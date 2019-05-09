@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  ComProject,
+  ProProject,
   ComLanguage
 } from '../index';
 
@@ -16,7 +16,7 @@ export interface ComLabelInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   "fk_entity"?: number;
-  project?: ComProject;
+  project?: ProProject;
   language?: ComLanguage;
 }
 
@@ -31,7 +31,7 @@ export class ComLabel implements ComLabelInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   "fk_entity": number;
-  project?: ComProject;
+  project?: ProProject;
   language?: ComLanguage;
   constructor(data?: ComLabelInterface) {
     Object.assign(this, data);

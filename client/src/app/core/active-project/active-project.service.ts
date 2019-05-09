@@ -1,13 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ComConfig, IAppState, InfChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
+import { ComConfig, IAppState, DatChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
 import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ComQuery, ComVisual, DfhProjRel, InfEntityProjectRel } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, DfhProjRel, ProInfoProjRel } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
-import { ComProject } from '../sdk/models/ComProject';
+import { ProProject } from '../sdk/models/ComProject';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
@@ -17,7 +17,7 @@ import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePrev
 
 @Injectable()
 export class ActiveProjectService {
-  project: ComProject;
+  project: ProProject;
 
   public activeProject$: Observable<ProjectDetail>;
   public pkProject$: Observable<number>;
@@ -29,9 +29,9 @@ export class ActiveProjectService {
   public list$: Observable<ListType>; // type of list displayed in left panel 
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
-  public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ComQuery>>
+  public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ProQuery>>
   public comQueryLoading$: Observable<boolean>
-  public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ComVisual>>
+  public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
   public comVisualLoading$: Observable<boolean>
 
   // emits true if no toolbox panel is opened
@@ -59,9 +59,9 @@ export class ActiveProjectService {
     this.classes$ = ngRedux.select<ClassConfigList>(['activeProject', 'crm', 'classes']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
     this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
-    this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ComQuery>>(['activeProject', 'comQueryVersionsByPk']);
+    this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProQuery>>(['activeProject', 'comQueryVersionsByPk']);
     this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
-    this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ComVisual>>(['activeProject', 'comVisualVersionsByPk']);
+    this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProVisual>>(['activeProject', 'comVisualVersionsByPk']);
     this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
 
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
@@ -127,7 +127,7 @@ export class ActiveProjectService {
    */
   initProject(id) {
     const state = this.ngRedux.getState();
-    if (!state.activeProject || state.activeProject.pk_project != id) {
+    if (!state.activeProject || state.activeProject.pk_entity != id) {
       this.ngRedux.dispatch(this.actions.loadProject(id))
     }
   }
@@ -139,7 +139,7 @@ export class ActiveProjectService {
    */
   initProjectCrm(id) {
     const state = this.ngRedux.getState();
-    if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.crm) {
+    if (!state.activeProject || state.activeProject.pk_entity != id || !state.activeProject.crm) {
       this.ngRedux.dispatch(this.actions.activeProjectLoadCrm(id))
     }
   }
@@ -198,7 +198,7 @@ export class ActiveProjectService {
   loadChunk(pkEntity: number, forceReload?: boolean) {
     const state = this.ngRedux.getState();
     if (!(((state || {}).activeProject || {}).chunks || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadChunk(state.activeProject.pk_project, pkEntity))
+      this.ngRedux.dispatch(this.actions.loadChunk(state.activeProject.pk_entity, pkEntity))
     }
   }
 
@@ -278,7 +278,7 @@ export class ActiveProjectService {
   loadEntityDetailForModal(pkEntity: number, forceReload = true, pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
     const state = this.ngRedux.getState();
     if (!(((state || {}).activeProject || {}).peItModals || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_project, pkEntity, pkUiContext))
+      this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_entity, pkEntity, pkUiContext))
     }
   }
 
@@ -427,7 +427,7 @@ export class ActiveProjectService {
   removePeIt(pk_entity: number) {
     this.pkProject$.pipe(first(pk => !!pk)).subscribe(fk_project => {
 
-      const epr: InfEntityProjectRel = {
+      const epr: ProInfoProjRel = {
         fk_project,
         fk_entity: pk_entity,
         is_in_project: false,
@@ -444,7 +444,7 @@ export class ActiveProjectService {
   * Mentioning
   ************************************************************************************/
 
-  updateSelectedChunk(c: InfChunk) {
+  updateSelectedChunk(c: DatChunk) {
     this.ngRedux.dispatch(this.actions.updateSelectedChunk(c))
   }
 

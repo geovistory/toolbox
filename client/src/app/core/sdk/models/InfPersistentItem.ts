@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   InfRole,
-  InfEntityProjectRel,
+  ProInfoProjRel,
   DfhClass,
   InfEntityAssociation,
   InfTypeNamespaceRel,
@@ -17,7 +17,7 @@ export interface InfPersistentItemInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   pi_roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];
@@ -33,7 +33,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   pi_roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];

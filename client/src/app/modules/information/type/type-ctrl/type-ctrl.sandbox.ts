@@ -20,7 +20,7 @@ export default sandboxOf(TypeCtrlComponent, {
                 assoc: {} as InfEntityAssociation
             },
             activeProject: {
-                pk_project: 8 // use same pkProject
+                pk_entity: 8 // use same pkProject
             } as ProjectDetail,
             basePath: ['sandboxState', '_typeCtrl'],
             sandboxState: {
@@ -57,12 +57,12 @@ export default sandboxOf(TypeCtrlComponent, {
             model: {
                 assoc: {
                     fk_property: 1,
-                    fk_domain_entity: 22,
-                    fk_range_entity: 80490
+                    fk_info_domain: 22,
+                    fk_info_range: 80490
                 } as InfEntityAssociation
             },
             activeProject: {
-                pk_project: 8 // use same pkProject
+                pk_entity: 8 // use same pkProject
             } as ProjectDetail,
             basePath: ['sandboxState', '_typeCtrl'],
             sandboxState: {

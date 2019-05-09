@@ -3,39 +3,37 @@ import {
   ComLabel,
   PubAccount,
   ComLanguage,
-  ComTextProperty,
+  ProTextProperty,
   InfPersistentItem,
-  InfEntityProjectRel,
-  InfNamespace
+  ProInfoProjRel,
+  DatNamespace
 } from '../index';
 
 declare var Object: any;
 export interface ComProjectInterface {
   "notes"?: string;
-  "pk_project"?: number;
   "pk_entity"?: number;
   "fk_language"?: string;
   labels?: ComLabel[];
   accounts?: PubAccount[];
   default_language?: ComLanguage;
-  text_properties?: ComTextProperty[];
+  text_properties?: ProTextProperty[];
   persistent_items?: InfPersistentItem[];
-  entity_version_project_rels?: InfEntityProjectRel[];
-  namespaces?: InfNamespace[];
+  entity_version_project_rels?: ProInfoProjRel[];
+  namespaces?: DatNamespace[];
 }
 
-export class ComProject implements ComProjectInterface {
+export class ProProject implements ComProjectInterface {
   "notes": string;
-  "pk_project": number;
   "pk_entity": number;
   "fk_language": string;
   labels?: ComLabel[];
   accounts?: PubAccount[];
   default_language?: ComLanguage;
-  text_properties?: ComTextProperty[];
+  text_properties?: ProTextProperty[];
   persistent_items?: InfPersistentItem[];
-  entity_version_project_rels?: InfEntityProjectRel[];
-  namespaces?: InfNamespace[];
+  entity_version_project_rels?: ProInfoProjRel[];
+  namespaces?: DatNamespace[];
   constructor(data?: ComProjectInterface) {
     Object.assign(this, data);
   }
@@ -52,8 +50,8 @@ export class ComProject implements ComProjectInterface {
   * @license MIT
   * This method creates an instance of ComProject for dynamic purposes.
   **/
-  public static factory(data: ComProjectInterface): ComProject{
-    return new ComProject(data);
+  public static factory(data: ComProjectInterface): ProProject{
+    return new ProProject(data);
   }
   /**
   * @method getModelDefinition

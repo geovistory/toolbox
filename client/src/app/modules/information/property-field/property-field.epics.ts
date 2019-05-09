@@ -1,6 +1,6 @@
 import { ObservableStore } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarAction, LoadingBarActions, InfRoleApi, InfRole } from 'app/core';
+import { ProInfoProjRel, ProInfoProjRelApi, LoadingBarAction, LoadingBarActions, InfRoleApi, InfRole } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { equals } from 'ramda';
 import { combineEpics, Epic, ofType } from 'redux-observable';
@@ -23,7 +23,7 @@ const ofSubstore = (path: string[]) => (action): boolean => {
 @Injectable()
 export class PropertyFieldApiEpics {
     constructor(
-        private eprApi: InfEntityProjectRelApi,
+        private eprApi: ProInfoProjRelApi,
         private roleApi: InfRoleApi,
         private actions: PropertyFieldActions,
         private loadingBarActions: LoadingBarActions,
@@ -52,7 +52,7 @@ export class PropertyFieldApiEpics {
                     combineLatest(
                         action.meta.eprs.map(data => this.eprApi.patchOrCreate(data))
                     )
-                        .subscribe((data: InfEntityProjectRel[]) => {
+                        .subscribe((data: ProInfoProjRel[]) => {
                             globalStore.next(this.loadingBarActions.completeLoading());
 
                             c.localStore.dispatch(this.actions.updateOrderSucceeded(data));
@@ -111,7 +111,7 @@ export class PropertyFieldApiEpics {
                     /**
                      * Do some api call
                      */
-                    this.roleApi.addToProjectWithTeEnt(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
+                    this.roleApi.addToProjectWithTeEnt(c.ngRedux.getState().activeProject.pk_entity, action.meta.pk_roles)
                         /**
                          * Subscribe to the api call
                          */
@@ -171,7 +171,7 @@ export class PropertyFieldApiEpics {
                     /**
                      * Do some api call
                      */
-                    this.roleApi.addToProject(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
+                    this.roleApi.addToProject(c.ngRedux.getState().activeProject.pk_entity, action.meta.pk_roles)
                         /**
                          * Subscribe to the api call
                          */

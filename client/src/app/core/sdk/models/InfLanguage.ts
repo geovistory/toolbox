@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel
+  ProInfoProjRel
 } from '../index';
 
 declare var Object: any;
@@ -17,7 +17,7 @@ export interface InfLanguageInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
 }
 
 export class InfLanguage implements InfLanguageInterface {
@@ -33,7 +33,7 @@ export class InfLanguage implements InfLanguageInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   constructor(data?: InfLanguageInterface) {
     Object.assign(this, data);
   }

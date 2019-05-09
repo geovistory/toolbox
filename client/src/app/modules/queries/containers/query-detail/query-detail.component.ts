@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, ComQuery, IAppState, SubstoreComponent } from 'app/core';
+import { ActiveProjectService, ProQuery, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { clone, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -68,7 +68,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() comQuery$: Observable<ComQuery>;
+  @select() comQuery$: Observable<ProQuery>;
 
   @select() showRightArea$: Observable<boolean>;
   @select() queryResults$: Observable<any[]>;
@@ -252,7 +252,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       (!loadedPages[pageBefore] && !loadingPages[pageBefore]) ? offsetOfPage(pageBefore, this.limit) : null;
   }
 
-  composeComQuery(fkProject: number): ComQuery {
+  composeComQuery(fkProject: number): ProQuery {
     return {
       fk_project: fkProject,
       name: this.thirdFormGroup.controls.nameCtrl.value,
@@ -261,7 +261,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
         filter: this.filterCtrl.value,
         columns: this.columnsCtrl.value
       }
-    } as ComQuery
+    } as ProQuery
   }
 
 

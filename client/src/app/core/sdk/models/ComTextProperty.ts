@@ -1,14 +1,14 @@
 /* tslint:disable */
 import {
   ComLanguage,
-  ComProject
+  ProProject
 } from '../index';
 
 declare var Object: any;
 export interface ComTextPropertyInterface {
-  "pk_text_property"?: number;
-  "text_property": string;
-  "text_property_xml": string;
+  "pk_entity"?: number;
+  "string": string;
+  "quill_doc": string;
   "fk_system_type": number;
   "fk_language": string;
   "entity_version"?: number;
@@ -18,13 +18,13 @@ export interface ComTextPropertyInterface {
   "sys_period"?: string;
   "fk_entity"?: number;
   language?: ComLanguage;
-  project?: ComProject;
+  project?: ProProject;
 }
 
-export class ComTextProperty implements ComTextPropertyInterface {
-  "pk_text_property": number;
-  "text_property": string;
-  "text_property_xml": string;
+export class ProTextProperty implements ComTextPropertyInterface {
+  "pk_entity": number;
+  "string": string;
+  "quill_doc": string;
   "fk_system_type": number;
   "fk_language": string;
   "entity_version": number;
@@ -34,7 +34,7 @@ export class ComTextProperty implements ComTextPropertyInterface {
   "sys_period": string;
   "fk_entity": number;
   language?: ComLanguage;
-  project?: ComProject;
+  project?: ProProject;
   constructor(data?: ComTextPropertyInterface) {
     Object.assign(this, data);
   }
@@ -51,8 +51,8 @@ export class ComTextProperty implements ComTextPropertyInterface {
   * @license MIT
   * This method creates an instance of ComTextProperty for dynamic purposes.
   **/
-  public static factory(data: ComTextPropertyInterface): ComTextProperty{
-    return new ComTextProperty(data);
+  public static factory(data: ComTextPropertyInterface): ProTextProperty{
+    return new ProTextProperty(data);
   }
   /**
   * @method getModelDefinition

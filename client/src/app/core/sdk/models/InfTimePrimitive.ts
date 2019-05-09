@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel
+  ProInfoProjRel
 } from '../index';
 
 declare var Object: any;
@@ -13,7 +13,7 @@ export interface InfTimePrimitiveInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
 }
 
 export class InfTimePrimitive implements InfTimePrimitiveInterface {
@@ -25,7 +25,7 @@ export class InfTimePrimitive implements InfTimePrimitiveInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   constructor(data?: InfTimePrimitiveInterface) {
     Object.assign(this, data);
   }

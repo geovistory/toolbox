@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
-import { LoopBackAuth, LoopBackConfig, ComProject, PubAccount, PubAccountApi } from 'app/core';
+import { LoopBackAuth, LoopBackConfig, ProProject, PubAccount, PubAccountApi } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { ProjectsActions } from '../../api/projects.actions';
@@ -16,7 +16,7 @@ import { IProjectList } from '../../projects.model';
 export class ProjectListComponent implements OnInit {
 
 
-  projects: ComProject[] = [];
+  projects: ProProject[] = [];
   loadingComplete = false;
 
 

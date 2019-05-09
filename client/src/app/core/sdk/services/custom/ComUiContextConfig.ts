@@ -9,19 +9,19 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComUiContextConfig } from '../../models/ComUiContextConfig';
+import { ProClassFieldConfig } from '../../models/ComUiContextConfig';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ComUiContext } from '../../models/ComUiContext';
+import { SysAppContext } from '../../models/ComUiContext';
 import { DfhProperty } from '../../models/DfhProperty';
-import { ComClassField } from '../../models/ComClassField';
-import { ComProject } from '../../models/ComProject';
+import { SysClassField } from '../../models/ComClassField';
+import { ProProject } from '../../models/ComProject';
 
 
 /**
  * Api services for the `ComUiContextConfig` model.
  */
 @Injectable()
-export class ComUiContextConfigApi extends BaseLoopBackApi {
+export class ProClassFieldConfigApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

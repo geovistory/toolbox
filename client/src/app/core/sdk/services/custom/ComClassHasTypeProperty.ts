@@ -9,7 +9,7 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComClassHasTypeProperty } from '../../models/ComClassHasTypeProperty';
+import { SysClassHasTypeProperty } from '../../models/ComClassHasTypeProperty';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
@@ -17,7 +17,7 @@ import { SocketConnection } from '../../sockets/socket.connections';
  * Api services for the `ComClassHasTypeProperty` model.
  */
 @Injectable()
-export class ComClassHasTypePropertyApi extends BaseLoopBackApi {
+export class SysClassHasTypePropertyApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

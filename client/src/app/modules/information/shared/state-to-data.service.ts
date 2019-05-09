@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TimeSpan, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, U } from 'app/core';
+import { TimeSpan, ProInfoProjRel, InfPersistentItem, InfRole, InfTemporalEntity, U } from 'app/core';
 import { FieldList, ExistenceTimeDetail, PeItDetail, RoleDetail, RoleDetailList, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { DfhConfig } from './dfh-config';
 import { Field } from 'app/core/state/models/field';
@@ -8,19 +8,19 @@ import { Field } from 'app/core/state/models/field';
 export class StateToDataService {
 
 
-  private static getOwnEpr(entity): InfEntityProjectRel {
+  private static getOwnEpr(entity): ProInfoProjRel {
     return !entity.entity_version_project_rels ? {} :
       !entity.entity_version_project_rels[0] ? {} :
         entity.entity_version_project_rels[0];
   }
 
-  private static createEpr(entity, eprOptions): InfEntityProjectRel {
+  private static createEpr(entity, eprOptions): ProInfoProjRel {
     const ownEpr = StateToDataService.getOwnEpr(entity);
-    const overridesOwnEpr = new InfEntityProjectRel;
+    const overridesOwnEpr = new ProInfoProjRel;
     overridesOwnEpr.fk_entity_version_concat = entity.pk_entity_version_concat;
     overridesOwnEpr.is_in_project = undefined;
 
-    return new InfEntityProjectRel(Object.assign(ownEpr, overridesOwnEpr, eprOptions));
+    return new ProInfoProjRel(Object.assign(ownEpr, overridesOwnEpr, eprOptions));
   }
 
 
@@ -29,7 +29,7 @@ export class StateToDataService {
   * Transforms a given PeItState object to an object that can be passed to the
    * api in order to change the project relation to the peIt (and potentially to its children)
    */
-  static peItStateToPeItToRelate(peItDetail: PeItDetail, eprOptions?: InfEntityProjectRel): InfPersistentItem {
+  static peItStateToPeItToRelate(peItDetail: PeItDetail, eprOptions?: ProInfoProjRel): InfPersistentItem {
     const peIt = new InfPersistentItem(peItDetail.peIt);
     peIt.entity_version_project_rels = [StateToDataService.createEpr(peIt, eprOptions)]
 
@@ -43,7 +43,7 @@ export class StateToDataService {
    * Transforms a given RoleState object to an object that can be passed to the
    * api in order to chante the project relation to the role (and potentially to its children)
    */
-  static roleStateToRoleToRelate(roleState: RoleDetail, eprOptions?: InfEntityProjectRel): InfRole {
+  static roleStateToRoleToRelate(roleState: RoleDetail, eprOptions?: ProInfoProjRel): InfRole {
     const role = new InfRole(roleState.role);
     role.entity_version_project_rels = [StateToDataService.createEpr(role, eprOptions)]
 
@@ -63,7 +63,7 @@ export class StateToDataService {
    *
    * @param teEntState
    */
-  static teEntToTeEntToRelate(teEntState: TeEntDetail, eprOptions?: InfEntityProjectRel): InfTemporalEntity {
+  static teEntToTeEntToRelate(teEntState: TeEntDetail, eprOptions?: ProInfoProjRel): InfTemporalEntity {
     const teEnt = new InfTemporalEntity(teEntState.teEnt);
     teEnt.entity_version_project_rels = [StateToDataService.createEpr(teEnt, eprOptions)]
 
@@ -73,7 +73,7 @@ export class StateToDataService {
     return teEnt;
   }
 
-  static propertyFieldsToRolesToRelate(children: FieldList, eprOptions?: InfEntityProjectRel): InfRole[] {
+  static propertyFieldsToRolesToRelate(children: FieldList, eprOptions?: ProInfoProjRel): InfRole[] {
 
     const roles: InfRole[] = [];
 
@@ -116,7 +116,7 @@ export class StateToDataService {
    *
    * @param teEntState
    */
-  static existenceTimeToRolesToRelate(teEntState: ExistenceTimeDetail, eprOptions?: InfEntityProjectRel): InfRole[] {
+  static existenceTimeToRolesToRelate(teEntState: ExistenceTimeDetail, eprOptions?: ProInfoProjRel): InfRole[] {
     if (teEntState) return StateToDataService.propertyFieldsToRolesToRelate(teEntState._fields as FieldList, eprOptions);
     else return []
   }

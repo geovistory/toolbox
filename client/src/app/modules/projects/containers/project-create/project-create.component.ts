@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoopBackAuth, LoopBackConfig, ComProjectApi, PubAccountApi, ComLanguage, ComLanguageApi } from 'app/core';
+import { LoopBackAuth, LoopBackConfig, SysProjectApi, PubAccountApi, ComLanguage, ComLanguageApi } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Observable } from 'rxjs';
@@ -33,7 +33,7 @@ export class ProjectCreateComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private accountApi: PubAccountApi,
-    private projectApi: ComProjectApi,
+    private projectApi: SysProjectApi,
     private languageApi: ComLanguageApi,
     private authService: LoopBackAuth,
     private slimLoadingBarService: SlimLoadingBarService

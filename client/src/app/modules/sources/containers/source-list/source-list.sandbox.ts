@@ -1,6 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { sandboxOf } from 'angular-playground';
-import { InfDigitalObject } from 'app/core';
+import { DatDigital } from 'app/core';
 import { AnnotationViewComponent } from 'app/modules/annotation/components/annotation-view/annotation-view.component';
 import { ChunkViewComponent } from 'app/modules/annotation/components/chunk-view/chunk-view.component';
 import { MentionedEntitiesViewComponent } from 'app/modules/annotation/components/mentioned-entities-view/mentioned-entities-view.component';
@@ -107,7 +107,7 @@ export default sandboxOf(SourceListComponent, {
           view: {
             js_quill_data: textBüchel,
             notes: 'Emmanuel Büchel'
-          } as InfDigitalObject
+          } as DatDigital
         }
       } as ISourceListState
     },
@@ -133,7 +133,7 @@ export default sandboxOf(SourceListComponent, {
           view: {
             js_quill_data: textBüchel,
             notes: 'Emmanuel Büchel'
-          } as InfDigitalObject,
+          } as DatDigital,
         }
       } as ISourceListState
     },

@@ -1,7 +1,7 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { active } from 'd3';
 import { indexBy, omit, groupBy, zipObj, clone } from 'ramda';
-import { InfPersistentItem, InfTemporalEntity, ComQuery, ComVisual } from '../sdk/models';
+import { InfPersistentItem, InfTemporalEntity, ProQuery, ProVisual } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ProjectDetail, Panel, TypePeIt, VersionEntity, ClassConfig } from './active-project.models';
@@ -385,7 +385,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 ...state,
                 comQueryVersionsByPk: {
                     ...indexBy(
-                        ((comQuery: VersionEntity<ComQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
+                        ((comQuery: VersionEntity<ProQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
                         action.meta.comQueryArray.map(comQ => ({
                             _latestVersion: comQ.entity_version,
                             ...indexBy((n) => n.toString(), (comQ.versions || [])),
@@ -453,7 +453,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 ...state,
                 comVisualVersionsByPk: {
                     ...indexBy(
-                        ((comVisual: VersionEntity<ComVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+                        ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
                         action.meta.comVisualArray.map(comQ => ({
                             _latestVersion: comQ.versions[0],
                             ...indexBy((n) => n.toString(), (comQ.versions || [])),
@@ -489,7 +489,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 comVisualVersionsByPk: {
                     ...state.comVisualVersionsByPk,
                     ...indexBy(
-                        ((comVisual: VersionEntity<ComVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+                        ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
                         action.meta.comVisualArray.map(comV => ({
                             _latestVersion: comV.versions[0],
                             ...indexBy((n) => n.toString(), (comV.versions || [])),

@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { InfDigitalObject, InfEntityAssociation } from 'app/core';
+import { DatDigital, InfEntityAssociation } from 'app/core';
 import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TextEditor } from './text-editor.models';
@@ -10,7 +10,7 @@ type Payload = TextEditor;
 interface MetaData {
   itemsArray?: any[];
   entityAssociation?: InfEntityAssociation;
-  digitalObject?: InfDigitalObject;
+  digitalObject?: DatDigital;
   pkProject?: number;
   fkRangeEntity?: number;
   fkProperty?: number;
@@ -74,13 +74,13 @@ export class TextEditorAPIActions {
   /*********************************************************************
   *  Method to save
   *********************************************************************/
-  @dispatch() save = (pkProject: number, digitalObject: InfDigitalObject): TextEditorAPIAction => ({
+  @dispatch() save = (pkProject: number, digitalObject: DatDigital): TextEditorAPIAction => ({
     type: TextEditorAPIActions.SAVE,
     meta: { pkProject, digitalObject },
     payload: null,
   });
 
-  saveSucceeded = (digitalObject: InfDigitalObject): TextEditorAPIAction => ({
+  saveSucceeded = (digitalObject: DatDigital): TextEditorAPIAction => ({
     type: TextEditorAPIActions.SAVE_SUCCEEDED,
     meta: {
       digitalObject

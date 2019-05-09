@@ -48,7 +48,7 @@ export default sandboxOf(TextPropertyComponent, {
                     fk_language: 19703,
                     fk_class_field: ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION,
                     fk_concerned_entity: undefined,
-                    text_property_quill_doc: {
+                    quill_doc: {
                         latestId: 3,
                         ops: [
                             {

@@ -8,7 +8,7 @@ import { SystemTypeList } from './api/system-type-list.models';
 import { SystemTypeListAPIEpics } from './api/system-type-list.epics';
 import { SystemTypeListAPIActions } from './api/system-type-list.actions';
 import { systemtypeListReducer } from './api/system-type-list.reducer';
-import { ComSystemType } from 'app/core/sdk/models/ComSystemType';
+import { SysSystemType } from 'app/core/sdk/models/ComSystemType';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -31,7 +31,7 @@ export class SystemTypeListComponent extends SystemTypeListAPIActions implements
   basePath = ['backoffice', 'systemtypesList'];
 
   // select observables of substore properties
-  @select() systemtypes$: Observable<ComSystemType[]>;
+  @select() systemtypes$: Observable<SysSystemType[]>;
 
   constructor(
     protected rootEpics: RootEpics,

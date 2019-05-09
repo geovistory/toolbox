@@ -9,16 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComUiContext } from '../../models/ComUiContext';
+import { SysAppContext } from '../../models/ComUiContext';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ComUiContextConfig } from '../../models/ComUiContextConfig';
+import { ProClassFieldConfig } from '../../models/ComUiContextConfig';
 
 
 /**
  * Api services for the `ComUiContext` model.
  */
 @Injectable()
-export class ComUiContextApi extends BaseLoopBackApi {
+export class SysAppContextApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -46,7 +46,7 @@ export class ComUiContextApi extends BaseLoopBackApi {
    * This usually means the response is a `ComUiContext` object.)
    * </em>
    */
-  public uiConfig(pk_ui_context: any = {}, pk_project: any = {}, customHeaders?: Function): Observable<any> {
+  public appContext(pk_ui_context: any = {}, pk_project: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ComUiContexts/ui-config";

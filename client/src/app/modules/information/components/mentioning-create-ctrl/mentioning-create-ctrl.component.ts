@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { EntityPreview, IAppState, InfChunk, InfEntityAssociation, ProjectCrm, U } from 'app/core';
+import { EntityPreview, IAppState, DatChunk, InfEntityAssociation, ProjectCrm, U } from 'app/core';
 import { Subject } from 'rxjs';
 import { DfhConfig } from '../../shared/dfh-config';
 
@@ -43,7 +43,7 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
   sourceOrSectionEntityEditing;
 
   // Range: Chunk. Provide a value to set this field onInit
-  @Input() chunkEntity: InfChunk;
+  @Input() chunkEntity: DatChunk;
 
   sourceAndSectionPks = [
     DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,
@@ -88,8 +88,8 @@ export class MentioningCreateCtrlComponent implements OnInit, OnDestroy, Control
       const rangeEntity = this.chunkEntity || this.sectionEntity || this.sourceEntity;
       const rangeClass = this.chunkEntity ? DfhConfig.CLASS_PK_CHUNK : (this.sectionEntity || this.sourceEntity).fk_class;
       const ea = new InfEntityAssociation({
-        fk_domain_entity: this.mentionedEntity.pk_entity,
-        fk_range_entity: rangeEntity.pk_entity,
+        fk_info_domain: this.mentionedEntity.pk_entity,
+        fk_info_range: rangeEntity.pk_entity,
         fk_property: this.getFkProperty(this.mentionedEntity.fk_class, rangeClass)
       })
       if (this.chunkEntity) {

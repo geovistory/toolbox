@@ -1,35 +1,35 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfEntityAssociation,
-  InfDigitalObject
+  DatDigital
 } from '../index';
 
 declare var Object: any;
 export interface InfChunkInterface {
-  "fk_digital_object": number;
-  "js_quill_data": any;
+  "fk_text": number;
+  "quill_doc": any;
   "pk_entity"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   entity_associations?: InfEntityAssociation[];
-  digital_object?: InfDigitalObject;
+  digital_object?: DatDigital;
 }
 
-export class InfChunk implements InfChunkInterface {
-  "fk_digital_object": number;
-  "js_quill_data": any;
+export class DatChunk implements InfChunkInterface {
+  "fk_text": number;
+  "quill_doc": any;
   "pk_entity": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   entity_associations?: InfEntityAssociation[];
-  digital_object?: InfDigitalObject;
+  digital_object?: DatDigital;
   constructor(data?: InfChunkInterface) {
     Object.assign(this, data);
   }
@@ -46,8 +46,8 @@ export class InfChunk implements InfChunkInterface {
   * @license MIT
   * This method creates an instance of InfChunk for dynamic purposes.
   **/
-  public static factory(data: InfChunkInterface): InfChunk{
-    return new InfChunk(data);
+  public static factory(data: InfChunkInterface): DatChunk{
+    return new DatChunk(data);
   }
   /**
   * @method getModelDefinition

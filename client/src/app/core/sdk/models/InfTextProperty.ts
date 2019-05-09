@@ -1,10 +1,10 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfPersistentItem,
   InfTemporalEntity,
   InfLanguage,
-  ComClassField
+  SysClassField
 } from '../index';
 
 declare var Object: any;
@@ -12,34 +12,34 @@ export interface InfTextPropertyInterface {
   "fk_class_field": number;
   "fk_concerned_entity": number;
   "fk_language": number;
-  "text_property_quill_doc": any;
+  "quill_doc": any;
   "pk_entity"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   persistent_item?: InfPersistentItem;
   temporal_entity?: InfTemporalEntity;
   language?: InfLanguage;
-  class_field?: ComClassField;
+  class_field?: SysClassField;
 }
 
 export class InfTextProperty implements InfTextPropertyInterface {
   "fk_class_field": number;
   "fk_concerned_entity": number;
   "fk_language": number;
-  "text_property_quill_doc": any;
+  "quill_doc": any;
   "pk_entity": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   persistent_item?: InfPersistentItem;
   temporal_entity?: InfTemporalEntity;
   language?: InfLanguage;
-  class_field?: ComClassField;
+  class_field?: SysClassField;
   constructor(data?: InfTextPropertyInterface) {
     Object.assign(this, data);
   }

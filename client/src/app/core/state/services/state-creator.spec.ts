@@ -92,7 +92,7 @@ describe('StateCreator', () => {
             { isOutgoing: false },
             {
                 fk_property: 1015,
-                fk_range_entity: 99,
+                fk_info_range: 99,
                 // domain_pe_it: {
                 //     domain_entity_associations: [
                 //         { TODO: add a predefined peIt type for the create form

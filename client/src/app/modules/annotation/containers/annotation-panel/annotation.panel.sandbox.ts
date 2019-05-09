@@ -48,7 +48,7 @@ export default sandboxOf(AnnotationPanelComponent, {
       path: ['annotationPanel'],
       initState: {
         activeProject: {
-          pk_project: pkProject,
+          pk_entity: pkProject,
           crm: crm
         } as ProjectDetail,
         annotationPanel: {

@@ -9,9 +9,9 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
+import { SysClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ComClassField } from '../../models/ComClassField';
+import { SysClassField } from '../../models/ComClassField';
 import { DfhProperty } from '../../models/DfhProperty';
 
 
@@ -19,7 +19,7 @@ import { DfhProperty } from '../../models/DfhProperty';
  * Api services for the `ComClassFieldPropertyRel` model.
  */
 @Injectable()
-export class ComClassFieldPropertyRelApi extends BaseLoopBackApi {
+export class SysClassFieldPropertyRelApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

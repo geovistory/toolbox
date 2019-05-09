@@ -8,12 +8,12 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { HasTypeComponent } from '../has-type.component';
 import { HasTypeAPIActions, HasTypeAPIAction } from './has-type.actions';
 import { ofSubstore } from 'app/core/store/module';
-import { ComClassHasTypePropertyApi } from 'app/core/sdk/services/custom/ComClassHasTypeProperty';
+import { SysClassHasTypePropertyApi } from 'app/core/sdk/services/custom/ComClassHasTypeProperty';
 
 @Injectable()
 export class HasTypeAPIEpics {
   constructor(
-    private modelApi: ComClassHasTypePropertyApi, // <- change the api
+    private modelApi: SysClassHasTypePropertyApi, // <- change the api
     private actions: HasTypeAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions

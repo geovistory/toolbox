@@ -9,7 +9,7 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
@@ -17,7 +17,7 @@ import { SocketConnection } from '../../sockets/socket.connections';
  * Api services for the `InfEntityProjectRel` model.
  */
 @Injectable()
-export class InfEntityProjectRelApi extends BaseLoopBackApi {
+export class ProInfoProjRelApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

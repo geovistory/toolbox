@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  ComClassField,
+  SysClassField,
   DfhProperty
 } from '../index';
 
@@ -11,17 +11,17 @@ export interface ComClassFieldPropertyRelInterface {
   "fk_property"?: number;
   "property_is_outgoing"?: boolean;
   "ord_num"?: number;
-  class_field?: ComClassField;
+  class_field?: SysClassField;
   property?: DfhProperty;
 }
 
-export class ComClassFieldPropertyRel implements ComClassFieldPropertyRelInterface {
+export class SysClassFieldPropertyRel implements ComClassFieldPropertyRelInterface {
   "pk_entity": number;
   "fk_class_field": number;
   "fk_property": number;
   "property_is_outgoing": boolean;
   "ord_num": number;
-  class_field?: ComClassField;
+  class_field?: SysClassField;
   property?: DfhProperty;
   constructor(data?: ComClassFieldPropertyRelInterface) {
     Object.assign(this, data);
@@ -39,8 +39,8 @@ export class ComClassFieldPropertyRel implements ComClassFieldPropertyRelInterfa
   * @license MIT
   * This method creates an instance of ComClassFieldPropertyRel for dynamic purposes.
   **/
-  public static factory(data: ComClassFieldPropertyRelInterface): ComClassFieldPropertyRel{
-    return new ComClassFieldPropertyRel(data);
+  public static factory(data: ComClassFieldPropertyRelInterface): SysClassFieldPropertyRel{
+    return new SysClassFieldPropertyRel(data);
   }
   /**
   * @method getModelDefinition

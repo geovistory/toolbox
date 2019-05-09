@@ -191,10 +191,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 85,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1188,
                 fk_class_field: null,
@@ -204,7 +204,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 222,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1188,
                 fk_class_field: null,
@@ -240,10 +240,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 191,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1196,
                 fk_class_field: null,
@@ -253,7 +253,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 224,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1196,
                 fk_class_field: null,
@@ -289,10 +289,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 86,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1180,
                 fk_class_field: null,
@@ -302,7 +302,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 225,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1180,
                 fk_class_field: null,
@@ -338,10 +338,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 226,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1198,
                 fk_class_field: null,
@@ -377,10 +377,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 79,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -390,7 +390,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 80,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -400,7 +400,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 223,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -436,10 +436,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 83,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 84,
                 fk_class_field: null,
@@ -449,7 +449,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 227,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 84,
                 fk_class_field: null,
@@ -485,10 +485,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 231,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 140,
                 fk_class_field: null,
@@ -524,10 +524,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 82,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 88,
                 fk_class_field: null,
@@ -537,7 +537,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 230,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 88,
                 fk_class_field: null,
@@ -573,10 +573,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 81,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 86,
                 fk_class_field: null,
@@ -586,7 +586,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 229,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 86,
                 fk_class_field: null,
@@ -622,10 +622,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 84,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 85,
                 fk_class_field: null,
@@ -635,7 +635,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 228,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 85,
                 fk_class_field: null,
@@ -671,10 +671,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 232,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 140,
                 fk_class_field: null,
@@ -710,7 +710,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -738,7 +738,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -766,7 +766,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -794,7 +794,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -822,7 +822,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -868,7 +868,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -896,7 +896,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 0,
@@ -947,7 +947,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -975,7 +975,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1003,7 +1003,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1031,7 +1031,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1059,7 +1059,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1087,7 +1087,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1115,7 +1115,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1143,7 +1143,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1171,7 +1171,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1199,7 +1199,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1227,7 +1227,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1255,7 +1255,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1283,7 +1283,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1311,7 +1311,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1339,7 +1339,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1367,7 +1367,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1395,7 +1395,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1423,7 +1423,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1468,7 +1468,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -1514,7 +1514,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1542,7 +1542,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1570,7 +1570,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -1598,7 +1598,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -1730,10 +1730,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 87,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 83,
                 fk_class_field: null,
@@ -1743,7 +1743,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 89,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 83,
                 fk_class_field: null,
@@ -1753,7 +1753,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 233,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 83,
                 fk_class_field: null,
@@ -1789,10 +1789,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 88,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 139,
                 fk_class_field: null,
@@ -1802,7 +1802,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 90,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 139,
                 fk_class_field: null,
@@ -1812,7 +1812,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 234,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 139,
                 fk_class_field: null,
@@ -2007,7 +2007,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -2035,10 +2035,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 76,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1186,
                 fk_class_field: null,
@@ -2048,7 +2048,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 235,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1186,
                 fk_class_field: null,
@@ -2084,10 +2084,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 77,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1187,
                 fk_class_field: null,
@@ -2097,7 +2097,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 236,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1187,
                 fk_class_field: null,
@@ -2133,10 +2133,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 73,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 84,
                 fk_class_field: null,
@@ -2146,7 +2146,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 237,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 84,
                 fk_class_field: null,
@@ -2182,10 +2182,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 78,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 86,
                 fk_class_field: null,
@@ -2195,7 +2195,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 74,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 86,
                 fk_class_field: null,
@@ -2205,7 +2205,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 239,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 86,
                 fk_class_field: null,
@@ -2241,10 +2241,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 75,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 85,
                 fk_class_field: null,
@@ -2254,7 +2254,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 238,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 85,
                 fk_class_field: null,
@@ -2391,10 +2391,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 240,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 87,
                 fk_class_field: null,
@@ -2404,7 +2404,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 403,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 87,
                 fk_class_field: null,
@@ -2414,7 +2414,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 404,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 87,
                 fk_class_field: null,
@@ -2424,7 +2424,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 406,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 87,
                 fk_class_field: null,
@@ -2577,10 +2577,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 214,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1044,
                 fk_class_field: null,
@@ -2616,10 +2616,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 92,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1191,
                 fk_class_field: null,
@@ -2629,7 +2629,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 216,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1191,
                 fk_class_field: null,
@@ -2639,7 +2639,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 241,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1191,
                 fk_class_field: null,
@@ -2675,10 +2675,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 91,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 88,
                 fk_class_field: null,
@@ -2688,7 +2688,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 215,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 88,
                 fk_class_field: null,
@@ -2698,7 +2698,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 242,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 88,
                 fk_class_field: null,
@@ -2872,10 +2872,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 98,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1189,
                 fk_class_field: null,
@@ -2911,10 +2911,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 101,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1197,
                 fk_class_field: null,
@@ -2950,10 +2950,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 102,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1182,
                 fk_class_field: null,
@@ -2963,7 +2963,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 408,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1182,
                 fk_class_field: null,
@@ -2999,10 +2999,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 103,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1199,
                 fk_class_field: null,
@@ -3038,10 +3038,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 93,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -3051,7 +3051,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 100,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -3061,7 +3061,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 407,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -3097,10 +3097,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 94,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 83,
                 fk_class_field: null,
@@ -3110,7 +3110,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 409,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 83,
                 fk_class_field: null,
@@ -3146,10 +3146,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 96,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 87,
                 fk_class_field: null,
@@ -3159,7 +3159,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 410,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 87,
                 fk_class_field: null,
@@ -3195,10 +3195,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 97,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 132,
                 fk_class_field: null,
@@ -3234,10 +3234,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 99,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 134,
                 fk_class_field: null,
@@ -3273,10 +3273,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 95,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 139,
                 fk_class_field: null,
@@ -3286,7 +3286,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 411,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 139,
                 fk_class_field: null,
@@ -3322,7 +3322,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -3350,7 +3350,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -3378,7 +3378,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -3406,7 +3406,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -3434,7 +3434,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -3462,7 +3462,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -3490,7 +3490,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -3518,7 +3518,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -3546,7 +3546,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -3705,10 +3705,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 188,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1196,
                 fk_class_field: null,
@@ -3718,7 +3718,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 190,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1196,
                 fk_class_field: null,
@@ -3728,7 +3728,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 412,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1196,
                 fk_class_field: null,
@@ -3764,10 +3764,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 414,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1197,
                 fk_class_field: null,
@@ -3777,7 +3777,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 416,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1197,
                 fk_class_field: null,
@@ -3787,7 +3787,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 417,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1197,
                 fk_class_field: null,
@@ -3823,10 +3823,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 415,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 131,
                 fk_class_field: null,
@@ -3862,10 +3862,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 187,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 132,
                 fk_class_field: null,
@@ -3875,7 +3875,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 189,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 132,
                 fk_class_field: null,
@@ -3885,7 +3885,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 413,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 132,
                 fk_class_field: null,
@@ -4066,10 +4066,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 419,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1198,
                 fk_class_field: null,
@@ -4079,7 +4079,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 421,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1198,
                 fk_class_field: null,
@@ -4089,7 +4089,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 424,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1198,
                 fk_class_field: null,
@@ -4125,10 +4125,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 420,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1199,
                 fk_class_field: null,
@@ -4138,7 +4138,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 422,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1199,
                 fk_class_field: null,
@@ -4148,7 +4148,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 423,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1199,
                 fk_class_field: null,
@@ -4184,7 +4184,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -4212,10 +4212,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 104,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 134,
                 fk_class_field: null,
@@ -4225,7 +4225,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 105,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 134,
                 fk_class_field: null,
@@ -4235,7 +4235,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 418,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 134,
                 fk_class_field: null,
@@ -4367,10 +4367,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 108,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1181,
                 fk_class_field: null,
@@ -4380,7 +4380,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 425,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1181,
                 fk_class_field: null,
@@ -4416,10 +4416,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 107,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1184,
                 fk_class_field: null,
@@ -4429,7 +4429,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 426,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1184,
                 fk_class_field: null,
@@ -4465,10 +4465,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 427,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 145,
                 fk_class_field: null,
@@ -4504,10 +4504,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 106,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 148,
                 fk_class_field: null,
@@ -4517,7 +4517,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 109,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 148,
                 fk_class_field: null,
@@ -4527,7 +4527,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 428,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 148,
                 fk_class_field: null,
@@ -4729,7 +4729,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -4757,10 +4757,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 114,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1178,
                 fk_class_field: null,
@@ -4770,7 +4770,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 119,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1178,
                 fk_class_field: null,
@@ -4780,7 +4780,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 430,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1178,
                 fk_class_field: null,
@@ -4816,10 +4816,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 115,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1180,
                 fk_class_field: null,
@@ -4829,7 +4829,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 120,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1180,
                 fk_class_field: null,
@@ -4839,7 +4839,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 431,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1180,
                 fk_class_field: null,
@@ -4875,10 +4875,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 118,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1182,
                 fk_class_field: null,
@@ -4888,7 +4888,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 121,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1182,
                 fk_class_field: null,
@@ -4898,7 +4898,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 432,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1182,
                 fk_class_field: null,
@@ -4934,10 +4934,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 117,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1183,
                 fk_class_field: null,
@@ -4973,10 +4973,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 116,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1185,
                 fk_class_field: null,
@@ -4986,7 +4986,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 122,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1185,
                 fk_class_field: null,
@@ -4996,7 +4996,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 433,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1185,
                 fk_class_field: null,
@@ -5175,10 +5175,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 623,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -5188,7 +5188,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 438,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -5198,7 +5198,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 447,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -5208,7 +5208,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 456,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -5218,7 +5218,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 542,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -5228,7 +5228,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 545,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -5238,7 +5238,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 550,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -5274,10 +5274,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 436,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -5287,7 +5287,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 446,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -5297,7 +5297,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 444,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -5307,7 +5307,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 448,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -5317,7 +5317,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 453,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -5327,7 +5327,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 625,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -5337,7 +5337,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 549,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -5373,10 +5373,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 606,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1216,
                 fk_class_field: null,
@@ -5386,7 +5386,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 626,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1216,
                 fk_class_field: null,
@@ -5422,10 +5422,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 624,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1235,
                 fk_class_field: null,
@@ -5435,7 +5435,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 603,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1235,
                 fk_class_field: null,
@@ -5471,10 +5471,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 627,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1236,
                 fk_class_field: null,
@@ -5484,7 +5484,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 604,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1236,
                 fk_class_field: null,
@@ -5520,10 +5520,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 602,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1237,
                 fk_class_field: null,
@@ -5533,7 +5533,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 628,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1237,
                 fk_class_field: null,
@@ -5569,10 +5569,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 605,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1238,
                 fk_class_field: null,
@@ -5582,7 +5582,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 629,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1238,
                 fk_class_field: null,
@@ -5618,10 +5618,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 439,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -5631,7 +5631,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 449,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -5641,7 +5641,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 454,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -5651,7 +5651,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 541,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -5661,7 +5661,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 547,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -5671,7 +5671,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 551,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -5681,7 +5681,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 631,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -5717,10 +5717,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 440,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -5730,7 +5730,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 455,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -5740,7 +5740,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 543,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -5750,7 +5750,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 546,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -5760,7 +5760,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 552,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -5770,7 +5770,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 451,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -5780,7 +5780,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 630,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -5816,10 +5816,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 441,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -5829,7 +5829,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 450,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -5839,7 +5839,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 457,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -5849,7 +5849,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 544,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -5859,7 +5859,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 548,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -5869,7 +5869,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 553,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -5879,7 +5879,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 632,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -6100,10 +6100,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 159,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 982,
                 fk_class_field: null,
@@ -6113,7 +6113,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 257,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 982,
                 fk_class_field: null,
@@ -6123,7 +6123,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 384,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 982,
                 fk_class_field: null,
@@ -6133,7 +6133,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 526,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 982,
                 fk_class_field: null,
@@ -6169,10 +6169,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 160,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -6182,7 +6182,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 254,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -6192,7 +6192,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 381,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -6202,7 +6202,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 525,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -6238,10 +6238,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 161,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -6251,7 +6251,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 256,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -6261,7 +6261,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 382,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -6271,7 +6271,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 527,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 979,
                 fk_class_field: null,
@@ -6307,10 +6307,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 162,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1000,
                 fk_class_field: null,
@@ -6320,7 +6320,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 255,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1000,
                 fk_class_field: null,
@@ -6330,7 +6330,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 383,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1000,
                 fk_class_field: null,
@@ -6340,7 +6340,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 528,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1000,
                 fk_class_field: null,
@@ -6376,10 +6376,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 163,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -6389,7 +6389,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 258,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -6399,7 +6399,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 385,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -6409,7 +6409,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 529,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1015,
                 fk_class_field: null,
@@ -6445,10 +6445,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 164,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1022,
                 fk_class_field: null,
@@ -6458,7 +6458,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 259,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1022,
                 fk_class_field: null,
@@ -6468,7 +6468,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 386,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1022,
                 fk_class_field: null,
@@ -6478,7 +6478,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 530,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1022,
                 fk_class_field: null,
@@ -6514,10 +6514,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 157,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -6527,7 +6527,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 156,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -6537,7 +6537,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 250,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -6547,7 +6547,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 388,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -6557,7 +6557,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 251,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -6567,7 +6567,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 400,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -6577,7 +6577,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 531,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -6613,7 +6613,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -6641,7 +6641,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -6669,7 +6669,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -6697,7 +6697,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -6725,10 +6725,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 260,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1206,
                 fk_class_field: null,
@@ -6738,7 +6738,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 389,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1206,
                 fk_class_field: null,
@@ -6748,7 +6748,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 532,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1206,
                 fk_class_field: null,
@@ -6784,10 +6784,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 165,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 968,
                 fk_class_field: null,
@@ -6797,7 +6797,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 261,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 968,
                 fk_class_field: null,
@@ -6807,7 +6807,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 387,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 968,
                 fk_class_field: null,
@@ -6817,7 +6817,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 533,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 968,
                 fk_class_field: null,
@@ -6853,10 +6853,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 167,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 969,
                 fk_class_field: null,
@@ -6866,7 +6866,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 262,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 969,
                 fk_class_field: null,
@@ -6876,7 +6876,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 390,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 969,
                 fk_class_field: null,
@@ -6886,7 +6886,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 534,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 969,
                 fk_class_field: null,
@@ -6922,10 +6922,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 166,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 970,
                 fk_class_field: null,
@@ -6935,7 +6935,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 263,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 970,
                 fk_class_field: null,
@@ -6945,7 +6945,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 391,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 970,
                 fk_class_field: null,
@@ -6955,7 +6955,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 535,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 970,
                 fk_class_field: null,
@@ -6991,10 +6991,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 168,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -7004,7 +7004,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 264,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -7014,7 +7014,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 392,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -7024,7 +7024,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 536,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 971,
                 fk_class_field: null,
@@ -7060,10 +7060,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 169,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 972,
                 fk_class_field: null,
@@ -7073,7 +7073,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 265,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 972,
                 fk_class_field: null,
@@ -7083,7 +7083,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 393,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 972,
                 fk_class_field: null,
@@ -7093,7 +7093,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 537,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 972,
                 fk_class_field: null,
@@ -7129,10 +7129,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 170,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 973,
                 fk_class_field: null,
@@ -7142,7 +7142,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 267,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 973,
                 fk_class_field: null,
@@ -7152,7 +7152,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 394,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 973,
                 fk_class_field: null,
@@ -7162,7 +7162,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 538,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 973,
                 fk_class_field: null,
@@ -7198,10 +7198,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 171,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 974,
                 fk_class_field: null,
@@ -7211,7 +7211,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 266,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 974,
                 fk_class_field: null,
@@ -7221,7 +7221,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 395,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 974,
                 fk_class_field: null,
@@ -7231,7 +7231,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 540,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 974,
                 fk_class_field: null,
@@ -7267,10 +7267,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 172,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 975,
                 fk_class_field: null,
@@ -7280,7 +7280,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 268,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 975,
                 fk_class_field: null,
@@ -7290,7 +7290,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 396,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 975,
                 fk_class_field: null,
@@ -7300,7 +7300,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 539,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 975,
                 fk_class_field: null,
@@ -7495,10 +7495,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 558,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -7508,7 +7508,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 566,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -7518,7 +7518,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 567,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -7528,7 +7528,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 569,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -7538,7 +7538,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 571,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -7548,7 +7548,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 573,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -7584,7 +7584,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -7612,7 +7612,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -7640,7 +7640,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -7668,7 +7668,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -7696,10 +7696,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 559,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1205,
                 fk_class_field: null,
@@ -7735,10 +7735,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 560,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1016,
                 fk_class_field: null,
@@ -7798,7 +7798,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -7826,7 +7826,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -7951,10 +7951,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 152,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1181,
                 fk_class_field: null,
@@ -7964,7 +7964,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 460,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1181,
                 fk_class_field: null,
@@ -8000,10 +8000,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 125,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1186,
                 fk_class_field: null,
@@ -8039,10 +8039,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 126,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1191,
                 fk_class_field: null,
@@ -8078,10 +8078,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 127,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1178,
                 fk_class_field: null,
@@ -8117,10 +8117,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 123,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -8130,7 +8130,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 124,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -8140,7 +8140,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 459,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -8176,7 +8176,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -8204,7 +8204,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -8232,7 +8232,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -8260,7 +8260,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -8288,7 +8288,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -8316,7 +8316,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -8499,10 +8499,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 579,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1110,
                 fk_class_field: null,
@@ -8538,10 +8538,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 185,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -8551,7 +8551,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 186,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -8561,7 +8561,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 461,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -8571,7 +8571,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 466,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -8581,7 +8581,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 467,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -8881,10 +8881,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 278,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1111,
                 fk_class_field: null,
@@ -8894,7 +8894,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 302,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1111,
                 fk_class_field: null,
@@ -8904,7 +8904,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 318,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1111,
                 fk_class_field: null,
@@ -8914,7 +8914,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 339,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1111,
                 fk_class_field: null,
@@ -8924,7 +8924,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 355,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1111,
                 fk_class_field: null,
@@ -8934,7 +8934,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 369,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1111,
                 fk_class_field: null,
@@ -8970,10 +8970,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 137,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -8983,7 +8983,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 131,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -8993,7 +8993,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 286,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -9003,7 +9003,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 306,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -9013,7 +9013,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 324,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -9023,7 +9023,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 342,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -9033,7 +9033,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 372,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1194,
                 fk_class_field: null,
@@ -9069,10 +9069,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 132,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -9082,7 +9082,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 139,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -9092,7 +9092,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 287,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -9102,7 +9102,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 307,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -9112,7 +9112,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 312,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -9122,7 +9122,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 343,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -9132,7 +9132,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 373,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -9168,10 +9168,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 133,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -9181,7 +9181,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 136,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -9191,7 +9191,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 285,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -9201,7 +9201,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 305,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -9211,7 +9211,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 325,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -9221,7 +9221,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 340,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -9231,7 +9231,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 370,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1193,
                 fk_class_field: null,
@@ -9267,10 +9267,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 130,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -9280,7 +9280,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 135,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -9290,7 +9290,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 284,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -9300,7 +9300,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 304,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -9310,7 +9310,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 323,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -9320,7 +9320,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 341,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -9330,7 +9330,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 371,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1192,
                 fk_class_field: null,
@@ -9366,10 +9366,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 594,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -9379,7 +9379,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 276,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -9389,7 +9389,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 297,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -9399,7 +9399,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 317,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -9409,7 +9409,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 335,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -9419,7 +9419,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 348,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -9429,7 +9429,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 361,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1208,
                 fk_class_field: null,
@@ -9465,10 +9465,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 277,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1209,
                 fk_class_field: null,
@@ -9478,7 +9478,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 298,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1209,
                 fk_class_field: null,
@@ -9488,7 +9488,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 315,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1209,
                 fk_class_field: null,
@@ -9498,7 +9498,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 332,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1209,
                 fk_class_field: null,
@@ -9508,7 +9508,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 350,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1209,
                 fk_class_field: null,
@@ -9518,7 +9518,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 365,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1209,
                 fk_class_field: null,
@@ -9554,10 +9554,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 279,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -9567,7 +9567,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 299,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -9577,7 +9577,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 316,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -9587,7 +9587,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 336,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -9597,7 +9597,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 351,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -9607,7 +9607,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 362,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -9617,7 +9617,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 595,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -9653,10 +9653,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 280,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -9666,7 +9666,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 300,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -9676,7 +9676,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 320,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -9686,7 +9686,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 334,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -9696,7 +9696,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 352,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -9706,7 +9706,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 364,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -9716,7 +9716,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 596,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -9752,10 +9752,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 281,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1212,
                 fk_class_field: null,
@@ -9765,7 +9765,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 293,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1212,
                 fk_class_field: null,
@@ -9775,7 +9775,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 322,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1212,
                 fk_class_field: null,
@@ -9785,7 +9785,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 333,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1212,
                 fk_class_field: null,
@@ -9795,7 +9795,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 347,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1212,
                 fk_class_field: null,
@@ -9805,7 +9805,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 366,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1212,
                 fk_class_field: null,
@@ -9841,10 +9841,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 282,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -9854,7 +9854,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 301,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -9864,7 +9864,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 319,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -9874,7 +9874,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 338,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -9884,7 +9884,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 353,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -9894,7 +9894,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 367,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -9930,10 +9930,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 283,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -9943,7 +9943,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 303,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -9953,7 +9953,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 321,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -9963,7 +9963,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 337,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -9973,7 +9973,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 354,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -9983,7 +9983,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 368,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -10019,10 +10019,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 290,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -10032,7 +10032,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 310,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -10042,7 +10042,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 329,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -10052,7 +10052,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 345,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -10062,7 +10062,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 358,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -10072,7 +10072,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 375,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -10082,7 +10082,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 597,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -10118,10 +10118,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 289,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -10131,7 +10131,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 308,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -10141,7 +10141,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 327,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -10151,7 +10151,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 344,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -10161,7 +10161,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 356,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -10171,7 +10171,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 374,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -10181,7 +10181,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 598,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1200,
                 fk_class_field: null,
@@ -10217,10 +10217,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 291,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -10230,7 +10230,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 311,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -10240,7 +10240,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 328,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -10250,7 +10250,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 346,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -10260,7 +10260,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 357,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -10270,7 +10270,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 363,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1202,
                 fk_class_field: null,
@@ -10306,10 +10306,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 128,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1113,
                 fk_class_field: null,
@@ -10319,7 +10319,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 134,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1113,
                 fk_class_field: null,
@@ -10329,7 +10329,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 273,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1113,
                 fk_class_field: null,
@@ -10339,7 +10339,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 292,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1113,
                 fk_class_field: null,
@@ -10349,7 +10349,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 295,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1113,
                 fk_class_field: null,
@@ -10359,7 +10359,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 313,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1113,
                 fk_class_field: null,
@@ -10369,7 +10369,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 376,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1113,
                 fk_class_field: null,
@@ -10405,10 +10405,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 275,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -10418,7 +10418,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 296,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -10428,7 +10428,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 314,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -10438,7 +10438,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 331,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -10448,7 +10448,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 349,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -10458,7 +10458,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 360,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1207,
                 fk_class_field: null,
@@ -10494,10 +10494,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 129,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1112,
                 fk_class_field: null,
@@ -10507,7 +10507,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 274,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1112,
                 fk_class_field: null,
@@ -10517,7 +10517,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 288,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1112,
                 fk_class_field: null,
@@ -10527,7 +10527,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 309,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1112,
                 fk_class_field: null,
@@ -10537,7 +10537,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 326,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1112,
                 fk_class_field: null,
@@ -10547,7 +10547,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 359,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1112,
                 fk_class_field: null,
@@ -10557,7 +10557,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 138,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1112,
                 fk_class_field: null,
@@ -10593,7 +10593,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -10621,7 +10621,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -10649,7 +10649,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 1,
@@ -10767,10 +10767,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 142,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1184,
                 fk_class_field: null,
@@ -10780,7 +10780,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 146,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1184,
                 fk_class_field: null,
@@ -10790,7 +10790,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 470,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1184,
                 fk_class_field: null,
@@ -10826,10 +10826,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 147,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1187,
                 fk_class_field: null,
@@ -10839,7 +10839,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 141,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1187,
                 fk_class_field: null,
@@ -10875,10 +10875,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 145,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1185,
                 fk_class_field: null,
@@ -10888,7 +10888,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 143,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1185,
                 fk_class_field: null,
@@ -10924,10 +10924,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 140,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -10937,7 +10937,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 144,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -10947,7 +10947,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 469,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1195,
                 fk_class_field: null,
@@ -10983,10 +10983,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 471,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1190,
                 fk_class_field: null,
@@ -11022,7 +11022,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -11050,7 +11050,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -11078,7 +11078,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -11106,7 +11106,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -11134,7 +11134,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 1,
@@ -11272,10 +11272,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 148,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1188,
                 fk_class_field: null,
@@ -11285,7 +11285,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 151,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1188,
                 fk_class_field: null,
@@ -11295,7 +11295,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 473,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1188,
                 fk_class_field: null,
@@ -11331,10 +11331,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 149,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1189,
                 fk_class_field: null,
@@ -11344,7 +11344,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 150,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1189,
                 fk_class_field: null,
@@ -11354,7 +11354,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 472,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1189,
                 fk_class_field: null,
@@ -11545,10 +11545,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 481,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1190,
                 fk_class_field: null,
@@ -11584,10 +11584,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 474,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -11597,7 +11597,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 476,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -11607,7 +11607,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 479,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -11617,7 +11617,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 480,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -11627,7 +11627,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 483,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1201,
                 fk_class_field: null,
@@ -11681,7 +11681,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 0,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: 1,
           targetMinQuantity: 0,
@@ -11709,7 +11709,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -11944,10 +11944,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 489,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1205,
                 fk_class_field: null,
@@ -11957,7 +11957,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 495,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1205,
                 fk_class_field: null,
@@ -11993,10 +11993,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 488,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -12006,7 +12006,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 485,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -12016,7 +12016,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 491,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -12026,7 +12026,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 492,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -12036,7 +12036,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 496,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -12046,7 +12046,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 561,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -12056,7 +12056,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 563,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1210,
                 fk_class_field: null,
@@ -12247,10 +12247,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 497,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -12260,7 +12260,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 500,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -12270,7 +12270,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 501,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -12280,7 +12280,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 504,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -12290,7 +12290,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 506,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1213,
                 fk_class_field: null,
@@ -12326,10 +12326,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 502,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1204,
                 fk_class_field: null,
@@ -12339,7 +12339,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 507,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1204,
                 fk_class_field: null,
@@ -12516,10 +12516,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 377,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1206,
                 fk_class_field: null,
@@ -12529,7 +12529,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 379,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1206,
                 fk_class_field: null,
@@ -12539,7 +12539,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 575,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1206,
                 fk_class_field: null,
@@ -12575,10 +12575,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 269,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -12588,7 +12588,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 271,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -12598,7 +12598,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 401,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -12608,7 +12608,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 577,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -12618,7 +12618,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 578,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1211,
                 fk_class_field: null,
@@ -12854,10 +12854,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 521,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -12867,7 +12867,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 522,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1214,
                 fk_class_field: null,
@@ -12903,10 +12903,10 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: [
+            class_field_config: [
               {
                 pk_entity: 509,
-                fk_ui_context: 47,
+                fk_app_context: 47,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -12916,7 +12916,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 511,
-                fk_ui_context: 45,
+                fk_app_context: 45,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -12926,7 +12926,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 513,
-                fk_ui_context: 46,
+                fk_app_context: 46,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -12936,7 +12936,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 520,
-                fk_ui_context: 212,
+                fk_app_context: 212,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -12946,7 +12946,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 515,
-                fk_ui_context: 210,
+                fk_app_context: 210,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -12956,7 +12956,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 517,
-                fk_ui_context: 211,
+                fk_app_context: 211,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -12966,7 +12966,7 @@ export const crm: ProjectCrm = {
               },
               {
                 pk_entity: 523,
-                fk_ui_context: 213,
+                fk_app_context: 213,
                 fk_project: null,
                 fk_property: 1215,
                 fk_class_field: null,
@@ -13020,7 +13020,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13048,7 +13048,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: null,
             dfh_range_instances_max_quantifier: null,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: null,
           targetMinQuantity: null,
@@ -13095,7 +13095,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13123,7 +13123,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13151,7 +13151,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13179,7 +13179,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13207,7 +13207,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13254,7 +13254,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13282,7 +13282,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13310,7 +13310,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13338,7 +13338,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: -1,
             identity_defining: false,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,
@@ -13366,7 +13366,7 @@ export const crm: ProjectCrm = {
             dfh_range_instances_min_quantifier: 1,
             dfh_range_instances_max_quantifier: 1,
             identity_defining: true,
-            ui_context_config: []
+            class_field_config: []
           },
           targetMaxQuantity: -1,
           targetMinQuantity: 0,

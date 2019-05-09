@@ -1,8 +1,8 @@
 /* tslint:disable */
 import {
-  ComClassFieldPropertyRel,
+  SysClassFieldPropertyRel,
   ComLabel,
-  ComUiContextConfig,
+  ProClassFieldConfig,
   DfhClass
 } from '../index';
 
@@ -13,21 +13,21 @@ export interface ComClassFieldInterface {
   "label"?: string;
   "fk_system_type_ng_component"?: number;
   "used_table"?: string;
-  class_field_property_rel?: ComClassFieldPropertyRel[];
+  class_field_property_rel?: SysClassFieldPropertyRel[];
   labels?: ComLabel[];
-  ui_context_configs?: ComUiContextConfig[];
+  class_field_configs?: ProClassFieldConfig[];
   classes?: DfhClass[];
 }
 
-export class ComClassField implements ComClassFieldInterface {
+export class SysClassField implements ComClassFieldInterface {
   "pk_entity": number;
   "description": string;
   "label": string;
   "fk_system_type_ng_component": number;
   "used_table": string;
-  class_field_property_rel?: ComClassFieldPropertyRel[];
+  class_field_property_rel?: SysClassFieldPropertyRel[];
   labels?: ComLabel[];
-  ui_context_configs?: ComUiContextConfig[];
+  class_field_configs?: ProClassFieldConfig[];
   classes?: DfhClass[];
   constructor(data?: ComClassFieldInterface) {
     Object.assign(this, data);
@@ -45,8 +45,8 @@ export class ComClassField implements ComClassFieldInterface {
   * @license MIT
   * This method creates an instance of ComClassField for dynamic purposes.
   **/
-  public static factory(data: ComClassFieldInterface): ComClassField{
-    return new ComClassField(data);
+  public static factory(data: ComClassFieldInterface): SysClassField{
+    return new SysClassField(data);
   }
   /**
   * @method getModelDefinition

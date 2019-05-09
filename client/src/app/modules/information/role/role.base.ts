@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhProperty, InfRole, ComProject, U } from 'app/core';
+import { DfhProperty, InfRole, ProProject, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { ReplaySubject, Subscription, Observable } from 'rxjs';
 
@@ -57,8 +57,8 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
   isDisplayRoleInProject$: ReplaySubject<boolean> = new ReplaySubject();
 
   property$: Observable<DfhProperty>;
-  activeProject$: Observable<ComProject>;
-  activeProject: ComProject;
+  activeProject$: Observable<ProProject>;
+  activeProject: ProProject;
 
   roleState: RoleDetail;
   parentPropertyFieldState: PropertyField;
@@ -152,7 +152,7 @@ export abstract class RoleBase implements OnInit, OnDestroy, ControlValueAccesso
 
     this.property$ = this.ngRedux.select<DfhProperty>([...this.parentPath, 'property']);
     this.roleState$ = this.localStore.select<RoleDetail>('');
-    this.activeProject$ = this.ngRedux.select<ComProject>('activeProject');
+    this.activeProject$ = this.ngRedux.select<ProProject>('activeProject');
 
     this.subs.push(this.ngRedux.select<PropertyField>([...this.parentPath]).subscribe(d => this.parentPropertyFieldState = d));
     this.subs.push(this.activeProject$.subscribe(d => this.activeProject = d));

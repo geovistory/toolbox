@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SystemTypeListComponent } from '../system-type-list.component';
 import { SystemTypeListAPIActions, SystemTypeListAPIAction } from './system-type-list.actions';
-import { ComSystemTypeApi } from 'app/core/sdk/services/custom/ComSystemType';
-import { ComSystemType } from 'app/core/sdk/models/ComSystemType';
+import { SysSystemTypeApi } from 'app/core/sdk/services/custom/ComSystemType';
+import { SysSystemType } from 'app/core/sdk/models/ComSystemType';
 
 @Injectable()
 export class SystemTypeListAPIEpics {
   constructor(
-    private systemtypeApi: ComSystemTypeApi, // <- change the api
+    private systemtypeApi: SysSystemTypeApi, // <- change the api
     private actions: SystemTypeListAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
@@ -44,7 +44,7 @@ export class SystemTypeListAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((data: ComSystemType[]) => {
+            .subscribe((data: SysSystemType[]) => {
               /**
                * Emit the global action that completes the loading bar
                */

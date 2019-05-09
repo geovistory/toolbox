@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfEntityProjectRel, InfRole } from 'app/core';
+import { ProInfoProjRel, InfRole } from 'app/core';
 import { RoleBase } from '../../role.base';
 import { RoleDetail } from 'app/core/state/models';
 import { RoleAddCtrlBase } from '../../role-add-ctrl.base';
@@ -62,7 +62,7 @@ export class TeEntRoleAddCtrlComponent extends RoleAddCtrlBase {
           is_in_project: this.isInProject,
           is_standard_in_project: this.isStandard,
           calendar: role.community_favorite_calendar
-        } as InfEntityProjectRel];
+        } as ProInfoProjRel];
       }
 
       this.onChange(role);

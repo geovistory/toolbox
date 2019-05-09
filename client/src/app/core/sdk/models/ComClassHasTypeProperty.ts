@@ -12,7 +12,7 @@ export interface ComClassHasTypePropertyInterface {
   "sys_period"?: string;
 }
 
-export class ComClassHasTypeProperty implements ComClassHasTypePropertyInterface {
+export class SysClassHasTypeProperty implements ComClassHasTypePropertyInterface {
   "fk_class": number;
   "fk_property": number;
   "pk_entity": number;
@@ -37,8 +37,8 @@ export class ComClassHasTypeProperty implements ComClassHasTypePropertyInterface
   * @license MIT
   * This method creates an instance of ComClassHasTypeProperty for dynamic purposes.
   **/
-  public static factory(data: ComClassHasTypePropertyInterface): ComClassHasTypeProperty{
-    return new ComClassHasTypeProperty(data);
+  public static factory(data: ComClassHasTypePropertyInterface): SysClassHasTypeProperty{
+    return new SysClassHasTypeProperty(data);
   }
   /**
   * @method getModelDefinition

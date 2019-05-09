@@ -1,5 +1,5 @@
 import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList, EntityPreview } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ComQuery, ComVisual, DfhProjRel } from 'app/core/sdk';
+import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, DatChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ProQuery, ProVisual, DfhProjRel } from 'app/core/sdk';
 import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
 import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
 import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
@@ -25,7 +25,7 @@ export interface EntityVersionsByPk<T> {
     [pk_entity: number]: VersionEntity<T>
 }
 
-export interface ChunkList { [pk_entity: number]: InfChunk };
+export interface ChunkList { [pk_entity: number]: DatChunk };
 export interface PeItList { [pk_entity: number]: InfPersistentItem };
 export interface TeEnList { [pk_entity: number]: InfTemporalEntity };
 export interface PropertyList { [pk_entity: string]: DfhProperty; }
@@ -36,7 +36,7 @@ export interface TypesByPk { [pk_entity: string]: TypePeIt; }
 export interface TypePreview extends EntityPreview { fk_typed_class: number; }
 export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
 export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
-export interface ComQueryByPk { [key: string]: ComQuery }
+export interface ComQueryByPk { [key: string]: ProQuery }
 
 export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
 
@@ -108,12 +108,12 @@ export interface ProjectDetail extends ComProjectInterface {
     teEnGraphs?: TeEnList;
 
     // ComQuery list by pk_entity
-    comQueryVersionsByPk?: EntityVersionsByPk<ComQuery>;
+    comQueryVersionsByPk?: EntityVersionsByPk<ProQuery>;
     comQueryLoading?: boolean;
     comQueryVersionLoading?: { [key: string]: boolean };
 
     // ComVisual list by pk_entity
-    comVisualVersionsByPk?: EntityVersionsByPk<ComVisual>;
+    comVisualVersionsByPk?: EntityVersionsByPk<ProVisual>;
     comVisualLoading?: boolean;
     comVisualVersionLoading?: boolean;
 
@@ -160,7 +160,7 @@ export interface ProjectDetail extends ComProjectInterface {
      */
 
     // the chunk that is used to create mentionings
-    selectedChunk?: InfChunk;
+    selectedChunk?: DatChunk;
 
     // if true, the text editor behaves so that each node can be clicked to de-/activate
     refiningChunk?: boolean;

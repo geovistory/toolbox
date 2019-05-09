@@ -1,4 +1,4 @@
-import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, InfEntityProjectRel, DfhPropertyInterface, InfRoleInterface, DfhClassInterface } from "app/core";
+import { DfhClass, DfhLabel, DfhProperty, InfRole, InfPersistentItem, InfTemporalEntity, ProInfoProjRel, DfhPropertyInterface, InfRoleInterface, DfhClassInterface } from "app/core";
 import { PeItDetail, RoleDetail, PropertyField, FieldList } from "app/core/state/models";
 import { DfhConfig } from "../../../shared/dfh-config";
 
@@ -96,7 +96,7 @@ export const generatedMockPerson = {
                 "entity_version_project_rels": [
                     {
                         "is_standard_in_project": true
-                    } as InfEntityProjectRel
+                    } as ProInfoProjRel
                 ],
                 "fk_property": 1194,
                 "temporal_entity": {
@@ -190,7 +190,7 @@ export const generatedMockPerson = {
                         "entity_version_project_rels": [
                             {
                                 "is_standard_in_project": true
-                            } as InfEntityProjectRel
+                            } as ProInfoProjRel
                         ],
                         "fk_property": 1194,
                         "temporal_entity": {
@@ -293,7 +293,7 @@ export const generatedMockPerson = {
                                             "entity_version_project_rels": [
                                                 {
                                                     "is_standard_in_project": true
-                                                } as InfEntityProjectRel
+                                                } as ProInfoProjRel
                                             ],
                                             "fk_property": 1113,
                                             "appellation": {
@@ -339,11 +339,11 @@ export const generatedMockPerson = {
                                     "entity_version_project_rels": [
                                         {
                                             "is_standard_in_project": true
-                                        } as InfEntityProjectRel
+                                        } as ProInfoProjRel
                                     ],
                                     "fk_property": 1113,
                                     "appellation": {
-                                        "appellation_label": {
+                                        "quill_doc": {
                                             "tokens": [
                                                 {
                                                     "id": 0,

@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 import { InfAppellation } from '../../models/InfAppellation';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { InfRole } from '../../models/InfRole';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
 
 
 /**

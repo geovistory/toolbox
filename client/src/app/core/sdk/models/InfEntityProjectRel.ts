@@ -17,7 +17,7 @@ export interface InfEntityProjectRelInterface {
   "fk_last_modifier": number;
 }
 
-export class InfEntityProjectRel implements InfEntityProjectRelInterface {
+export class ProInfoProjRel implements InfEntityProjectRelInterface {
   "pk_entity_version_project_rel": number;
   "pk_entity": number;
   "fk_project": number;
@@ -47,8 +47,8 @@ export class InfEntityProjectRel implements InfEntityProjectRelInterface {
   * @license MIT
   * This method creates an instance of InfEntityProjectRel for dynamic purposes.
   **/
-  public static factory(data: InfEntityProjectRelInterface): InfEntityProjectRel{
-    return new InfEntityProjectRel(data);
+  public static factory(data: InfEntityProjectRelInterface): ProInfoProjRel{
+    return new ProInfoProjRel(data);
   }
   /**
   * @method getModelDefinition

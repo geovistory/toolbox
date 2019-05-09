@@ -10,7 +10,7 @@ export interface ComSystemTypeInterface {
   "sys_period"?: string;
 }
 
-export class ComSystemType implements ComSystemTypeInterface {
+export class SysSystemType implements ComSystemTypeInterface {
   "pk_entity": number;
   "entity_version": number;
   "notes": string;
@@ -33,8 +33,8 @@ export class ComSystemType implements ComSystemTypeInterface {
   * @license MIT
   * This method creates an instance of ComSystemType for dynamic purposes.
   **/
-  public static factory(data: ComSystemTypeInterface): ComSystemType{
-    return new ComSystemType(data);
+  public static factory(data: ComSystemTypeInterface): SysSystemType{
+    return new SysSystemType(data);
   }
   /**
   * @method getModelDefinition

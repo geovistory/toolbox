@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   PubAccount,
-  ComProject
+  ProProject
 } from '../index';
 
 declare var Object: any;
@@ -18,10 +18,10 @@ export interface ComQueryInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   account?: PubAccount;
-  project?: ComProject;
+  project?: ProProject;
 }
 
-export class ComQuery implements ComQueryInterface {
+export class ProQuery implements ComQueryInterface {
   "name": string;
   "description": string;
   "query": any;
@@ -34,7 +34,7 @@ export class ComQuery implements ComQueryInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   account?: PubAccount;
-  project?: ComProject;
+  project?: ProProject;
   constructor(data?: ComQueryInterface) {
     Object.assign(this, data);
   }
@@ -51,8 +51,8 @@ export class ComQuery implements ComQueryInterface {
   * @license MIT
   * This method creates an instance of ComQuery for dynamic purposes.
   **/
-  public static factory(data: ComQueryInterface): ComQuery{
-    return new ComQuery(data);
+  public static factory(data: ComQueryInterface): ProQuery{
+    return new ProQuery(data);
   }
   /**
   * @method getModelDefinition

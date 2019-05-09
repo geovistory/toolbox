@@ -8,7 +8,7 @@ import { NamespaceList } from './api/namespace-list.models';
 import { NamespaceListAPIEpics } from './api/namespace-list.epics';
 import { NamespaceListAPIActions } from './api/namespace-list.actions';
 import { namespaceListReducer } from './api/namespace-list.reducer';
-import { InfNamespace } from '../../../../core/sdk/models/InfNamespace';
+import { DatNamespace } from '../../../../core/sdk/models/InfNamespace';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -31,7 +31,7 @@ export class NamespaceListComponent extends NamespaceListAPIActions implements O
   basePath = ['backoffice', 'namespacesList'];
 
   // select observables of substore properties
-  @select() namespaces$: Observable<InfNamespace[]>;
+  @select() namespaces$: Observable<DatNamespace[]>;
 
   constructor(
     protected rootEpics: RootEpics,

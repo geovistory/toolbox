@@ -2,13 +2,13 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ClassSettingsI, VocabularyItem } from './class-settings.models';
-import { DfhClass, InfNamespace } from 'app/core';
+import { DfhClass, DatNamespace } from 'app/core';
 
 type Payload = ClassSettingsI;
 interface MetaData {
   dfhPkClass?: number;
   dfhClass?: DfhClass;
-  namespaces?: InfNamespace[]
+  namespaces?: DatNamespace[]
   vocabulary?: VocabularyItem;
 };
 export type ClassSettingsAPIAction = FluxStandardAction<Payload, MetaData>;
@@ -38,7 +38,7 @@ export class ClassSettingsAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (dfhClass: DfhClass, namespaces: InfNamespace[]): ClassSettingsAPIAction => ({
+  loadSucceeded = (dfhClass: DfhClass, namespaces: DatNamespace[]): ClassSettingsAPIAction => ({
     type: ClassSettingsAPIActions.LOAD_SUCCEEDED,
     meta: { dfhClass, namespaces },
     payload: null

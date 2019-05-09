@@ -9,7 +9,7 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComSystemType } from '../../models/ComSystemType';
+import { SysSystemType } from '../../models/ComSystemType';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
@@ -17,7 +17,7 @@ import { SocketConnection } from '../../sockets/socket.connections';
  * Api services for the `ComSystemType` model.
  */
 @Injectable()
-export class ComSystemTypeApi extends BaseLoopBackApi {
+export class SysSystemTypeApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

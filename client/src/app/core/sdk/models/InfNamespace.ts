@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel
+  ProInfoProjRel
 } from '../index';
 
 declare var Object: any;
@@ -13,10 +13,10 @@ export interface InfNamespaceInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
 }
 
-export class InfNamespace implements InfNamespaceInterface {
+export class DatNamespace implements InfNamespaceInterface {
   "fk_root_namespace": number;
   "fk_project": number;
   "standard_label": string;
@@ -25,7 +25,7 @@ export class InfNamespace implements InfNamespaceInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   constructor(data?: InfNamespaceInterface) {
     Object.assign(this, data);
   }
@@ -42,8 +42,8 @@ export class InfNamespace implements InfNamespaceInterface {
   * @license MIT
   * This method creates an instance of InfNamespace for dynamic purposes.
   **/
-  public static factory(data: InfNamespaceInterface): InfNamespace{
-    return new InfNamespace(data);
+  public static factory(data: InfNamespaceInterface): DatNamespace{
+    return new DatNamespace(data);
   }
   /**
   * @method getModelDefinition

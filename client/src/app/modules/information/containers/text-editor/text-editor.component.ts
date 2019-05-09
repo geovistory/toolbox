@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
-import { ActiveProjectService, IAppState, InfChunk, InfDigitalObject, PeItDetail, SubstoreComponent } from 'app/core';
+import { ActiveProjectService, IAppState, DatChunk, DatDigital, PeItDetail, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { dropLast } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -39,7 +39,7 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
-  @select() digitalObject$: Observable<InfDigitalObject>;
+  @select() digitalObject$: Observable<DatDigital>;
   @select() versionList$: Observable<IVersion[]>;
   @select() quillDoc$: Observable<QuillDoc>;
   @select() readOnly$: Observable<boolean>;
@@ -143,9 +143,9 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
     const annotate = () => {
       this.annotate.emit()
 
-      this.projectService.updateSelectedChunk(new InfChunk({
-        fk_digital_object: this.localStore.getState().digitalObject.pk_entity,
-        js_quill_data: this.localStore.getState().selectedDelta,
+      this.projectService.updateSelectedChunk(new DatChunk({
+        fk_text: this.localStore.getState().digitalObject.pk_entity,
+        quill_doc: this.localStore.getState().selectedDelta,
       }))
     }
 
@@ -206,8 +206,8 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
         mergeMap(
           ms => combineLatest(
             ms.filter(m => !!m.fk_chunk)
-              .map(mentioning => this.ngRedux.select<InfChunk>(['activeProject', 'chunks', mentioning.fk_chunk]).pipe(
-                filter(chunk => (!!chunk && !!chunk.js_quill_data && !!chunk.js_quill_data.ops)),
+              .map(mentioning => this.ngRedux.select<DatChunk>(['activeProject', 'chunks', mentioning.fk_chunk]).pipe(
+                filter(chunk => (!!chunk && !!chunk.quill_doc && !!chunk.quill_doc.ops)),
                 map(chunk => ({
                   chunk,
                   mentioning
@@ -217,7 +217,7 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
             const nodes: { [nodeId: string]: number[] } = {};
             objs.forEach(obj => {
               const mentioning = obj.mentioning, chunk = obj.chunk;
-              (chunk.js_quill_data as Ops).forEach(op => {
+              (chunk.quill_doc as Ops).forEach(op => {
                 if (op.attributes && op.attributes.node) {
                   const arr = nodes[op.attributes.node] || [];
                   nodes[op.attributes.node] = [...arr, mentioning.pk_entity]

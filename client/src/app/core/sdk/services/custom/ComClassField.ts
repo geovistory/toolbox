@@ -9,11 +9,11 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComClassField } from '../../models/ComClassField';
+import { SysClassField } from '../../models/ComClassField';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { ComClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
+import { SysClassFieldPropertyRel } from '../../models/ComClassFieldPropertyRel';
 import { ComLabel } from '../../models/ComLabel';
-import { ComUiContextConfig } from '../../models/ComUiContextConfig';
+import { ProClassFieldConfig } from '../../models/ComUiContextConfig';
 import { DfhClass } from '../../models/DfhClass';
 
 
@@ -21,7 +21,7 @@ import { DfhClass } from '../../models/DfhClass';
  * Api services for the `ComClassField` model.
  */
 @Injectable()
-export class ComClassFieldApi extends BaseLoopBackApi {
+export class SysClassFieldApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -51,7 +51,7 @@ export class ComClassFieldApi extends BaseLoopBackApi {
    * This usually means the response is a `ComClassField` object.)
    * </em>
    */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<ComClassField[]> {
+  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<SysClassField[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ComClassFields/findComplex";
@@ -61,8 +61,8 @@ export class ComClassFieldApi extends BaseLoopBackApi {
     };
     let _urlParams: any = {};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<ComClassField>) =>
-        instances.map((instance: ComClassField) => new ComClassField(instance))
+    return result.pipe(map((instances: Array<SysClassField>) =>
+        instances.map((instance: SysClassField) => new SysClassField(instance))
     ));
   }
 

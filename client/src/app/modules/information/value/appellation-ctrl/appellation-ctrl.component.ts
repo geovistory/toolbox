@@ -63,7 +63,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
         // build a appe with the appellation_label given by the formControl
         role.appellation = new InfAppellation({
           ...this.appellation,
-          appellation_label: this.quillDeltaToAppellationLabel(qd)
+          quill_doc: this.quillDeltaToAppellationLabel(qd)
         });
         // send the appe the parent form
         this.onChange(role);
@@ -128,7 +128,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
     this.appellation = (role && role.appellation) ? role.appellation : new InfAppellation();
 
-    this.quillDoc = this.appellationLabelToQuillDelta(this.appellation.appellation_label);
+    this.quillDoc = this.appellationLabelToQuillDelta(this.appellation.quill_doc);
 
     this.validateAndEmit(this.quillDoc)
   }

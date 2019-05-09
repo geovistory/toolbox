@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ComClassField } from 'app/core';
+import { IAppState, SubstoreComponent, SysClassField } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { ClassFieldList } from './api/class-field-list.models';
 import { ClassFieldListAPIEpics } from './api/class-field-list.epics';
@@ -33,7 +33,7 @@ export class ClassFieldListComponent extends ClassFieldListAPIActions implements
   basePath = ['backoffice', 'classFieldList'];
 
   // select observables of substore properties
-  @select() items$: Observable<{ [key: string]: ComClassField }>;
+  @select() items$: Observable<{ [key: string]: SysClassField }>;
 
   tableConfiguration: Config = {
     searchEnabled: true,
@@ -112,7 +112,7 @@ export class ClassFieldListComponent extends ClassFieldListAPIActions implements
     this.destroy$.unsubscribe();
   }
 
-  setTableData(items: { [key: string]: ComClassField }) {
+  setTableData(items: { [key: string]: SysClassField }) {
     this.data = this.keys.transform(items).map((item) => {
       return {
         ...item.value,

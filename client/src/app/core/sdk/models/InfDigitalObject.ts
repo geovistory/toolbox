@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel,
-  InfChunk
+  ProInfoProjRel,
+  DatChunk
 } from '../index';
 
 declare var Object: any;
@@ -14,11 +14,11 @@ export interface InfDigitalObjectInterface {
   "pk_entity_version_concat"?: string;
   "pk_entity"?: number;
   "entity_version"?: number;
-  entity_version_project_rels?: InfEntityProjectRel[];
-  chunks?: InfChunk[];
+  entity_version_project_rels?: ProInfoProjRel[];
+  chunks?: DatChunk[];
 }
 
-export class InfDigitalObject implements InfDigitalObjectInterface {
+export class DatDigital implements InfDigitalObjectInterface {
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
@@ -27,8 +27,8 @@ export class InfDigitalObject implements InfDigitalObjectInterface {
   "pk_entity_version_concat": string;
   "pk_entity": number;
   "entity_version": number;
-  entity_version_project_rels?: InfEntityProjectRel[];
-  chunks?: InfChunk[];
+  entity_version_project_rels?: ProInfoProjRel[];
+  chunks?: DatChunk[];
   constructor(data?: InfDigitalObjectInterface) {
     Object.assign(this, data);
   }
@@ -45,8 +45,8 @@ export class InfDigitalObject implements InfDigitalObjectInterface {
   * @license MIT
   * This method creates an instance of InfDigitalObject for dynamic purposes.
   **/
-  public static factory(data: InfDigitalObjectInterface): InfDigitalObject{
-    return new InfDigitalObject(data);
+  public static factory(data: InfDigitalObjectInterface): DatDigital{
+    return new DatDigital(data);
   }
   /**
   * @method getModelDefinition

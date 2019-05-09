@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfDigitalObject, InfDigitalObjectApi, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRelApi, LoadingBarActions } from 'app/core';
+import { DatDigital, DatDigitalApi, InfEntityAssociation, InfEntityAssociationApi, ProInfoProjRelApi, LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { ofSubstore } from 'app/core/store/module';
 import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
@@ -15,8 +15,8 @@ import { TextEditorAPIAction, TextEditorAPIActions } from './text-editor.actions
 export class TextEditorAPIEpics {
   constructor(
     private eaApi: InfEntityAssociationApi,
-    private digitObjApi: InfDigitalObjectApi,
-    private eprApi: InfEntityProjectRelApi,
+    private digitObjApi: DatDigitalApi,
+    private eprApi: ProInfoProjRelApi,
     private actions: TextEditorAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -109,7 +109,7 @@ export class TextEditorAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((data: InfDigitalObject[]) => {
+            .subscribe((data: DatDigital[]) => {
 
 
               const dobj = data.length ? data[0] : undefined;
@@ -167,10 +167,10 @@ export class TextEditorAPIEpics {
            */
 
 
-          this.eaApi.findOrCreateInfEntityAssociation(c.ngRedux.getState().activeProject.pk_project, new InfEntityAssociation({
-            fk_domain_entity: action.meta.digitalObject.pk_entity,
+          this.eaApi.findOrCreateInfEntityAssociation(c.ngRedux.getState().activeProject.pk_entity, new InfEntityAssociation({
+            fk_info_domain: action.meta.digitalObject.pk_entity,
             fk_property: DfhConfig.PROPERTY_PK_IS_REPRODUCTION_OF_SECTION,
-            fk_range_entity: c.pkSection
+            fk_info_range: c.pkSection
           }))
             /**
              * Subscribe to the api call
@@ -233,7 +233,7 @@ export class TextEditorAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((digitObjects: InfDigitalObject[]) => {
+            .subscribe((digitObjects: DatDigital[]) => {
               /**
                * Emit the global action that completes the loading bar
                */
@@ -295,7 +295,7 @@ export class TextEditorAPIEpics {
            * Do some api call
            */
           this.eprApi.updateEprAttributes(
-            c.ngRedux.getState().activeProject.pk_project,
+            c.ngRedux.getState().activeProject.pk_entity,
             version.pkEntity,
             {
               fk_entity_version: version.entityVersion,
@@ -305,7 +305,7 @@ export class TextEditorAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((digitObjects: InfDigitalObject[]) => {
+            .subscribe((digitObjects: DatDigital[]) => {
               /**
                * Emit the global action that completes the loading bar
                */
@@ -321,8 +321,8 @@ export class TextEditorAPIEpics {
               * Trigger the loading of the version
               */
               c.localStore.dispatch(this.actions.load(
-                c.ngRedux.getState().activeProject.pk_project,
-                s.entityAssociation.fk_range_entity,
+                c.ngRedux.getState().activeProject.pk_entity,
+                s.entityAssociation.fk_info_range,
                 s.entityAssociation.fk_property
               ));
 

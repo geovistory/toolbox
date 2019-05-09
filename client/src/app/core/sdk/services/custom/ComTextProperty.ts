@@ -9,17 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComTextProperty } from '../../models/ComTextProperty';
+import { ProTextProperty } from '../../models/ComTextProperty';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ComLanguage } from '../../models/ComLanguage';
-import { ComProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ComProject';
 
 
 /**
  * Api services for the `ComTextProperty` model.
  */
 @Injectable()
-export class ComTextPropertyApi extends BaseLoopBackApi {
+export class ProTextPropertyApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

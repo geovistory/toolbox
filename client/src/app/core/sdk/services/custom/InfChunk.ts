@@ -9,18 +9,18 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfChunk } from '../../models/InfChunk';
+import { DatChunk } from '../../models/InfChunk';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
-import { InfDigitalObject } from '../../models/InfDigitalObject';
+import { DatDigital } from '../../models/InfDigitalObject';
 
 
 /**
  * Api services for the `InfChunk` model.
  */
 @Injectable()
-export class InfChunkApi extends BaseLoopBackApi {
+export class DatChunkApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -50,7 +50,7 @@ export class InfChunkApi extends BaseLoopBackApi {
    * This usually means the response is a `InfChunk` object.)
    * </em>
    */
-  public findOrCreateChunk(projectId: any, data: any, customHeaders?: Function): Observable<InfChunk[]> {
+  public findOrCreateChunk(projectId: any, data: any, customHeaders?: Function): Observable<DatChunk[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfChunks/findOrCreate";
@@ -61,8 +61,8 @@ export class InfChunkApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfChunk>) =>
-        instances.map((instance: InfChunk) => new InfChunk(instance))
+    return result.pipe(map((instances: Array<DatChunk>) =>
+        instances.map((instance: DatChunk) => new DatChunk(instance))
     ));
   }
 

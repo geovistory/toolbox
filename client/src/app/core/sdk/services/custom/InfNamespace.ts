@@ -9,16 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfNamespace } from '../../models/InfNamespace';
+import { DatNamespace } from '../../models/InfNamespace';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
 
 
 /**
  * Api services for the `InfNamespace` model.
  */
 @Injectable()
-export class InfNamespaceApi extends BaseLoopBackApi {
+export class DatNamespaceApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -46,7 +46,7 @@ export class InfNamespaceApi extends BaseLoopBackApi {
    * This usually means the response is a `InfNamespace` object.)
    * </em>
    */
-  public findWhereProjectOrHasTypes(pk_class: any, pk_project: any, customHeaders?: Function): Observable<InfNamespace[]> {
+  public findWhereProjectOrHasTypes(pk_class: any, pk_project: any, customHeaders?: Function): Observable<DatNamespace[]> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfNamespaces/find-where-project-or-has-types";
@@ -56,8 +56,8 @@ export class InfNamespaceApi extends BaseLoopBackApi {
     if (typeof pk_class !== 'undefined' && pk_class !== null) _urlParams.pk_class = pk_class;
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfNamespace>) =>
-        instances.map((instance: InfNamespace) => new InfNamespace(instance))
+    return result.pipe(map((instances: Array<DatNamespace>) =>
+        instances.map((instance: DatNamespace) => new DatNamespace(instance))
     ));
   }
 

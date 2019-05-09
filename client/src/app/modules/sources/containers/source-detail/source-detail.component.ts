@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, HostBinding, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, IAppState, PeItDetail, ComProject, ProjectCrm, SubstoreComponent, EntityPreview, ClassInstanceLabel } from 'app/core';
+import { ActiveProjectService, ComConfig, IAppState, PeItDetail, ProProject, ProjectCrm, SubstoreComponent, EntityPreview, ClassInstanceLabel } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { List } from 'app/modules/information/containers/list/api/list.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -101,7 +101,7 @@ export class SourceDetailComponent extends SourceDetailAPIActions implements OnI
     if (this.localStore.getState().tabTitle !== newTabTitle) this.setTabTitle(newTabTitle);
   }
 
-  onRemoveSource = (pkEntity: number) => this.removeSource(pkEntity, this.ngRedux.getState().activeProject.pk_project)
+  onRemoveSource = (pkEntity: number) => this.removeSource(pkEntity, this.ngRedux.getState().activeProject.pk_entity)
 
   ngOnDestroy() {
     this.destroy();

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { RoleDetail, RoleDetailList, CollapsedExpanded, PropertyField } from 'app/core/state/models';
-import { DfhProperty, InfEntityProjectRel } from 'app/core';
+import { DfhProperty, ProInfoProjRel } from 'app/core';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 
@@ -18,7 +18,7 @@ type Payload = PropertyField;
 interface MetaData {
   key?: string;
   roleDetail?: RoleDetail;
-  eprs?: InfEntityProjectRel[];
+  eprs?: ProInfoProjRel[];
   pk_roles?: number[]; // array of pk_entity of roles
   roleDetailList?: RoleDetailList;
   cdkDragDropEvent?: CdkDragDrop<string[]>;
@@ -241,7 +241,7 @@ export class PropertyFieldActions {
 
 
   // updates the state immediately
-  updateOrder = (eprs: InfEntityProjectRel[], cdkDragDropEvent: CdkDragDrop<string[]>): PropertyFieldAction => ({
+  updateOrder = (eprs: ProInfoProjRel[], cdkDragDropEvent: CdkDragDrop<string[]>): PropertyFieldAction => ({
     type: PropertyFieldActions.ROLE_SET_UPDATE_ORDER,
     meta: {
       eprs,
@@ -251,7 +251,7 @@ export class PropertyFieldActions {
   })
 
   // updates the eprs
-  updateOrderSucceeded = (eprs: InfEntityProjectRel[]): PropertyFieldAction => ({
+  updateOrderSucceeded = (eprs: ProInfoProjRel[]): PropertyFieldAction => ({
     type: PropertyFieldActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED,
     meta: {
       eprs

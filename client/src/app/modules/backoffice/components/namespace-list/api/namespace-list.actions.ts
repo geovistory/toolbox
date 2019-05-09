@@ -2,11 +2,11 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { NamespaceListI } from './namespace-list.models';
-import { InfNamespace } from 'app/core/sdk/models/InfNamespace';
+import { DatNamespace } from 'app/core/sdk/models/InfNamespace';
 
 type Payload = NamespaceListI;
 interface MetaData {
-  namespaces?: InfNamespace[]
+  namespaces?: DatNamespace[]
 };
 export type NamespaceListAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -32,7 +32,7 @@ export class NamespaceListAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (namespaces: InfNamespace[]): NamespaceListAPIAction => ({
+  loadSucceeded = (namespaces: DatNamespace[]): NamespaceListAPIAction => ({
     type: NamespaceListAPIActions.LOAD_SUCCEEDED,
     meta: null,
     payload: { namespaces }

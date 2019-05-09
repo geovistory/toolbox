@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { PubAccount } from '../../models/PubAccount';
-import { ComProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ComProject';
 
 
 /**

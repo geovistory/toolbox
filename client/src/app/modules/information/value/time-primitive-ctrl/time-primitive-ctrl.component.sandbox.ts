@@ -8,7 +8,7 @@ registerLocaleData(localeDeCh);
 
 
 import { TimePrimitiveCtrlComponent } from './time-primitive-ctrl.component';
-import { TimePrimitive, ValidationService, InfRole, InfTimePrimitive, InfEntityProjectRel } from 'app/core';
+import { TimePrimitive, ValidationService, InfRole, InfTimePrimitive, ProInfoProjRel } from 'app/core';
 import { DfhConfig } from '../../shared/dfh-config';
 
 
@@ -64,7 +64,7 @@ export default sandboxOf(TimePrimitiveCtrlComponent, {
           entity_version_project_rels: [
             {
               calendar: 'gregorian'
-            } as InfEntityProjectRel
+            } as ProInfoProjRel
           ]
         } as InfRole
       }

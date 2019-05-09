@@ -1,12 +1,12 @@
 /* tslint:disable */
 import {
   InfRole,
-  InfEntityProjectRel
+  ProInfoProjRel
 } from '../index';
 
 declare var Object: any;
 export interface InfAppellationInterface {
-  "appellation_label": any;
+  "quill_doc": any;
   "fk_class": number;
   "notes"?: string;
   "pk_entity"?: number;
@@ -14,11 +14,11 @@ export interface InfAppellationInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
 }
 
 export class InfAppellation implements InfAppellationInterface {
-  "appellation_label": any;
+  "quill_doc": any;
   "fk_class": number;
   "notes": string;
   "pk_entity": number;
@@ -26,7 +26,7 @@ export class InfAppellation implements InfAppellationInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   constructor(data?: InfAppellationInterface) {
     Object.assign(this, data);
   }

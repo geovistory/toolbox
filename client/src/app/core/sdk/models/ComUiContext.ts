@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  ComUiContextConfig
+  ProClassFieldConfig
 } from '../index';
 
 declare var Object: any;
@@ -8,14 +8,14 @@ export interface ComUiContextInterface {
   "pk_entity"?: number;
   "description"?: string;
   "label"?: string;
-  ui_context_config?: ComUiContextConfig[];
+  class_field_config?: ProClassFieldConfig[];
 }
 
-export class ComUiContext implements ComUiContextInterface {
+export class SysAppContext implements ComUiContextInterface {
   "pk_entity": number;
   "description": string;
   "label": string;
-  ui_context_config?: ComUiContextConfig[];
+  class_field_config?: ProClassFieldConfig[];
   constructor(data?: ComUiContextInterface) {
     Object.assign(this, data);
   }
@@ -32,8 +32,8 @@ export class ComUiContext implements ComUiContextInterface {
   * @license MIT
   * This method creates an instance of ComUiContext for dynamic purposes.
   **/
-  public static factory(data: ComUiContextInterface): ComUiContext{
-    return new ComUiContext(data);
+  public static factory(data: ComUiContextInterface): SysAppContext{
+    return new SysAppContext(data);
   }
   /**
   * @method getModelDefinition

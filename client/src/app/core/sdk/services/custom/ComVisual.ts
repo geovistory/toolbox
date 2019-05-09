@@ -9,17 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComVisual } from '../../models/ComVisual';
+import { ProVisual } from '../../models/ComVisual';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { PubAccount } from '../../models/PubAccount';
-import { ComProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ComProject';
 
 
 /**
  * Api services for the `ComVisual` model.
  */
 @Injectable()
-export class ComVisualApi extends BaseLoopBackApi {
+export class ProVisualApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -82,7 +82,7 @@ export class ComVisualApi extends BaseLoopBackApi {
    * This usually means the response is a `ComVisual` object.)
    * </em>
    */
-  public findPerIdAndVersionAndProject(pkProject: any, pkEntity: any = {}, version: any = {}, customHeaders?: Function): Observable<ComVisual[]> {
+  public findPerIdAndVersionAndProject(pkProject: any, pkEntity: any = {}, version: any = {}, customHeaders?: Function): Observable<ProVisual[]> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ComVisuals/find-per-id-and-project";
@@ -93,8 +93,8 @@ export class ComVisualApi extends BaseLoopBackApi {
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
     if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<ComVisual>) =>
-        instances.map((instance: ComVisual) => new ComVisual(instance))
+    return result.pipe(map((instances: Array<ProVisual>) =>
+        instances.map((instance: ProVisual) => new ProVisual(instance))
     ));
   }
 

@@ -12,7 +12,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComClassHasTypePropertyApi, ComProjectApi, ComQueryApi, ComUiContext, ComUiContextApi, ComUiContextConfig, ComVisualApi, DfhClass, DfhProjRelApi, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfEntityProjectRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
+import { SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi, SysProjectApi, SysQueryApi, SysAppContext, SysAppContextApi, ProClassFieldConfig, ProVisualApi, DfhClass, DfhProjRelApi, DfhProperty, DfhPropertyApi, DatChunk, DatChunkApi, ProInfoProjRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
 import { HasTypePropertyReadable, PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
@@ -27,16 +27,16 @@ export class ActiveProjectEpics {
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
-    private infProjRelApi: InfEntityProjectRelApi,
-    private chunkApi: InfChunkApi,
-    private uiContextApi: ComUiContextApi,
-    private projectApi: ComProjectApi,
+    private infProjRelApi: ProInfoProjRelApi,
+    private chunkApi: DatChunkApi,
+    private uiContextApi: SysAppContextApi,
+    private projectApi: SysProjectApi,
     private projRelApi: DfhProjRelApi,
-    private comQuery: ComQueryApi,
-    private comVisual: ComVisualApi,
+    private comQuery: SysQueryApi,
+    private comVisual: ProVisualApi,
     private dfhPropertyApi: DfhPropertyApi,
-    private comClassFieldApi: ComClassFieldApi,
-    private comHasTypePropsApi: ComClassHasTypePropertyApi,
+    private comClassFieldApi: SysClassFieldApi,
+    private comHasTypePropsApi: SysClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -124,7 +124,7 @@ export class ActiveProjectEpics {
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
-          this.uiContextApi.uiConfig(null, action.meta.pk_project),
+          this.uiContextApi.appContext(null, action.meta.pk_project),
           this.dfhPropertyApi.propertyFieldInfo(true),
           this.dfhPropertyApi.propertyFieldInfo(false),
           this.comClassFieldApi.find(),
@@ -134,7 +134,7 @@ export class ActiveProjectEpics {
             const classes: DfhClass[] = res[0],
               outgoingProperties: DfhProperty[] = res[2],
               ingoingProperties: DfhProperty[] = res[3],
-              classFields = res[4] as ComClassField[],
+              classFields = res[4] as SysClassField[],
               hasTypeProps: HasTypePropertyReadable[] = res[5];
 
             const properties = {
@@ -162,11 +162,11 @@ export class ActiveProjectEpics {
               }
             })
 
-            const uiContexts: ComUiContext[] = res[1];
+            const uiContexts: SysAppContext[] = res[1];
 
             uiContexts.forEach(uiCtxt => {
-              if (uiCtxt.ui_context_config) {
-                uiCtxt.ui_context_config.forEach(uiConf => {
+              if (uiCtxt.class_field_config) {
+                uiCtxt.class_field_config.forEach(uiConf => {
 
                   // add propertyField configs to crm
                   if (uiConf.fk_property) {
@@ -199,7 +199,7 @@ export class ActiveProjectEpics {
     )
   }
 
-  private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: ComUiContext, uiConf: ComUiContextConfig) {
+  private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: SysAppContext, uiConf: ProClassFieldConfig) {
 
     if (!cConf || !uiCtxt || !uiConf) return;
 
@@ -363,7 +363,7 @@ export class ActiveProjectEpics {
             /**
            * Subscribe to the api call
            */
-            .subscribe((data: InfChunk) => {
+            .subscribe((data: DatChunk) => {
               /**
                * Emit the global action that completes the loading bar
                */

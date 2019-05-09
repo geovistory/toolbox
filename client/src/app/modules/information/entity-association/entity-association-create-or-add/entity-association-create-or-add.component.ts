@@ -80,8 +80,8 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
     ).subscribe((d) => {
       const ea = d[0], pkProject = d[1], crm = d[2], propertyConfig = d[3];
       this.load(pkProject,
-        ea.fk_range_entity || null,
-        ea.fk_domain_entity || null,
+        ea.fk_info_range || null,
+        ea.fk_info_domain || null,
         ea.fk_property || null,
         crm,
         propertyConfig
@@ -107,19 +107,19 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
   }
 
   onCreateNew(ea: InfEntityAssociation) {
-    this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_project, ea).subscribe(
+    this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_entity, ea).subscribe(
       (eas) => { this.done.emit(eas[0]) }
     )
   }
 
   onAdd(eaD: EntityAssociationDetail) {
-    const pkEntity = eaD.isOutgoing ? eaD.entityAssociation.fk_range_entity : eaD.entityAssociation.fk_domain_entity;
-    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
+    const pkEntity = eaD.isOutgoing ? eaD.entityAssociation.fk_info_range : eaD.entityAssociation.fk_info_domain;
+    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_entity, pkEntity).subscribe(
       (peIts) => {
 
-        this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_project, {
-          fk_domain_entity: eaD.entityAssociation.fk_domain_entity,
-          fk_range_entity: eaD.entityAssociation.fk_range_entity,
+        this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_entity, {
+          fk_info_domain: eaD.entityAssociation.fk_info_domain,
+          fk_info_range: eaD.entityAssociation.fk_info_range,
           fk_property: eaD.entityAssociation.fk_property,
           entity_version_project_rels: [{
             is_in_project: true

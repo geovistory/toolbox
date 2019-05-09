@@ -1,5 +1,5 @@
 
-import { InfEntityProjectRel, U } from 'app/core';
+import { ProInfoProjRel, U } from 'app/core';
 import { RoleDetailList, PropertyField } from 'app/core/state/models';
 import { indexBy, omit, prop } from 'ramda';
 import { sortRoleDetailListByOrdNum } from '../information.helpers';
@@ -186,14 +186,14 @@ export const propertyFieldReducer =
 
       case PropertyFieldActions.ROLE_SET_UPDATE_ORDER_SUCCEEDED:
         // update the eprs of of the roles in _role_list
-        const updateEprs = (list: RoleDetailList, eprs: InfEntityProjectRel[]): RoleDetailList => {
+        const updateEprs = (list: RoleDetailList, eprs: ProInfoProjRel[]): RoleDetailList => {
           const newVal: RoleDetailList = {}
           const newEprsByPk = indexBy(prop('pk_entity'), eprs);
           U.obj2KeyValueArr(list).forEach(item => {
             const roleD = item.value;
             const oldEpr = roleD.role.entity_version_project_rels[0];
             if (newEprsByPk[oldEpr.pk_entity]) {
-              const newEpr = newEprsByPk[oldEpr.pk_entity] as InfEntityProjectRel;
+              const newEpr = newEprsByPk[oldEpr.pk_entity] as ProInfoProjRel;
               newVal[item.key] = {
                 ...roleD,
                 role: {

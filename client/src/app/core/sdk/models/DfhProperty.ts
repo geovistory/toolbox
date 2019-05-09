@@ -4,7 +4,7 @@ import {
   DfhLabel,
   DfhTextProperty,
   DfhPropertyProfileView,
-  ComUiContextConfig,
+  ProClassFieldConfig,
   DfhProjRel
 } from '../index';
 
@@ -34,7 +34,7 @@ export interface DfhPropertyInterface {
   labels?: DfhLabel[];
   text_properties?: DfhTextProperty[];
   property_profile_view?: DfhPropertyProfileView[];
-  ui_context_config?: ComUiContextConfig[];
+  class_field_config?: ProClassFieldConfig[];
   proj_rels?: DfhProjRel[];
 }
 
@@ -63,7 +63,7 @@ export class DfhProperty implements DfhPropertyInterface {
   labels?: DfhLabel[];
   text_properties?: DfhTextProperty[];
   property_profile_view?: DfhPropertyProfileView[];
-  ui_context_config?: ComUiContextConfig[];
+  class_field_config?: ProClassFieldConfig[];
   proj_rels?: DfhProjRel[];
   constructor(data?: DfhPropertyInterface) {
     Object.assign(this, data);

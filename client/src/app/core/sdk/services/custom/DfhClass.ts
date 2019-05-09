@@ -16,8 +16,8 @@ import { DfhProperty } from '../../models/DfhProperty';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhTextProperty } from '../../models/DfhTextProperty';
 import { DfhClassProfileView } from '../../models/DfhClassProfileView';
-import { ComUiContextConfig } from '../../models/ComUiContextConfig';
-import { ComClassField } from '../../models/ComClassField';
+import { ProClassFieldConfig } from '../../models/ComUiContextConfig';
+import { SysClassField } from '../../models/ComClassField';
 import { DfhProjRel } from '../../models/DfhProjRel';
 
 

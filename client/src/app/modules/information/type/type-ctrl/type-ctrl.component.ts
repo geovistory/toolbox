@@ -119,7 +119,7 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
     ).subscribe((d) => {
       const items = d[1], ea = d[0];
 
-      const selected = items.find((item) => item.value == ea.fk_range_entity)
+      const selected = items.find((item) => item.value == ea.fk_info_range)
 
       if (this.dropdownTreeviewSelectI18n.selectedItem !== selected) {
         this.dropdownTreeviewSelectI18n.selectedItem = selected;
@@ -169,9 +169,9 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
       && this.dropdownTreeviewSelectI18n.selectedItem.value
       && this.localStore.getState()) {
       this.onChange(new InfEntityAssociation({
-        fk_domain_entity: undefined,
+        fk_info_domain: undefined,
         fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
-        fk_range_entity: this.dropdownTreeviewSelectI18n.selectedItem.value
+        fk_info_range: this.dropdownTreeviewSelectI18n.selectedItem.value
       }))
     } else {
       this.onChange(null)

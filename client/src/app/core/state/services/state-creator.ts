@@ -195,7 +195,7 @@ export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociatio
         label: !roles ? '' : roles.filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
             .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
                 .map(r => {
-                    return new AppellationLabel(r.appellation.appellation_label).getString()
+                    return new AppellationLabel(r.appellation.quill_doc).getString()
                 })[0]).join(', ')
     });
 }
@@ -507,8 +507,8 @@ export function createTextPropertyField(options: TextPropertyField, textProperti
         txtPropList.textPropertyDetailList = indexBy(textPropertyDetailKey,
             textProperties.map((infTextProp) => {
 
-                if (typeof infTextProp.text_property_quill_doc === 'string') {
-                    infTextProp.text_property_quill_doc = JSON.parse(infTextProp.text_property_quill_doc)
+                if (typeof infTextProp.quill_doc === 'string') {
+                    infTextProp.quill_doc = JSON.parse(infTextProp.quill_doc)
                 }
 
                 return createTextPropertyDetail(

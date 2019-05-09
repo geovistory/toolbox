@@ -1,7 +1,7 @@
 import { dispatch, NgRedux, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IAppState, InfChunk, InfChunkApi, InfEntityAssociation, U } from 'app/core';
+import { IAppState, DatChunk, DatChunkApi, InfEntityAssociation, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Observable, Subscription } from 'rxjs';
 
@@ -55,7 +55,7 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
     private ngRedux: NgRedux<IAppState>,
     private actions: AnnotationPanelActions,
     private fb: FormBuilder,
-    private chunkApi: InfChunkApi
+    private chunkApi: DatChunkApi
   ) {
     this.annotationCtrl = new FormControl(null, [Validators.required])
     this.formGroup = this.fb.group({ 'annotationCtrl': this.annotationCtrl })
@@ -132,17 +132,17 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
     const val: AnnotationState = this.annotationCtrl.value;
 
     const c = {
-      js_quill_data: val.chunk.quillDelta,
-      fk_digital_object: this.ngRedux.getState().sources.edit.view.pk_entity,
+      quill_doc: val.chunk.quillDelta,
+      fk_text: this.ngRedux.getState().sources.edit.view.pk_entity,
       entity_associations: U.obj2Arr(val.mentionedEntities).map((me: MentionedEntity) => {
         return {
-          fk_range_entity: me.pkEntity,
+          fk_info_range: me.pkEntity,
           // fk_property: DfhConfig.PROPERTY_PK_MENTIONES
         } as InfEntityAssociation
       })
-    } as InfChunk
+    } as DatChunk
 
-    this.chunkApi.findOrCreateChunk(this.ngRedux.getState().activeProject.pk_project, c).subscribe(res => {
+    this.chunkApi.findOrCreateChunk(this.ngRedux.getState().activeProject.pk_entity, c).subscribe(res => {
       const chunk = res[0];
       this.created(chunk)
     })
@@ -152,13 +152,13 @@ export class AnnotationPanelComponent implements OnInit, OnDestroy {
    * Created a new annotation
    * - add annotation to substore path 'view'
    */
-  @dispatch() created(c: InfChunk) {
+  @dispatch() created(c: DatChunk) {
 
     // TODO: retrieve the mentioned entities or so
     return this.actions.createdAnnotation({
       chunk: {
         pkEntity: c.pk_entity,
-        quillDelta: c.js_quill_data
+        quillDelta: c.quill_doc
       },
       mentionedEntities: {}
     } as AnnotationState)

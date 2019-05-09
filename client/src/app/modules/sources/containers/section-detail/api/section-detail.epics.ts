@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions, ActiveAccountService, ActiveProjectService } from 'app/core';
+import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions, ActiveAccountService, ActiveProjectService } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -15,7 +15,7 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class SectionDetailAPIEpics {
   constructor(
-    private eprApi: InfEntityProjectRelApi,
+    private eprApi: ProInfoProjRelApi,
     private eaApi: InfEntityAssociationApi,
     private peItService: PeItService, // <- change the api
     private actions: SectionDetailAPIActions,
@@ -84,7 +84,7 @@ export class SectionDetailAPIEpics {
             .subscribe((eass: InfEntityAssociation[][]) => {
               const sourceDomainEa = eass[0].length > 0 ? eass[0][0] : undefined;
               const sourceRangeEa = eass[1].length > 0 ? eass[1][0] : undefined;
-              const pkSource = sourceDomainEa ? sourceDomainEa.fk_domain_entity : sourceRangeEa.fk_range_entity;
+              const pkSource = sourceDomainEa ? sourceDomainEa.fk_info_domain : sourceRangeEa.fk_info_range;
 
 
               this.p.streamEntityPreview(pkSource).subscribe(
@@ -248,11 +248,11 @@ export class SectionDetailAPIEpics {
                 // remove section (peIt)
                 this.eprApi.updateEprAttributes(action.meta.pkProject, action.meta.pkSection, {
                   is_in_project: false
-                } as InfEntityProjectRel),
+                } as ProInfoProjRel),
                 // remove entity association
                 this.eprApi.updateEprAttributes(action.meta.pkProject, ea.pk_entity, {
                   is_in_project: false
-                } as InfEntityProjectRel)
+                } as ProInfoProjRel)
               ).subscribe(
                 (data) => {
 

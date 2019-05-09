@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions, ActiveAccountService } from 'app/core';
+import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions, ActiveAccountService } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -15,7 +15,7 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class SourceDetailAPIEpics {
   constructor(
-    private eprApi: InfEntityProjectRelApi,
+    private eprApi: ProInfoProjRelApi,
     private eaApi: InfEntityAssociationApi,
     private peItService: PeItService, // <- change the api
     private actions: SourceDetailAPIActions,
@@ -126,7 +126,7 @@ export class SourceDetailAPIEpics {
            */
           this.eprApi.updateEprAttributes(action.meta.pkProject, action.meta.pkEntity, {
             is_in_project: false
-          } as InfEntityProjectRel)
+          } as ProInfoProjRel)
             /**
              * Subscribe to the api call
              */

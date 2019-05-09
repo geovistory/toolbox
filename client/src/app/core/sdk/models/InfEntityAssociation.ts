@@ -1,44 +1,44 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfPersistentItem,
-  InfChunk,
-  InfDigitalObject
+  DatChunk,
+  DatDigital
 } from '../index';
 
 declare var Object: any;
 export interface InfEntityAssociationInterface {
   "fk_property": number;
-  "fk_domain_entity": number;
-  "fk_range_entity": number;
+  "fk_info_domain": number;
+  "fk_info_range": number;
   "pk_entity"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   domain_pe_it?: InfPersistentItem;
   range_pe_it?: InfPersistentItem;
-  domain_chunk?: InfChunk;
-  range_chunk?: InfChunk;
-  digital_object?: InfDigitalObject;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
 }
 
 export class InfEntityAssociation implements InfEntityAssociationInterface {
   "fk_property": number;
-  "fk_domain_entity": number;
-  "fk_range_entity": number;
+  "fk_info_domain": number;
+  "fk_info_range": number;
   "pk_entity": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   domain_pe_it?: InfPersistentItem;
   range_pe_it?: InfPersistentItem;
-  domain_chunk?: InfChunk;
-  range_chunk?: InfChunk;
-  digital_object?: InfDigitalObject;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
   constructor(data?: InfEntityAssociationInterface) {
     Object.assign(this, data);
   }

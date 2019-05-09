@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DfhClass, InfNamespace, InfPersistentItem, PeItDetail } from 'app/core';
+import { DfhClass, DatNamespace, InfPersistentItem, PeItDetail } from 'app/core';
 import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Types } from './types.models';
@@ -11,7 +11,7 @@ interface MetaData {
   typeClass?: DfhClass,
   type?: InfPersistentItem,
   peItDetail?: PeItDetail,
-  namespace?: InfNamespace;
+  namespace?: DatNamespace;
   create?: CreateOrAddEntity;
   pkTypeClass?: number;
   pkProject?: number;

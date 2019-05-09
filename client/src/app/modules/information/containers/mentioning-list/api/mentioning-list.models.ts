@@ -1,4 +1,4 @@
-import { InfChunk } from 'app/core';
+import { DatChunk } from 'app/core';
 import { QuillDoc } from '../../../../quill/quill.models';
 
 export interface Mentioning {
@@ -50,7 +50,7 @@ export class MentioningList implements MentioningList {
     sourceEntityPk?: number;
     sectionEntityPk?: number;
     mentionedEntityPk?: number;
-    chunkEntity?: InfChunk;
+    chunkEntity?: DatChunk;
 
     constructor(data?: MentioningList) {
         Object.assign(this, data);

@@ -11,10 +11,10 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { InfChunk } from '../../models/InfChunk';
-import { InfDigitalObject } from '../../models/InfDigitalObject';
+import { DatChunk } from '../../models/InfChunk';
+import { DatDigital } from '../../models/InfDigitalObject';
 
 
 /**

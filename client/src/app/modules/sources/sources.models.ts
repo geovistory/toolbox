@@ -1,4 +1,4 @@
-import { InfDigitalObject } from 'app/core';
+import { DatDigital } from 'app/core';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { IAnnotationPanelState } from 'app/modules/annotation/annotation.models';
 import { IVersion } from '../information/components/version-picker/version-picker.component';
@@ -42,9 +42,9 @@ export class ISourceDetailState {
 
     _type?: TypeDetail;
 
-    view?: InfDigitalObject;
-    edit?: InfDigitalObject;
-    annotate?: InfDigitalObject;
+    view?: DatDigital;
+    edit?: DatDigital;
+    annotate?: DatDigital;
     annotationPanel?: IAnnotationPanelState;
     versionList?: IVersion[];
 
@@ -73,9 +73,9 @@ export class SectionListItem {
  * The state of a section being edited
  */
 export interface SectionDetailState {
-    view?: InfDigitalObject;
-    edit?: InfDigitalObject;
-    annotate?: InfDigitalObject;
+    view?: DatDigital;
+    edit?: DatDigital;
+    annotate?: DatDigital;
     annotationPanel?: IAnnotationPanelState;
     versionList?: IVersion[];
 }

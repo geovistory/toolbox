@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, DfhClassApi, DfhClass, InfNamespaceApi } from 'app/core';
+import { LoadingBarActions, DfhClassApi, DfhClass, DatNamespaceApi } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
@@ -11,7 +11,7 @@ import { ClassSettingsAPIActions, ClassSettingsAPIAction } from './class-setting
 export class ClassSettingsAPIEpics {
   constructor(
     private classApi: DfhClassApi,
-    private namespaceApi: InfNamespaceApi,
+    private namespaceApi: DatNamespaceApi,
     private actions: ClassSettingsAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
@@ -42,7 +42,7 @@ export class ClassSettingsAPIEpics {
            * Do some api calls
            */
           const cla$: Observable<DfhClass> = this.classApi.findById(action.meta.dfhPkClass)
-          const nmsp$ = this.namespaceApi.findWhereProjectOrHasTypes(action.meta.dfhPkClass, c.project.pk_project);
+          const nmsp$ = this.namespaceApi.findWhereProjectOrHasTypes(action.meta.dfhPkClass, c.project.pk_entity);
 
           /**
            * Subscribe to the api calls

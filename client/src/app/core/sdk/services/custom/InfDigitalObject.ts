@@ -9,17 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfDigitalObject } from '../../models/InfDigitalObject';
+import { DatDigital } from '../../models/InfDigitalObject';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
-import { InfChunk } from '../../models/InfChunk';
+import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
+import { DatChunk } from '../../models/InfChunk';
 
 
 /**
  * Api services for the `InfDigitalObject` model.
  */
 @Injectable()
-export class InfDigitalObjectApi extends BaseLoopBackApi {
+export class DatDigitalApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

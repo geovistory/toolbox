@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { AbstractControl, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfRole, InfRoleApi, U } from 'app/core';
+import { IAppState, ProInfoProjRel, ProInfoProjRelApi, InfRole, InfRoleApi, U } from 'app/core';
 import { RoleDetail } from 'app/core/state/models';
 import { RootEpics } from 'app/core/store/epics';
 import { clone } from 'ramda';
@@ -22,7 +22,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
   constructor(
     protected rootEpics: RootEpics,
     protected epics: PropertyFieldApiEpics,
-    protected eprApi: InfEntityProjectRelApi,
+    protected eprApi: ProInfoProjRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
     protected actions: PropertyFieldActions,
@@ -60,7 +60,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
               role.entity_version_project_rels[0] : {
                 is_in_project: true,
                 is_standard_in_project
-              } as InfEntityProjectRel
+              } as ProInfoProjRel
             role.entity_version_project_rels = [epr];
           }
 
@@ -122,7 +122,7 @@ export abstract class PropertyFieldCreateCtrlBase extends PropertyFieldBase {
         role.entity_version_project_rels[0] = {
           ...role.entity_version_project_rels[0],
           is_standard_in_project: false
-        } as InfEntityProjectRel
+        } as ProInfoProjRel
 
         ctrl.setValue(role, {
           onlySelf: false,

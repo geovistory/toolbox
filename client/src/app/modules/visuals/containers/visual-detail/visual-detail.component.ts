@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, ComVisual, IAppState, latestEntityVersion, SubstoreComponent, U } from 'app/core';
+import { ActiveProjectService, ProVisual, IAppState, latestEntityVersion, SubstoreComponent, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { uniq, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -24,7 +24,7 @@ export type VisualType = 'map' | 'pieChart'
  * Change this only with great caution 
  */
 
-export interface ComVisualI extends ComVisual {
+export interface ComVisualI extends ProVisual {
   visual: Visual
 }
 
@@ -65,7 +65,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
   @select() pkEntity$: Observable<number>;
   @select() queryResByVersion$: Observable<{ [key: string]: any[] }>;
   @select() queryResVersionLoading$: Observable<{ [key: string]: boolean }>;
-  comVisual$: Observable<ComVisual>;
+  comVisual$: Observable<ProVisual>;
   loading$: Observable<boolean>;
 
   firstFormGroup: FormGroup;
@@ -218,7 +218,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
   }
 
 
-  composeComVisual(fkProject: number): ComVisual {
+  composeComVisual(fkProject: number): ProVisual {
 
     const comVisual: ComVisualI = {
       fk_project: fkProject,

@@ -7,7 +7,7 @@ import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { ComClassField, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface, DfhProjRel } from '../sdk';
+import { SysClassField, ProClassFieldConfig, DfhClass, DfhProperty, ProInfoProjRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface, DfhProjRel } from '../sdk';
 import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
 import { Field } from '../state/models/field';
@@ -162,12 +162,12 @@ export class U {
 
 
         const rolesToAppe: InfRole[] = teEnt.te_roles.filter(
-            role => (role && role.appellation && role.appellation.appellation_label
+            role => (role && role.appellation && role.appellation.quill_doc
                 // TODO: Add a clause as soon as we have DisplayRoleForDomain in the db
                 // to filter for the role that is standard?? or is this not happening on forms?
             ))
 
-        return rolesToAppe.length ? new AppellationLabel(rolesToAppe[0].appellation.appellation_label).getString() : null;
+        return rolesToAppe.length ? new AppellationLabel(rolesToAppe[0].appellation.quill_doc).getString() : null;
 
     }
 
@@ -232,7 +232,7 @@ export class U {
                 ))
                 .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
                     .map(r => {
-                        return new AppellationLabel(r.appellation.appellation_label).getString()
+                        return new AppellationLabel(r.appellation.quill_doc).getString()
                     })[0]).join(', ')
 
     }
@@ -241,7 +241,7 @@ export class U {
       * Convert array of ComClassField to an array of Fields
       *
       */
-    static comCLassFields2Fields(classFields: ComClassField[]): Field[] {
+    static comCLassFields2Fields(classFields: SysClassField[]): Field[] {
         if (!classFields) return [];
 
         return classFields.map(comClassfield => {
@@ -327,14 +327,14 @@ export class U {
      * gets ui_context_config of PropertyField or null, if not available
      * @param propertyField
      */
-    static uiContextConfigFromPropertyField(propertyField: PropertyField): ComUiContextConfig | null {
+    static uiContextConfigFromPropertyField(propertyField: PropertyField): ProClassFieldConfig | null {
         if (!propertyField) return null;
 
         if (!propertyField.property) return null;
 
-        if (!propertyField.property.ui_context_config || !propertyField.property.ui_context_config[0]) return null;
+        if (!propertyField.property.class_field_config || !propertyField.property.class_field_config[0]) return null;
 
-        return propertyField.property.ui_context_config[0];
+        return propertyField.property.class_field_config[0];
     }
 
     /**
@@ -342,7 +342,7 @@ export class U {
     *
     * @param propSet
     */
-    static ordNumFromPropSet(propSet: ComClassField): number | null {
+    static ordNumFromPropSet(propSet: SysClassField): number | null {
 
         const config = U.uiContextConfigFromPropSet(propSet);
 
@@ -355,13 +355,13 @@ export class U {
      * gets ui_context_config of PropSet or null, if not available
      * @param propSet
      */
-    static uiContextConfigFromPropSet(propSet: ComClassField): ComUiContextConfig | null {
+    static uiContextConfigFromPropSet(propSet: SysClassField): ProClassFieldConfig | null {
 
-        if (!propSet.ui_context_configs) return null;
+        if (!propSet.class_field_configs) return null;
 
-        if (!propSet.ui_context_configs[0]) return null;
+        if (!propSet.class_field_configs[0]) return null;
 
-        return propSet.ui_context_configs[0];
+        return propSet.class_field_configs[0];
     }
 
 
@@ -572,8 +572,8 @@ export class U {
 
 
     static labelFromAppeDetail(a: AppeDetail): string {
-        if (a && a.appellation && a.appellation.appellation_label) {
-            return new AppellationLabel(a.appellation.appellation_label).getString();
+        if (a && a.appellation && a.appellation.quill_doc) {
+            return new AppellationLabel(a.appellation.quill_doc).getString();
         } else return null;
     }
 
@@ -614,7 +614,7 @@ export class U {
                 path: undefined,
                 type: 'txt-prop',
                 string: U.obj2Arr(txtPropField.textPropertyDetailList).slice(0, settings.rolesMax).map(tD => (
-                    tD.textProperty.text_property_quill_doc.contents.ops.map(op => op.insert).join('')
+                    tD.textProperty.quill_doc.contents.ops.map(op => op.insert).join('')
                 )).join(', ')
             }]
         })
@@ -676,7 +676,7 @@ export class U {
     /**
      *  Extracts the first InfEntityProjectRel from InfRole
     */
-    static eprFromInfRole(role: InfRole): InfEntityProjectRel | null {
+    static eprFromInfRole(role: InfRole): ProInfoProjRel | null {
 
         return (role && role.entity_version_project_rels && role.entity_version_project_rels[0]) ?
             role.entity_version_project_rels[0] : null;
@@ -688,7 +688,7 @@ export class U {
     /**
      *  Extracts the first InfEntityProjectRel from RoleDetail
     */
-    static eprFromRoleDetail(roleDetail: RoleDetail): InfEntityProjectRel | null {
+    static eprFromRoleDetail(roleDetail: RoleDetail): ProInfoProjRel | null {
 
         return (
             roleDetail &&

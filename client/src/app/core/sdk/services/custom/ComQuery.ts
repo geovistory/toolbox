@@ -9,17 +9,17 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComQuery } from '../../models/ComQuery';
+import { ProQuery } from '../../models/ComQuery';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { PubAccount } from '../../models/PubAccount';
-import { ComProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ComProject';
 
 
 /**
  * Api services for the `ComQuery` model.
  */
 @Injectable()
-export class ComQueryApi extends BaseLoopBackApi {
+export class SysQueryApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -143,7 +143,7 @@ export class ComQueryApi extends BaseLoopBackApi {
    * This usually means the response is a `ComQuery` object.)
    * </em>
    */
-  public findPerProject(pkProject: any, limit: any, offset: any, customHeaders?: Function): Observable<ComQuery[]> {
+  public findPerProject(pkProject: any, limit: any, offset: any, customHeaders?: Function): Observable<ProQuery[]> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ComQueries/find-per-project";
@@ -154,8 +154,8 @@ export class ComQueryApi extends BaseLoopBackApi {
     if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
     if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<ComQuery>) =>
-        instances.map((instance: ComQuery) => new ComQuery(instance))
+    return result.pipe(map((instances: Array<ProQuery>) =>
+        instances.map((instance: ProQuery) => new ProQuery(instance))
     ));
   }
 
@@ -175,7 +175,7 @@ export class ComQueryApi extends BaseLoopBackApi {
    * This usually means the response is a `ComQuery` object.)
    * </em>
    */
-  public findByIdAndProject(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<ComQuery> {
+  public findByIdAndProject(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<ProQuery> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ComQueries/find-by-id-and-project";
@@ -185,7 +185,7 @@ export class ComQueryApi extends BaseLoopBackApi {
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instance: ComQuery) => new ComQuery(instance)));
+    return result.pipe(map((instance: ProQuery) => new ProQuery(instance)));
   }
 
   /**
@@ -206,7 +206,7 @@ export class ComQueryApi extends BaseLoopBackApi {
    * This usually means the response is a `ComQuery` object.)
    * </em>
    */
-  public findByIdAndVersionAndProject(pkProject: any, pkEntity: any, version: any, customHeaders?: Function): Observable<ComQuery> {
+  public findByIdAndVersionAndProject(pkProject: any, pkEntity: any, version: any, customHeaders?: Function): Observable<ProQuery> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ComQueries/find-by-id-and-version-and-project";
@@ -217,7 +217,7 @@ export class ComQueryApi extends BaseLoopBackApi {
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
     if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instance: ComQuery) => new ComQuery(instance)));
+    return result.pipe(map((instance: ProQuery) => new ProQuery(instance)));
   }
 
   /**

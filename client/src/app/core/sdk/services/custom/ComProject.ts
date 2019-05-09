@@ -9,23 +9,23 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ComProject } from '../../models/ComProject';
+import { ProProject } from '../../models/ComProject';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ComLabel } from '../../models/ComLabel';
 import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { PubAccount } from '../../models/PubAccount';
 import { ComLanguage } from '../../models/ComLanguage';
-import { ComTextProperty } from '../../models/ComTextProperty';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProTextProperty } from '../../models/ComTextProperty';
+import { ProInfoProjRel } from '../../models/InfEntityProjectRel';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { InfNamespace } from '../../models/InfNamespace';
+import { DatNamespace } from '../../models/InfNamespace';
 
 
 /**
  * Api services for the `ComProject` model.
  */
 @Injectable()
-export class ComProjectApi extends BaseLoopBackApi {
+export class SysProjectApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,

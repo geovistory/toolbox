@@ -28,6 +28,6 @@ export class AppellationViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.label = new AppellationLabel(this.appellation.appellation_label).getString();
+    this.label = new AppellationLabel(this.appellation.quill_doc).getString();
   }
 }

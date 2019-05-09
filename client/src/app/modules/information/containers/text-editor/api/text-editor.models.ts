@@ -1,4 +1,4 @@
-import { InfDigitalObject, InfEntityAssociation } from 'app/core';
+import { DatDigital, InfEntityAssociation } from 'app/core';
 import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
 import { Ops, QuillDoc } from 'app/modules/quill/quill.models';
 
@@ -7,7 +7,7 @@ export class TextEditor {
 
 
     entityAssociation?: InfEntityAssociation;
-    digitalObject?: InfDigitalObject;
+    digitalObject?: DatDigital;
     quillDoc?: QuillDoc;
     readOnly?: boolean;
     creatingAnnotation?: boolean;

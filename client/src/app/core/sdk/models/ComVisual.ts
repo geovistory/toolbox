@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   PubAccount,
-  ComProject
+  ProProject
 } from '../index';
 
 declare var Object: any;
@@ -18,10 +18,10 @@ export interface ComVisualInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   account?: PubAccount;
-  project?: ComProject;
+  project?: ProProject;
 }
 
-export class ComVisual implements ComVisualInterface {
+export class ProVisual implements ComVisualInterface {
   "name": string;
   "description": string;
   "visual": any;
@@ -34,7 +34,7 @@ export class ComVisual implements ComVisualInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   account?: PubAccount;
-  project?: ComProject;
+  project?: ProProject;
   constructor(data?: ComVisualInterface) {
     Object.assign(this, data);
   }
@@ -51,8 +51,8 @@ export class ComVisual implements ComVisualInterface {
   * @license MIT
   * This method creates an instance of ComVisual for dynamic purposes.
   **/
-  public static factory(data: ComVisualInterface): ComVisual{
-    return new ComVisual(data);
+  public static factory(data: ComVisualInterface): ProVisual{
+    return new ProVisual(data);
   }
   /**
   * @method getModelDefinition

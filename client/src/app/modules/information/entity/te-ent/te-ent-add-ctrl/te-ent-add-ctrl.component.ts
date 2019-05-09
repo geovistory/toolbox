@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { ComConfig, InfEntityProjectRel, InfRole, InfTemporalEntity, U, UiContext } from 'app/core';
+import { ComConfig, ProInfoProjRel, InfRole, InfTemporalEntity, U, UiContext } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { slideInOut } from '../../../shared/animations';
 import { EntityAPIEpics } from '../../entity.epics';
@@ -93,7 +93,7 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
         // create the epr
         role.temporal_entity.entity_version_project_rels = [{
           is_in_project: true,
-        } as InfEntityProjectRel];
+        } as ProInfoProjRel];
 
         // try to retrieve a appellation label
         this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(role.temporal_entity);

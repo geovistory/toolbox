@@ -47,7 +47,7 @@ export default sandboxOf(AppellationCtrlComponent, {
                     appellation: {
                         // tslint:disable-next-line:max-line-length
                         // tslint:disable-next-line:quotemark
-                        appellation_label: { "tokens": [{ "id": 0, "string": "Rudolf", "isSeparator": false }, { "id": 1, "string": " ", "isSeparator": true }, { "id": 2, "string": "I", "isSeparator": false }, { "id": 3, "string": ",", "isSeparator": true }, { "id": 4, "string": " ", "isSeparator": true }, { "id": 5, "string": "Duke", "isSeparator": false }, { "id": 6, "string": " ", "isSeparator": true }, { "id": 7, "string": "of", "isSeparator": false }, { "id": 8, "string": " ", "isSeparator": true }, { "id": 9, "string": "Bavaria", "isSeparator": false }], "latestTokenId": 9 }
+                        quill_doc: { "tokens": [{ "id": 0, "string": "Rudolf", "isSeparator": false }, { "id": 1, "string": " ", "isSeparator": true }, { "id": 2, "string": "I", "isSeparator": false }, { "id": 3, "string": ",", "isSeparator": true }, { "id": 4, "string": " ", "isSeparator": true }, { "id": 5, "string": "Duke", "isSeparator": false }, { "id": 6, "string": " ", "isSeparator": true }, { "id": 7, "string": "of", "isSeparator": false }, { "id": 8, "string": " ", "isSeparator": true }, { "id": 9, "string": "Bavaria", "isSeparator": false }], "latestTokenId": 9 }
                     }
                 } as InfRole
             },

@@ -1,6 +1,6 @@
 import { NgRedux, select } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, ComVisual, IAppState, latestEntityVersions } from 'app/core';
+import { ActiveProjectService, ProVisual, IAppState, latestEntityVersions } from 'app/core';
 import { Observable, Subject } from 'rxjs';
 
 
@@ -14,7 +14,7 @@ export class VisualListComponent implements OnInit, OnDestroy {
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  items$: Observable<ComVisual[]>;
+  items$: Observable<ProVisual[]>;
   loading$: Observable<boolean>;
 
   constructor(

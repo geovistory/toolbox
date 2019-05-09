@@ -190,7 +190,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     const newPeIt = {
       domain_entity_associations: [{
         fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[d.pkClass],
-        fk_range_entity: d.pkType
+        fk_info_range: d.pkType
       }]
     } as InfPersistentItem;
 
@@ -199,18 +199,18 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
     if (this.isOutgoing()) {
       newEntityAssociaction = {
         pk_entity: undefined,
-        fk_domain_entity: this.pkDomainEntity,
+        fk_info_domain: this.pkDomainEntity,
         fk_property: DfhConfig.PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR,
-        fk_range_entity: undefined,
+        fk_info_range: undefined,
         range_pe_it: newPeIt
       } as InfEntityAssociation
     } else if (this.isOutgoing() === false) {
       newEntityAssociaction = {
         pk_entity: undefined,
-        fk_domain_entity: undefined,
+        fk_info_domain: undefined,
         domain_pe_it: newPeIt,
         fk_property: DfhConfig.PROPERTY_PK_R4_CARRIERS_PROVIDED_BY,
-        fk_range_entity: this.pkRangeEntity
+        fk_info_range: this.pkRangeEntity
       } as InfEntityAssociation
     } else {
       throw Error('Oops, parent class must be F3 or F4.')

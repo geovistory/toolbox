@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions } from 'app/core';
+import { ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { startsWith } from 'ramda';
 import { Action } from 'redux';
@@ -24,7 +24,7 @@ export const ofDirectChildSubstore = (path: string[]) => (action): boolean => {
 @Injectable()
 export class InformationAPIEpics {
   constructor(
-    private eprApi: InfEntityProjectRelApi,
+    private eprApi: ProInfoProjRelApi,
     private actions: InformationAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions

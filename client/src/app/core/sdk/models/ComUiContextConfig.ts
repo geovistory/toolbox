@@ -1,40 +1,40 @@
 /* tslint:disable */
 import {
-  ComUiContext,
+  SysAppContext,
   DfhProperty,
-  ComClassField,
-  ComProject
+  SysClassField,
+  ProProject
 } from '../index';
 
 declare var Object: any;
 export interface ComUiContextConfigInterface {
   "pk_entity"?: number;
-  "fk_ui_context": number;
+  "fk_app_context": number;
   "fk_project"?: number;
   "fk_property"?: number;
   "fk_class_field"?: number;
   "property_is_outgoing"?: boolean;
   "ord_num"?: number;
   "fk_class_for_class_field"?: number;
-  ui_context?: ComUiContext;
+  app_context?: SysAppContext;
   property?: DfhProperty;
-  class_field?: ComClassField;
-  project?: ComProject;
+  class_field?: SysClassField;
+  project?: ProProject;
 }
 
-export class ComUiContextConfig implements ComUiContextConfigInterface {
+export class ProClassFieldConfig implements ComUiContextConfigInterface {
   "pk_entity": number;
-  "fk_ui_context": number;
+  "fk_app_context": number;
   "fk_project": number;
   "fk_property": number;
   "fk_class_field": number;
   "property_is_outgoing": boolean;
   "ord_num": number;
   "fk_class_for_class_field": number;
-  ui_context?: ComUiContext;
+  app_context?: SysAppContext;
   property?: DfhProperty;
-  class_field?: ComClassField;
-  project?: ComProject;
+  class_field?: SysClassField;
+  project?: ProProject;
   constructor(data?: ComUiContextConfigInterface) {
     Object.assign(this, data);
   }
@@ -51,8 +51,8 @@ export class ComUiContextConfig implements ComUiContextConfigInterface {
   * @license MIT
   * This method creates an instance of ComUiContextConfig for dynamic purposes.
   **/
-  public static factory(data: ComUiContextConfigInterface): ComUiContextConfig{
-    return new ComUiContextConfig(data);
+  public static factory(data: ComUiContextConfigInterface): ProClassFieldConfig{
+    return new ProClassFieldConfig(data);
   }
   /**
   * @method getModelDefinition

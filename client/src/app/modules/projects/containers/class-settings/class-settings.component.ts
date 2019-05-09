@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, ProjectDetail, DfhClass, InfNamespace, U } from 'app/core';
+import { IAppState, ProjectDetail, DfhClass, DatNamespace, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { ClassSettings, VocabularyItem } from './api/class-settings.models';
 import { ClassSettingsAPIEpics } from './api/class-settings.epics';
@@ -35,7 +35,7 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
 
   // select observables of substore properties
   @select() dfhClass$: Observable<DfhClass>;
-  @select() namespaces$: Observable<InfNamespace[]>;
+  @select() namespaces$: Observable<DatNamespace[]>;
 
   // class
   class: DfhClass;
@@ -121,14 +121,14 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
    */
   private initNamespaces() {
     this.namespaces$.pipe(first(n => !(!n)), takeUntil(this.destroy$)).subscribe(nmsps => {
-      const namespaceInProject: InfNamespace = nmsps.find((nmsp) => (U.entityIsInProject(nmsp)));
+      const namespaceInProject: DatNamespace = nmsps.find((nmsp) => (U.entityIsInProject(nmsp)));
       if (namespaceInProject) {
         this.enabledVocabulary = {
           pk_entity: namespaceInProject.pk_entity,
           label: namespaceInProject.standard_label
         };
       } else {
-        const geovistoryOngoing: InfNamespace = nmsps.find((nmsp) => nmsp.pk_entity === Config.PK_NAMESPACE__GEOVISTORY_ONGOING);
+        const geovistoryOngoing: DatNamespace = nmsps.find((nmsp) => nmsp.pk_entity === Config.PK_NAMESPACE__GEOVISTORY_ONGOING);
         this.enabledVocabulary = {
           pk_entity: geovistoryOngoing.pk_entity,
           label: 'Custom Vocabulary of project: ' + this.projectLabel
@@ -160,6 +160,6 @@ export class ClassSettingsComponent extends ClassSettingsAPIActions implements O
     if (vocab.pk_entity === Config.PK_NAMESPACE__GEOVISTORY_ONGOING) return true;
 
     const fk_project = this.localStore.getState().namespaces.find((nsp) => nsp.pk_entity === vocab.pk_entity).fk_project;
-    return this.ngRedux.getState().activeProject.pk_project === fk_project;
+    return this.ngRedux.getState().activeProject.pk_entity === fk_project;
   }
 }

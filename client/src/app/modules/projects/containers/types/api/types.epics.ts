@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, InfNamespaceApi, InfNamespace, ComConfig } from 'app/core';
+import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, DatNamespaceApi, DatNamespace, ComConfig } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';

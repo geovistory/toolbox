@@ -24,7 +24,7 @@ export default sandboxOf(EntityAssociationCreateCtrlComponent, {
             sandboxState: {
                 entityAssociationDetail: createEntityAssociationDetail(
                     { isOutgoing: false },
-                    { fk_property: 1015, fk_range_entity: 99 } as InfEntityAssociation,
+                    { fk_property: 1015, fk_info_range: 99 } as InfEntityAssociation,
                     crm,
                     { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
                 )

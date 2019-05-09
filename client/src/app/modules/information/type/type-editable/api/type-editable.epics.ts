@@ -107,7 +107,7 @@ export class TypeEditableAPIEpics {
            * Do some api call
            */
 
-          this.peItApi.typeNested(c.ngRedux.getState().activeProject.pk_project, action.meta.entityAssociation.fk_range_entity)
+          this.peItApi.typeNested(c.ngRedux.getState().activeProject.pk_entity, action.meta.entityAssociation.fk_info_range)
             .subscribe((typePeIt: InfPersistentItem) => {
 
               const typeDetail = createTypeDetail(

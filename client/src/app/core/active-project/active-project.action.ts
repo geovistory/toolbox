@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt } from './active-project.models';
-import { InfChunk, InfTemporalEntity, InfPersistentItem, ComQuery, ComVisual, DfhProjRel, InfEntityProjectRel } from '../sdk';
+import { DatChunk, InfTemporalEntity, InfPersistentItem, ProQuery, ProVisual, DfhProjRel, ProInfoProjRel } from '../sdk';
 import { EntityPreview, PeItDetail, HasTypePropertyReadable } from '../state/models';
 
-export interface ComQueryV extends ComQuery {
+export interface ComQueryV extends ProQuery {
     versions: number[];
 }
 
-export interface ComVisualV extends ComVisual {
+export interface ComVisualV extends ProVisual {
     versions: number[];
 }
 
@@ -23,14 +23,14 @@ interface MetaData {
     // return vals for Data Cache
     entityPreview?: EntityPreview;
     peItDetail?: PeItDetail;
-    chunk?: InfChunk
+    chunk?: DatChunk
     teEnGraphs?: InfTemporalEntity[]
     peItGraphs?: InfPersistentItem[]
     types?: TypePeIt[]
     comQueryArray?: ComQueryV[]
-    comQuery?: ComQuery
+    comQuery?: ProQuery
     comVisualArray?: ComVisualV[]
-    comVisual?: ComVisual
+    comVisual?: ProVisual
 
     // CRM and Config
     projRel?: DfhProjRel;
@@ -38,7 +38,7 @@ interface MetaData {
     hasTypeProperties?: HasTypePropertyReadable[]
 
     // Information
-    infProjRel?: InfEntityProjectRel;
+    infProjRel?: ProInfoProjRel;
 
     // layout
     list?: ListType;
@@ -317,7 +317,7 @@ export class ActiveProjectActions {
         }
     }
 
-    loadChunkSucceeded(chunk: InfChunk): ActiveProjectAction {
+    loadChunkSucceeded(chunk: DatChunk): ActiveProjectAction {
         return {
             type: ActiveProjectActions.LOAD_CHUNK_SUCCEEDED,
             payload: null,
@@ -456,7 +456,7 @@ export class ActiveProjectActions {
         }
     }
 
-    loadQueryVersionSucceeded(comQuery: ComQuery): ActiveProjectAction {
+    loadQueryVersionSucceeded(comQuery: ProQuery): ActiveProjectAction {
         return {
             type: ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED,
             payload: null,
@@ -555,7 +555,7 @@ export class ActiveProjectActions {
     static SET_CREATING_MENTIONING = 'ActiveProject::SET_CREATING_MENTIONING';
 
 
-    updateSelectedChunk(selectedChunk: InfChunk): ActiveProjectAction {
+    updateSelectedChunk(selectedChunk: DatChunk): ActiveProjectAction {
         return {
             type: ActiveProjectActions.UPDATE_SELECTED_CHUNK,
             payload: { selectedChunk },
@@ -636,13 +636,13 @@ export class ActiveProjectActions {
     static readonly UPSERT_ENTITY_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_SUCCEEDED';
     static readonly UPSERT_ENTITY_PROJ_REL_FAILED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_FAILED';
 
-    upsertEntityProjRel = (infProjRel: InfEntityProjectRel): ActiveProjectAction => ({
+    upsertEntityProjRel = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
         type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL,
         meta: { infProjRel },
         payload: null,
     });
 
-    upsertEntityProjRelSucceeded = (infProjRel: InfEntityProjectRel): ActiveProjectAction => ({
+    upsertEntityProjRelSucceeded = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
         type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED,
         meta: { infProjRel },
         payload: null

@@ -81,7 +81,7 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
         ...this.textProperty,
         fk_language: this.langCtrl.value.pk_entity,
         language: this.langCtrl.value,
-        text_property_quill_doc: this.quillDoc
+        quill_doc: this.quillDoc
       })
       this.onChange(textProperty)
     } else {
@@ -113,8 +113,8 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
       if (textProperty.language) {
         this.langCtrl.setValue(textProperty.language);
       }
-      if (textProperty.text_property_quill_doc) {
-        this.quillDoc = textProperty.text_property_quill_doc
+      if (textProperty.quill_doc) {
+        this.quillDoc = textProperty.quill_doc
       }
       this.validateAndEmit();
     }

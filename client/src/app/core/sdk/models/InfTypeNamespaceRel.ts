@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel,
-  InfNamespace
+  ProInfoProjRel,
+  DatNamespace
 } from '../index';
 
 declare var Object: any;
@@ -13,8 +13,8 @@ export interface InfTypeNamespaceRelInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
-  namespace?: InfNamespace;
+  entity_version_project_rels?: ProInfoProjRel[];
+  namespace?: DatNamespace;
 }
 
 export class InfTypeNamespaceRel implements InfTypeNamespaceRelInterface {
@@ -25,8 +25,8 @@ export class InfTypeNamespaceRel implements InfTypeNamespaceRelInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
-  namespace?: InfNamespace;
+  entity_version_project_rels?: ProInfoProjRel[];
+  namespace?: DatNamespace;
   constructor(data?: InfTypeNamespaceRelInterface) {
     Object.assign(this, data);
   }

@@ -1,4 +1,4 @@
-import { ComQuery } from 'app/core';
+import { ProQuery } from 'app/core';
 
 export type FileType = 'json' | 'csv';
 
@@ -12,7 +12,7 @@ export class QueryDetail {
     loadingPages?: { [pageNr: string]: boolean };
     fullCount?: number;
 
-    comQuery?: ComQuery;
+    comQuery?: ProQuery;
     tabTitle?: string;
 
     // Layout

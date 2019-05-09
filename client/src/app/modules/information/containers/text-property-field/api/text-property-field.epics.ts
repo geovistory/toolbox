@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfTextPropertyApi, InfEntityProjectRelApi, InfEntityProjectRel } from 'app/core';
+import { LoadingBarActions, InfTextPropertyApi, ProInfoProjRelApi, ProInfoProjRel } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -13,7 +13,7 @@ import { createTextPropertyField, createTextPropertyDetail } from 'app/core/stat
 @Injectable()
 export class TextPropertyFieldAPIEpics {
   constructor(
-    private eprApi: InfEntityProjectRelApi,
+    private eprApi: ProInfoProjRelApi,
     private textPropertyApi: InfTextPropertyApi,
     private actions: TextPropertyFieldAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -45,7 +45,7 @@ export class TextPropertyFieldAPIEpics {
            * Do some api call
            */
           this.textPropertyApi.findOrCreateInfTextProperty(
-            c.ngRedux.getState().activeProject.pk_project,
+            c.ngRedux.getState().activeProject.pk_entity,
             action.meta.infTextProperty
           )
             /**
@@ -120,9 +120,9 @@ export class TextPropertyFieldAPIEpics {
           /**
            * Do some api call
            */
-          this.eprApi.updateEprAttributes(c.ngRedux.getState().activeProject.pk_project, action.meta.pkEntity, {
+          this.eprApi.updateEprAttributes(c.ngRedux.getState().activeProject.pk_entity, action.meta.pkEntity, {
             is_in_project: false
-          } as InfEntityProjectRel)
+          } as ProInfoProjRel)
             /**
              * Subscribe to the api call
              */

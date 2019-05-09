@@ -61,7 +61,7 @@ export class PeItPropertyFieldFormComponent extends PropertyFieldFormBase {
 
     const fkProperty = s.property.dfh_pk_property;
     const fkEntity = ps.peIt.pk_entity;
-    const fkProject = this.ngRedux.getState().activeProject.pk_project;
+    const fkProject = this.ngRedux.getState().activeProject.pk_entity;
 
     const waitAtLeast = timer(800);
     const apiCall = this.roleApi.alternativesNotInProjectByEntityPk(fkEntity, fkProperty, fkProject)
@@ -198,7 +198,7 @@ export class PeItPropertyFieldFormComponent extends PropertyFieldFormBase {
       })
 
       // call api
-      this.subs.push(this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, p).subscribe(peIts => {
+      this.subs.push(this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_entity, p).subscribe(peIts => {
         const roles: InfRole[] = peIts[0].pi_roles;
 
         // update the form group
