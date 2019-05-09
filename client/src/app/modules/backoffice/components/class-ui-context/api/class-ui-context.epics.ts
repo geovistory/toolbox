@@ -5,7 +5,7 @@ import { DfhClassApi } from 'app/core/sdk/services/custom/DfhClass';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { ProClassFieldConfigApi } from '../../../../../core/sdk/services/custom/ComUiContextConfig';
+import { ProClassFieldConfigApi } from 'app/core/sdk';
 import { ClassUiContext, Widget, Container } from '../../../backoffice.models';
 import { ClassUiContextAPIActions } from './class-ui-context.actions';
 import { sort } from 'ramda';

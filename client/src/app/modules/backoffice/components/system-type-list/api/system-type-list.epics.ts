@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SystemTypeListComponent } from '../system-type-list.component';
 import { SystemTypeListAPIActions, SystemTypeListAPIAction } from './system-type-list.actions';
-import { SysSystemTypeApi } from 'app/core/sdk/services/custom/ComSystemType';
-import { SysSystemType } from 'app/core/sdk/models/ComSystemType';
+import { SysSystemTypeApi } from 'app/core/sdk';
+import { SysSystemType } from 'app/core/sdk';
 
 @Injectable()
 export class SystemTypeListAPIEpics {

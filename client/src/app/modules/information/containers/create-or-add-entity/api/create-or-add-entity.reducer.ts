@@ -24,10 +24,6 @@ export function createOrAddEntityReducer(state: CreateOrAddEntity = INITIAL_STAT
         pkClass: action.meta.pkClass
       } as PeItSearchExisting;
 
-      if (action.meta.typeNamespaceRels.length) {
-        template.type_namespace_rels = action.meta.typeNamespaceRels
-        searchExisting.pkNamespace = action.meta.typeNamespaceRels[0].fk_namespace;
-      }
 
       const classConfig = action.meta.crm.classes[action.meta.pkClass];
 

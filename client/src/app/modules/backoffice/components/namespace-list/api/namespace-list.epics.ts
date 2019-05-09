@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { NamespaceListComponent } from '../namespace-list.component';
 import { NamespaceListAPIActions, NamespaceListAPIAction } from './namespace-list.actions';
-import { DatNamespaceApi } from 'app/core/sdk/services/custom/InfNamespace';
+import { DatNamespaceApi } from 'app/core/sdk';
 
 @Injectable()
 export class NamespaceListAPIEpics {

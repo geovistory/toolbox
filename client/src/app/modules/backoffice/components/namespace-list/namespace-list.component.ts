@@ -8,7 +8,7 @@ import { NamespaceList } from './api/namespace-list.models';
 import { NamespaceListAPIEpics } from './api/namespace-list.epics';
 import { NamespaceListAPIActions } from './api/namespace-list.actions';
 import { namespaceListReducer } from './api/namespace-list.reducer';
-import { DatNamespace } from '../../../../core/sdk/models/InfNamespace';
+import { DatNamespace } from 'app/core/sdk';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

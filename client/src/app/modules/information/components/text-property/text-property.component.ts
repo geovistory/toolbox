@@ -1,6 +1,6 @@
 import { Component, EventEmitter, forwardRef, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfTextProperty } from '../../../../core/sdk/models/InfTextProperty';
+import { InfTextProperty } from 'app/core/sdk';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState } from 'app/core';
 import { QuillDoc } from '../../../quill/quill.models';
@@ -94,8 +94,7 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
     return !s ? null :
       !s.activeProject ? null :
         !s.activeProject.default_language ? null :
-          !s.activeProject.default_language.inf_language ? null :
-            s.activeProject.default_language.inf_language
+          !s.activeProject.default_language
   }
 
   /****************************************

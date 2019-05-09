@@ -1,4 +1,4 @@
-import { SysSystemType } from 'app/core/sdk/models/ComSystemType';
+import { SysSystemType } from 'app/core/sdk';
 
 // Interface of this slice of store
 export interface SystemTypeListI {

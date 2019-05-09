@@ -59,7 +59,7 @@
       "foreignKey": "fk_data_range",
       "primaryKey": "pk_entity"
     },
-    "digital_object": {
+    "domain_digital": {
       "type": "belongsTo",
       "model": "DatDigital",
       "foreignKey": "fk_data_domain",

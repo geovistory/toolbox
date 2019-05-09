@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { InfTextProperty } from '../../../../core/sdk/models/InfTextProperty';
+import { InfTextProperty } from 'app/core/sdk';
 import { Information2Module } from '../../information.module';
 import { TextPropertyComponent } from './text-property.component';
 import { QuillDoc } from '../../../quill';

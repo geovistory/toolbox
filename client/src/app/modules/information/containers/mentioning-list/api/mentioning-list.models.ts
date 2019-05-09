@@ -1,5 +1,15 @@
-import { DatChunk } from 'app/core';
+import { DatChunk, InfEntityAssociation } from 'app/core';
 import { QuillDoc } from '../../../../quill/quill.models';
+
+
+
+export interface MentionedEntity {
+    pkEntity: number;
+    label: string;
+    entityAssociation: InfEntityAssociation;
+}
+
+
 
 export interface Mentioning {
     pk_entity?: number // pk of the entity association
@@ -9,7 +19,7 @@ export interface Mentioning {
     fk_expression_entity?: number
     fk_source_entity?: number
     fk_chunk?: number
-    js_quill_data?: QuillDoc
+    quill_doc?: QuillDoc
 }
 
 export type MentioningListType =

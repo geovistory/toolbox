@@ -20,7 +20,6 @@ import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
-import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 import { QuillModule } from '../quill';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
@@ -386,7 +385,6 @@ import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity
     PropertyFieldService,
     ValidationService,
 
-    MentionedEntityCtrlActions,
     MentioningListAPIActions,
     MentioningListAPIEpics,
     CreateOrAddEntityAPIActions,

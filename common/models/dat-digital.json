@@ -16,6 +16,12 @@
     }
   },
   "properties": {
+    "pk_text_version_concat": {
+      "generated": true
+    },
+    "pk_text": {
+      "generated": true
+    },
     "notes": {
       "type": "string",
       "required": false
@@ -35,9 +41,12 @@
       "generated": true,
       "hidden": true
     },
-    "js_quill_data": {
+    "quill_doc": {
       "type": "object",
       "required": true
+    },
+    "string": {
+      "type": "string"
     }
   },
   "validations": [],
@@ -45,7 +54,7 @@
     "chunks": {
       "type": "hasMany",
       "model": "DatChunk",
-      "foreignKey": "fk_digital_object",
+      "foreignKey": "fk_digital",
       "primaryKey": "pk_entity"
     }
   },

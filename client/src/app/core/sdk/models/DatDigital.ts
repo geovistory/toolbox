@@ -5,22 +5,28 @@ import {
 
 declare var Object: any;
 export interface DatDigitalInterface {
+  "pk_text_version_concat"?: any;
+  "pk_text"?: any;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  "js_quill_data": any;
+  "quill_doc": any;
+  "string"?: string;
   "pk_entity"?: number;
   "entity_version"?: number;
   chunks?: DatChunk[];
 }
 
 export class DatDigital implements DatDigitalInterface {
+  "pk_text_version_concat": any;
+  "pk_text": any;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  "js_quill_data": any;
+  "quill_doc": any;
+  "string": string;
   "pk_entity": number;
   "entity_version": number;
   chunks?: DatChunk[];
@@ -57,6 +63,14 @@ export class DatDigital implements DatDigitalInterface {
       path: 'DatDigitals',
       idName: 'pk_entity',
       properties: {
+        "pk_text_version_concat": {
+          name: 'pk_text_version_concat',
+          type: 'any'
+        },
+        "pk_text": {
+          name: 'pk_text',
+          type: 'any'
+        },
         "notes": {
           name: 'notes',
           type: 'string'
@@ -73,9 +87,13 @@ export class DatDigital implements DatDigitalInterface {
           name: 'sys_period',
           type: 'string'
         },
-        "js_quill_data": {
-          name: 'js_quill_data',
+        "quill_doc": {
+          name: 'quill_doc',
           type: 'any'
+        },
+        "string": {
+          name: 'string',
+          type: 'string'
         },
         "pk_entity": {
           name: 'pk_entity',
@@ -93,7 +111,7 @@ export class DatDigital implements DatDigitalInterface {
           model: 'DatChunk',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_digital_object'
+          keyTo: 'fk_digital'
         },
       }
     }

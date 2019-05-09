@@ -126,7 +126,7 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
   onSave() {
     this.save(this.pkProject, {
       ...this.localStore.getState().digitalObject,
-      js_quill_data: this.editedQuillDoc
+      quill_doc: this.editedQuillDoc
     })
   }
 
@@ -144,7 +144,8 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
       this.annotate.emit()
 
       this.projectService.updateSelectedChunk(new DatChunk({
-        fk_text: this.localStore.getState().digitalObject.pk_entity,
+        fk_text: this.localStore.getState().digitalObject.pk_text,
+        fk_entity_version: this.localStore.getState().digitalObject.entity_version,
         quill_doc: this.localStore.getState().selectedDelta,
       }))
     }
@@ -159,7 +160,7 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
 
       this.save(this.pkProject, {
         ...this.localStore.getState().digitalObject,
-        js_quill_data: this.editedQuillDoc
+        quill_doc: this.editedQuillDoc
       })
       // as soon as it is created, annotate
       this.digitalObject$.pipe(first(d => !!d.pk_entity), takeUntil(this.destroy$)).subscribe(d => {

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ClassConfig, IAppState, InfEntityAssociation, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, InfTypeNamespaceRel, PeItDetail, SubstoreComponent, TeEntDetail, U } from 'app/core';
+import { ClassConfig, IAppState, InfEntityAssociation, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, PeItDetail, SubstoreComponent, TeEntDetail, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -77,9 +77,8 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
 
-    combineLatest(this.classAndTypePk$, this.pkUiContext$, this.pkNamespace$).pipe(
+    combineLatest(this.classAndTypePk$, this.pkUiContext$).pipe(
       first((d) => {
-        // make sure that classAndTypePk, pkUiContext are set. pkNamespace is optional.
         return ((d[0] && d[1]) ? true : false)
       }),
       takeUntil(this.destroy$)
@@ -88,7 +87,6 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
       const pkClass = d[0].pkClass;
       const pkType = d[0].pkType;
       const pkUiContext = d[1];
-      const pkNamespace = d[2];
       const crm = this.ngRedux.getState().activeProject.crm;
       // if (!pkClass) throw Error('please provide a pkClass.');
       // if (!pkUiContext) throw Error('please provide a pkUiContext.');
@@ -105,14 +103,7 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
         } as InfEntityAssociation)
       }
 
-      const typeNamespaceRels: InfTypeNamespaceRel[] = [];
-      if (pkNamespace) {
-        typeNamespaceRels.push({
-          fk_namespace: pkNamespace
-        } as InfTypeNamespaceRel)
-      }
-
-      this.initCreateForm(pkClass, domainEntityAssociations, typeNamespaceRels, crm, pkUiContext);
+      this.initCreateForm(pkClass, domainEntityAssociations, crm, pkUiContext);
 
     })
 

@@ -1,8 +1,7 @@
-import { Action } from 'redux';
-import { TextEditor } from './text-editor.models';
-import { TextEditorAPIAction, TextEditorAPIActions } from './text-editor.actions';
 import { DatDigital } from 'app/core';
-import { clone } from 'ramda';
+import { Action } from 'redux';
+import { TextEditorAPIAction, TextEditorAPIActions } from './text-editor.actions';
+import { TextEditor } from './text-editor.models';
 
 const INITIAL_STATE = new TextEditor();
 
@@ -23,7 +22,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
     case TextEditorAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        quillDoc: (!action.meta.entityAssociation || !action.meta.entityAssociation.domain_digital) ? {} as DatDigital : action.meta.entityAssociation.domain_digital.js_quill_data,
+        quillDoc: (!action.meta.entityAssociation || !action.meta.entityAssociation.domain_digital) ? {} as DatDigital : action.meta.entityAssociation.domain_digital.quill_doc,
         digitalObject: !action.meta.entityAssociation ? {} as DatDigital : action.meta.entityAssociation.domain_digital,
         entityAssociation: action.meta.entityAssociation,
         readOnly: action.meta.entityAssociation ? true : false,
@@ -54,7 +53,7 @@ export function textEditorReducer(state: TextEditor = INITIAL_STATE, a: Action):
     case TextEditorAPIActions.SAVE_SUCCEEDED:
       state = {
         ...state,
-        quillDoc: action.meta.digitalObject.js_quill_data,
+        quillDoc: action.meta.digitalObject.quill_doc,
         digitalObject: action.meta.digitalObject,
         readOnly: true,
         loading: false

@@ -1,16 +1,15 @@
-import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList, EntityPreview } from 'app/core/state/models';
-import { SysClassFieldInterface, SysAppContextInterface, ProProjectInterface, DatChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ProQuery, ProVisual, DfhProjRel } from 'app/core/sdk';
-import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
-import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
-import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
+import { DatChunk, DfhProjRel, DfhProperty, InfPersistentItem, InfTemporalEntity, ProProjectInterface, ProQuery, ProVisual, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
+import { EntityPreview, EntityPreviewList, FieldList, PeItDetailList, PropertyFieldList } from 'app/core/state/models';
 import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
-import { SectionDetail } from 'app/modules/sources/containers/section-detail/api/section-detail.models';
-import { Observable } from 'rxjs';
-import { QueryDetail } from 'app/modules/queries/containers/query-detail/api/query-detail.models';
-import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
+import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
-import { HasTypePropertyReadable } from '../state/models';
+import { QueryDetail } from 'app/modules/queries/containers/query-detail/api/query-detail.models';
+import { SectionDetail } from 'app/modules/sources/containers/section-detail/api/section-detail.models';
+import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
+import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
+import { Observable } from 'rxjs';
 import { Types } from '../../modules/projects/containers/types/api/types.models';
+import { HasTypePropertyReadable } from '../state/models';
 
 export interface EntityByPk<T> {
     [pk_entity: number]: T
@@ -79,8 +78,6 @@ export interface ProjectDetail extends ProProjectInterface {
 
     // Conceptional Reference Model
     crm?: ProjectCrm,
-
-    classSettings?: ClassSettingsI
 
     /******************************************************************
      * Information Cache

@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SystemTypeListI } from './system-type-list.models';
-import { SysSystemType } from 'app/core/sdk/models/ComSystemType';
+import { SysSystemType } from 'app/core/sdk';
 
 type Payload = SystemTypeListI;
 interface MetaData {

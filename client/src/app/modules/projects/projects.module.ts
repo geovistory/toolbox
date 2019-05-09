@@ -22,9 +22,7 @@ import { ProjectsActions } from './api/projects.actions';
 import { SettingsListComponent } from './components/settings-list/settings-list.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
-import { ClassSettingsAPIActions } from './containers/class-settings/api/class-settings.actions';
-import { ClassSettingsAPIEpics } from './containers/class-settings/api/class-settings.epics';
-import { ClassSettingsComponent } from './containers/class-settings/class-settings.component';
+
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
 import { ProjectDashboardComponent } from './containers/project-dashboard/project-dashboard.component';
 import { ProjectEditPanelComponent } from './containers/project-edit-panel/project-edit-panel.component';
@@ -98,7 +96,6 @@ import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/conf
     ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
     ProjectSettingsProfileComponent,
-    ClassSettingsComponent,
     SideNavComponent,
     TypesComponent,
     TypeAddFormComponent,
@@ -112,8 +109,6 @@ import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/conf
     ProjectsActions,
     ProjectSettingsDataAPIEpics,
     ProjectSettingsDataAPIActions,
-    ClassSettingsAPIActions,
-    ClassSettingsAPIEpics,
     TypesAPIActions,
     TypesAPIEpics,
     TypeEditFormAPIActions,

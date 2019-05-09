@@ -15,7 +15,7 @@ export interface DatChunkInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  "fk_digital_object"?: number;
+  "fk_digital"?: number;
   data_info_association?: InfEntityAssociation[];
 }
 
@@ -30,7 +30,7 @@ export class DatChunk implements DatChunkInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  "fk_digital_object": number;
+  "fk_digital": number;
   data_info_association?: InfEntityAssociation[];
   constructor(data?: DatChunkInterface) {
     Object.assign(this, data);
@@ -105,8 +105,8 @@ export class DatChunk implements DatChunkInterface {
           name: 'sys_period',
           type: 'string'
         },
-        "fk_digital_object": {
-          name: 'fk_digital_object',
+        "fk_digital": {
+          name: 'fk_digital',
           type: 'number'
         },
       },

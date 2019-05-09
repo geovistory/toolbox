@@ -83,8 +83,7 @@ export class LanguageCtrlComponent implements OnDestroy, ControlValueAccessor {
     return !s ? null :
       !s.activeProject ? null :
         !s.activeProject.default_language ? null :
-          !s.activeProject.default_language.inf_language ? null :
-            s.activeProject.default_language.inf_language
+          !s.activeProject.default_language
   }
 
   /****************************************

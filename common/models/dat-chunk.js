@@ -8,8 +8,8 @@ module.exports = function(DatChunk) {
   DatChunk.findOrCreateChunk = function(projectId, data, ctx) {
 
     const dataObject = {
-      js_quill_data: JSON.stringify(data.js_quill_data),
-      fk_digital_object: data.fk_digital_object      
+      quill_doc: JSON.stringify(data.quill_doc),
+      fk_text: data.fk_text      
     };
 
     let requestedChunk;

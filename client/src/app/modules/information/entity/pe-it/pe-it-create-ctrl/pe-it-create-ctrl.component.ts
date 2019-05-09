@@ -84,10 +84,6 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       peIt.text_properties = [];
       peIt.domain_entity_associations = [];
 
-      // TODO: create a NamespaceField for explicitly showing the namespace as a field in GUI
-      if (s.peIt.type_namespace_rels) {
-        peIt.type_namespace_rels = s.peIt.type_namespace_rels;
-      }
 
       Object.keys(this.formGroup.controls).forEach(key => {
 

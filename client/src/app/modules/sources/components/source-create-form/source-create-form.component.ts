@@ -49,7 +49,7 @@ export class SourceCreateFormComponent implements OnInit {
       notes: this.model.label,
 
       // create a new QuillDoc
-      js_quill_data: {
+      quill_doc: {
         latestId: 0,
         ops: []
       } as QuillDoc,

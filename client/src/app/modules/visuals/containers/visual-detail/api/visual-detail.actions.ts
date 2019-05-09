@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { VisualDetail } from './visual-detail.models';
-import { ProVisual } from 'app/core/sdk/models/ComVisual';
+import { ProVisual } from 'app/core/sdk';
 
 type Payload = VisualDetail;
 interface MetaData {

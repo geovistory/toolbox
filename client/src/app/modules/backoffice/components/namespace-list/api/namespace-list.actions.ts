@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { NamespaceListI } from './namespace-list.models';
-import { DatNamespace } from 'app/core/sdk/models/InfNamespace';
+import { DatNamespace } from 'app/core/sdk/';
 
 type Payload = NamespaceListI;
 interface MetaData {

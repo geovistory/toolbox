@@ -7,7 +7,7 @@ import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { SysClassField, ProClassFieldConfig, DfhClass, DfhProperty, ProInfoProjRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface, DfhProjRel } from '../sdk';
+import { SysClassField, ProClassFieldConfig, DfhClass, DfhProperty, ProInfoProjRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, DfhProjRel } from '../sdk';
 import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
 import { Field } from '../state/models/field';

@@ -8,7 +8,7 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { QueryDetailComponent } from '../query-detail.component';
 import { QueryDetailAPIActions, QueryDetailAPIAction } from './query-detail.actions';
 import { ofSubstore } from 'app/core/store/module';
-import { ProQueryApi } from 'app/core/sdk/services/custom/ComQuery';
+import { ProQueryApi } from 'app/core/sdk';
 import { saveAs } from 'file-saver';
 
 @Injectable()

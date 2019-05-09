@@ -42,7 +42,7 @@
 <!-- Results -->
 <div class="d-flex gv-fh mx-0 py-1 px-3 border-light gv-scroll-y-auto" *ngIf="!(loading$ | async)">
   <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [hit]="hit"
-    (onSelectAsMentioned)="selectMentionedEntity($event)" (onOpenEntityPreview)=onOpen.emit($event)>
+     (onOpenEntityPreview)=onOpen.emit($event)>
   </gv-entity-search-hit>
 </div>
 

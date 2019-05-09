@@ -25,7 +25,7 @@ export interface InfEntityAssociationInterface {
   range_pe_it?: InfPersistentItem;
   domain_chunk?: DatChunk;
   range_chunk?: DatChunk;
-  digital_object?: DatDigital;
+  domain_digital?: DatDigital;
 }
 
 export class InfEntityAssociation implements InfEntityAssociationInterface {
@@ -46,7 +46,7 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
   range_pe_it?: InfPersistentItem;
   domain_chunk?: DatChunk;
   range_chunk?: DatChunk;
-  digital_object?: DatDigital;
+  domain_digital?: DatDigital;
   constructor(data?: InfEntityAssociationInterface) {
     Object.assign(this, data);
   }
@@ -170,8 +170,8 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
                   keyFrom: 'fk_data_range',
           keyTo: 'pk_entity'
         },
-        digital_object: {
-          name: 'digital_object',
+        domain_digital: {
+          name: 'domain_digital',
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',

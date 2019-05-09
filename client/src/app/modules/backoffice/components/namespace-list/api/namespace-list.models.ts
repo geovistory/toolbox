@@ -1,4 +1,4 @@
-import { DatNamespace } from 'app/core/sdk/models/InfNamespace';
+import { DatNamespace } from 'app/core/sdk';
 
 // Interface of this slice of store
 export interface NamespaceListI {

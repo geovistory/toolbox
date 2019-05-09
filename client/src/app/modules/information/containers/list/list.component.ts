@@ -1,16 +1,13 @@
-import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { Subject, Observable, combineLatest } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { List, EntitySearchHit } from './api/list.models';
-import { ListAPIEpics } from './api/list.epics';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 import { ListAPIActions } from './api/list.actions';
+import { ListAPIEpics } from './api/list.epics';
+import { EntitySearchHit, List } from './api/list.models';
 import { listReducer } from './api/list.reducer';
-import { MentionedEntity } from 'app/modules/annotation/annotation.models';
-import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
-import { mentionedEntityCtrlReducer } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.reducer';
-import { takeUntil, first } from 'rxjs/operators';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -57,7 +54,6 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   errorMessages: any;
 
   selectingEntities$: Observable<boolean>;
-  mentionedEntitiesCrtlStore: ObservableStore<{ [key: string]: MentionedEntity }>
   projectId: number;
 
   // Entity type (TeEn/PeIt) Filter
@@ -71,16 +67,12 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
   constructor(
     protected rootEpics: RootEpics,
     private epics: ListAPIEpics,
-    public ngRedux: NgRedux<IAppState>,
-    private mEntitiesActions: MentionedEntityCtrlActions
-  ) {
+    public ngRedux: NgRedux<IAppState>
+      ) {
     super();
 
     // listen to selecting entities for annotation
     this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities']);
-
-    this.mentionedEntitiesCrtlStore =
-      ngRedux.configureSubStore(['sources', 'edit', 'annotationPanel', 'edit', 'mentionedEntities'], mentionedEntityCtrlReducer)
 
 
   }
@@ -122,9 +114,9 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
     }
   }
 
-  selectMentionedEntity(entity: MentionedEntity) {
-    this.mentionedEntitiesCrtlStore.dispatch(this.mEntitiesActions.addMentionedEntity(entity))
-  }
+  // selectMentionedEntity(entity: MentionedEntity) {
+  //   this.mentionedEntitiesCrtlStore.dispatch(this.mEntitiesActions.addMentionedEntity(entity))
+  // }
 
   get hitsFrom() {
     return (this.limit * (this.page - 1)) + 1;

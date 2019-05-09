@@ -15,7 +15,7 @@ module.exports = function (DatDigital) {
 
     const dataObject = {
       pk_entity: data.pk_entity,
-      js_quill_data: data.js_quill_data,
+      quill_doc: data.quill_doc,
       notes: data.notes
     };
 

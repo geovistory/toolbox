@@ -233,17 +233,17 @@ export class TextEditorAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((digitObjects: DatDigital[]) => {
+            .subscribe((digitals: DatDigital[]) => {
               /**
                * Emit the global action that completes the loading bar
                */
               globalStore.next(this.loadingBarActions.completeLoading());
 
               // map versions to IVersion[]
-              const versionList = digitObjects.map(item => {
+              const versionList = digitals.map(item => {
                 return {
                   entityVersion: item.entity_version,
-                  pkEntityVersionConcat: item.pk_entity_version_concat,
+                  pkEntityVersionConcat: item.pk_text_version_concat,
                   pkEntity: item.pk_entity
                 } as IVersion
               })
