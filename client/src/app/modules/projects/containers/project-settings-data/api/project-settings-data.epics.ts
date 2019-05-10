@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ProjectSettingsDataComponent } from '../project-settings-data.component';
 import { ProjectSettingsDataAPIActions, ProjectSettingsDataAPIAction } from './project-settings-data.actions';
-import { DfhProjRelApi } from 'app/core/sdk/services/custom/DfhProjRel';
+import { ProDfhClassProjRelApi } from 'app/core/sdk/services/custom/ProDfhClassProjRel';
 
 @Injectable()
 export class ProjectSettingsDataAPIEpics {
   constructor(
     private classApi: DfhClassApi,
-    private projRelApi: DfhProjRelApi,
+    private projRelApi: ProDfhClassProjRelApi,
     private actions: ProjectSettingsDataAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }

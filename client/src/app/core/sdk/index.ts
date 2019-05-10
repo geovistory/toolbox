@@ -78,7 +78,7 @@ import { DfhClassProfileViewApi } from './services/custom/DfhClassProfileView';
 import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileView';
 import { SysAppContextApi } from './services/custom/SysAppContext';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
-import { DfhProjRelApi } from './services/custom/DfhProjRel';
+import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
 import { DatNamespaceApi } from './services/custom/DatNamespace';
 import { InfTextPropertyApi } from './services/custom/InfTextProperty';
 import { SysSystemTypeApi } from './services/custom/SysSystemType';
@@ -142,7 +142,7 @@ export class SDKBrowserModule {
         DfhPropertyProfileViewApi,
         SysAppContextApi,
         ProClassFieldConfigApi,
-        DfhProjRelApi,
+        ProDfhClassProjRelApi,
         DatNamespaceApi,
         InfTextPropertyApi,
         SysSystemTypeApi,

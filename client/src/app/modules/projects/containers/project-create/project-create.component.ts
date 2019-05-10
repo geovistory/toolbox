@@ -70,7 +70,7 @@ export class ProjectCreateComponent implements OnInit {
 
     this.projectApi.createWithLabelAndDescription(
       this.authService.getCurrentUserId(),
-      this.model.language.pk_language,
+      this.model.language.pk_entity,
       this.model.label,
       (this.model.text_property ? this.model.text_property : null)
     ).subscribe(

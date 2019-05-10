@@ -5,7 +5,7 @@ import { Information2Module } from '../../../information.module';
 import { mockPerson } from '../pe-it-create-form/sandbox.mock';
 import { PeItCreateCtrlComponent } from './pe-it-create-ctrl.component';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
-import { InfPersistentItem, ComConfig } from 'app/core';
+import { InfPersistentItem, SysConfig } from 'app/core';
 import { crm } from 'app/core/active-project';
 
 
@@ -23,7 +23,7 @@ export default sandboxOf(PeItCreateCtrlComponent, {
             },
             basePath: ['sandboxState', 'peItDetail'],
             sandboxState: {
-                peItDetail: createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })
+                peItDetail: createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })
             }
         },
         template: `

@@ -40,13 +40,13 @@ export class ClassFieldListAPIEpics {
            */
           this.classFieldApi.findComplex({
             include: {
-              labels: {
-                $relation: {
-                  name: 'labels',
-                  joinType: 'left join',
-                  orderBy: [{ pk_entity: 'DESC' }],
-                }
-              },
+              // labels: {
+              //   $relation: {
+              //     name: 'labels',
+              //     joinType: 'left join',
+              //     orderBy: [{ pk_entity: 'DESC' }],
+              //   }
+              // },
               class_field_property_rel: {
                 $relation: {
                   name: 'class_field_property_rel',

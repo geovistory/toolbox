@@ -17,12 +17,12 @@
 
         <div  *ngFor="let project of projects" class="card mt-2">
           <div class="card-body">
-            <h4 class="card-title">{{project?.labels[0]?.label}}
+            <h4 class="card-title">{{project?.label}}
               <span class="gv-project-language text-muted pull-right">
                 {{project?.default_language?.notes}}
               </span>
             </h4>
-            <p class="card-text">{{project?.text_properties[0]?.text_property}}</p>
+            <p class="card-text">{{project?.description}}</p>
 
             <button class="btn btn-primary" routerLink="{{project.pk_project}}/edit">Open</button>
           </div>

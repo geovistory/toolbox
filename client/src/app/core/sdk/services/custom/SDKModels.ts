@@ -30,7 +30,7 @@ import { DfhClassProfileView } from '../../models/DfhClassProfileView';
 import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
 import { SysAppContext } from '../../models/SysAppContext';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
-import { DfhProjRel } from '../../models/DfhProjRel';
+import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 import { DatNamespace } from '../../models/DatNamespace';
 import { InfTextProperty } from '../../models/InfTextProperty';
 import { SysSystemType } from '../../models/SysSystemType';
@@ -71,7 +71,7 @@ export class SDKModels {
     DfhPropertyProfileView: DfhPropertyProfileView,
     SysAppContext: SysAppContext,
     ProClassFieldConfig: ProClassFieldConfig,
-    DfhProjRel: DfhProjRel,
+    ProDfhClassProjRel: ProDfhClassProjRel,
     DatNamespace: DatNamespace,
     InfTextProperty: InfTextProperty,
     SysSystemType: SysSystemType,

@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { ComConfig, ProInfoProjRel, InfRole, InfTemporalEntity, U, UiContext } from 'app/core';
+import { SysConfig, ProInfoProjRel, InfRole, InfTemporalEntity, U, UiContext } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { slideInOut } from '../../../shared/animations';
 import { EntityAPIEpics } from '../../entity.epics';
@@ -45,7 +45,7 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   }
 
   onInitTeEntBaseChild(): void {
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+    this.uiContext = this.classConfig.uiContexts[SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.initFormCtrls()
   }

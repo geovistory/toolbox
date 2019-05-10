@@ -1,8 +1,7 @@
 import { ProjectCrm } from 'app/core/active-project';
-import { ComConfig } from 'app/core/config/com-config';
+import { SysConfig } from 'app/core/config/sys-config';
 import { InfAppellation, InfEntityAssociation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from 'app/core/sdk';
 import { U } from 'app/core/util/util';
-import { AppellationLabel } from 'app/modules/information/shared/appellation-label';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { clone, groupBy, indexBy, omit, prop, sort } from 'ramda';
 import * as Config from '../../../../../../common/config/Config';
@@ -29,7 +28,7 @@ export class StateSettings {
     // produces states, made for *-editable.component.ts.
     //
     // By defaut, the state creator acts like it was in the dataunits editable context.
-    pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+    pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
     // If the provided pkUiContext points to a editable context,
     // you can set isViewMode to true to hide all editing functionalities from *-editable.component.ts.
@@ -50,9 +49,9 @@ export class StateSettings {
  */
 export function isCreateContext(pkUiContext: number): boolean {
     return [
-        ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
-        ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
-        ComConfig.PK_UI_CONTEXT_SOURCES_CREATE
+        SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
+        SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
+        SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
     ].indexOf(pkUiContext) > -1;
 }
 
@@ -62,14 +61,14 @@ export function isCreateContext(pkUiContext: number): boolean {
  */
 export function getCreateOfEditableContext(pkUiEditableContext: number): number {
     switch (pkUiEditableContext) {
-        case ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE:
-            return ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+        case SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE:
+            return SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
-        case ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE:
-            return ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+        case SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE:
+            return SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
 
-        case ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE:
-            return ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
+        case SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE:
+            return SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
 
         default:
             break;
@@ -195,7 +194,7 @@ export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociatio
         label: !roles ? '' : roles.filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
             .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
                 .map(r => {
-                    return new AppellationLabel(r.appellation.quill_doc).getString()
+                    return r.appellation.string;
                 })[0]).join(', ')
     });
 }
@@ -540,13 +539,13 @@ export function createTextPropertyDetail(options: TextPropertyDetail, textProper
     const txtPropDetail = new TextPropertyDetail({ textProperty });
 
     switch (options.fkClassField) {
-        case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+        case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
             txtPropDetail.textareaLike = true;
             txtPropDetail.inputLike = false;
             break;
 
-        case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-        case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+        case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+        case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
             txtPropDetail.textareaLike = false;
             txtPropDetail.inputLike = true;
             break;

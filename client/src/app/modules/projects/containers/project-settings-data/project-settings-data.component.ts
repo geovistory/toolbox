@@ -9,7 +9,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '../../../../../../node_modules/@angular/animations';
 import { MatSort, MatTableDataSource, Sort, matExpansionAnimations } from '../../../../../../node_modules/@angular/material';
-import { DfhProjRel } from '../../../../core/sdk/models/DfhProjRel';
+import { ProDfhClassProjRel } from '../../../../core/sdk/models/ProDfhClassProjRel';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
 import { EntityType, ProjectSettingsData } from './api/project-settings-data.models';
@@ -185,7 +185,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
         const mapped = items.map(i => ({
           ...i,
-          enabled: (!i.projRel ? false : i.projRel.is_in_project),
+          enabled: (!i.projRel ? false : i.projRel.enabled_in_entities),
           subclassOf: (i.subclassOf || 'other'),
           dfh_standard_label: i.dfh_standard_label + ' – ' + i.dfh_identifier_in_namespace
         }))
@@ -201,7 +201,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
               // filter for subclassOf
               && (subclassOf === undefined || item.subclassOf === subclassOf)
               // filter for status
-              && (status === undefined || status === (!item.projRel ? false : item.projRel.is_in_project))
+              && (status === undefined || status === (!item.projRel ? false : item.projRel.enabled_in_entities))
               // filter for profiles
               && (profile === undefined || item.profilePks.indexOf(profile) > -1)
             ))
@@ -263,11 +263,11 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
    * Called when user enables class
    */
   enableClass(classItem: ClassConfig) {
-    const projRel = new DfhProjRel({
+    const projRel = new ProDfhClassProjRel({
       pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
       fk_project: this.project.pk_entity,
-      is_in_project: true
+      enabled_in_entities: true
     })
 
     this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
@@ -277,11 +277,11 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
    * Called when user disables class
    */
   disableClass(classItem: ClassConfig) {
-    const projRel = new DfhProjRel({
+    const projRel = new ProDfhClassProjRel({
       pk_entity: classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
       fk_project: this.project.pk_entity,
-      is_in_project: false
+      enabled_in_entities: false
     })
 
     this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);

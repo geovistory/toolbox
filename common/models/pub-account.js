@@ -14,7 +14,7 @@ module.exports = function (PubAccount) {
         "relation": "projects",
         "scope": {
           "include": [
-            "labels",
+            // "labels",
             "text_properties",
             "default_language"
           ],

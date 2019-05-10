@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ComConfig, InfEntityAssociation, InfEntityAssociationApi, ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions, ActiveAccountService, ActiveProjectService } from 'app/core';
+import { SysConfig, InfEntityAssociation, InfEntityAssociationApi, ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions, ActiveAccountService, ActiveProjectService } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -155,7 +155,7 @@ export class SectionDetailAPIEpics {
                 }
 
               }, data, action.meta.crm,
-                { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
+                { pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
               /**
                * Emit the global action that completes the loading bar
                */

@@ -1,5 +1,5 @@
 
-export { ComConfig } from './config/com-config';
+export { SysConfig } from './config/sys-config';
 export { LoadingBarAction, LoadingBarActions } from './loading-bar/api/loading-bar.actions';
 export { TimeSpan } from './time-span/time-span';
 export { ValidationService } from './validation/validation.service';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, DatNamespaceApi, DatNamespace, ComConfig } from 'app/core';
+import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, DatNamespaceApi, DatNamespace, SysConfig } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, combineLatest } from 'rxjs';
@@ -104,7 +104,7 @@ export class TypesAPIEpics {
               showPropertiesHeader: true,
               showAddAPropertyButton: true
             }, type, c.ngRedux.getState().activeProject.crm, {
-                pkUiContext: ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE
+                pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE
               })
 
             /**

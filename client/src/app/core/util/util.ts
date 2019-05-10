@@ -4,14 +4,14 @@ import { indexBy, omit } from 'ramda';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { AppellationLabel } from '../../modules/information/shared/appellation-label';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
-import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
+import { ClassConfig, ProjectCrm, ProjectPreview } from 'app/core/active-project/active-project.models';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { SysClassField, ProClassFieldConfig, DfhClass, DfhProperty, ProInfoProjRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, DfhProjRel } from '../sdk';
+import { SysClassField, ProClassFieldConfig, DfhClass, DfhProperty, ProInfoProjRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProDfhClassProjRel, ProProject, ProTextProperty } from '../sdk';
 import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
 import * as Config from '../../../../../common/config/Config';
 import { Field } from '../state/models/field';
-import { ComConfig } from '../config/com-config';
+import { SysConfig } from '../config/sys-config';
 import { TextPropertyField } from '../state/models/text-property-field';
 
 export interface LabelGeneratorSettings {
@@ -167,7 +167,7 @@ export class U {
                 // to filter for the role that is standard?? or is this not happening on forms?
             ))
 
-        return rolesToAppe.length ? new AppellationLabel(rolesToAppe[0].appellation.quill_doc).getString() : null;
+        return rolesToAppe.length ? rolesToAppe[0].appellation.string : null;
 
     }
 
@@ -232,7 +232,7 @@ export class U {
                 ))
                 .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
                     .map(r => {
-                        return new AppellationLabel(r.appellation.quill_doc).getString()
+                        return r.appellation.string
                     })[0]).join(', ')
 
     }
@@ -255,13 +255,13 @@ export class U {
 
 
             switch (comClassfield.pk_entity) {
-                case ComConfig.PK_CLASS_FIELD_WHEN:
+                case SysConfig.PK_CLASS_FIELD_WHEN:
 
                     return new ExistenceTimeDetail({ fkClassField, label })
 
-                case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-                case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-                case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+                case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+                case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+                case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
 
                     return new TextPropertyField({ fkClassField, label })
 
@@ -435,7 +435,7 @@ export class U {
     /**
      * Gets the project rel of a data_for_history class
      */
-    static getProjRel = (dfhClass: DfhClass): DfhProjRel => {
+    static getProjRel = (dfhClass: DfhClass): ProDfhClassProjRel => {
         if (dfhClass && dfhClass.proj_rels && dfhClass.proj_rels.length && dfhClass.proj_rels[0]) {
             return dfhClass.proj_rels[0];
         } else return undefined;
@@ -466,7 +466,7 @@ export class U {
 
         const extractIsInProject = (c: DfhClass): boolean => {
             return !c.proj_rels ? false :
-                !c.proj_rels[0] ? false : c.proj_rels[0].is_in_project;
+                !c.proj_rels[0] ? false : c.proj_rels[0].enabled_in_entities;
         }
 
         const cConf: ClassConfig = {
@@ -1243,4 +1243,23 @@ export class U {
         })
         return key;
     }
+
+
+    /**
+     * Transform ProProject to ProjectPreview
+     */
+    static proProjectToProjectPreview(project: ProProject): ProjectPreview {
+        return {
+            label: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+            description: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+            default_language: project.default_language,
+            pk_project: project.pk_entity
+        }
+    }
+
+    static firstProTextPropStringOfType(textProperties: ProTextProperty[], fkSystemType): string {
+        return (textProperties.find(t => t.fk_system_type === fkSystemType) || { string: '' }).string
+    }
+
+
 }

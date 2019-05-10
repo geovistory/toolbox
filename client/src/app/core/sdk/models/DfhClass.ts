@@ -7,7 +7,7 @@ import {
   DfhClassProfileView,
   ProClassFieldConfig,
   SysClassField,
-  DfhProjRel
+  ProDfhClassProjRel
 } from '../index';
 
 declare var Object: any;
@@ -29,7 +29,7 @@ export interface DfhClassInterface {
   class_profile_view?: DfhClassProfileView[];
   class_field_configs?: ProClassFieldConfig[];
   class_fields?: SysClassField[];
-  proj_rels?: DfhProjRel[];
+  proj_rels?: ProDfhClassProjRel[];
 }
 
 export class DfhClass implements DfhClassInterface {
@@ -50,7 +50,7 @@ export class DfhClass implements DfhClassInterface {
   class_profile_view?: DfhClassProfileView[];
   class_field_configs?: ProClassFieldConfig[];
   class_fields?: SysClassField[];
-  proj_rels?: DfhProjRel[];
+  proj_rels?: ProDfhClassProjRel[];
   constructor(data?: DfhClassInterface) {
     Object.assign(this, data);
   }
@@ -190,8 +190,8 @@ export class DfhClass implements DfhClassInterface {
         },
         proj_rels: {
           name: 'proj_rels',
-          type: 'DfhProjRel[]',
-          model: 'DfhProjRel',
+          type: 'ProDfhClassProjRel[]',
+          model: 'ProDfhClassProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

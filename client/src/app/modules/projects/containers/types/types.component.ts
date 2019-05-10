@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, HostBinding } from '@angular/core';
-import { ActiveProjectService, ClassConfig, ComConfig, IAppState, InfPersistentItem, U } from 'app/core';
+import { ActiveProjectService, ClassConfig, SysConfig, IAppState, InfPersistentItem, U } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -178,7 +178,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
           pkClass: typeClass.dfh_pk_class,
           pkType: undefined
         },
-        pkUiContext: ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
+        pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
       })
     })
 

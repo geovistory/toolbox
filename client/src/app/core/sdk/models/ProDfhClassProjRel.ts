@@ -1,36 +1,36 @@
 /* tslint:disable */
 
 declare var Object: any;
-export interface DfhProjRelInterface {
+export interface ProDfhClassProjRelInterface {
   "pk_entity"?: number;
   "fk_entity": number;
   "fk_project": number;
-  "is_in_project"?: boolean;
+  "enabled_in_entities"?: boolean;
 }
 
-export class DfhProjRel implements DfhProjRelInterface {
+export class ProDfhClassProjRel implements ProDfhClassProjRelInterface {
   "pk_entity": number;
   "fk_entity": number;
   "fk_project": number;
-  "is_in_project": boolean;
-  constructor(data?: DfhProjRelInterface) {
+  "enabled_in_entities": boolean;
+  constructor(data?: ProDfhClassProjRelInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `DfhProjRel`.
+   * i.e. `ProDfhClassProjRel`.
    */
   public static getModelName() {
-    return "DfhProjRel";
+    return "ProDfhClassProjRel";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of DfhProjRel for dynamic purposes.
+  * This method creates an instance of ProDfhClassProjRel for dynamic purposes.
   **/
-  public static factory(data: DfhProjRelInterface): DfhProjRel{
-    return new DfhProjRel(data);
+  public static factory(data: ProDfhClassProjRelInterface): ProDfhClassProjRel{
+    return new ProDfhClassProjRel(data);
   }
   /**
   * @method getModelDefinition
@@ -41,9 +41,9 @@ export class DfhProjRel implements DfhProjRelInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'DfhProjRel',
-      plural: 'DfhProjRels',
-      path: 'DfhProjRels',
+      name: 'ProDfhClassProjRel',
+      plural: 'ProDfhClassProjRels',
+      path: 'ProDfhClassProjRels',
       idName: 'pk_entity',
       properties: {
         "pk_entity": {

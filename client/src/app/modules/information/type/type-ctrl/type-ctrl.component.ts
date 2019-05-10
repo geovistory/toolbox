@@ -141,9 +141,9 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
   //   this.selectedTypeOption = type;
 
   //   this.onChange(new InfEntityAssociation({
-  //     fk_domain_entity: undefined,
+  //     fk_info_domain: undefined,
   //     fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
-  //     fk_range_entity: type.pk_entity
+  //     fk_info_domain: type.pk_entity
   //   }))
   // }
 

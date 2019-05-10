@@ -14,6 +14,7 @@ import { ProjectDetail, Panel, TypePeIt, VersionEntity, ClassConfig } from './ac
 //     panels: []
 // };
 const INITIAL_STATE: ProjectDetail = {
+    label: '',
     list: '',
     uiIdSerial: 0,
     panelSerial: 0,
@@ -29,7 +30,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         case ActiveProjectActions.ACTIVE_PROJECT_UPDATED:
             state = {
                 ...state,
-                ...action.payload
+                ...action.meta.projectPreview
             };
             break;
 
@@ -537,7 +538,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                         [action.meta.dfh_pk_class]: {
                             ...state.crm.classes[action.meta.dfh_pk_class],
                             projRel: action.meta.projRel,
-                            isInProject: action.meta.projRel.is_in_project,
+                            isInProject: action.meta.projRel.enabled_in_entities,
                             changingProjRel: false
                         }
                     }

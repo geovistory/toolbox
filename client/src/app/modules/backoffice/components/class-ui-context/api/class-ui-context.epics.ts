@@ -16,7 +16,7 @@ export class ClassUiContextAPIEpics {
   constructor(
     private classApi: DfhClassApi,
     private fieldsApi: SysClassFieldApi,
-    private uiPropConfigApi: ProClassFieldConfigApi,
+    private classFieldConfigApi: ProClassFieldConfigApi,
     private actions: ClassUiContextAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
@@ -69,7 +69,7 @@ export class ClassUiContextAPIEpics {
         subStore.dispatch(this.actions.updateUiContextConfigStarted());
 
         combineLatest(
-          action.meta.uiPropConfigs.map(data => this.uiPropConfigApi.patchOrCreate(data))
+          action.meta.uiPropConfigs.map(data => this.classFieldConfigApi.patchOrCreate(data))
         ).subscribe((data: ProClassFieldConfig[]) => {
 
           subStore.dispatch(this.actions.loadClassUiContext());

@@ -56,7 +56,8 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "queryByString"
+        "queryByString",
+        "find"
       ]
     }
   ],

@@ -2,13 +2,13 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DfhClass } from 'app/core';
-import { DfhProjRel } from '../../../../../core/sdk/models/DfhProjRel';
+import { ProDfhClassProjRel } from '../../../../../core/sdk/models/ProDfhClassProjRel';
 import { ProjectSettingsData } from './project-settings-data.models';
 
 type Payload = ProjectSettingsData;
 interface MetaData {
   itemsArray?: DfhClass[],
-  projRel?: DfhProjRel,
+  projRel?: ProDfhClassProjRel,
   tabTitle?:string
 };
 export type ProjectSettingsDataAPIAction = FluxStandardAction<Payload, MetaData>;

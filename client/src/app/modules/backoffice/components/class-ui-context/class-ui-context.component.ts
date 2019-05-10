@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ComConfig, ProClassFieldConfig, IAppState, U } from 'app/core';
+import { SysConfig, ProClassFieldConfig, IAppState, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pathOr } from 'ramda';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
@@ -27,8 +27,8 @@ import { RootEpics } from 'app/core/store/epics';
 })
 export class ClassUiContextComponent extends ClassUiContextAPIActions implements OnInit, OnDestroy {
 
-  public readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-  public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+  public readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+  public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
 
   localStore: ObservableStore<ClassUiContext>

@@ -1,12 +1,12 @@
 {
-  "name": "DfhProjRel",
+  "name": "ProDfhClassProjRel",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "postgresql": {
-      "schema": "data_for_history",
-      "table": "proj_rel"
+      "schema": "projects",
+      "table": "dfh_class_proj_rel"
     }
   },
   "mixins": {
@@ -29,7 +29,7 @@
       "type": "number",
       "required": true
     },
-    "is_in_project": {
+    "enabled_in_entities": {
       "type": "boolean"
     }
   },

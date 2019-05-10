@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, ComConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement, ProjectCrm } from 'app/core';
+import { ClassConfig, SysConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement, ProjectCrm } from 'app/core';
 import { AddOption, FieldList,  ClassInstanceLabel, PeItDetail, PropertyField, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { createPropertyField, propertyFieldKey, StateSettings } from 'app/core/state/services/state-creator';
@@ -15,7 +15,7 @@ import { takeUntil, filter, first } from 'rxjs/operators';
 
 // maps pk_class_field to key in ngRedux store
 export const propSetMap = {
-  [ComConfig.PK_CLASS_FIELD_WHEN]: '_field_48'
+  [SysConfig.PK_CLASS_FIELD_WHEN]: '_field_48'
 }
 
 
@@ -58,7 +58,7 @@ export abstract class EntityBase implements OnInit, OnDestroy, SubstoreComponent
 
   crm$: Observable<ProjectCrm>;
 
-  comConfig = ComConfig;
+  comConfig = SysConfig;
   classConfig: ClassConfig;
 
   /**

@@ -159,7 +159,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "DfhProjRel": {
+  "ProDfhClassProjRel": {
     "dataSource": "postgres1",
     "public": true
   },

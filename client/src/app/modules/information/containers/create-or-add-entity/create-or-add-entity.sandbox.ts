@@ -3,7 +3,7 @@ import { InitStateModule } from 'app/shared/components/init-state/init-state.mod
 import { Information2Module } from '../../information.module';
 import { CreateOrAddEntityComponent } from './create-or-add-entity.component';
 import { CreateOrAddEntity } from './api/create-or-add-entity.models';
-import { ComConfig } from 'app/core';
+import { SysConfig } from 'app/core';
 
 
 
@@ -19,7 +19,7 @@ export default sandboxOf(CreateOrAddEntityComponent, {
             basePath: ['sandboxState', 'createOrAddEntity'],
             sandboxState: {
                 createOrAddEntity: {
-                    pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
+                    pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
                     classAndTypePk: {
                         pkClass: 21
                     }

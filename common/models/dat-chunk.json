@@ -36,7 +36,7 @@
     "data_info_association": {
       "type": "hasMany",
       "model": "InfEntityAssociation",
-      "foreignKey": "fk_domain_entity",
+      "foreignKey": "fk_info_domain",
       "primaryKey": "pk_entity"
     }
   },

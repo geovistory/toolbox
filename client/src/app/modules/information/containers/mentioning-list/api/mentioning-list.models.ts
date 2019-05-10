@@ -13,9 +13,9 @@ export interface MentionedEntity {
 
 export interface Mentioning {
     pk_entity?: number // pk of the entity association
-    fk_domain_entity?: number
+    fk_info_domain?: number
     fk_property?: number
-    fk_range_entity?: number
+    fk_info_range?: number
     fk_expression_entity?: number
     fk_source_entity?: number
     fk_chunk?: number

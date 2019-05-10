@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { Subject, Observable, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ProjectCrm, ComConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem, ActiveProjectService, EntityPreview, EntityPreviewList } from 'app/core';
+import { IAppState, SubstoreComponent, ProjectCrm, SysConfig, InfEntityAssociation, PeItDetail, U, ClassConfig, InfPersistentItem, ActiveProjectService, EntityPreview, EntityPreviewList } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { SectionList } from './api/section-list.models';
 import { SectionListAPIEpics } from './api/section-list.epics';
@@ -54,7 +54,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
   parentFkClass: number;
 
   pkClassesOfAddBtn = [DfhConfig.CLASS_PK_EXPRESSION]
-  pkUiContextCreate = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+  pkUiContextCreate = SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
   pkRangeEntity: number;
   pkDomainEntity: number;
 
@@ -221,7 +221,7 @@ export class SectionListComponent extends SectionListAPIActions implements OnIni
         { isOutgoing: this.isOutgoing() },
         newEntityAssociaction,
         this.ngRedux.getState().activeProject.crm,
-        { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
+        { pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE }
       )
     )
   }

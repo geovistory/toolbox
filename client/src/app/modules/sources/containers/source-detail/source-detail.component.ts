@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, HostBinding, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, IAppState, PeItDetail, ProProject, ProjectCrm, SubstoreComponent, EntityPreview, ClassInstanceLabel } from 'app/core';
+import { ActiveProjectService, SysConfig, IAppState, PeItDetail, ProProject, ProjectCrm, SubstoreComponent, EntityPreview, ClassInstanceLabel } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { List } from 'app/modules/information/containers/list/api/list.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -55,7 +55,7 @@ export class SourceDetailComponent extends SourceDetailAPIActions implements OnI
   // used for breadcumbs when section is opened
   sourcePreview$: Observable<EntityPreview>;
 
-  pkUiContextCreate = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+  pkUiContextCreate = SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
 
   constructor(
     protected rootEpics: RootEpics,

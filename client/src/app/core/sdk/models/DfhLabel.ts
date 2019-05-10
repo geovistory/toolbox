@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  DfhProjRel
+  ProDfhClassProjRel
 } from '../index';
 
 declare var Object: any;
@@ -26,7 +26,7 @@ export interface DfhLabelInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  proj_rels?: DfhProjRel[];
+  proj_rels?: ProDfhClassProjRel[];
 }
 
 export class DfhLabel implements DfhLabelInterface {
@@ -51,7 +51,7 @@ export class DfhLabel implements DfhLabelInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  proj_rels?: DfhProjRel[];
+  proj_rels?: ProDfhClassProjRel[];
   constructor(data?: DfhLabelInterface) {
     Object.assign(this, data);
   }
@@ -173,8 +173,8 @@ export class DfhLabel implements DfhLabelInterface {
       relations: {
         proj_rels: {
           name: 'proj_rels',
-          type: 'DfhProjRel[]',
-          model: 'DfhProjRel',
+          type: 'ProDfhClassProjRel[]',
+          model: 'ProDfhClassProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

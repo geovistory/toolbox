@@ -1,8 +1,7 @@
 
-import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { InfAppellation } from 'app/core';
 import { AppellationService } from '../../shared/appellation.service';
-import { AppellationLabel } from '../../shared/appellation-label';
 
 
 @Component({
@@ -28,6 +27,6 @@ export class AppellationViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.label = new AppellationLabel(this.appellation.quill_doc).getString();
+    this.label = this.appellation.string;
   }
 }

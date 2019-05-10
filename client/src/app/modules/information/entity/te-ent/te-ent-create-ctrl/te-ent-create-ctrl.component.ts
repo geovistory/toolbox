@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { ComConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, PropertyField, ExistenceTimeDetail, FieldLabel, FieldList } from 'app/core';
+import { SysConfig, InfRole, InfTemporalEntity, U, UiContext, AddOption, PropertyField, ExistenceTimeDetail, FieldLabel, FieldList } from 'app/core';
 import { pick } from 'ramda';
 import { TeEntCtrlBase } from '../te-ent-ctrl.base';
 import { TeEntActions } from '../te-ent.actions';
@@ -145,7 +145,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
         // if this is a prop set
         // TODO Make this generic for all class fields
-        if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
+        if (o.uiElement.fk_class_field === SysConfig.PK_CLASS_FIELD_WHEN) {
 
           const existenceTimeDetail = createExistenceTimeDetail(
             new ExistenceTimeDetail({ toggle: 'expanded' }),

@@ -118,8 +118,8 @@ module.exports = function (InfPersistentItem) {
           // return the promise that the PeIt will be
           // returned together with all nested items
           const promise = Promise.map(requestedPeIt.domain_entity_associations.filter(item => (item)), (item) => {
-            // use the pk_entity from the created peIt to set the fk_domain_entity of the item
-            item.fk_domain_entity = resultingPeIt.pk_entity;
+            // use the pk_entity from the created peIt to set the fk_info_domain of the item
+            item.fk_info_domain = resultingPeIt.pk_entity;
             // find or create the item
             return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item, ctxWithoutBody);
           }).then((items) => {
@@ -1202,10 +1202,10 @@ module.exports = function (InfPersistentItem) {
 
     -- join the info, of which class these the type_entities are types 
     JOIN data_for_history.property has_type ON has_type.dfh_has_range = type_entity.fk_class
-    JOIN commons.class_has_type_property has_type_prop ON has_type.dfh_pk_property = has_type_prop.fk_property
+    JOIN system.class_has_type_property has_type_prop ON has_type.dfh_pk_property = has_type_prop.fk_property
     
     -- join the project_rel of the type
-    JOIN information.entity_version_project_rel type_proj_rel ON type_entity.pk_entity = type_proj_rel.fk_entity
+    JOIN projects.info_proj_rel type_proj_rel ON type_entity.pk_entity = type_proj_rel.fk_entity
     
     -- join the namespace of the type
     -- JOIN information.type_namespace_rel type_nmsp_rel ON type_entity.pk_entity = type_nmsp_rel.fk_persistent_item
@@ -1335,9 +1335,9 @@ module.exports = function (InfPersistentItem) {
       -- that are of an auto-add property
       pe_it_entity_associations AS (
         -- where pe_it is domain
-        select ea.pk_entity, ea.fk_domain_entity, ea.fk_property, ea.fk_range_entity, addp.max_quantifier
+        select ea.pk_entity, ea.fk_info_domain, ea.fk_property, ea.fk_info_domain, addp.max_quantifier
         from information.v_entity_association as ea
-        inner join pe_it on ea.fk_domain_entity = pe_it.pk_entity
+        inner join pe_it on ea.fk_info_domain = pe_it.pk_entity
         inner join auto_add_properties as addp on (addp.dfh_pk_property = ea.fk_property AND addp.fk_class = pe_it.fk_class)		
         -- take only the max allowed rows
         WHERE ea.rank_for_domain <= ea.range_max_quantifier OR ea.range_max_quantifier = -1 OR ea.range_max_quantifier IS NULL
@@ -1345,9 +1345,9 @@ module.exports = function (InfPersistentItem) {
         UNION
         
         -- where pe_it is range
-        select ea.pk_entity, ea.fk_domain_entity, ea.fk_property, ea.fk_range_entity, addp.max_quantifier
+        select ea.pk_entity, ea.fk_info_domain, ea.fk_property, ea.fk_info_domain, addp.max_quantifier
         from information.v_entity_association as ea
-        inner join pe_it on ea.fk_range_entity = pe_it.pk_entity
+        inner join pe_it on ea.fk_info_domain = pe_it.pk_entity
         inner join auto_add_properties as addp on (addp.dfh_pk_property = ea.fk_property AND addp.fk_class = pe_it.fk_class)		
         -- take only the max allowed rows
         WHERE ea.rank_for_range <= ea.domain_max_quantifier OR ea.domain_max_quantifier = -1  OR ea.domain_max_quantifier IS NULL

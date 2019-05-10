@@ -1,7 +1,7 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, forwardRef, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfPersistentItem, InfTemporalEntity, U, UiContext, ComConfig, IAppState } from 'app/core';
+import { InfPersistentItem, InfTemporalEntity, U, UiContext, SysConfig, IAppState } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';

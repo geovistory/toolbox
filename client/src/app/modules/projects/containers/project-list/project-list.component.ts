@@ -1,8 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
-import { LoopBackAuth, LoopBackConfig, ProProject, PubAccount, PubAccountApi } from 'app/core';
+import { LoopBackAuth, LoopBackConfig, ProjectPreview, ProProject, ProTextProperty, PubAccount, PubAccountApi, U } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { SysConfig } from '../../../../core/config/sys-config';
 import { ProjectsActions } from '../../api/projects.actions';
 import { IProjectList } from '../../projects.model';
 
@@ -16,7 +17,7 @@ import { IProjectList } from '../../projects.model';
 export class ProjectListComponent implements OnInit {
 
 
-  projects: ProProject[] = [];
+  projects: ProjectPreview[] = [];
   loadingComplete = false;
 
 
@@ -41,13 +42,14 @@ export class ProjectListComponent implements OnInit {
     this.accountApi.listProjects(this.authService.getCurrentUserId()).subscribe(
       (accounts: Array<PubAccount>) => {
 
-        this.projects = accounts[0].projects;
+        this.projects = accounts[0].projects.map((p: ProProject) => U.proProjectToProjectPreview(p));
 
-        this.actions.loadProjectsSucceeded(this.projects)
+        this.ngRedux.dispatch(this.actions.loadProjectsSucceeded(this.projects))
 
         this.completeLoading();
       });
   }
+
 
 
 

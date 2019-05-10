@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt } from './active-project.models';
-import { DatChunk, InfTemporalEntity, InfPersistentItem, ProQuery, ProVisual, DfhProjRel, ProInfoProjRel } from '../sdk';
+import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt, ProjectPreview } from './active-project.models';
+import { DatChunk, InfTemporalEntity, InfPersistentItem, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
 import { EntityPreview, PeItDetail, HasTypePropertyReadable } from '../state/models';
 
 export interface ComQueryV extends ProQuery {
@@ -13,6 +13,9 @@ export interface ComVisualV extends ProVisual {
 }
 
 interface MetaData {
+
+    projectPreview?: ProjectPreview;
+
     pk_project?: number;
     pk_entity?: number;
     pk_entities?: number[];
@@ -33,7 +36,7 @@ interface MetaData {
     comVisual?: ProVisual
 
     // CRM and Config
-    projRel?: DfhProjRel;
+    projRel?: ProDfhClassProjRel;
     dfh_pk_class?: number;
     hasTypeProperties?: HasTypePropertyReadable[]
 
@@ -78,6 +81,14 @@ export class ActiveProjectActions {
         }
     }
 
+    activeProjectUpdated(projectPreview: ProjectPreview): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
+            payload: null,
+            meta: { projectPreview },
+        }
+    }
+
     activeProjectLoadCrm(pk_project: number): ActiveProjectAction {
         return {
             type: ActiveProjectActions.PROJECT_LOAD_CRM,
@@ -85,14 +96,6 @@ export class ActiveProjectActions {
             meta: {
                 pk_project
             },
-        }
-    }
-
-    activeProjectUpdated(payload: Payload): ActiveProjectAction {
-        return {
-            type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
-            payload,
-            meta: null,
         }
     }
 
@@ -609,13 +612,13 @@ export class ActiveProjectActions {
     static readonly UPSERT_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_SUCCEEDED';
     static readonly UPSERT_CLASS_PROJ_REL_FAILED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_FAILED';
 
-    upsertClassProjRel = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+    upsertClassProjRel = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
         type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL,
         meta: { projRel, dfh_pk_class },
         payload: null,
     });
 
-    upsertClassProjRelSucceeded = (projRel: DfhProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+    upsertClassProjRelSucceeded = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
         type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED,
         meta: { projRel, dfh_pk_class },
         payload: null
@@ -650,7 +653,7 @@ export class ActiveProjectActions {
 
     upsertEntityProjRelFailed = (error): ActiveProjectAction => ({
         type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_FAILED,
-        meta:  null,
+        meta: null,
         payload: null,
         error,
     })

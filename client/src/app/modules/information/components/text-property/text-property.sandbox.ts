@@ -3,7 +3,7 @@ import { InfTextProperty } from 'app/core/sdk';
 import { Information2Module } from '../../information.module';
 import { TextPropertyComponent } from './text-property.component';
 import { QuillDoc } from '../../../quill';
-import { InfLanguage, InfLanguageInterface, ComConfig } from '../../../../core';
+import { InfLanguage, InfLanguageInterface, SysConfig } from '../../../../core';
 
 
 
@@ -46,7 +46,7 @@ export default sandboxOf(TextPropertyComponent, {
             model: {
                 textProperty: {
                     fk_language: 19703,
-                    fk_class_field: ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION,
+                    fk_class_field: SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION,
                     fk_concerned_entity: undefined,
                     quill_doc: {
                         latestId: 3,

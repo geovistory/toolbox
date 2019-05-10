@@ -38,7 +38,7 @@
     "domain_entity_associations": {
       "type": "hasMany",
       "model": "InfEntityAssociation",
-      "foreignKey": "fk_domain_entity",
+      "foreignKey": "fk_info_domain",
       "primaryKey": "pk_entity"
     },
     "text_properties": {

@@ -5,7 +5,7 @@
   "options": {
     "validateUpsert": true,
     "postgresql": {
-      "schema": "commons",
+      "schema": "projects",
       "table": "text_property"
     }
   },

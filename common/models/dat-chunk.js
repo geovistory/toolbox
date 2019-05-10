@@ -38,7 +38,7 @@ module.exports = function(DatChunk) {
         // returned together with all nested items
         return Promise.map(requestedChunk.entity_associations.filter(ea => (ea)), (ea) => {
             // use the pk_entity from the created peIt to set the fk_entity of the ea
-            ea.fk_domain_entity = resultingChunk.pk_entity;
+            ea.fk_info_domain = resultingChunk.pk_entity;
             // find or create the teEnt and the ea pointing to the teEnt
             return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, ea, ctxWithoutBody);
           })

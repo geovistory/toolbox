@@ -3,7 +3,7 @@ import { roleWithPlace, place, roleWithLanguage, language, roleWithAppellation, 
 import { crm } from 'app/core/active-project/_mock-data';
 import { PropertyField, ExistenceTimeDetail, FieldList } from 'app/core/state/models';
 import { InfPersistentItem, InfEntityAssociation } from 'app/core/sdk';
-import { ComConfig } from 'app/core/config/com-config';
+import { SysConfig } from 'app/core/config/com-config';
 
 
 describe('StateCreator', () => {
@@ -17,7 +17,7 @@ describe('StateCreator', () => {
      * createPeIt specs
      ***************************************************/
     it('#createPeIt should create a PeItDetail for creating a new person', () => {
-        expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }))
+        expect(((createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE }))
             ._fields._1192_ingoing as PropertyField)._role_list['_undefined']._teEnt._fields)
             .toBeTruthy()
     });
@@ -61,7 +61,7 @@ describe('StateCreator', () => {
      ***************************************************/
 
     it('#createPropertyField should return a PropertyField with _role_list of that contains a RoleDetail with the right key', () => {
-        expect(createPropertyField(new PropertyField({ isOutgoing: true, property }), [role], crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })._role_list['_1'].isOutgoing).toBe(true)
+        expect(createPropertyField(new PropertyField({ isOutgoing: true, property }), [role], crm, { pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })._role_list['_1'].isOutgoing).toBe(true)
     });
 
     /***************************************************
@@ -101,7 +101,7 @@ describe('StateCreator', () => {
                 // }
             } as InfEntityAssociation,
             crm,
-            { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
+            { pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE }
         ))._peIt._fields._100005_ingoing as PropertyField)._role_list['_undefined']._teEnt._fields).toBeTruthy()
     });
 

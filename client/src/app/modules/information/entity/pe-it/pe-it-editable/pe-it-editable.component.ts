@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, IAppState, U, UiContext } from 'app/core';
+import { SysConfig, IAppState, U, UiContext } from 'app/core';
 import { AddOption, CollapsedExpanded, ExistenceTimeDetail, PeItDetail, PropertyField, PropertyFieldForm, SubstoreComponent, ClassInstanceLabel } from 'app/core/state/models';
 import { createExistenceTimeDetail, createClassField } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';

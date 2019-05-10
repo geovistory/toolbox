@@ -108,7 +108,6 @@ SELECT commons.change_fk_reference_of_versioned_table(
     'pk_entity'
 );
 
-
 -------------------------------------------------------------------------
 -- 22. class_field_config: Change FK's from referencing pk_project to pk_entity
 -------------------------------------------------------------------------

@@ -6,7 +6,7 @@ INSERT INTO system.system_type (notes)
 VALUES ('Label of an entity.')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO projects.text_property (string, fk_system_type, notes)
+INSERT INTO projects.text_property (string, fk_system_type, notes, fk_entity)
 SELECT 
     COALESCE(label, ''),
     (
@@ -14,7 +14,8 @@ SELECT
         from system.system_type 
         where notes = 'Label of an entity.'
     ),
-    'added from _deprecated_label table'
+    'added from _deprecated_label table',
+    fk_entity
 FROM projects._deprecated_label;
 
 -------------------------------------------------------------------------

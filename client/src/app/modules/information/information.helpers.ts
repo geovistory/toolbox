@@ -1,4 +1,4 @@
-import { ComConfig, FieldList, InfRole, InfTimePrimitive, RoleDetailList, U, UiContext } from 'app/core';
+import { SysConfig, FieldList, InfRole, InfTimePrimitive, RoleDetailList, U, UiContext } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 import { roleDetailKey, sortRoleDetailsByOrdNum } from 'app/core/state/services/state-creator';
 import { indexBy } from 'ramda';
@@ -6,7 +6,7 @@ import { indexBy } from 'ramda';
 
 export function propSetKeyFromFk(fkPropSet: number) {
     switch (fkPropSet) {
-        case ComConfig.PK_CLASS_FIELD_WHEN:
+        case SysConfig.PK_CLASS_FIELD_WHEN:
             return '_field_48';
 
         default:

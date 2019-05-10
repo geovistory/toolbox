@@ -29,7 +29,7 @@ export * from './DfhClassProfileView';
 export * from './DfhPropertyProfileView';
 export * from './SysAppContext';
 export * from './ProClassFieldConfig';
-export * from './DfhProjRel';
+export * from './ProDfhClassProjRel';
 export * from './DatNamespace';
 export * from './InfTextProperty';
 export * from './SysSystemType';

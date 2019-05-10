@@ -49,7 +49,7 @@ export class SectionListAPIEpics {
               globalStore.next(this.loadingBarActions.completeLoading());
 
               // const eaList = createEntityAssociationList(new PropertyField(), data, action.meta.crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
-              const relevantProperty = c.isManifestationProductType() ? 'fk_domain_entity' : 'fk_range_entity';
+              const relevantProperty = c.isManifestationProductType() ? 'fk_info_domain' : 'fk_info_domain';
               const pkSections = data.map(ea => (ea[relevantProperty]))
 
               /**

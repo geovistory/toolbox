@@ -1,4 +1,4 @@
-import { DfhProjRel } from 'app/core/sdk/models/DfhProjRel';
+import { ProDfhClassProjRel } from 'app/core/sdk/models/ProDfhClassProjRel';
 import { DfhClassProfileView, ClassConfig } from '../../../../../core';
 
 export type EntityType = 'teEnt' | 'peIt' | 'other';
@@ -9,7 +9,7 @@ export type EntityType = 'teEnt' | 'peIt' | 'other';
 //     title: string;
 //     profileLabels: string;
 //     profilePks: number[];
-//     projRel: DfhProjRel;
+//     projRel: ProDfhClassProjRel;
 //     entityType: EntityType;
 //     scopeNote: string;
 //     changingProjRel: boolean;

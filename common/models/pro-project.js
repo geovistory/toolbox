@@ -22,41 +22,53 @@ module.exports = function (ProProject) {
   * @param  {type} cb        callback
   * @return {void}
   */
-  ProProject.createWithLabelAndDescription = function (accountId, pkLanguage, label, textProperty, cb) {
+  ProProject.createWithLabelAndDescription = function (accountId, pkLanguage, label, description, cb) {
 
-    var params = [
-      accountId,
-      pkLanguage,
-      label,
-      Config.PK_PROJECT_OF_TEMPLATE_PROJECT
-    ];
+    var params = [];
+
+    const addParam = (val) => {
+      params.push(val);
+      return '$' + params.length;
+    }
+
+
 
     let insertTextProperty = '';
-    if (textProperty) {
-      params.push(textProperty);
+    if (description) {
+
       insertTextProperty = `
       , insert_text_property AS (
-        INSERT INTO commons.text_property (text_property, text_property_xml, fk_entity, fk_system_type, fk_language, notes)
-        SELECT  $`+ params.length + `, null, pk_entity, 1, 'fra', 'Sample note' FROM insert_project
+        INSERT INTO projects.text_property (fk_entity, string, fk_system_type, fk_language)
+        SELECT  
+          pk_entity, 
+          ${addParam(description)},
+          ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION)}, 
+          ${addParam(pkLanguage)}
+        FROM insert_project
       )`;
     }
 
     let sql_stmt = `
     WITH insert_project AS (
-      INSERT INTO commons.project (fk_language)
+      INSERT INTO projects.project (fk_language)
       VALUES
-      ($2)
+      (${addParam(pkLanguage)})
       ON CONFLICT DO NOTHING
       RETURNING pk_entity
     ),
     insert_label AS (
-      INSERT INTO commons.label (label, fk_entity, fk_system_type, fk_language)
-      SELECT $3, pk_entity, 1, $2 FROM insert_project
+      INSERT INTO projects.text_property (fk_entity, string, fk_system_type, fk_language)
+      SELECT 
+        pk_entity, 
+        ${addParam(label)},
+        ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION)}, 
+        ${addParam(pkLanguage)}
+      FROM insert_project
       ON CONFLICT DO NOTHING
     )
     ${insertTextProperty},
     add_information_from_template_project AS (
-      INSERT INTO information.entity_version_project_rel (fk_project, fk_entity, fk_entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project, calendar, ord_num, entity_version)
+      INSERT INTO projects.info_proj_rel (fk_project, fk_entity, fk_entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project, calendar, ord_num, entity_version)
       SELECT 
         (SELECT pk_entity FROM insert_project) as fk_project,
         fk_entity,
@@ -67,22 +79,22 @@ module.exports = function (ProProject) {
         calendar,
         ord_num, 
         entity_version
-      FROM information.entity_version_project_rel
-      WHERE fk_project = $4        
+      FROM projects.info_proj_rel
+      WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}        
       ON CONFLICT DO NOTHING
     ),
     add_data_for_history_from_template_project AS (
-      INSERT INTO data_for_history.proj_rel (fk_project, fk_entity, is_in_project)
+      INSERT INTO projects.dfh_class_proj_rel (fk_project, fk_entity, enabled_in_entities)
       SELECT 
         (SELECT pk_entity FROM insert_project) as fk_project,
         fk_entity,
-        is_in_project
-      FROM data_for_history.proj_rel
-      WHERE fk_project = $4
+        enabled_in_entities
+      FROM projects.dfh_class_proj_rel
+      WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}
       ON CONFLICT DO NOTHING
     )
     INSERT INTO public.account_project_rel (fk_project, account_id, role)
-    SELECT pk_entity, $1, 'owner' FROM insert_project
+    SELECT pk_entity, ${addParam(accountId)}, 'owner' FROM insert_project
     `;
 
 
@@ -121,27 +133,21 @@ module.exports = function (ProProject) {
 
   ProProject.getBasics = function (pkProject, cb) {
     ProProject.findComplex({
-      'where': ['pk_project', '=', pkProject],
+      'where': ['pk_entity', '=', pkProject],
       'include': {
-        'labels': {
+        'text_properties': {
           '$relation': {
-            'name': 'labels',
+            'name': 'text_properties',
             'joinType': 'inner join',
-            'orderBy': [{ 'pk_entity': 'asc' }]
+            'orderBy': [{ 'pk_entity': 'asc' }],
+            'where': ['fk_system_type', '=', Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL],
           }
         },
         'default_language': {
           '$relation': {
             'name': 'default_language',
             'joinType': 'inner join',
-            'orderBy': [{ 'pk_language': 'asc' }]
-          },
-          'inf_language': {
-            '$relation': {
-              'name': 'inf_language',
-              'joinType': 'inner join',
-              'orderBy': [{ 'pk_language': 'asc' }]
-            }
+            'orderBy': [{ 'pk_entity': 'asc' }]
           }
         }
       }

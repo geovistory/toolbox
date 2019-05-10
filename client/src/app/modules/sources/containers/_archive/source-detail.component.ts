@@ -263,7 +263,7 @@
 //             },
 //             mentionedEntities: indexBy(mentionedEntityKey, chunk.entity_associations.map(ea => {
 //               return {
-//                 pkEntity: ea.fk_range_entity,
+//                 pkEntity: ea.fk_info_domain,
 //                 entityAssociation: ea,
 //                 label: '' // TODO lazy load pe it or eager load ?
 //               } as MentionedEntity

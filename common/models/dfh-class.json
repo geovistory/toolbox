@@ -31,6 +31,12 @@
   },
   "validations": [],
   "relations": {
+    "proj_rels": {
+      "type": "hasMany",
+      "model": "ProDfhClassProjRel",
+      "primaryKey": "pk_entity",
+      "foreignKey": "fk_entity"
+    },
     "class_profile_view": {
       "type": "hasMany",
       "model": "DfhClassProfileView",
@@ -179,7 +185,7 @@
           }
         },
         {
-          "arg": "fk_app_context",
+          "arg": "pk_app_context",
           "type": "number",
           "required": true,
           "description": "Provide the pk_entity of the app_context to query",

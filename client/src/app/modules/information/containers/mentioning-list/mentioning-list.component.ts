@@ -216,7 +216,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
         if (m.fk_expression_entity) this.projectService.streamEntityPreview(m.fk_expression_entity);
         if (m.fk_source_entity) this.projectService.streamEntityPreview(m.fk_source_entity);
         if (m.fk_chunk) this.projectService.loadChunk(m.fk_chunk);
-        this.projectService.streamEntityPreview(m.fk_domain_entity);
+        this.projectService.streamEntityPreview(m.fk_info_domain);
       });
 
       const createString = (p: EntityPreview): string => {
@@ -229,7 +229,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
         return combineLatest(
           this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_expression_entity]),
           this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_source_entity]),
-          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_domain_entity]),
+          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_info_domain]),
           this.ngRedux.select<DatChunk>(['activeProject', 'chunks', m.fk_chunk]),
           this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInText']),
           this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInTable'])

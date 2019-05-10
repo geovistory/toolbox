@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { ComConfig, InfEntityAssociation } from 'app/core';
+import { SysConfig, InfEntityAssociation } from 'app/core';
 import { crm } from 'app/core/active-project';
 import { createEntityAssociationDetail } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
@@ -26,7 +26,7 @@ export default sandboxOf(EntityAssociationCreateCtrlComponent, {
                     { isOutgoing: false },
                     { fk_property: 1015, fk_info_range: 99 } as InfEntityAssociation,
                     crm,
-                    { pkUiContext: ComConfig.PK_UI_CONTEXT_SOURCES_CREATE }
+                    { pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE }
                 )
             }
         },

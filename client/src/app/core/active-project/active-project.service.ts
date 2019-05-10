@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ComConfig, IAppState, DatChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
+import { SysConfig, IAppState, DatChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
 import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
 import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, DfhProjRel, ProInfoProjRel } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ProProject } from '../sdk';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
@@ -171,7 +171,7 @@ export class ActiveProjectService {
           pk_project: pkProject,
           pks: [pkEntity]
         })
-        const pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+        const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
         this.ngRedux.dispatch(this.actions.loadEntityPreview(pkProject, pkEntity, pkUiContext))
       })
@@ -275,7 +275,7 @@ export class ActiveProjectService {
    * @param pkEntity
    * @param forceReload
    */
-  loadEntityDetailForModal(pkEntity: number, forceReload = true, pkUiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
+  loadEntityDetailForModal(pkEntity: number, forceReload = true, pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
     const state = this.ngRedux.getState();
     if (!(((state || {}).activeProject || {}).peItModals || {})[pkEntity] || forceReload) {
       this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_entity, pkEntity, pkUiContext))
@@ -420,7 +420,7 @@ export class ActiveProjectService {
   /************************************************************************************
   * Change Project Relations
   ************************************************************************************/
-  changeClassProjRel(projRel: DfhProjRel, dfh_pk_class: number) {
+  changeClassProjRel(projRel: ProDfhClassProjRel, dfh_pk_class: number) {
     this.ngRedux.dispatch(this.actions.upsertClassProjRel(projRel, dfh_pk_class))
   }
 

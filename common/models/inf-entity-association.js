@@ -10,8 +10,8 @@ module.exports = function (InfEntityAssociation) {
     const dataObject = {
       // pk_entity: ea.pk_entity,
       fk_property: ea.fk_property,
-      fk_domain_entity: ea.fk_domain_entity,
-      fk_range_entity: ea.fk_range_entity,
+      fk_info_domain: ea.fk_info_domain,
+      fk_info_range: ea.fk_info_range,
       notes: ea.notes
     };
 
@@ -34,7 +34,7 @@ module.exports = function (InfEntityAssociation) {
           const resultingPeIt = resultingPeIts[0];
 
           // … prepare the Ea to create
-          dataObject.fk_domain_entity = resultingPeIt.pk_entity;
+          dataObject.fk_info_domain = resultingPeIt.pk_entity;
 
           return InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
             .then((resultingEas) => {
@@ -68,7 +68,7 @@ module.exports = function (InfEntityAssociation) {
           const resultingPeIt = resultingPeIts[0];
 
           // … prepare the Ea to create
-          dataObject.fk_range_entity = resultingPeIt.pk_entity;
+          dataObject.fk_info_range = resultingPeIt.pk_entity;
 
           return InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
             .then((resultingEas) => {
@@ -102,7 +102,7 @@ module.exports = function (InfEntityAssociation) {
           const resultingObject = resultingObjects[0];
 
           // … prepare the Ea to create
-          dataObject.fk_range_entity = resultingObject.pk_entity;
+          dataObject.fk_info_range = resultingObject.pk_entity;
 
           return InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
             .then((resultingEas) => {
@@ -143,15 +143,15 @@ module.exports = function (InfEntityAssociation) {
   * @param  {number} pkProject primary key of project
   * @param  {number} pkEntity  pk_entity of the entityAssociation
   */
-  InfEntityAssociation.nestedObject = function (ofProject, pkProject, pkEntity, pkRangeEntity, pkDomainEntity, pkProperty, cb) {
+  InfEntityAssociation.nestedObject = function (ofProject, pkProject, pkEntity, pkInfoRange, pkInfoDomain, pkProperty, cb) {
 
-    if (!pkEntity && !pkRangeEntity && !pkDomainEntity) {
-      return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
+    if (!pkEntity && !pkInfoRange && !pkInfoDomain) {
+      return cb('please provide at least a pkEntity, pkInfoRange or pkInfoDomain');
     }
 
     const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
 
-    const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
+    const w = { pk_entity: pkEntity, fk_info_range: pkInfoRange, fk_info_domain: pkInfoDomain, fk_property: pkProperty }
     let where = [];
     Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
       let part = [key, '=', w[key]];
@@ -174,9 +174,9 @@ module.exports = function (InfEntityAssociation) {
             }]
           },
         },
-        "digital_object": {
+        "domain_digital": {
           "$relation": {
-            "name": "digital_object",
+            "name": "domain_digital",
             "joinType": "left join",
             "orderBy": [{
               "pk_entity": "asc"
@@ -207,15 +207,15 @@ module.exports = function (InfEntityAssociation) {
   * @param  {number} pkProject primary key of project
   * @param  {number} pkEntity  pk_entity of the entityAssociation
   */
-  InfEntityAssociation.queryByParams = function (ofProject, pkProject, pkEntity, pkRangeEntity, pkDomainEntity, pkProperty, cb) {
+  InfEntityAssociation.queryByParams = function (ofProject, pkProject, pkEntity, pkInfoRange, pkInfoDomain, pkProperty, cb) {
 
-    if (!pkEntity && !pkRangeEntity && !pkDomainEntity) {
-      return cb('please provide at least a pkEntity, pkRangeEntity or pkDomainEntity');
+    if (!pkEntity && !pkInfoRange && !pkInfoDomain) {
+      return cb('please provide at least a pkEntity, pkInfoRange or pkInfoDomain');
     }
 
 
 
-    const w = { pk_entity: pkEntity, fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_property: pkProperty }
+    const w = { pk_entity: pkEntity, fk_info_range: pkInfoRange, fk_info_domain: pkInfoDomain, fk_property: pkProperty }
     let where = [];
     Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
       let part = [key, '=', w[key]];
@@ -258,7 +258,7 @@ module.exports = function (InfEntityAssociation) {
     entity_associations_of_project AS (
       SELECT ea.* 
       FROM  information.entity_association as ea
-      INNER JOIN information.entity_version_project_rel as epr on ea.pk_entity = epr.fk_entity
+      INNER JOIN projects.info_proj_rel as epr on ea.pk_entity = epr.fk_entity
       WHERE epr.fk_project = $2 AND is_in_project = $1
     ),
     mentioned_in_associations AS (
@@ -272,37 +272,37 @@ module.exports = function (InfEntityAssociation) {
         chunk.pk_entity as fk_chunk,
         chunk.js_quill_data,
         mentioned_in.pk_entity, 
-        mentioned_in.fk_domain_entity, 
+        mentioned_in.fk_info_domain, 
         mentioned_in.fk_property, 
-        mentioned_in.fk_range_entity
+        mentioned_in.fk_info_range
       FROM mentioned_in_associations as mentioned_in
-      inner join entity_associations_of_project as repro_of on mentioned_in.fk_range_entity = repro_of.fk_domain_entity
-      inner join information.chunk as chunk on repro_of.fk_range_entity = chunk.fk_digital_object
+      inner join entity_associations_of_project as repro_of on mentioned_in.fk_info_range = repro_of.fk_info_domain
+      inner join information.chunk as chunk on repro_of.fk_info_range = chunk.fk_digital_object
       AND repro_of.fk_property = 1216 
-      AND repro_of.fk_range_entity = $3 -- F2 Expression
+      AND repro_of.fk_info_range = $3 -- F2 Expression
     ),
     mentionings_of_expression AS (
-      SELECT pk_entity, fk_domain_entity, fk_property, fk_range_entity 
+      SELECT pk_entity, fk_info_domain, fk_property, fk_info_range 
       FROM mentioned_in_associations
-      WHERE fk_range_entity = $3 -- F2 Expression
+      WHERE fk_info_range = $3 -- F2 Expression
     ),
     source_of_expression AS (
-      SELECT fk_range_entity as fk_source_entity  -- F3 Manifestation Product Type
+      SELECT fk_info_range as fk_source_entity  -- F3 Manifestation Product Type
       FROM entity_associations_of_project
       WHERE fk_property = 979  -- F2 Carriers provided by
-      AND fk_domain_entity = $3 -- F2 Expression
+      AND fk_info_domain = $3 -- F2 Expression
       UNION
-      SELECT fk_domain_entity as pk_source_entity  -- F4 Manifestation Singleton
+      SELECT fk_info_domain as pk_source_entity  -- F4 Manifestation Singleton
       FROM entity_associations_of_project
       WHERE fk_property = 1016  -- R42 is representative manifestation singleton for
-      AND fk_range_entity = $3 -- F2 Expression
+      AND fk_info_range = $3 -- F2 Expression
     )
     SELECT
       pk_entity,
-      fk_domain_entity,
+      fk_info_domain,
       fk_property,
-      fk_range_entity,
-      fk_range_entity as fk_expression_entity,
+      fk_info_range,
+      fk_info_range as fk_expression_entity,
       (SELECT fk_source_entity from source_of_expression),
       null as fk_chunk,
       null as js_quill_data
@@ -310,10 +310,10 @@ module.exports = function (InfEntityAssociation) {
     UNION
     SELECT 
       pk_entity,
-      fk_domain_entity,
+      fk_info_domain,
       fk_property,
-      fk_range_entity,
-      fk_range_entity as fk_expression_entity,
+      fk_info_range,
+      fk_info_range as fk_expression_entity,
       (SELECT fk_source_entity from source_of_expression),
       fk_chunk,
       js_quill_data
@@ -339,16 +339,16 @@ module.exports = function (InfEntityAssociation) {
   * - if the range is a geovC2 Chunk or geovC3 Spot.
   * 
   * @param  {number} pkProject primary key of project
-  * @param  {number} pkRangeEntity  the source/expression/chunk/spot that mentiones the entity
+  * @param  {number} pkInfoRange  the source/expression/chunk/spot that mentiones the entity
   */
-  InfEntityAssociation.mentionings = function (ofProject, pkProject, pkRangeEntity, pkDomainEntity, pkSource, pkExpression, pkChunk, cb) {
+  InfEntityAssociation.mentionings = function (ofProject, pkProject, pkInfoRange, pkInfoDomain, pkSource, pkExpression, pkChunk, cb) {
 
     const params = [
       ofProject,
       pkProject
     ]
 
-    const w = { fk_range_entity: pkRangeEntity, fk_domain_entity: pkDomainEntity, fk_source_entity: pkSource, fk_expression_entity: pkExpression, fk_chunk: pkChunk }
+    const w = { fk_info_range: pkInfoRange, fk_info_domain: pkInfoDomain, fk_source_entity: pkSource, fk_expression_entity: pkExpression, fk_chunk: pkChunk }
     let where = '';
     Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
       params.push(w[key])
@@ -361,7 +361,7 @@ module.exports = function (InfEntityAssociation) {
     entity_associations_of_project AS (
       SELECT ea.* 
       FROM  information.entity_association as ea
-      INNER JOIN information.entity_version_project_rel as epr on ea.pk_entity = epr.fk_entity
+      INNER JOIN projects.info_proj_rel as epr on ea.pk_entity = epr.fk_entity
       WHERE epr.fk_project = $2 AND is_in_project = $1
       ),
     is_mentioned_in_association AS (
@@ -372,38 +372,38 @@ module.exports = function (InfEntityAssociation) {
     ),
     source_of_expression AS (
       SELECT 
-      fk_range_entity as fk_source_entity, -- F3 Manifestation Product Type
-      fk_domain_entity as fk_expression_entity  
+      fk_info_range as fk_source_entity, -- F3 Manifestation Product Type
+      fk_info_domain as fk_expression_entity  
       FROM entity_associations_of_project
       WHERE fk_property = 979  -- F2 Carriers provided by
       UNION
       SELECT 
-      fk_domain_entity as fk_source_entity,  -- F4 Manifestation Singleton
-      fk_range_entity as fk_expression_entity  
+      fk_info_domain as fk_source_entity,  -- F4 Manifestation Singleton
+      fk_info_range as fk_expression_entity  
       FROM entity_associations_of_project
       WHERE fk_property = 1016  -- R42 is representative manifestation singleton for
     ),
     source_and_expression_of_digital_object AS (
       SELECT 
-        repro_of.fk_domain_entity as fk_digital_object,
-      repro_of.fk_range_entity as fk_expression_entity,
+        repro_of.fk_info_domain as fk_digital_object,
+      repro_of.fk_info_range as fk_expression_entity,
       source_of_expression.fk_source_entity
       FROM entity_associations_of_project as repro_of
-      inner join source_of_expression on source_of_expression.fk_expression_entity = repro_of.fk_range_entity
+      inner join source_of_expression on source_of_expression.fk_expression_entity = repro_of.fk_info_range
       WHERE repro_of.fk_property = 1216 
     ),
     joins as (
       SELECT
         ea.pk_entity,
-        ea.fk_domain_entity,
+        ea.fk_info_domain,
         ea.fk_property,
-        ea.fk_range_entity,
+        ea.fk_info_range,
         
       -- get the fk source entity 
       COALESCE(
         source_and_expression_of_digital_object.fk_source_entity, -- if range is a chunk 
         source_of_expression.fk_source_entity, -- if given range is a expression, get corresponding associated fk source entity 
-        ea.fk_range_entity -- else, the given range is a source (F3/4/5)
+        ea.fk_info_range -- else, the given range is a source (F3/4/5)
       ) as fk_source_entity,
       
       -- get the fk section entity
@@ -418,8 +418,8 @@ module.exports = function (InfEntityAssociation) {
       chunk.fk_digital_object
         
       FROM is_mentioned_in_association as ea
-      LEFT JOIN source_of_expression on ea.fk_range_entity = source_of_expression.fk_expression_entity
-      LEFT JOIN information.chunk as chunk on chunk.pk_entity = ea.fk_range_entity
+      LEFT JOIN source_of_expression on ea.fk_info_range = source_of_expression.fk_expression_entity
+      LEFT JOIN information.chunk as chunk on chunk.pk_entity = ea.fk_info_range
       LEFT JOIN source_and_expression_of_digital_object on chunk.fk_digital_object = source_and_expression_of_digital_object.fk_digital_object
       )
 

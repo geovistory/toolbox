@@ -16,7 +16,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3148,
         fk_entity: 84,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Person',
       dfh_standard_label: 'Person',
@@ -921,7 +921,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3172,
         fk_entity: 217,
         fk_project: 9,
-        is_in_project: false
+        enabled_in_entities: false
       },
       label: 'Time-Span',
       dfh_standard_label: 'Time-Span',
@@ -1846,7 +1846,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3159,
         fk_entity: 90,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Birth',
       dfh_standard_label: 'Birth',
@@ -2458,7 +2458,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3149,
         fk_entity: 91,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Death',
       dfh_standard_label: 'Death',
@@ -2732,7 +2732,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3130,
         fk_entity: 92,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Group',
       dfh_standard_label: 'Group',
@@ -3572,7 +3572,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3167,
         fk_entity: 221,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Joining',
       dfh_standard_label: 'Joining',
@@ -3919,7 +3919,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3168,
         fk_entity: 222,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Leaving',
       dfh_standard_label: 'Leaving',
@@ -4561,7 +4561,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3164,
         fk_entity: 597,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Localization',
       dfh_standard_label: 'Geographical localisation',
@@ -5031,7 +5031,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3162,
         fk_entity: 2715,
         fk_project: 9,
-        is_in_project: false
+        enabled_in_entities: false
       },
       label: 'Content/Section',
       dfh_standard_label: 'Expression',
@@ -5913,7 +5913,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3150,
         fk_entity: 2661,
         fk_project: 9,
-        is_in_project: false
+        enabled_in_entities: false
       },
       label: 'Serially Produced Object',
       dfh_standard_label: 'Manifestation Product Type',
@@ -7334,7 +7334,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3170,
         fk_entity: 2823,
         fk_project: 9,
-        is_in_project: false
+        enabled_in_entities: false
       },
       label: 'Unique Object',
       dfh_standard_label: 'Manifestation Singleton',
@@ -7772,7 +7772,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3166,
         fk_entity: 2662,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Item',
       dfh_standard_label: 'Item',
@@ -7853,7 +7853,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3155,
         fk_entity: 97,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Geographical Place',
       dfh_standard_label: 'Geographical Place',
@@ -8342,7 +8342,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3156,
         fk_entity: 98,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Geographical place type',
       dfh_standard_label: 'Geographical place type',
@@ -8616,7 +8616,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3158,
         fk_entity: 569,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Naming',
       dfh_standard_label: 'Appellation for language',
@@ -10676,7 +10676,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3160,
         fk_entity: 637,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Built work',
       dfh_standard_label: 'Built work',
@@ -11160,7 +11160,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3169,
         fk_entity: 638,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Membership',
       dfh_standard_label: 'Membership',
@@ -11388,7 +11388,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3161,
         fk_entity: 639,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Built work type',
       dfh_standard_label: 'Built work type',
@@ -11735,7 +11735,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3171,
         fk_entity: 2843,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Manifestation singleton type',
       dfh_standard_label: 'Manifestation singleton type',
@@ -12090,7 +12090,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3165,
         fk_entity: 2835,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Group type',
       dfh_standard_label: 'Group type',
@@ -12373,7 +12373,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3129,
         fk_entity: 2844,
         fk_project: 9,
-        is_in_project: true
+        enabled_in_entities: true
       },
       label: 'Type of Serially Produced Object',
       dfh_standard_label: 'Type of manifestation product type',
@@ -12652,7 +12652,7 @@ export const crm: ProjectCrm = {
         pk_entity: 3163,
         fk_entity: 2877,
         fk_project: 9,
-        is_in_project: false
+        enabled_in_entities: false
       },
       label: 'Section Type',
       dfh_standard_label: 'Expression type',

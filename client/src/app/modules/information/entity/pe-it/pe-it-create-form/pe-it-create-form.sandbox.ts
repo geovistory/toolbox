@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { ComConfig, InfPersistentItem } from 'app/core';
+import { SysConfig, InfPersistentItem } from 'app/core';
 import { crm } from 'app/core/active-project/_mock-data';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
@@ -21,7 +21,7 @@ export default sandboxOf(PeItCreateFormComponent, {
     context: {
       f: {},
       sandboxState: {
-        _peIt_create_form: createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })
+        _peIt_create_form: createPeItDetail({}, new InfPersistentItem({ fk_class: 21 }), crm, { pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE })
       },
       basePath: ['sandboxState', '_peIt_create_form']
     },

@@ -1,5 +1,5 @@
 import { DfhClass, DfhClassProfileView, U, ClassConfig } from 'app/core';
-import { DfhProjRel } from 'app/core/sdk/models/DfhProjRel';
+import { ProDfhClassProjRel } from 'app/core/sdk/models/ProDfhClassProjRel';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { clone } from 'ramda';
 import { Action } from 'redux';

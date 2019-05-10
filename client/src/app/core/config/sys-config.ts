@@ -1,10 +1,10 @@
 /**
- * Contains configuration of keys used in the the commons-schema
+ * Contains configuration of keys used in the the system-schema
  * that are relevant for the app logic.
  *
  * Example: the ui-context keys are used to query the order of properties in different contexts
  */
-export class ComConfig {
+export class SysConfig {
 
 
     /***********************
@@ -41,5 +41,7 @@ export class ComConfig {
      * System Types
     ************************/
 
-    static readonly PK_SYSTEM_TYPE__TEXT_PROPERY__DEFINITION = 179;
+    static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION = 179;
+    static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL = 639;
+    static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
 }

@@ -1,8 +1,8 @@
 ------------------------------------------------------------------------------------------------------------
 -- 1. TABULA RASA for SCHEMA data
 ------------------------------------------------------------------------------------------------------------
-ALTER TABLE projects.argument DROP CONSTRAINT assertion_fk_is_based_on_factoid_role_fkey;
-ALTER TABLE projects.argument DROP CONSTRAINT assertion_fk_is_based_on_cell_fkey;
+ALTER TABLE projects.argument DROP CONSTRAINT IF EXISTS assertion_fk_is_based_on_factoid_role_fkey;
+ALTER TABLE projects.argument DROP CONSTRAINT IF EXISTS assertion_fk_is_based_on_cell_fkey;
 ALTER TABLE projects.argument ALTER COLUMN pk_entity SET DEFAULT nextval('projects.entity_pk_entity_seq'::regclass);
 
 DROP SCHEMA data CASCADE; -- no way back, but no ploblem since never used.

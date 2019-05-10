@@ -1,7 +1,7 @@
-import { ProProject } from 'app/core';
+import { ProjectPreview } from './containers/project-list/project-list.component';
 
 export interface IProject {
-    record: ProProject
+    record: ProjectPreview
 }
 
 export interface IProjectList {
