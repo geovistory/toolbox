@@ -1,6 +1,7 @@
 'use strict';
 
 const Config = require('../config/Config');
+var logSql = require("../../server/scripts/log-deserialized-sql");
 
 module.exports = function (ProProject) {
 
@@ -61,7 +62,7 @@ module.exports = function (ProProject) {
       SELECT 
         pk_entity, 
         ${addParam(label)},
-        ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION)}, 
+        ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL)}, 
         ${addParam(pkLanguage)}
       FROM insert_project
       ON CONFLICT DO NOTHING
@@ -97,6 +98,8 @@ module.exports = function (ProProject) {
     SELECT pk_entity, ${addParam(accountId)}, 'owner' FROM insert_project
     `;
 
+
+    logSql(sql_stmt, params);
 
     const connector = ProProject.dataSource.connector;
     connector.execute(sql_stmt, params, (err, result) => {

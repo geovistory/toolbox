@@ -7,188 +7,191 @@ const _ = require('lodash')
 module.exports = function (InfPersistentItem) {
 
 
-  InfPersistentItem.findOrCreatePeIt = function (pkProject, data, ctx) {
+  InfPersistentItem.findOrCreatePeIt = function (pkProject, data, ctx, cb) {
+    return new Promise((resolve, reject) => {
 
-    const dataObject = {
-      pk_entity: data.pk_entity,
-      notes: data.notes,
-      fk_class: data.fk_class
-    };
+      const dataObject = {
+        pk_entity: data.pk_entity,
+        notes: data.notes,
+        fk_class: data.fk_class
+      };
 
-    let requestedPeIt;
+      let requestedPeIt;
 
-    if (ctx && ctx.req && ctx.req.body) {
-      requestedPeIt = ctx.req.body;
-    } else {
-      requestedPeIt = data;
-    }
+      if (ctx && ctx.req && ctx.req.body) {
+        requestedPeIt = ctx.req.body;
+      } else {
+        requestedPeIt = data;
+      }
 
-    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+      const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-    return InfPersistentItem._findOrCreatePeIt(InfPersistentItem, pkProject, dataObject, ctxWithoutBody)
-      .then((resultingPeIts) => {
-        // pick first item of array
-        const resultingPeIt = resultingPeIts[0];
-        const res = resultingPeIt.toJSON();
+      InfPersistentItem._findOrCreatePeIt(InfPersistentItem, pkProject, dataObject, ctxWithoutBody)
+        .then((resultingPeIts) => {
+          // pick first item of array
+          const resultingPeIt = resultingPeIts[0];
+          const res = resultingPeIt.toJSON();
 
-        // Array of Promises
-        const promiseArray = []
+          // Array of Promises
+          const promiseArray = []
 
-        /******************************************
-         * pi-roles
-         ******************************************/
-        if (requestedPeIt.pi_roles) {
+          /******************************************
+           * pi-roles
+           ******************************************/
+          if (requestedPeIt.pi_roles) {
 
-          // prepare parameters
-          const InfRole = InfPersistentItem.app.models.InfRole;
+            // prepare parameters
+            const InfRole = InfPersistentItem.app.models.InfRole;
 
-          //… filter roles that are truthy (not null), iterate over them,
-          // return the promise that the PeIt will be
-          // returned together with all nested items
-          const promise = Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
-            // use the pk_entity from the created peIt to set the fk_entity of the role
-            role.fk_entity = resultingPeIt.pk_entity;
-            // find or create the teEnt and the role pointing to the teEnt
-            return InfRole.findOrCreateInfRole(pkProject, role, ctxWithoutBody);
-          }).then((roles) => {
-            //attach the roles to peit.pi_roles
-            res.pi_roles = [];
-            for (var i = 0; i < roles.length; i++) {
-              const role = roles[i];
-              if (role && role[0]) {
-                res.pi_roles.push(role[0]);
+            //… filter roles that are truthy (not null), iterate over them,
+            // return the promise that the PeIt will be
+            // returned together with all nested items
+            const promise = Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
+              // use the pk_entity from the created peIt to set the fk_entity of the role
+              role.fk_entity = resultingPeIt.pk_entity;
+              // find or create the teEnt and the role pointing to the teEnt
+              return InfRole.findOrCreateInfRole(pkProject, role, ctxWithoutBody);
+            }).then((roles) => {
+              //attach the roles to peit.pi_roles
+              res.pi_roles = [];
+              for (var i = 0; i < roles.length; i++) {
+                const role = roles[i];
+                if (role && role[0]) {
+                  res.pi_roles.push(role[0]);
+                }
               }
-            }
-            return true;
+              resolve(true);
 
-          }).catch((err) => {
-            return err;
-          })
+            }).catch((err) => {
+              return err;
+            })
 
-          // add promise for pi_roles
-          promiseArray.push(promise)
 
-        }
+            // add promise for pi_roles
+            promiseArray.push(promise)
 
-        /******************************************
-         * text_properties
-         ******************************************/
-        if (requestedPeIt.text_properties) {
+          }
 
-          // prepare parameters
-          const InfTextProperty = InfPersistentItem.app.models.InfTextProperty;
+          /******************************************
+           * text_properties
+           ******************************************/
+          if (requestedPeIt.text_properties) {
 
-          //… filter items that are truthy (not null), iterate over them,
-          // return the promise that the PeIt will be
-          // returned together with all nested items
-          const promise = Promise.map(requestedPeIt.text_properties.filter(item => (item)), (item) => {
-            // use the pk_entity from the created peIt to set the fk_concerned_entity of the item
-            item.fk_concerned_entity = resultingPeIt.pk_entity;
-            // find or create the item
-            return InfTextProperty.findOrCreateInfTextProperty(pkProject, item, ctxWithoutBody);
-          }).then((items) => {
-            //attach the items to peit.text_properties
-            res.text_properties = [];
-            for (var i = 0; i < items.length; i++) {
-              const item = items[i];
-              if (item && item[0]) {
-                res.text_properties.push(item[0]);
+            // prepare parameters
+            const InfTextProperty = InfPersistentItem.app.models.InfTextProperty;
+
+            //… filter items that are truthy (not null), iterate over them,
+            // return the promise that the PeIt will be
+            // returned together with all nested items
+            const promise = Promise.map(requestedPeIt.text_properties.filter(item => (item)), (item) => {
+              // use the pk_entity from the created peIt to set the fk_concerned_entity of the item
+              item.fk_concerned_entity = resultingPeIt.pk_entity;
+              // find or create the item
+              return InfTextProperty.findOrCreateInfTextProperty(pkProject, item, ctxWithoutBody);
+            }).then((items) => {
+              //attach the items to peit.text_properties
+              res.text_properties = [];
+              for (var i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item && item[0]) {
+                  res.text_properties.push(item[0]);
+                }
               }
-            }
-            return true;
+              return true;
 
-          }).catch((err) => {
-            return err;
-          })
+            }).catch((err) => {
+              return err;
+            })
 
-          // add promise for text properties
-          promiseArray.push(promise)
+            // add promise for text properties
+            promiseArray.push(promise)
 
-        }
+          }
 
-        /******************************************
-         * domain_entity_associations
-         ******************************************/
-        if (requestedPeIt.domain_entity_associations) {
+          /******************************************
+           * domain_entity_associations
+           ******************************************/
+          if (requestedPeIt.domain_entity_associations) {
 
-          // prepare parameters
-          const InfEntityAssociation = InfPersistentItem.app.models.InfEntityAssociation;
+            // prepare parameters
+            const InfEntityAssociation = InfPersistentItem.app.models.InfEntityAssociation;
 
-          //… filter items that are truthy (not null), iterate over them,
-          // return the promise that the PeIt will be
-          // returned together with all nested items
-          const promise = Promise.map(requestedPeIt.domain_entity_associations.filter(item => (item)), (item) => {
-            // use the pk_entity from the created peIt to set the fk_info_domain of the item
-            item.fk_info_domain = resultingPeIt.pk_entity;
-            // find or create the item
-            return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item, ctxWithoutBody);
-          }).then((items) => {
-            //attach the items to peit.domain_entity_associations
-            res.domain_entity_associations = [];
-            for (var i = 0; i < items.length; i++) {
-              const item = items[i];
-              if (item && item[0]) {
-                res.domain_entity_associations.push(item[0]);
+            //… filter items that are truthy (not null), iterate over them,
+            // return the promise that the PeIt will be
+            // returned together with all nested items
+            const promise = Promise.map(requestedPeIt.domain_entity_associations.filter(item => (item)), (item) => {
+              // use the pk_entity from the created peIt to set the fk_info_domain of the item
+              item.fk_info_domain = resultingPeIt.pk_entity;
+              // find or create the item
+              return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item, ctxWithoutBody);
+            }).then((items) => {
+              //attach the items to peit.domain_entity_associations
+              res.domain_entity_associations = [];
+              for (var i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item && item[0]) {
+                  res.domain_entity_associations.push(item[0]);
+                }
               }
-            }
-            return true;
+              return true;
 
-          }).catch((err) => {
-            return err;
-          })
+            }).catch((err) => {
+              return err;
+            })
 
-          // add promise for text properties
-          promiseArray.push(promise)
+            // add promise for text properties
+            promiseArray.push(promise)
 
-        }
+          }
 
-        // /******************************************
-        //  * type_namespace_rels
-        //  ******************************************/
-        // if (requestedPeIt.type_namespace_rels) {
+          // /******************************************
+          //  * type_namespace_rels
+          //  ******************************************/
+          // if (requestedPeIt.type_namespace_rels) {
 
-        //   // prepare parameters
-        //   const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+          //   // prepare parameters
+          //   const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
 
-        //   //… filter items that are truthy (not null), iterate over them,
-        //   // return the promise that the PeIt will be
-        //   // returned together with all nested items
-        //   const promise = Promise.map(requestedPeIt.type_namespace_rels.filter(item => (item)), (item) => {
-        //     // use the pk_entity from the created peIt to set the fk_persistent_item of the item
-        //     item.fk_persistent_item = resultingPeIt.pk_entity;
-        //     // find or create the item
-        //     return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item, ctxWithoutBody);
-        //   }).then((items) => {
-        //     //attach the items to peit.type_namespace_rels
-        //     res.type_namespace_rels = [];
-        //     for (var i = 0; i < items.length; i++) {
-        //       const item = items[i];
-        //       if (item && item[0]) {
-        //         res.type_namespace_rels.push(item[0]);
-        //       }
-        //     }
-        //     return true;
+          //   //… filter items that are truthy (not null), iterate over them,
+          //   // return the promise that the PeIt will be
+          //   // returned together with all nested items
+          //   const promise = Promise.map(requestedPeIt.type_namespace_rels.filter(item => (item)), (item) => {
+          //     // use the pk_entity from the created peIt to set the fk_persistent_item of the item
+          //     item.fk_persistent_item = resultingPeIt.pk_entity;
+          //     // find or create the item
+          //     return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item, ctxWithoutBody);
+          //   }).then((items) => {
+          //     //attach the items to peit.type_namespace_rels
+          //     res.type_namespace_rels = [];
+          //     for (var i = 0; i < items.length; i++) {
+          //       const item = items[i];
+          //       if (item && item[0]) {
+          //         res.type_namespace_rels.push(item[0]);
+          //       }
+          //     }
+          //     return true;
 
-        //   }).catch((err) => {
-        //     return err;
-        //   })
+          //   }).catch((err) => {
+          //     return err;
+          //   })
 
-        //   // add promise
-        //   promiseArray.push(promise)
+          //   // add promise
+          //   promiseArray.push(promise)
 
-        // }
+          // }
 
 
-        if (promiseArray.length === 0) return resultingPeIts;
-        else return Promise.map(promiseArray, (promise) => promise).then(() => {
-          return [res]
+          if (promiseArray.length === 0) return resultingPeIts;
+          else return Promise.map(promiseArray, (promise) => promise).then(() => {
+            return [res]
+          });
+
+        })
+        .catch((err) => {
+          reject(err);
         });
 
-      })
-      .catch((err) => {
-
-      });
-
+    });
   }
 
   // /** 
@@ -1281,25 +1284,25 @@ module.exports = function (InfPersistentItem) {
         -- select the fk_class and the properties that are auto add because of a class_field_config
         select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+        inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
         Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
         UNION
         select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+        inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
         Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
         UNION
         -- select the fk_class and the properties that are auto add because of a property set
           select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+        inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
         Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
         UNION
           select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
         from data_for_history.property as p
-        inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join commons.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+        inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+        inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
         Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
       ),
       -- Find all roles related to the given persistent item pk_entity 
@@ -1370,7 +1373,7 @@ module.exports = function (InfPersistentItem) {
       ---- get a list of all pk_entities that the project manually removed
       --pk_entities_excluded_by_project AS (
       --  SELECT fk_entity as pk_entity
-      --  FROM information.v_entity_version_project_rel as epr 
+      --  FROM projects.v_info_proj_rel as epr 
       --  where epr.is_in_project = false and epr.fk_project = $2
       --),
       ---- get final list of pk_entities to add to project
@@ -1381,14 +1384,14 @@ module.exports = function (InfPersistentItem) {
       --)
       ----select * from pk_entities_to_add;
 
-      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
+      insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
       SELECT $2, true, pk_entity, calendar, $3
       from pk_entities_of_repo;
     `
 
     const connector = InfPersistentItem.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
-      if (err) cb(err, resultObjects);
+      if (err) return cb(err, resultObjects);
 
       InfPersistentItem.nestedObjectOfProject(pk_project, pk_entity, (err, result) => {
         cb(err, result)

@@ -107,17 +107,17 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
   }
 
   onCreateNew(ea: InfEntityAssociation) {
-    this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_entity, ea).subscribe(
+    this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_project, ea).subscribe(
       (eas) => { this.done.emit(eas[0]) }
     )
   }
 
   onAdd(eaD: EntityAssociationDetail) {
     const pkEntity = eaD.isOutgoing ? eaD.entityAssociation.fk_info_range : eaD.entityAssociation.fk_info_domain;
-    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_entity, pkEntity).subscribe(
+    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
       (peIts) => {
 
-        this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_entity, {
+        this.eaApi.findOrCreateInfEntityAssociation(this.ngRedux.getState().activeProject.pk_project, {
           fk_info_domain: eaD.entityAssociation.fk_info_domain,
           fk_info_range: eaD.entityAssociation.fk_info_range,
           fk_property: eaD.entityAssociation.fk_property,

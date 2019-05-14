@@ -1,17 +1,17 @@
-import { TimeSpan } from 'app/core/time-span/time-span';
-import { AppeDetail, ClassInstanceFieldLabel, FieldList, ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, PropertyField, FieldLabel, PropertyFieldList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
-import { indexBy, omit } from 'ramda';
-import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
-import { AppellationLabel } from '../../modules/information/shared/appellation-label';
-import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { ClassConfig, ProjectCrm, ProjectPreview } from 'app/core/active-project/active-project.models';
+import { AppeDetail, ClassInstanceFieldLabel, ClassInstanceLabel, ExistenceTimeDetail, FieldLabel, FieldList, LangDetail, PeItDetail, PlaceDetail, PropertyField, PropertyFieldList, RoleDetail, RoleDetailList, RoleLabel, TeEntDetail } from 'app/core/state/models';
+import { fieldKey, propertyFieldKey, propertyFieldKeyFromParams, roleDetailKey } from 'app/core/state/services/state-creator';
+import { TimeSpan } from 'app/core/time-span/time-span';
+import { QuillDoc } from 'app/modules/quill';
+import { indexBy, omit } from 'ramda';
+import * as Config from '../../../../../common/config/Config';
+import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
+import { DfhConfig } from '../../modules/information/shared/dfh-config';
+import { SysConfig } from '../config/sys-config';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { SysClassField, ProClassFieldConfig, DfhClass, DfhProperty, ProInfoProjRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProDfhClassProjRel, ProProject, ProTextProperty } from '../sdk';
-import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
-import * as Config from '../../../../../common/config/Config';
+import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysClassField } from '../sdk';
 import { Field } from '../state/models/field';
-import { SysConfig } from '../config/sys-config';
 import { TextPropertyField } from '../state/models/text-property-field';
 
 export interface LabelGeneratorSettings {
@@ -167,7 +167,7 @@ export class U {
                 // to filter for the role that is standard?? or is this not happening on forms?
             ))
 
-        return rolesToAppe.length ? rolesToAppe[0].appellation.string : null;
+        return rolesToAppe.length ? U.stringFromAppellation(rolesToAppe[0].appellation) : null;
 
     }
 
@@ -232,7 +232,7 @@ export class U {
                 ))
                 .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
                     .map(r => {
-                        return r.appellation.string
+                        return U.stringFromAppellation(r.appellation)
                     })[0]).join(', ')
 
     }
@@ -573,7 +573,7 @@ export class U {
 
     static labelFromAppeDetail(a: AppeDetail): string {
         if (a && a.appellation && a.appellation.quill_doc) {
-            return new AppellationLabel(a.appellation.quill_doc).getString();
+            return U.stringFromAppellation(a.appellation);
         } else return null;
     }
 
@@ -614,7 +614,7 @@ export class U {
                 path: undefined,
                 type: 'txt-prop',
                 string: U.obj2Arr(txtPropField.textPropertyDetailList).slice(0, settings.rolesMax).map(tD => (
-                    tD.textProperty.quill_doc.contents.ops.map(op => op.insert).join('')
+                    U.stringFromQuillDoc(tD.textProperty.quill_doc)
                 )).join(', ')
             }]
         })
@@ -671,6 +671,22 @@ export class U {
             }]
         })
 
+    }
+
+
+    static stringFromAppellation(appellation: InfAppellation): string {
+        if (appellation.quill_doc && appellation.quill_doc.ops && appellation.quill_doc.ops.length) {
+            return U.stringFromQuillDoc(appellation.quill_doc)
+        }
+        else if (appellation.string) {
+            return appellation.string
+        }
+        else return '';
+    }
+
+    static stringFromQuillDoc(quillDoc: QuillDoc): string {
+        if (quillDoc && quillDoc.ops && quillDoc.ops.length) return quillDoc.ops.map(op => op.insert).join('');
+        else return '';
     }
 
     /**

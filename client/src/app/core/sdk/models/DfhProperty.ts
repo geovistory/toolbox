@@ -4,8 +4,7 @@ import {
   DfhLabel,
   DfhTextProperty,
   DfhPropertyProfileView,
-  ProClassFieldConfig,
-  ProDfhClassProjRel
+  ProClassFieldConfig
 } from '../index';
 
 declare var Object: any;
@@ -35,7 +34,6 @@ export interface DfhPropertyInterface {
   text_properties?: DfhTextProperty[];
   property_profile_view?: DfhPropertyProfileView[];
   class_field_config?: ProClassFieldConfig[];
-  proj_rels?: ProDfhClassProjRel[];
 }
 
 export class DfhProperty implements DfhPropertyInterface {
@@ -64,7 +62,6 @@ export class DfhProperty implements DfhPropertyInterface {
   text_properties?: DfhTextProperty[];
   property_profile_view?: DfhPropertyProfileView[];
   class_field_config?: ProClassFieldConfig[];
-  proj_rels?: ProDfhClassProjRel[];
   constructor(data?: DfhPropertyInterface) {
     Object.assign(this, data);
   }
@@ -223,14 +220,6 @@ export class DfhProperty implements DfhPropertyInterface {
           relationType: 'hasMany',
                   keyFrom: 'dfh_pk_property',
           keyTo: 'fk_property'
-        },
-        proj_rels: {
-          name: 'proj_rels',
-          type: 'ProDfhClassProjRel[]',
-          model: 'ProDfhClassProjRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
         },
       }
     }

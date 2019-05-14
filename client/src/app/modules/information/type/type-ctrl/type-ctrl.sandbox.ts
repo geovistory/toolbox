@@ -20,7 +20,7 @@ export default sandboxOf(TypeCtrlComponent, {
                 assoc: {} as InfEntityAssociation
             },
             activeProject: {
-                pk_entity: 8 // use same pkProject
+                pk_project: 8 // use same pkProject
             } as ProjectDetail,
             basePath: ['sandboxState', '_typeCtrl'],
             sandboxState: {
@@ -62,7 +62,7 @@ export default sandboxOf(TypeCtrlComponent, {
                 } as InfEntityAssociation
             },
             activeProject: {
-                pk_entity: 8 // use same pkProject
+                pk_project: 8 // use same pkProject
             } as ProjectDetail,
             basePath: ['sandboxState', '_typeCtrl'],
             sandboxState: {

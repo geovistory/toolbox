@@ -75,7 +75,7 @@ export class ExTimePropertyFieldFormComponent extends PropertyFieldFormBase impl
 
     const fkProperty = s.property.dfh_pk_property;
     const fkTemporalEntity = ps.teEnt.pk_entity;
-    const fkProject = this.ngRedux.getState().activeProject.pk_entity;
+    const fkProject = this.ngRedux.getState().activeProject.pk_project;
 
     const waitAtLeast = timer(0);
     const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
@@ -167,7 +167,7 @@ export class ExTimePropertyFieldFormComponent extends PropertyFieldFormBase impl
       })
 
       // call api
-      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_entity, t).subscribe(teEnts => {
+      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
 
@@ -201,7 +201,7 @@ export class ExTimePropertyFieldFormComponent extends PropertyFieldFormBase impl
       })
 
       // call api
-      this.subs.push(this.teEnApi.changeTeEntProjectRelation(this.ngRedux.getState().activeProject.pk_entity, true, p).subscribe(teEnt => {
+      this.subs.push(this.teEnApi.changeTeEntProjectRelation(this.ngRedux.getState().activeProject.pk_project, true, p).subscribe(teEnt => {
         const roles: InfRole[] = teEnt[0].te_roles;
 
         // update the form group

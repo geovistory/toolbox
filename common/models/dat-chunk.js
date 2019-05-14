@@ -5,6 +5,24 @@ const Promise = require('bluebird');
 
 module.exports = function(DatChunk) {
 
+
+  DatChunk.t = function() {
+
+    return new Promise ((res, rej)=> {
+
+      return new Promise((res2, rej2) => {
+
+        res2('super')
+        // rej2('err')
+        
+      })
+      .catch(err => rej(err))
+      .then(result => result)
+
+    })
+
+  }
+
   DatChunk.findOrCreateChunk = function(projectId, data, ctx) {
 
     const dataObject = {

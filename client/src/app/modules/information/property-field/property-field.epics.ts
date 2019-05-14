@@ -111,7 +111,7 @@ export class PropertyFieldApiEpics {
                     /**
                      * Do some api call
                      */
-                    this.roleApi.addToProjectWithTeEnt(c.ngRedux.getState().activeProject.pk_entity, action.meta.pk_roles)
+                    this.roleApi.addToProjectWithTeEnt(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
                         /**
                          * Subscribe to the api call
                          */
@@ -171,7 +171,7 @@ export class PropertyFieldApiEpics {
                     /**
                      * Do some api call
                      */
-                    this.roleApi.addToProject(c.ngRedux.getState().activeProject.pk_entity, action.meta.pk_roles)
+                    this.roleApi.addToProject(c.ngRedux.getState().activeProject.pk_project, action.meta.pk_roles)
                         /**
                          * Subscribe to the api call
                          */

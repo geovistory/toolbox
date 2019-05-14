@@ -2,7 +2,6 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityPreview, IAppState } from 'app/core';
 import { EntitySearchHit } from '../../containers/list/api/list.models';
-import { AppellationLabel } from '../../shared/appellation-label';
 import { MentionedEntity } from '../../containers/mentioning-list/api/mentioning-list.models';
 
 @Component({
@@ -32,10 +31,6 @@ export class EntityAddExistingHitComponent implements OnInit {
   @Output() onOpen: EventEmitter<number> = new EventEmitter();
   @Output() onSelect: EventEmitter<number> = new EventEmitter();
   @Output() onSelectAsMentioned: EventEmitter<MentionedEntity> = new EventEmitter();
-
-
-  standardAppellationLabel: AppellationLabel;
-  moreAppellationLabels: Array<AppellationLabel> = [];
 
   headlineItems: Array<string> = [];
   isInProject: boolean;

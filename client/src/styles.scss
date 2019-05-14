@@ -1183,13 +1183,13 @@ gv-mentioning-list .ngx-table__header-title {
 }
 
 .gv-show-token-ids {
-    span[quillnode] {
+    span[charid] {
         background: lightpink;
         margin: 0 1px;
     }
 
-    span[quillnode]::after {
-        content: attr(quillnode);
+    span[charid]::after {
+        content: attr(charid);
         vertical-align: super;
         font-size: smaller;
     }

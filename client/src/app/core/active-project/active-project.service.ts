@@ -127,7 +127,7 @@ export class ActiveProjectService {
    */
   initProject(id) {
     const state = this.ngRedux.getState();
-    if (!state.activeProject || state.activeProject.pk_entity != id) {
+    if (!state.activeProject || state.activeProject.pk_project != id) {
       this.ngRedux.dispatch(this.actions.loadProject(id))
     }
   }
@@ -139,7 +139,7 @@ export class ActiveProjectService {
    */
   initProjectCrm(id) {
     const state = this.ngRedux.getState();
-    if (!state.activeProject || state.activeProject.pk_entity != id || !state.activeProject.crm) {
+    if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.crm) {
       this.ngRedux.dispatch(this.actions.activeProjectLoadCrm(id))
     }
   }
@@ -198,7 +198,7 @@ export class ActiveProjectService {
   loadChunk(pkEntity: number, forceReload?: boolean) {
     const state = this.ngRedux.getState();
     if (!(((state || {}).activeProject || {}).chunks || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadChunk(state.activeProject.pk_entity, pkEntity))
+      this.ngRedux.dispatch(this.actions.loadChunk(state.activeProject.pk_project, pkEntity))
     }
   }
 
@@ -278,7 +278,7 @@ export class ActiveProjectService {
   loadEntityDetailForModal(pkEntity: number, forceReload = true, pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
     const state = this.ngRedux.getState();
     if (!(((state || {}).activeProject || {}).peItModals || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_entity, pkEntity, pkUiContext))
+      this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_project, pkEntity, pkUiContext))
     }
   }
 

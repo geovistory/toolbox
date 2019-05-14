@@ -62,7 +62,11 @@ app.start = function () {
         working = true;
         const fn = queue.pop();
         client.query('select ' + fn, (err,res)=>{
-          // console.log('executed', (executed ++))
+          console.log(`
+\u{1b}[32m Warehouse update   Nr. ${(executed ++)} \u{1b}[34m ${new Date().toString()}
+    \u{1b}[33m Function call:  \u{1b}[0m ${fn}
+    \u{1b}[31m ${err ? err : ''}  \u{1b}[0m
+          `)
           working = false
           nextFromQue();
         })
@@ -88,7 +92,8 @@ app.start = function () {
     client.on('notification', function (msg) {
       let payload = JSON.parse(msg.payload);
 
-      //console.log(payload.fn)
+      // console.log(msg.channel, payload.fn)
+
       switch (msg.channel) {
         case 'warehouse_update_request':
           enQueue(payload.fn);

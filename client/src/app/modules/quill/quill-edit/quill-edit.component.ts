@@ -221,14 +221,19 @@ export class QuillEditComponent implements OnInit, OnChanges {
       // See list of formats: https://quilljs.com/docs/formats/
       formats: [
         // Inline formats
-        'node',
+        'charid',
         'bold', 'italic', 'link', 'size', 'strike', 'underline',
         // Block formats
-        'header', 'indent', 'list', 'align'
+        'blockid',
+        'header', 'indent', 'list', 'align',
       ]
     };
     // initialize default config
-    this.editorConfig = this.editorConfig ? this.editorConfig : defaultEditorConfig;
+    this.editorConfig = {
+      ...this.editorConfig,
+      ...defaultEditorConfig
+      // formats: (this.editorConfig && this.editorConfig.formats) ? this.editorConfig.formats : defaultEditorConfig.formats
+    }
 
     // initialize config for readonly
     this.editorConfig = {
@@ -254,8 +259,14 @@ export class QuillEditComponent implements OnInit, OnChanges {
   }
 
   private initQuillDoc() {
-    this.quillDoc = (this.quillDoc && 'latestId' in this.quillDoc && 'ops' in this.quillDoc) ?
-      this.quillDoc : { latestId: 0, ops: [] };
+    this.quillDoc = (this.quillDoc && 'latestId' in this.quillDoc && 'ops' in this.quillDoc && this.quillDoc.ops.length) ?
+      this.quillDoc : {
+        latestId: 1,
+        ops: [{
+          attributes: { blockid: 1 },
+          insert: "\n"
+        }]
+      };
     this.latestId = this.quillDoc.latestId;
     this.ops = this.quillDoc.ops;
   }
@@ -282,8 +293,20 @@ export class QuillEditComponent implements OnInit, OnChanges {
   }
 
   private initContents() {
+
     // set the initial contents
+    // if (this.ops && this.ops.length > 0) {
+
     this.quillEditor.setContents(this.ops);
+
+    // } else {
+    //   this.latestId = this.latestId + 1;
+    //   this.quillEditor.setContents([{
+    //     attributes: { id: this.latestId },
+    //     insert: "\n"
+    //   }])
+    // }
+
 
     // create the nodeSelctionMap
     if (this.creatingAnnotation) {
@@ -309,7 +332,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // styling
     this.editorConfig.theme = 'bubble';
     // disable all formatting (no bold, italic etc.)
-    this.editorConfig.formats = ['node'];
+    this.editorConfig.formats = ['charid', 'blockid'];
     // disable tabs and linebreak keys
     this.editorConfig['modules'] = {
       ...this.editorConfig['modules'],
@@ -339,7 +362,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // styling
     this.editorConfig.theme = 'bubble';
     // disable all formatting (no bold, italic etc.)
-    this.editorConfig.formats = ['node'];
+    this.editorConfig.formats = ['charid', 'blockid'];
     // // disable tabs and linebreak keys
     // this.editorConfig['modules'] = {
     //   ...this.editorConfig['modules'],
@@ -387,7 +410,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
           distinct()
         ).subscribe(percent => {
           progDialogData.value$.next(percent)
-          console.log('progress', percent)
+          // console.log('progress', percent)
         })
 
 
@@ -396,7 +419,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
             progDialogData.mode$.next('indeterminate')
           })
         ).subscribe(res => {
-          
+
           const nodenizeResult = res;
 
           this.latestId = nodenizeResult.latestId;
@@ -451,11 +474,11 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // if added nodes
     if ($event.addedNodes.length) {
       const node = $event.addedNodes[0] as any;
-      if (node.attributes && node.attributes.quillnode) {
+      if (node.attributes && node.attributes.charid) {
 
         if (!this.nodeSubs.has(node)) {
 
-          const id = node.attributes.quillnode.value;
+          const id = node.attributes.charid.value;
 
           const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.map(nodes => nodes[id]) : Observable.of(null);
 
@@ -483,8 +506,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // if removed nodes
     if ($event.removedNodes.length) {
       const node = $event.removedNodes[0] as any;
-      if (node.attributes && node.attributes.quillnode) {
-        const id = node.attributes.quillnode.value;
+      if (node.attributes && node.attributes.charid) {
+        const id = node.attributes.charid.value;
 
         if (
           this.nodeSubs.has(node) &&

@@ -16,7 +16,6 @@ import { DfhLabel } from '../../models/DfhLabel';
 import { DfhTextProperty } from '../../models/DfhTextProperty';
 import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
-import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 
 
 /**

@@ -266,7 +266,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     const projRel = new ProDfhClassProjRel({
       pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
-      fk_project: this.project.pk_entity,
+      fk_project: this.project.pk_project,
       enabled_in_entities: true
     })
 
@@ -280,7 +280,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     const projRel = new ProDfhClassProjRel({
       pk_entity: classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
-      fk_project: this.project.pk_entity,
+      fk_project: this.project.pk_project,
       enabled_in_entities: false
     })
 

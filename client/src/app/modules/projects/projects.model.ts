@@ -1,4 +1,4 @@
-import { ProjectPreview } from './containers/project-list/project-list.component';
+import { ProjectPreview } from "app/core";
 
 export interface IProject {
     record: ProjectPreview

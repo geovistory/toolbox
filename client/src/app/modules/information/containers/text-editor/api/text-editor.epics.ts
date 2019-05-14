@@ -167,7 +167,7 @@ export class TextEditorAPIEpics {
            */
 
 
-          this.eaApi.findOrCreateInfEntityAssociation(c.ngRedux.getState().activeProject.pk_entity, new InfEntityAssociation({
+          this.eaApi.findOrCreateInfEntityAssociation(c.ngRedux.getState().activeProject.pk_project, new InfEntityAssociation({
             fk_info_domain: action.meta.digitalObject.pk_entity,
             fk_property: DfhConfig.PROPERTY_PK_IS_REPRODUCTION_OF_SECTION,
             fk_info_range: c.pkSection
@@ -295,7 +295,7 @@ export class TextEditorAPIEpics {
            * Do some api call
            */
           this.eprApi.updateEprAttributes(
-            c.ngRedux.getState().activeProject.pk_entity,
+            c.ngRedux.getState().activeProject.pk_project,
             version.pkEntity,
             {
               fk_entity_version: version.entityVersion,
@@ -321,7 +321,7 @@ export class TextEditorAPIEpics {
               * Trigger the loading of the version
               */
               c.localStore.dispatch(this.actions.load(
-                c.ngRedux.getState().activeProject.pk_entity,
+                c.ngRedux.getState().activeProject.pk_project,
                 s.entityAssociation.fk_info_range,
                 s.entityAssociation.fk_property
               ));

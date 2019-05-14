@@ -44,13 +44,13 @@
           </div>
   
           <div class="gv-grow-1 mt-3">
-            <gv-quill-view [contents]=item.value.textProperty.text_property_quill_doc.contents></gv-quill-view>
+            <gv-quill-view [contents]=item.value.textProperty.quill_doc></gv-quill-view>
           </div>
   
         </div>
   
         <div class="gv-card-spacer-x gv-card-spacer-y gv-grow-1" *ngIf="item.value.toggle === 'collapsed'" (click)="toggleTextPropertyDetail(item.key)">
-          <gv-quill-view [contents]=item.value.textProperty.text_property_quill_doc.contents></gv-quill-view>
+          <gv-quill-view [contents]=item.value.textProperty.quill_doc></gv-quill-view>
         </div>
   
   

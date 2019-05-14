@@ -12,7 +12,6 @@ import { map } from 'rxjs/operators';
 import { DfhClassProfileView } from '../../models/DfhClassProfileView';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { DfhClass } from '../../models/DfhClass';
-import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 
 
 /**

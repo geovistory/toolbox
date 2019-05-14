@@ -18,47 +18,12 @@ exports.setup = function(options, seedLink) {
 exports.up = function (db, callback) {
 
   const sql = `    
+  CREATE OR REPLACE FUNCTION commons.appellation_label_to_quill_doc(orig jsonb) RETURNS jsonb AS $f$
       
-    CREATE OR REPLACE FUNCTION commons.appellation_label_to_quill_doc(orig jsonb) RETURNS jsonb AS $f$
-      DECLARE
-        newJ jsonb;
-        latestId int;
-        newOps jsonb;
-        oldOp jsonb;
-        char text;
-      BEGIN
-        newOps = jsonb_build_array();
-        latestId = 0;
-        
-        -- LOOP over ops
-        FOR oldOp IN SELECT * FROM jsonb_array_elements((orig->>'tokens')::jsonb)
-          LOOP
-        
-            -- LOOP over string characters
-            FOREACH char IN ARRAY (SELECT chars FROM (SELECT regexp_split_to_array(oldOp->>'string','')) AS x(chars))
-            LOOP 
-              latestId = latestId + 1;																					  
-              newOps = newOps || jsonb_build_object(
-                'insert', char,
-                'attributes', jsonb_build_object('node', latestId::text::jsonb)
-              );
-                                                              
-            END LOOP;
-        
-          
-        END LOOP;
-        
-      newOps = newOps || jsonb_build_object(
-                'insert', E'\n'
-      );																										
-                                                        
-        RAISE NOTICE 'New Ops: %', newOps;
-
-        newJ = jsonb_build_object('latestId',latestId, 'ops', newOps);
-
-        RETURN newJ;
-      END;
-    $f$ LANGUAGE 'plpgsql' IMMUTABLE;
+    BEGIN
+      RETURN commons.text_to_quill_doc(information.appellation_label_to_string(orig));
+    END;
+  $f$ LANGUAGE 'plpgsql' IMMUTABLE;
                                                       
   `
 

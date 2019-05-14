@@ -126,13 +126,13 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
   }
 
   onAddExisting(pkEntity: number) {
-    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_entity, pkEntity).subscribe(
+    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
       (peIts) => { this.done.emit(peIts[0]) }
     )
   }
 
   onOpenExisting(pkEntity: number) {
-    this.peItApi.nestedObjectOfProject(this.ngRedux.getState().activeProject.pk_entity, pkEntity).subscribe(
+    this.peItApi.nestedObjectOfProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
       (peIts) => { this.done.emit(peIts[0]) }
     )
   }
@@ -140,14 +140,14 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
   submitCreateForm() {
     // Create PeIt
     if (this.form.form.valid && this.form.form.value.peIt) {
-      this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_entity, this.form.form.value.peIt).subscribe(
+      this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.peIt).subscribe(
         (peIts) => { this.done.emit(peIts[0]) }
       )
     }
 
     // Find or create TeEn
     if (this.form.form.valid && this.form.form.value.teEn) {
-      this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_entity, this.form.form.value.teEn.temporal_entity).subscribe(
+      this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.teEn.temporal_entity).subscribe(
         (teEns) => { this.done.emit(teEns[0]) }
       )
     }

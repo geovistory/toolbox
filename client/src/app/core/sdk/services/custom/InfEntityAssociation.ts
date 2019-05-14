@@ -76,9 +76,9 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
    *
    * @param {number} pkEntity Primary Key of the entity association (pk_entity)
    *
-   * @param {number} pkRangeEntity Foreign Key of the entity association pointing to the range entity (fk_range_entity)
+   * @param {number} pkInfoRange Foreign Key of the entity association pointing to the range entity (fk_info_range)
    *
-   * @param {number} pkDomainEntity Foreign Key of the entity association pointing to the domain entity (fk_domain_entity)
+   * @param {number} pkInfoDomain Foreign Key of the entity association pointing to the domain entity (fk_info_domain)
    *
    * @param {number} pkProperty Foreign Key of the entity association pointing to the property (fk_property)
    *
@@ -91,7 +91,7 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
    * This usually means the response is a `InfEntityAssociation` object.)
    * </em>
    */
-  public nestedObject(ofProject: any, pkProject: any = {}, pkEntity: any = {}, pkRangeEntity: any = {}, pkDomainEntity: any = {}, pkProperty: any = {}, customHeaders?: Function): Observable<any> {
+  public nestedObject(ofProject: any, pkProject: any = {}, pkEntity: any = {}, pkInfoRange: any = {}, pkInfoDomain: any = {}, pkProperty: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfEntityAssociations/nested-object";
@@ -101,8 +101,8 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
     if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    if (typeof pkRangeEntity !== 'undefined' && pkRangeEntity !== null) _urlParams.pkRangeEntity = pkRangeEntity;
-    if (typeof pkDomainEntity !== 'undefined' && pkDomainEntity !== null) _urlParams.pkDomainEntity = pkDomainEntity;
+    if (typeof pkInfoRange !== 'undefined' && pkInfoRange !== null) _urlParams.pkInfoRange = pkInfoRange;
+    if (typeof pkInfoDomain !== 'undefined' && pkInfoDomain !== null) _urlParams.pkInfoDomain = pkInfoDomain;
     if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
@@ -117,9 +117,9 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
    *
    * @param {number} pkEntity Primary Key of the entity association (pk_entity)
    *
-   * @param {number} pkRangeEntity Foreign Key of the entity association pointing to the range entity (fk_range_entity)
+   * @param {number} pkInfoRange Foreign Key of the entity association pointing to the range entity (fk_info_range)
    *
-   * @param {number} pkDomainEntity Foreign Key of the entity association pointing to the domain entity (fk_domain_entity)
+   * @param {number} pkInfoDomain Foreign Key of the entity association pointing to the domain entity (fk_info_domain)
    *
    * @param {number} pkProperty Foreign Key of the entity association pointing to the property (fk_property)
    *
@@ -132,7 +132,7 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
    * This usually means the response is a `InfEntityAssociation` object.)
    * </em>
    */
-  public queryByParams(ofProject: any, pkProject: any = {}, pkEntity: any = {}, pkRangeEntity: any = {}, pkDomainEntity: any = {}, pkProperty: any = {}, customHeaders?: Function): Observable<any> {
+  public queryByParams(ofProject: any, pkProject: any = {}, pkEntity: any = {}, pkInfoRange: any = {}, pkInfoDomain: any = {}, pkProperty: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfEntityAssociations/find-by-params";
@@ -142,8 +142,8 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
     if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    if (typeof pkRangeEntity !== 'undefined' && pkRangeEntity !== null) _urlParams.pkRangeEntity = pkRangeEntity;
-    if (typeof pkDomainEntity !== 'undefined' && pkDomainEntity !== null) _urlParams.pkDomainEntity = pkDomainEntity;
+    if (typeof pkInfoRange !== 'undefined' && pkInfoRange !== null) _urlParams.pkInfoRange = pkInfoRange;
+    if (typeof pkInfoDomain !== 'undefined' && pkInfoDomain !== null) _urlParams.pkInfoDomain = pkInfoDomain;
     if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
@@ -156,9 +156,9 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
    *
    * @param {number} pkProject Primary Key of the Project. If provided and ofProject=false, makes a left join with project
    *
-   * @param {number} pkRangeEntity Foreign Key (fk_range_entity) to the source/section/chunk/spot that mentiones (range of 'geovP2 – is mentioned in')
+   * @param {number} pkInfoRange Foreign Key (fk_info_range) to the source/section/chunk/spot that mentiones (range of 'geovP2 – is mentioned in')
    *
-   * @param {number} pkDomainEntity Foreign Key (fk_domain_entity) to the mentioned entity (domain of 'geovP2 – is mentioned in')
+   * @param {number} pkInfoDomain Foreign Key (fk_info_domain) to the mentioned entity (domain of 'geovP2 – is mentioned in')
    *
    * @param {number} pkSource Primary Key of the entity association (pk_entity)
    *
@@ -175,7 +175,7 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
    * This usually means the response is a `InfEntityAssociation` object.)
    * </em>
    */
-  public mentionings(ofProject: any, pkProject: any, pkRangeEntity: any = {}, pkDomainEntity: any = {}, pkSource: any = {}, pkExpression: any = {}, pkChunk: any = {}, customHeaders?: Function): Observable<any> {
+  public mentionings(ofProject: any, pkProject: any, pkInfoRange: any = {}, pkInfoDomain: any = {}, pkSource: any = {}, pkExpression: any = {}, pkChunk: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfEntityAssociations/mentionings";
@@ -184,8 +184,8 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkRangeEntity !== 'undefined' && pkRangeEntity !== null) _urlParams.pkRangeEntity = pkRangeEntity;
-    if (typeof pkDomainEntity !== 'undefined' && pkDomainEntity !== null) _urlParams.pkDomainEntity = pkDomainEntity;
+    if (typeof pkInfoRange !== 'undefined' && pkInfoRange !== null) _urlParams.pkInfoRange = pkInfoRange;
+    if (typeof pkInfoDomain !== 'undefined' && pkInfoDomain !== null) _urlParams.pkInfoDomain = pkInfoDomain;
     if (typeof pkSource !== 'undefined' && pkSource !== null) _urlParams.pkSource = pkSource;
     if (typeof pkExpression !== 'undefined' && pkExpression !== null) _urlParams.pkExpression = pkExpression;
     if (typeof pkChunk !== 'undefined' && pkChunk !== null) _urlParams.pkChunk = pkChunk;

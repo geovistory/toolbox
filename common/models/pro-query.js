@@ -21,9 +21,9 @@ module.exports = function (ProQuery) {
 
         const sql = `
             SELECT * FROM (
-                select * from commons.query
+                select * from projects.query
                 Union
-                select * from commons.query_vt
+                select * from projects.query_vt
             ) as queries
             WHERE queries.fk_project = $1
             AND queries.pk_entity = $2
@@ -86,10 +86,10 @@ module.exports = function (ProQuery) {
             latest.tmsp_last_modification,
             latest.sys_period,
             vt.versions
-            FROM commons.query latest
+            FROM projects.query latest
             LEFT JOIN ( 
                 SELECT pk_entity, json_agg(entity_version ORDER BY entity_version DESC) versions
-                FROM commons.query_vt
+                FROM projects.query_vt
                 GROUP BY pk_entity
             ) AS vt ON vt.pk_entity = latest.pk_entity
             WHERE 
@@ -136,9 +136,9 @@ module.exports = function (ProQuery) {
             tmsp_last_modification,
             sys_period
             FROM (
-                SELECT * from commons.query latest
+                SELECT * from projects.query latest
                 UNION
-                SELECT * from commons.query_vt vt
+                SELECT * from projects.query_vt vt
             ) as all_versions
             WHERE  fk_project = $1 AND pk_entity = $2 AND entity_version = $3 
         `

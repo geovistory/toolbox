@@ -34,10 +34,10 @@ module.exports = function (ProVisual) {
     //         latest.tmsp_last_modification,
     //         latest.sys_period,
     //         vt.versions
-    //         FROM commons.visual latest
+    //         FROM projects.visual latest
     //         LEFT JOIN ( 
     //             SELECT pk_entity, json_agg(entity_version ORDER BY entity_version DESC) versions
-    //             FROM commons.visual_vt
+    //             FROM projects.visual_vt
     //             GROUP BY pk_entity
     //         ) AS vt ON vt.pk_entity = latest.pk_entity
     //         WHERE 
@@ -62,9 +62,9 @@ module.exports = function (ProVisual) {
 
         const sql = `
         WITH all_versions AS (
-            SELECT *, true as is_latest from commons.visual latest
+            SELECT *, true as is_latest from projects.visual latest
             UNION
-            SELECT *, false as is_latest  from commons.visual_vt vt
+            SELECT *, false as is_latest  from projects.visual_vt vt
         )
          SELECT
             all_versions.name,

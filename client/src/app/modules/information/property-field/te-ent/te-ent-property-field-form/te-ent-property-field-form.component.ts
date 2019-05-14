@@ -63,7 +63,7 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
 
     const fkProperty = s.property.dfh_pk_property;
     const fkTemporalEntity = ps.teEnt.pk_entity;
-    const fkProject = this.ngRedux.getState().activeProject.pk_entity;
+    const fkProject = this.ngRedux.getState().activeProject.pk_project;
 
     const waitAtLeast = timer(800);
     const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
@@ -156,7 +156,7 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
       })
 
       // call api
-      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_entity, t).subscribe(teEnts => {
+      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
 

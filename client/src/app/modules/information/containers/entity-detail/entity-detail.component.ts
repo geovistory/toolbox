@@ -124,7 +124,7 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
     }
   }
 
-  onRemovePeIt = (pkEntity: number) => this.removePeIt(pkEntity, this.ngRedux.getState().activeProject.pk_entity)
+  onRemovePeIt = (pkEntity: number) => this.removePeIt(pkEntity, this.ngRedux.getState().activeProject.pk_project)
 
   ngOnDestroy() {
     this.destroy();

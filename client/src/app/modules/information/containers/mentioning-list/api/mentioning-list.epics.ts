@@ -42,7 +42,7 @@ export class MentioningListAPIEpics {
           /**
            * Do some api call
            */
-          this.eaApi.findOrCreateInfEntityAssociation(c.ngRedux.getState().activeProject.pk_entity, action.meta.ea)
+          this.eaApi.findOrCreateInfEntityAssociation(c.ngRedux.getState().activeProject.pk_project, action.meta.ea)
             /**
              * Subscribe to the api call
              */
@@ -98,7 +98,7 @@ export class MentioningListAPIEpics {
            * Do some api call
            */
           const s = c.localStore.getState();
-          const pkProject = c.ngRedux.getState().activeProject.pk_entity;
+          const pkProject = c.ngRedux.getState().activeProject.pk_project;
           const type = s.mentioningListType;
           (
             type === 'ofSection' ? this.eaApi.mentionings(true, pkProject, null, null, null, s.sectionEntityPk, null) :

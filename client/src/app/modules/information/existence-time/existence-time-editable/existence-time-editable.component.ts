@@ -173,7 +173,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
         ...data.toAdd.filter(r => (r)) // than all roles are created or added to project
       ]
     } as InfTemporalEntity);
-    this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_entity, teEnt).subscribe(teEnts => {
+    this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, teEnt).subscribe(teEnts => {
       const roles = [
         // get the resulting roles of the and filter out the ones that are in project
         ...teEnts[0].te_roles.filter(role => (role.entity_version_project_rels && role.entity_version_project_rels[0].is_in_project)),

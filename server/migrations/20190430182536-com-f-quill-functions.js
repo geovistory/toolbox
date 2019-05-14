@@ -31,16 +31,27 @@ exports.up = function (db, callback) {
       -- LOOP over text characters
       FOREACH char IN ARRAY (SELECT chars FROM (SELECT regexp_split_to_array(text,'')) AS x(chars))
       LOOP 
+
+
+      IF char = E'\n' THEN
         ops = ops || jsonb_build_object(
           'insert', char,
-          'attributes', jsonb_build_object('node', latestId::text::jsonb)
+          'attributes', jsonb_build_object('blockid',  to_json(latestId::text)::jsonb)
         );
+      ELSE
+        ops = ops || jsonb_build_object(
+          'insert', char,
+          'attributes', jsonb_build_object('charid',  to_json(latestId::text)::jsonb)
+        );
+      END IF;
+
+
       latestId = latestId + 1;
       END LOOP;
 
         ops = ops || jsonb_build_object(
         'insert', E'\n',
-        'attributes', jsonb_build_object('node', latestId::text::jsonb)
+        'attributes', jsonb_build_object('blockid', to_json(latestId::text)::jsonb)
       );
 
       RETURN jsonb_build_object('latestId',latestId, 'ops', ops);

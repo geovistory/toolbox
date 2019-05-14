@@ -101,7 +101,7 @@ export class SourceDetailComponent extends SourceDetailAPIActions implements OnI
     if (this.localStore.getState().tabTitle !== newTabTitle) this.setTabTitle(newTabTitle);
   }
 
-  onRemoveSource = (pkEntity: number) => this.removeSource(pkEntity, this.ngRedux.getState().activeProject.pk_entity)
+  onRemoveSource = (pkEntity: number) => this.removeSource(pkEntity, this.ngRedux.getState().activeProject.pk_project)
 
   ngOnDestroy() {
     this.destroy();

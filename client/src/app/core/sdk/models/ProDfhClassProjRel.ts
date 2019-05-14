@@ -58,8 +58,8 @@ export class ProDfhClassProjRel implements ProDfhClassProjRelInterface {
           name: 'fk_project',
           type: 'number'
         },
-        "is_in_project": {
-          name: 'is_in_project',
+        "enabled_in_entities": {
+          name: 'enabled_in_entities',
           type: 'boolean'
         },
       },

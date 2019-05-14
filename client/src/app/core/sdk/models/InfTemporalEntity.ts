@@ -112,7 +112,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           model: 'InfEntityAssociation',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_domain_entity'
+          keyTo: 'fk_info_domain'
         },
         text_properties: {
           name: 'text_properties',

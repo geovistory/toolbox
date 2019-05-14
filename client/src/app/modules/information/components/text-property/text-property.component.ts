@@ -73,7 +73,7 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
   validateAndEmit() {
 
     // If quilldoc is not empty
-    this.quillValid = (((this.quillDoc || {} as any).contents || {}).ops || {}).length ? true : false;
+    this.quillValid = ((this.quillDoc || {} as any).ops || {}).length ? true : false;
 
     // If quillDoc and language are valid
     if (this.quillValid && this.langCtrl.valid) {

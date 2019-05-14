@@ -117,7 +117,7 @@ export class DatChunk implements DatChunkInterface {
           model: 'InfEntityAssociation',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_domain_entity'
+          keyTo: 'fk_info_domain'
         },
       }
     }

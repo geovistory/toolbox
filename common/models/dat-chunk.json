@@ -52,7 +52,8 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "findById"
+        "findById",
+        "t"
       ]
     },
     {
@@ -65,6 +66,19 @@
     }
   ],
   "methods": {
+    "t": {
+      "accepts": [ ],
+      "returns": {
+        "arg": "data",
+        "type": "boolean",
+        "root": true
+      },
+      "description": "T.",
+      "http": {
+        "path": "/t",
+        "verb": "post"
+      }
+    },
     "findOrCreateChunk": {
       "accepts": [
         {

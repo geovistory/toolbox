@@ -24,7 +24,7 @@ export class EprService {
     if (!entity.entity_version_project_rels) return undefined;
 
     const eprs = entity.entity_version_project_rels.filter(
-      epr => epr.fk_project === this.ngRedux.getState().activeProject.pk_entity
+      epr => epr.fk_project === this.ngRedux.getState().activeProject.pk_project
     )
     if (eprs.length !== 1) {
       // TODO error

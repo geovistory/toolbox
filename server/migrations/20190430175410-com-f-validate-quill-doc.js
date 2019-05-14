@@ -23,52 +23,54 @@ exports.up = function (db, callback) {
     isValid boolean;
   BEGIN
     SELECT INTO isValid commons.validate_json_schema('{
-        "$schema": "http://json-schema.org/draft-06/schema#",
-        "definitions": {
-          "QuillDoc": {
-            "type": "object",
-            "properties": {
-              "latestId": {
-                "type": "number"
-              },
-              "ops": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/Op"
-                }
-              }
+      "$schema": "http://json-schema.org/draft-06/schema#",
+      "definitions": {
+        "QuillDoc": {
+          "type": "object",
+          "properties": {
+            "latestId": {
+              "type": "number"
             },
-            "required": [
-              "latestId"
-            ],
-            "additionalProperties": false
+            "ops": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Op"
+              }
+            }
           },
-          "Op": {
-            "type": "object",
-            "properties": {
-              "insert": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 1
-              },
-              "attributes": {
-                "type": "object",
-                "properties": {
-                  "node": {
-                    "type": "number",
-                    "minimum": 1
-                  }
+          "required": [
+            "latestId"
+          ],
+          "additionalProperties": false
+        },
+        "Op": {
+          "type": "object",
+          "properties": {
+            "insert": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "charid": {
+                  "type": "string"
+                },
+                "blockid": {
+                  "type": "string"
                 }
               }
-            },
-            "required": [
-              "insert"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "$ref": "#/definitions/QuillDoc"
-      }'::jsonb, quillDoc);
+            }
+          },
+          "required": [
+            "insert"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "$ref": "#/definitions/QuillDoc"
+    }'::jsonb, quillDoc);
     RETURN isValid;
   END;
   $f$ LANGUAGE 'plpgsql' IMMUTABLE;

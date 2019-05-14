@@ -67,7 +67,7 @@ export class TypeEditableComponent extends TypeEditableAPIActions implements OnI
   ngAfterViewInit() {
     this.formGroup.valueChanges.subscribe((value) => {
       if (this.formGroup.valid && this.localStore.getState().editing) {
-        const fk_project = this.ngRedux.getState().activeProject.pk_entity;
+        const fk_project = this.ngRedux.getState().activeProject.pk_project;
 
         // old ea
         const ea = this.localStore.getState().entityAssociation;

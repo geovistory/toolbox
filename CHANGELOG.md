@@ -2,7 +2,7 @@
 ## Sprint 17
 ### Features
 * Visuals:
-  * Added new table commons.visual, storing the visual itself (not the results). `GEOV-398`
+  * Added new table projects.visual, storing the visual itself (not the results). `GEOV-398`
   * Added API Endpoints, all of them restricted to project_members: `GEOV-397`
     * findPerIdAndVersionAndProject: finds queries of the project, if specified by pk_entity and entity_version
     * create: persists a new visual to the datastore 

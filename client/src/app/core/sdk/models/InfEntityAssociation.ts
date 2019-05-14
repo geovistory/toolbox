@@ -18,8 +18,6 @@ export interface InfEntityAssociationInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  "fk_domain_entity"?: number;
-  "fk_range_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
   domain_pe_it?: InfPersistentItem;
   range_pe_it?: InfPersistentItem;
@@ -39,8 +37,6 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  "fk_domain_entity": number;
-  "fk_range_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
   domain_pe_it?: InfPersistentItem;
   range_pe_it?: InfPersistentItem;
@@ -119,14 +115,6 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
         "sys_period": {
           name: 'sys_period',
           type: 'string'
-        },
-        "fk_domain_entity": {
-          name: 'fk_domain_entity',
-          type: 'number'
-        },
-        "fk_range_entity": {
-          name: 'fk_range_entity',
-          type: 'number'
         },
       },
       relations: {

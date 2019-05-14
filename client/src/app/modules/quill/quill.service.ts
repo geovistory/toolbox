@@ -12,14 +12,14 @@ const Inline = Quill.import('blots/inline');
 
 class NodeBlot extends Inline {
 
-  static blotName = 'node';
+  static blotName = 'charid';
   static tagName = 'span';
 
 
   static create(value) {
     const node = super.create();
     // add id here
-    node.setAttribute('quillnode', value);
+    node.setAttribute('charid', value);
 
     return node;
   }
@@ -28,7 +28,7 @@ class NodeBlot extends Inline {
     // We will only be called with a node already
     // determined to be a blot, so we do
     // not need to check ourselves
-    return node.getAttribute('quillnode');
+    return node.getAttribute('charid');
   }
 }
 
@@ -38,15 +38,15 @@ Quill.register(NodeBlot, false);
 
 // class CustomBlock extends Block {
 
-//   // constructor(domNode, x) {
-//   //   super(domNode);
-//   //   domNode.setAttribute('id', uuid.v4());
-//   //   this.cache = {};
-//   // }
+//   constructor(domNode, x) {
+//     super(domNode);
+//     domNode.setAttribute('node', 999);
+//     this.cache = {};
+//   }
 
 //   static create(value) {
 //     const node = super.create()
-//     node.setAttribute("qid", value)
+//     node.setAttribute("node", value)
 //     return node
 //   }
 
@@ -54,43 +54,46 @@ Quill.register(NodeBlot, false);
 //   //   // We will only be called with a node already
 //   //   // determined to be a blot, so we do
 //   //   // not need to check ourselves
-//   //   return node.getAttribute('qid');
+//   //   return node.getAttribute('node');
 //   // }
 
-//   split(index, force = false) {
-//     if (force && (index === 0 || index >= this.length() - 1)) {
-//       const clone = this.clone()
-//       clone.domNode.qid = uuid.v4()
-//       if (index === 0) {
-//         this.parent.insertBefore(clone, this)
-//         return this
-//       }
-//       this.parent.insertBefore(clone, this.next)
-//       return clone
-//     }
-//     const next = super.split(index, force)
-//     next.domNode.qid = uuid.v4()
-//     this.cache = {}
-//     return next
-//   }
+//   // split(index, force = false) {
+//   //   if (force && (index === 0 || index >= this.length() - 1)) {
+//   //     const clone = this.clone()
+//   //     clone.domNode.node = '999'
+//   //     if (index === 0) {
+//   //       this.parent.insertBefore(clone, this)
+//   //       return this
+//   //     }
+//   //     this.parent.insertBefore(clone, this.next)
+//   //     return clone
+//   //   }
+//   //   const next = super.split(index, force)
+//   //   next.domNode.node = '999'
+//   //   this.cache = {}
+//   //   return next
+//   // }
 // }
 // CustomBlock.blotName = "block"
 // CustomBlock.tagName = "p"
 
 // Quill.register(CustomBlock, false);
 
-// const Parchment = Quill.import("parchment")
+const Parchment = Quill.import("parchment")
 
-// const QidAttribute = new Parchment.Attributor.Attribute('qid', 'qid', {
-//   scope: Parchment.Scope.BLOCK,
-// });
+// const QidAttribute = new Parchment.Attributor.Attribute('node', 'block-node')
+const QidAttribute = new Parchment.Attributor.Attribute('blockid', 'blockid', {
+  // scope: Parchment.Scope.INLINE,
+});
+Parchment.register(QidAttribute);
+
+
+Quill.register({
+  'attributors/attribute/blockid': QidAttribute
+}, true);
 
 // Quill.register({
-//   'attributors/attribute/id': IdAttribute
-// }, true);
-
-// Quill.register({
-//   'formats/qid': QidAttribute,
+//   'formats/node': QidAttribute,
 // }, true);
 
 
@@ -179,7 +182,7 @@ export class QuillService {
             // add the chars to the precedingToken
             newOps.push({
               retain: 1,
-              attributes: { node: id }
+              attributes: { charid: id, blockid: id }
             } as Op)
 
           }
@@ -231,152 +234,152 @@ export class QuillService {
     return { progress, result }
   }
 
-  /**
-   * Nodenizes the delta given by the content-change event.
-   * Returns the Delta with whitch the newDelta should be updated.
-   */
-  tokenizeContentChange(delta: DeltaI, oldDelta: DeltaI, latestId: number): { delta: DeltaI, latestId: number } {
+  // /**
+  //  * Nodenizes the delta given by the content-change event.
+  //  * Returns the Delta with whitch the newDelta should be updated.
+  //  */
+  // tokenizeContentChange(delta: DeltaI, oldDelta: DeltaI, latestId: number): { delta: DeltaI, latestId: number } {
 
-    const newDelta = new Delta();
+  //   const newDelta = new Delta();
 
-    // if user did insert something
-    if (this.isInsert(delta)) {
-      let id = latestId * 1;
-      let newOps: any[] = [];
-      let precedingToken: PrecedingToken;
-      let nextToken: NextToken;
+  //   // if user did insert something
+  //   if (this.isInsert(delta)) {
+  //     let id = latestId * 1;
+  //     let newOps: any[] = [];
+  //     let precedingToken: PrecedingToken;
+  //     let nextToken: NextToken;
 
-      // init newOps and oldOps
-      if (this.beginsWithRetain(delta)) {
-        // ad first op to new newOps and remove the first item of oldOps
-        newOps.push(delta.ops.shift());
+  //     // init newOps and oldOps
+  //     if (this.beginsWithRetain(delta)) {
+  //       // ad first op to new newOps and remove the first item of oldOps
+  //       newOps.push(delta.ops.shift());
 
-      } else if (this.endsWithRetain(delta)) {
-        newOps = this.initOpsThatEndWithRetains(delta)
-      }
+  //     } else if (this.endsWithRetain(delta)) {
+  //       newOps = this.initOpsThatEndWithRetains(delta)
+  //     }
 
-      // init precedingToken
-      precedingToken = this.initPrecedingToken(oldDelta, newOps);
+  //     // init precedingToken
+  //     precedingToken = this.initPrecedingToken(oldDelta, newOps);
 
-      const addRetainOp = () => {
-        // init nextToken
-        nextToken = this.extractNextToken(delta);
+  //     const addRetainOp = () => {
+  //       // init nextToken
+  //       nextToken = this.extractNextToken(delta);
 
-        // if last char before change and first char of change ar regChars
-        if ((precedingToken.type === nextToken.type && precedingToken.type === 'regChar')) {
+  //       // if last char before change and first char of change ar regChars
+  //       if ((precedingToken.type === nextToken.type && precedingToken.type === 'regChar')) {
 
-          // add the chars to the precedingToken
-          newOps.push({
-            retain: nextToken.length,
-            attributes: { node: precedingToken.id }
-          })
+  //         // add the chars to the precedingToken
+  //         newOps.push({
+  //           retain: nextToken.length,
+  //           attributes: { node: precedingToken.id }
+  //         })
 
-        } else {
-          // increase id
-          id = id + 1;
+  //       } else {
+  //         // increase id
+  //         id = id + 1;
 
-          newOps.push({
-            retain: nextToken.length,
-            attributes: { node: id }
-          })
+  //         newOps.push({
+  //           retain: nextToken.length,
+  //           attributes: { node: id }
+  //         })
 
-        }
+  //       }
 
-        // memorize token type for next iteration
-        precedingToken.type = nextToken.type;
+  //       // memorize token type for next iteration
+  //       precedingToken.type = nextToken.type;
 
-        // if there are remaining ops, start next iteration
-        if (delta.ops.length) addRetainOp()
+  //       // if there are remaining ops, start next iteration
+  //       if (delta.ops.length) addRetainOp()
 
-      }
+  //     }
 
-      // start nodenization
-      addRetainOp();
+  //     // start nodenization
+  //     addRetainOp();
 
-      newDelta.ops = newOps;
-      latestId = id;
-    }
+  //     newDelta.ops = newOps;
+  //     latestId = id;
+  //   }
 
-    return { delta: newDelta, latestId: latestId };
+  //   return { delta: newDelta, latestId: latestId };
 
-  }
+  // }
 
-  /**
-   * Returns the PrecedingToken of the last character before change
-   * if no last character, returns undefined.
-   * @param oldDelta
-   * @param ops empty array or array containing one retain op
-   */
-  initPrecedingToken(oldDelta: DeltaI, ops: any[]): PrecedingToken {
+  // /**
+  //  * Returns the PrecedingToken of the last character before change
+  //  * if no last character, returns undefined.
+  //  * @param oldDelta
+  //  * @param ops empty array or array containing one retain op
+  //  */
+  // initPrecedingToken(oldDelta: DeltaI, ops: any[]): PrecedingToken {
 
-    if (ops.length === 0) return { id: undefined, type: undefined };
+  //   if (ops.length === 0) return { id: undefined, type: undefined };
 
-    const retain = ops[0].retain;
-    const slicedDelta = oldDelta.slice((retain - 1), retain);
-    const precedingChar = slicedDelta.ops[0].insert;
-    const precedingType = this.hasSeparator(precedingChar) ? 'sepChar' : 'regChar';
-    // if insert is a '\n' there is no id available and no id needed
-    const precedingId = (slicedDelta.ops[0].attributes || {}).node;
+  //   const retain = ops[0].retain;
+  //   const slicedDelta = oldDelta.slice((retain - 1), retain);
+  //   const precedingChar = slicedDelta.ops[0].insert;
+  //   const precedingType = this.hasSeparator(precedingChar) ? 'sepChar' : 'regChar';
+  //   // if insert is a '\n' there is no id available and no id needed
+  //   const precedingId = (slicedDelta.ops[0].attributes || {}).node;
 
-    return {
-      id: precedingId,
-      type: precedingType
-    }
-  }
+  //   return {
+  //     id: precedingId,
+  //     type: precedingType
+  //   }
+  // }
 
-  /**
-   * Returns the NextToken from given delta and removes
-   * this part from the delta (eighter a piece of string or a op item)
-   * @param delta
-   */
-  extractNextToken(delta: DeltaI): NextToken {
+  // /**
+  //  * Returns the NextToken from given delta and removes
+  //  * this part from the delta (eighter a piece of string or a op item)
+  //  * @param delta
+  //  */
+  // extractNextToken(delta: DeltaI): NextToken {
 
-    // if no next token, return NextToken of type undefined
-    if (!delta.ops.length || !delta.ops[0].insert) return { length: 0, type: undefined };
+  //   // if no next token, return NextToken of type undefined
+  //   if (!delta.ops.length || !delta.ops[0].insert) return { length: 0, type: undefined };
 
-    // get insert string
-    const insert = delta.ops[0].insert;
+  //   // get insert string
+  //   const insert = delta.ops[0].insert;
 
-    /**
-     * Drop first n characters of delta and remove op if empty
-     * @param n length of string to remove from delta
-     */
-    const removeFromDelta = (n: number) => {
-      // drop first n characters of string
-      delta.ops[0].insert = insert.substring(n);
+  //   /**
+  //    * Drop first n characters of delta and remove op if empty
+  //    * @param n length of string to remove from delta
+  //    */
+  //   const removeFromDelta = (n: number) => {
+  //     // drop first n characters of string
+  //     delta.ops[0].insert = insert.substring(n);
 
-      // if op.insert is now empty, remove the op
-      if (delta.ops[0].insert === '') delta.ops.shift();
-    }
+  //     // if op.insert is now empty, remove the op
+  //     if (delta.ops[0].insert === '') delta.ops.shift();
+  //   }
 
-    const begSep = this.BEGINING_SEPARATOR.exec(insert)[0];
-    if (begSep.length) {
+  //   const begSep = this.BEGINING_SEPARATOR.exec(insert)[0];
+  //   if (begSep.length) {
 
-      // begSep must be a string of length = 1
-      if (begSep.length !== 1) throw new Error('Separator Tokens can contain max. one character');
+  //     // begSep must be a string of length = 1
+  //     if (begSep.length !== 1) throw new Error('Separator Tokens can contain max. one character');
 
-      removeFromDelta(begSep.length)
+  //     removeFromDelta(begSep.length)
 
-      return {
-        length: begSep.length,
-        type: 'sepChar'
-      }
+  //     return {
+  //       length: begSep.length,
+  //       type: 'sepChar'
+  //     }
 
-    }
+  //   }
 
-    const wordSep = this.BEGINING_WORD.exec(insert)[0];
-    if (wordSep.length) {
+  //   const wordSep = this.BEGINING_WORD.exec(insert)[0];
+  //   if (wordSep.length) {
 
-      removeFromDelta(wordSep.length)
+  //     removeFromDelta(wordSep.length)
 
-      return {
-        length: wordSep.length,
-        type: 'regChar'
-      }
-    }
+  //     return {
+  //       length: wordSep.length,
+  //       type: 'regChar'
+  //     }
+  //   }
 
 
-  }
+  // }
 
 
   /**
@@ -471,34 +474,34 @@ export class QuillService {
       d.ops[1].hasOwnProperty('insert') ? d.ops[1].insert.length : 0;
   }
 
-  /**
-   * Checks if the given delta inserts something in the
-   * first or second op in ops and if this contains a separator
-   * @param d
-   */
-  insertsSeparator(d: DeltaI): boolean {
-    const string = d.ops[0].hasOwnProperty('insert') ? d.ops[0].insert :
-      d.ops[1].hasOwnProperty('insert') ? d.ops[1].insert : '';
+  // /**
+  //  * Checks if the given delta inserts something in the
+  //  * first or second op in ops and if this contains a separator
+  //  * @param d
+  //  */
+  // insertsSeparator(d: DeltaI): boolean {
+  //   const string = d.ops[0].hasOwnProperty('insert') ? d.ops[0].insert :
+  //     d.ops[1].hasOwnProperty('insert') ? d.ops[1].insert : '';
 
-    return this.hasSeparator(string)
-  }
+  //   return this.hasSeparator(string)
+  // }
 
-  /**
-   * Checks if the op in ops of d that comes before the
-   * provided index is a separator
-   * @param d
-   * @param index
-   */
-  isAfterSeparator(d, index): boolean {
+  // /**
+  //  * Checks if the op in ops of d that comes before the
+  //  * provided index is a separator
+  //  * @param d
+  //  * @param index
+  //  */
+  // isAfterSeparator(d, index): boolean {
 
-    const affectedOp = this.getOpByIndex(d, index);
+  //   const affectedOp = this.getOpByIndex(d, index);
 
-    if (this.isSingleSeparator(affectedOp.insert)) return true;
+  //   if (this.isSingleSeparator(affectedOp.insert)) return true;
 
-    // else if (this.hasSeparator(affectedOp.insert)) throw new Error('something wern wrong');
+  //   // else if (this.hasSeparator(affectedOp.insert)) throw new Error('something wern wrong');
 
-    else return false;
-  }
+  //   else return false;
+  // }
 
 
   /**
@@ -522,78 +525,78 @@ export class QuillService {
   }
 
 
-  /**
-   * create delta with one a retain that has the latest id
-   * TODO: make this more flexible for different lenghts of
-   * ops and inserts
-   */
-  nodenizeInsert(latestId): { delta: DeltaI, latestId: number } {
-    const delta = new Delta();
-    latestId++;
-    delta.retain(1, { node: latestId })
-    return { delta, latestId };
-  }
+  // /**
+  //  * create delta with one a retain that has the latest id
+  //  * TODO: make this more flexible for different lenghts of
+  //  * ops and inserts
+  //  */
+  // nodenizeInsert(latestId): { delta: DeltaI, latestId: number } {
+  //   const delta = new Delta();
+  //   latestId++;
+  //   delta.retain(1, { node: latestId })
+  //   return { delta, latestId };
+  // }
 
-  /**
-   * nodenizes the part after the inserted text by adding
-   * a new nodid
-   *
-   * @param oldDelta
-   * @param retained
-   * @param inserted
-   */
-  nodenizeAfterInsert(oldDelta, retained, inserted, latestId): { delta: DeltaI, latestId: number } {
-    let r = retained
-    const delta = new Delta();
-    oldDelta.ops.some(op => {
-
-
-      // if op is before the change
-      if (op.insert.length < r) {
-        r = r - op.insert.length;
-      } else {
-        // if this is the splitted op
-        const re = op.insert.length - r;
-
-        // if re is 0, this means that there is nothing after the insert
-        if (re === 0) return true; // return true breaks some()
-
-        latestId++;
-        delta.retain(re, { node: latestId })
-      }
-
-    })
-
-    return { delta, latestId };
-  }
+  // /**
+  //  * nodenizes the part after the inserted text by adding
+  //  * a new nodid
+  //  *
+  //  * @param oldDelta
+  //  * @param retained
+  //  * @param inserted
+  //  */
+  // nodenizeAfterInsert(oldDelta, retained, inserted, latestId): { delta: DeltaI, latestId: number } {
+  //   let r = retained
+  //   const delta = new Delta();
+  //   oldDelta.ops.some(op => {
 
 
-  /**
-   * Checks if given string is only one single
-   * separator character
-   * @param string
-   */
-  isSingleSeparator(string: string): boolean {
+  //     // if op is before the change
+  //     if (op.insert.length < r) {
+  //       r = r - op.insert.length;
+  //     } else {
+  //       // if this is the splitted op
+  //       const re = op.insert.length - r;
 
-    // if the length is wrong, return false
-    if (string.length !== 1) return false;
+  //       // if re is 0, this means that there is nothing after the insert
+  //       if (re === 0) return true; // return true breaks some()
 
-    // else if it has a separator, return true
-    else if (this.hasSeparator(string)) return true;
+  //       latestId++;
+  //       delta.retain(re, { node: latestId })
+  //     }
 
-    else return false;
+  //   })
 
-  }
+  //   return { delta, latestId };
+  // }
 
-  /**
-  * Checks if given string does contain
-  * any separator charactor.
-  *
-  * @return true if string has separator
-  */
-  hasSeparator(string): boolean {
-    return this.SEPARATOR_REGEX.test(string);
-  }
+
+  // /**
+  //  * Checks if given string is only one single
+  //  * separator character
+  //  * @param string
+  //  */
+  // isSingleSeparator(string: string): boolean {
+
+  //   // if the length is wrong, return false
+  //   if (string.length !== 1) return false;
+
+  //   // else if it has a separator, return true
+  //   else if (this.hasSeparator(string)) return true;
+
+  //   else return false;
+
+  // }
+
+  // /**
+  // * Checks if given string does contain
+  // * any separator charactor.
+  // *
+  // * @return true if string has separator
+  // */
+  // hasSeparator(string): boolean {
+  //   return this.SEPARATOR_REGEX.test(string);
+  // }
 
 
 

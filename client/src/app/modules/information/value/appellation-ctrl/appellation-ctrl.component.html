@@ -1,2 +1,2 @@
-<gv-quill-edit *ngIf="quillDoc" [quillDoc]="quillDoc" [inputLike]="true" [editorConfig]="editorConfig"
+<gv-quill-edit [quillDoc]="quillDoc" [inputLike]="true" [editorConfig]="editorConfig"
                     (quillDocChange)="quillDocChange($event)" (htmlChange)="html=$event" (blur)="markAsTouched()"></gv-quill-edit>

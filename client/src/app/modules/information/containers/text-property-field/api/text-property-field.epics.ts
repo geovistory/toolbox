@@ -45,7 +45,7 @@ export class TextPropertyFieldAPIEpics {
            * Do some api call
            */
           this.textPropertyApi.findOrCreateInfTextProperty(
-            c.ngRedux.getState().activeProject.pk_entity,
+            c.ngRedux.getState().activeProject.pk_project,
             action.meta.infTextProperty
           )
             /**
@@ -120,7 +120,7 @@ export class TextPropertyFieldAPIEpics {
           /**
            * Do some api call
            */
-          this.eprApi.updateEprAttributes(c.ngRedux.getState().activeProject.pk_entity, action.meta.pkEntity, {
+          this.eprApi.updateEprAttributes(c.ngRedux.getState().activeProject.pk_project, action.meta.pkEntity, {
             is_in_project: false
           } as ProInfoProjRel)
             /**
