@@ -125,10 +125,10 @@ function readFiles(dirPath) {
 		// get a ordered list of table names needed for populating db in right order (no FK violations)
 		const tableOrder = getTableOrder();
 
-		
+
 		Promise.all([truncateTables, tableOrder]).then(
 			results => {
-				
+
 				// order filenames according to manually created list
 				const tableNames = results[1];
 
@@ -138,28 +138,42 @@ function readFiles(dirPath) {
 				const loopFilesSynchonously = () => {
 					var hrFileStart = process.hrtime();
 					const filename = tableNames[i];
-					// call readfile
-					readFile(filename,
-						onSuccess => {
 
-							var hrFileEnd = process.hrtime(hrFileStart);
-							console.log(`Inserted data of #${i + 1} of ${tableNames.length} files: ${filename} after %ds %dms`, hrFileEnd[0], parseInt(hrFileEnd[1] / 1000000))
+					// Add all parent tables in this array. They need to be skipped because otherwise we have everything twice. 
+					if (
+						[
+							'commons.text', 'commons.text_vt', 'data.entity', 'data_for_history.entity', 'projects.entity', 'system.entity', 'information.entity'
+						].includes(filename)
+					) {
+						console.log(`Skipping file #${i + 1} of ${tableNames.length}: ${filename}, because it is a parent table`)
+						i++;
+						loopFilesSynchonously()
+					} else {
 
-							// onSuccess increase index for next filename and call readfile
-							i++;
 
-							if (i === tableNames.length) {
-								var hrend = process.hrtime(hrstart);
-								console.info('Execution time: %ds %dms', hrend[0], parseInt(hrend[1] / 1000000))
-								process.exit();
-							} else {
-								loopFilesSynchonously();
-							}
-						},
-						error => {
-							errorHandler(`Error on inerting of #${i + 1} of ${tableNames.length} files: ${filename}. Error: ${error}`)
-						}
-					)
+						// call readfile
+						readFile(filename,
+							onSuccess => {
+
+								var hrFileEnd = process.hrtime(hrFileStart);
+								console.log(`Inserted data of file #${i + 1} of ${tableNames.length}: ${filename} after %ds %dms`, hrFileEnd[0], parseInt(hrFileEnd[1] / 1000000))
+
+								// onSuccess increase index for next filename and call readfile
+								i++;
+
+								if (i === tableNames.length) {
+									var hrend = process.hrtime(hrstart);
+									console.info('Execution time: %ds %dms', hrend[0], parseInt(hrend[1] / 1000000))
+									process.exit();
+								} else {
+									loopFilesSynchonously();
+								}
+							},
+							error => {
+								errorHandler(`Error on inerting of #${i + 1} of ${tableNames.length} files: ${filename}. Error: ${error}`)
+							})
+					}
+
 				};
 
 				loopFilesSynchonously();
