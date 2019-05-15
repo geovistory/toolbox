@@ -12,7 +12,7 @@ CREATE OR REPLACE FUNCTION public.drop_all ()
         from information_schema.schemata
 
          -- You can exclude the schema which you don't want to drop by adding another condition here
-         where schema_name !~* 'information_schema|pg_catalog' 
+         where schema_name !~* 'information_schema|pg_catalog|pg_toast' 
            LOOP
              EXECUTE 'DROP SCHEMA ' || rec.schema_name || ' CASCADE'; 
            END LOOP; 
@@ -21,3 +21,5 @@ CREATE OR REPLACE FUNCTION public.drop_all ()
    $$ LANGUAGE plpgsql;
 
 select public.drop_all();
+
+CREATE SCHEMA public;
