@@ -8,7 +8,7 @@ module.exports = function(DatChunk) {
 
   DatChunk.t = function() {
 
-    return new Promise ((res, rej)=> {
+    return new Promise ((resolve, reject)=> {
 
       return new Promise((res2, rej2) => {
 
@@ -16,8 +16,8 @@ module.exports = function(DatChunk) {
         // rej2('err')
         
       })
-      .catch(err => rej(err))
-      .then(result => result)
+      .catch(err => reject(err))
+      .then(res => resolve(res))
 
     })
 

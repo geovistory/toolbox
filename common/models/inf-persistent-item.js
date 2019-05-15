@@ -60,10 +60,10 @@ module.exports = function (InfPersistentItem) {
                   res.pi_roles.push(role[0]);
                 }
               }
-              resolve(true);
+              return true;
 
             }).catch((err) => {
-              return err;
+              reject(err);
             })
 
 
@@ -100,7 +100,7 @@ module.exports = function (InfPersistentItem) {
               return true;
 
             }).catch((err) => {
-              return err;
+              reject(err);
             })
 
             // add promise for text properties
@@ -136,7 +136,7 @@ module.exports = function (InfPersistentItem) {
               return true;
 
             }).catch((err) => {
-              return err;
+              reject(err);
             })
 
             // add promise for text properties
@@ -172,7 +172,7 @@ module.exports = function (InfPersistentItem) {
           //     return true;
 
           //   }).catch((err) => {
-          //     return err;
+          //     reject(err);
           //   })
 
           //   // add promise
@@ -181,9 +181,9 @@ module.exports = function (InfPersistentItem) {
           // }
 
 
-          if (promiseArray.length === 0) return resultingPeIts;
+          if (promiseArray.length === 0) return resolve([res]);
           else return Promise.map(promiseArray, (promise) => promise).then(() => {
-            return [res]
+            resolve([res])
           });
 
         })

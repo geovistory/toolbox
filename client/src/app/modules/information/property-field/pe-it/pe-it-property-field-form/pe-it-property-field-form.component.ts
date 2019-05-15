@@ -169,8 +169,11 @@ export class PeItPropertyFieldFormComponent extends PropertyFieldFormBase {
     if (this.createForm.valid) {
 
       // prepare peIt
-      const p = new InfPersistentItem(this.parentPeItStore.getState().peIt);
-      p.pi_roles = [];
+      const p = {
+        pk_entity: this.parentPeItStore.getState().peIt.pk_entity,
+        fk_class: this.parentPeItStore.getState().peIt.fk_class,
+        pi_roles: []
+      } as InfPersistentItem;
 
       Object.keys(this.createForm.controls).forEach(key => {
         if (this.createForm.get(key)) {

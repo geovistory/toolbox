@@ -6,132 +6,132 @@ const _ = require('lodash')
 module.exports = function (InfEntityAssociation) {
 
   InfEntityAssociation.findOrCreateInfEntityAssociation = function (pk_project, ea, ctx) {
+    return new Promise((resolve, reject) => {
 
-    const dataObject = {
-      // pk_entity: ea.pk_entity,
-      fk_property: ea.fk_property,
-      fk_info_domain: ea.fk_info_domain,
-      fk_info_range: ea.fk_info_range,
-      notes: ea.notes
-    };
+      const dataObject = {
+        // pk_entity: ea.pk_entity,
+        fk_property: ea.fk_property,
+        fk_info_domain: ea.fk_info_domain,
+        fk_info_range: ea.fk_info_range,
+        notes: ea.notes
+      };
 
 
-    let requestedEa = (ctx && ctx.req && ctx.req.body) ? ctx.req.body : ea;
+      let requestedEa = (ctx && ctx.req && ctx.req.body) ? ctx.req.body : ea;
 
-    const ctxWithoutBody = _.omit(ctx, [ 'req.body']);
+      const ctxWithoutBody = _.omit(ctx, [ 'req.body']);
 
-    
-    // if the ea has a persistent item as the domain 
-    if (requestedEa.domain_pe_it && Object.keys(requestedEa.domain_pe_it).length > 0) {
 
-      // prepare parameters
-      const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
+      // if the ea has a persistent item as the domain 
+      if (requestedEa.domain_pe_it && Object.keys(requestedEa.domain_pe_it).length > 0) {
 
-      // find or create the peIt and the ea pointing to it
-      return InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.domain_pe_it, ctxWithoutBody)
-        .then((resultingPeIts) => {
+        // prepare parameters
+        const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
 
-          const resultingPeIt = resultingPeIts[0];
+        // find or create the peIt and the ea pointing to it
+        InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.domain_pe_it, ctxWithoutBody)
+          .then((resultingPeIts) => {
 
-          // … prepare the Ea to create
-          dataObject.fk_info_domain = resultingPeIt.pk_entity;
+            const resultingPeIt = resultingPeIts[0];
 
-          return InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
-            .then((resultingEas) => {
+            // … prepare the Ea to create
+            dataObject.fk_info_domain = resultingPeIt.pk_entity;
 
-              let res = resultingEas[0].toJSON();
-              res.domain_pe_it = resultingPeIt;
+            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
+              .then((resultingEas) => {
 
-              return [res];
+                let res = resultingEas[0].toJSON();
+                res.domain_pe_it = resultingPeIt;
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
+                resolve([res]);
 
-    }
+              })
+              .catch(err => reject(err))
 
-    // if the ea has a persistent item as the range 
-    if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
+          })
+          .catch(err => reject(err))
 
-      // prepare parameters
-      const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
 
-      // find or create the peIt and the ea pointing to it
-      return InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.range_pe_it, ctxWithoutBody)
-        .then((resultingPeIts) => {
+      }
 
-          const resultingPeIt = resultingPeIts[0];
+      // if the ea has a persistent item as the range 
+      if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
 
-          // … prepare the Ea to create
-          dataObject.fk_info_range = resultingPeIt.pk_entity;
+        // prepare parameters
+        const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
 
-          return InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
-            .then((resultingEas) => {
+        // find or create the peIt and the ea pointing to it
+        InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.range_pe_it, ctxWithoutBody)
+          .then((resultingPeIts) => {
 
-              let res = resultingEas[0].toJSON();
-              res.range_pe_it = resultingPeIt;
+            const resultingPeIt = resultingPeIts[0];
 
-              return [res];
+            // … prepare the Ea to create
+            dataObject.fk_info_range = resultingPeIt.pk_entity;
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
+            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
+              .then((resultingEas) => {
 
-    }
+                let res = resultingEas[0].toJSON();
+                res.range_pe_it = resultingPeIt;
 
-    // if the ea has a chunk as the range 
-    if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
+                resolve([res]);
 
-      // prepare parameters
-      const DatChunk = InfEntityAssociation.app.models.DatChunk;
+              })
+              .catch(err => reject(err))
 
-      // find or create the peIt and the ea pointing to it
-      return DatChunk.findOrCreateChunk(pk_project, requestedEa.range_chunk, ctxWithoutBody)
-        .then((resultingObjects) => {
+          })
+          .catch(err => reject(err))
 
-          const resultingObject = resultingObjects[0];
 
-          // … prepare the Ea to create
-          dataObject.fk_info_range = resultingObject.pk_entity;
+      }
 
-          return InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
-            .then((resultingEas) => {
+      // if the ea has a chunk as the range 
+      if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
 
-              let res = resultingEas[0].toJSON();
-              res.range_chunk = resultingObject;
+        // prepare parameters
+        const DatChunk = InfEntityAssociation.app.models.DatChunk;
 
-              return [res];
+        // find or create the peIt and the ea pointing to it
+        DatChunk.findOrCreateChunk(pk_project, requestedEa.range_chunk, ctxWithoutBody)
+          .then((resultingObjects) => {
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
+            const resultingObject = resultingObjects[0];
 
-    }
+            // … prepare the Ea to create
+            dataObject.fk_info_range = resultingObject.pk_entity;
+
+            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
+              .then((resultingEas) => {
+
+                let res = resultingEas[0].toJSON();
+                res.range_chunk = resultingObject;
+
+                resolve([res]);
+
+              })
+              .catch(err => reject(err))
+
+          })
+          .catch(err => reject(err))
+
+      }
 
 
 
 
-    else {
+      else {
 
-      return InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
+        InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
+          .catch(err => {
+            reject(err)
+          })
+          .then(result => {
+            resolve(result)
+          })
 
-    }
-
+      }
+    })
   }
 
 

@@ -180,7 +180,7 @@ export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
       })
 
       // call api
-      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.project.pk_entity, t).subscribe(teEnts => {
+      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.project.pk_project, t).subscribe(teEnts => {
         const roles: InfRole[] = teEnts[0].te_roles;
 
         const roleDetailList = createRoleDetailList(this.propertyFieldState, roles, this.ngRedux.getState().activeProject.crm, { pkUiContext: this.propertyFieldState.pkUiContext })

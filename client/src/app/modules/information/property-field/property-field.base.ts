@@ -3,7 +3,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhProperty, IAppState, ProInfoProjRel, ProInfoProjRelApi, InfPersistentItem, InfRole, InfRoleApi, ProProject, U } from 'app/core';
+import { DfhProperty, IAppState, ProInfoProjRel, ProInfoProjRelApi, InfPersistentItem, InfRole, InfRoleApi, ProProject, U, ProjectPreview } from 'app/core';
 import { CollapsedExpanded, FieldLabel, PropertyField, PropertyFieldForm, RoleDetail, RoleDetailList } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
@@ -82,7 +82,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
     */
 
     _role_list: RoleDetailList
-    project: ProProject;
+    project: ProjectPreview;
     propertyFieldState: PropertyField;
 
     roleDetails: { key: string, value: RoleDetail }[];
@@ -334,7 +334,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
         const roleToRemove = StateToDataService.roleStateToRoleToRelate(roleState)
 
         this.subs.push(this.roleApi.changeRoleProjectRelation(
-            this.project.pk_entity, false, roleToRemove
+            this.project.pk_project, false, roleToRemove
         ).subscribe(result => {
             this.localStore.dispatch(this.actions.roleRemovedFromProject(key, roleState))
         }))
