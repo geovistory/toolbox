@@ -95,7 +95,7 @@ CREATE SCHEMA warehouse;
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS postgis; --WITH SCHEMA public;
 
 
 --
@@ -104,7 +104,7 @@ CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 -- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
+-- COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial types and functions';
 
 
 --
@@ -112,7 +112,7 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 -- Name: postgis_topology; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
+CREATE EXTENSION IF NOT EXISTS postgis_topology; -- WITH SCHEMA topology;
 
 
 --
@@ -121,7 +121,7 @@ CREATE EXTENSION IF NOT EXISTS postgis_topology WITH SCHEMA topology;
 -- Name: EXTENSION postgis_topology; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
+-- COMMENT ON EXTENSION postgis_topology IS 'PostGIS topology spatial types and functions';
 
 
 --
