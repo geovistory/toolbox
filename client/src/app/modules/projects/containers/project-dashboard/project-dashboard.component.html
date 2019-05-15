@@ -2,7 +2,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
-    <li class="breadcrumb-item">{{project?.labels[0].label}}</li>
+    <li class="breadcrumb-item">{{project.label}}</li>
   </ol>
 </gv-navbar>
 
@@ -10,7 +10,7 @@
 <div *ngIf="(showDashboard$ |async)" id="project-dashboard" class="container">
   <div class="row">
     <div class="col">
-      <h2>Project {{project?.labels[0].label}} <a class="btn btn-link pull-right" routerLink="settings">Project
+      <h2>Project {{project.label}} <a class="btn btn-link pull-right" routerLink="settings">Project
           settings</a></h2>
     </div>
   </div>
