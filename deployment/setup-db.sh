@@ -49,7 +49,6 @@ then
     ../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up $latest_migration;
 
 
-
     echo '================= RESTORE TARGET DB WITH DATA OF SOURCE ================= ';
     node restore-target.js $DB_TARGET $dirPath;
 
