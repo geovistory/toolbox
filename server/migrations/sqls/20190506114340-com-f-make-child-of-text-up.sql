@@ -39,7 +39,7 @@ CREATE FUNCTION commons.make_table_child_of_text(
         ADD CONSTRAINT text_quill_doc_check CHECK (commons.validate_quill_doc(quill_doc));
 
         -- Add the column for string and fill with empty string
-        ALTER TABLE %1$s  ADD COLUMN string text;
+        ALTER TABLE %1$s  ADD COLUMN string text DEFAULT '''';
         UPDATE %1$s SET string = '''' WHERE string IS NULL;
         ALTER TABLE %1$s ALTER COLUMN string SET NOT NULL;  
 
