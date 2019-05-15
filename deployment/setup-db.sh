@@ -14,7 +14,7 @@ then
 fi
 
 # Begin the process of data replication, if in review or staging environment
-if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'staging' ]
+if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'staging' ]
 then
 
     echo '========================================================================= ';
