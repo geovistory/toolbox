@@ -1,4 +1,4 @@
-import { InfAppellation } from 'app/core/sdk/models/InfAppellation';
+import { InfAppellation } from 'app/core/sdk';
 
 export interface AppeDetailI {
     appellation?: InfAppellation;

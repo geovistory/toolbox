@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, ComClassFieldApi } from 'app/core';
+import { LoadingBarActions, SysClassFieldApi } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class ClassFieldListAPIEpics {
   constructor(
-    private classFieldApi: ComClassFieldApi, // <- change the api
+    private classFieldApi: SysClassFieldApi, // <- change the api
     private actions: ClassFieldListAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -40,13 +40,13 @@ export class ClassFieldListAPIEpics {
            */
           this.classFieldApi.findComplex({
             include: {
-              labels: {
-                $relation: {
-                  name: 'labels',
-                  joinType: 'left join',
-                  orderBy: [{ pk_entity: 'DESC' }],
-                }
-              },
+              // labels: {
+              //   $relation: {
+              //     name: 'labels',
+              //     joinType: 'left join',
+              //     orderBy: [{ pk_entity: 'DESC' }],
+              //   }
+              // },
               class_field_property_rel: {
                 $relation: {
                   name: 'class_field_property_rel',

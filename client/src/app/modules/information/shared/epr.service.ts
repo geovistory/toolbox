@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfEntityProjectRel, InfEntityProjectRelApi, IAppState } from 'app/core';
+import { ProInfoProjRel, ProInfoProjRelApi, IAppState } from 'app/core';
 import { ReplaySubject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 
@@ -9,7 +9,7 @@ export class EprService {
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
-    private eprApi: InfEntityProjectRelApi
+    private eprApi: ProInfoProjRelApi
   ) { }
 
 
@@ -37,9 +37,9 @@ export class EprService {
   * and the active project
   *
   * @param  {any} entity   InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfLanguage
-  * @param  {InfEntityProjectRel} epr
+  * @param  {ProInfoProjRel} epr
   */
-  updateEprOfEntity(entity, epr: InfEntityProjectRel) {
+  updateEprOfEntity(entity, epr: ProInfoProjRel) {
     let eprs = entity.entity_version_project_rels;
     for (let i = 0; i < eprs.length; i++) {
       if (eprs[i].pk_entity_version_project_rel == epr.pk_entity_version_project_rel) {

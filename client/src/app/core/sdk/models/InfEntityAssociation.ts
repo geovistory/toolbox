@@ -1,44 +1,48 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfPersistentItem,
-  InfChunk,
-  InfDigitalObject
+  DatChunk,
+  DatDigital
 } from '../index';
 
 declare var Object: any;
 export interface InfEntityAssociationInterface {
   "fk_property": number;
-  "fk_domain_entity": number;
-  "fk_range_entity": number;
+  "fk_info_domain"?: number;
+  "fk_info_range"?: number;
+  "fk_data_domain"?: number;
+  "fk_data_range"?: number;
   "pk_entity"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   domain_pe_it?: InfPersistentItem;
   range_pe_it?: InfPersistentItem;
-  domain_chunk?: InfChunk;
-  range_chunk?: InfChunk;
-  digital_object?: InfDigitalObject;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
 }
 
 export class InfEntityAssociation implements InfEntityAssociationInterface {
   "fk_property": number;
-  "fk_domain_entity": number;
-  "fk_range_entity": number;
+  "fk_info_domain": number;
+  "fk_info_range": number;
+  "fk_data_domain": number;
+  "fk_data_range": number;
   "pk_entity": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   domain_pe_it?: InfPersistentItem;
   range_pe_it?: InfPersistentItem;
-  domain_chunk?: InfChunk;
-  range_chunk?: InfChunk;
-  digital_object?: InfDigitalObject;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
   constructor(data?: InfEntityAssociationInterface) {
     Object.assign(this, data);
   }
@@ -76,12 +80,20 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
           name: 'fk_property',
           type: 'number'
         },
-        "fk_domain_entity": {
-          name: 'fk_domain_entity',
+        "fk_info_domain": {
+          name: 'fk_info_domain',
           type: 'number'
         },
-        "fk_range_entity": {
-          name: 'fk_range_entity',
+        "fk_info_range": {
+          name: 'fk_info_range',
+          type: 'number'
+        },
+        "fk_data_domain": {
+          name: 'fk_data_domain',
+          type: 'number'
+        },
+        "fk_data_range": {
+          name: 'fk_data_range',
           type: 'number'
         },
         "pk_entity": {
@@ -108,8 +120,8 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
       relations: {
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
@@ -119,7 +131,7 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_domain_entity',
+                  keyFrom: 'fk_info_domain',
           keyTo: 'pk_entity'
         },
         range_pe_it: {
@@ -127,31 +139,31 @@ export class InfEntityAssociation implements InfEntityAssociationInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_range_entity',
+                  keyFrom: 'fk_info_range',
           keyTo: 'pk_entity'
         },
         domain_chunk: {
           name: 'domain_chunk',
-          type: 'InfChunk',
-          model: 'InfChunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_domain_entity',
+                  keyFrom: 'fk_data_domain',
           keyTo: 'pk_entity'
         },
         range_chunk: {
           name: 'range_chunk',
-          type: 'InfChunk',
-          model: 'InfChunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_range_entity',
+                  keyFrom: 'fk_data_range',
           keyTo: 'pk_entity'
         },
-        digital_object: {
-          name: 'digital_object',
-          type: 'InfDigitalObject',
-          model: 'InfDigitalObject',
+        domain_digital: {
+          name: 'domain_digital',
+          type: 'DatDigital',
+          model: 'DatDigital',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_domain_entity',
+                  keyFrom: 'fk_data_domain',
           keyTo: 'pk_entity'
         },
       }

@@ -32,6 +32,7 @@ module.exports = function (InfRole) {
               return [requestedRole];
             })
             .catch((err) => {
+              console.log(err);
               return err;
             })
         } else if (requestedRole.persistent_item) {
@@ -44,29 +45,13 @@ module.exports = function (InfRole) {
                 return [requestedRole];
               })
               .catch((err) => {
+                console.log(err);
                 return err;
               })
           } else {
             return [requestedRole];
           }
         }
-
-        // else if (requestedRole.place) {
-        //   if (requestedRole.place.eprs) {
-        //     //add the place to the project
-        //     const InfPlace = InfRole.app.models.InfPlace;
-        //     return InfPlace.changeProjectRelation(projectId, isInProject, requestedRole.place)
-        //       .then((results) => {
-        //         requestedRole.place = results[0];
-        //         return [requestedRole];
-        //       })
-        //       .catch((err) => {
-        //         return err;
-        //       })
-        //   } else {
-        //     return [requestedRole];
-        //   }
-        // } 
 
         else if (requestedRole.appellation) {
           if (requestedRole.appellation.entity_version_project_rels) {
@@ -79,6 +64,7 @@ module.exports = function (InfRole) {
                 return [requestedRole];
               })
               .catch((err) => {
+                console.log(err);
                 return err;
               })
           } else {
@@ -95,6 +81,7 @@ module.exports = function (InfRole) {
                 return [requestedRole];
               })
               .catch((err) => {
+                console.log(err);
                 return err;
               })
           } else {
@@ -114,225 +101,201 @@ module.exports = function (InfRole) {
 
 
   InfRole.findOrCreateInfRole = function (projectId, role, ctx) {
+    return new Promise((resolve, reject) => {
 
-    const dataObject = {
-      // pk_entity: role.pk_entity,
-      fk_entity: role.fk_entity,
-      fk_temporal_entity: role.fk_temporal_entity,
-      fk_property: role.fk_property,
-      notes: role.notes,
-    };
 
-    let requestedRole = (ctx && ctx.req.body) ? ctx.req.body : role;
+      const dataObject = {
+        // pk_entity: role.pk_entity,
+        fk_entity: role.fk_entity,
+        fk_temporal_entity: role.fk_temporal_entity,
+        fk_property: role.fk_property,
+        notes: role.notes,
+      };
 
-    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+      let requestedRole = (ctx && ctx.req && ctx.req.body) ? ctx.req.body : role;
 
-    if (requestedRole.temporal_entity && Object.keys(requestedRole.temporal_entity).length > 0) {
+      const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-      //create the temporal_entity first
-      const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
-      return InfTemporalEntity.findOrCreateInfTemporalEntity(projectId, requestedRole.temporal_entity, ctxWithoutBody)
-        .then((resultingTeEnts) => {
+      // if the role points to a temporal entity
+      if (requestedRole.temporal_entity && Object.keys(requestedRole.temporal_entity).length > 0) {
 
-          const resultingTeEnt = resultingTeEnts[0];
+        //create the temporal_entity first
+        const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
+        return InfTemporalEntity.findOrCreateInfTemporalEntity(projectId, requestedRole.temporal_entity, ctxWithoutBody)
+          .then((resultingTeEnts) => {
 
-          // … prepare the Role to create
-          dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
+            const resultingTeEnt = resultingTeEnts[0];
 
-          // call the api to find or create the role that points to the teEnt
-          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-            .then((roles) => {
+            // … prepare the Role to create
+            dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
 
-              let res = roles[0].toJSON()
-              res.temporal_entity = resultingTeEnt;
+            // call the api to find or create the role that points to the teEnt
 
-              return [res];
+            InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+              .then((roles) => {
+                let res = roles[0].toJSON()
+                res.temporal_entity = resultingTeEnt;
+                resolve([res]);
+              })
+              .catch(err => reject(err))
 
-            })
-            .catch((err) => {
-              return err;
-            })
+          })
+          .catch(err => reject(err))
 
-        })
-        .catch((err) => {
-          return err;
-        })
+      }
 
-    }
+      // if the role points to a persistent item
+      else if (requestedRole.persistent_item && Object.keys(requestedRole.persistent_item).length > 0) {
 
-    // if the role points to a persistent item
-    if (requestedRole.persistent_item && Object.keys(requestedRole.persistent_item).length > 0) {
+        // prepare parameters
+        const InfPersistentItem = InfRole.app.models.InfPersistentItem;
 
-      // prepare parameters
-      const InfPersistentItem = InfRole.app.models.InfPersistentItem;
+        // find or create the peIt and the role pointing to it
+        return InfPersistentItem.findOrCreatePeIt(projectId, requestedRole.persistent_item, ctxWithoutBody)
+          .then((resultingPeIts) => {
 
-      // find or create the peIt and the role pointing to it
-      return InfPersistentItem.findOrCreatePeIt(projectId, requestedRole.persistent_item, ctxWithoutBody)
-        .then((resultingPeIts) => {
+            const resultingPeIt = resultingPeIts[0];
 
-          const resultingPeIt = resultingPeIts[0];
+            // … prepare the Role to create
+            dataObject.fk_entity = resultingPeIt.pk_entity;
 
-          // … prepare the Role to create
-          dataObject.fk_entity = resultingPeIt.pk_entity;
+            return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+              .then((resultingRoles) => {
 
-          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-            .then((resultingRoles) => {
+                let res = resultingRoles[0].toJSON();
+                res.persistent_item = resultingPeIt.toJSON();
 
-              let res = resultingRole[0].toJSON();
-              res.persistent_item = resultingPeIt.toJSON();
+                resolve([res]);
 
-              return [res];
+              })
+              .catch(err => reject(err))
+          })
+          .catch(err => reject(err))
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
+      }
 
-    }
+      // if the role points to a place
+      else if (requestedRole.place && Object.keys(requestedRole.place).length > 0) {
 
+        // prepare parameters
+        const InfPlace = InfRole.app.models.InfPlace;
 
+        // find or create the place and the role pointing to it
+        return InfPlace.findOrCreatePlace(projectId, requestedRole.place, ctxWithoutBody)
+          .then((resultingEntities) => {
+            const resultingEntity = resultingEntities[0];
 
-    // if the role points to a place
-    else if (requestedRole.place && Object.keys(requestedRole.place).length > 0) {
+            // … prepare the Role to create
+            dataObject.fk_entity = resultingEntity.pk_entity;
 
-      // prepare parameters
-      const InfPlace = InfRole.app.models.InfPlace;
+            return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+              .then((resultingRoles) => {
 
-      // find or create the place and the role pointing to it
-      return InfPlace.findOrCreatePlace(projectId, requestedRole.place, ctxWithoutBody)
-        .then((resultingEntities) => {
-          const resultingEntity = resultingEntities[0];
+                let res = resultingRoles[0].toJSON();
+                res.place = resultingEntity.toJSON();
 
-          // … prepare the Role to create
-          dataObject.fk_entity = resultingEntity.pk_entity;
+                resolve([res]);
 
-          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-            .then((resultingRoles) => {
+              })
+              .catch(err => reject(err))
+          })
+          .catch(err => reject(err))
 
-              let res = resultingRoles[0].toJSON();
-              res.place = resultingEntity.toJSON();
+      }
 
-              return [res];
+      // if the role points to a appellation
+      else if (requestedRole.appellation && Object.keys(requestedRole.appellation).length > 0) {
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
+        // prepare parameters
+        const InfAppellation = InfRole.app.models.InfAppellation;
 
-    }
+        // find or create the appellation and the role pointing to it
+        return InfAppellation.create(requestedRole.appellation)
+          .then((resultingEntity) => {
 
+            // … prepare the Role to create
+            dataObject.fk_entity = resultingEntity.pk_entity;
 
+            return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+              .then((resultingRoles) => {
 
-    // if the role points to a appellation
-    else if (requestedRole.appellation && Object.keys(requestedRole.appellation).length > 0) {
+                let res = resultingRoles[0].toJSON();
+                res.appellation = resultingEntity.toJSON();
 
-      // prepare parameters
-      const InfAppellation = InfRole.app.models.InfAppellation;
+                resolve([res]);
 
-      // find or create the appellation and the role pointing to it
-      return InfAppellation.create(requestedRole.appellation)
-        .then((resultingEntity) => {
+              })
+              .catch(err => reject(err))
+          })
+          .catch(err => reject(err))
 
-          // … prepare the Role to create
-          dataObject.fk_entity = resultingEntity.pk_entity;
+      }
 
-          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-            .then((resultingRoles) => {
+      // if the role points to a language
+      else if (requestedRole.language && Object.keys(requestedRole.language).length > 0) {
 
-              let res = resultingRoles[0].toJSON();
-              res.appellation = resultingEntity.toJSON();
+        // prepare parameters
+        const InfLanguage = InfRole.app.models.InfLanguage;
 
-              return [res];
+        // find the language and the role pointing to it
+        return InfLanguage.find({ "where": { "pk_entity": requestedRole.language.pk_entity } })
+          .then((resultingEntities) => {
+            const resultingEntity = resultingEntities[0];
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
+            // … prepare the Role to create
+            dataObject.fk_entity = resultingEntity.pk_entity;
 
-    }
+            return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+              .then((resultingRoles) => {
 
+                let res = resultingRoles[0].toJSON();
+                res.language = resultingEntity.toJSON();
 
-    // if the role points to a language
-    else if (requestedRole.language && Object.keys(requestedRole.language).length > 0) {
+                resolve([res]);
 
-      // prepare parameters
-      const InfLanguage = InfRole.app.models.InfLanguage;
+              })
+              .catch(err => reject(err))
+          })
+          .catch(err => reject(err))
+      }
 
-      // find the language and the role pointing to it
-      return InfLanguage.find({ "where": { "pk_entity": requestedRole.language.pk_entity } })
-        .then((resultingEntities) => {
-          const resultingEntity = resultingEntities[0];
+      // if the role points to a time_primitive
+      else if (requestedRole.time_primitive && Object.keys(requestedRole.time_primitive).length > 0) {
 
-          // … prepare the Role to create
-          dataObject.fk_entity = resultingEntity.pk_entity;
+        // prepare parameters
+        const InfTimePrimitive = InfRole.app.models.InfTimePrimitive;
 
-          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-            .then((resultingRoles) => {
+        // find or create the time_primitive and the role pointing to it
+        delete requestedRole.time_primitive.pk_entity
+        return InfTimePrimitive.create(requestedRole.time_primitive)
+          .then((resultingEntity) => {
 
-              let res = resultingRoles[0].toJSON();
-              res.language = resultingEntity.toJSON();
 
-              return [res];
+            // … prepare the Role to create 
+            dataObject.fk_entity = resultingEntity.pk_entity;
 
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
-    }
-    // if the role points to a time_primitive
-    else if (requestedRole.time_primitive && Object.keys(requestedRole.time_primitive).length > 0) {
+            return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+              .then((resultingRoles) => {
 
-      // prepare parameters
-      const InfTimePrimitive = InfRole.app.models.InfTimePrimitive;
+                let res = resultingRoles[0].toJSON();
+                res.time_primitive = resultingEntity.toJSON();
 
-      // find or create the time_primitive and the role pointing to it
-      delete requestedRole.time_primitive.pk_entity
-      return InfTimePrimitive.create(requestedRole.time_primitive)
-        .then((resultingEntity) => {
+                resolve([res]);
 
+              })
+              .catch(err => reject(err))
+          })
+          .catch(err => reject(err))
+      }
+      else {
 
-          // … prepare the Role to create 
-          dataObject.fk_entity = resultingEntity.pk_entity;
+        InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+          .catch(err => reject(err))
+          .then(result => resolve(result))
 
-          return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-            .then((resultingRoles) => {
+      }
 
-              let res = resultingRoles[0].toJSON();
-              res.time_primitive = resultingEntity.toJSON();
-
-              return [res];
-
-            })
-            .catch((err) => {
-              return err;
-            })
-        })
-        .catch((err) => {
-          return err;
-        })
-    }
-    else {
-
-      return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-
-    }
-
+    });
   }
 
 
@@ -660,29 +623,29 @@ module.exports = function (InfRole) {
     -- Find "auto-add-properties" for all classes 
     -- TODO: Add a filter for properties enabled by given project
        auto_add_properties AS (
-      -- select the fk_class and the properties that are auto add because of a ui_context_config
+      -- select the fk_class and the properties that are auto add because of a class_field_config
       select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
+      inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
       UNION
       select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.ui_context_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
+      inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
       UNION
       -- select the fk_class and the properties that are auto add because of a property set
       select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
+      inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+      inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
       UNION
       select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
       from data_for_history.property as p
-      inner join commons.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join commons.ui_context_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-      Where ctxt.fk_ui_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
+      inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
+      inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
+      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
     ),
   -- Find the roles
     pe_it_roles AS (
@@ -715,7 +678,7 @@ module.exports = function (InfRole) {
     -- get a list of all pk_entities that the project manually removed
     pk_entities_excluded_by_project AS (
       SELECT fk_entity as pk_entity
-      FROM information.v_entity_version_project_rel as epr 
+      FROM projects.v_info_proj_rel as epr 
       where epr.is_in_project = false and epr.fk_project = 12
     ),
     -- get final list of pk_entities to add to project
@@ -726,7 +689,7 @@ module.exports = function (InfRole) {
     )
     --  select * from pk_entities_to_add;
 
-    insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
+    insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
     SELECT $1, true, pk_entity, calendar, $2
     from pk_entities_to_add;
     `
@@ -767,7 +730,7 @@ module.exports = function (InfRole) {
         where pk_entity IN (${pk_roles.map(r => (r * 1))})
       )
       -- add the project relations
-      insert into information.v_entity_version_project_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
+      insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
       SELECT $1, true, pk_entity, calendar, $2
       from roles;    
       `
@@ -775,7 +738,7 @@ module.exports = function (InfRole) {
     const connector = InfRole.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       if (err) cb(err, resultObjects);
-      
+
       const innerJoinThisProject = {
         "$relation": {
           "name": "entity_version_project_rels",
@@ -790,7 +753,7 @@ module.exports = function (InfRole) {
       const filter = {
         where: ["pk_entity", "IN", pk_roles],
         include: {
-          "entity_version_project_rels": innerJoinThisProject,           
+          "entity_version_project_rels": innerJoinThisProject,
           "appellation": {
             "$relation": {
               "name": "appellation",

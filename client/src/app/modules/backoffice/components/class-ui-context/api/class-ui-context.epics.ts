@@ -1,11 +1,11 @@
 import { ObservableStore } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ComUiContextConfig, DfhClass, LoadingBarAction, LoadingBarActions, DfhProperty, U, ComClassFieldApi, ComClassField } from 'app/core';
+import { ProClassFieldConfig, DfhClass, LoadingBarAction, LoadingBarActions, DfhProperty, U, SysClassFieldApi, SysClassField } from 'app/core';
 import { DfhClassApi } from 'app/core/sdk/services/custom/DfhClass';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-import { ComUiContextConfigApi } from '../../../../../core/sdk/services/custom/ComUiContextConfig';
+import { ProClassFieldConfigApi } from 'app/core/sdk';
 import { ClassUiContext, Widget, Container } from '../../../backoffice.models';
 import { ClassUiContextAPIActions } from './class-ui-context.actions';
 import { sort } from 'ramda';
@@ -15,8 +15,8 @@ import { sort } from 'ramda';
 export class ClassUiContextAPIEpics {
   constructor(
     private classApi: DfhClassApi,
-    private fieldsApi: ComClassFieldApi,
-    private uiPropConfigApi: ComUiContextConfigApi,
+    private fieldsApi: SysClassFieldApi,
+    private classFieldConfigApi: ProClassFieldConfigApi,
     private actions: ClassUiContextAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
@@ -43,7 +43,7 @@ export class ClassUiContextAPIEpics {
           this.classApi.propertiesAndUiElements(pkClass, pkUiContext, null)
         )
           .subscribe((d) => {
-            const classes: DfhClass[] = d[1], fields: ComClassField[] = d[0];
+            const classes: DfhClass[] = d[1], fields: SysClassField[] = d[0];
             globalStore.next(this.loadingBarActions.completeLoading());
 
             const r = this.createContainers(classes[0], fields, pkUiContext)
@@ -69,8 +69,8 @@ export class ClassUiContextAPIEpics {
         subStore.dispatch(this.actions.updateUiContextConfigStarted());
 
         combineLatest(
-          action.meta.uiPropConfigs.map(data => this.uiPropConfigApi.patchOrCreate(data))
-        ).subscribe((data: ComUiContextConfig[]) => {
+          action.meta.uiPropConfigs.map(data => this.classFieldConfigApi.patchOrCreate(data))
+        ).subscribe((data: ProClassFieldConfig[]) => {
 
           subStore.dispatch(this.actions.loadClassUiContext());
 
@@ -82,7 +82,7 @@ export class ClassUiContextAPIEpics {
     )
   }
 
-  private createContainers = (dfhClass: DfhClass, fields: ComClassField[], pkUiContext: number): ClassUiContext => {
+  private createContainers = (dfhClass: DfhClass, fields: SysClassField[], pkUiContext: number): ClassUiContext => {
     const enabledWidgets: Widget[] = [];
     const disabledProperties: Widget[] = [];
     const disabledFields: Widget[] = [];
@@ -97,8 +97,8 @@ export class ClassUiContextAPIEpics {
         uiContextConf = {
           fk_property: property.dfh_pk_property,
           property_is_outgoing: isOutgoing,
-          fk_ui_context: pkUiContext
-        } as ComUiContextConfig;
+          fk_app_context: pkUiContext
+        } as ProClassFieldConfig;
       }
 
       const ordNum = U.ordNumFromPropertyField(propertyField)
@@ -130,8 +130,8 @@ export class ClassUiContextAPIEpics {
 
     // add widget for each class_field in ui_context_config (custom elements that are not PropertyFields / Properties)
     const pkFieldsWithClassRelation = []
-    if (dfhClass.ui_context_configs) {
-      dfhClass.ui_context_configs.forEach((uiContextConf) => {
+    if (dfhClass.class_field_configs) {
+      dfhClass.class_field_configs.forEach((uiContextConf) => {
 
         if (uiContextConf.fk_class_field) {
 

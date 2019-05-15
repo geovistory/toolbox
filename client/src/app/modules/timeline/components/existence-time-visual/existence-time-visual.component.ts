@@ -1,7 +1,7 @@
 /// <reference path="../../../../../../node_modules/@types/color/index.d.ts" />
 import { Component, DoCheck, Input } from '@angular/core';
 import { TimeSpan } from 'app/core';
-import * as Color from 'color';
+import Color from 'color';
 import { Timeline } from '../../models/timeline';
 
 

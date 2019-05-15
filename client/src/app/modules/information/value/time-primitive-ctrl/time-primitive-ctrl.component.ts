@@ -2,7 +2,7 @@ import { Component, EventEmitter, forwardRef, HostBinding, Input, OnInit, Output
 import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import {
   GregorianDateTime,
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfRole,
   InfTimePrimitive,
   JulianDateTime,
@@ -235,7 +235,7 @@ export class TimePrimitiveCtrlComponent implements OnInit, OnDestroy, ControlVal
       role.entity_version_project_rels = [
         {
           calendar: tp.calendar as string
-        } as InfEntityProjectRel
+        } as ProInfoProjRel
       ]
 
       this.timePrimitive = tp;

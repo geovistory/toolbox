@@ -1,10 +1,9 @@
 /* tslint:disable */
 import {
   InfRole,
-  InfEntityProjectRel,
+  ProInfoProjRel,
   DfhClass,
   InfEntityAssociation,
-  InfTypeNamespaceRel,
   InfTextProperty
 } from '../index';
 
@@ -17,11 +16,10 @@ export interface InfPersistentItemInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   pi_roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];
-  type_namespace_rels?: InfTypeNamespaceRel[];
   text_properties?: InfTextProperty[];
 }
 
@@ -33,11 +31,10 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   pi_roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];
-  type_namespace_rels?: InfTypeNamespaceRel[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfPersistentItemInterface) {
     Object.assign(this, data);
@@ -108,8 +105,8 @@ export class InfPersistentItem implements InfPersistentItemInterface {
         },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
@@ -128,7 +125,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           model: 'InfEntityAssociation',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_domain_entity'
+          keyTo: 'fk_info_domain'
         },
         range_entity_associations: {
           name: 'range_entity_associations',
@@ -136,15 +133,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           model: 'InfEntityAssociation',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_range_entity'
-        },
-        type_namespace_rels: {
-          name: 'type_namespace_rels',
-          type: 'InfTypeNamespaceRel[]',
-          model: 'InfTypeNamespaceRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_persistent_item'
+          keyTo: 'fk_info_domain'
         },
         text_properties: {
           name: 'text_properties',

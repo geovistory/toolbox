@@ -16,15 +16,15 @@
     }
   },
   "properties": {
-    "appellation_label": {
-      "type": "any",
+    "quill_doc": {
+      "type": "object",
       "required": true
     },
     "fk_class": {
       "type": "number",
       "required": true
     },
-    "notes": {
+    "string": {
       "type": "string"
     }
   },

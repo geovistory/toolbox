@@ -1,7 +1,4 @@
 /* tslint:disable */
-import {
-  DfhProjRel
-} from '../index';
 
 declare var Object: any;
 export interface DfhPropertyProfileViewInterface {
@@ -15,7 +12,6 @@ export interface DfhPropertyProfileViewInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  proj_rels?: DfhProjRel[];
 }
 
 export class DfhPropertyProfileView implements DfhPropertyProfileViewInterface {
@@ -29,7 +25,6 @@ export class DfhPropertyProfileView implements DfhPropertyProfileViewInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  proj_rels?: DfhProjRel[];
   constructor(data?: DfhPropertyProfileViewInterface) {
     Object.assign(this, data);
   }
@@ -105,14 +100,6 @@ export class DfhPropertyProfileView implements DfhPropertyProfileViewInterface {
         },
       },
       relations: {
-        proj_rels: {
-          name: 'proj_rels',
-          type: 'DfhProjRel[]',
-          model: 'DfhProjRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
       }
     }
   }

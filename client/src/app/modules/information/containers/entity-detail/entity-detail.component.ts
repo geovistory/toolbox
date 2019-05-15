@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, HostBinding, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, EntityPreview, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, TeEntDetail, ClassInstanceLabel, RoleLabel } from 'app/core';
+import { ActiveProjectService, SysConfig, EntityPreview, IAppState, InfPersistentItem, PeItDetail, ProjectCrm, SubstoreComponent, TeEntDetail, ClassInstanceLabel, RoleLabel } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 // import { EntityAddModalComponent } from '../../add-modal/entity-add-modal/entity-add-modal.component';
@@ -53,7 +53,7 @@ export class EntityDetailComponent extends EntityDetailAPIActions implements OnI
 
   selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
 
-  pkUiContextCreate = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+  pkUiContextCreate = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
   constructor(
     protected rootEpics: RootEpics,

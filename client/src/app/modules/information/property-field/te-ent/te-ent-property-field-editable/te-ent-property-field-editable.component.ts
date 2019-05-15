@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
+import { IAppState, ProInfoProjRelApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { RoleDetail, RoleDetailList, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { getCreateOfEditableContext, StateSettings, createRoleDetail, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
@@ -55,7 +55,7 @@ export class TeEntPropertyFieldEditableComponent extends PropertyFieldBase {
   constructor(
     protected rootEpics: RootEpics,
     protected epics: PropertyFieldApiEpics,
-    protected eprApi: InfEntityProjectRelApi,
+    protected eprApi: ProInfoProjRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
     protected actions: PropertyFieldActions,

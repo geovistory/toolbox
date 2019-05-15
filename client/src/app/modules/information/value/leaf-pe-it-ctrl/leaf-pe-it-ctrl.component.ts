@@ -2,7 +2,7 @@ import { NgRedux, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ClassConfig, ComConfig, IAppState, InfRole } from 'app/core';
+import { ClassConfig, SysConfig, IAppState, InfRole } from 'app/core';
 import { pick } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { LeafPeItViewAPIActions } from '../leaf-pe-it-view/api/leaf-pe-it-view.actions';
@@ -113,7 +113,7 @@ export class LeafPeItCtrlComponent extends LeafPeItViewAPIActions implements OnI
         pkClass: this.pkClass,
         pkType: undefined
       },
-      pkUiContext: ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+      pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
     })
 
     // this.pkEntity = undefined;

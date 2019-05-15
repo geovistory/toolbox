@@ -31,6 +31,12 @@
   },
   "validations": [],
   "relations": {
+    "proj_rels": {
+      "type": "hasMany",
+      "model": "ProDfhClassProjRel",
+      "primaryKey": "pk_entity",
+      "foreignKey": "fk_entity"
+    },
     "class_profile_view": {
       "type": "hasMany",
       "model": "DfhClassProfileView",
@@ -64,16 +70,16 @@
       "foreignKey": "dfh_has_domain",
       "primaryKey": "dfh_pk_class"
     },
-    "ui_context_configs": {
+    "class_field_configs": {
       "type": "hasMany",
-      "model": "ComUiContextConfig",
+      "model": "ProClassFieldConfig",
       "foreignKey": "fk_class_for_class_field"
     },
     "class_fields": {
       "type": "hasMany",
-      "model": "ComClassField",
+      "model": "SysClassField",
       "foreignKey": "fk_class_for_class_field",
-      "through": "ComUiContextConfig",
+      "through": "ProClassFieldConfig",
       "keyThrough": "fk_class_field"
     },
     "persistent_items": {
@@ -104,9 +110,7 @@
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
-      "property": [
-        "projectSettingsClassList"
-      ]
+      "property": []
     },
     {
       "principalType": "ROLE",
@@ -181,10 +185,10 @@
           }
         },
         {
-          "arg": "pk_ui_context",
+          "arg": "pk_app_context",
           "type": "number",
           "required": true,
-          "description": "Provide the pk_entity of the ui_context to query",
+          "description": "Provide the pk_entity of the app_context to query",
           "http": {
             "source": "query"
           }
@@ -209,31 +213,6 @@
       "description": "Get ingoing and outgoing properties and ui elements of class",
       "http": {
         "path": "/properties-and-ui-elements",
-        "verb": "get"
-      }
-    },
-    "projectSettingsClassList": {
-      "accepts": [
-        {
-          "arg": "pk_project",
-          "type": "number",
-          "required": true,
-          "description": "The pk_project for whicht the list of classes is loaded.",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhClass"
-        ],
-        "root": true
-      },
-      "description": "Get a list of classes with info about the status they have int the project (used for the poject-settings > data-settings page).",
-      "http": {
-        "path": "/project-settings-class-list",
         "verb": "get"
       }
     }

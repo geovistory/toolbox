@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ComConfig, IAppState, UiContext, UiElement, ProjectCrm, U } from 'app/core';
+import { SysConfig, IAppState, UiContext, UiElement, ProjectCrm, U } from 'app/core';
 import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, PropertyField, PropertyFieldForm, TeEntAccentuation, TeEntDetail, FieldList, ClassInstanceLabel } from 'app/core/state/models';
 import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarPropertyField, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
@@ -235,7 +235,7 @@ export class TeEntEditableComponent extends EntityBase {
 
         // if this is a prop set
         // TODO make this generic for all class fields
-        if (o.uiElement.fk_class_field === ComConfig.PK_CLASS_FIELD_WHEN) {
+        if (o.uiElement.fk_class_field === SysConfig.PK_CLASS_FIELD_WHEN) {
 
           const settings: StateSettings = {
             pkUiContext: getCreateOfEditableContext(this.localStore.getState().pkUiContext)

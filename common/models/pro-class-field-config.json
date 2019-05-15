@@ -1,0 +1,92 @@
+{
+  "name": "ProClassFieldConfig",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "projects",
+      "table": "class_field_config"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "fk_app_context": {
+      "type": "number",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": false
+    },
+    "fk_property": {
+      "type": "number",
+      "required": false
+    },
+    "fk_class_field": {
+      "type": "number",
+      "required": false
+    },
+    "property_is_outgoing": {
+      "type": "boolean",
+      "required": false
+    },
+    "ord_num": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "app_context": {
+      "type": "belongsTo",
+      "model": "SysAppContext",
+      "foreignKey": "fk_app_context",
+      "primaryKey": "pk_entity"
+    },
+    "property": {
+      "type": "belongsTo",
+      "model": "DfhProperty",
+      "foreignKey": "fk_property",
+      "primaryKey": "dfh_pk_property"
+    },
+    "class_field": {
+      "type": "belongsTo",
+      "model": "SysClassField",
+      "foreignKey": "fk_class_field",
+      "primaryKey": "pk_entity"
+    },
+    "project": {
+      "type": "belongsTo",
+      "model": "ProProject",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "patchOrCreate"
+      ]
+    }
+  ],
+  "methods": {}
+}

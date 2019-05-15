@@ -1,52 +1,32 @@
-<gv-navbar>
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
-    <li class="breadcrumb-item"><a routerLink="../../../../../../">Your Projects</a></li>
-    <li class="breadcrumb-item"><a routerLink="../../../../../">{{projectLabel}}</a></li>
-    <li class="breadcrumb-item">Settings</li>
-    <li class="breadcrumb-item"><a routerLink="../../../">Classes</a></li>
-    <li class="breadcrumb-item"><a routerLink="../../">{{classLabel}}</a></li>
-    <li class="breadcrumb-item">Types</li>
-
-  </ol>
-</gv-navbar>
-<gv-side-nav [projectLabel]="projectLabel" [levelsBelowSettings]="4">
-
-  <h1>
-    {{classLabel}} Types
-  </h1>
-
-  <!-- List or Tree of Types -->
-  <div *ngIf="listVisible">
-    <h3 class="my-4 d-flex">
-      <span class="gv-grow-1">{{namespaceLabel}}</span>
-      <button class="btn btn-link pr-0" (click)="addOrCreate()" *ngIf="listVisible"><i class="fa fa-plus"></i> add a
-        type</button>
-    </h3>
-    <ul>
-      <li *ngFor="let type of (items$ | async) | keys">
-        <div class="d-flex border-bottom">
-          <span class="gv-grow-1">{{getLabel(type.value)}} </span>
-          <!-- <a href class="gv-passive-link mr-2"><i class="fa fa-plus"></i></a> -->
-          <a href class="gv-passive-link mr-2" (click)=openEditForm(type.value)><i class="fa fa-edit"></i></a>
-          <a href class="gv-passive-link"><i class="fa fa-trash"></i></a>
-        </div>
-      </li>
-    </ul>
-  </div>
-
-  <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div>
-
-  <!-- Add new type -->
-  <!-- <gv-type-add-form *ngIf="(add$ | async)" (cancel)="closeAddForm()" (create)="createType($event)"></gv-type-add-form> -->
-  <gv-create-or-add-entity *ngIf="(add$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('add')" (done)="added($event)"
-    (cancel)="closeAddForm()"></gv-create-or-add-entity>
+<gv-detail-top-bar>
+  Controlled Vocabulary of {{(typedClass$ | async)?.label}} Types
+</gv-detail-top-bar>
+<gv-detail-content class="p-3 gv-scroll-y-auto">
 
 
-  <!-- Edit existing Type -->
-  <gv-type-edit-form *ngIf="(edit$ | async)" (close)="closeEditForm()" [basePath]="['activeProject','classSettings','types', 'edit']"></gv-type-edit-form>
+  <h3 mat-subheader>
+    <span class="gv-grow-1">{{(typedClass$ | async)?.label}} Types</span>
+    <button mat-icon-button color="primary" (click)="addOrCreate()">
+      <mat-icon aria-label="Edit type">add_circle</mat-icon>
+    </button>
+  </h3>
+  
+  <mat-list>
+    <mat-list-item *ngFor="let type of (items$ | async) | keys">
 
+      <span class="gv-grow-1">{{getLabel(type.value)}} </span>
 
-  <!-- Remove Type from Project -->
+      <button mat-icon-button color="primary" class="mr-2" (click)=edit(type.value)>
+        <mat-icon aria-label="Edit type">edit</mat-icon>
+      </button>
 
-</gv-side-nav>
+      <button mat-icon-button color="primary" (click)=remove(type.value)>
+        <mat-icon aria-label="Remove type">delete</mat-icon>
+      </button>
+
+      <mat-divider></mat-divider>
+    </mat-list-item>
+
+  </mat-list>
+
+</gv-detail-content>

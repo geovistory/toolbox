@@ -15,7 +15,7 @@ import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
 import { InfPlace } from '../../models/InfPlace';
 import { WarEntityPreview } from '../../models/WarEntityPreview';

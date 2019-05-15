@@ -2,11 +2,11 @@ var findComplex = require('loopback-postgres-find-complex');
 var { getAuthorizedAclMethods } = require('../../node_modules/loopback-setup-remote-methods-mixin/lib/utils')
 var exclude = [];
 var include = [
-  "ComUiContext",
-  "ComUiContextConfig",
-  "ComClassField",
-  "ComProject",
-  "ComQuery",
+  "SysAppContext",
+  "ProClassFieldConfig",
+  "SysClassField",
+  "ProProject",
+  "ProQuery",
   "DfhClass",
   "DfhClassProfileView",
   "DfhProperty",
@@ -17,11 +17,10 @@ var include = [
   "InfTemporalEntity",
   "InfLanguage",
   "InfEntityAssociation",
-  "InfChunk",
-  "InfDigitalObject",
+  "DatChunk",
+  "DatDigital",
   "InfPlace",
-  "InfNamespace",
-  "InfTypeNamespaceRel",
+  "DatNamespace",
   "WarEntityPreview",
 ];
 

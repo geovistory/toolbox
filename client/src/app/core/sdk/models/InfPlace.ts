@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel
+  ProInfoProjRel
 } from '../index';
 
 declare var Object: any;
@@ -13,7 +13,7 @@ export interface InfPlaceInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
 }
 
 export class InfPlace implements InfPlaceInterface {
@@ -25,7 +25,7 @@ export class InfPlace implements InfPlaceInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   constructor(data?: InfPlaceInterface) {
     Object.assign(this, data);
   }
@@ -95,8 +95,8 @@ export class InfPlace implements InfPlaceInterface {
       relations: {
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

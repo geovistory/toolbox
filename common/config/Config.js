@@ -31,20 +31,22 @@ const Config = {
     PK_NAMESPACE__GEOVISTORY_ONGOING: 80409,
 
     /**
-     * System Types (commons.system_type)
+     * System Types (system.system_type)
      */
     PROPERTY_LABEL_SG: 180,
     PROPERTY_LABEL_PL: 181,
     PROPERTY_LABEL_INVERSED_SG: 182,
     PROPERTY_LABEL_INVERSED_PL: 183,
+    PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION: 179,
+    PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL: 639,
+    PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION: 638,
 
     CLASS_LABEL: 184,
 
     /**
-    * Primary Key of Namespace "Geovistory Ongoing"
-    */
-    PK_PROJECT_OF_TEMPLATE_PROJECT: 16,
-
+     * Primary Key of Namespace "Geovistory Ongoing"
+     */
+    PK_PROJECT_OF_TEMPLATE_PROJECT: 173,
 
 }
 module.exports = Config;

@@ -6,27 +6,27 @@
 
     <!-- View -->
     <div class="gv-grow-1 d-flex flex-row" *ngIf="!((edit$ | async) || (annotate$ | async)) && (view$ | async)">
-      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
+      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).quill_doc"
         [readOnly]="true"></gv-quill-edit>
 
-      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).js_quill_data"
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(view$ | async).quill_doc"
         [readOnly]="true" [annotationsVisible]="true" [annotatedNodes]="annotatedNodes" (selectedDeltaChange)="onSelectedDeltaChange($event)"></gv-quill-edit>
 
     </div>
 
     <!-- Edit -->
     <div class="gv-grow-1 d-flex flex-column" *ngIf="(edit$ | async)">
-      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
+      <gv-quill-edit *ngIf="!(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).quill_doc"
         [readOnly]="false" (quillDocChange)="onQuillDocChange($event)"></gv-quill-edit>
 
-      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).js_quill_data"
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(edit$ | async).quill_doc"
         [annotationsVisible]="true" [annotatedNodes]="annotatedNodes" (quillDocChange)="onQuillDocChange($event)"></gv-quill-edit>
 
     </div>
 
     <!-- Annotate -->
     <div class="gv-grow-1 d-flex flex-column" *ngIf="(annotate$ | async)">
-      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(annotate$ | async).js_quill_data"
+      <gv-quill-edit *ngIf="(annotationPanel$ | async)" class="gv-grow-1 d-flex flex-column" [quillDoc]="(annotate$ | async).quill_doc"
         [creatingAnnotation]="true" (selectedDeltaChange)="onSelectedDeltaChange($event)"></gv-quill-edit>
     </div>
 

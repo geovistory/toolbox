@@ -11,7 +11,7 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfPlace } from '../../models/InfPlace';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 
 
 /**

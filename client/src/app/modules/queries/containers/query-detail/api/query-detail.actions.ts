@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { QueryDetail, FileType } from './query-detail.models';
 import { GvQuery } from '../query-detail.component';
-import { ComQuery } from 'app/core';
+import { ProQuery } from 'app/core';
 type Payload = QueryDetail;
 interface MetaData {
   queryResults?: any[],
   pkProject?: number;
   pkEntity?: number;
   query?: GvQuery;
-  comQuery?: ComQuery;
+  comQuery?: ProQuery;
   offset?: number
   limit?: number,
   tabTitle?: string
@@ -70,7 +70,7 @@ export class QueryDetailAPIActions {
     payload: null,
   });
 
-  loadSucceeded = (comQuery: ComQuery): QueryDetailAPIAction => ({
+  loadSucceeded = (comQuery: ProQuery): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.LOAD_SUCCEEDED,
     meta: {
       comQuery
@@ -90,13 +90,13 @@ export class QueryDetailAPIActions {
   *********************************************************************/
 
   @dispatch()
-  save = (comQuery: ComQuery, pkEntity: number): QueryDetailAPIAction => ({
+  save = (comQuery: ProQuery, pkEntity: number): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.SAVE,
     meta: { comQuery, pkEntity },
     payload: null,
   });
 
-  saveSucceeded = (comQuery: ComQuery): QueryDetailAPIAction => ({
+  saveSucceeded = (comQuery: ProQuery): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.SAVE_SUCCEEDED,
     meta: { comQuery },
     payload: null

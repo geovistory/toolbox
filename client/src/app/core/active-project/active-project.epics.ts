@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { MentioningListAPIActions } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.actions';
+import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
@@ -11,13 +12,12 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ComClassField, ComClassFieldApi, ComProjectApi, ComUiContext, ComUiContextApi, ComUiContextConfig, DfhClass, DfhProperty, DfhPropertyApi, InfChunk, InfChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ComQueryApi, ComQuery, ComVisualApi } from '../sdk';
-import { PeItDetail } from '../state/models';
+import { SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi, ProProjectApi, ProQueryApi, SysAppContext, SysAppContextApi, ProClassFieldConfig, ProVisualApi, DfhClass, ProDfhClassProjRelApi, DfhProperty, DfhPropertyApi, DatChunk, DatChunkApi, ProInfoProjRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProProject } from '../sdk';
+import { HasTypePropertyReadable, PeItDetail } from '../state/models';
 import { IAppState } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 
 
 
@@ -27,13 +27,16 @@ export class ActiveProjectEpics {
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
-    private chunkApi: InfChunkApi,
-    private uiContextApi: ComUiContextApi,
-    private projectApi: ComProjectApi,
-    private comQuery: ComQueryApi,
-    private comVisual: ComVisualApi,
+    private infProjRelApi: ProInfoProjRelApi,
+    private chunkApi: DatChunkApi,
+    private uiContextApi: SysAppContextApi,
+    private projectApi: ProProjectApi,
+    private projRelApi: ProDfhClassProjRelApi,
+    private comQuery: ProQueryApi,
+    private comVisual: ProVisualApi,
     private dfhPropertyApi: DfhPropertyApi,
-    private comClassFieldApi: ComClassFieldApi,
+    private comClassFieldApi: SysClassFieldApi,
+    private comHasTypePropsApi: SysClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -61,7 +64,9 @@ export class ActiveProjectEpics {
       this.createEnableCreatingMentioningEpic(),
       this.createDisableCreatingMentioningEpic(),
       this.createSplitPanelActivateTabEpic(),
-      this.createAddTabCloseListEpic()
+      this.createAddTabCloseListEpic(),
+      this.createChangeClassProjRelEpic(),
+      this.createUpsertEntityProjRelEpic()
     );
   }
 
@@ -83,8 +88,8 @@ export class ActiveProjectEpics {
 
         this.projectApi.getBasics(action.meta.pk_project)
           .subscribe(
-            data => {
-              globalStore.next(this.actions.activeProjectUpdated(data[0]))
+            (data: ProProject[]) => {
+              globalStore.next(this.actions.activeProjectUpdated(U.proProjectToProjectPreview(data[0])))
             },
             error => {
               globalStore.next(this.notificationActions.addToast({
@@ -119,26 +124,29 @@ export class ActiveProjectEpics {
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
-          this.uiContextApi.uiConfig(null, action.meta.pk_project),
+          this.uiContextApi.appContext(null, action.meta.pk_project),
           this.dfhPropertyApi.propertyFieldInfo(true),
           this.dfhPropertyApi.propertyFieldInfo(false),
-          this.comClassFieldApi.find()
+          this.comClassFieldApi.find(),
+          this.comHasTypePropsApi.readableList()
         )
           .subscribe(res => {
             const classes: DfhClass[] = res[0],
               outgoingProperties: DfhProperty[] = res[2],
               ingoingProperties: DfhProperty[] = res[3],
-              classFields = res[4] as ComClassField[];
+              classFields = res[4] as SysClassField[],
+              hasTypeProps: HasTypePropertyReadable[] = res[5];
 
             const properties = {
-              ...indexBy((prop: DfhProperty) => prop.dfh_pk_property.toString(), ingoingProperties),
-              ...indexBy((prop: DfhProperty) => prop.dfh_pk_property.toString(), outgoingProperties)
+              ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
+              ...indexBy((prop) => prop.dfh_pk_property.toString(), outgoingProperties)
             }
 
             const crm: ProjectCrm = {
               classes: {},
               fieldList: {},
-              properties
+              properties,
+              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps)
             }
 
             classes.forEach((cla: DfhClass) => {
@@ -154,11 +162,11 @@ export class ActiveProjectEpics {
               }
             })
 
-            const uiContexts: ComUiContext[] = res[1];
+            const uiContexts: SysAppContext[] = res[1];
 
             uiContexts.forEach(uiCtxt => {
-              if (uiCtxt.ui_context_config) {
-                uiCtxt.ui_context_config.forEach(uiConf => {
+              if (uiCtxt.class_field_config) {
+                uiCtxt.class_field_config.forEach(uiConf => {
 
                   // add propertyField configs to crm
                   if (uiConf.fk_property) {
@@ -191,7 +199,7 @@ export class ActiveProjectEpics {
     )
   }
 
-  private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: ComUiContext, uiConf: ComUiContextConfig) {
+  private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: SysAppContext, uiConf: ProClassFieldConfig) {
 
     if (!cConf || !uiCtxt || !uiConf) return;
 
@@ -355,7 +363,7 @@ export class ActiveProjectEpics {
             /**
            * Subscribe to the api call
            */
-            .subscribe((data: InfChunk) => {
+            .subscribe((data: DatChunk) => {
               /**
                * Emit the global action that completes the loading bar
                */
@@ -780,5 +788,125 @@ export class ActiveProjectEpics {
         globalStore.next(this.actions.updateSelectedChunk(null));
       }))
     )
+  }
+
+  /**
+   * CRM
+   */
+
+
+  /**
+   * Epic to handle enabling and disabling of a class for project
+   * @param c
+   */
+  private createChangeClassProjRelEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.UPSERT_CLASS_PROJ_REL),
+        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+
+          /**
+           * Prepare api call
+           */
+          let apiCall;
+          // update existing projRel
+          if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
+          // create new projRel
+          else apiCall = this.projRelApi.create(action.meta.projRel);
+
+          /**
+           * Subscribe to the api call
+           */
+          apiCall.subscribe((data) => {
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+             * Emit the local action on loading succeeded
+             */
+            globalStore.next(this.actions.upsertClassProjRelSucceeded(data, action.meta.dfh_pk_class));
+
+          }, error => {
+            /**
+             * Emit the global action that shows some loading error message
+             */
+            // globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+            * Emit the local action on loading failed
+            */
+            globalStore.next(this.actions.upsertClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
+          })
+        }))
+      )
+    }
+  }
+
+
+
+
+  /**
+   * Update Entity Project Relation
+   * @param c
+   */
+  private createUpsertEntityProjRelEpic(): Epic {
+    return (action$, store) => {
+      return action$.pipe(
+        /**
+         * Filter the actions that triggers this epic
+         */
+        ofType(ActiveProjectActions.UPSERT_ENTITY_PROJ_REL),
+        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+          /**
+           * Emit the global action that activates the loading bar
+           */
+          globalStore.next(this.loadingBarActions.startLoading());
+
+          /**
+           * Prepare api call
+           */
+          let apiCall;
+          // update existing infProjRel
+          if (action.meta.infProjRel.fk_entity) apiCall = this.infProjRelApi.updateEprAttributes(
+            action.meta.infProjRel.fk_project,
+            action.meta.infProjRel.fk_entity,
+            action.meta.infProjRel
+          );
+          // create new infProjRel
+          else apiCall = this.infProjRelApi.create(action.meta.infProjRel);
+
+          /**
+           * Subscribe to the api call
+           */
+          apiCall.subscribe((data) => {
+            /**
+             * Emit the global action that completes the loading bar
+             */
+            globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+             * Emit the local action on loading succeeded
+             */
+            globalStore.next(this.actions.upsertEntityProjRelSucceeded(data));
+
+          }, error => {
+            /**
+             * Emit the global action that shows some loading error message
+             */
+            // globalStore.next(this.loadingBarActions.completeLoading());
+            /**
+            * Emit the local action on loading failed
+            */
+            globalStore.next(this.actions.upsertEntityProjRelFailed({ status: '' + error.status }))
+          })
+        }))
+      )
+    }
   }
 }

@@ -12,10 +12,9 @@ import { map } from 'rxjs/operators';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { InfRole } from '../../models/InfRole';
-import { InfEntityProjectRel } from '../../models/InfEntityProjectRel';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { DfhClass } from '../../models/DfhClass';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
-import { InfTypeNamespaceRel } from '../../models/InfTypeNamespaceRel';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
 
@@ -213,6 +212,35 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
     if (typeof pk_namespace !== 'undefined' && pk_namespace !== null) _urlParams.pk_namespace = pk_namespace;
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     if (typeof pk_typed_class !== 'undefined' && pk_typed_class !== null) _urlParams.pk_typed_class = pk_typed_class;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Find types by class and project. E.g. get the types for the class 'histC9 Geographical place type' (pk_class=364) used in project (pk_project=123)
+   *
+   * @param {number} pk_project Primary Key of Project
+   *
+   * @param {number} pk_class Primary Key of the Type Class (e.g. pk of Geographical Place Type)
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfPersistentItem` object.)
+   * </em>
+   */
+  public typesByClassAndProject(pk_project: any, pk_class: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfPersistentItems/types-by-class-and-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    if (typeof pk_class !== 'undefined' && pk_class !== null) _urlParams.pk_class = pk_class;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

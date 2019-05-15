@@ -2,7 +2,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
-    <li class="breadcrumb-item">{{((p.activeProject$|async)?.labels || [])[0]?.label}}</li>
+    <li class="breadcrumb-item">{{(p.activeProject$|async)?.label}}</li>
   </ol>
 </gv-navbar>
 <mat-drawer-container class="gv-flex-fh">
@@ -41,7 +41,8 @@
 
 
       <div class="btn-group-vertical rounded-0 d-block mt-auto">
-        <button class="gv-nav-btn" [routerLink]="['../', 'settings']">
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='settings'}" (click)="setList('settings')">
           <div class="fa fa-2x fa-cogs text-secondary"></div> Settings
         </button>
       </div>
@@ -53,8 +54,8 @@
 
       <!-- List of Sources, Entities … -->
       <mat-drawer class="gv-drawer-list" #list mode="over" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
-        <button class="btn btn-link-gray position-absolute" style="right: 0; top: 50%" (click)="list.close()"
-          (positionChanged)="setList('')">
+        <button class="btn btn-link-gray position-absolute" style="right: 0; top: 50%; z-index: 2000"
+          (click)="list.close()" (positionChanged)="setList('')">
           <i class="fa fa-chevron-left"></i> </button>
         <gv-source-list *ngIf="(p.list$ | async) === 'sources'"></gv-source-list>
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
@@ -66,6 +67,7 @@
           </gv-list-drawer-header>
           <div class="ml-3">Coming soon.</div>
         </div>
+        <gv-settings-list *ngIf="(p.list$ | async) === 'settings'"></gv-settings-list>
 
       </mat-drawer>
 
@@ -77,7 +79,7 @@
             Your Project
           </div>
           <div class="display-1 text-gray-400">
-            {{((p.activeProject$|async)?.labels || [])[0]?.label}}
+            {{(p.activeProject$|async)?.label}}
           </div>
           <div class="text-gray-400 helper-text">
             Find your Entities and Sources to the left.
@@ -134,6 +136,7 @@
 
         <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
           *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
+
           <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.data.pkEntity"
             [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-entity-detail>
@@ -147,6 +150,14 @@
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
           <gv-visual-detail *ngIf="tab.component=='visual-detail'" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-visual-detail>
+
+
+          <gv-project-settings-data *ngIf="tab.component=='classes-settings'" [basePath]="tab.path"
+            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-project-settings-data>
+
+          <gv-types *ngIf="tab.component=='contr-vocab-settings'" [pkProperty]="tab.data.pkProperty"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-types>
+
         </gv-tab-body>
 
       </mat-drawer-content>

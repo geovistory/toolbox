@@ -16,9 +16,9 @@ import { DfhProperty } from '../../models/DfhProperty';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhTextProperty } from '../../models/DfhTextProperty';
 import { DfhClassProfileView } from '../../models/DfhClassProfileView';
-import { ComUiContextConfig } from '../../models/ComUiContextConfig';
-import { ComClassField } from '../../models/ComClassField';
-import { DfhProjRel } from '../../models/DfhProjRel';
+import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
+import { SysClassField } from '../../models/SysClassField';
+import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 
 
 /**
@@ -68,7 +68,7 @@ export class DfhClassApi extends BaseLoopBackApi {
    *
    * @param {number} pk_class Provide the dfh_pk_class to query one specific class
    *
-   * @param {number} pk_ui_context Provide the pk_entity of the ui_context to query
+   * @param {number} pk_app_context Provide the pk_entity of the app_context to query
    *
    * @param {number} pk_project Provide a pk_project for loading the settings of a project or leaf it blank to query the default settings.
    *
@@ -81,7 +81,7 @@ export class DfhClassApi extends BaseLoopBackApi {
    * This usually means the response is a `DfhClass` object.)
    * </em>
    */
-  public propertiesAndUiElements(pk_class: any, pk_ui_context: any, pk_project: any = {}, customHeaders?: Function): Observable<any> {
+  public propertiesAndUiElements(pk_class: any, pk_app_context: any, pk_project: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/DfhClasses/properties-and-ui-elements";
@@ -89,33 +89,7 @@ export class DfhClassApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof pk_class !== 'undefined' && pk_class !== null) _urlParams.pk_class = pk_class;
-    if (typeof pk_ui_context !== 'undefined' && pk_ui_context !== null) _urlParams.pk_ui_context = pk_ui_context;
-    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get a list of classes with info about the status they have int the project (used for the poject-settings > data-settings page).
-   *
-   * @param {number} pk_project The pk_project for whicht the list of classes is loaded.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhClass` object.)
-   * </em>
-   */
-  public projectSettingsClassList(pk_project: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhClasses/project-settings-class-list";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
+    if (typeof pk_app_context !== 'undefined' && pk_app_context !== null) _urlParams.pk_app_context = pk_app_context;
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;

@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   InfRole,
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfEntityAssociation,
   InfTextProperty
 } from '../index';
@@ -15,7 +15,7 @@ export interface InfTemporalEntityInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   te_roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   domain_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
 }
@@ -28,7 +28,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   te_roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   domain_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfTemporalEntityInterface) {
@@ -100,8 +100,8 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
         },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
@@ -112,7 +112,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           model: 'InfEntityAssociation',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_domain_entity'
+          keyTo: 'fk_info_domain'
         },
         text_properties: {
           name: 'text_properties',

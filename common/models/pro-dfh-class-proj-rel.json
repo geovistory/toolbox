@@ -1,0 +1,56 @@
+{
+  "name": "ProDfhClassProjRel",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "projects",
+      "table": "dfh_class_proj_rel"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "fk_entity": {
+      "type": "number",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "enabled_in_entities": {
+      "type": "boolean"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "create",
+        "patchAttributes"
+      ]
+    }
+  ],
+  "methods": {}
+}

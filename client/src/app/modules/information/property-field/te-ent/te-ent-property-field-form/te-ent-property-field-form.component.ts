@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { IAppState, InfEntityProjectRel, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
+import { IAppState, ProInfoProjRel, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi } from 'app/core';
 import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { createRoleDetail, createPropertyField, getCreateOfEditableContext, StateSettings, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -149,7 +149,7 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
       Object.keys(this.createForm.controls).forEach(key => {
         if (this.createForm.get(key)) {
           const role: InfRole = this.createForm.get(key).value;
-          role.entity_version_project_rels = [{ is_in_project: true } as InfEntityProjectRel]
+          role.entity_version_project_rels = [{ is_in_project: true } as ProInfoProjRel]
           // add roles to create to peIt
           t.te_roles.push(role)
         }

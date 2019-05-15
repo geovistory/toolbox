@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnChanges } from '@angular/core';
-import * as Delta from 'quill-delta/lib/delta';
+import { Component, ElementRef, Input, OnChanges, ViewChild } from '@angular/core';
+import { QuillDoc } from '../quill.models';
 import { QuillService } from '../quill.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { QuillService } from '../quill.service';
   styleUrls: ['./quill-view.component.scss']
 })
 export class QuillViewComponent implements OnChanges {
-  @Input() contents: Delta;
+  @Input() contents: QuillDoc;
 
   @Input() formatItalic: boolean;
 
@@ -24,7 +24,6 @@ export class QuillViewComponent implements OnChanges {
 
   ) {
     this.Quill = quillService.Quill;
-
   }
 
   ngOnChanges() {
@@ -37,7 +36,6 @@ export class QuillViewComponent implements OnChanges {
     });
 
     if (this.formatItalic) {
-      const d = new Delta();
       if (this.contents && this.contents.ops) {
         this.contents.ops.forEach(op => {
           if (op.attributes && op.attributes.node) {

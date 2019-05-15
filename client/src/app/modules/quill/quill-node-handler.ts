@@ -26,7 +26,7 @@ export class QuillNodeHandler {
         public readonly creatingAnnotation: boolean
     ) {
 
-        this.nodeId = node.attributes.quillnode.value;
+        this.nodeId = node.attributes.charid.value;
 
         combineLatest(annotatedEntities$, annotationsVisible$, entitiesToHighlight$).pipe(takeUntil(this.destroy$)).subscribe(d => {
 

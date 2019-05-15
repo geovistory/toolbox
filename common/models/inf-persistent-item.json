@@ -31,13 +31,13 @@
     "domain_entity_associations": {
       "type": "hasMany",
       "model": "InfEntityAssociation",
-      "foreignKey": "fk_domain_entity",
+      "foreignKey": "fk_info_domain",
       "primaryKey": "pk_entity"
     },
     "range_entity_associations": {
       "type": "hasMany",
       "model": "InfEntityAssociation",
-      "foreignKey": "fk_range_entity",
+      "foreignKey": "fk_info_domain",
       "primaryKey": "pk_entity"
     },
     "text_properties": {
@@ -51,12 +51,6 @@
       "model": "DfhClass",
       "foreignKey": "fk_class",
       "primaryKey": "dfh_pk_class"
-    },
-    "type_namespace_rels": {
-      "type": "hasMany",
-      "model": "InfTypeNamespaceRel",
-      "foreignKey": "fk_persistent_item",
-      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -84,6 +78,7 @@
         "typesOfClassAndProject",
         "typesOfNamespaceNested",
         "typesOfNamespaceClassAndProject",
+        "typesByClassAndProject",
         "nestedObjectOfProject",
         "findOrCreatePeIt",
         "typeNested",
@@ -497,6 +492,40 @@
         "verb": "get"
       }
     },
+    "typesByClassAndProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_class",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the Type Class (e.g. pk of Geographical Place Type)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": [
+          "InfPersistentItem"
+        ],
+        "root": true
+      },
+      "description": "Find types by class and project. E.g. get the types for the class 'histC9 Geographical place type' (pk_class=364) used in project (pk_project=123)",
+      "http": {
+        "path": "/types-by-class-and-project",
+        "verb": "get"
+      }
+    },
     "typesOfClassAndProject": {
       "accepts": [
         {
@@ -542,7 +571,9 @@
         },
         {
           "arg": "pk_typed_classes",
-          "type": ["number"],
+          "type": [
+            "number"
+          ],
           "required": true,
           "description": "Primary Keyes of Typed Classes (e.g. pk of Geographical Place to get Geographical Place Types)",
           "http": {
@@ -694,10 +725,10 @@
           }
         },
         {
-          "arg": "pk_ui_context",
+          "arg": "pk_app_context",
           "type": "number",
           "required": true,
-          "description": "Primary Key of the ui context.",
+          "description": "Primary Key of the app context.",
           "http": {
             "source": "query"
           }
@@ -708,7 +739,7 @@
         "type": "WarEntityPreview",
         "root": true
       },
-      "description": "Get the preview of a persistent according to project and ui context.",
+      "description": "Get the preview of a persistent according to project and app context.",
       "http": {
         "path": "/preview",
         "verb": "get"

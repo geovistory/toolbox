@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, PropertyField, ComConfig, ProjectCrm } from 'app/core';
+import { ActiveProjectService, PropertyField, SysConfig, ProjectCrm } from 'app/core';
 import { uniq, indexBy, values } from 'ramda';
 import { filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
@@ -44,7 +44,7 @@ export class QueryService {
 
         Object.keys(classPks).forEach(pkClass => {
           const classConfig = crm.classes[pkClass];
-          const uiContext = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+          const uiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
           if (classConfig.uiContexts && classConfig.uiContexts[uiContext]) {
             (classConfig.uiContexts[uiContext].uiElements || []).forEach(ele => {
               if (ele.propertyFieldKey) {

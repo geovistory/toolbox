@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { DfhProperty, IAppState, InfEntityProjectRelApi, InfPersistentItem, InfRoleApi, ComProject, U } from 'app/core';
+import { DfhProperty, IAppState, ProInfoProjRelApi, InfPersistentItem, InfRoleApi, ProProject, U } from 'app/core';
 
 import { Observable } from 'rxjs';
 
@@ -59,7 +59,7 @@ export class PeItPropertyFieldEditableComponent extends PropertyFieldBase {
   constructor(
     protected rootEpics: RootEpics,
     protected epics: PropertyFieldApiEpics,
-    protected eprApi: InfEntityProjectRelApi,
+    protected eprApi: ProInfoProjRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
     protected actions: PropertyFieldActions,
@@ -116,7 +116,7 @@ export class PeItPropertyFieldEditableComponent extends PropertyFieldBase {
     this.subs.push(this.property$.subscribe(p => this.property = p))
     this.subs.push(this.ngRedux.select<InfPersistentItem>([...this.parentPeItStatePath, 'peIt']).subscribe(i => this.parentPeIt = i))
     this.subs.push(this.ngRedux.select<PeItDetail>(this.parentPath).subscribe(d => this.parentPeItState = d))
-    this.subs.push(this.ngRedux.select<ComProject>('activeProject').subscribe(p => this.fkProject = p.pk_project))
+    this.subs.push(this.ngRedux.select<ProProject>('activeProject').subscribe(p => this.fkProject = p.pk_entity))
 
     // observe if a teEnt is in edit mode
     this.subs.push(this._role_list$.subscribe(roleDetails => {

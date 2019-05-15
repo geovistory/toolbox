@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   PubAccount,
-  ComProject
+  ProProject
 } from '../index';
 
 declare var Object: any;
@@ -11,7 +11,7 @@ export interface PubAccountProjectRelInterface {
   "account_id"?: number;
   "id"?: number;
   account?: PubAccount;
-  project?: ComProject;
+  project?: ProProject;
 }
 
 export class PubAccountProjectRel implements PubAccountProjectRelInterface {
@@ -20,7 +20,7 @@ export class PubAccountProjectRel implements PubAccountProjectRelInterface {
   "account_id": number;
   "id": number;
   account?: PubAccount;
-  project?: ComProject;
+  project?: ProProject;
   constructor(data?: PubAccountProjectRelInterface) {
     Object.assign(this, data);
   }
@@ -83,11 +83,11 @@ export class PubAccountProjectRel implements PubAccountProjectRelInterface {
         },
         project: {
           name: 'project',
-          type: 'ComProject',
-          model: 'ComProject',
+          type: 'ProProject',
+          model: 'ProProject',
           relationType: 'belongsTo',
                   keyFrom: 'fk_project',
-          keyTo: 'pk_project'
+          keyTo: 'pk_entity'
         },
       }
     }

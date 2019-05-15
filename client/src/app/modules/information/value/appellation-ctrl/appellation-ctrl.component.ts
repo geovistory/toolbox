@@ -1,12 +1,10 @@
 import { Component, EventEmitter, forwardRef, OnDestroy, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfAppellation, InfRole } from 'app/core';
+import { QuillDoc } from 'app/modules/quill/quill.models';
 import { pick } from 'ramda';
 import { Subject } from 'rxjs';
-import { QuillDoc } from '../../../quill';
 import { QuillService } from '../../../quill/quill.service';
-import { AppellationLabel, AppellationLabelInterface } from '../../shared/appellation-label';
-import { Token } from '../../shared/appellation-token';
 
 @Component({
   selector: 'gv-appellation-ctrl',
@@ -55,15 +53,15 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
     this.validateAndEmit(qd);
   }
 
-  private validateAndEmit(qd: QuillDoc) {
+  private validateAndEmit(quill_doc: QuillDoc) {
     if (this.onChangeRegistered) {
-      if (qd && qd.contents && qd.contents.ops.filter(op => op.insert.length > 0).length > 1 && this.role) {
+      if (quill_doc &&  quill_doc.ops.filter(op => op.insert.length > 0).length > 1 && this.role) {
         // build the role
         const role = new InfRole(pick(['fk_temporal_entity', 'fk_property'], this.role) as InfRole);
         // build a appe with the appellation_label given by the formControl
         role.appellation = new InfAppellation({
           ...this.appellation,
-          appellation_label: this.quillDeltaToAppellationLabel(qd)
+          quill_doc
         });
         // send the appe the parent form
         this.onChange(role);
@@ -72,47 +70,6 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
       }
     }
   }
-
-  // converts Appellation Label to Quill Delta
-  appellationLabelToQuillDelta(appeLabel: AppellationLabel): QuillDoc {
-    const q: QuillDoc = { latestId: 1, contents: { ops: [] } };
-    const a = new AppellationLabel(appeLabel);
-    // we increase the id, since quill can't handle 0 attribute value
-    // see: https://github.com/quilljs/parchment/issues/62
-    q.latestId = a.latestTokenId ? (appeLabel.latestTokenId + 1) : 1;
-
-    q.contents.ops = a.tokens.map(token => {
-      return {
-        insert: token.string,
-        attributes: {
-          // we increase the id, since quill can't handle 0 attribute value
-          node: (token.id + 1)
-        }
-      }
-    })
-
-    return q;
-  }
-
-  // converts quill Delta to Appellation Label
-  quillDeltaToAppellationLabel(qd: QuillDoc): AppellationLabelInterface {
-    const a: AppellationLabelInterface = {
-      // we decrease the id, since we increased it for quill, that can't handle 0 attribute value
-      latestTokenId: (qd.latestId - 1),
-      tokens: qd.contents.ops.map(op => {
-        // this if statement will remove the newline
-        if ((op.attributes || {}).node) {
-          return {
-            id: (op.attributes.node - 1),
-            string: op.insert,
-            isSeparator: this.quillService.hasSeparator(op.insert)
-          } as Token
-        }
-      }).filter(op => (op))
-    }
-    return a;
-  }
-
 
   /****************************************
    *  ControlValueAccessor implementation *
@@ -128,7 +85,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
 
     this.appellation = (role && role.appellation) ? role.appellation : new InfAppellation();
 
-    this.quillDoc = this.appellationLabelToQuillDelta(this.appellation.appellation_label);
+    this.quillDoc = this.appellation.quill_doc
 
     this.validateAndEmit(this.quillDoc)
   }

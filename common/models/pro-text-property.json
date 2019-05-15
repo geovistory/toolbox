@@ -1,0 +1,51 @@
+{
+  "name": "ProTextProperty",
+  "base": "ProEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "projects",
+      "table": "text_property"
+    }
+  },
+  "properties": {
+    "string": {
+      "type": "string",
+      "required": true
+    },
+    "quill_doc": {
+      "type": "string",
+      "required": true
+    },
+    "fk_system_type": {
+      "type": "number",
+      "required": true
+    },
+    "fk_language": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "systemType": {
+      "type": "belongsTo",
+      "model": "SysSystemType",
+      "foreignKey": "fk_system_type"
+    },
+    "language": {
+      "type": "belongsTo",
+      "model": "InfLanguage",
+      "foreignKey": "fk_language"
+    },
+    "project": {
+      "type": "belongsTo",
+      "model": "ProProject",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

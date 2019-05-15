@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt } from './active-project.models';
-import { EntityPreview, PeItDetail } from '../state/models';
-import { InfChunk, InfTemporalEntity, InfPersistentItem, ComQuery, ComVisual } from '../sdk';
+import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt, ProjectPreview } from './active-project.models';
+import { DatChunk, InfTemporalEntity, InfPersistentItem, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
+import { EntityPreview, PeItDetail, HasTypePropertyReadable } from '../state/models';
 
-export interface ComQueryV extends ComQuery {
+export interface ComQueryV extends ProQuery {
     versions: number[];
 }
 
-export interface ComVisualV extends ComVisual {
+export interface ComVisualV extends ProVisual {
     versions: number[];
 }
 
 interface MetaData {
+
+    projectPreview?: ProjectPreview;
+
     pk_project?: number;
     pk_entity?: number;
     pk_entities?: number[];
@@ -23,14 +26,22 @@ interface MetaData {
     // return vals for Data Cache
     entityPreview?: EntityPreview;
     peItDetail?: PeItDetail;
-    chunk?: InfChunk
+    chunk?: DatChunk
     teEnGraphs?: InfTemporalEntity[]
     peItGraphs?: InfPersistentItem[]
     types?: TypePeIt[]
     comQueryArray?: ComQueryV[]
-    comQuery?: ComQuery
+    comQuery?: ProQuery
     comVisualArray?: ComVisualV[]
-    comVisual?: ComVisual
+    comVisual?: ProVisual
+
+    // CRM and Config
+    projRel?: ProDfhClassProjRel;
+    dfh_pk_class?: number;
+    hasTypeProperties?: HasTypePropertyReadable[]
+
+    // Information
+    infProjRel?: ProInfoProjRel;
 
     // layout
     list?: ListType;
@@ -51,7 +62,7 @@ export class ActiveProjectActions {
     /* tslint:disable:member-ordering */
 
     /************************************************************************************
-     * Load project data (metadata, crm)
+     * CRM and Config (metadata, crm)
     ************************************************************************************/
     static LOAD_PROJECT = 'ActiveProject::LOAD_PROJECT';
     static LOAD_PROJECT_FAILED = 'ActiveProject::LOAD_PROJECT_FAILED';
@@ -70,6 +81,14 @@ export class ActiveProjectActions {
         }
     }
 
+    activeProjectUpdated(projectPreview: ProjectPreview): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
+            payload: null,
+            meta: { projectPreview },
+        }
+    }
+
     activeProjectLoadCrm(pk_project: number): ActiveProjectAction {
         return {
             type: ActiveProjectActions.PROJECT_LOAD_CRM,
@@ -77,14 +96,6 @@ export class ActiveProjectActions {
             meta: {
                 pk_project
             },
-        }
-    }
-
-    activeProjectUpdated(payload: Payload): ActiveProjectAction {
-        return {
-            type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
-            payload,
-            meta: null,
         }
     }
 
@@ -97,7 +108,6 @@ export class ActiveProjectActions {
             meta: null,
         }
     }
-
 
     /************************************************************************************
      * Layout
@@ -186,7 +196,7 @@ export class ActiveProjectActions {
     }
 
     /************************************************************************************
-    * Data cache
+    * Information cache
     ************************************************************************************/
 
     // EntityPreviews
@@ -310,7 +320,7 @@ export class ActiveProjectActions {
         }
     }
 
-    loadChunkSucceeded(chunk: InfChunk): ActiveProjectAction {
+    loadChunkSucceeded(chunk: DatChunk): ActiveProjectAction {
         return {
             type: ActiveProjectActions.LOAD_CHUNK_SUCCEEDED,
             payload: null,
@@ -449,7 +459,7 @@ export class ActiveProjectActions {
         }
     }
 
-    loadQueryVersionSucceeded(comQuery: ComQuery): ActiveProjectAction {
+    loadQueryVersionSucceeded(comQuery: ProQuery): ActiveProjectAction {
         return {
             type: ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED,
             payload: null,
@@ -548,7 +558,7 @@ export class ActiveProjectActions {
     static SET_CREATING_MENTIONING = 'ActiveProject::SET_CREATING_MENTIONING';
 
 
-    updateSelectedChunk(selectedChunk: InfChunk): ActiveProjectAction {
+    updateSelectedChunk(selectedChunk: DatChunk): ActiveProjectAction {
         return {
             type: ActiveProjectActions.UPDATE_SELECTED_CHUNK,
             payload: { selectedChunk },
@@ -593,6 +603,61 @@ export class ActiveProjectActions {
             meta: null
         }
     }
+
+
+    /*********************************************************************
+     *  Methods to manage enabling and disabling a class for the project
+     *********************************************************************/
+    static readonly UPSERT_CLASS_PROJ_REL = 'ActiveProject::UPSERT_CLASS_PROJ_REL';
+    static readonly UPSERT_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_SUCCEEDED';
+    static readonly UPSERT_CLASS_PROJ_REL_FAILED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_FAILED';
+
+    upsertClassProjRel = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL,
+        meta: { projRel, dfh_pk_class },
+        payload: null,
+    });
+
+    upsertClassProjRelSucceeded = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED,
+        meta: { projRel, dfh_pk_class },
+        payload: null
+    })
+
+    upsertClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED,
+        meta: { dfh_pk_class },
+        payload: null,
+        error,
+    })
+
+
+    /*********************************************************************
+     *  Methods to manage enabling and disabling an entity for the project
+     *********************************************************************/
+    static readonly UPSERT_ENTITY_PROJ_REL = 'ActiveProject::UPSERT_ENTITY_PROJ_REL';
+    static readonly UPSERT_ENTITY_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_SUCCEEDED';
+    static readonly UPSERT_ENTITY_PROJ_REL_FAILED = 'ActiveProject::UPSERT_ENTITY_PROJ_REL_FAILED';
+
+    upsertEntityProjRel = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL,
+        meta: { infProjRel },
+        payload: null,
+    });
+
+    upsertEntityProjRelSucceeded = (infProjRel: ProInfoProjRel): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED,
+        meta: { infProjRel },
+        payload: null
+    })
+
+    upsertEntityProjRelFailed = (error): ActiveProjectAction => ({
+        type: ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_FAILED,
+        meta: null,
+        payload: null,
+        error,
+    })
+
 
     /************************************************************************************
      * Destroy the active project state (on closing a project)

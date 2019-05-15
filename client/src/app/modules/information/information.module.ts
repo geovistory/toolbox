@@ -20,7 +20,6 @@ import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
-import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 import { QuillModule } from '../quill';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
@@ -150,7 +149,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { EntityDetailAPIEpics } from './containers/entity-detail/api/entity-detail.epics';
 import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
-import { MatTooltipModule, MatTabsModule } from '@angular/material';
+import { MatTooltipModule, MatTabsModule, MatDividerModule } from '@angular/material';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
@@ -195,9 +194,10 @@ import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity
     DragDropModule,
     MatTooltipModule,
     MatTabsModule,
+    MatDividerModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
-    EntityPreviewModule
+    EntityPreviewModule,
 
   ],
   declarations: [
@@ -385,7 +385,6 @@ import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity
     PropertyFieldService,
     ValidationService,
 
-    MentionedEntityCtrlActions,
     MentioningListAPIActions,
     MentioningListAPIEpics,
     CreateOrAddEntityAPIActions,

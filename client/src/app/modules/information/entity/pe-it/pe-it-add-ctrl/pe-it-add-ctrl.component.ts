@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { ComConfig, InfEntityProjectRel, InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
+import { SysConfig, ProInfoProjRel, InfPersistentItem, InfTemporalEntity, U, UiContext } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { RootEpics } from 'app/core/store/epics';
@@ -45,7 +45,7 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
 
   onInitPeItBaseChild(): void {
 
-    this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
+    this.uiContext = this.classConfig.uiContexts[SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.initFormCtrls()
   }
@@ -95,7 +95,7 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
       // create the epr
       peIt.entity_version_project_rels = [{
         is_in_project: true,
-      } as InfEntityProjectRel];
+      } as ProInfoProjRel];
 
 
       // try to retrieve a appellation label

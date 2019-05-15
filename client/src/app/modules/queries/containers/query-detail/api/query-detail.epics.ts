@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, ComQuery } from 'app/core';
+import { LoadingBarActions, ProQuery } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -8,13 +8,13 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { QueryDetailComponent } from '../query-detail.component';
 import { QueryDetailAPIActions, QueryDetailAPIAction } from './query-detail.actions';
 import { ofSubstore } from 'app/core/store/module';
-import { ComQueryApi } from 'app/core/sdk/services/custom/ComQuery';
+import { ProQueryApi } from 'app/core/sdk';
 import { saveAs } from 'file-saver';
 
 @Injectable()
 export class QueryDetailAPIEpics {
   constructor(
-    private queryApi: ComQueryApi, // <- change the api
+    private queryApi: ProQueryApi, // <- change the api
     private actions: QueryDetailAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions
@@ -177,7 +177,7 @@ export class QueryDetailAPIEpics {
           /**
            * Subscribe to the api call
            */
-          apiCall.subscribe((comQuery: ComQuery) => {
+          apiCall.subscribe((comQuery: ProQuery) => {
             /**
              * Emit the global action that completes the loading bar
              */

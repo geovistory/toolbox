@@ -1,9 +1,9 @@
 import { Component, EventEmitter, forwardRef, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfTextProperty } from '../../../../core/sdk/models/InfTextProperty';
-import { QuillDoc } from '../../../quill';
+import { InfTextProperty } from 'app/core/sdk';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState } from 'app/core';
+import { QuillDoc } from '../../../quill/quill.models';
 
 @Component({
   selector: 'gv-text-property',
@@ -73,7 +73,7 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
   validateAndEmit() {
 
     // If quilldoc is not empty
-    this.quillValid = (((this.quillDoc || {} as any).contents || {}).ops || {}).length ? true : false;
+    this.quillValid = ((this.quillDoc || {} as any).ops || {}).length ? true : false;
 
     // If quillDoc and language are valid
     if (this.quillValid && this.langCtrl.valid) {
@@ -81,7 +81,7 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
         ...this.textProperty,
         fk_language: this.langCtrl.value.pk_entity,
         language: this.langCtrl.value,
-        text_property_quill_doc: this.quillDoc
+        quill_doc: this.quillDoc
       })
       this.onChange(textProperty)
     } else {
@@ -94,8 +94,7 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
     return !s ? null :
       !s.activeProject ? null :
         !s.activeProject.default_language ? null :
-          !s.activeProject.default_language.inf_language ? null :
-            s.activeProject.default_language.inf_language
+          s.activeProject.default_language
   }
 
   /****************************************
@@ -113,8 +112,8 @@ export class TextPropertyComponent implements OnInit, ControlValueAccessor {
       if (textProperty.language) {
         this.langCtrl.setValue(textProperty.language);
       }
-      if (textProperty.text_property_quill_doc) {
-        this.quillDoc = textProperty.text_property_quill_doc
+      if (textProperty.quill_doc) {
+        this.quillDoc = textProperty.quill_doc
       }
       this.validateAndEmit();
     }

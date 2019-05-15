@@ -1,17 +1,17 @@
+import { ClassConfig, ProjectCrm, ProjectPreview } from 'app/core/active-project/active-project.models';
+import { AppeDetail, ClassInstanceFieldLabel, ClassInstanceLabel, ExistenceTimeDetail, FieldLabel, FieldList, LangDetail, PeItDetail, PlaceDetail, PropertyField, PropertyFieldList, RoleDetail, RoleDetailList, RoleLabel, TeEntDetail } from 'app/core/state/models';
+import { fieldKey, propertyFieldKey, propertyFieldKeyFromParams, roleDetailKey } from 'app/core/state/services/state-creator';
 import { TimeSpan } from 'app/core/time-span/time-span';
-import { AppeDetail, ClassInstanceFieldLabel, FieldList, ClassInstanceLabel, ExistenceTimeDetail, LangDetail, PeItDetail, RoleDetail, RoleLabel, PropertyField, FieldLabel, PropertyFieldList, TeEntDetail, RoleDetailList, PlaceDetail } from 'app/core/state/models';
+import { QuillDoc } from 'app/modules/quill';
 import { indexBy, omit } from 'ramda';
+import * as Config from '../../../../../common/config/Config';
 import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
-import { AppellationLabel } from '../../modules/information/shared/appellation-label';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
-import { ClassConfig, ProjectCrm } from 'app/core/active-project/active-project.models';
+import { SysConfig } from '../config/sys-config';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { ComClassField, ComUiContextConfig, DfhClass, DfhProperty, InfEntityProjectRel, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, InfEntityProjectRelInterface } from '../sdk';
-import { propertyFieldKeyFromParams, propertyFieldKey, fieldKey, roleDetailKey } from 'app/core/state/services/state-creator';
-import * as Config from '../../../../../common/config/Config';
+import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysClassField } from '../sdk';
 import { Field } from '../state/models/field';
-import { ComConfig } from '../config/com-config';
 import { TextPropertyField } from '../state/models/text-property-field';
 
 export interface LabelGeneratorSettings {
@@ -162,12 +162,12 @@ export class U {
 
 
         const rolesToAppe: InfRole[] = teEnt.te_roles.filter(
-            role => (role && role.appellation && role.appellation.appellation_label
+            role => (role && role.appellation && role.appellation.quill_doc
                 // TODO: Add a clause as soon as we have DisplayRoleForDomain in the db
                 // to filter for the role that is standard?? or is this not happening on forms?
             ))
 
-        return rolesToAppe.length ? new AppellationLabel(rolesToAppe[0].appellation.appellation_label).getString() : null;
+        return rolesToAppe.length ? U.stringFromAppellation(rolesToAppe[0].appellation) : null;
 
     }
 
@@ -232,7 +232,7 @@ export class U {
                 ))
                 .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
                     .map(r => {
-                        return new AppellationLabel(r.appellation.appellation_label).getString()
+                        return U.stringFromAppellation(r.appellation)
                     })[0]).join(', ')
 
     }
@@ -241,7 +241,7 @@ export class U {
       * Convert array of ComClassField to an array of Fields
       *
       */
-    static comCLassFields2Fields(classFields: ComClassField[]): Field[] {
+    static comCLassFields2Fields(classFields: SysClassField[]): Field[] {
         if (!classFields) return [];
 
         return classFields.map(comClassfield => {
@@ -255,13 +255,13 @@ export class U {
 
 
             switch (comClassfield.pk_entity) {
-                case ComConfig.PK_CLASS_FIELD_WHEN:
+                case SysConfig.PK_CLASS_FIELD_WHEN:
 
                     return new ExistenceTimeDetail({ fkClassField, label })
 
-                case ComConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-                case ComConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-                case ComConfig.PK_CLASS_FIELD_SHORT_TITLE:
+                case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+                case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+                case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
 
                     return new TextPropertyField({ fkClassField, label })
 
@@ -327,14 +327,14 @@ export class U {
      * gets ui_context_config of PropertyField or null, if not available
      * @param propertyField
      */
-    static uiContextConfigFromPropertyField(propertyField: PropertyField): ComUiContextConfig | null {
+    static uiContextConfigFromPropertyField(propertyField: PropertyField): ProClassFieldConfig | null {
         if (!propertyField) return null;
 
         if (!propertyField.property) return null;
 
-        if (!propertyField.property.ui_context_config || !propertyField.property.ui_context_config[0]) return null;
+        if (!propertyField.property.class_field_config || !propertyField.property.class_field_config[0]) return null;
 
-        return propertyField.property.ui_context_config[0];
+        return propertyField.property.class_field_config[0];
     }
 
     /**
@@ -342,7 +342,7 @@ export class U {
     *
     * @param propSet
     */
-    static ordNumFromPropSet(propSet: ComClassField): number | null {
+    static ordNumFromPropSet(propSet: SysClassField): number | null {
 
         const config = U.uiContextConfigFromPropSet(propSet);
 
@@ -355,13 +355,13 @@ export class U {
      * gets ui_context_config of PropSet or null, if not available
      * @param propSet
      */
-    static uiContextConfigFromPropSet(propSet: ComClassField): ComUiContextConfig | null {
+    static uiContextConfigFromPropSet(propSet: SysClassField): ProClassFieldConfig | null {
 
-        if (!propSet.ui_context_configs) return null;
+        if (!propSet.class_field_configs) return null;
 
-        if (!propSet.ui_context_configs[0]) return null;
+        if (!propSet.class_field_configs[0]) return null;
 
-        return propSet.ui_context_configs[0];
+        return propSet.class_field_configs[0];
     }
 
 
@@ -433,6 +433,15 @@ export class U {
 
 
     /**
+     * Gets the project rel of a data_for_history class
+     */
+    static getProjRel = (dfhClass: DfhClass): ProDfhClassProjRel => {
+        if (dfhClass && dfhClass.proj_rels && dfhClass.proj_rels.length && dfhClass.proj_rels[0]) {
+            return dfhClass.proj_rels[0];
+        } else return undefined;
+    }
+
+    /**
      * Converts a DfhClass to a ClassConfig
      * @param dfhC
      */
@@ -457,15 +466,22 @@ export class U {
 
         const extractIsInProject = (c: DfhClass): boolean => {
             return !c.proj_rels ? false :
-                !c.proj_rels[0] ? false : c.proj_rels[0].is_in_project;
+                !c.proj_rels[0] ? false : c.proj_rels[0].enabled_in_entities;
         }
 
         const cConf: ClassConfig = {
-            isInProject: extractIsInProject(dfhC),
-            subclassOf: extractSubclassOf(dfhC),
-            label: extractClassLabel(dfhC),
-            dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
+            pkEntity: dfhC.pk_entity,
             dfh_pk_class: dfhC.dfh_pk_class,
+            subclassOf: extractSubclassOf(dfhC),
+            profileLabels: dfhC.class_profile_view.map(prof => prof.dfh_profile_label).join(', '),
+            profilePks: dfhC.class_profile_view.map(prof => prof.dfh_fk_profile),
+            isInProject: extractIsInProject(dfhC),
+            projRel: U.getProjRel(dfhC),
+            label: extractClassLabel(dfhC),
+            dfh_standard_label: dfhC.dfh_standard_label,
+            changingProjRel: false,
+            scopeNote: !dfhC.text_properties ? '' : !dfhC.text_properties.length ? '' : dfhC.text_properties[0].dfh_text_property,
+            dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
             uiContexts: {}
         };
 
@@ -556,8 +572,8 @@ export class U {
 
 
     static labelFromAppeDetail(a: AppeDetail): string {
-        if (a && a.appellation && a.appellation.appellation_label) {
-            return new AppellationLabel(a.appellation.appellation_label).getString();
+        if (a && a.appellation && a.appellation.quill_doc) {
+            return U.stringFromAppellation(a.appellation);
         } else return null;
     }
 
@@ -598,7 +614,7 @@ export class U {
                 path: undefined,
                 type: 'txt-prop',
                 string: U.obj2Arr(txtPropField.textPropertyDetailList).slice(0, settings.rolesMax).map(tD => (
-                    tD.textProperty.text_property_quill_doc.contents.ops.map(op => op.insert).join('')
+                    U.stringFromQuillDoc(tD.textProperty.quill_doc)
                 )).join(', ')
             }]
         })
@@ -657,10 +673,26 @@ export class U {
 
     }
 
+
+    static stringFromAppellation(appellation: InfAppellation): string {
+        if (appellation.quill_doc && appellation.quill_doc.ops && appellation.quill_doc.ops.length) {
+            return U.stringFromQuillDoc(appellation.quill_doc)
+        }
+        else if (appellation.string) {
+            return appellation.string
+        }
+        else return '';
+    }
+
+    static stringFromQuillDoc(quillDoc: QuillDoc): string {
+        if (quillDoc && quillDoc.ops && quillDoc.ops.length) return quillDoc.ops.map(op => op.insert).join('');
+        else return '';
+    }
+
     /**
      *  Extracts the first InfEntityProjectRel from InfRole
     */
-    static eprFromInfRole(role: InfRole): InfEntityProjectRel | null {
+    static eprFromInfRole(role: InfRole): ProInfoProjRel | null {
 
         return (role && role.entity_version_project_rels && role.entity_version_project_rels[0]) ?
             role.entity_version_project_rels[0] : null;
@@ -672,7 +704,7 @@ export class U {
     /**
      *  Extracts the first InfEntityProjectRel from RoleDetail
     */
-    static eprFromRoleDetail(roleDetail: RoleDetail): InfEntityProjectRel | null {
+    static eprFromRoleDetail(roleDetail: RoleDetail): ProInfoProjRel | null {
 
         return (
             roleDetail &&
@@ -1227,4 +1259,23 @@ export class U {
         })
         return key;
     }
+
+
+    /**
+     * Transform ProProject to ProjectPreview
+     */
+    static proProjectToProjectPreview(project: ProProject): ProjectPreview {
+        return {
+            label: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
+            description: this.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
+            default_language: project.default_language,
+            pk_project: project.pk_entity
+        }
+    }
+
+    static firstProTextPropStringOfType(textProperties: ProTextProperty[], fkSystemType): string {
+        return (textProperties.find(t => t.fk_system_type === fkSystemType) || { string: '' }).string
+    }
+
+
 }

@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DfhClass, InfNamespace, InfPersistentItem, PeItDetail } from 'app/core';
+import { DfhClass, DatNamespace, InfPersistentItem, PeItDetail } from 'app/core';
 import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Types } from './types.models';
@@ -11,8 +11,11 @@ interface MetaData {
   typeClass?: DfhClass,
   type?: InfPersistentItem,
   peItDetail?: PeItDetail,
-  namespace?: InfNamespace;
+  namespace?: DatNamespace;
   create?: CreateOrAddEntity;
+  pkTypeClass?: number;
+  pkProject?: number;
+  tabTitle?: string;
 };
 export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -37,30 +40,20 @@ export class TypesAPIActions {
 
   static readonly CLOSE_EDIT_FORM = 'Types::CLOSE_EDIT_FORM';
 
-  static readonly EDIT = 'Types::EDIT';
-  static readonly EDIT_STARTED = 'Types::EDIT_STARTED';
-  static readonly EDIT_SUCCEEDED = 'Types::EDIT_SUCCEEDED';
-  static readonly EDIT_FAILED = 'Types::EDIT_FAILED';
-
+  static readonly SET_TAB_TITLE = 'Types::SET_TAB_TITLE';
 
   static readonly DESTROY = 'Types::DESTROY';
 
   @dispatch()
-  load = (): TypesAPIAction => ({
+  load = (pkProject: number, pkTypeClass: number): TypesAPIAction => ({
     type: TypesAPIActions.LOAD,
-    meta: null,
+    meta: { pkProject, pkTypeClass },
     payload: null,
   });
 
-  loadStarted = (): TypesAPIAction => ({
-    type: TypesAPIActions.LOAD_STARTED,
-    meta: null,
-    payload: null,
-  })
-
-  loadSucceeded = (typeClass: DfhClass, types: InfPersistentItem[], namespace: InfNamespace): TypesAPIAction => ({
+  loadSucceeded = (types: InfPersistentItem[]): TypesAPIAction => ({
     type: TypesAPIActions.LOAD_SUCCEEDED,
-    meta: { typeClass, types, namespace },
+    meta: { types },
     payload: null
   })
 
@@ -102,9 +95,9 @@ export class TypesAPIActions {
 
 
   @dispatch()
-  openEditForm = (type: InfPersistentItem): TypesAPIAction => ({
+  openEditForm = (pkProject: number, type: InfPersistentItem): TypesAPIAction => ({
     type: TypesAPIActions.OPEN_EDIT_FORM,
-    meta: { type },
+    meta: { pkProject, type },
     payload: null
   })
 
@@ -122,16 +115,20 @@ export class TypesAPIActions {
   })
 
   @dispatch()
-  closeEditForm = (error): TypesAPIAction => ({
+  closeEditForm = (): TypesAPIAction => ({
     type: TypesAPIActions.CLOSE_EDIT_FORM,
     meta: null,
-    payload: null,
-    error
+    payload: null
   })
 
-  edit = (type: InfPersistentItem): TypesAPIAction => ({
-    type: TypesAPIActions.EDIT,
-    meta: { type },
+
+  /*********************************************************************
+  *  Set the tab title
+  *********************************************************************/
+
+  @dispatch() setTabTitle = (tabTitle: string): TypesAPIAction => ({
+    type: TypesAPIActions.SET_TAB_TITLE,
+    meta: { tabTitle },
     payload: null
   })
 

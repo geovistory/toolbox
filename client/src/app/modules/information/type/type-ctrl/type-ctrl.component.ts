@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IAppState, InfEntityAssociation, SubstoreComponent, U } from 'app/core';
+import { IAppState, InfEntityAssociation, SubstoreComponent, U, ActiveProjectService } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { DropdownTreeviewComponent, TreeviewItem, TreeviewI18n, TreeviewConfig } from 'ngx-treeview';
 import { combineLatest, Observable, Subject } from 'rxjs';
@@ -68,7 +68,8 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
     protected rootEpics: RootEpics,
     private epics: TypeCtrlAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
-    public i18n: TreeviewI18n
+    public i18n: TreeviewI18n,
+    private p: ActiveProjectService
   ) {
     super()
 
@@ -88,13 +89,15 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typeCtrlReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    combineLatest(this.ngRedux.select(['activeProject', 'pk_project']), this.pkTypedClass$).pipe(
-      first(d => !!(d[0] && d[1])),
+    combineLatest(this.p.pkProject$, this.pkTypedClass$, this.p.hasTypeProperties$).pipe(
+      first(d => !d.includes(undefined)),
       takeUntil(this.destroy$)
-    ).subscribe(d => {
+    ).subscribe(([pkProject, pkTypedClass, hasTypeProperties]) => {
+
+      const pkTypeClass = U.objNr2Arr(hasTypeProperties).find(p => p.pk_typed_class === pkTypedClass).pk_type_class;
 
       // load the available types
-      this.load(d[0], d[1])
+      this.load(pkProject, pkTypeClass)
     })
 
     // Listen for closing the treeview
@@ -116,7 +119,7 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
     ).subscribe((d) => {
       const items = d[1], ea = d[0];
 
-      const selected = items.find((item) => item.value == ea.fk_range_entity)
+      const selected = items.find((item) => item.value == ea.fk_info_range)
 
       if (this.dropdownTreeviewSelectI18n.selectedItem !== selected) {
         this.dropdownTreeviewSelectI18n.selectedItem = selected;
@@ -138,9 +141,9 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
   //   this.selectedTypeOption = type;
 
   //   this.onChange(new InfEntityAssociation({
-  //     fk_domain_entity: undefined,
+  //     fk_info_domain: undefined,
   //     fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
-  //     fk_range_entity: type.pk_entity
+  //     fk_info_domain: type.pk_entity
   //   }))
   // }
 
@@ -166,9 +169,9 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
       && this.dropdownTreeviewSelectI18n.selectedItem.value
       && this.localStore.getState()) {
       this.onChange(new InfEntityAssociation({
-        fk_domain_entity: undefined,
+        fk_info_domain: undefined,
         fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
-        fk_range_entity: this.dropdownTreeviewSelectI18n.selectedItem.value
+        fk_info_range: this.dropdownTreeviewSelectI18n.selectedItem.value
       }))
     } else {
       this.onChange(null)

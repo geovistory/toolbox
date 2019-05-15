@@ -1,4 +1,4 @@
-import { DfhClassInterface, ComClassField, ComUiContextConfig, DfhPropertyProfileView, PropertyField } from '../../core';
+import { DfhClassInterface, SysClassField, ProClassFieldConfig, DfhPropertyProfileView, PropertyField } from '../../core';
 
 
 
@@ -36,7 +36,7 @@ export class Container {
 export class Widget {
     constructor(
         public name: string, public metaInfo: string, public propertyField: PropertyField,
-        public propSet: ComClassField, public uiContextConfig: ComUiContextConfig,
+        public propSet: SysClassField, public uiContextConfig: ProClassFieldConfig,
         public profiles: DfhPropertyProfileView[]
     ) { }
 }

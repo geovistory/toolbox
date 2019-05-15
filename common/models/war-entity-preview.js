@@ -354,7 +354,7 @@ module.exports = function (WarEntityPreview) {
       FROM q
       JOIN (
         SELECT fk_project, fk_entity
-        FROM information.entity_version_project_rel 
+        FROM projects.info_proj_rel 
         WHERE is_in_project = true
       ) epr ON epr.fk_entity = q.pk_entity
       WHERE rank = 1
@@ -440,7 +440,7 @@ module.exports = function (WarEntityPreview) {
     if (pkProject) {
       // get the join object. If ofProject is false, the join will be a left join.
       projectJoin = {
-        "entity_version_project_rels": WarEntityPreview.app.models.InfEntityProjectRel.getJoinObject(ofProject, pkProject)
+        "entity_version_project_rels": WarEntityPreview.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
       }
     }
 

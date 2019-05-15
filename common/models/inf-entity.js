@@ -57,9 +57,9 @@ module.exports = function (InfEntity) {
         // it is possible that there is already an epr between the given
         // project and the given pk_entity.
 
-        const InfEntityProjectRel = InfEntity.modelBuilder.models.InfEntityProjectRel;
+        const ProInfoProjRel = InfEntity.modelBuilder.models.ProInfoProjRel;
         // Search for an epr with that pk_entity and that projectId
-        InfEntityProjectRel.findOrCreate({
+        ProInfoProjRel.findOrCreate({
           "where": {
             "fk_entity": data.pk_entity,
             "fk_project": projectId
@@ -116,104 +116,107 @@ module.exports = function (InfEntity) {
    */
   InfEntity._findOrCreatePeIt = function (Model, projectId, dataObject, ctx) {
 
-    if (!ctx.req.accessToken.userId) return Error('Something went wrong with createing a peIt or TeEnt');
-    const accountId = ctx.req.accessToken.userId;
+    return new Promise(function (resolve, reject) {
 
-    // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
-    Object.keys(dataObject).forEach(key => {
-      if (dataObject[key] == undefined) {
-        delete dataObject[key]
+      if (!ctx.req.accessToken.userId) return reject('Something went wrong with createing a peIt or TeEnt');
+      const accountId = ctx.req.accessToken.userId;
+
+      // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
+      Object.keys(dataObject).forEach(key => {
+        if (dataObject[key] == undefined) {
+          delete dataObject[key]
+        }
+      })
+
+      const ProInfoProjRel = Model.app.models.ProInfoProjRel;
+
+      const filter = {
+        where: dataObject,
+        include: {
+          relation: "entity_version_project_rels",
+          scope: {
+            where: {
+              fk_project: projectId
+            }
+          }
+        }
       }
-    })
 
-    const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
-
-    const filter = {
-      where: dataObject,
-      include: {
-        relation: "entity_version_project_rels",
-        scope: {
+      const find = function (pk_entity) {
+        //find the entity and include the epr
+        return Model.findOne({
           where: {
-            fk_project: projectId
-          }
-        }
-      }
-    }
-
-    const find = function (pk_entity) {
-      //find the entity and include the epr
-      return Model.findOne({
-        where: {
-          pk_entity: pk_entity
-        },
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
+            pk_entity: pk_entity
+          },
+          include: {
+            relation: "entity_version_project_rels",
+            scope: {
+              where: {
+                fk_project: projectId
+              }
             }
           }
-        }
-      }).then((res) => {
-        return [res];
-      })
-        .catch(err => err);
-    }
-
-
-    // If there is a pk_entity, find the record
-    if (dataObject.pk_entity) {
-      //find the entity and include the epr
-      return Model.findOne({
-        where: {
-          pk_entity: dataObject.pk_entity
-        },
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
-            }
-          }
-        }
-      }).then((res) => {
-        return [res];
-      }).catch(err => err);
-    }
-
-    // If there is no pk_entity, create the record
-    else {
-      return Model.create(dataObject).catch((err) => {
-        return err;
-      })
-        .then((resultingEntity) => {
-          if (!resultingEntity) return Error('Something went wrong with createing a peIt or TeEnt');
-
-          // create the project relation
-
-          let reqEpr = {};
-
-          // create a new epr 
-          var newEpr = new InfEntityProjectRel({
-            "fk_entity": resultingEntity.pk_entity,
-
-            "fk_project": projectId,
-
-            // use the requested value or true
-            "is_in_project": [reqEpr.is_in_project, true].find(item => item !== undefined),
-            fk_creator: accountId,
-            fk_last_modifier: accountId
-          })
-
-          // persist epr in DB
-          return newEpr.save().then(resultingEpr => {
-            return find(resultingEpr.fk_entity)
-          });
-
+        }).then((res) => {
+          resolve([res]);
         })
-    }
+          .catch(err => reject(err));
+      }
 
 
+      // If there is a pk_entity, find the record
+      if (dataObject.pk_entity) {
+        //find the entity and include the epr
+        return Model.findOne({
+          where: {
+            pk_entity: dataObject.pk_entity
+          },
+          include: {
+            relation: "entity_version_project_rels",
+            scope: {
+              where: {
+                fk_project: projectId
+              }
+            }
+          }
+        })
+          .then((res) => resolve([res]))
+          .catch(err => reject(err));
+      }
+
+      // If there is no pk_entity, create the record
+      else {
+        return Model.create(dataObject)
+          .catch(err => reject(err))
+          .then((resultingEntity) => {
+
+            if (!resultingEntity || !resultingEntity.pk_entity) return reject('Something went wrong with createing a peIt or TeEnt');
+
+            // create the project relation
+
+            let reqEpr = {};
+
+            // create a new epr 
+            var newEpr = new ProInfoProjRel({
+              "fk_entity": resultingEntity.pk_entity,
+
+              "fk_project": projectId,
+
+              // use the requested value or true
+              "is_in_project": [reqEpr.is_in_project, true].find(item => item !== undefined),
+              fk_creator: accountId,
+              fk_last_modifier: accountId
+            })
+
+            // persist epr in DB
+            return newEpr.save()
+              .then(resultingEpr => {
+                return find(resultingEpr.fk_entity)
+              })
+              .catch(err => reject(err));
+          })
+      }
+
+    })
   };
 
 
@@ -224,7 +227,7 @@ module.exports = function (InfEntity) {
    * 1. in the simplest case, the given dataObject has a pk_entity for which the existing temporal entity is retrieved from db.
    * 2. in a more complex case, the given dataObject holds an array of roles ('te_roles') for which the function checks,
    *    if there is an existing temporal entity whose identity defining roles do excactly match the given roles.
-   *    Remark: The given 'te_roles' must have a valid fk_entity, fk_temporal_entity and fk_property in order to be compared 
+   *    Remark: The given 'te_roles' must have a valid fk_entity and fk_property in order to be compared 
    *    to the existing temporal entitites 
    * 
    * If none of the above checks retrieves an exsisting temporal entity, a new one is created. 
@@ -241,63 +244,65 @@ module.exports = function (InfEntity) {
    * @param {any} requestedObject [optional] plain object. 
    */
   InfEntity._findOrCreateTeEnt = function (Model, projectId, dataObject, ctx) {
-
-    if (!ctx.req.accessToken.userId) return Error('Something went wrong with createing a peIt or TeEnt');
-    const accountId = ctx.req.accessToken.userId;
+    return new Promise((resolve, reject) => {
 
 
-    // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
-    Object.keys(dataObject).forEach(key => {
-      if (dataObject[key] == undefined) {
-        delete dataObject[key]
-      }
-    })
+      if (!ctx.req.accessToken.userId) return reject('Something went wrong with createing a peIt or TeEnt');
+      const accountId = ctx.req.accessToken.userId;
 
-    const InfTemporalEntity = Model;
-    const InfEntityProjectRel = InfTemporalEntity.app.models.InfEntityProjectRel;
 
-    const find = function (pk_entity) {
-      //find the entity and include the epr
-      return InfTemporalEntity.findOne({
-        where: {
-          pk_entity: pk_entity
-        },
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
-            }
-          }
+      // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
+      Object.keys(dataObject).forEach(key => {
+        if (dataObject[key] == undefined) {
+          delete dataObject[key]
         }
-      }).then((res) => {
-        return [res];
       })
-        .catch(err => err);
-    }
 
+      const InfTemporalEntity = Model;
+      const ProInfoProjRel = InfTemporalEntity.app.models.ProInfoProjRel;
 
-    // If there is a pk_entity, find the record
-    if (dataObject.pk_entity) {
-      //find the entity and include the epr
-      return InfTemporalEntity.findOne({
-        where: {
-          pk_entity: dataObject.pk_entity
-        },
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
+      const find = function (pk_entity) {
+        //find the entity and include the epr
+        return InfTemporalEntity.findOne({
+          where: {
+            pk_entity: pk_entity
+          },
+          include: {
+            relation: "entity_version_project_rels",
+            scope: {
+              where: {
+                fk_project: projectId
+              }
             }
           }
-        }
-      }).then((res) => {
-        return [res];
-      }).catch(err => err);
-    } else {
-      // If there is no pk_entity, find or create the record
-      return new Promise((resolve, reject) => {
+        })
+          .catch(err => reject(err))
+          .then(res => {
+            resolve([res])
+          })
+      }
+
+
+      // If there is a pk_entity, find the record
+      if (dataObject.pk_entity) {
+        //find the entity and include the epr
+        return InfTemporalEntity.findOne({
+          where: {
+            pk_entity: dataObject.pk_entity
+          },
+          include: {
+            relation: "entity_version_project_rels",
+            scope: {
+              where: {
+                fk_project: projectId
+              }
+            }
+          }
+        })
+          .catch(err => reject(err))
+          .then(res => resolve([res]))
+      } else {
+        // If there is no pk_entity, find or create the record
 
         const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`
         const params = [dataObject.fk_class, JSON.stringify(dataObject.te_roles)]
@@ -305,16 +310,16 @@ module.exports = function (InfEntity) {
         const connector = InfTemporalEntity.dataSource.connector;
         connector.execute(sql_stmt, params, (err, resultObjects) => {
 
-          if (err) reject(err);
+          if (err) return reject(err);
           const resultingEntity = resultObjects[0];
-          if (!resultingEntity) reject('Something went wrong with creating TeEn');
+          if (!resultingEntity || !resultingEntity.pk_entity) reject('Something went wrong with creating TeEn');
 
           // create the project relation
 
           let reqEpr = {};
 
           // create a new epr 
-          var newEpr = new InfEntityProjectRel({
+          var newEpr = new ProInfoProjRel({
             fk_entity: resultingEntity.pk_entity,
             fk_project: projectId,
             is_in_project: [reqEpr.is_in_project, true].find(item => item !== undefined), // use the requested value or true
@@ -323,17 +328,20 @@ module.exports = function (InfEntity) {
           })
 
           // persist epr in DB
-          return newEpr.save().then(resultingEpr => {
-            resolve(find(resultingEpr.fk_entity));
-          });
+          newEpr.save()
+            .catch(err => reject(err))
+            .then(resultingEpr => {
+              find(resultingEpr.fk_entity);
+            });
 
 
         });
 
 
-      })
 
-    }
+      }
+
+    });
 
 
   };
@@ -342,7 +350,7 @@ module.exports = function (InfEntity) {
    * Finds or creates an entity role or an object by value
    * 
    * Those Models use this method:
-   * InfChunk, InfEntityAssociation
+   * DatChunk, InfEntityAssociation
    * 
    * Those Models still use the entity_version which is deprecated:
    * InfRole, InfTimePrimitive, InfAppellation, InfLanguage
@@ -363,32 +371,19 @@ module.exports = function (InfEntity) {
    * @param {any} requestedObject [optional] plain object. Provide a epr to customize the project relation    
    */
   InfEntity._findOrCreateByValue = function (Model, projectId, dataObject, requestedObject, ctx) {
-    if (!ctx.req.accessToken.userId) return Error('AccessToken.userId missing');
-    const accountId = ctx.req.accessToken.userId;
+    return new Promise((resolve, reject) => {
 
-    // make sure no pk_entity is used for findOrReplace below
-    delete dataObject.pk_entity;
 
-    const InfEntityProjectRel = Model.app.models.InfEntityProjectRel;
+      if (!ctx.req.accessToken.userId) return reject('AccessToken.userId missing');
+      const accountId = ctx.req.accessToken.userId;
 
-    const filter = {
-      where: dataObject,
-      include: {
-        relation: "entity_version_project_rels",
-        scope: {
-          where: {
-            fk_project: projectId
-          }
-        }
-      }
-    }
+      // make sure no pk_entity is used for findOrReplace below
+      delete dataObject.pk_entity;
 
-    const find = function (pk_entity) {
-      //find the entity and include the epr
-      return Model.findOne({
-        where: {
-          pk_entity: pk_entity
-        },
+      const ProInfoProjRel = Model.app.models.ProInfoProjRel;
+
+      const filter = {
+        where: dataObject,
         include: {
           relation: "entity_version_project_rels",
           scope: {
@@ -397,79 +392,104 @@ module.exports = function (InfEntity) {
             }
           }
         }
-      }).then((res) => {
-        return [res];
-      })
-        .catch(err => err);
-    }
+      }
 
-    // Find or create an entity with this values
-    return Model.create(dataObject)
-      .catch((err) => {
-        return err;
-      })
-      .then((resultingEntity) => {
-
-        // let resultingEntity = result[0];
-
-        // Search for eprs to given project
-        return resultingEntity.entity_version_project_rels({
+      const find = function (pk_entity) {
+        //find the entity and include the epr
+        return Model.findOne({
           where: {
-            fk_project: projectId
-          }
-        }).then(eprs => {
-
-
-          let existingEpr = eprs[0] ? eprs[0] : {};
-
-          let reqEpr = {};
-          if (requestedObject) {
-            if (requestedObject.entity_version_project_rels) {
-              reqEpr = requestedObject.entity_version_project_rels[0];
+            pk_entity: pk_entity
+          },
+          include: {
+            relation: "entity_version_project_rels",
+            scope: {
+              where: {
+                fk_project: projectId
+              }
             }
           }
-
-          // create a new epr 
-          var newEpr = new InfEntityProjectRel({
-            "fk_entity": resultingEntity.pk_entity,
-            "fk_project": projectId,
-
-            // use the requested value, or the existing or true
-            "is_in_project": [reqEpr.is_in_project, existingEpr.is_in_project, true].find(item => item !== undefined),
-
-            // use the requested value, or the existing or false
-            "is_standard_in_project": [reqEpr.is_standard_in_project, existingEpr.is_standard_in_project, false].find(item => item !== undefined),
-
-            // use the requested value, or the existing or undefined
-            "calendar": reqEpr.calendar || existingEpr.calendar || undefined,
-            fk_last_modifier: accountId,
-            fk_creator: existingEpr.fk_creator || accountId
-          })
-
-
-          // if epr to given project exisiting
-          if (eprs.length > 0) {
-
-            // add the pk
-            newEpr.pk_entity_version_project_rel = existingEpr.pk_entity_version_project_rel;
-
-            // update it in DB
-            return InfEntityProjectRel.upsert(newEpr).then(resultingEpr => {
-              return find(resultingEpr.fk_entity)
-            });
-          }
-          else {
-
-            // create it in DB
-            return newEpr.save().then(resultingEpr => {
-              return find(resultingEpr.fk_entity)
-            });
-          }
-
+        }).then((res) => {
+          resolve([res]);
         })
+          .catch(err => reject(err));
+      }
 
-      });
+      // Find or create an entity with this values
+      return Model.create(dataObject)
+        .catch((err) => {
+          reject(err)
+        })
+        .then((resultingEntity) => {
 
+          if (!resultingEntity || !resultingEntity.pk_entity) return reject('Error when creating Instance of ' + Model.name);
+
+          // let resultingEntity = result[0];
+
+          // Search for eprs to given project
+          return resultingEntity.entity_version_project_rels({
+            where: {
+              fk_project: projectId
+            }
+          })
+            .catch((err) => reject(err))
+            .then(eprs => {
+
+
+              let existingEpr = eprs[0] ? eprs[0] : {};
+
+              let reqEpr = {};
+              if (requestedObject) {
+                if (requestedObject.entity_version_project_rels) {
+                  reqEpr = requestedObject.entity_version_project_rels[0];
+                }
+              }
+
+              // create a new epr 
+              var newEpr = new ProInfoProjRel({
+                "fk_entity": resultingEntity.pk_entity,
+                "fk_project": projectId,
+
+                // use the requested value, or the existing or true
+                "is_in_project": [reqEpr.is_in_project, existingEpr.is_in_project, true].find(item => item !== undefined),
+
+                // use the requested value, or the existing or false
+                "is_standard_in_project": [reqEpr.is_standard_in_project, existingEpr.is_standard_in_project, false].find(item => item !== undefined),
+
+                // use the requested value, or the existing or undefined
+                "calendar": reqEpr.calendar || existingEpr.calendar || undefined,
+                fk_last_modifier: accountId,
+                fk_creator: existingEpr.fk_creator || accountId
+              })
+
+
+              // if epr to given project exisiting
+              if (eprs.length > 0) {
+
+                // add the pk
+                newEpr.pk_entity_version_project_rel = existingEpr.pk_entity_version_project_rel;
+
+                // update it in DB
+                return ProInfoProjRel.upsert(newEpr)
+                  .catch((err) => reject(err))
+                  .then(resultingEpr => {
+                    return find(resultingEpr.fk_entity)
+                  });
+              }
+              else {
+
+                // create it in DB
+                return newEpr.save()
+                  .catch((err) => reject(err))
+                  .then(resultingEpr => {
+                    return find(resultingEpr.fk_entity)
+                  });
+              }
+
+            })
+
+        });
+
+    });
 
   };
 

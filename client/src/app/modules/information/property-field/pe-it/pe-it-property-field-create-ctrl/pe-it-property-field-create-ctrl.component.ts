@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IAppState, InfEntityProjectRelApi, InfRoleApi } from 'app/core';
+import { IAppState, ProInfoProjRelApi, InfRoleApi } from 'app/core';
 import { RoleDetail } from 'app/core/state/models';
 import { RootEpics } from 'app/core/store/epics';
 import { RoleActions } from '../../../role/role.actions';
@@ -35,7 +35,7 @@ export class PeItPropertyFieldCreateCtrlComponent extends PropertyFieldBase  {
   constructor(
     protected rootEpics: RootEpics,
     protected epics: PropertyFieldApiEpics,
-    protected eprApi: InfEntityProjectRelApi,
+    protected eprApi: ProInfoProjRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
     protected actions: PropertyFieldActions,

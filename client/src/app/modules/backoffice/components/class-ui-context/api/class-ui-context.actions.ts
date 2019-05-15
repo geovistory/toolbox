@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { dispatch } from '@angular-redux/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { DfhClass, ComUiContextConfig } from 'app/core';
+import { DfhClass, ProClassFieldConfig } from 'app/core';
 import { Container } from '../../../backoffice.models';
 
 // Flux-standard-action gives us stronger typing of our actions.
@@ -9,7 +9,7 @@ type Payload = DfhClass;
 interface MetaData {
   pkClass?: number;
   pkUiContext?: number;
-  uiPropConfigs?: ComUiContextConfig[];
+  uiPropConfigs?: ProClassFieldConfig[];
   containerEnabled?: Container;
   containerDisabledProperties?: Container;
   containerDisabledFields?: Container;
@@ -61,7 +61,7 @@ export class ClassUiContextAPIActions {
   })
 
 
-  @dispatch() updateUiContextConfig = (uiPropConfigs: ComUiContextConfig[]): ClassUiContextAPIAction => ({
+  @dispatch() updateUiContextConfig = (uiPropConfigs: ProClassFieldConfig[]): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.UPDATE_UI_PROP_CONFIG,
     meta: { uiPropConfigs },
     payload: null,
@@ -73,7 +73,7 @@ export class ClassUiContextAPIActions {
     payload: null,
   })
 
-  @dispatch() updateUiContextConfigSucceeded = (uiPropConfigs: ComUiContextConfig[]): ClassUiContextAPIAction => ({
+  @dispatch() updateUiContextConfigSucceeded = (uiPropConfigs: ProClassFieldConfig[]): ClassUiContextAPIAction => ({
     type: ClassUiContextAPIActions.UPDATE_UI_PROP_CONFIG_SUCCEEDED,
     meta: { uiPropConfigs },
     payload: null

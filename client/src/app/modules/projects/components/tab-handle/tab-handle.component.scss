@@ -3,7 +3,7 @@
     display: flex;
     overflow: hidden;
     .icon {
-        width: 1rem;
+        min-width: 1rem;
         padding-right: .2rem;
     }
     .label {

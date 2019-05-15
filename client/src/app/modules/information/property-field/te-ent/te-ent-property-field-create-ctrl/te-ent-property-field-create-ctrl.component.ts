@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, forwardRef, Input } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { IAppState, InfEntityProjectRelApi, InfRole, InfRoleApi } from 'app/core';
+import { IAppState, ProInfoProjRelApi, InfRole, InfRoleApi } from 'app/core';
 import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { StateSettings, createRoleDetail } from 'app/core/state/services/state-creator';
 import { Observable } from 'rxjs';
@@ -55,7 +55,7 @@ export class TeEntPropertyFieldCreateCtrlComponent extends PropertyFieldCreateCt
   constructor(
     protected rootEpics: RootEpics,
     protected epics: PropertyFieldApiEpics,
-    protected eprApi: InfEntityProjectRelApi,
+    protected eprApi: ProInfoProjRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
     protected actions: PropertyFieldActions,

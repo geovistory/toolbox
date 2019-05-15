@@ -2,7 +2,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material';
-import { ActiveProjectService, ComQuery, latestEntityVersions, ValidationService } from 'app/core';
+import { ActiveProjectService, ProQuery, latestEntityVersions, ValidationService } from 'app/core';
 import { ColDef, QueryPathSegment } from 'app/modules/queries/components/col-def-editor/col-def-editor.component';
 import { QueryService } from 'app/modules/queries/services/query.service';
 import { equals, keys, omit, pathOr } from 'ramda';
@@ -57,7 +57,7 @@ export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy,
   queryOptions$: Observable<QueryPkOption[]>;
   queryVersions$: Observable<number[]>;
   isOldVersion$: Observable<boolean>;
-  comQuery$: Observable<ComQuery>;
+  comQuery$: Observable<ProQuery>;
   colOptions$: Observable<ColOption[]>;
   geoColOptions$: Observable<ColOption[]>;
   temporalColOptions$: Observable<ColOption[]>;

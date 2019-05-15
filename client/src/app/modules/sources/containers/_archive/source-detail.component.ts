@@ -246,7 +246,7 @@
 //       const nodes = new Map();
 //       this.annotationPanel = {
 //         view: indexBy(annotationStateKey, chunks.map(chunk => {
-//           const delta = JSON.parse(chunk.js_quill_data);
+//           const delta = JSON.parse(chunk.quill_doc);
 
 //           delta.ops.forEach(op => {
 //             if (op.attributes && op.attributes.node && !(op.attributes.node == '_')) {
@@ -259,11 +259,11 @@
 //             chunk: {
 //               pkEntity: chunk.pk_entity,
 //               fkDigitalObject: chunk.fk_digital_object,
-//               quillDelta: JSON.parse(chunk.js_quill_data) // TODO why does it store the deltas stringified??
+//               quillDelta: JSON.parse(chunk.quill_doc) // TODO why does it store the deltas stringified??
 //             },
 //             mentionedEntities: indexBy(mentionedEntityKey, chunk.entity_associations.map(ea => {
 //               return {
-//                 pkEntity: ea.fk_range_entity,
+//                 pkEntity: ea.fk_info_domain,
 //                 entityAssociation: ea,
 //                 label: '' // TODO lazy load pe it or eager load ?
 //               } as MentionedEntity

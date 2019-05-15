@@ -4,8 +4,7 @@ import {
   DfhLabel,
   DfhTextProperty,
   DfhPropertyProfileView,
-  ComUiContextConfig,
-  DfhProjRel
+  ProClassFieldConfig
 } from '../index';
 
 declare var Object: any;
@@ -34,8 +33,7 @@ export interface DfhPropertyInterface {
   labels?: DfhLabel[];
   text_properties?: DfhTextProperty[];
   property_profile_view?: DfhPropertyProfileView[];
-  ui_context_config?: ComUiContextConfig[];
-  proj_rels?: DfhProjRel[];
+  class_field_config?: ProClassFieldConfig[];
 }
 
 export class DfhProperty implements DfhPropertyInterface {
@@ -63,8 +61,7 @@ export class DfhProperty implements DfhPropertyInterface {
   labels?: DfhLabel[];
   text_properties?: DfhTextProperty[];
   property_profile_view?: DfhPropertyProfileView[];
-  ui_context_config?: ComUiContextConfig[];
-  proj_rels?: DfhProjRel[];
+  class_field_config?: ProClassFieldConfig[];
   constructor(data?: DfhPropertyInterface) {
     Object.assign(this, data);
   }
@@ -216,21 +213,13 @@ export class DfhProperty implements DfhPropertyInterface {
                   keyFrom: 'dfh_pk_property',
           keyTo: 'dfh_pk_property'
         },
-        ui_context_config: {
-          name: 'ui_context_config',
-          type: 'ComUiContextConfig[]',
-          model: 'ComUiContextConfig',
+        class_field_config: {
+          name: 'class_field_config',
+          type: 'ProClassFieldConfig[]',
+          model: 'ProClassFieldConfig',
           relationType: 'hasMany',
                   keyFrom: 'dfh_pk_property',
           keyTo: 'fk_property'
-        },
-        proj_rels: {
-          name: 'proj_rels',
-          type: 'DfhProjRel[]',
-          model: 'DfhProjRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
         },
       }
     }

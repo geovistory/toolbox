@@ -44,7 +44,7 @@
 
     <!-- Chunk -->
     <div *ngIf="chunkEntity">
-      <span>Annotated text:</span> « {{chunkEntity?.js_quill_data | quillDeltaToStr}} »
+      <span>Annotated text:</span> « {{chunkEntity?.quill_doc | quillOpsToStr}} »
     </div>
 
     <!-- Edit ui for chunk -->

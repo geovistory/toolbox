@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InfEntityProjectRel, InfEntityProjectRelApi, LoadingBarActions } from 'app/core';
+import { ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { TeEntService } from 'app/modules/information/shared/te-ent.service';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -29,7 +29,7 @@ export const ofDirectChildSubstore = (path: string[]) => (action): boolean => {
 @Injectable()
 export class EntityDetailAPIEpics {
   constructor(
-    private eprApi: InfEntityProjectRelApi,
+    private eprApi: ProInfoProjRelApi,
     private peItService: PeItService,
     private teEntService: TeEntService,
     private actions: EntityDetailAPIActions,
@@ -176,7 +176,7 @@ export class EntityDetailAPIEpics {
            */
           this.eprApi.updateEprAttributes(action.meta.pkProject, action.meta.pkEntity, {
             is_in_project: false
-          } as InfEntityProjectRel)
+          } as ProInfoProjRel)
             /**
              * Subscribe to the api call
              */

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, EntityPreview, IAppState, PeItDetail, SubstoreComponent, ClassInstanceLabel } from 'app/core';
+import { ActiveProjectService, SysConfig, EntityPreview, IAppState, PeItDetail, SubstoreComponent, ClassInstanceLabel } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
 import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
@@ -51,7 +51,7 @@ export class SectionDetailComponent extends SectionDetailAPIActions implements O
   sectionPreview$ = new BehaviorSubject<EntityPreview>(undefined);
   sourcePreview$ = new BehaviorSubject<EntityPreview>(undefined);
 
-  pkUiContextCreate = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+  pkUiContextCreate = SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
 
   constructor(
     protected rootEpics: RootEpics,

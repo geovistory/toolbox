@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, ComVisualApi, ComQueryApi, ComVisual, ActiveProjectService } from 'app/core';
+import { LoadingBarActions, ProVisualApi, ProQueryApi, ProVisual, ActiveProjectService } from 'app/core';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
@@ -12,8 +12,8 @@ import { ofSubstore } from 'app/core/store/module';
 @Injectable()
 export class VisualDetailAPIEpics {
   constructor(
-    private visualApi: ComVisualApi,
-    private queryApi: ComQueryApi,
+    private visualApi: ProVisualApi,
+    private queryApi: ProQueryApi,
     private actions: VisualDetailAPIActions,
     private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions,
@@ -51,7 +51,7 @@ export class VisualDetailAPIEpics {
           /**
            * Subscribe to the api call
            */
-          apiCall.subscribe((comVisual: ComVisual) => {
+          apiCall.subscribe((comVisual: ProVisual) => {
             /**
              * Emit the global action that completes the loading bar
              */

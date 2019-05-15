@@ -1,0 +1,56 @@
+{
+  "name": "DatNamespace",
+  "base": "DatEntity",
+  "options": {
+    "postgresql": {
+      "schema": "data",
+      "table": "namespace"
+    }
+  },
+  "properties": {
+    "fk_root_namespace": {
+      "type": "number"
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "standard_label": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "findById"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": []
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}

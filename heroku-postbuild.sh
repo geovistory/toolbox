@@ -2,5 +2,5 @@
 
 if [ $DB_ENV = 'review' ]
 then
-cd deployment && bash setup-review-db.sh
+cd deployment && bash setup-db.sh
 fi

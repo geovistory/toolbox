@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { NgForm, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { IAppState, SubstoreComponent, InfEntityAssociation, InfEntityProjectRel } from 'app/core';
+import { IAppState, SubstoreComponent, InfEntityAssociation, ProInfoProjRel } from 'app/core';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable, Subject } from 'rxjs';
@@ -74,13 +74,13 @@ export class TypeEditableComponent extends TypeEditableAPIActions implements OnI
         const eas = [];
         if (ea) {
           const oldEa = new InfEntityAssociation({
-            fk_domain_entity: ea.fk_domain_entity,
-            fk_range_entity: ea.fk_range_entity,
+            fk_info_domain: ea.fk_info_domain,
+            fk_info_range: ea.fk_info_range,
             fk_property: ea.fk_property,
             entity_version_project_rels: [{
               fk_project,
               is_in_project: false
-            } as InfEntityProjectRel]
+            } as ProInfoProjRel]
           })
           eas.push(oldEa);
         }
@@ -89,10 +89,10 @@ export class TypeEditableComponent extends TypeEditableAPIActions implements OnI
         const assoc: InfEntityAssociation = value.eaCtrl;
         if (assoc) {
           const newEa = new InfEntityAssociation({
-            fk_domain_entity: this.localStore.getState().fkDomainEntity,
-            fk_range_entity: assoc.fk_range_entity,
+            fk_info_domain: this.localStore.getState().fkDomainEntity,
+            fk_info_range: assoc.fk_info_range,
             fk_property: assoc.fk_property,
-            entity_version_project_rels: [{ is_in_project: true } as InfEntityProjectRel]
+            entity_version_project_rels: [{ is_in_project: true } as ProInfoProjRel]
           })
           eas.push(newEa);
         }

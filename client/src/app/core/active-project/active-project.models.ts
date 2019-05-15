@@ -1,14 +1,23 @@
-import { PropertyFieldList, FieldList, EntityPreviewList, PeItDetailList, EntityPreview } from 'app/core/state/models';
-import { ComClassFieldInterface, ComUiContextInterface, ComProjectInterface, InfChunk, InfPersistentItem, InfTemporalEntity, DfhProperty, ComQuery, ComVisual } from 'app/core/sdk';
-import { ClassSettingsI } from 'app/modules/projects/containers/class-settings/api/class-settings.models';
-import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
-import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
+import { DatChunk, ProDfhClassProjRel, DfhProperty, InfPersistentItem, InfTemporalEntity, ProProjectInterface, ProQuery, ProVisual, SysAppContextInterface, SysClassFieldInterface, InfLanguage } from 'app/core/sdk';
+import { EntityPreview, EntityPreviewList, FieldList, PeItDetailList, PropertyFieldList } from 'app/core/state/models';
 import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
-import { SectionDetail } from 'app/modules/sources/containers/section-detail/api/section-detail.models';
-import { Observable } from 'rxjs';
+import { EntityDetail } from 'app/modules/information/containers/entity-detail/api/entity-detail.models';
+import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
 import { QueryDetail } from 'app/modules/queries/containers/query-detail/api/query-detail.models';
+import { SectionDetail } from 'app/modules/sources/containers/section-detail/api/section-detail.models';
+import { SourceDetail } from 'app/modules/sources/containers/source-detail/api/source-detail.models';
 import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
+import { Observable } from 'rxjs';
+import { Types } from '../../modules/projects/containers/types/api/types.models';
+import { HasTypePropertyReadable } from '../state/models';
 
+export interface ProjectPreview {
+    label?: string,
+    description?: string,
+    default_language?: InfLanguage,
+    pk_project?: number
+  }
+  
 export interface EntityByPk<T> {
     [pk_entity: number]: T
 }
@@ -22,41 +31,43 @@ export interface EntityVersionsByPk<T> {
     [pk_entity: number]: VersionEntity<T>
 }
 
-export interface ChunkList { [pk_entity: number]: InfChunk };
+export interface ChunkList { [pk_entity: number]: DatChunk };
 export interface PeItList { [pk_entity: number]: InfPersistentItem };
 export interface TeEnList { [pk_entity: number]: InfTemporalEntity };
-// export interface PropertyList { [pk_entity: number]: DfhProperty };
-export class PropertyList { [pk_entity: string]: DfhProperty; }
+export interface PropertyList { [pk_entity: string]: DfhProperty; }
 export interface TypePeIt extends InfPersistentItem { fk_typed_class: number; } // TODO remove if replaced by TypePreview
-export class TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
-export class TypesByPk { [pk_entity: string]: TypePeIt; }
+export interface TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
+export interface TypesByPk { [pk_entity: string]: TypePeIt; }
 
 export interface TypePreview extends EntityPreview { fk_typed_class: number; }
-export class TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
-export class TypePreviewList { [pk_entity: string]: TypePreview[]; }
-export interface ComQueryByPk { [key: string]: ComQuery }
+export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
+export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
+export interface ComQueryByPk { [key: string]: ProQuery }
 
+export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
 
 export interface Panel {
     id: number;
     tabs: Tab[];
 }
 
-export type ListType = '' | 'entities' | 'sources' | 'queries' | 'visuals' | 'stories';
+export type ListType = '' | 'entities' | 'sources' | 'queries' | 'visuals' | 'stories' | 'settings';
 
 export interface Tab {
     // wheter tab is active or not
     active: boolean;
     // the root component included in this tab, in dash separate minuscles: EntityDetailComponent -> 'entity-detail'
-    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail';
+    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail' | 'classes-settings' |  'contr-vocab-settings';
     // icon to be displayed in tab, e.g.: gv-icon-source
-    icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story';
+    icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story' | 'settings';
     // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
-    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails';
+    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails' | 'classesSettings' |  'contrVocabSettings';
     // data to pass to component via input variabales
     data?: {
         pkEntity?: number;
         classAndTypePk?: ClassAndTypePk;
+
+        pkProperty?: number;
     }
     // generated by reducer: base path where the component will be attatch his SubStore
     path?: string[];
@@ -66,12 +77,17 @@ export interface Tab {
 }
 
 
-export interface ProjectDetail extends ComProjectInterface {
-    crm?: ProjectCrm,
-    classSettings?: ClassSettingsI
+export interface ProjectDetail extends ProjectPreview {
 
     /******************************************************************
-     * Data Cache
+     * CRM and Project Config
+     */
+
+    // Conceptional Reference Model
+    crm?: ProjectCrm,
+
+    /******************************************************************
+     * Information Cache
      */
 
     // data unit previews
@@ -96,12 +112,12 @@ export interface ProjectDetail extends ComProjectInterface {
     teEnGraphs?: TeEnList;
 
     // ComQuery list by pk_entity
-    comQueryVersionsByPk?: EntityVersionsByPk<ComQuery>;
+    comQueryVersionsByPk?: EntityVersionsByPk<ProQuery>;
     comQueryLoading?: boolean;
     comQueryVersionLoading?: { [key: string]: boolean };
 
     // ComVisual list by pk_entity
-    comVisualVersionsByPk?: EntityVersionsByPk<ComVisual>;
+    comVisualVersionsByPk?: EntityVersionsByPk<ProVisual>;
     comVisualLoading?: boolean;
     comVisualVersionLoading?: boolean;
 
@@ -137,12 +153,18 @@ export interface ProjectDetail extends ComProjectInterface {
     // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
     visualDetails?: { [uiId: string]: VisualDetail }
 
+    // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+    classesSettings?: { [uiId: string]: ProjectSettingsData }
+
+    // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+    contrVocabSettings?: { [uiId: string]: Types }
+
     /******************************************************************
      * Things for Mentionings / Annotations
      */
 
     // the chunk that is used to create mentionings
-    selectedChunk?: InfChunk;
+    selectedChunk?: DatChunk;
 
     // if true, the text editor behaves so that each node can be clicked to de-/activate
     refiningChunk?: boolean;
@@ -165,23 +187,38 @@ export interface ProjectCrm {
     classes?: ClassConfigList;
     properties?: PropertyList
     fieldList?: FieldList;
+    hasTypeProperties?: HasTypePropertyList;
 }
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };
 
 export interface ClassConfig {
-    label: string;
-    dfh_identifier_in_namespace: string;
+    pkEntity: number;
     dfh_pk_class: number;
-    subclassOf?: 'peIt' | 'teEnt'; // to distinguish TeEnts from PeIts
+
+    label: string;
+    dfh_standard_label: string;
+
+    profileLabels: string;
+    profilePks: number[];
+
+    projRel?: ProDfhClassProjRel;
     isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
+    changingProjRel: boolean;
+
+    subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
+
+    scopeNote: string;
+
+    dfh_identifier_in_namespace: string;
+
     propertyFields?: PropertyFieldList;
     uiContexts?: {
         [pk: number]: UiContext
     }
 }
 
-export interface UiContext extends ComUiContextInterface {
+export interface UiContext extends SysAppContextInterface {
     uiElements?: UiElement[]
 }
 
@@ -192,6 +229,6 @@ export interface UiElement {
     propertyFieldKey?: string, // TODO: merge the propertyFieldKey and propSetKey to fieldKey
     propSetKey?: string,
     fk_class_field?: number,
-    class_field?: ComClassFieldInterface
+    class_field?: SysClassFieldInterface
     ord_num: number
 }

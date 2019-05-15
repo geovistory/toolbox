@@ -57,8 +57,8 @@ export default sandboxOf(TypeCtrlComponent, {
             model: {
                 assoc: {
                     fk_property: 1,
-                    fk_domain_entity: 22,
-                    fk_range_entity: 80490
+                    fk_info_domain: 22,
+                    fk_info_range: 80490
                 } as InfEntityAssociation
             },
             activeProject: {

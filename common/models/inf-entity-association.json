@@ -20,13 +20,17 @@
       "type": "number",
       "required": true
     },
-    "fk_domain_entity": {
-      "type": "number",
-      "required": true
+    "fk_info_domain": {
+      "type": "number"
     },
-    "fk_range_entity": {
-      "type": "number",
-      "required": true
+    "fk_info_range": {
+      "type": "number"
+    },
+    "fk_data_domain": {
+      "type": "number"
+    },
+    "fk_data_range": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -34,31 +38,31 @@
     "domain_pe_it": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
-      "foreignKey": "fk_domain_entity",
+      "foreignKey": "fk_info_domain",
       "primaryKey": "pk_entity"
     },
     "range_pe_it": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
-      "foreignKey": "fk_range_entity",
+      "foreignKey": "fk_info_range",
       "primaryKey": "pk_entity"
     },
     "domain_chunk": {
       "type": "belongsTo",
-      "model": "InfChunk",
-      "foreignKey": "fk_domain_entity",
+      "model": "DatChunk",
+      "foreignKey": "fk_data_domain",
       "primaryKey": "pk_entity"
     },
     "range_chunk": {
       "type": "belongsTo",
-      "model": "InfChunk",
-      "foreignKey": "fk_range_entity",
+      "model": "DatChunk",
+      "foreignKey": "fk_data_range",
       "primaryKey": "pk_entity"
     },
-    "digital_object": {
+    "domain_digital": {
       "type": "belongsTo",
-      "model": "InfDigitalObject",
-      "foreignKey": "fk_domain_entity",
+      "model": "DatDigital",
+      "foreignKey": "fk_data_domain",
       "primaryKey": "pk_entity"
     }
   },
@@ -158,19 +162,19 @@
           }
         },
         {
-          "arg": "pkRangeEntity",
+          "arg": "pkInfoRange",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the entity association pointing to the range entity (fk_range_entity)",
+          "description": "Foreign Key of the entity association pointing to the range entity (fk_info_range)",
           "http": {
             "source": "query"
           }
         },
         {
-          "arg": "pkDomainEntity",
+          "arg": "pkInfoDomain",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the entity association pointing to the domain entity (fk_domain_entity)",
+          "description": "Foreign Key of the entity association pointing to the domain entity (fk_info_domain)",
           "http": {
             "source": "query"
           }
@@ -226,19 +230,19 @@
           }
         },
         {
-          "arg": "pkRangeEntity",
+          "arg": "pkInfoRange",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the entity association pointing to the range entity (fk_range_entity)",
+          "description": "Foreign Key of the entity association pointing to the range entity (fk_info_range)",
           "http": {
             "source": "query"
           }
         },
         {
-          "arg": "pkDomainEntity",
+          "arg": "pkInfoDomain",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the entity association pointing to the domain entity (fk_domain_entity)",
+          "description": "Foreign Key of the entity association pointing to the domain entity (fk_info_domain)",
           "http": {
             "source": "query"
           }
@@ -285,19 +289,19 @@
           }
         },
         {
-          "arg": "pkRangeEntity",
+          "arg": "pkInfoRange",
           "type": "number",
           "required": false,
-          "description": "Foreign Key (fk_range_entity) to the source/section/chunk/spot that mentiones (range of 'geovP2 – is mentioned in')",
+          "description": "Foreign Key (fk_info_range) to the source/section/chunk/spot that mentiones (range of 'geovP2 – is mentioned in')",
           "http": {
             "source": "query"
           }
         },
         {
-          "arg": "pkDomainEntity",
+          "arg": "pkInfoDomain",
           "type": "number",
           "required": false,
-          "description": "Foreign Key (fk_domain_entity) to the mentioned entity (domain of 'geovP2 – is mentioned in')",
+          "description": "Foreign Key (fk_info_domain) to the mentioned entity (domain of 'geovP2 – is mentioned in')",
           "http": {
             "source": "query"
           }

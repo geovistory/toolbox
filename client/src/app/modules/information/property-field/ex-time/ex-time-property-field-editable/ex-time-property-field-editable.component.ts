@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PropertyFieldBase } from '../../property-field.base';
-import { InfEntityProjectRelApi, InfRoleApi, IAppState, InfTemporalEntityApi } from 'app/core';
+import { ProInfoProjRelApi, InfRoleApi, IAppState, InfTemporalEntityApi } from 'app/core';
 import { NgRedux } from '@angular-redux/store';
 import { PropertyFieldActions } from '../../property-field.actions';
 import { PropertyFieldService } from '../../../shared/property-field.service';
@@ -22,7 +22,7 @@ export class ExTimePropertyFieldEditableComponent extends PropertyFieldBase {
   constructor(
     protected rootEpics: RootEpics,
     protected epics: PropertyFieldApiEpics,
-    protected eprApi: InfEntityProjectRelApi,
+    protected eprApi: ProInfoProjRelApi,
     protected roleApi: InfRoleApi,
     public ngRedux: NgRedux<IAppState>,
     protected actions: PropertyFieldActions,

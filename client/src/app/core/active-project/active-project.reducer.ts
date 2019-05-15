@@ -1,10 +1,10 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { active } from 'd3';
-import { indexBy, omit, groupBy, zipObj } from 'ramda';
-import { InfPersistentItem, InfTemporalEntity, ComQuery, ComVisual } from '../sdk/models';
+import { indexBy, omit, groupBy, zipObj, clone } from 'ramda';
+import { InfPersistentItem, InfTemporalEntity, ProQuery, ProVisual } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
-import { ProjectDetail, Panel, TypePeIt, VersionEntity } from './active-project.models';
+import { ProjectDetail, Panel, TypePeIt, VersionEntity, ClassConfig } from './active-project.models';
 
 // const INITIAL_STATE: ProjectDetail = {
 //     list: '',
@@ -14,6 +14,7 @@ import { ProjectDetail, Panel, TypePeIt, VersionEntity } from './active-project.
 //     panels: []
 // };
 const INITIAL_STATE: ProjectDetail = {
+    label: '',
     list: '',
     uiIdSerial: 0,
     panelSerial: 0,
@@ -29,7 +30,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         case ActiveProjectActions.ACTIVE_PROJECT_UPDATED:
             state = {
                 ...state,
-                ...action.payload
+                ...action.meta.projectPreview
             };
             break;
 
@@ -385,7 +386,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 ...state,
                 comQueryVersionsByPk: {
                     ...indexBy(
-                        ((comQuery: VersionEntity<ComQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
+                        ((comQuery: VersionEntity<ProQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
                         action.meta.comQueryArray.map(comQ => ({
                             _latestVersion: comQ.entity_version,
                             ...indexBy((n) => n.toString(), (comQ.versions || [])),
@@ -453,7 +454,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 ...state,
                 comVisualVersionsByPk: {
                     ...indexBy(
-                        ((comVisual: VersionEntity<ComVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+                        ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
                         action.meta.comVisualArray.map(comQ => ({
                             _latestVersion: comQ.versions[0],
                             ...indexBy((n) => n.toString(), (comQ.versions || [])),
@@ -489,7 +490,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 comVisualVersionsByPk: {
                     ...state.comVisualVersionsByPk,
                     ...indexBy(
-                        ((comVisual: VersionEntity<ComVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+                        ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
                         action.meta.comVisualArray.map(comV => ({
                             _latestVersion: comV.versions[0],
                             ...indexBy((n) => n.toString(), (comV.versions || [])),
@@ -508,6 +509,56 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 comVisualLoading: false
             };
             break;
+
+
+        /********************************************
+          * Reducers to handle disabling and enabling a class
+          *****************************************************/
+        case ActiveProjectActions.UPSERT_CLASS_PROJ_REL:
+            return {
+                ...state,
+                crm: {
+                    ...state.crm,
+                    classes: {
+                        ...state.crm.classes,
+                        [action.meta.dfh_pk_class]: {
+                            ...state.crm.classes[action.meta.dfh_pk_class],
+                            changingProjRel: true
+                        }
+                    }
+                }
+            };
+        case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED:
+            return {
+                ...state,
+                crm: {
+                    ...state.crm,
+                    classes: {
+                        ...state.crm.classes,
+                        [action.meta.dfh_pk_class]: {
+                            ...state.crm.classes[action.meta.dfh_pk_class],
+                            projRel: action.meta.projRel,
+                            isInProject: action.meta.projRel.enabled_in_entities,
+                            changingProjRel: false
+                        }
+                    }
+                }
+            };
+        case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
+        return {
+            ...state,
+            crm: {
+                ...state.crm,
+                classes: {
+                    ...state.crm.classes,
+                    [action.meta.dfh_pk_class]: {
+                        ...state.crm.classes[action.meta.dfh_pk_class],
+                        changingProjRel: false
+                    }
+                }
+            }
+        };
+
 
         /************************************************************************************
         *  Things for Mentionings / Annotations

@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, Component, forwardRef, Input } from '@angular/core';
 import { FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IAppState, InfEntityProjectRelApi, InfRoleApi, InfTemporalEntityApi } from 'app/core';
+import { IAppState, ProInfoProjRelApi, InfRoleApi, InfTemporalEntityApi } from 'app/core';
 import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable } from 'rxjs';
@@ -56,7 +56,7 @@ export class TeEntPropertyFieldAddCtrlComponent extends PropertyFieldAddCtrlBase
     constructor(
         protected rootEpics: RootEpics,
         protected epics: PropertyFieldApiEpics,
-        protected eprApi: InfEntityProjectRelApi,
+        protected eprApi: ProInfoProjRelApi,
         protected roleApi: InfRoleApi,
         public ngRedux: NgRedux<IAppState>,
         protected actions: PropertyFieldActions,

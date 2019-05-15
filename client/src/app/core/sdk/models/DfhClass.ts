@@ -5,9 +5,9 @@ import {
   DfhLabel,
   DfhTextProperty,
   DfhClassProfileView,
-  ComUiContextConfig,
-  ComClassField,
-  DfhProjRel
+  ProClassFieldConfig,
+  SysClassField,
+  ProDfhClassProjRel
 } from '../index';
 
 declare var Object: any;
@@ -27,9 +27,9 @@ export interface DfhClassInterface {
   labels?: DfhLabel[];
   text_properties?: DfhTextProperty[];
   class_profile_view?: DfhClassProfileView[];
-  ui_context_configs?: ComUiContextConfig[];
-  class_fields?: ComClassField[];
-  proj_rels?: DfhProjRel[];
+  class_field_configs?: ProClassFieldConfig[];
+  class_fields?: SysClassField[];
+  proj_rels?: ProDfhClassProjRel[];
 }
 
 export class DfhClass implements DfhClassInterface {
@@ -48,9 +48,9 @@ export class DfhClass implements DfhClassInterface {
   labels?: DfhLabel[];
   text_properties?: DfhTextProperty[];
   class_profile_view?: DfhClassProfileView[];
-  ui_context_configs?: ComUiContextConfig[];
-  class_fields?: ComClassField[];
-  proj_rels?: DfhProjRel[];
+  class_field_configs?: ProClassFieldConfig[];
+  class_fields?: SysClassField[];
+  proj_rels?: ProDfhClassProjRel[];
   constructor(data?: DfhClassInterface) {
     Object.assign(this, data);
   }
@@ -170,28 +170,28 @@ export class DfhClass implements DfhClassInterface {
                   keyFrom: 'dfh_pk_class',
           keyTo: 'dfh_fk_class'
         },
-        ui_context_configs: {
-          name: 'ui_context_configs',
-          type: 'ComUiContextConfig[]',
-          model: 'ComUiContextConfig',
+        class_field_configs: {
+          name: 'class_field_configs',
+          type: 'ProClassFieldConfig[]',
+          model: 'ProClassFieldConfig',
           relationType: 'hasMany',
                   keyFrom: 'dfh_pk_class',
           keyTo: 'fk_class_for_class_field'
         },
         class_fields: {
           name: 'class_fields',
-          type: 'ComClassField[]',
-          model: 'ComClassField',
+          type: 'SysClassField[]',
+          model: 'SysClassField',
           relationType: 'hasMany',
-          modelThrough: 'ComUiContextConfig',
+          modelThrough: 'ProClassFieldConfig',
           keyThrough: 'fk_class_field',
           keyFrom: 'dfh_pk_class',
           keyTo: 'fk_class_for_class_field'
         },
         proj_rels: {
           name: 'proj_rels',
-          type: 'DfhProjRel[]',
-          model: 'DfhProjRel',
+          type: 'ProDfhClassProjRel[]',
+          model: 'ProDfhClassProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

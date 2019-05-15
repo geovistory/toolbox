@@ -3,7 +3,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DfhProperty, IAppState, InfEntityProjectRel, InfEntityProjectRelApi, InfPersistentItem, InfRole, InfRoleApi, ComProject, U } from 'app/core';
+import { DfhProperty, IAppState, ProInfoProjRel, ProInfoProjRelApi, InfPersistentItem, InfRole, InfRoleApi, ProProject, U, ProjectPreview } from 'app/core';
 import { CollapsedExpanded, FieldLabel, PropertyField, PropertyFieldForm, RoleDetail, RoleDetailList } from 'app/core/state/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
@@ -82,7 +82,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
     */
 
     _role_list: RoleDetailList
-    project: ComProject;
+    project: ProjectPreview;
     propertyFieldState: PropertyField;
 
     roleDetails: { key: string, value: RoleDetail }[];
@@ -115,7 +115,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
     constructor(
         protected rootEpics: RootEpics,
         protected epics: PropertyFieldApiEpics,
-        protected eprApi: InfEntityProjectRelApi,
+        protected eprApi: ProInfoProjRelApi,
         protected roleApi: InfRoleApi,
         public ngRedux: NgRedux<IAppState>,
         protected actions: PropertyFieldActions,
@@ -191,7 +191,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
         this.rootEpics.addEpic(this.epics.createEpics(this));
 
         // Subscribe to the activeProject, to get the pk_project needed for api call
-        this.subs.push(this.ngRedux.select<ComProject>('activeProject').subscribe(d => this.project = d));
+        this.subs.push(this.ngRedux.select<ProProject>('activeProject').subscribe(d => this.project = d));
 
         this.subs.push(this.localStore.select<PropertyField>('').subscribe(d => {
             this.propertyFieldState = d
@@ -400,7 +400,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
     onChangeOrder(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.roleDetails, event.previousIndex, event.currentIndex);
 
-        const changedEprs: InfEntityProjectRel[] = []
+        const changedEprs: ProInfoProjRel[] = []
 
         // check, if needs update
         for (let i = 0; i < this.roleDetails.length; i++) {

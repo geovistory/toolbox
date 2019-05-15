@@ -4,9 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PassiveLinkModule } from 'app/shared';
 import { KeysModule } from '../../shared/pipes/keys.module';
-import { AnnotationCtrlActions } from '../annotation/containers/annotation-ctrl/annotation-ctrl.actions';
-import { AnnotationPanelActions } from '../annotation/containers/annotation-panel/annotation-panel.actions';
-import { MentionedEntityCtrlActions } from '../annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
 import { Information2Module } from '../information/information.module';
 import { QuillModule } from '../quill';
 import { SourceCreateFormComponent } from './components/source-create-form/source-create-form.component';
@@ -42,9 +39,6 @@ import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity
   ],
   providers: [
     SourceListAPIActions,
-    AnnotationPanelActions,
-    AnnotationCtrlActions,
-    MentionedEntityCtrlActions,
     SourceListAPIEpics,
     SourceListAPIActions,
     SourceDetailAPIEpics,

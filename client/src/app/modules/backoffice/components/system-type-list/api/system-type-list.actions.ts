@@ -2,11 +2,11 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SystemTypeListI } from './system-type-list.models';
-import { ComSystemType } from 'app/core/sdk/models/ComSystemType';
+import { SysSystemType } from 'app/core/sdk';
 
 type Payload = SystemTypeListI;
 interface MetaData {
-  systemtypes?: ComSystemType[]
+  systemtypes?: SysSystemType[]
 };
 export type SystemTypeListAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -32,7 +32,7 @@ export class SystemTypeListAPIActions {
     payload: null,
   })
 
-  loadSucceeded = (systemtypes: ComSystemType[]): SystemTypeListAPIAction => ({
+  loadSucceeded = (systemtypes: SysSystemType[]): SystemTypeListAPIAction => ({
     type: SystemTypeListAPIActions.LOAD_SUCCEEDED,
     meta: null,
     payload: { systemtypes }

@@ -1,7 +1,7 @@
 import { Action } from 'redux';
 import { RoleAction, RoleActions } from './role.actions';
 import { RoleDetail } from 'app/core/state/models';
-import { InfEntityProjectRel } from 'app/core';
+import { ProInfoProjRel } from 'app/core';
 
 
 
@@ -36,7 +36,7 @@ export const roleReducer =
     * In this case, the entity_project_relation.is_display_role_for_range will be adapted.  
     */
       case RoleActions.CHANGE_DISPLAY_ROLE_SUCCEEDED:
-        var epr: InfEntityProjectRel = new InfEntityProjectRel;
+        var epr: ProInfoProjRel = new ProInfoProjRel;
         Object.assign(epr, lastState.role.entity_version_project_rels[0]);
 
         //adapt the roles epr

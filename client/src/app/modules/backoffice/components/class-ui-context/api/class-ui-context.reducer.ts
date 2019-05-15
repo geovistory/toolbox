@@ -1,4 +1,4 @@
-import { DfhClass, DfhProperty, U, ComConfig, ComClassField, ComUiContextConfig } from 'app/core';
+import { DfhClass, DfhProperty, U, SysConfig, SysClassField, ProClassFieldConfig } from 'app/core';
 import { omit, pick, sort } from 'ramda';
 import { Action } from 'redux';
 

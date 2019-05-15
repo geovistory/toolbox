@@ -20,6 +20,7 @@ import { DndModule } from 'ng2-dnd';
 import { ExampleTableModule } from 'app/shared/components/core-table/example-table/example-table.module';
 import { MccColorPickerModule } from 'material-community-components';
 import { AngularSplitModule } from 'angular-split';
+import { MatDialogModule, MatProgressBarModule } from '../node_modules/@angular/material';
 
 PlaygroundModule
   .configure({
@@ -49,7 +50,7 @@ PlaygroundModule
       NgxJsonViewerModule,
       LoadingBarModule,
       ExampleTableModule,
-      ValidationDirectivesModule
+      ValidationDirectivesModule,
     ]
   });
 

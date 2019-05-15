@@ -1,15 +1,25 @@
-import { QuillDoc } from 'app/modules/quill';
-import { InfChunk } from 'app/core';
+import { DatChunk, InfEntityAssociation } from 'app/core';
+import { QuillDoc } from '../../../../quill/quill.models';
+
+
+
+export interface MentionedEntity {
+    pkEntity: number;
+    label: string;
+    entityAssociation: InfEntityAssociation;
+}
+
+
 
 export interface Mentioning {
     pk_entity?: number // pk of the entity association
-    fk_domain_entity?: number
+    fk_info_domain?: number
     fk_property?: number
-    fk_range_entity?: number
+    fk_info_range?: number
     fk_expression_entity?: number
     fk_source_entity?: number
     fk_chunk?: number
-    js_quill_data?: QuillDoc
+    quill_doc?: QuillDoc
 }
 
 export type MentioningListType =
@@ -50,7 +60,7 @@ export class MentioningList implements MentioningList {
     sourceEntityPk?: number;
     sectionEntityPk?: number;
     mentionedEntityPk?: number;
-    chunkEntity?: InfChunk;
+    chunkEntity?: DatChunk;
 
     constructor(data?: MentioningList) {
         Object.assign(this, data);

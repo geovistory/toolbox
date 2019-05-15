@@ -1,32 +1,34 @@
 /* tslint:disable */
 import {
   InfRole,
-  InfEntityProjectRel
+  ProInfoProjRel
 } from '../index';
 
 declare var Object: any;
 export interface InfAppellationInterface {
-  "appellation_label": any;
+  "quill_doc": any;
   "fk_class": number;
-  "notes"?: string;
+  "string"?: string;
   "pk_entity"?: number;
+  "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
 }
 
 export class InfAppellation implements InfAppellationInterface {
-  "appellation_label": any;
+  "quill_doc": any;
   "fk_class": number;
-  "notes": string;
+  "string": string;
   "pk_entity": number;
+  "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
   roles?: InfRole[];
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   constructor(data?: InfAppellationInterface) {
     Object.assign(this, data);
   }
@@ -60,21 +62,25 @@ export class InfAppellation implements InfAppellationInterface {
       path: 'InfAppellations',
       idName: 'pk_entity',
       properties: {
-        "appellation_label": {
-          name: 'appellation_label',
+        "quill_doc": {
+          name: 'quill_doc',
           type: 'any'
         },
         "fk_class": {
           name: 'fk_class',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
+        "string": {
+          name: 'string',
           type: 'string'
         },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
+        },
+        "notes": {
+          name: 'notes',
+          type: 'string'
         },
         "tmsp_creation": {
           name: 'tmsp_creation',
@@ -100,8 +106,8 @@ export class InfAppellation implements InfAppellationInterface {
         },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

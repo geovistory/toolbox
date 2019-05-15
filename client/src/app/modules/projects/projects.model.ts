@@ -1,7 +1,7 @@
-import { ComProject } from 'app/core';
+import { ProjectPreview } from "app/core";
 
 export interface IProject {
-    record: ComProject
+    record: ProjectPreview
 }
 
 export interface IProjectList {

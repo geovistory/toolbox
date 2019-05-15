@@ -120,7 +120,7 @@ module.exports = function (DfhClass) {
    *    - Ui elements of the class
    *    
    */
-  DfhClass.propertiesAndUiElements = function (pk_class, pk_ui_context, pk_project, cb) {
+  DfhClass.propertiesAndUiElements = function (pk_class, fk_app_context, pk_project, cb) {
 
     const propertiesSelect = {
       include: [
@@ -167,15 +167,15 @@ module.exports = function (DfhClass) {
       }
     };
 
-    const ui_context_config = (isOutgoing) => {
+    const class_field_config = (isOutgoing) => {
       return {
         "$relation": {
-          "name": "ui_context_config",
+          "name": "class_field_config",
           "joinType": "left join",
           "where": [
             "property_is_outgoing", "=", JSON.stringify(isOutgoing), 'AND',
             "fk_project", ...(pk_project ? ['=', pk_project] : ['IS NULL']), 'AND',
-            "fk_ui_context", '=', pk_ui_context
+            "fk_app_context", '=', fk_app_context
           ],
         }
       }
@@ -203,7 +203,7 @@ module.exports = function (DfhClass) {
             select: propertiesSelect,
           },
           property_profile_view,
-          ui_context_config: ui_context_config(false),
+          class_field_config: class_field_config(false),
           labels,
         },
         "outgoing_properties": {
@@ -213,14 +213,14 @@ module.exports = function (DfhClass) {
             select: propertiesSelect,
           },
           property_profile_view,
-          ui_context_config: ui_context_config(true),
+          class_field_config: class_field_config(true),
           labels
         },
-        "ui_context_configs": {
+        "class_field_configs": {
           "$relation": {
-            "name": "ui_context_configs",
+            "name": "class_field_configs",
             "joinType": "left join",
-            where: ["fk_ui_context", '=', pk_ui_context]
+            where: ["fk_app_context", '=', fk_app_context]
           },
           class_field: {
             $relation: {
@@ -268,71 +268,71 @@ module.exports = function (DfhClass) {
    * @param pk_project the pk of the project
    * 
    */
-  DfhClass.projectSettingsClassList = function (pk_project, cb) {
+  // DfhClass.projectSettingsClassList = function (pk_project, cb) {
 
 
-    const filter = {
-      /** 
-       * Select persistent items by pk_entity
-       */
-      select: {
-        include: [
-          "pk_entity",
-          "dfh_pk_class",
-          "dfh_standard_label"
-        ]
-      },
-      "orderBy": [{
-        "pk_entity": "asc"
-      }],
-      "include": {
-        "class_profile_view": {
-          "$relation": {
-            select: {
-              include: [
-                "dfh_fk_system_type",
-                "dfh_fk_profile",
-                "dfh_profile_label"
-              ]
-            },
-            "name": "class_profile_view",
-            "joinType": "inner join",
-            "where": [
-              "dfh_profile_association_type", "=", "selected", "and",
-              "dfh_fk_profile", "!=", technicalProfilePk
-            ],
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
-        },
-        "text_properties": {
-          "$relation": {
-            select: {
-              include: [
-                "dfh_language_iso_code",
-                "dfh_text_property"
-              ]
-            },
-            "name": "text_properties",
-            "joinType": "left join"
-          }
-        },
-        "proj_rels": {
-          "$relation": {
-            "name": "proj_rels",
-            "where": [
-              "fk_project", "=", pk_project,
-            ],
-            "joinType": "left join"
-          }
-        }
-      }
-    }
+  //   const filter = {
+  //     /** 
+  //      * Select persistent items by pk_entity
+  //      */
+  //     select: {
+  //       include: [
+  //         "pk_entity",
+  //         "dfh_pk_class",
+  //         "dfh_standard_label"
+  //       ]
+  //     },
+  //     "orderBy": [{
+  //       "pk_entity": "asc"
+  //     }],
+  //     "include": {
+  //       "class_profile_view": {
+  //         "$relation": {
+  //           select: {
+  //             include: [
+  //               "dfh_fk_system_type",
+  //               "dfh_fk_profile",
+  //               "dfh_profile_label"
+  //             ]
+  //           },
+  //           "name": "class_profile_view",
+  //           "joinType": "inner join",
+  //           "where": [
+  //             "dfh_profile_association_type", "=", "selected", "and",
+  //             "dfh_fk_profile", "!=", technicalProfilePk
+  //           ],
+  //           "orderBy": [{
+  //             "pk_entity": "asc"
+  //           }]
+  //         }
+  //       },
+  //       "text_properties": {
+  //         "$relation": {
+  //           select: {
+  //             include: [
+  //               "dfh_language_iso_code",
+  //               "dfh_text_property"
+  //             ]
+  //           },
+  //           "name": "text_properties",
+  //           "joinType": "left join"
+  //         }
+  //       },
+  //       "proj_rels": {
+  //         "$relation": {
+  //           "name": "proj_rels",
+  //           "where": [
+  //             "fk_project", "=", pk_project,
+  //           ],
+  //           "joinType": "left join"
+  //         }
+  //       }
+  //     }
+  //   }
 
-    return DfhClass.findComplex(filter, cb)
+  //   return DfhClass.findComplex(filter, cb)
 
-  }
+  // }
 
 
 };

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { ClassConfig, IAppState, U, UiElement, ComConfig } from 'app/core';
+import { ClassConfig, IAppState, U, UiElement, SysConfig } from 'app/core';
 import { merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
 
@@ -86,7 +86,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
           const level1propLabel = level1PropertyField.label.default;
           const cla = crm.classes[level1PropertyField.targetClassPk];
           const classLabel = cla.label;
-          const level2propsLabels = cla.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements.map(uiEle => {
+          const level2propsLabels = cla.uiContexts[SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE].uiElements.map(uiEle => {
             if (uiEle.propertyFieldKey) {
               const rs = crm.fieldList[uiEle.propertyFieldKey] as PropertyField;
               if (!similarPropertyField(level1PropertyField, rs)) return rs.label.default

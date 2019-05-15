@@ -1,16 +1,7 @@
 import { RouterModule } from '@angular/router';
 import { sandboxOf } from 'angular-playground';
-import { InfDigitalObject } from 'app/core';
-import { AnnotationViewComponent } from 'app/modules/annotation/components/annotation-view/annotation-view.component';
-import { ChunkViewComponent } from 'app/modules/annotation/components/chunk-view/chunk-view.component';
-import { MentionedEntitiesViewComponent } from 'app/modules/annotation/components/mentioned-entities-view/mentioned-entities-view.component';
-import { MentionedEntityViewComponent } from 'app/modules/annotation/components/mentioned-entity-view/mentioned-entity-view.component';
-import { AnnotationCtrlActions } from 'app/modules/annotation/containers/annotation-ctrl/annotation-ctrl.actions';
-import { AnnotationCtrlComponent } from 'app/modules/annotation/containers/annotation-ctrl/annotation-ctrl.component';
-import { AnnotationPanelActions } from 'app/modules/annotation/containers/annotation-panel/annotation-panel.actions';
-import { AnnotationPanelComponent } from 'app/modules/annotation/containers/annotation-panel/annotation-panel.component';
-import { MentionedEntityCtrlActions } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.actions';
-import { MentionedEntitiesCtrlComponent } from 'app/modules/annotation/containers/mentioned-entities-ctrl/mentioned-entities-ctrl.component';
+import { DatDigital } from 'app/core';
+
 import { QuillModule } from 'app/modules/quill';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { ISourceListState } from '../..';
@@ -29,20 +20,10 @@ export default sandboxOf(SourceListComponent, {
     KeysPipe,
     SourceSearchHitComponent,
     SourceCreateFormComponent,
-    AnnotationPanelComponent,
-    AnnotationViewComponent,
-    AnnotationCtrlComponent,
-    MentionedEntitiesCtrlComponent,
-    AnnotationViewComponent,
-    ChunkViewComponent,
-    MentionedEntitiesViewComponent,
-    MentionedEntityViewComponent
   ],
   providers: [
     KeysPipe,
-    AnnotationPanelActions,
-    AnnotationCtrlActions,
-    MentionedEntityCtrlActions
+
   ]
 })
   .add('Source-List | Source List', {
@@ -105,9 +86,9 @@ export default sandboxOf(SourceListComponent, {
         },
         edit: {
           view: {
-            js_quill_data: textBüchel,
+            quill_doc: textBüchel,
             notes: 'Emmanuel Büchel'
-          } as InfDigitalObject
+          } as DatDigital
         }
       } as ISourceListState
     },
@@ -131,9 +112,9 @@ export default sandboxOf(SourceListComponent, {
         },
         edit: {
           view: {
-            js_quill_data: textBüchel,
+            quill_doc: textBüchel,
             notes: 'Emmanuel Büchel'
-          } as InfDigitalObject,
+          } as DatDigital,
         }
       } as ISourceListState
     },

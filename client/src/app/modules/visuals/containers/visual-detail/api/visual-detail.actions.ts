@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { VisualDetail } from './visual-detail.models';
-import { ComVisual } from 'app/core/sdk/models/ComVisual';
+import { ProVisual } from 'app/core/sdk';
 
 type Payload = VisualDetail;
 interface MetaData {
@@ -13,7 +13,7 @@ interface MetaData {
   pkEntity?: number;
   version?: number;
 
-  comVisual?: ComVisual;
+  comVisual?: ProVisual;
 };
 export type VisualDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -97,13 +97,13 @@ export class VisualDetailAPIActions {
   *********************************************************************/
 
   @dispatch()
-  save = (comVisual: ComVisual, pkEntity: number): VisualDetailAPIAction => ({
+  save = (comVisual: ProVisual, pkEntity: number): VisualDetailAPIAction => ({
     type: VisualDetailAPIActions.SAVE,
     meta: { comVisual, pkEntity },
     payload: null,
   });
 
-  saveSucceeded = (comVisual: ComVisual): VisualDetailAPIAction => ({
+  saveSucceeded = (comVisual: ProVisual): VisualDetailAPIAction => ({
     type: VisualDetailAPIActions.SAVE_SUCCEEDED,
     meta: { comVisual },
     payload: null

@@ -4,7 +4,7 @@ import {
   InfTemporalEntity,
   InfLanguage,
   InfPersistentItem,
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfTimePrimitive,
   InfPlace,
   WarEntityPreview
@@ -31,7 +31,7 @@ export interface InfRoleInterface {
   temporal_entity?: InfTemporalEntity;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   time_primitive?: InfTimePrimitive;
   place?: InfPlace;
   persistent_item_preview?: WarEntityPreview;
@@ -58,7 +58,7 @@ export class InfRole implements InfRoleInterface {
   temporal_entity?: InfTemporalEntity;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   time_primitive?: InfTimePrimitive;
   place?: InfPlace;
   persistent_item_preview?: WarEntityPreview;
@@ -192,8 +192,8 @@ export class InfRole implements InfRoleInterface {
         },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, ComConfig, EntityPreview, IAppState, InfPersistentItem, ProjectCrm, SubstoreComponent } from 'app/core';
+import { ActiveProjectService, SysConfig, EntityPreview, IAppState, InfPersistentItem, ProjectCrm, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -40,7 +40,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   selectedEntity$ = new BehaviorSubject<EntityPreview>(undefined);
 
   pkClassesInProject;
-  pkUiContextCreate = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+  pkUiContextCreate = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
   constructor(
     protected rootEpics: RootEpics,

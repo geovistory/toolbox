@@ -88,8 +88,8 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
 
 
     /************************************************
-       * Reducers to remove PeIt from project
-       ************************************************/
+     * Reducers to remove PeIt from project
+     ************************************************/
 
     case EntityDetailAPIActions.REMOVE_PE_IT:
       state = {

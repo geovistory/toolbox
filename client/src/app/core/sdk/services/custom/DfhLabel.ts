@@ -11,7 +11,6 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DfhLabel } from '../../models/DfhLabel';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { DfhProjRel } from '../../models/DfhProjRel';
 
 
 /**

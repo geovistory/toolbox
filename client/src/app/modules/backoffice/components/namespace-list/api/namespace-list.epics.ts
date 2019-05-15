@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfNamespace } from 'app/core';
+import { LoadingBarActions, DatNamespace } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { NamespaceListComponent } from '../namespace-list.component';
 import { NamespaceListAPIActions, NamespaceListAPIAction } from './namespace-list.actions';
-import { InfNamespaceApi } from 'app/core/sdk/services/custom/InfNamespace';
+import { DatNamespaceApi } from 'app/core/sdk';
 
 @Injectable()
 export class NamespaceListAPIEpics {
   constructor(
-    private namespaceApi: InfNamespaceApi, // <- change the api
+    private namespaceApi: DatNamespaceApi, // <- change the api
     private actions: NamespaceListAPIActions,
     private loadingBarActions: LoadingBarActions
   ) { }
@@ -43,7 +43,7 @@ export class NamespaceListAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((data: InfNamespace[]) => {
+            .subscribe((data: DatNamespace[]) => {
               /**
                * Emit the global action that completes the loading bar
                */

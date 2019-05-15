@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, Entity, IAppState, SubstoreComponent, EntityPreview, InfChunk } from 'app/core';
+import { ActiveProjectService, Entity, IAppState, SubstoreComponent, EntityPreview, DatChunk } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { dropLast } from 'ramda';
 import { Observable, Subject, combineLatest } from 'rxjs';
@@ -11,7 +11,7 @@ import { MentioningListAPIEpics } from './api/mentioning-list.epics';
 import { MentioningList, MentioningListType, Mentioning } from './api/mentioning-list.models';
 import { mentioningListReducer } from './api/mentioning-list.reducer';
 import { Config, Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
-import { QuillDeltaToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 
 // this is not for state, only for the table view
 export interface MentioningRow extends Mentioning {
@@ -19,7 +19,7 @@ export interface MentioningRow extends Mentioning {
 
   sourceEntity: EntityPreview;
   sectionEntity: EntityPreview;
-  chunkEntity: InfChunk;
+  chunkEntity: DatChunk;
   mentionedEntity: EntityPreview;
 
   // stings
@@ -42,7 +42,7 @@ export interface MentioningRow extends Mentioning {
   selector: 'gv-mentioning-list',
   templateUrl: './mentioning-list.component.html',
   styleUrls: ['./mentioning-list.component.scss'],
-  providers: [QuillDeltaToStrPipe]
+  providers: [QuillOpsToStrPipe]
 })
 export class MentioningListComponent extends MentioningListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
@@ -71,7 +71,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
 
   sourceEntity$: Observable<EntityPreview>;
   sectionEntity$: Observable<EntityPreview>;
-  chunkEntity$: Observable<InfChunk>;
+  chunkEntity$: Observable<DatChunk>;
   mentionedEntity$: Observable<EntityPreview>;
 
   formGroup: FormGroup;
@@ -130,7 +130,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     public ngRedux: NgRedux<IAppState>,
     private projectService: ActiveProjectService,
     fb: FormBuilder,
-    private quillDeltaToStr: QuillDeltaToStrPipe
+    private quillOpsToStr: QuillOpsToStrPipe
   ) {
     super()
     this.mentioningCreateCtrl = new FormControl(null, [Validators.required])
@@ -189,7 +189,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     )
 
     // create the InfChunk Observable
-    this.chunkEntity$ = this.ngRedux.select<InfChunk>(['activeProject', 'selectedChunk'])
+    this.chunkEntity$ = this.ngRedux.select<DatChunk>(['activeProject', 'selectedChunk'])
 
     // create the entityPreview Observable
     this.mentionedEntity$ = this.mentionedEntityPk$.pipe(
@@ -216,7 +216,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
         if (m.fk_expression_entity) this.projectService.streamEntityPreview(m.fk_expression_entity);
         if (m.fk_source_entity) this.projectService.streamEntityPreview(m.fk_source_entity);
         if (m.fk_chunk) this.projectService.loadChunk(m.fk_chunk);
-        this.projectService.streamEntityPreview(m.fk_domain_entity);
+        this.projectService.streamEntityPreview(m.fk_info_domain);
       });
 
       const createString = (p: EntityPreview): string => {
@@ -229,8 +229,8 @@ export class MentioningListComponent extends MentioningListAPIActions implements
         return combineLatest(
           this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_expression_entity]),
           this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_source_entity]),
-          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_domain_entity]),
-          this.ngRedux.select<InfChunk>(['activeProject', 'chunks', m.fk_chunk]),
+          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_info_domain]),
+          this.ngRedux.select<DatChunk>(['activeProject', 'chunks', m.fk_chunk]),
           this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInText']),
           this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInTable'])
         )
@@ -243,7 +243,7 @@ export class MentioningListComponent extends MentioningListAPIActions implements
             mentionedEntity: d[2],
             mentionedEntityString: createString(d[2]),
             chunkEntity: d[3],
-            chunkEntityString: (!d[3] || !d[3].js_quill_data) ? '' : this.quillDeltaToStr.transform(d[3].js_quill_data),
+            chunkEntityString: (!d[3] || !d[3].quill_doc) ? '' : this.quillOpsToStr.transform(d[3].quill_doc),
             isFocusedInText: (!d[4] ? false : (d[4].indexOf(m.pk_entity) > -1)),
             isFocusedInTable: (!d[5] ? false : (d[5].indexOf(m.pk_entity) > -1))
           } as MentioningRow))

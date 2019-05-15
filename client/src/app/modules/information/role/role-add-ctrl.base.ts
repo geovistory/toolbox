@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
-import { InfEntityProjectRel, InfRole } from 'app/core';
+import { ProInfoProjRel, InfRole } from 'app/core';
 
 import { RoleDetail } from 'app/core/state/models';
 import { RoleBase } from './role.base';
@@ -80,7 +80,7 @@ export abstract class RoleAddCtrlBase extends RoleBase {
         role.entity_version_project_rels = [{
           is_in_project: this.isInProject,
           is_standard_in_project: this.isStandard
-        } as InfEntityProjectRel];
+        } as ProInfoProjRel];
       }
 
       this.onChange(role);

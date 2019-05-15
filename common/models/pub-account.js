@@ -14,7 +14,7 @@ module.exports = function (PubAccount) {
         "relation": "projects",
         "scope": {
           "include": [
-            "labels",
+            // "labels",
             "text_properties",
             "default_language"
           ],
@@ -181,9 +181,9 @@ module.exports = function (PubAccount) {
     ) AS rolemappings
     ON rolemappings.principalid = account.id::text
     LEFT JOIN LATERAL (
-      SELECT apr.account_id ,jsonb_build_object('pk_project', pk_project, 'role', role) projects
+      SELECT apr.account_id ,jsonb_build_object('pk_entity', pk_entity, 'role', role) projects
       FROM account_project_rel AS apr
-      JOIN commons.project ON apr.fk_project = project.pk_project
+      JOIN projects.project ON apr.fk_project = project.pk_entity
     ) AS project_rels
     ON project_rels.account_id = account.id
     GROUP BY 

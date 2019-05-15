@@ -29,9 +29,12 @@
       "type": "number",
       "required": true
     },
-    "text_property_quill_doc": {
+    "quill_doc": {
       "type": "object",
       "required": true
+    },
+    "string": {
+      "type": "string"
     }
   },
   "validations": [],
@@ -56,7 +59,7 @@
     },
     "class_field": {
       "type": "belongsTo",
-      "model": "ComClassField",
+      "model": "SysClassField",
       "foreignKey": "fk_class_field",
       "primaryKey": "pk_entity"
     }

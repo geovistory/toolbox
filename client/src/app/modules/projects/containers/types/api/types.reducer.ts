@@ -10,29 +10,23 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
   const action = a as TypesAPIAction;
 
   switch (action.type) {
-    case TypesAPIActions.LOAD_STARTED:
+    case TypesAPIActions.LOAD:
       state = {
         ...state,
-        items: {},
-        class: undefined,
-        // namespace: undefined
+        items: {}
       };
       break;
 
     case TypesAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.types),
-        class: action.meta.typeClass,
-        namespace: action.meta.namespace
+        items: indexBy(prop('pk_entity'), action.meta.types)
       };
       break;
     case TypesAPIActions.LOAD_FAILED:
       state = {
         ...state,
         items: {},
-        class: undefined,
-        namespace: undefined
       };
       break;
 
@@ -134,6 +128,17 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
         loading: false,
         error: action.error
       };
+      break;
+
+    /*********************************************************************
+    *  Set the tab title
+    *********************************************************************/
+
+    case TypesAPIActions.SET_TAB_TITLE:
+      state = {
+        ...state,
+        tabTitle: action.meta.tabTitle
+      }
       break;
 
     /*****************************************************

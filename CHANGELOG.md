@@ -2,7 +2,7 @@
 ## Sprint 17
 ### Features
 * Visuals:
-  * Added new table commons.visual, storing the visual itself (not the results). `GEOV-398`
+  * Added new table projects.visual, storing the visual itself (not the results). `GEOV-398`
   * Added API Endpoints, all of them restricted to project_members: `GEOV-397`
     * findPerIdAndVersionAndProject: finds queries of the project, if specified by pk_entity and entity_version
     * create: persists a new visual to the datastore 
@@ -65,7 +65,7 @@
   * Secured all 82 endpoints by restricting access according to the needs (enabled ACL). (See documentation: https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/13598721/LoopBack+REST+Api)
 * Backoffice: Added Access Control in frontend, so that only 'system_admin' can access backoffice (guard and error-page). `GEOV-377`
 * Backoffice: Added a page that lists all geovistory accounts with their roles and their projects
-* Metadata: ID of logged-in user gets stored, when she/he modifies data in information schema (in table information.entity_version_project_rel, column fk_last_modifier). `GEOV-271`
+* Metadata: ID of logged-in user gets stored, when she/he modifies data in information schema (in table projects.info_proj_rel, column fk_last_modifier). `GEOV-271`
 * DevOps: Production App on Heroku is up and running on a new App Server and a new DB Server, ready for beta release (with backups enabled). `GEOV-383`
 * DevOps: Checked security for go live (See notes: https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/925040705/Security) `GEOV-343`
 * Project Edit: Added new UI for navigation within the project's data, using a left drawer for search-lists and a right panel for detail-pages with tabs and resizable split screen. (See below for: `GEOV-217 GEOV-361 GEOV-362 GEOV-353`)

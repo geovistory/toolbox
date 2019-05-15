@@ -1,8 +1,8 @@
-import { ComClassField } from 'app/core';
+import { SysClassField } from 'app/core';
 
 // Class of this slice of store
 export class ClassFieldList implements ClassFieldList {
-    items?:  { [key: string]: ComClassField};
+    items?:  { [key: string]: SysClassField};
     loading?: boolean;
     error?: any;
 

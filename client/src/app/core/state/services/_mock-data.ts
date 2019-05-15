@@ -7,7 +7,7 @@ export const place = new InfPlace({ pk_entity: 22, fk_class: 123, lat: 213.2, lo
 
 export const language = new InfLanguage({ pk_entity: 17071, fk_class: 54, pk_language: 'aae', lang_type: 'living', scope: 'individual', iso6392b: null, iso6392t: null, iso6391: null, notes: 'Arbëreshë Albanian' });
 
-export const appellation = new InfAppellation({ appellation_label: { tokens: [{ id: 4, string: 'Hügel', isSeparator: false }], latestTokenId: 4 }, fk_class: 40, notes: null, pk_entity: 80681 });
+export const appellation = new InfAppellation({ quill_doc: { tokens: [{ id: 4, string: 'Hügel', isSeparator: false }], latestTokenId: 4 }, fk_class: 40, notes: null, pk_entity: 80681 });
 
 export const time_primitive = new InfTimePrimitive({ pk_entity: 25788, fk_class: 335, julian_day: 2431383, duration: '1 day' });
 

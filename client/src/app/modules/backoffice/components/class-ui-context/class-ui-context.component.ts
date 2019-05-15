@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ComConfig, ComUiContextConfig, IAppState, U } from 'app/core';
+import { SysConfig, ProClassFieldConfig, IAppState, U } from 'app/core';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { pathOr } from 'ramda';
 import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
@@ -27,8 +27,8 @@ import { RootEpics } from 'app/core/store/epics';
 })
 export class ClassUiContextComponent extends ClassUiContextAPIActions implements OnInit, OnDestroy {
 
-  public readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-  public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+  public readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+  public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
 
   localStore: ObservableStore<ClassUiContext>
@@ -137,7 +137,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
   checkAndUpdateEnabled() {
     const widgets = this.containerEnabled.widgets;
 
-    const uiPropConfs: ComUiContextConfig[] = []
+    const uiPropConfs: ProClassFieldConfig[] = []
 
     // check, if ui_context_config needs update
     for (let i = 0; i < widgets.length; i++) {
@@ -147,12 +147,12 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
       // if there is no uiContextConfig yet
       if (!widget.uiContextConfig && widget.propSet.pk_entity) {
-        const newPropConf: ComUiContextConfig = {
+        const newPropConf: ProClassFieldConfig = {
           pk_entity: undefined,
           fk_project: undefined,
           fk_property: undefined,
           property_is_outgoing: undefined,
-          fk_ui_context: this.pkUiContext,
+          fk_app_context: this.pkUiContext,
           fk_class_for_class_field: this.pkClass,
           fk_class_field: widget.propSet.pk_entity,
           ord_num: i
@@ -162,7 +162,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
       } else if (widget.uiContextConfig.ord_num != i) {
 
-        const newPropConf: ComUiContextConfig = {
+        const newPropConf: ProClassFieldConfig = {
           ...widget.uiContextConfig,
           ord_num: i,
           // fk_project: null

@@ -1,10 +1,10 @@
 /* tslint:disable */
 import {
-  InfEntityProjectRel,
+  ProInfoProjRel,
   InfPersistentItem,
   InfTemporalEntity,
   InfLanguage,
-  ComClassField
+  SysClassField
 } from '../index';
 
 declare var Object: any;
@@ -12,34 +12,36 @@ export interface InfTextPropertyInterface {
   "fk_class_field": number;
   "fk_concerned_entity": number;
   "fk_language": number;
-  "text_property_quill_doc": any;
+  "quill_doc": any;
+  "string"?: string;
   "pk_entity"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   persistent_item?: InfPersistentItem;
   temporal_entity?: InfTemporalEntity;
   language?: InfLanguage;
-  class_field?: ComClassField;
+  class_field?: SysClassField;
 }
 
 export class InfTextProperty implements InfTextPropertyInterface {
   "fk_class_field": number;
   "fk_concerned_entity": number;
   "fk_language": number;
-  "text_property_quill_doc": any;
+  "quill_doc": any;
+  "string": string;
   "pk_entity": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  entity_version_project_rels?: InfEntityProjectRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
   persistent_item?: InfPersistentItem;
   temporal_entity?: InfTemporalEntity;
   language?: InfLanguage;
-  class_field?: ComClassField;
+  class_field?: SysClassField;
   constructor(data?: InfTextPropertyInterface) {
     Object.assign(this, data);
   }
@@ -85,9 +87,13 @@ export class InfTextProperty implements InfTextPropertyInterface {
           name: 'fk_language',
           type: 'number'
         },
-        "text_property_quill_doc": {
-          name: 'text_property_quill_doc',
+        "quill_doc": {
+          name: 'quill_doc',
           type: 'any'
+        },
+        "string": {
+          name: 'string',
+          type: 'string'
         },
         "pk_entity": {
           name: 'pk_entity',
@@ -113,8 +119,8 @@ export class InfTextProperty implements InfTextPropertyInterface {
       relations: {
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
-          type: 'InfEntityProjectRel[]',
-          model: 'InfEntityProjectRel',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
@@ -145,8 +151,8 @@ export class InfTextProperty implements InfTextPropertyInterface {
         },
         class_field: {
           name: 'class_field',
-          type: 'ComClassField',
-          model: 'ComClassField',
+          type: 'SysClassField',
+          model: 'SysClassField',
           relationType: 'belongsTo',
                   keyFrom: 'fk_class_field',
           keyTo: 'pk_entity'

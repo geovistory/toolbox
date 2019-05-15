@@ -1,17 +1,16 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { InfEntityAssociation, InfDigitalObject } from 'app/core';
+import { DatDigital, InfEntityAssociation } from 'app/core';
+import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
 import { FluxStandardAction } from 'flux-standard-action';
 import { TextEditor } from './text-editor.models';
-import { QuillDoc, Delta } from 'app/modules/quill';
-import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
+import { Ops } from '../../../../quill/quill.models';
 
 type Payload = TextEditor;
 interface MetaData {
   itemsArray?: any[];
   entityAssociation?: InfEntityAssociation;
-  // quillDoc?: QuillDoc;
-  digitalObject?: InfDigitalObject;
+  digitalObject?: DatDigital;
   pkProject?: number;
   fkRangeEntity?: number;
   fkProperty?: number;
@@ -75,13 +74,13 @@ export class TextEditorAPIActions {
   /*********************************************************************
   *  Method to save
   *********************************************************************/
-  @dispatch() save = (pkProject: number, digitalObject: InfDigitalObject): TextEditorAPIAction => ({
+  @dispatch() save = (pkProject: number, digitalObject: DatDigital): TextEditorAPIAction => ({
     type: TextEditorAPIActions.SAVE,
     meta: { pkProject, digitalObject },
     payload: null,
   });
 
-  saveSucceeded = (digitalObject: InfDigitalObject): TextEditorAPIAction => ({
+  saveSucceeded = (digitalObject: DatDigital): TextEditorAPIAction => ({
     type: TextEditorAPIActions.SAVE_SUCCEEDED,
     meta: {
       digitalObject
@@ -181,7 +180,7 @@ export class TextEditorAPIActions {
     payload: { readOnly }
   })
 
-  @dispatch() selectDelta = (selectedDelta: Delta): TextEditorAPIAction => ({
+  @dispatch() selectDelta = (selectedDelta: Ops): TextEditorAPIAction => ({
     type: TextEditorAPIActions.SET_SELECTED_DELTA,
     meta: null,
     payload: { selectedDelta }

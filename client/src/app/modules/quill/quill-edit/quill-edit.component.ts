@@ -1,9 +1,12 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
-import * as Delta from 'quill-delta/lib/delta';
-import { Subscription, Observable } from 'rxjs';
-import { QuillDoc } from '..';
+import Delta from 'quill/node_modules/quill-delta';
+import { Subscription, Observable, BehaviorSubject, asapScheduler, asyncScheduler, timer, interval } from 'rxjs';
 import { QuillNodeHandler } from '../quill-node-handler';
 import { QuillService } from '../quill.service';
+import { QuillDoc, DeltaI, Ops } from '../quill.models';
+import { ProgressDialogData, ProgressDialogComponent, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
+import { MatDialog, MatDialogRef } from '../../../../../node_modules/@angular/material';
+import { first, takeUntil, filter, map, audit, delay, tap, distinct } from '../../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'gv-quill-edit',
@@ -40,8 +43,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
   // needed for creating annotation: maps nodeid with object containing isSelected-boolean and op (from Delta.ops)
   nodeSelctionMap = new Map<string, { isSelected: boolean, op: any }>();
 
-  // the selected Delta, when creating an annotation
-  private selectedDelta: Delta;
+  // the selected Ops, when creating an annotation
+  private selectedOps: DeltaI;
 
   // the editor object
   quillEditor: any;
@@ -51,8 +54,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
   // Next node inerted will get id = latestId + 1
   latestId: number;
 
-  // The jsQuill-Delta object
-  contents: Delta;
+  // The Operations object
+  ops: Ops;
 
   html: string;
 
@@ -76,6 +79,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     private ref: ChangeDetectorRef,
     private quillService: QuillService,
     private renderer: Renderer2,
+    public dialog: MatDialog
   ) {
     this.Quill = quillService.Quill;
   }
@@ -173,11 +177,11 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   private getChunkOfSelectedRange(range: any) {
     const firstBlotOfSelection = this.quillEditor.getLeaf(range.index);
-    const missingFromStart = firstBlotOfSelection[1] === firstBlotOfSelection[0].text.length ? 0 : firstBlotOfSelection[1];
+    const missingFromStart = firstBlotOfSelection[1] === (firstBlotOfSelection[0].text || []).length ? 0 : firstBlotOfSelection[1];
     const startIndex = range.index - missingFromStart;
 
     const lastBlotOfSelection = this.quillEditor.getLeaf((range.index + range.length));
-    const missingTillEnd = lastBlotOfSelection[0].text.length - lastBlotOfSelection[1];
+    const missingTillEnd = (lastBlotOfSelection[0].text || []).length - lastBlotOfSelection[1];
     const offset = range.length + missingTillEnd + missingFromStart;
 
     const ops = this.quillEditor.getContents(startIndex, offset);
@@ -217,14 +221,19 @@ export class QuillEditComponent implements OnInit, OnChanges {
       // See list of formats: https://quilljs.com/docs/formats/
       formats: [
         // Inline formats
-        'node',
+        'charid',
         'bold', 'italic', 'link', 'size', 'strike', 'underline',
         // Block formats
-        'header', 'indent', 'list', 'align'
+        'blockid',
+        'header', 'indent', 'list', 'align',
       ]
     };
     // initialize default config
-    this.editorConfig = this.editorConfig ? this.editorConfig : defaultEditorConfig;
+    this.editorConfig = {
+      ...this.editorConfig,
+      ...defaultEditorConfig
+      // formats: (this.editorConfig && this.editorConfig.formats) ? this.editorConfig.formats : defaultEditorConfig.formats
+    }
 
     // initialize config for readonly
     this.editorConfig = {
@@ -250,10 +259,16 @@ export class QuillEditComponent implements OnInit, OnChanges {
   }
 
   private initQuillDoc() {
-    this.quillDoc = (this.quillDoc && 'latestId' in this.quillDoc && 'contents' in this.quillDoc) ?
-      this.quillDoc : { latestId: 0, contents: {} };
+    this.quillDoc = (this.quillDoc && 'latestId' in this.quillDoc && 'ops' in this.quillDoc && this.quillDoc.ops.length) ?
+      this.quillDoc : {
+        latestId: 1,
+        ops: [{
+          attributes: { blockid: 1 },
+          insert: "\n"
+        }]
+      };
     this.latestId = this.quillDoc.latestId;
-    this.contents = this.quillDoc.contents;
+    this.ops = this.quillDoc.ops;
   }
 
   /**
@@ -264,7 +279,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
    * @param qd
    */
   private quillDocIsDifferent(qd: QuillDoc) {
-    if (this.latestId !== qd.latestId || this.contents !== qd.contents) return true;
+    if (this.latestId !== qd.latestId || this.ops !== qd.ops) return true;
     else return false;
   }
 
@@ -278,13 +293,24 @@ export class QuillEditComponent implements OnInit, OnChanges {
   }
 
   private initContents() {
+
     // set the initial contents
-    this.quillEditor.setContents(this.contents);
+    // if (this.ops && this.ops.length > 0) {
+
+    this.quillEditor.setContents(this.ops);
+
+    // } else {
+    //   this.latestId = this.latestId + 1;
+    //   this.quillEditor.setContents([{
+    //     attributes: { id: this.latestId },
+    //     insert: "\n"
+    //   }])
+    // }
 
 
     // create the nodeSelctionMap
     if (this.creatingAnnotation) {
-      this.contents.ops.forEach(op => {
+      this.ops.forEach(op => {
         if (op.attributes && op.attributes.node) {
 
           // add it to the nodeSelctionMap
@@ -306,7 +332,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // styling
     this.editorConfig.theme = 'bubble';
     // disable all formatting (no bold, italic etc.)
-    this.editorConfig.formats = ['node'];
+    this.editorConfig.formats = ['charid', 'blockid'];
     // disable tabs and linebreak keys
     this.editorConfig['modules'] = {
       ...this.editorConfig['modules'],
@@ -336,7 +362,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // styling
     this.editorConfig.theme = 'bubble';
     // disable all formatting (no bold, italic etc.)
-    this.editorConfig.formats = ['node'];
+    this.editorConfig.formats = ['charid', 'blockid'];
     // // disable tabs and linebreak keys
     // this.editorConfig['modules'] = {
     //   ...this.editorConfig['modules'],
@@ -363,13 +389,49 @@ export class QuillEditComponent implements OnInit, OnChanges {
     if (source == 'user') {
       console.log('A user action triggered this change.');
 
-      const nodenizeResult = this.quillService.nodenizeContentChange(delta, oldDelta, this.latestId);
 
-      this.latestId = nodenizeResult.latestId;
+      asyncScheduler.schedule(() => {
 
-      this.quillEditor.updateContents(nodenizeResult.delta)
+        const feedback = this.quillService.characterizeContentChange(delta, oldDelta, this.latestId);
 
-      this.updateComponent()
+        const progDialogData: ProgressDialogData = {
+          title: 'Processing entered text',
+          mode$: new BehaviorSubject<ProgressMode>('determinate'),
+          value$: new BehaviorSubject(0)
+        }
+        let progDialog;
+        const done$ = feedback.progress.pipe(filter(p => p === 1), map(() => true))
+        timer(20).pipe(takeUntil(done$)).subscribe(() => {
+          progDialog = this.openProgressDialog(progDialogData)
+        })
+
+        feedback.progress.pipe(
+          map(n => Math.round(n * 100)),
+          distinct()
+        ).subscribe(percent => {
+          progDialogData.value$.next(percent)
+          // console.log('progress', percent)
+        })
+
+
+        feedback.result.pipe(
+          tap(() => {
+            progDialogData.mode$.next('indeterminate')
+          })
+        ).subscribe(res => {
+
+          const nodenizeResult = res;
+
+          this.latestId = nodenizeResult.latestId;
+
+          this.quillEditor.updateContents(nodenizeResult.delta)
+
+          this.updateComponent()
+
+          if (progDialog) progDialog.close()
+
+        })
+      })
 
     }
 
@@ -396,10 +458,10 @@ export class QuillEditComponent implements OnInit, OnChanges {
   };
 
   updateContents() {
-    this.contents = this.quillEditor.getContents();
+    this.ops = this.quillEditor.getContents().ops;
     this.quillDocChange.emit({
       latestId: this.latestId,
-      contents: this.contents
+      ops: this.ops
     })
   }
 
@@ -412,13 +474,13 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // if added nodes
     if ($event.addedNodes.length) {
       const node = $event.addedNodes[0] as any;
-      if (node.attributes && node.attributes.quillnode) {
-
-        const id = node.attributes.quillnode.value;
-
-        const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.map(nodes => nodes[id]) : Observable.of(null);
+      if (node.attributes && node.attributes.charid) {
 
         if (!this.nodeSubs.has(node)) {
+
+          const id = node.attributes.charid.value;
+
+          const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.map(nodes => nodes[id]) : Observable.of(null);
 
           const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this.annotationsVisible$, this.entitiesToHighlight$, this.creatingAnnotation)
 
@@ -444,8 +506,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
     // if removed nodes
     if ($event.removedNodes.length) {
       const node = $event.removedNodes[0] as any;
-      if (node.attributes && node.attributes.quillnode) {
-        const id = node.attributes.quillnode.value;
+      if (node.attributes && node.attributes.charid) {
+        const id = node.attributes.charid.value;
 
         if (
           this.nodeSubs.has(node) &&
@@ -486,7 +548,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     item.isSelected = isSelected;
 
     // create new and empty selectedDelta
-    this.selectedDelta = new Delta()
+    this.selectedOps = new Delta()
 
     // fill the selectedDelta with the selected items
     // or a ... node if some tokens are omitted
@@ -496,10 +558,10 @@ export class QuillEditComponent implements OnInit, OnChanges {
       if (i.isSelected) {
         // add dots, if there is a previous i that is not selected
         if (
-          this.selectedDelta.ops.length &&
+          this.selectedOps.ops.length &&
           previousItem.isSelected === false
         ) {
-          this.selectedDelta.ops.push({
+          this.selectedOps.ops.push({
             'attributes': {
               'node': '_'
             },
@@ -507,19 +569,28 @@ export class QuillEditComponent implements OnInit, OnChanges {
           })
         }
 
-        this.selectedDelta.ops.push(i.op);
+        this.selectedOps.ops.push(i.op);
 
       }
 
       previousItem = i;
     })
 
-    this.selectedDeltaChange.emit(this.selectedDelta)
+    this.selectedDeltaChange.emit(this.selectedOps)
   }
 
 
   toggleShowTokenIds() {
     this.showTokenIds = !this.showTokenIds;
+  }
+
+  openProgressDialog(data: ProgressDialogData) {
+    return this.dialog.open(ProgressDialogComponent, {
+      width: '250px',
+      data,
+      // hasBackdrop: false,
+      disableClose: true
+    });
   }
 
 }

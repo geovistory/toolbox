@@ -1,9 +1,7 @@
-import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { InfDigitalObject, InfEntityProjectRel } from 'app/core';
-import { QuillDoc } from 'app/modules/quill';
-import { DELEGATE_CTOR } from '@angular/core/src/reflection/reflection_capabilities';
-import * as Delta from 'quill-delta/lib/delta';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DatDigital } from 'app/core';
+import Delta from 'quill/node_modules/quill-delta';
+import { QuillDoc } from 'app/modules/quill/quill.models';
 
 /**
  * A simple component that has a form to create a new source
@@ -28,7 +26,7 @@ export class SourceCreateFormComponent implements OnInit {
   @Input() projectPk: number;
 
   @Output() cancel: EventEmitter<void> = new EventEmitter();
-  @Output() ok: EventEmitter<InfDigitalObject> = new EventEmitter();
+  @Output() ok: EventEmitter<DatDigital> = new EventEmitter();
 
   model: { label?: string } = {};
   errorMessages:any;
@@ -51,9 +49,9 @@ export class SourceCreateFormComponent implements OnInit {
       notes: this.model.label,
 
       // create a new QuillDoc
-      js_quill_data: {
+      quill_doc: {
         latestId: 0,
-        contents: new Delta()
+        ops: []
       } as QuillDoc,
 
       // // create a epr
@@ -63,7 +61,7 @@ export class SourceCreateFormComponent implements OnInit {
       //     is_in_project: true
       //   } as InfEntityProjectRel
       // ]
-    } as InfDigitalObject
+    } as DatDigital
 
     this.ok.emit(dObj)
   }

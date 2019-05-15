@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ComConfig, IAppState } from 'app/core';
+import { SysConfig, IAppState } from 'app/core';
 import { Observable, Subject } from 'rxjs';
 import { RootEpics } from '../../../../core/store/epics';
 import { ClassDetail, Container } from '../../backoffice.models';
@@ -21,14 +21,14 @@ import { classReducer } from './api/class.reducer';
 })
 export class ClassComponent extends ClassAPIActions implements OnInit, OnDestroy {
 
-  public readonly PK_UI_CONTEXT_ADD = ComConfig.PK_UI_CONTEXT_ADD;
-  public readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-  public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = ComConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+  public readonly PK_UI_CONTEXT_ADD = SysConfig.PK_UI_CONTEXT_ADD;
+  public readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+  public readonly PK_UI_CONTEXT_DATAUNITS_CREATE = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
-  public readonly PK_UI_CONTEXT_SOURCES_EDITABLE = ComConfig.PK_UI_CONTEXT_SOURCES_EDITABLE;
-  public readonly PK_UI_CONTEXT_SOURCES_CREATE = ComConfig.PK_UI_CONTEXT_SOURCES_CREATE;
-  public readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
-  public readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = ComConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE;
+  public readonly PK_UI_CONTEXT_SOURCES_EDITABLE = SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE;
+  public readonly PK_UI_CONTEXT_SOURCES_CREATE = SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+  public readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
+  public readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE;
 
 
   localStore: ObservableStore<ClassDetail>
@@ -54,7 +54,7 @@ export class ClassComponent extends ClassAPIActions implements OnInit, OnDestroy
     this.rootEpics.addEpic(this.epics.createEpic(this.localStore, this.until$))
 
     const pkClass = this.activatedRoute.snapshot.params['pk_class'];
-    this.loadClassDetails(pkClass, ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE)
+    this.loadClassDetails(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE)
   }
 
   getBasePath = () => ['backoffice', 'classDetail'];

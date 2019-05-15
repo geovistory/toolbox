@@ -21,7 +21,7 @@
   "relations": {
     "projects": {
       "type": "hasMany",
-      "model": "ComProject",
+      "model": "ProProject",
       "foreignKey": "account_id",
       "keyThrough": "fk_project",
       "through": "PubAccountProjectRel"

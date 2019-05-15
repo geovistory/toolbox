@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, Inject, HostBinding } from '@angular/core';
 import { IAppState, InfPersistentItem, PeItDetail } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
@@ -8,6 +8,11 @@ import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './api/type-edit-form.epics';
 import { TypeEditForm } from './api/type-edit-form.models';
 import { typeEditFormReducer } from './api/type-edit-form.reducer';
+import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../node_modules/@angular/material';
+
+export interface TypeEditFormData {
+  basePath: string[];
+}
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -20,14 +25,15 @@ import { typeEditFormReducer } from './api/type-edit-form.reducer';
 })
 export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnInit, OnDestroy, SubstoreComponent {
 
+  @HostBinding('class.h-100') h = true;
+  @HostBinding('class.gv-flex-fh') flexFh = true;
+  
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
   // local store of this component
   localStore: ObservableStore<TypeEditForm>;
 
-  // path to the substore
-  @Input() basePath: string[];
 
   // select observables of substore properties
   @select() peItDetail$: Observable<InfPersistentItem>;
@@ -41,15 +47,17 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypeEditFormAPIEpics,
-    protected ngRedux: NgRedux<IAppState>
+    protected ngRedux: NgRedux<IAppState>,
+    public dialogRef: MatDialogRef<TypeEditFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: TypeEditFormData
   ) {
     super()
   }
 
-  getBasePath = () => this.basePath;
+  getBasePath = () => this.data.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, typeEditFormReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.data.basePath, typeEditFormReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
   }
 
@@ -59,4 +67,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
     this.destroy$.unsubscribe();
   }
 
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }

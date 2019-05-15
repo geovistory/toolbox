@@ -6,7 +6,7 @@ import { TreeviewItem } from 'ngx-treeview';
 
 type Payload = TypeCtrl;
 interface MetaData {
-  pkTypedClass?: number,
+  pkTypeClass?: number,
   pkProject?: number,
   itemsArray?: any[]
 };
@@ -21,9 +21,9 @@ export class TypeCtrlAPIActions {
   static readonly DESTROY = 'TypeCtrl::DESTROY';
 
   @dispatch()
-  load = (pkProject: number, pkTypedClass: number, ): TypeCtrlAPIAction => ({
+  load = (pkProject: number, pkTypeClass: number, ): TypeCtrlAPIAction => ({
     type: TypeCtrlAPIActions.LOAD,
-    meta: { pkProject, pkTypedClass },
+    meta: { pkProject, pkTypeClass },
     payload: null,
   });
 

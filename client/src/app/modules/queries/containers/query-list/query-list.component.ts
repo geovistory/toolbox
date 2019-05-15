@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, ComQueryByPk, IAppState, U, ComQuery, latestEntityVersions } from 'app/core';
+import { ActiveProjectService, ComQueryByPk, IAppState, U, ProQuery, latestEntityVersions } from 'app/core';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ export class QueryListComponent implements OnInit, OnDestroy {
 
 
   loading$: Observable<boolean>;
-  items$: Observable<ComQuery[]>;
+  items$: Observable<ProQuery[]>;
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

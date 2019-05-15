@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { InfRole, ComProject, ProjectDetail } from 'app/core';
+import { InfRole, ProProject, ProjectDetail } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { RoleDetail, PropertyField } from 'app/core/state/models';
@@ -31,7 +31,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                                 fk_property: 99,
                                 appellation: {
                                     fk_class: DfhConfig.CLASS_PK_APPELLATION,
-                                    appellation_label: {
+                                    quill_doc: {
                                         tokens: [
                                             {
                                                 "id": 0,
@@ -53,7 +53,7 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
                             } as InfRole,
                             _appe: {
                                 appellation: {
-                                    appellation_label: {
+                                    quill_doc: {
                                         tokens: [
                                             {
                                                 id: 1,
@@ -334,8 +334,8 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             index: '_role_1',
             initState: {
                 activeProject: {
-                    pk_project: 50
-                } as ComProject,
+                    pk_entity: 50
+                } as ProProject,
                 _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
@@ -391,8 +391,8 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             index: '_role_1',
             initState: {
                 activeProject: {
-                    pk_project: 50
-                } as ComProject,
+                    pk_entity: 50
+                } as ProProject,
                 _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {
@@ -459,8 +459,8 @@ export default sandboxOf(TeEntRoleCreateCtrlComponent, {
             index: '_role_1',
             initState: {
                 activeProject: {
-                    pk_project: 50
-                } as ComProject,
+                    pk_entity: 50
+                } as ProProject,
                 _property_field_1: new PropertyField({
                     _role_list: {
                         _role_1: {

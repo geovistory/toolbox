@@ -1,7 +1,7 @@
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, forwardRef, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { InfPersistentItem, InfTemporalEntity, U, UiContext, ComConfig, IAppState } from 'app/core';
+import { InfPersistentItem, InfTemporalEntity, U, UiContext, SysConfig, IAppState } from 'app/core';
 import { PeItCtrlBase } from '../pe-it-ctrl.base';
 import { PeItActions } from '../pe-it.actions';
 import { peItReducer } from '../pe-it.reducer';
@@ -84,10 +84,6 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
       peIt.text_properties = [];
       peIt.domain_entity_associations = [];
 
-      // TODO: create a NamespaceField for explicitly showing the namespace as a field in GUI
-      if (s.peIt.type_namespace_rels) {
-        peIt.type_namespace_rels = s.peIt.type_namespace_rels;
-      }
 
       Object.keys(this.formGroup.controls).forEach(key => {
 

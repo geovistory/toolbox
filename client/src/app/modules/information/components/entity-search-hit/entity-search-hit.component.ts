@@ -1,9 +1,8 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityPreview, IAppState } from 'app/core';
-import { MentionedEntity } from 'app/modules/annotation';
-import { AppellationLabel } from '../../shared/appellation-label';
 import { EntitySearchHit } from '../../containers/list/api/list.models';
+import { MentionedEntity } from '../../containers/mentioning-list/api/mentioning-list.models';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -33,10 +32,6 @@ export class EntitySearchHitComponent implements OnInit {
   @Output() onOpenEntityPreview: EventEmitter<EntityPreview> = new EventEmitter();
   @Output() onSelect: EventEmitter<number> = new EventEmitter();
   @Output() onSelectAsMentioned: EventEmitter<MentionedEntity> = new EventEmitter();
-
-
-  standardAppellationLabel: AppellationLabel;
-  moreAppellationLabels: Array<AppellationLabel> = [];
 
   headlineItems: Array<string> = [];
   isInProject: boolean;

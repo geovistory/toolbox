@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IAppState, InfEntityProjectRel, InfRole, InfTimePrimitive, ValidationService } from 'app/core';
+import { IAppState, ProInfoProjRel, InfRole, InfTimePrimitive, ValidationService } from 'app/core';
 import { ExistenceTimeEdit, ExTimeHelpMode, ExTimeModalMode, PropertyField, PropertyFieldList, TeEntDetail } from 'app/core/state/models';
 import { propertyFieldKey, propertyFieldKeyFromParams, createPropertyField } from 'app/core/state/services/state-creator';
 import { dropLast, union } from 'ramda';
@@ -240,7 +240,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
           if (role.entity_version_project_rels && role.entity_version_project_rels[0]) {
             role.entity_version_project_rels = [{
               calendar: r.entity_version_project_rels[0].calendar
-            } as InfEntityProjectRel]
+            } as ProInfoProjRel]
           }
           role.fk_property = fkProperty;
           break;
@@ -360,7 +360,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
       // change the epr of the roles to remove
       rolesToRemove.forEach(r => {
         if (r) {
-          r.entity_version_project_rels = [new InfEntityProjectRel({ is_in_project: false } as InfEntityProjectRel)];
+          r.entity_version_project_rels = [new ProInfoProjRel({ is_in_project: false } as ProInfoProjRel)];
         }
       });
 

@@ -1,7 +1,6 @@
 /* tslint:disable */
 import {
-  DfhClass,
-  DfhProjRel
+  DfhClass
 } from '../index';
 
 declare var Object: any;
@@ -22,7 +21,6 @@ export interface DfhClassProfileViewInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   persistent_items?: DfhClass;
-  proj_rels?: DfhProjRel[];
 }
 
 export class DfhClassProfileView implements DfhClassProfileViewInterface {
@@ -42,7 +40,6 @@ export class DfhClassProfileView implements DfhClassProfileViewInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   persistent_items?: DfhClass;
-  proj_rels?: DfhProjRel[];
   constructor(data?: DfhClassProfileViewInterface) {
     Object.assign(this, data);
   }
@@ -145,14 +142,6 @@ export class DfhClassProfileView implements DfhClassProfileViewInterface {
           relationType: 'belongsTo',
                   keyFrom: 'dfh_fk_class',
           keyTo: 'dfh_pk_class'
-        },
-        proj_rels: {
-          name: 'proj_rels',
-          type: 'DfhProjRel[]',
-          model: 'DfhProjRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
         },
       }
     }
