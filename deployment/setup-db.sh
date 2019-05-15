@@ -13,8 +13,14 @@ then
     DB_TARGET=$DATABASE_URL;
 fi
 
+if [ $DB_ENV = 'development' ]
+then
+    DB_SOURCE=$GEOV_PROD_DATABASE_URL;
+    DB_TARGET=$DATABASE_URL;
+fi
+
 # Begin the process of data replication, if in review or staging environment
-if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'staging' ]
+if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'staging' ] || [ $DB_ENV = 'development' ]
 then
 
     echo '========================================================================= ';
@@ -22,8 +28,8 @@ then
 
 
     echo 'copy data'
-    echo 'from: '$DB_SOURCE;
-    echo 'copy to: '$DB_TARGET;
+    echo 'from SOURCE: '$DB_SOURCE;
+    echo 'to TARGET: '$DB_TARGET;
     dirPath=`pwd`;
     echo 'dump to: '$dirPath
 
@@ -33,13 +39,13 @@ then
     node dump-source.js $DB_SOURCE $dirPath;
 
 
-    # echo '================= DROP ALL SCHEMAS OF TARGET DB ==========================';
-    # psql $DB_TARGET -f dropSchemas.sql
+    echo '================= DROP ALL SCHEMAS OF TARGET DB ==========================';
+    psql $DB_TARGET -f dropSchemas.sql
 
 
     echo '================= MIGRATE TARGET DB UP TO STATE OF SOURCE ===============';
     latest_migration=`psql $DB_SOURCE -t -c "SELECT trim(leading '/' from name) from public.migrations ORDER BY id DESC LIMIT 1"`
-    echo 'latest migration of staging: '$latest_migration;
+    echo 'latest migration of source: '$latest_migration;
     ../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up $latest_migration;
 
 
