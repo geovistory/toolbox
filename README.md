@@ -6,6 +6,7 @@ Those folders contain the substantial parts of the code
 - /server : node.js server logic
 - /common : some code shared by server and client
 - /client : angular web app
+- /deploy : scripts used for deployment process
 
 ## Server
 
