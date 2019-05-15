@@ -95,7 +95,7 @@ CREATE SCHEMA warehouse;
 -- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS postgis; --WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
 
 
 --
