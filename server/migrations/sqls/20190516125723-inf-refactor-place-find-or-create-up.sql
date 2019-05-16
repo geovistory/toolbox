@@ -48,5 +48,3 @@ AS $BODY$
       END;
       $BODY$;
 
-ALTER FUNCTION information.v_place_find_or_create()
-    OWNER TO postgres;
