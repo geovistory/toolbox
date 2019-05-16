@@ -11,7 +11,6 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DfhClass } from '../../models/DfhClass';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { DfhProperty } from '../../models/DfhProperty';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhTextProperty } from '../../models/DfhTextProperty';
@@ -19,6 +18,7 @@ import { DfhClassProfileView } from '../../models/DfhClassProfileView';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { SysClassField } from '../../models/SysClassField';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
+import { InfPersistentItem } from '../../models/InfPersistentItem';
 
 
 /**

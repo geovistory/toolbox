@@ -58,21 +58,13 @@ import { EmailApi } from './services/custom/Email';
 import { ProProjectApi } from './services/custom/ProProject';
 import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel';
 import { ProTextPropertyApi } from './services/custom/ProTextProperty';
-import { InfAppellationApi } from './services/custom/InfAppellation';
-import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
-import { InfRoleApi } from './services/custom/InfRole';
-import { InfLanguageApi } from './services/custom/InfLanguage';
-import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
 import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
 import { DfhClassApi } from './services/custom/DfhClass';
 import { DfhPropertyApi } from './services/custom/DfhProperty';
 import { DfhLabelApi } from './services/custom/DfhLabel';
 import { DfhTextPropertyApi } from './services/custom/DfhTextProperty';
-import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
 import { DatChunkApi } from './services/custom/DatChunk';
-import { InfEntityAssociationApi } from './services/custom/InfEntityAssociation';
 import { DatDigitalApi } from './services/custom/DatDigital';
-import { InfPlaceApi } from './services/custom/InfPlace';
 import { WarEntityPreviewApi } from './services/custom/WarEntityPreview';
 import { DfhClassProfileViewApi } from './services/custom/DfhClassProfileView';
 import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileView';
@@ -80,8 +72,16 @@ import { SysAppContextApi } from './services/custom/SysAppContext';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
 import { DatNamespaceApi } from './services/custom/DatNamespace';
-import { InfTextPropertyApi } from './services/custom/InfTextProperty';
 import { SysSystemTypeApi } from './services/custom/SysSystemType';
+import { InfAppellationApi } from './services/custom/InfAppellation';
+import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
+import { InfRoleApi } from './services/custom/InfRole';
+import { InfLanguageApi } from './services/custom/InfLanguage';
+import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
+import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
+import { InfEntityAssociationApi } from './services/custom/InfEntityAssociation';
+import { InfPlaceApi } from './services/custom/InfPlace';
+import { InfTextPropertyApi } from './services/custom/InfTextProperty';
 /**
 * @module SDKBrowserModule
 * @description
@@ -122,21 +122,13 @@ export class SDKBrowserModule {
         ProProjectApi,
         PubAccountProjectRelApi,
         ProTextPropertyApi,
-        InfAppellationApi,
-        InfTemporalEntityApi,
-        InfRoleApi,
-        InfLanguageApi,
-        InfPersistentItemApi,
         ProInfoProjRelApi,
         DfhClassApi,
         DfhPropertyApi,
         DfhLabelApi,
         DfhTextPropertyApi,
-        InfTimePrimitiveApi,
         DatChunkApi,
-        InfEntityAssociationApi,
         DatDigitalApi,
-        InfPlaceApi,
         WarEntityPreviewApi,
         DfhClassProfileViewApi,
         DfhPropertyProfileViewApi,
@@ -144,8 +136,16 @@ export class SDKBrowserModule {
         ProClassFieldConfigApi,
         ProDfhClassProjRelApi,
         DatNamespaceApi,
-        InfTextPropertyApi,
         SysSystemTypeApi,
+        InfAppellationApi,
+        InfTemporalEntityApi,
+        InfRoleApi,
+        InfLanguageApi,
+        InfPersistentItemApi,
+        InfTimePrimitiveApi,
+        InfEntityAssociationApi,
+        InfPlaceApi,
+        InfTextPropertyApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

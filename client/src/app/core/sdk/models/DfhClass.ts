@@ -1,13 +1,13 @@
 /* tslint:disable */
 import {
-  InfPersistentItem,
   DfhProperty,
   DfhLabel,
   DfhTextProperty,
   DfhClassProfileView,
   ProClassFieldConfig,
   SysClassField,
-  ProDfhClassProjRel
+  ProDfhClassProjRel,
+  InfPersistentItem
 } from '../index';
 
 declare var Object: any;
@@ -21,7 +21,6 @@ export interface DfhClassInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  persistent_items?: InfPersistentItem[];
   ingoing_properties?: DfhProperty[];
   outgoing_properties?: DfhProperty[];
   labels?: DfhLabel[];
@@ -30,6 +29,7 @@ export interface DfhClassInterface {
   class_field_configs?: ProClassFieldConfig[];
   class_fields?: SysClassField[];
   proj_rels?: ProDfhClassProjRel[];
+  persistent_items?: InfPersistentItem[];
 }
 
 export class DfhClass implements DfhClassInterface {
@@ -42,7 +42,6 @@ export class DfhClass implements DfhClassInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  persistent_items?: InfPersistentItem[];
   ingoing_properties?: DfhProperty[];
   outgoing_properties?: DfhProperty[];
   labels?: DfhLabel[];
@@ -51,6 +50,7 @@ export class DfhClass implements DfhClassInterface {
   class_field_configs?: ProClassFieldConfig[];
   class_fields?: SysClassField[];
   proj_rels?: ProDfhClassProjRel[];
+  persistent_items?: InfPersistentItem[];
   constructor(data?: DfhClassInterface) {
     Object.assign(this, data);
   }
@@ -122,14 +122,6 @@ export class DfhClass implements DfhClassInterface {
         },
       },
       relations: {
-        persistent_items: {
-          name: 'persistent_items',
-          type: 'InfPersistentItem[]',
-          model: 'InfPersistentItem',
-          relationType: 'hasMany',
-                  keyFrom: 'dfh_pk_class',
-          keyTo: 'fk_class'
-        },
         ingoing_properties: {
           name: 'ingoing_properties',
           type: 'DfhProperty[]',
@@ -195,6 +187,14 @@ export class DfhClass implements DfhClassInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
+        },
+        persistent_items: {
+          name: 'persistent_items',
+          type: 'InfPersistentItem[]',
+          model: 'InfPersistentItem',
+          relationType: 'hasMany',
+                  keyFrom: 'dfh_pk_class',
+          keyTo: 'fk_class'
         },
       }
     }
