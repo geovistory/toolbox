@@ -10,9 +10,6 @@
     }
   },
   "properties": {
-    "pk_entity": {
-      "type": "number"
-    },
     "fk_project": {
       "type": "number",
       "required": true

@@ -329,7 +329,9 @@ module.exports = function (InfEntity) {
 
           // persist epr in DB
           newEpr.save()
-            .catch(err => reject(err))
+            .catch(err => {
+              reject(err)
+            })
             .then(resultingEpr => {
               find(resultingEpr.fk_entity);
             });
