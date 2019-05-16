@@ -466,7 +466,7 @@ module.exports = function (InfEntity) {
               if (eprs.length > 0) {
 
                 // add the pk
-                newEpr.pk_entity_version_project_rel = existingEpr.pk_entity_version_project_rel;
+                newEpr.pk_entity = existingEpr.pk_entity;
 
                 // update it in DB
                 return ProInfoProjRel.upsert(newEpr)

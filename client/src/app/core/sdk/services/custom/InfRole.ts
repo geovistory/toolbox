@@ -11,14 +11,14 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfRole } from '../../models/InfRole';
 import { SocketConnection } from '../../sockets/socket.connections';
+import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
+import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
-import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
 import { InfPlace } from '../../models/InfPlace';
-import { WarEntityPreview } from '../../models/WarEntityPreview';
 
 
 /**

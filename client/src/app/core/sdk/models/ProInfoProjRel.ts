@@ -2,7 +2,6 @@
 
 declare var Object: any;
 export interface ProInfoProjRelInterface {
-  "pk_entity_version_project_rel"?: number;
   "pk_entity"?: number;
   "fk_project": number;
   "fk_entity"?: number;
@@ -15,10 +14,13 @@ export interface ProInfoProjRelInterface {
   "tmsp_last_modification"?: string;
   "fk_creator"?: number;
   "fk_last_modifier": number;
+  "entity_version"?: number;
+  "notes"?: string;
+  "tmsp_creation"?: string;
+  "sys_period"?: string;
 }
 
 export class ProInfoProjRel implements ProInfoProjRelInterface {
-  "pk_entity_version_project_rel": number;
   "pk_entity": number;
   "fk_project": number;
   "fk_entity": number;
@@ -31,6 +33,10 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
   "tmsp_last_modification": string;
   "fk_creator": number;
   "fk_last_modifier": number;
+  "entity_version": number;
+  "notes": string;
+  "tmsp_creation": string;
+  "sys_period": string;
   constructor(data?: ProInfoProjRelInterface) {
     Object.assign(this, data);
   }
@@ -62,12 +68,8 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
       name: 'ProInfoProjRel',
       plural: 'ProInfoProjRels',
       path: 'ProInfoProjRels',
-      idName: 'pk_entity_version_project_rel',
+      idName: '',
       properties: {
-        "pk_entity_version_project_rel": {
-          name: 'pk_entity_version_project_rel',
-          type: 'number'
-        },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
@@ -115,6 +117,22 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
         "fk_last_modifier": {
           name: 'fk_last_modifier',
           type: 'number'
+        },
+        "entity_version": {
+          name: 'entity_version',
+          type: 'number'
+        },
+        "notes": {
+          name: 'notes',
+          type: 'string'
+        },
+        "tmsp_creation": {
+          name: 'tmsp_creation',
+          type: 'string'
+        },
+        "sys_period": {
+          name: 'sys_period',
+          type: 'string'
         },
       },
       relations: {

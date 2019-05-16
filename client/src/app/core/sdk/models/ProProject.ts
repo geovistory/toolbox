@@ -2,10 +2,10 @@
 import {
   PubAccount,
   ProTextProperty,
-  InfLanguage,
-  InfPersistentItem,
   ProInfoProjRel,
-  DatNamespace
+  DatNamespace,
+  InfLanguage,
+  InfPersistentItem
 } from '../index';
 
 declare var Object: any;
@@ -14,10 +14,10 @@ export interface ProProjectInterface {
   "fk_language"?: number;
   accounts?: PubAccount[];
   text_properties?: ProTextProperty[];
-  default_language?: InfLanguage;
-  persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: ProInfoProjRel[];
   namespaces?: DatNamespace[];
+  default_language?: InfLanguage;
+  persistent_items?: InfPersistentItem[];
 }
 
 export class ProProject implements ProProjectInterface {
@@ -25,10 +25,10 @@ export class ProProject implements ProProjectInterface {
   "fk_language": number;
   accounts?: PubAccount[];
   text_properties?: ProTextProperty[];
-  default_language?: InfLanguage;
-  persistent_items?: InfPersistentItem[];
   entity_version_project_rels?: ProInfoProjRel[];
   namespaces?: DatNamespace[];
+  default_language?: InfLanguage;
+  persistent_items?: InfPersistentItem[];
   constructor(data?: ProProjectInterface) {
     Object.assign(this, data);
   }
@@ -90,6 +90,22 @@ export class ProProject implements ProProjectInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
+        entity_version_project_rels: {
+          name: 'entity_version_project_rels',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_project'
+        },
+        namespaces: {
+          name: 'namespaces',
+          type: 'DatNamespace[]',
+          model: 'DatNamespace',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_project'
+        },
         default_language: {
           name: 'default_language',
           type: 'InfLanguage',
@@ -106,22 +122,6 @@ export class ProProject implements ProProjectInterface {
           modelThrough: 'ProInfoProjRel',
           keyThrough: 'fk_entity',
           keyFrom: 'pk_entity',
-          keyTo: 'fk_project'
-        },
-        entity_version_project_rels: {
-          name: 'entity_version_project_rels',
-          type: 'ProInfoProjRel[]',
-          model: 'ProInfoProjRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_project'
-        },
-        namespaces: {
-          name: 'namespaces',
-          type: 'DatNamespace[]',
-          model: 'DatNamespace',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
       }

@@ -1,4 +1,4 @@
-SELECT 'SELECT SETVAL(' ||
+SELECT DISTINCT 'SELECT SETVAL(' ||
        quote_literal(quote_ident(PGT.schemaname) || '.' || quote_ident(S.relname)) ||
        ', COALESCE(MAX(' ||quote_ident(C.attname)|| '), 1) ) FROM ' ||
        quote_ident(PGT.schemaname)|| '.'||quote_ident(T.relname)|| ';'
@@ -13,4 +13,4 @@ WHERE S.relkind = 'S'
     AND D.refobjid = C.attrelid
     AND D.refobjsubid = C.attnum
     AND T.relname = PGT.tablename
-ORDER BY S.relname;
+ORDER BY 1;

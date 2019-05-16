@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
-  InfRole,
-  ProInfoProjRel
+  ProInfoProjRel,
+  InfRole
 } from '../index';
 
 declare var Object: any;
@@ -14,8 +14,8 @@ export interface InfAppellationInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  roles?: InfRole[];
   entity_version_project_rels?: ProInfoProjRel[];
+  roles?: InfRole[];
 }
 
 export class InfAppellation implements InfAppellationInterface {
@@ -27,8 +27,8 @@ export class InfAppellation implements InfAppellationInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  roles?: InfRole[];
   entity_version_project_rels?: ProInfoProjRel[];
+  roles?: InfRole[];
   constructor(data?: InfAppellationInterface) {
     Object.assign(this, data);
   }
@@ -96,18 +96,18 @@ export class InfAppellation implements InfAppellationInterface {
         },
       },
       relations: {
-        roles: {
-          name: 'roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_entity'
+        },
+        roles: {
+          name: 'roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

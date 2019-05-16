@@ -42,7 +42,7 @@ export class EprService {
   updateEprOfEntity(entity, epr: ProInfoProjRel) {
     let eprs = entity.entity_version_project_rels;
     for (let i = 0; i < eprs.length; i++) {
-      if (eprs[i].pk_entity_version_project_rel == epr.pk_entity_version_project_rel) {
+      if (eprs[i].pk_entity == epr.pk_entity) {
         eprs[i] = epr;
       }
     }

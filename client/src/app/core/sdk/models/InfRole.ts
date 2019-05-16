@@ -1,13 +1,13 @@
 /* tslint:disable */
 import {
+  ProInfoProjRel,
   InfAppellation,
   InfTemporalEntity,
+  WarEntityPreview,
   InfLanguage,
   InfPersistentItem,
-  ProInfoProjRel,
   InfTimePrimitive,
-  InfPlace,
-  WarEntityPreview
+  InfPlace
 } from '../index';
 
 declare var Object: any;
@@ -27,15 +27,15 @@ export interface InfRoleInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
+  entity_version_project_rels?: ProInfoProjRel[];
   appellation?: InfAppellation;
   temporal_entity?: InfTemporalEntity;
-  language?: InfLanguage;
-  persistent_item?: InfPersistentItem;
-  entity_version_project_rels?: ProInfoProjRel[];
-  time_primitive?: InfTimePrimitive;
-  place?: InfPlace;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
+  language?: InfLanguage;
+  persistent_item?: InfPersistentItem;
+  time_primitive?: InfTimePrimitive;
+  place?: InfPlace;
 }
 
 export class InfRole implements InfRoleInterface {
@@ -54,15 +54,15 @@ export class InfRole implements InfRoleInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
+  entity_version_project_rels?: ProInfoProjRel[];
   appellation?: InfAppellation;
   temporal_entity?: InfTemporalEntity;
-  language?: InfLanguage;
-  persistent_item?: InfPersistentItem;
-  entity_version_project_rels?: ProInfoProjRel[];
-  time_primitive?: InfTimePrimitive;
-  place?: InfPlace;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
+  language?: InfLanguage;
+  persistent_item?: InfPersistentItem;
+  time_primitive?: InfTimePrimitive;
+  place?: InfPlace;
   constructor(data?: InfRoleInterface) {
     Object.assign(this, data);
   }
@@ -158,6 +158,14 @@ export class InfRole implements InfRoleInterface {
         },
       },
       relations: {
+        entity_version_project_rels: {
+          name: 'entity_version_project_rels',
+          type: 'ProInfoProjRel[]',
+          model: 'ProInfoProjRel',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_entity'
+        },
         appellation: {
           name: 'appellation',
           type: 'InfAppellation',
@@ -170,6 +178,22 @@ export class InfRole implements InfRoleInterface {
           name: 'temporal_entity',
           type: 'InfTemporalEntity',
           model: 'InfTemporalEntity',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_temporal_entity',
+          keyTo: 'pk_entity'
+        },
+        persistent_item_preview: {
+          name: 'persistent_item_preview',
+          type: 'WarEntityPreview',
+          model: 'WarEntityPreview',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
+        },
+        temporal_entity_preview: {
+          name: 'temporal_entity_preview',
+          type: 'WarEntityPreview',
+          model: 'WarEntityPreview',
           relationType: 'belongsTo',
                   keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
@@ -190,14 +214,6 @@ export class InfRole implements InfRoleInterface {
                   keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
-        entity_version_project_rels: {
-          name: 'entity_version_project_rels',
-          type: 'ProInfoProjRel[]',
-          model: 'ProInfoProjRel',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
         time_primitive: {
           name: 'time_primitive',
           type: 'InfTimePrimitive',
@@ -212,22 +228,6 @@ export class InfRole implements InfRoleInterface {
           model: 'InfPlace',
           relationType: 'belongsTo',
                   keyFrom: 'fk_entity',
-          keyTo: 'pk_entity'
-        },
-        persistent_item_preview: {
-          name: 'persistent_item_preview',
-          type: 'WarEntityPreview',
-          model: 'WarEntityPreview',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
-          keyTo: 'pk_entity'
-        },
-        temporal_entity_preview: {
-          name: 'temporal_entity_preview',
-          type: 'WarEntityPreview',
-          model: 'WarEntityPreview',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
       }

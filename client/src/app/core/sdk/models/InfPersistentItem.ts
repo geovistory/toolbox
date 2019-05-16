@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
-  InfRole,
   ProInfoProjRel,
+  InfRole,
   DfhClass,
   InfEntityAssociation,
   InfTextProperty
@@ -15,8 +15,8 @@ export interface InfPersistentItemInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  pi_roles?: InfRole[];
   entity_version_project_rels?: ProInfoProjRel[];
+  pi_roles?: InfRole[];
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];
@@ -30,8 +30,8 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
-  pi_roles?: InfRole[];
   entity_version_project_rels?: ProInfoProjRel[];
+  pi_roles?: InfRole[];
   dfh_class?: DfhClass;
   domain_entity_associations?: InfEntityAssociation[];
   range_entity_associations?: InfEntityAssociation[];
@@ -95,18 +95,18 @@ export class InfPersistentItem implements InfPersistentItemInterface {
         },
       },
       relations: {
-        pi_roles: {
-          name: 'pi_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
-        },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_entity'
+        },
+        pi_roles: {
+          name: 'pi_roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'

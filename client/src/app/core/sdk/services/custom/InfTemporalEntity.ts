@@ -11,8 +11,8 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfRole } from '../../models/InfRole';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
+import { InfRole } from '../../models/InfRole';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfTextProperty } from '../../models/InfTextProperty';
 

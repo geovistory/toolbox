@@ -683,7 +683,6 @@ module.exports = function (InfPersistentItem) {
         "joinType": "inner join",
         "select": {
           include: [
-            "pk_entity_version_project_rel",
             "pk_entity",
             "fk_project",
             "fk_entity",
@@ -821,7 +820,6 @@ module.exports = function (InfPersistentItem) {
         "joinType": "inner join",
         "select": {
           include: [
-            "pk_entity_version_project_rel",
             "pk_entity",
             "fk_project",
             "fk_entity",
@@ -923,7 +921,6 @@ module.exports = function (InfPersistentItem) {
         "joinType": "inner join",
         "select": {
           include: [
-            "pk_entity_version_project_rel",
             "pk_entity",
             "fk_project",
             "fk_entity",
@@ -1049,7 +1046,6 @@ module.exports = function (InfPersistentItem) {
         "joinType": "inner join",
         "select": {
           include: [
-            "pk_entity_version_project_rel",
             "pk_entity",
             "fk_project",
             "fk_entity",
