@@ -1,0 +1,1 @@
+DROP TRIGGER on_insert ON information.v_time_primitive;
