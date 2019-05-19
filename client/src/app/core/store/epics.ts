@@ -13,6 +13,8 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { FluxStandardAction } from 'flux-standard-action';
 import { StandardActionsFactory } from './actions';
 import { flatten } from 'ramda';
+import { LoopBackConfig } from 'app/core';
+import { environment } from 'environments/environment';
 
 export function bulkCreateOrReplace<T>(api: (item: T) => Observable<T>): (items: T[]) => Observable<T[]> {
   return (items: T[]) => combineLatest<T>(items.map(item => api(item)))
@@ -112,6 +114,9 @@ export class RootEpics {
     private dfhEpics: DfhEpics,
     private accountEpics: AccountEpics
   ) {
+    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setApiVersion(environment.apiVersion);
+
 
     this.rootEpicStream$ = new BehaviorSubject(combineEpics(
       this.loadingBarEpics.createEpics(),
