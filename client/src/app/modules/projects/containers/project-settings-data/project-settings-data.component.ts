@@ -6,7 +6,7 @@ import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, filter, first, takeWhile, takeUntil } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '../../../../../../node_modules/@angular/animations';
 import { MatSort, MatTableDataSource, Sort, matExpansionAnimations } from '../../../../../../node_modules/@angular/material';
 import { ProDfhClassProjRel } from '../../../../core/sdk/models/ProDfhClassProjRel';
@@ -22,7 +22,7 @@ import { projectSettingsDataReducer } from './api/project-settings-data.reducer'
 @Component({
   selector: 'gv-project-settings-data',
   templateUrl: './project-settings-data.component.html',
-  styleUrls: ['./project-settings-data.component.css'],
+  styleUrls: ['./project-settings-data.component.scss'],
   providers: [HighlightPipe],
   animations: [
     trigger('detailExpand', [
@@ -52,7 +52,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   items$: Observable<ClassConfig[]>;
 
   // columns of the table
-  displayedColumns: string[] = ['enabled', 'label', 'subclassOf', 'dfh_standard_label', 'expansion'];
+  displayedColumns: string[] = [];
 
   // expanded element (row) of the table
   expandedElement: ClassConfig | null;
@@ -85,6 +85,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   selectedStatus: { value: any, label: string } = this.statusOptions[0];
   status$ = new BehaviorSubject<boolean>(undefined);
 
+  // Basic Classes Filter
+  showBasicClasses$ = new BehaviorSubject<boolean>(false);
 
   // Profile Filter
   profileOptions = [
@@ -96,8 +98,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   // Sort Settings
   sorting$ = new BehaviorSubject<Sort>({ active: 'label', direction: 'asc' });
 
-  project: ProjectDetail;
-  projectLabel: string;
+  // project: ProjectDetail;
+  // projectLabel: string;
 
   constructor(
     protected rootEpics: RootEpics,
@@ -106,11 +108,11 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     private highilghtPipe: HighlightPipe,
     private p: ActiveProjectService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     super();
-    this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
-    this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
+    // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
+    // this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
     this.filteredItems$.takeUntil(this.destroy$).subscribe(items => {
       this.dataSource.data = items;
@@ -128,17 +130,17 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     //   if (pk) this.load();
     // })
 
-    this.items$ = this.p.crm$.pipe(map(crm => U.objNr2Arr(crm.classes)))
+    this.items$ = this.p.crm$.pipe(filter((crm) => !!crm.classes), map(crm => U.objNr2Arr(crm.classes)))
 
-    // load the profile Options as soon as the profiles are available
-    this.ngRedux.select<DfhClassProfileView[]>(['activeProject', 'dataSettings', 'profiles']).takeUntil(this.destroy$).subscribe(profiles => {
-      if (profiles) {
-        this.profileOptions = [...this.profileOptions, ...profiles.map((p) => ({
-          value: p.dfh_fk_profile,
-          label: p.dfh_profile_label
-        }))]
-      }
-    })
+    // // load the profile Options as soon as the profiles are available
+    // this.ngRedux.select<DfhClassProfileView[]>(['activeProject', 'dataSettings', 'profiles']).takeUntil(this.destroy$).subscribe(profiles => {
+    //   if (profiles) {
+    //     this.profileOptions = [...this.profileOptions, ...profiles.map((p) => ({
+    //       value: p.dfh_fk_profile,
+    //       label: p.dfh_profile_label
+    //     }))]
+    //   }
+    // })
 
     this.initFilter();
 
@@ -146,6 +148,27 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.dataSource.sort = this.sort;
 
+    this.showBasicClasses$.takeUntil(this.destroy$).subscribe(showBasicClasses => {
+      if (showBasicClasses) this.displayedColumns = [
+        'enabled_in_entities',
+        'required_by_sources',
+        'required_by_basics',
+        'label',
+        'subclassOf',
+        'dfh_standard_label',
+        'subclassOfType',
+        // 'expansion'
+      ];
+      else this.displayedColumns = [
+        'enabled_in_entities',
+        'required_by_sources',
+        'label',
+        'subclassOf',
+        'dfh_standard_label',
+        'subclassOfType',
+        // 'expansion'
+      ];
+    })
   }
 
   ngOnDestroy() {
@@ -162,8 +185,22 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
 
 
-    combineLatest(this.debouncedText$, this.items$, this.subclassOf$, this.status$, this.profile$, this.sorting$).subscribe((d) => {
-      const text = d[0], items = d[1], subclassOf = d[2], status = d[3], profile = d[4], sorting = d[5];
+    combineLatest<any>(
+      this.debouncedText$,
+      this.items$,
+      this.subclassOf$,
+      this.status$,
+      this.profile$,
+      this.sorting$,
+      this.showBasicClasses$
+    ).subscribe((d) => {
+      const text: string = d[0],
+        items: ClassConfig[] = d[1],
+        subclassOf: string = d[2],
+        status: boolean = d[3],
+        profile: number = d[4],
+        sorting: Sort = d[5],
+        showBasicClasses: boolean = d[6];
 
       const sortFn = (a, b) => {
         let nameA;
@@ -185,17 +222,19 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
         const mapped = items.map(i => ({
           ...i,
-          enabled: (!i.projRel ? false : i.projRel.enabled_in_entities),
+          enabled_in_entities: (!i.projRel ? false : i.projRel.enabled_in_entities),
           subclassOf: (i.subclassOf || 'other'),
           dfh_standard_label: i.dfh_standard_label + ' – ' + i.dfh_identifier_in_namespace
         }))
 
         this.filteredItems$.next(
-          (text === '' && subclassOf === undefined && status === undefined && profile === undefined) ?
+          (text === '' && subclassOf === undefined && status === undefined && profile === undefined && showBasicClasses === true) ?
             mapped.sort(sortFn) :
             mapped.filter(item => (
+              // filter for show basic classes
+              (showBasicClasses || !item.required_by_basics)
               // filter for search term
-              (text === '' ||
+              && (text === '' ||
                 (item.label + ' ' + item.dfh_standard_label + ' ' + item.scopeNote)
                   .toLowerCase().indexOf(text.toLowerCase()) > -1)
               // filter for subclassOf
@@ -266,7 +305,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     const projRel = new ProDfhClassProjRel({
       pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
-      fk_project: this.project.pk_project,
+      fk_project: this.p.state.pk_project,
       enabled_in_entities: true
     })
 
@@ -280,7 +319,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     const projRel = new ProDfhClassProjRel({
       pk_entity: classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
-      fk_project: this.project.pk_project,
+      fk_project: this.p.state.pk_project,
       enabled_in_entities: false
     })
 
@@ -293,4 +332,21 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   customizeClass(classItem: ClassConfig) {
     this.router.navigate([classItem.dfh_pk_class], { relativeTo: this.route })
   }
+
+  openControlledVocab(classItem: ClassConfig) {
+    this.p.hasTypeProperties$.pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((hasTypeProperties) => {
+
+      const pkProperty = U.objNr2Arr(hasTypeProperties).find(p => p.pk_type_class === classItem.dfh_pk_class).dfh_pk_property;
+
+      this.p.addTab({
+        active: true,
+        component: 'contr-vocab-settings',
+        icon: 'settings',
+        pathSegment: 'contrVocabSettings',
+        data: { pkProperty }
+      })
+
+    })
+  }
 }
+

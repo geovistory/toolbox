@@ -1,11 +1,13 @@
-<h2>
+<h2 class="px-3 pt-3">
   Classes
 </h2>
-<p>
-  All Classes.
+<p class="px-3">
+  <mat-checkbox (change)="showRemovedClasses$.next(!showRemovedClasses$.value)" [checked]="showRemovedClasses$ | async">
+    Show removed classes (removed from api of all profiles)
+  </mat-checkbox>
 </p>
 
-<table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
+<!-- <table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
   <thead>
     <tr>
       <th scope="col">dfh_pk_class</th>
@@ -17,25 +19,144 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of (tableData$ | async) | keys; trackBy:getKey;">
-      <td>{{item.value.dfh_pk_class}}</td>
-      <td>{{item.value.dfh_standard_label}}</td>
+    <tr *ngFor="let row of (tableData$ | async); trackBy:getKey;">
+      <td>{{row.dfh_pk_class}}</td>
+      <td>{{row.dfh_standard_label}}</td>
       <td>
-        <gv-dfh-label-list-edit [basePath]="['backoffice','classList','items', item.key, 'labels']"
-          [dfhFkClass]="item.value.dfh_pk_class"></gv-dfh-label-list-edit>
+        <span *ngFor="let label of row?.labels">{{label?.dfh_label}}</span>
+        <gv-dfh-label-list-edit [basePath]="['backoffice','classList','rows', row.key, 'labels']"
+          [dfhFkClass]="row.dfh_pk_class"></gv-dfh-label-list-edit>
       </td>
-      <td>{{item.value?.class_profile_view[0]?.dfh_type_label}}</td>
+      <td>{{row?.type}}</td>
 
       <td>
-        <div *ngFor="let i of item.value?.class_profile_view" class="badge mr-1" [ngClass]="{'badge-success': !i.removed_from_api,  'badge-danger': i.removed_from_api }">
+        <div *ngFor="let i of row?.class_profile_view" class="badge mr-1"
+          [ngClass]="{'badge-success': !i.removed_from_api,  'badge-danger': i.removed_from_api }">
           {{i.dfh_profile_label}}: {{i.dfh_profile_association_type}} {{i.removed_from_api ? 'removed from API':''}}
         </div>
       </td>
 
       <td>
-        <a class="nav-link" routerLink="/backoffice/classes/{{item.value.dfh_pk_class}}"
-          routerLinkActive="active">Details</a>
+        <a class="nav-link" routerLink="/backoffice/classes/{{row.dfh_pk_class}}" routerLinkActive="active">Details</a>
       </td>
     </tr>
   </tbody>
+</table> -->
+
+
+<table class="gv-flex-fh" mat-table [dataSource]="tableData$" matSort matSortDisableClear="true" multiTemplateDataRows
+  class="mat-elevation-z1">
+
+  <!-- Checkbox Column -->
+  <!-- <ng-container matColumnDef="enabled_in_entities">
+
+  <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="enabled_in_entities"> In Entities
+  </th>
+
+  <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+    <mat-checkbox (click)="$event.stopPropagation()"
+      (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
+      [checked]="element.enabled_in_entities" [hidden]="element.changingProjRel"
+      *ngIf="!element.excluded_from_entities">
+    </mat-checkbox>
+    <mat-spinner *ngIf="element.changingProjRel" diameter="20" color="accent"></mat-spinner>
+  </td>
+</ng-container> -->
+
+
+  <!-- dfh_pk_class Column -->
+  <ng-container matColumnDef="dfh_pk_class">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="dfh_pk_class"> dfh_pk_class </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element"> {{element.dfh_pk_class}} </td>
+  </ng-container>
+
+  <!-- dfh_standard_label Column -->
+  <ng-container matColumnDef="dfh_standard_label">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="dfh_standard_label"> dfh_standard_label
+    </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element"> {{element.dfh_standard_label}} </td>
+  </ng-container>
+
+  <!-- labels Column -->
+  <ng-container matColumnDef="labels">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="labels"> labels
+    </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <gv-dfh-label-list-edit [dfhFkClass]="element.dfh_pk_class" [comFkSystemType]="classLabelSysType"
+        [infFkLanguage]="infFkLanguage"></gv-dfh-label-list-edit>
+    </td>
+  </ng-container>
+
+
+  <!-- type Column -->
+  <ng-container matColumnDef="type">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="type"> type
+    </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element"> {{element.type}} </td>
+  </ng-container>
+
+  <!-- profiles Column -->
+  <ng-container matColumnDef="profiles">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="profiles"> profiles
+    </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <div *ngFor="let i of element?.profiles" class="badge mr-1"
+        [ngClass]="{'badge-success': !i.removed_from_api,  'badge-danger': i.removed_from_api }">
+        {{i.dfh_profile_label}}: {{i.dfh_profile_association_type}} {{i.removed_from_api ? 'removed from API':''}}
+      </div>
+    </td>
+  </ng-container>
+
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="required_by_basics">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_basics"> Required By
+      Basics </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_basics')"
+        [checked]="element.required_by_basics" [hidden]="element?.pending?.required_by_basics">
+      </mat-checkbox>
+      <mat-spinner *ngIf="element?.pending?.required_by_basics" diameter="20" color="accent"></mat-spinner>
+    </td>
+  </ng-container>
+
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="required_by_sources">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_sources"> Required By
+      Sources </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_sources')"
+        [checked]="element.required_by_sources" [hidden]="element?.pending?.required_by_sources">
+      </mat-checkbox>
+      <mat-spinner *ngIf="element?.pending?.required_by_sources" diameter="20" color="accent"></mat-spinner>
+    </td>
+  </ng-container>
+
+
+
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="required_by_entities">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_entities"> Required By
+      Entities </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_entities')"
+        [checked]="element.required_by_entities" [hidden]="element?.pending?.required_by_entities">
+      </mat-checkbox>
+      <mat-spinner *ngIf="element?.pending?.required_by_entities" diameter="20" color="accent"></mat-spinner>
+    </td>
+  </ng-container>
+
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="excluded_from_entities">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="excluded_from_entities"> Excluded from
+      Entities </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'excluded_from_entities')"
+        [checked]="element.excluded_from_entities" [hidden]="element?.pending?.excluded_from_entities">
+      </mat-checkbox>
+      <mat-spinner *ngIf="element?.pending?.excluded_from_entities" diameter="20" color="accent"></mat-spinner>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+  <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
 </table>

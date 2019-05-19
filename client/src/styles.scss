@@ -1644,6 +1644,9 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 @include gv-sidenav-accordion-theme($app-theme);
 @include gv-sidenav-accordion-typography($gv-typography);
 
+.mat-table thead {
+    background: #f5f5f5;
+}
 
 .mat-text-primary {
     color: mat-color($app-primary);

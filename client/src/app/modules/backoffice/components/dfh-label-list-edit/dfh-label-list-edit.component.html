@@ -1,14 +1,22 @@
-<span *ngIf="!(loading$|async)">
-    <span *ngIf="(items$ | async) != {}">
-        <gv-dfh-label-edit *ngFor="let item of (items$ | async) | keys; trackBy:getKey;" [basePath]="basePath.concat('items').concat(item.key)"
-            (delete)="delete($event)"></gv-dfh-label-edit>
+<span *ngIf="!loading">
+    <!-- <gv-dfh-label-edit *ngFor="let item of (items$ | async); trackBy:getKey;"
+            (delete)="delete($event)"></gv-dfh-label-edit> -->
+    <span *ngFor="let item of (items$ | async)" (click)="startEditing(item.pk_entity)">
+        <span *ngIf="!item.editing"> {{item?.dfh_label}}</span>
+    </span>
+    <span *ngFor="let item of (items$ | async)">
+        <gv-dfh-label-create *ngIf="item.editing" (create)="upsert($event)"  (delete)="delete($event)"
+            (cancel)="stopEditing(item.pk_entity)" [label]="item" [dfhFkProperty]="dfhFkProperty"
+            [dfhFkClass]="dfhFkClass" [infFkLanguage]="infFkLanguage" [comFkSystemType]="comFkSystemType">
+        </gv-dfh-label-create>
     </span>
     
-    <gv-dfh-label-create *ngIf="(creating$ | async)" (create)="onCreate($event)" (cancel)="stopCreate()" [dfhFkProperty]="dfhFkProperty" [dfhFkClass]="dfhFkClass"
-        [infFkLanguage]="(infFkLanguage$|async)" [comFkSystemType]="(comFkSystemType$|async)"></gv-dfh-label-create>
-    
-    <button class="btn btn-sm btn-link text-muted" *ngIf="!((items$ | async) | keys).length && !(creating$ | async)"
-        (click)="startCreate()"><i class="fa fa-plus"></i></button>
+    <gv-dfh-label-create *ngIf="creating" (create)="upsert($event)" (cancel)="creating = false"
+        [dfhFkProperty]="dfhFkProperty" [dfhFkClass]="dfhFkClass" [infFkLanguage]="infFkLanguage"
+        [comFkSystemType]="comFkSystemType"></gv-dfh-label-create>
+
+    <button class="btn btn-sm btn-link text-muted" *ngIf="!(items$ | async).length && !creating"
+        (click)="creating = true"><i class="fa fa-plus"></i></button>
 </span>
 
-<span *ngIf="(loading$|async)" class="fa fa-pulse fa-spinner"></span>
+<span *ngIf="loading" class="fa fa-pulse fa-spinner"></span>

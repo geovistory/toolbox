@@ -208,6 +208,8 @@ export interface ClassConfig {
 
     subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
 
+    subclassOfType?: boolean; // true if subclass of E55 Type
+
     scopeNote: string;
 
     dfh_identifier_in_namespace: string;
@@ -216,6 +218,11 @@ export interface ClassConfig {
     uiContexts?: {
         [pk: number]: UiContext
     }
+
+    required_by_sources?: boolean
+    required_by_entities?: boolean
+    required_by_basics?: boolean
+    excluded_from_entities?: boolean
 }
 
 export interface UiContext extends SysAppContextInterface {

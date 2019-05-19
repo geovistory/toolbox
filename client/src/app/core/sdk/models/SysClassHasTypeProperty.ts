@@ -5,22 +5,12 @@ export interface SysClassHasTypePropertyInterface {
   "fk_class"?: number;
   "fk_property"?: number;
   "pk_entity"?: number;
-  "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
 }
 
 export class SysClassHasTypeProperty implements SysClassHasTypePropertyInterface {
   "fk_class": number;
   "fk_property": number;
   "pk_entity": number;
-  "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   constructor(data?: SysClassHasTypePropertyInterface) {
     Object.assign(this, data);
   }
@@ -65,26 +55,6 @@ export class SysClassHasTypeProperty implements SysClassHasTypePropertyInterface
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
-        },
-        "entity_version": {
-          name: 'entity_version',
-          type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

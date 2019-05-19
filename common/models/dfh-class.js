@@ -61,8 +61,8 @@ module.exports = function (DfhClass) {
 
   /** 
    * Query classes 
-   * where:
-   * - they are are selected (and thus not inferred)
+   * 
+   * Of a specific profile. If no profile specified, retrieves all classes.
    * 
    * include:
    * - text_properties
@@ -80,30 +80,30 @@ module.exports = function (DfhClass) {
             "name": "class_profile_view",
             "joinType": "inner join",
             "where": [
-              // "dfh_profile_association_type", "=", "selected",
               ...(dfh_pk_profile ? ["and", "dfh_fk_profile", "=", dfh_pk_profile] : [])
             ],
             "orderBy": [{
               "pk_entity": "asc"
             }]
           }
-        },
-        "text_properties": {
-          "$relation": {
-            "name": "text_properties",
-            "joinType": "left join"
-          }
-        },
-        labels: {
-          "$relation": {
-            "name": "labels",
-            "joinType": "left join",
-            select: { include: ["dfh_label", "inf_fk_language", "pk_entity", "com_fk_system_type"] },
-            "where": [
-              "com_fk_system_type", "IN", [Config.CLASS_LABEL]
-            ]
-          }
         }
+        // },
+        // "text_properties": {
+        //   "$relation": {
+        //     "name": "text_properties",
+        //     "joinType": "left join"
+        //   }
+        // },
+        // labels: {
+        //   "$relation": {
+        //     "name": "labels",
+        //     "joinType": "left join",
+        //     select: { include: ["dfh_label", "inf_fk_language", "pk_entity", "com_fk_system_type"] },
+        //     "where": [
+        //       "com_fk_system_type", "IN", [Config.CLASS_LABEL]
+        //     ]
+        //   }
+        // }
       }
     }
 

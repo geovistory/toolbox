@@ -1,73 +1,61 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, DfhLabel } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
-import { DfhLabelListEdit } from './api/dfh-label-list-edit.models';
-import { DfhLabelListEditAPIEpics } from './api/dfh-label-list-edit.epics';
-import { DfhLabelListEditAPIActions } from './api/dfh-label-list-edit.actions';
-import { dfhLabelListEditReducer } from './api/dfh-label-list-edit.reducer';
-import { indexBy } from 'ramda';
-import { pkEntityKey } from 'app/core/state/services/state-creator';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { DfhLabel, U } from 'app/core';
+import { DfhService } from 'app/core/dfh/dfh.service';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { ByPk } from '../../../../core/store/model';
 
-export const createDfhLabelListEdit = (dfhLabels: DfhLabel[], comFkSystemType: number, infFkLanguage: number): DfhLabelListEdit => ({
-  items: !dfhLabels ? undefined : indexBy(pkEntityKey, dfhLabels),
-  comFkSystemType,
-  infFkLanguage
-})
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: dfhLabelListEditReducer
-})
+
+export interface DfhLabelEdit extends DfhLabel {
+  editing: boolean
+}
+
 @Component({
   selector: 'gv-dfh-label-list-edit',
   templateUrl: './dfh-label-list-edit.component.html',
   styleUrls: ['./dfh-label-list-edit.component.css']
 })
-export class DfhLabelListEditComponent extends DfhLabelListEditAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class DfhLabelListEditComponent implements OnInit, OnDestroy {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // local store of this component
-  localStore: ObservableStore<DfhLabelListEdit>;
-
-  // path to the substore
-  @Input() basePath: string[];
   @Input() dfhFkProperty: number;
   @Input() dfhFkClass: number;
+  @Input() infFkLanguage?: number;
+  @Input() comFkSystemType?: number;
 
-  @select() infFkLanguage$: Observable<number>;
-  @select() comFkSystemType$: Observable<number>;
+  creating: boolean;
+  loading: boolean;
+  items$: Observable<DfhLabelEdit[]>;
 
-  // select observables of substore properties
-  @select() creating$: Observable<boolean>;
-  @select() loading$: Observable<boolean>;
-  @select() items$: Observable<{}>;
-
-  // Since we're observing an array of items, we need to set up a 'trackBy'
-  // parameter so Angular doesn't tear down and rebuild the list's DOM every
-  // time there's an update.
-  getKey(_, item) {
-    return _;
-  }
+  editing$ = new BehaviorSubject<{ [key: string]: boolean }>({});
 
 
-  constructor(
-    protected rootEpics: RootEpics,
-    private epics: DfhLabelListEditAPIEpics,
-    protected ngRedux: NgRedux<IAppState>
-  ) {
-    super()
-  }
+  constructor(private dfhService: DfhService) { }
 
-  getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, dfhLabelListEditReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+    if (!this.infFkLanguage || !this.comFkSystemType) throw Error('You must provide infFkLanguage and comFkSystemType')
 
+    if (this.dfhFkClass) {
+
+      this.items$ = this.pipeItems(this.dfhService.label$.by_dfh_fk_class$, this.dfhFkClass);
+
+    } else if (this.dfhFkProperty) {
+
+      this.items$ = this.pipeItems(this.dfhService.label$.by_dfh_fk_property$, this.dfhFkProperty);
+
+    }
+  }
+
+  private pipeItems(selector: Observable<ByPk<ByPk<DfhLabel>>>, key: number): Observable<DfhLabelEdit[]> {
+    return combineLatest(selector, this.editing$).pipe(map(([labelsByClass, editing]) => U.obj2Arr(labelsByClass[key])
+      .filter(label => (label.com_fk_system_type === this.comFkSystemType && label.inf_fk_language === this.infFkLanguage))
+      .map(label => ({
+        ...label, editing: editing[label.pk_entity]
+      }))));
   }
 
   ngOnDestroy() {
@@ -76,8 +64,30 @@ export class DfhLabelListEditComponent extends DfhLabelListEditAPIActions implem
     this.destroy$.unsubscribe();
   }
 
-  onCreate(label: DfhLabel) {
-    this.create(label);
+
+
+
+  upsert(label: DfhLabel) {
+    this.dfhService.label.upsert([label]).pipe(takeUntil(this.destroy$)).subscribe((pending) => {
+      if (pending) this.loading = true;
+      else this.loading = false
+    });
+  }
+
+  delete(label: DfhLabel) {
+    this.dfhService.label.delete([label]).pipe(takeUntil(this.destroy$)).subscribe((pending) => {
+      if (pending) this.loading = true;
+      else this.loading = false
+    });
+  }
+
+
+  startEditing(pk_entity) {
+    this.editing$.next({ ...this.editing$.value, [pk_entity]: true });
+  }
+
+  stopEditing(pk_entity) {
+    this.editing$.next({ ...this.editing$.value, [pk_entity]: false });
   }
 
 }

@@ -1,0 +1,84 @@
+{
+  "name": "SysSystemRelevantClass",
+  "base": "SysEntity",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "system",
+      "table": "system_relevant_class"
+    }
+  },
+  "properties": {
+    "fk_class": {
+      "type": "number"
+    },
+    "required_by_entities": {
+      "type": "boolean"
+    },
+    "required_by_sources": {
+      "type": "boolean"
+    },
+    "required_by_basics": {
+      "type": "boolean"
+    },
+    "excluded_from_entities": {
+      "type": "boolean"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "bulkReplaceOrCreate"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {
+    "bulkReplaceOrCreate": {
+      "accepts": [
+        {
+          "arg": "data",
+          "type": [
+            "SysSystemRelevantClass"
+          ],
+          "required": true,
+          "description": "Array of SysSystemRelevantClass",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SysSystemRelevantClass"
+        ],
+        "root": true
+      },
+      "description": "Replace or create all items in the array.",
+      "http": {
+        "path": "/bulk-replace-or-create",
+        "verb": "post"
+      }
+    }
+  }
+}

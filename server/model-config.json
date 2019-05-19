@@ -26,6 +26,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "SysSystemRelevantClass": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "ProQuery": {
     "dataSource": "postgres1",
     "public": true

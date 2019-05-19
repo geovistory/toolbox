@@ -7,6 +7,7 @@ import { Observable, Subject, BehaviorSubject, combineLatest, zip } from 'rxjs';
 import { first, take, map, takeUntil } from 'rxjs/operators';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
 import { MatDrawer } from '@angular/material';
+import { SystemService } from '../../../../core/system/system.service';
 
 
 export interface TabBody extends Tab {
@@ -113,11 +114,10 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
   constructor(
     public p: ActiveProjectService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private activatedRoute: ActivatedRoute
   ) {
 
-    const id = activatedRoute.snapshot.params['pkActiveProject'];
+    const id = this.activatedRoute.snapshot.params['pkActiveProject'];
 
     this.p.initProject(id);
     this.p.initProjectCrm(id);

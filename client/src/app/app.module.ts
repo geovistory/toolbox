@@ -15,7 +15,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ActiveAccountService, AuthGuard, EntityEditorService, SDKBrowserModule, ValidationDirectivesModule } from './core';
+import { ActiveAccountService, AuthGuard, EntityEditorService, SDKBrowserModule, ValidationDirectivesModule, LoopBackConfig } from './core';
 import { SystemAdminGuard } from './core/auth/system-admin-guard.service';
 import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
 import { NotificationsModule } from './core/notifications/notifications.module';
@@ -29,6 +29,7 @@ import { KeysModule } from './shared/pipes/keys.module';
 import { AngularSplitModule } from 'angular-split';
 import { MccColorPickerModule } from 'material-community-components';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material';
+import { SystemModule } from './core/system/system.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -46,9 +47,12 @@ registerLocaleData(localeDeCh);
     AppComponent
   ],
   imports: [
+    StoreModule,
+    NotificationsModule,
+    LoadingBarModule,
+    SystemModule,
     NgReduxRouterModule,
     NgReduxModule,
-    StoreModule,
     SDKBrowserModule.forRoot(),
     NgbModule.forRoot(),
     ElasticInputModule.forRoot(),
@@ -59,8 +63,6 @@ registerLocaleData(localeDeCh);
     SocketIoModule.forRoot(socketConfig),
     AngularSplitModule.forRoot(),
     MccColorPickerModule.forRoot({}),
-    NotificationsModule,
-    LoadingBarModule,
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
@@ -93,4 +95,9 @@ registerLocaleData(localeDeCh);
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(){
+    LoopBackConfig.setBaseURL(environment.baseUrl);
+    LoopBackConfig.setApiVersion(environment.apiVersion);
+  }
+}

@@ -9,7 +9,11 @@
       "table": "system_type"
     }
   },
-  "properties": {},
+  "properties": {
+    "notes": {
+      "type": "string"
+    }
+  },
   "validations": [],
   "relations": {},
   "acls": [

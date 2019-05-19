@@ -8,6 +8,7 @@ var include = [
   "ProProject",
   "ProQuery",
   "DfhClass",
+  "DfhLabel",
   "DfhClassProfileView",
   "DfhProperty",
   "DfhPropertyProfileView",

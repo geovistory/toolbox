@@ -5,15 +5,26 @@ import { Backoffice } from '../../modules/backoffice/backoffice.models';
 import { IProjectList } from '../../modules/projects/projects.model';
 import { ISourceListState } from '../../modules/sources';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
+import { System } from '../system/system.models';
+import { Dfh } from '../dfh/dfh.models';
 
 export interface IAppState {
     account?: IAccount,
     backoffice?: Backoffice,
     loadingBar?: LoadingBar,
     projects?: IProjectList
+    system?: System
+    dfh?: Dfh
     activeProject?: ProjectDetail
     routes?: any,
     information?: Information,
     sources?: ISourceListState,
-    sandboxState?: any
+    sandboxState?: any,
+    pending?: ByPk<string>
 }
+
+// generic interfaces used by different store modules
+export interface ByPk<T> {
+    [pk: string]: T
+}
+

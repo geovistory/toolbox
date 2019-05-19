@@ -80,14 +80,78 @@
     },
     {
       "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "findComplex"
+      ]
+    },
+    {
+      "principalType": "ROLE",
       "principalId": "system_admin",
       "permission": "ALLOW",
       "property": [
+        "bulkReplaceOrCreate",
+        "bulkDelete",
         "patchAttributes",
-        "create",
-        "deleteById"
+        "create"
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "bulkReplaceOrCreate": {
+      "accepts": [
+        {
+          "arg": "data",
+          "type": [
+            "DfhLabel"
+          ],
+          "required": true,
+          "description": "Array of DfhLabel",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhLabel"
+        ],
+        "root": true
+      },
+      "description": "Replace or create all items in the array.",
+      "http": {
+        "path": "/bulk-replace-or-create",
+        "verb": "post"
+      }
+    },
+    "bulkDelete": {
+      "accepts": [
+        {
+          "arg": "data",
+          "type": [
+            "DfhLabel"
+          ],
+          "required": true,
+          "description": "Array of DfhLabel",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhLabel"
+        ],
+        "root": true
+      },
+      "description": "Delete all items in the array.",
+      "http": {
+        "path": "/bulk-delete",
+        "verb": "post"
+      }
+    }
+  }
 }

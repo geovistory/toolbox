@@ -14,7 +14,8 @@
   </div>
 </div>
 
-<ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns" [summaryTemplate]="summaryTemplateRef">
+<ngx-table [configuration]="tableConfiguration" [data]="data" [columns]="columns"
+  [summaryTemplate]="summaryTemplateRef">
   <ng-template let-row let-index="index">
     <td *ngIf="checked.has('dfh_has_domain')">
       {{row.dfh_has_domain}}
@@ -47,17 +48,19 @@
       {{row.dfh_range_instances_min_quantifier}}
     </td>
     <td *ngIf="checked.has('gui_label_sg')">
-      <gv-dfh-label-list-edit [basePath]="['backoffice','propertiesList','items', row.key, 'label_sg']" [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
+      <gv-dfh-label-list-edit [comFkSystemType]="config.PROPERTY_LABEL_SG" [infFkLanguage]="18889"
+        [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
     <td *ngIf="checked.has('gui_label_pl')">
-      <gv-dfh-label-list-edit [basePath]="['backoffice','propertiesList','items', row.key, 'label_pl']" [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
+      <gv-dfh-label-list-edit [comFkSystemType]="config.PROPERTY_LABEL_PL" [infFkLanguage]="18889"
+        [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
     <td *ngIf="checked.has('gui_label_sg_inv')">
-      <gv-dfh-label-list-edit [basePath]="['backoffice','propertiesList','items', row.key, 'label_inversed_sg']"
+      <gv-dfh-label-list-edit [comFkSystemType]="config.PROPERTY_LABEL_INVERSED_SG" [infFkLanguage]="18889"
         [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
     <td *ngIf="checked.has('gui_label_pl_inv')">
-      <gv-dfh-label-list-edit [basePath]="['backoffice','propertiesList','items', row.key, 'label_inversed_pl']"
+      <gv-dfh-label-list-edit [comFkSystemType]="config.PROPERTY_LABEL_INVERSED_PL" [infFkLanguage]="18889"
         [dfhFkProperty]="row.dfh_pk_property"></gv-dfh-label-list-edit>
     </td>
     <td *ngIf="checked.has('identity_defining')" [ngClass]="{'bg-success': row.identity_defining}">

@@ -51,6 +51,7 @@ import { RealTime } from './services/core/real.time';
 import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldPropertyRel';
 import { SysClassFieldApi } from './services/custom/SysClassField';
 import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
+import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
 import { ProQueryApi } from './services/custom/ProQuery';
 import { ProVisualApi } from './services/custom/ProVisual';
 import { PubAccountApi } from './services/custom/PubAccount';
@@ -115,6 +116,7 @@ export class SDKBrowserModule {
         SysClassFieldPropertyRelApi,
         SysClassFieldApi,
         SysClassHasTypePropertyApi,
+        SysSystemRelevantClassApi,
         ProQueryApi,
         ProVisualApi,
         PubAccountApi,
