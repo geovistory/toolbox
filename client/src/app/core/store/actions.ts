@@ -16,17 +16,19 @@ export class StandardActionsFactory<Payload, Model> {
   loadSucceeded: (items: Model[], removePending: string) => void;
   upsert: (items: Model[]) => Observable<boolean>;
   upsertSucceeded: (items: Model[], removePending: string) => void;
+  delete: (items: Model[]) => Observable<boolean>;
+  deleteSucceeded: (items: Model[], removePending: string) => void;
   failed: (error, removePending: string) => void;
 
   actionPrefix: string;
   modelName: string;
 
-  constructor(private ngRedux: NgRedux<IAppState>, actionPrefix: string, modelName: string) {
-    this.actionPrefix = actionPrefix;
-    this.modelName = modelName;
+  constructor(private ngRedux: NgRedux<IAppState>) {
   }
 
-  createActions() {
+  createCrudActions(actionPrefix: string, modelName: string) {
+    this.actionPrefix = actionPrefix;
+    this.modelName = modelName;
 
     this.load = (suffix: string = '') => {
       const action: FluxStandardAction<Payload, { addPending: string }> = {
@@ -46,16 +48,9 @@ export class StandardActionsFactory<Payload, Model> {
       this.ngRedux.dispatch(action)
     }
 
-    this.failed = (error, removePending: string) => {
-      const action: FluxStandardAction<Payload, { items: Model[], removePending: string }> = ({
-        type: this.actionPrefix + '.' + this.modelName + '::FAILED',
-        meta: null,
-        payload: null,
-        error,
-      })
-      this.ngRedux.dispatch(action)
-    }
-
+    /**
+     * Call the Redux Action to upsert model instances.
+     */
     this.upsert = (items: Model[]) => {
       const addPending = U.uuid();
       const action: FluxStandardAction<Payload, { items: Model[], addPending: string }> = ({
@@ -72,6 +67,41 @@ export class StandardActionsFactory<Payload, Model> {
         type: this.actionPrefix + '.' + this.modelName + '::UPSERT_SUCCEEDED',
         meta: { items, removePending },
         payload: null
+      })
+      this.ngRedux.dispatch(action)
+    }
+
+    /**
+    * Call the Redux Action to delete model instances.
+    */
+    this.delete = (items: Model[]) => {
+      const addPending = U.uuid();
+      const action: FluxStandardAction<Payload, { items: Model[], addPending: string }> = ({
+        type: this.actionPrefix + '.' + this.modelName + '::DELETE',
+        meta: { items, addPending },
+        payload: null
+      })
+      this.ngRedux.dispatch(action)
+      return this.ngRedux.select(['pending', addPending]);
+    }
+
+    this.deleteSucceeded = (items: Model[], removePending: string) => {
+      const action: FluxStandardAction<Payload, { items: Model[], removePending: string }> = ({
+        type: this.actionPrefix + '.' + this.modelName + '::DELETE_SUCCEEDED',
+        meta: { items, removePending },
+        payload: null
+      })
+      this.ngRedux.dispatch(action)
+    }
+
+
+
+    this.failed = (error, removePending: string) => {
+      const action: FluxStandardAction<Payload, { items: Model[], removePending: string }> = ({
+        type: this.actionPrefix + '.' + this.modelName + '::FAILED',
+        meta: null,
+        payload: null,
+        error,
       })
       this.ngRedux.dispatch(action)
     }

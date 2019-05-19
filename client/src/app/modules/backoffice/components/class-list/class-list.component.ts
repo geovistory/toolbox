@@ -1,16 +1,11 @@
-import { NgRedux } from '@angular-redux/store';
-import { Component, OnDestroy, OnInit, HostBinding } from '@angular/core';
-import { DfhClassProfileView, DfhLabel, IAppState, U, SysSystemRelevantClass } from 'app/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { DfhClassProfileView, DfhLabel, SysConfig, SysSystemRelevantClass, U } from 'app/core';
 import { DfhService } from 'app/core/dfh/dfh.service';
-import { RootEpics } from 'app/core/store/epics';
 import { SystemService } from 'app/core/system/system.service';
-import { combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
+import { omit, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { DfhActions } from '../../../../core/dfh/dfh.actions';
-import { ClassListAPIActions } from './api/class-list.actions';
-import { ClassListAPIEpics } from './api/class-list.epics';
-import { MatTableDataSource } from '@angular/material';
-import { values, omit } from 'ramda';
 
 interface TableRow {
   dfh_pk_class: number,
@@ -31,7 +26,7 @@ interface TableRow {
   templateUrl: './class-list.component.html',
   styleUrls: ['./class-list.component.scss']
 })
-export class ClassListComponent extends ClassListAPIActions implements OnInit, OnDestroy {
+export class ClassListComponent  implements OnInit, OnDestroy {
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @HostBinding('class.gv-scroll-y-auto') scY = true;
@@ -61,12 +56,14 @@ export class ClassListComponent extends ClassListAPIActions implements OnInit, O
 
   showRemovedClasses$ = new BehaviorSubject<boolean>(false);
 
+  classLabelSysType = SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS;
+  infFkLanguage = 18889;
+  
   constructor(
     private dfhService: DfhService,
     private dfhActions: DfhActions,
     private sysService: SystemService
   ) {
-    super()
 
     this.dfhActions.klass.load();
     this.dfhActions.label.load('CLASS_LABELS');
@@ -84,36 +81,31 @@ export class ClassListComponent extends ClassListAPIActions implements OnInit, O
       map(([classes, lablesByClass, sysRelClasses, pendingRows, showRemovedClasses]) => {
 
         return U.obj2Arr(classes)
-        .filter((c) => {
-          if(showRemovedClasses) return true;
-          else if(c.class_profile_view.find(cpv => cpv.removed_from_api === false)) return true;
-          else return false;
-        })
-        .map(c => {
-          const systemRelevantClass = U.firstItemInIndexedGroup(sysRelClasses, c.dfh_pk_class);
-          const row: TableRow = {
-            dfh_pk_class: c.dfh_pk_class,
-            dfh_standard_label: c.dfh_standard_label,
-            profiles: c.class_profile_view,
-            labels: values(lablesByClass[c.dfh_pk_class]),
-            type: !c.class_profile_view ? '' : c.class_profile_view[0].dfh_type_label,
-            required_by_sources: !systemRelevantClass ? false : systemRelevantClass.required_by_sources,
-            required_by_basics: !systemRelevantClass ? false : systemRelevantClass.required_by_basics,
-            excluded_from_entities: !systemRelevantClass ? false : systemRelevantClass.excluded_from_entities,
-            required_by_entities: !systemRelevantClass ? false : systemRelevantClass.required_by_entities,
-            systemRelevantClass,
-            pending: pendingRows[c.dfh_pk_class]
-          }
-          return row;
-        })
+          .filter((c) => {
+            if (showRemovedClasses) return true;
+            else if (c.class_profile_view.find(cpv => cpv.removed_from_api === false)) return true;
+            else return false;
+          })
+          .map(c => {
+            const systemRelevantClass = U.firstItemInIndexedGroup(sysRelClasses, c.dfh_pk_class);
+            const row: TableRow = {
+              dfh_pk_class: c.dfh_pk_class,
+              dfh_standard_label: c.dfh_standard_label,
+              profiles: c.class_profile_view,
+              labels: values(lablesByClass[c.dfh_pk_class]),
+              type: !c.class_profile_view ? '' : c.class_profile_view[0].dfh_type_label,
+              required_by_sources: !systemRelevantClass ? false : systemRelevantClass.required_by_sources,
+              required_by_basics: !systemRelevantClass ? false : systemRelevantClass.required_by_basics,
+              excluded_from_entities: !systemRelevantClass ? false : systemRelevantClass.excluded_from_entities,
+              required_by_entities: !systemRelevantClass ? false : systemRelevantClass.required_by_entities,
+              systemRelevantClass,
+              pending: pendingRows[c.dfh_pk_class]
+            }
+            return row;
+          })
 
-      })    
+      })
     )
-
-    // this.tableData$.takeUntil(this.destroy$).subscribe(items => {
-    //   this.dataSource.data = items;
-    // })
-
   }
 
 

@@ -25,7 +25,7 @@ export class SystemEpics {
 
       // SystemRelevantClass Loaders
       systemRelevantClassEpicsFactory.createLoadEpic(this.sysRelevantClassApi.find(), ''),
-      systemRelevantClassEpicsFactory.createUpsertEpic((items) => this.sysRelevantClassApi.bulkReplaceOrCreate(items), '')
+      systemRelevantClassEpicsFactory.createUpsertEpic((items) => this.sysRelevantClassApi.bulkReplaceOrCreate(items))
 
     );
   }

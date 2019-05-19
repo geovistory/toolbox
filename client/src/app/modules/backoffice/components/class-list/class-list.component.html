@@ -44,8 +44,8 @@
 </table> -->
 
 
-<table class="gv-flex-fh" mat-table [dataSource]="tableData$" matSort matSortDisableClear="true"
-  (matSortChange)="sortData($event)" multiTemplateDataRows class="mat-elevation-z1">
+<table class="gv-flex-fh" mat-table [dataSource]="tableData$" matSort matSortDisableClear="true" multiTemplateDataRows
+  class="mat-elevation-z1">
 
   <!-- Checkbox Column -->
   <!-- <ng-container matColumnDef="enabled_in_entities">
@@ -82,9 +82,8 @@
     <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="labels"> labels
     </th>
     <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-      <span *ngFor="let label of element?.labels">{{label?.dfh_label}}</span>
-      <!-- <gv-dfh-label-list-edit [basePath]="['backoffice','classList','rows', row.key, 'labels']"
-              [dfhFkClass]="row.dfh_pk_class"></gv-dfh-label-list-edit> -->
+      <gv-dfh-label-list-edit [dfhFkClass]="element.dfh_pk_class" [comFkSystemType]="classLabelSysType"
+        [infFkLanguage]="infFkLanguage"></gv-dfh-label-list-edit>
     </td>
   </ng-container>
 

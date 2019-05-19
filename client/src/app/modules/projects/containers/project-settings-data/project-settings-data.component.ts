@@ -22,7 +22,7 @@ import { projectSettingsDataReducer } from './api/project-settings-data.reducer'
 @Component({
   selector: 'gv-project-settings-data',
   templateUrl: './project-settings-data.component.html',
-  styleUrls: ['./project-settings-data.component.css'],
+  styleUrls: ['./project-settings-data.component.scss'],
   providers: [HighlightPipe],
   animations: [
     trigger('detailExpand', [

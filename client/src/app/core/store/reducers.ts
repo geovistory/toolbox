@@ -4,7 +4,7 @@ import { createAccountReducer } from 'app/modules/account/api/account.reducers';
 import { informationReducer } from 'app/modules/information/containers/information/api/information.reducer';
 import { sourceListReducer } from 'app/modules/sources/containers/source-list/api/source-list.reducer';
 import { FluxStandardAction } from 'flux-standard-action';
-import { indexBy, omit, groupBy, mergeDeepRight, values } from 'ramda';
+import { indexBy, omit, groupBy, mergeDeepRight, values, clone } from 'ramda';
 import { combineReducers } from 'redux';
 import { backofficeReducer } from '../../modules/backoffice/backoffice.reducer';
 import { createProjectsReducer } from '../../modules/projects/api/projects.reducers';
@@ -20,12 +20,10 @@ interface StandardReducerConfig {
     keyInStore: string;
     indexByFn: (item) => string;
   },
-  groupBy?: [
-    {
-      keyInStore: string;
-      groupByFn: (item) => string;
-    }
-  ]
+  groupBy?: {
+    keyInStore: string;
+    groupByFn: (item) => string;
+  }[]
 }
 
 /**
@@ -76,6 +74,49 @@ export class StandardReducerFactory<Payload, Model> {
           }
           break;
 
+        case actionPrefix + '.' + modelName + '::DELETE':
+          state = {
+            ...state,
+            [this.deletingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
+          };
+          break;
+
+        case actionPrefix + '.' + modelName + '::DELETE_SUCCEEDED':
+
+          const iKey = this.by(config.indexBy.keyInStore);
+          const keysToOmit = action.meta.items.map(item => config.indexBy.indexByFn(item))
+          state = {
+            ...state,
+            [iKey]: omit(keysToOmit, state[iKey])
+          };
+
+          if (config.groupBy && config.groupBy.length) {
+            config.groupBy.forEach(i => {
+              const gkey = this.by(i.keyInStore);
+              const g = {};
+              action.meta.items.forEach(item => { try { g[i.groupByFn(item)] = true } catch (e) { } })
+              const groupsToClean = Object.keys(g);
+              const gKey = clone(state[gkey])
+              groupsToClean.forEach(group => {
+                gKey[group] = omit(keysToOmit, gKey[group]);
+                if (!Object.keys(gKey[group]).length) delete gKey[group];
+              })
+              state = {
+                ...state,
+                [gkey]: gKey
+              };
+            });
+          }
+
+          const deletingKey = this.deletingBy(config.indexBy.keyInStore)
+          state = {
+            ...state,
+            [deletingKey]: omit(values(this.indexKeyObject(action, config)), state[this.deletingBy(config.indexBy.keyInStore)])
+          }
+          if (!Object.keys(state[deletingKey]).length) state = omit([deletingKey], state);
+
+          break;
+
         case actionPrefix + '.' + modelName + '::FAILED':
 
 
@@ -95,6 +136,7 @@ export class StandardReducerFactory<Payload, Model> {
 
   by = (name: string) => 'by_' + name;
   updatingBy = (name: string) => 'updating_' + this.by(name);
+  deletingBy = (name: string) => 'deleting_' + this.by(name);
 
 
   /**
@@ -142,9 +184,16 @@ export class StandardReducerFactory<Payload, Model> {
   groupBy(items: any[], groupByFn: (item) => string, indexByFn: (item) => string) {
     const groups = {}
     items.forEach(item => {
-      const groupKey = groupByFn(item);
-      const indexKey = indexByFn(item)
-      groups[groupKey] = { ...groups[groupKey], ...{ [indexKey]: item } }
+      let groupKey;
+      // if the group by key is not possible to create, the item won't be added to the index
+      try {
+        groupKey = groupByFn(item);
+      } catch (error) { }
+
+      if (groupKey) {
+        const indexKey = indexByFn(item);
+        groups[groupKey] = { ...groups[groupKey], ...{ [indexKey]: item } }
+      }
     })
     return groups;
   }

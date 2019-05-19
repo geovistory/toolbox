@@ -6,6 +6,7 @@ import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel } from '../sdk';
 import { DfhActions } from './dfh.actions';
 import { ClassSlice, LabelSlice } from './dfh.models';
 import { SysConfig } from '../config/sys-config';
+import * as Config from '../../../../../common/config/Config';
 
 
 
@@ -32,9 +33,26 @@ export class DfhEpics {
         where: ['com_fk_system_type', '=', SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS]
       }), 'CLASS_LABELS'),
 
-      // Label Upserters
-      labelEpicsFactory.createUpsertEpic((items) => this.labelApi.bulkReplaceOrCreate(items), '')
-      
+      // Label Loaders
+      labelEpicsFactory.createLoadEpic(this.labelApi.findComplex({
+        where: ['com_fk_system_type', 'IN', [
+          Config.PROPERTY_LABEL_SG,
+          Config.PROPERTY_LABEL_PL,
+          Config.PROPERTY_LABEL_INVERSED_SG,
+          Config.PROPERTY_LABEL_INVERSED_PL
+        ]]
+      }), 'PROPERTY_LABELS'),
+
+      // Label Upserter
+      labelEpicsFactory.createUpsertEpic((items) => {
+        return this.labelApi.bulkReplaceOrCreate(items)
+      }),
+
+      // Label Deleter
+      labelEpicsFactory.createDeleteEpic((items) => {
+        return this.labelApi.bulkDelete(items)
+      })
+
     );
   }
 

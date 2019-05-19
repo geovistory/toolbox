@@ -53,15 +53,36 @@ export class StandardEpicsFactory<Payload, Model> {
     }
   }
 
-  createUpsertEpic(apiFn: (items: Model[]) => Observable<Model[]>, actionSuffix: string) {
+  createUpsertEpic(apiFn: (items: Model[]) => Observable<Model[]>)  {
     return (action$, store) => {
       return action$.pipe(
-        ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT' + (actionSuffix ? '::' + actionSuffix : '')),
+        ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'),
         mergeMap((action: FluxStandardAction<Payload, { items: Model[], addPending: string }>) => new Observable<Action>((globalActions) => {
           const pendingKey = action.meta.addPending;
 
           apiFn(action.meta.items).subscribe((data: Model[]) => {
             this.standardActions.upsertSucceeded(data, pendingKey)
+          }, error => {
+            globalActions.next(this.notifications.addToast({
+              type: 'error',
+              options: { title: error.message }
+            }));
+            this.standardActions.failed({ status: '' + error.status }, pendingKey)
+          })
+        }))
+      )
+    }
+  }
+
+  createDeleteEpic(apiFn: (items: Model[]) => Observable<Model[]>) {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'),
+        mergeMap((action: FluxStandardAction<Payload, { items: Model[], addPending: string }>) => new Observable<Action>((globalActions) => {
+          const pendingKey = action.meta.addPending;
+
+          apiFn(action.meta.items).subscribe((data: Model[]) => {
+            this.standardActions.deleteSucceeded(action.meta.items, pendingKey)
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',

@@ -18,6 +18,7 @@ class DfhClassSelections {
 class DfhLabelSelections {
   @select() public by_pk_entity$: Observable<ByPk<DfhLabel>>;
   @select() public by_dfh_fk_class$: Observable<ByPk<ByPk<DfhLabel>>>;
+  @select() public by_dfh_fk_property$: Observable<ByPk<ByPk<DfhLabel>>>;
   @select() public loading$: Observable<boolean>;
   getBasePath = () => ['dfh', 'label'];
 }

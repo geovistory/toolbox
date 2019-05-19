@@ -6,7 +6,6 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import * as Config from '../../../../../../../../common/config/Config';
-import { createDfhLabelListEdit } from '../../dfh-label-list-edit/dfh-label-list-edit.component';
 import { PropertyListComponent } from '../property-list.component';
 import { PropertyListAPIAction, PropertyListAPIActions } from './property-list.actions';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
@@ -128,17 +127,10 @@ export class PropertyListAPIEpics {
                * Emit the global action that completes the loading bar
                */
               globalStore.next(this.loadingBarActions.completeLoading());
-              const props = data.map(prop => ({
-                ...prop,
-                label_sg: createDfhLabelListEdit(prop.label_sg, Config.PROPERTY_LABEL_SG, 18889),
-                label_pl: createDfhLabelListEdit(prop.label_pl, Config.PROPERTY_LABEL_PL, 18889),
-                label_inversed_sg: createDfhLabelListEdit(prop.label_inversed_sg, Config.PROPERTY_LABEL_INVERSED_SG, 18889),
-                label_inversed_pl: createDfhLabelListEdit(prop.label_inversed_pl, Config.PROPERTY_LABEL_INVERSED_PL, 18889)
-              }))
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.loadSucceeded(props));
+              c.localStore.dispatch(this.actions.loadSucceeded(data));
 
             }, error => {
               /**

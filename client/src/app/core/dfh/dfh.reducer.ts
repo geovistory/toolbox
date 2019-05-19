@@ -24,6 +24,10 @@ export function createDfhReducer() {
         {
           keyInStore: 'dfh_fk_class',
           groupByFn: (d): string => d.dfh_fk_class.toString()
+        },
+        {
+          keyInStore: 'dfh_fk_property',
+          groupByFn: (d): string => d.dfh_fk_property.toString()
         }
       ]
     }, {}).reducer

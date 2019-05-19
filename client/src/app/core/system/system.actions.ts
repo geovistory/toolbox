@@ -20,7 +20,7 @@ export class SystemActions {
   constructor(ngRedux: NgRedux<IAppState>) {
 
     this.systemRelevantClass = new StandardActionsFactory<Payload, SysSystemRelevantClass>
-      (ngRedux, 'system', 'systemRelevantClass').createActions();
+      (ngRedux).createCrudActions('system', 'systemRelevantClass');
 
   }
   

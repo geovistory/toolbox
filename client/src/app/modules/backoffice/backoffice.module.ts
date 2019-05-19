@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { BackofficeRoutingModule } from './backoffice-routing.module';
-import { ClassListAPIActions } from './components/class-list/api/class-list.actions';
-import { ClassListAPIEpics } from './components/class-list/api/class-list.epics';
 import { ClassListComponent } from './components/class-list/class-list.component';
 import { ClassComponent } from './components/class/class.component';
 import { MainComponent } from './components/main/main.component';
@@ -26,12 +24,7 @@ import { SystemTypeListComponent } from './components/system-type-list/system-ty
 import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
 import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
 import { PropertyListComponent } from './components/property-list/property-list.component';
-import { DfhLabelEditComponent } from './components/dfh-label-edit/dfh-label-edit.component';
-import { DfhLabelEditAPIActions } from './components/dfh-label-edit/api/dfh-label-edit.actions';
-import { DfhLabelEditAPIEpics } from './components/dfh-label-edit/api/dfh-label-edit.epics';
 import { DfhLabelListEditComponent } from './components/dfh-label-list-edit/dfh-label-list-edit.component';
-import { DfhLabelListEditAPIActions } from './components/dfh-label-list-edit/api/dfh-label-list-edit.actions';
-import { DfhLabelListEditAPIEpics } from './components/dfh-label-list-edit/api/dfh-label-list-edit.epics';
 import { DfhLabelCreateComponent } from './components/dfh-label-create/dfh-label-create.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
@@ -73,8 +66,6 @@ import { DfhModule } from 'app/core/dfh/dfh.module';
     MatProgressSpinnerModule
   ],
   providers: [
-    ClassListAPIActions,
-    ClassListAPIEpics,
     ClassAPIActions,
     ClassAPIEpics,
     ClassUiContextAPIActions,
@@ -85,10 +76,6 @@ import { DfhModule } from 'app/core/dfh/dfh.module';
     SystemTypeListAPIEpics,
     PropertyListAPIActions,
     PropertyListAPIEpics,
-    DfhLabelEditAPIActions,
-    DfhLabelEditAPIEpics,
-    DfhLabelListEditAPIActions,
-    DfhLabelListEditAPIEpics,
     ClassFieldListAPIActions,
     ClassFieldListAPIEpics,
     AccountListAPIActions,
@@ -106,7 +93,6 @@ import { DfhModule } from 'app/core/dfh/dfh.module';
     ClassUiContextComponent,
     NamespaceListComponent,
     SystemTypeListComponent,
-    DfhLabelEditComponent,
     DfhLabelListEditComponent,
     DfhLabelCreateComponent,
     LandingPageComponent,

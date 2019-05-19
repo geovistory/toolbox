@@ -13,6 +13,8 @@ import { Config } from 'ngx-easy-table/src/app/ngx-easy-table/model/config';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { takeUntil, first } from 'rxjs/operators';
 import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table/model/columns';
+import * as Conf from '../../../../../../../common/config/Config';
+import { DfhService } from '../../../../core/dfh/dfh.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -38,6 +40,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   // select observables of substore properties
   @select() items$: Observable<{ [key: string]: DfhProperty }>;
 
+  config = Conf;
 
   tableConfiguration: Config = {
     searchEnabled: true,
@@ -126,7 +129,8 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     protected rootEpics: RootEpics,
     private epics: PropertyListAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
-    private keys: KeysPipe
+    private keys: KeysPipe,
+    private dfhService: DfhService
   ) {
     super()
     this.items$.pipe(
@@ -136,7 +140,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
 
     this.columnsCopy = this.columns;
     this.columns = this.columnsCopy.filter((column) => this.checked.has(column.key));
-
+    this.dfhService.label.load('PROPERTY_LABELS')
   }
 
   quantifierToText(q): string {

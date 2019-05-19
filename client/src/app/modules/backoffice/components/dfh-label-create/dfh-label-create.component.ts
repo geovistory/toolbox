@@ -12,9 +12,11 @@ export class DfhLabelCreateComponent implements OnInit {
   @Input() dfhFkClass: number;
   @Input() infFkLanguage: number;
   @Input() comFkSystemType: number;
+  @Input() label: DfhLabel;
 
   @Output() create = new EventEmitter<DfhLabel>();
   @Output() cancel = new EventEmitter<void>();
+  @Output() delete = new EventEmitter<DfhLabel>();
 
 
   formGroup: FormGroup;
@@ -26,10 +28,12 @@ export class DfhLabelCreateComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.label) this.labelCtrl.setValue(this.label.dfh_label)
   }
 
   onSubmit() {
     const l = new DfhLabel({
+      pk_entity: this.label ? this.label.pk_entity : undefined,
       com_fk_system_type: this.comFkSystemType,
       inf_fk_language: this.infFkLanguage,
       dfh_label: this.labelCtrl.value,
