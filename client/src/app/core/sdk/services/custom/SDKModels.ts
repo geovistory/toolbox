@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
 import { SysClassField } from '../../models/SysClassField';
 import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
+import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
 import { ProQuery } from '../../models/ProQuery';
 import { ProVisual } from '../../models/ProVisual';
 import { PubAccount } from '../../models/PubAccount';
@@ -44,6 +45,7 @@ export class SDKModels {
     SysClassFieldPropertyRel: SysClassFieldPropertyRel,
     SysClassField: SysClassField,
     SysClassHasTypeProperty: SysClassHasTypeProperty,
+    SysSystemRelevantClass: SysSystemRelevantClass,
     ProQuery: ProQuery,
     ProVisual: ProVisual,
     PubAccount: PubAccount,

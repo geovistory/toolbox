@@ -13,6 +13,8 @@ import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
 import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysClassField } from '../sdk';
 import { Field } from '../state/models/field';
 import { TextPropertyField } from '../state/models/text-property-field';
+import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
+import { ByPk } from 'app/core/store/model';
 
 export interface LabelGeneratorSettings {
     // maximum number of data unit children that are taken into account for the label generator
@@ -74,6 +76,9 @@ export class U {
         return keys;
     }
 
+    static firstItemInIndexedGroup<T>(item: ByPk<ByPk<T>>, key: string |  number): T {
+        return item[key] && Object.keys(item[key]).length ? U.obj2Arr(item[key])[0] : undefined;
+    }
 
     /**
      *  Converts InfTimePrimitve and CalendarType to TimePrimitive
@@ -241,7 +246,7 @@ export class U {
       * Convert array of ComClassField to an array of Fields
       *
       */
-    static comCLassFields2Fields(classFields: SysClassField[]): Field[] {
+    static comClassFields2Fields(classFields: SysClassField[]): Field[] {
         if (!classFields) return [];
 
         return classFields.map(comClassfield => {
@@ -445,7 +450,7 @@ export class U {
      * Converts a DfhClass to a ClassConfig
      * @param dfhC
      */
-    static classConfigFromDfhClass(dfhC: DfhClass): ClassConfig {
+    static classConfigFromDfhClass(dfhC: DfhClass, systemRelevantClass: SysSystemRelevantClass): ClassConfig {
 
         // extract class label. prefer eager loaded label over standard label.
         const extractClassLabel = (c: DfhClass): string => {
@@ -482,7 +487,11 @@ export class U {
             changingProjRel: false,
             scopeNote: !dfhC.text_properties ? '' : !dfhC.text_properties.length ? '' : dfhC.text_properties[0].dfh_text_property,
             dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
-            uiContexts: {}
+            uiContexts: {},
+            required_by_sources: systemRelevantClass ? systemRelevantClass.required_by_sources : false,
+            required_by_entities: systemRelevantClass ? systemRelevantClass.required_by_entities : false,
+            required_by_basics: systemRelevantClass ? systemRelevantClass.required_by_basics : false,
+            excluded_from_entities: systemRelevantClass ? systemRelevantClass.excluded_from_entities : false
         };
 
         if (dfhC.ingoing_properties || dfhC.outgoing_properties) {
@@ -1277,5 +1286,16 @@ export class U {
         return (textProperties.find(t => t.fk_system_type === fkSystemType) || { string: '' }).string
     }
 
+
+    /**
+    * Erzeugt eine UUID nach RFC 4122
+    */
+    static uuid(): string {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (char) => {
+            let random = Math.random() * 16 | 0; // Nachkommastellen abschneiden
+            let value = char === "x" ? random : (random % 4 + 8); // Bei x Random 0-15 (0-F), bei y Random 0-3 + 8 = 8-11 (8-b) gemäss RFC 4122
+            return value.toString(16); // Hexadezimales Zeichen zurückgeben
+        });
+    }
 
 }

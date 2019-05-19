@@ -1,19 +1,31 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ClassListAPIActions } from './api/class-list.actions';
-import { WithSubStore, NgRedux, ObservableStore, select } from '@angular-redux/store';
-import { classListReducer } from './api/class-list.reducer';
-import { IAppState } from 'app/core';
-import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares'
-import { ClassListAPIEpics } from './api/class-list.epics';
-import { ClassList } from '../../backoffice.models';
-import { Observable, Subject } from 'rxjs';
+import { NgRedux } from '@angular-redux/store';
+import { Component, OnDestroy, OnInit, HostBinding } from '@angular/core';
+import { DfhClassProfileView, DfhLabel, IAppState, U, SysSystemRelevantClass } from 'app/core';
+import { DfhService } from 'app/core/dfh/dfh.service';
 import { RootEpics } from 'app/core/store/epics';
+import { SystemService } from 'app/core/system/system.service';
+import { combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+import { DfhActions } from '../../../../core/dfh/dfh.actions';
+import { ClassListAPIActions } from './api/class-list.actions';
+import { ClassListAPIEpics } from './api/class-list.epics';
+import { MatTableDataSource } from '@angular/material';
+import { values, omit } from 'ramda';
 
+interface TableRow {
+  dfh_pk_class: number,
+  dfh_standard_label: string,
+  labels: DfhLabel[],
+  type: string,
+  profiles: DfhClassProfileView[],
+  required_by_sources: boolean,
+  required_by_basics: boolean,
+  required_by_entities: boolean,
+  excluded_from_entities: boolean,
+  systemRelevantClass: SysSystemRelevantClass,
+  pending: { [prop: string]: boolean }
+}
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: classListReducer
-})
 @Component({
   selector: 'gv-class-list',
   templateUrl: './class-list.component.html',
@@ -21,40 +33,89 @@ import { RootEpics } from 'app/core/store/epics';
 })
 export class ClassListComponent extends ClassListAPIActions implements OnInit, OnDestroy {
 
-  localStore: ObservableStore<ClassList>
+  @HostBinding('class.gv-flex-fh') flexFh = true;
+  @HostBinding('class.gv-scroll-y-auto') scY = true;
+
 
   destroy$: Subject<boolean> = new Subject<boolean>();
 
-  @select() items$: Observable<any>;
+  items$: Observable<any>;
 
-  tableData$: Observable<any>;
+  tableData$: Observable<TableRow[]>;
 
-  // Since we're observing an array of items, we need to set up a 'trackBy'
-  // parameter so Angular doesn't tear down and rebuild the list's DOM every
-  // time there's an update.
-  getKey(_, item) {
-    return item.key;
-  }
+  // columns of the table
+  displayedColumns: string[] = [
+    'dfh_pk_class',
+    'dfh_standard_label',
+    'labels',
+    'type',
+    'profiles',
+    'required_by_basics',
+    'required_by_sources',
+    'required_by_entities',
+    'excluded_from_entities',    //'expansion'
+  ];
+
+  // if required_by_sources is pending, put 'required_by_sources' in the string array of the pk_class
+  pendingRows$ = new BehaviorSubject<{ [pk_class: string]: { [prop: string]: boolean } }>({});
+
+  showRemovedClasses$ = new BehaviorSubject<boolean>(false);
 
   constructor(
-    private rootEpics: RootEpics,
-    private epics: ClassListAPIEpics,
-    private ngRedux: NgRedux<IAppState>
+    private dfhService: DfhService,
+    private dfhActions: DfhActions,
+    private sysService: SystemService
   ) {
     super()
 
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), classListReducer)
+    this.dfhActions.klass.load();
+    this.dfhActions.label.load('CLASS_LABELS');
 
-    this.rootEpics.addEpic(this.epics.createEpic(this.localStore, this.destroy$));
+    this.sysService.systemRelevantClass.load();
 
-    this.tableData$ = this.items$.pipe(
-      
-    );
+    this.tableData$ = combineLatest(
+      this.dfhService.class$.by_dfh_pk_class$,
+      this.dfhService.label$.by_dfh_fk_class$,
+      this.sysService.systemRelevantClass$.by_fk_class$,
+      this.pendingRows$,
+      this.showRemovedClasses$
+    ).pipe(
+      filter((d) => !d.includes(undefined)),
+      map(([classes, lablesByClass, sysRelClasses, pendingRows, showRemovedClasses]) => {
 
-    this.loadClasses()
+        return U.obj2Arr(classes)
+        .filter((c) => {
+          if(showRemovedClasses) return true;
+          else if(c.class_profile_view.find(cpv => cpv.removed_from_api === false)) return true;
+          else return false;
+        })
+        .map(c => {
+          const systemRelevantClass = U.firstItemInIndexedGroup(sysRelClasses, c.dfh_pk_class);
+          const row: TableRow = {
+            dfh_pk_class: c.dfh_pk_class,
+            dfh_standard_label: c.dfh_standard_label,
+            profiles: c.class_profile_view,
+            labels: values(lablesByClass[c.dfh_pk_class]),
+            type: !c.class_profile_view ? '' : c.class_profile_view[0].dfh_type_label,
+            required_by_sources: !systemRelevantClass ? false : systemRelevantClass.required_by_sources,
+            required_by_basics: !systemRelevantClass ? false : systemRelevantClass.required_by_basics,
+            excluded_from_entities: !systemRelevantClass ? false : systemRelevantClass.excluded_from_entities,
+            required_by_entities: !systemRelevantClass ? false : systemRelevantClass.required_by_entities,
+            systemRelevantClass,
+            pending: pendingRows[c.dfh_pk_class]
+          }
+          return row;
+        })
+
+      })    
+    )
+
+    // this.tableData$.takeUntil(this.destroy$).subscribe(items => {
+    //   this.dataSource.data = items;
+    // })
+
   }
 
-  getBasePath = () => ['backoffice', 'classList'];
 
   ngOnInit() {
   }
@@ -65,4 +126,41 @@ export class ClassListComponent extends ClassListAPIActions implements OnInit, O
   }
 
 
+  toggleRequiredBySources(row: TableRow) {
+    const col = 'required_by_sources';
+    this.toggleSystemRelevantClassBool(row, col);
+  }
+
+
+  private toggleSystemRelevantClassBool(row: TableRow, col: string) {
+    this.sysService.systemRelevantClass.upsert([
+      {
+        ...row.systemRelevantClass,
+        fk_class: row.dfh_pk_class,
+        [col]: !row.systemRelevantClass ? true : !row.systemRelevantClass[col]
+      }
+    ]).pipe(takeUntil(this.destroy$)).subscribe((pending) => {
+      this.updatePendingRow(pending, row, col);
+    });
+  }
+
+  private updatePendingRow(pending: boolean, row: TableRow, col: string) {
+    if (pending) {
+      const p = this.pendingRows$.value;
+      this.pendingRows$.next({
+        ...p, [row.dfh_pk_class]: {
+          ...p[row.dfh_pk_class],
+          [col]: true
+        }
+      });
+    }
+    else {
+      let p = this.pendingRows$.value;
+      p = { ...p, [row.dfh_pk_class]: omit([col], p[row.dfh_pk_class]) };
+      if (Object.keys(p[row.dfh_pk_class]).length === 0) {
+        p = omit([row.dfh_pk_class.toString()], p);
+      }
+      this.pendingRows$.next(p);
+    }
+  }
 }

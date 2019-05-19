@@ -44,4 +44,5 @@ export class SysConfig {
     static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION = 179;
     static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL = 639;
     static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
+    static readonly PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
 }

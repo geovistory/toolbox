@@ -2,7 +2,6 @@
 
 declare var Object: any;
 export interface ProInfoProjRelInterface {
-  "pk_entity"?: number;
   "fk_project": number;
   "fk_entity"?: number;
   "fk_entity_version"?: string;
@@ -14,6 +13,7 @@ export interface ProInfoProjRelInterface {
   "tmsp_last_modification"?: string;
   "fk_creator"?: number;
   "fk_last_modifier": number;
+  "pk_entity"?: number;
   "entity_version"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
@@ -21,7 +21,6 @@ export interface ProInfoProjRelInterface {
 }
 
 export class ProInfoProjRel implements ProInfoProjRelInterface {
-  "pk_entity": number;
   "fk_project": number;
   "fk_entity": number;
   "fk_entity_version": string;
@@ -33,6 +32,7 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
   "tmsp_last_modification": string;
   "fk_creator": number;
   "fk_last_modifier": number;
+  "pk_entity": number;
   "entity_version": number;
   "notes": string;
   "tmsp_creation": string;
@@ -68,12 +68,8 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
       name: 'ProInfoProjRel',
       plural: 'ProInfoProjRels',
       path: 'ProInfoProjRels',
-      idName: '',
+      idName: 'pk_entity',
       properties: {
-        "pk_entity": {
-          name: 'pk_entity',
-          type: 'number'
-        },
         "fk_project": {
           name: 'fk_project',
           type: 'number'
@@ -116,6 +112,10 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
         },
         "fk_last_modifier": {
           name: 'fk_last_modifier',
+          type: 'number'
+        },
+        "pk_entity": {
+          name: 'pk_entity',
           type: 'number'
         },
         "entity_version": {

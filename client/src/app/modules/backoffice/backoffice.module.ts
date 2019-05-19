@@ -46,10 +46,11 @@ import { AccountListAPIEpics } from './components/account-list/api/account-list.
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { WarehouseAPIEpics } from './components/warehouse/api/warehouse.epics';
 import { WarehouseAPIActions } from './components/warehouse/api/warehouse.actions';
-import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule, MatTableModule } from '@angular/material';
+import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule, MatTableModule, MatCheckboxModule, MatProgressSpinnerModule } from '@angular/material';
 import { HasTypeComponent } from './components/has-type/has-type.component';
 import { HasTypeAPIActions } from './components/has-type/api/has-type.actions';
 import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';
+import { DfhModule } from 'app/core/dfh/dfh.module';
 
 @NgModule({
   imports: [
@@ -57,6 +58,7 @@ import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';
     NgbCollapseModule,
     BackofficeRoutingModule,
     SlimLoadingBarModule,
+    DfhModule,
     KeysModule,
     DndModule,
     FormsModule,
@@ -66,7 +68,9 @@ import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';
     MatCardModule,
     MatButtonModule,
     MatProgressBarModule,
-    MatTableModule
+    MatTableModule,
+    MatCheckboxModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     ClassListAPIActions,

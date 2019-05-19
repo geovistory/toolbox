@@ -33,7 +33,6 @@ import { ProjectSettingsDataAPIActions } from './containers/project-settings-dat
 import { ProjectSettingsDataAPIEpics } from './containers/project-settings-data/api/project-settings-data.epics';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
 import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
-import { ProjectSettingsComponent } from './containers/project-settings/project-settings.component';
 import { TypeAddFormComponent } from './containers/type-add-form/type-add-form.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
@@ -92,7 +91,6 @@ import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/conf
     ProjectEditComponent,
     ProjectEditPanelComponent,
     ProjectListComponent,
-    ProjectSettingsComponent,
     ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
     ProjectSettingsProfileComponent,

@@ -2,21 +2,13 @@
 
 declare var Object: any;
 export interface SysSystemTypeInterface {
-  "pk_entity"?: number;
-  "entity_version"?: number;
   "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
+  "pk_entity"?: number;
 }
 
 export class SysSystemType implements SysSystemTypeInterface {
-  "pk_entity": number;
-  "entity_version": number;
   "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
+  "pk_entity": number;
   constructor(data?: SysSystemTypeInterface) {
     Object.assign(this, data);
   }
@@ -50,29 +42,13 @@ export class SysSystemType implements SysSystemTypeInterface {
       path: 'SysSystemTypes',
       idName: 'pk_entity',
       properties: {
-        "pk_entity": {
-          name: 'pk_entity',
-          type: 'number'
-        },
-        "entity_version": {
-          name: 'entity_version',
-          type: 'number'
-        },
         "notes": {
           name: 'notes',
           type: 'string'
         },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
+        "pk_entity": {
+          name: 'pk_entity',
+          type: 'number'
         },
       },
       relations: {

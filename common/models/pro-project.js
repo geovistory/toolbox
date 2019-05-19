@@ -111,28 +111,6 @@ module.exports = function (ProProject) {
     });
   };
 
-  // Project.addEntity = function(pk_project, fk_entity, cb) {
-
-  //   var params = [
-  //     pk_project, // $1
-  //     fk_entity // $2
-  //   ];
-
-  //   var sql_stmt = `
-  //   INSERT INTO information.entity_project_rel (fk_project, fk_entity, in_project)
-  //   VALUES ($1, $2, true);
-  //   `;
-
-  //   const connector = Project.dataSource.connector;
-  //   connector.execute(sql_stmt, params, (err, result) => {
-  //     var success = true;
-  //     if (err){
-  //       success = false;
-  //     }
-  //     cb(err, success);
-  //   });
-  // };
-
 
   ProProject.getBasics = function (pkProject, cb) {
     ProProject.findComplex({

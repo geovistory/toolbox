@@ -63,6 +63,68 @@ export class DfhLabelApi extends BaseLoopBackApi {
   }
 
   /**
+   * Replace or create all items in the array.
+   *
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{DfhLabel}` - Array of DfhLabel
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhLabel` object.)
+   * </em>
+   */
+  public bulkReplaceOrCreate(data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhLabels/bulk-replace-or-create";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   * This method expects a subset of model properties as request parameters.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhLabel` object.)
+   * </em>
+   */
+  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<DfhLabel[]> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhLabels/findComplex";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      filter: filter
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instances: Array<DfhLabel>) =>
+        instances.map((instance: DfhLabel) => new DfhLabel(instance))
+    ));
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `DfhLabel`.
    */

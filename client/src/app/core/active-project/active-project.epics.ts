@@ -10,20 +10,23 @@ import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
-import { map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
+import { map, mapTo, mergeMap, switchMap, filter } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
 import { SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi, ProProjectApi, ProQueryApi, SysAppContext, SysAppContextApi, ProClassFieldConfig, ProVisualApi, DfhClass, ProDfhClassProjRelApi, DfhProperty, DfhPropertyApi, DatChunk, DatChunkApi, ProInfoProjRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProProject } from '../sdk';
 import { HasTypePropertyReadable, PeItDetail } from '../state/models';
-import { IAppState } from '../store/model';
+import { IAppState, ByPk } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { SystemService } from '../system/system.service';
+import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
+    private systemService: SystemService,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -121,6 +124,7 @@ export class ActiveProjectEpics {
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
+        this.systemService.systemRelevantClass.load();
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
@@ -128,14 +132,17 @@ export class ActiveProjectEpics {
           this.dfhPropertyApi.propertyFieldInfo(true),
           this.dfhPropertyApi.propertyFieldInfo(false),
           this.comClassFieldApi.find(),
-          this.comHasTypePropsApi.readableList()
+          this.comHasTypePropsApi.readableList(),
+          this.systemService.systemRelevantClass$.by_fk_class$
         )
-          .subscribe(res => {
+          .pipe(filter((res) => !res.includes(undefined)))
+          .subscribe((res) => {
             const classes: DfhClass[] = res[0],
               outgoingProperties: DfhProperty[] = res[2],
               ingoingProperties: DfhProperty[] = res[3],
               classFields = res[4] as SysClassField[],
-              hasTypeProps: HasTypePropertyReadable[] = res[5];
+              hasTypeProps: HasTypePropertyReadable[] = res[5],
+              systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6];
 
             const properties = {
               ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
@@ -149,15 +156,22 @@ export class ActiveProjectEpics {
               hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps)
             }
 
-            classes.forEach((cla: DfhClass) => {
-              crm.classes[cla.dfh_pk_class] = U.classConfigFromDfhClass(cla);
+            const hasTypePropertiesByTypeClass = indexBy((prop) => prop.pk_type_class.toString(), hasTypeProps)
 
+            classes.forEach((cla: DfhClass) => {
+              crm.classes[cla.dfh_pk_class] = {
+                ...U.classConfigFromDfhClass(
+                  cla,
+                  U.firstItemInIndexedGroup(systemRelevantClasses, cla.dfh_pk_class)
+                ),
+                subclassOfType: hasTypePropertiesByTypeClass[cla.dfh_pk_class] ? true : false
+              }
               // create fieldList
               crm.fieldList = {
                 ...indexBy(fieldKey, [
                   ...U.infProperties2PropertyFields(false, ingoingProperties),
                   ...U.infProperties2PropertyFields(true, outgoingProperties),
-                  ...U.comCLassFields2Fields(classFields)
+                  ...U.comClassFields2Fields(classFields)
                 ])
               }
             })

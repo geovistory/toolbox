@@ -20,12 +20,12 @@ export class DfhLabelListEditAPIEpics {
 
   public createEpics(c: DfhLabelListEditComponent): Epic {
     return combineEpics(
-      this.createLoadDfhLabelListEditEpic(c),
-      this.deleteLabelEpic(c)
+      this.createCreateLabelEpic(c),
+      this.createDeleteLabelEpic(c)
       );
   }
 
-  private createLoadDfhLabelListEditEpic(c: DfhLabelListEditComponent): Epic {
+  private createCreateLabelEpic(c: DfhLabelListEditComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**
@@ -79,7 +79,7 @@ export class DfhLabelListEditAPIEpics {
 
 
 
-  private deleteLabelEpic(c: DfhLabelListEditComponent): Epic {
+  private createDeleteLabelEpic(c: DfhLabelListEditComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**

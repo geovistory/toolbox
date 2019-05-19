@@ -1,50 +1,81 @@
 <gv-detail-top-bar>
-    Classes used in your project
+  Classes used in your project
+  <span class="ml-auto">
 
-  <mat-form-field class="ml-auto">
-    <input matInput (keyup)="textFilter($event.target.value)" placeholder="Filter">
-  </mat-form-field>
+    <mat-checkbox (change)="showBasicClasses$.next(!showBasicClasses$.value)" [checked]="showBasicClasses$ | async">
+      Show Basic Classes
+    </mat-checkbox>
 
+    <mat-form-field class="ml-2">
+      <input matInput (keyup)="textFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+  </span>
 </gv-detail-top-bar>
 
-<gv-detail-content class="p-3 gv-scroll-y-auto">
-  <p>
+<gv-detail-content class="gv-flex-fh">
+  <!-- <p>
     Define what kind of data is collected in your project. Do so by enabling and disabling classes in the list below.
     By enabling a class the collaborators of the project can create and add Entities of that class.
-  </p>
+  </p> -->
 
 
 
-  <table mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true" (matSortChange)="sortData($event)"
-    multiTemplateDataRows class="mat-elevation-z1">
-
+  <table class="gv-flex-fh" mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true"
+    (matSortChange)="sortData($event)" class="mat-elevation-z1">
+    <!-- <table class="gv-flex-fh" mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true"
+    (matSortChange)="sortData($event)" multiTemplateDataRows class="mat-elevation-z1"> -->
     <!-- Checkbox Column -->
-    <ng-container matColumnDef="enabled">
+    <ng-container matColumnDef="enabled_in_entities">
 
-      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="enabled"> Enabled </th>
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="enabled_in_entities"> In Entities
+      </th>
 
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
         <mat-checkbox (click)="$event.stopPropagation()"
-          (change)="element.enabled ? disableClass(element) : enableClass(element)" [checked]="element.enabled"
-          [hidden]="element.changingProjRel">
+          (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
+          [checked]="element.enabled_in_entities" [hidden]="element.changingProjRel"
+          *ngIf="!element.excluded_from_entities">
         </mat-checkbox>
         <mat-spinner *ngIf="element.changingProjRel" diameter="20" color="accent"></mat-spinner>
       </td>
     </ng-container>
 
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="required_by_sources">
+
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_sources"> In Sources </th>
+
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox *ngIf="element.required_by_sources" [checked]="element.required_by_sources" [disabled]="true">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="required_by_basics">
+
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_basics"> Basic </th>
+
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox *ngIf="element.required_by_basics" [checked]="element.required_by_basics" [disabled]="true">
+        </mat-checkbox>
+      </td>
+    </ng-container>
 
     <!-- Label Column -->
     <ng-container matColumnDef="label">
-      <th mat-header-cell style="flex: 1 0 0%" *matHeaderCellDef mat-sort-header="label"> Class </th>
-      <td mat-cell style="flex: 1 0 0%" *matCellDef="let element">
-        <strong [innerHtml]="element.label"></strong>
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="label"> Class </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <strong [innerHtml]="element.label"></strong> {{element.dfh_pk_class}}
       </td>
     </ng-container>
 
     <!-- Temporal / Persistent Column -->
     <ng-container matColumnDef="subclassOf">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header="subclassOf"> Persistent / Temporal </th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell style="flex: 1 0 0%" *matHeaderCellDef mat-sort-header="subclassOf"> Persistent / Temporal
+      </th>
+      <td mat-cell style="flex: 1 0 0%" *matCellDef="let element">
         <i *ngIf="element.subclassOf=='peIt'" class="gv-icon gv-icon-persistent-entity">&nbsp;</i>
         <span *ngIf="element.subclassOf=='peIt'">Persistent</span>
         <i *ngIf="element.subclassOf=='teEnt'" class="fa fa-star-o">&nbsp;</i>
@@ -54,8 +85,9 @@
 
     <!-- Dfh Standard Label Column -->
     <ng-container matColumnDef="dfh_standard_label">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header="dfh_standard_label"> OntoMe Definition </th>
-      <td mat-cell *matCellDef="let element">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="dfh_standard_label"> OntoMe Definition
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
         <a [attr.href]="'http://ontologies.dataforhistory.org/class/' + element.dfh_pk_class" target="_blank"
           (click)="$event.target.stopPropagation()">
           <span [innerHtml]="element.dfh_standard_label"></span>
@@ -64,31 +96,46 @@
       </td>
     </ng-container>
 
+    <!-- Manage Controlled Vocabulary Column -->
+    <ng-container matColumnDef="subclassOfType">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="subclassOfType"> Types
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+
+        <button mat-button color="primary" *ngIf="element.subclassOfType" (click)="openControlledVocab(element)"> Manage
+          Controlled Vocabulary </button>
+
+      </td>
+    </ng-container>
+
     <!-- Collapse / Expand Column -->
-    <ng-container matColumnDef="expansion">
-      <th mat-header-cell *matHeaderCellDef> </th>
-      <td mat-cell *matCellDef="let element">
+    <!-- <ng-container matColumnDef="expansion">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
         <div class="d-flex">
           <span [@indicatorRotate]="expandedElement === element ? 'expanded' : 'collapsed'"
             class="mat-expansion-indicator"></span>
         </div>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
+    <!-- <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
         <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
           <p [innerHtml]="element.scopeNote"> </p>
         </div>
       </td>
-    </ng-container>
+    </ng-container> -->
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row"
       [class.example-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      (click)="expandedElement = expandedElement === element ? null : element"></tr> -->
+    <!-- <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr> -->
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
   </table>
 
 </gv-detail-content>

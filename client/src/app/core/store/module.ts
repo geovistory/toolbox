@@ -18,6 +18,7 @@ import { equals } from 'ramda'
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { AccountActions } from 'app/modules/account/api/account.actions';
 import { Router } from '@angular/router';
+import { StandardActionsFactory } from './actions';
 
 /**
  * Function to use in combination with rxjs/operator .filter()
@@ -52,6 +53,7 @@ export const ofSubstore = (path: string[]) => (action): boolean => {
         RootEpics,
         AccountEpics,
         AccountActions,
+        StandardActionsFactory
     ]
 })
 export class StoreModule {
