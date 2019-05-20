@@ -1,4 +1,18 @@
 # Changelog of Geovistory Developments
+## Sprint 18
+### Features
+* Backoffice: Configuration of system relevant Classes `GEOV-439`
+* Project-Settings: Classes Settings respect special status of system relevant classes `GEOV-440`
+
+### DevOps
+* Go live of Production App and DB `GEOV-389`
+* Implemented Data-flow (Production ready) `GEOV-420`
+
+### Improvements
+* Major rework of the LDM and PDM. `GEOV-414 GEOV-426 GEOV-443`
+* Properties of Properties included in PDM. `GEOV-425`
+* Reworked QuillDoc in DB and Frontend `GEOV-422 GEOV-423 GEOV-424` 
+
 ## Sprint 17
 ### Features
 * Visuals:
