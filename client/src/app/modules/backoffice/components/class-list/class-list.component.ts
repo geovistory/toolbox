@@ -1,11 +1,12 @@
-import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DfhClassProfileView, DfhLabel, SysConfig, SysSystemRelevantClass, U } from 'app/core';
 import { DfhService } from 'app/core/dfh/dfh.service';
-import { SystemService } from 'app/core/system/system.service';
+import { SystemService } from 'app/core/sys/sys.service';
 import { omit, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { DfhActions } from '../../../../core/dfh/dfh.actions';
+import { DfhActions } from 'app/core/dfh/dfh.actions';
+import { MatTableDataSource, MatSort } from '@angular/material';
 
 interface TableRow {
   dfh_pk_class: number,
@@ -38,6 +39,10 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
   tableData$: Observable<TableRow[]>;
 
+  dataSource = new MatTableDataSource();
+
+  @ViewChild(MatSort) sort: MatSort;
+
   // columns of the table
   displayedColumns: string[] = [
     'dfh_pk_class',
@@ -48,7 +53,8 @@ export class ClassListComponent  implements OnInit, OnDestroy {
     'required_by_basics',
     'required_by_sources',
     'required_by_entities',
-    'excluded_from_entities',    //'expansion'
+    'excluded_from_entities',    
+    'edit'
   ];
 
   // if required_by_sources is pending, put 'required_by_sources' in the string array of the pk_class
@@ -68,12 +74,12 @@ export class ClassListComponent  implements OnInit, OnDestroy {
     this.dfhActions.klass.load();
     this.dfhActions.label.load('CLASS_LABELS');
 
-    this.sysService.systemRelevantClass.load();
-
+    this.sysService.system_relevant_class.load();
+    
     this.tableData$ = combineLatest(
       this.dfhService.class$.by_dfh_pk_class$,
       this.dfhService.label$.by_dfh_fk_class$,
-      this.sysService.systemRelevantClass$.by_fk_class$,
+      this.sysService.system_relevant_class$.by_fk_class$,
       this.pendingRows$,
       this.showRemovedClasses$
     ).pipe(
@@ -106,10 +112,17 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
       })
     )
+    this.tableData$.takeUntil(this.destroy$).subscribe(data => {
+      this.dataSource.data = data;
+    })
   }
 
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
 
   ngOnInit() {
+    this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy() {
@@ -125,7 +138,7 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
 
   private toggleSystemRelevantClassBool(row: TableRow, col: string) {
-    this.sysService.systemRelevantClass.upsert([
+    this.sysService.system_relevant_class.upsert([
       {
         ...row.systemRelevantClass,
         fk_class: row.dfh_pk_class,

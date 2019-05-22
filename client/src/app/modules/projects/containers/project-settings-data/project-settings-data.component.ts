@@ -130,7 +130,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     //   if (pk) this.load();
     // })
 
-    this.items$ = this.p.crm$.pipe(filter((crm) => !!crm.classes), map(crm => U.objNr2Arr(crm.classes)))
+    this.items$ = this.p.crm$.pipe(filter((crm) => !!crm && !!crm.classes), map(crm => U.objNr2Arr(crm.classes)))
 
     // // load the profile Options as soon as the profiles are available
     // this.ngRedux.select<DfhClassProfileView[]>(['activeProject', 'dataSettings', 'profiles']).takeUntil(this.destroy$).subscribe(profiles => {

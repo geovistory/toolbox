@@ -1,10 +1,13 @@
 <h2 class="px-3 pt-3">
   Classes
 </h2>
-<p class="px-3">
+<p class="px-3 d-flex">
   <mat-checkbox (change)="showRemovedClasses$.next(!showRemovedClasses$.value)" [checked]="showRemovedClasses$ | async">
     Show removed classes (removed from api of all profiles)
   </mat-checkbox>
+  <mat-form-field class="ml-auto">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
 </p>
 
 <!-- <table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
@@ -44,7 +47,7 @@
 </table> -->
 
 
-<table class="gv-flex-fh" mat-table [dataSource]="tableData$" matSort matSortDisableClear="true" multiTemplateDataRows
+<table class="gv-flex-fh" mat-table [dataSource]="dataSource" matSort matSortDisableClear="true" 
   class="mat-elevation-z1">
 
   <!-- Checkbox Column -->
@@ -156,6 +159,14 @@
       <mat-spinner *ngIf="element?.pending?.excluded_from_entities" diameter="20" color="accent"></mat-spinner>
     </td>
   </ng-container>
+  <!-- Checkbox Column -->
+  <ng-container matColumnDef="edit">
+    <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> Class Fields </th>
+    <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <a class="nav-link" routerLink="/backoffice/classes/{{element.dfh_pk_class}}" routerLinkActive="active">Edit</a>
+    </td>
+  </ng-container>
+  
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>

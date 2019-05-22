@@ -10,14 +10,15 @@ import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/v
 import { Observable } from 'rxjs';
 import { Types } from '../../modules/projects/containers/types/api/types.models';
 import { HasTypePropertyReadable } from '../state/models';
+import { Inf } from '../inf/inf.models';
 
 export interface ProjectPreview {
     label?: string,
     description?: string,
     default_language?: InfLanguage,
     pk_project?: number
-  }
-  
+}
+
 export interface EntityByPk<T> {
     [pk_entity: number]: T
 }
@@ -57,11 +58,11 @@ export interface Tab {
     // wheter tab is active or not
     active: boolean;
     // the root component included in this tab, in dash separate minuscles: EntityDetailComponent -> 'entity-detail'
-    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail' | 'classes-settings' |  'contr-vocab-settings';
+    component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail' | 'classes-settings' | 'contr-vocab-settings';
     // icon to be displayed in tab, e.g.: gv-icon-source
     icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story' | 'settings';
     // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
-    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails' | 'classesSettings' |  'contrVocabSettings';
+    pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails' | 'classesSettings' | 'contrVocabSettings';
     // data to pass to component via input variabales
     data?: {
         pkEntity?: number;
@@ -89,6 +90,8 @@ export interface ProjectDetail extends ProjectPreview {
     /******************************************************************
      * Information Cache
      */
+
+    inf?: Inf;
 
     // data unit previews
     entityPreviews?: EntityPreviewList;

@@ -86,7 +86,7 @@
           </div>
         </div>
 
-
+<!-- Tab Handles -->
         <as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1"
           *ngIf="(p.panels$ | async)?.length > 0">
           <as-split-area size="(100 / (p.panels$ | async)?.length )"
@@ -133,7 +133,7 @@
           </as-split-area>
         </as-split>
 
-
+<!-- Tab Bodies. The body is placed to gvPanelBody via Cdk Portal -->
         <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
           *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
 

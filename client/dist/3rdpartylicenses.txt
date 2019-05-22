@@ -4305,8 +4305,6 @@ If the Work includes a "NOTICE" text file as part of its distribution, then any 
 END OF TERMS AND CONDITIONS
 
 
-undefined
-
 util
 MIT
 Copyright Joyent, Inc. and other Node contributors. All rights reserved.
@@ -4328,6 +4326,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
+
+undefined
 
 webpack
 MIT

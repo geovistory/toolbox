@@ -1,18 +1,10 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { active } from 'd3';
-import { indexBy, omit, groupBy, zipObj, clone } from 'ramda';
+import { groupBy, indexBy, omit, zipObj } from 'ramda';
 import { InfPersistentItem, InfTemporalEntity, ProQuery, ProVisual } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
-import { ProjectDetail, Panel, TypePeIt, VersionEntity, ClassConfig } from './active-project.models';
+import { ProjectDetail, TypePeIt, VersionEntity } from './active-project.models';
 
-// const INITIAL_STATE: ProjectDetail = {
-//     list: '',
-//     uiIdSerial: 0,
-//     panelSerial: 0,
-//     focusedPanel: 0,
-//     panels: []
-// };
 const INITIAL_STATE: ProjectDetail = {
     label: '',
     list: '',
@@ -44,6 +36,15 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         /************************************************************************************
          * Layout
         ************************************************************************************/
+        case ActiveProjectActions.SET_PANELS:
+            state = {
+                ...state,
+                panels: action.meta.panels,
+                uiIdSerial: action.meta.uiIdSerial,
+                panelSerial: action.meta.panelIndex,
+                focusedPanel: action.meta.focusedPanel
+            }
+            break;
         case ActiveProjectActions.SET_LIST_TYPE:
             state = {
                 ...state,
@@ -545,19 +546,19 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 }
             };
         case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
-        return {
-            ...state,
-            crm: {
-                ...state.crm,
-                classes: {
-                    ...state.crm.classes,
-                    [action.meta.dfh_pk_class]: {
-                        ...state.crm.classes[action.meta.dfh_pk_class],
-                        changingProjRel: false
+            return {
+                ...state,
+                crm: {
+                    ...state.crm,
+                    classes: {
+                        ...state.crm.classes,
+                        [action.meta.dfh_pk_class]: {
+                            ...state.crm.classes[action.meta.dfh_pk_class],
+                            changingProjRel: false
+                        }
                     }
                 }
-            }
-        };
+            };
 
 
         /************************************************************************************

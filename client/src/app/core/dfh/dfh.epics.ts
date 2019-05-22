@@ -20,21 +20,21 @@ export class DfhEpics {
   ) { }
 
   public createEpics(): Epic {
-    const classEpicsFactory = new StandardEpicsFactory<ClassSlice, DfhClass>('dfh', 'class', this.actions.klass, this.notification);
+    const classEpicsFactory = new StandardEpicsFactory<ClassSlice, DfhClass>('dfh', 'klass', this.actions.klass, this.notification);
     const labelEpicsFactory = new StandardEpicsFactory<LabelSlice, DfhLabel>('dfh', 'label', this.actions.label, this.notification);
 
     return combineEpics(
 
       // Class Loaders      
-      classEpicsFactory.createLoadEpic(this.classApi.classesOfProfile(null), ''),
+      classEpicsFactory.createLoadEpic((action) => this.classApi.classesOfProfile(null), ''),
 
       // Label Loaders
-      labelEpicsFactory.createLoadEpic(this.labelApi.findComplex({
+      labelEpicsFactory.createLoadEpic((action) => this.labelApi.findComplex({
         where: ['com_fk_system_type', '=', SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS]
       }), 'CLASS_LABELS'),
 
       // Label Loaders
-      labelEpicsFactory.createLoadEpic(this.labelApi.findComplex({
+      labelEpicsFactory.createLoadEpic((action) => this.labelApi.findComplex({
         where: ['com_fk_system_type', 'IN', [
           Config.PROPERTY_LABEL_SG,
           Config.PROPERTY_LABEL_PL,

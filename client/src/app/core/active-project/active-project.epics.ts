@@ -18,7 +18,7 @@ import { IAppState, ByPk } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { SystemService } from '../system/system.service';
+import { SystemService } from '../sys/sys.service';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 
 
@@ -124,7 +124,7 @@ export class ActiveProjectEpics {
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
-        this.systemService.systemRelevantClass.load();
+        this.systemService.system_relevant_class.load();
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
@@ -133,7 +133,7 @@ export class ActiveProjectEpics {
           this.dfhPropertyApi.propertyFieldInfo(false),
           this.comClassFieldApi.find(),
           this.comHasTypePropsApi.readableList(),
-          this.systemService.systemRelevantClass$.by_fk_class$
+          this.systemService.system_relevant_class$.by_fk_class$
         )
           .pipe(filter((res) => !res.includes(undefined)))
           .subscribe((res) => {
