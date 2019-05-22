@@ -41,7 +41,7 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 ...state,
                 panels: action.meta.panels,
                 uiIdSerial: action.meta.uiIdSerial,
-                panelSerial: action.meta.panelIndex,
+                panelSerial: action.meta.panelSerial,
                 focusedPanel: action.meta.focusedPanel
             }
             break;

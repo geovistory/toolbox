@@ -736,10 +736,23 @@ export class ActiveProjectEpics {
     return (action$, store) => {
       return action$.pipe(
         ofType(ActiveProjectActions.SPLIT_PANEL),
-        map(action => this.actions.activateTab(action.meta.currentPanelIndex, 0))
+        map((action: ActiveProjectAction) => {
+          const p = this.ngRedux.getState().activeProject;
+          const c = action.meta.currentPanelIndex;
+          const panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
+          return this.actions.activateTab(panelIndex, 0)
+        })
       )
     }
   }
+  // private createSplitPanelActivateTabEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       ofType(ActiveProjectActions.SPLIT_PANEL),
+  //       map(action => this.actions.activateTab(action.meta.currentPanelIndex, 0))
+  //     )
+  //   }
+  // }
   private createActivateTabFocusPanelEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
