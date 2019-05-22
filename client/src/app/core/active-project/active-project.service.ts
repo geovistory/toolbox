@@ -2,16 +2,21 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { SysConfig, IAppState, DatChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
 import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
-import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
+import { combineLatest, Observable, BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel, InfPersistentItemApi } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ProProject } from '../sdk';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ComQueryByPk, EntityByPk, VersionEntity, EntityVersionsByPk, HasTypePropertyList, ClassConfigList } from './active-project.models';
+import { InfSelector } from '../inf/inf.service';
+import { InfActions } from 'app/core/inf/inf.actions';
+import { RootEpics } from '../store/epics';
+import { InfEpics } from '../inf/inf.epics';
+import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 
 
 
@@ -43,16 +48,19 @@ export class ActiveProjectService {
 
   classesInProject$: Observable<number[]>
 
+  inf$: InfSelector;
+
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
-    private entityPreviewSocket: EntityPreviewSocket
+    private entityPreviewSocket: EntityPreviewSocket,
+
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
-    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']);
+    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).filter(p => p !== undefined);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
     this.hasTypeProperties$ = ngRedux.select<HasTypePropertyList>(['activeProject', 'crm', 'hasTypeProperties']);
@@ -67,6 +75,9 @@ export class ActiveProjectService {
     this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
+
+    this.inf$ = new InfSelector(ngRedux, this.pkProject$);
+
     this.classesInProject$ = this.crm$.pipe(
       first(d => !!d),
       map(crm => {
@@ -79,7 +90,6 @@ export class ActiveProjectService {
         return pkClassesInProject;
       })
     )
-
 
     // emits true if no toolbox panel is opened
     this.dashboardVisible$ = combineLatest(
@@ -463,6 +473,9 @@ export class ActiveProjectService {
   /************************************************************************************
   * Layout
   ************************************************************************************/
+  setPanels(panels: Panel[]) {
+    this.ngRedux.dispatch(this.actions.setPanels(panels))
+  }
   // List (left panel) modifications
   setListType(list: ListType) {
     this.ngRedux.dispatch(this.actions.setListType(list))

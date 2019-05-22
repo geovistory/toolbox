@@ -5,6 +5,9 @@ import { InfPersistentItem, InfTemporalEntity, ProQuery, ProVisual } from '../sd
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 import { ProjectDetail, Panel, TypePeIt, VersionEntity, ClassConfig } from './active-project.models';
+import { composeReducers } from '@angular-redux/form';
+import { combineReducers } from '../../../../node_modules/redux';
+import { createInfReducer } from '../inf/inf.reducer';
 
 // const INITIAL_STATE: ProjectDetail = {
 //     list: '',
@@ -44,6 +47,12 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         /************************************************************************************
          * Layout
         ************************************************************************************/
+        case ActiveProjectActions.SET_PANELS:
+            state = {
+                ...state,
+                panels: action.meta.panels
+            }
+            break;
         case ActiveProjectActions.SET_LIST_TYPE:
             state = {
                 ...state,
@@ -545,19 +554,19 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
                 }
             };
         case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
-        return {
-            ...state,
-            crm: {
-                ...state.crm,
-                classes: {
-                    ...state.crm.classes,
-                    [action.meta.dfh_pk_class]: {
-                        ...state.crm.classes[action.meta.dfh_pk_class],
-                        changingProjRel: false
+            return {
+                ...state,
+                crm: {
+                    ...state.crm,
+                    classes: {
+                        ...state.crm.classes,
+                        [action.meta.dfh_pk_class]: {
+                            ...state.crm.classes[action.meta.dfh_pk_class],
+                            changingProjRel: false
+                        }
                     }
                 }
-            }
-        };
+            };
 
 
         /************************************************************************************

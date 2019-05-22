@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt, ProjectPreview } from './active-project.models';
+import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt, ProjectPreview, Panel } from './active-project.models';
 import { DatChunk, InfTemporalEntity, InfPersistentItem, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
 import { EntityPreview, PeItDetail, HasTypePropertyReadable } from '../state/models';
+import { InfActions } from 'app/core/inf/inf.actions';
+import { IAppState } from 'app/core/store/model';
+import { NgRedux } from '@angular-redux/store';
 
 export interface ComQueryV extends ProQuery {
     versions: number[];
@@ -44,6 +47,7 @@ interface MetaData {
     infProjRel?: ProInfoProjRel;
 
     // layout
+    panels?: Panel[];
     list?: ListType;
     panelIndex?: number;
     tabIndex?: number;
@@ -59,6 +63,7 @@ export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class ActiveProjectActions {
+
     /* tslint:disable:member-ordering */
 
     /************************************************************************************
@@ -124,6 +129,17 @@ export class ActiveProjectActions {
         }
     }
 
+    static SET_PANELS = 'ActiveProject::SET_PANELS';
+
+    setPanels(panels: Panel[]): ActiveProjectAction {
+        return {
+            type: ActiveProjectActions.SET_PANELS,
+            payload: null,
+            meta: {
+                panels
+            }
+        }
+    }
 
     static ACTIVATE_TAB = 'ActiveProject::ACTIVATE_TAB';
 

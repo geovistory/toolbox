@@ -6,6 +6,7 @@ import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { SysConfig } from '../../../../core/config/sys-config';
 import { ProjectsActions } from '../../api/projects.actions';
 import { IProjectList } from '../../projects.model';
+import { Router } from '@angular/router';
 
 
 
@@ -27,7 +28,8 @@ export class ProjectListComponent implements OnInit {
     private authService: LoopBackAuth,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IProjectList>,
-    private actions: ProjectsActions
+    private actions: ProjectsActions,
+    private router: Router,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -47,6 +49,15 @@ export class ProjectListComponent implements OnInit {
         this.ngRedux.dispatch(this.actions.loadProjectsSucceeded(this.projects))
 
         this.completeLoading();
+      },
+      (error) => {
+        if(error.statusCode === 401){
+          this.router.navigate(['login'], {
+            queryParams: {
+              redirectUrl: 'projects'
+            }
+          })
+        }
       });
   }
 

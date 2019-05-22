@@ -2,8 +2,8 @@
 
   <gv-list-drawer-header>
     <div title>Your Sources</div>
-    <gv-class-and-type-selector buttons buttonClass="btn-primary btn-sm no-caret mr-0" *ngIf="(p.pkProject$ |async) && (p.crm$ | async)"
-      [pkClasses]="pkClassesOfAddBtn" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
+    <gv-class-and-type-selector buttons buttonClass="btn-primary btn-sm no-caret mr-0" *ngIf="(p.pkProject$ |async) && (p.crm$ | async) && (pkClassesOfAddBtn$ | async)"
+      [pkClasses]="pkClassesOfAddBtn$ | async" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
       (select)="startCreate($event, pkUiContextCreate)" buttonText="+ Add" placement="right"></gv-class-and-type-selector>
   </gv-list-drawer-header>
  

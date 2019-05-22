@@ -29,7 +29,8 @@ import { KeysModule } from './shared/pipes/keys.module';
 import { AngularSplitModule } from 'angular-split';
 import { MccColorPickerModule } from 'material-community-components';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material';
-import { SystemModule } from './core/system/system.module';
+import { SysModule } from './core/sys/sys.module';
+import { InfModule } from './core/inf/inf.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -50,7 +51,8 @@ registerLocaleData(localeDeCh);
     StoreModule,
     NotificationsModule,
     LoadingBarModule,
-    SystemModule,
+    SysModule,
+    InfModule,
     NgReduxRouterModule,
     NgReduxModule,
     SDKBrowserModule.forRoot(),

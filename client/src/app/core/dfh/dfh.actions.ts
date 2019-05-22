@@ -18,7 +18,7 @@ export class DfhActions {
 
   constructor(private ngRedux: NgRedux<IAppState>) {
     this.label = new StandardActionsFactory<Payload, DfhLabel>(ngRedux).createCrudActions('dfh', 'label');
-    this.klass = new StandardActionsFactory<Payload, DfhClass>(ngRedux).createCrudActions('dfh', 'class');
+    this.klass = new StandardActionsFactory<Payload, DfhClass>(ngRedux).createCrudActions('dfh', 'klass');
   }
 
 }

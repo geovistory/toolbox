@@ -1,9 +1,15 @@
-import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { FluxStandardAction } from 'flux-standard-action';
-import { dispatch, NgRedux } from '@angular-redux/store';
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { IAppState, U } from 'app/core';
+import { FluxStandardAction } from 'flux-standard-action';
 import { Observable } from 'rxjs';
+import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
+
+export interface LoadActionMeta { addPending: string, pk?: number }
+export interface ModifyActionMeta<Model> { items: Model[], addPending: string, pk?: number }
+export interface SucceedActionMeta<Model> { items: Model[], removePending: string, pk?: number }
+export interface FailActionMeta { removePending: string, pk?: number }
+
 
 /**
  * A: Action Type (e.g. DfhAction)
@@ -12,37 +18,62 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class StandardActionsFactory<Payload, Model> {
 
-  load: (suffix?: string) => void;
-  loadSucceeded: (items: Model[], removePending: string) => void;
-  upsert: (items: Model[]) => Observable<boolean>;
-  upsertSucceeded: (items: Model[], removePending: string) => void;
-  delete: (items: Model[]) => Observable<boolean>;
-  deleteSucceeded: (items: Model[], removePending: string) => void;
-  failed: (error, removePending: string) => void;
+  load: (suffix?: string, pk?: number) => void;
+
+  /**
+   * @param pk is used for facetting
+   */
+  loadSucceeded: (items: Model[], removePending: string, pk?: number) => void;
+
+  /**
+   * @param pk is used for facetting
+   */
+  upsert: (items: Model[], pk?: number) => Observable<boolean>;
+
+  /**
+   * @param pk is used for facetting
+   */
+  upsertSucceeded: (items: Model[], removePending: string, pk?: number) => void;
+
+  /**
+   * @param pk is used for facetting
+   */
+  delete: (items: Model[], pk?: number) => Observable<boolean>;
+
+  /**
+   * @param pk is used for facetting
+   */
+  deleteSucceeded: (items: Model[], removePending: string, pk?: number) => void;
+
+  /**
+   * @param pk is used for facetting
+   */
+  failed: (error, removePending: string, pk?: number) => void;
 
   actionPrefix: string;
   modelName: string;
 
-  constructor(private ngRedux: NgRedux<IAppState>) {
+  constructor(public ngRedux: NgRedux<IAppState>) {
   }
 
-  createCrudActions(actionPrefix: string, modelName: string) {
+
+  createCrudActions(actionPrefix: string, modelName: string): StandardActionsFactory<Payload, Model> {
     this.actionPrefix = actionPrefix;
     this.modelName = modelName;
 
-    this.load = (suffix: string = '') => {
-      const action: FluxStandardAction<Payload, { addPending: string }> = {
+    this.load = (suffix: string = '', pk?: number) => {
+      const action: FluxStandardAction<Payload, LoadActionMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + (suffix ? '::' + suffix : ''),
-        meta: { addPending: U.uuid() },
+        meta: { addPending: U.uuid(), pk },
         payload: null,
       };
       this.ngRedux.dispatch(action)
     }
 
-    this.loadSucceeded = (items: Model[], removePending: string) => {
-      const action: FluxStandardAction<Payload, { items: Model[], removePending: string }> = ({
+    this.loadSucceeded = (items: Model[], removePending: string, pk?: number) => {
+      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
         type: this.actionPrefix + '.' + this.modelName + '::LOAD_SUCCEEDED',
-        meta: { items, removePending },
+        meta: { items, removePending, pk },
         payload: null
       })
       this.ngRedux.dispatch(action)
@@ -51,21 +82,21 @@ export class StandardActionsFactory<Payload, Model> {
     /**
      * Call the Redux Action to upsert model instances.
      */
-    this.upsert = (items: Model[]) => {
+    this.upsert = (items: Model[], pk?: number) => {
       const addPending = U.uuid();
-      const action: FluxStandardAction<Payload, { items: Model[], addPending: string }> = ({
+      const action: FluxStandardAction<Payload, ModifyActionMeta<Model>> = ({
         type: this.actionPrefix + '.' + this.modelName + '::UPSERT',
-        meta: { items, addPending },
+        meta: { items, addPending, pk },
         payload: null
       })
       this.ngRedux.dispatch(action)
       return this.ngRedux.select(['pending', addPending]);
     }
 
-    this.upsertSucceeded = (items: Model[], removePending: string) => {
-      const action: FluxStandardAction<Payload, { items: Model[], removePending: string }> = ({
+    this.upsertSucceeded = (items: Model[], removePending: string, pk?: number) => {
+      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
         type: this.actionPrefix + '.' + this.modelName + '::UPSERT_SUCCEEDED',
-        meta: { items, removePending },
+        meta: { items, removePending, pk },
         payload: null
       })
       this.ngRedux.dispatch(action)
@@ -74,21 +105,21 @@ export class StandardActionsFactory<Payload, Model> {
     /**
     * Call the Redux Action to delete model instances.
     */
-    this.delete = (items: Model[]) => {
+    this.delete = (items: Model[], pk?: number) => {
       const addPending = U.uuid();
-      const action: FluxStandardAction<Payload, { items: Model[], addPending: string }> = ({
+      const action: FluxStandardAction<Payload, ModifyActionMeta<Model>> = ({
         type: this.actionPrefix + '.' + this.modelName + '::DELETE',
-        meta: { items, addPending },
+        meta: { items, addPending, pk },
         payload: null
       })
       this.ngRedux.dispatch(action)
       return this.ngRedux.select(['pending', addPending]);
     }
 
-    this.deleteSucceeded = (items: Model[], removePending: string) => {
-      const action: FluxStandardAction<Payload, { items: Model[], removePending: string }> = ({
+    this.deleteSucceeded = (items: Model[], removePending: string, pk?: number) => {
+      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
         type: this.actionPrefix + '.' + this.modelName + '::DELETE_SUCCEEDED',
-        meta: { items, removePending },
+        meta: { items, removePending, pk },
         payload: null
       })
       this.ngRedux.dispatch(action)
@@ -96,10 +127,10 @@ export class StandardActionsFactory<Payload, Model> {
 
 
 
-    this.failed = (error, removePending: string) => {
-      const action: FluxStandardAction<Payload, { items: Model[], removePending: string }> = ({
+    this.failed = (error, removePending: string, pk?: number) => {
+      const action: FluxStandardAction<Payload, FailActionMeta> = ({
         type: this.actionPrefix + '.' + this.modelName + '::FAILED',
-        meta: null,
+        meta: { removePending, pk },
         payload: null,
         error,
       })

@@ -58,7 +58,7 @@ export class SettingsListComponent implements OnInit {
             items: props.map(prop => ({
               onClickFnName: 'openContrVocabSettings',
               param: prop.dfh_pk_property,
-              label: prop.typed_class_label + ' Types'
+              label: prop.typed_class_label
             }))
           },
           {

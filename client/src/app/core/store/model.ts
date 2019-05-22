@@ -5,7 +5,7 @@ import { Backoffice } from '../../modules/backoffice/backoffice.models';
 import { IProjectList } from '../../modules/projects/projects.model';
 import { ISourceListState } from '../../modules/sources';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
-import { System } from '../system/system.models';
+import { Sys } from '../sys/sys.models';
 import { Dfh } from '../dfh/dfh.models';
 
 export interface IAppState {
@@ -13,7 +13,7 @@ export interface IAppState {
     backoffice?: Backoffice,
     loadingBar?: LoadingBar,
     projects?: IProjectList
-    system?: System
+    system?: Sys
     dfh?: Dfh
     activeProject?: ProjectDetail
     routes?: any,

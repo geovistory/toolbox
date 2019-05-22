@@ -1,13 +1,15 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { CdkPortal, DomPortalHost } from '@angular/cdk/portal';
-import { ApplicationRef, Component, ComponentFactoryResolver, Directive, HostBinding, Injector, Input, OnChanges, OnDestroy, QueryList, ViewChild, ViewChildren, AfterViewInit, SimpleChanges, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, UrlSegment, UrlSegmentGroup } from '@angular/router';
-import { ActiveProjectService, Panel, Tab, ListType } from 'app/core';
-import { Observable, Subject, BehaviorSubject, combineLatest, zip } from 'rxjs';
-import { first, take, map, takeUntil } from 'rxjs/operators';
-import { PanelBodyDirective } from '../../directives/panel-body.directive';
+import { CdkPortal } from '@angular/cdk/portal';
+import { AfterViewInit, Component, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { MatDrawer } from '@angular/material';
-import { SystemService } from '../../../../core/system/system.service';
+import { ActivatedRoute } from '@angular/router';
+import { ActiveProjectService, ListType, SDKStorage, Tab, InfPersistentItemApi } from 'app/core';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { first, takeUntil, delay, filter } from 'rxjs/operators';
+import { PanelBodyDirective } from '../../directives/panel-body.directive';
+import { RootEpics } from 'app/core/store/epics';
+import { InfEpics } from 'app/core/inf/inf.epics';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 
 
 export interface TabBody extends Tab {
@@ -37,11 +39,7 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   @ViewChild(CdkPortal) portal: CdkPortal;
   private host: PanelBodyDirective;
 
-  constructor(
-    private componentFactoryResolver: ComponentFactoryResolver,
-    private applicationRef: ApplicationRef,
-    private injector: Injector
-  ) {
+  constructor() {
     combineLatest(this.active$, this.panelId$, this.bodies$).takeUntil(this.destroy$)
       .subscribe(([active, panelId, panelBodies]) => {
         // const oldHost = this.host;
@@ -105,6 +103,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
+  beforeDestroy$ = new Subject<boolean>();
 
   allTabs$: Observable<TabBody[]>;
   highlightPanel = {};
@@ -114,10 +113,23 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
   constructor(
     public p: ActiveProjectService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private sdkStorage: SDKStorage
   ) {
 
     const id = this.activatedRoute.snapshot.params['pkActiveProject'];
+    const storagePrefix = 'Geovistory-Panels-Project-';
+
+    // Get last panel state of this project from local storage and put it to store
+    const recoveredPanels = this.sdkStorage.get(storagePrefix + id) || [];
+    setTimeout(() => {
+      this.p.setPanels(recoveredPanels)
+    })
+    // Subscribe to the panels until just before the project edit is destroyed
+    this.p.panels$.pipe(takeUntil(this.beforeDestroy$)).subscribe(panels => {
+      // Set the panels in local storage
+      this.sdkStorage.set(storagePrefix + id, panels)
+    })
 
     this.p.initProject(id);
     this.p.initProjectCrm(id);
@@ -138,6 +150,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
       return allTabs
     })
 
+ 
   }
 
   ngAfterViewInit() {
@@ -208,6 +221,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
+    this.beforeDestroy$.next(true)
     this.p.closeProject()
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

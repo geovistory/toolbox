@@ -13,6 +13,8 @@ import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { TypeEditFormComponent } from '../type-edit-form/type-edit-form.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TypeAddFormComponent } from '../type-add-form/type-add-form.component';
+import { InfSelector } from '../../../../core/inf/inf.service';
+import { InfActions } from '../../../../core/inf/inf.actions';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -60,6 +62,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     private epics: TypesAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
+    public inf: InfActions,
     public dialog: MatDialog
   ) {
     super();
@@ -70,7 +73,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
-
+    
     this.typedClass$ = combineLatest(this.p.classes$, this.p.hasTypeProperties$).pipe(
       first(d => !d.includes(undefined)),
       map(([classes, hasTypeProps]) => classes[hasTypeProps[this.pkProperty].pk_typed_class]),
@@ -189,9 +192,9 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
+      if (result) {
         this.added(result);
-      }else{
+      } else {
         this.closeAddForm()
       }
     });

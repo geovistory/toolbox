@@ -1,27 +1,20 @@
 import { Injectable } from '@angular/core';
-import { combineEpics, Epic, StateObservable, ActionsObservable, ofType } from 'redux-observable';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { Action } from 'redux';
-import { ActiveProjectEpics } from '../active-project/active-project.epics';
-import { LoadingBarEpics } from '../loading-bar/api/loading-bar.epics';
-import { mergeMap, flatMap, map } from 'rxjs/operators';
-import { IAppState } from './model';
-import { AccountEpics } from 'app/modules/account/api/account.epics';
-import { SystemEpics } from '../system/system.epics';
-import { DfhEpics } from '../dfh/dfh.epics';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { FluxStandardAction } from 'flux-standard-action';
-import { StandardActionsFactory } from './actions';
-import { flatten } from 'ramda';
 import { LoopBackConfig } from 'app/core';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { environment } from 'environments/environment';
-
-export function bulkCreateOrReplace<T>(api: (item: T) => Observable<T>): (items: T[]) => Observable<T[]> {
-  return (items: T[]) => combineLatest<T>(items.map(item => api(item)))
-    .pipe(
-      map((items) => flatten(items))
-    )
-}
+import { FluxStandardAction } from 'flux-standard-action';
+import { Action } from 'redux';
+import { ActionsObservable, combineEpics, Epic, ofType, StateObservable } from 'redux-observable';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { ActiveProjectEpics } from '../active-project/active-project.epics';
+import { DfhEpics } from '../dfh/dfh.epics';
+import { InfEpics } from '../inf/inf.epics';
+import { LoadingBarEpics } from '../loading-bar/api/loading-bar.epics';
+import { SysEpics } from '../sys/sys.epics';
+import { LoadActionMeta, ModifyActionMeta, StandardActionsFactory } from './actions';
+import { IAppState } from './model';
 
 export class StandardEpicsFactory<Payload, Model> {
 
@@ -32,46 +25,47 @@ export class StandardEpicsFactory<Payload, Model> {
     private modelName: string,
     private standardActions: StandardActionsFactory<Payload, Model>,
     private notifications: NotificationsAPIActions
-  ) {
-  }
+  ) { }
 
-  createLoadEpic(apiCall: Observable<Model[]>, actionSuffix: string) {
+  createLoadEpic<T>(apiFn: (meta: T) => Observable<Model[]>, actionSuffix: string) {
     return (action$, store) => {
       return action$.pipe(
         ofType(this.actionPrefix + '.' + this.modelName + '::LOAD' + (actionSuffix ? '::' + actionSuffix : '')),
-        mergeMap((action: FluxStandardAction<Payload, { addPending: string }>) => new Observable<Action>((globalActions) => {
+        mergeMap((action: FluxStandardAction<Payload, LoadActionMeta>) => new Observable<Action>((globalActions) => {
           const pendingKey = action.meta.addPending;
-          apiCall.subscribe((data: Model[]) => {
-            this.standardActions.loadSucceeded(data, pendingKey)
+          const meta = action.meta as any as T;
+          apiFn(meta).subscribe((data: Model[]) => {
+            this.standardActions.loadSucceeded(data, pendingKey, action.meta.pk)
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',
               options: { title: error.message }
             }));
-            this.standardActions.failed({ status: '' + error.status }, pendingKey)
+            this.standardActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk)
           })
         }))
       )
     }
   }
 
-  createUpsertEpic(apiFn: (items: Model[]) => Observable<Model[]>)  {
+  createUpsertEpic(apiFn: (items: Model[]) => Observable<Model[]>) {
     return (action$, store) => {
       return action$.pipe(
         ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'),
-        mergeMap((action: FluxStandardAction<Payload, { items: Model[], addPending: string }>) => new Observable<Action>((globalActions) => {
+        mergeMap((action: FluxStandardAction<Payload, ModifyActionMeta<Model>>) => new Observable<Action>((globalActions) => {
           const pendingKey = action.meta.addPending;
 
           apiFn(action.meta.items).subscribe((data: Model[]) => {
-            this.standardActions.upsertSucceeded(data, pendingKey)
+            this.standardActions.upsertSucceeded(data, pendingKey, action.meta.pk)
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',
               options: { title: error.message }
             }));
-            this.standardActions.failed({ status: '' + error.status }, pendingKey)
+            this.standardActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk)
           })
         }))
+
       )
     }
   }
@@ -80,17 +74,17 @@ export class StandardEpicsFactory<Payload, Model> {
     return (action$, store) => {
       return action$.pipe(
         ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'),
-        mergeMap((action: FluxStandardAction<Payload, { items: Model[], addPending: string }>) => new Observable<Action>((globalActions) => {
+        mergeMap((action: FluxStandardAction<Payload, ModifyActionMeta<Model>>) => new Observable<Action>((globalActions) => {
           const pendingKey = action.meta.addPending;
 
           apiFn(action.meta.items).subscribe((data: Model[]) => {
-            this.standardActions.deleteSucceeded(action.meta.items, pendingKey)
+            this.standardActions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk)
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',
               options: { title: error.message }
             }));
-            this.standardActions.failed({ status: '' + error.status }, pendingKey)
+            this.standardActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk)
           })
         }))
       )
@@ -110,9 +104,10 @@ export class RootEpics {
   constructor(
     private loadingBarEpics: LoadingBarEpics,
     private activeProjectEpics: ActiveProjectEpics,
-    private systemEpics: SystemEpics,
+    private systemEpics: SysEpics,
     private dfhEpics: DfhEpics,
-    private accountEpics: AccountEpics
+    private accountEpics: AccountEpics,
+    private infEpics: InfEpics
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -123,7 +118,8 @@ export class RootEpics {
       this.systemEpics.createEpics(),
       this.activeProjectEpics.createEpics(),
       this.accountEpics.createEpics(),
-      this.dfhEpics.createEpics()
+      this.dfhEpics.createEpics(),
+      this.infEpics.createEpics()
     ));
 
     this.rootEpic = (
