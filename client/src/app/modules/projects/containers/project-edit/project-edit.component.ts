@@ -121,14 +121,22 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     const storagePrefix = 'Geovistory-Panels-Project-';
 
     // Get last panel state of this project from local storage and put it to store
-    const recoveredPanels = this.sdkStorage.get(storagePrefix + id) || [];
+    const x = this.sdkStorage.get(storagePrefix + id) || [];
     setTimeout(() => {
-      this.p.setPanels(recoveredPanels)
+      if (typeof x.panels !== 'object' || typeof x.uiIdSerial !== 'number' || typeof x.panelSerial !== 'number' || typeof x.focusedPanel !== 'number') {
+        this.sdkStorage.remove(storagePrefix + id)
+      } else {
+
+        this.p.setPanels(x.panels, x.uiIdSerial, x.panelSerial, x.focusedPanel
+        )
+      }
     })
     // Subscribe to the panels until just before the project edit is destroyed
-    this.p.panels$.pipe(takeUntil(this.beforeDestroy$)).subscribe(panels => {
+    combineLatest(
+      this.p.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$
+    ).pipe(takeUntil(this.beforeDestroy$)).subscribe(([panels, uiIdSerial, panelSerial, focusedPanel]) => {
       // Set the panels in local storage
-      this.sdkStorage.set(storagePrefix + id, panels)
+      this.sdkStorage.set(storagePrefix + id, { panels, uiIdSerial, panelSerial, focusedPanel })
     })
 
     this.p.initProject(id);
@@ -150,7 +158,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
       return allTabs
     })
 
- 
+
   }
 
   ngAfterViewInit() {

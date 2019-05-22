@@ -50,7 +50,10 @@ interface MetaData {
     panels?: Panel[];
     list?: ListType;
     panelIndex?: number;
+    panelSerial?: number;
     tabIndex?: number;
+    uiIdSerial?: number;
+    focusedPanel?: number;
     previousPanelIndex?: number
     currentPanelIndex?: number
     previousTabIndex?: number
@@ -131,13 +134,11 @@ export class ActiveProjectActions {
 
     static SET_PANELS = 'ActiveProject::SET_PANELS';
 
-    setPanels(panels: Panel[]): ActiveProjectAction {
+    setPanels(panels: Panel[], uiIdSerial: number, panelSerial: number, focusedPanel: number): ActiveProjectAction {
         return {
             type: ActiveProjectActions.SET_PANELS,
             payload: null,
-            meta: {
-                panels
-            }
+            meta: { panels, uiIdSerial, panelSerial, focusedPanel }
         }
     }
 

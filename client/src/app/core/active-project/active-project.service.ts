@@ -27,10 +27,12 @@ export class ActiveProjectService {
   public activeProject$: Observable<ProjectDetail>;
   public pkProject$: Observable<number>;
   public panels$: Observable<Panel[]>
+  public uiIdSerial$: Observable<number>;
+  public panelSerial$: Observable<number>;
+  public focusedPanel$: Observable<number>;
   public crm$: Observable<ProjectCrm>
   public classes$: Observable<ClassConfigList>
   public hasTypeProperties$: Observable<HasTypePropertyList>
-  public focusedPanel$: Observable<boolean>;
   public list$: Observable<ListType>; // type of list displayed in left panel 
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
@@ -62,6 +64,9 @@ export class ActiveProjectService {
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).filter(p => p !== undefined);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
+    this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
+    this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
+    this.focusedPanel$ = ngRedux.select<number>(['activeProject', 'focusedPanel']);
     this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
     this.hasTypeProperties$ = ngRedux.select<HasTypePropertyList>(['activeProject', 'crm', 'hasTypeProperties']);
     this.classes$ = ngRedux.select<ClassConfigList>(['activeProject', 'crm', 'classes']);
@@ -72,7 +77,6 @@ export class ActiveProjectService {
     this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProVisual>>(['activeProject', 'comVisualVersionsByPk']);
     this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
 
-    this.focusedPanel$ = ngRedux.select<boolean>(['activeProject', 'focusedPanel']);
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
 
@@ -473,8 +477,8 @@ export class ActiveProjectService {
   /************************************************************************************
   * Layout
   ************************************************************************************/
-  setPanels(panels: Panel[]) {
-    this.ngRedux.dispatch(this.actions.setPanels(panels))
+  setPanels(panels: Panel[], uiIdSerial: number, panelSerial: number, focusedPanel: number) {
+    this.ngRedux.dispatch(this.actions.setPanels(panels, uiIdSerial, panelSerial, focusedPanel))
   }
   // List (left panel) modifications
   setListType(list: ListType) {
