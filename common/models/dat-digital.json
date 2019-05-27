@@ -75,7 +75,8 @@
       "permission": "ALLOW",
       "property": [
         "findById",
-        "bulkUpsert"
+        "bulkUpsert",
+        "bulkDelete"
       ]
     }
   ],
@@ -118,6 +119,38 @@
       "description": "Creates or updates instances of DatDigital.",
       "http": {
         "path": "/bulk-upsert",
+        "verb": "put"
+      }
+    },
+    "bulkDelete": {
+      "accepts": [
+        {
+          "arg": "pks",
+          "type": [
+            "number"
+          ],
+          "required": true,
+          "description": "Array of Primary Key of DatDigitals",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "boolean",
+        "root": true
+      },
+      "description": "Deletes instances of DatDigital.",
+      "http": {
+        "path": "/delete-delete",
         "verb": "put"
       }
     },

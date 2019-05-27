@@ -72,8 +72,6 @@ import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileV
 import { SysAppContextApi } from './services/custom/SysAppContext';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
-import { DatNamespaceApi } from './services/custom/DatNamespace';
-import { SysSystemTypeApi } from './services/custom/SysSystemType';
 import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
 import { InfRoleApi } from './services/custom/InfRole';
@@ -82,7 +80,9 @@ import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
 import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
 import { InfEntityAssociationApi } from './services/custom/InfEntityAssociation';
 import { InfPlaceApi } from './services/custom/InfPlace';
+import { DatNamespaceApi } from './services/custom/DatNamespace';
 import { InfTextPropertyApi } from './services/custom/InfTextProperty';
+import { SysSystemTypeApi } from './services/custom/SysSystemType';
 /**
 * @module SDKBrowserModule
 * @description
@@ -137,8 +137,6 @@ export class SDKBrowserModule {
         SysAppContextApi,
         ProClassFieldConfigApi,
         ProDfhClassProjRelApi,
-        DatNamespaceApi,
-        SysSystemTypeApi,
         InfAppellationApi,
         InfTemporalEntityApi,
         InfRoleApi,
@@ -147,7 +145,9 @@ export class SDKBrowserModule {
         InfTimePrimitiveApi,
         InfEntityAssociationApi,
         InfPlaceApi,
+        DatNamespaceApi,
         InfTextPropertyApi,
+        SysSystemTypeApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

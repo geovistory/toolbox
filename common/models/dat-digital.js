@@ -2,6 +2,10 @@
 const Promise = require('bluebird');
 
 module.exports = function (DatDigital) {
+  DatDigital.bulkDelete = function (pks, ctx, cb) {
+    const promiseArray = pks.map(pk => DatDigital.deleteById(pk))
+    return Promise.map(promiseArray, (promise) => promise)
+  };
 
   DatDigital.bulkUpsert = function (pkNamespace, items) {
     return new Promise((resolve, reject) => {

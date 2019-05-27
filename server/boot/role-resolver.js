@@ -1,11 +1,11 @@
 var _ = require('lodash');
-
+const Promise = require('bluebird');
 
 module.exports = function (app) {
   var Role = app.models.Role;
 
-  var isAssociatedWithProject = (accountId, pkProject, cb) => {
-    app.models.ProProject.findById(pkProject, function (err, project) {
+  Role.isAssociatedWithProject = (accountId, pkProject, cb) => {
+    Role.app.models.ProProject.findById(pkProject, function (err, project) {
       // A: The datastore produced an error! Pass error to callback
       if (err)
         return cb(err);
@@ -72,6 +72,69 @@ module.exports = function (app) {
 
         })
 
+      }
+      // Q: Does the request want to DELETE a record?
+      else if (context.method === 'deleteById') {
+        // A: Yes, it wants to delete a record
+        // Step 1: find the record
+        context.model.findById(context.modelId, function (err, result) {
+          // A: The datastore produced an error! Pass error to callback
+          if (err) return cb(err);
+          // A: There's no record by this ID! Pass error to callback
+          if (!result) return cb(new Error("Item not found"));
+
+          //Q: does the record belong to a namespace
+          if (result.fk_namespace) {
+            // A: Yes, send get pk of project owning the namespace (back via callback)
+            getNamespaceProjectPk(app, pkNamespace, cb);
+          } else {
+            // A: No. send back undefined
+            return cb(null)
+          }
+
+        })
+      }
+      else if (context.method === 'bulkDelete') {
+
+        context.model.findComplex({
+          "where": ['pk_entity', 'IN', context.remotingContext.args.pks],
+          "include": {
+            "namespace": {
+              "$relation": {
+                "name": "namespace",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            }
+          }
+        }, function (err, result) {
+          // A: The datastore produced an error! Pass error to callback
+          if (err) return cb(err);
+          // A: There's no record by this ID! Pass error to callback
+          if (!result || !result.length) return cb(new Error("Items to delete or their namespaces were not found"));
+
+          // Q: what projects do own this item?
+          const projectPks = _.uniq(result.map(item => _.get(item, 'namespace.fk_project')));
+
+          // Q: Are there excactly one project pk ?
+          if (projectPks.length === 1 && typeof projectPks[0] === 'number') {
+            // A: Yes, there is one valid project pk
+            cb(null, projectPks[0])
+
+          } else if (projectPks.length > 1) {
+
+            // A: No, there are more than one projects, reject
+            return cb('You cannot bulk delete data entities from different namespaces');
+          } else {
+            // A: No, something else went wrong
+            return cb('Something went wrong when bulk deleting data entities. Check if they all have valid fk_namespace');
+
+          }
+
+        })
+
       } else {
         // A: No, it is no about finding a data entity by id
 
@@ -83,24 +146,12 @@ module.exports = function (app) {
         );
 
         // A: No. No namespace pk provided, return error
-        if(!pkNamespace) return cb('please provide a namespace key');
+        if (!pkNamespace) return cb('please provide a namespace key');
 
         // A: Yes, pkNamespace is provided
 
         // Q: To which project does the namespace belong?
-        app.models.DatNamespace.findById(pkNamespace, function (err, result) {
-          // A: The datastore produced an error! Pass error to callback
-          if (err) return cb(err);
-          // A: There's no record by this ID! Pass error to callback
-          if (!result) return cb(new Error("Item not found"));
-
-          //Q: does the record belong to a namespace that has a fk_project?
-          //A: If so, returns the integer, else undefined
-          return cb(null, parseInt(_.get(result, 'fk_project')))
-
-        })
-
-
+        getNamespaceProjectPk(app, pkNamespace, cb);
 
       }
     } else {
@@ -164,10 +215,24 @@ module.exports = function (app) {
 
       // Q: Is the current logged-in user associated with this Project?
       // Step 1: lookup the requested project
-      isAssociatedWithProject(accountId, pkProject, cb);
+      Role.isAssociatedWithProject(accountId, pkProject, cb);
 
     })
   });
 
 };
 
+
+function getNamespaceProjectPk(app, pkNamespace, cb) {
+  app.models.DatNamespace.findById(pkNamespace, function (err, result) {
+    // A: The datastore produced an error! Pass error to callback
+    if (err)
+      return cb(err);
+    // A: There's no record by this ID! Pass error to callback
+    if (!result)
+      return cb(new Error("Item not found"));
+    //Q: does the record belong to a namespace that has a fk_project?
+    //A: If so, returns the integer, else undefined
+    return cb(null, parseInt(_.get(result, 'fk_project')));
+  });
+}

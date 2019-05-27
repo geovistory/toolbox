@@ -1,14 +1,16 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
-import { ActiveProjectService, InfEntityAssociationInterface, DatDigital, InfEntityAssociation, U, latestVersion } from 'app/core';
+import { ActiveProjectService, InfEntityAssociationInterface, DatDigital, InfEntityAssociation, U, latestVersion, SysConfig, InfPersistentItem } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { ByPk } from 'app/core/store/model';
 import { DatActions } from '../../../../core/dat/dat.actions';
+import { DatSelector } from '../../../../core/dat/dat.service';
+import { DfhConfig } from '../../shared/dfh-config';
 
 /**
  * Food data with nested structure.
@@ -62,6 +64,7 @@ export class ExpressionComponent implements OnInit, OnDestroy {
   fkPropertyFromSource: number;
   sourceIsDomain: boolean;
   pkExpression$: Observable<number>;
+  pkExpression: number;
   contentTree$: Observable<EntityAssociationNode[]>;
 
   temp$: Observable<any>;
@@ -70,7 +73,7 @@ export class ExpressionComponent implements OnInit, OnDestroy {
     private p: ActiveProjectService,
     private r: RepoService,
     private inf: InfActions,
-    private dat: DatActions
+    private dat: DatSelector
   ) { }
 
   ngOnInit() {
@@ -102,6 +105,7 @@ export class ExpressionComponent implements OnInit, OnDestroy {
 
     this.pkExpression$.pipe(first()).subscribe(pkExpression => {
 
+      this.pkExpression = pkExpression;
       // load ea recursive is part of / is reproduction of
       this.inf.entity_association.contentTree(pkProject, pkExpression)
       this.contentTree$ = this.observeChildren(pkExpression)
@@ -311,8 +315,8 @@ export class ExpressionComponent implements OnInit, OnDestroy {
     // Required by Firefox (https://stackoverflow.com/questions/19055264/why-doesnt-html5-drag-and-drop-work-in-firefox)
     event.dataTransfer.setData('foo', 'bar');
     // event.dataTransfer.setDragImage(this.emptyItem.nativeElement, 0, 0);
-    const x = event.offsetX || 0;
-    const y = event.offsetY || 0;
+    const x = event.offsetX || 0;
+    const y = event.offsetY || 0;
     event.dataTransfer.setDragImage(event.target, x, y);
     this.dragNode = node;
     this.treeControl.collapse(node);
@@ -358,18 +362,6 @@ export class ExpressionComponent implements OnInit, OnDestroy {
     }
   }
 
-  // nodeToEA(node): InfEntityAssociation {
-  //   const {
-  //     pk_entity,
-  //     fk_entity,
-  //     fk_property,
-  //     fk_data_domain,
-  //     fk_info_domain,
-  //     fk_info_range,
-  //     fk_data_range
-  //   } = node
-  //   return
-  // }
 
   handleDrop(event, dropNode: ContentTreeNode) {
     if (dropNode.isDigital) return;
@@ -429,21 +421,9 @@ export class ExpressionComponent implements OnInit, OnDestroy {
 
 
     if (draggedNode.isDigital) {
-      if (parentIsF2Expression) {
-        // geovC1 Digital	-->	geovP1 is reproduction of -->	F2 Expression
-        fk_property = 1216
-      } else {
-        // geovC1 Digital	-->	geovP1 is reproduction of --> geovC5 Expression portion
-        fk_property = 1329
-      }
+      fk_property = this.isReproProp(parentIsF2Expression);
     } else {
-      if (parentIsF2Expression) {
-        // geovC5 Expression portion -->geovP6 is part of -->	F2 Expression
-        fk_property = 1317
-      } else {
-        // geovC5 Expression portion -->geovP6 is part of --> geovC5 Expression portion
-        fk_property = 1328
-      }
+      fk_property = this.isPartOfProp(parentIsF2Expression);
     }
 
     return {
@@ -454,41 +434,141 @@ export class ExpressionComponent implements OnInit, OnDestroy {
     } as InfEntityAssociation;
   }
 
+  /**
+   * returns the fk_property for 'is part of' depending on
+   * wheter the range is an F2 Expression or geovC5 Expression Portion
+   */
+  private isPartOfProp(parentIsF2Expression: boolean) {
+    if (parentIsF2Expression) {
+      // geovC5 Expression portion -->geovP6 is part of -->	F2 Expression
+      return 1317;
+    }
+    else {
+      // geovC5 Expression portion -->geovP6 is part of --> geovC5 Expression portion
+      return 1328;
+    }
+  }
 
-  addText() {
-    this.dat.digital.upsert([{
-      string: ''
-    } as DatDigital], 82438).resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-      if (resolved) {
-        resolved.items[0].pk_entity
+  /**
+   * returns the fkProperty for 'is reproduction of' depending on
+   * whether the range is an F2 Expression or geovC5 Expression Portion
+   */
+  private isReproProp(parentIsF2Expression: boolean) {
+    if (parentIsF2Expression) {
+      // geovC1 Digital	-->	geovP1 is reproduction of -->	F2 Expression
+      return 1216;
+    }
+    else {
+      // geovC1 Digital	-->	geovP1 is reproduction of --> geovC5 Expression portion
+      return 1329;
+    }
+  }
 
+  /**
+   * When user adds a new text digital to the content tree
+   */
+  addText(pkParent: number, parentIsF2Expression = false) {
+    combineLatest(this.p.pkProject$, this.p.datNamespaces$).pipe(
+      first(d => !d.includes(undefined)),
+      takeUntil(this.destroy$)
+    ).subscribe(([pkProject, namespaces]) => {
 
-        this.inf.entity_association.upsert([{
-          fk_data_domain: resolved.items[0].pk_entity,
-          fk_info_range: 82843,
-          fk_property: 1329
-        } as InfEntityAssociation], 24)
+      const pkNamespace = namespaces.find(n => n.fk_root_namespace == null).pk_entity;
 
-      }
+      this.dat.digital.upsert([{ string: '' } as DatDigital], pkNamespace)
+        .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
+
+          if (resolved) {
+            resolved.items[0].pk_entity
+
+            this.inf.entity_association.upsert([{
+              fk_data_domain: resolved.items[0].pk_entity,
+              fk_info_range: pkParent,
+              fk_property: this.isReproProp(parentIsF2Expression)
+            } as InfEntityAssociation], pkProject)
+
+          }
+        })
     })
   }
 
+  /**
+   * When user adds a new Expression Portion to the content tree
+   */
+  addExpressionPortion(pkParent: number, parentIsF2Expression = false) {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-  tempAdd() {
-    this.dat.digital.upsert([{
-      string: 'New text'
-    } as DatDigital], 82438).resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-      if (resolved) {
-        resolved.items[0].pk_entity
-
+      this.p.openModalCreateOrAddEntity({
+        classAndTypePk: {
+          pkClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
+          pkType: undefined
+        },
+        pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,
+      }).subscribe((expPortion: InfPersistentItem) => {
+        // TODO: Integrate this in the create or add entity component
+        this.inf.persistent_item.loadNestedObject(pkProject, expPortion.pk_entity)
 
         this.inf.entity_association.upsert([{
-          fk_data_domain: resolved.items[0].pk_entity,
-          fk_info_range: 82843,
-          fk_property: 1329
-        } as InfEntityAssociation], 24)
+          fk_info_domain: expPortion.pk_entity,
+          fk_info_range: pkParent,
+          fk_property: this.isPartOfProp(parentIsF2Expression)
+        } as InfEntityAssociation], pkProject)
 
-      }
+      })
+    })
+  }
+
+  remove(node: ContentTreeNode) {
+    if (node.isDigital) this.removeDigital(node);
+    else this.removeExpressionPortion(node);
+  }
+
+  private removeDigital(node: ContentTreeNode) {
+    const entityAssociation = node.entityAssociation;
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+
+      // remove the current entity association from project
+      this.inf.entity_association.remove([entityAssociation], pkProject)
+
+      // get the digital
+      this.dat.digital$.by_pk_entity$.key(entityAssociation.fk_data_domain).pipe(
+        map(versions => latestVersion(versions))
+      ).subscribe(digital => {
+        // remove the digital
+        if (digital) this.dat.digital.delete([digital])
+      })
+    })
+  }
+
+  private removeExpressionPortion(node: ContentTreeNode) {
+    if (this.treeControl.getDescendants(node).length) return alert('You can not remove a section with content in it.');
+    else {
+
+      this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+
+        // remove the current entity association from project
+        this.inf.entity_association.remove([node.entityAssociation], pkProject)
+
+      })
+    }
+
+  }
+
+
+  open(node: ContentTreeNode) {
+    if (node.isDigital) console.log('open digital');//this.openDigital(node);
+    else this.openExpressionPortion(node);
+  }
+
+  openExpressionPortion(node: ContentTreeNode) {
+    this.p.addTab({
+      active: true,
+      component: 'entity-detail',
+      icon: 'persistent-entity',
+      data: {
+        pkEntity: node.entityAssociation.fk_info_domain
+      },
+      pathSegment: 'entityDetails'
     })
   }
 
@@ -496,11 +576,17 @@ export class ExpressionComponent implements OnInit, OnDestroy {
   tempRemove() {
     // remove the current entity association from project
     this.inf.entity_association.remove([{
-      pk_entity: 82872,
-      fk_info_domain: 82861,
-      fk_info_range: 82843,
-      fk_property: 1328
+      pk_entity: 83119,
+      fk_data_domain: 83118,
+      fk_info_range: 82825,
+      fk_property: 1329
     } as InfEntityAssociation], 24)
+
+    this.dat.digital$.by_pk_entity$.key(82861).pipe(
+      map(versions => latestVersion(versions))
+    ).subscribe(digital => {
+      this.dat.digital.delete([digital])
+    })
 
   }
 

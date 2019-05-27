@@ -1,8 +1,8 @@
 /* tslint:disable */
 import {
   ProProject,
-  SysSystemType,
-  InfLanguage
+  InfLanguage,
+  SysSystemType
 } from '../index';
 
 declare var Object: any;
@@ -19,8 +19,8 @@ export interface ProTextPropertyInterface {
   "sys_period"?: string;
   "fk_entity"?: number;
   project?: ProProject;
-  systemType?: SysSystemType;
   language?: InfLanguage;
+  systemType?: SysSystemType;
 }
 
 export class ProTextProperty implements ProTextPropertyInterface {
@@ -36,8 +36,8 @@ export class ProTextProperty implements ProTextPropertyInterface {
   "sys_period": string;
   "fk_entity": number;
   project?: ProProject;
-  systemType?: SysSystemType;
   language?: InfLanguage;
+  systemType?: SysSystemType;
   constructor(data?: ProTextPropertyInterface) {
     Object.assign(this, data);
   }
@@ -125,20 +125,20 @@ export class ProTextProperty implements ProTextPropertyInterface {
                   keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
-        systemType: {
-          name: 'systemType',
-          type: 'SysSystemType',
-          model: 'SysSystemType',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_system_type',
-          keyTo: 'pk_entity'
-        },
         language: {
           name: 'language',
           type: 'InfLanguage',
           model: 'InfLanguage',
           relationType: 'belongsTo',
                   keyFrom: 'fk_language',
+          keyTo: 'pk_entity'
+        },
+        systemType: {
+          name: 'systemType',
+          type: 'SysSystemType',
+          model: 'SysSystemType',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_system_type',
           keyTo: 'pk_entity'
         },
       }

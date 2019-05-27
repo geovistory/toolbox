@@ -1,9 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, ByPk } from 'app/core/store/model';
+import { Injectable } from '@angular/core';
+import { ByPk, IAppState } from 'app/core/store/model';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
-import { DatDigital } from '../sdk';
+import { DatDigital, DatNamespace } from '../sdk';
+import { DatActions } from './dat.actions';
 import { datDefinitions, datRoot } from './dat.config';
 
 class Selector {
@@ -34,10 +35,25 @@ class DatDigitalSelections extends Selector {
   public by_pk_entity$ = this.selector<ByPk<DatDigital>>('by_pk_entity')
 }
 
-export class DatSelector {
+class DatNamespaceSelections extends Selector {
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
 
-  constructor(public ngRedux: NgRedux<IAppState>,) { }
+  public by_pk_entity$ = this.selector<DatNamespace>('by_pk_entity')
+  public by_fk_project$ = this.selector<ByPk<DatNamespace>>('by_fk_project')
+}
+
+@Injectable()
+export class DatSelector extends DatActions {
+
+  constructor(public ngRedux: NgRedux<IAppState>) {
+    super(ngRedux)
+  }
 
   digital$ = new DatDigitalSelections(this.ngRedux, datDefinitions, 'digital');
+  namespace$ = new DatNamespaceSelections(this.ngRedux, datDefinitions, 'namespace');
 
 }

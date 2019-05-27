@@ -12,6 +12,7 @@ import { Types } from '../../modules/projects/containers/types/api/types.models'
 import { HasTypePropertyReadable } from '../state/models';
 import { Inf } from '../inf/inf.models';
 import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
+import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 
 export interface ProjectPreview {
   label?: string,
@@ -127,7 +128,7 @@ export interface ProjectDetail extends ProjectPreview {
 
 
   /******************************************************************
-   * Layout
+   * Layout – Tabs
    */
   list?: ListType;
 
@@ -162,6 +163,13 @@ export interface ProjectDetail extends ProjectPreview {
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   contrVocabSettings?: { [uiId: string]: Types }
+
+  /******************************************************************
+   * Layout – Modals
+   */
+
+  addModal?: CreateOrAddEntity;
+
 
   /******************************************************************
    * Things for Mentionings / Annotations

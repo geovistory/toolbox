@@ -16,5 +16,18 @@ export const datDefinitions: ReducerConfigCollection = {
         groupByFn: (item): string => item.pk_entity.toString()
       }
     ]
+  },
+  namespace: {
+    // facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => item.pk_entity.toString()
+    },
+    groupBy: [
+      {
+        keyInStore: 'fk_project',
+        groupByFn: (item): string => item.fk_project.toString()
+      }
+    ]
   }
 }

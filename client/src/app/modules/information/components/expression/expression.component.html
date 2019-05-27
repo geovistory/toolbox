@@ -3,6 +3,26 @@
 </pre> -->
 <!-- https://github.com/angular/components/issues/13616 -->
 
+<table class="mat-table w-100" *ngIf="pkExpression">
+  <thead>
+    <tr class="mat-header-row" fxLayout="row">
+      <th class="mat-header-cell pl-5" fxFlex="60" fxLayout="row" fxLayoutAlign="start center">
+        Name
+      </th>
+      <th class="mat-header-cell" fxFlex="30" fxLayout="row" fxLayoutAlign="start center">
+        Type
+      </th>
+      <th class="mat-header-cell pr-0" fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
+        <ng-container *ngTemplateOutlet="menuBtn; context:{
+          isDigital: false,
+          pkParent: pkExpression,
+          parentIsF2Expression: true
+        }"></ng-container>
+      </th>
+    </tr>
+  </thead>
+</table>
+
 
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
   <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle [ngClass]="{
@@ -28,6 +48,7 @@
 
         <div class="gv-ellipsis">
           {{node.name}}
+          <i *ngIf="!node.name" class="text-muted"> Empty </i>
         </div>
       </div>
 
@@ -37,7 +58,11 @@
       </div>
 
       <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
-        <ng-container *ngTemplateOutlet="menuBtn; context:{node:node}"></ng-container>
+        <ng-container *ngTemplateOutlet="menuBtn; context:{
+          isDigital: node.isDigital,
+          pkParent: node.entityAssociation.fk_info_domain,
+          node: node
+        }"></ng-container>
       </div>
     </div>
   </mat-tree-node>
@@ -71,7 +96,11 @@
       </div>
 
       <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
-        <ng-container *ngTemplateOutlet="menuBtn; context:{node:node}"></ng-container>
+        <ng-container *ngTemplateOutlet="menuBtn; context:{
+          isDigital: node.isDigital,
+          pkParent: node.entityAssociation.fk_info_domain,
+          node: node
+        }"></ng-container>
       </div>
     </div>
   </mat-tree-node>
@@ -84,26 +113,39 @@
 <button (click)="tempRemove()">Remove</button>
 
 
-<ng-template #menuBtn let-node="node">
+<ng-template #menuBtn let-isDigital="isDigital" let-pkParent="pkParent" let-parentIsF2Expression="parentIsF2Expression"
+  let-node="node">
   <button mat-icon-button [matMenuTriggerFor]="mainMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #mainMenu="matMenu" xPosition="before">
 
-    <!-- is folder -->
-    <button mat-menu-item *ngIf="!node.isDigital">
+    <!-- is expression portion or digital -->
+    <button mat-menu-item *ngIf="!parentIsF2Expression" (click)="open(node)">
+      <mat-icon>edit</mat-icon>
+      <span>Open</span>
+    </button>
+
+    <!-- is expression portion -->
+    <mat-divider *ngIf="!isDigital && !parentIsF2Expression"></mat-divider>
+
+    <!-- is expression or expression portion -->
+    <button mat-menu-item *ngIf="!isDigital" (click)="addExpressionPortion(pkParent, parentIsF2Expression)">
       <mat-icon>folder</mat-icon>
       <span>Add a Section</span>
     </button>
-    <button mat-menu-item (click)="addText(node)" *ngIf="!node.isDigital">
+    <button mat-menu-item *ngIf="!isDigital" (click)="addText(pkParent, parentIsF2Expression)">
       <mat-icon>description</mat-icon>
       <span>Add a Text</span>
     </button>
 
-    <!-- is digital -->
-    <button mat-menu-item *ngIf="node.isDigital">
-      <mat-icon>edit</mat-icon>
-      <span>Open</span>
+    <!-- is expression portion -->
+    <mat-divider *ngIf="!isDigital && !parentIsF2Expression"></mat-divider>
+
+    <!-- is expression portion or digital -->
+    <button mat-menu-item *ngIf="!parentIsF2Expression" (click)="removeExpressionPortion(node)">
+      <mat-icon>delete</mat-icon>
+      <span>Remove</span>
     </button>
 
   </mat-menu>

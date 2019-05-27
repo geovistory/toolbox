@@ -64,6 +64,35 @@ export class DatDigitalApi extends BaseLoopBackApi {
   }
 
   /**
+   * Deletes instances of DatDigital.
+   *
+   * @param {object} data Request data.
+   *
+   *  - `pks` – `{number}` - Array of Primary Key of DatDigitals
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DatDigital` object.)
+   * </em>
+   */
+  public bulkDelete(pks: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DatDigitals/delete-delete";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      pks: pks
+    };
+    let _urlParams: any = {};
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Finds the versions of given pkEntity.
    *
    * @param {number} pkEntity Primary Key of the digital object (pk_entity)

@@ -12,8 +12,8 @@ import { map } from 'rxjs/operators';
 import { ProTextProperty } from '../../models/ProTextProperty';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProProject } from '../../models/ProProject';
-import { SysSystemType } from '../../models/SysSystemType';
 import { InfLanguage } from '../../models/InfLanguage';
+import { SysSystemType } from '../../models/SysSystemType';
 
 
 /**

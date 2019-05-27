@@ -1,18 +1,21 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DatChunk, IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
-import { difference, groupBy, indexBy, path, without } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { difference, groupBy, indexBy, path, without, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { DatSelector } from '../dat/dat.service';
 import { InfSelector } from '../inf/inf.service';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual } from '../sdk';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual, DatNamespace } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
+import { MatDialog } from '@angular/material';
+import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 
 
 
@@ -36,6 +39,7 @@ export class ActiveProjectService {
   public comQueryLoading$: Observable<boolean>
   public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
   public comVisualLoading$: Observable<boolean>
+  public datNamespaces$: Observable<DatNamespace[]>
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -53,7 +57,7 @@ export class ActiveProjectService {
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
     private entityPreviewSocket: EntityPreviewSocket,
-
+    public dialog: MatDialog
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -91,6 +95,11 @@ export class ActiveProjectService {
         }
         return classPksEnabledInEntities;
       })
+    )
+
+    this.datNamespaces$ = this.pkProject$.pipe(
+      mergeMap(pro => this.dat$.namespace$.by_fk_project$.key(pro)),
+      map(byPk => values(byPk))
     )
 
     // emits true if no toolbox panel is opened
@@ -473,7 +482,7 @@ export class ActiveProjectService {
   }
 
   /************************************************************************************
-  * Layout
+  * Layout -- Tabs
   ************************************************************************************/
   setPanels(panels: Panel[], uiIdSerial: number, panelSerial: number, focusedPanel: number) {
     this.ngRedux.dispatch(this.actions.setPanels(panels, uiIdSerial, panelSerial, focusedPanel))
@@ -523,4 +532,29 @@ export class ActiveProjectService {
       }
     })
   }
+
+  /************************************************************************************
+  * Layout -- Modals
+  ************************************************************************************/
+
+  /**
+   * Returns an observable that emits the added entity
+   */
+  openModalCreateOrAddEntity(config: CreateOrAddEntity) {
+    const observable = new Subject();
+
+    this.ngRedux.dispatch(this.actions.openAddForm(config));
+
+    const dialogRef = this.dialog.open(AddOrCreateEntityModal, {
+      height: '90%',
+      width: '90%',
+      data: { basePath: ['activeProject', 'addModal'] }
+    }).afterClosed().subscribe(result => {
+      this.ngRedux.dispatch(this.actions.closeAddForm());
+      if (result) observable.next(result)
+    });
+
+    return observable;
+  }
+
 }

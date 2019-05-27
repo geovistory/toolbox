@@ -2,31 +2,17 @@
 
 declare var Object: any;
 export interface DatNamespaceInterface {
+  "pk_entity"?: number;
   "fk_root_namespace"?: number;
   "fk_project": number;
   "standard_label": string;
-  "pk_entity"?: number;
-  "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
-  "fk_namespace"?: number;
-  namespace?: DatNamespace;
 }
 
 export class DatNamespace implements DatNamespaceInterface {
+  "pk_entity": number;
   "fk_root_namespace": number;
   "fk_project": number;
   "standard_label": string;
-  "pk_entity": number;
-  "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
-  "fk_namespace": number;
-  namespace?: DatNamespace;
   constructor(data?: DatNamespaceInterface) {
     Object.assign(this, data);
   }
@@ -60,6 +46,10 @@ export class DatNamespace implements DatNamespaceInterface {
       path: 'DatNamespaces',
       idName: 'pk_entity',
       properties: {
+        "pk_entity": {
+          name: 'pk_entity',
+          type: 'number'
+        },
         "fk_root_namespace": {
           name: 'fk_root_namespace',
           type: 'number'
@@ -72,44 +62,8 @@ export class DatNamespace implements DatNamespaceInterface {
           name: 'standard_label',
           type: 'string'
         },
-        "pk_entity": {
-          name: 'pk_entity',
-          type: 'number'
-        },
-        "entity_version": {
-          name: 'entity_version',
-          type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
-        },
-        "fk_namespace": {
-          name: 'fk_namespace',
-          type: 'number'
-        },
       },
       relations: {
-        namespace: {
-          name: 'namespace',
-          type: 'DatNamespace',
-          model: 'DatNamespace',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_namespace',
-          keyTo: 'pk_entity'
-        },
       }
     }
   }

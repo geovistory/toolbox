@@ -21,13 +21,15 @@ import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
 import { SystemSelector } from '../sys/sys.service';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { SysClassHasTypePropertySlice } from '../sys/sys.models';
+import { DatSelector } from 'app/core/dat/dat.service';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private systemService: SystemSelector,
+    private sys: SystemSelector,
+    private dat: DatSelector,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -125,8 +127,9 @@ export class ActiveProjectEpics {
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
-        this.systemService.system_relevant_class.load();
-        this.systemService.class_has_type_property.load();
+        this.sys.system_relevant_class.load();
+        this.sys.class_has_type_property.load();
+        this.dat.namespace.load('', action.meta.pk_project)
 
 
         combineLatest(
@@ -136,8 +139,9 @@ export class ActiveProjectEpics {
           this.dfhPropertyApi.propertyFieldInfo(false),
           this.comClassFieldApi.find(),
           this.sysHasTypePropsApi.find(),
-          this.systemService.system_relevant_class$.by_fk_class$.all$,
-          this.systemService.class_has_type_property$.slice$
+          this.sys.system_relevant_class$.by_fk_class$.all$,
+          this.sys.class_has_type_property$.slice$,
+          this.dat.namespace$.by_fk_project$.key(action.meta.pk_project)
         )
           .pipe(filter((res) => !res.includes(undefined)))
           .subscribe((res) => {

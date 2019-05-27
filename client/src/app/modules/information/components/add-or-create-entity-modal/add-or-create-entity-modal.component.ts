@@ -2,17 +2,17 @@ import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core
 import { Subject } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
-export interface TypeAddFormData {
+export interface AddOrCreateEntityModalData {
   basePath: string[];
 }
 
 
 @Component({
-  selector: 'gv-type-add-form',
-  templateUrl: './type-add-form.component.html',
-  styleUrls: ['./type-add-form.component.css']
+  selector: 'gv-add-or-create-entity-modal',
+  templateUrl: './add-or-create-entity-modal.component.html',
+  styleUrls: ['./add-or-create-entity-modal.component.css']
 })
-export class TypeAddFormComponent implements OnInit, OnDestroy {
+export class AddOrCreateEntityModal implements OnInit, OnDestroy {
   @HostBinding('class.h-100') h = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
@@ -25,8 +25,8 @@ export class TypeAddFormComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    public dialogRef: MatDialogRef<TypeAddFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TypeAddFormData
+    public dialogRef: MatDialogRef<AddOrCreateEntityModal>,
+    @Inject(MAT_DIALOG_DATA) public data: AddOrCreateEntityModalData
   ) { }
 
 

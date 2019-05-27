@@ -24,8 +24,6 @@ import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
 import { SysAppContext } from '../../models/SysAppContext';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
-import { DatNamespace } from '../../models/DatNamespace';
-import { SysSystemType } from '../../models/SysSystemType';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfRole } from '../../models/InfRole';
@@ -34,7 +32,9 @@ import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfPlace } from '../../models/InfPlace';
+import { DatNamespace } from '../../models/DatNamespace';
 import { InfTextProperty } from '../../models/InfTextProperty';
+import { SysSystemType } from '../../models/SysSystemType';
 
 export interface Models { [name: string]: any }
 
@@ -66,8 +66,6 @@ export class SDKModels {
     SysAppContext: SysAppContext,
     ProClassFieldConfig: ProClassFieldConfig,
     ProDfhClassProjRel: ProDfhClassProjRel,
-    DatNamespace: DatNamespace,
-    SysSystemType: SysSystemType,
     InfAppellation: InfAppellation,
     InfTemporalEntity: InfTemporalEntity,
     InfRole: InfRole,
@@ -76,7 +74,9 @@ export class SDKModels {
     InfTimePrimitive: InfTimePrimitive,
     InfEntityAssociation: InfEntityAssociation,
     InfPlace: InfPlace,
+    DatNamespace: DatNamespace,
     InfTextProperty: InfTextProperty,
+    SysSystemType: SysSystemType,
     
   };
 

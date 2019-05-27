@@ -11,8 +11,8 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DatChunk } from '../../models/DatChunk';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { DatNamespace } from '../../models/DatNamespace';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
+import { DatNamespace } from '../../models/DatNamespace';
 
 
 /**

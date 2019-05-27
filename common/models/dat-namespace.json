@@ -1,6 +1,6 @@
 {
   "name": "DatNamespace",
-  "base": "DatEntity",
+  "base": "AbstractEntity",
   "options": {
     "postgresql": {
       "schema": "data",
@@ -8,6 +8,11 @@
     }
   },
   "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
     "fk_root_namespace": {
       "type": "number"
     },
@@ -41,7 +46,9 @@
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
-      "property": []
+      "property": [
+        "byProject"
+      ]
     },
     {
       "principalType": "ROLE",
@@ -52,5 +59,31 @@
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "byProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Key of the Project for which the namespaces should be found.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DatNamespace"
+        ],
+        "root": true
+      },
+      "description": "Finds namespaces of a project.",
+      "http": {
+        "path": "/find-by-project",
+        "verb": "get"
+      }
+    }
+  }
 }
