@@ -88,6 +88,8 @@
       "permission": "ALLOW",
       "property": [
         "findOrCreateInfEntityAssociation",
+        "findOrCreateInfEntityAssociations",
+        "contentTree",
         "mentionings"
       ]
     }
@@ -129,6 +131,49 @@
       "description": "Find or create an information entity association.",
       "http": {
         "path": "/findOrCreate",
+        "verb": "post"
+      }
+    },
+    "findOrCreateInfEntityAssociations": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "InfEntityAssociation"
+          ],
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfEntityAssociation"
+        ],
+        "root": true
+      },
+      "description": "Find or create information entity associations.",
+      "http": {
+        "path": "/find-or-create-many",
         "verb": "post"
       }
     },
@@ -383,6 +428,40 @@
       "description": "Find mentionings of section (F2 Expression).",
       "http": {
         "path": "/mentionings-of-section",
+        "verb": "get"
+      }
+    },
+    "contentTree": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkExpressionEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the F2 Expression entity for which the content tree is needed.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfEntityAssociation"
+        ],
+        "root": true
+      },
+      "description": "Get an array of entity associations that build the tree of the content of an F2 Expression.",
+      "http": {
+        "path": "/content-tree",
         "verb": "get"
       }
     }

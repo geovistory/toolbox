@@ -7,6 +7,6 @@
       (select)="startCreate($event, pkUiContextCreate)" buttonText="+ Add" placement="right"></gv-class-and-type-selector>
   </gv-list-drawer-header>
  
-  <gv-list [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)">    </gv-list>
+  <gv-list [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)" [pkAllowedClasses$]="pkClassesOfAddBtn$">    </gv-list>
 
 </div>

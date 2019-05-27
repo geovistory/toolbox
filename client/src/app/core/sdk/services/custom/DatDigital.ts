@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 import { DatDigital } from '../../models/DatDigital';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { DatChunk } from '../../models/DatChunk';
+import { DatNamespace } from '../../models/DatNamespace';
 
 
 /**
@@ -31,13 +32,13 @@ export class DatDigitalApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates or updates the instance of DatDigital and creates or updates its relation to the project of given projectId.
+   * Creates or updates instances of DatDigital.
    *
-   * @param {number} pkProject Project id
+   * @param {number} pkNamespace Namespace
    *
    * @param {object} data Request data.
    *
-   *  - `data` – `{DatDigital}` - Instance of DatDigital
+   *  - `data` – `{DatDigital}` - Array DatDigital
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -48,16 +49,16 @@ export class DatDigitalApi extends BaseLoopBackApi {
    * This usually means the response is a `DatDigital` object.)
    * </em>
    */
-  public saveWithEpr(data: any, pkProject: any, customHeaders?: Function): Observable<any> {
+  public bulkUpsert(pkNamespace: any, data: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DatDigitals/save-with-epr";
+    "/DatDigitals/bulk-upsert";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
     };
     let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkNamespace !== 'undefined' && pkNamespace !== null) _urlParams.pkNamespace = pkNamespace;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

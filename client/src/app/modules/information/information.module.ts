@@ -149,17 +149,20 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { EntityDetailAPIEpics } from './containers/entity-detail/api/entity-detail.epics';
 import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
-import { MatTooltipModule, MatTabsModule, MatDividerModule } from '@angular/material';
+import { MatTooltipModule, MatTabsModule, MatDividerModule, MatTreeModule, MatIconModule, MatButtonModule, MatMenuModule } from '@angular/material';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
-
+import { ExpressionComponent } from './components/expression/expression.component';
+import { CdkTreeModule } from '@angular/cdk/tree';
+import {FlexLayoutModule} from '@angular/flex-layout'
 
 
 
 @NgModule({
   imports: [
     CommonModule,
+    FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
     GvAngularCesiumModule,
@@ -194,7 +197,12 @@ import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity
     DragDropModule,
     MatTooltipModule,
     MatTabsModule,
+    MatTreeModule,
+    CdkTreeModule, // Check if still used
+    MatIconModule,
     MatDividerModule,
+    MatButtonModule,
+    MatMenuModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
     EntityPreviewModule,
@@ -310,6 +318,7 @@ import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity
     MentioningListComponent,
     MentioningCreateCtrlComponent,
     TileHeaderComponent,
+    ExpressionComponent,
   ],
   providers: [
 

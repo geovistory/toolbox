@@ -11,6 +11,8 @@ export interface DatNamespaceInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
+  "fk_namespace"?: number;
+  namespace?: DatNamespace;
 }
 
 export class DatNamespace implements DatNamespaceInterface {
@@ -23,6 +25,8 @@ export class DatNamespace implements DatNamespaceInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
+  "fk_namespace": number;
+  namespace?: DatNamespace;
   constructor(data?: DatNamespaceInterface) {
     Object.assign(this, data);
   }
@@ -92,8 +96,20 @@ export class DatNamespace implements DatNamespaceInterface {
           name: 'sys_period',
           type: 'string'
         },
+        "fk_namespace": {
+          name: 'fk_namespace',
+          type: 'number'
+        },
       },
       relations: {
+        namespace: {
+          name: 'namespace',
+          type: 'DatNamespace',
+          model: 'DatNamespace',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_namespace',
+          keyTo: 'pk_entity'
+        },
       }
     }
   }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SectionListComponent } from './section-list.component';
+import { ExpressionComponent } from './expression.component';
 
-describe('SectionListComponent', () => {
-  let component: SectionListComponent;
-  let fixture: ComponentFixture<SectionListComponent>;
+describe('ExpressionComponent', () => {
+  let component: ExpressionComponent;
+  let fixture: ComponentFixture<ExpressionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SectionListComponent ]
+      declarations: [ ExpressionComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SectionListComponent);
+    fixture = TestBed.createComponent(ExpressionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

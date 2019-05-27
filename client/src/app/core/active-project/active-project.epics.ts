@@ -18,15 +18,16 @@ import { IAppState, ByPk } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { SystemService } from '../sys/sys.service';
+import { SystemSelector } from '../sys/sys.service';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
+import { SysClassHasTypePropertySlice } from '../sys/sys.models';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private systemService: SystemService,
+    private systemService: SystemSelector,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -39,7 +40,7 @@ export class ActiveProjectEpics {
     private comVisual: ProVisualApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: SysClassFieldApi,
-    private comHasTypePropsApi: SysClassHasTypePropertyApi,
+    private sysHasTypePropsApi: SysClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -125,6 +126,8 @@ export class ActiveProjectEpics {
         globalStore.next(this.loadingBarActions.startLoading());
 
         this.systemService.system_relevant_class.load();
+        this.systemService.class_has_type_property.load();
+
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
@@ -132,8 +135,9 @@ export class ActiveProjectEpics {
           this.dfhPropertyApi.propertyFieldInfo(true),
           this.dfhPropertyApi.propertyFieldInfo(false),
           this.comClassFieldApi.find(),
-          this.comHasTypePropsApi.readableList(),
-          this.systemService.system_relevant_class$.by_fk_class$
+          this.sysHasTypePropsApi.find(),
+          this.systemService.system_relevant_class$.by_fk_class$.all$,
+          this.systemService.class_has_type_property$.slice$
         )
           .pipe(filter((res) => !res.includes(undefined)))
           .subscribe((res) => {
@@ -142,7 +146,9 @@ export class ActiveProjectEpics {
               ingoingProperties: DfhProperty[] = res[3],
               classFields = res[4] as SysClassField[],
               hasTypeProps: HasTypePropertyReadable[] = res[5],
-              systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6];
+              systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6],
+              classHasTypeProperty: SysClassHasTypePropertySlice = res[7];
+
 
             const properties = {
               ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
@@ -153,7 +159,8 @@ export class ActiveProjectEpics {
               classes: {},
               fieldList: {},
               properties,
-              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps)
+              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps),
+              classHasTypeProperty
             }
 
             const hasTypePropertiesByTypeClass = indexBy((prop) => prop.pk_type_class.toString(), hasTypeProps)

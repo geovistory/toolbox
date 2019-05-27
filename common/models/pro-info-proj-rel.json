@@ -73,7 +73,8 @@
       "permission": "ALLOW",
       "property": [
         "patchOrCreate",
-        "updateEprAttributes"
+        "updateEprAttributes",
+        "bulkUpdateEprAttributes"
       ]
     }
   ],
@@ -123,6 +124,45 @@
       "description": "Updates the ProInfoProjRel found by fk_project and fk_entity.",
       "http": {
         "path": "/updateEprAttributes",
+        "verb": "put"
+      }
+    },
+    "bulkUpdateEprAttributes": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "fk_project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "items",
+          "type": ["ProInfoProjRel"],
+          "required": true,
+          "description": "Array of ProInfoProjRel (fk_project must be equal to pkProject)",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "ProInfoProjRel",
+        "root": true
+      },
+      "description": "Updates the ProInfoProjRel of all found by fk_project and fk_entity.",
+      "http": {
+        "path": "/bulk-update-attributes",
         "verb": "put"
       }
     }

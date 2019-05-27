@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ClassConfig, IAppState, InfEntityAssociation, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, PeItDetail, SubstoreComponent, TeEntDetail, U } from 'app/core';
+import { ClassConfig, IAppState, InfEntityAssociation, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, PeItDetail, SubstoreComponent, TeEntDetail, U, ActiveProjectService } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -44,7 +44,7 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
   @select() pkNamespace$: Observable<number>;
 
   // emits the nested PeIt or TeEn, no matter if created, added, opened or selected!
-  @Output() done = new EventEmitter<InfPersistentItem | InfTemporalEntity>();
+  @Output() done = new EventEmitter<InfPersistentItem |  InfTemporalEntity>();
 
   // on cancel
   @Output() cancel = new EventEmitter<void>();
@@ -65,7 +65,8 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
     private epics: CreateOrAddEntityAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     private peItApi: InfPersistentItemApi,
-    private teEnApi: InfTemporalEntityApi
+    private teEnApi: InfTemporalEntityApi,
+    private p: ActiveProjectService
   ) {
     super()
   }
@@ -77,9 +78,9 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
 
-    combineLatest(this.classAndTypePk$, this.pkUiContext$).pipe(
+    combineLatest(this.classAndTypePk$, this.pkUiContext$, this.p.crm$).pipe(
       first((d) => {
-        return ((d[0] && d[1]) ? true : false)
+        return ((d[0] && d[1] && d[2]) ? true : false)
       }),
       takeUntil(this.destroy$)
     ).subscribe((d) => {
@@ -87,7 +88,7 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
       const pkClass = d[0].pkClass;
       const pkType = d[0].pkType;
       const pkUiContext = d[1];
-      const crm = this.ngRedux.getState().activeProject.crm;
+      const crm = d[2];
       // if (!pkClass) throw Error('please provide a pkClass.');
       // if (!pkUiContext) throw Error('please provide a pkUiContext.');
 

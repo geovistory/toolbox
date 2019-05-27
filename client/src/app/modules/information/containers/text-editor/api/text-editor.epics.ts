@@ -27,7 +27,7 @@ export class TextEditorAPIEpics {
       this.createLoadTextEditorEpic(c),
       this.createSaveTextEditorEpic(c),
       this.createRelateToSectionEpic(c),
-      this.createGetVersionListEpic(c),
+      // this.createGetVersionListEpic(c),
       this.createChangeVersionEpic(c),
     );
   }
@@ -105,39 +105,39 @@ export class TextEditorAPIEpics {
            */
 
 
-          this.digitObjApi.saveWithEpr(action.meta.digitalObject, action.meta.pkProject)
-            /**
-             * Subscribe to the api call
-             */
-            .subscribe((data: DatDigital[]) => {
+        //   this.digitObjApi.saveWithEpr(action.meta.digitalObject, action.meta.pkProject)
+        //     /**
+        //      * Subscribe to the api call
+        //      */
+        //     .subscribe((data: DatDigital[]) => {
 
 
-              const dobj = data.length ? data[0] : undefined;
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.saveSucceeded(dobj));
+        //       const dobj = data.length ? data[0] : undefined;
+        //       /**
+        //        * Emit the global action that completes the loading bar
+        //        */
+        //       globalStore.next(this.loadingBarActions.completeLoading());
+        //       /**
+        //        * Emit the local action on loading succeeded
+        //        */
+        //       c.localStore.dispatch(this.actions.saveSucceeded(dobj));
 
-            }, error => {
-              /**
-        * Emit the global action that shows some loading error message
-        */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              c.localStore.dispatch(this.actions.saveFailed({ status: '' + error.status }))
-            })
+        //     }, error => {
+        //       /**
+        // * Emit the global action that shows some loading error message
+        // */
+        //       globalStore.next(this.loadingBarActions.completeLoading());
+        //       globalStore.next(this.notificationActions.addToast({
+        //         type: 'error',
+        //         options: {
+        //           title: error.message
+        //         }
+        //       }));
+        //       /**
+        //        * Emit the local action on loading failed
+        //        */
+        //       c.localStore.dispatch(this.actions.saveFailed({ status: '' + error.status }))
+        //     })
         })),
         takeUntil(c.destroy$)
       )
@@ -209,70 +209,70 @@ export class TextEditorAPIEpics {
     }
   }
 
-  private createGetVersionListEpic(c: TextEditorComponent): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(TextEditorAPIActions.LOAD_SUCCEEDED, TextEditorAPIActions.SAVE_SUCCEEDED),
-        filter(action => ofSubstore(c.basePath)(action)),
-        // Let it pass, only if there is a digital object yet
-        filter(() => ('pk_entity' in (c.localStore.getState().digitalObject || {}))),
-        switchMap((action: TextEditorAPIAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          c.localStore.dispatch(this.actions.loadVersionList())
+  // private createGetVersionListEpic(c: TextEditorComponent): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(TextEditorAPIActions.LOAD_SUCCEEDED, TextEditorAPIActions.SAVE_SUCCEEDED),
+  //       filter(action => ofSubstore(c.basePath)(action)),
+  //       // Let it pass, only if there is a digital object yet
+  //       filter(() => ('pk_entity' in (c.localStore.getState().digitalObject || {}))),
+  //       switchMap((action: TextEditorAPIAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         c.localStore.dispatch(this.actions.loadVersionList())
 
-          /**
-           * Do some api call
-           */
-          this.digitObjApi.getVersions(c.localStore.getState().digitalObject.pk_entity)
-            /**
-             * Subscribe to the api call
-             */
-            .subscribe((digitals: DatDigital[]) => {
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.digitObjApi.getVersions(c.localStore.getState().digitalObject.pk_entity)
+  //           /**
+  //            * Subscribe to the api call
+  //            */
+  //           .subscribe((digitals: DatDigital[]) => {
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              // map versions to IVersion[]
-              const versionList = digitals.map(item => {
-                return {
-                  entityVersion: item.entity_version,
-                  pkEntityVersionConcat: item.pk_text_version_concat,
-                  pkEntity: item.pk_entity
-                } as IVersion
-              })
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.loadVersionListSucceeded(versionList));
+  //             // map versions to IVersion[]
+  //             const versionList = digitals.map(item => {
+  //               return {
+  //                 entityVersion: item.entity_version,
+  //                 pkEntityVersionConcat: item.pk_text_version_concat,
+  //                 pkEntity: item.pk_entity
+  //               } as IVersion
+  //             })
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             c.localStore.dispatch(this.actions.loadVersionListSucceeded(versionList));
 
-            }, error => {
-              /**
-        * Emit the global action that shows some loading error message
-        */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              c.localStore.dispatch(this.actions.loadVersionListFailed({ status: '' + error.status }))
-            })
-        })),
-        takeUntil(c.destroy$)
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //       * Emit the global action that shows some loading error message
+  //       */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             c.localStore.dispatch(this.actions.loadVersionListFailed({ status: '' + error.status }))
+  //           })
+  //       })),
+  //       takeUntil(c.destroy$)
+  //     )
+  //   }
+  // }
 
 
   private createChangeVersionEpic(c: TextEditorComponent): Epic {

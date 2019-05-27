@@ -148,6 +148,11 @@
         [basePath]="basePath.concat('sectionList')" [loadListOnInit]="true" (close)="toggle('showSectionList')">
       </gv-section-list>
 
+      <!-- Section List. Sections of a source -->
+      <gv-expression class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$" *ngIf="(showSectionList$ | async) && !isolatedChild"
+        (close)="toggle('showSectionList')">
+      </gv-expression>
+
       <!-- Repros. Reproductions of a section -->
       <gv-repros class="gv-flex-fh" class="gv-tile" *ngIf="(showRepros$ | async) && !isolatedChild"
         [basePath]="basePath.concat('repros')" (annotate)="onAnnotate()" (close)="toggle('showRepros')"></gv-repros>
@@ -174,7 +179,7 @@
 
   <!-- ********************** Isolated Create Section ***************************
        * - If 'create' is truthy, show a form with SourceCreateFormComponent
-       *     listening to ok and cancel Outputs 
+       *     listening to ok and cancel Outputs
        -->
   <div *ngIf="(showSectionList$ | async)" [hidden]="!(sectionList$ | async)?.create"
     [ngClass]="{'gv-flex-fh': (sectionList$ | async)?.create}">

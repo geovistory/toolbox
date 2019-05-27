@@ -68,7 +68,7 @@ export class DfhLabelListEditComponent implements OnInit, OnDestroy {
 
 
   upsert(label: DfhLabel) {
-    this.dfhService.label.upsert([label]).pipe(takeUntil(this.destroy$)).subscribe((pending) => {
+    this.dfhService.label.upsert([label]).pending$.pipe(takeUntil(this.destroy$)).subscribe((pending) => {
       if (pending) this.loading = true;
       else this.loading = false
     });

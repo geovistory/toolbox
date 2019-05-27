@@ -98,21 +98,21 @@ module.exports = function (InfEntity) {
 
   /**
    * Finds or creates an InfPersistentItem.
-   * 
-   * The pk_entity is relevant for finding or creating an entity. 
+   *
+   * The pk_entity is relevant for finding or creating an entity.
    * - Provide no pk_entity to create a new record.
-   * - Provide a pk_entity to find a record. If no record is found, an error is thrown. 
-   * 
+   * - Provide a pk_entity to find a record. If no record is found, an error is thrown.
+   *
    * The requstedObject is relevant for related models.
    * - Provide a entity_version_project_rel[0] to customize the project relation
    * - Provide pi_roles to findOrCreate the roles and its children
-   * 
+   *
    * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
-   * 
+   *
    * @param {LoopackModel} Model The loopback model InfPersistentItem.
    * @param {number} projectId the project id
    * @param {any} dataObject the data object containing the values we check for existing entities (pk_entity) or to create (notes)
-   * @param {any} requestedObject [optional] plain object. 
+   * @param {any} requestedObject [optional] plain object.
    */
   InfEntity._findOrCreatePeIt = function (Model, projectId, dataObject, ctx) {
 
@@ -121,7 +121,7 @@ module.exports = function (InfEntity) {
       if (!ctx.req.accessToken.userId) return reject('Something went wrong with createing a peIt or TeEnt');
       const accountId = ctx.req.accessToken.userId;
 
-      // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
+      // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined
       Object.keys(dataObject).forEach(key => {
         if (dataObject[key] == undefined) {
           delete dataObject[key]
@@ -195,7 +195,7 @@ module.exports = function (InfEntity) {
 
             let reqEpr = {};
 
-            // create a new epr 
+            // create a new epr
             var newEpr = new ProInfoProjRel({
               "fk_entity": resultingEntity.pk_entity,
 
@@ -222,26 +222,26 @@ module.exports = function (InfEntity) {
 
   /**
    * Finds or creates an InfTemporalEntity.
-   * 
-   * The function first performes two checks to find out if the requested temporal entity already exists: 
+   *
+   * The function first performes two checks to find out if the requested temporal entity already exists:
    * 1. in the simplest case, the given dataObject has a pk_entity for which the existing temporal entity is retrieved from db.
    * 2. in a more complex case, the given dataObject holds an array of roles ('te_roles') for which the function checks,
    *    if there is an existing temporal entity whose identity defining roles do excactly match the given roles.
-   *    Remark: The given 'te_roles' must have a valid fk_entity and fk_property in order to be compared 
-   *    to the existing temporal entitites 
-   * 
-   * If none of the above checks retrieves an exsisting temporal entity, a new one is created. 
-   * 
+   *    Remark: The given 'te_roles' must have a valid fk_entity and fk_property in order to be compared
+   *    to the existing temporal entitites
+   *
+   * If none of the above checks retrieves an exsisting temporal entity, a new one is created.
+   *
    * The requstedObject is relevant for related models.
    * - Provide a entity_version_project_rel[0] to customize the project relation, else a new one is created with default values
    * - Provide te_roles to findOrCreate the roles and its children
-   * 
+   *
    * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
-   * 
+   *
    * @param {LoopackModel} Model The loopback model InfTemporalEntity.
    * @param {number} projectId the project id
    * @param {any} dataObject the data object containing the values we check for existing entities (pk_entity) or to create (notes)
-   * @param {any} requestedObject [optional] plain object. 
+   * @param {any} requestedObject [optional] plain object.
    */
   InfEntity._findOrCreateTeEnt = function (Model, projectId, dataObject, ctx) {
     return new Promise((resolve, reject) => {
@@ -251,7 +251,7 @@ module.exports = function (InfEntity) {
       const accountId = ctx.req.accessToken.userId;
 
 
-      // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined 
+      // cleanup data object: remove all undefined properties to avoid creating e.g. pk_entity = undefined
       Object.keys(dataObject).forEach(key => {
         if (dataObject[key] == undefined) {
           delete dataObject[key]
@@ -318,7 +318,7 @@ module.exports = function (InfEntity) {
 
           let reqEpr = {};
 
-          // create a new epr 
+          // create a new epr
           var newEpr = new ProInfoProjRel({
             fk_entity: resultingEntity.pk_entity,
             fk_project: projectId,
@@ -350,27 +350,27 @@ module.exports = function (InfEntity) {
 
   /**
    * Finds or creates an entity role or an object by value
-   * 
+   *
    * Those Models use this method:
    * DatChunk, InfEntityAssociation
-   * 
+   *
    * Those Models still use the entity_version which is deprecated:
    * InfRole, InfTimePrimitive, InfAppellation, InfLanguage
    *
-   * The data object is relevant for finding a record. 
+   * The data object is relevant for finding a record.
    * - Provide a data object with all values relevant to uniquely identify this type of record.
    * - The method will remove the pk_entity from the data object, if one is provided accidentially.
    *
-   * Explanation: The values of roles and objects are unique. For example, there can't be two roles with 
-   * the same fk_entity and fk_temporal_entity, and there can't be two timePrimitives with the same values. 
-   * Therefore the 'unique identifier' relevant to findOrCreate are the values of the objects, not the pk_entity. 
-   * 
+   * Explanation: The values of roles and objects are unique. For example, there can't be two roles with
+   * the same fk_entity and fk_temporal_entity, and there can't be two timePrimitives with the same values.
+   * Therefore the 'unique identifier' relevant to findOrCreate are the values of the objects, not the pk_entity.
+   *
    * Remark: To find or create a role or an object (e.g. InfRole, InfTimePrimitive or InfAppellation), use find or create object
-   * 
+   *
    * @param {LoopackModel} Model The loopback model like e.g. InfRole
    * @param {number} projectId the project id
    * @param {any} dataObject the data object containing the values we check for existing entities
-   * @param {any} requestedObject [optional] plain object. Provide a epr to customize the project relation    
+   * @param {any} requestedObject [optional] plain object. Provide a epr to customize the project relation
    */
   InfEntity._findOrCreateByValue = function (Model, projectId, dataObject, requestedObject, ctx) {
     return new Promise((resolve, reject) => {
@@ -442,11 +442,15 @@ module.exports = function (InfEntity) {
               let reqEpr = {};
               if (requestedObject) {
                 if (requestedObject.entity_version_project_rels) {
-                  reqEpr = requestedObject.entity_version_project_rels[0];
+                  if (typeof requestedObject.entity_version_project_rels === 'function') {
+                    reqEpr = requestedObject.entity_version_project_rels()[0];
+                  } else {
+                    reqEpr = requestedObject.entity_version_project_rels[0];
+                  }
                 }
               }
 
-              // create a new epr 
+              // create a new epr
               var newEpr = new ProInfoProjRel({
                 "fk_entity": resultingEntity.pk_entity,
                 "fk_project": projectId,

@@ -1,15 +1,18 @@
 <div class="gv-flex-fh">
 
   <gv-list-drawer-header>
-    
+
     <div title>Your Entities</div>
-    <gv-class-and-type-selector buttons buttonClass="btn-primary btn-sm no-caret mr-0" *ngIf="pkClassesInProject != undefined && (p.pkProject$ |async)"
-      [pkClasses]="pkClassesInProject" [pkProject]="(p.pkProject$ |async)" [basePath]="basePath.concat('classAndTypeSelector')"
-      (select)="startCreate($event)" buttonText="+ Add" placement="right" hasFilter="true"></gv-class-and-type-selector>
+    <gv-class-and-type-selector buttons buttonClass="btn-primary btn-sm no-caret mr-0"
+      *ngIf="(p.classPksEnabledInEntities$ | async )&& (p.pkProject$ |async)"
+      [pkClasses]="p.classPksEnabledInEntities$ | async " [pkProject]="(p.pkProject$ |async)"
+      [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event)" buttonText="+ Add"
+      placement="right" hasFilter="true"></gv-class-and-type-selector>
 
   </gv-list-drawer-header>
-  
 
-  <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" [basePath]="basePath.concat('items')" (onOpen)="openEntity($event)">
+
+  <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" [basePath]="basePath.concat('items')"
+    (onOpen)="openEntity($event)" [pkAllowedClasses$]="p.classPksEnabledInEntities$">
   </gv-list>
 </div>

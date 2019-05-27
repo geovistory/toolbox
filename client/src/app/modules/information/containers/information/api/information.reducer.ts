@@ -11,18 +11,6 @@ export function informationReducer(state: Information = INITIAL_STATE, a: Action
 
   switch (action.type) {
 
-    /*****************************************************
-    * Reducers to manage the list
-    *****************************************************/
-    case InformationAPIActions.INITIALIZE_LIST:
-      state = {
-        ...state,
-        items: {
-          pkAllowedClasses: action.meta.pkClasses
-        }
-      };
-      break;
-
 
     /*****************************************************
     * Reducers called on destroy of component

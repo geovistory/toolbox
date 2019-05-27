@@ -136,18 +136,6 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
     this.destroy$.unsubscribe();
   }
 
-
-  // select(type: TypeOption) {
-  //   this.selectedTypeOption = type;
-
-  //   this.onChange(new InfEntityAssociation({
-  //     fk_info_domain: undefined,
-  //     fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
-  //     fk_info_domain: type.pk_entity
-  //   }))
-  // }
-
-
   select(item: TreeviewItem) {
     if (item.children === undefined) {
       this.selectItem(item);
@@ -165,17 +153,21 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
 
 
   emitOnChange() {
-    if (this.dropdownTreeviewSelectI18n.selectedItem
-      && this.dropdownTreeviewSelectI18n.selectedItem.value
-      && this.localStore.getState()) {
-      this.onChange(new InfEntityAssociation({
-        fk_info_domain: undefined,
-        fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[this.localStore.getState().pkTypedClass],
-        fk_info_range: this.dropdownTreeviewSelectI18n.selectedItem.value
-      }))
-    } else {
-      this.onChange(null)
-    }
+    this.p.crm$.pipe(first(x => !!x.classHasTypeProperty), takeUntil(this.destroy$)).subscribe((crm) => {
+      const fk_property = U.obj2Arr(crm.classHasTypeProperty
+        .by_pk_typed_class[this.localStore.getState().pkTypedClass])[0].dfh_pk_property;
+      if (this.dropdownTreeviewSelectI18n.selectedItem
+        && this.dropdownTreeviewSelectI18n.selectedItem.value
+        && this.localStore.getState()) {
+        this.onChange(new InfEntityAssociation({
+          fk_info_domain: undefined,
+          fk_property,
+          fk_info_range: this.dropdownTreeviewSelectI18n.selectedItem.value
+        }))
+      } else {
+        this.onChange(null)
+      }
+    })
   }
 
   /****************************************

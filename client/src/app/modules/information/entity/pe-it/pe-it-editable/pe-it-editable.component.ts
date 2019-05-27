@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { IAppState, U, UiContext } from 'app/core';
+import { IAppState, InfPersistentItem, U, UiContext } from 'app/core';
 import { AddOption, ClassInstanceLabel, CollapsedExpanded, PeItDetail, PropertyField, PropertyFieldForm, SubstoreComponent } from 'app/core/state/models';
 import { TextPropertyField } from 'app/core/state/models/text-property-field';
 import { RootEpics } from 'app/core/store/epics';
@@ -35,7 +35,7 @@ export class PeItEditableComponent extends EntityBase implements AfterViewInit, 
 
   @Output() remove = new EventEmitter<number>();
   @Output() onLabelChange = new EventEmitter<ClassInstanceLabel>();
-  
+
   // afterViewInit = false;
 
   localStore: ObservableStore<PeItDetail>;
@@ -43,7 +43,6 @@ export class PeItEditableComponent extends EntityBase implements AfterViewInit, 
   /**
    * Local Store Observables
    */
-
 
   @select() pkEntity$: Observable<number>;
   @select() sectionList$: Observable<SectionList>;
@@ -95,6 +94,9 @@ export class PeItEditableComponent extends EntityBase implements AfterViewInit, 
   // if this variable is set, only that child is shown, all other elements are hidden
   isolatedChild: string;
 
+  // The pe
+  sourcePeIt$: Observable<InfPersistentItem>
+
   initStore(): void {
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItReducer);
   }
@@ -109,6 +111,7 @@ export class PeItEditableComponent extends EntityBase implements AfterViewInit, 
   ) {
     super(ngRedux, fb, rootEpics, entityEpics);
     console.log('PeItEditableComponent')
+
   }
 
   getBasePath = () => this.basePath;
@@ -141,9 +144,6 @@ export class PeItEditableComponent extends EntityBase implements AfterViewInit, 
       this.showMentionedEntities$,
       this.showSources$
     ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
-
-
-    // this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
 
     this.rootEpics.addEpic(this.epics.createEpics(this));
 

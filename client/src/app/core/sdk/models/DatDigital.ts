@@ -1,25 +1,26 @@
 /* tslint:disable */
 import {
-  DatChunk
+  DatChunk,
+  DatNamespace
 } from '../index';
 
 declare var Object: any;
 export interface DatDigitalInterface {
-  "pk_text_version_concat"?: any;
   "pk_text"?: any;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
-  "quill_doc": any;
+  "quill_doc"?: any;
   "string"?: string;
   "pk_entity"?: number;
   "entity_version"?: number;
+  "fk_namespace"?: number;
   chunks?: DatChunk[];
+  namespace?: DatNamespace;
 }
 
 export class DatDigital implements DatDigitalInterface {
-  "pk_text_version_concat": any;
   "pk_text": any;
   "notes": string;
   "tmsp_creation": string;
@@ -29,7 +30,9 @@ export class DatDigital implements DatDigitalInterface {
   "string": string;
   "pk_entity": number;
   "entity_version": number;
+  "fk_namespace": number;
   chunks?: DatChunk[];
+  namespace?: DatNamespace;
   constructor(data?: DatDigitalInterface) {
     Object.assign(this, data);
   }
@@ -63,10 +66,6 @@ export class DatDigital implements DatDigitalInterface {
       path: 'DatDigitals',
       idName: 'pk_entity',
       properties: {
-        "pk_text_version_concat": {
-          name: 'pk_text_version_concat',
-          type: 'any'
-        },
         "pk_text": {
           name: 'pk_text',
           type: 'any'
@@ -103,6 +102,10 @@ export class DatDigital implements DatDigitalInterface {
           name: 'entity_version',
           type: 'number'
         },
+        "fk_namespace": {
+          name: 'fk_namespace',
+          type: 'number'
+        },
       },
       relations: {
         chunks: {
@@ -112,6 +115,14 @@ export class DatDigital implements DatDigitalInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_digital'
+        },
+        namespace: {
+          name: 'namespace',
+          type: 'DatNamespace',
+          model: 'DatNamespace',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_namespace',
+          keyTo: 'pk_entity'
         },
       }
     }

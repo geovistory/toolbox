@@ -1,22 +1,18 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { SysConfig, IAppState, DatChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
-import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
-import { combineLatest, Observable, BehaviorSubject, Subject } from 'rxjs';
+import { DatChunk, IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
+import { difference, groupBy, indexBy, path, without } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel, InfPersistentItemApi } from '../sdk';
+import { DatSelector } from '../dat/dat.service';
+import { InfSelector } from '../inf/inf.service';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
-import { ProProject } from '../sdk';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ComQueryByPk, EntityByPk, VersionEntity, EntityVersionsByPk, HasTypePropertyList, ClassConfigList } from './active-project.models';
-import { InfSelector } from '../inf/inf.service';
-import { InfActions } from 'app/core/inf/inf.actions';
-import { RootEpics } from '../store/epics';
-import { InfEpics } from '../inf/inf.epics';
-import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
+import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
 
 
 
@@ -33,7 +29,7 @@ export class ActiveProjectService {
   public crm$: Observable<ProjectCrm>
   public classes$: Observable<ClassConfigList>
   public hasTypeProperties$: Observable<HasTypePropertyList>
-  public list$: Observable<ListType>; // type of list displayed in left panel 
+  public list$: Observable<ListType>; // type of list displayed in left panel
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
   public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ProQuery>>
@@ -48,9 +44,10 @@ export class ActiveProjectService {
     return this.ngRedux.getState().activeProject;
   }
 
-  classesInProject$: Observable<number[]>
+  classPksEnabledInEntities$: Observable<number[]>
 
   inf$: InfSelector;
+  dat$: DatSelector;
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
@@ -81,17 +78,18 @@ export class ActiveProjectService {
 
 
     this.inf$ = new InfSelector(ngRedux, this.pkProject$);
+    this.dat$ = new DatSelector(ngRedux);
 
-    this.classesInProject$ = this.crm$.pipe(
+    this.classPksEnabledInEntities$ = this.crm$.pipe(
       first(d => !!d),
       map(crm => {
-        const pkClassesInProject: number[] = []
+        const classPksEnabledInEntities: number[] = []
         for (const key in crm.classes) {
           if (crm.classes[key] && crm.classes[key].isInProject) {
-            pkClassesInProject.push(crm.classes[key].dfh_pk_class);
+            classPksEnabledInEntities.push(crm.classes[key].dfh_pk_class);
           }
         }
-        return pkClassesInProject;
+        return classPksEnabledInEntities;
       })
     )
 
@@ -364,7 +362,7 @@ export class ActiveProjectService {
   }
 
   reloadTypesForClassesInProject() {
-    this.classesInProject$.pipe(first(([classes]) => !!classes))
+    this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
       .subscribe((classesInProject) => {
         this.streamTypePreviewsByClass(classesInProject)
       })
@@ -402,7 +400,7 @@ export class ActiveProjectService {
   }
 
   /**
-   * Loads one specific visual version 
+   * Loads one specific visual version
    * @param pkEntity pk_entity of visual
    * @param entityVersion if no entity_version provided, returns latest version
    */
