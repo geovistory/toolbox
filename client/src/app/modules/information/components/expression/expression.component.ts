@@ -556,9 +556,22 @@ export class ExpressionComponent implements OnInit, OnDestroy {
 
 
   open(node: ContentTreeNode) {
-    if (node.isDigital) console.log('open digital');//this.openDigital(node);
+    if (node.isDigital) this.openText(node);
     else this.openExpressionPortion(node);
   }
+
+  openText(node: ContentTreeNode) {
+    this.p.addTab({
+      active: true,
+      component: 'text-detail',
+      icon: 'text',
+      data: {
+        pkEntity: node.entityAssociation.fk_data_domain
+      },
+      pathSegment: 'textDetails'
+    })
+  }
+
 
   openExpressionPortion(node: ContentTreeNode) {
     this.p.addTab({

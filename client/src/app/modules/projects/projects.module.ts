@@ -43,6 +43,7 @@ import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
+import { DataModule } from '../data/data.module';
 
 
 
@@ -55,6 +56,7 @@ import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/conf
     NgbModule,
     ProxyRouteModule,
     Information2Module,
+    DataModule,
     KeysModule,
     ReadMoreModule,
     HighlightModule,

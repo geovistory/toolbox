@@ -18,6 +18,7 @@ module.exports = function (DatDigital) {
       Promise.map(promiseArray, (promise) => promise)
         .catch(err => reject(err))
         .then(res => {
+          if(!res || !res.length) return reject('No item upserted');
           DatDigital.findComplex({
             'where': ['pk_entity', 'IN', res.map(item => item.pk_entity)]
           }, (err, result) => {
@@ -28,6 +29,62 @@ module.exports = function (DatDigital) {
     })
   }
 
+
+  /**
+   * Returns all version with given pkEntity
+   * @param {*} pkEntity
+   * @param {*} cb
+   */
+  DatDigital.getVersion = function (pkEntity, entityVersion, context, cb) {
+    const accountId = context.req.accessToken.userId;
+
+    const params = [pkEntity, accountId];
+    if(entityVersion) params.push(entityVersion);
+
+    const sql = `
+    WITH namespaces AS (
+      SELECT pk_entity pk_namespace
+      FROM data.namespace n
+      JOIN public.account_project_rel apr ON apr.fk_project = n.fk_project
+      WHERE apr.account_id = $2
+    ),
+     versions AS(
+      SELECT
+      pk_entity,
+      entity_version,
+      fk_namespace,
+      metadata,
+      pk_text,
+      quill_doc,
+      string,
+      fk_system_type
+      from data.digital
+       JOIN namespaces n ON n.pk_namespace = digital.fk_namespace
+      UNION
+      SELECT
+      pk_entity,
+      entity_version,
+      fk_namespace,
+      metadata,
+      pk_text,
+      quill_doc,
+      string,
+      fk_system_type
+      from data.digital_vt
+      JOIN namespaces n ON n.pk_namespace = digital_vt.fk_namespace
+    )
+    SELECT * FROM versions
+    WHERE pk_entity = $1 ${entityVersion ? 'AND entity_version = $3' : ''}
+    ORDER BY entity_version desc
+    LIMIT 1
+    `
+
+    const connector = DatDigital.dataSource.connector;
+    connector.execute(sql, params, (err, resultObjects) => {
+      if (err) return cb(err, resultObjects);
+      cb(null, resultObjects);
+    });
+  }
 
 
   /**

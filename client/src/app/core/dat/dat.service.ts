@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { DatDigital, DatNamespace } from '../sdk';
 import { DatActions } from './dat.actions';
 import { datDefinitions, datRoot } from './dat.config';
+import { filter } from '../../../../node_modules/rxjs/operators';
 
 class Selector {
   constructor(
@@ -17,8 +18,10 @@ class Selector {
   selector<M>(indexKey: string): { all$: Observable<M>, key: (x) => Observable<M> } {
 
     const all$ = this.ngRedux.select<M>([datRoot, this.model, indexKey])
+      .pipe(filter(x => !!x))
 
     const key = (x): Observable<M> => this.ngRedux.select<M>([datRoot, this.model, indexKey, x])
+      .pipe(filter(x => !!x))
 
     return { all$, key }
   }

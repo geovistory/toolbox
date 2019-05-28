@@ -47,7 +47,6 @@ import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.c
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';
 import { TileHeaderComponent } from './components/tile-header/tile-header.component';
-import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
 import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
 import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
@@ -225,7 +224,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     SectionListComponent,
     ReprosComponent,
     TextEditorComponent,
-    VersionPickerComponent,
 
     // Add Modal
     // EntityAddAddExistingComponent,
@@ -425,7 +423,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItEditableComponent,
     PeItCreateFormComponent,
     TextEditorComponent,
-    VersionPickerComponent,
 
     // PeIt specific user interfaces
     SectionListComponent,

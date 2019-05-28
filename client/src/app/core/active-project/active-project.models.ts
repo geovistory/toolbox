@@ -13,6 +13,7 @@ import { HasTypePropertyReadable } from '../state/models';
 import { Inf } from '../inf/inf.models';
 import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
 import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
+import { TextDetail } from 'app/modules/data/components/text-detail/api/text-detail.models';
 
 export interface ProjectPreview {
   label?: string,
@@ -60,11 +61,11 @@ export interface Tab {
   // wheter tab is active or not
   active: boolean;
   // the root component included in this tab, in dash separate minuscles: EntityDetailComponent -> 'entity-detail'
-  component: 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail' | 'classes-settings' | 'contr-vocab-settings';
+  component: 'text-detail' | 'entity-detail' | 'source-detail' | 'section-detail' | 'query-detail' | 'visual-detail' | 'classes-settings' | 'contr-vocab-settings';
   // icon to be displayed in tab, e.g.: gv-icon-source
-  icon: 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story' | 'settings';
+  icon: 'text' | 'persistent-entity' | 'temporal-entity' | 'source' | 'section' | 'query' | 'visual' | 'story' | 'settings';
   // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
-  pathSegment: 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails' | 'classesSettings' | 'contrVocabSettings';
+  pathSegment: 'textDetails' | 'entityDetails' | 'sourceDetails' | 'sectionDetails' | 'queryDetails' | 'visualDetails' | 'classesSettings' | 'contrVocabSettings';
   // data to pass to component via input variabales
   data?: {
     pkEntity?: number;
@@ -142,6 +143,9 @@ export interface ProjectDetail extends ProjectPreview {
 
   // serial number for uiId
   uiIdSerial?: number;
+
+  // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+  textDetails?: { [uiId: string]: TextDetail }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   entityDetails?: { [uiId: string]: EntityDetail }

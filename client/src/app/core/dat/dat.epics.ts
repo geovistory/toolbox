@@ -3,10 +3,11 @@ import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { combineEpics, Epic } from 'redux-observable';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi } from '../sdk';
-import { DatActions } from './dat.actions';
+import { DatActions, DigitalActionsFactory, LoadVersionAction } from './dat.actions';
 import { datRoot } from './dat.config';
 import { DigitalSlice, NamespaceSlice } from './dat.models';
 import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
+import { LoadByPkAction } from '../inf/inf.actions';
 
 
 @Injectable()
@@ -27,12 +28,18 @@ export class DatEpics {
 
     return combineEpics(
 
+      // Digital
+      digitalEpicsFactory.createLoadEpic<LoadVersionAction>(
+        (meta) => this.digitalApi.getVersion(meta.pkEntity, meta.entityVersion ? meta.entityVersion : null),
+        DigitalActionsFactory.LOAD_VERSION
+      ),
       digitalEpicsFactory.createUpsertEpic<ModifyActionMeta<DatDigital>>(
         (meta) => this.digitalApi.bulkUpsert(meta.pk, meta.items)
       ),
       digitalEpicsFactory.createDeleteEpic(
         (items) => this.digitalApi.bulkDelete(items.map(item => item.pk_entity))
       ),
+
       namespaceEpicsFactory.createLoadEpic<LoadActionMeta>(
         (meta) => this.namespaceApi.byProject(meta.pk), ''
       )

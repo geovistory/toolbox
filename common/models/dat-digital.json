@@ -17,6 +17,7 @@
   },
   "properties": {
     "pk_text": {
+      "type": "number",
       "generated": true
     },
     "notes": {
@@ -66,7 +67,7 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "getVersions"
+        "getVersion"
       ]
     },
     {
@@ -154,7 +155,47 @@
         "verb": "put"
       }
     },
-
+    "getVersion" : {
+      "accepts": [
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the digital object (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "entityVersion",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the digital object (entity_version)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DatDigital"
+        ],
+        "root": true
+      },
+      "description": "Finds the version of given digital. If no version specified, latest is returned.",
+        "http": {
+        "path": "/get-version",
+        "verb": "get"
+      }
+    },
     "getVersions": {
       "accepts": [
         {

@@ -4,8 +4,8 @@
   </div>
 
   <!-- Version Picker -->
-  <gv-version-picker class="d-inline-block" *ngIf="(readOnly$|async)" [versionList]="(versionList$ | async)"
-    [selectedVersion]="(digitalObject$ | async)?.entity_version" (versionChange)="onVersionChange($event)"></gv-version-picker>
+  <!-- <gv-version-picker class="d-inline-block" *ngIf="(readOnly$|async)" [versionList]="(versionList$ | async)"
+    [selectedVersion]="(digitalObject$ | async)?.entity_version" (versionChange)="onVersionChange($event)"></gv-version-picker> -->
 
   <span class="ml-auto">
 
@@ -34,7 +34,7 @@
       </div>
       Annotations
     </span>
-    <!-- 
+    <!--
     <div class="btn-group ml-2" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
       <button class="btn btn-sm btn-link btn-lg no-caret" ngbDropdownToggle>
         <i class="fa fa-cogs"></i>

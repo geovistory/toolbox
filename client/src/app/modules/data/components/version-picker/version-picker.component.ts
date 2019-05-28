@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Version } from '../text-detail/text-detail.component';
 
 export interface IVersion {
   entityVersion: number; // entity_version
@@ -13,12 +14,12 @@ export interface IVersion {
 })
 export class VersionPickerComponent implements OnChanges {
 
-  @Input() versionList: IVersion[];
+  @Input() versionList: Version[];
   @Input() selectedVersion: number;
 
-  @Output() versionChange: EventEmitter<IVersion> = new EventEmitter();
+  @Output() versionChange: EventEmitter<Version> = new EventEmitter();
 
-  selectedItem: IVersion;
+  selectedItem: Version;
 
   selectVisible: false;
 

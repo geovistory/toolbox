@@ -109,7 +109,7 @@ export function latestEntityVersion<T>(pkEntity: number): OperatorFunction<Entit
   )
 }
 
-export function latestVersion<T>(versions: ByPk<T>) {
+export function latestVersion<T>(versions: ByPk<T>): T {
   let latestVersion = 0
   let latest;
   values(versions).forEach((v: any) => {
@@ -119,4 +119,9 @@ export function latestVersion<T>(versions: ByPk<T>) {
     }
   })
   return latest;
+}
+
+export function getSpecificVersion<T>(versions: ByPk<T>, version): T {
+  const ver = values(versions).find((v: any) => v.entity_version === version)
+  return ver
 }

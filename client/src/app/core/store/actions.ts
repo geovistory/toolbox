@@ -63,12 +63,18 @@ export class StandardActionsFactory<Payload, Model> {
     this.modelName = modelName;
 
     this.load = (suffix: string = '', pk?: number) => {
+      const addPending=  U.uuid()
       const action: FluxStandardAction<Payload, LoadActionMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + (suffix ? '::' + suffix : ''),
-        meta: { addPending: U.uuid(), pk },
+        meta: { addPending, pk },
         payload: null,
       };
       this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+        key: addPending
+      };
     }
 
     this.loadSucceeded = (items: Model[], removePending: string, pk?: number) => {
