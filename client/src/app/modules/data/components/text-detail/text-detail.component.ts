@@ -1,14 +1,14 @@
 import { Component, OnDestroy, Input, OnInit, HostBinding, ViewChild } from '@angular/core';
 import { Subject, Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ActiveProjectService, DatDigital, latestVersion, getSpecificVersion } from 'app/core';
+import { IAppState, SubstoreComponent, ActiveProjectService, DatDigital, latestVersion, getSpecificVersion, DatChunk } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { TextDetail } from './api/text-detail.models';
 import { TextDetailAPIEpics } from './api/text-detail.epics';
 import { TextDetailAPIActions } from './api/text-detail.actions';
 import { textDetailReducer } from './api/text-detail.reducer';
 import { map, tap, first, takeUntil, filter } from 'rxjs/operators';
-import { QuillDoc } from '../../../quill';
+import { QuillDoc, Ops, Op, DeltaI } from '../../../quill';
 import { tick } from '../../../../../../node_modules/@angular/core/src/render3';
 import { SucceedActionMeta } from '../../../../core/store/actions';
 import { QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
@@ -48,14 +48,25 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   version$ = new BehaviorSubject<number>(1);
 
   // select observables of substore properties
-  @select() loading$: Observable<boolean>;
+  @select() showRightArea$: Observable<boolean>;
 
   digital$: Observable<DatDigital>;
   latestVersion$: Observable<DatDigital>;
 
-  quillDoc: QuillDoc;
-
   versions$: Observable<Version[]>;
+
+  // the selction made by user in editor
+  selectedDelta$ = new BehaviorSubject<DeltaI>(null);
+  // if the annotate button is shown
+  showAnnotateBtn$: Observable<boolean>;
+  createAnnotation$ = new BehaviorSubject<boolean>(false);
+  chunk$ = new BehaviorSubject<DatChunk>(null);
+
+  // TODO check if needed
+  readOnly$;
+  annotationsVisible$;
+  annotatedNodes$
+  mentioningsFocusedInTable$
 
   constructor(
     protected rootEpics: RootEpics,
@@ -120,11 +131,15 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
       map(([versions, v]) => {
         return getSpecificVersion(versions, v)
       }),
-      filter((v) => !!v),
-      tap((digital) => {
-        // this.quillDoc = digital.quill_doc
-      })
+      filter((v) => !!v)
     )
+
+
+    /**
+     * Annotation
+     */
+    // show the annotate button when some delta is selected
+    this.showAnnotateBtn$ = this.selectedDelta$.map(d => (!!d))
 
   }
 
@@ -147,13 +162,6 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     this.version$.next(v.entityVersion);
     this.p.dat$.digital.loadVersion(this.pkEntity, v.entityVersion);
   }
-
-  /**
-   * When user edits text
-   */
-  // quillDocChange(q: QuillDoc) {
-  //   this.quillDoc = q
-  // }
 
 
   /**
@@ -186,7 +194,55 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   /**
    * When user changes text selection
    */
-  selectedDeltaChange() {
+  selectedDeltaChange(d: DeltaI) {
+    this.selectedDelta$.next(d)
+    if(this.createAnnotation$.value){
+      this.setChunk();
+    }
+  }
+
+  private latestIdReducer(a: Op, b: Op): Op {
+    const idOf = (op: Op): string => op.attributes.charid || op.attributes.blockid;
+    const aId = parseInt(idOf(a));
+    const bId = parseInt(idOf(b));
+    return aId > bId ? a : b;
+  }
+
+
+  annotate() {
+    this.setShowRightArea(true)
+    this.setChunk();
+  }
+
+  private setChunk() {
+    this.digital$.pipe(first()).subscribe(digital => {
+      this.chunk$.next({
+        fk_text: digital.pk_text,
+        fk_entity_version: digital.entity_version,
+        fk_namespace: digital.fk_namespace,
+        quill_doc: this.quillDocForChunk()
+      } as DatChunk);
+      this.createAnnotation$.next(true);
+    });
+  }
+
+
+  private quillDocForChunk(): QuillDoc {
+    const latestOp: Op = this.selectedDelta$.value.ops.reduce(this.latestIdReducer);
+    const latestId: number = latestOp.attributes.charid || latestOp.attributes.blockid;
+    const ops: Ops = this.selectedDelta$.value.ops;
+    const quill_doc: QuillDoc = { ops, latestId };
+    return quill_doc;
+  }
+
+  /**
+   * When user resizes the areas
+   */
+  resizedArea(event: { gutterNum: number, sizes: Array<number> }) {
+    if (event.sizes[1] < 5) this.setShowRightArea(false)
+  }
+
+  onNodeClick($event){
 
   }
 

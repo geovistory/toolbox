@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityPreview, IAppState } from 'app/core';
 import { EntitySearchHit } from '../../containers/list/api/list.models';
-import { MentionedEntity } from '../../containers/mentioning-list/api/mentioning-list.models';
+import { MentionedEntity } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.models';
 
 @Component({
   selector: 'gv-entity-add-existing-hit',

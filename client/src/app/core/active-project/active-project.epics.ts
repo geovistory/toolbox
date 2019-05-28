@@ -2,7 +2,6 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { MentioningListAPIActions } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.actions';
 import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -22,6 +21,7 @@ import { SystemSelector } from '../sys/sys.service';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { SysClassHasTypePropertySlice } from '../sys/sys.models';
 import { DatSelector } from 'app/core/dat/dat.service';
+import { MentioningListAPIActions } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.actions';
 
 
 
@@ -67,8 +67,8 @@ export class ActiveProjectEpics {
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
       this.createClosePanelFocusPanelEpic(),
-      this.createEnableCreatingMentioningEpic(),
-      this.createDisableCreatingMentioningEpic(),
+      // this.createEnableCreatingMentioningEpic(),
+      // this.createDisableCreatingMentioningEpic(),
       this.createSplitPanelActivateTabEpic(),
       this.createAddTabCloseListEpic(),
       this.createChangeClassProjRelEpic(),
@@ -812,21 +812,21 @@ export class ActiveProjectEpics {
   /**
    * MENTIONING
    */
-  private createEnableCreatingMentioningEpic(): Epic {
-    return (action$, store) => action$.pipe(
-      ofType(MentioningListAPIActions.START_CREATE, PeItActions.START_CREATE_MENTIONING),
-      mapTo(this.actions.setCreatingMentioning(true))
-    )
-  }
-  private createDisableCreatingMentioningEpic(): Epic {
-    return (action$, store) => action$.pipe(
-      ofType(MentioningListAPIActions.STOP_CREATE, MentioningListAPIActions.CREATE_SUCCEEDED, MentioningListAPIActions.CREATE_FAILED),
-      mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-        globalStore.next(this.actions.setCreatingMentioning(false));
-        globalStore.next(this.actions.updateSelectedChunk(null));
-      }))
-    )
-  }
+  // private createEnableCreatingMentioningEpic(): Epic {
+  //   return (action$, store) => action$.pipe(
+  //     ofType(MentioningListAPIActions.START_CREATE, PeItActions.START_CREATE_MENTIONING),
+  //     mapTo(this.actions.setCreatingMentioning(true))
+  //   )
+  // }
+  // private createDisableCreatingMentioningEpic(): Epic {
+  //   return (action$, store) => action$.pipe(
+  //     ofType(MentioningListAPIActions.STOP_CREATE, MentioningListAPIActions.CREATE_SUCCEEDED, MentioningListAPIActions.CREATE_FAILED),
+  //     mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //       globalStore.next(this.actions.setCreatingMentioning(false));
+  //       globalStore.next(this.actions.updateSelectedChunk(null));
+  //     }))
+  //   )
+  // }
 
   /**
    * CRM

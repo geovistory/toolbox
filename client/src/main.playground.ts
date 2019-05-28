@@ -21,12 +21,23 @@ import { ExampleTableModule } from 'app/shared/components/core-table/example-tab
 import { MccColorPickerModule } from 'material-community-components';
 import { AngularSplitModule } from 'angular-split';
 import { MatDialogModule, MatProgressBarModule } from '../node_modules/@angular/material';
+import { SysModule } from 'app/core/sys/sys.module';
+import { InfModule } from 'app/core/inf/inf.module';
+import { DatModule } from 'app/core/dat/dat.module';
+import { DfhModule } from 'app/core/dfh/dfh.module';
 
 PlaygroundModule
   .configure({
     selector: 'gv-root',
     overlay: false,
     modules: [
+      StoreModule,
+      SysModule,
+      InfModule,
+      DatModule,
+      DfhModule,
+      MatDialogModule,
+      NotificationsModule,
       SDKBrowserModule.forRoot(),
       NgbModule.forRoot(),
       ElasticInputModule.forRoot(),
@@ -38,8 +49,6 @@ PlaygroundModule
         used_colors: ['#000000', '#123456', '#777666']
       }),
       AngularSplitModule.forRoot(),
-      NotificationsModule,
-      StoreModule,
       BrowserModule,
       BrowserAnimationsModule,
       ControlMessagesModule,

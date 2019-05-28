@@ -44,7 +44,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
   private nodeSelctionMap = new Map<string, { isSelected: boolean, op: any }>();
 
   // the selected Ops, when creating an annotation
-  private selectedOps: DeltaI;
+  private selectedDelta: DeltaI;
 
   // the editor object
   quillEditor: any;
@@ -61,10 +61,10 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   private nodeSubs = new Map<Node, { nh: QuillNodeHandler, subs: Subscription[] }>(); // the DOM Node, subscriptions on this nodes events
 
-  private showTokenIds = false;
+  showTokenIds = false;
 
   // if false, the toolbar defined in html will be hidden
-  private showDefaultToolbar = true;
+  showDefaultToolbar = true;
 
   @ViewChild('editor') editorElem: ElementRef;
   @ViewChild('toolbar') toolbar: ElementRef;
@@ -549,7 +549,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     item.isSelected = isSelected;
 
     // create new and empty selectedDelta
-    this.selectedOps = new Delta()
+    this.selectedDelta = new Delta()
 
     // fill the selectedDelta with the selected items
     // or a ... node if some tokens are omitted
@@ -559,10 +559,10 @@ export class QuillEditComponent implements OnInit, OnChanges {
       if (i.isSelected) {
         // add dots, if there is a previous i that is not selected
         if (
-          this.selectedOps.ops.length &&
+          this.selectedDelta.ops.length &&
           previousItem.isSelected === false
         ) {
-          this.selectedOps.ops.push({
+          this.selectedDelta.ops.push({
             'attributes': {
               'node': '_'
             },
@@ -570,14 +570,14 @@ export class QuillEditComponent implements OnInit, OnChanges {
           })
         }
 
-        this.selectedOps.ops.push(i.op);
+        this.selectedDelta.ops.push(i.op);
 
       }
 
       previousItem = i;
     })
 
-    this.selectedDeltaChange.emit(this.selectedOps)
+    this.selectedDeltaChange.emit(this.selectedDelta)
   }
 
 

@@ -150,8 +150,6 @@ export class SectionDetailAPIEpics {
 
                 mentionedEntities: {
                   mentioningListType: 'ofSection',
-                  sectionEntityPk: action.meta.pkSection,
-                  sourceEntityPk: action.meta.pkSource
                 }
 
               }, data, action.meta.crm,

@@ -9,6 +9,7 @@ import { DetailContentModule } from '../../shared/components/detail-content/deta
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { FormsModule } from '@angular/forms';
+import { AnnotationModule } from 'app/modules/annotation/annotation.module';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     AngularSplitModule,
     DetailContentModule,
     DetailTopBarModule,
-
+    AnnotationModule
   ],
   providers: [TextDetailAPIActions, TextDetailAPIEpics],
   declarations: [TextDetailComponent, VersionPickerComponent],

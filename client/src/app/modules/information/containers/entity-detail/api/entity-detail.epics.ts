@@ -78,7 +78,7 @@ export class EntityDetailAPIEpics {
                 showSourcesToggle: true,
                 sources: {
                   mentioningListType: 'ofEntity',
-                  mentionedEntityPk: action.meta.pkEntity
+                  // mentionedEntityPk: action.meta.pkEntity
                 }
               }, data, c.ngRedux.getState().activeProject.crm)
               /**

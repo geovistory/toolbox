@@ -583,12 +583,12 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
     *  Things for Mentionings / Annotations
     ************************************************************************************/
 
-    case ActiveProjectActions.UPDATE_SELECTED_CHUNK:
-      state = {
-        ...state,
-        selectedChunk: action.payload.selectedChunk
-      };
-      break;
+    // case ActiveProjectActions.UPDATE_SELECTED_CHUNK:
+    //   state = {
+    //     ...state,
+    //     selectedChunk: action.payload.selectedChunk
+    //   };
+    //   break;
 
     case ActiveProjectActions.SET_REFINING_CHUNK:
       state = {

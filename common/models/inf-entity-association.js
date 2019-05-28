@@ -4,6 +4,10 @@ const Promise = require('bluebird');
 const Config = require('../config/Config');
 const _ = require('lodash')
 
+const toData = (prop) => {
+  return typeof prop === 'function' ? prop() : prop;
+}
+
 const toDataObject = (ea) => ({
   fk_property: ea.fk_property,
   fk_info_domain: ea.fk_info_domain,
@@ -13,16 +17,24 @@ const toDataObject = (ea) => ({
   entity_version_project_rels: ea.entity_version_project_rels
 })
 
+
 module.exports = function (InfEntityAssociation) {
 
 
   InfEntityAssociation.findOrCreateInfEntityAssociations = function (pk_project, eas, ctx) {
     return new Promise((resolve, reject) => {
-      ctx = { ...ctx, req: _.omit(ctx.req, ['body']) }
-      const promiseArray = eas.map(ea => InfEntityAssociation.findOrCreateInfEntityAssociation(pk_project, toDataObject(ea), ctx))
+      // ctx = { ...ctx, req: _.omit(ctx.req, ['body']) }
+      const promiseArray = eas.map((ea, i) => {
+
+        ctx.req.body = ctx.req.body[i];
+
+        return InfEntityAssociation.findOrCreateInfEntityAssociation(pk_project, ea, ctx)
+      })
       Promise.map(promiseArray, (promise) => promise)
         .catch(err => reject(err))
-        .then(res => resolve(_.flatten(res)))
+        .then(res => {
+          return resolve(_.flatten(res))
+        })
     })
   };
 
@@ -131,7 +143,38 @@ module.exports = function (InfEntityAssociation) {
 
       }
 
+      // if the ea has a chunk as the domain
+      if (requestedEa.domain_chunk && Object.keys(requestedEa.domain_chunk).length > 0) {
 
+        // prepare parameters
+        const DatChunk = InfEntityAssociation.app.models.DatChunk;
+
+        // find or create the peIt and the ea pointing to it
+        DatChunk.findOrCreate({
+          where: { pk_entity: requestedEa.domain_chunk.pk_entity }
+        }, requestedEa.domain_chunk)
+          .then((resultingObjects) => {
+
+            const resultingObject = resultingObjects[0];
+
+            // … prepare the Ea to create
+            dataObject.fk_data_domain = resultingObject.pk_entity;
+
+            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
+              .then((resultingEas) => {
+
+                let res = resultingEas[0].toJSON();
+                res.domain_chunk = resultingObject;
+
+                resolve([res]);
+
+              })
+              .catch(err => reject(err))
+
+          })
+          .catch(err => reject(err))
+
+      }
 
 
       else {
@@ -510,7 +553,7 @@ module.exports = function (InfEntityAssociation) {
                   else resolve([res]);
                 })
               }
-              else{
+              else {
                 console.log('er')
               }
             })

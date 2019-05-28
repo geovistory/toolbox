@@ -1,11 +1,11 @@
 import { DatDigital } from 'app/core';
 import { TypeDetail } from 'app/core/state/models/type-detail';
-import { IVersion } from '../information/components/version-picker/version-picker.component';
 import { ClassAndTypeSelector } from '../information/containers/class-and-type-selector/api/class-and-type-selector.models';
 import { CreateOrAddEntity } from '../information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { List } from '../information/containers/list/api/list.models';
 import Delta from 'quill/node_modules/quill-delta';
-import { MentionedEntity } from '../information/containers/mentioning-list/api/mentioning-list.models';
+import { MentionedEntity } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.models';
+import { IVersion } from 'app/modules/data/components/version-picker/version-picker.component';
 
 
 /**
@@ -53,13 +53,13 @@ export interface AnnotationCtrlState {
 
 export interface IChunk {
     quillDelta?: Delta; // TODO -> jsQuill's AbstractDelta Type
-    fkDigitalObject?: number;  // reference to source 
+    fkDigitalObject?: number;  // reference to source
     pkEntity?: number
 }
 
 export class Chunk {
     quillDelta: Delta; // TODO -> jsQuill's AbstractDelta Type
-    fkDigitalObject: number;  // reference to source 
+    fkDigitalObject: number;  // reference to source
     pkEntity: number
 
     constructor(data?: IChunk) {

@@ -47,14 +47,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "chunks": {
-      "type": "hasMany",
-      "model": "DatChunk",
-      "foreignKey": "fk_digital",
-      "primaryKey": "pk_entity"
-    }
-  },
+  "relations": {},
   "acls": [
     {
       "principalType": "ROLE",
@@ -155,7 +148,7 @@
         "verb": "put"
       }
     },
-    "getVersion" : {
+    "getVersion": {
       "accepts": [
         {
           "arg": "pkEntity",
@@ -191,7 +184,7 @@
         "root": true
       },
       "description": "Finds the version of given digital. If no version specified, latest is returned.",
-        "http": {
+      "http": {
         "path": "/get-version",
         "verb": "get"
       }

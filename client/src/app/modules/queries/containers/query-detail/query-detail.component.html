@@ -2,7 +2,7 @@
 
 
   <!-------------------------------------------------------------------
-     Query Definition 
+     Query Definition
   -------------------------------------------------------------------->
   <as-split-area [size]="((showRightArea$ | async) ? 50 : 100)" class="d-flex flex-column">
 
@@ -27,7 +27,7 @@
               </mat-error>
             </ng-template>
 
-            <gv-class-and-type-filter [pkClasses$]="p.classesInProject$" [showRemoveBtn]="false"
+            <gv-class-and-type-filter [pkClasses$]="p.classPksEnabledInEntities$" [showRemoveBtn]="false"
               [formControl]="filterCtrl" #a [gvNoInvalidChildren]="a.formGroup.controls">
             </gv-class-and-type-filter>
 
@@ -98,7 +98,7 @@
   </as-split-area>
 
   <!-------------------------------------------------------------------
-    Query Results 
+    Query Results
   -------------------------------------------------------------------->
   <as-split-area *ngIf="(showRightArea$ | async)" [size]="50" class="d-flex flex-column">
 

@@ -17,7 +17,7 @@ import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
-import { QuillDeltaToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
 import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
 import { DndModule } from 'ng2-dnd';
@@ -41,12 +41,10 @@ import { EntitySearchHitComponent } from './components/entity-search-hit/entity-
 import { ExpressionComponent } from './components/expression/expression.component';
 import { FieldHeaderComponent } from './components/field-header/field-header.component';
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
-import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
 import { TeEntHeaderComponent } from './components/te-ent-header/te-ent-header.component';
 import { TeEntLabelComponent } from './components/te-ent-label/te-ent-label.component';
 import { TextPropertyComponent } from './components/text-property/text-property.component';
-import { TileHeaderComponent } from './components/tile-header/tile-header.component';
 import { ClassAndTypeSelectorAPIActions } from './containers/class-and-type-selector/api/class-and-type-selector.actions';
 import { ClassAndTypeSelectorAPIEpics } from './containers/class-and-type-selector/api/class-and-type-selector.epics';
 import { ClassAndTypeSelectorComponent } from './containers/class-and-type-selector/class-and-type-selector.component';
@@ -63,9 +61,6 @@ import { ListAPIActions } from './containers/list/api/list.actions';
 import { ListAPIEpics } from './containers/list/api/list.epics';
 import { ListComponent } from './containers/list/list.component';
 import { MapComponent } from './containers/map/map.component';
-import { MentioningListAPIActions } from './containers/mentioning-list/api/mentioning-list.actions';
-import { MentioningListAPIEpics } from './containers/mentioning-list/api/mentioning-list.epics';
-import { MentioningListComponent } from './containers/mentioning-list/mentioning-list.component';
 import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
 import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
 import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
@@ -78,9 +73,6 @@ import { ReprosComponent } from './containers/repros/repros.component';
 import { SectionListAPIActions } from './containers/section-list/api/section-list.actions';
 import { SectionListAPIEpics } from './containers/section-list/api/section-list.epics';
 import { SectionListComponent } from './containers/section-list/section-list.component';
-import { TextEditorAPIActions } from './containers/text-editor/api/text-editor.actions';
-import { TextEditorAPIEpics } from './containers/text-editor/api/text-editor.epics';
-import { TextEditorComponent } from './containers/text-editor/text-editor.component';
 import { TextPropertyFieldAPIActions } from './containers/text-property-field/api/text-property-field.actions';
 import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
 import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
@@ -156,6 +148,8 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { AnnotationModule } from '../annotation/annotation.module';
+import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 
 
 
@@ -190,7 +184,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     QuillModule,
     TreeviewModule,
     TableModule,
-    QuillDeltaToStrModule,
+    QuillOpsToStrModule,
     TimePrimitivePipeModule,
     InfTimePrimitivePipeModule,
     TimeSpanPipeModule,
@@ -208,6 +202,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     ListDrawerHeaderModule,
     DetailTopBarModule,
     EntityPreviewModule,
+    AnnotationModule,
+    TileHeaderModule
 
   ],
   declarations: [
@@ -223,7 +219,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PolygonsEditorLayerComponent,
     SectionListComponent,
     ReprosComponent,
-    TextEditorComponent,
 
     // Add Modal
     // EntityAddAddExistingComponent,
@@ -316,9 +311,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     EntityAssociationCreateOrAddComponent,
     EntityAssociationExistingListComponent,
     TextPropertyFieldComponent,
-    MentioningListComponent,
-    MentioningCreateCtrlComponent,
-    TileHeaderComponent,
     ExpressionComponent,
     AddOrCreateEntityModal
   ],
@@ -353,8 +345,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     SectionListAPIEpics,
     ReprosAPIActions,
     ReprosAPIEpics,
-    TextEditorAPIActions,
-    TextEditorAPIEpics,
 
     // Existence Time
     ExistenceTimeActions,
@@ -396,8 +386,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PropertyFieldService,
     ValidationService,
 
-    MentioningListAPIActions,
-    MentioningListAPIEpics,
     CreateOrAddEntityAPIActions,
     CreateOrAddEntityAPIEpics,
     PeItSearchExistingAPIActions,
@@ -422,7 +410,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItCreateCtrlComponent,
     PeItEditableComponent,
     PeItCreateFormComponent,
-    TextEditorComponent,
 
     // PeIt specific user interfaces
     SectionListComponent,
@@ -485,7 +472,6 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItLabelComponent,
     ClassInfoComponent,
     EditorHeaderComponent,
-    MentioningCreateCtrlComponent,
 
   ],
   entryComponents: [

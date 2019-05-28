@@ -600,13 +600,13 @@ export class ActiveProjectActions {
   static SET_CREATING_MENTIONING = 'ActiveProject::SET_CREATING_MENTIONING';
 
 
-  updateSelectedChunk(selectedChunk: DatChunk): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.UPDATE_SELECTED_CHUNK,
-      payload: { selectedChunk },
-      meta: null
-    }
-  }
+  // updateSelectedChunk(selectedChunk: DatChunk): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.UPDATE_SELECTED_CHUNK,
+  //     payload: { selectedChunk },
+  //     meta: null
+  //   }
+  // }
 
   setRefiningChunk(refiningChunk: boolean): ActiveProjectAction {
     return {

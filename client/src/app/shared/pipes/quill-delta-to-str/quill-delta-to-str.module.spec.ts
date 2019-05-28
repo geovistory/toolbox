@@ -1,10 +1,10 @@
-import { QuillDeltaToStrModule } from './quill-delta-to-str.module';
+import { QuillOpsToStrModule } from './quill-delta-to-str.module';
 
 describe('QuillDeltaToStrModule', () => {
-  let quillOpsToStrModule: QuillDeltaToStrModule;
+  let quillOpsToStrModule: QuillOpsToStrModule;
 
   beforeEach(() => {
-    quillOpsToStrModule = new QuillDeltaToStrModule();
+    quillOpsToStrModule = new QuillOpsToStrModule();
   });
 
   it('should create an instance', () => {

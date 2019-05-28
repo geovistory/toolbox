@@ -179,8 +179,8 @@ export interface ProjectDetail extends ProjectPreview {
    * Things for Mentionings / Annotations
    */
 
-  // the chunk that is used to create mentionings
-  selectedChunk?: DatChunk;
+  // // the chunk that is used to create mentionings
+  // selectedChunk?: DatChunk;
 
   // if true, the text editor behaves so that each node can be clicked to de-/activate
   refiningChunk?: boolean;

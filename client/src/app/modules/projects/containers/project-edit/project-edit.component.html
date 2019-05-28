@@ -50,7 +50,7 @@
 
   </mat-drawer>
   <mat-drawer-content style="display:flex; flex-direction:column">
-    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="!(p.creatingMentioning$ | async)">
+    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="false //!(p.creatingMentioning$ | async)">
 
       <!-- List of Sources, Entities … -->
       <mat-drawer class="gv-drawer-list" #list mode="over" [opened]="(p.list$ | async) !== ''" style="width: 300px;">

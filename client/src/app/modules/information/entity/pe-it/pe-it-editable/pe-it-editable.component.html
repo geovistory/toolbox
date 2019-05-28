@@ -162,12 +162,12 @@
     <!-- Right Panel -->
     <div class="gv-panel" [ngClass]="{'ml-2':(showLeftPanel$ | async)}" *ngIf="(showRightPanel$ | async)">
 
-      <gv-mentioning-list class="gv-tile" *ngIf="(showMentionedEntities$ | async)"
+      <!-- <gv-mentioning-list class="gv-tile" *ngIf="(showMentionedEntities$ | async)"
         [basePath]="basePath.concat('mentionedEntities')" (close)="toggle('showMentionedEntities')">
       </gv-mentioning-list>
 
       <gv-mentioning-list class="gv-tile" *ngIf="(showSources$ | async)" [basePath]="basePath.concat('sources')"
-        (close)="toggle('showSources')"></gv-mentioning-list>
+        (close)="toggle('showSources')"></gv-mentioning-list> -->
 
       <gv-map class="gv-tile" *ngIf="(showMap$ | async)" [path]="basePath" (close)="toggle('showMap')"></gv-map>
 

@@ -465,13 +465,13 @@ export class ActiveProjectService {
   * Mentioning
   ************************************************************************************/
 
-  updateSelectedChunk(c: DatChunk) {
-    this.ngRedux.dispatch(this.actions.updateSelectedChunk(c))
-  }
+  // updateSelectedChunk(c: DatChunk) {
+  //   this.ngRedux.dispatch(this.actions.updateSelectedChunk(c))
+  // }
 
-  setRefiningChunk(bool: boolean) {
-    this.ngRedux.dispatch(this.actions.setRefiningChunk(bool))
-  }
+  // setRefiningChunk(bool: boolean) {
+  //   this.ngRedux.dispatch(this.actions.setRefiningChunk(bool))
+  // }
 
   mentioningsFocusedInText(pks: number[]) {
     this.ngRedux.dispatch(this.actions.setMentioningsFocusedInText(pks))

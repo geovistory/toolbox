@@ -19,6 +19,16 @@ export function textDetailReducer(state: TextDetail = INITIAL_STATE, a: Action):
       };
       break;
 
+    /*****************************************************
+    * Set show right panel
+    *****************************************************/
+    case TextDetailAPIActions.SET_SHOW_RIGHT_AREA:
+      state = {
+        ...state,
+        showRightArea: action.meta.showRightArea
+      };
+      break;
+
 
     /*****************************************************
     * Reducers called on destroy of component

@@ -1079,6 +1079,19 @@ gv-quill-edit.gv-hide-toolbar {
   }
 }
 
+.gv-quill-borderless {
+  .ql-toolbar.ql-snow{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    @extend .border-bottom;
+    background-color: #f5f5f5;
+  }
+  .ql-container.ql-snow {
+    border: 0;
+  }
+}
+
 // Outer form control is for nesting form controls
 // Assign this class to the wrapper form-control.
 .gv-outer-form-control {
@@ -1246,6 +1259,14 @@ gv-map {
   text-align: center;
   font-size: $font-size-lg;
   border: 3px dashed #dcdede95;
+  border-radius: $btn-border-radius-lg;
+}
+.gv-select-text {
+  background-color: #dcdede4d;
+  padding: 2rem;
+  text-align: center;
+  font-size: $font-size-lg;
+  border: 3px solid #dcdede95;
   border-radius: $btn-border-radius-lg;
 }
 

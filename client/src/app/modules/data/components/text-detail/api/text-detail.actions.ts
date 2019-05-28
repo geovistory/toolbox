@@ -5,13 +5,16 @@ import { TextDetail } from './text-detail.models';
 
 type Payload = TextDetail;
 interface MetaData {
-  tabTitle?: string
+  tabTitle?: string,
+  showRightArea?: boolean
 };
 export type TextDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class TextDetailAPIActions {
   static readonly SET_TAB_TITLE = 'TextDetail::SET_TAB_TITLE';
+
+  static readonly SET_SHOW_RIGHT_AREA = 'TextDetail::SET_SHOW_RIGHT_AREA';
 
   static readonly DESTROY = 'TextDetail::DESTROY';
 
@@ -24,6 +27,17 @@ export class TextDetailAPIActions {
     meta: { tabTitle },
     payload: null,
   });
+
+  /*********************************************************************
+*  Set right panel state
+*********************************************************************/
+  @dispatch()
+  setShowRightArea = (showRightArea: boolean): TextDetailAPIAction => ({
+    type: TextDetailAPIActions.SET_SHOW_RIGHT_AREA,
+    meta: { showRightArea },
+    payload: null,
+  });
+
 
   /*********************************************************************
   *  Method to distroy the slice of store

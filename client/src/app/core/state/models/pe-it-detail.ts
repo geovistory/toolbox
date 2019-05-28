@@ -3,8 +3,8 @@ import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
 import { Entity } from './data-unit';
 import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
 import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
-import { MentioningList } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.models';
 import { PeItTimeline } from 'app/modules/information/containers/pe-it-timeline/api/pe-it-timeline.models';
+import { MentioningList } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.models';
 
 export interface PeItDetailList { [pk_entity: number]: PeItDetail };
 
