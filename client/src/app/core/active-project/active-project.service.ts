@@ -1,22 +1,21 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { SysConfig, IAppState, DatChunk, Panel, ProjectDetail, PropertyList, U } from 'app/core';
-import { groupBy, indexBy, without, flatten, path, difference } from 'ramda';
-import { combineLatest, Observable, BehaviorSubject, Subject } from 'rxjs';
+import { DatChunk, IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
+import { difference, groupBy, indexBy, path, without, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel, InfPersistentItemApi } from '../sdk';
+import { DatSelector } from '../dat/dat.service';
+import { InfSelector } from '../inf/inf.service';
+import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual, DatNamespace } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
-import { ProProject } from '../sdk';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ComQueryByPk, EntityByPk, VersionEntity, EntityVersionsByPk, HasTypePropertyList, ClassConfigList } from './active-project.models';
-import { InfSelector } from '../inf/inf.service';
-import { InfActions } from 'app/core/inf/inf.actions';
-import { RootEpics } from '../store/epics';
-import { InfEpics } from '../inf/inf.epics';
-import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
+import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
+import { MatDialog } from '@angular/material';
+import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 
 
 
@@ -33,13 +32,14 @@ export class ActiveProjectService {
   public crm$: Observable<ProjectCrm>
   public classes$: Observable<ClassConfigList>
   public hasTypeProperties$: Observable<HasTypePropertyList>
-  public list$: Observable<ListType>; // type of list displayed in left panel 
+  public list$: Observable<ListType>; // type of list displayed in left panel
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
   public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ProQuery>>
   public comQueryLoading$: Observable<boolean>
   public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
   public comVisualLoading$: Observable<boolean>
+  public datNamespaces$: Observable<DatNamespace[]>
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -48,15 +48,16 @@ export class ActiveProjectService {
     return this.ngRedux.getState().activeProject;
   }
 
-  classesInProject$: Observable<number[]>
+  classPksEnabledInEntities$: Observable<number[]>
 
   inf$: InfSelector;
+  dat$: DatSelector;
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
     private entityPreviewSocket: EntityPreviewSocket,
-
+    public dialog: MatDialog
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -81,18 +82,24 @@ export class ActiveProjectService {
 
 
     this.inf$ = new InfSelector(ngRedux, this.pkProject$);
+    this.dat$ = new DatSelector(ngRedux);
 
-    this.classesInProject$ = this.crm$.pipe(
+    this.classPksEnabledInEntities$ = this.crm$.pipe(
       first(d => !!d),
       map(crm => {
-        const pkClassesInProject: number[] = []
+        const classPksEnabledInEntities: number[] = []
         for (const key in crm.classes) {
           if (crm.classes[key] && crm.classes[key].isInProject) {
-            pkClassesInProject.push(crm.classes[key].dfh_pk_class);
+            classPksEnabledInEntities.push(crm.classes[key].dfh_pk_class);
           }
         }
-        return pkClassesInProject;
+        return classPksEnabledInEntities;
       })
+    )
+
+    this.datNamespaces$ = this.pkProject$.pipe(
+      mergeMap(pro => this.dat$.namespace$.by_fk_project$.key(pro)),
+      map(byPk => values(byPk))
     )
 
     // emits true if no toolbox panel is opened
@@ -364,7 +371,7 @@ export class ActiveProjectService {
   }
 
   reloadTypesForClassesInProject() {
-    this.classesInProject$.pipe(first(([classes]) => !!classes))
+    this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
       .subscribe((classesInProject) => {
         this.streamTypePreviewsByClass(classesInProject)
       })
@@ -402,7 +409,7 @@ export class ActiveProjectService {
   }
 
   /**
-   * Loads one specific visual version 
+   * Loads one specific visual version
    * @param pkEntity pk_entity of visual
    * @param entityVersion if no entity_version provided, returns latest version
    */
@@ -458,13 +465,13 @@ export class ActiveProjectService {
   * Mentioning
   ************************************************************************************/
 
-  updateSelectedChunk(c: DatChunk) {
-    this.ngRedux.dispatch(this.actions.updateSelectedChunk(c))
-  }
+  // updateSelectedChunk(c: DatChunk) {
+  //   this.ngRedux.dispatch(this.actions.updateSelectedChunk(c))
+  // }
 
-  setRefiningChunk(bool: boolean) {
-    this.ngRedux.dispatch(this.actions.setRefiningChunk(bool))
-  }
+  // setRefiningChunk(bool: boolean) {
+  //   this.ngRedux.dispatch(this.actions.setRefiningChunk(bool))
+  // }
 
   mentioningsFocusedInText(pks: number[]) {
     this.ngRedux.dispatch(this.actions.setMentioningsFocusedInText(pks))
@@ -475,7 +482,7 @@ export class ActiveProjectService {
   }
 
   /************************************************************************************
-  * Layout
+  * Layout -- Tabs
   ************************************************************************************/
   setPanels(panels: Panel[], uiIdSerial: number, panelSerial: number, focusedPanel: number) {
     this.ngRedux.dispatch(this.actions.setPanels(panels, uiIdSerial, panelSerial, focusedPanel))
@@ -525,4 +532,29 @@ export class ActiveProjectService {
       }
     })
   }
+
+  /************************************************************************************
+  * Layout -- Modals
+  ************************************************************************************/
+
+  /**
+   * Returns an observable that emits the added entity
+   */
+  openModalCreateOrAddEntity(config: CreateOrAddEntity) {
+    const observable = new Subject();
+
+    this.ngRedux.dispatch(this.actions.openAddForm(config));
+
+    const dialogRef = this.dialog.open(AddOrCreateEntityModal, {
+      height: '90%',
+      width: '90%',
+      data: { basePath: ['activeProject', 'addModal'] }
+    }).afterClosed().subscribe(result => {
+      this.ngRedux.dispatch(this.actions.closeAddForm());
+      if (result) observable.next(result)
+    });
+
+    return observable;
+  }
+
 }

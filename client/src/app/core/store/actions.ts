@@ -10,6 +10,7 @@ export interface ModifyActionMeta<Model> { items: Model[], addPending: string, p
 export interface SucceedActionMeta<Model> { items: Model[], removePending: string, pk?: number }
 export interface FailActionMeta { removePending: string, pk?: number }
 
+export interface ActionResultObservable<Model> { pending$: Observable<boolean>, resolved$: Observable<SucceedActionMeta<Model>>, key: string }
 
 /**
  * A: Action Type (e.g. DfhAction)
@@ -28,7 +29,7 @@ export class StandardActionsFactory<Payload, Model> {
   /**
    * @param pk is used for facetting
    */
-  upsert: (items: Model[], pk?: number) => Observable<boolean>;
+  upsert: (items: Model[], pk?: number) => ActionResultObservable<Model>;
 
   /**
    * @param pk is used for facetting
@@ -62,12 +63,18 @@ export class StandardActionsFactory<Payload, Model> {
     this.modelName = modelName;
 
     this.load = (suffix: string = '', pk?: number) => {
+      const addPending=  U.uuid()
       const action: FluxStandardAction<Payload, LoadActionMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + (suffix ? '::' + suffix : ''),
-        meta: { addPending: U.uuid(), pk },
+        meta: { addPending, pk },
         payload: null,
       };
       this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+        key: addPending
+      };
     }
 
     this.loadSucceeded = (items: Model[], removePending: string, pk?: number) => {
@@ -90,7 +97,11 @@ export class StandardActionsFactory<Payload, Model> {
         payload: null
       })
       this.ngRedux.dispatch(action)
-      return this.ngRedux.select(['pending', addPending]);
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+        key: addPending
+      };
     }
 
     this.upsertSucceeded = (items: Model[], removePending: string, pk?: number) => {

@@ -36,14 +36,13 @@ module.exports = function (ProProject) {
 
     let insertTextProperty = '';
     if (description) {
-
       insertTextProperty = `
       , insert_text_property AS (
         INSERT INTO projects.text_property (fk_entity, string, fk_system_type, fk_language)
-        SELECT  
-          pk_entity, 
+        SELECT
+          pk_entity,
           ${addParam(description)},
-          ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION)}, 
+          ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION)},
           ${addParam(pkLanguage)}
         FROM insert_project
       )`;
@@ -59,10 +58,10 @@ module.exports = function (ProProject) {
     ),
     insert_label AS (
       INSERT INTO projects.text_property (fk_entity, string, fk_system_type, fk_language)
-      SELECT 
-        pk_entity, 
+      SELECT
+        pk_entity,
         ${addParam(label)},
-        ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL)}, 
+        ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL)},
         ${addParam(pkLanguage)}
       FROM insert_project
       ON CONFLICT DO NOTHING
@@ -70,7 +69,7 @@ module.exports = function (ProProject) {
     ${insertTextProperty},
     add_information_from_template_project AS (
       INSERT INTO projects.info_proj_rel (fk_project, fk_entity, fk_entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project, calendar, ord_num, entity_version)
-      SELECT 
+      SELECT
         (SELECT pk_entity FROM insert_project) as fk_project,
         fk_entity,
         fk_entity_version,
@@ -78,21 +77,28 @@ module.exports = function (ProProject) {
         is_in_project,
         is_standard_in_project,
         calendar,
-        ord_num, 
+        ord_num,
         entity_version
       FROM projects.info_proj_rel
-      WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}        
+      WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}
       ON CONFLICT DO NOTHING
     ),
     add_data_for_history_from_template_project AS (
       INSERT INTO projects.dfh_class_proj_rel (fk_project, fk_entity, enabled_in_entities)
-      SELECT 
+      SELECT
         (SELECT pk_entity FROM insert_project) as fk_project,
         fk_entity,
         enabled_in_entities
       FROM projects.dfh_class_proj_rel
       WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}
       ON CONFLICT DO NOTHING
+    ),
+    add_default_namespace AS (
+      INSERT INTO data.namespace (fk_project, standard_label)
+      VALUES (
+        (SELECT pk_entity FROM insert_project),
+        'Default Namespace'
+      )
     )
     INSERT INTO public.account_project_rel (fk_project, account_id, role)
     SELECT pk_entity, ${addParam(accountId)}, 'owner' FROM insert_project
@@ -140,7 +146,7 @@ module.exports = function (ProProject) {
    * - DfhClasses available for project, including
    *    - Ingoing and Outgoing DfhProperties available for project, including
    *        - Boolean that indicates
-   *    
+   *
    */
   ProProject.getReferenceModel = function (pkProject, cb) {
 
@@ -233,7 +239,7 @@ module.exports = function (ProProject) {
             "name": "class_profile_view",
             "joinType": "inner join",
             "where": [
-              //              "dfh_profile_association_type", "=", "selected" // TODO: Check if app still works correctly 
+              //              "dfh_profile_association_type", "=", "selected" // TODO: Check if app still works correctly
               "removed_from_api", "=", "false"
             ],
             select: { include: ["dfh_fk_system_type", "dfh_type_label", "dfh_profile_association_type", "dfh_fk_profile", "dfh_profile_label"] }

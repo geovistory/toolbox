@@ -149,14 +149,15 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 */
 export function createTypeDetailOfEntity(options: TypeDetail, entity: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
     // if for instances of this class we do not want types, return
-    if (!entity.fk_class || !Config.PK_CLASS_PK_HAS_TYPE_MAP[entity.fk_class]) return;
+    if (!entity.fk_class || !crm.classHasTypeProperty.by_pk_typed_class[entity.fk_class]) return;
 
     let typeEntityAssociation: InfEntityAssociation;
 
     // try to find domain entity association with type information
     if (entity.domain_entity_associations) {
+        const property = U.obj2Arr(crm.classHasTypeProperty.by_pk_typed_class[entity.fk_class])[0].dfh_pk_property;
         typeEntityAssociation = entity.domain_entity_associations
-            .find(ea => ea.fk_property === Config.PK_CLASS_PK_HAS_TYPE_MAP[entity.fk_class]);
+            .find(ea => ea.fk_property === property);
     }
 
     return createTypeDetail(

@@ -68,6 +68,40 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
   }
 
   /**
+   * Find or create information entity associations.
+   *
+   * @param {number} pk_project Id of the project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{InfEntityAssociation}` - data
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfEntityAssociation` object.)
+   * </em>
+   */
+  public findOrCreateInfEntityAssociations(pk_project: any, data: any, customHeaders?: Function): Observable<InfEntityAssociation[]> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfEntityAssociations/find-or-create-many";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instances: Array<InfEntityAssociation>) =>
+        instances.map((instance: InfEntityAssociation) => new InfEntityAssociation(instance))
+    ));
+  }
+
+  /**
    * Get e nested object of all information about the found entity associations.
    *
    * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
@@ -189,6 +223,35 @@ export class InfEntityAssociationApi extends BaseLoopBackApi {
     if (typeof pkSource !== 'undefined' && pkSource !== null) _urlParams.pkSource = pkSource;
     if (typeof pkExpression !== 'undefined' && pkExpression !== null) _urlParams.pkExpression = pkExpression;
     if (typeof pkChunk !== 'undefined' && pkChunk !== null) _urlParams.pkChunk = pkChunk;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get an array of entity associations that build the tree of the content of an F2 Expression.
+   *
+   * @param {number} pkProject Primary Key of the Project.
+   *
+   * @param {number} pkExpressionEntity Primary Key of the F2 Expression entity for which the content tree is needed.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfEntityAssociation` object.)
+   * </em>
+   */
+  public contentTree(pkProject: any = {}, pkExpressionEntity: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfEntityAssociations/content-tree";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkExpressionEntity !== 'undefined' && pkExpressionEntity !== null) _urlParams.pkExpressionEntity = pkExpressionEntity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

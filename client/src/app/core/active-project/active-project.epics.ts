@@ -2,7 +2,6 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { MentioningListAPIActions } from 'app/modules/information/containers/mentioning-list/api/mentioning-list.actions';
 import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -18,15 +17,19 @@ import { IAppState, ByPk } from '../store/model';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { SystemService } from '../sys/sys.service';
+import { SystemSelector } from '../sys/sys.service';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
+import { SysClassHasTypePropertySlice } from '../sys/sys.models';
+import { DatSelector } from 'app/core/dat/dat.service';
+import { MentioningListAPIActions } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.actions';
 
 
 
 @Injectable()
 export class ActiveProjectEpics {
   constructor(
-    private systemService: SystemService,
+    private sys: SystemSelector,
+    private dat: DatSelector,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -39,7 +42,7 @@ export class ActiveProjectEpics {
     private comVisual: ProVisualApi,
     private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: SysClassFieldApi,
-    private comHasTypePropsApi: SysClassHasTypePropertyApi,
+    private sysHasTypePropsApi: SysClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -64,8 +67,8 @@ export class ActiveProjectEpics {
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
       this.createClosePanelFocusPanelEpic(),
-      this.createEnableCreatingMentioningEpic(),
-      this.createDisableCreatingMentioningEpic(),
+      // this.createEnableCreatingMentioningEpic(),
+      // this.createDisableCreatingMentioningEpic(),
       this.createSplitPanelActivateTabEpic(),
       this.createAddTabCloseListEpic(),
       this.createChangeClassProjRelEpic(),
@@ -124,7 +127,10 @@ export class ActiveProjectEpics {
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
-        this.systemService.system_relevant_class.load();
+        this.sys.system_relevant_class.load();
+        this.sys.class_has_type_property.load();
+        this.dat.namespace.load('', action.meta.pk_project)
+
 
         combineLatest(
           this.projectApi.getReferenceModel(action.meta.pk_project),
@@ -132,8 +138,10 @@ export class ActiveProjectEpics {
           this.dfhPropertyApi.propertyFieldInfo(true),
           this.dfhPropertyApi.propertyFieldInfo(false),
           this.comClassFieldApi.find(),
-          this.comHasTypePropsApi.readableList(),
-          this.systemService.system_relevant_class$.by_fk_class$
+          this.sysHasTypePropsApi.find(),
+          this.sys.system_relevant_class$.by_fk_class$.all$,
+          this.sys.class_has_type_property$.slice$,
+          this.dat.namespace$.by_fk_project$.key(action.meta.pk_project)
         )
           .pipe(filter((res) => !res.includes(undefined)))
           .subscribe((res) => {
@@ -142,7 +150,9 @@ export class ActiveProjectEpics {
               ingoingProperties: DfhProperty[] = res[3],
               classFields = res[4] as SysClassField[],
               hasTypeProps: HasTypePropertyReadable[] = res[5],
-              systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6];
+              systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6],
+              classHasTypeProperty: SysClassHasTypePropertySlice = res[7];
+
 
             const properties = {
               ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
@@ -153,7 +163,8 @@ export class ActiveProjectEpics {
               classes: {},
               fieldList: {},
               properties,
-              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps)
+              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps),
+              classHasTypeProperty
             }
 
             const hasTypePropertiesByTypeClass = indexBy((prop) => prop.pk_type_class.toString(), hasTypeProps)
@@ -801,21 +812,21 @@ export class ActiveProjectEpics {
   /**
    * MENTIONING
    */
-  private createEnableCreatingMentioningEpic(): Epic {
-    return (action$, store) => action$.pipe(
-      ofType(MentioningListAPIActions.START_CREATE, PeItActions.START_CREATE_MENTIONING),
-      mapTo(this.actions.setCreatingMentioning(true))
-    )
-  }
-  private createDisableCreatingMentioningEpic(): Epic {
-    return (action$, store) => action$.pipe(
-      ofType(MentioningListAPIActions.STOP_CREATE, MentioningListAPIActions.CREATE_SUCCEEDED, MentioningListAPIActions.CREATE_FAILED),
-      mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-        globalStore.next(this.actions.setCreatingMentioning(false));
-        globalStore.next(this.actions.updateSelectedChunk(null));
-      }))
-    )
-  }
+  // private createEnableCreatingMentioningEpic(): Epic {
+  //   return (action$, store) => action$.pipe(
+  //     ofType(MentioningListAPIActions.START_CREATE, PeItActions.START_CREATE_MENTIONING),
+  //     mapTo(this.actions.setCreatingMentioning(true))
+  //   )
+  // }
+  // private createDisableCreatingMentioningEpic(): Epic {
+  //   return (action$, store) => action$.pipe(
+  //     ofType(MentioningListAPIActions.STOP_CREATE, MentioningListAPIActions.CREATE_SUCCEEDED, MentioningListAPIActions.CREATE_FAILED),
+  //     mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //       globalStore.next(this.actions.setCreatingMentioning(false));
+  //       globalStore.next(this.actions.updateSelectedChunk(null));
+  //     }))
+  //   )
+  // }
 
   /**
    * CRM

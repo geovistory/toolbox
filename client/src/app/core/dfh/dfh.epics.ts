@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from 'app/core/store/epics';
+import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { combineEpics, Epic } from 'redux-observable';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel } from '../sdk';
@@ -7,6 +7,7 @@ import { DfhActions } from './dfh.actions';
 import { ClassSlice, LabelSlice } from './dfh.models';
 import { SysConfig } from '../config/sys-config';
 import * as Config from '../../../../../common/config/Config';
+import { ModifyActionMeta } from '../store/actions';
 
 
 
@@ -25,7 +26,7 @@ export class DfhEpics {
 
     return combineEpics(
 
-      // Class Loaders      
+      // Class Loaders
       classEpicsFactory.createLoadEpic((action) => this.classApi.classesOfProfile(null), ''),
 
       // Label Loaders
@@ -44,8 +45,8 @@ export class DfhEpics {
       }), 'PROPERTY_LABELS'),
 
       // Label Upserter
-      labelEpicsFactory.createUpsertEpic((items) => {
-        return this.labelApi.bulkReplaceOrCreate(items)
+      labelEpicsFactory.createUpsertEpic<ModifyActionMeta<DfhLabel>>((meta) => {
+        return this.labelApi.bulkReplaceOrCreate(meta.items)
       }),
 
       // Label Deleter

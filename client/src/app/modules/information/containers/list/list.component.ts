@@ -31,10 +31,10 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
 
   @Input() showTeEnPeItFilter: boolean;
 
-
   // the classes for which this list can search
-  @select() pkAllowedClasses$: Observable<number[]>;
+  @Input() pkAllowedClasses$: Observable<number[]>;
   pkAllowedClasses: number[];
+
 
   // emits pk_entity of click
   @Output() onOpen = new EventEmitter<number>();

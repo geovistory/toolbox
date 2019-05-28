@@ -9,4 +9,4 @@ import { QuillOpsToStrPipe } from './quill-delta-to-str.pipe';
   declarations: [QuillOpsToStrPipe],
   exports: [QuillOpsToStrPipe]
 })
-export class QuillDeltaToStrModule { }
+export class QuillOpsToStrModule { }

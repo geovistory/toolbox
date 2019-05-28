@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DfhClassProfileView, DfhLabel, SysConfig, SysSystemRelevantClass, U } from 'app/core';
 import { DfhService } from 'app/core/dfh/dfh.service';
-import { SystemService } from 'app/core/sys/sys.service';
+import { SystemSelector } from 'app/core/sys/sys.service';
 import { omit, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
@@ -53,7 +53,7 @@ export class ClassListComponent  implements OnInit, OnDestroy {
     'required_by_basics',
     'required_by_sources',
     'required_by_entities',
-    'excluded_from_entities',    
+    'excluded_from_entities',
     'edit'
   ];
 
@@ -64,22 +64,22 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
   classLabelSysType = SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS;
   infFkLanguage = 18889;
-  
+
   constructor(
     private dfhService: DfhService,
     private dfhActions: DfhActions,
-    private sysService: SystemService
+    private sysService: SystemSelector
   ) {
 
     this.dfhActions.klass.load();
     this.dfhActions.label.load('CLASS_LABELS');
 
     this.sysService.system_relevant_class.load();
-    
+
     this.tableData$ = combineLatest(
       this.dfhService.class$.by_dfh_pk_class$,
       this.dfhService.label$.by_dfh_fk_class$,
-      this.sysService.system_relevant_class$.by_fk_class$,
+      this.sysService.system_relevant_class$.by_fk_class$.all$,
       this.pendingRows$,
       this.showRemovedClasses$
     ).pipe(
@@ -144,7 +144,7 @@ export class ClassListComponent  implements OnInit, OnDestroy {
         fk_class: row.dfh_pk_class,
         [col]: !row.systemRelevantClass ? true : !row.systemRelevantClass[col]
       }
-    ]).pipe(takeUntil(this.destroy$)).subscribe((pending) => {
+    ]).pending$.pipe(takeUntil(this.destroy$)).subscribe((pending) => {
       this.updatePendingRow(pending, row, col);
     });
   }

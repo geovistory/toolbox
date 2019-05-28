@@ -73,7 +73,7 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
-    
+
     this.typedClass$ = combineLatest(this.p.classes$, this.p.hasTypeProperties$).pipe(
       first(d => !d.includes(undefined)),
       map(([classes, hasTypeProps]) => classes[hasTypeProps[this.pkProperty].pk_typed_class]),

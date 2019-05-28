@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 import { DatChunk } from '../../models/DatChunk';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { InfEntityAssociation } from '../../models/InfEntityAssociation';
+import { DatNamespace } from '../../models/DatNamespace';
 
 
 /**

@@ -6,7 +6,7 @@
     "validateUpsert": true,
     "postgresql": {
       "schema": "data",
-      "table": "v_digital_version"
+      "table": "digital"
     }
   },
   "mixins": {
@@ -16,10 +16,8 @@
     }
   },
   "properties": {
-    "pk_text_version_concat": {
-      "generated": true
-    },
     "pk_text": {
+      "type": "number",
       "generated": true
     },
     "notes": {
@@ -42,22 +40,14 @@
       "hidden": true
     },
     "quill_doc": {
-      "type": "object",
-      "required": true
+      "type": "object"
     },
     "string": {
       "type": "string"
     }
   },
   "validations": [],
-  "relations": {
-    "chunks": {
-      "type": "hasMany",
-      "model": "DatChunk",
-      "foreignKey": "fk_digital",
-      "primaryKey": "pk_entity"
-    }
-  },
+  "relations": {},
   "acls": [
     {
       "principalType": "ROLE",
@@ -70,7 +60,7 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "getVersions"
+        "getVersion"
       ]
     },
     {
@@ -78,29 +68,33 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "saveWithEpr"
+        "findById",
+        "bulkUpsert",
+        "bulkDelete"
       ]
     }
   ],
   "methods": {
-    "saveWithEpr": {
+    "bulkUpsert": {
       "accepts": [
         {
-          "arg": "data",
-          "type": "DatDigital",
+          "arg": "pkNamespace",
+          "type": "number",
           "required": true,
-          "description": "Instance of DatDigital",
+          "description": "Namespace",
           "http": {
-            "source": "body"
+            "source": "query"
           }
         },
         {
-          "arg": "pkProject",
-          "type": "number",
+          "arg": "data",
+          "type": [
+            "DatDigital"
+          ],
           "required": true,
-          "description": "Project id",
+          "description": "Array DatDigital",
           "http": {
-            "source": "query"
+            "source": "body"
           }
         },
         {
@@ -116,30 +110,69 @@
         "type": "DatDigital",
         "root": true
       },
-      "description": "Creates or updates the instance of DatDigital and creates or updates its relation to the project of given projectId.",
+      "description": "Creates or updates instances of DatDigital.",
       "http": {
-        "path": "/save-with-epr",
+        "path": "/bulk-upsert",
         "verb": "put"
       }
     },
-    "findProjectVersion": {
+    "bulkDelete": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pks",
+          "type": [
+            "number"
+          ],
+          "required": true,
+          "description": "Array of Primary Key of DatDigitals",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "boolean",
+        "root": true
+      },
+      "description": "Deletes instances of DatDigital.",
+      "http": {
+        "path": "/delete-delete",
+        "verb": "put"
+      }
+    },
+    "getVersion": {
+      "accepts": [
+        {
+          "arg": "pkEntity",
           "type": "number",
           "required": true,
-          "description": "Project id",
+          "description": "Primary Key of the digital object (pk_entity)",
           "http": {
             "source": "query"
           }
         },
         {
-          "arg": "pkEntity",
+          "arg": "entityVersion",
           "type": "number",
           "required": false,
-          "description": "Primary Key of the digital object (pk_entity)",
+          "description": "Primary Key of the digital object (entity_version)",
           "http": {
             "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
           }
         }
       ],
@@ -150,9 +183,9 @@
         ],
         "root": true
       },
-      "description": "Finds the versions of given projectId. If pkEntity is given, finds version of this one.",
+      "description": "Finds the version of given digital. If no version specified, latest is returned.",
       "http": {
-        "path": "/find-project-version",
+        "path": "/get-version",
         "verb": "get"
       }
     },
@@ -201,38 +234,6 @@
       "description": "Finds the latest version of given pkEntity.",
       "http": {
         "path": "/get-latest-version",
-        "verb": "get"
-      }
-    },
-    "nestedObjectOfProject": {
-      "accepts": [
-        {
-          "arg": "projectId",
-          "type": "number",
-          "required": true,
-          "description": "Project id",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pkEntity",
-          "type": "number",
-          "required": true,
-          "description": "Primary Key of the digital object (pk_entity)",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "DatDigital",
-        "root": true
-      },
-      "description": "Get e nested object of all information about the digital object of the project.",
-      "http": {
-        "path": "/nested-object-of-project",
         "verb": "get"
       }
     }

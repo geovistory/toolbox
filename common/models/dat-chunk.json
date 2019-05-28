@@ -6,7 +6,7 @@
     "validateUpsert": true,
     "postgresql": {
       "schema": "data",
-      "table": "v_chunk"
+      "table": "chunk"
     }
   },
   "mixins": {

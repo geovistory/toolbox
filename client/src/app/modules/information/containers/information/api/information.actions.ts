@@ -21,19 +21,8 @@ export type InformationAPIAction = FluxStandardAction<Payload, MetaData>;
 export class InformationAPIActions {
 
 
-  static readonly INITIALIZE_LIST = 'Information::INITIALIZE_LIST';
 
   static readonly DESTROY = 'Information::DESTROY';
-
-  /*********************************************************************
-  *  Actions to manage the list
-  *********************************************************************/
-
-  @dispatch() initializeList = (pkClasses: number[]): InformationAPIAction => ({
-    type: InformationAPIActions.INITIALIZE_LIST,
-    meta: { pkClasses },
-    payload: null,
-  });
 
 
   /*********************************************************************

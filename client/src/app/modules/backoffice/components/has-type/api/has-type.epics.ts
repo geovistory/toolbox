@@ -39,7 +39,7 @@ export class HasTypeAPIEpics {
           /**
            * Do some api call
            */
-          this.modelApi.readableList() // <- change api call here
+          this.modelApi.find() // <- change api call here
             /**
              * Subscribe to the api call
              */

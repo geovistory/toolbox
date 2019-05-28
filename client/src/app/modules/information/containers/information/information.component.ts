@@ -52,13 +52,6 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   ) {
     super()
 
-    // listen to the crm and add extract the classes ready to add.
-    p.classesInProject$.pipe(first(d => !!d), takeUntil(this.destroy$))
-      .subscribe(pkClassesInProject => {
-        this.pkClassesInProject = pkClassesInProject;
-        this.initializeList(pkClassesInProject)
-      })
-
   }
 
   getBasePath = () => this.basePath;

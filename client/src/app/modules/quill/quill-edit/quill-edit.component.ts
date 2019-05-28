@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import Delta from 'quill/node_modules/quill-delta';
-import { Subscription, Observable, BehaviorSubject, asapScheduler, asyncScheduler, timer, interval } from 'rxjs';
+import { asyncScheduler, BehaviorSubject, Observable, Subscription, timer } from 'rxjs';
+import { distinct, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
 import { QuillNodeHandler } from '../quill-node-handler';
+import { DeltaI, Ops, QuillDoc } from '../quill.models';
 import { QuillService } from '../quill.service';
-import { QuillDoc, DeltaI, Ops } from '../quill.models';
-import { ProgressDialogData, ProgressDialogComponent, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
-import { MatDialog, MatDialogRef } from '../../../../../node_modules/@angular/material';
-import { first, takeUntil, filter, map, audit, delay, tap, distinct } from '../../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'gv-quill-edit',
@@ -41,25 +41,25 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
 
   // needed for creating annotation: maps nodeid with object containing isSelected-boolean and op (from Delta.ops)
-  nodeSelctionMap = new Map<string, { isSelected: boolean, op: any }>();
+  private nodeSelctionMap = new Map<string, { isSelected: boolean, op: any }>();
 
   // the selected Ops, when creating an annotation
-  private selectedOps: DeltaI;
+  private selectedDelta: DeltaI;
 
   // the editor object
   quillEditor: any;
 
-  Quill;
+  private Quill;
 
   // Next node inerted will get id = latestId + 1
-  latestId: number;
+  private latestId: number;
 
   // The Operations object
-  ops: Ops;
+  private ops: Ops;
 
-  html: string;
+  private html: string;
 
-  nodeSubs = new Map<Node, { nh: QuillNodeHandler, subs: Subscription[] }>(); // the DOM Node, subscriptions on this nodes events
+  private nodeSubs = new Map<Node, { nh: QuillNodeHandler, subs: Subscription[] }>(); // the DOM Node, subscriptions on this nodes events
 
   showTokenIds = false;
 
@@ -459,10 +459,11 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   updateContents() {
     this.ops = this.quillEditor.getContents().ops;
-    this.quillDocChange.emit({
+    this.quillDoc = {
       latestId: this.latestId,
       ops: this.ops
-    })
+    }
+    this.quillDocChange.emit(this.quillDoc)
   }
 
 
@@ -548,7 +549,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
     item.isSelected = isSelected;
 
     // create new and empty selectedDelta
-    this.selectedOps = new Delta()
+    this.selectedDelta = new Delta()
 
     // fill the selectedDelta with the selected items
     // or a ... node if some tokens are omitted
@@ -558,10 +559,10 @@ export class QuillEditComponent implements OnInit, OnChanges {
       if (i.isSelected) {
         // add dots, if there is a previous i that is not selected
         if (
-          this.selectedOps.ops.length &&
+          this.selectedDelta.ops.length &&
           previousItem.isSelected === false
         ) {
-          this.selectedOps.ops.push({
+          this.selectedDelta.ops.push({
             'attributes': {
               'node': '_'
             },
@@ -569,14 +570,14 @@ export class QuillEditComponent implements OnInit, OnChanges {
           })
         }
 
-        this.selectedOps.ops.push(i.op);
+        this.selectedDelta.ops.push(i.op);
 
       }
 
       previousItem = i;
     })
 
-    this.selectedDeltaChange.emit(this.selectedOps)
+    this.selectedDeltaChange.emit(this.selectedDelta)
   }
 
 

@@ -13,6 +13,7 @@ import { createActiveProjectReducer } from '../active-project/active-project.red
 import { createDfhReducer } from '../dfh/dfh.reducer';
 import { loadingBarReducer } from '../loading-bar/api/loading-bar.reducer';
 import { createSysReducer } from '../sys/sys.reducer';
+import { createDatReducer } from '../dat/dat.reducer';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
@@ -46,6 +47,18 @@ export const pendingRequestReducer = (state = {}, action) => {
   return state;
 }
 
+export const resolvedRequestReducer = (state = {}, action) => {
+
+  if (action && action.meta && action.meta.removePending) {
+    const uuid = action.meta.removePending;
+    state = {
+      ...state,
+      [uuid]: action.meta
+    }
+  }
+  return state;
+}
+
 export const rootReducer = composeReducers(
   defaultFormReducer(),
   combineReducers({
@@ -61,6 +74,8 @@ export const rootReducer = composeReducers(
     sources: sourceListReducer,
     sandboxState: sandboxStateReducer,
     inf: createInfReducer(),
-    pending: pendingRequestReducer
+    dat: createDatReducer(),
+    pending: pendingRequestReducer,
+    resolved: resolvedRequestReducer,
   })
 )

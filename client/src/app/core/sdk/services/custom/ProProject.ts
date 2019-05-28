@@ -15,9 +15,9 @@ import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { PubAccount } from '../../models/PubAccount';
 import { ProTextProperty } from '../../models/ProTextProperty';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { DatNamespace } from '../../models/DatNamespace';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
+import { DatNamespace } from '../../models/DatNamespace';
 
 
 /**

@@ -1,6 +1,7 @@
 /* tslint:disable */
 import {
-  InfEntityAssociation
+  InfEntityAssociation,
+  DatNamespace
 } from '../index';
 
 declare var Object: any;
@@ -15,8 +16,10 @@ export interface DatChunkInterface {
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
+  "fk_namespace"?: number;
   "fk_digital"?: number;
   data_info_association?: InfEntityAssociation[];
+  namespace?: DatNamespace;
 }
 
 export class DatChunk implements DatChunkInterface {
@@ -30,8 +33,10 @@ export class DatChunk implements DatChunkInterface {
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
+  "fk_namespace": number;
   "fk_digital": number;
   data_info_association?: InfEntityAssociation[];
+  namespace?: DatNamespace;
   constructor(data?: DatChunkInterface) {
     Object.assign(this, data);
   }
@@ -105,6 +110,10 @@ export class DatChunk implements DatChunkInterface {
           name: 'sys_period',
           type: 'string'
         },
+        "fk_namespace": {
+          name: 'fk_namespace',
+          type: 'number'
+        },
         "fk_digital": {
           name: 'fk_digital',
           type: 'number'
@@ -118,6 +127,14 @@ export class DatChunk implements DatChunkInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_info_domain'
+        },
+        namespace: {
+          name: 'namespace',
+          type: 'DatNamespace',
+          model: 'DatNamespace',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_namespace',
+          keyTo: 'pk_entity'
         },
       }
     }

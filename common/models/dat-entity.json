@@ -36,6 +36,18 @@
     "sys_period": {
       "type": "string",
       "generated": true
+    },
+    "fk_namespace": {
+      "type": "number",
+      "generated": true
+    }
+  },
+  "relations":{
+    "namespace": {
+      "type": "belongsTo",
+      "model": "DatNamespace",
+      "foreignKey": "fk_namespace",
+      "primaryKey": "pk_entity"
     }
   },
   "validations": [],

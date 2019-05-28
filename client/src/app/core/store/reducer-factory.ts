@@ -3,13 +3,15 @@ import { FluxStandardAction } from "flux-standard-action";
 import { clone, indexBy, mergeDeepRight, omit, values } from "ramda";
 import { combineReducers } from "redux";
 
+
+
 export interface ReducerConfigCollection {
   [key: string]: ReducerConfig
 }
 
 export interface ReducerConfig {
   // wraps everything in facette named by facetteByPk and grouped by action.meta.pk
-  facetteByPk?: string, 
+  facetteByPk?: string,
   indexBy?: {
     keyInStore: string;
     indexByFn: (item) => string;
@@ -24,10 +26,10 @@ export interface Meta<Model> { items: Model[], pk?: number }
 
 /**
  * Creates standard reducers for the given model.
- * 
+ *
  * Adds indexes according to config.
- *  
- * S: Interface of the state (slice of store) 
+ *
+ * S: Interface of the state (slice of store)
  */
 export class ReducerFactory<Payload, Model> {
 
@@ -61,11 +63,11 @@ export class ReducerFactory<Payload, Model> {
       switch (action.type) {
         case actionPrefix + '.' + modelName + '::LOAD':
 
-          state = {
+          state = facette(action, state, (innerState) => ({
             // TODO refactor this for partial lodings
-            ...omit([this.by(config.indexBy.keyInStore)], state),
+            ...omit([this.by(config.indexBy.keyInStore)], innerState),
             loading: true
-          };
+          }));
 
           break;
 
@@ -80,46 +82,69 @@ export class ReducerFactory<Payload, Model> {
 
 
         case actionPrefix + '.' + modelName + '::UPSERT':
-          state = {
-            ...state,
+          state = facette(action, state, (innerState) => ({
+            ...innerState,
             [this.updatingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
-          };
+          }))
           break;
 
         case actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED':
-          state = {
-            ... this.mergeItemsInState(config, state, action),
+          state = facette(action, state, (innerState) => ({
+            ... this.mergeItemsInState(config, innerState, action),
             [this.updatingBy(config.indexBy.keyInStore)]:
-              omit(values(this.indexKeyObject(action, config)), state[this.updatingBy(config.indexBy.keyInStore)])
-          }
+              omit(values(this.indexKeyObject(action, config)), innerState[this.updatingBy(config.indexBy.keyInStore)])
+          }))
           break;
 
         case actionPrefix + '.' + modelName + '::DELETE':
-          state = {
-            ...state,
+          state = facette(action, state, (innerState) => ({
+            ...innerState,
             [this.deletingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
-          };
+          }));
           break;
 
         case actionPrefix + '.' + modelName + '::DELETE_SUCCEEDED':
 
           const deletingKey = this.deletingBy(config.indexBy.keyInStore)
-          state = {
-            ...this.deleteItemsFromState(config, action, state),
-            [deletingKey]: omit(values(this.indexKeyObject(action, config)), state[this.deletingBy(config.indexBy.keyInStore)])
-          }
-          if (!Object.keys(state[deletingKey]).length) state = omit([deletingKey], state);
+          state = facette(action, state, (innerState) => {
+            innerState = {
+              ...this.deleteItemsFromState(config, action, innerState),
+              [deletingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.deletingBy(config.indexBy.keyInStore)])
+            }
+            if (!Object.keys(innerState[deletingKey]).length) innerState = omit([deletingKey], innerState);
+            return innerState;
+          })
 
+          break;
+
+        case actionPrefix + '.' + modelName + '::REMOVE':
+          state = facette(action, state, (innerState) => ({
+            ...innerState,
+            [this.removingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
+          }));
+          break;
+
+        case actionPrefix + '.' + modelName + '::REMOVE_SUCCEEDED':
+
+          const removingKey = this.removingBy(config.indexBy.keyInStore)
+          state = facette(action, state, (innerState) => {
+            innerState = {
+              ...this.deleteItemsFromState(config, action, innerState),
+              [removingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.removingBy(config.indexBy.keyInStore)])
+            }
+            if (!Object.keys(innerState[removingKey]).length) innerState = omit([removingKey], innerState);
+            return innerState;
+          })
           break;
 
         case actionPrefix + '.' + modelName + '::FAILED':
 
 
-          state = {
-            ...state,
-            ...omit([this.by(config.indexBy.keyInStore)], state),
+          state = facette(action, state, (innerState) => ({
+            ...innerState,
+            ...omit([this.by(config.indexBy.keyInStore)], innerState),
             loading: false
-          };
+          }));
 
           break;
 
@@ -135,23 +160,26 @@ export class ReducerFactory<Payload, Model> {
   by = (name: string) => 'by_' + name;
   updatingBy = (name: string) => 'updating_' + this.by(name);
   deletingBy = (name: string) => 'deleting_' + this.by(name);
+  removingBy = (name: string) => 'removing_' + this.by(name);
 
 
   private deFacette(modelName: string, config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; pk?: number; }>, outerState: any, state: {}) {
     if (this.isFacetteByPk(config, action)) {
       outerState = clone(state);
-      state = !state[config.facetteByPk] ? {} : state[config.facetteByPk][action.meta.pk] || {};
+      const pk = action.meta.pk || 'repo'
+      state = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
     }
     return { outerState, state };
   }
 
   private enFacette(modelName: string, config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; pk?: number; }>, state: {}, outerState: any) {
     if (this.isFacetteByPk(config, action)) {
+      const pk = action.meta.pk || 'repo'
       state = {
         ...outerState,
         [config.facetteByPk]: {
           ...outerState[config.facetteByPk],
-          [action.meta.pk]: state
+          [pk]: state
         }
       };
     }
@@ -202,7 +230,7 @@ export class ReducerFactory<Payload, Model> {
 
   /**
    * This function is there to merge new items in the store including its indexes
-   * 
+   *
    * It bundles the logic for storing the results of a find, update or insert requests
    */
   private mergeItemsInState(config: ReducerConfig, state: {}, action: FluxStandardAction<Payload, { items: Model[]; }>) {

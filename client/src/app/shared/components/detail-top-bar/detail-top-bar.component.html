@@ -1,3 +1,12 @@
 <div class="gv-detail-top-bar border-bottom boder-gray-300 bg-white d-flex flex-row gv-grow-1 px-2 align-items-center">
+
+  <button mat-stroked-button class="close-right-area-btn mr-3 text-muted" *ngIf="closeRightAreaBtn" (click)="closeRight.emit()">
+    <mat-icon aria-label="Close right area">chevron_right</mat-icon>
+  </button>
+
   <ng-content></ng-content>
+
+  <button mat-stroked-button class="open-right-area-btn  ml-3 text-muted" *ngIf="openRightAreaBtn" (click)="openRight.emit()">
+    <mat-icon aria-label="Open left area">chevron_left</mat-icon>
+  </button>
 </div>

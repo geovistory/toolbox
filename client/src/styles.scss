@@ -8,7 +8,7 @@
 */
 
 @import "src/assets/scss/bootstrap";
-$font-size-xs: .68rem;
+$font-size-xs: 0.68rem;
 /**
 * Ngx easy table
 * Docs: https://ngx-easy-table.eu/#/styles
@@ -47,168 +47,164 @@ $font-size-xs: .68rem;
 @import "src/assets/scss/components/_version_modal";
 // Entity Add Modal
 @import "src/assets/scss/components/_appellation_label_editor";
+
 /**
 * Generic stuff
 */
 
 body {
-    background-color: $gray-100;
+  background-color: $gray-100;
 }
 
 .container {
-    min-width: 63rem;
-    margin-top: 2rem;
+  min-width: 63rem;
+  margin-top: 2rem;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
 }
 
 .rotate-90 {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .rotate-180 {
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
-    transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .rotate-270 {
-    -webkit-transform: rotate(270deg);
-    -moz-transform: rotate(270deg);
-    -ms-transform: rotate(270deg);
-    -o-transform: rotate(270deg);
-    transform: rotate(270deg);
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
 }
 
 .form-control {
-    @extend .form-control; // overflow: hidden;
+  @extend .form-control; // overflow: hidden;
 }
 
 .gv-full {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 // text with no line break and overflow ellipsis
 .gv-one-liner {
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gv-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 // generate .bg-gray-* classes
-@each $color,
-$value in $grays {
-    @include bg-variant(".bg-gray-#{$color}", $value);
+@each $color, $value in $grays {
+  @include bg-variant(".bg-gray-#{$color}", $value);
 }
 
 // generate btn-gray-* classes
-@each $color,
-$value in $grays {
-    .btn-gray-#{$color} {
-        @include button-variant($value, $value);
-    }
+@each $color, $value in $grays {
+  .btn-gray-#{$color} {
+    @include button-variant($value, $value);
+  }
 }
 
 // generate btn-outline-gray-* classes
-@each $color,
-$value in $grays {
-    .btn-outline-gray-#{$color} {
-        @include button-outline-variant($value);
-    }
+@each $color, $value in $grays {
+  .btn-outline-gray-#{$color} {
+    @include button-outline-variant($value);
+  }
 }
 
 // generate border-gray-* classes
-@each $color,
-$value in $grays {
-    .border-gray-#{$color} {
-        border-color: $value !important;
-    }
+@each $color, $value in $grays {
+  .border-gray-#{$color} {
+    border-color: $value !important;
+  }
 }
 
 // generate btn-outline-gray-* classes
-@each $color,
-$value in $grays {
-    .btn-outline-gray-#{$color} {
-        @include button-outline-variant($value);
-    }
+@each $color, $value in $grays {
+  .btn-outline-gray-#{$color} {
+    @include button-outline-variant($value);
+  }
 }
 
 // generate text-gray-* classes
-@each $color,
-$value in $grays {
-    @include text-emphasis-variant(".text-gray-#{$color}", $value);
+@each $color, $value in $grays {
+  @include text-emphasis-variant(".text-gray-#{$color}", $value);
 }
 
 // generate .border-right* classes
-@each $color,
-$value in $theme-colors {
-    .border-right-#{$color} {
-        border-right-color: $value !important;
-    }
-
-    ;
+@each $color, $value in $theme-colors {
+  .border-right-#{$color} {
+    border-right-color: $value !important;
+  }
 }
 
 // generate .border-left* classes
-@each $color,
-$value in $theme-colors {
-    .border-left-#{$color} {
-        border-left-color: $value !important;
-    }
-
-    ;
+@each $color, $value in $theme-colors {
+  .border-left-#{$color} {
+    border-left-color: $value !important;
+  }
 }
 
 // generate .text-* classes for all colors
-@each $color,
-$value in $colors {
-    .text-#{$color} {
-        color: $value !important;
-    }
-
-    ;
+@each $color, $value in $colors {
+  .text-#{$color} {
+    color: $value !important;
+  }
 }
 
 /**
-* card-body padding minus button padding 
+* card-body padding minus button padding
 */
 
 // btn
 .btn-r {
-    padding-right: ($card-spacer-x - $btn-padding-x);
+  padding-right: ($card-spacer-x - $btn-padding-x);
 }
 
 .btn-l {
-    padding-left: ($card-spacer-x - $btn-padding-x);
+  padding-left: ($card-spacer-x - $btn-padding-x);
 }
 
 .btn-x {
-    padding-right: ($card-spacer-x - $btn-padding-x);
-    padding-left: ($card-spacer-x - $btn-padding-x);
+  padding-right: ($card-spacer-x - $btn-padding-x);
+  padding-left: ($card-spacer-x - $btn-padding-x);
 }
 
 .btn-t {
-    padding-top: ($card-spacer-y - $btn-padding-y);
+  padding-top: ($card-spacer-y - $btn-padding-y);
 }
 
 .btn-b {
-    padding-bottom: ($card-spacer-y - $btn-padding-y);
+  padding-bottom: ($card-spacer-y - $btn-padding-y);
 }
 
 .btn-y {
-    padding-left: ($card-spacer-y - $btn-padding-y);
-    padding-right: ($card-spacer-y - $btn-padding-y);
+  padding-left: ($card-spacer-y - $btn-padding-y);
+  padding-right: ($card-spacer-y - $btn-padding-y);
 }
 
 /**
@@ -217,30 +213,30 @@ $value in $colors {
 
 // Make a button look and behave like a link
 .btn-link-gray {
-    font-weight: $font-weight-normal;
-    color: $gray-500;
+  font-weight: $font-weight-normal;
+  color: $gray-500;
+  background-color: transparent;
+
+  @include hover {
+    color: $gray-800;
     background-color: transparent;
+    border-color: transparent;
+  }
 
-    @include hover {
-        color: $gray-800;
-        background-color: transparent;
-        border-color: transparent;
-    }
+  &:focus,
+  &.focus {
+    text-decoration: $link-hover-decoration;
+    border-color: transparent;
+    box-shadow: none;
+  }
 
-    &:focus,
-    &.focus {
-        text-decoration: $link-hover-decoration;
-        border-color: transparent;
-        box-shadow: none;
-    }
+  &:disabled,
+  &.disabled {
+    color: $gray-300;
+    pointer-events: none;
+  }
 
-    &:disabled,
-    &.disabled {
-        color: $gray-300;
-        pointer-events: none;
-    }
-
-    // No need for an active state here
+  // No need for an active state here
 }
 
 /**
@@ -249,30 +245,30 @@ $value in $colors {
 
 // Make a button look and behave like a link
 .btn-link-white {
-    font-weight: $font-weight-normal;
-    color: $white;
+  font-weight: $font-weight-normal;
+  color: $white;
+  background-color: transparent;
+
+  @include hover {
+    color: $gray-800;
     background-color: transparent;
+    border-color: transparent;
+  }
 
-    @include hover {
-        color: $gray-800;
-        background-color: transparent;
-        border-color: transparent;
-    }
+  &:focus,
+  &.focus {
+    text-decoration: $link-hover-decoration;
+    border-color: transparent;
+    box-shadow: none;
+  }
 
-    &:focus,
-    &.focus {
-        text-decoration: $link-hover-decoration;
-        border-color: transparent;
-        box-shadow: none;
-    }
+  &:disabled,
+  &.disabled {
+    color: $gray-300;
+    pointer-events: none;
+  }
 
-    &:disabled,
-    &.disabled {
-        color: $gray-300;
-        pointer-events: none;
-    }
-
-    // No need for an active state here
+  // No need for an active state here
 }
 
 /**
@@ -291,25 +287,25 @@ h6,
 .h4,
 .h5,
 .h6 {
-    // font-weight: $font-weight-light;
-    color: $gray-700;
+  // font-weight: $font-weight-light;
+  color: $gray-700;
 
-    small,
-    .small {
-        // font-weight: $font-weight-light;
-    }
+  small,
+  .small {
+    // font-weight: $font-weight-light;
+  }
 }
 
 h4,
 h5,
 .h4,
 .h5 {
-    color: $gray-800;
+  color: $gray-800;
 }
 
 h6,
 .h6 {
-    color: $gray-700
+  color: $gray-700;
 }
 
 // Custom Variables
@@ -318,352 +314,372 @@ $gv-color-selected: #00ffff;
 
 // Custom Stuff
 .font-normal {
-    font-size: $font-size-base;
+  font-size: $font-size-base;
 }
 
 .font-lg {
-    font-size: $font-size-lg;
+  font-size: $font-size-lg;
 }
 
 .font-sm {
-    font-size: $font-size-sm;
+  font-size: $font-size-sm;
 }
 
 .font-xs {
-    font-size: ($font-size-base * .68);
+  font-size: ($font-size-base * 0.68);
 }
 
 .gv-highlight {
-    color: theme-color("success");
-    font-weight: 600;
+  color: theme-color("success");
+  font-weight: 600;
 }
 
 .gv-bg-selected {
-    background-color: #b9f5ff;
+  background-color: #b9f5ff;
 }
 
 .gv-scroll-y-auto {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
 .gv-table-scroll-y {
-    @extend .gv-flex-fh;
+  @extend .gv-flex-fh;
+  @extend .gv-scroll-y-auto;
+
+  tr {
+    @extend .d-flex;
+
+    td,
+    th {
+      flex-basis: 100%;
+    }
+  }
+
+  tbody {
     @extend .gv-scroll-y-auto;
-
-    tr {
-        @extend .d-flex;
-
-        td,
-        th {
-            flex-basis: 100%
-        }
-    }
-
-    tbody {
-        @extend .gv-scroll-y-auto;
-    }
+  }
 }
 
 .dropdown-toggle.no-caret::after {
-    display: none;
+  display: none;
 }
 
 .rounded-bottom-0 {
-    border-bottom-right-radius: 0 !important;
-    border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
 .rounded-top-0 {
-    border-top-right-radius: 0 !important;
-    border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-top-left-radius: 0 !important;
 }
 
 .gv-dropdown-secondary {
-    .dropdown-menu {
-        margin: 0;
-        border-top-right-radius: 0;
-        background-color: theme-color("secondary");
+  .dropdown-menu {
+    margin: 0;
+    border-top-right-radius: 0;
+    background-color: theme-color("secondary");
 
-        .dropdown-item {
-            color: $white;
-        }
-
-        .dropdown-item:focus,
-        .dropdown-item:hover {
-            color: $white;
-            text-decoration: none;
-            background-color: darken(theme-color("secondary"), 10%);
-        }
+    .dropdown-item {
+      color: $white;
     }
+
+    .dropdown-item:focus,
+    .dropdown-item:hover {
+      color: $white;
+      text-decoration: none;
+      background-color: darken(theme-color("secondary"), 10%);
+    }
+  }
 }
 
 .gv-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .gv-w-max-500 {
-    max-width: 500px;
+  max-width: 500px;
 }
 
 .gv-grow-1 {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .gv-grow-2 {
-    flex-grow: 2;
+  flex-grow: 2;
 }
 
 .gv-grow-5 {
-    flex-grow: 5;
+  flex-grow: 5;
 }
 
 .gv-flex-shrink-0 {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 // full height
 .gv-fh {
-    @extend .flex-column;
-    @extend .gv-grow-1;
-    flex-basis: 0%;
+  @extend .flex-column;
+  @extend .gv-grow-1;
+  flex-basis: 0%;
 }
 
 // full height and display flex
 .gv-flex-fh {
-    @extend .gv-fh;
-    @extend .d-flex;
+  @extend .gv-fh;
+  @extend .d-flex;
 }
 
 // full viewport height
 .gv-h-100-vh {
-    height: 100vh;
+  height: 100vh;
 }
 
 // assigns fullheight to children elements of first nesting level
-.gv-flex-fh-second-child> :nth-child(2) {
-    @extend .gv-flex-fh;
+.gv-flex-fh-second-child > :nth-child(2) {
+  @extend .gv-flex-fh;
 }
 
 .gv-search-hits-count {
-    font-size: $font-size-sm;
-    color: $text-muted;
-    display: inline-block;
+  font-size: $font-size-sm;
+  color: $text-muted;
+  display: inline-block;
 }
 
 .gv-ul-sm {
-    color: theme-color("secondary");
-    font-size: $font-size-sm;
-    margin: 0;
-    padding: 0;
+  color: theme-color("secondary");
+  font-size: $font-size-sm;
+  margin: 0;
+  padding: 0;
 }
 
 .gv-li-inline {
-    display: inline-block;
-    margin-right: .4rem;
+  display: inline-block;
+  margin-right: 0.4rem;
 }
 
 .gv-li-inline::before {
-    content: "•";
-    margin-right: .4rem;
+  content: "•";
+  margin-right: 0.4rem;
 }
 
 .gv-li-inline:first-of-type::before {
-    content: none;
+  content: none;
 }
 
 .gv-li-inline:last-of-type {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .fa-caret-right {
-    margin-right: .2rem;
+  margin-right: 0.2rem;
 }
 
 gv-property {
-    display: block;
+  display: block;
 }
 
 .gv-card-spacer-l {
-    padding-left: $card-spacer-x;
+  padding-left: $card-spacer-x;
 }
 
 .gv-card-spacer-r {
-    padding-right: $card-spacer-x;
+  padding-right: $card-spacer-x;
 }
 
 .gv-card-spacer-b {
-    padding-bottom: $card-spacer-x;
+  padding-bottom: $card-spacer-x;
 }
 
 .gv-card-spacer-t {
-    padding-top: $card-spacer-x;
+  padding-top: $card-spacer-x;
 }
 
 .gv-card-spacer-y {
-    padding-top: $card-spacer-y;
-    padding-bottom: $card-spacer-y;
+  padding-top: $card-spacer-y;
+  padding-bottom: $card-spacer-y;
 }
 
 .gv-card-spacer-x {
-    padding-left: $card-spacer-x;
-    padding-right: $card-spacer-x;
+  padding-left: $card-spacer-x;
+  padding-right: $card-spacer-x;
 }
 
 .gv-btn-spacer {
-    display: inline-block;
-    font-weight: $btn-font-weight;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: $btn-border-width solid transparent;
-    @include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-line-height, $btn-border-radius);
+  display: inline-block;
+  font-weight: $btn-font-weight;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: $btn-border-width solid transparent;
+  @include button-size(
+    $btn-padding-y,
+    $btn-padding-x,
+    $font-size-base,
+    $btn-line-height,
+    $btn-border-radius
+  );
 }
 
 .gv-btn-spacer-sm {
-    display: inline-block;
-    font-weight: $btn-font-weight;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: $btn-border-width solid transparent;
-    @include button-size($btn-padding-y-sm, $btn-padding-x-sm, $font-size-sm, $btn-line-height-sm, $btn-border-radius-sm);
+  display: inline-block;
+  font-weight: $btn-font-weight;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: $btn-border-width solid transparent;
+  @include button-size(
+    $btn-padding-y-sm,
+    $btn-padding-x-sm,
+    $font-size-sm,
+    $btn-line-height-sm,
+    $btn-border-radius-sm
+  );
 }
 
 .gv-btn-spacer-lg {
-    display: inline-block;
-    font-weight: $btn-font-weight;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-    border: $btn-border-width solid transparent;
-    @include button-size($btn-padding-y-lg, $btn-padding-x-lg, $font-size-lg, $btn-line-height-lg, $btn-border-radius-lg);
+  display: inline-block;
+  font-weight: $btn-font-weight;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: $btn-border-width solid transparent;
+  @include button-size(
+    $btn-padding-y-lg,
+    $btn-padding-x-lg,
+    $font-size-lg,
+    $btn-line-height-lg,
+    $btn-border-radius-lg
+  );
 }
 
 .gv-border-selected {
-    @extend .border;
-    border-color: $gv-color-selected !important;
+  @extend .border;
+  border-color: $gv-color-selected !important;
 }
 
 .gv-border-highlighted {
-    @extend .border;
-    border-color: $gv-color-highlighted !important;
+  @extend .border;
+  border-color: $gv-color-highlighted !important;
 }
 
 .gv-shadow-outer-1 {
-    box-shadow: 0 0 0 1px rgba(89, 105, 129, .1), 0 1px 3px 0 rgba(89, 105, 129, .1), 0 1px 2px 0 rgba(0, 0, 0, .05);
+  box-shadow: 0 0 0 1px rgba(89, 105, 129, 0.1),
+    0 1px 3px 0 rgba(89, 105, 129, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 // Navbar (main)
 #nav {
-    .breadcrumb {
-        padding: 0.25rem .75rem;
-        margin-bottom: 0;
-    }
+  .breadcrumb {
+    padding: 0.25rem 0.75rem;
+    margin-bottom: 0;
+  }
 
-    #userDropdown {
-        i {
-            font-size: 1.3rem;
-        }
+  #userDropdown {
+    i {
+      font-size: 1.3rem;
     }
+  }
 
-    #userDropdown::after {
-        display: none
-    }
+  #userDropdown::after {
+    display: none;
+  }
 
-    #userIconBig {
-        font-size: 3rem;
-        color: $gray-300;
-        margin-top: 1rem;
-    }
+  #userIconBig {
+    font-size: 3rem;
+    color: $gray-300;
+    margin-top: 1rem;
+  }
 }
 
 // Loading Bar
 .slim-loading-bar-progress {
-    margin: 0;
-    padding: 0;
-    z-index: 99998;
-    background-color: theme-color("info") !important;
-    color: theme-color("info") !important;
-    box-shadow: 0 0 10px 0;
-    height: 2px;
-    opacity: 0;
-    -webkit-transition: all .5s ease-in-out;
-    transition: all .5s ease-in-out;
-    position: absolute;
+  margin: 0;
+  padding: 0;
+  z-index: 99998;
+  background-color: theme-color("info") !important;
+  color: theme-color("info") !important;
+  box-shadow: 0 0 10px 0;
+  height: 2px;
+  opacity: 0;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  position: absolute;
 }
 
 #userDashboard {
-    #userImage {
-        font-size: 6rem;
-        color: $gray-200;
-    }
+  #userImage {
+    font-size: 6rem;
+    color: $gray-200;
+  }
 }
 
 // Forms
 .ng-touched.ng-invalid {
-    @extend .is-invalid;
+  @extend .is-invalid;
 }
 
 .ng-touched.ng-valid {
-    @extend .is-valid;
+  @extend .is-valid;
 }
 
 // Pagination
 ngb-pagination {
-    .pagination {
-        margin: 0
-    }
+  .pagination {
+    margin: 0;
+  }
 }
 
 .gv-icon-preview,
 .gv-icon-preview.fa {
-    // margin-right: 0.48rem;
-    // font-size: 1.8rem;
-    // color: #9d7ab3;
+  // margin-right: 0.48rem;
+  // font-size: 1.8rem;
+  // color: #9d7ab3;
 }
 
 // data unit previews
 gv-entity-preview {
-    display: inline-block;
+  display: inline-block;
 }
 
 $gv-bg-drawer-list: #cde4f3;
 
 .gv-nav-btn {
-    $background: $gray-200;
-    $active-background: $gv-bg-drawer-list;
-    $hover-background: darken($background, 7.5%);
-    height: 80px;
-    width: 100%;
-    outline: none;
-    color: color-yiq($background);
-    background-color: $background;
-    border: none;
+  $background: $gray-200;
+  $active-background: $gv-bg-drawer-list;
+  $hover-background: darken($background, 7.5%);
+  height: 80px;
+  width: 100%;
+  outline: none;
+  color: color-yiq($background);
+  background-color: $background;
+  border: none;
 
-    @include hover {
-        color: color-yiq($hover-background);
-        background-color: darken($background, 7.5%);
+  @include hover {
+    color: color-yiq($hover-background);
+    background-color: darken($background, 7.5%);
+  }
+
+  &:focus,
+  &.focus {
+    outline: none; // background-color: $gray-500;
+  }
+
+  // Disabled comes first so active can properly restyle
+  &.disabled,
+  &:disabled {
+    background-color: $gray-100;
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    color: color-yiq($active-background);
+    background-color: $active-background;
+
+    &:focus {
     }
-
-    &:focus,
-    &.focus {
-        outline: none; // background-color: $gray-500;
-    }
-
-    // Disabled comes first so active can properly restyle
-    &.disabled,
-    &:disabled {
-        background-color: $gray-100;
-    }
-
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active,
-    .show>&.dropdown-toggle {
-        color: color-yiq($active-background);
-        background-color: $active-background;
-
-        &:focus {}
-    }
+  }
 }
 
 /***************************
@@ -679,68 +695,68 @@ $gv-bg-drawer-list: #cde4f3;
 ****************************/
 
 .gv-canvas {
-    background-color: $gray-100;
-    @extend .px-2;
-    @extend .pb-2;
-    @extend .pt-3;
-    flex-basis: 100%;
-    overflow-x: auto;
+  background-color: $gray-100;
+  @extend .px-2;
+  @extend .pb-2;
+  @extend .pt-3;
+  flex-basis: 100%;
+  overflow-x: auto;
 }
 
 .gv-panel {
-    @extend .gv-flex-fh;
-    overflow-y: auto; // @extend .align-items-center;
+  @extend .gv-flex-fh;
+  overflow-y: auto; // @extend .align-items-center;
 }
 
 .gv-tile {
-    min-width: 20rem;
-    background-color: $gray-100; // @extend .gv-flex-fh;
-    // @extend .border;
-    // @extend .border-primary;
-    margin-bottom: 1.5rem; // @extend .gv-shadow-outer-1;
-    // @extend .rounded;
+  min-width: 20rem;
+  background-color: $gray-100; // @extend .gv-flex-fh;
+  // @extend .border;
+  // @extend .border-primary;
+  margin-bottom: 1.5rem; // @extend .gv-shadow-outer-1;
+  // @extend .rounded;
 }
 
 .gv-tile:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .gv-tile-header,
 gv-tile-header {
-    @extend .gv-flex-shrink-0;
-    @extend .d-flex; // @extend .border-bottom; // @extend .border-top;
-    // @extend .border-primary;
-    // background-color: $secondary; // background-color: lighten($teal, 30%);
-    // color: $white;
-    @extend .align-items-baseline;
-    @extend .mb-0; // background-color: theme-color-level('secondary', -9); // like list-group-item-secondary
-    @extend .mx-2;
-    @extend .h4; // padding-left: $btn-padding-y-sm;
-    @extend .border-bottom;
-    @extend .border-secondary; // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
+  @extend .gv-flex-shrink-0;
+  @extend .d-flex; // @extend .border-bottom; // @extend .border-top;
+  // @extend .border-primary;
+  // background-color: $secondary; // background-color: lighten($teal, 30%);
+  // color: $white;
+  @extend .align-items-baseline;
+  @extend .mb-0; // background-color: theme-color-level('secondary', -9); // like list-group-item-secondary
+  @extend .mx-2;
+  @extend .h4; // padding-left: $btn-padding-y-sm;
+  @extend .border-bottom;
+  @extend .border-secondary; // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
 
-    .btn {
-        @extend .btn-link-gray;
-    }
+  .btn {
+    @extend .btn-link-gray;
+  }
 }
 
 .gv-tile-body {
-    // @extend .gv-flex-fh;
-    display: flex;
-    flex-direction: column;
-    @extend .p-2;
+  // @extend .gv-flex-fh;
+  display: flex;
+  flex-direction: column;
+  @extend .p-2;
 }
 
 .gv-field {
-    @extend .my-2;
+  @extend .my-2;
 }
 
 .gv-field-header-label {
-    font-size: $font-size-sm;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: $secondary;
-    margin-bottom: .5rem;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: $secondary;
+  margin-bottom: 0.5rem;
 }
 
 // .gv-field {
@@ -754,7 +770,7 @@ gv-tile-header {
 ****************************/
 
 .gv-p-list-group-item {
-    padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.25rem;
 }
 
 /***************************
@@ -762,16 +778,16 @@ gv-tile-header {
 ****************************/
 
 .gv-outer-form-control {
-    ngx-dropdown-treeview {
-        button.dropdown-toggle {
-            border: 0
-        }
+  ngx-dropdown-treeview {
+    button.dropdown-toggle {
+      border: 0;
     }
+  }
 }
 
 .placement-right .dropdown-menu.show {
-    left: auto;
-    right: 0;
+  left: auto;
+  right: 0;
 }
 
 /***************************
@@ -779,254 +795,254 @@ gv-tile-header {
  ***************************/
 
 gv-timeline {
-    $bg-timeline: $gray-100;
-    $font-color: $dark;
+  $bg-timeline: $gray-100;
+  $font-color: $dark;
 
-    .timeline-container {
-        background-color: $bg-timeline;
-        @extend .border-top;
-        @extend .border-bottom;
-        @extend .border-secondary;
+  .timeline-container {
+    background-color: $bg-timeline;
+    @extend .border-top;
+    @extend .border-bottom;
+    @extend .border-secondary;
+  }
+
+  path.domain {
+    stroke: none; // no outer line around xAxis
+  }
+
+  .header {
+    .tick > line {
+      stroke: none;
     }
 
-    path.domain {
-        stroke: none // no outer line around xAxis
+    .tick > text {
+      font-size: $font-size-xs;
+      fill: $font-color;
+    }
+  }
+
+  .rows {
+    border-top: 1px solid theme-color(dark);
+
+    .tick > text {
+      fill: none;
     }
 
-    .header {
-        .tick>line {
-            stroke: none;
-        }
-
-        .tick>text {
-            font-size: $font-size-xs;
-            fill: $font-color
-        }
+    .x-axis-julian {
+      .tick > line {
+        stroke: $gray-400; // stroke-dasharray: 7;
+      }
     }
 
-    .rows {
-        border-top: 1px solid theme-color(dark);
-
-        .tick>text {
-            fill: none;
-        }
-
-        .x-axis-julian {
-            .tick>line {
-                stroke: $gray-400; // stroke-dasharray: 7;
-            }
-        }
-
-        .x-axis-gregorian {
-            .tick>line {
-                stroke: $gray-400; // stroke-dasharray: 7;
-            }
-        }
+    .x-axis-gregorian {
+      .tick > line {
+        stroke: $gray-400; // stroke-dasharray: 7;
+      }
     }
+  }
 
-    .row {
-        font-size: $font-size-xs;
-    }
+  .row {
+    font-size: $font-size-xs;
+  }
 
-    .row:nth-child(odd) .row-bg {
-        fill: $gray-200; //opacity: 0.2;
-    }
+  .row:nth-child(odd) .row-bg {
+    fill: $gray-200; //opacity: 0.2;
+  }
 
-    .row:nth-child(even) .row-bg {
-        fill: $white;
-        opacity: 0.2;
-    }
+  .row:nth-child(even) .row-bg {
+    fill: $white;
+    opacity: 0.2;
+  }
 
-    .row .row-bg.selected {
-        fill: #ffffff;
-        opacity: 0.6;
-    }
+  .row .row-bg.selected {
+    fill: #ffffff;
+    opacity: 0.6;
+  }
 
-    .row .row-bg.highlighted {
-        fill: #ffffff;
-        opacity: 0.4;
-    }
+  .row .row-bg.highlighted {
+    fill: #ffffff;
+    opacity: 0.4;
+  }
 
-    .row-label-bg {
-        fill: $bg-timeline
-    }
+  .row-label-bg {
+    fill: $bg-timeline;
+  }
 
-    text.row-label {
-        fill: $font-color;
-    }
+  text.row-label {
+    fill: $font-color;
+  }
 
-    .gv-open-path {
-        stroke: $black;
-        fill: none;
-    }
+  .gv-open-path {
+    stroke: $black;
+    fill: none;
+  }
 
-    .gv-closed-path {
-        stroke: none;
-        fill-opacity: .8;
-    }
+  .gv-closed-path {
+    stroke: none;
+    fill-opacity: 0.8;
+  }
 
-    // .gv-closed-path.gv-inner,
-    // .gv-rectangle.gv-inner {
-    //     fill: lighten(theme-color("info"), 0%);
-    // }
+  // .gv-closed-path.gv-inner,
+  // .gv-rectangle.gv-inner {
+  //     fill: lighten(theme-color("info"), 0%);
+  // }
 
-    // .gv-closed-path.gv-outer,
-    // .gv-rectangle.gv-outer {
-    //     fill: lighten(theme-color("info"), 20%);
-    // }
+  // .gv-closed-path.gv-outer,
+  // .gv-rectangle.gv-outer {
+  //     fill: lighten(theme-color("info"), 20%);
+  // }
 
-    .separator-line {
-        stroke: theme-color("dark");
-    }
+  .separator-line {
+    stroke: theme-color("dark");
+  }
 
-    .cover-rect {
-        fill: $bg-timeline;
-    }
+  .cover-rect {
+    fill: $bg-timeline;
+  }
 
-    .no-data-text {
-        fill: theme-color("secondary");
-        font-size: $font-size-sm;
-    }
+  .no-data-text {
+    fill: theme-color("secondary");
+    font-size: $font-size-sm;
+  }
 
-    .cursor-handle {
-        fill: theme-color("primary");
-        stroke: $white; // fill-opacity: .8;
-    }
+  .cursor-handle {
+    fill: theme-color("primary");
+    stroke: $white; // fill-opacity: .8;
+  }
 
-    .cursor-line {
-        stroke: theme-color("primary");
-        stroke-width: 2;
-    }
+  .cursor-line {
+    stroke: theme-color("primary");
+    stroke-width: 2;
+  }
 
-    .btn {
-        @extend .btn-link-gray;
-    }
+  .btn {
+    @extend .btn-link-gray;
+  }
 }
 
 gv-timeline.gv-timeline-dark {
-    $bg-timeline: $gray-600;
-    $font-color: $white;
+  $bg-timeline: $gray-600;
+  $font-color: $white;
 
-    .timeline-container {
-        background-color: $bg-timeline;
-        @extend .border;
-        @extend .border-dark;
-        @extend .rounded;
+  .timeline-container {
+    background-color: $bg-timeline;
+    @extend .border;
+    @extend .border-dark;
+    @extend .rounded;
+  }
+
+  path.domain {
+    stroke: none; // no outer line around xAxis
+  }
+
+  .header {
+    .tick > line {
+      stroke: none;
     }
 
-    path.domain {
-        stroke: none // no outer line around xAxis
+    .tick > text {
+      font-size: $font-size-xs;
+      fill: $font-color;
+    }
+  }
+
+  .rows {
+    border-top: 1px solid theme-color(dark);
+
+    .tick > text {
+      fill: none;
     }
 
-    .header {
-        .tick>line {
-            stroke: none;
-        }
-
-        .tick>text {
-            font-size: $font-size-xs;
-            fill: $font-color
-        }
+    .x-axis-julian {
+      .tick > line {
+        stroke: $gray-400; // stroke-dasharray: 7;
+      }
     }
 
-    .rows {
-        border-top: 1px solid theme-color(dark);
-
-        .tick>text {
-            fill: none;
-        }
-
-        .x-axis-julian {
-            .tick>line {
-                stroke: $gray-400; // stroke-dasharray: 7;
-            }
-        }
-
-        .x-axis-gregorian {
-            .tick>line {
-                stroke: $gray-400; // stroke-dasharray: 7;
-            }
-        }
+    .x-axis-gregorian {
+      .tick > line {
+        stroke: $gray-400; // stroke-dasharray: 7;
+      }
     }
+  }
 
-    .row {
-        font-size: $font-size-xs;
-    }
+  .row {
+    font-size: $font-size-xs;
+  }
 
-    .row:nth-child(odd) .row-bg {
-        fill: $gray-200;
-        opacity: 0.2;
-    }
+  .row:nth-child(odd) .row-bg {
+    fill: $gray-200;
+    opacity: 0.2;
+  }
 
-    .row:nth-child(even) .row-bg {
-        fill: $white;
-        opacity: 0.2;
-    }
+  .row:nth-child(even) .row-bg {
+    fill: $white;
+    opacity: 0.2;
+  }
 
-    .row .row-bg.selected {
-        fill: #ffffff;
-        opacity: 0.6;
-    }
+  .row .row-bg.selected {
+    fill: #ffffff;
+    opacity: 0.6;
+  }
 
-    .row .row-bg.highlighted {
-        fill: #ffffff;
-        opacity: 0.4;
-    }
+  .row .row-bg.highlighted {
+    fill: #ffffff;
+    opacity: 0.4;
+  }
 
-    .row-label-bg {
-        fill: $bg-timeline
-    }
+  .row-label-bg {
+    fill: $bg-timeline;
+  }
 
-    text.row-label {
-        fill: $font-color;
-    }
+  text.row-label {
+    fill: $font-color;
+  }
 
-    .gv-open-path {
-        stroke: darken(theme-color("info"), 20%);
-        fill: none;
-    }
+  .gv-open-path {
+    stroke: darken(theme-color("info"), 20%);
+    fill: none;
+  }
 
-    .gv-closed-path {
-        stroke: none;
-        fill-opacity: .8;
-    }
+  .gv-closed-path {
+    stroke: none;
+    fill-opacity: 0.8;
+  }
 
-    .gv-closed-path.gv-inner,
-    .gv-rectangle.gv-inner {
-        fill: lighten(theme-color("info"), 20%);
-    }
+  .gv-closed-path.gv-inner,
+  .gv-rectangle.gv-inner {
+    fill: lighten(theme-color("info"), 20%);
+  }
 
-    .gv-closed-path.gv-outer,
-    .gv-rectangle.gv-outer {
-        fill: lighten(theme-color("info"), 50%);
-    }
+  .gv-closed-path.gv-outer,
+  .gv-rectangle.gv-outer {
+    fill: lighten(theme-color("info"), 50%);
+  }
 
-    .separator-line {
-        stroke: theme-color("dark");
-    }
+  .separator-line {
+    stroke: theme-color("dark");
+  }
 
-    .cover-rect {
-        fill: $bg-timeline;
-    }
+  .cover-rect {
+    fill: $bg-timeline;
+  }
 
-    .no-data-text {
-        fill: theme-color("secondary");
-        font-size: $font-size-sm;
-    }
+  .no-data-text {
+    fill: theme-color("secondary");
+    font-size: $font-size-sm;
+  }
 
-    .cursor-handle {
-        fill: theme-color("primary");
-        stroke: $white; // fill-opacity: .8;
-    }
+  .cursor-handle {
+    fill: theme-color("primary");
+    stroke: $white; // fill-opacity: .8;
+  }
 
-    .cursor-line {
-        stroke: theme-color("primary");
-        stroke-width: 2;
-    }
+  .cursor-line {
+    stroke: theme-color("primary");
+    stroke-width: 2;
+  }
 
-    .btn {
-        @extend .btn-gray-700;
-    }
+  .btn {
+    @extend .btn-gray-700;
+  }
 }
 
 /***************************
@@ -1034,165 +1050,177 @@ gv-timeline.gv-timeline-dark {
  ***************************/
 
 gv-quill-view {
-    .ql-container.ql-snow {
-        height: auto;
-        border: none;
-    }
+  .ql-container.ql-snow {
+    height: auto;
+    border: none;
+  }
 
-    .ql-editor {
-        padding: 0;
-    }
+  .ql-editor {
+    padding: 0;
+  }
 }
 
 gv-quill-edit {
-    .ql-container.ql-snow {
-        @extend .d-flex;
-        @extend .flex-column;
-        @extend .gv-grow-1;
-    }
+  .ql-container.ql-snow {
+    @extend .d-flex;
+    @extend .flex-column;
+    @extend .gv-grow-1;
+  }
 
-    .ql-editor {
-        @extend .gv-grow-1;
-    }
+  .ql-editor {
+    @extend .gv-grow-1;
+  }
 }
 
 gv-quill-edit.gv-hide-toolbar {
+  .ql-toolbar,
+  .ql-tooltip {
+    display: none;
+  }
+}
 
-    .ql-toolbar,
-    .ql-tooltip {
-        display: none;
-    }
+.gv-quill-borderless {
+  .ql-toolbar.ql-snow{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    @extend .border-bottom;
+    background-color: #f5f5f5;
+  }
+  .ql-container.ql-snow {
+    border: 0;
+  }
 }
 
 // Outer form control is for nesting form controls
 // Assign this class to the wrapper form-control.
 .gv-outer-form-control {
-    @extend .form-control;
-    padding: 0;
-    overflow-y: visible;
+  @extend .form-control;
+  padding: 0;
+  overflow-y: visible;
 
-    .form-control {
-        border: 0;
-        height: $input-height-inner;
-    }
+  .form-control {
+    border: 0;
+    height: $input-height-inner;
+  }
 }
 
 gv-quill-edit.gv-quill-input-like {
-    @extend gv-quill-edit.gv-hide-toolbar;
+  @extend gv-quill-edit.gv-hide-toolbar;
 
-    .gv-editor {
-        height: auto;
-    }
+  .gv-editor {
+    height: auto;
+  }
 
-    .ql-editor {
-        @extend .form-control;
-        border: 0;
-        height: $input-height-inner;
-    }
+  .ql-editor {
+    @extend .form-control;
+    border: 0;
+    height: $input-height-inner;
+  }
 }
 
 gv-quill-edit.gv-quill-textarea-like.gv-outer-form-control {
-    height: auto;
+  height: auto;
 }
 
 gv-quill-edit.gv-quill-textarea-like {
-    @extend gv-quill-edit.gv-hide-toolbar;
+  @extend gv-quill-edit.gv-hide-toolbar;
 
-    .gv-editor {
-        height: auto;
+  .gv-editor {
+    height: auto;
+  }
+
+  .ql-editor {
+    border: 0;
+    min-height: 3.5rem; // copy from .form-control except border and height
+    display: block;
+    width: 100%;
+    padding: $input-padding-y $input-padding-x;
+    font-size: $font-size-base;
+    line-height: $input-line-height;
+    color: $input-color;
+    background-color: $input-bg;
+    background-clip: padding-box;
+
+    @if $enable-rounded {
+      // Manually use the if/else instead of the mixin to account for iOS override
+      border-radius: $input-border-radius;
+    } @else {
+      // Otherwise undo the iOS default
+      border-radius: 0;
     }
 
-    .ql-editor {
-        border: 0;
-        min-height: 3.5rem; // copy from .form-control except border and height
-        display: block;
-        width: 100%;
-        padding: $input-padding-y $input-padding-x;
-        font-size: $font-size-base;
-        line-height: $input-line-height;
-        color: $input-color;
-        background-color: $input-bg;
-        background-clip: padding-box;
+    @include box-shadow($input-box-shadow);
+    @include transition(
+      $input-transition
+    ); // Unstyle the caret on `<select>`s in IE10+.
 
-        @if $enable-rounded {
-            // Manually use the if/else instead of the mixin to account for iOS override
-            border-radius: $input-border-radius;
-        }
-
-        @else {
-            // Otherwise undo the iOS default
-            border-radius: 0;
-        }
-
-        @include box-shadow($input-box-shadow);
-        @include transition($input-transition); // Unstyle the caret on `<select>`s in IE10+.
-
-        &::-ms-expand {
-            background-color: transparent;
-            border: 0;
-        }
-
-        // Customize the `:focus` state to imitate native WebKit styles.
-        @include form-control-focus(); // Placeholder
-
-        &::placeholder {
-            color: $input-placeholder-color; // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
-            opacity: 1;
-        }
-
-        // Disabled and read-only inputs
-        //
-        // HTML5 says that controls under a fieldset > legend:first-child won't be
-        // disabled if the fieldset is disabled. Due to implementation difficulty, we
-        // don't honor that edge case; we style them as disabled anyway.
-        &:disabled,
-        &[readonly] {
-            background-color: $input-disabled-bg; // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
-            opacity: 1;
-        }
+    &::-ms-expand {
+      background-color: transparent;
+      border: 0;
     }
+
+    // Customize the `:focus` state to imitate native WebKit styles.
+    @include form-control-focus(); // Placeholder
+
+    &::placeholder {
+      color: $input-placeholder-color; // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
+      opacity: 1;
+    }
+
+    // Disabled and read-only inputs
+    //
+    // HTML5 says that controls under a fieldset > legend:first-child won't be
+    // disabled if the fieldset is disabled. Due to implementation difficulty, we
+    // don't honor that edge case; we style them as disabled anyway.
+    &:disabled,
+    &[readonly] {
+      background-color: $input-disabled-bg; // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
+      opacity: 1;
+    }
+  }
 }
 
 gv-source-list {
-    @extend .d-flex;
-    @extend .gv-grow-1;
-    @extend .flex-column;
+  @extend .d-flex;
+  @extend .gv-grow-1;
+  @extend .flex-column;
 }
 
 gv-information {
-    @extend .d-flex;
-    @extend .gv-grow-1;
-    @extend .flex-column;
+  @extend .d-flex;
+  @extend .gv-grow-1;
+  @extend .flex-column;
 }
 
 gv-pe-it-property-field-editable {
-    min-width: 360px;
-    display: block;
+  min-width: 360px;
+  display: block;
 }
 
 gv-add-info-pe-it {
-    .dropdown-item.active {
-        color: inherit;
-        background-color: $gray-300; // border: 1px solid theme-color("primary");
-    }
+  .dropdown-item.active {
+    color: inherit;
+    background-color: $gray-300; // border: 1px solid theme-color("primary");
+  }
 }
 
 gv-mentioning-list .ngx-table__header-title {
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .gv-show-token-ids {
-    span[charid] {
-        background: lightpink;
-        margin: 0 1px;
-    }
+  span[charid] {
+    background: lightpink;
+    margin: 0 1px;
+  }
 
-    span[charid]::after {
-        content: attr(charid);
-        vertical-align: super;
-        font-size: smaller;
-    }
+  span[charid]::after {
+    content: attr(charid);
+    vertical-align: super;
+    font-size: smaller;
+  }
 }
 
 /***************************
@@ -1200,25 +1228,25 @@ gv-mentioning-list .ngx-table__header-title {
  ***************************/
 
 gv-map {
-    ac-map {
-        height: 400px;
+  ac-map {
+    height: 400px;
 
-        .map-container {
-            flex: 1 1 100px;
-            height: 400px;
-            background-color: lightcyan;
-            position: relative;
-            border: 1px solid #00ffff;
-            display: flex;
-            flex-direction: column;
-            flex-flow: column;
-            @extend .border;
+    .map-container {
+      flex: 1 1 100px;
+      height: 400px;
+      background-color: lightcyan;
+      position: relative;
+      border: 1px solid #00ffff;
+      display: flex;
+      flex-direction: column;
+      flex-flow: column;
+      @extend .border;
 
-            .cesium-viewer {
-                flex: 1 1 auto;
-            }
-        }
+      .cesium-viewer {
+        flex: 1 1 auto;
+      }
     }
+  }
 }
 
 /***************************
@@ -1226,12 +1254,20 @@ gv-map {
  ***************************/
 
 .gv-drop-zone {
-    background-color: #dcdede4d;
-    padding: 2rem;
-    text-align: center;
-    font-size: $font-size-lg;
-    border: 3px dashed #dcdede95;
-    border-radius: $btn-border-radius-lg;
+  background-color: #dcdede4d;
+  padding: 2rem;
+  text-align: center;
+  font-size: $font-size-lg;
+  border: 3px dashed #dcdede95;
+  border-radius: $btn-border-radius-lg;
+}
+.gv-select-text {
+  background-color: #dcdede4d;
+  padding: 2rem;
+  text-align: center;
+  font-size: $font-size-lg;
+  border: 3px solid #dcdede95;
+  border-radius: $btn-border-radius-lg;
 }
 
 /***************************
@@ -1239,56 +1275,56 @@ gv-map {
  ***************************/
 
 .gv-bg-highlight {
-    background-color: hsla(271, 68%, 80%, 0.5)
+  background-color: hsla(271, 68%, 80%, 0.5);
 }
 
 .gv-bg-highlight-2 {
-    background-color: hsla(271, 68%, 80%, 0.9)
+  background-color: hsla(271, 68%, 80%, 0.9);
 }
 
 /**************************
-* Ngx easy table vertical scroll 
+* Ngx easy table vertical scroll
 **************************/
 
 ngx-table.light-header {
-    th {
-        font-weight: 400;
-    }
+  th {
+    font-weight: 400;
+  }
 }
 
 ngx-table.sticky-header {
+  @extend .gv-flex-fh;
+
+  .ngx-container {
     @extend .gv-flex-fh;
+  }
 
-    .ngx-container {
-        @extend .gv-flex-fh;
+  .ngx-table {
+    @extend .gv-flex-fh;
+  }
+
+  thead {
+    display: table;
+
+    th {
+      font-weight: 400;
     }
+  }
 
-    .ngx-table {
-        @extend .gv-flex-fh;
+  tbody {
+    @extend .gv-flex-fh;
+    overflow-y: auto;
+
+    tr {
+      display: flex;
+      flex-shrink: 0;
+
+      td {
+        flex-grow: 1;
+        flex-shrink: 0;
+      }
     }
-
-    thead {
-        display: table;
-
-        th {
-            font-weight: 400;
-        }
-    }
-
-    tbody {
-        @extend .gv-flex-fh;
-        overflow-y: auto;
-
-        tr {
-            display: flex;
-            flex-shrink: 0;
-
-            td {
-                flex-grow: 1;
-                flex-shrink: 0;
-            }
-        }
-    }
+  }
 }
 
 /**************************
@@ -1296,108 +1332,117 @@ ngx-table.sticky-header {
 **************************/
 
 .switch {
+  /* Box around the slider */
+  .box {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    @extend .mr-1;
+  }
 
-    /* Box around the slider */
-    .box {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-        @extend .mr-1;
-    }
+  /* Hide default HTML checkbox */
+  .box input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
 
-    /* Hide default HTML checkbox */
-    .box input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $gray-300;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
 
-    /* The slider */
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: $gray-300;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
 
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
+  input:checked + .slider {
+    background-color: $primary;
+  }
 
-    input:checked+.slider {
-        background-color: $primary;
-    }
+  input:focus + .slider {
+    box-shadow: 0 0 1px $primary;
+  }
 
-    input:focus+.slider {
-        box-shadow: 0 0 1px $primary;
-    }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
 
-    input:checked+.slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-    }
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
 
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
+  .slider.round:before {
+    border-radius: 50%;
+  }
 }
 
 /* Sizes */
 
 $switch-sm-box-border: 2px;
-$switch-sm-box-heigth: calc(#{$input-height-inner-sm} + #{$input-height-border} - (#{$input-padding-y-sm} *2));
-$slider-diameter: calc(#{$switch-sm-box-heigth} - (#{$switch-sm-box-border} *2));
-$slide-distance: calc(#{$slider-diameter} * .5); // Adjust the hight/width ratio
-$switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diameter} + #{$slide-distance}));
+$switch-sm-box-heigth: calc(
+  #{$input-height-inner-sm} + #{$input-height-border} -
+    (#{$input-padding-y-sm} * 2)
+);
+$slider-diameter: calc(
+  #{$switch-sm-box-heigth} - (#{$switch-sm-box-border} * 2)
+);
+$slide-distance: calc(
+  #{$slider-diameter} * 0.5
+); // Adjust the hight/width ratio
+$switch-sm-box-width: calc(
+  (#{$switch-sm-box-border} * 2) +
+    calc(#{$slider-diameter} + #{$slide-distance})
+);
 
 // $switch-sm-box-width: calc(#{$switch-sm-box-heigth} * 2);
 .switch.switch-sm {
-    @extend .form-control-sm;
-    margin-bottom: 0;
-    cursor: pointer;
+  @extend .form-control-sm;
+  margin-bottom: 0;
+  cursor: pointer;
 
-    .box {
-        height: $switch-sm-box-heigth;
-        width: $switch-sm-box-width;
-    }
+  .box {
+    height: $switch-sm-box-heigth;
+    width: $switch-sm-box-width;
+  }
 
-    .slider:before {
-        height: $slider-diameter;
-        width: $slider-diameter;
-        left: $switch-sm-box-border;
-        bottom: $switch-sm-box-border;
-    }
+  .slider:before {
+    height: $slider-diameter;
+    width: $slider-diameter;
+    left: $switch-sm-box-border;
+    bottom: $switch-sm-box-border;
+  }
 
-    input:checked+.slider:before {
-        -webkit-transform: translateX($slide-distance);
-        -ms-transform: translateX($slide-distance);
-        transform: translateX($slide-distance);
-    }
+  input:checked + .slider:before {
+    -webkit-transform: translateX($slide-distance);
+    -ms-transform: translateX($slide-distance);
+    transform: translateX($slide-distance);
+  }
 
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-    }
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
 }
 
 /***********************************
@@ -1405,25 +1450,26 @@ $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diame
 ************************************/
 
 .cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-placeholder {
-    opacity: 0;
+  opacity: 0;
 }
 
 .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .example-box:last-child {
-    border: none;
+  border: none;
 }
 
 .list-group.cdk-drop-list-dragging .list-group-item:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 /*****************
@@ -1431,9 +1477,9 @@ $switch-sm-box-width: calc((#{$switch-sm-box-border} * 2) + calc(#{$slider-diame
 *****************/
 
 mcc-color-picker-selector {
-    .mcc-color-picker-selector-preview {
-        box-sizing: content-box;
-    }
+  .mcc-color-picker-selector-preview {
+    box-sizing: content-box;
+  }
 }
 
 /******************
@@ -1441,119 +1487,119 @@ mcc-color-picker-selector {
 ******************/
 
 as-split.gv-split-style {
-    .as-split-area {
-
-        // background-color: lightgrey;
-        &>p {
-            padding: 5px;
-        }
+  .as-split-area {
+    // background-color: lightgrey;
+    & > p {
+      padding: 5px;
     }
+  }
 
-    ::ng-deep .as-split-gutter {
-        background-color: $gray-300 !important;
-        position: relative;
-    }
+  ::ng-deep .as-split-gutter {
+    background-color: $gray-300 !important;
+    position: relative;
+  }
 
-    .as-split-gutter {
-        background-color: $gray-300 !important;
-        position: relative;
-    }
+  .as-split-gutter {
+    background-color: $gray-300 !important;
+    position: relative;
+  }
 
+  ::ng-deep .as-split-gutter-icon {
+    background-image: none !important;
+    background-color: black;
+    transition: opacity 0.3s;
+    opacity: 0;
+    position: absolute;
+  }
+
+  .as-split-gutter-icon {
+    background-image: none !important;
+    background-color: black;
+    transition: opacity 0.3s;
+    opacity: 0;
+    position: absolute;
+  }
+
+  ::ng-deep .as-split-gutter.is-dragged .as-split-gutter-icon,
+  ::ng-deep .as-split-gutter-icon:hover {
+    opacity: 0.1;
+  }
+
+  .as-split-gutter.is-dragged .as-split-gutter-icon,
+  .as-split-gutter-icon:hover {
+    opacity: 0.1;
+  }
+
+  &.is-horizontal {
     ::ng-deep .as-split-gutter-icon {
-        background-image: none !important;
-        background-color: black;
-        transition: opacity .3s;
-        opacity: 0;
-        position: absolute;
+      width: 13px !important;
+      left: -6px;
+      right: 6px;
     }
 
     .as-split-gutter-icon {
-        background-image: none !important;
-        background-color: black;
-        transition: opacity .3s;
-        opacity: 0;
-        position: absolute;
+      width: 13px !important;
+      left: -6px;
+      right: 6px;
+    }
+  }
+
+  &.is-vertical {
+    ::ng-deep .as-split-gutter-icon {
+      height: 13px !important;
+      top: -6px;
+      bottom: 6px;
     }
 
-    ::ng-deep .as-split-gutter.is-dragged .as-split-gutter-icon,
-    ::ng-deep .as-split-gutter-icon:hover {
-        opacity: .1;
+    .as-split-gutter-icon {
+      height: 13px !important;
+      top: -6px;
+      bottom: 6px;
     }
-
-    .as-split-gutter.is-dragged .as-split-gutter-icon,
-    .as-split-gutter-icon:hover {
-        opacity: .1;
-    }
-
-    &.is-horizontal {
-        ::ng-deep .as-split-gutter-icon {
-            width: 13px !important;
-            left: -6px;
-            right: 6px;
-        }
-
-        .as-split-gutter-icon {
-            width: 13px !important;
-            left: -6px;
-            right: 6px;
-        }
-    }
-
-    &.is-vertical {
-        ::ng-deep .as-split-gutter-icon {
-            height: 13px !important;
-            top: -6px;
-            bottom: 6px;
-        }
-
-        .as-split-gutter-icon {
-            height: 13px !important;
-            top: -6px;
-            bottom: 6px;
-        }
-    }
+  }
 }
 
 // Query Details
 .gv-sub-query-item {
-    margin-left: 0rem;
+  margin-left: 0rem;
 }
 
 // Main category icons
 .gv-source-color {
-    color: $cyan
+  color: $cyan;
 }
 
 .gv-entity-color {
-    color: $blue
+  color: $blue;
 }
 
 .gv-query-color {
-    color: $pink
+  color: $pink;
 }
 
 .gv-visual-color {
-    color: $orange
+  color: $orange;
 }
 
 .gv-settings-color {
-    color: $secondary
+  color: $secondary;
 }
 
 .gv-story-color {
-    color: $green
+  color: $green;
 }
 
 /************************************************************************************
 ** INCLUDE MATERIAL THEME
 ************************************************************************************/
 
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
-$gv-typography: mat-typography-config($font-family: $font-family-base);
-
+$gv-typography: mat-typography-config(
+  $font-family: $font-family-base
+);
 
 // Plus imports for other components in your app.
 // Include the common styles for Angular Material. We include this here so that you only
@@ -1561,8 +1607,70 @@ $gv-typography: mat-typography-config($font-family: $font-family-base);
 // Be sure that you only ever include this mixin once!
 @include mat-core($gv-typography);
 // Custom color Palette for primary colors (starting with $purple)
-$gv-mat-purple: (50: #f2e7f5, 100: #dfc3e8, 200: #ca9cda, 300: #b576cb, 400: #a55abf, 500: #9643b3, 600: #893eac, 700: #7638a2, 800: #663399, 900: #482a87, A100: #ea80fc, A200: #e040fb, A400: #d500f9, A700: #aa00ff, contrast: (50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $light-primary-text, 400: $light-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $light-primary-text, A400: $light-primary-text, A700: $light-primary-text, ));
-$gv-mat-teal: (50: #dff6ed, 100: #b1e8d1, 200: #7ad8b4, 300: #20c996, 400: #00bd80, 500: #00b06a, 600: #00a15f, 700: #008f52, 800: #007d45, 900: #005d2f, A100: #a7ffeb, A200: #64ffda, A400: #1de9b6, A700: #00bfa5, contrast: (50: $dark-primary-text, 100: $dark-primary-text, 200: $dark-primary-text, 300: $dark-primary-text, 400: $dark-primary-text, 500: $light-primary-text, 600: $light-primary-text, 700: $light-primary-text, 800: $light-primary-text, 900: $light-primary-text, A100: $dark-primary-text, A200: $dark-primary-text, A400: $dark-primary-text, A700: $dark-primary-text, ));
+$gv-mat-purple: (
+  50: #f2e7f5,
+  100: #dfc3e8,
+  200: #ca9cda,
+  300: #b576cb,
+  400: #a55abf,
+  500: #9643b3,
+  600: #893eac,
+  700: #7638a2,
+  800: #663399,
+  900: #482a87,
+  A100: #ea80fc,
+  A200: #e040fb,
+  A400: #d500f9,
+  A700: #aa00ff,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text
+  )
+);
+$gv-mat-teal: (
+  50: #dff6ed,
+  100: #b1e8d1,
+  200: #7ad8b4,
+  300: #20c996,
+  400: #00bd80,
+  500: #00b06a,
+  600: #00a15f,
+  700: #008f52,
+  800: #007d45,
+  900: #005d2f,
+  A100: #a7ffeb,
+  A200: #64ffda,
+  A400: #1de9b6,
+  A700: #00bfa5,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $dark-primary-text,
+    A700: $dark-primary-text
+  )
+);
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
@@ -1577,67 +1685,63 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 // that you are using.
 @include angular-material-theme($app-theme);
 
-
 /***********************************
 * Custom sidenav accordion theme
 ***********************************/
 // Define a mixin that accepts a theme and outputs the theme-specific styles.
 @mixin gv-sidenav-accordion-theme($theme) {
-    // Extract the palettes you need from the theme definition.
-    $foreground: map-get($theme, foreground);
-    $background: map-get($theme, background);
+  // Extract the palettes you need from the theme definition.
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
 
-    // Define any styles affected by the theme.
-    mat-accordion.gv-sidenav-accordion {
-        border: none;
+  // Define any styles affected by the theme.
+  mat-accordion.gv-sidenav-accordion {
+    border: none;
 
-        >mat-expansion-panel {
+    > mat-expansion-panel {
+      background-color: transparent;
+      box-shadow: none !important;
 
-            background-color: transparent;
-            box-shadow: none !important;
-
-            >mat-expansion-panel-header {
-                .mat-expansion-panel-header-title {
-                    color: mat-color($foreground, secondary-text);
-                }
-            }
-
+      > mat-expansion-panel-header {
+        .mat-expansion-panel-header-title {
+          color: mat-color($foreground, secondary-text);
         }
-
-        >mat-expansion-panel:not(:first-of-type) {
-            $foreground: map-get($theme, foreground);
-
-            border-top-color: mat-color($foreground, divider);
-            border-top-width: 1px;
-            border-top-style: solid;
-
-        }
+      }
     }
+
+    > mat-expansion-panel:not(:first-of-type) {
+      $foreground: map-get($theme, foreground);
+
+      border-top-color: mat-color($foreground, divider);
+      border-top-width: 1px;
+      border-top-style: solid;
+    }
+  }
 }
 
 @mixin gv-sidenav-accordion-typography($config) {
-    mat-accordion.gv-sidenav-accordion {
-        >mat-expansion-panel {
-            >mat-expansion-panel-header {
-                font-family: mat-font-family($config, body-2);
-                font-size: mat-font-size($config, body-2);
-                font-weight: mat-font-weight($config, body-2);
-                padding: 0 16px;
-            }
+  mat-accordion.gv-sidenav-accordion {
+    > mat-expansion-panel {
+      > mat-expansion-panel-header {
+        font-family: mat-font-family($config, body-2);
+        font-size: mat-font-size($config, body-2);
+        font-weight: mat-font-weight($config, body-2);
+        padding: 0 16px;
+      }
 
-            .mat-expansion-panel-content {
-                @include mat-typography-level-to-styles($config, body-1);
-            }
+      .mat-expansion-panel-content {
+        @include mat-typography-level-to-styles($config, body-1);
+      }
 
-            .mat-expansion-panel-body {
-                padding: 0;
-            }
+      .mat-expansion-panel-body {
+        padding: 0;
+      }
 
-            mat-action-list {
-                padding-top: 0;
-            }
-        }
+      mat-action-list {
+        padding-top: 0;
+      }
     }
+  }
 }
 
 // Include theme styles for your custom components.
@@ -1645,73 +1749,73 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 @include gv-sidenav-accordion-typography($gv-typography);
 
 .mat-table thead {
-    background: #f5f5f5;
+  background: #f5f5f5;
 }
 
 .mat-text-primary {
-    color: mat-color($app-primary);
+  color: mat-color($app-primary);
 }
 
 .mat-text-accent {
-    color: mat-color($app-accent);
+  color: mat-color($app-accent);
 }
 
 .mat-text-warn {
-    color: mat-color($app-warn);
+  color: mat-color($app-warn);
 }
 
 .mat-bg-primary {
-    background-color: mat-color($app-primary);
+  background-color: mat-color($app-primary);
 }
 
 .mat-bg-accent {
-    background-color: mat-color($app-accent);
+  background-color: mat-color($app-accent);
 }
 
 .mat-bg-warn {
-    background-color: mat-color($app-warn);
+  background-color: mat-color($app-warn);
 }
 
 mat-checkbox {
-    label {
-        margin-bottom: 0
-    }
+  label {
+    margin-bottom: 0;
+  }
 }
 
 .gv-mat-icon-button-sm {
-    width: 24px !important;
-    height: 24px !important;
+  width: 24px !important;
+  height: 24px !important;
 
-    &::ng-deep .mat-button-wrapper {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 100% !important;
-        height: 100% !important;
+  &::ng-deep .mat-button-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
 
-        .mat-icon {
-            font-size: 20px !important;
-        }
+    .mat-icon {
+      font-size: 20px !important;
     }
+  }
 }
 
 .gv-btn-info {
-    background: $white;
-    @extend .border;
-    @extend .border-info;
-    @extend .rounded-circle;
+  background: $white;
+  @extend .border;
+  @extend .border-info;
+  @extend .rounded-circle;
 }
 
 .gv-btn-danger {
-    background: $white;
-    @extend .border;
-    @extend .border-danger;
-    @extend .rounded-circle;
+  background: $white;
+  @extend .border;
+  @extend .border-danger;
+  @extend .rounded-circle;
 }
 
 .gv-btn-success {
-    background: $white;
-    @extend .border;
-    @extend .border-success;
-    @extend .rounded-circle;
+  background: $white;
+  @extend .border;
+  @extend .border-success;
+  @extend .rounded-circle;
 }

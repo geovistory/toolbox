@@ -94,6 +94,38 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
   }
 
   /**
+   * Updates the ProInfoProjRel of all found by fk_project and fk_entity.
+   *
+   * @param {number} pkProject fk_project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `items` – `{ProInfoProjRel}` - Array of ProInfoProjRel (fk_project must be equal to pkProject)
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProInfoProjRel` object.)
+   * </em>
+   */
+  public bulkUpdateEprAttributes(pkProject: any, items: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProInfoProjRels/bulk-update-attributes";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      items: items
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `ProInfoProjRel`.
    */

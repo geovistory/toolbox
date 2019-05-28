@@ -6,87 +6,87 @@ const Promise = require('bluebird');
 module.exports = function(DatChunk) {
 
 
-  DatChunk.t = function() {
+  // DatChunk.t = function() {
 
-    return new Promise ((resolve, reject)=> {
+  //   return new Promise ((resolve, reject)=> {
 
-      return new Promise((res2, rej2) => {
+  //     return new Promise((res2, rej2) => {
 
-        res2('super')
-        // rej2('err')
-        
-      })
-      .catch(err => reject(err))
-      .then(res => resolve(res))
+  //       res2('super')
+  //       // rej2('err')
 
-    })
+  //     })
+  //     .catch(err => reject(err))
+  //     .then(res => resolve(res))
 
-  }
+  //   })
 
-  DatChunk.findOrCreateChunk = function(projectId, data, ctx) {
+  // }
 
-    const dataObject = {
-      quill_doc: JSON.stringify(data.quill_doc),
-      fk_text: data.fk_text      
-    };
+  // DatChunk.findOrCreateChunk = function(projectId, data, ctx) {
 
-    let requestedChunk;
+  //   const dataObject = {
+  //     quill_doc: JSON.stringify(data.quill_doc),
+  //     fk_text: data.fk_text
+  //   };
 
-    if (ctx && ctx.req && ctx.req.body) {
-      requestedChunk = ctx.req.body;
-    } else {
-      requestedChunk = data;
-    }
+  //   let requestedChunk;
 
-    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+  //   if (ctx && ctx.req && ctx.req.body) {
+  //     requestedChunk = ctx.req.body;
+  //   } else {
+  //     requestedChunk = data;
+  //   }
 
-    return DatChunk._findOrCreateByValue(DatChunk, projectId, dataObject, requestedChunk, ctxWithoutBody)
-    .then((resultingChunks) => {
-      // pick first item of array
-      const resultingChunk = resultingChunks[0];
+  //   const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-      // if there are entity_associations
-      if (requestedChunk.entity_associations) {
+  //   return DatChunk._findOrCreateByValue(DatChunk, projectId, dataObject, requestedChunk, ctxWithoutBody)
+  //   .then((resultingChunks) => {
+  //     // pick first item of array
+  //     const resultingChunk = resultingChunks[0];
 
-        // prepare parameters
-        const InfEntityAssociation = DatChunk.app.models.InfEntityAssociation;
+  //     // if there are entity_associations
+  //     if (requestedChunk.entity_associations) {
 
-        //… filter entity_associations that are truthy (not null), iterate over them,
-        // return the promise that the range entity will be
-        // returned together with all nested items
-        return Promise.map(requestedChunk.entity_associations.filter(ea => (ea)), (ea) => {
-            // use the pk_entity from the created peIt to set the fk_entity of the ea
-            ea.fk_info_domain = resultingChunk.pk_entity;
-            // find or create the teEnt and the ea pointing to the teEnt
-            return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, ea, ctxWithoutBody);
-          })
-          .then((entity_associations) => {
+  //       // prepare parameters
+  //       const InfEntityAssociation = DatChunk.app.models.InfEntityAssociation;
 
-            //attach the entity_associations to resultingChunk.entity_associations
-            const res = resultingChunk.toJSON();
-            res.entity_associations = [];
-            for (var i = 0; i < entity_associations.length; i++) {
-              const ea = entity_associations[i];
-              if (ea && ea[0]) {
-                res.entity_associations.push(ea[0]);
-              }
-            }
+  //       //… filter entity_associations that are truthy (not null), iterate over them,
+  //       // return the promise that the range entity will be
+  //       // returned together with all nested items
+  //       return Promise.map(requestedChunk.entity_associations.filter(ea => (ea)), (ea) => {
+  //           // use the pk_entity from the created peIt to set the fk_entity of the ea
+  //           ea.fk_info_domain = resultingChunk.pk_entity;
+  //           // find or create the teEnt and the ea pointing to the teEnt
+  //           return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, ea, ctxWithoutBody);
+  //         })
+  //         .then((entity_associations) => {
 
-            return [res];
+  //           //attach the entity_associations to resultingChunk.entity_associations
+  //           const res = resultingChunk.toJSON();
+  //           res.entity_associations = [];
+  //           for (var i = 0; i < entity_associations.length; i++) {
+  //             const ea = entity_associations[i];
+  //             if (ea && ea[0]) {
+  //               res.entity_associations.push(ea[0]);
+  //             }
+  //           }
 
-          })
-          .catch((err) => {
-            return err;
-          })
+  //           return [res];
 
-      } else {
-        return resultingChunks;
-      }
-    })
-    .catch((err) => {
+  //         })
+  //         .catch((err) => {
+  //           return err;
+  //         })
 
-    });;
+  //     } else {
+  //       return resultingChunks;
+  //     }
+  //   })
+  //   .catch((err) => {
 
-  }
+  //   });;
+
+  // }
 
 };

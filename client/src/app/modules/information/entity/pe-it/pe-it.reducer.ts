@@ -58,7 +58,6 @@ export const peItReducer = (state: PeItDetail = INITIAL_STATE, action: PeItActio
         ...state,
         mentionedEntities: {
           ...state.mentionedEntities,
-          create: true
         }
       }
       break;

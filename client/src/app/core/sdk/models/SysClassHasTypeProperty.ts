@@ -2,14 +2,22 @@
 
 declare var Object: any;
 export interface SysClassHasTypePropertyInterface {
-  "fk_class"?: number;
-  "fk_property"?: number;
+  "pk_typed_class"?: number;
+  "typed_class_label"?: string;
+  "dfh_pk_property"?: number;
+  "property_label"?: string;
+  "pk_type_class"?: number;
+  "type_class_label"?: string;
   "pk_entity"?: number;
 }
 
 export class SysClassHasTypeProperty implements SysClassHasTypePropertyInterface {
-  "fk_class": number;
-  "fk_property": number;
+  "pk_typed_class": number;
+  "typed_class_label": string;
+  "dfh_pk_property": number;
+  "property_label": string;
+  "pk_type_class": number;
+  "type_class_label": string;
   "pk_entity": number;
   constructor(data?: SysClassHasTypePropertyInterface) {
     Object.assign(this, data);
@@ -44,13 +52,29 @@ export class SysClassHasTypeProperty implements SysClassHasTypePropertyInterface
       path: 'SysClassHasTypeProperties',
       idName: 'pk_entity',
       properties: {
-        "fk_class": {
-          name: 'fk_class',
+        "pk_typed_class": {
+          name: 'pk_typed_class',
           type: 'number'
         },
-        "fk_property": {
-          name: 'fk_property',
+        "typed_class_label": {
+          name: 'typed_class_label',
+          type: 'string'
+        },
+        "dfh_pk_property": {
+          name: 'dfh_pk_property',
           type: 'number'
+        },
+        "property_label": {
+          name: 'property_label',
+          type: 'string'
+        },
+        "pk_type_class": {
+          name: 'pk_type_class',
+          type: 'number'
+        },
+        "type_class_label": {
+          name: 'type_class_label',
+          type: 'string'
         },
         "pk_entity": {
           name: 'pk_entity',

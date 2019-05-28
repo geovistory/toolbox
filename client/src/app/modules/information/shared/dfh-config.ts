@@ -42,7 +42,8 @@ export class DfhConfig {
   static PROPERTY_PK_R4_CARRIERS_PROVIDED_BY = 979;
 
   // dfh_pk_property used to connect a a persitent item or temporal entity as domain with source, section or chunk as range
-  static PROPERTY_OF_ORIGIN_PK_IS_MENTIONED_IN = 1218;
+  static PROPERTY_OF_ORIGIN_PK_GEOVP2_MENTIONS = 1218;
+  static PROPERTY_OF_ORIGIN_PK_GEOVP11_REFERS_TO = 1334;
 
   static PROPERTY_PK_IS_REPRODUCTION_OF_SECTION = 1216;
 
@@ -118,6 +119,7 @@ export class DfhConfig {
   static CLASS_PK_ITEM = 221;
   static CLASS_PK_SPOT = 457;
   static CLASS_PK_CHUNK = 456;
+  static CLASS_PK_EXPRESSION_PORTION = 503;
 
 
   static CLASS_PKS_SOURCE_PE_IT = [219, 220];

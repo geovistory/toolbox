@@ -3,9 +3,9 @@ import {
   PubAccount,
   ProTextProperty,
   ProInfoProjRel,
-  DatNamespace,
   InfLanguage,
-  InfPersistentItem
+  InfPersistentItem,
+  DatNamespace
 } from '../index';
 
 declare var Object: any;
@@ -15,9 +15,9 @@ export interface ProProjectInterface {
   accounts?: PubAccount[];
   text_properties?: ProTextProperty[];
   entity_version_project_rels?: ProInfoProjRel[];
-  namespaces?: DatNamespace[];
   default_language?: InfLanguage;
   persistent_items?: InfPersistentItem[];
+  namespaces?: DatNamespace[];
 }
 
 export class ProProject implements ProProjectInterface {
@@ -26,9 +26,9 @@ export class ProProject implements ProProjectInterface {
   accounts?: PubAccount[];
   text_properties?: ProTextProperty[];
   entity_version_project_rels?: ProInfoProjRel[];
-  namespaces?: DatNamespace[];
   default_language?: InfLanguage;
   persistent_items?: InfPersistentItem[];
+  namespaces?: DatNamespace[];
   constructor(data?: ProProjectInterface) {
     Object.assign(this, data);
   }
@@ -98,14 +98,6 @@ export class ProProject implements ProProjectInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
-        namespaces: {
-          name: 'namespaces',
-          type: 'DatNamespace[]',
-          model: 'DatNamespace',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_project'
-        },
         default_language: {
           name: 'default_language',
           type: 'InfLanguage',
@@ -122,6 +114,14 @@ export class ProProject implements ProProjectInterface {
           modelThrough: 'ProInfoProjRel',
           keyThrough: 'fk_entity',
           keyFrom: 'pk_entity',
+          keyTo: 'fk_project'
+        },
+        namespaces: {
+          name: 'namespaces',
+          type: 'DatNamespace[]',
+          model: 'DatNamespace',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_project'
         },
       }

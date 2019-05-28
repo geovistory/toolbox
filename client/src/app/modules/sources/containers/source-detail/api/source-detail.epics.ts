@@ -70,7 +70,7 @@ export class SourceDetailAPIEpics {
 
                 mentionedEntities: {
                   mentioningListType: 'ofSource',
-                  sourceEntityPk: action.meta.pkEntity
+                  // sourceEntityPk: action.meta.pkEntity
                 }
 
               }, data, action.meta.crm,

@@ -1,5 +1,7 @@
 'use strict';
+const Promise = require('bluebird');
 
-module.exports = function(DatEntity) {
+module.exports = function (DatEntity) {
+
 
 };
