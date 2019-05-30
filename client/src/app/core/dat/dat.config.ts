@@ -17,6 +17,19 @@ export const datDefinitions: ReducerConfigCollection = {
       }
     ]
   },
+  chunk: {
+    // facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => item.pk_entity.toString()
+    },
+    groupBy: [
+      {
+        keyInStore: 'fk_text',
+        groupByFn: (item): string => item.fk_text.toString()
+      }
+    ]
+  },
   namespace: {
     // facetteByPk,
     indexBy: {

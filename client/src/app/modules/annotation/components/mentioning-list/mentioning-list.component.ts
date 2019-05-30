@@ -1,63 +1,61 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, IAppState, SubstoreComponent, InfEntityAssociation } from 'app/core';
+import { ActiveProjectService, DatChunk, EntityPreview, IAppState, InfEntityAssociation, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
-import { Columns, Config } from 'ngx-easy-table/src/app/ngx-easy-table';
+import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { filter, first, mergeMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { MatSort, MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { MentioningListAPIActions } from './api/mentioning-list.actions';
-import { MentioningListAPIEpics } from './api/mentioning-list.epics';
-import { Mentioning, MentioningList, MentioningListType } from './api/mentioning-list.models';
-import { mentioningListReducer } from './api/mentioning-list.reducer';
+import { ByPk } from '../../../../core/store/model';
+import { QuillDoc } from '../../../quill';
+import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
+
 
 // this is not for state, only for the table view
-export interface MentioningRow extends Mentioning {
-  pk_entity: number;
+export interface Row {
+  // data for actions
+  entityAssociation: InfEntityAssociation;
+  domainInfoEntity: EntityPreview;
+  domainChunk: DatChunk;
+  rangeInfoEntity: EntityPreview;
 
-  sourceEntity: EntityPreview;
-  sectionEntity: EntityPreview;
-  chunkEntity: DatChunk;
-  mentionedEntity: EntityPreview;
+  // for highlight
+  highlight: boolean;
 
-  // stings
-  sourceEntityString: string;
-  sectionEntityString: string;
-  chunkEntityString: string;
-  mentionedEntityString: string;
-
-  isFocusedInText: boolean;
-  isFocusedInTable: boolean;
+  // columns
+  domainLabel: string;
+  propertyLabel: string;
+  rangeLabel: string;
 
 }
 
+export interface MentioningListOf {
+  type: 'digital-text' | 'digital-table' | 'f2-expresion' | 'geovC5-expression-portion' | 'entity'
+  pkEntity: number
+};
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: mentioningListReducer
-})
+
 @Component({
   selector: 'gv-mentioning-list',
   templateUrl: './mentioning-list.component.html',
   styleUrls: ['./mentioning-list.component.scss'],
   providers: [QuillOpsToStrPipe]
 })
-export class MentioningListComponent extends MentioningListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // local store of this component
-  localStore: ObservableStore<MentioningList>;
-
   // path to the substore
   @Input() basePath: string[];
-  @Input() create$ = new BehaviorSubject<boolean>(false);
+
 
   /**
-   * These properties are there as presets for creating a new mentioning.
+   * FOR CREATING a new mentioning:
    *
    * 1. Add a Mentioned Entity to a source-like thing:
    *
@@ -76,81 +74,74 @@ export class MentioningListComponent extends MentioningListAPIActions implements
   @Input() expressionPk$: Observable<number>;
   @Input() expressionPortionPk$: Observable<number>;
   @Input() chunk$ = new BehaviorSubject<DatChunk>(null);
-  // @Input() chunkEntityPk$: Observable<number>;
 
-  @Output() close = new EventEmitter<void>();
+  // If true, the list is hidden and the create form is shown
+  @Input() create$ = new BehaviorSubject<boolean>(false);
+
+
+  /**
+   * FOR LOADING the list items:
+   *
+   * The list consists of entity associations of those properties
+   * - refers To
+   * - mentions
+   * and previews / labels of the associated domain and range
+   *
+   *
+   * type
+   * - 'digital-text'
+   *   Loads all chunks associated with the digital (with the given pkEntity).
+   *   The chunks are the domain of the entity associations of the list.
+   * - 'f2-expression'
+   *   The persitent item with the given pkEntity is the domain
+   *   of the entity associations of the list.
+   * - 'geovC5-expression-portion'
+   *   The persitent item with the given pkEntity is the domain
+   *   of the entity associations of the list.
+   * - 'entity'
+   *   The persitent item or temporal entity with the given pkEntity is the range
+   *   of the entity associations of the list.
+   */
+  @Input() listOf: MentioningListOf;
+
+  @Input() chunksToHighligt$: Observable<ChunksPks>;
+
+  // @Output() close = new EventEmitter<void>();
 
   // select observables of substore properties
-  @select() mentioningListType$: Observable<MentioningListType>;
-  @select() items$: Observable<Mentioning[]>;
-  @select() loading$: Observable<boolean>;
-
-  @select() mentionedEntityPk$: Observable<number>;
-
-  sourceEntity$: Observable<EntityPreview>;
-  sectionEntity$: Observable<EntityPreview>;
-  mentionedEntity$: Observable<EntityPreview>;
 
   formGroup: FormGroup;
   mentioningCreateCtrl;
 
-  listData$: Observable<MentioningRow[]>;
+  data$: Observable<Row[]>;
+  dataSource = new MatTableDataSource();
 
-  tableConfiguration: Config = {
-    searchEnabled: true,
-    headerEnabled: true,
-    orderEnabled: true,
-    orderEventOnly: false,
-    globalSearchEnabled: false,
-    paginationEnabled: false,
-    exportEnabled: false,
-    clickEvent: false,
-    selectRow: false,
-    selectCol: false,
-    selectCell: false,
-    rows: 0, // infinit
-    additionalActions: false,
-    serverPagination: false,
-    isLoading: false,
-    detailsTemplate: false,
-    groupRows: false,
-    paginationRangeEnabled: true,
-    collapseAllRows: false,
-    checkboxes: false,
-    resizeColumn: false,
-    fixedColumnWidth: false,
-    horizontalScroll: false,
-    draggable: false,
-    logger: false,
-    showDetailsArrow: false,
-    showContextMenu: false,
-    persistState: false,
-    paginationMaxSize: 5,
-    tableLayout: {
-      style: 'tiny', // or big or normal
-      theme: 'normal', // or dark
-      borderless: false,
-      hover: true,
-      striped: true,
-    }
-  };
+  @Output() dataChange = new EventEmitter<Row[]>();
+  @Output() rowMouseenter = new EventEmitter<Row>();
+  @Output() rowMouseleave = new EventEmitter<Row>();
+  @Output() rowClick = new EventEmitter<Row>();
 
-  columns: Columns[];
-  checkedCols = new Map<string, Columns>();
+  @ViewChild(MatSort) sort: MatSort;
 
-  data: MentioningRow[] = [];
-
+  // displayed columns of the table
+  displayedColumns: string[] = [
+    'domainLabel',
+    'propertyLabel',
+    'rangeInfoEntity',
+    'actions'
+    // 'rangeLabel',
+    // 'isFocusedInText',
+    // 'isFocusedInTable'
+  ];
 
   constructor(
     protected rootEpics: RootEpics,
-    private epics: MentioningListAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     private p: ActiveProjectService,
     private inf: InfActions,
     fb: FormBuilder,
     private quillOpsToStr: QuillOpsToStrPipe
   ) {
-    super()
     this.mentioningCreateCtrl = new FormControl(null, [Validators.required])
     this.formGroup = fb.group({ 'mentioningCreateCtrl': this.mentioningCreateCtrl })
   }
@@ -158,125 +149,117 @@ export class MentioningListComponent extends MentioningListAPIActions implements
   getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, mentioningListReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.mentioningListType$.pipe(first(), takeUntil(this.destroy$)).subscribe(type => {
-      switch (type) {
-        case 'ofSource':
-          this.columns = [
-            { key: 'mentionedEntityString', title: 'Entity', width: '50%' },
-            { key: 'sectionEntityString', title: 'Section', width: '20%' },
-            { key: 'chunkEntityString', title: 'Annotated Text', width: '30%' },
-          ];
-          break;
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-        case 'ofSection':
-          this.columns = [
-            { key: 'mentionedEntityString', title: 'Entity', width: '60%' },
-            { key: 'chunkEntityString', title: 'Annotated Text', width: '40%' },
-          ];
-          break;
+      if (this.listOf.type === 'digital-text') {
 
-        case 'ofEntity':
-          this.columns = [
-            { key: 'sourceEntityString', title: 'Source', width: '50%' },
-            { key: 'sectionEntityString', title: 'Section', width: '20%' },
-            { key: 'chunkEntityString', title: 'Annotated Text', width: '30%' },
-          ];
-          break;
+        this.p.dat$.chunk.loadChunksOfDigital(this.listOf.pkEntity, pkProject)
 
-        default:
-          break;
+        const chunks$ = this.p.dat$.digital$.by_pk_entity$.key(this.listOf.pkEntity).pipe(
+          filter(digitalVersions => !!digitalVersions && Object.keys(digitalVersions).length > 0),
+          map(digitalVersions => values(digitalVersions)[0].pk_text),
+          mergeMap(pkText => this.p.dat$.chunk$.by_fk_text$.key(pkText)),
+          map(chunksByPk => values(chunksByPk)),
+        )
+
+        const addDomain$ = chunks$.pipe(
+          mergeMap(chunks => combineLatest(
+            this.p.inf$.entity_association$.by_fk_data_domain$.all$,
+            this.chunksToHighligt$
+          )
+            .pipe(
+              map(([easByDataDomain, chunksToHi]) => chunks
+                .map(chunk => {
+                  const easOfChunk = values(easByDataDomain[chunk.pk_entity]);
+                  const partialRows = easOfChunk.map(ea => ({
+                    entityAssociation: ea,
+                    domainChunk: chunk,
+                    highlight: !chunksToHi ? false : chunksToHi.includes(chunk.pk_entity)
+                  } as Row))
+
+                  return partialRows;
+                })
+              ),
+              map(rowsNested => (
+                flatten(rowsNested) as any as Row[])
+                .filter(row => row.entityAssociation)
+              )
+            )
+          ))
+
+        const addRange$ = addDomain$.pipe(
+          mergeMap((rows) => {
+            const ranges = rows.map(row => row.entityAssociation.fk_info_range)
+            const pks = flatten(ranges) as any as number[]; // https://github.com/types/npm-ramda/issues/356
+            return combineLatest(pks.map(pk => this.p.streamEntityPreview(pk)))
+              .pipe(
+                filter(previews => !previews.find(p => p.loading)),
+                map(previews => {
+                  const prevs = indexBy((i) => i.pk_entity.toString(), previews)
+                  rows = rows.map(row => ({
+                    ...row,
+                    rangeInfoEntity: prevs[row.entityAssociation.fk_info_range],
+                    domainLabel: this.getDomainLabel(row),
+                    rangeLabel: this.getRangeLabel(prevs, row),
+                    propertyLabel: this.getPropertyLabel(row)
+                  }))
+                  return rows;
+                })
+              )
+          }))
+
+        this.data$ = addRange$;
+
+        this.data$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+          this.dataSource.data = data
+          this.dataChange.emit(data)
+        })
+
       }
 
-      this.columns.forEach(c => { this.checkedCols.set(c.key, c) })
     })
 
 
-    // create the entityPreview Observable
-    this.sourceEntity$ = this.expressionPk$.pipe(
-      filter(pk => !!pk),
-      mergeMap(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk]))
-    )
+  }
 
-    // create the entityPreview Observable
-    this.sectionEntity$ = this.expressionPortionPk$.pipe(
-      filter(pk => !!pk),
-      mergeMap(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk]))
-    )
+  private getPropertyLabel(row: Row): string {
+    return row.entityAssociation.fk_property === DfhConfig.PROPERTY_OF_ORIGIN_PK_GEOVP11_REFERS_TO ? 'Refers To' : '';
+  }
 
-    // create the entityPreview Observable
-    this.mentionedEntity$ = this.mentionedEntityPk$.pipe(
-      filter(pk => !!pk),
-      mergeMap(pk => this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pk]))
-    )
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+  }
 
-    // Get the init state
-    const s = this.localStore.getState();
+  private getRangeLabel(prevs: ByPk<EntityPreview>, row: Row): string {
+    if (row.entityAssociation && row.entityAssociation.fk_info_range) {
+      const e = prevs[row.entityAssociation.fk_info_range];
+      return [e.entity_label, e.class_label, e.type_label,].join(' ');
+    }
+  }
 
-    // load previews
-    // [s.sourceEntityPk, s.sectionEntityPk, s.mentionedEntityPk].filter(i => !!i).forEach(pk => {
-    //   this.projectService.streamEntityPreview(pk);
-    // })
-
-    // init the loading
-    this.load();
-
-    // Listen to the entity pks of the sections
-    this.listData$ = this.items$.pipe(filter(ms => ms !== undefined), mergeMap(ms => {
-
-      // update the entityPreview
-      ms.forEach(m => {
-        if (m.fk_expression_entity) this.p.streamEntityPreview(m.fk_expression_entity);
-        if (m.fk_source_entity) this.p.streamEntityPreview(m.fk_source_entity);
-        if (m.fk_chunk) this.p.loadChunk(m.fk_chunk);
-        this.p.streamEntityPreview(m.fk_info_domain);
-      });
-
-      const createString = (p: EntityPreview): string => {
-        if (!p) return '';
-        return [(p.type_label ? p.type_label : p.class_label), p.entity_label].join(' ');
-      }
-
-      // create the observable of MentioningRow[]
-      return combineLatest(ms.map(m => {
-        return combineLatest(
-          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_expression_entity]),
-          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_source_entity]),
-          this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', m.fk_info_domain]),
-          this.ngRedux.select<DatChunk>(['activeProject', 'chunks', m.fk_chunk]),
-          this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInText']),
-          this.ngRedux.select<number[]>(['activeProject', 'mentioningsFocusedInTable'])
-        )
-          .map(d => ({
-            pk_entity: m.pk_entity,
-            sectionEntity: d[0],
-            sectionEntityString: createString(d[0]),
-            sourceEntity: d[1],
-            sourceEntityString: createString(d[1]),
-            mentionedEntity: d[2],
-            mentionedEntityString: createString(d[2]),
-            chunkEntity: d[3],
-            chunkEntityString: (!d[3] || !d[3].quill_doc) ? '' : this.quillOpsToStr.transform(d[3].quill_doc),
-            isFocusedInText: (!d[4] ? false : (d[4].indexOf(m.pk_entity) > -1)),
-            isFocusedInTable: (!d[5] ? false : (d[5].indexOf(m.pk_entity) > -1))
-          } as MentioningRow))
-      }));
-
-    }))
-
-    this.listData$.takeUntil(this.destroy$).subscribe(d => this.data = d);
-
+  private getDomainLabel(row: Row): string {
+    if (row.domainChunk) {
+      return "« " + (row.domainChunk.quill_doc as QuillDoc).ops.map(op => op.insert).join('') + " »";
+    }
   }
 
   submit() {
     if (this.formGroup.valid) {
       this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
         const ea: InfEntityAssociation = this.mentioningCreateCtrl.value;
-        this.inf.entity_association.upsert([ea], pkProject)
+        this.inf.entity_association.upsert([ea], pkProject).resolved$
+          .pipe(first(r => !!r), takeUntil(this.destroy$)).subscribe(resolved => {
+            this.create$.next(false)
+          })
       })
     }
+  }
+
+  remove(row: Row) {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.inf.entity_association.remove([row.entityAssociation], pkProject)
+    })
   }
 
   ngOnDestroy() {
@@ -285,10 +268,6 @@ export class MentioningListComponent extends MentioningListAPIActions implements
     this.destroy$.unsubscribe();
   }
 
-  onRowClicked(row: MentioningRow) {
-    this.p.mentioningsFocusedInText([]);
-    if (row.isFocusedInTable) this.p.mentioningsFocusedInTable([])
-    else this.p.mentioningsFocusedInTable([row.pk_entity])
-  }
+
 
 }

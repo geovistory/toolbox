@@ -1,27 +1,25 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
+import { DatSelector } from 'app/core/dat/dat.service';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { PeItActions } from 'app/modules/information/entity/pe-it/pe-it.actions';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { combineLatest, Observable } from 'rxjs';
-import { map, mapTo, mergeMap, switchMap, filter } from 'rxjs/operators';
+import { filter, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi, ProProjectApi, ProQueryApi, SysAppContext, SysAppContextApi, ProClassFieldConfig, ProVisualApi, DfhClass, ProDfhClassProjRelApi, DfhProperty, DfhPropertyApi, DatChunk, DatChunkApi, ProInfoProjRelApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProProject } from '../sdk';
+import { DatChunk, DatChunkApi, DfhClass, DfhProperty, DfhPropertyApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProClassFieldConfig, ProDfhClassProjRelApi, ProInfoProjRelApi, ProProject, ProProjectApi, ProQueryApi, ProVisualApi, SysAppContext, SysAppContextApi, SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
+import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { HasTypePropertyReadable, PeItDetail } from '../state/models';
-import { IAppState, ByPk } from '../store/model';
+import { ByPk, IAppState } from '../store/model';
+import { SysClassHasTypePropertySlice } from '../sys/sys.models';
+import { SystemSelector } from '../sys/sys.service';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { SystemSelector } from '../sys/sys.service';
-import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
-import { SysClassHasTypePropertySlice } from '../sys/sys.models';
-import { DatSelector } from 'app/core/dat/dat.service';
-import { MentioningListAPIActions } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.actions';
 
 
 

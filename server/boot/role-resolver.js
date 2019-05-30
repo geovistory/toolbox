@@ -138,20 +138,30 @@ module.exports = function (app) {
       } else {
         // A: No, it is no about finding a data entity by id
 
-        // Q: Does the current request provide a PK of the Namespace it wants to access?
         const req = context.remotingContext.req;
         const pkNamespace = parseInt(
           _.get(req, 'query.pkNamespace') ||
           _.get(req, 'body.pkNamespace')
         );
 
-        // A: No. No namespace pk provided, return error
-        if (!pkNamespace) return cb('please provide a namespace key');
+        // Q: Does the current request provide a PK of the Namespace it wants to access?
+        if (pkNamespace) {
+          // A: Yes, pkNamespace is provided
 
-        // A: Yes, pkNamespace is provided
+          // Q: To which project does the namespace belong?
+          getNamespaceProjectPk(app, pkNamespace, cb);
 
-        // Q: To which project does the namespace belong?
-        getNamespaceProjectPk(app, pkNamespace, cb);
+        } else {
+          // A: No. No namespace pk provided, return error
+
+          // Q: Does the current request provide a PK of the project it wants to access?
+          const pkProject = parseInt(
+            _.get(req, 'query.pkProject') || // search pk_project in query, where arg is called pkProject
+            _.get(req, 'body.pkProject') // search pk_project in body, for example when an model object is sent
+          );
+          cb(null, pkProject)
+        }
+
 
       }
     } else {

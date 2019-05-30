@@ -20,25 +20,25 @@ export class QuillNodeHandler {
     constructor(
         private renderer: Renderer2,
         private node: any,
-        public readonly annotatedEntities$: Observable<number[]>, // pk_entities (of mentionings or assertions)
+        public readonly annotatedChunks$: Observable<number[]>, // pk_entities (of chunks)
         public readonly annotationsVisible$: Observable<boolean>,
-        public readonly entitiesToHighlight$: Observable<number[]>, // array of pk_entities (of mentionings or assertions) that are to be highlighted in the text
+        public readonly chunksToHighlight$: Observable<number[]>, // array of pk_entities (of chunks) that are to be highlighted in the text
         public readonly creatingAnnotation: boolean
     ) {
 
         this.nodeId = node.attributes.charid.value;
 
-        combineLatest(annotatedEntities$, annotationsVisible$, entitiesToHighlight$).pipe(takeUntil(this.destroy$)).subscribe(d => {
+        combineLatest(annotatedChunks$, annotationsVisible$, chunksToHighlight$).pipe(takeUntil(this.destroy$)).subscribe(d => {
 
-            const annotatedEntities = d[0], annotationsVisible = d[1], entitiesToHighlight = d[2];
+            const annotatedChunks = d[0], annotationsVisible = d[1], chunksToHighlight = d[2];
 
-            if (entitiesToHighlight && annotatedEntities && intersection(annotatedEntities, entitiesToHighlight).length) {
+            if (chunksToHighlight && annotatedChunks && intersection(annotatedChunks, chunksToHighlight).length) {
                 // if an annotated entity is to highlight
 
                 this.renderer.addClass(this.node, 'gv-bg-highlight-2');
                 this.renderer.removeClass(this.node, 'gv-bg-highlight');
 
-            } else if (annotationsVisible && annotatedEntities && annotatedEntities.length ) {
+            } else if (annotationsVisible && annotatedChunks && annotatedChunks.length ) {
                 // if annotations are visible and there is at least one annotation
                 this.renderer.addClass(this.node, 'gv-bg-highlight');
                 this.renderer.removeClass(this.node, 'gv-bg-highlight-2');

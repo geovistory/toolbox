@@ -2,10 +2,10 @@ import { InfEntityAssociation, InfPersistentItem, InfRole } from "app/core";
 import { InfActions } from "app/core/inf/inf.actions";
 import { EntityAssociationSlice, PersistentItemSlice } from "app/core/inf/inf.models";
 import { keys, omit, values } from "ramda";
-import { InfAppellation, InfTemporalEntity, DatDigital } from "../sdk";
+import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk } from "../sdk";
 import { StandardActionsFactory } from "./actions";
 import { DatActions } from "../dat/dat.actions";
-import { DigitalSlice } from "../dat/dat.models";
+import { DigitalSlice, ChunkSlice } from "../dat/dat.models";
 
 export class ModelFlattener<Payload, Model> {
   constructor(
@@ -91,6 +91,8 @@ export class Flattener {
         this.persistent_item.flatten([item.domain_pe_it])
         this.persistent_item.flatten([item.range_pe_it])
         this.digital.flatten([item.domain_digital])
+        this.chunk.flatten([item.domain_chunk])
+        this.chunk.flatten([item.range_chunk])
       })
     })
 
@@ -112,6 +114,16 @@ export class Flattener {
       })
     })
 
+  chunk = new ModelFlattener<ChunkSlice, DatChunk>(
+    this.datActions.chunk,
+    DatChunk.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new DatChunk(item);
+        this.entity_association.flatten(item.data_info_associations)
+      })
+    })
+
   getFlattened(): FlattenerInterface {
     return {
       persistent_item: this.persistent_item,
@@ -119,7 +131,8 @@ export class Flattener {
       entity_association: this.entity_association,
       role: this.role,
       appellation: this.appellation,
-      digital: this.digital
+      digital: this.digital,
+      chunk: this.chunk
     }
   }
 }

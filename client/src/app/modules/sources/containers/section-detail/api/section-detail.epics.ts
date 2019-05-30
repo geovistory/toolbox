@@ -148,10 +148,6 @@ export class SectionDetailAPIEpics {
                 showAssertions: false,
                 showAssertionsToggle: false,
 
-                mentionedEntities: {
-                  mentioningListType: 'ofSection',
-                }
-
               }, data, action.meta.crm,
                 { pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })
               /**

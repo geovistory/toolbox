@@ -1,6 +1,6 @@
 <div class="left" (mousedown)="activateTab.emit()">
   <div *ngIf="!(loading$ | async )" class="icon">
-    <i *ngIf="tab.icon =='text'" class="gv-icon"></i>
+    <mat-icon *ngIf="tab.icon =='text'" class="gv-digital-color" style="font-size: 18px">description</mat-icon>
     <i *ngIf="tab.icon =='persistent-entity'" class="gv-icon gv-icon-persistent-entity gv-entity-color"></i>
     <i *ngIf="tab.icon =='temporal-entity'" class="fa fa-star-o  gv-entity-color"></i>
     <i *ngIf="tab.icon =='source'" class="gv-icon gv-icon-source gv-source-color"></i>
@@ -10,7 +10,7 @@
   </div>
   <div *ngIf="(loading$ | async )" class="icon">
     <span class="fa fa-pulse fa-spinner text-muted"></span>
-    </div>
+  </div>
   <div class="label">
     {{(title$ | async )}}
   </div>

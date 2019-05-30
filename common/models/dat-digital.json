@@ -213,29 +213,6 @@
         "path": "/get-versions",
         "verb": "get"
       }
-    },
-    "getLatestVersion": {
-      "accepts": [
-        {
-          "arg": "pkEntity",
-          "type": "number",
-          "required": true,
-          "description": "Primary Key of the digital object (pk_entity)",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "DatDigital",
-        "root": true
-      },
-      "description": "Finds the latest version of given pkEntity.",
-      "http": {
-        "path": "/get-latest-version",
-        "verb": "get"
-      }
     }
   }
 }

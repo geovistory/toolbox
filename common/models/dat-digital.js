@@ -18,7 +18,7 @@ module.exports = function (DatDigital) {
       Promise.map(promiseArray, (promise) => promise)
         .catch(err => reject(err))
         .then(res => {
-          if(!res || !res.length) return reject('No item upserted');
+          if (!res || !res.length) return reject('No item upserted');
           DatDigital.findComplex({
             'where': ['pk_entity', 'IN', res.map(item => item.pk_entity)]
           }, (err, result) => {
@@ -39,7 +39,7 @@ module.exports = function (DatDigital) {
     const accountId = context.req.accessToken.userId;
 
     const params = [pkEntity, accountId];
-    if(entityVersion) params.push(entityVersion);
+    if (entityVersion) params.push(entityVersion);
 
     const sql = `
     WITH namespaces AS (
@@ -122,7 +122,6 @@ module.exports = function (DatDigital) {
     return DatDigital.findComplex(filter, cb);
 
   }
-
 
 
 };

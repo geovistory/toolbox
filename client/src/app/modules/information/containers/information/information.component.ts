@@ -1,12 +1,11 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, SysConfig, EntityPreview, IAppState, InfPersistentItem, ProjectCrm, SubstoreComponent } from 'app/core';
+import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent, SysConfig } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
-import { CreateOrAddEntity } from '../create-or-add-entity/api/create-or-add-entity.models';
 import { InformationAPIActions } from './api/information.actions';
 import { InformationAPIEpics } from './api/information.epics';
 import { Information } from './api/information.models';

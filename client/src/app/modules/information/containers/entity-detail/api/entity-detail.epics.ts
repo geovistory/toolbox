@@ -75,11 +75,7 @@ export class EntityDetailAPIEpics {
                 showTimeline: true,
                 showTimelineToggle: true,
                 showSources: false,
-                showSourcesToggle: true,
-                sources: {
-                  mentioningListType: 'ofEntity',
-                  // mentionedEntityPk: action.meta.pkEntity
-                }
+                showSourcesToggle: true
               }, data, c.ngRedux.getState().activeProject.crm)
               /**
                * Emit the global action that completes the loading bar

@@ -42,6 +42,7 @@ export class InfEpics {
         }
       ),
 
+      // Entiy Associations
       eaEpicsFactory.createLoadEpic<FindEAByParams>(
         (meta) => this.eaApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
         EntityAssoctiationActionFactory.BY_PARAMS
@@ -60,7 +61,13 @@ export class InfEpics {
       eaEpicsFactory.createRemoveEpic(),
 
       eaEpicsFactory.createUpsertEpic<ModifyActionMeta<InfEntityAssociation>>((meta) => this.eaApi
-        .findOrCreateInfEntityAssociations(meta.pk, meta.items)),
+        .findOrCreateInfEntityAssociations(meta.pk, meta.items),
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions);
+          flattener.entity_association.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk);
+        }
+      ),
     );
   }
 

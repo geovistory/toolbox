@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-import { SysConfig, InfEntityAssociation, InfEntityAssociationApi, ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions, ActiveAccountService } from 'app/core';
+import { InfEntityAssociationApi, LoadingBarActions, ProInfoProjRel, ProInfoProjRelApi, SysConfig } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail } from 'app/core/state/services/state-creator';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { ofSubstore } from 'app/core/store/module';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable';
-import { combineLatest, Observable } from 'rxjs';
-import { switchMap, takeUntil, filter } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { SourceDetailComponent } from '../source-detail.component';
 import { SourceDetailAPIAction, SourceDetailAPIActions } from './source-detail.actions';
-import { ofSubstore } from 'app/core/store/module';
 
 @Injectable()
 export class SourceDetailAPIEpics {
@@ -67,11 +66,6 @@ export class SourceDetailAPIEpics {
 
                 showPropertiesHeader: true,
                 // showAddAPropertyButton: false,
-
-                mentionedEntities: {
-                  mentioningListType: 'ofSource',
-                  // sourceEntityPk: action.meta.pkEntity
-                }
 
               }, data, action.meta.crm,
                 { pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE })

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { combineEpics, Epic } from 'redux-observable';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi } from '../sdk';
-import { DatActions, DigitalActionsFactory, LoadVersionAction } from './dat.actions';
+import { DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, DatChunk, DatChunkApi } from '../sdk';
+import { DatActions, DigitalActionsFactory, LoadVersionAction, ChunkActionsFactory, LoadChunksOfDigitalAction } from './dat.actions';
 import { datRoot } from './dat.config';
-import { DigitalSlice, NamespaceSlice } from './dat.models';
+import { DigitalSlice, NamespaceSlice, ChunkSlice } from './dat.models';
 import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
-import { LoadByPkAction } from '../inf/inf.actions';
+import { LoadByPkAction, InfActions } from '../inf/inf.actions';
+import { Flattener, storeFlattened } from 'app/core/store/flattener';
 
 
 @Injectable()
@@ -15,13 +16,18 @@ export class DatEpics {
   constructor(
     public notification: NotificationsAPIActions,
     public datActions: DatActions,
+    public infActions: InfActions,
     public digitalApi: DatDigitalApi,
+    public chunkApi: DatChunkApi,
     public namespaceApi: DatNamespaceApi,
   ) { }
 
   public createEpics(): Epic {
     const digitalEpicsFactory = new StandardEpicsFactory<DigitalSlice, DatDigital>
       (datRoot, 'digital', this.datActions.digital, this.notification);
+
+    const chunkEpicsFactory = new StandardEpicsFactory<ChunkSlice, DatChunk>
+      (datRoot, 'chunk', this.datActions.chunk, this.notification);
 
     const namespaceEpicsFactory = new StandardEpicsFactory<NamespaceSlice, DatNamespace>
       (datRoot, 'namespace', this.datActions.namespace, this.notification);
@@ -40,6 +46,18 @@ export class DatEpics {
         (items) => this.digitalApi.bulkDelete(items.map(item => item.pk_entity))
       ),
 
+      // Chunk
+      chunkEpicsFactory.createLoadEpic<LoadChunksOfDigitalAction>(
+        (meta) => this.chunkApi.ofDigital(meta.pk, meta.pkDigital),
+        ChunkActionsFactory.CHUNKS_OF_DIGITAL,
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions);
+          flattener.chunk.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk);
+        }
+      ),
+
+      // Namespace
       namespaceEpicsFactory.createLoadEpic<LoadActionMeta>(
         (meta) => this.namespaceApi.byProject(meta.pk), ''
       )

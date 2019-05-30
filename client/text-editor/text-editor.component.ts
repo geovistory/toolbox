@@ -188,7 +188,7 @@ export class TextEditorComponent extends TextEditorAPIActions implements OnInit,
 
   onNodeClick(nh: QuillNodeHandler) {
     if (this.localStore.getState().annotationsVisible) {
-      nh.annotatedEntities$.pipe(first()).subscribe(pks => {
+      nh.annotatedChunks$.pipe(first()).subscribe(pks => {
         this.projectService.mentioningsFocusedInText(pks || [])
         this.projectService.mentioningsFocusedInTable([])
       })

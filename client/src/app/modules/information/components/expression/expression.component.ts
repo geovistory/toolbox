@@ -1,14 +1,13 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, Input, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
-import { ActiveProjectService, InfEntityAssociationInterface, DatDigital, InfEntityAssociation, U, latestVersion, SysConfig, InfPersistentItem } from 'app/core';
+import { ActiveProjectService, DatDigital, InfEntityAssociation, InfPersistentItem, latestVersion, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
-import { equals, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { ByPk } from 'app/core/store/model';
-import { DatActions } from '../../../../core/dat/dat.actions';
+import { equals, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 

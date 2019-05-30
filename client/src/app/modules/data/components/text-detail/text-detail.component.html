@@ -1,4 +1,5 @@
-<as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" [useTransition]="true" (dragEnd)="resizedArea($event)">
+<as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" [useTransition]="true"
+  (dragEnd)="resizedArea($event)">
 
 
   <!-------------------------------------------------------------------
@@ -6,7 +7,7 @@
     -------------------------------------------------------------------->
   <as-split-area [size]="((showRightArea$ | async) ? 62 : 100)" class="d-flex flex-column">
 
-    <gv-detail-top-bar [openRightAreaBtn]="!(showRightArea$ | async)" (openRight)="setShowRightArea(true)">
+    <gv-detail-top-bar [openRightAreaBtn]="!(showRightArea$ | async)" (openRight)="setShowRightArea(true); annotationsVisible$.next(true);">
 
       <!--  *ngIf="(readOnly$|async)" -->
       <gv-version-picker class="d-inline-block" [versionList]="(versions$ | async)"
@@ -18,6 +19,14 @@
         <button class="btn btn-sm btn-link" (click)="annotate()" *ngIf="(showAnnotateBtn$|async)">
           <i class="fa fa-plus" aria-hidden="true"></i> Annotate…
         </button>
+        <button class="btn btn-sm btn-link" (click)="setShowRightArea(true); annotationsVisible$.next(true)"
+          *ngIf="!(annotationsVisible$|async)">
+          Show Annotations
+        </button>
+        <button class="btn btn-sm btn-link" (click)="annotationsVisible$.next(false)"
+          *ngIf="(annotationsVisible$|async)">
+          Hide Annotations
+        </button>
         <!-- <button class="btn btn-link btn-sm" (click)="startEdit()" *ngIf="(readOnly$|async)">
           <i class="fa fa-edit" aria-hidden="true"></i> Edit
         </button>
@@ -25,7 +34,7 @@
           Cancel
         </button> -->
         <!-- *ngIf="!(readOnly$|async)" -->
-        <button class="btn btn-link btn-sm ml-2" (click)="save()" >
+        <button class="btn btn-link btn-sm ml-2" (click)="save()">
           <i class="fa fa-save" aria-hidden="true"></i> Save
         </button>
       </span>
@@ -34,8 +43,9 @@
 
       <gv-quill-edit class="gv-grow-1 d-flex flex-column gv-quill-borderless" [quillDoc]="(digital$ | async)?.quill_doc"
         [readOnly]="(readOnly$ | async)" [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="annotatedNodes$"
-        [entitiesToHighlight$]="mentioningsFocusedInTable$" [creatingAnnotation]="false"
-        (selectedDeltaChange)="selectedDeltaChange($event)" (nodeClick)="onNodeClick($event)"></gv-quill-edit>
+        [chunksToHighlight$]="chunksToHighlightInText$" [creatingAnnotation]="false"
+        (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
+        (nodeMouseleave)="textNodeMouseleave($event)"></gv-quill-edit>
 
     </gv-detail-content>
   </as-split-area>
@@ -47,10 +57,18 @@
 
     <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="setShowRightArea(false)">
       Annotations
+      <span class="ml-auto">
+        <button class="btn btn-link btn-sm ml-2" (click)="createAnnotation$.next(true)">
+          <i class="fa fa-plus" aria-hidden="true"></i> Add
+        </button>
+      </span>
     </gv-detail-top-bar>
     <gv-detail-content>
       <gv-mentioning-list class="gv-tile" [create$]="createAnnotation$" [chunk$]="chunk$"
-        [basePath]="basePath.concat('mentionedEntities')" (close)="toggle('showMentionedEntities')">
+        [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
+        [basePath]="basePath.concat('mentionedEntities')" (close)="toggle('showMentionedEntities')"
+        (rowMouseenter)="mentioningRowMousenter($event)" (rowMouseleave)="mentioningRowMouseleave($event)"
+        (rowClick)="mentioningRowClick($event)" (dataChange)="mentioningListChange($event)">
       </gv-mentioning-list>
     </gv-detail-content>
 

@@ -1,17 +1,18 @@
-import { Component, OnDestroy, Input, OnInit, HostBinding, ViewChild } from '@angular/core';
-import { Subject, Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ActiveProjectService, DatDigital, latestVersion, getSpecificVersion, DatChunk } from 'app/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { ActiveProjectService, DatChunk, DatDigital, getSpecificVersion, IAppState, latestVersion, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { TextDetail } from './api/text-detail.models';
-import { TextDetailAPIEpics } from './api/text-detail.epics';
-import { TextDetailAPIActions } from './api/text-detail.actions';
-import { textDetailReducer } from './api/text-detail.reducer';
-import { map, tap, first, takeUntil, filter } from 'rxjs/operators';
-import { QuillDoc, Ops, Op, DeltaI } from '../../../quill';
-import { tick } from '../../../../../../node_modules/@angular/core/src/render3';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { filter, first, map, takeUntil, take } from 'rxjs/operators';
 import { SucceedActionMeta } from '../../../../core/store/actions';
-import { QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
+import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
+import { QuillEditComponent, AnnotatedOps, ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
+import { TextDetailAPIActions } from './api/text-detail.actions';
+import { TextDetailAPIEpics } from './api/text-detail.epics';
+import { TextDetail } from './api/text-detail.models';
+import { textDetailReducer } from './api/text-detail.reducer';
+import { MentioningListOf, MentioningListComponent, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
+import { QuillNodeHandler } from 'app/modules/quill/quill-node-handler';
 
 
 export interface Version {
@@ -32,6 +33,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(QuillEditComponent) quillEdit: QuillEditComponent;
+  @ViewChild(MentioningListComponent) mentioningList: MentioningListComponent;
 
 
   // emits true on destroy of this component
@@ -43,7 +45,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   // path to the substore
   @Input() basePath: string[];
 
-  // Primary key of the text to be viewed or edited
+  // Primary key of the text digital to be viewed or edited
   @Input() pkEntity: number;
   version$ = new BehaviorSubject<number>(1);
 
@@ -62,11 +64,15 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   createAnnotation$ = new BehaviorSubject<boolean>(false);
   chunk$ = new BehaviorSubject<DatChunk>(null);
 
+  annotatedNodes$ = new BehaviorSubject<AnnotatedOps>({})
+  annotationsVisible$ = new BehaviorSubject<boolean>(false);
+
+  chunksToHighlightInText$ = new BehaviorSubject<ChunksPks>([]);
+  chunksToHighlightInList$ = new BehaviorSubject<ChunksPks>([]);
+
   // TODO check if needed
   readOnly$;
-  annotationsVisible$;
-  annotatedNodes$
-  mentioningsFocusedInTable$
+  listOf: MentioningListOf;
 
   constructor(
     protected rootEpics: RootEpics,
@@ -90,6 +96,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     this.p.dat$.digital.loadVersion(this.pkEntity).resolved$.subscribe(result => {
       // set the latest version as the initial version shown in editor
       this.setVersion(result)
+      this.setTabTitle('Text ' + this.pkEntity)
     })
 
 
@@ -140,7 +147,39 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
      */
     // show the annotate button when some delta is selected
     this.showAnnotateBtn$ = this.selectedDelta$.map(d => (!!d))
+    this.listOf = { pkEntity: this.pkEntity, type: 'digital-text' }
+  }
 
+  mentioningListChange(rows: Row[]) {
+    const annotatedNodes: AnnotatedOps = {}
+    rows.forEach(row => {
+      (row.domainChunk.quill_doc as QuillDoc).ops.forEach(op => {
+        const id = op.attributes.charid
+        if (id) annotatedNodes[id] = [...(annotatedNodes[id] || []), row.domainChunk.pk_entity]
+      })
+    })
+    this.annotatedNodes$.next(annotatedNodes);
+  }
+
+  mentioningRowMousenter(row: Row) {
+    this.chunksToHighlightInText$.next(row.domainChunk ? [row.domainChunk.pk_entity] : []);
+  }
+  mentioningRowMouseleave(row: Row) {
+    this.chunksToHighlightInText$.next([]);
+  }
+  // mentioningRowClick(row: Row) {
+  //   this.chunksToHighlightInText$.next(row.domainChunk ? [row.domainChunk.pk_entity] : []);
+  // }
+
+  textNodeMouseenter(qnh: QuillNodeHandler) {
+    if (this.annotationsVisible$.value) {
+      qnh.annotatedChunks$.pipe(first()).subscribe(chunkPks => {
+        this.chunksToHighlightInList$.next(chunkPks)
+      })
+    }
+  }
+  textNodeMouseleave(qnh: QuillNodeHandler) {
+    this.chunksToHighlightInList$.next([])
   }
 
 
@@ -196,7 +235,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
    */
   selectedDeltaChange(d: DeltaI) {
     this.selectedDelta$.next(d)
-    if(this.createAnnotation$.value){
+    if (this.createAnnotation$.value && !!d && !!d.ops && d.ops.length) {
       this.setChunk();
     }
   }
@@ -207,7 +246,6 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     const bId = parseInt(idOf(b));
     return aId > bId ? a : b;
   }
-
 
   annotate() {
     this.setShowRightArea(true)
@@ -229,7 +267,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
 
   private quillDocForChunk(): QuillDoc {
     const latestOp: Op = this.selectedDelta$.value.ops.reduce(this.latestIdReducer);
-    const latestId: number = latestOp.attributes.charid || latestOp.attributes.blockid;
+    const latestId: number = parseInt(latestOp.attributes.charid || latestOp.attributes.blockid);
     const ops: Ops = this.selectedDelta$.value.ops;
     const quill_doc: QuillDoc = { ops, latestId };
     return quill_doc;
@@ -242,9 +280,6 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     if (event.sizes[1] < 5) this.setShowRightArea(false)
   }
 
-  onNodeClick($event){
-
-  }
 
   ngOnDestroy() {
     this.destroy();

@@ -1,112 +1,119 @@
-<!-- <pre>
-  {{dataSource._flattenedData | async | json:2 }}
-</pre> -->
-<!-- https://github.com/angular/components/issues/13616 -->
+<gv-tile-header>
+  <span title>
+    Sections & Digital Reproductions
+  </span>
+  <span buttons>
 
-<table class="mat-table w-100" *ngIf="pkExpression">
-  <thead>
-    <tr class="mat-header-row" fxLayout="row">
-      <th class="mat-header-cell pl-5" fxFlex="60" fxLayout="row" fxLayoutAlign="start center">
-        Name
-      </th>
-      <th class="mat-header-cell" fxFlex="30" fxLayout="row" fxLayoutAlign="start center">
-        Type
-      </th>
-      <th class="mat-header-cell pr-0" fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
-        <ng-container *ngTemplateOutlet="menuBtn; context:{
+  </span>
+</gv-tile-header>
+
+<div class="gv-tile-body">
+
+  <table class="mat-table w-100" *ngIf="pkExpression">
+    <thead>
+      <tr class="mat-header-row" fxLayout="row">
+        <th class="mat-header-cell pl-5" fxFlex="60" fxLayout="row" fxLayoutAlign="start center">
+          Name
+        </th>
+        <th class="mat-header-cell" fxFlex="30" fxLayout="row" fxLayoutAlign="start center">
+          Type
+        </th>
+        <th class="mat-header-cell pr-0" fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
+          <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: false,
           pkParent: pkExpression,
           parentIsF2Expression: true
         }"></ng-container>
-      </th>
-    </tr>
-  </thead>
-</table>
+        </th>
+      </tr>
+    </thead>
+  </table>
 
 
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle [ngClass]="{
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle [ngClass]="{
     'drop-above': dragNodeExpandOverArea === 'above' && dragNodeExpandOverNode === node && !node.isDigital,
     'drop-center': dragNodeExpandOverArea === 'center' && dragNodeExpandOverNode === node && !node.isDigital}"
-    draggable="true" (dragstart)="handleDragStart($event, node);" (dragover)="handleDragOver($event, node);"
-    (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);">
+      draggable="true" (dragstart)="handleDragStart($event, node);" (dragover)="handleDragOver($event, node);"
+      (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);">
 
 
-    <!-- if expression portion -> edge of tree -->
-    <div fxLayout="row">
+      <!-- if expression portion -> edge of tree -->
+      <div fxLayout="row">
 
-      <div fxFlex="60" fxLayout="row" fxLayoutAlign="start center" [ngStyle]="{'padding-left.px': 40 * node.level}">
+        <div fxFlex="60" fxLayout="row" fxLayoutAlign="start center" [ngStyle]="{'padding-left.px': 40 * node.level}">
 
-        <button mat-icon-button disabled> </button>
+          <button mat-icon-button disabled> </button>
 
-        <button *ngIf="!node.isDigital" mat-icon-button disabled>
-          <mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
-        </button>
-        <button *ngIf="node.isDigital" mat-icon-button disabled>
-          <mat-icon class="mat-icon-rtl-mirror">description</mat-icon>
-        </button>
+          <button *ngIf="!node.isDigital" mat-icon-button disabled>
+            <mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
+          </button>
+          <button *ngIf="node.isDigital" mat-icon-button disabled>
+            <mat-icon class="mat-icon-rtl-mirror">description</mat-icon>
+          </button>
 
-        <div class="gv-ellipsis">
-          {{node.name}}
-          <i *ngIf="!node.name" class="text-muted"> Empty </i>
+          <div class="gv-ellipsis">
+            {{node.name}}
+            <i *ngIf="!node.name" class="text-muted"> Empty </i>
+          </div>
         </div>
-      </div>
 
 
-      <div fxFlex="30" class="gv-ellipsis">
-        {{node.typeLabel}}
-      </div>
+        <div fxFlex="30" class="gv-ellipsis">
+          {{node.typeLabel}}
+        </div>
 
-      <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
-        <ng-container *ngTemplateOutlet="menuBtn; context:{
+        <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
+          <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: node.isDigital,
           pkParent: node.entityAssociation.fk_info_domain,
           node: node
         }"></ng-container>
+        </div>
       </div>
-    </div>
-  </mat-tree-node>
+    </mat-tree-node>
 
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" [ngClass]="{
+    <mat-tree-node *matTreeNodeDef="let node; when: hasChild" [ngClass]="{
     'drop-above': dragNodeExpandOverArea === 'above' && dragNodeExpandOverNode === node,
     'drop-center': dragNodeExpandOverArea === 'center' && dragNodeExpandOverNode === node}" draggable="true"
-    (dragstart)="handleDragStart($event, node);" (dragover)="handleDragOver($event, node);"
-    (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);">
+      (dragstart)="handleDragStart($event, node);" (dragover)="handleDragOver($event, node);"
+      (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);">
 
-    <div fxLayout="row">
+      <div fxLayout="row">
 
-      <div fxFlex="60" fxLayout="row" fxLayoutAlign="start center" [ngStyle]="{'padding-left.px': 40 * node.level}">
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-        </button>
+        <div fxFlex="60" fxLayout="row" fxLayoutAlign="start center" [ngStyle]="{'padding-left.px': 40 * node.level}">
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
 
-        <button mat-icon-button disabled>
-          <mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
-        </button>
+          <button mat-icon-button disabled>
+            <mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
+          </button>
 
-        <div class="gv-ellipsis">
-          {{node.name}}
+          <div class="gv-ellipsis">
+            {{node.name}}
+          </div>
         </div>
-      </div>
 
-      <div fxFlex="30" class="gv-ellipsis">
-        {{node.typeLabel}}
-      </div>
+        <div fxFlex="30" class="gv-ellipsis">
+          {{node.typeLabel}}
+        </div>
 
-      <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
-        <ng-container *ngTemplateOutlet="menuBtn; context:{
+        <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
+          <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: node.isDigital,
           pkParent: node.entityAssociation.fk_info_domain,
           node: node
         }"></ng-container>
+        </div>
       </div>
-    </div>
-  </mat-tree-node>
-</mat-tree>
+    </mat-tree-node>
+  </mat-tree>
 
-<div #emptyItem>
+  <div #emptyItem>
+  </div>
 </div>
 
 

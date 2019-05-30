@@ -25,7 +25,7 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
    * In addition to the standard, it extends the items to upsert, so that
    * they are added to the project.
    */
-  createUpsertEpic<T>(apiFn: (meta: T) => Observable<Model[]>) {
+  createUpsertEpic<T>(apiFn: (meta: T) => Observable<Model[]>, onSuccessHook?: (data: Model[], pk?) => void) {
     return (action$, store) => {
       return action$.pipe(
         ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'),
@@ -41,7 +41,13 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
           }))
 
           apiFn(meta).subscribe((data: Model[]) => {
-            this.infActions.upsertSucceeded(data, pendingKey, action.meta.pk);
+            if (onSuccessHook) {
+              onSuccessHook(data, action.meta.pk);
+              this.infActions.upsertSucceeded([], pendingKey, action.meta.pk);
+            }
+            else {
+              this.infActions.upsertSucceeded(data, pendingKey, action.meta.pk);
+            }
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',

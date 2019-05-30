@@ -50,17 +50,6 @@ export const peItReducer = (state: PeItDetail = INITIAL_STATE, action: PeItActio
       }
       break;
 
-    /************************************************
-    * Reducer to start create a new mentioning
-    ************************************************/
-    case PeItActions.START_CREATE_MENTIONING:
-      state = {
-        ...state,
-        mentionedEntities: {
-          ...state.mentionedEntities,
-        }
-      }
-      break;
 
   }
 

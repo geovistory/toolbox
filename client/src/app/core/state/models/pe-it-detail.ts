@@ -4,7 +4,6 @@ import { Entity } from './data-unit';
 import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
 import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
 import { PeItTimeline } from 'app/modules/information/containers/pe-it-timeline/api/pe-it-timeline.models';
-import { MentioningList } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.models';
 
 export interface PeItDetailList { [pk_entity: number]: PeItDetail };
 
@@ -97,12 +96,6 @@ export class PeItDetail extends Entity {
 
     // reproductions of a section
     repros?: Repros;
-
-    // mentioned entities
-    mentionedEntities?: MentioningList;
-
-    // sources that are associated to the peIt through a mentioning
-    sources?: MentioningList;
 
     /** Timeline */
     peItTimeLine?: PeItTimeline;

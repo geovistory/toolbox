@@ -23,7 +23,8 @@
     },
     "notes": {
       "type": "string",
-      "required": false
+      "required": false,
+      "hidden": true
     },
     "tmsp_creation": {
       "type": "string",
@@ -35,7 +36,8 @@
     },
     "sys_period": {
       "type": "string",
-      "generated": true
+      "generated": true,
+      "hidden": true
     }
   },
   "validations": [],

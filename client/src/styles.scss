@@ -1053,6 +1053,8 @@ gv-quill-view {
   .ql-container.ql-snow {
     height: auto;
     border: none;
+    font-size: $font-size-base;
+    font-family: $font-family-base;
   }
 
   .ql-editor {
@@ -1065,6 +1067,9 @@ gv-quill-edit {
     @extend .d-flex;
     @extend .flex-column;
     @extend .gv-grow-1;
+
+    font-size: $font-size-base;
+    font-family: $font-family-base;
   }
 
   .ql-editor {
@@ -1080,7 +1085,7 @@ gv-quill-edit.gv-hide-toolbar {
 }
 
 .gv-quill-borderless {
-  .ql-toolbar.ql-snow{
+  .ql-toolbar.ql-snow {
     border-top: 0;
     border-left: 0;
     border-right: 0;
@@ -1277,6 +1282,9 @@ gv-map {
 .gv-bg-highlight {
   background-color: hsla(271, 68%, 80%, 0.5);
 }
+.mat-row.gv-bg-highlight {
+  background-color: rgba(223, 213, 232, 0.5);
+}
 
 .gv-bg-highlight-2 {
   background-color: hsla(271, 68%, 80%, 0.9);
@@ -1448,6 +1456,32 @@ $switch-sm-box-width: calc(
 /***********************************
 * Drag & Drop
 ************************************/
+$border: 1px solid #000;
+
+.dnd-drag-start {
+  -moz-transform: scale(0.8);
+  -webkit-transform: scale(0.8);
+  transform: scale(0.8);
+  opacity: 0.7;
+  border: $border;
+}
+
+.dnd-drag-enter {
+  opacity: 0.7;
+  border: $border;
+}
+
+.dnd-drag-over {
+  border: $border;
+}
+
+.dnd-sortable-drag {
+  -moz-transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+  opacity: 0.7;
+  border: 1px dashed #000;
+}
 
 .cdk-drag-preview {
   box-sizing: border-box;
@@ -1563,7 +1597,9 @@ as-split.gv-split-style {
 .gv-sub-query-item {
   margin-left: 0rem;
 }
-
+.gv-digital-color {
+  color: $secondary;
+}
 // Main category icons
 .gv-source-color {
   color: $cyan;

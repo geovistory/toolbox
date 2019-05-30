@@ -14,11 +14,11 @@ class Selector {
     public model: string
   ) { }
 
-  selector<M>(indexKey: string): { all$: Observable<M>, key: (x) => Observable<M> } {
+  selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
     const all$ = this.pkProject$.pipe(
       mergeMap(pk => {
-        return this.ngRedux.select<M>([infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey])
+        return this.ngRedux.select<ByPk<M>>([infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey])
       })
     )
 

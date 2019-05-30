@@ -200,10 +200,7 @@ export class ActiveProjectService {
 
     return this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pkEntity])
       .pipe(
-        filter(prev => (!!prev)),
-        tap(test => {
-          test;
-        })
+        filter(prev => (!!prev))
       )
   }
 

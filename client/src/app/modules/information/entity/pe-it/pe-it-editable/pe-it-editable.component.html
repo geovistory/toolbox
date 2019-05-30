@@ -144,9 +144,9 @@
       </span>
 
       <!-- Section List. Sections of a source -->
-      <gv-section-list class="gv-tile" *ngIf="(showSectionList$ | async) && !isolatedChild"
+      <!-- <gv-section-list class="gv-tile" *ngIf="(showSectionList$ | async) && !isolatedChild"
         [basePath]="basePath.concat('sectionList')" [loadListOnInit]="true" (close)="toggle('showSectionList')">
-      </gv-section-list>
+      </gv-section-list> -->
 
       <!-- Section List. Sections of a source -->
       <gv-expression class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$" *ngIf="(showSectionList$ | async) && !isolatedChild"

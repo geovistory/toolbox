@@ -2,91 +2,59 @@
 const _ = require('lodash')
 
 const Promise = require('bluebird');
+const logSql = require('../../server/scripts/log-deserialized-sql')
 
-module.exports = function(DatChunk) {
+module.exports = function (DatChunk) {
 
 
-  // DatChunk.t = function() {
+  /**
+  * Get the chunks related to the digital, with their entity associations.
+  * @param {*} pkProject is needed for filtering the entity associations
+  * @param {*} pkEntity the pk of the digital
+  * @param {*} cb
+  */
+  DatChunk.ofDigital = function (pkProject, pkEntity, ctx, cb) {
 
-  //   return new Promise ((resolve, reject)=> {
+    const joinThisProject = DatChunk.app.models.ProInfoProjRel.getJoinObject(true, pkProject)
 
-  //     return new Promise((res2, rej2) => {
+    // returns one row with an array of primary keys of chunks of given digital
+    const params = [pkProject, pkEntity]
+    const sql_stmt = `
+      WITH namespaces AS (
+        SELECT pk_entity pk_namespace
+        FROM data.namespace n
+        WHERE n.fk_project = $1
+      )
+      SELECT  1, jsonb_agg(c.pk_entity) chunk_pks
+      FROM data.chunk c
+      JOIN data.digital d ON c.fk_text = d.pk_text
+      JOIN namespaces n ON n.pk_namespace = d.fk_namespace
+      WHERE d.pk_entity = $2
+      GROUP BY 1
+      `
+    // logSql(sql_stmt, params)
+    const connector = DatChunk.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) return cb(err);
 
-  //       res2('super')
-  //       // rej2('err')
+      DatChunk.app.models.DatChunk.findComplex({
+        where: ['pk_entity', 'IN', resultObjects[0].chunk_pks],
+        include: {
+          data_info_associations: {
+            $relation: {
+              name: "data_info_associations",
+              joinType: "left join",
+              orderBy: [{
+                pk_entity: "asc"
+              }]
+            },
+            entity_version_project_rels: joinThisProject,
+          }
+        }
+      }, cb)
 
-  //     })
-  //     .catch(err => reject(err))
-  //     .then(res => resolve(res))
+    });
 
-  //   })
-
-  // }
-
-  // DatChunk.findOrCreateChunk = function(projectId, data, ctx) {
-
-  //   const dataObject = {
-  //     quill_doc: JSON.stringify(data.quill_doc),
-  //     fk_text: data.fk_text
-  //   };
-
-  //   let requestedChunk;
-
-  //   if (ctx && ctx.req && ctx.req.body) {
-  //     requestedChunk = ctx.req.body;
-  //   } else {
-  //     requestedChunk = data;
-  //   }
-
-  //   const ctxWithoutBody = _.omit(ctx, ['req.body']);
-
-  //   return DatChunk._findOrCreateByValue(DatChunk, projectId, dataObject, requestedChunk, ctxWithoutBody)
-  //   .then((resultingChunks) => {
-  //     // pick first item of array
-  //     const resultingChunk = resultingChunks[0];
-
-  //     // if there are entity_associations
-  //     if (requestedChunk.entity_associations) {
-
-  //       // prepare parameters
-  //       const InfEntityAssociation = DatChunk.app.models.InfEntityAssociation;
-
-  //       //… filter entity_associations that are truthy (not null), iterate over them,
-  //       // return the promise that the range entity will be
-  //       // returned together with all nested items
-  //       return Promise.map(requestedChunk.entity_associations.filter(ea => (ea)), (ea) => {
-  //           // use the pk_entity from the created peIt to set the fk_entity of the ea
-  //           ea.fk_info_domain = resultingChunk.pk_entity;
-  //           // find or create the teEnt and the ea pointing to the teEnt
-  //           return InfEntityAssociation.findOrCreateInfEntityAssociation(projectId, ea, ctxWithoutBody);
-  //         })
-  //         .then((entity_associations) => {
-
-  //           //attach the entity_associations to resultingChunk.entity_associations
-  //           const res = resultingChunk.toJSON();
-  //           res.entity_associations = [];
-  //           for (var i = 0; i < entity_associations.length; i++) {
-  //             const ea = entity_associations[i];
-  //             if (ea && ea[0]) {
-  //               res.entity_associations.push(ea[0]);
-  //             }
-  //           }
-
-  //           return [res];
-
-  //         })
-  //         .catch((err) => {
-  //           return err;
-  //         })
-
-  //     } else {
-  //       return resultingChunks;
-  //     }
-  //   })
-  //   .catch((err) => {
-
-  //   });;
-
-  // }
+  }
 
 };

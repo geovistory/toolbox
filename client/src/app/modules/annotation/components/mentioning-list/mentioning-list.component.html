@@ -1,62 +1,54 @@
-<!-- Header -->
-
-<gv-tile-header (close)="close.emit()">
-  <span title>
-
-    <div *ngIf="(mentioningListType$|async) === 'ofSource' || (mentioningListType$|async) === 'ofSection'"
-      class="gv-grow-1">
-      <!-- <i class="fa fa-fw gv-icon gv-icon-persistent-entity"></i> -->
-      <span>Mentioned Entities</span>
-    </div>
-
-    <div *ngIf="(mentioningListType$|async) === 'ofEntity'" class="gv-grow-1">
-      <!-- <i class="fa fa-fw gv-icon gv-icon-source"></i> -->
-      <span>Sources & Annotations</span>
-    </div>
-
-  </span>
-  <span buttons>
-    <button class="btn btn-sm btn-link" (click)="create$.next(true)">
-      <i class="fa fa-plus"></i> Add
-    </button>
-  </span>
-</gv-tile-header>
+<div class="d-flex flex-column" *ngIf="!(create$ |async)">
 
 
-<!-- List -->
+  <table mat-table [dataSource]="dataSource" matSort matSortDisableClear="false" class="mat-elevation-z0">
+    <!-- domainLabel Column -->
+    <ng-container matColumnDef="domainLabel">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="domainLabel">
+        <span *ngIf="listOf.type === 'digital-text'">Annotated Text</span>
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element"> {{element.domainLabel}} </td>
+    </ng-container>
 
-<div class="gv-tile-body" *ngIf="!(create$ |async)">
-  <ngx-table *ngIf="data.length" class="sticky-header" [configuration]="tableConfiguration" [data]="data"
-    [columns]="columns">
-    <ng-template let-row let-index="index">
-      <td *ngIf="checkedCols.has('mentionedEntityString')"
-        [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
-        [ngStyle]="{'flex-basis': checkedCols.get('mentionedEntityString').width}" (click)="onRowClicked(row)">
-        <!-- <gv-leaf-pe-it-view *ngIf="row.mentionedEntity?.pk_entity" [pkEntity]="row.mentionedEntity.pk_entity"></gv-leaf-pe-it-view> -->
+    <!-- propertyLabel Column -->
+    <ng-container matColumnDef="propertyLabel">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="propertyLabel"> Property </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element"> {{element.propertyLabel}} </td>
+    </ng-container>
+
+    <!-- rangeInfoEntity Column -->
+    <ng-container matColumnDef="rangeInfoEntity">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="rangeLabel"> Entity </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <gv-entity-preview [preview]="element.rangeInfoEntity" dragEnabled="false" openTabOnClick="true">
+        </gv-entity-preview>
       </td>
+    </ng-container>
+    <!-- actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
 
-      <td *ngIf="checkedCols.has('sourceEntityString')"
-        [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
-        [ngStyle]="{'flex-basis': checkedCols.get('sourceEntityString').width}" (click)="onRowClicked(row)">
-        <!-- <gv-leaf-pe-it-view *ngIf="row.sourceEntity?.pk_entity" [pkEntity]="row.sourceEntity.pk_entity" [openIn]="'source'"></gv-leaf-pe-it-view> -->
+        <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #mainMenu="matMenu" xPosition="before">
+          <button mat-menu-item (click)="remove(element)">
+            <mat-icon>delete</mat-icon>
+            <span>Remove</span>
+          </button>
+        </mat-menu>
+
       </td>
+    </ng-container>
 
-      <td *ngIf="checkedCols.has('sectionEntityString')"
-        [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
-        [ngStyle]="{'flex-basis': checkedCols.get('sectionEntityString').width}" (click)="onRowClicked(row)">
-        <!-- <gv-leaf-pe-it-view *ngIf="row.sourceEntity?.pk_entity && row.sectionEntity?.pk_entity" [pkEntity]="row.sectionEntity.pk_entity"
-          [sectionParentPk]="row.sourceEntity.pk_entity" [openIn]="'section'"></gv-leaf-pe-it-view> -->
-      </td>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row class="element-row" *matRowDef="let element; columns: displayedColumns;"
+      (mouseenter)="rowMouseenter.emit(element)" (mouseleave)="rowMouseleave.emit(element)"
+      [ngClass]="{'gv-bg-highlight': element.highlight}"></tr>
+  </table>
 
-      <td *ngIf="checkedCols.has('chunkEntityString')"
-        [ngClass]="{'gv-bg-highlight': row.isFocusedInText, 'gv-bg-highlight-2': row.isFocusedInTable}"
-        [ngStyle]="{'flex-basis': checkedCols.get('chunkEntityString').width}" (click)="onRowClicked(row)">
-        <i>"{{row.chunkEntityString}}"</i>
-      </td>
-    </ng-template>
-  </ngx-table>
-
-  <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofSource'">
+  <i class="alert alert-light" *ngIf="!(data$ | async)?.length && ofType === 'ofSource'">
     <p>Add links between this Source and Entities (right side panel).</p>
     <p>By creating such links, you state what Entities are mentioned in this Source.</p>
     <p>To add links to more specific sections of this source (e.g. a page or even words in a transctiption), use
@@ -64,7 +56,7 @@
 
   </i>
 
-  <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofSection'">
+  <i class="alert alert-light" *ngIf="!(data$ | async)?.length && ofType === 'ofSection'">
     <p>Add links between this Section and Entities (right side panel).</p>
     <p>By creating such links, you state what Entities are mentioned in this Section.</p>
 
@@ -81,7 +73,7 @@
       <li>Spots in images.</li>
     </ul>
   </i>
-  <i class="alert alert-light" *ngIf="!data.length && (mentioningListType$|async) === 'ofEntity'">
+  <i class="alert alert-light" *ngIf="!(data$ | async)?.length && ofType === 'ofEntity'">
     Link this Entity with
     <ul>
       <li>Sources (Books, Articles, Manuscripts, etc.), or</li>
@@ -99,8 +91,6 @@
     <gv-mentioning-create-ctrl [domainChunk]="(chunk$|async)" [domainChunkFixed]="true"
       formControlName="mentioningCreateCtrl">
     </gv-mentioning-create-ctrl>
-    <!-- <gv-mentioning-create-ctrl formControlName="mentioningCreateCtrl" [mentionedEntity]="(mentionedEntity$|async)"
-      [sourceEntity]="(sourceEntity$|async)" [sectionEntity]="(sectionEntity$|async)" [chunkEntity]="(chunk$|async)"></gv-mentioning-create-ctrl> -->
 
     <button class="btn btn-primary mt-3 mr-2" type="submit" [disabled]="formGroup.invalid" (click)="submit()">
       Create

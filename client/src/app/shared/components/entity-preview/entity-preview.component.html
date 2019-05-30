@@ -1,4 +1,4 @@
-<div dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex">
+<div dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex" (click)="click()">
 
   <span *ngIf="preview?.loading" class="fa fa-pulse fa-spinner"> </span>
 
