@@ -1,0 +1,8 @@
+<div *ngIf="(loading$ | async)" class="align-self-center gv-flex-fh justify-content-center text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div>
+
+<gv-pe-it-detail *ngIf="!(loading$ | async) && (_peIt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_peIt_editable')"
+  (remove)="onRemovePeIt($event)" (onLabelChange)="onPeItLabelChange($event)"></gv-pe-it-detail>
+
+<gv-te-ent-editable *ngIf="!(loading$ | async) && (_teEnt_editable$ | async)" class="gv-flex-fh" [basePath]="basePath.concat('_teEnt_editable')"
+  (onLabelChange)="onTeEnLabelChange($event)"></gv-te-ent-editable>
+

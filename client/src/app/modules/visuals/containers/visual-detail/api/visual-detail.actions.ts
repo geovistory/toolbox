@@ -20,7 +20,6 @@ export type VisualDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 @Injectable()
 export class VisualDetailAPIActions {
 
-  static readonly SET_TAB_TITLE = 'VisualDetail::SET_TAB_TITLE';
   static readonly SET_PK_ENTITY = 'VisualDetail::SET_PK_ENTITY';
 
   static readonly LOAD = 'VisualDetail::LOAD';
@@ -39,23 +38,11 @@ export class VisualDetailAPIActions {
   static readonly DELETE_SUCCEEDED = 'VisualDetail::DELETE_SUCCEEDED';
   static readonly DELETE_FAILED = 'VisualDetail::DELETE_FAILED';
 
-  static readonly SHOW_RIGHT_AREA = 'VisualDetail::SHOW_RIGHT_AREA';
-  static readonly HIDE_RIGHT_AREA = 'VisualDetail::HIDE_RIGHT_AREA';
-
   static readonly DESTROY = 'VisualDetail::DESTROY';
-  /*********************************************************************
-  *  Set tab title
-  *********************************************************************/
-  @dispatch()
-  setTabTitle = (tabTitle: string): VisualDetailAPIAction => ({
-    type: VisualDetailAPIActions.SET_TAB_TITLE,
-    meta: { tabTitle },
-    payload: null,
-  });
 
   /*********************************************************************
-*  Set pk entity
-*********************************************************************/
+  *  Set pk entity
+  *********************************************************************/
   @dispatch()
   setPkEntity = (pkEntity: number): VisualDetailAPIAction => ({
     type: VisualDetailAPIActions.SET_PK_ENTITY,
@@ -140,28 +127,6 @@ export class VisualDetailAPIActions {
     error,
   })
 
-
-  /*********************************************************************
-  *  Layout
-  *********************************************************************/
-  @dispatch()
-  showRightArea = (): VisualDetailAPIAction => ({
-    type: VisualDetailAPIActions.SHOW_RIGHT_AREA,
-    meta: null,
-    payload: null
-  })
-  @dispatch()
-  hideRightArea = (): VisualDetailAPIAction => ({
-    type: VisualDetailAPIActions.HIDE_RIGHT_AREA,
-    meta: null,
-    payload: null
-  })
-
-
-
-
-
-  /******
    /*********************************************************************
    *  Method to distroy the slice of store
    *********************************************************************/

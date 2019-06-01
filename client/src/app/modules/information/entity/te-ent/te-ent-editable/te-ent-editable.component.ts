@@ -1,19 +1,21 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { SysConfig, IAppState, UiContext, UiElement, ProjectCrm, U } from 'app/core';
-import { AddOption, CollapsedExpanded, ExistenceTimeDetail, RoleDetail, PropertyField, PropertyFieldForm, TeEntAccentuation, TeEntDetail, FieldList, ClassInstanceLabel } from 'app/core/state/models';
-import { createExistenceTimeDetail, getCreateOfEditableContext, StateSettings, similarPropertyField, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
+import { ActiveProjectService, IAppState, ProjectCrm, SysConfig, Tab, U, UiContext } from 'app/core';
+import { AddOption, ClassInstanceLabel, CollapsedExpanded, ExistenceTimeDetail, FieldList, PropertyField, PropertyFieldForm, RoleDetail, TeEntAccentuation, TeEntDetail } from 'app/core/state/models';
+import { createExistenceTimeDetail, getCreateOfEditableContext, similarPropertyField, StateSettings } from 'app/core/state/services/state-creator';
+import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { dropLast } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { RootEpics } from '../../../../../core/store/epics';
 import { slideInOut } from '../../../shared/animations';
 import { EntityBase } from '../../entity.base';
 import { EntityAPIEpics } from '../../entity.epics';
-import { TeEntActions } from '../te-ent.actions';
-import { TeEntAPIEpics } from '../te-ent.epics';
-import { teEntReducer } from '../te-ent.reducer';
-import { filter, map } from 'rxjs/operators';
-import { dropLast } from 'ramda';
+import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
+import { TeEntDetailAPIEpics } from './api/te-ent-detail.epics';
+import { teEntDetailReducer } from './api/te-ent-detail.reducer';
 
 export function getTeEntAddOptions(
   fkClass$: Observable<number>,
@@ -73,7 +75,7 @@ export function getTeEntAddOptions(
 }
 
 @WithSubStore({
-  localReducer: teEntReducer,
+  localReducer: teEntDetailReducer,
   basePathMethodName: 'getBasePath'
 })
 @Component({
@@ -83,14 +85,19 @@ export function getTeEntAddOptions(
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeEntEditableComponent extends EntityBase {
+export class TeEntEditableComponent extends EntityBase implements TabLayoutComponentInterface {
 
   @Input() basePath: string[];
   @Input() asPeItChild: boolean;
+  @Input() pkEntity: number;
+  @Input() tab: Tab;
 
   parentPath: string[];
 
   localStore: ObservableStore<TeEntDetail>;
+
+  // Visibility of right area
+  @select() showRightArea$: Observable<boolean>;
 
   @select() toggle$: Observable<boolean>
   @select() _field_48$: Observable<ExistenceTimeDetail>; // TODO check if needed
@@ -124,13 +131,18 @@ export class TeEntEditableComponent extends EntityBase {
   // used for storing previous accentuation when mouse enters
   previousAccentuation: TeEntAccentuation;
 
+
+  t: TabLayout;
+
   constructor(
     protected rootEpics: RootEpics,
     protected entityEpics: EntityAPIEpics,
-    protected epics: TeEntAPIEpics,
+    protected epics: TeEntDetailAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
-    protected actions: TeEntActions,
+    protected actions: TeEntDetailAPIActions,
     protected fb: FormBuilder,
+    public ref: ChangeDetectorRef,
+    private p: ActiveProjectService,
   ) {
     super(ngRedux, fb, rootEpics, entityEpics);
 
@@ -143,9 +155,30 @@ export class TeEntEditableComponent extends EntityBase {
    */
   // gets called by base class onInit
   initStore() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, teEntReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this.localStore, this.basePath, this.destroy$))
+    this.localStore = this.ngRedux.configureSubStore(this.basePath, teEntDetailReducer);
+    this.rootEpics.addEpic(this.epics.createEpics(this))
 
+    if (!this.asPeItChild) {
+      this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
+
+      this.showRightArea$.pipe(first(b => b !== undefined), takeUntil(this.destroy$)).subscribe((b) => {
+        this.t.setShowRightArea(b)
+      })
+
+      combineLatest(
+        this.p.pkProject$,
+        this.p.crm$
+      ).pipe(first((x => !x.includes(undefined) && !!this.tab)), takeUntil(this.destroy$))
+        .subscribe(([pkProject, crm]) => {
+          this.localStore.dispatch(this.actions.load(
+            this.pkEntity,
+            pkProject,
+            this.tab.data.teEntDetailConfig.teEntDetail,
+            this.tab.data.teEntDetailConfig.stateSettings,
+            crm
+          ))
+        })
+    }
   }
 
 

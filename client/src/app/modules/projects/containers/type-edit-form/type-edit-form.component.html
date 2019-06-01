@@ -1,7 +1,7 @@
 <h2 mat-dialog-title> Edit Type </h2>
 <mat-dialog-content class="gv-grow-1">
-  <gv-pe-it-editable *ngIf="(peItDetail$ |async)" class="gv-grow-1  d-flex flex-column"
-    [basePath]="data.basePath.concat('peItDetail')"></gv-pe-it-editable>
+  <gv-pe-it-detail *ngIf="(peItDetail$ |async)" class="gv-grow-1  d-flex flex-column"
+    [basePath]="data.basePath.concat('peItDetail')"></gv-pe-it-detail>
 </mat-dialog-content>
 
 

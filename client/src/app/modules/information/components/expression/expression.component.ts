@@ -6,7 +6,7 @@ import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
 import { equals, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
@@ -63,7 +63,9 @@ export class ExpressionComponent implements OnInit, OnDestroy {
   fkPropertyFromSource: number;
   sourceIsDomain: boolean;
   pkExpression$: Observable<number>;
-  pkExpression: number;
+  pkRoot$: Observable<number>
+  pkRoot: number;
+  rootIsF2Expression: boolean;
   contentTree$: Observable<EntityAssociationNode[]>;
 
   temp$: Observable<any>;
@@ -81,33 +83,44 @@ export class ExpressionComponent implements OnInit, OnDestroy {
       first(d => !d.includes(undefined)),
       takeUntil(this.destroy$)
     ).subscribe(([pkEntity, fkClass, pkProject]) => {
-      this.loadExpressionOf(pkEntity, fkClass, pkProject)
+      this.loadRootEntity(pkEntity, fkClass, pkProject)
     })
   }
 
   /**
-   * Loads the entity association that associates the expression to the source
-   * and then the expression itself
+   * Loads the entity that is the root of the content tree
+
    */
-  loadExpressionOf(pkEntity: number, fkClass: number, pkProject) {
-    // load ea source --> expression
+  loadRootEntity(pkEntity: number, fkClass: number, pkProject) {
 
-    this.fkPropertyFromSource = this.getFkPropertyFromSource(fkClass);
-    this.sourceIsDomain = this.isSourceDomain(fkClass);
+    // if we start from a source like class
+    // load the entity association that associates source --> expression
+    if (fkClass !== DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+      this.rootIsF2Expression = true;
+      this.fkPropertyFromSource = this.getFkPropertyFromSource(fkClass);
+      this.sourceIsDomain = this.isSourceDomain(fkClass);
 
-    if (this.sourceIsDomain) {
-      this.pkExpression$ = this.getExpressionWhereSourceIsDomain(pkEntity);
+      if (this.sourceIsDomain) {
+        this.pkExpression$ = this.getExpressionWhereSourceIsDomain(pkEntity);
+      }
+      else {
+        this.pkExpression$ = this.getExpressionWhereSourceIsRange(pkEntity);
+      }
+      this.pkRoot$ = this.pkExpression$;
     }
     else {
-      this.pkExpression$ = this.getExpressionWhereSourceIsRange(pkEntity);
+      this.rootIsF2Expression = false;
+      this.pkRoot$ = of(pkEntity)
     }
 
-    this.pkExpression$.pipe(first()).subscribe(pkExpression => {
 
-      this.pkExpression = pkExpression;
+
+    this.pkRoot$.pipe(first()).subscribe(pkRoot => {
+
+      this.pkRoot = pkRoot;
       // load ea recursive is part of / is reproduction of
-      this.inf.entity_association.contentTree(pkProject, pkExpression)
-      this.contentTree$ = this.observeChildren(pkExpression)
+      this.inf.entity_association.contentTree(pkProject, pkRoot)
+      this.contentTree$ = this.observeChildren(pkRoot)
 
       this.contentTree$.pipe(distinctUntilChanged<EntityAssociationNode[]>(equals), takeUntil(this.destroy$))
         .subscribe((x) => {
@@ -115,17 +128,11 @@ export class ExpressionComponent implements OnInit, OnDestroy {
           this.storeIdsOfExpandedNodes()
           // update data source
           this.dataSource.data = x;
-
           // expand nodes with stored ids
           this.expandNodesWithStoredId()
         })
 
     })
-
-    // load peIt expression portion nested objects (with appellations)
-    // this.inf.persistent_item.loadNestedObject(pkProject, pkExpressionPortion)
-
-    // load digital
   }
 
 
@@ -573,15 +580,8 @@ export class ExpressionComponent implements OnInit, OnDestroy {
 
 
   openExpressionPortion(node: ContentTreeNode) {
-    this.p.addTab({
-      active: true,
-      component: 'entity-detail',
-      icon: 'persistent-entity',
-      data: {
-        pkEntity: node.entityAssociation.fk_info_domain
-      },
-      pathSegment: 'entityDetails'
-    })
+    this.p.addSourceExpressionPortionTab(node.entityAssociation.fk_info_domain)
+
   }
 
 

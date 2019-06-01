@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActiveProjectService, ProQuery, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
@@ -14,6 +14,8 @@ import { QueryDetailAPIEpics } from './api/query-detail.epics';
 import { FileType, QueryDetail } from './api/query-detail.models';
 import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-detail.reducer';
 import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
+import { TabLayoutComponentInterface } from '../../../projects/containers/project-edit/project-edit.component';
+import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 
 export type SubGroupType = 'property' | 'classAndType'
 export interface FilterTreeData {
@@ -51,7 +53,8 @@ export interface GvQuery {
   templateUrl: './query-detail.component.html',
   styleUrls: ['./query-detail.component.css']
 })
-export class QueryDetailComponent extends QueryDetailAPIActions implements OnInit, AfterViewInit, OnDestroy, SubstoreComponent {
+export class QueryDetailComponent extends QueryDetailAPIActions implements OnInit, AfterViewInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
+
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(forwardRef(() => ClassAndTypeFilterComponent)) filterComponent: ClassAndTypeFilterComponent;
@@ -103,12 +106,15 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   readonly limit = 500;
   pending$: Observable<boolean>
 
+  t: TabLayout;
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: QueryDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     private fb: FormBuilder,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public ref: ChangeDetectorRef
   ) {
     super()
 
@@ -161,8 +167,11 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     this.localStore = this.ngRedux.configureSubStore(this.basePath, queryDetailReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
+    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
+    this.t.defaultSizeRight = 50;
+
     if (this.pkEntity) this.loadExistingQuery();
-    if (!this.pkEntity) this.setTabTitle('New Query*');
+    if (!this.pkEntity) this.t.setTabTitle('New Query*');
 
     this.pending$ = this.loadingPages$.pipe(
       map(pages => !!values(pages).find(loading => loading === true))
@@ -211,7 +220,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     }
 
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
-      this.showRightArea();
+      this.t.setShowRightArea(true);
       this.colDefsCopy = clone(this.columnsCtrl.value)
       this.filterQueryCopy = clone(this.filterCtrl.value)
       this.displayedColumns = this.colDefsCopy.map(col => col.label);

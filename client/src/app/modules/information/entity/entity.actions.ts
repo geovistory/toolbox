@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { U, UiContext } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy } from 'ramda';
-import {  ClassInstanceLabel, PropertyField, Entity } from 'app/core/state/models';
+import { ClassInstanceLabel, PropertyField, Entity } from 'app/core/state/models';
 import { propertyFieldKey } from 'app/core/state/services/state-creator';
 
 
@@ -40,10 +40,13 @@ export class EntityActions {
 
   static readonly TOGGLE_REMOVE_VERIFICATION = 'Entity::TOGGLE_REMOVE_VERIFICATION';
 
+  static readonly SET_SHOW_RIGHT_AREA = 'Entity::SET_SHOW_RIGHT_AREA';
+
+
   @dispatch()
 
 
-  propertyFieldsListDisplayLabelUpdated = (label:  ClassInstanceLabel): EntityAction => ({
+  propertyFieldsListDisplayLabelUpdated = (label: ClassInstanceLabel): EntityAction => ({
     type: EntityActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
     meta: null,
     payload: {
@@ -139,6 +142,14 @@ export class EntityActions {
     type: EntityActions.TOGGLE_REMOVE_VERIFICATION,
     meta: null,
     payload: null
+  })
+
+  setShowRightArea = (showRightArea: boolean): EntityAction => ({
+    type: EntityActions.SET_SHOW_RIGHT_AREA,
+    meta: null,
+    payload: {
+      showRightArea
+    }
   })
 
 }

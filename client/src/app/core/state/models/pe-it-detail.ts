@@ -1,7 +1,6 @@
 import { InfPersistentItem } from 'app/core/sdk';
 import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
-import { Entity } from './data-unit';
-import { SectionList } from 'app/modules/information/containers/section-list/api/section-list.models';
+import { Entity } from './entity';
 import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
 import { PeItTimeline } from 'app/modules/information/containers/pe-it-timeline/api/pe-it-timeline.models';
 
@@ -91,8 +90,6 @@ export class PeItDetail extends Entity {
     leafPeItLoading?: boolean;
     _leaf_peIt_modal?: PeItDetail; // for leaf pe it view modal
 
-    // sections of a source (related with an entity association)
-    sectionList?: SectionList;
 
     // reproductions of a section
     repros?: Repros;

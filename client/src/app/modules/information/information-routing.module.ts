@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InformationComponent } from './containers/information/information.component';
+import { InformationComponent } from './containers/entity-list/entity-list.component';
 
 
 

@@ -1,21 +1,21 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DatChunk, IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
-import { difference, groupBy, indexBy, path, without, values } from 'ramda';
+import { MatDialog } from '@angular/material';
+import { IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
+import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { difference, groupBy, indexBy, path, values, without } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { DatSelector } from '../dat/dat.service';
 import { InfSelector } from '../inf/inf.service';
-import { DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual, DatNamespace } from '../sdk';
+import { DatNamespace, DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
-import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
-import { MatDialog } from '@angular/material';
-import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
 
 
 
@@ -510,22 +510,123 @@ export class ActiveProjectService {
 
   // Tab data selections
   getTabTitle(path: string[]): Observable<string> {
-    return this.ngRedux.select<string>([...path, 'tabTitle']);
+    return this.ngRedux.select<string>([...['activeProject', 'tabLayouts', path[2]], 'tabTitle']);
   }
   getTabLoading(path: string[]): Observable<boolean> {
-    return this.ngRedux.select<boolean>([...path, 'loading']);
+    return this.ngRedux.select<boolean>([...['activeProject', 'tabLayouts', path[2]], 'loading']);
   }
 
   addEntityTab(preview: EntityPreview) {
+    if (preview.entity_type === 'peIt') {
+      this.addEntityPeItTab(preview.pk_entity)
+    } else {
+      this.addEntityTeEnTab(preview.pk_entity)
+    }
+  }
 
-    // TODO: Add some logic to figure out wheter to open as Source, Section or Entity
+  addSourceTab(pkEntity: number) {
     this.addTab({
       active: true,
-      component: 'entity-detail',
-      icon: preview.entity_type === 'peIt' ? 'persistent-entity' : 'temporal-entity',
-      pathSegment: 'entityDetails',
+      component: 'pe-it-detail',
+      icon: 'source',
+      pathSegment: 'peItDetails',
       data: {
-        pkEntity: preview.pk_entity
+        pkEntity: pkEntity,
+        peItDetailConfig: {
+          peItDetail: {
+
+            showMentionedEntities: true,
+            showMentionedEntitiesToggle: true,
+
+            showAssertions: false,
+            showAssertionsToggle: false,
+
+            showSectionList: true,
+            showSectionListToggle: true,
+
+            showProperties: true,
+            showPropertiesToggle: true,
+
+            showPropertiesHeader: true,
+            // showAddAPropertyButton: false,
+
+          },
+          stateSettings: {
+            pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE
+          }
+        }
+      }
+    });
+  }
+
+  addSourceExpressionPortionTab(pkEntity: number) {
+    this.addTab({
+      active: true,
+      component: 'pe-it-detail',
+      icon: 'expression-portion',
+      data: {
+        pkEntity: pkEntity,
+        peItDetailConfig: {
+          peItDetail: {
+            showSectionList: true,
+            showSectionListToggle: true,
+            showProperties: true,
+            showPropertiesToggle: true,
+            showMap: false,
+            showMapToggle: false,
+            showTimeline: false,
+            showTimelineToggle: false,
+            showSources: false,
+            showSourcesToggle: false
+          }
+        }
+      },
+      pathSegment: 'peItDetails'
+    })
+  }
+
+  addEntityPeItTab(pkEntity: number) {
+
+    this.addTab({
+      active: true,
+      component: 'pe-it-detail',
+      icon: 'persistent-entity',
+      pathSegment: 'peItDetails',
+      data: {
+        pkEntity: pkEntity,
+        peItDetailConfig: {
+          peItDetail: {
+            showProperties: true,
+            showPropertiesToggle: true,
+            showMap: true,
+            showMapToggle: true,
+            showTimeline: true,
+            showTimelineToggle: true,
+            showSources: false,
+            showSourcesToggle: true
+          }
+        }
+
+      }
+    })
+
+
+  }
+
+
+  addEntityTeEnTab(pkEntity: number) {
+    this.addTab({
+      active: true,
+      component: 'te-en-detail',
+      icon: 'temporal-entity',
+      pathSegment: 'teEnDetails',
+      data: {
+        pkEntity: pkEntity,
+        teEntDetailConfig: {
+          teEntDetail: {
+
+          }
+        }
       }
     })
   }

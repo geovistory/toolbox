@@ -20,7 +20,6 @@ export type QueryDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class QueryDetailAPIActions {
-  static readonly SET_TAB_TITLE = 'QueryDetail::SET_TAB_TITLE';
 
   static readonly LOAD = 'QueryDetail::LOAD';
   static readonly LOAD_SUCCEEDED = 'QueryDetail::LOAD_SUCCEEDED';
@@ -38,26 +37,14 @@ export class QueryDetailAPIActions {
   static readonly DELETE = 'QueryDetail::DELETE';
   static readonly DELETE_SUCCEEDED = 'QueryDetail::DELETE_SUCCEEDED';
   static readonly DELETE_FAILED = 'QueryDetail::DELETE_FAILED';
-  
+
   static readonly DOWNLOAD = 'QueryDetail::DOWNLOAD';
   static readonly DOWNLOAD_SUCCEEDED = 'QueryDetail::DOWNLOAD_SUCCEEDED';
   static readonly DOWNLOAD_FAILED = 'QueryDetail::DOWNLOAD_FAILED';
-  
-  static readonly SHOW_RIGHT_AREA = 'QueryDetail::SHOW_RIGHT_AREA';
-  static readonly HIDE_RIGHT_AREA = 'QueryDetail::HIDE_RIGHT_AREA';
 
   static readonly DESTROY = 'QueryDetail::DESTROY';
 
 
-  /*********************************************************************
-  *  Set tab title
-  *********************************************************************/
-  @dispatch()
-  setTabTitle = (tabTitle: string): QueryDetailAPIAction => ({
-    type: QueryDetailAPIActions.SET_TAB_TITLE,
-    meta: { tabTitle },
-    payload: null,
-  });
 
   /*********************************************************************
   *  Load an existing query
@@ -194,23 +181,6 @@ export class QueryDetailAPIActions {
     meta: null,
     payload: null,
     error,
-  })
-
-
-  /*********************************************************************
-  *  Layout
-  *********************************************************************/
-  @dispatch()
-  showRightArea = (): QueryDetailAPIAction => ({
-    type: QueryDetailAPIActions.SHOW_RIGHT_AREA,
-    meta: null,
-    payload: null
-  })
-  @dispatch()
-  hideRightArea = (): QueryDetailAPIAction => ({
-    type: QueryDetailAPIActions.HIDE_RIGHT_AREA,
-    meta: null,
-    payload: null
   })
 
   /*********************************************************************

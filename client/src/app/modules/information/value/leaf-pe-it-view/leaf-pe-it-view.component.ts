@@ -4,7 +4,7 @@ import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ActiveProjectService, ClassConfig, IAppState, InfPersistentItem, InfRole } from 'app/core';
 import { ClassInstanceLabel, EntityPreview, FieldList, PeItDetail, SubstoreComponent } from 'app/core/state/models';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, first } from 'rxjs/operators';
 import { LeafPeItViewAPIActions } from './api/leaf-pe-it-view.actions';
 import { LeafPeItView } from './api/leaf-pe-it-view.models';
 import { leafPeItViewReducer } from './api/leaf-pe-it-view.reducer';
@@ -130,35 +130,14 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
 
     const navigate = () => {
       if (this.openIn === 'information') {
-        this.p.addTab({
-          active: true,
-          component: 'entity-detail',
-          icon: 'persistent-entity' ,
-          pathSegment: 'entityDetails',
-          data: {
-            pkEntity: this.pkEntity
-          }
-        });
-      } else if (this.openIn === 'source') {
-        this.p.addTab({
-          active: true,
-          component: 'source-detail',
-          icon: 'source',
-          pathSegment: 'sourceDetails',
-          data: {
-            pkEntity: this.pkEntity
-          }
-        });
-      } else if (this.openIn === 'section') {
-        this.p.addTab({
-          active: true,
-          component: 'section-detail',
-          icon: 'section',
-          pathSegment: 'sectionDetails',
-          data: {
-            pkEntity: this.pkEntity
-          }
+        this.preview$.pipe(first(), takeUntil(this.destroy$)).subscribe(preview => {
+          this.p.addEntityTab(preview)
         })
+      } else if (this.openIn === 'source') {
+        this.p.addSourceTab(this.pkEntity)
+
+      } else if (this.openIn === 'section') {
+        this.p.addSourceExpressionPortionTab(this.pkEntity)
       }
     }
 

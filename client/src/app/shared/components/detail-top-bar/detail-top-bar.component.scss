@@ -5,21 +5,22 @@
 
 .close-right-area-btn {
   text-align: right;
-  margin-left: -49px;
   padding-right: 0px;
+  padding-left: 0px;
   height: 2.5rem;
   border-top: 0;
   border-bottom: 0;
+  border-left: 0;
   border-radius: 0;
 }
 
 
 .open-right-area-btn  {
   text-align: left;
-  margin-right: -49px;
   padding-left: 0px;
   height: 2.5rem;
   border-top: 0;
   border-bottom: 0;
+  border-right: 0;
   border-radius: 0;
 }

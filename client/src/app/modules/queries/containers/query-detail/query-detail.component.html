@@ -4,12 +4,14 @@
   <!-------------------------------------------------------------------
      Query Definition
   -------------------------------------------------------------------->
-  <as-split-area [size]="((showRightArea$ | async) ? 50 : 100)" class="d-flex flex-column">
+  <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-    <gv-detail-top-bar>
-      Query
+    <gv-detail-top-bar  [openRightAreaBtn]="!t.showRightArea" (openRight)="onRun()">
+      <span class="ml-2">
+        Query
+      </span>
       <button class="ml-auto btn btn-sm btn-primary" (click)="onSave()">Save</button>
-      <button class="ml-3 btn btn-sm btn-primary" (click)="onRun()">Run >></button>
+      <button class="ml-3 mr-2 btn btn-sm btn-primary" (click)="onRun()">Run >></button>
     </gv-detail-top-bar>
     <gv-detail-content>
 
@@ -48,8 +50,8 @@
             <input matInput placeholder="Address" formControlName="secondCtrl" required>
           </mat-form-field> -->
             <div class="my-3">
-              <gv-col-def-editor [propertyOptions$]="propertyOptions$" [classesAndTypes$]="classesAndTypes$" [formControl]="columnsCtrl" #c
-                [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def-editor>
+              <gv-col-def-editor [propertyOptions$]="propertyOptions$" [classesAndTypes$]="classesAndTypes$"
+                [formControl]="columnsCtrl" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def-editor>
             </div>
             <!-- <div>
             <button mat-flat-button matStepperPrevious>Back</button>
@@ -100,20 +102,18 @@
   <!-------------------------------------------------------------------
     Query Results
   -------------------------------------------------------------------->
-  <as-split-area *ngIf="(showRightArea$ | async)" [size]="50" class="d-flex flex-column">
+  <as-split-area [size]="t.splitSizeRight" *ngIf="t.showRightArea" class="d-flex flex-column">
 
-    <gv-detail-top-bar>
-      {{fullCount$ | async}} Results
+    <gv-detail-top-bar [closeRightAreaBtn]="true" (closeRight)="t.setShowRightArea(false)">
+      <span class="ml-2">{{fullCount$ | async}} Results</span>
 
-      <div class="ml-auto">
+      <div class="ml-auto mr-2">
         <button class="btn btn-sm btn-primary mr-3" [matMenuTriggerFor]="export_menu">Export</button>
         <mat-menu #export_menu="matMenu">
           <button mat-menu-item (click)="onDownload('json')">Download as JSON</button>
           <button mat-menu-item (click)="onDownload('csv')">Download as CSV</button>
           <!-- <button  mat-menu-item (click)="onDownload('xls')">Download as Excel</button> -->
         </mat-menu>
-
-        <button class="btn btn-sm btn-link-gray" (click)="hideRightArea()"><i class="fa fa-close"></i></button>
       </div>
     </gv-detail-top-bar>
     <gv-detail-content>

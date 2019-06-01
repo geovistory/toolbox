@@ -13,10 +13,6 @@ export class QueryDetail {
     fullCount?: number;
 
     comQuery?: ProQuery;
-    tabTitle?: string;
-
-    // Layout
-    showRightArea?: boolean;
 
     deleted?: boolean;
 

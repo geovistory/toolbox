@@ -713,7 +713,7 @@ $gv-bg-drawer-list: #cde4f3;
   background-color: $gray-100; // @extend .gv-flex-fh;
   // @extend .border;
   // @extend .border-primary;
-  margin-bottom: 1.5rem; // @extend .gv-shadow-outer-1;
+  // @extend .mb-2;
   // @extend .rounded;
 }
 
@@ -726,14 +726,16 @@ gv-tile-header {
   @extend .gv-flex-shrink-0;
   @extend .d-flex; // @extend .border-bottom; // @extend .border-top;
   // @extend .border-primary;
-  // background-color: $secondary; // background-color: lighten($teal, 30%);
+  background-color: $gray-150; // background-color: lighten($teal, 30%);
+  height: 2.5rem;
   // color: $white;
-  @extend .align-items-baseline;
-  @extend .mb-0; // background-color: theme-color-level('secondary', -9); // like list-group-item-secondary
-  @extend .mx-2;
-  @extend .h4; // padding-left: $btn-padding-y-sm;
+  @extend .align-items-center;
+  @extend .mb-0;
+  @extend .px-2;
+  // @extend .h4; // padding-left: $btn-padding-y-sm;
   @extend .border-bottom;
-  @extend .border-secondary; // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
+
+  // @extend .border-secondary; // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
 
   .btn {
     @extend .btn-link-gray;
@@ -744,7 +746,7 @@ gv-tile-header {
   // @extend .gv-flex-fh;
   display: flex;
   flex-direction: column;
-  @extend .p-2;
+  // @extend .p-2;
 }
 
 .gv-field {
@@ -1519,7 +1521,6 @@ mcc-color-picker-selector {
 /******************
 ** Resizable Split Panel
 ******************/
-
 as-split.gv-split-style {
   .as-split-area {
     // background-color: lightgrey;
@@ -1592,6 +1593,12 @@ as-split.gv-split-style {
     }
   }
 }
+as-split.gv-split-style.gv-hide-split-gutter{
+  .as-split-gutter {
+   display:none;
+  }
+}
+
 
 // Query Details
 .gv-sub-query-item {
@@ -1816,6 +1823,10 @@ mat-checkbox {
   label {
     margin-bottom: 0;
   }
+}
+
+.material-icons.md-18 {
+  font-size: 18px;
 }
 
 .gv-mat-icon-button-sm {

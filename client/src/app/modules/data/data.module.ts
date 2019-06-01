@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextDetailComponent } from './components/text-detail/text-detail.component';
-import { TextDetailAPIActions } from './components/text-detail/api/text-detail.actions';
-import { TextDetailAPIEpics } from './components/text-detail/api/text-detail.epics';
 import { QuillModule } from '../quill';
 import { AngularSplitModule } from 'angular-split';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
@@ -21,7 +19,7 @@ import { AnnotationModule } from 'app/modules/annotation/annotation.module';
     DetailTopBarModule,
     AnnotationModule
   ],
-  providers: [TextDetailAPIActions, TextDetailAPIEpics],
+  providers: [],
   declarations: [TextDetailComponent, VersionPickerComponent],
   exports: [TextDetailComponent, VersionPickerComponent]
 })

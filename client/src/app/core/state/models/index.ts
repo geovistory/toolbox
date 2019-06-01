@@ -3,7 +3,7 @@ export * from './add-option';
 export * from './appe-detail';
 export * from './class-instance-field-label';
 export * from './class-instance-label';
-export * from './data-unit';
+export * from './entity';
 export * from './entity-association-detail';
 export * from './entity-association-list';
 export * from './entity-preview';

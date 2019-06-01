@@ -1,16 +1,16 @@
 import { NgRedux, ObservableStore, select } from '@angular-redux/store';
-import { Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ClassConfig, SysConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, UiContext, UiElement, ProjectCrm } from 'app/core';
-import { AddOption, FieldList,  ClassInstanceLabel, PeItDetail, PropertyField, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
+import { ClassConfig, DfhClass, DfhProperty, IAppState, InfPersistentItem, InfRole, ProjectCrm, SysConfig, UiContext, UiElement } from 'app/core';
+import { AddOption, ClassInstanceLabel, FieldList, PeItDetail, PropertyField, SelectPropStateType, SubstoreComponent, TeEntDetail } from 'app/core/state/models';
 import { TypeDetail } from 'app/core/state/models/type-detail';
 import { createPropertyField, propertyFieldKey, StateSettings } from 'app/core/state/services/state-creator';
 import { RootEpics } from 'app/core/store/epics';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 import { EntityAPIEpics } from './entity.epics';
 import { PeItActions } from './pe-it/pe-it.actions';
 import { TeEntActions } from './te-ent/te-ent.actions';
-import { takeUntil, filter, first } from 'rxjs/operators';
 
 
 // maps pk_class_field to key in ngRedux store
@@ -26,8 +26,7 @@ export abstract class EntityBase implements OnInit, OnDestroy, SubstoreComponent
   formGroup: FormGroup;
 
   @Input() parentPath: string[];
-  basePath?: string[];
-
+  @Input() basePath: string[];
 
   abstract localStore: ObservableStore<TeEntDetail | PeItDetail>;
   protected actions: PeItActions | TeEntActions;
@@ -109,6 +108,8 @@ export abstract class EntityBase implements OnInit, OnDestroy, SubstoreComponent
 
 
   ngOnInit() {
+
+
     // Init entityEpics
     this.rootEpics.addEpic(this.entityEpics.createEpics(this));
 
@@ -267,5 +268,6 @@ export abstract class EntityBase implements OnInit, OnDestroy, SubstoreComponent
 
 
   toggleRemoveVerification = () => this.localStore.dispatch(this.actions.toggleRemoveVerification())
+  setShowRightArea = (value:boolean) => this.localStore.dispatch(this.actions.setShowRightArea(value))
 
 }

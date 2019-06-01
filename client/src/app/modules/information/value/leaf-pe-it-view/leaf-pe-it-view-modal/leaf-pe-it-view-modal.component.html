@@ -15,11 +15,11 @@
 <div *ngIf="!(loading$ |async)" class="modal-body">
 
   <!-- Todo add gv-pe-it-view -->
-  <!-- <gv-pe-it-editable [basePath]="parentPath"></gv-pe-it-editable> -->
+  <!-- <gv-pe-it-detail [basePath]="parentPath"></gv-pe-it-detail> -->
 
   <!-- <gv-pe-it-add-form  *ngIf="!isInProject" [basePath]="parentPath.concat('_leaf_peIt_modal')" (formChange)="formChange($event)"></gv-pe-it-add-form> -->
 
-  <gv-pe-it-editable [basePath]="['activeProject', 'peItModals', pkEntity]"></gv-pe-it-editable>
+  <gv-pe-it-detail [basePath]="['activeProject', 'peItModals', pkEntity]"></gv-pe-it-detail>
 
 
 </div>

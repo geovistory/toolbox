@@ -2,7 +2,7 @@ import { composeReducers, defaultFormReducer } from '@angular-redux/form';
 import { routerReducer } from '@angular-redux/router';
 import { createInfReducer } from 'app/core/inf/inf.reducer';
 import { createAccountReducer } from 'app/modules/account/api/account.reducers';
-import { informationReducer } from 'app/modules/information/containers/information/api/information.reducer';
+import { informationReducer } from 'app/modules/information/containers/entity-list/api/entity-list.reducer';
 import { sourceListReducer } from 'app/modules/sources/containers/source-list/api/source-list.reducer';
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';

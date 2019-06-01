@@ -1,8 +1,9 @@
 <div *ngIf="!(editing$ | async)">
   <span *ngIf="(label$ | async)">Type: {{label$ | async}}</span>
   <i *ngIf="!(label$ | async)">No Type</i>
-  <button *ngIf="!(isViewMode$ | async)" class="btn btn-sm btn-link-gray" (click)="startEdit()"><i
-      class="fa fa-pencil"></i></button>
+  <button *ngIf="!(isViewMode$ | async)" mat-icon-button (click)="startEdit()">
+    <mat-icon class="md-18">edit</mat-icon>
+  </button>
 </div>
 
 <form [formGroup]="formGroup" class="form-inline" *ngIf="(editing$ | async)">

@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActiveProjectService, ProVisual, IAppState, latestEntityVersion, SubstoreComponent, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
@@ -11,6 +11,8 @@ import { VisualDetailAPIActions } from './api/visual-detail.actions';
 import { VisualDetailAPIEpics } from './api/visual-detail.epics';
 import { VisualDetail } from './api/visual-detail.models';
 import { visualDetailReducer } from './api/visual-detail.reducer';
+import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 
 
 export interface VisualTypeOption {
@@ -21,7 +23,7 @@ export type VisualType = 'map' | 'pieChart'
 
 /**
  * These typings are relevant for persisting of the visual settings in the database
- * Change this only with great caution 
+ * Change this only with great caution
  */
 
 export interface ComVisualI extends ProVisual {
@@ -43,7 +45,7 @@ export interface Visual {
   templateUrl: './visual-detail.component.html',
   styleUrls: ['./visual-detail.component.css']
 })
-export class VisualDetailComponent extends VisualDetailAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class VisualDetailComponent extends VisualDetailAPIActions implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
@@ -87,12 +89,15 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
     return this.visualSettingsCtrl.value
   }
 
+  t: TabLayout;
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: VisualDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     private fb: FormBuilder,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public ref: ChangeDetectorRef
   ) {
     super()
 
@@ -124,8 +129,11 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
     this.localStore = this.ngRedux.configureSubStore(this.basePath, visualDetailReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
+    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
+
+
     if (this.pkEntity) this.setPkEntity(this.pkEntity);
-    if (!this.pkEntity) this.setTabTitle('New Visual*');
+    if (!this.pkEntity) this.t.setTabTitle('New Visual*');
 
     this.loading$ = this.queryResVersionLoading$.pipe(map(d => {
       return U.obj2Arr(d).filter(v => v === true).length ? true : false
@@ -134,6 +142,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
     this.comVisual$ = this.pkEntity$.pipe(
       filter(pkEntity => pkEntity !== undefined),
       switchMap((pkEntity) => this.p.loadVisualVersion(pkEntity).pipe(
+        filter(versions => !!versions),
         latestEntityVersion(pkEntity)
       )
       ))
@@ -143,7 +152,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
       this.visualSettingsCtrl.setValue(comVisual.visual.settings);
       this.nameCtrl.setValue(comVisual.name);
       this.descriptionCtrl.setValue(comVisual.description);
-      this.setTabTitle(comVisual.name);
+      this.t.setTabTitle(comVisual.name);
     })
   }
 
@@ -158,7 +167,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
     }
 
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.showRightArea();
+      this.t.setShowRightArea(true);
       const layers = uniq(this.visualSettings.queryLayers.map(ql => ({
         queryPk: ql.queryPk, queryVersion: ql.queryVersion
       })))

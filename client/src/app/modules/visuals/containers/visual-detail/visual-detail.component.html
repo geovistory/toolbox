@@ -1,15 +1,15 @@
-<as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" [useTransition]="true">
-
+<as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': !t.showRightArea}" [direction]="'horizontal'"
+  gutterSize="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
 
   <!-------------------------------------------------------------------
-     Query Definition 
+     Query Definition
   -------------------------------------------------------------------->
-  <as-split-area [size]="((showRightArea$ | async) ? 50 : 100)" class="d-flex flex-column">
+  <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-    <gv-detail-top-bar>
-      Visual
+    <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="onCreatePreview()">
+      <span class="ml-2">Visual</span>
       <button class="ml-auto btn btn-sm btn-primary" (click)="onSave()">Save</button>
-      <button class="ml-3 btn btn-sm btn-primary" (click)="onCreatePreview()">Preview >></button>
+      <button class="ml-3 mr-2 btn btn-sm btn-primary" (click)="onCreatePreview()">Preview >></button>
     </gv-detail-top-bar>
     <gv-detail-content>
 
@@ -96,16 +96,19 @@
   </as-split-area>
 
   <!-------------------------------------------------------------------
-    Visual Results 
+    Visual Results
   -------------------------------------------------------------------->
-  <as-split-area *ngIf="(showRightArea$ | async)" [size]="50" class="d-flex flex-column">
+  <as-split-area *ngIf="t.showRightArea" [size]="t.splitSizeRight" [ngClass]="{
+      'd-flex flex-column': t.showRightArea,
+      'd-none': !t.showRightArea
+    }">
+    <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
 
-    <gv-detail-top-bar>
-      Result
-
+      <span class="ml-2">
+        Result
+      </span>
       <div class="ml-auto">
-        <button class="btn btn-sm btn-primary mr-3">Embed</button>
-        <button class="btn btn-sm btn-link-gray" (click)="hideRightArea()"><i class="fa fa-close"></i></button>
+        <button class="btn btn-sm btn-primary mr-2">Embed</button>
       </div>
     </gv-detail-top-bar>
     <gv-detail-content>
@@ -121,8 +124,8 @@
         {{queryResByVersion$ | async | json:2}}
       </pre> -->
 
-      <gv-map-visual *ngIf="visualTypeCtrl.value === 'map'" [settings$]="visualSettings$"
-        [data$]="queryResByVersion$"></gv-map-visual>
+      <gv-map-visual *ngIf="visualTypeCtrl.value === 'map'" [settings$]="visualSettings$" [data$]="queryResByVersion$">
+      </gv-map-visual>
 
     </gv-detail-content>
 

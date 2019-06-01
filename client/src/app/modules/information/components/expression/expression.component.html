@@ -1,15 +1,6 @@
-<gv-tile-header>
-  <span title>
-    Sections & Digital Reproductions
-  </span>
-  <span buttons>
 
-  </span>
-</gv-tile-header>
 
-<div class="gv-tile-body">
-
-  <table class="mat-table w-100" *ngIf="pkExpression">
+  <table class="mat-table w-100" *ngIf="pkRoot">
     <thead>
       <tr class="mat-header-row" fxLayout="row">
         <th class="mat-header-cell pl-5" fxFlex="60" fxLayout="row" fxLayoutAlign="start center">
@@ -21,8 +12,8 @@
         <th class="mat-header-cell pr-0" fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
           <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: false,
-          pkParent: pkExpression,
-          parentIsF2Expression: true
+          pkParent: pkRoot,
+          parentIsF2Expression: rootIsF2Expression
         }"></ng-container>
         </th>
       </tr>
@@ -114,7 +105,6 @@
 
   <div #emptyItem>
   </div>
-</div>
 
 
 <ng-template #menuBtn let-isDigital="isDigital" let-pkParent="pkParent" let-parentIsF2Expression="parentIsF2Expression"

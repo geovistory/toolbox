@@ -23,15 +23,6 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
   const action = a as QueryDetailAPIAction;
 
   switch (action.type) {
-    /*****************************************************
-    * Set tab title
-    *****************************************************/
-    case QueryDetailAPIActions.SET_TAB_TITLE:
-      state = {
-        ...state,
-        tabTitle: action.meta.tabTitle
-      };
-      break;
 
     /*****************************************************
     * Load existing query
@@ -46,7 +37,6 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
       state = {
         ...state,
         comQuery: action.meta.comQuery,
-        tabTitle: action.meta.comQuery.name,
         deleted: false,
       };
       break;
@@ -139,7 +129,6 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
       state = {
         ...state,
         deleted: true,
-        tabTitle: state.tabTitle + ' (Deleted)'
       };
       break;
 
@@ -168,16 +157,6 @@ export function queryDetailReducer(state: QueryDetail = INITIAL_STATE, a: Action
         downloadLoading: false,
         downloadError: true
       };
-      break;
-
-    /*****************************************************
-    * Layout
-    *****************************************************/
-    case QueryDetailAPIActions.SHOW_RIGHT_AREA:
-      state = { ...state, showRightArea: true };
-      break;
-    case QueryDetailAPIActions.HIDE_RIGHT_AREA:
-      state = { ...state, showRightArea: false };
       break;
 
 

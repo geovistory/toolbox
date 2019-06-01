@@ -1,18 +1,17 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { ActiveProjectService, DatChunk, DatDigital, getSpecificVersion, IAppState, latestVersion, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, takeUntil, take } from 'rxjs/operators';
-import { SucceedActionMeta } from '../../../../core/store/actions';
+import { SucceedActionMeta } from 'app/core/store/actions';
 import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
 import { QuillEditComponent, AnnotatedOps, ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
-import { TextDetailAPIActions } from './api/text-detail.actions';
-import { TextDetailAPIEpics } from './api/text-detail.epics';
-import { TextDetail } from './api/text-detail.models';
-import { textDetailReducer } from './api/text-detail.reducer';
 import { MentioningListOf, MentioningListComponent, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
 import { QuillNodeHandler } from 'app/modules/quill/quill-node-handler';
+import { TabBase } from 'app/shared/components/tab-layout/tab-layout.models';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 
 
 export interface Version {
@@ -22,14 +21,14 @@ export interface Version {
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: textDetailReducer
+  localReducer: () => { }
 })
 @Component({
   selector: 'gv-text-detail',
   templateUrl: './text-detail.component.html',
   styleUrls: ['./text-detail.component.css']
 })
-export class TextDetailComponent extends TextDetailAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(QuillEditComponent) quillEdit: QuillEditComponent;
@@ -40,7 +39,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   destroy$ = new Subject<boolean>();
 
   // local store of this component
-  localStore: ObservableStore<TextDetail>;
+  localStore: ObservableStore<TabBase>;
 
   // path to the substore
   @Input() basePath: string[];
@@ -74,21 +73,22 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   readOnly$;
   listOf: MentioningListOf;
 
+  t: TabLayout;
+
   constructor(
     protected rootEpics: RootEpics,
-    private epics: TextDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public ref: ChangeDetectorRef
   ) {
-    super()
 
   }
 
   getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, textDetailReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+
+    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
 
     /**
      * initialize the editor with the latest version
@@ -96,7 +96,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     this.p.dat$.digital.loadVersion(this.pkEntity).resolved$.subscribe(result => {
       // set the latest version as the initial version shown in editor
       this.setVersion(result)
-      this.setTabTitle('Text ' + this.pkEntity)
+      this.t.setTabTitle('Text ' + this.pkEntity)
     })
 
 
@@ -248,7 +248,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   }
 
   annotate() {
-    this.setShowRightArea(true)
+    this.t.setShowRightArea(true)
     this.setChunk();
   }
 
@@ -273,16 +273,9 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     return quill_doc;
   }
 
-  /**
-   * When user resizes the areas
-   */
-  resizedArea(event: { gutterNum: number, sizes: Array<number> }) {
-    if (event.sizes[1] < 5) this.setShowRightArea(false)
-  }
 
 
   ngOnDestroy() {
-    this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

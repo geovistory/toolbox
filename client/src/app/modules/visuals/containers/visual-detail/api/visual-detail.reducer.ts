@@ -11,15 +11,6 @@ export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Acti
   const action = a as VisualDetailAPIAction;
 
   switch (action.type) {
-    /*****************************************************
-    * Set tab title
-    *****************************************************/
-    case VisualDetailAPIActions.SET_TAB_TITLE:
-      state = {
-        ...state,
-        tabTitle: action.meta.tabTitle
-      };
-      break;
 
     /*****************************************************
     * Set pkEntity
@@ -98,17 +89,6 @@ export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Acti
         tabTitle: state.tabTitle + ' (Deleted)'
       };
       break;
-
-    /*****************************************************
-    * Layout
-    *****************************************************/
-    case VisualDetailAPIActions.SHOW_RIGHT_AREA:
-      state = { ...state, showRightArea: true };
-      break;
-    case VisualDetailAPIActions.HIDE_RIGHT_AREA:
-      state = { ...state, showRightArea: false };
-      break;
-
 
 
     /*****************************************************
