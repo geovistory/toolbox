@@ -1,14 +1,14 @@
 <gv-detail-top-bar>
-  Classes used in your project
-  <span class="ml-auto">
+  <div class="ml-2">Classes used in your project</div>
+  <span class="ml-auto d-flex">
 
     <mat-checkbox (change)="showBasicClasses$.next(!showBasicClasses$.value)" [checked]="showBasicClasses$ | async">
       Show Basic Classes
     </mat-checkbox>
 
-    <mat-form-field class="ml-5">
-      <input matInput (keyup)="textFilter($event.target.value)" placeholder="Filter">
-    </mat-form-field>
+    <div class="ml-5 mr-2">
+      <input matInput (keyup)="textFilter($event.target.value)" placeholder="Filter" autocomplete="false">
+    </div>
 
   </span>
 </gv-detail-top-bar>

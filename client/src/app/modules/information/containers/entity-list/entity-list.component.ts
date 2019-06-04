@@ -76,17 +76,11 @@ export class InformationComponent extends InformationAPIActions implements OnIni
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
         }).subscribe((entity: InfPersistentItem | InfTemporalEntity) => {
-
-          this.p.addTab({
-            active: true,
-            component: classConfig.subclassOf === 'peIt' ? 'pe-it-detail' : 'te-en-detail',
-            icon: classConfig.subclassOf === 'peIt' ? 'persistent-entity' : 'temporal-entity',
-            pathSegment: classConfig.subclassOf === 'peIt' ? 'peItDetails' : 'teEnDetails',
-            data: {
-              pkEntity: entity.pk_entity
-            }
-          });
-
+          if (classConfig.subclassOf === 'peIt') {
+            this.p.addEntityPeItTab(entity.pk_entity)
+          } else {
+            this.p.addEntityTeEnTab(entity.pk_entity)
+          }
         })
 
       })

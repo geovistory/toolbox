@@ -2,13 +2,13 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActiveProjectService, IAppState, ProjectCrm, SysConfig, Tab, U, UiContext } from 'app/core';
-import { AddOption, ClassInstanceLabel, CollapsedExpanded, ExistenceTimeDetail, FieldList, PropertyField, PropertyFieldForm, RoleDetail, TeEntAccentuation, TeEntDetail } from 'app/core/state/models';
+import { AddOption, ClassInstanceLabel, CollapsedExpanded, ExistenceTimeDetail, FieldList, PropertyField, PropertyFieldForm, RoleDetail, TeEntAccentuation, TeEntDetail, RoleLabel } from 'app/core/state/models';
 import { createExistenceTimeDetail, getCreateOfEditableContext, similarPropertyField, StateSettings } from 'app/core/state/services/state-creator';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
-import { dropLast } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { filter, first, map, takeUntil } from 'rxjs/operators';
+import { dropLast, pathOr, path } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { filter, first, map, takeUntil, distinctUntilChanged, mergeMap, tap } from 'rxjs/operators';
 import { RootEpics } from '../../../../core/store/epics';
 import { slideInOut } from '../../shared/animations';
 import { EntityBase } from '../../entity/entity.base';
@@ -184,6 +184,42 @@ export class TeEntDetailComponent extends EntityBase implements TabLayoutCompone
             crm
           ))
         })
+
+
+
+      combineLatest(this._fields$, this.p.crm$, this.fkClass$)
+        .pipe(
+          filter(d => !d.includes(undefined)),
+          map(([fields, crm, fkClass]) => ({
+            label: U.labelFromFieldList(fields, { path: [], fieldsMax: 1, rolesMax: 1 }),
+            crm,
+            fkClass
+          })),
+          filter((d) => pathOr(false, ['parts', 0, 'roleLabels', 0], d.label)),
+          mergeMap((d) => {
+            const label = d.label
+            const classConfig = d.crm.classes[d.fkClass];
+            let newTabTitle: string;
+            const firstRole = path<RoleLabel>(['parts', 0, 'roleLabels', 0], label);
+
+            if (firstRole.string) {
+
+              newTabTitle = classConfig.label + ' ' + pathOr<string>('', ['parts', 0, 'roleLabels', 0, 'string'], label);
+              return of(newTabTitle)
+            } else if (firstRole.fkEntity) {
+
+              return this.p.streamEntityPreview(firstRole.fkEntity).pipe(
+                first(d => !!d.entity_label),
+                map(preview => newTabTitle = classConfig.label + ' ' + preview.entity_label))
+            }
+
+          }),
+          distinctUntilChanged((a, b) => a === b),
+          takeUntil(this.destroy$)
+        ).subscribe((label) => {
+          this.t.setTabTitle(label)
+        })
+
     }
   }
 

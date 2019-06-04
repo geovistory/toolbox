@@ -290,6 +290,8 @@ export class ActiveProjectEpics {
               if (data) {
                 const peItDetail: PeItDetail = createPeItDetail(
                   {
+                    showRightArea: false,
+
                     showProperties: true,
                     showMapToggle: true
                   },

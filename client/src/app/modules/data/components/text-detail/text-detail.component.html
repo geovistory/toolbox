@@ -5,7 +5,7 @@
   <!-------------------------------------------------------------------
        Text Editor
     -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeLeft">
+  <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
     <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true); annotationsVisible$.next(true);">
 

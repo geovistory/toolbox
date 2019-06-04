@@ -1,5 +1,7 @@
 <gv-detail-top-bar>
-  Controlled Vocabulary for {{(typedClass$ | async)?.label}}
+  <div class="ml-2">
+    Controlled Vocabulary for {{(typedClass$ | async)?.label}}
+  </div>
 </gv-detail-top-bar>
 <gv-detail-content class="p-3 gv-scroll-y-auto">
 
@@ -10,7 +12,7 @@
       <mat-icon aria-label="Edit type">add_circle</mat-icon>
     </button>
   </h3>
-  
+
   <mat-list>
     <mat-list-item *ngFor="let type of (items$ | async) | keys">
 

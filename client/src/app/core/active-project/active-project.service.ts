@@ -627,7 +627,7 @@ export class ActiveProjectService {
         pkEntity: pkEntity,
         teEntDetailConfig: {
           teEntDetail: {
-
+            showRightArea: false
           }
         }
       }

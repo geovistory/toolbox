@@ -93,7 +93,7 @@
   -------------------------------------------------------------------->
     <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-      <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true);"
+      <gv-detail-top-bar [openRightAreaBtn]="false" (openRight)="t.setShowRightArea(true);"
         *ngIf="(showHeader$ | async)">
 
         <!-- <div labels class="d-flex flex-row">
@@ -108,7 +108,7 @@
           <gv-type [basePath]="basePath.concat('_type')"></gv-type>
         </div>
 
-        <gv-class-info classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
+        <gv-class-info class="text-muted small ml-2" [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
 
         <div settings>
           <!-- <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
@@ -150,7 +150,7 @@
           </gv-tile-header>
 
           <!-- Tile Body -->
-          <div class="gv-tile-body">
+          <div class="gv-tile-body p-2">
 
             <!-- Step 2 for adding new Property section -->
             <gv-add-info-te-ent *ngIf="(selectPropState$ | async) === 'selectProp'" [addOptions$]="addOptionsTeEnt$"

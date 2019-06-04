@@ -5,12 +5,13 @@ import { IAppState, ProInfoProjRel, InfRole, InfRoleApi, InfTemporalEntity, InfT
 import { RoleDetail, PropertyField, TeEntDetail } from 'app/core/state/models';
 import { createRoleDetail, createPropertyField, getCreateOfEditableContext, StateSettings, createRoleDetailList } from 'app/core/state/services/state-creator';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { combineLatest, timer } from 'rxjs';
+import { combineLatest, timer, Observable } from 'rxjs';
 import { teEntReducer } from '../../../entity/te-ent/te-ent.reducer';
 import { ClassService } from '../../../shared/class.service';
 import { PropertyFieldFormBase } from '../../property-field-form.base';
 import { PropertyFieldActions } from '../../property-field.actions';
 import { propertyFieldReducer } from '../../property-field.reducer';
+import { first, takeUntil } from '../../../../../../../node_modules/rxjs/operators';
 
 
 
@@ -29,7 +30,7 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
 
   @Input() parentTeEntPath: string[];
 
-  parentTeEntStore: ObservableStore<TeEntDetail>;
+  parentTeEnt$: Observable<TeEntDetail>;
 
   constructor(
     protected ngRedux: NgRedux<IAppState>,
@@ -50,7 +51,7 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
   }
 
   initPropertyFieldFormBaseChild(): void {
-    this.parentTeEntStore = this.ngRedux.configureSubStore(this.parentTeEntPath, teEntReducer)
+    this.parentTeEnt$ = this.ngRedux.select<TeEntDetail>(this.parentTeEntPath)
 
     this.loadAlternativeRoles()
   }
@@ -58,54 +59,56 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
 
   loadAlternativeRoles() {
 
-    const s = this.localStore.getState();
-    const ps = this.parentTeEntStore.getState();
+    this.parentTeEnt$.pipe(first(), takeUntil(this.destroy$)).subscribe(ps => {
 
-    const fkProperty = s.property.dfh_pk_property;
-    const fkTemporalEntity = ps.teEnt.pk_entity;
-    const fkProject = this.ngRedux.getState().activeProject.pk_project;
+      const s = this.localStore.getState();
 
-    const waitAtLeast = timer(800);
-    const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
+      const fkProperty = s.property.dfh_pk_property;
+      const fkTemporalEntity = ps.teEnt.pk_entity;
+      const fkProject = this.ngRedux.getState().activeProject.pk_project;
 
-    this.subs.push(combineLatest([waitAtLeast, apiCall])
-      .subscribe((results) => {
+      const waitAtLeast = timer(800);
+      const apiCall = this.roleApi.alternativesNotInProjectByTeEntPk(fkTemporalEntity, fkProperty, fkProject)
 
-        const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count, 10) > 0);
-        const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count, 10) == 0);
+      this.subs.push(combineLatest([waitAtLeast, apiCall])
+        .subscribe((results) => {
+
+          const rolesInOtherProjects = results[1].filter(role => parseInt(role.is_in_project_count, 10) > 0);
+          const rolesInNoProject = results[1].filter(role => parseInt(role.is_in_project_count, 10) == 0);
 
 
-        // update the state
-        const roleDetailsInOtherProjects = createRoleDetailList(
-          new PropertyField(this.localStore.getState()),
-          rolesInOtherProjects,
-          this.ngRedux.getState().activeProject.crm,
-          {
-            isViewMode: true,
-            pkUiContext: this.localStore.getState().pkUiContext
+          // update the state
+          const roleDetailsInOtherProjects = createRoleDetailList(
+            new PropertyField(this.localStore.getState()),
+            rolesInOtherProjects,
+            this.ngRedux.getState().activeProject.crm,
+            {
+              isViewMode: true,
+              pkUiContext: this.localStore.getState().pkUiContext
+            }
+          );
+          const roleDetailsInNoProjects = createRoleDetailList(
+            new PropertyField(this.localStore.getState()),
+            rolesInNoProject,
+            this.ngRedux.getState().activeProject.crm,
+            {
+              isViewMode: true,
+              pkUiContext: this.localStore.getState().pkUiContext
+            }
+          );
+          this.localStore.dispatch(this.actions.alternativeRolesLoaded(
+            roleDetailsInOtherProjects,
+            roleDetailsInNoProjects
+          ))
+
+
+          if (rolesInOtherProjects.length === 0) {
+            this.startCreateNewRole();
+          } else {
+            this.initAddFormCtrls(roleDetailsInOtherProjects)
           }
-        );
-        const roleDetailsInNoProjects = createRoleDetailList(
-          new PropertyField(this.localStore.getState()),
-          rolesInNoProject,
-          this.ngRedux.getState().activeProject.crm,
-          {
-            isViewMode: true,
-            pkUiContext: this.localStore.getState().pkUiContext
-          }
-        );
-        this.localStore.dispatch(this.actions.alternativeRolesLoaded(
-          roleDetailsInOtherProjects,
-          roleDetailsInNoProjects
-        ))
-
-
-        if (rolesInOtherProjects.length === 0) {
-          this.startCreateNewRole();
-        } else {
-          this.initAddFormCtrls(roleDetailsInOtherProjects)
-        }
-      }))
+        }))
+    })
 
   }
 
@@ -116,67 +119,71 @@ export class TeEntPropertyFieldFormComponent extends PropertyFieldFormBase {
   * and pointing to the parent persistent item
   */
   startCreateNewRole() {
+    this.parentTeEnt$.pipe(first(), takeUntil(this.destroy$)).subscribe(ps => {
 
-    const s = this.localStore.getState();
-    const ps = this.parentTeEntStore.getState();
+      const s = this.localStore.getState();
 
-    const roleToCreate = {
-      fk_property: s.property.dfh_pk_property,
-      fk_temporal_entity: ps.teEnt.pk_entity,
-    } as InfRole;
+      const roleToCreate = {
+        fk_property: s.property.dfh_pk_property,
+        fk_temporal_entity: ps.teEnt.pk_entity,
+      } as InfRole;
 
-    const options: RoleDetail = { targetClassPk: s.targetClassPk, isOutgoing: s.isOutgoing }
+      const options: RoleDetail = { targetClassPk: s.targetClassPk, isOutgoing: s.isOutgoing }
 
-    const settings: StateSettings = {
-      pkUiContext: getCreateOfEditableContext(s.pkUiContext)
-    }
-    // initialize the state
-    const roleStateToCreate = createRoleDetail(options, roleToCreate, this.ngRedux.getState().activeProject.crm, settings)
-    this.initCreateFormCtrls(roleStateToCreate)
+      const settings: StateSettings = {
+        pkUiContext: getCreateOfEditableContext(s.pkUiContext)
+      }
+      // initialize the state
+      const roleStateToCreate = createRoleDetail(options, roleToCreate, this.ngRedux.getState().activeProject.crm, settings)
+      this.initCreateFormCtrls(roleStateToCreate)
+    })
 
   }
 
 
   createRoles() {
-    const s = this.localStore.getState();
+    this.parentTeEnt$.pipe(first(), takeUntil(this.destroy$)).subscribe(ps => {
 
-    if (this.createForm.valid) {
+      const s = this.localStore.getState();
 
-      // prepare teEnt
-      const t = new InfTemporalEntity(this.parentTeEntStore.getState().teEnt);
-      t.te_roles = [];
+      if (this.createForm.valid) {
 
-      Object.keys(this.createForm.controls).forEach(key => {
-        if (this.createForm.get(key)) {
-          const role: InfRole = this.createForm.get(key).value;
-          role.entity_version_project_rels = [{ is_in_project: true } as ProInfoProjRel]
-          // add roles to create to peIt
-          t.te_roles.push(role)
-        }
-      })
+        // prepare teEnt
+        const t = new InfTemporalEntity(ps.teEnt);
+        t.te_roles = [];
 
-      // call api
-      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, t).subscribe(teEnts => {
-        const roles: InfRole[] = teEnts[0].te_roles;
-
-
-        // update the form group
         Object.keys(this.createForm.controls).forEach(key => {
-          this.createForm.removeControl(key)
+          if (this.createForm.get(key)) {
+            const role: InfRole = this.createForm.get(key).value;
+            role.entity_version_project_rels = [{ is_in_project: true } as ProInfoProjRel]
+            // add roles to create to peIt
+            t.te_roles.push(role)
+          }
         })
 
+        // call api
+        this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, t).subscribe(teEnts => {
+          const roles: InfRole[] = teEnts[0].te_roles;
 
-        // update the state
-        const propertyField = createPropertyField(
-          new PropertyField({ isOutgoing: s.isOutgoing, property: s.property }),
-          roles,
-          this.ngRedux.getState().activeProject.crm,
-          { pkUiContext: s.pkUiContext }
-        )
-        this.localStore.dispatch(this.actions.rolesCreated(propertyField._role_list))
 
-      }))
-    }
+          // update the form group
+          Object.keys(this.createForm.controls).forEach(key => {
+            this.createForm.removeControl(key)
+          })
+
+
+          // update the state
+          const propertyField = createPropertyField(
+            new PropertyField({ isOutgoing: s.isOutgoing, property: s.property }),
+            roles,
+            this.ngRedux.getState().activeProject.crm,
+            { pkUiContext: s.pkUiContext }
+          )
+          this.localStore.dispatch(this.actions.rolesCreated(propertyField._role_list))
+
+        }))
+      }
+    })
   }
 
   addRoles() {

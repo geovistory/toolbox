@@ -17,6 +17,7 @@ import { PeItDetailAPIEpics } from './api/pe-it-detail.epics';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
 import { pathOr } from 'ramda';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 
 
 
@@ -102,6 +103,7 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
   sourcePeIt$: Observable<InfPersistentItem>
 
   t: TabLayout;
+  listOf: MentioningListOf;
 
   constructor(
     protected rootEpics: RootEpics,
@@ -136,6 +138,8 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
       this.t.setShowRightArea(b)
     })
 
+    this.listOf = { pkEntity: this.pkEntity, type: 'digital-text' }
+
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
     combineLatest(
@@ -159,7 +163,8 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
     this._fields$.pipe(
       map(fields => U.labelFromFieldList(fields, { path: [], fieldsMax: 1, rolesMax: 1 })),
       map(label => pathOr('', ['parts', '0', 'roleLabels', '0', 'string'], label)),
-      distinctUntilChanged((a, b) => a === b)
+      distinctUntilChanged((a, b) => a === b),
+      takeUntil(this.destroy$)
     ).subscribe((label) => {
       this.t.setTabTitle(label)
     })
