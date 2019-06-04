@@ -7,7 +7,8 @@
     -------------------------------------------------------------------->
   <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-    <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true); annotationsVisible$.next(true);">
+    <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea"
+      (openRight)="t.setShowRightArea(true); annotationsVisible$.next(true);">
 
       <!--  *ngIf="(readOnly$|async)" -->
       <gv-version-picker class="d-inline-block" [versionList]="(versions$ | async)"
@@ -65,13 +66,11 @@
     <gv-detail-content>
       <gv-mentioning-list class="gv-tile" [create$]="createAnnotation$" [chunk$]="chunk$"
         [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
-        [basePath]="basePath.concat('mentionedEntities')" (close)="toggle('showMentionedEntities')"
-        (rowMouseenter)="mentioningRowMousenter($event)" (rowMouseleave)="mentioningRowMouseleave($event)"
-        (rowClick)="mentioningRowClick($event)" (dataChange)="mentioningListChange($event)">
+        [basePath]="basePath.concat('mentionedEntities')" (rowMouseenter)="mentioningRowMousenter($event)"
+        (rowMouseleave)="mentioningRowMouseleave($event)" (dataChange)="mentioningListChange($event)">
       </gv-mentioning-list>
     </gv-detail-content>
 
 
   </as-split-area>
 </as-split>
-

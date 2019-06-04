@@ -53,6 +53,9 @@ export class InfEpics {
         }
       ),
 
+      persistentItemEpicsFactory.createRemoveEpic(),
+
+
       /**
        * Temporal Entity
        *

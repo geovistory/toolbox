@@ -22,7 +22,7 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
   createActions(): InfPersistentItemActionFactory {
-    Object.assign(this, this.createCrudActions(infRoot, 'persistent_item'))
+    Object.assign(this, this.createInfActions(infRoot, 'persistent_item'))
 
     this.loadNestedObject = (pkProject: number, pkEntity: number) => {
       const action: FluxStandardAction<Payload, LoadByPkAction> = {
@@ -45,7 +45,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
   createActions(): InfTemporalEntityActionFactory {
-    Object.assign(this, this.createCrudActions(infRoot, 'temporal_entity'))
+    Object.assign(this, this.createInfActions(infRoot, 'temporal_entity'))
 
     this.loadNestedObject = (pkProject: number, pkEntity: number) => {
       const action: FluxStandardAction<Payload, LoadByPkAction> = {

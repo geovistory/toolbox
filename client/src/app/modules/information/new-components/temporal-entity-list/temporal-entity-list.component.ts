@@ -15,7 +15,7 @@ export class TemporalEntityListComponent implements OnInit, PropertyListComponen
   @Input() pkEntity: number;
 
   @Input() listDefinition: ListDefinition;
-  @Input() treeControl: NestedTreeControl<ListDefinition[]>;
+  @Input() treeControl: NestedTreeControl<ListDefinition>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;

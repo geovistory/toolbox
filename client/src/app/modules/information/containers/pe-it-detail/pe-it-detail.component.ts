@@ -37,6 +37,7 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
 
   @Output() remove = new EventEmitter<number>();
   @Output() onLabelChange = new EventEmitter<ClassInstanceLabel>();
+  @Output() close = new EventEmitter<void>();
 
   // afterViewInit = false;
 
@@ -286,7 +287,17 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
     this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
   }
 
-  onRemove = () => this.remove.emit(this.peItState.pkEntity)
+  onRemove = () => {
+    combineLatest(
+      this.p.inf$.persistent_item$.by_pk_entity$.key(this.peItState.pkEntity),
+      this.p.pkProject$
+    )
+      .pipe(first(), takeUntil(this.destroy$)).subscribe(([peIt, pkProject]) => {
+        this.inf.persistent_item.remove([peIt], pkProject).resolved$.pipe(first()).subscribe(() => {
+          this.close.emit()
+        })
+      })
+  }
 
   onAnnotate() {
     if (this.localStore.getState().showMentionedEntities === false) {

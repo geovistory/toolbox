@@ -15,7 +15,7 @@ export class EntityPreviewListComponent implements OnInit, PropertyListComponent
   @Input() pkEntity: number;
 
   @Input() listDefinition: ListDefinition;
-  @Input() treeControl: NestedTreeControl<ListDefinition[]>;
+  @Input() treeControl: NestedTreeControl<ListDefinition>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;

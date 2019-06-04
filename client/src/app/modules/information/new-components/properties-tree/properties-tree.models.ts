@@ -79,7 +79,7 @@ export interface TimeSpanProperties {
 export interface PropertyListComponentInterface {
   pkEntity: number;
   listDefinition: ListDefinition;
-  treeControl: NestedTreeControl<ListDefinition[]>;
+  treeControl: NestedTreeControl<ListDefinition>;
   showOntoInfo$;
   readonly$;
   addButtonVisible;

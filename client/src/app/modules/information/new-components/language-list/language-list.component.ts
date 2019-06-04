@@ -15,7 +15,7 @@ export class LanguageListComponent implements OnInit, PropertyListComponentInter
   @Input() pkEntity: number;
 
   @Input() listDefinition: ListDefinition;
-  @Input() treeControl: NestedTreeControl<ListDefinition[]>;
+  @Input() treeControl: NestedTreeControl<ListDefinition>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() addButtonVisible;

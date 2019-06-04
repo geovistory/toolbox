@@ -42,7 +42,7 @@ class InfPersistentItemSelections extends Selector {
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
 
-  public by_pk_entity$ = this.selector<ByPk<InfPersistentItem>>('by_pk_entity')
+  public by_pk_entity$ = this.selector<InfPersistentItem>('by_pk_entity')
   public by_fk_class$ = this.selector<ByPk<InfPersistentItem>>('by_fk_class')
 
 }

@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 export class ListHeaderComponent implements OnInit {
   @Output() addClick = new EventEmitter<void>()
   @Input() listDefinition: ListDefinition;
-  @Input() treeControl: NestedTreeControl<ListDefinition[]>;
+  @Input() treeControl: NestedTreeControl<ListDefinition>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
   @Input() showAddButton$: Observable<boolean>;
