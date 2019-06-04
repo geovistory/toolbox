@@ -37,6 +37,11 @@ module.exports = function (DatChunk) {
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       if (err) return cb(err);
 
+      // Q: are there any chunks?
+      if (!resultObjects ||  !resultObjects.length) {
+        return cb(false, [])
+      }
+
       DatChunk.app.models.DatChunk.findComplex({
         where: ['pk_entity', 'IN', resultObjects[0].chunk_pks],
         include: {

@@ -6,8 +6,6 @@ import { QuillModule } from 'app/modules/quill';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { ISourceListState } from '../..';
 import { textBüchel } from '../../../quill/quill-edit/quill-edit.sandbox.mock';
-import { SourceCreateFormComponent } from '../../components/source-create-form/source-create-form.component';
-import { SourceSearchHitComponent } from '../../components/source-search-hit/source-search-hit.component';
 
 import { SourceListComponent } from './source-list.component';
 
@@ -17,9 +15,7 @@ export default sandboxOf(SourceListComponent, {
     QuillModule,
   ],
   declarations: [
-    KeysPipe,
-    SourceSearchHitComponent,
-    SourceCreateFormComponent,
+    KeysPipe
   ],
   providers: [
     KeysPipe,

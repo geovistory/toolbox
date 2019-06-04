@@ -9,6 +9,7 @@ import { DigitalSlice, NamespaceSlice, ChunkSlice } from './dat.models';
 import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
 import { LoadByPkAction, InfActions } from '../inf/inf.actions';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
+import { ProActions } from '../pro/pro.actions';
 
 
 @Injectable()
@@ -17,6 +18,7 @@ export class DatEpics {
     public notification: NotificationsAPIActions,
     public datActions: DatActions,
     public infActions: InfActions,
+    public proActions: ProActions,
     public digitalApi: DatDigitalApi,
     public chunkApi: DatChunkApi,
     public namespaceApi: DatNamespaceApi,
@@ -51,7 +53,7 @@ export class DatEpics {
         (meta) => this.chunkApi.ofDigital(meta.pk, meta.pkDigital),
         ChunkActionsFactory.CHUNKS_OF_DIGITAL,
         (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions);
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.chunk.flatten(results);
           storeFlattened(flattener.getFlattened(), pk);
         }

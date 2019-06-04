@@ -25,6 +25,7 @@ import { SysModule } from 'app/core/sys/sys.module';
 import { InfModule } from 'app/core/inf/inf.module';
 import { DatModule } from 'app/core/dat/dat.module';
 import { DfhModule } from 'app/core/dfh/dfh.module';
+import { ProModule } from 'app/core/pro/pro.module';
 
 PlaygroundModule
   .configure({
@@ -36,6 +37,7 @@ PlaygroundModule
       InfModule,
       DatModule,
       DfhModule,
+      ProModule,
       MatDialogModule,
       NotificationsModule,
       SDKBrowserModule.forRoot(),

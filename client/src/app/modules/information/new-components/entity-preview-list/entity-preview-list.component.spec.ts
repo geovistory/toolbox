@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TeEntEditableComponent } from './te-ent-editable.component';
+import { EntityPreviewListComponent } from './entity-preview-list.component';
 
-describe('TeEntEditableComponent', () => {
-  let component: TeEntEditableComponent;
-  let fixture: ComponentFixture<TeEntEditableComponent>;
+describe('EntityPreviewListComponent', () => {
+  let component: EntityPreviewListComponent;
+  let fixture: ComponentFixture<EntityPreviewListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TeEntEditableComponent ]
+      declarations: [ EntityPreviewListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TeEntEditableComponent);
+    fixture = TestBed.createComponent(EntityPreviewListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

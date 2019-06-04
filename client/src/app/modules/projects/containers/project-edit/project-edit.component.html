@@ -148,9 +148,9 @@
           </gv-pe-it-detail>
 
 
-          <gv-te-ent-editable class="gv-flex-fh" *ngIf="tab.component=='te-en-detail'" [tab]="tab"
+          <gv-te-ent-detail class="gv-flex-fh" *ngIf="tab.component=='te-en-detail'" [tab]="tab"
             [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
-            [onActivateTab]="c"></gv-te-ent-editable>
+            [onActivateTab]="c"></gv-te-ent-detail>
 
           <gv-query-detail class="gv-flex-fh" *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>

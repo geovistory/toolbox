@@ -9,7 +9,7 @@ import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TeEntDetailAPIActions, TeEntDetailAPIAction } from './te-ent-detail.actions';
-import { TeEntEditableComponent } from '../te-ent-editable.component';
+import { TeEntDetailComponent } from '../te-ent-detail.component';
 import { createTeEntDetail } from 'app/core/state/services/state-creator';
 
 
@@ -33,13 +33,13 @@ export class TeEntDetailAPIEpics {
     private loadingBarActions: LoadingBarActions,
   ) { }
 
-  public createEpics(c: TeEntEditableComponent): Epic {
+  public createEpics(c: TeEntDetailComponent): Epic {
     return combineEpics(
       this.createLoadTemporalEntityEditorEpic(c),
     );
   }
 
-  private createLoadTemporalEntityEditorEpic(c: TeEntEditableComponent): Epic {
+  private createLoadTemporalEntityEditorEpic(c: TeEntDetailComponent): Epic {
     return (action$, store) => {
       return action$.pipe(
         /**

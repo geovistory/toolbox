@@ -13,11 +13,11 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
   constructor(
     public actionPrefix: string,
     public modelName: string,
-    public infActions: InfActionFactory<Payload, Model>,
+    public actions: InfActionFactory<Payload, Model>,
     public notifications: NotificationsAPIActions,
     public infoProjRelApi: ProInfoProjRelApi
   ) {
-    super(actionPrefix, modelName, infActions, notifications)
+    super(actionPrefix, modelName, actions, notifications)
   }
 
   /**
@@ -43,17 +43,17 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
           apiFn(meta).subscribe((data: Model[]) => {
             if (onSuccessHook) {
               onSuccessHook(data, action.meta.pk);
-              this.infActions.upsertSucceeded([], pendingKey, action.meta.pk);
+              this.actions.upsertSucceeded([], pendingKey, action.meta.pk);
             }
             else {
-              this.infActions.upsertSucceeded(data, pendingKey, action.meta.pk);
+              this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
             }
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',
               options: { title: error.message }
             }));
-            this.infActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
           });
         })));
     };
@@ -79,13 +79,13 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
             }))
           )
             .subscribe(() => {
-              this.infActions.removeSucceeded(action.meta.items, pendingKey, action.meta.pk)
+              this.actions.removeSucceeded(action.meta.items, pendingKey, action.meta.pk)
             }, error => {
               globalActions.next(this.notifications.addToast({
                 type: 'error',
                 options: { title: error.message }
               }));
-              this.infActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk)
+              this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk)
             })
         }))
 

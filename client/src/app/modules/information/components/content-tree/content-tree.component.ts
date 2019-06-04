@@ -47,11 +47,11 @@ interface ContentTreeNode {
 
 
 @Component({
-  selector: 'gv-expression',
-  templateUrl: './expression.component.html',
-  styleUrls: ['./expression.component.scss']
+  selector: 'gv-content-tree',
+  templateUrl: './content-tree.component.html',
+  styleUrls: ['./content-tree.component.scss']
 })
-export class ExpressionComponent implements OnInit, OnDestroy {
+export class ContentTreeComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 

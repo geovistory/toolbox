@@ -95,6 +95,20 @@
             </div>
           </div>
 
+
+          <!-- <div class="gv-tile">
+
+            <gv-tile-header *ngIf="(showPropertiesHeader$ | async)" (close)="toggle('showProperties')">
+              <span title>
+                New Properties
+              </span>
+            </gv-tile-header>
+
+            <div class="gv-tile-body">
+              <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$"></gv-properties-tree>
+            </div>
+          </div> -->
+
         </span>
 
 
@@ -157,9 +171,9 @@
           </gv-tile-header>
 
           <div class="gv-tile-body">
-            <gv-expression class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$"
+            <gv-content-tree class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$"
               (close)="toggle('showSectionList')">
-            </gv-expression>
+            </gv-content-tree>
           </div>
         </div>
 

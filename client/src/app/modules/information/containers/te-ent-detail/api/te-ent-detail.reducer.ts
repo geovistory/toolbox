@@ -2,7 +2,7 @@ import { omit } from 'ramda';
 import { Action } from 'redux';
 import { TeEntDetail } from 'app/core';
 import { TeEntDetailAPIAction, TeEntDetailAPIActions } from './te-ent-detail.actions';
-import { teEntReducer } from '../../te-ent.reducer';
+import { teEntReducer } from '../../../entity/te-ent/te-ent.reducer';
 
 const INITIAL_STATE = new TeEntDetail();
 

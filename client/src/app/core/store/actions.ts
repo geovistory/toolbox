@@ -63,7 +63,7 @@ export class StandardActionsFactory<Payload, Model> {
     this.modelName = modelName;
 
     this.load = (suffix: string = '', pk?: number) => {
-      const addPending=  U.uuid()
+      const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadActionMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + (suffix ? '::' + suffix : ''),
         meta: { addPending, pk },

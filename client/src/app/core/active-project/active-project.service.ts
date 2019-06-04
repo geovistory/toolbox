@@ -16,6 +16,7 @@ import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { ProSelector } from 'app/core/pro/pro.service';
 
 
 
@@ -52,6 +53,7 @@ export class ActiveProjectService {
 
   inf$: InfSelector;
   dat$: DatSelector;
+  pro$: ProSelector;
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
@@ -83,6 +85,7 @@ export class ActiveProjectService {
 
     this.inf$ = new InfSelector(ngRedux, this.pkProject$);
     this.dat$ = new DatSelector(ngRedux);
+    this.pro$ = new ProSelector(ngRedux);
 
     this.classPksEnabledInEntities$ = this.crm$.pipe(
       first(d => !!d),

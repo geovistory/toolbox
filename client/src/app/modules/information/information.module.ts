@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatDialogModule, MatDividerModule, MatIconModule, MatMenuModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatSlideToggleModule } from '@angular/material';
+import { MatButtonModule, MatDialogModule, MatDividerModule, MatIconModule, MatMenuModule, MatSlideToggleModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatExpansionModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
@@ -24,8 +24,12 @@ import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
+import { AngularSplitModule } from '../../../../node_modules/angular-split';
+import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
+import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
+import { AnnotationModule } from '../annotation/annotation.module';
 import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 import { QuillModule } from '../quill';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
@@ -35,10 +39,10 @@ import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it
 import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
 import { AddOrCreateEntityModal } from './components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { ClassInfoComponent } from './components/class-info/class-info.component';
+import { ContentTreeComponent } from './components/content-tree/content-tree.component';
 import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { EntitySearchHitComponent } from './components/entity-search-hit/entity-search-hit.component';
-import { ExpressionComponent } from './components/expression/expression.component';
 import { FieldHeaderComponent } from './components/field-header/field-header.component';
 import { LeafPeItLabelComponent } from './components/leaf-pe-it-label/leaf-pe-it-label.component';
 import { PeItLabelComponent } from './components/pe-it-label/pe-it-label.component';
@@ -58,6 +62,9 @@ import { ListAPIActions } from './containers/list/api/list.actions';
 import { ListAPIEpics } from './containers/list/api/list.epics';
 import { ListComponent } from './containers/list/list.component';
 import { MapComponent } from './containers/map/map.component';
+import { PeItDetailAPIActions } from './containers/pe-it-detail/api/pe-it-detail.actions';
+import { PeItDetailAPIEpics } from './containers/pe-it-detail/api/pe-it-detail.epics';
+import { PeItDetailComponent } from './containers/pe-it-detail/pe-it-detail.component';
 import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
 import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
 import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
@@ -69,7 +76,6 @@ import { ReprosAPIEpics } from './containers/repros/api/repros.epics';
 import { ReprosComponent } from './containers/repros/repros.component';
 import { TextPropertyFieldAPIActions } from './containers/text-property-field/api/text-property-field.actions';
 import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
-import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
 import { EntityAssociationAPIActions } from './entity-association/api/entity-association.actions';
 import { EntityAssociationAPIEpics } from './entity-association/api/entity-association.epics';
 import { EntityAssociationCreateCtrlComponent } from './entity-association/entity-association-create-ctrl/entity-association-create-ctrl.component';
@@ -80,11 +86,11 @@ import { EntityAPIEpics } from './entity/entity.epics';
 import { PeItAddCtrlComponent } from './entity/pe-it/pe-it-add-ctrl/pe-it-add-ctrl.component';
 import { PeItCreateCtrlComponent } from './entity/pe-it/pe-it-create-ctrl/pe-it-create-ctrl.component';
 import { PeItCreateFormComponent } from './entity/pe-it/pe-it-create-form/pe-it-create-form.component';
-import { PeItDetailComponent } from './containers/pe-it-detail/pe-it-detail.component';
 import { PeItActions } from './entity/pe-it/pe-it.actions';
 import { TeEntAddCtrlComponent } from './entity/te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
 import { TeEntCreateCtrlComponent } from './entity/te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component';
-import { TeEntEditableComponent } from './entity/te-ent/te-ent-editable/te-ent-editable.component';
+import { TeEntDetailAPIActions } from './containers/te-ent-detail/api/te-ent-detail.actions';
+import { TeEntDetailAPIEpics } from './containers/te-ent-detail/api/te-ent-detail.epics';
 import { TeEntActions } from './entity/te-ent/te-ent.actions';
 import { TeEntAPIEpics } from './entity/te-ent/te-ent.epics';
 import { ExistenceTimeAddCtrlComponent } from './existence-time/existence-time-add-ctrl/existence-time-add-ctrl.component';
@@ -94,6 +100,7 @@ import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help
 import { ExistenceTimeModalComponent } from './existence-time/existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
+import { PropertiesTreeComponent } from './new-components/properties-tree/properties-tree.component';
 import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
 import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
 import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
@@ -141,14 +148,18 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { AnnotationModule } from '../annotation/annotation.module';
-import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
-import { AngularSplitModule } from '../../../../node_modules/angular-split';
-import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
-import { PeItDetailAPIEpics } from './containers/pe-it-detail/api/pe-it-detail.epics';
-import { PeItDetailAPIActions } from './containers/pe-it-detail/api/pe-it-detail.actions';
-import { TeEntDetailAPIEpics } from './entity/te-ent/te-ent-editable/api/te-ent-detail.epics';
-import { TeEntDetailAPIActions } from './entity/te-ent/te-ent-editable/api/te-ent-detail.actions';
+import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.component';
+import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
+import { PropertyTreeService } from './new-components/properties-tree/properties-tree.service';
+import { AppellationListComponent } from './new-components/appellation-list/appellation-list.component';
+import { EntityPreviewListComponent } from './new-components/entity-preview-list/entity-preview-list.component';
+import { ListHeaderComponent } from './new-components/list-header/list-header.component';
+import { LanguageListComponent } from './new-components/language-list/language-list.component';
+import { TemporalEntityListComponent } from './new-components/temporal-entity-list/temporal-entity-list.component';
+import { PlaceListComponent } from './new-components/place-list/place-list.component';
+import { TimeSpanListComponent } from './new-components/time-span-list/time-span-list.component';
+import { TextPropertyListComponent } from './new-components/text-property-list/text-property-list.component';
+import { AddRoleComponent } from './new-components/add-role/add-role.component';
 
 
 
@@ -201,6 +212,7 @@ import { TeEntDetailAPIActions } from './entity/te-ent/te-ent-editable/api/te-en
     MatDialogModule,
     MatDividerModule,
     MatSlideToggleModule,
+    MatExpansionModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
     EntityPreviewModule,
@@ -239,11 +251,14 @@ import { TeEntDetailAPIActions } from './entity/te-ent/te-ent-editable/api/te-en
     // Entity > TeEnt
     TeEntAddCtrlComponent,
     TeEntCreateCtrlComponent,
-    TeEntEditableComponent,
+    TeEntDetailComponent,
 
     // Existence Time
     ExistenceTimeEditableComponent,
     ExistenceTimeAddCtrlComponent,
+
+    // Text Property Field
+    TextPropertyFieldComponent,
 
     // Appe Lang
     AppeLangCreateCtrlComponent,
@@ -310,9 +325,18 @@ import { TeEntDetailAPIActions } from './entity/te-ent/te-ent-editable/api/te-en
     EntityAssociationCreateCtrlComponent,
     EntityAssociationCreateOrAddComponent,
     EntityAssociationExistingListComponent,
-    TextPropertyFieldComponent,
-    ExpressionComponent,
-    AddOrCreateEntityModal
+    ContentTreeComponent,
+    AddOrCreateEntityModal,
+    PropertiesTreeComponent,
+    AppellationListComponent,
+    EntityPreviewListComponent,
+    ListHeaderComponent,
+    LanguageListComponent,
+    TemporalEntityListComponent,
+    PlaceListComponent,
+    TimeSpanListComponent,
+    TextPropertyListComponent,
+    AddRoleComponent
   ],
   providers: [
 
@@ -390,6 +414,7 @@ import { TeEntDetailAPIActions } from './entity/te-ent/te-ent-editable/api/te-en
     PeItSearchExistingAPIActions,
     PeItSearchExistingAPIEpics,
 
+    PropertyTreeService
 
 
   ],
@@ -415,12 +440,15 @@ import { TeEntDetailAPIActions } from './entity/te-ent/te-ent-editable/api/te-en
     // Entity > TeEnt
     TeEntAddCtrlComponent,
     TeEntCreateCtrlComponent,
-    TeEntEditableComponent,
+    TeEntDetailComponent,
 
     // Existence Time
     ExistenceTimeEditableComponent,
     ExistenceTimeAddCtrlComponent,
     AppeLangCreateCtrlComponent,
+
+    // Text Property Field
+    TextPropertyFieldComponent,
 
     // Property Field
     PeItPropertyFieldAddCtrlComponent,

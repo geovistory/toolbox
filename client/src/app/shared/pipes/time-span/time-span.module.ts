@@ -9,7 +9,7 @@ import { TimeSpanPipe } from './time-span.pipe';
     CommonModule,
     TimePrimitivePipeModule
   ],
-  providers: [TimePrimitivePipe],
+  providers: [TimePrimitivePipe, TimeSpanPipe],
   declarations: [
     TimeSpanPipe,
   ],

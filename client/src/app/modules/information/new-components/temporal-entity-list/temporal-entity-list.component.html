@@ -1,0 +1,99 @@
+<gv-list-header class="mat-tree-node  align-items-baseline" [listDefinition]="listDefinition"
+  [treeControl]="treeControl" [readonly$]="readonly$" [itemsCount$]="itemsCount$" (addClick)="t.showControl$.next(listDefinition)"></gv-list-header>
+
+<div FxFlex *ngIf="treeControl.isExpanded(listDefinition)">
+
+  <mat-accordion class="drop-list" cdkDropList (cdkDropListDropped)="t.updateOrder($event, items$)">
+    <mat-expansion-panel *ngFor="let item of (items$ | async)" cdkDrag (opened)="item.panelOpenState = true"
+      (closed)="item.panelOpenState = false">
+      <mat-expansion-panel-header collapsedHeight="75px">
+
+
+        <mat-panel-title *ngIf="!item.panelOpenState" class="main d-flex">
+          <!-- Role Labels -->
+          <div class="gv-grow-1 pr-3" *ngFor="let p of item?.properties; let i = index">
+            <div class="text-muted font-xs">
+              {{p?.listDefinition?.label}}
+            </div>
+            <div *ngFor="let jtem of p?.items">
+              <div *ngIf="jtem.target === 'appellation' || jtem.target !== 'language'">
+                {{jtem?.label}}
+              </div>
+              <div *ngIf="jtem.target === 'time-span'">
+                <!-- {{getExTLabel(jtem?.exTimeLabel)}} -->
+              </div>
+              <div *ngIf="jtem.target === 'entity-preview'">
+                <gv-entity-preview [dragEnabled]="false" [preview]="jtem.preview"></gv-entity-preview>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex font-xs text-muted flex-column justify-content-between">
+
+            <!-- Class info -->
+            <div>
+              <div class="align-self-center">
+                <i class="gv-entity-color fa fa-star-o"></i>
+                {{listDefinition?.targetClassLabel}}
+              </div>
+            </div>
+
+            <div class="text-right" *ngIf="label?.hasMore">
+              More…
+            </div>
+          </div>
+
+        </mat-panel-title>
+
+
+        <mat-panel-title *ngIf="item.panelOpenState" class="main d-flex flex-column">
+
+          <!-- Header -->
+          <div class="d-flex font-lg text-gray-400">
+
+            <!-- Class info -->
+            <div class="gv-grow-1 gv-pointer  d-flex  justify-content-start'">
+              <div class="align-self-center">
+                <i class="text-gray-400" class="gv-entity-color fa fa-star-o"></i>
+                {{listDefinition?.targetClassLabel}}
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <ng-content select="[buttons]"></ng-content>
+              <!-- <button type="button" class="btn btn-link-gray" title="Minimize">
+                <i class="fa fa-compress"></i>
+              </button> -->
+            </div>
+          </div>
+
+        </mat-panel-title>
+
+
+      </mat-expansion-panel-header>
+
+
+
+
+
+      <!-- Role Labels -->
+      <div class="gv-grow-1 mt-3" *ngFor="let p of item?.properties; let i = index">
+        <div class="text-muted font-xs">
+          {{p?.listDefinition?.label}}
+        </div>
+        <div *ngFor="let jtem of p?.items">
+          <div *ngIf="jtem.target === 'appellation' || jtem.target !== 'language'">
+            {{jtem?.label}}
+          </div>
+          <div *ngIf="jtem.target === 'time-span'">
+            <!-- {{getExTLabel(jtem?.exTimeLabel)}} -->
+          </div>
+          <div *ngIf="jtem.target === 'entity-preview'">
+            <gv-entity-preview [dragEnabled]="false" [preview]="jtem.preview"></gv-entity-preview>
+          </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

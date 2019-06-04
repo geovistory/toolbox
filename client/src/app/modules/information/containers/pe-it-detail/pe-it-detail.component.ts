@@ -16,6 +16,7 @@ import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
 import { PeItDetailAPIEpics } from './api/pe-it-detail.epics';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
 import { pathOr } from 'ramda';
+import { InfActions } from '../../../../core/inf/inf.actions';
 
 
 
@@ -110,7 +111,8 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
     private p: ActiveProjectService,
     protected fb: FormBuilder,
     protected entityEpics: EntityAPIEpics,
-    public ref: ChangeDetectorRef
+    public ref: ChangeDetectorRef,
+    private inf: InfActions
   ) {
     super(ngRedux, fb, rootEpics, entityEpics);
     console.log('PeItEditableComponent')
@@ -139,8 +141,12 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
     combineLatest(
       this.p.pkProject$,
       this.p.crm$
-    ).pipe(first((x => !x.includes(undefined) && !!this.tab )), takeUntil(this.destroy$))
-      .subscribe(([ pkProject, crm]) => {
+    ).pipe(first((x => !x.includes(undefined) && !!this.tab)), takeUntil(this.destroy$))
+      .subscribe(([pkProject, crm]) => {
+
+        this.inf.persistent_item.loadNestedObject(pkProject, this.pkEntity)
+
+        // TDOD: Delete this and the load epic as well
         this.localStore.dispatch(this.actions.load(
           this.pkEntity,
           pkProject,

@@ -3,13 +3,13 @@ import { DfhClass, DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { RoleDetail, PropertyField, ExistenceTimeDetail } from 'app/core/state/models';
-import { Information2Module } from '../../../information.module';
-import { TeEntEditableComponent } from './te-ent-editable.component';
-import { DfhConfig } from '../../../shared/dfh-config';
+import { Information2Module } from '../../information.module';
+import { TeEntDetailComponent } from './te-ent-detail.component';
+import { DfhConfig } from '../../shared/dfh-config';
 
 
 
-export default sandboxOf(TeEntEditableComponent, {
+export default sandboxOf(TeEntDetailComponent, {
     imports: [
         InitStateModule,
         Information2Module
@@ -959,12 +959,12 @@ export default sandboxOf(TeEntEditableComponent, {
 
             <div class="d-flex justify-content-center mt-5">
                 <div style="width:430px;height:400px" class="d-flex">
-    
-                    <gv-te-ent-editable [basePath]="basePath">
-                    </gv-te-ent-editable>
-                        
+
+                    <gv-te-ent-detail [basePath]="basePath">
+                    </gv-te-ent-detail>
+
                 </div>
-             
+
             </div>
         `
     })

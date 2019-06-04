@@ -9,13 +9,14 @@ import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { dropLast } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
-import { RootEpics } from '../../../../../core/store/epics';
-import { slideInOut } from '../../../shared/animations';
-import { EntityBase } from '../../entity.base';
-import { EntityAPIEpics } from '../../entity.epics';
+import { RootEpics } from '../../../../core/store/epics';
+import { slideInOut } from '../../shared/animations';
+import { EntityBase } from '../../entity/entity.base';
+import { EntityAPIEpics } from '../../entity/entity.epics';
 import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
 import { TeEntDetailAPIEpics } from './api/te-ent-detail.epics';
 import { teEntDetailReducer } from './api/te-ent-detail.reducer';
+import { InfActions } from '../../../../core/inf/inf.actions';
 
 export function getTeEntAddOptions(
   fkClass$: Observable<number>,
@@ -79,13 +80,13 @@ export function getTeEntAddOptions(
   basePathMethodName: 'getBasePath'
 })
 @Component({
-  selector: 'gv-te-ent-editable',
-  templateUrl: './te-ent-editable.component.html',
-  styleUrls: ['./te-ent-editable.component.scss'],
+  selector: 'gv-te-ent-detail',
+  templateUrl: './te-ent-detail.component.html',
+  styleUrls: ['./te-ent-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeEntEditableComponent extends EntityBase implements TabLayoutComponentInterface {
+export class TeEntDetailComponent extends EntityBase implements TabLayoutComponentInterface {
 
   @Input() basePath: string[];
   @Input() asPeItChild: boolean;
@@ -143,6 +144,7 @@ export class TeEntEditableComponent extends EntityBase implements TabLayoutCompo
     protected fb: FormBuilder,
     public ref: ChangeDetectorRef,
     private p: ActiveProjectService,
+    private inf: InfActions
   ) {
     super(ngRedux, fb, rootEpics, entityEpics);
 
@@ -165,11 +167,15 @@ export class TeEntEditableComponent extends EntityBase implements TabLayoutCompo
         this.t.setShowRightArea(b)
       })
 
+      // Temp: put this line onInit of te-en-detail and a similar one to pe-it-detail
       combineLatest(
         this.p.pkProject$,
         this.p.crm$
       ).pipe(first((x => !x.includes(undefined) && !!this.tab)), takeUntil(this.destroy$))
         .subscribe(([pkProject, crm]) => {
+          this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity)
+
+          // TDOD: Delete this and the load epic as well
           this.localStore.dispatch(this.actions.load(
             this.pkEntity,
             pkProject,

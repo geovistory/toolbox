@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExpressionComponent } from './expression.component';
+import { TeEntDetailComponent } from './te-ent-detail.component';
 
-describe('ExpressionComponent', () => {
-  let component: ExpressionComponent;
-  let fixture: ComponentFixture<ExpressionComponent>;
+describe('TeEntEditableComponent', () => {
+  let component: TeEntDetailComponent;
+  let fixture: ComponentFixture<TeEntDetailComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExpressionComponent ]
+      declarations: [ TeEntDetailComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ExpressionComponent);
+    fixture = TestBed.createComponent(TeEntDetailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
