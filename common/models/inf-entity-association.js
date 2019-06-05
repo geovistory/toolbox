@@ -81,7 +81,7 @@ module.exports = function (InfEntityAssociation) {
       }
 
       // if the ea has a persistent item as the range
-      if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
+      else if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
 
         // prepare parameters
         const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
@@ -113,7 +113,7 @@ module.exports = function (InfEntityAssociation) {
       }
 
       // if the ea has a chunk as the range
-      if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
+      else if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
 
         // prepare parameters
         const DatChunk = InfEntityAssociation.app.models.DatChunk;
@@ -144,7 +144,7 @@ module.exports = function (InfEntityAssociation) {
       }
 
       // if the ea has a chunk as the domain
-      if (requestedEa.domain_chunk && Object.keys(requestedEa.domain_chunk).length > 0) {
+      else if (requestedEa.domain_chunk && Object.keys(requestedEa.domain_chunk).length > 0) {
 
         // prepare parameters
         const DatChunk = InfEntityAssociation.app.models.DatChunk;

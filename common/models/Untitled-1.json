@@ -1,0 +1,92 @@
+{
+    "pi_roles": [
+        {
+            "fk_property": 1208,
+            "temporal_entity": {
+                "fk_class": 365,
+                "te_roles": [
+                    {
+                        "fk_property": 1113,
+                        "appellation": {
+                            "fk_class": 40,
+                            "quill_doc": {
+                                "latestId": 2,
+                                "ops": [
+                                    {
+                                        "attributes": {
+                                            "charid": "2"
+                                        },
+                                        "insert": "b"
+                                    },
+                                    {
+                                        "attributes": {
+                                            "blockid": "1"
+                                        },
+                                        "insert": "\n"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "fk_property": 1112,
+                        "language": {
+                            "fk_class": 54,
+                            "pk_language": "deu",
+                            "lang_type": "living",
+                            "scope": "individual",
+                            "iso6392b": "ger",
+                            "iso6392t": "deu",
+                            "iso6391": "de ",
+                            "notes": "German",
+                            "pk_entity": 18605
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "text_properties": [
+        {
+            "fk_language": 18605,
+            "language": {
+                "fk_class": 54,
+                "pk_language": "deu",
+                "lang_type": "living",
+                "scope": "individual",
+                "iso6392b": "ger",
+                "iso6392t": "deu",
+                "iso6391": "de ",
+                "notes": "German",
+                "pk_entity": 18605
+            },
+            "quill_doc": {
+                "latestId": 2,
+                "ops": [
+                    {
+                        "attributes": {
+                            "charid": "2"
+                        },
+                        "insert": "a"
+                    },
+                    {
+                        "attributes": {
+                            "blockid": "1"
+                        },
+                        "insert": "\n"
+                    }
+                ]
+            },
+            "fk_class_field": 217
+        }
+    ],
+    "domain_entity_associations": [
+        {
+            "fk_property": 1016,
+            "range_pe_it": {
+                "fk_class": 218
+            }
+        }
+    ],
+    "fk_class": 220
+}

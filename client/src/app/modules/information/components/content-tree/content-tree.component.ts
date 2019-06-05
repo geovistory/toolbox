@@ -1,5 +1,5 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
 import { ActiveProjectService, DatDigital, InfEntityAssociation, InfPersistentItem, latestVersion, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
@@ -74,7 +74,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private p: ActiveProjectService,
     private r: RepoService,
     private inf: InfActions,
-    private dat: DatSelector
+    private dat: DatSelector,
+    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -130,6 +131,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           this.dataSource.data = x;
           // expand nodes with stored ids
           this.expandNodesWithStoredId()
+
+          this.ref.detectChanges()
         })
 
     })
@@ -260,7 +263,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       case 219: return 979;
       case 220: return 1016;
       case 221: return 1316;
-      case 520: return 1323;
+      case 502: return 1305;
     }
   }
 
@@ -270,7 +273,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       case 219: return false;
       case 220: return true;
       case 221: return false;
-      case 520: return false;
+      case 502: return false;
     }
   }
 
