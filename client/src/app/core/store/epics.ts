@@ -12,6 +12,7 @@ import { InfEpics } from '../inf/inf.epics';
 import { LoadingBarEpics } from '../loading-bar/api/loading-bar.epics';
 import { SysEpics } from '../sys/sys.epics';
 import { DatEpics } from 'app/core/dat/dat.epics';
+import { ProEpics } from '../pro/pro.epics';
 
 @Injectable()
 export class RootEpics {
@@ -27,6 +28,7 @@ export class RootEpics {
     private dfhEpics: DfhEpics,
     private infEpics: InfEpics,
     private datEpics: DatEpics,
+    private proEpics: ProEpics
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -39,7 +41,8 @@ export class RootEpics {
       this.accountEpics.createEpics(),
       this.dfhEpics.createEpics(),
       this.infEpics.createEpics(),
-      this.datEpics.createEpics()
+      this.datEpics.createEpics(),
+      this.proEpics.createEpics(),
     ));
 
     this.rootEpic = (

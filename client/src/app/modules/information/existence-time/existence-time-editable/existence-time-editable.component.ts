@@ -6,12 +6,13 @@ import { IAppState, InfRole, InfTemporalEntity, InfTemporalEntityApi } from 'app
 import { ExistenceTimeDetail, ExTimeModalMode, PropertyFieldList, TeEntDetail, FieldLabel } from 'app/core/state/models';
 import { createExistenceTimeDetail, StateSettings } from 'app/core/state/services/state-creator';
 import { dropLast } from 'ramda';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { teEntReducer } from '../../entity/te-ent/te-ent.reducer';
 import { slideInOut } from '../../shared/animations';
 import { ExistenceTimeModalComponent } from '../existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from '../existence-time.actions';
 import { existenceTimeReducer } from '../existence-time.reducer';
+import { first, takeUntil } from 'rxjs/operators';
 
 
 @WithSubStore({
@@ -33,6 +34,7 @@ import { existenceTimeReducer } from '../existence-time.reducer';
   ]
 })
 export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, ControlValueAccessor {
+  destroy$ = new Subject<boolean>();
 
   @Input() basePath: string[]
 
@@ -45,8 +47,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
   @Output() touched: EventEmitter<void> = new EventEmitter();
 
   localStore: ObservableStore<ExistenceTimeDetail>
-  parentTeEntStore: ObservableStore<TeEntDetail>;
-
+  parentTeEn$: Observable<TeEntDetail>
   showOntoInfo$: Observable<boolean>
   @select() toggle$: Observable<boolean>
 
@@ -75,7 +76,7 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
     if (!this.mode) throw new Error('mode of existence-time-editable is not defined');
 
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeReducer);
-    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(2, this.basePath), teEntReducer)
+    this.parentTeEn$ = this.ngRedux.select(dropLast(2, this.basePath))
 
     this.label$ = this.ngRedux.select(['activeProject', 'crm', 'fieldList', this.basePath[this.basePath.length - 1], 'label'])
 
@@ -161,40 +162,39 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
     this.localStore.dispatch(this.actions.toggle())
   }
 
-
-
-
   private save(data: { toRemove: InfRole[], toAdd: InfRole[], unchanged: InfRole[] }) {
+    this.parentTeEn$.pipe(first(), takeUntil(this.destroy$)).subscribe(teEn => {
+      const teEnt = new InfTemporalEntity({
+        ...teEn,
+        te_roles: [
+          ...data.toRemove.filter(r => (r)),
+          ...data.toAdd.filter(r => (r)) // than all roles are created or added to project
+        ]
+      } as InfTemporalEntity);
 
-    const teEnt = new InfTemporalEntity({
-      ...this.parentTeEntStore.getState().teEnt,
-      te_roles: [
-        ...data.toRemove.filter(r => (r)),
-        ...data.toAdd.filter(r => (r)) // than all roles are created or added to project
-      ]
-    } as InfTemporalEntity);
-    this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, teEnt).subscribe(teEnts => {
-      const roles = [
-        // get the resulting roles of the and filter out the ones that are in project
-        ...teEnts[0].te_roles.filter(role => (role.entity_version_project_rels && role.entity_version_project_rels[0].is_in_project)),
-        // concat with the roles that were unchanged
-        ...data.unchanged
-      ];
+      this.subs.push(this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, teEnt).subscribe(teEnts => {
+        const roles = [
+          // get the resulting roles of the and filter out the ones that are in project
+          ...teEnts[0].te_roles.filter(role => (role.entity_version_project_rels && role.entity_version_project_rels[0].is_in_project)),
+          // concat with the roles that were unchanged
+          ...data.unchanged
+        ];
 
-      const settings: StateSettings = {
-        pkUiContext: this.localStore.getState().pkUiContext
-      }
+        const settings: StateSettings = {
+          pkUiContext: this.localStore.getState().pkUiContext
+        }
 
-      if (!roles.length) {
-        this.doRemovePropSet()
-      } else {
+        if (!roles.length) {
+          this.doRemovePropSet()
+        } else {
 
-        // update the state
-        const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), roles, this.ngRedux.getState().activeProject.crm, settings)
-        this.localStore.dispatch(this.actions.existenceTimeUpdated(extDetail))
-      }
+          // update the state
+          const extDetail = createExistenceTimeDetail(new ExistenceTimeDetail({ toggle: 'expanded' }), roles, this.ngRedux.getState().activeProject.crm, settings)
+          this.localStore.dispatch(this.actions.existenceTimeUpdated(extDetail))
+        }
 
-    }));
+      }));
+    })
   }
 
   emitCtrlVals(data: { toRemove: InfRole[], toAdd: InfRole[], unchanged: InfRole[] }) {

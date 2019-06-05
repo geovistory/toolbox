@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { EntityPreview } from 'app/core';
+import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { EntityPreview, ActiveProjectService } from 'app/core';
 
 @Component({
   selector: 'gv-entity-preview',
@@ -10,10 +10,15 @@ export class EntityPreviewComponent implements OnInit {
 
   @Input() preview: EntityPreview
   @Input() dragEnabled = true;
+  @Input() openTabOnClick = false;
 
-  constructor() { }
+  constructor(private p: ActiveProjectService) { }
 
   ngOnInit() {
+
   }
 
+  click(){
+    if(this.openTabOnClick) this.p.addEntityTab(this.preview)
+  }
 }

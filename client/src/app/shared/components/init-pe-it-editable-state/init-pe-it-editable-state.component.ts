@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { IAppState, InfPersistentItem, PeItDetail } from 'app/core';
 import { createPeItDetail, isCreateContext, StateSettings } from 'app/core/state/services/state-creator';
 import { INIT_SANDBOX_STATE, sandboxStateReducer } from 'app/core/store/reducers';
-import { Information } from 'app/modules/information/containers/information/api/information.models';
+import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 
 

@@ -1,5 +1,5 @@
 import { InfTemporalEntity } from 'app/core/sdk';
-import { Entity } from './data-unit';
+import { Entity } from './entity';
 import { TeEntAccentuation } from './types';
 
 
@@ -17,6 +17,8 @@ export class TeEntDetail extends Entity  {
 
     // if true, this show the interface to edit the details
     editing? = false;
+
+    loading?: boolean
 
     constructor(data?: TeEntDetail) {
         super()

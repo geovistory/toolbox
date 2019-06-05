@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DfhClassProfileView, IAppState, ProjectDetail, ActiveProjectService, U, ClassConfig } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
@@ -14,6 +14,7 @@ import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actio
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
 import { EntityType, ProjectSettingsData } from './api/project-settings-data.models';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -101,6 +102,9 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   // project: ProjectDetail;
   // projectLabel: string;
 
+  t: TabLayout;
+
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: ProjectSettingsDataAPIEpics,
@@ -109,6 +113,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     private p: ActiveProjectService,
     private router: Router,
     private route: ActivatedRoute,
+    public ref: ChangeDetectorRef,
   ) {
     super();
     // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -124,6 +129,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
+
+    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
     // // load the class list as soon as the pk_project is available
     // this.ngRedux.select<ProjectDetail>(['activeProject', 'pk_project']).takeUntil(this.destroy$).subscribe(pk => {
@@ -144,7 +151,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.initFilter();
 
-    this.setTabTitle('Settings > Classes')
+    this.t.setTabTitle('Settings > Classes')
 
     this.dataSource.sort = this.sort;
 

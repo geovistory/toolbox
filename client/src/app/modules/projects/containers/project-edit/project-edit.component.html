@@ -50,7 +50,8 @@
 
   </mat-drawer>
   <mat-drawer-content style="display:flex; flex-direction:column">
-    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="false //!(p.creatingMentioning$ | async)">
+    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;"
+      [hasBackdrop]="false //!(p.creatingMentioning$ | async)">
 
       <!-- List of Sources, Entities … -->
       <mat-drawer class="gv-drawer-list" #list mode="over" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
@@ -137,27 +138,31 @@
         <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
           *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
 
-          <gv-text-detail *ngIf="tab.component=='text-detail'" [pkEntity]="tab.data.pkEntity" [basePath]="tab.path"
-            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-text-detail>
-          <gv-entity-detail *ngIf="tab.component=='entity-detail'" [pkEntity]="tab.data.pkEntity"
-            [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
-            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-entity-detail>
-          <gv-source-detail *ngIf="tab.component=='source-detail'" [pkEntity]="tab.data.pkEntity"
-            [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
-            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-source-detail>
-          <gv-section-detail *ngIf="tab.component=='section-detail'" [pkEntity]="tab.data.pkEntity"
-            [classAndTypePk]="tab.data.classAndTypePk" [basePath]="tab.path"
-            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-section-detail>
-          <gv-query-detail *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
-            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
-          <gv-visual-detail *ngIf="tab.component=='visual-detail'" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
-            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-visual-detail>
+          <gv-text-detail class="gv-flex-fh" *ngIf="tab.component=='text-detail'" [pkEntity]="tab.data.pkEntity" [basePath]="tab.path"
+            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c"></gv-text-detail>
 
 
-          <gv-project-settings-data *ngIf="tab.component=='classes-settings'" [basePath]="tab.path"
+          <gv-pe-it-detail class="gv-flex-fh" *ngIf="tab.component=='pe-it-detail'" [tab]="tab"
+            [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
+            [onActivateTab]="c">
+          </gv-pe-it-detail>
+
+
+          <gv-te-ent-detail class="gv-flex-fh" *ngIf="tab.component=='te-en-detail'" [tab]="tab"
+            [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
+            [onActivateTab]="c"></gv-te-ent-detail>
+
+          <gv-query-detail class="gv-flex-fh" *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
+          <gv-visual-detail class="gv-flex-fh" *ngIf="tab.component=='visual-detail'" [pkEntity]="tab.data?.pkEntity"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+          </gv-visual-detail>
+
+
+          <gv-project-settings-data class="gv-flex-fh" *ngIf="tab.component=='classes-settings'" [basePath]="tab.path"
             (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-project-settings-data>
 
-          <gv-types *ngIf="tab.component=='contr-vocab-settings'" [pkProperty]="tab.data.pkProperty"
+          <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkProperty]="tab.data.pkProperty"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-types>
 
         </gv-tab-body>

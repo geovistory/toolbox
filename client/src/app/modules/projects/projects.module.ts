@@ -26,7 +26,7 @@ import { TabHandleComponent } from './components/tab-handle/tab-handle.component
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
 import { ProjectDashboardComponent } from './containers/project-dashboard/project-dashboard.component';
 import { ProjectEditPanelComponent } from './containers/project-edit-panel/project-edit-panel.component';
-import { ProjectEditComponent, TabBodyComponent } from './containers/project-edit/project-edit.component';
+import { ProjectEditComponent, TabBodyComponent, OnActivateTabDirective } from './containers/project-edit/project-edit.component';
 import { ProjectListComponent } from './containers/project-list/project-list.component';
 import { ProjectSettingsCollaboratorsComponent } from './containers/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataAPIActions } from './containers/project-settings-data/api/project-settings-data.actions';
@@ -103,7 +103,8 @@ import { DataModule } from '../data/data.module';
     TabBodyComponent,
     PanelBodyDirective,
     TabHandleComponent,
-    SettingsListComponent
+    SettingsListComponent,
+    OnActivateTabDirective
   ],
   providers: [
     ProjectsActions,

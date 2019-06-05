@@ -134,7 +134,7 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
 
             itms.forEach(item => {
               if (item.value.pkType) {
-                item.text = typesByPk[item.value.pkType].entity_label
+                item.text = (typesByPk[item.value.pkType].entity_label || '')
               }
             })
 

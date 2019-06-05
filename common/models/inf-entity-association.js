@@ -81,7 +81,7 @@ module.exports = function (InfEntityAssociation) {
       }
 
       // if the ea has a persistent item as the range
-      if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
+      else if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
 
         // prepare parameters
         const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
@@ -113,7 +113,7 @@ module.exports = function (InfEntityAssociation) {
       }
 
       // if the ea has a chunk as the range
-      if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
+      else if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
 
         // prepare parameters
         const DatChunk = InfEntityAssociation.app.models.DatChunk;
@@ -144,18 +144,15 @@ module.exports = function (InfEntityAssociation) {
       }
 
       // if the ea has a chunk as the domain
-      if (requestedEa.domain_chunk && Object.keys(requestedEa.domain_chunk).length > 0) {
+      else if (requestedEa.domain_chunk && Object.keys(requestedEa.domain_chunk).length > 0) {
 
         // prepare parameters
         const DatChunk = InfEntityAssociation.app.models.DatChunk;
 
-        // find or create the peIt and the ea pointing to it
-        DatChunk.findOrCreate({
-          where: { pk_entity: requestedEa.domain_chunk.pk_entity }
-        }, requestedEa.domain_chunk)
-          .then((resultingObjects) => {
+        // find or create the chunk and the ea pointing to it
+        DatChunk.create(requestedEa.domain_chunk)
+          .then((resultingObject) => {
 
-            const resultingObject = resultingObjects[0];
 
             // … prepare the Ea to create
             dataObject.fk_data_domain = resultingObject.pk_entity;

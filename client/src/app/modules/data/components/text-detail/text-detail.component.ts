@@ -1,17 +1,17 @@
-import { Component, OnDestroy, Input, OnInit, HostBinding, ViewChild } from '@angular/core';
-import { Subject, Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, ActiveProjectService, DatDigital, latestVersion, getSpecificVersion, DatChunk } from 'app/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { ActiveProjectService, DatChunk, DatDigital, getSpecificVersion, IAppState, latestVersion, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { TextDetail } from './api/text-detail.models';
-import { TextDetailAPIEpics } from './api/text-detail.epics';
-import { TextDetailAPIActions } from './api/text-detail.actions';
-import { textDetailReducer } from './api/text-detail.reducer';
-import { map, tap, first, takeUntil, filter } from 'rxjs/operators';
-import { QuillDoc, Ops, Op, DeltaI } from '../../../quill';
-import { tick } from '../../../../../../node_modules/@angular/core/src/render3';
-import { SucceedActionMeta } from '../../../../core/store/actions';
-import { QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { filter, first, map, takeUntil, take } from 'rxjs/operators';
+import { SucceedActionMeta } from 'app/core/store/actions';
+import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
+import { QuillEditComponent, AnnotatedOps, ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
+import { MentioningListOf, MentioningListComponent, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
+import { QuillNodeHandler } from 'app/modules/quill/quill-node-handler';
+import { TabBase } from 'app/shared/components/tab-layout/tab-layout.models';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 
 
 export interface Version {
@@ -21,29 +21,30 @@ export interface Version {
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
-  localReducer: textDetailReducer
+  localReducer: () => { }
 })
 @Component({
   selector: 'gv-text-detail',
   templateUrl: './text-detail.component.html',
   styleUrls: ['./text-detail.component.css']
 })
-export class TextDetailComponent extends TextDetailAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(QuillEditComponent) quillEdit: QuillEditComponent;
+  @ViewChild(MentioningListComponent) mentioningList: MentioningListComponent;
 
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
   // local store of this component
-  localStore: ObservableStore<TextDetail>;
+  localStore: ObservableStore<TabBase>;
 
   // path to the substore
   @Input() basePath: string[];
 
-  // Primary key of the text to be viewed or edited
+  // Primary key of the text digital to be viewed or edited
   @Input() pkEntity: number;
   version$ = new BehaviorSubject<number>(1);
 
@@ -62,27 +63,32 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
   createAnnotation$ = new BehaviorSubject<boolean>(false);
   chunk$ = new BehaviorSubject<DatChunk>(null);
 
+  annotatedNodes$ = new BehaviorSubject<AnnotatedOps>({})
+  annotationsVisible$ = new BehaviorSubject<boolean>(false);
+
+  chunksToHighlightInText$ = new BehaviorSubject<ChunksPks>([]);
+  chunksToHighlightInList$ = new BehaviorSubject<ChunksPks>([]);
+
   // TODO check if needed
   readOnly$;
-  annotationsVisible$;
-  annotatedNodes$
-  mentioningsFocusedInTable$
+  listOf: MentioningListOf;
+
+  t: TabLayout;
 
   constructor(
     protected rootEpics: RootEpics,
-    private epics: TextDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public ref: ChangeDetectorRef
   ) {
-    super()
 
   }
 
   getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, textDetailReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+
+    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
 
     /**
      * initialize the editor with the latest version
@@ -90,6 +96,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     this.p.dat$.digital.loadVersion(this.pkEntity).resolved$.subscribe(result => {
       // set the latest version as the initial version shown in editor
       this.setVersion(result)
+      this.t.setTabTitle('Text ' + this.pkEntity)
     })
 
 
@@ -140,7 +147,39 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
      */
     // show the annotate button when some delta is selected
     this.showAnnotateBtn$ = this.selectedDelta$.map(d => (!!d))
+    this.listOf = { pkEntity: this.pkEntity, type: 'digital-text' }
+  }
 
+  mentioningListChange(rows: Row[]) {
+    const annotatedNodes: AnnotatedOps = {}
+    rows.forEach(row => {
+      (row.domainChunk.quill_doc as QuillDoc).ops.forEach(op => {
+        const id = op.attributes.charid
+        if (id) annotatedNodes[id] = [...(annotatedNodes[id] || []), row.domainChunk.pk_entity]
+      })
+    })
+    this.annotatedNodes$.next(annotatedNodes);
+  }
+
+  mentioningRowMousenter(row: Row) {
+    this.chunksToHighlightInText$.next(row.domainChunk ? [row.domainChunk.pk_entity] : []);
+  }
+  mentioningRowMouseleave(row: Row) {
+    this.chunksToHighlightInText$.next([]);
+  }
+  // mentioningRowClick(row: Row) {
+  //   this.chunksToHighlightInText$.next(row.domainChunk ? [row.domainChunk.pk_entity] : []);
+  // }
+
+  textNodeMouseenter(qnh: QuillNodeHandler) {
+    if (this.annotationsVisible$.value) {
+      qnh.annotatedChunks$.pipe(first()).subscribe(chunkPks => {
+        this.chunksToHighlightInList$.next(chunkPks)
+      })
+    }
+  }
+  textNodeMouseleave(qnh: QuillNodeHandler) {
+    this.chunksToHighlightInList$.next([])
   }
 
 
@@ -196,7 +235,7 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
    */
   selectedDeltaChange(d: DeltaI) {
     this.selectedDelta$.next(d)
-    if(this.createAnnotation$.value){
+    if (this.createAnnotation$.value && !!d && !!d.ops && d.ops.length) {
       this.setChunk();
     }
   }
@@ -208,9 +247,8 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
     return aId > bId ? a : b;
   }
 
-
   annotate() {
-    this.setShowRightArea(true)
+    this.t.setShowRightArea(true)
     this.setChunk();
   }
 
@@ -229,25 +267,15 @@ export class TextDetailComponent extends TextDetailAPIActions implements OnInit,
 
   private quillDocForChunk(): QuillDoc {
     const latestOp: Op = this.selectedDelta$.value.ops.reduce(this.latestIdReducer);
-    const latestId: number = latestOp.attributes.charid || latestOp.attributes.blockid;
+    const latestId: number = parseInt(latestOp.attributes.charid || latestOp.attributes.blockid);
     const ops: Ops = this.selectedDelta$.value.ops;
     const quill_doc: QuillDoc = { ops, latestId };
     return quill_doc;
   }
 
-  /**
-   * When user resizes the areas
-   */
-  resizedArea(event: { gutterNum: number, sizes: Array<number> }) {
-    if (event.sizes[1] < 5) this.setShowRightArea(false)
-  }
 
-  onNodeClick($event){
-
-  }
 
   ngOnDestroy() {
-    this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

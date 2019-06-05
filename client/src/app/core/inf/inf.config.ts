@@ -100,6 +100,21 @@ export const infDefinitions: ReducerConfigCollection = {
       },
     ]
   },
+  text_property: {
+    facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => {
+        return item.pk_entity.toString()
+      }
+    },
+    groupBy: [
+      {
+        keyInStore: 'fk_concerned_entity',
+        groupByFn: (d): string => d.fk_concerned_entity.toString()
+      },
+    ]
+  },
   appellation: {
     facetteByPk,
     indexBy: {
@@ -110,4 +125,34 @@ export const infDefinitions: ReducerConfigCollection = {
     },
     groupBy: []
   },
+  time_primitive: {
+    facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => {
+        return item.pk_entity.toString()
+      }
+    },
+    groupBy: []
+  },
+  place: {
+    facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => {
+        return item.pk_entity.toString()
+      }
+    },
+    groupBy: []
+  },
+  language: {
+    facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => {
+        return item.pk_entity.toString()
+      }
+    },
+    groupBy: []
+  }
 }

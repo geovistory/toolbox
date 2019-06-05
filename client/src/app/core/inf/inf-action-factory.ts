@@ -1,4 +1,4 @@
-import { StandardActionsFactory, ModifyActionMeta, SucceedActionMeta } from "app/core/store/actions";
+import { StandardActionsFactory, ModifyActionMeta, SucceedActionMeta, ActionResultObservable } from "app/core/store/actions";
 import { Observable } from "rxjs";
 import { NgRedux } from "@angular-redux/store";
 import { IAppState, U } from "app/core";
@@ -12,7 +12,7 @@ export class InfActionFactory<Payload, Model> extends StandardActionsFactory<Pay
   /**
    * @param pk is used for facetting
    */
-  remove: (items: Model[], pk?: number) => Observable<boolean>;
+  remove: (items: Model[], pk?: number) => ActionResultObservable<Model>;
 
   /**
    * @param pk is used for facetting
@@ -37,7 +37,11 @@ export class InfActionFactory<Payload, Model> extends StandardActionsFactory<Pay
         payload: null
       })
       this.ngRedux.dispatch(action)
-      return this.ngRedux.select(['pending', addPending]);
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+        key: addPending
+      };
     }
 
     this.removeSucceeded = (items: Model[], removePending: string, pk?: number) => {

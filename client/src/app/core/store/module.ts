@@ -17,8 +17,6 @@ import { INITIAL_STATE } from './initial-state';
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
 import { rootReducer } from './reducers';
-import { DfhEpics } from '../dfh/dfh.epics';
-import { InfEpics } from 'app/core/inf/inf.epics';
 
 /**
  * Function to use in combination with rxjs/operator .filter()

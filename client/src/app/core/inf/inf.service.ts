@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { Observable } from 'rxjs';
-import { InfPersistentItem, InfEntityAssociation, InfRole, InfAppellation } from '../sdk';
+import { InfPersistentItem, InfEntityAssociation, InfRole, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage } from '../sdk';
 import { mergeMap } from 'rxjs/operators';
 import { infRoot, infDefinitions } from './inf.config';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
@@ -14,11 +14,11 @@ class Selector {
     public model: string
   ) { }
 
-  selector<M>(indexKey: string): { all$: Observable<M>, key: (x) => Observable<M> } {
+  selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
     const all$ = this.pkProject$.pipe(
       mergeMap(pk => {
-        return this.ngRedux.select<M>([infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey])
+        return this.ngRedux.select<ByPk<M>>([infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey])
       })
     )
 
@@ -42,7 +42,7 @@ class InfPersistentItemSelections extends Selector {
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
 
-  public by_pk_entity$ = this.selector<ByPk<InfPersistentItem>>('by_pk_entity')
+  public by_pk_entity$ = this.selector<InfPersistentItem>('by_pk_entity')
   public by_fk_class$ = this.selector<ByPk<InfPersistentItem>>('by_fk_class')
 
 }
@@ -107,6 +107,52 @@ class InfAppellationSelections extends Selector {
   public by_pk_entity$ = this.selector<InfAppellation>('by_pk_entity')
 }
 
+class InfPlaceSelections extends Selector {
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
+
+  public by_pk_entity$ = this.selector<InfPlace>('by_pk_entity')
+}
+
+class InfTimePrimitiveSelections extends Selector {
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
+
+  public by_pk_entity$ = this.selector<InfTimePrimitive>('by_pk_entity')
+}
+
+class InfTextPropertySelections extends Selector {
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
+
+  public by_pk_entity$ = this.selector<InfTextProperty>('by_pk_entity')
+  public by_fk_concerned_entity$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity')
+}
+
+class InfLanguageSelections extends Selector {
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
+
+  public by_pk_entity$ = this.selector<InfLanguage>('by_pk_entity')
+}
+
+
 export class InfSelector {
 
   constructor(public ngRedux: NgRedux<IAppState>, public pkProject$: Observable<number | string>) { }
@@ -116,5 +162,8 @@ export class InfSelector {
   temporal_entity$ = new InfTemporalEntitySelections(this.ngRedux, this.pkProject$, infDefinitions, 'temporal_entity');
   role$ = new InfRoleSelections(this.ngRedux, this.pkProject$, infDefinitions, 'role');
   appellation$ = new InfAppellationSelections(this.ngRedux, this.pkProject$, infDefinitions, 'appellation');
-
+  place$ = new InfPlaceSelections(this.ngRedux, this.pkProject$, infDefinitions, 'place');
+  text_property$ = new InfTextPropertySelections(this.ngRedux, this.pkProject$, infDefinitions, 'text_property');
+  time_primitive$ = new InfTimePrimitiveSelections(this.ngRedux, this.pkProject$, infDefinitions, 'time_primitive');
+  language$ = new InfLanguageSelections(this.ngRedux, this.pkProject$, infDefinitions, 'language');
 }

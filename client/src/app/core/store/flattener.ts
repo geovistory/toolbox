@@ -1,11 +1,15 @@
 import { InfEntityAssociation, InfPersistentItem, InfRole } from "app/core";
 import { InfActions } from "app/core/inf/inf.actions";
-import { EntityAssociationSlice, PersistentItemSlice } from "app/core/inf/inf.models";
+import { InfEntityAssociationSlice, InfPersistentItemSlice, InfAppellationSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLanguageSlice } from "app/core/inf/inf.models";
 import { keys, omit, values } from "ramda";
-import { InfAppellation, InfTemporalEntity, DatDigital } from "../sdk";
+import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk, InfPlace, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLanguage } from "../sdk";
 import { StandardActionsFactory } from "./actions";
 import { DatActions } from "../dat/dat.actions";
-import { DigitalSlice } from "../dat/dat.models";
+import { DigitalSlice, ChunkSlice } from "../dat/dat.models";
+import { time_primitive } from "../state/services/_mock-data";
+import { ProActions } from "../pro/pro.actions";
+import { Injectable } from "../../../../node_modules/@angular/core";
+import { ProInfoProjRelSlice } from "../pro/pro.models";
 
 export class ModelFlattener<Payload, Model> {
   constructor(
@@ -45,10 +49,20 @@ export class Flattener {
 
   constructor(
     public infActions: InfActions,
-    public datActions: DatActions
+    public datActions: DatActions,
+    public proActions: ProActions
   ) { }
 
-  persistent_item = new ModelFlattener<PersistentItemSlice, InfPersistentItem>(
+  info_proj_rel = new ModelFlattener<ProInfoProjRelSlice, ProInfoProjRel>(
+    this.proActions.info_proj_rel,
+    ProInfoProjRel.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProInfoProjRel(item);
+      })
+    })
+
+  persistent_item = new ModelFlattener<InfPersistentItemSlice, InfPersistentItem>(
     this.infActions.persistent_item,
     InfPersistentItem.getModelDefinition(),
     (items) => {
@@ -56,21 +70,25 @@ export class Flattener {
         item = new InfPersistentItem(item);
         this.entity_association.flatten(item.domain_entity_associations);
         this.role.flatten(item.pi_roles)
+        this.text_property.flatten(item.text_properties)
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
-  temporal_entity = new ModelFlattener<PersistentItemSlice, InfTemporalEntity>(
+  temporal_entity = new ModelFlattener<InfPersistentItemSlice, InfTemporalEntity>(
     this.infActions.temporal_entity,
     InfTemporalEntity.getModelDefinition(),
     (items) => {
       items.forEach(item => {
         item = new InfTemporalEntity(item);
         this.role.flatten(item.te_roles)
+        this.text_property.flatten(item.text_properties)
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
 
-  role = new ModelFlattener<PersistentItemSlice, InfRole>(
+  role = new ModelFlattener<InfPersistentItemSlice, InfRole>(
     this.infActions.role,
     InfRole.getModelDefinition(),
     (items) => {
@@ -79,10 +97,14 @@ export class Flattener {
         this.temporal_entity.flatten([item.temporal_entity])
         this.persistent_item.flatten([item.persistent_item])
         this.appellation.flatten([item.appellation])
+        this.place.flatten([item.place])
+        this.time_primitive.flatten([item.time_primitive])
+        this.language.flatten([item.language])
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
-  entity_association = new ModelFlattener<EntityAssociationSlice, InfEntityAssociation>(
+  entity_association = new ModelFlattener<InfEntityAssociationSlice, InfEntityAssociation>(
     this.infActions.entity_association,
     InfEntityAssociation.getModelDefinition(),
     (items) => {
@@ -91,15 +113,56 @@ export class Flattener {
         this.persistent_item.flatten([item.domain_pe_it])
         this.persistent_item.flatten([item.range_pe_it])
         this.digital.flatten([item.domain_digital])
+        this.chunk.flatten([item.domain_chunk])
+        this.chunk.flatten([item.range_chunk])
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
-  appellation = new ModelFlattener<EntityAssociationSlice, InfAppellation>(
+  appellation = new ModelFlattener<InfAppellationSlice, InfAppellation>(
     this.infActions.appellation,
     InfAppellation.getModelDefinition(),
     (items) => {
       items.forEach(item => {
         item = new InfAppellation(item);
+      })
+    })
+
+
+  place = new ModelFlattener<InfPlaceSlice, InfPlace>(
+    this.infActions.place,
+    InfPlace.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new InfPlace(item);
+      })
+    })
+
+  time_primitive = new ModelFlattener<InfTimePrimitiveSlice, InfTimePrimitive>(
+    this.infActions.time_primitive,
+    InfTimePrimitive.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new InfTimePrimitive(item);
+      })
+    })
+
+  language = new ModelFlattener<InfLanguageSlice, InfLanguage>(
+    this.infActions.language,
+    InfLanguage.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new InfLanguage(item);
+      })
+    })
+
+  text_property = new ModelFlattener<InfTextPropertySlice, InfTextProperty>(
+    this.infActions.text_property,
+    InfTextProperty.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new InfTextProperty(item);
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
@@ -112,14 +175,32 @@ export class Flattener {
       })
     })
 
+  chunk = new ModelFlattener<ChunkSlice, DatChunk>(
+    this.datActions.chunk,
+    DatChunk.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new DatChunk(item);
+        this.entity_association.flatten(item.data_info_associations)
+      })
+    })
+
   getFlattened(): FlattenerInterface {
     return {
+      info_proj_rel: this.info_proj_rel,
+
       persistent_item: this.persistent_item,
       temporal_entity: this.temporal_entity,
       entity_association: this.entity_association,
       role: this.role,
       appellation: this.appellation,
-      digital: this.digital
+      place: this.place,
+      time_primitive: this.time_primitive,
+      language: this.language,
+      text_property: this.text_property,
+
+      digital: this.digital,
+      chunk: this.chunk,
     }
   }
 }

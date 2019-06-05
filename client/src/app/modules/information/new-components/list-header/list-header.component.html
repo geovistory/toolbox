@@ -1,0 +1,23 @@
+<!-- Toggle Button -->
+<button mat-icon-button (click)="treeControl.isExpanded(listDefinition) ? treeControl.collapse(listDefinition) : treeControl.expand(listDefinition)" [attr.aria-label]="'toggle ' + listDefinition?.name" *ngIf="(itemsCount$ | async) > 0">
+  <mat-icon class="mat-icon-rtl-mirror">
+    {{treeControl.isExpanded(listDefinition) ? 'expand_more' : 'chevron_right'}}
+  </mat-icon>
+</button>
+<button mat-icon-button disabled *ngIf="!((itemsCount$ | async) > 0)"></button>
+
+<div class="gv-field-header-label bg-transparent d-flex align-items-center gv-grow-1">
+  {{listDefinition.label}}
+</div>
+
+<div *ngIf="(showOntoInfo$|async)" class="gv-grow-1 gv-card-spacer-x align-self-stretch d-flex">
+  <div class="align-self-center">
+    <a class="badge badge-success" href="{{listDefinition.ontoInfoUrl}}" target="_blank">
+      {{listDefinition.ontoInfoLabel}}
+    </a>
+  </div>
+</div>
+
+<div *ngIf="showAddButton$ | async" class="btn btn-sm btn-link-gray" (click)="addClick.emit()">
+  <i class="fa fa-plus"></i> Add
+</div>

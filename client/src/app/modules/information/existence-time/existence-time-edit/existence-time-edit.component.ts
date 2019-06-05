@@ -42,7 +42,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
   @select() mode$: Observable<ExTimeModalMode>
 
   localStore: ObservableStore<ExistenceTimeEdit>
-  parentTeEntStore: ObservableStore<TeEntDetail>; // needed for creating a value to send to api
+  // parentTeEntStore: ObservableStore<TeEntDetail>; // needed for creating a value to send to api
 
   formGroup: FormGroup;
 
@@ -73,7 +73,7 @@ export class ExistenceTimeEditComponent extends ExTimeEditActions implements OnI
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, existenceTimeEditReducer);
-    this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(3, this.basePath), teEntReducer)
+    // this.parentTeEntStore = this.ngRedux.configureSubStore(dropLast(3, this.basePath), teEntReducer)
 
     this.initShortCuts(this.localStore.getState())
     this.initFormCtrls();

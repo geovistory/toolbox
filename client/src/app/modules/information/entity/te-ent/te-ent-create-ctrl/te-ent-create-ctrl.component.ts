@@ -9,7 +9,7 @@ import { RootEpics } from 'app/core/store/epics';
 import { EntityAPIEpics } from '../../entity.epics';
 import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { getTeEntAddOptions } from '../te-ent-editable/te-ent-editable.component';
+import { getTeEntAddOptions } from '../../../containers/te-ent-detail/te-ent-detail.component';
 
 @Component({
   selector: 'gv-te-ent-create-ctrl',

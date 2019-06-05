@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit, HostBinding } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, HostBinding, ChangeDetectorRef } from '@angular/core';
 import { ActiveProjectService, ClassConfig, SysConfig, IAppState, InfPersistentItem, U } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
@@ -15,6 +15,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/co
 import { TypeAddFormComponent } from '../type-add-form/type-add-form.component';
 import { InfSelector } from '../../../../core/inf/inf.service';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -57,13 +58,16 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   // flag indicatig if loaing info is visible
   @select() loading$: Observable<boolean>;
 
+  t: TabLayout;
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: TypesAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
     public inf: InfActions,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public ref: ChangeDetectorRef,
   ) {
     super();
   }
@@ -74,11 +78,13 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
+    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
+
     this.typedClass$ = combineLatest(this.p.classes$, this.p.hasTypeProperties$).pipe(
       first(d => !d.includes(undefined)),
       map(([classes, hasTypeProps]) => classes[hasTypeProps[this.pkProperty].pk_typed_class]),
       tap((klass) => {
-        this.setTabTitle(klass.label + ' Types')
+        this.t.setTabTitle(klass.label + ' Types')
       })
     )
 

@@ -1,8 +1,9 @@
 import { composeReducers, defaultFormReducer } from '@angular-redux/form';
 import { routerReducer } from '@angular-redux/router';
 import { createInfReducer } from 'app/core/inf/inf.reducer';
+import { createProReducer } from 'app/core/pro/pro.reducer';
 import { createAccountReducer } from 'app/modules/account/api/account.reducers';
-import { informationReducer } from 'app/modules/information/containers/information/api/information.reducer';
+import { informationReducer } from 'app/modules/information/containers/entity-list/api/entity-list.reducer';
 import { sourceListReducer } from 'app/modules/sources/containers/source-list/api/source-list.reducer';
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
@@ -10,10 +11,10 @@ import { combineReducers } from 'redux';
 import { backofficeReducer } from '../../modules/backoffice/backoffice.reducer';
 import { createProjectsReducer } from '../../modules/projects/api/projects.reducers';
 import { createActiveProjectReducer } from '../active-project/active-project.reducer';
+import { createDatReducer } from '../dat/dat.reducer';
 import { createDfhReducer } from '../dfh/dfh.reducer';
 import { loadingBarReducer } from '../loading-bar/api/loading-bar.reducer';
 import { createSysReducer } from '../sys/sys.reducer';
-import { createDatReducer } from '../dat/dat.reducer';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
@@ -75,6 +76,7 @@ export const rootReducer = composeReducers(
     sandboxState: sandboxStateReducer,
     inf: createInfReducer(),
     dat: createDatReducer(),
+    pro: createProReducer(),
     pending: pendingRequestReducer,
     resolved: resolvedRequestReducer,
   })

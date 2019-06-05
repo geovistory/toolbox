@@ -10,7 +10,7 @@ export class StandardEpicsFactory<Payload, Model> {
   constructor(
     public actionPrefix: string,
     public modelName: string,
-    public infActions: StandardActionsFactory<Payload, Model>,
+    public actions: StandardActionsFactory<Payload, Model>,
     public notifications: NotificationsAPIActions) { }
 
 
@@ -24,22 +24,22 @@ export class StandardEpicsFactory<Payload, Model> {
           apiFn(meta).subscribe((data: Model[]) => {
             if (onSuccessHook) {
               onSuccessHook(data, action.meta.pk);
-              this.infActions.loadSucceeded([], pendingKey, action.meta.pk);
+              this.actions.loadSucceeded([], pendingKey, action.meta.pk);
             }
             else {
-              this.infActions.loadSucceeded(data, pendingKey, action.meta.pk);
+              this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
             }
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',
               options: { title: error.message }
             }));
-            this.infActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
           });
         })));
     };
   }
-  createUpsertEpic<T>(apiFn: (meta: T) => Observable<Model[]>) {
+  createUpsertEpic<T>(apiFn: (meta: T) => Observable<Model[]>, onSuccessHook?: (data: Model[], pk?) => void) {
     return (action$, store) => {
       return action$.pipe(
         ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT'),
@@ -47,13 +47,19 @@ export class StandardEpicsFactory<Payload, Model> {
           const pendingKey = action.meta.addPending;
           const meta = action.meta as any as T;
           apiFn(meta).subscribe((data: Model[]) => {
-            this.infActions.upsertSucceeded(data, pendingKey, action.meta.pk);
+            if (onSuccessHook) {
+              onSuccessHook(data, action.meta.pk);
+              this.actions.upsertSucceeded([], pendingKey, action.meta.pk);
+            }
+            else {
+              this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+            }
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',
               options: { title: error.message }
             }));
-            this.infActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
           });
         })));
     };
@@ -65,13 +71,13 @@ export class StandardEpicsFactory<Payload, Model> {
         mergeMap((action: FluxStandardAction<Payload, ModifyActionMeta<Model>>) => new Observable<Action>((globalActions) => {
           const pendingKey = action.meta.addPending;
           apiFn(action.meta.items).subscribe((data: Model[]) => {
-            this.infActions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
+            this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
           }, error => {
             globalActions.next(this.notifications.addToast({
               type: 'error',
               options: { title: error.message }
             }));
-            this.infActions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
           });
         })));
     };

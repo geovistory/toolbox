@@ -10,44 +10,8 @@
   </mat-form-field>
 </p>
 
-<!-- <table class="table table-striped gv-table-scroll-y border-bottom border-secondary">
-  <thead>
-    <tr>
-      <th scope="col">dfh_pk_class</th>
-      <th scope="col">dfh_standard_label</th>
-      <th>gui label (english)</th>
-      <th scope="col">type</th>
-      <th scope="col">profile</th>
-      <th scope="col">action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let row of (tableData$ | async); trackBy:getKey;">
-      <td>{{row.dfh_pk_class}}</td>
-      <td>{{row.dfh_standard_label}}</td>
-      <td>
-        <span *ngFor="let label of row?.labels">{{label?.dfh_label}}</span>
-        <gv-dfh-label-list-edit [basePath]="['backoffice','classList','rows', row.key, 'labels']"
-          [dfhFkClass]="row.dfh_pk_class"></gv-dfh-label-list-edit>
-      </td>
-      <td>{{row?.type}}</td>
 
-      <td>
-        <div *ngFor="let i of row?.class_profile_view" class="badge mr-1"
-          [ngClass]="{'badge-success': !i.removed_from_api,  'badge-danger': i.removed_from_api }">
-          {{i.dfh_profile_label}}: {{i.dfh_profile_association_type}} {{i.removed_from_api ? 'removed from API':''}}
-        </div>
-      </td>
-
-      <td>
-        <a class="nav-link" routerLink="/backoffice/classes/{{row.dfh_pk_class}}" routerLinkActive="active">Details</a>
-      </td>
-    </tr>
-  </tbody>
-</table> -->
-
-
-<table class="gv-flex-fh" mat-table [dataSource]="dataSource" matSort matSortDisableClear="true" 
+<table class="gv-flex-fh" mat-table [dataSource]="dataSource" matSort matSortDisableClear="true"
   class="mat-elevation-z1">
 
   <!-- Checkbox Column -->
@@ -166,7 +130,7 @@
       <a class="nav-link" routerLink="/backoffice/classes/{{element.dfh_pk_class}}" routerLinkActive="active">Edit</a>
     </td>
   </ng-container>
-  
+
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>

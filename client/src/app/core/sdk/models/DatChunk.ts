@@ -17,8 +17,7 @@ export interface DatChunkInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   "fk_namespace"?: number;
-  "fk_digital"?: number;
-  data_info_association?: InfEntityAssociation[];
+  data_info_associations?: InfEntityAssociation[];
   namespace?: DatNamespace;
 }
 
@@ -34,8 +33,7 @@ export class DatChunk implements DatChunkInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   "fk_namespace": number;
-  "fk_digital": number;
-  data_info_association?: InfEntityAssociation[];
+  data_info_associations?: InfEntityAssociation[];
   namespace?: DatNamespace;
   constructor(data?: DatChunkInterface) {
     Object.assign(this, data);
@@ -114,19 +112,15 @@ export class DatChunk implements DatChunkInterface {
           name: 'fk_namespace',
           type: 'number'
         },
-        "fk_digital": {
-          name: 'fk_digital',
-          type: 'number'
-        },
       },
       relations: {
-        data_info_association: {
-          name: 'data_info_association',
+        data_info_associations: {
+          name: 'data_info_associations',
           type: 'InfEntityAssociation[]',
           model: 'InfEntityAssociation',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_info_domain'
+          keyTo: 'fk_data_domain'
         },
         namespace: {
           name: 'namespace',

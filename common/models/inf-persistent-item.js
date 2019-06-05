@@ -24,7 +24,39 @@ module.exports = function (InfPersistentItem) {
         requestedPeIt = data;
       }
 
+      // Add F2 Expression, if this is a F4 Manifestation Singleton
+      if (requestedPeIt.fk_class == 220) {
+        requestedPeIt.domain_entity_associations = [
+          ...(requestedPeIt.domain_entity_associations ||  []),
+          { fk_property: 1016, range_pe_it: { fk_class: 218 } }
+        ]
+      }
+      // Add F2 Expression, if this is a F3 Manifestation Product Type
+      else if (requestedPeIt.fk_class == 219) {
+        requestedPeIt.range_entity_associations = [
+          ...(requestedPeIt.range_entity_associations ||  []),
+          { fk_property: 979, domain_pe_it: { fk_class: 218 } }
+        ]
+      }
+      // Add F2 Expression, if this is a F5 Item
+      else if (requestedPeIt.fk_class == 221) {
+        requestedPeIt.range_entity_associations = [
+          ...(requestedPeIt.range_entity_associations ||  []),
+          { fk_property: 1316, domain_pe_it: { fk_class: 218 } }
+        ]
+      }
+      // Add F2 Expression, if this is a geovC4 Web Request
+      else if (requestedPeIt.fk_class == 502) {
+        requestedPeIt.range_entity_associations = [
+          ...(requestedPeIt.range_entity_associations ||  []),
+          { fk_property: 1305, domain_pe_it: { fk_class: 218 } }
+        ]
+      }
+
+
       const ctxWithoutBody = _.omit(ctx, ['req.body']);
+
+
 
       InfPersistentItem._findOrCreatePeIt(InfPersistentItem, pkProject, dataObject, ctxWithoutBody)
         .then((resultingPeIts) => {
@@ -144,42 +176,41 @@ module.exports = function (InfPersistentItem) {
 
           }
 
-          // /******************************************
-          //  * type_namespace_rels
-          //  ******************************************/
-          // if (requestedPeIt.type_namespace_rels) {
+          /******************************************
+           * range_entity_associations
+           ******************************************/
+          if (requestedPeIt.range_entity_associations) {
 
-          //   // prepare parameters
-          //   const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
+            // prepare parameters
+            const InfEntityAssociation = InfPersistentItem.app.models.InfEntityAssociation;
 
-          //   //… filter items that are truthy (not null), iterate over them,
-          //   // return the promise that the PeIt will be
-          //   // returned together with all nested items
-          //   const promise = Promise.map(requestedPeIt.type_namespace_rels.filter(item => (item)), (item) => {
-          //     // use the pk_entity from the created peIt to set the fk_persistent_item of the item
-          //     item.fk_persistent_item = resultingPeIt.pk_entity;
-          //     // find or create the item
-          //     return InfTypeNamespaceRel.findOrCreateInfTypeNamespaceRel(pkProject, item, ctxWithoutBody);
-          //   }).then((items) => {
-          //     //attach the items to peit.type_namespace_rels
-          //     res.type_namespace_rels = [];
-          //     for (var i = 0; i < items.length; i++) {
-          //       const item = items[i];
-          //       if (item && item[0]) {
-          //         res.type_namespace_rels.push(item[0]);
-          //       }
-          //     }
-          //     return true;
+            //… filter items that are truthy (not null), iterate over them,
+            // return the promise that the PeIt will be
+            // returned together with all nested items
+            const promise = Promise.map(requestedPeIt.range_entity_associations.filter(item => (item)), (item) => {
+              // use the pk_entity from the created peIt to set the fk_info_range of the item
+              item.fk_info_range = resultingPeIt.pk_entity;
+              // find or create the item
+              return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item, ctxWithoutBody);
+            }).then((items) => {
+              //attach the items to peit.range_entity_associations
+              res.range_entity_associations = [];
+              for (var i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item && item[0]) {
+                  res.range_entity_associations.push(item[0]);
+                }
+              }
+              return true;
 
-          //   }).catch((err) => {
-          //     reject(err);
-          //   })
+            }).catch((err) => {
+              reject(err);
+            })
 
-          //   // add promise
-          //   promiseArray.push(promise)
+            // add promise for text properties
+            promiseArray.push(promise)
 
-          // }
-
+          }
 
           if (promiseArray.length === 0) return resolve([res]);
           else return Promise.map(promiseArray, (promise) => promise).then(() => {
@@ -194,10 +225,10 @@ module.exports = function (InfPersistentItem) {
     });
   }
 
-  // /** 
+  // /**
   //  * Check if authorized to relate type with namespace
   //  * - pk_namespace must be of "Geovistory Ongoing"
-  //  * - or pk_project must be in fk_project of namespace  
+  //  * - or pk_project must be in fk_project of namespace
   //  */
   // InfPersistentItem.beforeRemote('findOrCreateType', function (context, obj, next) {
   //   const pk_project = context.req.query.pk_project;
@@ -224,9 +255,9 @@ module.exports = function (InfPersistentItem) {
 
   // /**
   //  * Remote method to create instances of E55 types.
-  //  * 
+  //  *
   //  * Adds a type_namespace_rel between peIt and namespace
-  //  * 
+  //  *
   //  */
   // InfPersistentItem.findOrCreateType = function (pk_project, pk_namespace, data, ctx) {
 
@@ -402,11 +433,11 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
-   * Internal function to create a include object of 
+   * Internal function to create a include object of
    * a filter object for findComplex()
-   * 
+   *
    * It includes everything, that is not better requested by itself.
-   * 
+   *
    * It includes relations from the persistent items
    * - roles
   //  * - domain_entity_associations
@@ -414,20 +445,20 @@ module.exports = function (InfPersistentItem) {
    *
    * It includes associated values
    * - text properties
-   *  
+   *
    * It does not include related
-   * - persistent items 
+   * - persistent items
    * - temporal entities
    * - classes
    * ...since those can be requested and cached alone
-   * 
+   *
    * Usage: add the returned object to the include property of a persistent item relation
    * of findComplex() filter, e.g.:
    * {
    *    ...
    *    include: InfPersistentItem.getIncludeObject(true, 123)
    * }
-   * 
+   *
    * @param ofProject {boolean}
    * @param project {number}
    * @returns include object of findComplex filter
@@ -475,16 +506,16 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
-   * Internal function to create the include property of 
+   * Internal function to create the include property of
    * a filter object for findComplex()
-   * 
+   *
    * Usage: add the returned object to the include property of a persistent item relation
    * of findComplex() filter, e.g.:
    * {
    *    ...
    *    include: InfPersistentItem.getIncludeObject(true, 123)
    * }
-   * 
+   *
    * @param ofProject {boolean}
    * @param project {number}
    * @returns include object of findComplex filter
@@ -656,17 +687,17 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
-   * Query instances of E55 Type 
-   * 
-   * Where 
-   *	- types are related to the given namespace  
+   * Query instances of E55 Type
+   *
+   * Where
+   *	- types are related to the given namespace
    *	- types are in given project
-   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class)
    *
    * Eager loading
    *  - The appellations of given language
    *  - TODO: The entity_associations of property "has broader term" used for hierarchy
-   * 
+   *
    * @param pk_namespace
    * @param pk_project
    * @param pk_typed_class
@@ -798,16 +829,16 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
-   * Query instances of E55 Type 
-   * 
-   * Where 
+   * Query instances of E55 Type
+   *
+   * Where
    *	- types are in given project
    *	- types are instances of the type class
    *
    * Eager loading
    *  - The appellations of given language
    *  - TODO: The entity_associations of property "has broader term" used for hierarchy
-   * 
+   *
    * @param pk_namespace
    * @param pk_project
    * @param pk_class
@@ -897,18 +928,18 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
-   * Query instances of E55 Type 
-   * 
-   * Where 
-   *	- types are related to the given namespace  
+   * Query instances of E55 Type
+   *
+   * Where
+   *	- types are related to the given namespace
    *	- types are in given project
-   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class)
    *  - optional: the type has the pk_entity. This is for querying a specific type.
    *
    * Eager loading
    *  - The appellations of given language
    *  - TODO: The entity_associations of property "has broader term" used for hierarchy
-   * 
+   *
    * @param pk_namespace
    * @param pk_project
    * @param pk_typed_class
@@ -1025,16 +1056,16 @@ module.exports = function (InfPersistentItem) {
 
 
   /**
-   * Query instance of E55 Type 
-   * 
-   * Where 
+   * Query instance of E55 Type
+   *
+   * Where
    *	- types are in given project
    *  - the type has the pk_entity.
    *
    * Eager loading
    *  - The appellations of given language
    *  - TODO: The entity_associations of property "has broader term" used for hierarchy
-   * 
+   *
    * @param pk_project
    * @param pk_entity
    */
@@ -1127,18 +1158,18 @@ module.exports = function (InfPersistentItem) {
   }
 
   /**
-   * Query instances of E55 Type 
-   * 
-   * Where 
+   * Query instances of E55 Type
+   *
+   * Where
    *	- types are in given project
    *	- types are related to the namespace enabled by given project or the namespace geovistory ongoing
-   *    TODO: There is the need of a namespace_proj_rel table that says: This project has enabled this namespace for this class 
-   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *    TODO: There is the need of a namespace_proj_rel table that says: This project has enabled this namespace for this class
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class)
    *
    * Eager loading
    *  - The appellations of given language
    *  - TODO: The entity_associations of property "has broader term" used for hierarchy
-   * 
+   *
    * @param pk_namespace
    * @param pk_project
    * @param pk_typed_class
@@ -1178,12 +1209,12 @@ module.exports = function (InfPersistentItem) {
 
   /**
    * Get all types for classes and project
-   * 
-   * Where 
+   *
+   * Where
    *	- types are in given project
    *	- types are related to the namespace enabled by given project or the namespace geovistory ongoing
-   *    TODO: There is the need of a namespace_proj_rel table that says: This project has enabled this namespace for this class 
-   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class) 
+   *    TODO: There is the need of a namespace_proj_rel table that says: This project has enabled this namespace for this class
+   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class)
    *
    * @param pk_project
    * @param pk_typed_classes
@@ -1199,31 +1230,31 @@ module.exports = function (InfPersistentItem) {
     SELECT type_entity.*, has_type_prop.fk_class as fk_typed_class
     from information.persistent_item type_entity
 
-    -- join the info, of which class these the type_entities are types 
+    -- join the info, of which class these the type_entities are types
     JOIN data_for_history.property has_type ON has_type.dfh_has_range = type_entity.fk_class
     JOIN system.class_has_type_property has_type_prop ON has_type.dfh_pk_property = has_type_prop.fk_property
-    
+
     -- join the project_rel of the type
     JOIN projects.info_proj_rel type_proj_rel ON type_entity.pk_entity = type_proj_rel.fk_entity
-    
+
     -- join the namespace of the type
     -- JOIN information.type_namespace_rel type_nmsp_rel ON type_entity.pk_entity = type_nmsp_rel.fk_persistent_item
-    
+
     -- TODO: join namespace_project_rel in order to see if for that class a custom namespace is activated
-    --LEFT JOIN commons.namespace_project_rel nmsp_proj_rel 
+    --LEFT JOIN commons.namespace_project_rel nmsp_proj_rel
     --	ON nmsp_proj_rel.fk_namespace = type_nmsp_rel.fk_namespace
     --	AND nmsp_proj_rel.fk_class = type_entity.fk_class
     --	AND nmsp_proj_rel.fk_project = $1
     -- filter for types in the given project
-    
-    WHERE 
+
+    WHERE
     -- where the typed class is in ...
-    has_type_prop.fk_class IN (${pk_typed_classes_refs}) 
-    
+    has_type_prop.fk_class IN (${pk_typed_classes_refs})
+
     -- where they type is in project
     AND type_proj_rel.fk_project = $1
     AND type_proj_rel.is_in_project = true
-    
+
     -- TODO: somehow filter for the namespace activated per project and class
     --AND
     -- where the namespace is activated by the project, else geovistory_ongoing
@@ -1243,20 +1274,20 @@ module.exports = function (InfPersistentItem) {
 
   /**
    * Add a persistent item to project
-   * 
+   *
    * This query will add those things to the project:
    * - Roles that are enabled for auto-adding (using the admin configuration of that class).
    * - Entity associationss enabled for auto-adding (using the admin configuration of that class).
    *   This will add the type for example. If the type is not activated by the project, the association is added but nothing will be displayed in that project.
    *   Currently, there is no information displayed to the user, concerning the possible 'loss' of type information upon adding it to the project.
-   * 
+   *
    * This query will not add
    * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
    * - The value-like items (time-primitive, appellation, language), since they never belong to projects
-   * 
+   *
    * See this page for details
    * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
-   * 
+   *
    * @param pk_namespace
    * @param pk_project
    * @param pk_typed_class
@@ -1267,123 +1298,7 @@ module.exports = function (InfPersistentItem) {
 
     const params = [pk_entity, pk_project, accountId]
 
-    const sql_stmt = `
-      -- Relate given persistent item to given project --
-      ----------------------------------------------------
-
-      WITH pe_it AS (
-        select pk_entity, fk_class from information.persistent_item where pk_entity = $1
-        ),
-      -- Find "auto-add-properties" for all classes 
-      -- TODO: Add a filter for properties enabled by given project
-      auto_add_properties AS (
-        -- select the fk_class and the properties that are auto add because of a class_field_config
-        select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
-        from data_for_history.property as p
-        inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
-        UNION
-        select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
-        from data_for_history.property as p
-        inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
-        UNION
-        -- select the fk_class and the properties that are auto add because of a property set
-          select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
-        from data_for_history.property as p
-        inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
-        UNION
-          select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
-        from data_for_history.property as p
-        inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-        inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-        Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
-      ),
-      -- Find all roles related to the given persistent item pk_entity 
-      -- that are of an auto-add property
-      pe_it_roles AS (
-        select r.pk_entity, r.fk_temporal_entity, r.fk_property, r.fk_entity, addp.max_quantifier, r.community_favorite_calendar as calendar
-        from information.v_role as r
-        inner join pe_it on r.fk_entity = pe_it.pk_entity
-        inner join auto_add_properties as addp on (
-          addp.dfh_pk_property = r.fk_property AND addp.fk_class = pe_it.fk_class 
-        )
-        -- take only the max quantity of rows for that property, exclude repo-alternatives
-        WHERE r.rank_for_pe_it <= r.domain_max_quantifier OR r.domain_max_quantifier = -1  OR r.domain_max_quantifier IS NULL
-      ),
-      -- Find all temporal entities related to pe_it_roles
-      -- that are of an auto-add property
-      te_ents AS (
-        select fk_temporal_entity as pk_entity
-        from pe_it_roles
-      ),
-      -- Find all roles related to temporal entities mached by pe_it_roles
-      -- that are of an auto-add property
-      te_ent_roles AS (
-        select r.pk_entity, r.fk_temporal_entity, r.fk_property, r.fk_entity, addp.max_quantifier, r.community_favorite_calendar as calendar
-        from information.v_role as r
-        inner join pe_it_roles as pi_r on pi_r.fk_temporal_entity = r.fk_temporal_entity
-        inner join information.temporal_entity as te on te.pk_entity = pi_r.fk_temporal_entity
-        inner join auto_add_properties as addp on (addp.dfh_pk_property = r.fk_property AND addp.fk_class = te.fk_class)
-        -- take only the max quantity of rows for that property, exclude repo-alternatives
-        WHERE r.rank_for_te_ent <= r.range_max_quantifier OR r.range_max_quantifier = -1 OR r.range_max_quantifier IS NULL
-      ),
-      -- find all entity associations that involve the pe_it
-      -- that are of an auto-add property
-      pe_it_entity_associations AS (
-        -- where pe_it is domain
-        select ea.pk_entity, ea.fk_info_domain, ea.fk_property, ea.fk_info_domain, addp.max_quantifier
-        from information.v_entity_association as ea
-        inner join pe_it on ea.fk_info_domain = pe_it.pk_entity
-        inner join auto_add_properties as addp on (addp.dfh_pk_property = ea.fk_property AND addp.fk_class = pe_it.fk_class)		
-        -- take only the max allowed rows
-        WHERE ea.rank_for_domain <= ea.range_max_quantifier OR ea.range_max_quantifier = -1 OR ea.range_max_quantifier IS NULL
-        
-        UNION
-        
-        -- where pe_it is range
-        select ea.pk_entity, ea.fk_info_domain, ea.fk_property, ea.fk_info_domain, addp.max_quantifier
-        from information.v_entity_association as ea
-        inner join pe_it on ea.fk_info_domain = pe_it.pk_entity
-        inner join auto_add_properties as addp on (addp.dfh_pk_property = ea.fk_property AND addp.fk_class = pe_it.fk_class)		
-        -- take only the max allowed rows
-        WHERE ea.rank_for_range <= ea.domain_max_quantifier OR ea.domain_max_quantifier = -1  OR ea.domain_max_quantifier IS NULL
-      ),
-      -- TODO: find all entity associations that involve the te_ents (for types or mentionings of te_ents!)
-
-      -- get a list of all pk_entities of repo version
-      pk_entities_of_repo AS (
-        select pk_entity, null::calendar_type as calendar from pe_it
-        UNION
-        select pk_entity, null::calendar_type as calendar from pe_it_entity_associations
-        UNION
-        select pk_entity, calendar from pe_it_roles 
-        UNION 
-        select pk_entity, null::calendar_type as calendar from te_ents
-        UNION
-        select pk_entity, calendar from te_ent_roles
-      )
-      --,
-      ---- get a list of all pk_entities that the project manually removed
-      --pk_entities_excluded_by_project AS (
-      --  SELECT fk_entity as pk_entity
-      --  FROM projects.v_info_proj_rel as epr 
-      --  where epr.is_in_project = false and epr.fk_project = $2
-      --),
-      ---- get final list of pk_entities to add to project
-      --pk_entities_to_add AS (
-      --  select pk_entity, calendar from pk_entities_of_repo
-      --  EXCEPT
-      --  select pk_entity, null::calendar_type from pk_entities_excluded_by_project
-      --)
-      ----select * from pk_entities_to_add;
-
-      insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
-      SELECT $2, true, pk_entity, calendar, $3
-      from pk_entities_of_repo;
-    `
+    const sql_stmt = `SELECT information.add_pe_it_to_project($1, $2, $3)`
 
     const connector = InfPersistentItem.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {

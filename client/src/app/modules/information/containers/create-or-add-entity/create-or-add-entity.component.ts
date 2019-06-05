@@ -126,18 +126,21 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
     this.destroy$.unsubscribe();
   }
 
+  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
   onAddExisting(pkEntity: number) {
     this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
       (peIts) => { this.done.emit(peIts[0]) }
     )
   }
 
+  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
   onOpenExisting(pkEntity: number) {
     this.peItApi.nestedObjectOfProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
       (peIts) => { this.done.emit(peIts[0]) }
     )
   }
 
+  // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
   submitCreateForm() {
     // Create PeIt
     if (this.form.form.valid && this.form.form.value.peIt) {

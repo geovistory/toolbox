@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { StandardActionsFactory, LoadActionMeta } from 'app/core/store/actions';
-import { InfPersistentItem, InfEntityAssociation, InfRole, InfTemporalEntity, InfAppellation } from '../sdk';
+import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta } from 'app/core/store/actions';
+import { InfPersistentItem, InfEntityAssociation, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage } from '../sdk';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState, U } from 'app/core';
-import { PersistentItemSlice } from './inf.models';
+import { InfPersistentItemSlice } from './inf.models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { infRoot } from './inf.config';
 import { InfActionFactory } from './inf-action-factory';
 
-type Payload = PersistentItemSlice;
+type Payload = InfPersistentItemSlice;
 
 export interface LoadByPkAction extends LoadActionMeta { pkEntity: number };
 
-export class PeItActionFactory extends StandardActionsFactory<Payload, InfPersistentItem> {
+export class InfPersistentItemActionFactory extends InfActionFactory<Payload, InfPersistentItem> {
 
   // Suffixes of load action types
   static readonly NESTED_BY_PK = 'NESTED_BY_PK';
@@ -21,12 +21,12 @@ export class PeItActionFactory extends StandardActionsFactory<Payload, InfPersis
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
-  createActions(): PeItActionFactory {
-    Object.assign(this, this.createCrudActions(infRoot, 'persistent_item'))
+  createActions(): InfPersistentItemActionFactory {
+    Object.assign(this, this.createInfActions(infRoot, 'persistent_item'))
 
     this.loadNestedObject = (pkProject: number, pkEntity: number) => {
       const action: FluxStandardAction<Payload, LoadByPkAction> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + PeItActionFactory.NESTED_BY_PK,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfPersistentItemActionFactory.NESTED_BY_PK,
         meta: { addPending: U.uuid(), pk: pkProject, pkEntity },
         payload: null,
       };
@@ -35,7 +35,29 @@ export class PeItActionFactory extends StandardActionsFactory<Payload, InfPersis
     return this;
   }
 }
+export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, InfTemporalEntity> {
 
+  // Suffixes of load action types
+  static readonly NESTED_BY_PK = 'NESTED_BY_PK';
+
+  loadNestedObject: (pkProject: number, pkEntity: number) => void;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): InfTemporalEntityActionFactory {
+    Object.assign(this, this.createInfActions(infRoot, 'temporal_entity'))
+
+    this.loadNestedObject = (pkProject: number, pkEntity: number) => {
+      const action: FluxStandardAction<Payload, LoadByPkAction> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.NESTED_BY_PK,
+        meta: { addPending: U.uuid(), pk: pkProject, pkEntity },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+    }
+    return this;
+  }
+}
 export interface FindEAByParams extends LoadActionMeta {
   ofProject: boolean,
   pkEntity: number,
@@ -46,8 +68,7 @@ export interface FindEAByParams extends LoadActionMeta {
 export interface ContentTreeMeta extends LoadActionMeta {
   pkExpressionEntity: number,
 }
-
-export class EntityAssoctiationActionFactory extends InfActionFactory<Payload, InfEntityAssociation> {
+export class InfEntityAssoctiationActionFactory extends InfActionFactory<Payload, InfEntityAssociation> {
   // export class EntityAssoctiationActionFactory extends StandardActionsFactory<Payload, InfEntityAssociation> {
 
   // Suffixes of load action types
@@ -67,7 +88,7 @@ export class EntityAssoctiationActionFactory extends InfActionFactory<Payload, I
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
-  createActions(): EntityAssoctiationActionFactory {
+  createActions(): InfEntityAssoctiationActionFactory {
     Object.assign(this, this.createInfActions(infRoot, 'entity_association'))
 
     this.findByParams = (
@@ -79,7 +100,7 @@ export class EntityAssoctiationActionFactory extends InfActionFactory<Payload, I
       pkProperty: number,
     ) => {
       const action: FluxStandardAction<Payload, FindEAByParams> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + EntityAssoctiationActionFactory.BY_PARAMS,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfEntityAssoctiationActionFactory.BY_PARAMS,
         meta: {
           addPending: U.uuid(),
           pk: pkProject,
@@ -99,7 +120,7 @@ export class EntityAssoctiationActionFactory extends InfActionFactory<Payload, I
      */
     this.contentTree = (pkProject, pkExpressionEntity) => {
       const action: FluxStandardAction<Payload, ContentTreeMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + EntityAssoctiationActionFactory.CONTENT_TREE,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfEntityAssoctiationActionFactory.CONTENT_TREE,
         meta: {
           addPending: U.uuid(),
           pk: pkProject,
@@ -114,17 +135,86 @@ export class EntityAssoctiationActionFactory extends InfActionFactory<Payload, I
   }
 }
 
+export interface LoadOutgoingAlternativeRoles extends LoadActionMeta { pkTemporalEntity: number, pkProperty: number };
+export interface LoadIngoingAlternativeRoles extends LoadActionMeta { pkEntity: number, pkProperty: number };
+
+export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
+
+  // Suffixes of load action types
+  static readonly ALTERNATIVES_OUTGOING = 'ALTERNATIVES_OUTGOING';
+  static readonly ALTERNATIVES_INGOING = 'ALTERNATIVES_INGOING';
+
+  loadOutgoingAlternatives: (pkTemporalEntity, pkProperty, pkProject) => ActionResultObservable<InfRole>;
+  loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfRole>;
+
+  contentTree: (pkProject: number, pkExpressionEntity: number) => void;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): InfRoleActionFactory {
+    Object.assign(this, this.createInfActions(infRoot, 'role'))
+
+    this.loadOutgoingAlternatives = (pkTemporalEntity: number, pkProperty: number, pkProject: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadOutgoingAlternativeRoles> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.ALTERNATIVES_OUTGOING,
+        meta: {
+          addPending,
+          pk: pkProject,
+          pkTemporalEntity,
+          pkProperty,
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]),
+        key: addPending
+      };
+    }
+
+    this.loadIngoingAlternatives = (pkEntity: number, pkProperty: number, pkProject: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadIngoingAlternativeRoles> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.ALTERNATIVES_INGOING,
+        meta: {
+          addPending,
+          pk: pkProject,
+          pkEntity,
+          pkProperty,
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]),
+        key: addPending
+      };
+    }
+
+    return this;
+  }
+}
+
 
 
 
 @Injectable()
 export class InfActions {
 
-  persistent_item = new PeItActionFactory(this.ngRedux).createActions();;
-  entity_association = new EntityAssoctiationActionFactory(this.ngRedux).createActions()
-  temporal_entity = new StandardActionsFactory<Payload, InfTemporalEntity>(this.ngRedux).createCrudActions(infRoot, 'temporal_entity')
-  role = new StandardActionsFactory<Payload, InfRole>(this.ngRedux).createCrudActions(infRoot, 'role')
+  persistent_item = new InfPersistentItemActionFactory(this.ngRedux).createActions();;
+  entity_association = new InfEntityAssoctiationActionFactory(this.ngRedux).createActions()
+  temporal_entity = new InfTemporalEntityActionFactory(this.ngRedux).createActions()
+  role = new InfRoleActionFactory(this.ngRedux).createActions()
+
+  // TODO: pimp those up to real Inf Actions!
+  language = new StandardActionsFactory<Payload, InfLanguage>(this.ngRedux).createCrudActions(infRoot, 'language')
   appellation = new StandardActionsFactory<Payload, InfAppellation>(this.ngRedux).createCrudActions(infRoot, 'appellation')
+  place = new StandardActionsFactory<Payload, InfPlace>(this.ngRedux).createCrudActions(infRoot, 'place')
+  time_primitive = new StandardActionsFactory<Payload, InfTimePrimitive>(this.ngRedux).createCrudActions(infRoot, 'time_primitive')
+  text_property = new StandardActionsFactory<Payload, InfTextProperty>(this.ngRedux).createCrudActions(infRoot, 'text_property')
 
   constructor(public ngRedux: NgRedux<IAppState>) { }
 

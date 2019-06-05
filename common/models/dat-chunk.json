@@ -6,7 +6,7 @@
     "validateUpsert": true,
     "postgresql": {
       "schema": "data",
-      "table": "chunk"
+      "table": "v_chunk"
     }
   },
   "mixins": {
@@ -33,10 +33,10 @@
   },
   "validations": [],
   "relations": {
-    "data_info_association": {
+    "data_info_associations": {
       "type": "hasMany",
       "model": "InfEntityAssociation",
-      "foreignKey": "fk_info_domain",
+      "foreignKey": "fk_data_domain",
       "primaryKey": "pk_entity"
     }
   },
@@ -52,51 +52,43 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "findById",
-        "t"
+        "findById"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "ofDigital"
       ]
     },
     {
       "principalType": "ROLE",
       "principalId": "system_admin",
       "permission": "ALLOW",
-      "property": [
-        "findOrCreateChunk"
-      ]
+      "property": []
     }
   ],
   "methods": {
-    "t": {
-      "accepts": [ ],
-      "returns": {
-        "arg": "data",
-        "type": "boolean",
-        "root": true
-      },
-      "description": "T.",
-      "http": {
-        "path": "/t",
-        "verb": "post"
-      }
-    },
-    "findOrCreateChunk": {
+    "ofDigital": {
       "accepts": [
         {
-          "arg": "projectId",
+          "arg": "pkProject",
           "type": "number",
           "required": true,
-          "description": "Id of the project",
+          "description": "Primary key of the project",
           "http": {
             "source": "query"
           }
         },
         {
-          "arg": "data",
-          "type": "DatChunk",
+          "arg": "pkDigital",
+          "type": "number",
           "required": true,
-          "description": "data",
+          "description": "Primary key of the digital",
           "http": {
-            "source": "body"
+            "source": "query"
           }
         },
         {
@@ -109,13 +101,15 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "DatChunk",
+        "type": [
+          "DatChunk"
+        ],
         "root": true
       },
-      "description": "Find or create a DatChunk and update the project relation if needed.",
+      "description": "Get the chunks related to the digital, with their entity associations.",
       "http": {
-        "path": "/findOrCreate",
-        "verb": "post"
+        "path": "/of-digital",
+        "verb": "get"
       }
     }
   }

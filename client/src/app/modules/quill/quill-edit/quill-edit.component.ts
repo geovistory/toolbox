@@ -8,6 +8,10 @@ import { QuillNodeHandler } from '../quill-node-handler';
 import { DeltaI, Ops, QuillDoc } from '../quill.models';
 import { QuillService } from '../quill.service';
 
+// the array of numbers are the pk_entities of the chunks
+export interface AnnotatedOps { [nodeId: string]: number[] }
+export type ChunksPks = number[]
+
 @Component({
   selector: 'gv-quill-edit',
   templateUrl: './quill-edit.component.html',
@@ -29,15 +33,17 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   @Input() annotationsVisible$: Observable<boolean>;
 
-  @Input() annotatedNodes$: Observable<{ [nodeId: string]: number[] }>;
+  @Input() annotatedNodes$: Observable<AnnotatedOps>;
 
-  @Input() entitiesToHighlight$: Observable<number[]>
+  @Input() chunksToHighlight$: Observable<ChunksPks>
 
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
   @Output() htmlChange = new EventEmitter<string>()
   @Output() selectedDeltaChange = new EventEmitter<Delta>()
   @Output() nodeClick = new EventEmitter<QuillNodeHandler>()
+  @Output() nodeMouseenter = new EventEmitter<QuillNodeHandler>()
+  @Output() nodeMouseleave = new EventEmitter<QuillNodeHandler>()
 
 
   // needed for creating annotation: maps nodeid with object containing isSelected-boolean and op (from Delta.ops)
@@ -483,18 +489,24 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
           const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.map(nodes => nodes[id]) : Observable.of(null);
 
-          const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this.annotationsVisible$, this.entitiesToHighlight$, this.creatingAnnotation)
+          const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this.annotationsVisible$, this.chunksToHighlight$, this.creatingAnnotation)
 
           // subscribe for events of nodehandler
           this.nodeSubs.set(node, {
             nh: qnh,
             subs: [
+              qnh.onMouseEnter.subscribe((nh: QuillNodeHandler) => {
+                this.nodeMouseenter.emit(qnh)
+              }),
+              qnh.onMouseLeave.subscribe((nh: QuillNodeHandler) => {
+                this.nodeMouseleave.emit(qnh)
+              }),
               qnh.onClick.subscribe((nh: QuillNodeHandler) => {
                 this.nodeClick.emit(qnh)
-                console.log({ click: nh })
+                // console.log({ click: nh })
               }),
               qnh.onSelectedChange.subscribe((nh: QuillNodeHandler) => {
-                console.log({ onSelectedChange: nh })
+                // console.log({ onSelectedChange: nh })
                 this.changeAnnotatedDelta(nh);
               }),
             ]

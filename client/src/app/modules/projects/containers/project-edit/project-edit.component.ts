@@ -1,15 +1,33 @@
+
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CdkPortal } from '@angular/cdk/portal';
-import { AfterViewInit, Component, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { MatDrawer } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
-import { ActiveProjectService, ListType, SDKStorage, Tab, InfPersistentItemApi } from 'app/core';
+import { ActiveProjectService, ListType, SDKStorage, Tab } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, takeUntil, delay, filter } from 'rxjs/operators';
+import { first, takeUntil } from 'rxjs/operators';
+import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
-import { RootEpics } from 'app/core/store/epics';
-import { InfEpics } from 'app/core/inf/inf.epics';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+
+export interface TabLayoutComponentInterface {
+  t: TabLayout
+}
+
+@Directive({
+  selector: '[onActivateTab]'
+})
+export class OnActivateTabDirective {
+  @Input('onActivateTab') c: TabLayoutComponentInterface;
+
+  onActivateTab() {
+    this.c.t.onActivateTab()
+  }
+  beforeDeactivateTab() {
+    this.c.t.beforeDeactivateTab()
+  }
+}
+
 
 
 export interface TabBody extends Tab {
@@ -37,6 +55,8 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();
 
   @ViewChild(CdkPortal) portal: CdkPortal;
+  @ContentChild(OnActivateTabDirective) child: OnActivateTabDirective;
+
   private host: PanelBodyDirective;
 
   constructor() {
@@ -53,6 +73,7 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
             if (this.portal.isAttached) this.portal.detach();
             // attatch portal to new Host
             newHost.attach(this.portal);
+            if (this.child) this.child.onActivateTab()
           }
         }
 
@@ -235,3 +256,5 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.destroy$.unsubscribe();
   }
 }
+
+

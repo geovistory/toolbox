@@ -1,37 +1,36 @@
 /* tslint:disable */
 import {
-  DatChunk,
   DatNamespace
 } from '../index';
 
 declare var Object: any;
 export interface DatDigitalInterface {
-  "pk_text"?: any;
+  "pk_text"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   "quill_doc"?: any;
   "string"?: string;
+  "chunks"?: Array<any>;
   "pk_entity"?: number;
   "entity_version"?: number;
   "fk_namespace"?: number;
-  chunks?: DatChunk[];
   namespace?: DatNamespace;
 }
 
 export class DatDigital implements DatDigitalInterface {
-  "pk_text": any;
+  "pk_text": number;
   "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
   "sys_period": string;
   "quill_doc": any;
   "string": string;
+  "chunks": Array<any>;
   "pk_entity": number;
   "entity_version": number;
   "fk_namespace": number;
-  chunks?: DatChunk[];
   namespace?: DatNamespace;
   constructor(data?: DatDigitalInterface) {
     Object.assign(this, data);
@@ -68,7 +67,7 @@ export class DatDigital implements DatDigitalInterface {
       properties: {
         "pk_text": {
           name: 'pk_text',
-          type: 'any'
+          type: 'number'
         },
         "notes": {
           name: 'notes',
@@ -94,6 +93,10 @@ export class DatDigital implements DatDigitalInterface {
           name: 'string',
           type: 'string'
         },
+        "chunks": {
+          name: 'chunks',
+          type: 'Array&lt;any&gt;'
+        },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
@@ -108,14 +111,6 @@ export class DatDigital implements DatDigitalInterface {
         },
       },
       relations: {
-        chunks: {
-          name: 'chunks',
-          type: 'DatChunk[]',
-          model: 'DatChunk',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_digital'
-        },
         namespace: {
           name: 'namespace',
           type: 'DatNamespace',

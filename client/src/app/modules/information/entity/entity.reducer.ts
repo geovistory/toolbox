@@ -88,6 +88,12 @@ export const entityReducer =
           showRemoveVerification: !state.showRemoveVerification
         }
         break;
+      case EntityActions.SET_SHOW_RIGHT_AREA:
+        state = {
+          ...state,
+          showRightArea: action.payload.showRightArea
+        }
+        break;
     }
 
 

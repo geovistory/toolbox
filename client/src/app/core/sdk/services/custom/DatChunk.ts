@@ -32,13 +32,13 @@ export class DatChunkApi extends BaseLoopBackApi {
   }
 
   /**
-   * T.
+   * Get the chunks related to the digital, with their entity associations.
    *
-   * @param {object} data Request data.
+   * @param {number} pkProject Primary key of the project
    *
-   * This method does not accept any data. Supply an empty object.
+   * @param {number} pkDigital Primary key of the digital
    *
-   * @returns {object} An empty reference that will be
+   * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
@@ -47,49 +47,17 @@ export class DatChunkApi extends BaseLoopBackApi {
    * This usually means the response is a `DatChunk` object.)
    * </em>
    */
-  public t(customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
+  public ofDigital(pkProject: any, pkDigital: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DatChunks/t";
+    "/DatChunks/of-digital";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkDigital !== 'undefined' && pkDigital !== null) _urlParams.pkDigital = pkDigital;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
-  }
-
-  /**
-   * Find or create a DatChunk and update the project relation if needed.
-   *
-   * @param {number} projectId Id of the project
-   *
-   * @param {object} data Request data.
-   *
-   *  - `data` – `{DatChunk}` - data
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DatChunk` object.)
-   * </em>
-   */
-  public findOrCreateChunk(projectId: any, data: any, customHeaders?: Function): Observable<DatChunk[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DatChunks/findOrCreate";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    if (typeof projectId !== 'undefined' && projectId !== null) _urlParams.projectId = projectId;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<DatChunk>) =>
-        instances.map((instance: DatChunk) => new DatChunk(instance))
-    ));
   }
 
   /**

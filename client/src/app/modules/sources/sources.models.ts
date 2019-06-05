@@ -4,7 +4,6 @@ import { ClassAndTypeSelector } from '../information/containers/class-and-type-s
 import { CreateOrAddEntity } from '../information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { List } from '../information/containers/list/api/list.models';
 import Delta from 'quill/node_modules/quill-delta';
-import { MentionedEntity } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.models';
 import { IVersion } from 'app/modules/data/components/version-picker/version-picker.component';
 
 
@@ -26,7 +25,7 @@ export interface AnnotationState {
     chunk: IChunk; // add other types of references here, like a spot in a image
 
     // entities mentioned by the chunk
-    mentionedEntities: { [key: string]: MentionedEntity }
+    // mentionedEntities: { [key: string]: MentionedEntity }
 
 }
 
@@ -38,8 +37,8 @@ export interface AnnotationCtrlState {
     // reference to the exact place of mentioning within a digital object
     chunk?: IChunk; // add other types of references here, like a spot in a image
 
-    // entities mentioned by the chunk
-    mentionedEntities?: { [key: string]: MentionedEntity }
+    // // entities mentioned by the chunk
+    // mentionedEntities?: { [key: string]: MentionedEntity }
 
     // when true, the user can select the segment (chunk of text / spot of image)
     selectingSegment?: boolean;

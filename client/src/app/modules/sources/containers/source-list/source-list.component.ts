@@ -1,13 +1,13 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, EntityPreview, IAppState, ProjectCrm, SubstoreComponent, SysConfig, U } from 'app/core';
+import { ActiveProjectService, EntityPreview, IAppState, ProjectCrm, SubstoreComponent, SysConfig, U, InfPersistentItem } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { SystemSelector } from 'app/core/sys/sys.service';
 import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
-import { Information } from 'app/modules/information/containers/information/api/information.models';
+import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, map, tap } from 'rxjs/operators';
+import { first, map, tap, takeUntil } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
@@ -70,30 +70,25 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
 
   openEntity(preview: EntityPreview) {
-    // TODO figure out what icon to use
-    this.p.addTab({
-      active: true,
-      component: 'source-detail',
-      icon: 'source',
-      pathSegment: 'sourceDetails',
-      data: {
-        pkEntity: preview.pk_entity
-      }
-    });
+    this.p.addSourceTab(preview.pk_entity)
   }
 
 
   startCreate(classAndTypePk: ClassAndTypePk) {
-    // TODO figure out what icon to use
-    this.p.addTab({
-      active: true,
-      component: 'source-detail',
-      icon: 'source',
-      pathSegment: 'sourceDetails',
-      data: {
-        classAndTypePk
-      }
-    });
+    this.p.getClassConfig(classAndTypePk.pkClass)
+      .pipe(first(d => !!d), takeUntil(this.destroy$)).subscribe(classConfig => {
+
+        this.p.setListType('')
+
+        this.p.openModalCreateOrAddEntity({
+          classAndTypePk,
+          pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
+        }).subscribe((entity: InfPersistentItem) => {
+          this.p.addSourceTab(entity.pk_entity)
+        })
+
+      })
+
   }
 
   ngOnDestroy() {

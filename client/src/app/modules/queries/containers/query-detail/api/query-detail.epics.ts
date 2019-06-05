@@ -53,7 +53,7 @@ export class QueryDetailAPIEpics {
             /**
              * Subscribe to the api call
              */
-            .subscribe((data) => {
+            .subscribe((query: ProQuery) => {
               /**
                * Emit the global action that completes the loading bar
                */
@@ -61,7 +61,8 @@ export class QueryDetailAPIEpics {
               /**
                * Emit the local action on loading succeeded
                */
-              c.localStore.dispatch(this.actions.loadSucceeded(data));
+              c.localStore.dispatch(this.actions.loadSucceeded(query));
+              c.t.setTabTitle(query.name)
 
             }, error => {
               /**
@@ -260,6 +261,7 @@ export class QueryDetailAPIEpics {
                * Emit the local action on loading succeeded
                */
               c.localStore.dispatch(this.actions.deleteSucceeded());
+              c.t.setTabTitle('(Deleted)')
 
             }, error => {
               /**
@@ -321,8 +323,8 @@ export class QueryDetailAPIEpics {
               } else if (action.meta.filetype === 'csv') {
                 const blob = new Blob([data], { type: 'text/comma-separated-values' });
                 saveAs(blob, 'query-results.csv')
-              } 
-              
+              }
+
               // else if (action.meta.filetype === 'xls') {
 
               //   const s2ab = (s) => {

@@ -33,6 +33,7 @@ import { SysModule } from './core/sys/sys.module';
 import { InfModule } from './core/inf/inf.module';
 import { RepoModule } from './core/repo/repo.module';
 import { DatModule } from './core/dat/dat.module';
+import { ProModule } from 'app/core/pro/pro.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -56,6 +57,7 @@ registerLocaleData(localeDeCh);
     SysModule,
     InfModule,
     DatModule,
+    ProModule,
     RepoModule,
     NgReduxRouterModule,
     NgReduxModule,

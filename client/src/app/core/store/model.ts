@@ -1,5 +1,5 @@
 import { ProjectDetail } from 'app/core/active-project/active-project.models';
-import { Information } from 'app/modules/information/containers/information/api/information.models';
+import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { IAccount } from '../../modules/account/account.model';
 import { Backoffice } from '../../modules/backoffice/backoffice.models';
 import { IProjectList } from '../../modules/projects/projects.model';

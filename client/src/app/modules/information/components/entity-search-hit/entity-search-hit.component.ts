@@ -2,7 +2,6 @@ import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityPreview, IAppState } from 'app/core';
 import { EntitySearchHit } from '../../containers/list/api/list.models';
-import { MentionedEntity } from 'app/modules/annotation/components/mentioning-list/api/mentioning-list.models';
 
 @Component({
   selector: 'gv-entity-search-hit',
@@ -31,7 +30,6 @@ export class EntitySearchHitComponent implements OnInit {
   @Output() onOpen: EventEmitter<number> = new EventEmitter();
   @Output() onOpenEntityPreview: EventEmitter<EntityPreview> = new EventEmitter();
   @Output() onSelect: EventEmitter<number> = new EventEmitter();
-  @Output() onSelectAsMentioned: EventEmitter<MentionedEntity> = new EventEmitter();
 
   headlineItems: Array<string> = [];
   isInProject: boolean;

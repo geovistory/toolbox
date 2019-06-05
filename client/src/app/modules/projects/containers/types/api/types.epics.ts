@@ -99,6 +99,7 @@ export class TypesAPIEpics {
           type$.subscribe((type) => {
 
             const peItDetail = createPeItDetail({
+              showRightArea: false,
               showHeader: false,
               showProperties: true,
               showPropertiesHeader: true,
@@ -142,7 +143,7 @@ export class TypesAPIEpics {
 
   /**
    * This is kind of a hacky way to observe when a type is removed
-   * 
+   *
    * This should be replaced with a better method, once all the information
    * data (peIt, roles, ect.) is also centrally stored in 'activeProject'
    */

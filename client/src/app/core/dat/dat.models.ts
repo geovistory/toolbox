@@ -6,6 +6,11 @@ export class DigitalSlice {
   by_pk_entity?: ByPk<DatDigital>;
   loading?: boolean
 }
+export class ChunkSlice {
+  by_pk_entity?: ByPk<DatDigital>;
+  by_fk_text?: ByPk<ByPk<DatDigital>>;
+  loading?: boolean
+}
 
 export class NamespaceSlice {
   by_pk_entity?: ByPk<DatNamespace>;
@@ -15,6 +20,7 @@ export class NamespaceSlice {
 
 export interface Dat {
   digital?: DigitalSlice;
+  chunk?: ChunkSlice;
 }
 
 
