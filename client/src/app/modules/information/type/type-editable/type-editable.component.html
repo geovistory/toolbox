@@ -8,5 +8,5 @@
 
 <form [formGroup]="formGroup" class="form-inline" *ngIf="(editing$ | async)">
   <gv-type-ctrl formControlName="eaCtrl" [basePath]="basePath.concat('_typeCtrl')" [openOnInit]="true"> </gv-type-ctrl>
-  <button type="submit" class="btn btn-outline-secondary ml-2" (click)="stopEdit()">Cancel</button>
+  <button type="button" class="btn btn-outline-secondary ml-2" (click)="stopEdit()">Cancel</button>
 </form>

@@ -1,40 +1,56 @@
-.map{
-    padding-bottom: 2px;
+.map {
+  padding-bottom: 2px;
 }
-.timeline{
-    padding-top: 2px;
+.timeline {
+  padding-top: 2px;
 }
 
 .map-container {
-    display: flex;
-    flex: auto;
+  display: flex;
+  position: relative;
+  flex: 1 1 100%;
 }
 
 ::ng-deep .map-container {
-    display: flex;
-    flex: auto;
+  display: flex;
+  position: relative;
+  flex: 1 1 100%;
+}
+
+.cesium-viewer {
+  display: flex;
+  flex: 1 1 100%;
+  width: unset;
+  height: unset;
+}
+
+::ng-deep .cesium-viewer {
+  display: flex;
+  flex: 1 1 100%;
+  width: unset;
+  height: unset;
 }
 
 .cesium-viewer-timelineContainer {
-    display: none;
+  display: none;
 }
 
 ::ng-deep .cesium-viewer-timelineContainer {
-    display: none;
+  display: none;
 }
 
 .cesium-viewer-animationContainer {
-    display: none;
+  display: none;
 }
 
 ::ng-deep .cesium-viewer-animationContainer {
-    display: none;
+  display: none;
 }
 
 .cesium-viewer-bottom {
-    display: none;
+  display: none;
 }
 
 ::ng-deep .cesium-viewer-bottom {
-    display: none;
+  display: none;
 }
