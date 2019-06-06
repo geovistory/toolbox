@@ -12,6 +12,21 @@
   "properties": {
     "notes": {
       "type": "string"
+    },
+    "definition": {
+      "type": "string"
+    },
+    "st_schema_name": {
+      "type": "string"
+    },
+    "st_table_name": {
+      "type": "string"
+    },
+    "st_column_name": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
     }
   },
   "validations": [],
