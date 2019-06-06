@@ -4,9 +4,18 @@ var loopback = require('loopback');
 var boot = require('loopback-boot');
 
 var app = module.exports = loopback();
+
+var enforce = require('express-sslify');
+
 const { Client } = require('pg')
 const { Subject } = require('rxjs');
 
+/**
+ * Enfoce using ssl (https) on staging and production
+ */
+if (['production', 'staging'].includes(process.env.DB_ENV)) {
+  app.use(enforce.HTTPS({ trustProtoHeader: true }))
+}
 
 app.start = function () {
   // start the web server
@@ -20,7 +29,7 @@ app.start = function () {
     }
 
     /**********************************************************
-     * Setup the Refreshing of the Materialized View 
+     * Setup the Refreshing of the Materialized View
      **********************************************************/
     // const connector = app.dataSources.postgres1.connector;
 
@@ -43,10 +52,10 @@ app.start = function () {
     // });
 
 
-     /**********************************************************
-     * Setup the queue for warehouse update requests
-     **********************************************************/
-    // Connect to Postgres 
+    /**********************************************************
+    * Setup the queue for warehouse update requests
+    **********************************************************/
+    // Connect to Postgres
     const client = new Client({
       connectionString: app.datasources.postgres1.connector.settings.url,
     })
@@ -54,16 +63,16 @@ app.start = function () {
 
     const queue = [];
     let working = false;
-    let skipped=0;
-    let executed=0;
+    let skipped = 0;
+    let executed = 0;
     const nextFromQue = () => {
 
-      if(!working && queue.length){
+      if (!working && queue.length) {
         working = true;
         const fn = queue.pop();
-        client.query('select ' + fn, (err,res)=>{
+        client.query('select ' + fn, (err, res) => {
           console.log(`
-\u{1b}[32m Warehouse update   Nr. ${(executed ++)} \u{1b}[34m ${new Date().toString()}
+\u{1b}[32m Warehouse update   Nr. ${(executed++)} \u{1b}[34m ${new Date().toString()}
     \u{1b}[33m Function call:  \u{1b}[0m ${fn}
     \u{1b}[31m ${err ? err : ''}  \u{1b}[0m
           `)
@@ -78,7 +87,7 @@ app.start = function () {
       if (!queue.includes(fn)) {
         queue.push(fn);
         // console.log('enQueued', fn)
-          nextFromQue();
+        nextFromQue();
       }
       // else{
       //   console.log('skipped', (skipped ++))
