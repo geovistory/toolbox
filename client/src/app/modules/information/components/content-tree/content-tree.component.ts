@@ -232,7 +232,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         .pipe(
           filter(x => !!x),
           map(versions => latestVersion(versions)),
-          map(x => x.string.substring(0, 50) + (x.string.length > 50 ? '…' : '')),
+          map(x => x.string.substring(0, 20) + (x.string.length > 20 ? '…' : '')),
           startWith(''));
     }
   }
