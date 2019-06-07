@@ -28,12 +28,13 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from './shared/pipes/keys.module';
 import { AngularSplitModule } from 'angular-split';
 import { MccColorPickerModule } from 'material-community-components';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions, MatButtonModule, MatDialogModule, MatIconModule } from '@angular/material';
 import { SysModule } from './core/sys/sys.module';
 import { InfModule } from './core/inf/inf.module';
 import { RepoModule } from './core/repo/repo.module';
 import { DatModule } from './core/dat/dat.module';
 import { ProModule } from 'app/core/pro/pro.module';
+import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -84,7 +85,10 @@ registerLocaleData(localeDeCh);
     LanguageSearchTypeaheadModule,
     KeysModule,
     AccountModule,
-    ValidationDirectivesModule
+    ValidationDirectivesModule,
+    MatButtonModule,
+    MatIconModule,
+    UserFeedbackModule
   ],
   providers: [
     EntityEditorService,

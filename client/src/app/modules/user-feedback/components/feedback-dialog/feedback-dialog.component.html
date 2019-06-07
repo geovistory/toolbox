@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>Feedback</h2>
+<mat-dialog-content class="mat-typography">
+
+  <h3>Do you have any feedback on Geovistory?</h3>
+
+  <p>
+   Use our GitHub feedback page to <br>
+  </p>
+  <ul>
+    <li>report bugs / problems*</li>
+    <li>suggest ideas for Geovistory features*</li>
+    <li>explore existing feedback and discussions.</li>
+  </ul>
+
+  <p class="text-muted small">
+    * GitHub login required.
+  </p>
+
+  <p>
+    Thank you for your feedback!
+  </p>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Not now</button>
+  <a mat-button mat-dialog-close cdkFocusInitial (click)="onCloseClick()" color="primary"
+    href="https://github.com/kleiolab/geovistory-feedback/issues/new/choose" target="_blank">
+    <i class="fa fa-2x fa-github mr-2"></i> Open feedback page on GitHub
+  </a>
+</mat-dialog-actions>
