@@ -3,11 +3,21 @@
 declare var Object: any;
 export interface SysSystemTypeInterface {
   "notes"?: string;
+  "definition"?: string;
+  "st_schema_name"?: string;
+  "st_table_name"?: string;
+  "st_column_name"?: string;
+  "st_group"?: string;
   "pk_entity"?: number;
 }
 
 export class SysSystemType implements SysSystemTypeInterface {
   "notes": string;
+  "definition": string;
+  "st_schema_name": string;
+  "st_table_name": string;
+  "st_column_name": string;
+  "st_group": string;
   "pk_entity": number;
   constructor(data?: SysSystemTypeInterface) {
     Object.assign(this, data);
@@ -44,6 +54,26 @@ export class SysSystemType implements SysSystemTypeInterface {
       properties: {
         "notes": {
           name: 'notes',
+          type: 'string'
+        },
+        "definition": {
+          name: 'definition',
+          type: 'string'
+        },
+        "st_schema_name": {
+          name: 'st_schema_name',
+          type: 'string'
+        },
+        "st_table_name": {
+          name: 'st_table_name',
+          type: 'string'
+        },
+        "st_column_name": {
+          name: 'st_column_name',
+          type: 'string'
+        },
+        "st_group": {
+          name: 'st_group',
           type: 'string'
         },
         "pk_entity": {

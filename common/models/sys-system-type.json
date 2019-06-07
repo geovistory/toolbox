@@ -25,7 +25,7 @@
     "st_column_name": {
       "type": "string"
     },
-    "group": {
+    "st_group": {
       "type": "string"
     }
   },

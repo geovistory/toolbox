@@ -12,7 +12,6 @@ export interface DatDigitalInterface {
   "sys_period"?: string;
   "quill_doc"?: any;
   "string"?: string;
-  "chunks"?: Array<any>;
   "pk_entity"?: number;
   "entity_version"?: number;
   "fk_namespace"?: number;
@@ -27,7 +26,6 @@ export class DatDigital implements DatDigitalInterface {
   "sys_period": string;
   "quill_doc": any;
   "string": string;
-  "chunks": Array<any>;
   "pk_entity": number;
   "entity_version": number;
   "fk_namespace": number;
@@ -92,10 +90,6 @@ export class DatDigital implements DatDigitalInterface {
         "string": {
           name: 'string',
           type: 'string'
-        },
-        "chunks": {
-          name: 'chunks',
-          type: 'Array&lt;any&gt;'
         },
         "pk_entity": {
           name: 'pk_entity',
