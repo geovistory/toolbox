@@ -15,6 +15,7 @@ import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
 import { EntityType, ProjectSettingsData } from './api/project-settings-data.models';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -37,6 +38,7 @@ import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions implements OnInit, OnDestroy, SubstoreComponent {
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(DetailContentComponent) detailContentComponent: DetailContentComponent;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -152,6 +154,16 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.initFilter();
 
     this.t.setTabTitle('Settings > Classes')
+
+    // This is needed to keep the table scrollable
+    // this.t.activated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    //   this.detailContentComponent.fh = this.detailContentComponent.scroll = false;
+    //   this.ref.detectChanges()
+    //   setTimeout(() => {
+    //     this.detailContentComponent.fh = this.detailContentComponent.scroll = true;
+    //     this.ref.detectChanges()
+    //   })
+    // })
 
     this.dataSource.sort = this.sort;
 
