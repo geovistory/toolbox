@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 const Promise = require('bluebird');
+var exec = require('child_process').exec;
 var pg = require('pg');
-var QueryStream = require('pg-query-stream')
 
 var path = require('path');
 var fs = require('fs-extra');
@@ -30,77 +30,19 @@ function createSqlFile(dirPath, tableName) {
   return new Promise(function (resolve, reject) {
 
     var outfile = dirPath + tableName;
-    var ws = fs.createWriteStream(outfile);
-
-    var query = new QueryStream(`SELECT * FROM ${tableName}`, [], { batchSize: 10000 })
-    var queryStream = client.query(query);
-
-    ws.write(`
-		BEGIN;
-		ALTER TABLE ${tableName} DISABLE TRIGGER USER;`);
-
-    var isFirstRow = true;
-    queryStream.on('data', function (row) {
-
-      const values = []
-      for (const col in row) {
-        if (row.hasOwnProperty(col)) {
-          var val = row[col];
-
-          if (val === null) {
-            // stringify the value
-            val = JSON.stringify(val)
-          }
-          else if (typeof val === 'string') {
-            // escape single quotes
-            val = val.split("'").join("''");
-            // wrap in single quotes
-            val = "'" + val + "'";
-          }
-          else if (typeof val === 'object') {
-            // stringify the value
-            val = JSON.stringify(val)
-
-            if (val[0] === '"' && val[val.length - 1] === '"') {
-              // remove wrapping double quotes
-              val = val.slice(1, -1);
-            }
-
-            // escape single quotes
-            val = val.split("'").join("''");
-
-            // wrapp in single quotes instead
-            val = "'" + val + "'";
-          }
-
-          values.push(val);
-        }
+    var cmd = `psql ${database_url} -c "\\copy ${tableName} to '${outfile}' WITH DELIMITER ',' CSV HEADER;"; `;
+    var copy = exec(cmd, function (err, stdout, stderr) {
+      if (err) {
+        reject(err)
+        console.log(err);
       }
-
-      if (isFirstRow) {
-
-        ws.write(`
-				INSERT INTO ${tableName} (${Object.keys(row).map(key => '"' + key + '"').join(',')})
-				VALUES
-			(${values.join(',')})`);
-
-        isFirstRow = false;
-      } else {
-        ws.write(`,
-			(${values.join(',')})`);
-      }
+      // console.log(stdout);
     });
 
-    queryStream.on('end', function (result) {
-      ws.write(`;
-
-			ALTER TABLE ${tableName} ENABLE TRIGGER USER;
-			COMMIT;
-			`);
-      ws.end();
-
-      resolve()
+    copy.on('exit', function (code) {
+      resolve(code)
     });
+
   })
 }
 
