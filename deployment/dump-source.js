@@ -110,7 +110,7 @@ function createSqlFile(dirPath, tableName) {
 client.query(`
 SELECT * FROM information_schema.tables
 WHERE table_type = 'BASE TABLE'
-AND table_schema !~* 'information_schema|pg_catalog|topology|importer_dbpedia'
+AND table_schema !~* 'information_schema|pg_catalog|topology|importer_dbpedia|importer'
 ORDER BY table_schema, table_type, table_name
 `, function (err, result) {
     if (err) {
