@@ -2,6 +2,9 @@
 
 var path = require('path');
 
+var UrlBuilder = require('../classes/UrlBuilder');
+var urlBuilder = new UrlBuilder();
+
 module.exports = function (PubAccount) {
 
   PubAccount.listProjects = function (id, cb) {
@@ -31,69 +34,23 @@ module.exports = function (PubAccount) {
   PubAccount.afterRemote('create', function (context, account, next) {
     console.log('> account.afterRemote create triggered');
 
-    /**
-    * var getRedirectUrl - gets the Url to be redericted after successful
-    * email verification.
-    *
-    * The URL will point to the client app server, which can be hosted
-    * on a different domain as the api server (e.g. in local dev environment).
-    *
-    * @return {type}  redirect url after successful email verification
-    */
-    var getRedirectUrl = function () {
-      return context.req.headers.origin + '/email-verified';
-    }
-
-    /**
-    * var getProtocol - get the protocol of api server ('http' or 'https').
-    *
-    * @return {String} protocol of api server
-    */
-    var getProtocol = function () {
-      if (process.env.HEROKU_APP_NAME) {
-        return 'https';
-      }
-      return undefined;
-    }
-
-    /**
-    * var getHost - get the host of api server.
-    *
-    * @return {String} host of api server
-    */
-    var getHost = function () {
-      if (process.env.HEROKU_APP_NAME) {
-        return process.env.HEROKU_APP_NAME + '.herokuapp.com';
-      }
-      return undefined;
-    }
-
-    /**
-    * var getPort - get the port of api server.
-    *
-    * @return {String}  port of api server
-    */
-    var getPort = function () {
-      if (process.env.HEROKU_APP_NAME) {
-        return '443';
-      }
-      return undefined;
-    }
+    var baseUrl = urlBuilder.getBaseUrl();
 
     var options = {
       type: 'email',
       to: account.email,
-      from: 'noreply@geovistory.org',
-      subject: '[Geovistory] Please verify your email address',
+      from: 'noreply@geovistory.com',
+      subject: 'Geovistory – Please verify your email address',
       template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-      protocol: getProtocol(), //if undefined 'http' will be used.
-      host: getHost(),  //if undefined app.get('host') will be used.
-      port: getPort(), //if undefined app.get('port') will be used.
-      redirect: getRedirectUrl(),
+      protocol: urlBuilder.getProtocol(),
+      host: urlBuilder.getHost(),
+      port: urlBuilder.getPort(),
+      redirect: baseUrl + '/email-verified',
       account: account
     };
 
     account.verify(options, function (err, response) {
+
       if (err) {
         PubAccount.deleteById(account.id);
         return next(err);
@@ -107,33 +64,18 @@ module.exports = function (PubAccount) {
   });
 
 
-
-  /**
-  * PubAccount - Prepare options for resetPassword method
-  */
-  PubAccount.beforeRemote('resetPassword', function (ctx, unused, next) {
-
-    // We need headersOrigin for the reset-password-link in the email
-    ctx.args.options.headersOrigin = ctx.req.headers.origin;
-
-    next();
-
-  })
-
   // Send an email with reset-password-link
   PubAccount.on('resetPasswordRequest', function (info) {
 
-    // takes headersOrigin as base path, so that the reset-password-link
-    // works on all servers (ng dev., staging, prod.).
-    var url = info.options.headersOrigin + '/reset-password';
+    var url = urlBuilder.getBaseUrl() + '/reset-password';
 
     var html = 'Click <a href="' + url + '?access_token=' +
       info.accessToken.id + '">here</a> to reset your password';
 
     PubAccount.app.models.Email.send({
       to: info.email,
-      from: 'noreply@geovistory.org',
-      subject: 'Password reset',
+      from: 'noreply@geovistory.com',
+      subject: 'Geovistory – Password reset',
       html: html
     }, function (err) {
       if (err) return console.log('> error sending password reset email');
@@ -146,13 +88,13 @@ module.exports = function (PubAccount) {
 
     var sql_stmt = `
     SELECT role.id, role.name
-    FROM role 
+    FROM role
     JOIN rolemapping ON role.id = rolemapping.roleid
     WHERE rolemapping.principaltype = 'USER'
     AND rolemapping.principalid = $1::text
     `;
     var params = [id];
-    
+
     const connector = PubAccount.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
@@ -161,20 +103,20 @@ module.exports = function (PubAccount) {
     return cb.promise;
   }
 
-  PubAccount.withRolesAndProjects = function ( cb) {
+  PubAccount.withRolesAndProjects = function (cb) {
 
     var sql_stmt = `
-    SELECT 
-    account.id, 
-    account.username, 
-    account.email, 
-    account.emailverified, 
+    SELECT
+    account.id,
+    account.username,
+    account.email,
+    account.emailverified,
     COALESCE(json_agg(DISTINCT rolemappings.roles) FILTER (WHERE rolemappings.principalid IS NOT NULL), '[]') AS roles,
     COALESCE(json_agg(DISTINCT project_rels.projects) FILTER (WHERE project_rels.account_id IS NOT NULL), '[]') AS projectrels
     from account
     LEFT JOIN LATERAL (
-      SELECT jsonb_build_object('id', role.id, 'name', role.name) roles, rolemapping.principalid 
-      FROM role 
+      SELECT jsonb_build_object('id', role.id, 'name', role.name) roles, rolemapping.principalid
+      FROM role
       JOIN rolemapping ON role.id = rolemapping.roleid
       WHERE rolemapping.principaltype = 'USER'
       AND rolemapping.principalid = account.id::text
@@ -186,14 +128,14 @@ module.exports = function (PubAccount) {
       JOIN projects.project ON apr.fk_project = project.pk_entity
     ) AS project_rels
     ON project_rels.account_id = account.id
-    GROUP BY 
-    account.id, 
-    account.username, 
-    account.email, 
-    account.emailverified    
+    GROUP BY
+    account.id,
+    account.username,
+    account.email,
+    account.emailverified
     `;
     var params = [];
-    
+
     const connector = PubAccount.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);

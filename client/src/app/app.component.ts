@@ -7,10 +7,6 @@ import { FeedbackDialogComponent } from './modules/user-feedback/components/feed
 
 @Component({
   selector: 'gv-root',
-  host: {
-    '(window:keydown)': 'keydown($event)',
-    '(window:keyup)': 'keyup($event)',
-  },
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -32,8 +28,6 @@ export class AppComponent {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
-
-
 
 
 }
