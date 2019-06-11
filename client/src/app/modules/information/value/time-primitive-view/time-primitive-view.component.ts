@@ -1,14 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { InfTimePrimitive, InfRole } from 'app/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { InfRole } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
-import { DatePipe } from '@angular/common';
-import { getCalendarFromRole, infRole2TimePrimitive } from '../../information.helpers';
+import { infRole2TimePrimitive } from '../../information.helpers';
 
 @Component({
   selector: 'gv-time-primitive-view',
   templateUrl: './time-primitive-view.component.html',
-  styleUrls: ['./time-primitive-view.component.scss'],
-  providers: [DatePipe]
+  styleUrls: ['./time-primitive-view.component.scss']
 })
 export class TimePrimitiveViewComponent implements OnInit {
 
@@ -22,36 +20,9 @@ export class TimePrimitiveViewComponent implements OnInit {
   calendar: CalendarType;
   timePrimitive: TimePrimitive;
 
-  constructor(
-    private datePipe: DatePipe
-  ) { }
+  constructor() { }
 
   ngOnInit() {
     this.timePrimitive = infRole2TimePrimitive(this.role)
-  }
-
-
-  get displayLabel(): string {
-
-    const tp = new TimePrimitive(this.timePrimitive)
-
-    const dt = tp.getDateTime();
-
-    switch (this.show) {
-
-      case 'duration':
-        return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString());
-
-      case 'firstSecond':
-        return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
-
-      case 'lastSecond':
-        dt.toLastSecondOf(this.timePrimitive.duration);
-        return this.datePipe.transform(dt.getDate(), tp.getDateFormatString('1 second'));
-
-      default:
-        return '';
-
-    }
   }
 }

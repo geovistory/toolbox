@@ -13,6 +13,9 @@ interface ITimePrimitive {
 
 export class TimePrimitive {
 
+  // Last day of the era before christ
+  readonly LAST_DAY_BC = 1721422;
+
   julianDay: number;
   duration: Granularity;
   calendar: CalendarType; // the calendar initialy used by user to create time primitive
@@ -61,22 +64,41 @@ export class TimePrimitive {
    * a according to the given granularity
    */
   getDateFormatString(granularity: Granularity): string {
-    const string = 'MMM d, y GG, HH:mm:ss';
-    switch (granularity) {
-      case '1 year':
-        return 'y GG';
-      case '1 month':
-        return 'MMM, y GG';
-      case '1 day':
-        return 'MMM d, y GG';
-      case '1 hour':
-        return 'MMM d, y GG, HH';
-      case '1 minute':
-        return 'MMM d, y GG, HH:mm';
-      case '1 second':
-        return 'MMM d, y GG, HH:mm:ss';
-      default:
-        return '';
+
+    if (this.julianDay <= this.LAST_DAY_BC) {
+      switch (granularity) {
+        case '1 year':
+          return 'y GG';
+        case '1 month':
+          return 'MMM, y GG';
+        case '1 day':
+          return 'MMM d, y GG';
+        case '1 hour':
+          return 'MMM d, y GG, HH';
+        case '1 minute':
+          return 'MMM d, y GG, HH:mm';
+        case '1 second':
+          return 'MMM d, y GG, HH:mm:ss';
+        default:
+          return '';
+      }
+    } else {
+      switch (granularity) {
+        case '1 year':
+          return 'y';
+        case '1 month':
+          return 'MMM, y';
+        case '1 day':
+          return 'MMM d, y';
+        case '1 hour':
+          return 'MMM d, y, HH';
+        case '1 minute':
+          return 'MMM d, y, HH:mm';
+        case '1 second':
+          return 'MMM d, y, HH:mm:ss';
+        default:
+          return '';
+      }
     }
   }
 
@@ -88,7 +110,7 @@ export class TimePrimitive {
     return this.getDateFormatString(this.duration);
   }
 
-  
+
   /**
    * Get the julian day in seconds
    * TODO: integrate time

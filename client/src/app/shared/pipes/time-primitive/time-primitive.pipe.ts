@@ -16,7 +16,15 @@ export class TimePrimitivePipe implements PipeTransform {
 
     const dt = tp.getDateTime();
 
-    return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString());
+    // This is a hack for dataPipe, because datePipe subtracts 1 year from BC
+    // Probably to avoid the year 0
+    if(dt.year < 0) dt.year = dt.year + 1;
+
+    if(!dt.day) dt.day = 31;
+
+    const date = dt.getDate()
+
+    return this.datePipe.transform(date, tp.getShortesDateFormatString());
 
   }
 

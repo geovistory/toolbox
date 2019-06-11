@@ -95,7 +95,7 @@ registerLocaleData(localeDeCh);
     ActiveAccountService,
     AuthGuard,
     SystemAdminGuard,
-    { provide: LOCALE_ID, useValue: 'de-CH' },
+    { provide: LOCALE_ID, useValue: 'en-US' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: appearance
