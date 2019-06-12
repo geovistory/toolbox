@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
+import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
@@ -20,6 +20,10 @@ import { SysSystemType } from 'app/core/sdk';
   styleUrls: ['./system-type-list.component.css']
 })
 export class SystemTypeListComponent extends SystemTypeListAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+
+  @HostBinding('class.gv-flex-fh') flexFh = true;
+  @HostBinding('class.gv-scroll-y-auto') scY = true;
+
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();

@@ -2,7 +2,7 @@ import { dispatch, ObservableStore, select, WithSubStore } from '@angular-redux/
 import { Injectable, ChangeDetectorRef, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Tab, SubstoreComponent } from 'app/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { TabBase } from './tab-layout.models';
 import { takeUntil } from 'rxjs/operators';
 import { tabBaseReducer } from './tab-layout.reducer';
@@ -37,6 +37,9 @@ export class TabLayout {
   splitSizeRight: number;
   useTransition = false;
   private firstActivation = true;
+
+  activated$ = new Subject<void>();
+
   constructor(public uiId: string, public ref: ChangeDetectorRef, public destroy$: Subject<boolean>) {
     this.basePath = ['activeProject', 'tabLayouts', this.uiId]
     this.showRightArea$.pipe(takeUntil(this.destroy$)).subscribe(bool => {
@@ -51,6 +54,7 @@ export class TabLayout {
   }
 
   onActivateTab() {
+    this.activated$.next()
     if (this.firstActivation) {
       setTimeout(() => {
         this.setSplitSize(!this.showRightArea);

@@ -218,7 +218,7 @@ export class DateTimeCommons {
   getDate(): Date | null {
 
     // validate
-    if (!this.year) return null;
+    if (!this.year && this.year !== 0) return null;
     if (this.day && !this.month) return null;
     if (this.hours && !this.day) return null;
     if (this.minutes && !this.hours) return null;
