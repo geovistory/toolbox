@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActiveProjectService, ProVisual, IAppState, latestEntityVersion, SubstoreComponent, U } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { uniq, values } from 'ramda';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, takeUntil, switchMap, delay } from 'rxjs/operators';
 import { MapVisualSettings } from '../../components/map-settings/map-settings.component';
 import { VisualDetailAPIActions } from './api/visual-detail.actions';
@@ -182,10 +182,9 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
     const s = this.localStore.getState();
     let pkEntity;
 
-    if (!s.deleted && s.pkEntity) {
+    if (s && !s.deleted && s.pkEntity) {
       pkEntity = s.pkEntity
     }
-
     this.persist(pkEntity);
   }
 
@@ -251,11 +250,8 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
 
   onDelete() {
     const s = this.localStore.getState();
-    let pkEntity;
-
-    if (!s.deleted && s.pkEntity) {
-      pkEntity = s.pkEntity
-      this.delete(pkEntity)
+    if (s && !s.deleted && s.pkEntity) {
+      this.delete(s.pkEntity)
     }
   }
 

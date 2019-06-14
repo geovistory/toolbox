@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule, MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatInputModule, MatListModule, MatProgressSpinnerModule, MatSidenavModule, MatSortModule, MatTableModule, MatIconModule, MatExpansionModule, MatDialogModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
-import { NavbarModule, PassiveLinkModule, ProxyRouteModule } from 'app/shared';
+import { NavbarModule, PassiveLinkModule, ProxyRouteModule, LanguageSearchTypeaheadModule } from 'app/shared';
 import { DrawerContainerResizeModule } from 'app/shared/components/drawer-container-resize/drawer-container-resize.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 import { ReadMoreModule } from 'app/shared/components/read-more/read-more.module';
@@ -85,7 +85,8 @@ import { DataModule } from '../data/data.module';
     ListDrawerHeaderModule,
     DetailTopBarModule,
     DetailContentModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    LanguageSearchTypeaheadModule
   ],
   declarations: [
     ProjectCreateComponent,

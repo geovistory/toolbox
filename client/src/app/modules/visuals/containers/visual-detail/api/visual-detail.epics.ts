@@ -175,6 +175,7 @@ export class VisualDetailAPIEpics {
                * Emit the local action on loading succeeded
                */
               c.localStore.dispatch(this.actions.deleteSucceeded());
+              c.t.setTabTitle('(Deleted)')
 
             }, error => {
               /**

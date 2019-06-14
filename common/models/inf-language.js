@@ -29,8 +29,8 @@ module.exports = function (InfLanguage) {
       sql_stmt = `
         select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
         FROM information."language"
-        WHERE iso6391 IN ('de','en','fr','it','es')
-        ORDER BY notes ASC;
+        WHERE iso6391 IN ('en','de','fr','nl','it','es')
+        ORDER BY POSITION(iso6391 IN 'en, de, fr, nl, it, es');
         `
     } else {
 

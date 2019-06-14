@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActiveProjectService, ProQuery, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { clone, values } from 'ramda';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { ClassAndTypeFilterComponent } from '../../components/class-and-type-filter/class-and-type-filter.component';
 import { ColDef } from '../../components/col-def-editor/col-def-editor.component';
@@ -182,6 +182,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       this.columnsCtrl.setValue(comQuery.query.columns);
       this.nameCtrl.setValue(comQuery.name);
       this.descriptionCtrl.setValue(comQuery.description);
+      this.t.setTabTitle(comQuery.name);
     })
 
   }
@@ -275,14 +276,13 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
 
   onSave() {
-    const s = this.localStore.getState();
-    let pkEntity;
-
-    if (!s.deleted && s.comQuery && s.comQuery.pk_entity) {
-      pkEntity = s.comQuery.pk_entity
-    }
-
-    this.persist(pkEntity);
+    combineLatest(this.deleted$, this.comQuery$).pipe(first(), takeUntil(this.destroy$)).subscribe(([deleted, comQuery]) => {
+      let pkEntity;
+      if (!deleted && comQuery && comQuery.pk_entity) {
+        pkEntity = comQuery.pk_entity
+      }
+      this.persist(pkEntity);
+    })
   }
 
   onSaveAs() {
@@ -322,8 +322,9 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   }
 
   onDelete() {
-    const pkEntity = (this.localStore.getState().comQuery || { pk_entity: undefined }).pk_entity
-    this.delete(pkEntity)
+    this.comQuery$.pipe(first(), takeUntil(this.destroy$)).subscribe((item) => {
+      this.delete(item.pk_entity)
+    })
   }
 
   onDownload(fileType: FileType) {
