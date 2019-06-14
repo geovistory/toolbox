@@ -108,7 +108,7 @@
               <!-- <button (click)="p.addTab()">Split</button> -->
             </div>
 
-            <div class="panel-body gv-flex-fh position-relative">
+            <div class="panel-body gv-flex-fh position-relative bg-gray-100">
               <div gvPanelBody [gvPanelId]="panel.id">
                 <!-- Tab body will be placed dynamically via Cdk Portal -->
               </div>
@@ -156,6 +156,7 @@
 
           <gv-query-detail class="gv-flex-fh" *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
+
           <gv-visual-detail class="gv-flex-fh" *ngIf="tab.component=='visual-detail'" [pkEntity]="tab.data?.pkEntity"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
           </gv-visual-detail>

@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { LoopBackAuth, LoopBackConfig, ProProjectApi, PubAccountApi, InfLanguageApi, InfLanguage } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { Observable } from 'rxjs';
+import { Observable, merge } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap } from '../../../../../../node_modules/rxjs/operators';
 
 
 export class ProjectLabelDescription {
@@ -90,22 +91,24 @@ export class ProjectCreateComponent implements OnInit {
   }
 
 
-  search = (text$: Observable<string>) =>
-    text$
-      .debounceTime(300)
-      .distinctUntilChanged()
-      .do(() => this.searching = true)
-      .switchMap(term =>
-        this.languageApi.queryByString(term)
-          .do(() => this.searchFailed = false)
-          .catch(() => {
-            this.searchFailed = true;
-            return Observable.of([]);
-          }))
-      .do(() => this.searching = false)
-      .merge(this.hideSearchingWhenUnsubscribed);
+  // search = (text$: Observable<string>) =>
+  //   text$
+  //     .pipe(
+  //       debounceTime(300),
+  //       distinctUntilChanged(),
+  //       tap(() => this.searching = true),
+  //       switchMap(term =>
+  //         this.languageApi.queryByString(term)
+  //           .do(() => this.searchFailed = false)
+  //           .catch(() => {
+  //             this.searchFailed = true;
+  //             return Observable.of([]);
+  //           })),
+  //       tap(() => this.searching = false),
+  //       merge(this.hideSearchingWhenUnsubscribed)
+  //     )
 
-  formatter = (x) => x.notes;
+  // formatter = (x) => x.notes;
 
 
   /**

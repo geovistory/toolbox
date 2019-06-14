@@ -55,21 +55,24 @@
       <gv-detail-content>
 
 
+
         <!-- Property Tile -->
         <span class="gv-tile" *ngIf="(showProperties$ | async)">
 
-          <gv-tile-header *ngIf="(showPropertiesHeader$ | async)" (close)="toggle('showProperties')">
-            <span title>
-              Properties
-            </span>
-            <span buttons>
-              <button class="btn btn-sm btn-link" (click)="startSelectProperty()"
+          <div class="gv-pe-it-title mx-2 mt-3">
+
+            <div class="gv-one-liner">
+              <h2>{{title$ | async}}</h2>
+            </div>
+
+            <div class="ml-auto">
+              <button class="btn btn-sm btn-link-gray" (click)="startSelectProperty()"
                 *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
                 [ngClass]="{'invisible' : isolatedChild}">
-                <i class="fa fa-plus"></i> Add
+                <i class="fa fa-plus"></i> Add a field
               </button>
-            </span>
-          </gv-tile-header>
+            </div>
+          </div>
 
           <!-- Tile Body -->
           <div class="gv-tile-body p-2">
@@ -131,7 +134,12 @@
         'd-none': !t.showRightArea
       }">
       <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
-
+        <span *ngIf="(showMap$ | async) && (showTimeline$ | async)">
+          Map and Timeline
+        </span>
+        <span *ngIf="(showSectionList$ | async)">
+          Sections & Digital Reproductions
+        </span>
       </gv-detail-top-bar>
       <gv-detail-content>
 
@@ -143,14 +151,14 @@
           <gv-mentioning-list class="gv-tile" *ngIf="(showSources$ | async)" [basePath]="basePath.concat('sources')"
             (close)="toggle('showSources')"></gv-mentioning-list> -->
         <div class="gv-tile" *ngIf="(showMap$ | async) && (showTimeline$ | async)">
-          <gv-tile-header>
+          <!-- <gv-tile-header>
             <span title>
               Map and Timeline
             </span>
             <span buttons>
 
             </span>
-          </gv-tile-header>
+          </gv-tile-header> -->
 
           <div class="gv-tile-body">
             <gv-map *ngIf="(showMap$ | async)" [path]="basePath" (close)="toggle('showMap')"></gv-map>
@@ -161,14 +169,14 @@
 
         <!-- Section List. Sections of a source -->
         <div class="gv-tile" *ngIf="(showSectionList$ | async)">
-          <gv-tile-header>
+          <!-- <gv-tile-header>
             <span title>
               Sections & Digital Reproductions
             </span>
             <span buttons>
 
             </span>
-          </gv-tile-header>
+          </gv-tile-header> -->
 
           <div class="gv-tile-body">
             <gv-content-tree class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$"

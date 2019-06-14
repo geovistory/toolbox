@@ -24,11 +24,14 @@
 
         <div class="form-group">
           <label for="typeahead-http">Project's default language</label>
-          <input id="typeahead-http" type="text" class="form-control"  name="language"
+
+          <gv-language-search-typeahead  name="language" [(ngModel)]="model.language" #languageSearch="ngModel"></gv-language-search-typeahead>
+
+          <!-- <input id="typeahead-http" type="text" class="form-control"  name="language"
           [class.is-invalid]="searchFailed" [(ngModel)]="model.language" #languageSearch="ngModel"
           [ngbTypeahead]="search" [resultTemplate]="rt" placeholder="Search for a language"
-          [inputFormatter]="formatter"  />
-          <span *ngIf="searching">searching...</span>
+          [inputFormatter]="formatter"  /> -->
+          <!-- <span *ngIf="searching">searching...</span> -->
           <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
         </div>
 

@@ -13,11 +13,11 @@
     </gv-detail-top-bar>
     <gv-detail-content>
 
-      <!-- <div *ngIf="(deleted$ | async)" class="alert alert-info">
+      <div *ngIf="(deleted$ | async)" class="alert alert-info">
         The Visual has been successfully deleted. To recover it, click on save.
-      </div> -->
+      </div>
 
-      <mat-vertical-stepper [linear]="true" #stepper>
+      <mat-vertical-stepper [linear]="true" #stepper class="bg-gray-100">
         <mat-step [stepControl]="firstFormGroup">
           <form [formGroup]="firstFormGroup">
             <ng-template matStepLabel>
