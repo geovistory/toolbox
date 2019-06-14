@@ -125,3 +125,113 @@ CREATE INDEX ON data.digital_vt (string);
 
 CREATE INDEX ON data.chunk (string);
 CREATE INDEX ON data.chunk_vt (string);
+
+
+-- 9
+
+CREATE OR REPLACE FUNCTION data.rebuild_digital_table(
+	id_digital integer,
+	column_list integer[])
+    RETURNS text
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+AS $BODY$
+
+DECLARE
+    query_start text;
+    query_from text;
+    query text;
+    field text;
+    field_label text;
+    field_metadata json;
+    n integer = 1;
+    a integer;
+    output_query text;
+
+BEGIN
+
+		query_start = 'DROP VIEW IF EXISTS tv_' || id_digital || ';
+	   					CREATE OR REPLACE TEMPORARY VIEW tv_' || id_digital || ' AS
+							SELECT dr.pk_entity';
+
+		query_from =  ' FROM data.row dr';
+
+
+		IF array_length(column_list, 1) > 0 THEN
+
+				FOR a IN
+
+						SELECT UNNEST(column_list)
+
+			    LOOP
+
+							SELECT row_to_json((pk_entity,id_for_import_txt,fk_data_type)) into field_metadata
+							FROM data.column
+							WHERE pk_entity = a;
+
+
+							field_label = replace(trim((field_metadata -> 'f2')::text), ' ', '_');
+
+							IF (field_metadata -> 'f3')::varchar::integer = 3293 THEN
+								field = 't'|| n ||'.numeric_value';
+							ELSE
+								field = 't'|| n ||'.id_for_import_txt';   -- .string     .id_for_import_txt
+							END IF;
+
+							query_start = query_start || ', ' || field || ' AS ' || field_label;
+
+							query_from = query_from || ' JOIN data.cell t' || n || ' ON dr.pk_entity = t' || n || '.fk_row AND t' || n || '.fk_column = ' || (field_metadata -> 'f1')::text;
+
+							n = n + 1;
+
+			        -- RAISE NOTICE '%', query_start ; -- return current row of SELECT
+
+			    END LOOP;
+
+		ELSE
+
+
+					FOR field_metadata IN
+
+							SELECT row_to_json((pk_entity,id_for_import_txt,fk_data_type))
+							FROM data.column
+							WHERE fk_digital = id_digital
+							ORDER BY pk_entity
+
+				    LOOP
+
+								field_label = replace(trim((field_metadata -> 'f2')::text), ' ', '_');
+
+								IF (field_metadata -> 'f3')::varchar::integer = 3293 THEN
+									field = 't'|| n ||'.numeric_value';
+								ELSE
+									field = 't'|| n ||'.id_for_import_txt';   -- .string     .id_for_import_txt
+								END IF;
+
+								query_start = query_start || ', ' || field || ' AS ' || field_label;
+
+								query_from = query_from || ' JOIN data.cell t' || n || ' ON dr.pk_entity = t' || n || '.fk_row AND t' || n || '.fk_column = ' || (field_metadata -> 'f1')::text;
+
+								n = n + 1;
+
+				        -- RAISE NOTICE '%', query_start ; -- return current row of SELECT
+
+				    END LOOP;
+
+  	END IF;
+
+	query := query_start || query_from || 'WHERE dr.fk_digital = ' || id_digital || ';';
+
+	RAISE NOTICE '%', query ;
+
+	EXECUTE query;
+
+
+	output_query := 'SELECT * FROM tv_' || id_digital || ' LIMIT 10' ;
+
+RETURN output_query;
+END;
+
+$BODY$;

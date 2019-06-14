@@ -42,7 +42,7 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  zoomed = false;
+  zoomed$ = new Subject<boolean>();
 
   // array of pk_entity of leaf peIts of class Built Work or Geographical Place
   leafGeoPeItsPks$: Observable<number[]>;
@@ -67,9 +67,6 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-
-    // fly to browser geolocation
-    this.flyToBrowserGeolocation();
 
     this.initLayer();
 
@@ -128,7 +125,7 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
         if (!inizializedTeEns.has(teEn.pkEntity)) {
-          this.zoomed = this.zoomToEntities();
+          this.zoomToEntities();
         }
         inizializedTeEns.add(teEn.pkEntity)
 
@@ -423,28 +420,28 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // if only one entity, set some distance from ground, else 0.0
     const distance = dataSource.entities.values.length === 1 ? 200000 : 0.0;
-    this.acMap.getCesiumViewer().zoomTo(dataSource, new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, distance));
+    const options = new Cesium.HeadingPitchRange(0.0, -Cesium.Math.PI_OVER_TWO, undefined)
+    this.acMap.getCesiumViewer().zoomTo(dataSource, options);
 
     // parent map is loading until this one emits
-    this.readyToShow.emit()
+    this.zoomed$.next(true)
 
     return true;
 
   }
 
-  flyToBrowserGeolocation() {
-    navigator.geolocation.getCurrentPosition((position) => {
-      if (!this.zoomed) {
-        this.acMap.getCesiumViewer().camera.flyTo({
-          destination: Cesium.Cartesian3.fromDegrees(position.coords.longitude, position.coords.latitude, 4500000),
-          duration: 0
-        });
-
-        // parent map is loading until this one emits
-        this.readyToShow.emit()
-      }
-    });
-  }
+  // flyToBrowserGeolocation(position: Position) {
+  //   console.log('position', { long: position.coords.longitude, lat: position.coords.latitude })
+  //   console.log('zoomed', this.zoomed)
+  //   if (!this.zoomed) {
+  //     this.acMap.getCesiumViewer().camera.flyTo({
+  //       destination: Cesium.Cartesian3.fromDegrees(position.coords.longitude, position.coords.latitude, 4500000),
+  //       duration: 0
+  //     });
+  //     // parent map is loading until this one emits
+  //     this.readyToShow.emit()
+  //   }
+  // }
 
   /**
    * get the Cesium.DataSource of this PeItLayer

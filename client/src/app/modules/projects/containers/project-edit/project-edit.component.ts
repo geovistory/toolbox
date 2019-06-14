@@ -9,6 +9,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
+import { BasicService } from '../../../../core/basic/basic.service';
 
 export interface TabLayoutComponentInterface {
   t: TabLayout
@@ -135,7 +136,8 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   constructor(
     public p: ActiveProjectService,
     private activatedRoute: ActivatedRoute,
-    private sdkStorage: SDKStorage
+    private sdkStorage: SDKStorage,
+    private basic: BasicService // this initiates the question if geolocalization is allowed
   ) {
 
     const id = this.activatedRoute.snapshot.params['pkActiveProject'];

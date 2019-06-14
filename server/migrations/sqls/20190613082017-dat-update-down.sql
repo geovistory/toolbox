@@ -1,3 +1,5 @@
+-- 9
+DROP FUNCTION data.rebuild_digital_table(integer, integer[]);
 
 -- 8 Indexes on column string of commons.text and all its children
 DROP INDEX commons.text_string_idx;
