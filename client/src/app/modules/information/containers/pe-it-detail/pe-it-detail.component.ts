@@ -102,6 +102,7 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
 
   // The pe
   sourcePeIt$: Observable<InfPersistentItem>
+  title$: Observable<string>
 
   t: TabLayout;
   listOf: MentioningListOf;
@@ -161,12 +162,12 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
         ))
       })
 
-    this._fields$.pipe(
+    this.title$ = this._fields$.pipe(
       map(fields => U.labelFromFieldList(fields, { path: [], fieldsMax: 1, rolesMax: 1 })),
       map(label => pathOr('', ['parts', '0', 'roleLabels', '0', 'string'], label)),
       distinctUntilChanged((a, b) => a === b),
-      takeUntil(this.destroy$)
-    ).subscribe((label) => {
+    )
+    this.title$.pipe(takeUntil(this.destroy$)).subscribe((label) => {
       this.t.setTabTitle(label)
     })
 
