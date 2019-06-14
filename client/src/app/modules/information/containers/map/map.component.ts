@@ -1,9 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
 import { IAppState, LoopBackConfig, U } from 'app/core';
-import { Subject } from 'rxjs';
+import { Subject, combineLatest, Observable } from 'rxjs';
 import { AcMapComponent, MapLayerProviderOptions, ViewerConfiguration } from '../../../gv-angular-cesium/angular-cesium-fork';
 import { PeItLayerComponent } from '../pe-it-layer/pe-it-layer.component';
+import { BasicService } from 'app/core/basic/basic.service';
+import { takeUntil, filter, startWith, map, first } from '../../../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'gv-map',
@@ -38,9 +40,13 @@ export class MapComponent implements AfterViewInit, OnDestroy {
   // while true, loading spinner is visible
   isLoading = true;
 
+  dontZoomToBrowserLocation$: Observable<boolean>;
+  zoomedToBrowserLocation$ = new Subject<boolean>();
+
   constructor(
     viewerConf: ViewerConfiguration,
     private ngRedux: NgRedux<IAppState>,
+    private basic: BasicService
   ) {
 
     viewerConf.viewerOptions = {
@@ -60,12 +66,44 @@ export class MapComponent implements AfterViewInit, OnDestroy {
       resolutionScale: 2
     };
 
+
   }
 
 
 
   ngAfterViewInit() {
+
+    // set this flag to true, as soon as peItLayer zoomed or this component zoomed to browser location
+    this.dontZoomToBrowserLocation$ = combineLatest(
+      this.peItLayer.zoomed$.pipe(startWith(false)),
+      this.zoomedToBrowserLocation$.pipe(startWith(false)),
+      this.destroy$.pipe(startWith(false))
+    ).pipe(
+      first(d => d.includes(true)),
+      map(() => {
+        return true
+      })
+    )
+
+
     const viewer = this.acMap.getCesiumViewer();
+
+    // Set initial view
+    this.basic.geoPosition$.pipe(takeUntil(this.dontZoomToBrowserLocation$)).subscribe((position) => {
+      if (position) {
+        // fly to browser geolocation
+        viewer.camera.setView({
+          destination: Cesium.Cartesian3.fromDegrees(position.coords.longitude, position.coords.latitude, 2000000.0)
+        });
+        this.zoomedToBrowserLocation$.next(true)
+      }
+      else {
+        viewer.camera.setView({
+          destination: Cesium.Cartesian3.fromDegrees(7, 47, 8000000.0)
+        });
+      }
+    })
+
 
     // set resolution Scale (for clean rendering on retina displays)
     viewer.resolutionScale = window.devicePixelRatio;

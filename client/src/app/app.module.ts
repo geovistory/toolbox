@@ -35,6 +35,7 @@ import { RepoModule } from './core/repo/repo.module';
 import { DatModule } from './core/dat/dat.module';
 import { ProModule } from 'app/core/pro/pro.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
+import { BasicModule } from './core/basic/basic.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -52,6 +53,7 @@ registerLocaleData(localeDeCh);
     AppComponent
   ],
   imports: [
+    BasicModule,
     StoreModule,
     NotificationsModule,
     LoadingBarModule,
