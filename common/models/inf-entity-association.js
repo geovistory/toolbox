@@ -386,7 +386,7 @@ module.exports = function (InfEntityAssociation) {
 
 
   /**
-  * Find mentionings of oa project and filter by domain or range of 'geovP2 – is mentioned in'.
+  * Find mentionings of a project and filter by domain or range of 'geovP2 – is mentioned in'.
   *
   * Returns also context information:
   * - if the range is a F2 Expression (section), the pk_entity of the parent source (F3/F4) is delivered (fk_source_entity)
@@ -491,6 +491,8 @@ module.exports = function (InfEntityAssociation) {
   };
 
 
+
+
   /**
   * Get an array of entity associations that build the tree of the content of an F2 Expression.
   */
@@ -583,6 +585,58 @@ module.exports = function (InfEntityAssociation) {
 
       }
     });
+
+  };
+
+  /**
+  * Get an nested object with everything needed to display the
+  * links made from an entity towards sources and digitals.
+  */
+  InfEntityAssociation.sourcesAndDigitalsOfEntity = function (ofProject, pkProject, pkEntity, cb) {
+
+
+    const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
+
+    const filter = {
+      "where": [
+        'fk_info_range', '=', pkEntity
+      ],
+      "include": {
+        "entity_version_project_rels": joinThisProject,
+        "domain_chunk": {
+          "$relation": {
+            "name": "domain_chunk",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        }
+      }
+    }
+
+    return InfEntityAssociation.findComplex(filter, (err, entity_associations) => {
+      if (err) return cb(err);
+
+      const textPks = _.uniq(entity_associations
+        .filter(ea => ea.domain_chunk)
+        .map(ea => ea.domain_chunk.fk_text));
+
+      if (!textPks.length) return cb(null, entity_associations);
+
+      InfEntityAssociation.app.models.DatDigital.findComplex({
+        where: ['pk_text', 'IN', textPks]
+      }, (err2, digitals) => {
+        if (err2) return cb(err2);
+
+        cb(null, {
+          entity_associations: entity_associations,
+          digitals
+        })
+      })
+
+    });
+
 
   };
 

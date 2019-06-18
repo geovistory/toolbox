@@ -1,5 +1,6 @@
 /* tslint:disable */
 import {
+  DatDigital,
   InfEntityAssociation,
   DatNamespace
 } from '../index';
@@ -17,6 +18,7 @@ export interface DatChunkInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   "fk_namespace"?: number;
+  digital?: DatDigital;
   data_info_associations?: InfEntityAssociation[];
   namespace?: DatNamespace;
 }
@@ -33,6 +35,7 @@ export class DatChunk implements DatChunkInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   "fk_namespace": number;
+  digital?: DatDigital;
   data_info_associations?: InfEntityAssociation[];
   namespace?: DatNamespace;
   constructor(data?: DatChunkInterface) {
@@ -114,6 +117,14 @@ export class DatChunk implements DatChunkInterface {
         },
       },
       relations: {
+        digital: {
+          name: 'digital',
+          type: 'DatDigital',
+          model: 'DatDigital',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_text',
+          keyTo: 'pk_text'
+        },
         data_info_associations: {
           name: 'data_info_associations',
           type: 'InfEntityAssociation[]',

@@ -4,7 +4,7 @@ import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { combineEpics, Epic } from 'redux-observable';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPersistentItemApi, ProInfoProjRelApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
-import { InfEntityAssoctiationActionFactory, FindEAByParams, InfActions, LoadByPkAction, InfPersistentItemActionFactory, ContentTreeMeta, InfTemporalEntityActionFactory } from './inf.actions';
+import { InfEntityAssoctiationActionFactory, FindEAByParams, InfActions, LoadByPkAction, InfPersistentItemActionFactory, ContentTreeMeta, InfTemporalEntityActionFactory, SourcesAndDigitalsOfEntityResult, SourcesAndDigitalsOfEntity } from './inf.actions';
 import { infRoot } from './inf.config';
 import { InfEntityAssociationSlice, InfPersistentItemSlice, InfTemporalEntitySlice } from './inf.models';
 import { DatActions } from '../dat/dat.actions';
@@ -87,6 +87,22 @@ export class InfEpics {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.entity_association.flatten(results);
           storeFlattened(flattener.getFlattened(), pk);
+        }
+      ),
+
+      entityAssociationEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
+        (meta) => this.eaApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),
+        InfEntityAssoctiationActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
+        (results, pk) => {
+          const res = results as any as SourcesAndDigitalsOfEntityResult;
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.entity_association.flatten(res.entity_associations);
+          storeFlattened(flattener.getFlattened(), pk);
+
+          const flattener2 = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener2.digital.flatten(res.digitals);
+          storeFlattened(flattener2.getFlattened(), pk);
+
         }
       ),
 

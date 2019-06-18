@@ -570,21 +570,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
   openText(node: ContentTreeNode) {
-    this.p.addTab({
-      active: true,
-      component: 'text-detail',
-      icon: 'text',
-      data: {
-        pkEntity: node.entityAssociation.fk_data_domain
-      },
-      pathSegment: 'textDetails'
-    })
+   this.p.addTextTab(node.entityAssociation.fk_data_domain)
   }
-
 
   openExpressionPortion(node: ContentTreeNode) {
     this.p.addSourceExpressionPortionTab(node.entityAssociation.fk_info_domain)
-
   }
 
 

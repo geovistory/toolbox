@@ -90,7 +90,8 @@
         "findOrCreateInfEntityAssociation",
         "findOrCreateInfEntityAssociations",
         "contentTree",
-        "mentionings"
+        "mentionings",
+        "sourcesAndDigitalsOfEntity"
       ]
     }
   ],
@@ -462,6 +463,49 @@
       "description": "Get an array of entity associations that build the tree of the content of an F2 Expression.",
       "http": {
         "path": "/content-tree",
+        "verb": "get"
+      }
+    },
+    "sourcesAndDigitalsOfEntity": {
+      "accepts": [
+        {
+          "arg": "ofProject",
+          "type": "boolean",
+          "required": true,
+          "description": "if true, finds project version. if false, finds repo version.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the entity for which the sources links are needed.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+         "object"
+        ],
+        "root": true
+      },
+      "description": "Get an nested object of entity associations with everything needed to display the links made from an entity towards sources and digitals.",
+      "http": {
+        "path": "/sources-and-digitals-of-entity",
         "verb": "get"
       }
     }

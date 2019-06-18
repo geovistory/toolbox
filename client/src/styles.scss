@@ -736,6 +736,11 @@ $gv-bg-drawer-list: #cde4f3;
   flex-direction: column;
 }
 
+.gv-detail-top-bar {
+  .mat-tab-label {
+    height: 40px;
+  }
+}
 /***************************
 * Tile Header
 ****************************/

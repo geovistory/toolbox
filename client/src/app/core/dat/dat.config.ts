@@ -14,6 +14,10 @@ export const datDefinitions: ReducerConfigCollection = {
       {
         keyInStore: 'pk_entity',
         groupByFn: (item): string => item.pk_entity.toString()
+      },
+      {
+        keyInStore: 'pk_text',
+        groupByFn: (item): string => item.pk_text.toString()
       }
     ]
   },

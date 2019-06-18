@@ -134,59 +134,42 @@
         'd-none': !t.showRightArea
       }">
       <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
-        <span *ngIf="(showMap$ | async) && (showTimeline$ | async)">
-          Map and Timeline
-        </span>
-        <span *ngIf="(showSectionList$ | async)">
-          Sections & Digital Reproductions
-        </span>
+
+        <mat-tab-group animationDuration="0ms" [selectedIndex]="activeTabIndex$ | async" (selectedIndexChange)="rightTabIndexChange($event)">
+          <mat-tab *ngIf="(showMapToggle$ | async)" label="Map and Timeline"> </mat-tab>
+          <mat-tab *ngIf="(showSectionListToggle$ | async)" label="Sections & Digital Reproductions"
+            (click)="show('showSectionList')"> </mat-tab>
+          <mat-tab *ngIf="(showSourcesToggle$ | async)" label="Sources"> </mat-tab>
+        </mat-tab-group>
       </gv-detail-top-bar>
       <gv-detail-content>
 
-
-        <!-- <gv-mentioning-list class="gv-tile" *ngIf="(showMentionedEntities$ | async)"
-          [basePath]="basePath.concat('mentionedEntities')" (close)="toggle('showMentionedEntities')">
-          </gv-mentioning-list>
-
-          <gv-mentioning-list class="gv-tile" *ngIf="(showSources$ | async)" [basePath]="basePath.concat('sources')"
-            (close)="toggle('showSources')"></gv-mentioning-list> -->
-        <div class="gv-tile" *ngIf="(showMap$ | async) && (showTimeline$ | async)">
-          <!-- <gv-tile-header>
-            <span title>
-              Map and Timeline
-            </span>
-            <span buttons>
-
-            </span>
-          </gv-tile-header> -->
-
+        <div class="gv-tile" *ngIf="(activeTab$ | async) == 'showMap'">
           <div class="gv-tile-body">
-            <gv-map *ngIf="(showMap$ | async)" [path]="basePath" (close)="toggle('showMap')"></gv-map>
-
+            <gv-map [path]="basePath"></gv-map>
             <gv-pe-it-timeline [basePath]="basePath.concat('peItTimeline')"></gv-pe-it-timeline>
           </div>
         </div>
 
         <!-- Section List. Sections of a source -->
-        <div class="gv-tile" *ngIf="(showSectionList$ | async)">
-          <!-- <gv-tile-header>
-            <span title>
-              Sections & Digital Reproductions
-            </span>
-            <span buttons>
-
-            </span>
-          </gv-tile-header> -->
+        <div class="gv-tile" *ngIf="(activeTab$ | async) == 'showSectionList'">
 
           <div class="gv-tile-body">
-            <gv-content-tree class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$"
-              (close)="toggle('showSectionList')">
+            <gv-content-tree class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
             </gv-content-tree>
           </div>
         </div>
 
-        <!-- <gv-mentioning-list *ngIf="(showMentionedEntities$ | async)" class="gv-tile" [listOf]="listOf">
-        </gv-mentioning-list> -->
+        <!-- Show Sources (where this PeIt is annotated) -->
+        <div class="gv-tile" *ngIf="(showSources$ | async)">
+
+          <div class="gv-tile-body">
+            <gv-mentioning-list class="gv-tile" [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
+            </gv-mentioning-list>
+          </div>
+        </div>
+
+
 
       </gv-detail-content>
     </as-split-area>
