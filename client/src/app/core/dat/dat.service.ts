@@ -36,6 +36,7 @@ class DatDigitalSelections extends Selector {
 
   public by_pk_entity__entity_version$ = this.selector<DatDigital>('by_pk_entity__entity_version')
   public by_pk_entity$ = this.selector<ByPk<DatDigital>>('by_pk_entity')
+  public by_pk_text$ = this.selector<ByPk<DatDigital>>('by_pk_text')
 }
 
 class DatNamespaceSelections extends Selector {

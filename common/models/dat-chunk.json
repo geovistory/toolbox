@@ -38,6 +38,12 @@
       "model": "InfEntityAssociation",
       "foreignKey": "fk_data_domain",
       "primaryKey": "pk_entity"
+    },
+    "digital": {
+      "type": "belongsTo",
+      "model": "DatDigital",
+      "foreignKey": "fk_text",
+      "primaryKey": "pk_text"
     }
   },
   "acls": [

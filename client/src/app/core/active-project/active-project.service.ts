@@ -634,6 +634,18 @@ export class ActiveProjectService {
     })
   }
 
+  addTextTab(pkEntity: number) {
+    this.addTab({
+      active: true,
+      component: 'text-detail',
+      icon: 'text',
+      data: {
+        pkEntity: pkEntity
+      },
+      pathSegment: 'textDetails'
+    })
+  }
+
   /************************************************************************************
   * Layout -- Modals
   ************************************************************************************/

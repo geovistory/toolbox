@@ -2,10 +2,21 @@
 
 
   <table mat-table [dataSource]="dataSource" matSort matSortDisableClear="false" class="mat-elevation-z0">
+    <!-- digital Column -->
+    <ng-container matColumnDef="digital">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="digitalLabel">
+        <span *ngIf="listOf.type === 'entity'">Digital</span>
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <gv-digital-preview [digital]="element.digital" [openTabOnClick]="true"></gv-digital-preview>
+      </td>
+    </ng-container>
+
     <!-- domainLabel Column -->
     <ng-container matColumnDef="domainLabel">
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="domainLabel">
         <span *ngIf="listOf.type === 'digital-text'">Annotated Text</span>
+        <span *ngIf="listOf.type === 'entity'">Annotated Text</span>
       </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element"> {{element.domainLabel}} </td>
     </ng-container>

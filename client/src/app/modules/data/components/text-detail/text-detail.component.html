@@ -64,10 +64,10 @@
       </span>
     </gv-detail-top-bar>
     <gv-detail-content>
-      <gv-mentioning-list class="gv-tile" [create$]="createAnnotation$" [chunk$]="chunk$"
-        [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
-        [basePath]="basePath.concat('mentionedEntities')" (rowMouseenter)="mentioningRowMousenter($event)"
-        (rowMouseleave)="mentioningRowMouseleave($event)" (dataChange)="mentioningListChange($event)">
+        <gv-mentioning-list class="gv-tile" [create$]="createAnnotation$" [chunk$]="chunk$"
+          [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
+          (rowMouseenter)="mentioningRowMousenter($event)"
+          (rowMouseleave)="mentioningRowMouseleave($event)" (dataChange)="mentioningListChange($event)">
       </gv-mentioning-list>
     </gv-detail-content>
 

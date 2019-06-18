@@ -83,6 +83,11 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
   @select() showAssertionsToggle$: Observable<boolean>;
   @select() showSourcesToggle$: Observable<boolean>;
 
+  // tabs on the right panel
+  activeTab$: Observable<string>;
+  activeTabIndex$: Observable<number>;
+  tabs$: Observable<string[]>;
+
   // Visibility of container elements, set by function below
   // showRightPanel$: Observable<boolean>;
   // showLeftPanel$: Observable<boolean>;
@@ -100,7 +105,7 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
   // if this variable is set, only that child is shown, all other elements are hidden
   isolatedChild: string;
 
-  // The pe
+
   sourcePeIt$: Observable<InfPersistentItem>
   title$: Observable<string>
 
@@ -125,6 +130,7 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
 
   initStore(): void {
     this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItDetailReducer);
+
   }
 
 
@@ -140,7 +146,7 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
       this.t.setShowRightArea(b)
     })
 
-    this.listOf = { pkEntity: this.pkEntity, type: 'digital-text' }
+    this.listOf = { pkEntity: this.pkEntity, type: 'entity' }
 
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
@@ -171,35 +177,29 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
       this.t.setTabTitle(label)
     })
 
-    // /**
-    //  * Keeps track of all sections in the right panel.
-    //  * If at least one is visible, show the right panel,
-    //  * else hide it.
-    //  */
-    // this.showLeftPanel$ = combineLatest(
-    //   this.showProperties$,
-    //   this.showSectionList$,
-    //   this.showRepros$
-    // ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
-
-
-    // /**
-    //  * Keeps track of all sections in the right panel.
-    //  * If at least one is visible, show the right panel,
-    //  * else hide it.
-    //  */
-    // this.showRightPanel$ = combineLatest(
-    //   this.showMap$,
-    //   this.showTimeline$,
-    //   this.showAssertions$,
-    //   this.showMentionedEntities$,
-    //   this.showSources$
-    // ).pipe(map((bools) => ((bools.filter((bool) => (bool === true)).length > 0))));
-
-
 
     this.initPeItSubscriptions()
 
+
+    this.activeTab$ = combineLatest(this.showMap$, this.showSectionList$, this.showMentionedEntities$, this.showSources$)
+      .pipe(
+        map(([showMap, showSectionList, showMentionedEntities, showSources]) => {
+          return showMap ? 'showMap' : showSectionList ? 'showSectionList' : showMentionedEntities ? 'showMentionedEntities' : showSources ? 'showSources' : null
+        })
+      )
+
+    this.tabs$ = combineLatest(this.showMapToggle$, this.showSectionListToggle$, this.showMentionedEntitiesToggle$, this.showSourcesToggle$)
+      .pipe(
+        map(([showMap, showSectionList, showMentionedEntities, showSources]) => {
+          const x = { showMap, showSectionList, showMentionedEntities, showSources };
+          return U.obj2KeyValueArr(x).filter(v => v.value).map(v => v.key);
+        })
+      )
+
+    this.activeTabIndex$ = combineLatest(this.activeTab$, this.tabs$)
+    .pipe(
+      map(([activeTab, tabs]) => tabs.indexOf(activeTab))
+    )
   }
 
 
@@ -279,6 +279,17 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
 
   }
 
+  rightTabIndexChange(i:number){
+    this.tabs$.pipe(first()).subscribe(tabs => {
+      this.show(tabs[i]);
+    })
+  }
+  show(keyToShow) {
+    this.activeTab$.pipe(first()).subscribe(showRight => {
+      this.toggle(showRight)
+      this.toggle(keyToShow)
+    })
+  }
 
   /**
   * Method to toggle booleans of state.

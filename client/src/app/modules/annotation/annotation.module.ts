@@ -9,6 +9,7 @@ import { EntityPreviewModule } from '../../shared/components/entity-preview/enti
 import { QuillOpsToStrModule } from '../../shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { MentioningListComponent } from './components/mentioning-list/mentioning-list.component';
+import { DigitalPreviewModule } from '../../shared/components/digital-preview/digital-preview.module';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { MentioningListComponent } from './components/mentioning-list/mentioning
     MatIconModule,
     MatButtonModule,
     EntityPreviewModule,
-    TableModule // TODO replace this with Mat Table
+    // TableModule, // TODO replace this with Mat Table
+    DigitalPreviewModule
   ],
   providers: [],
   declarations: [MentioningListComponent, MentioningCreateCtrlComponent],

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta } from 'app/core/store/actions';
-import { InfPersistentItem, InfEntityAssociation, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage } from '../sdk';
+import { InfPersistentItem, InfEntityAssociation, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital } from '../sdk';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState, U } from 'app/core';
 import { InfPersistentItemSlice } from './inf.models';
@@ -68,12 +68,21 @@ export interface FindEAByParams extends LoadActionMeta {
 export interface ContentTreeMeta extends LoadActionMeta {
   pkExpressionEntity: number,
 }
+export interface SourcesAndDigitalsOfEntity extends LoadActionMeta {
+  ofProject: boolean,
+  pkEntity: number,
+}
+export interface SourcesAndDigitalsOfEntityResult {
+  entity_associations: InfEntityAssociation[],
+  digitals: DatDigital[],
+}
 export class InfEntityAssoctiationActionFactory extends InfActionFactory<Payload, InfEntityAssociation> {
   // export class EntityAssoctiationActionFactory extends StandardActionsFactory<Payload, InfEntityAssociation> {
 
   // Suffixes of load action types
   static readonly BY_PARAMS = 'BY_PARAMS';
   static readonly CONTENT_TREE = 'CONTENT_TREE';
+  static readonly SOURCES_AND_DIGITALS_OF_ENTITY = 'SOURCES_AND_DIGITALS_OF_ENTITY';
 
   findByParams: (
     ofProject: boolean,
@@ -85,6 +94,7 @@ export class InfEntityAssoctiationActionFactory extends InfActionFactory<Payload
   ) => void;
 
   contentTree: (pkProject: number, pkExpressionEntity: number) => void;
+  sourcesAndDigitalsOfEntity: (ofProject: boolean, pkProject: number, pkEntity: number) => ActionResultObservable<SourcesAndDigitalsOfEntityResult>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
@@ -130,6 +140,31 @@ export class InfEntityAssoctiationActionFactory extends InfActionFactory<Payload
       };
       this.ngRedux.dispatch(action)
     }
+
+    /**
+    * Get an nested object with everything needed to display the
+    * links made from an entity towards sources and digitals.
+    */
+    this.sourcesAndDigitalsOfEntity = (ofProject: boolean, pkProject: number, pkEntity: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, SourcesAndDigitalsOfEntity> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfEntityAssoctiationActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
+        meta: {
+          addPending,
+          ofProject,
+          pk: pkProject,
+          pkEntity
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<SourcesAndDigitalsOfEntityResult>>(['resolved', addPending]),
+        key: addPending
+      };
+    }
+
 
     return this;
   }

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, IAppState, InfEntityAssociation, SubstoreComponent } from 'app/core';
+import { ActiveProjectService, DatChunk, EntityPreview, IAppState, InfEntityAssociation, SubstoreComponent, DatDigital, latestVersion } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -21,12 +21,14 @@ export interface Row {
   entityAssociation: InfEntityAssociation;
   domainInfoEntity: EntityPreview;
   domainChunk: DatChunk;
+  digital: DatDigital; // the digital
   rangeInfoEntity: EntityPreview;
 
   // for highlight
   highlight: boolean;
 
   // columns
+  digitalLabel: string;
   domainLabel: string;
   propertyLabel: string;
   rangeLabel: string;
@@ -139,8 +141,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
     public ngRedux: NgRedux<IAppState>,
     private p: ActiveProjectService,
     private inf: InfActions,
-    fb: FormBuilder,
-    private quillOpsToStr: QuillOpsToStrPipe
+    fb: FormBuilder
   ) {
     this.mentioningCreateCtrl = new FormControl(null, [Validators.required])
     this.formGroup = fb.group({ 'mentioningCreateCtrl': this.mentioningCreateCtrl })
@@ -153,6 +154,8 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       if (this.listOf.type === 'digital-text') {
+
+        this.displayedColumns = ['domainLabel', 'propertyLabel', 'rangeInfoEntity', 'actions'];
 
         this.p.dat$.chunk.loadChunksOfDigital(this.listOf.pkEntity, pkProject)
 
@@ -217,6 +220,36 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
         })
 
       }
+      else if (this.listOf.type === 'entity') {
+
+        this.displayedColumns = ['digital', 'domainLabel', 'actions'];
+
+        this.inf.entity_association.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
+
+        const rows$ = this.p.inf$.entity_association$.by_fk_info_range$.key(this.listOf.pkEntity)
+          .pipe(
+            mergeMap((eas) => combineLatest(values(eas)
+              .map(entityAssociation => this.p.dat$.chunk$.by_pk_entity$.key(entityAssociation.fk_data_domain)
+                .pipe(mergeMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+                  map(texts => latestVersion(texts)),
+                  map(digital => ({
+                    entityAssociation,
+                    domainChunk,
+                    domainLabel: this.getStringFromChunk(domainChunk),
+                    digital,
+                    digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
+                  } as Row))))
+                )
+              )))
+          )
+
+        this.data$ = rows$;
+
+        this.data$.pipe(takeUntil(this.destroy$)).subscribe(data => {
+          this.dataSource.data = data
+          this.dataChange.emit(data)
+        })
+      }
 
     })
 
@@ -240,7 +273,13 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
   private getDomainLabel(row: Row): string {
     if (row.domainChunk) {
-      return "« " + (row.domainChunk.quill_doc as QuillDoc).ops.map(op => op.insert).join('') + " »";
+      return this.getStringFromChunk(row.domainChunk);
+    }
+  }
+
+  private getStringFromChunk(chunk: DatChunk): string {
+    if (chunk) {
+      return "« " + (chunk.quill_doc as QuillDoc).ops.map(op => op.insert).join('') + " »";
     }
   }
 
