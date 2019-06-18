@@ -165,7 +165,8 @@ export class ExistenceTimeEditableComponent implements OnInit, OnDestroy, Contro
   private save(data: { toRemove: InfRole[], toAdd: InfRole[], unchanged: InfRole[] }) {
     this.parentTeEn$.pipe(first(), takeUntil(this.destroy$)).subscribe(teEn => {
       const teEnt = new InfTemporalEntity({
-        ...teEn,
+        fk_class: teEn.fkClass,
+        pk_entity: teEn.pkEntity,
         te_roles: [
           ...data.toRemove.filter(r => (r)),
           ...data.toAdd.filter(r => (r)) // than all roles are created or added to project
