@@ -285,20 +285,7 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
 
                     rolesWithinQuantity = rolesByFkProp[el.fk_property];
 
-                    // // if existing roles of this property
-                    // if (rolesByFkProp[el.fk_property]) {
-                    //     // takes the number of roles within quantity
-                    //     rolesWithinQuantity = rolesByFkProp[el.fk_property].filter(role => {
-                    //         if (options.isOutgoing) {
-                    //             if (!role.range_max_quantifier || role.range_max_quantifier === -1 || role.rank_for_te_ent <= role.range_max_quantifier) return true
-                    //         } else {
-                    //             if (!role.domain_max_quantifier || role.domain_max_quantifier === -1 || role.rank_for_pe_it <= options.targetMaxQuantity) return true
-                    //         }
-                    //     })
 
-                    //     // initializes the hasAlternatives flag of the propertyField
-                    //     if (rolesByFkProp[el.fk_property].length > rolesWithinQuantity.length) options.hasAlternatives = true;
-                    // }
 
                     if (rolesWithinQuantity && rolesWithinQuantity.length > 0) {
                         fields.push(createPropertyField(options, rolesWithinQuantity, crm, settings));

@@ -11,7 +11,7 @@ class QueryBuilder {
             [this.PK_HISTC11_BUILT_WORK]: true
         }
 
-        // Properties inherited from 'P166 was a presence of' 
+        // Properties inherited from 'P166 was a presence of'
         // connecting E93 Presence and 'Built Work' or 'Geographical Place'
         this.P166_INHERITED_PKS = [1184, 1181]
 
@@ -36,13 +36,13 @@ class QueryBuilder {
         const rootTableAlias = this.addTableAlias()
 
 
-        // root table where 
+        // root table where
         this.wheres.push(this.createEntityWhere(query.filter, rootTableAlias, fkProject))
 
         // root table from
         this.froms.push(`warehouse.entity_preview ${rootTableAlias}`)
 
-        // create froms and wheres according to filter definition  
+        // create froms and wheres according to filter definition
         this.createFilterFroms(query.filter, rootTableAlias, fkProject)
         this.createFilterWheres(query.filter)
 
@@ -56,7 +56,7 @@ class QueryBuilder {
         this.createLimitAndOffset(query)
 
         this.sql = `
-        SELECT 
+        SELECT
             ${this.joinSelects(this.selects)}
 
         FROM
@@ -66,7 +66,7 @@ class QueryBuilder {
             ${this.joinWheres(this.wheres, 'AND')}
 
         GROUP BY
-            ${this.joinGroupBys(this.groupBys)}      
+            ${this.joinGroupBys(this.groupBys)}
         ${this.limit}
         ${this.offset}
         `
@@ -92,7 +92,7 @@ class QueryBuilder {
      * if there is limit and offset provided, this function adds:
      * - a limit
      * - a offset
-     * @param {*} query 
+     * @param {*} query
      */
     createLimitAndOffset(query) {
         if (
@@ -241,7 +241,7 @@ class QueryBuilder {
     }
 
     joinEntities(node, parentTableAlias, thisTableAlias, fkProject) {
-        this.froms.push(`    
+        this.froms.push(`
                     LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
                     (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
                     AND
@@ -256,23 +256,23 @@ class QueryBuilder {
         const was_at = thisTableAlias + '_was_at';
         const place = thisTableAlias + '_place';
 
-        this.froms.push(`    
+        this.froms.push(`
 
             -- PEIT GEO ENTITY
             LEFT JOIN (
-                SELECT 
-                ${thisTableAlias}.*, 
+                SELECT
+                ${thisTableAlias}.*,
                 (
                     SELECT jsonb_agg(${presence})
                     -- ROLE P166 HAS PRESENCE
-                    FROM warehouse.v_roles_per_project_and_repo ${has_presence} 
+                    FROM warehouse.v_roles_per_project_and_repo_no_rank ${has_presence}
                     -- E93 PRESENCE
                     LEFT JOIN (
                         SELECT ${presence}.pk_entity, ${presence}.fk_project, ${presence}.fk_class, ${presence}.time_span,
-                        ( 
+                        (
                             SELECT COALESCE(
                             json_agg(
-                                distinct jsonb_build_object(	
+                                distinct jsonb_build_object(
                                 'lat',
                                 ${place}.lat,
                                 'long',
@@ -280,18 +280,18 @@ class QueryBuilder {
                                 )
                             ) FILTER ( WHERE ${place}.pk_entity IS NOT NULL ),
                             '[]'
-                            ) AS place	  
-                            FROM 
+                            ) AS place
+                            FROM
                             -- ROLE P167 WAS AT
-                            warehouse.v_roles_per_project_and_repo ${was_at}
+                            warehouse.v_roles_per_project_and_repo_no_rank ${was_at}
                             -- PLACE
                             LEFT JOIN information.v_place ${place} ON ${was_at}.fk_entity = ${place}.pk_entity
-        
-                            WHERE ${was_at}.fk_project = ${this.addParam(fkProject)} 
+
+                            WHERE ${was_at}.fk_project = ${this.addParam(fkProject)}
                             AND ${presence}.pk_entity = ${was_at}.fk_temporal_entity
                             AND ${was_at}.fk_property IN (${this.addParam(this.PK_P167_WAS_AT)}) -- ROLE P167 WAS AT
                         )  AS was_at
-                        FROM warehouse.entity_preview ${presence} 
+                        FROM warehouse.entity_preview ${presence}
                         WHERE ${presence}.fk_project = ${this.addParam(fkProject)}
                         AND ${presence}.fk_class IS NOT NULL
                         AND ${presence}.fk_class IN (${this.addParam(this.PK_E93_PRESENCE)}) -- E93 Presence
@@ -302,14 +302,14 @@ class QueryBuilder {
                         ${thisTableAlias}.pk_entity = ${has_presence}.fk_entity
                         AND ${has_presence}.fk_property IN (${this.addParams(this.P166_INHERITED_PKS)})
                     )
-                    ) 
+                    )
                 ) as presences
-                FROM warehouse.entity_preview ${thisTableAlias} 
+                FROM warehouse.entity_preview ${thisTableAlias}
                 WHERE ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
                 AND ${this.createEntityWhere(node, thisTableAlias, fkProject)}
-                 
-                
-        ) AS ${thisTableAlias} ON ${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity                                
+
+
+        ) AS ${thisTableAlias} ON ${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity
         `);
     }
 
@@ -331,11 +331,11 @@ class QueryBuilder {
         }
         if (secondLevelWheres.length) {
             topLevelWheres.push(`(
-                         ${this.joinWheres(secondLevelWheres, 'OR')} 
+                         ${this.joinWheres(secondLevelWheres, 'OR')}
                     )`);
         }
-        this.froms.push(`    
-                LEFT JOIN warehouse.v_roles_per_project_and_repo ${thisTableAlias} ON 
+        this.froms.push(`
+                LEFT JOIN warehouse.v_roles_per_project_and_repo_no_rank ${thisTableAlias} ON
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
     }
@@ -377,23 +377,23 @@ class QueryBuilder {
                 childNodeWheres = this.createFilterWheres(childNode, (level + 1));
             }
 
-            // create the where clause for the entity table 
+            // create the where clause for the entity table
             if (childNode.data.classes || childNode.data.types) {
                 nodeWheres.push(`${childNode._tableAlias}.pk_entity IS NOT NULL`)
             }
 
-            // create the where clause for the role table 
+            // create the where clause for the role table
             if (childNode.data.ingoingProperties || childNode.data.outgoingProperties) {
                 const equals = childNode.data.operator === 'IS' ? 'IS NOT NULL'
                     : childNode.data.operator === 'IS NOT' ? 'IS NULL'
-                        : 'IS NOT NULL'; // DEFAULT 
+                        : 'IS NOT NULL'; // DEFAULT
 
                 nodeWheres.push(`${childNode._tableAlias}.fk_entity ${equals}`)
             }
 
             if (childNodeWheres) {
                 let childrenSql;
-                // if we are in a subgroup node 
+                // if we are in a subgroup node
                 if (childNode.data.subgroup) {
                     // join the wheres of this subgroup's children
                     childrenSql = childNodeWheres.join(`
@@ -431,7 +431,7 @@ class QueryBuilder {
 
     /**
      * Returns true, if given node is for joining roles
-     * @param {*} node 
+     * @param {*} node
      */
     isRolesJoin(node) {
         if (!node || typeof node.data !== 'object') return false;
@@ -439,7 +439,7 @@ class QueryBuilder {
     }
     /**
      * Returns true, if given node is for joining entities
-     * @param {*} node 
+     * @param {*} node
      */
     isEntitesJoin(node) {
         if (!node || typeof node.data !== 'object') return false;
@@ -448,7 +448,7 @@ class QueryBuilder {
 
     /**
      * Returns true, if given node is for joining GeoEntities (and no other classes)
-     * @param {*} node 
+     * @param {*} node
      */
     isGeoEntityJoin(node) {
         if (this.isEntitesJoin) {

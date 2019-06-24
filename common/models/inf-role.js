@@ -271,7 +271,7 @@ module.exports = function (InfRole) {
           .then((resultingEntity) => {
 
 
-            // … prepare the Role to create 
+            // … prepare the Role to create
             dataObject.fk_entity = resultingEntity.pk_entity;
 
             return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
@@ -351,7 +351,6 @@ module.exports = function (InfRole) {
             "$relation": {
               "name": "temporal_entity",
               "joinType": "inner join",
-              //  "where": ["is_community_favorite", "=", "true"],
               "orderBy": [{
                 "pk_entity": "asc"
               }]
@@ -360,10 +359,8 @@ module.exports = function (InfRole) {
               "$relation": {
                 "name": "te_roles",
                 "joinType": "left join",
-                // "where": ["rank_for_te_ent", "=", "1"],
-                // "where":s ["rank_for_te_ent", "<=", "range_max_quantifier", "OR", "range_max_quantifier", "=", "-1", "OR", "range_max_quantifier", "IS NULL"],
-                "orderBy": [{
-                  "rank_for_te_ent": "asc"
+                  "orderBy": [{
+                  "pk_entity": "asc"
                 }]
               },
               "language": {
@@ -595,17 +592,17 @@ module.exports = function (InfRole) {
 
   /**
      * Add roles with their associated temporal entity to the project
-     * 
+     *
      * This query will add those things to the project:
      * - Roles that are enabled for auto-adding (using the admin configuration of that class).
-     * 
+     *
      * This query will not add
      * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
      * - The value-like items (time-primitive, appellation, language), since they never belong to projects
-     * 
+     *
      * See this page for details
      * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
-     * 
+     *
      * @param pk_namespace
      * @param pk_project
      * @param pk_typed_class
@@ -619,8 +616,8 @@ module.exports = function (InfRole) {
     -- Relate given roles with its temporal entities to given project --
     ----------------------------------------------------
 
-    WITH 
-    -- Find "auto-add-properties" for all classes 
+    WITH
+    -- Find "auto-add-properties" for all classes
     -- TODO: Add a filter for properties enabled by given project
        auto_add_properties AS (
       -- select the fk_class and the properties that are auto add because of a class_field_config
@@ -650,7 +647,7 @@ module.exports = function (InfRole) {
   -- Find the roles
     pe_it_roles AS (
         select pk_entity, fk_temporal_entity
-      from information.v_role 
+      from information.v_role
       where pk_entity IN (${pk_roles.map(r => (r * 1))})
     ),
     -- Find all roles related to temporal entities mached by pe_it_roles
@@ -664,7 +661,7 @@ module.exports = function (InfRole) {
       -- take only the max quantity of rows for that property, exclude repo-alternatives
       WHERE r.rank_for_te_ent <= r.range_max_quantifier OR r.range_max_quantifier = -1 OR r.range_max_quantifier IS NULL
     ),
-   
+
     -- TODO: find all entity associations that involve the te_ents (for types or mentionings of te_ents!)
 
     -- get a list of all pk_entities of repo version
@@ -672,13 +669,13 @@ module.exports = function (InfRole) {
       select pk_entity, null::calendar_type as calendar from pe_it_roles
       UNION
       select fk_temporal_entity, null::calendar_type as calendar from pe_it_roles
-      UNION 
+      UNION
       select pk_entity, calendar from te_ent_roles
     ),
     -- get a list of all pk_entities that the project manually removed
     pk_entities_excluded_by_project AS (
       SELECT fk_entity as pk_entity
-      FROM projects.v_info_proj_rel as epr 
+      FROM projects.v_info_proj_rel as epr
       where epr.is_in_project = false and epr.fk_project = 12
     ),
     -- get final list of pk_entities to add to project
@@ -709,9 +706,9 @@ module.exports = function (InfRole) {
 
   /**
     * Add roles to the project
-    * 
+    *
     * This query will not add any related entitie but the given roles
-    * 
+    *
     * @param pk_namespace
     * @param pk_project
     * @param pk_typed_class
@@ -722,17 +719,17 @@ module.exports = function (InfRole) {
     const params = [parseInt(pk_project), accountId]
 
     const sql_stmt = `
-      WITH 
+      WITH
       -- Find the roles
       roles AS (
         select pk_entity, community_favorite_calendar as calendar
-        from information.v_role 
+        from information.v_role
         where pk_entity IN (${pk_roles.map(r => (r * 1))})
       )
       -- add the project relations
       insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
       SELECT $1, true, pk_entity, calendar, $2
-      from roles;    
+      from roles;
       `
 
     const connector = InfRole.dataSource.connector;
