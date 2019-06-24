@@ -1,4 +1,4 @@
-var findComplex = require('loopback-postgres-find-complex');
+var findComplex = require('../custom/findComplex');
 var { getAuthorizedAclMethods } = require('../../node_modules/loopback-setup-remote-methods-mixin/lib/utils')
 var exclude = [];
 var include = [
