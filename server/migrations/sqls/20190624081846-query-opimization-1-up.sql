@@ -25,11 +25,64 @@ CREATE OR REPLACE VIEW information.v_role_tmp AS
 		 GROUP BY fk_entity
 	 ) AS t2 ON TRUE;
 
+
+CREATE FUNCTION information.v_role_tmp_find_or_create()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+    DECLARE
+      resulting_pk integer;
+      resulting_row information.v_role_tmp;
+    BEGIN
+
+      -- RAISE INFO 'input values: %', NEW;
+
+      ------ if existing, store in result -----
+      SELECT pk_entity FROM INTO resulting_pk information.role
+        WHERE
+            fk_entity = NEW.fk_entity
+            AND fk_temporal_entity = NEW.fk_temporal_entity
+            AND fk_property = NEW.fk_property;
+
+            -- RAISE INFO 'result of select: %', resulting_row;
+
+      ------- if not existing, insert and store in result -----
+        IF NOT FOUND THEN
+
+              -- RAISE INFO 'Not found, creating new...';
+
+            WITH _insert AS (
+                INSERT INTO information.role (
+                    fk_entity,
+                    fk_temporal_entity,
+                    fk_property
+                )
+                VALUES (
+                    NEW.fk_entity,
+                    NEW.fk_temporal_entity,
+                    NEW.fk_property
+                )
+                -- return all fields of the new row
+                RETURNING *
+                )
+            SELECT pk_entity FROM INTO resulting_pk _insert;
+
+              -- RAISE INFO 'result of insert: %', resulting_row;
+      END IF;
+
+  SELECT * FROM INTO resulting_row information.v_role_tmp
+  WHERE pk_entity = resulting_pk;
+RETURN resulting_row;
+  END;
+  $BODY$;
+
 CREATE TRIGGER on_insert
     INSTEAD OF INSERT
     ON information.v_role_tmp
     FOR EACH ROW
-    EXECUTE PROCEDURE information.v_role_find_or_create();
+    EXECUTE PROCEDURE information.v_role_tmp_find_or_create();
 
 -- 1
 CREATE OR REPLACE VIEW warehouse.v_roles_per_project_and_repo_no_rank AS
