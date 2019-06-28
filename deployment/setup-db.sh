@@ -12,7 +12,7 @@ if [ $DB_ENV = 'staging' ]; then
 fi
 
 if [ $DB_ENV = 'development' ]; then
-  DB_SOURCE=$GEOV_STAG_DATABASE_URL
+  DB_SOURCE=$GEOV_PROD_DATABASE_URL
   DB_TARGET=$DATABASE_URL
 fi
 
@@ -58,26 +58,24 @@ if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'development' ]; then
     node create-dropping-constraints-sqls.js $DB_TARGET $dirPath
     node create-adding-constraints-sqls.js $DB_TARGET $dirPath
 
-    echo '================= RESTORE TARGET DB WITH DATA OF SOURCE ================= '
-    # pgloader --no-ssl-cert-verification load
+    echo '========================= DROP ALL CONSTRAINTS  ========================= '
     psql $DB_TARGET -f droppingConstraints.sql
+    echo '================= RESTORE TARGET DB WITH DATA OF SOURCE ================= '
     node restore-target.js $DB_TARGET $dirPath
+    echo '========================= ADD ALL CONSTRAINTS =========================== '
     psql $DB_TARGET -f addingConstraints.sql
 
-    echo '================== FIX SEQUENCES OF TARGET DB ============================ '
+    # echo '================== FIX SEQUENCES OF TARGET DB ============================ '
 
-    psql $DB_TARGET -Atq -f reset-sequences.sql -o temp
-    psql $DB_TARGET -f temp
+    psql $DB_TARGET -Atq -f reset-sequences.sql -o tmp/temp
+    psql $DB_TARGET -f tmp/temp
     rm temp
 
     echo '================================= VACUUM ANALYZE ========================= '
     psql $DB_SOURCE -c "VACUUM ANALYZE"
 
-    echo '============================= DELETE DUMP ================================ '
-
-    rm -r $dirPath/data_dump
-    rm -r $dirPath/droppingConstraints.sql
-    rm -r $dirPath/addingConstraints.sql
+    echo '=========================== DELETE TMP FILES ============================= '
+    rm -r $dirPath/tmp
 
     echo '======== TARGET DB IS READY FOR MIGRATING UP IN RELEASE PHASE ============ '
     echo '========================================================================== '

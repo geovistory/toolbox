@@ -3,7 +3,7 @@ var exec = require('child_process').exec;
 var database_url = process.argv[2];
 var basePath = process.argv[3]
 
-const dirPath = path.resolve(basePath) + "/addingConstraints.sql";
+const dirPath = path.resolve(basePath) + "tmp/addingConstraints.sql";
 
 
 var cmd = `psql ${database_url} -c "\\copy (SELECT 'ALTER TABLE '||nspname||'.\\"'||relname||'\\" ADD CONSTRAINT \\"'||conname||'\\" '|| pg_get_constraintdef(pg_constraint.oid)||';' \

@@ -11,7 +11,7 @@ var hrstart = process.hrtime()
 var database_url = process.argv[2];
 var basePath = process.argv[3]
 
-const dirPath = path.resolve(basePath) + "/data_dump/";
+const dirPath = path.resolve(basePath) + "tmp/data_dump/";
 
 // ensure the folder exists
 fs.ensureDir(dirPath);
