@@ -21,13 +21,13 @@
   ],
   "buildpacks": [
     {
+      "url": "heroku-community/apt"
+    },
+    {
       "url": "heroku/python"
     },
     {
       "url": "heroku/nodejs"
-    },
-    {
-      "url": "heroku-community/apt"
     }
   ]
 }
