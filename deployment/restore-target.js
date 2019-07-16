@@ -170,7 +170,7 @@ function readFile(filename, resolve, reject) {
     fs.outputFile(pgloaderFilePath, `
       LOAD CSV
         FROM '${filePath}'
-        INTO ${database_url}?${filename}
+        INTO ${database_url}?sslmode=require&${filename}
 
         WITH  truncate,
               csv header,
