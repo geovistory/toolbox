@@ -26,8 +26,8 @@ if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'development' ]; then
   echo 'copy data'
   echo 'from SOURCE: '$DB_SOURCE
   echo 'to TARGET: '$DB_TARGET
-  dirPath=$(pwd)
-  echo 'dump to: '$dirPath
+  tmpPath=$(pwd)/tmp
+  echo 'dump to: '$tmpPath
 
   latest_migration_of_source=$(psql $DB_SOURCE -t -c "SELECT trim(leading '/' from name) from public.migrations ORDER BY id DESC LIMIT 1")
   latest_migration_of_target=$(psql $DB_TARGET -t -c "SELECT trim(leading '/' from name) from public.migrations ORDER BY id DESC LIMIT 1")
@@ -46,7 +46,7 @@ if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'development' ]; then
     echo '========================================================================= '
 
     echo '============================= DUMP SOURCE DB ============================ '
-    node dump-source.js $DB_SOURCE $dirPath
+    node dump-source.js $DB_SOURCE $tmpPath
 
     echo '================= DROP ALL SCHEMAS OF TARGET DB =========================='
     psql $DB_TARGET -f dropSchemas.sql
@@ -55,27 +55,26 @@ if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'development' ]; then
     ../node_modules/db-migrate/bin/db-migrate --config ../server/migrate-db-config.json --migrations-dir ../server/migrations up $latest_migration_of_source
 
     echo '=========== CREATE SCRIPTS TO DROP AND RECREATE ALL CONSTRAINTS ======== '
-    node create-dropping-constraints-sqls.js $DB_TARGET $dirPath
-    node create-adding-constraints-sqls.js $DB_TARGET $dirPath
+    node create-dropping-constraints-sqls.js $DB_TARGET $tmpPath
+    node create-adding-constraints-sqls.js $DB_TARGET $tmpPath
 
     echo '========================= DROP ALL CONSTRAINTS  ========================= '
-    psql $DB_TARGET -f droppingConstraints.sql
+    psql $DB_TARGET -f $tmpPath/droppingConstraints.sql
     echo '================= RESTORE TARGET DB WITH DATA OF SOURCE ================= '
-    node restore-target.js $DB_TARGET $dirPath
+    node restore-target.js $DB_TARGET $tmpPath
     echo '========================= ADD ALL CONSTRAINTS =========================== '
-    psql $DB_TARGET -f addingConstraints.sql
+    psql $DB_TARGET -f $tmpPath/addingConstraints.sql
 
-    # echo '================== FIX SEQUENCES OF TARGET DB ============================ '
+    echo '================== FIX SEQUENCES OF TARGET DB ============================ '
 
-    psql $DB_TARGET -Atq -f reset-sequences.sql -o tmp/temp
-    psql $DB_TARGET -f tmp/temp
-    rm temp
+    psql $DB_TARGET -Atq -f reset-sequences.sql -o $tmpPath/sequences
+    psql $DB_TARGET -f $tmpPath/sequences
 
     echo '================================= VACUUM ANALYZE ========================= '
     psql $DB_SOURCE -c "VACUUM ANALYZE"
 
     echo '=========================== DELETE TMP FILES ============================= '
-    rm -r $dirPath/tmp
+    rm -r $tmpPath
 
     echo '======== TARGET DB IS READY FOR MIGRATING UP IN RELEASE PHASE ============ '
     echo '========================================================================== '

@@ -3,7 +3,7 @@ var exec = require('child_process').exec;
 var database_url = process.argv[2];
 var basePath = process.argv[3]
 
-const dirPath = path.resolve(basePath) + "tmp/droppingConstraints.sql";
+const dirPath = path.resolve(basePath) + "/droppingConstraints.sql";
 
 
 var cmd = `psql ${database_url} -c "\\copy (SELECT 'ALTER TABLE '||nspname||'.\\"'||relname||'\\" DROP CONSTRAINT \\"'||conname||'\\";' \

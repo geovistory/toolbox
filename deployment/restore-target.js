@@ -13,8 +13,8 @@ var basePath = process.argv[3]
 
 var hrstart = process.hrtime()
 
-const dirPath = path.resolve(basePath) + "tmp/data_dump/";
-const pgloaderPath = path.resolve(basePath) + "tmp/pgloader/";
+const dirPath = path.resolve(basePath) + "/data_dump/";
+const pgloaderPath = path.resolve(basePath) + "/pgloader/";
 
 const client = new pg.Client({
   connectionString: database_url,
@@ -170,7 +170,7 @@ function readFile(filename, resolve, reject) {
     fs.outputFile(pgloaderFilePath, `
       LOAD CSV
         FROM '${filePath}'
-        INTO ${database_url}?sslmode=require&${filename}
+        INTO ${database_url}?sslmode=prefer&${filename}
 
         WITH  truncate,
               csv header,
@@ -184,13 +184,13 @@ function readFile(filename, resolve, reject) {
               standard_conforming_strings to 'on'
     ;`)
       .then(() => {
-        exec(`pgloader --verbose ${pgloaderFilePath}`, function (err, stdout, stderr) {
+        exec(`pgloader --no-ssl-cert-verification --verbose ${pgloaderFilePath}`, function (err, stdout, stderr) {
           if (err) {
             return reject(err)
             console.log(err);
           }
-          resolve(stdout)
           console.log(stdout);
+          resolve(stdout)
 
         });
       })
