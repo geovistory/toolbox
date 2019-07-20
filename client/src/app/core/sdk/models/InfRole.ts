@@ -18,9 +18,7 @@ export interface InfRoleInterface {
   "is_in_project_count"?: number;
   "is_standard_in_project_count"?: number;
   "community_favorite_calendar"?: string;
-  "rank_for_te_ent"?: number;
   "range_max_quantifier"?: number;
-  "rank_for_pe_it"?: number;
   "domain_max_quantifier"?: number;
   "pk_entity"?: number;
   "notes"?: string;
@@ -45,9 +43,7 @@ export class InfRole implements InfRoleInterface {
   "is_in_project_count": number;
   "is_standard_in_project_count": number;
   "community_favorite_calendar": string;
-  "rank_for_te_ent": number;
   "range_max_quantifier": number;
-  "rank_for_pe_it": number;
   "domain_max_quantifier": number;
   "pk_entity": number;
   "notes": string;
@@ -120,16 +116,8 @@ export class InfRole implements InfRoleInterface {
           name: 'community_favorite_calendar',
           type: 'string'
         },
-        "rank_for_te_ent": {
-          name: 'rank_for_te_ent',
-          type: 'number'
-        },
         "range_max_quantifier": {
           name: 'range_max_quantifier',
-          type: 'number'
-        },
-        "rank_for_pe_it": {
-          name: 'rank_for_pe_it',
           type: 'number'
         },
         "domain_max_quantifier": {

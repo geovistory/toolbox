@@ -1039,7 +1039,7 @@ findComplex.prototype.find = function(filter,cb,onlyOne=false){
   mainSql = this.generateQuery(filter.select,filter.where,filter.order,filter.offset,filter.limit,joinSqls,pagingSql);
   sql = this.datasource.connector.parameterize(mainSql);
 
-  logSql(sql.sql,sql.params);
+  //logSql(sql.sql,sql.params);
 
   this.datasource.connector.execute(sql.sql,sql.params,function(error,data){
           if(onlyOne) data = (data != null)?data[0]:null;

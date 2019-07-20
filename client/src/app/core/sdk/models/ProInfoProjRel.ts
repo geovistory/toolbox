@@ -9,7 +9,9 @@ export interface ProInfoProjRelInterface {
   "is_in_project"?: boolean;
   "is_standard_in_project"?: boolean;
   "calendar"?: string;
-  "ord_num"?: number;
+  "ord_num_of_domain"?: number;
+  "ord_num_of_range"?: number;
+  "ord_num_of_text_property"?: number;
   "tmsp_last_modification"?: string;
   "fk_creator"?: number;
   "fk_last_modifier": number;
@@ -28,7 +30,9 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
   "is_in_project": boolean;
   "is_standard_in_project": boolean;
   "calendar": string;
-  "ord_num": number;
+  "ord_num_of_domain": number;
+  "ord_num_of_range": number;
+  "ord_num_of_text_property": number;
   "tmsp_last_modification": string;
   "fk_creator": number;
   "fk_last_modifier": number;
@@ -98,8 +102,16 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
           name: 'calendar',
           type: 'string'
         },
-        "ord_num": {
-          name: 'ord_num',
+        "ord_num_of_domain": {
+          name: 'ord_num_of_domain',
+          type: 'number'
+        },
+        "ord_num_of_range": {
+          name: 'ord_num_of_range',
+          type: 'number'
+        },
+        "ord_num_of_text_property": {
+          name: 'ord_num_of_text_property',
           type: 'number'
         },
         "tmsp_last_modification": {

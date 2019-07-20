@@ -18,7 +18,7 @@ const pgloaderPath = path.resolve(basePath) + "/pgloader/";
 
 const client = new pg.Client({
   connectionString: database_url,
-  // ssl: true,
+  ssl: true
 });
 
 client.connect();
@@ -170,7 +170,7 @@ function readFile(filename, resolve, reject) {
     fs.outputFile(pgloaderFilePath, `
       LOAD CSV
         FROM '${filePath}'
-        INTO ${database_url}?sslmode=prefer&${filename}
+        INTO ${database_url}?sslmode=require&${filename}
 
         WITH  truncate,
               csv header,
@@ -184,6 +184,8 @@ function readFile(filename, resolve, reject) {
               standard_conforming_strings to 'on'
     ;`)
       .then(() => {
+        console.log('created file');
+
         exec(`pgloader --no-ssl-cert-verification --verbose ${pgloaderFilePath}`, function (err, stdout, stderr) {
           if (err) {
             return reject(err)

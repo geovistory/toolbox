@@ -73,8 +73,8 @@ if [ $DB_ENV = 'review' ] || [ $DB_ENV = 'development' ]; then
     echo '================================= VACUUM ANALYZE ========================= '
     psql $DB_SOURCE -c "VACUUM ANALYZE"
 
-    echo '=========================== DELETE TMP FILES ============================= '
-    rm -r $tmpPath
+    # echo '=========================== DELETE TMP FILES ============================= '
+    # rm -r $tmpPath
 
     echo '======== TARGET DB IS READY FOR MIGRATING UP IN RELEASE PHASE ============ '
     echo '========================================================================== '

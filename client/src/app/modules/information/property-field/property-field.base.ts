@@ -407,8 +407,8 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
 
             const epr = U.eprFromRoleDetail(this.roleDetails[i].value);
             // if the ord_num is wrong
-            if (epr.ord_num != i) {
-                changedEprs.push({ ...epr, ord_num: i, })
+            if (epr.ord_num_of_domain != i) {
+                changedEprs.push({ ...epr, ord_num_of_domain: i, })
             }
         }
 

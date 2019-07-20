@@ -927,6 +927,7 @@ export function similarPropertyField(a: PropertyField, b: PropertyField): boolea
 /**
  * returns a copy of the given RoleDetail[], where the items are sorted
  * according to the ord_num in the epr.
+ * TODO: make this dependent of 'isOutgoing' of the roleDetail.
  *
  * @param roleDetailArray a RoleDetail[]
  * @returns a sorted copy of RoleDetail[]
@@ -935,8 +936,8 @@ export function sortRoleDetailsByOrdNum(roleDetailArray: RoleDetail[]): RoleDeta
 
     const diff = (rdA: RoleDetail, rdB: RoleDetail) => {
 
-        const a = rdA.role.entity_version_project_rels ? rdA.role.entity_version_project_rels[0].ord_num : undefined;
-        const b = rdB.role.entity_version_project_rels ? rdB.role.entity_version_project_rels[0].ord_num : undefined;
+        const a = rdA.role.entity_version_project_rels ? rdA.role.entity_version_project_rels[0].ord_num_of_domain : undefined;
+        const b = rdB.role.entity_version_project_rels ? rdB.role.entity_version_project_rels[0].ord_num_of_domain : undefined;
 
         if (a === undefined || b === undefined) return 0;
 

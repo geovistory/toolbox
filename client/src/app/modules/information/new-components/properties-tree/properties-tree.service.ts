@@ -192,7 +192,7 @@ export class PropertyTreeService {
                   projRel,
                   textProperty,
                   label: textProperty.string,
-                  ordNum: projRel.ord_num
+                  ordNum: projRel.ord_num_of_text_property
                 }
                 return item
               })
@@ -405,7 +405,7 @@ export class PropertyTreeService {
         const node: TemporalEntityItem = {
           role,
           projRel,
-          ordNum: projRel.ord_num,
+          ordNum: projRel.ord_num_of_domain,
           properties: properties,
           label: pathOr('', ['0', 'items', '0', 'label'], properties)
         }
@@ -435,8 +435,9 @@ export class PropertyTreeService {
 
         const ipr = items[i].projRel;
         // if the ord_num is wrong
-        if (ipr.ord_num != i) {
-          changedEprs.push({ ...ipr, ord_num: i, })
+        // TODO: add support for ord_num_of_range
+        if (ipr.ord_num_of_domain != i) {
+          changedEprs.push({ ...ipr, ord_num_of_domain: i, })
         }
       }
 

@@ -26,7 +26,7 @@ CREATE OR REPLACE VIEW information.v_role_tmp AS
 	 ) AS t2 ON TRUE;
 
 
-CREATE FUNCTION information.v_role_tmp_find_or_create()
+CREATE OR REPLACE FUNCTION information.v_role_tmp_find_or_create()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -101,51 +101,3 @@ UNION
     0 AS project
    FROM information.v_role_tmp r
   WHERE r.is_in_project_count > 0;
-
--- 1 make warehouse.v_fk_entity_label independent from rank_for_pe_it and rank_for_te_ent
--- CREATE OR REPLACE VIEW warehouse.v_fk_entity_label AS
--- WITH entities AS (
---          SELECT v_entities.pk_entity,
---             v_entities.fk_project,
---             v_entities.project,
---             v_entities.fk_class,
---             v_entities.table_name,
---             v_entities.entity_type
---            FROM warehouse.v_entities
---         )
---  SELECT DISTINCT ON (entities.pk_entity, entities.project)
---  	entities.pk_entity,
---     entities.fk_project,
---     entities.project,
---     entities.fk_class,
---     entities.table_name,
---     entities.entity_type,
---     a.fk_entity_label
---     FROM entities
---      LEFT JOIN (
---         (
--- 			SELECT
--- 				r.fk_entity AS pk_entity,
--- 				r.fk_temporal_entity AS fk_entity_label,
--- 				prel.fk_project,
--- 				 r.is_in_project_count
--- 			FROM information.v_role r, projects.info_proj_rel prel, projects.class_field_config ucc, information.entity e
--- 			WHERE r.pk_entity = prel.fk_entity and prel.is_in_project = TRUE
--- 			AND ucc.fk_property = r.fk_property AND ucc.ord_num = 0 AND ucc.property_is_outgoing = false AND ucc.fk_app_context = 45
--- 			AND r.fk_temporal_entity = e.pk_entity AND e.table_name::text = 'temporal_entity'::text
--- 			ORDER BY r.is_in_project_count DESC
--- 		)
---         UNION
---         (
--- 			SELECT
--- 				r.fk_temporal_entity AS pk_entity,
--- 				r.fk_entity AS fk_entity_label,
--- 				prel.fk_project,
--- 				r.is_in_project_count
--- 			FROM information.v_role r, projects.info_proj_rel prel, projects.class_field_config ucc, information.entity e
--- 			WHERE r.pk_entity = prel.fk_entity and prel.is_in_project = TRUE
--- 			AND ucc.fk_property = r.fk_property AND ucc.ord_num = 0 AND ucc.property_is_outgoing = true AND ucc.fk_app_context = 45
--- 			AND r.fk_entity = e.pk_entity AND e.table_name::text = 'persistent_item'::text
--- 			ORDER BY r.is_in_project_count DESC
--- 		)
---   ) a ON a.pk_entity = entities.pk_entity AND a.fk_project IS NOT DISTINCT FROM entities.fk_project;

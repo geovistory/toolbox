@@ -613,87 +613,12 @@ module.exports = function (InfRole) {
     const params = [parseInt(pk_project), accountId]
 
     const sql_stmt = `
-    -- Relate given roles with its temporal entities to given project --
-    ----------------------------------------------------
-
-    WITH
-    -- Find "auto-add-properties" for all classes
-    -- TODO: Add a filter for properties enabled by given project
-       auto_add_properties AS (
-      -- select the fk_class and the properties that are auto add because of a class_field_config
-      select p.dfh_has_domain as fk_class, p.dfh_pk_property, p.dfh_range_instances_max_quantifier as max_quantifier
-      from data_for_history.property as p
-      inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = true
-      UNION
-      select p.dfh_has_range as fk_class, p.dfh_pk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
-      from data_for_history.property as p
-      inner join projects.class_field_config as ctxt on p.dfh_pk_property = ctxt.fk_property
-      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND ctxt.property_is_outgoing = false
-      UNION
-      -- select the fk_class and the properties that are auto add because of a property set
-      select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_domain_instances_max_quantifier as max_quantifier
-      from data_for_history.property as p
-      inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = false
-      UNION
-      select ctxt.fk_class_for_class_field, psprel.fk_property, p.dfh_range_instances_max_quantifier as max_quantifier
-      from data_for_history.property as p
-      inner join system.class_field_property_rel as psprel on psprel.fk_property = p.dfh_pk_property
-      inner join projects.class_field_config as ctxt on psprel.fk_class_field = ctxt.fk_class_field
-      Where ctxt.fk_app_context = 47 AND ctxt.ord_num is not null AND psprel.property_is_outgoing = true
-    ),
-  -- Find the roles
-    pe_it_roles AS (
-        select pk_entity, fk_temporal_entity
-      from information.v_role
-      where pk_entity IN (${pk_roles.map(r => (r * 1))})
-    ),
-    -- Find all roles related to temporal entities mached by pe_it_roles
-    -- that are of an auto-add property
-    te_ent_roles AS (
-      select r.pk_entity, r.fk_temporal_entity, r.fk_property, r.fk_entity, addp.max_quantifier, r.community_favorite_calendar as calendar
-      from information.v_role as r
-      inner join pe_it_roles as pi_r on pi_r.fk_temporal_entity = r.fk_temporal_entity
-      inner join information.temporal_entity as te on te.pk_entity = pi_r.fk_temporal_entity
-      inner join auto_add_properties as addp on (addp.dfh_pk_property = r.fk_property AND addp.fk_class = te.fk_class)
-      -- take only the max quantity of rows for that property, exclude repo-alternatives
-      WHERE r.rank_for_te_ent <= r.range_max_quantifier OR r.range_max_quantifier = -1 OR r.range_max_quantifier IS NULL
-    ),
-
-    -- TODO: find all entity associations that involve the te_ents (for types or mentionings of te_ents!)
-
-    -- get a list of all pk_entities of repo version
-    pk_entities_of_repo AS (
-      select pk_entity, null::calendar_type as calendar from pe_it_roles
-      UNION
-      select fk_temporal_entity, null::calendar_type as calendar from pe_it_roles
-      UNION
-      select pk_entity, calendar from te_ent_roles
-    ),
-    -- get a list of all pk_entities that the project manually removed
-    pk_entities_excluded_by_project AS (
-      SELECT fk_entity as pk_entity
-      FROM projects.v_info_proj_rel as epr
-      where epr.is_in_project = false and epr.fk_project = 12
-    ),
-    -- get final list of pk_entities to add to project
-    pk_entities_to_add AS (
-      select pk_entity, calendar from pk_entities_of_repo
-    --  EXCEPT
-    --  select pk_entity, null::calendar_type from pk_entities_excluded_by_project
-    )
-    --  select * from pk_entities_to_add;
-
-    insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
-    SELECT $1, true, pk_entity, calendar, $2
-    from pk_entities_to_add;
+      select information.add_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles.map(r => (r * 1)).join(', ')}], $1, $2);
     `
 
     const connector = InfRole.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
-      if (err) cb(err, resultObjects);
+      if (err) return cb(err, resultObjects);
 
       InfRole.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
         cb(err, result)
