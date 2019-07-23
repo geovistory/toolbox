@@ -1,7 +1,6 @@
 {
   "name": "geovistory",
-  "scripts": {
-  },
+  "scripts": {},
   "env": {
     "DB_ENV": "review",
     "GEOV_STAG_DATABASE_URL": {
@@ -11,8 +10,7 @@
       "required": true
     }
   },
-  "formation": {
-  },
+  "formation": {},
   "addons": [
     {
       "plan": "heroku-postgresql:hobby-basic",
@@ -22,6 +20,9 @@
     }
   ],
   "buildpacks": [
+    {
+      "url": "heroku-community/apt"
+    },
     {
       "url": "heroku/python"
     },

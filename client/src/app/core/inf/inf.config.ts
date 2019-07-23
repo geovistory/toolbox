@@ -116,7 +116,7 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   appellation: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -126,7 +126,7 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: []
   },
   time_primitive: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -136,7 +136,7 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: []
   },
   place: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -146,7 +146,7 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: []
   },
   language: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {

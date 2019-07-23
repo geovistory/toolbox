@@ -19,5 +19,5 @@ node_modules
 npm-debug.log
 
 server/datasources.development.js
-deployment/data_dump
+deployment/tmp
 openapi.yml

@@ -14,10 +14,11 @@ var basePath = process.argv[3]
 var hrstart = process.hrtime()
 
 const dirPath = path.resolve(basePath) + "/data_dump/";
+const pgloaderPath = path.resolve(basePath) + "/pgloader/";
 
 const client = new pg.Client({
   connectionString: database_url,
-  ssl: true,
+  ssl: true
 });
 
 client.connect();
@@ -26,8 +27,6 @@ function errorHandler(error) {
   console.error(error)
   process.exit();
 }
-
-var fs = require('fs');
 
 // get a ordered list of table names needed for populating db in right order (no FK violations)
 function getTableOrder() {
@@ -82,6 +81,9 @@ function getTableOrder() {
         resolve(orderOfPopulation);
       }
     )
+    .catch(err => {
+      console.log(err)
+    })
 
   })
 }
@@ -158,10 +160,50 @@ function readFile(filename, resolve, reject) {
     })
     .catch(err => reject(err))
 
+  }
+
+  function readFile2(filename, resolve, reject) {
+
+    // Copy data from file to target table
+    var filePath = dirPath + filename;
+    var pgloaderFilePath = pgloaderPath + filename
+    fs.outputFile(pgloaderFilePath, `
+      LOAD CSV
+        FROM '${filePath}'
+        INTO ${database_url}?sslmode=require&${filename}
+
+        WITH  truncate,
+              csv header,
+              drop indexes,
+              disable triggers,
+              fields optionally enclosed by '"',
+              fields escaped by double-quote,
+              fields terminated by ','
+
+          SET work_mem to '12MB',
+              standard_conforming_strings to 'on'
+    ;`)
+      .then(() => {
+        console.log('created file');
+
+        exec(`pgloader --no-ssl-cert-verification --verbose ${pgloaderFilePath}`, function (err, stdout, stderr) {
+          if (err) {
+            return reject(err)
+            console.log(err);
+          }
+          console.log(stdout);
+          resolve(stdout)
+
+        });
+      })
+      .catch(err => {
+        reject(err)
+      })
 
 
+  }
 
-}
+
 
 function readFiles(dirPath) {
 
@@ -200,11 +242,12 @@ function readFiles(dirPath) {
             i++;
             loopFilesSynchonously()
           } else {
-
-            console.log(`Inserting data of file #${i + 1} of ${tableNames.length}: ${filename}`)
+            console.log(`-------------------------------------------------------------------------------------`)
+            console.log(`Inserting data of file #${i + 1} of ${tableNames.length}: \u{1b}[33m ${filename} \u{1b}[0m`)
+            console.log(`-------------------------------------------------------------------------------------`)
 
             // call readfile
-            readFile(filename,
+            readFile2(filename,
               onSuccess => {
 
                 var hrFileEnd = process.hrtime(hrFileStart);

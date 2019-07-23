@@ -68,7 +68,19 @@ module.exports = function (ProProject) {
     )
     ${insertTextProperty},
     add_information_from_template_project AS (
-      INSERT INTO projects.info_proj_rel (fk_project, fk_entity, fk_entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project, calendar, ord_num, entity_version)
+      INSERT INTO projects.info_proj_rel (
+          fk_project,
+          fk_entity,
+          fk_entity_version,
+          fk_entity_version_concat,
+          is_in_project,
+          is_standard_in_project,
+          calendar,
+          ord_num_of_domain,
+          ord_num_of_range,
+          ord_num_of_text_property,
+          entity_version
+         )
       SELECT
         (SELECT pk_entity FROM insert_project) as fk_project,
         fk_entity,
@@ -77,7 +89,9 @@ module.exports = function (ProProject) {
         is_in_project,
         is_standard_in_project,
         calendar,
-        ord_num,
+        ord_num_of_domain,
+        ord_num_of_range,
+        ord_num_of_text_property,
         entity_version
       FROM projects.info_proj_rel
       WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}

@@ -35,7 +35,13 @@
     "calendar": {
       "type": "string"
     },
-    "ord_num": {
+    "ord_num_of_domain": {
+      "type": "number"
+    },
+    "ord_num_of_range": {
+      "type": "number"
+    },
+    "ord_num_of_text_property": {
       "type": "number"
     },
     "tmsp_last_modification": {

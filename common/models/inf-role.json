@@ -6,7 +6,7 @@
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "v_role_tmp"
+      "table": "v_role"
     }
   },
   "mixins": {
