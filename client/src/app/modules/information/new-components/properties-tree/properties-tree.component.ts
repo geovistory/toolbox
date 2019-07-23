@@ -26,6 +26,8 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   @Input() readonly$ = new BehaviorSubject(false);
 
 
+
+
   tree$: Observable<ListDefinition[]>
 
   treeControl = new NestedTreeControl<ListDefinition>(node => ([]));

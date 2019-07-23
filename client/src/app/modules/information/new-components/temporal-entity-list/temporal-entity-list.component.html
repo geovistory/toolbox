@@ -1,99 +1,70 @@
 <gv-list-header class="mat-tree-node  align-items-baseline" [listDefinition]="listDefinition"
-  [treeControl]="treeControl" [readonly$]="readonly$" [itemsCount$]="itemsCount$" (addClick)="t.showControl$.next(listDefinition)"></gv-list-header>
-
-<div FxFlex *ngIf="treeControl.isExpanded(listDefinition)">
-
-  <mat-accordion class="drop-list" cdkDropList (cdkDropListDropped)="t.updateOrder($event, items$)">
-    <mat-expansion-panel *ngFor="let item of (items$ | async)" cdkDrag (opened)="item.panelOpenState = true"
-      (closed)="item.panelOpenState = false">
-      <mat-expansion-panel-header collapsedHeight="75px">
+  [treeControl]="treeControl" [readonly$]="readonly$" [itemsCount$]="itemsCount$"
+  (addClick)="t.showControl$.next(listDefinition)"></gv-list-header>
 
 
-        <mat-panel-title *ngIf="!item.panelOpenState" class="main d-flex">
-          <!-- Role Labels -->
-          <div class="gv-grow-1 pr-3" *ngFor="let p of item?.properties; let i = index">
-            <div class="text-muted font-xs">
-              {{p?.listDefinition?.label}}
-            </div>
-            <div *ngFor="let jtem of p?.items">
-              <div *ngIf="jtem.target === 'appellation' || jtem.target !== 'language'">
-                {{jtem?.label}}
-              </div>
-              <div *ngIf="jtem.target === 'time-span'">
-                <!-- {{getExTLabel(jtem?.exTimeLabel)}} -->
-              </div>
-              <div *ngIf="jtem.target === 'entity-preview'">
-                <gv-entity-preview [dragEnabled]="false" [preview]="jtem.preview"></gv-entity-preview>
-              </div>
-            </div>
-          </div>
+<div class=" table-and-paginator-container mat-elevation-z4mx-2" *ngIf="treeControl.isExpanded(listDefinition)">
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource">
+      <!-- Empty Column -->
+      <ng-container matColumnDef="empty">
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *matCellDef="let element"> </td>
+      </ng-container>
 
-          <div class="d-flex font-xs text-muted flex-column justify-content-between">
+      <!-- Generic Cell Column -->
+      <ng-container *ngFor="let column of dataColumns" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngIf="element[column]?.listDefinition?.listType !== 'entity-preview'">
+            {{element[column]?.label}}
+          </span>
+          <span *ngIf="element[column]?.listDefinition?.listType === 'entity-preview' && element[column]?.items.length">
+            <gv-entity-preview [dragEnabled]="false" [preview]="element[column].items[0].preview"></gv-entity-preview>
+          </span>
+          <span class="text-muted small" *ngIf="element[column].items.length > 1">
+            + {{element[column].items.length - 1}}
+          </span>
+        </td>
+      </ng-container>
 
-            <!-- Class info -->
-            <div>
-              <div class="align-self-center">
-                <i class="gv-entity-color fa fa-star-o"></i>
-                {{listDefinition?.targetClassLabel}}
-              </div>
-            </div>
+      <!-- Action Column -->
+      <ng-container matColumnDef="actions" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="action-cell">
+          <mat-menu #appMenu="matMenu">
 
-            <div class="text-right" *ngIf="label?.hasMore">
-              More…
-            </div>
-          </div>
+            <button mat-menu-item>
+              <mat-icon>add</mat-icon>
+              Add a new Name
+            </button>
+            <mat-divider></mat-divider>
+            <div class="dropdown-header">Columns</div>
 
-        </mat-panel-title>
+            <button *ngFor="let col of dataColumns" mat-menu-item (click)="toggleCol(col); $event.stopPropagation(); ">
+              <mat-checkbox color="accent" [checked]="dataColumnsMap[col]">
+                {{col}}
+              </mat-checkbox>
+            </button>
 
+          </mat-menu>
 
-        <mat-panel-title *ngIf="item.panelOpenState" class="main d-flex flex-column">
-
-          <!-- Header -->
-          <div class="d-flex font-lg text-gray-400">
-
-            <!-- Class info -->
-            <div class="gv-grow-1 gv-pointer  d-flex  justify-content-start'">
-              <div class="align-self-center">
-                <i class="text-gray-400" class="gv-entity-color fa fa-star-o"></i>
-                {{listDefinition?.targetClassLabel}}
-              </div>
-            </div>
-
-            <!-- Buttons -->
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <ng-content select="[buttons]"></ng-content>
-              <!-- <button type="button" class="btn btn-link-gray" title="Minimize">
-                <i class="fa fa-compress"></i>
-              </button> -->
-            </div>
-          </div>
-
-        </mat-panel-title>
+          <button mat-icon-button [matMenuTriggerFor]="appMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let element" class="action-cell">
+          <button mat-icon-button aria-label="Actions on table row">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
 
-      </mat-expansion-panel-header>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
 
 
-
-
-
-      <!-- Role Labels -->
-      <div class="gv-grow-1 mt-3" *ngFor="let p of item?.properties; let i = index">
-        <div class="text-muted font-xs">
-          {{p?.listDefinition?.label}}
-        </div>
-        <div *ngFor="let jtem of p?.items">
-          <div *ngIf="jtem.target === 'appellation' || jtem.target !== 'language'">
-            {{jtem?.label}}
-          </div>
-          <div *ngIf="jtem.target === 'time-span'">
-            <!-- {{getExTLabel(jtem?.exTimeLabel)}} -->
-          </div>
-          <div *ngIf="jtem.target === 'entity-preview'">
-            <gv-entity-preview [dragEnabled]="false" [preview]="jtem.preview"></gv-entity-preview>
-          </div>
-        </div>
-      </div>
-    </mat-expansion-panel>
-  </mat-accordion>
+  </div>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>

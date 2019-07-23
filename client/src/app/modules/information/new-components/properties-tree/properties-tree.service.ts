@@ -1,27 +1,34 @@
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { Injectable } from "@angular/core";
-import { ActiveProjectService, ClassConfigList, InfRole, ProInfoProjRel, PropertyField, SysConfig, TimePrimitive, U } from "app/core";
+import { ActiveProjectService, ClassConfigList, InfRole, ProInfoProjRel, PropertyField, SysConfig, TimePrimitive, U, IAppState, InfEntityAssociation } from "app/core";
 import { Granularity } from "app/core/date-time/date-time-commons";
 import { CalendarType } from "app/core/date-time/time-primitive";
 import { DfhConfig } from "app/modules/information/shared/dfh-config";
 import { TimePrimitivePipe } from "app/shared/pipes/time-primitive/time-primitive.pipe";
 import { TimeSpanPipe } from "app/shared/pipes/time-span/time-span.pipe";
-import { pathOr, values } from "ramda";
+import { pathOr, values, omit } from "ramda";
 import { combineLatest, Observable, of, BehaviorSubject } from "rxjs";
-import { filter, first, map, mergeMap, startWith } from "rxjs/operators";
+import { filter, first, map, mergeMap, startWith, tap } from "rxjs/operators";
 import { AppellationItem, EntityPreviewItem, ItemBasics, LanguageItem, ListDefinition, PlaceItem, ListType, TemporalEntityItem, TemporalEntityProperties, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperties } from "./properties-tree.models";
+import { InfSelector } from "app/core/inf/inf.service";
+import { NgRedux } from "../../../../../../node_modules/@angular-redux/store";
 
 
 @Injectable()
 export class PropertyTreeService {
 
-  showControl$ = new BehaviorSubject(null)
+  showControl$ = new BehaviorSubject<ListDefinition>(null)
+
+  infRepo: InfSelector;
 
   constructor(
     private p: ActiveProjectService,
     private timePrimitivePipe: TimePrimitivePipe,
-    private timeSpanPipe: TimeSpanPipe
-  ) { }
+    private timeSpanPipe: TimeSpanPipe,
+    ngRedux: NgRedux<IAppState>
+  ) {
+    this.infRepo = new InfSelector(ngRedux, of('repo'))
+  }
   /**
    * Pipe the fields of given class and app context
    */
@@ -90,13 +97,17 @@ export class PropertyTreeService {
 
   }
 
+  /*********************************************************************
+   * Pipe the project entities
+   *********************************************************************/
+
   /**
    * Pipe the items in appellation field
    */
   pipeAppellationList<T>(listDefinition: ListDefinition, pkEntity): Observable<AppellationItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.pipeTeEnRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
         mergeMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeAppellationItem(r)))
             .pipe(
@@ -112,11 +123,11 @@ export class PropertyTreeService {
   pipeEntityPreviewList<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
 
     return (listDefinition.isOutgoing ?
-      this.pipeTeEnRoles(listDefinition.pkProperty, pkEntity) :
-      this.pipePeItRoles(listDefinition.pkProperty, pkEntity)
+      this.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity) :
+      this.pipeIngoingRoles(listDefinition.pkProperty, pkEntity)
     ).pipe(
       mergeMap((roles) => {
-        return combineLatest(roles.map((r, i) => this.pipeEntityPreviewItem(r)))
+        return combineLatest(roles.map((r, i) => this.pipeEntityPreviewItem(r, listDefinition.isOutgoing)))
           .pipe(
             map(nodes => nodes
               .filter(node => !!node)
@@ -127,11 +138,14 @@ export class PropertyTreeService {
 
   }
 
+  /**
+   * Pipe the temporal entities connected to given entity by roles that are in the current project
+   */
   pipeTemporalEntityList<T>(listDefinition: ListDefinition, pkEntity: number, appContext: number): Observable<TemporalEntityItem[]> {
 
     return (listDefinition.isOutgoing ?
-      this.pipeTeEnRoles(listDefinition.pkProperty, pkEntity) :
-      this.pipePeItRoles(listDefinition.pkProperty, pkEntity)
+      this.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity) :
+      this.pipeIngoingRoles(listDefinition.pkProperty, pkEntity)
     ).pipe(
       mergeMap((roles) => {
         return combineLatest(roles.map((r, i) => this.pipeTemporalEntityItem(r, listDefinition, appContext)))
@@ -144,10 +158,11 @@ export class PropertyTreeService {
       }))
   }
 
+
   pipeLanguageList<T>(listDefinition: ListDefinition, pkEntity): Observable<LanguageItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.pipeTeEnRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
         mergeMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeLanguageItem(r)))
             .pipe(
@@ -163,7 +178,7 @@ export class PropertyTreeService {
   pipePlaceList<T>(listDefinition: ListDefinition, pkEntity): Observable<PlaceItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.pipeTeEnRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
         mergeMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipePlaceItem(r)))
             .pipe(
@@ -205,9 +220,20 @@ export class PropertyTreeService {
 
 
   /**
-   * Pipe roles of persistent item
+   * Pipe outgoing roles of temporal entity
    */
-  pipePeItRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+  pipeOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+    return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
+      .key(pkProperty + '_' + pkEntity).pipe(
+        map(roles => values(roles))
+      )
+  }
+
+
+  /**
+   * Pipe ingoing roles of an entity
+   */
+  pipeIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
     return this.p.inf$.role$.by_fk_property__fk_entity$
       .key(pkProperty + '_' + pkEntity).pipe(
         map(roles => values(roles))
@@ -215,22 +241,79 @@ export class PropertyTreeService {
   }
 
   /**
-   * Pipe roles of temporal entity
+   * Pipe temporal entity item in the way it is defined by the active project
    */
-  pipeTeEnRoles(pkProperty, pkEntity): Observable<InfRole[]> {
-    return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
-      .key(pkProperty + '_' + pkEntity).pipe(
-        map(roles => values(roles))
+  pipeTemporalEntityItem(role: InfRole, listDefinition: ListDefinition, appContext: number): Observable<TemporalEntityItem> {
+    return combineLatest(this.p.pkProject$, this.p.crm$).pipe(first(p => !!p)).switchMap(([pkProject, crm]) => {
+      const p = crm.properties[listDefinition.pkProperty];
+      const targetClass = listDefinition.isOutgoing ? p.dfh_has_range : p.dfh_has_domain;
+      const targetInstance = listDefinition.isOutgoing ? role.fk_entity : role.fk_temporal_entity;
+      return combineLatest(
+        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity),
+        this.pipeListDefinitions(targetClass, appContext).mergeMap((listDefinitions) => {
+          return combineLatest(listDefinitions.map(listDef => {
+            if (listDef.listType === 'appellation') return this.pipeAppellationList(listDef, targetInstance)
+              .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
+
+            else if (listDef.listType === 'language') return this.pipeLanguageList(listDef, targetInstance)
+              .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
+
+            else if (listDef.listType === 'place') return this.pipePlaceList(listDef, targetInstance)
+              .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
+
+            else if (listDef.listType === 'entity-preview' || listDef.listType === 'temporal-entity') return this.pipeEntityPreviewList(listDef, targetInstance)
+              .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
+
+
+            else if (listDef.listType === 'time-span') return this.pipeTimeSpanItem(targetInstance)
+              .pipe(
+                map((item) => {
+                  const items = item.properties.find(p => p.items.length > 0) ? [{
+                    label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item))
+                  }] : []
+                  return {
+                    listDefinition: listDef,
+                    items
+                  }
+                }))
+
+            else return of(null)
+
+          }))
+        }).pipe(
+          map((properties: TemporalEntityProperties[]) => properties.filter(
+            // exclude properties without roles
+            p => p
+              // && p.items && p.items.length
+              // exclude circular role
+              // && p.listDefinition.pkProperty !== role.fk_property
+          ))
+        )
       )
+    }).pipe(
+
+      map(([
+        projRel,
+        properties,
+      ]) => {
+
+        const node: TemporalEntityItem = {
+          role,
+          projRel,
+          ordNum: projRel.ord_num_of_domain,
+          properties: properties,
+          label: pathOr('', ['0', 'items', '0', 'label'], properties)
+        }
+        return node
+      }))
   }
 
   /**
-   * Pipe roles of temporal entity
+   * Pipe time span item in version of project
    */
-  pipeTimeSpan(pkEntity): Observable<TimeSpanItem> {
+  pipeTimeSpanItem(pkEntity): Observable<TimeSpanItem> {
     return this.p.pkProject$.pipe(
       mergeMap(pkProject => {
-        // DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(pkProperty => (
         return this.pipeListDefinitions(
           DfhConfig.ClASS_PK_TIME_SPAN,
           SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE
@@ -286,6 +369,7 @@ export class PropertyTreeService {
   }
 
 
+
   pipeAppellationItem(role: InfRole): Observable<AppellationItem> {
     return this.p.inf$.appellation$.by_pk_entity$.key(role.fk_entity).pipe(
       filter(x => !!x),
@@ -331,8 +415,8 @@ export class PropertyTreeService {
       }))
   }
 
-  pipeEntityPreviewItem(role: InfRole): Observable<EntityPreviewItem> {
-    return this.p.streamEntityPreview(role.fk_entity).pipe(
+  pipeEntityPreviewItem(role: InfRole, isOutgoing: boolean): Observable<EntityPreviewItem> {
+    return this.p.streamEntityPreview((isOutgoing ? role.fk_entity : role.fk_temporal_entity)).pipe(
       filter(preview => !preview.loading && !!preview && !!preview.entity_type),
       map(preview => {
         if (!preview) {
@@ -349,63 +433,121 @@ export class PropertyTreeService {
       }))
   }
 
-  pipeTemporalEntityItem(role: InfRole, listDefinition: ListDefinition, appContext: number): Observable<TemporalEntityItem> {
+  pipeTemporalEntityProperties(listDefinition: ListDefinition, items): TemporalEntityProperties {
+    return {
+      listDefinition,
+      items,
+    }
+  }
+
+  /*********************************************************************
+  * Pipe alternatives (not in project)
+  *********************************************************************/
+  /**
+   * Pipe the temporal entities connected to given entity by alternative roles (= roles not in active project)
+   */
+  pipeAlternativeTemporalEntityList<T>(listDefinition: ListDefinition, pkEntity: number, appContext: number): Observable<TemporalEntityItem[]> {
+
+    return (listDefinition.isOutgoing ?
+      this.pipeAlternativeOutgoingRoles(listDefinition.pkProperty, pkEntity) :
+      this.pipeAlternativeIngoingRoles(listDefinition.pkProperty, pkEntity)
+    ).pipe(
+      mergeMap((roles) => {
+        return combineLatest(roles.map((r, i) => this.pipeRepoTemporalEntityItem(r, listDefinition, appContext)))
+          .pipe(
+            map(nodes => nodes
+              .filter(node => !!node)
+              .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
+            ),
+            startWith([]))
+      }))
+  }
+
+  /**
+     * Pipe alternative ingoing roles (= roles not in active project)
+     */
+  pipeAlternativeIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+    return combineLatest(
+      this.infRepo.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity).filter(x => !!x),
+      this.p.inf$.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity),
+    ).pipe(
+      map(([inrepo, inproject]) => omit(Object.keys(inproject), inrepo)),
+      map(roles => values(roles))
+    )
+  }
+
+
+  /**
+   * Pipe alternative outgoing roles (= roles not in active project)
+   */
+  pipeAlternativeOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+    return combineLatest(
+      this.infRepo.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x)),
+      this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
+    ).pipe(
+      map(([inrepo, inproject]) => omit(Object.keys(inproject), inrepo)),
+      map(roles => values(roles))
+    )
+  }
+
+  /*********************************************************************
+   * Pipe repo views (community favorites, where restricted by quantifiers)
+   *********************************************************************/
+
+  /**
+   * Pipe repository temporal entity item in the way it is defined by the repository
+   */
+  pipeRepoTemporalEntityItem(role: InfRole, listDefinition: ListDefinition, appContext: number): Observable<TemporalEntityItem> {
     return combineLatest(this.p.pkProject$, this.p.crm$).pipe(first(p => !!p)).switchMap(([pkProject, crm]) => {
       const p = crm.properties[listDefinition.pkProperty];
       const targetClass = listDefinition.isOutgoing ? p.dfh_has_range : p.dfh_has_domain;
       const targetInstance = listDefinition.isOutgoing ? role.fk_entity : role.fk_temporal_entity;
-      return combineLatest(
-        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity),
-        this.pipeListDefinitions(targetClass, appContext).mergeMap((listDefinitions) => {
-          return combineLatest(listDefinitions.map(listDef => {
-            if (listDef.listType === 'appellation') return this.pipeAppellationList(listDef, targetInstance)
-              .pipe(map((items) => this.pipeKeyValues(listDef, items)))
+      return this.pipeListDefinitions(targetClass, appContext).mergeMap((listDefinitions) => {
+        return combineLatest(listDefinitions.map(listDef => {
+          if (listDef.listType === 'appellation') return this.pipeRepoAppellationList(listDef, targetInstance)
+            .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
 
-            else if (listDef.listType === 'language') return this.pipeLanguageList(listDef, targetInstance)
-              .pipe(map((items) => this.pipeKeyValues(listDef, items)))
+          else if (listDef.listType === 'language') return this.pipeRepoLanguageList(listDef, targetInstance)
+            .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
 
-            else if (listDef.listType === 'place') return this.pipePlaceList(listDef, targetInstance)
-              .pipe(map((items) => this.pipeKeyValues(listDef, items)))
+          else if (listDef.listType === 'place') return this.pipeRepoPlaceList(listDef, targetInstance)
+            .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
 
-            else if (listDef.listType === 'entity-preview' || listDef.listType === 'temporal-entity') return this.pipeEntityPreviewList(listDef, targetInstance)
-              .pipe(map((items) => this.pipeKeyValues(listDef, items)))
+          else if (listDef.listType === 'entity-preview' || listDef.listType === 'temporal-entity') return this.pipeRepoEntityPreviewList(listDef, targetInstance)
+            .pipe(map((items) => this.pipeTemporalEntityProperties(listDef, items)))
 
 
-            else if (listDef.listType === 'time-span') return this.pipeTimeSpan(targetInstance)
-              .pipe(
-                map((item) => {
-                  const items = item.properties.find(p => p.items.length > 0) ? [{
-                    label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item))
-                  }] : []
-                  return {
-                    listDefinition: listDef,
-                    items
-                  }
-                }))
+          else if (listDef.listType === 'time-span') return this.pipeRepoTimeSpanItem(targetInstance)
+            .pipe(
+              map((item) => {
+                const items = item.properties.find(p => p.items.length > 0) ? [{
+                  label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item))
+                }] : []
+                return {
+                  listDefinition: listDef,
+                  items
+                }
+              }))
 
-            else return of(null)
+          else return of(null)
 
-          }))
-        }).pipe(
-          map((properties: TemporalEntityProperties[]) => properties.filter(
-            // exclude properties without roles
-            p => p && p.items && p.items.length &&
-              // exclude circular role
-              p.listDefinition.pkProperty !== role.fk_property)
-          )
-        )
+        }))
+      }).pipe(
+        map((properties: TemporalEntityProperties[]) => properties.filter(
+          // exclude properties without roles
+          p => p && p.items && p.items.length
+            // exclude circular role
+            && p.listDefinition.pkProperty !== role.fk_property
+        ))
       )
     }).pipe(
 
-      map(([
-        projRel,
-        properties,
-      ]) => {
+      map((properties) => {
 
         const node: TemporalEntityItem = {
           role,
-          projRel,
-          ordNum: projRel.ord_num_of_domain,
+          projRel: null,
+          ordNum: null,
           properties: properties,
           label: pathOr('', ['0', 'items', '0', 'label'], properties)
         }
@@ -413,13 +555,176 @@ export class PropertyTreeService {
       }))
   }
 
-  pipeKeyValues(listDefinition: ListDefinition, items): TemporalEntityProperties {
-    return {
-      listDefinition, items
+  /**
+   * Pipe appellation list in the way it is defined by the repository
+   */
+  pipeRepoAppellationList<T>(listDefinition: ListDefinition, pkEntity): Observable<AppellationItem[]> {
+
+    if (listDefinition.isOutgoing) {
+      return this.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+        mergeMap((roles) => {
+          return combineLatest(roles.map((r, i) => this.pipeAppellationItem(r)))
+            .pipe(
+              map(nodes => nodes.filter(node => !!node)),
+              startWith([]))
+        }))
     }
   }
 
+  /**
+  * Pipe language list in the way it is defined by the repository
+  */
+  pipeRepoLanguageList<T>(listDefinition: ListDefinition, pkEntity): Observable<LanguageItem[]> {
 
+    if (listDefinition.isOutgoing) {
+      return this.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+        mergeMap((roles) => {
+          return combineLatest(roles.map((r, i) => this.pipeLanguageItem(r)))
+            .pipe(
+              map(nodes => nodes.filter(node => !!node)),
+              startWith([]))
+        }))
+    }
+  }
+
+  /**
+   * Pipe place list in the way it is defined by the repository
+   */
+  pipeRepoPlaceList<T>(listDefinition: ListDefinition, pkEntity): Observable<PlaceItem[]> {
+
+    if (listDefinition.isOutgoing) {
+      return this.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+        mergeMap((roles) => {
+          return combineLatest(roles.map((r, i) => this.pipePlaceItem(r)))
+            .pipe(
+              map(nodes => nodes.filter(node => !!node)),
+              startWith([]))
+        }))
+    }
+  }
+
+  /**
+ * Pipe the items in entity preview field, connected by community favorite roles
+ */
+  pipeRepoEntityPreviewList<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
+
+    return (listDefinition.isOutgoing ?
+      this.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity) :
+      this.pipeRepoIngoingRoles(listDefinition.pkProperty, pkEntity)
+    ).pipe(
+      mergeMap((roles) => {
+        return combineLatest(roles.map((r, i) => this.pipeEntityPreviewItem(r, listDefinition.isOutgoing)))
+          .pipe(
+            map(nodes => nodes.filter(node => !!node)
+              // .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
+            ))
+      }),
+      startWith([])
+    )
+
+  }
+
+
+  /**
+   * Pipe repo time span item
+   */
+  pipeRepoTimeSpanItem(pkEntity): Observable<TimeSpanItem> {
+    return this.p.pkProject$.pipe(
+      mergeMap(pkProject => {
+        return this.pipeListDefinitions(
+          DfhConfig.ClASS_PK_TIME_SPAN,
+          SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE
+        ).pipe(
+          mergeMap(listDefs => {
+
+            return combineLatest(listDefs.map(listDefinition =>
+              this.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity)
+                .pipe(
+                  mergeMap(roles => combineLatest(
+                    roles.map(role =>
+                      this.infRepo.time_primitive$.by_pk_entity$.key(role.fk_entity)
+                        .pipe(map((infTimePrimitive) => {
+                          const timePrimitive = new TimePrimitive({
+                            julianDay: infTimePrimitive.julian_day,
+                            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType ),
+                            duration: (infTimePrimitive.duration as Granularity)
+                          })
+                          const item: TimePrimitiveItem = {
+                            role,
+                            ordNum: undefined,
+                            projRel: undefined,
+                            timePrimitive,
+                            label: this.timePrimitivePipe.transform(timePrimitive)
+                          }
+                          return item;
+                        }))
+                    )
+                  )),
+                  map(items => {
+                    const res: TimeSpanProperties = {
+                      listDefinition, items
+                    }
+                    return res
+                  }),
+                  startWith({ listDefinition, items: [] } as TimeSpanProperties)
+                )
+            )).pipe(
+              map((properties) => {
+                const timespanitem: TimeSpanItem = {
+                  properties: properties.filter(props => props.items.length > 0)
+                }
+                return timespanitem
+              })
+            )
+          })
+        )
+      })
+
+    )
+  }
+
+  /**
+   * Pipe repo outgoing roles.
+   * If max quantity is limited, takes only max allowed number of roles, starting with highest is_in_project_count
+   */
+  pipeRepoOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+    return combineLatest(
+      this.p.crm$.pipe(filter(x => !!x), map(crm => crm.properties[pkProperty].dfh_range_instances_max_quantifier)),
+      this.infRepo.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
+    ).pipe(
+      map(([m, inrepo]) => {
+        const rs = values(inrepo);
+        if (rs.length === 0) return rs;
+        const r = this.sortRolesByRepoPopularity(rs);
+        return (m === -1 || m === null) ? r : r.slice(0, m);
+      })
+    )
+  }
+
+  /**
+ * Pipe repo ingoing roles.
+ * If max quantity is limited, takes only max allowed number of roles, starting with highest is_in_project_count
+ */
+  pipeRepoIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+    return combineLatest(
+      this.p.crm$.pipe(filter(x => !!x), map(crm => crm.properties[pkProperty].dfh_domain_instances_max_quantifier)),
+      this.infRepo.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
+    ).pipe(
+      map(([m, inrepo]) => {
+        const rs = values(inrepo);
+        if (rs.length === 0) return rs;
+        const r = this.sortRolesByRepoPopularity(rs);
+        return (m === -1 || m === null) ? r : r.slice(0, m);
+      })
+    )
+  }
+
+  /*********************************************************************
+   * Helpers
+   *********************************************************************/
+  sortRolesByRepoPopularity(roles: InfRole[]): InfRole[] {
+    return roles.sort((a, b) => a.is_in_project_count > b.is_in_project_count ? 1 : -1)
+  }
 
   updateOrder(event: CdkDragDrop<ItemBasics[]>, items$: Observable<ItemBasics[]>) {
     combineLatest(this.p.pkProject$, items$).pipe(

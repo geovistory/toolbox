@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatDialogModule, MatDividerModule, MatIconModule, MatMenuModule, MatSlideToggleModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatExpansionModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatIconModule, MatMenuModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatPaginatorModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
@@ -74,8 +74,12 @@ import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer
 import { ReprosAPIActions } from './containers/repros/api/repros.actions';
 import { ReprosAPIEpics } from './containers/repros/api/repros.epics';
 import { ReprosComponent } from './containers/repros/repros.component';
+import { TeEntDetailAPIActions } from './containers/te-ent-detail/api/te-ent-detail.actions';
+import { TeEntDetailAPIEpics } from './containers/te-ent-detail/api/te-ent-detail.epics';
+import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.component';
 import { TextPropertyFieldAPIActions } from './containers/text-property-field/api/text-property-field.actions';
 import { TextPropertyFieldAPIEpics } from './containers/text-property-field/api/text-property-field.epics';
+import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
 import { EntityAssociationAPIActions } from './entity-association/api/entity-association.actions';
 import { EntityAssociationAPIEpics } from './entity-association/api/entity-association.epics';
 import { EntityAssociationCreateCtrlComponent } from './entity-association/entity-association-create-ctrl/entity-association-create-ctrl.component';
@@ -89,8 +93,6 @@ import { PeItCreateFormComponent } from './entity/pe-it/pe-it-create-form/pe-it-
 import { PeItActions } from './entity/pe-it/pe-it.actions';
 import { TeEntAddCtrlComponent } from './entity/te-ent/te-ent-add-ctrl/te-ent-add-ctrl.component';
 import { TeEntCreateCtrlComponent } from './entity/te-ent/te-ent-create-ctrl/te-ent-create-ctrl.component';
-import { TeEntDetailAPIActions } from './containers/te-ent-detail/api/te-ent-detail.actions';
-import { TeEntDetailAPIEpics } from './containers/te-ent-detail/api/te-ent-detail.epics';
 import { TeEntActions } from './entity/te-ent/te-ent.actions';
 import { TeEntAPIEpics } from './entity/te-ent/te-ent.epics';
 import { ExistenceTimeAddCtrlComponent } from './existence-time/existence-time-add-ctrl/existence-time-add-ctrl.component';
@@ -100,7 +102,18 @@ import { ExistenceTimeHelpComponent } from './existence-time/existence-time-help
 import { ExistenceTimeModalComponent } from './existence-time/existence-time-modal/existence-time-modal.component';
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
+import { AddRoleComponent } from './new-components/add-role/add-role.component';
+import { AppellationListComponent } from './new-components/appellation-list/appellation-list.component';
+import { EntityPreviewListComponent } from './new-components/entity-preview-list/entity-preview-list.component';
+import { LanguageListComponent } from './new-components/language-list/language-list.component';
+import { ListHeaderComponent } from './new-components/list-header/list-header.component';
+import { PlaceListComponent } from './new-components/place-list/place-list.component';
 import { PropertiesTreeComponent } from './new-components/properties-tree/properties-tree.component';
+import { PropertyTreeService } from './new-components/properties-tree/properties-tree.service';
+import { TemporalEntityAddListComponent } from './new-components/temporal-entity-add-list/temporal-entity-add-list.component';
+import { TemporalEntityListComponent } from './new-components/temporal-entity-list/temporal-entity-list.component';
+import { TextPropertyListComponent } from './new-components/text-property-list/text-property-list.component';
+import { TimeSpanListComponent } from './new-components/time-span-list/time-span-list.component';
 import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
 import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
 import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
@@ -148,18 +161,6 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.component';
-import { TextPropertyFieldComponent } from './containers/text-property-field/text-property-field.component';
-import { PropertyTreeService } from './new-components/properties-tree/properties-tree.service';
-import { AppellationListComponent } from './new-components/appellation-list/appellation-list.component';
-import { EntityPreviewListComponent } from './new-components/entity-preview-list/entity-preview-list.component';
-import { ListHeaderComponent } from './new-components/list-header/list-header.component';
-import { LanguageListComponent } from './new-components/language-list/language-list.component';
-import { TemporalEntityListComponent } from './new-components/temporal-entity-list/temporal-entity-list.component';
-import { PlaceListComponent } from './new-components/place-list/place-list.component';
-import { TimeSpanListComponent } from './new-components/time-span-list/time-span-list.component';
-import { TextPropertyListComponent } from './new-components/text-property-list/text-property-list.component';
-import { AddRoleComponent } from './new-components/add-role/add-role.component';
 
 
 
@@ -213,6 +214,9 @@ import { AddRoleComponent } from './new-components/add-role/add-role.component';
     MatDividerModule,
     MatSlideToggleModule,
     MatExpansionModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
     EntityPreviewModule,
@@ -333,6 +337,7 @@ import { AddRoleComponent } from './new-components/add-role/add-role.component';
     ListHeaderComponent,
     LanguageListComponent,
     TemporalEntityListComponent,
+    TemporalEntityAddListComponent,
     PlaceListComponent,
     TimeSpanListComponent,
     TextPropertyListComponent,
@@ -415,7 +420,6 @@ import { AddRoleComponent } from './new-components/add-role/add-role.component';
     PeItSearchExistingAPIEpics,
 
     PropertyTreeService
-
 
   ],
   exports: [

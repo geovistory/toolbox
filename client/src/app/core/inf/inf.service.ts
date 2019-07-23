@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { Observable } from 'rxjs';
 import { InfPersistentItem, InfEntityAssociation, InfRole, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage } from '../sdk';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, filter } from 'rxjs/operators';
 import { infRoot, infDefinitions } from './inf.config';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 
@@ -18,16 +18,32 @@ class Selector {
 
     const all$ = this.pkProject$.pipe(
       mergeMap(pk => {
-        return this.ngRedux.select<ByPk<M>>([infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey])
+        let path: any[];
+        if (this.configs[this.model].facetteByPk) {
+          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey];
+        } else {
+          path = [infRoot, this.model, indexKey];
+        }
+        return this.ngRedux.select<ByPk<M>>(path)
       })
     )
+    // .pipe(filter(x => !!x))
+
 
     const key = (x): Observable<M> => {
       return this.pkProject$.pipe(
         mergeMap(pk => {
-          return this.ngRedux.select<M>([infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey, x])
+          let path: any[];
+          if (this.configs[this.model].facetteByPk) {
+            path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, indexKey, x];
+          } else {
+            path = [infRoot, this.model, indexKey, x];
+          }
+          return this.ngRedux.select<M>(path)
         })
       )
+      // .pipe(filter(x => !!x))
+
     }
 
     return { all$, key }

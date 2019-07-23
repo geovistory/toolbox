@@ -90,3 +90,18 @@ export interface PropertyListComponentInterface {
   t: PropertyTreeService
 
 }
+
+
+export interface AddListComponentInterface {
+  pkEntity: number;
+  listDefinition: ListDefinition;
+  showOntoInfo$;
+  readonly$;
+  addButtonVisible;
+  toggleButtonVisible;
+
+  items$: Observable<ItemBasics[]>
+  p: ActiveProjectService,
+  t: PropertyTreeService
+
+}

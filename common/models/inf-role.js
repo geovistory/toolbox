@@ -336,11 +336,7 @@ module.exports = function (InfRole) {
         /** Select roles with fk_entity and fk_property … */
         "where": [
           "fk_entity", "=", entityPk,
-          "and", "fk_property", "=", propertyPk,
-          // "and", [
-          //   "is_community_favorite", "=", "true",
-          //   "or", "is_in_project_count", "=", "0"
-          // ]
+          "and", "fk_property", "=", propertyPk
         ],
         "orderBy": [{
           "pk_entity": "asc"
@@ -393,8 +389,16 @@ module.exports = function (InfRole) {
                     "pk_entity": "asc"
                   }]
                 }
+              },
+              "place": {
+                "$relation": {
+                  "name": "place",
+                  "joinType": "left join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                }
               }
-
             }
           }
 

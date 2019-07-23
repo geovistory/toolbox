@@ -3,10 +3,10 @@ import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { combineEpics, Epic } from 'redux-observable';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPersistentItemApi, ProInfoProjRelApi, InfTemporalEntity, InfTemporalEntityApi } from '../sdk';
-import { InfEntityAssoctiationActionFactory, FindEAByParams, InfActions, LoadByPkAction, InfPersistentItemActionFactory, ContentTreeMeta, InfTemporalEntityActionFactory, SourcesAndDigitalsOfEntityResult, SourcesAndDigitalsOfEntity } from './inf.actions';
+import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPersistentItemApi, ProInfoProjRelApi, InfTemporalEntity, InfTemporalEntityApi, InfRole, InfRoleApi } from '../sdk';
+import { InfEntityAssoctiationActionFactory, FindEAByParams, InfActions, LoadByPkAction, InfPersistentItemActionFactory, ContentTreeMeta, InfTemporalEntityActionFactory, SourcesAndDigitalsOfEntityResult, SourcesAndDigitalsOfEntity, InfRoleActionFactory } from './inf.actions';
 import { infRoot } from './inf.config';
-import { InfEntityAssociationSlice, InfPersistentItemSlice, InfTemporalEntitySlice } from './inf.models';
+import { InfEntityAssociationSlice, InfPersistentItemSlice, InfTemporalEntitySlice, InfRoleSlice } from './inf.models';
 import { DatActions } from '../dat/dat.actions';
 import { InfEpicsFactory } from './inf-epic-factory';
 import { ModifyActionMeta } from '../store/actions';
@@ -20,6 +20,7 @@ export class InfEpics {
     public peItApi: InfPersistentItemApi,
     public teEnApi: InfTemporalEntityApi,
     public eaApi: InfEntityAssociationApi,
+    public roleApi: InfRoleApi,
     public infActions: InfActions,
     public proActions: ProActions,
     public datActions: DatActions,
@@ -27,14 +28,17 @@ export class InfEpics {
   ) { }
 
   public createEpics(): Epic {
-    const persistentItemEpicsFactory = new InfEpicsFactory<InfPersistentItemSlice, InfPersistentItem>
+    const infPersistentItemEpicsFactory = new InfEpicsFactory<InfPersistentItemSlice, InfPersistentItem>
       (infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi);
 
-    const temporalEntityEpicsFactory = new InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>
+    const infTemporalEntityEpicsFactory = new InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>
       (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi);
 
-    const entityAssociationEpicsFactory = new InfEpicsFactory<InfEntityAssociationSlice, InfEntityAssociation>
+    const infEntityAssociationEpicsFactory = new InfEpicsFactory<InfEntityAssociationSlice, InfEntityAssociation>
       (infRoot, 'entity_association', this.infActions.entity_association, this.notification, this.infoProjRelApi);
+
+    const infRoleEpicsFactory = new InfEpicsFactory<InfRoleSlice, InfRole>
+      (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi);
 
 
 
@@ -43,7 +47,7 @@ export class InfEpics {
        * Perstistent Item
        *
        */
-      persistentItemEpicsFactory.createLoadEpic<LoadByPkAction>(
+      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkAction>(
         (meta) => this.peItApi.nestedObjectOfProject(meta.pk, meta.pkEntity),
         InfPersistentItemActionFactory.NESTED_BY_PK,
         (results, pk) => {
@@ -53,14 +57,14 @@ export class InfEpics {
         }
       ),
 
-      persistentItemEpicsFactory.createRemoveEpic(),
+      infPersistentItemEpicsFactory.createRemoveEpic(),
 
 
       /**
        * Temporal Entity
        *
        */
-      temporalEntityEpicsFactory.createLoadEpic<LoadByPkAction>(
+      infTemporalEntityEpicsFactory.createLoadEpic<LoadByPkAction>(
         (meta) => this.teEnApi.nestedObjectOfProject(meta.pk, meta.pkEntity),
         InfTemporalEntityActionFactory.NESTED_BY_PK,
         (results, pk) => {
@@ -70,17 +74,39 @@ export class InfEpics {
         }
       ),
 
+      /**
+       * Role
+       *
+       */
+      infRoleEpicsFactory.createLoadEpic<FindEAByParams>(
+        (meta) => this.roleApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk),
+        InfRoleActionFactory.ALTERNATIVES_INGOING,
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.role.flatten(results);
+          storeFlattened(flattener.getFlattened(), null);
+        }
+      ),
+      infRoleEpicsFactory.createLoadEpic<FindEAByParams>(
+        (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkEntity, meta.pkProperty, meta.pk),
+        InfRoleActionFactory.ALTERNATIVES_OUTGOING,
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.role.flatten(results);
+          storeFlattened(flattener.getFlattened(), null);
+        }
+      ),
 
       /**
        * Entity Association
        *
        */
-      entityAssociationEpicsFactory.createLoadEpic<FindEAByParams>(
+      infEntityAssociationEpicsFactory.createLoadEpic<FindEAByParams>(
         (meta) => this.eaApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
         InfEntityAssoctiationActionFactory.BY_PARAMS
       ),
 
-      entityAssociationEpicsFactory.createLoadEpic<ContentTreeMeta>(
+      infEntityAssociationEpicsFactory.createLoadEpic<ContentTreeMeta>(
         (meta) => this.eaApi.contentTree(meta.pk, meta.pkExpressionEntity),
         InfEntityAssoctiationActionFactory.CONTENT_TREE,
         (results, pk) => {
@@ -90,7 +116,7 @@ export class InfEpics {
         }
       ),
 
-      entityAssociationEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
+      infEntityAssociationEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
         (meta) => this.eaApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),
         InfEntityAssoctiationActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
         (results, pk) => {
@@ -106,9 +132,9 @@ export class InfEpics {
         }
       ),
 
-      entityAssociationEpicsFactory.createRemoveEpic(),
+      infEntityAssociationEpicsFactory.createRemoveEpic(),
 
-      entityAssociationEpicsFactory.createUpsertEpic<ModifyActionMeta<InfEntityAssociation>>((meta) => this.eaApi
+      infEntityAssociationEpicsFactory.createUpsertEpic<ModifyActionMeta<InfEntityAssociation>>((meta) => this.eaApi
         .findOrCreateInfEntityAssociations(meta.pk, meta.items),
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);

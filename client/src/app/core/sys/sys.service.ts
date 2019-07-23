@@ -7,6 +7,7 @@ import { SysClassHasTypeProperty } from 'app/core';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { sysDefinitions, sysRoot } from './sys.config';
 import { SysRelevantClassSlice, SysClassHasTypePropertySlice } from './sys.models';
+import { filter } from '../../../../node_modules/rxjs/operators';
 
 class Selector<Slice> {
 
@@ -21,8 +22,10 @@ class Selector<Slice> {
   selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
     const all$ = this.ngRedux.select<ByPk<M>>([sysRoot, this.model, indexKey])
+      .pipe(filter(x => !!x))
 
     const key = (x): Observable<M> => this.ngRedux.select<M>([sysRoot, this.model, indexKey, x])
+      .pipe(filter(x => !!x))
 
     return { all$, key }
   }
