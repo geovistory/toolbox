@@ -54,7 +54,7 @@ export class PropertyListAPIEpics {
                 $relation: {
                   name: 'labels',
                   joinType: 'left join',
-                  orderBy: [{ notes: 'asc' }],
+                  orderBy: [{ pk_entity: 'asc' }],
                   where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_SG]
 
                 }
@@ -63,7 +63,7 @@ export class PropertyListAPIEpics {
                 $relation: {
                   name: 'labels',
                   joinType: 'left join',
-                  orderBy: [{ notes: 'asc' }],
+                  orderBy: [{ pk_entity: 'asc' }],
                   where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_PL]
 
                 }
@@ -72,7 +72,7 @@ export class PropertyListAPIEpics {
                 $relation: {
                   name: 'labels',
                   joinType: 'left join',
-                  orderBy: [{ notes: 'asc' }],
+                  orderBy: [{ pk_entity: 'asc' }],
                   where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_INVERSED_SG]
 
                 }
@@ -81,7 +81,7 @@ export class PropertyListAPIEpics {
                 $relation: {
                   name: 'labels',
                   joinType: 'left join',
-                  orderBy: [{ notes: 'asc' }],
+                  orderBy: [{ pk_entity: 'asc' }],
                   where: ['com_fk_system_type', '=', Config.PROPERTY_LABEL_INVERSED_PL]
                 }
               },

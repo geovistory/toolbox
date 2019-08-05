@@ -42,6 +42,7 @@ class SysSystemRelevantClassSelections extends Selector<SysRelevantClassSlice> {
   public by_pk_entity$ = this.selector<SysSystemRelevantClass>('by_pk_entity');
   public by_fk_class$ = this.selector<ByPk<SysSystemRelevantClass>>('by_fk_class');
   public by_required_by_sources$ = this.selector<ByPk<SysSystemRelevantClass>>('by_required_by_sources');
+  public by_required$ = this.selector<ByPk<SysSystemRelevantClass>>('by_required');
 
 }
 

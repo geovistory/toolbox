@@ -11,6 +11,7 @@ export interface ProClassFieldConfigInterface {
   "pk_entity"?: number;
   "fk_app_context": number;
   "fk_project"?: number;
+  "fk_class"?: number;
   "fk_property"?: number;
   "fk_class_field"?: number;
   "property_is_outgoing"?: boolean;
@@ -26,6 +27,7 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
   "pk_entity": number;
   "fk_app_context": number;
   "fk_project": number;
+  "fk_class": number;
   "fk_property": number;
   "fk_class_field": number;
   "property_is_outgoing": boolean;
@@ -78,6 +80,10 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
         },
         "fk_project": {
           name: 'fk_project',
+          type: 'number'
+        },
+        "fk_class": {
+          name: 'fk_class',
           type: 'number'
         },
         "fk_property": {

@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DfhLabel, U } from 'app/core';
-import { DfhService } from 'app/core/dfh/dfh.service';
+import { DfhSelector } from 'app/core/dfh/dfh.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { ByPk } from '../../../../core/store/model';
@@ -33,7 +33,7 @@ export class DfhLabelListEditComponent implements OnInit, OnDestroy {
   editing$ = new BehaviorSubject<{ [key: string]: boolean }>({});
 
 
-  constructor(private dfhService: DfhService) { }
+  constructor(private dfhService: DfhSelector) { }
 
 
   ngOnInit() {
@@ -41,11 +41,11 @@ export class DfhLabelListEditComponent implements OnInit, OnDestroy {
 
     if (this.dfhFkClass) {
 
-      this.items$ = this.pipeItems(this.dfhService.label$.by_dfh_fk_class$, this.dfhFkClass);
+      this.items$ = this.pipeItems(this.dfhService.label$.by_dfh_fk_class$.all$, this.dfhFkClass);
 
     } else if (this.dfhFkProperty) {
 
-      this.items$ = this.pipeItems(this.dfhService.label$.by_dfh_fk_property$, this.dfhFkProperty);
+      this.items$ = this.pipeItems(this.dfhService.label$.by_dfh_fk_property$.all$, this.dfhFkProperty);
 
     }
   }

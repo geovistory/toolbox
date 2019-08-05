@@ -48,9 +48,43 @@
       "permission": "ALLOW",
       "property": [
         "create",
+        "getEnabledByProject",
         "patchAttributes"
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "getEnabledByProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProDfhClassProjRel"
+        ],
+        "root": true
+      },
+      "description": "Find ProDfhClassProjRel of project where enabled_in_entities is true",
+      "http": {
+        "path": "/get-enabled-by-project",
+        "verb": "get"
+      }
+    }
+  }
 }

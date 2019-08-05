@@ -1,0 +1,97 @@
+<div FxFlex *ngIf="itemsCount$ | async">
+
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-100">
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="checkbox">
+      <th mat-header-cell *matHeaderCellDef> Select
+        <!-- <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+        </mat-checkbox> -->
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Radio Button Column -->
+    <ng-container matColumnDef="radiobutton">
+      <th mat-header-cell *matHeaderCellDef> Select
+
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-radio-button (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)" [aria-label]="select">
+        </mat-radio-button>
+      </td>
+    </ng-container>
+
+    <!-- item Column -->
+    <ng-container matColumnDef="item">
+      <th mat-header-cell *matHeaderCellDef> Item </th>
+      <td mat-cell *matCellDef="let item">
+        <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass" *ngIf="showOntoInfo$ | async">
+        </gv-onto-class-info>
+        <gv-entity-preview *ngIf="listDefinition.listType === 'entity-preview'" [preview]="item.preview"
+          [dragEnabled]="false"></gv-entity-preview>
+
+        <span *ngIf="['appellation', 'language', 'place', 'text-property'].includes(listDefinition.listType)">
+          {{item.label}} {{item?.role?.is_in_project_count}}
+        </span>
+      </td>
+    </ng-container>
+
+    <!-- project Column -->
+    <ng-container matColumnDef="projects">
+      <th mat-header-cell *matHeaderCellDef> Used By </th>
+      <td mat-cell *matCellDef="let item">
+        {{item?.role?.is_in_project_count}} {{item?.role?.is_in_project_count == 1 ? 'Project' : 'Projects'}}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+    </tr>
+  </table>
+
+
+  <!-- <mat-selection-list #shoes>
+    <mat-list-option *ngFor="let item of (items$ | async)" [value]="item.role">
+      <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass" *ngIf="showOntoInfo$ | async">
+      </gv-onto-class-info>
+      <gv-entity-preview *ngIf="listDefinition.listType === 'entity-preview'" [preview]="item.preview"
+        [dragEnabled]="false"></gv-entity-preview>
+
+      <span *ngIf="['appellation', 'language', 'place', 'text-property'].includes(listDefinition.listType)">
+        {{item.label}}
+      </span>
+      <mat-divider></mat-divider>
+    </mat-list-option>
+  </mat-selection-list> -->
+
+  <!-- <div *ngFor="let item of (items$ | async)" class="drag-box">
+    <mat-checkbox [checked]="selection.isSelected(item.role)" (click)="$event.stopPropagation()"
+      (change)="$event ? selection.toggle(item.role) : null">
+      <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass" *ngIf="showOntoInfo$ | async">
+      </gv-onto-class-info>
+
+      <gv-entity-preview *ngIf="listDefinition.listType === 'entity-preview'" [preview]="item.preview"
+        [dragEnabled]="false"></gv-entity-preview>
+
+      <span *ngIf="['appellation', 'language', 'place', 'text-property'].includes(listDefinition.listType)">
+        {{item.label}}
+      </span>
+
+    </mat-checkbox>
+  </div> -->
+</div>
+
+<div class="my-3">
+  <button [disabled]="(selectedCount$ | async) < 1" type="submit" class="btn btn-primary mr-2" (click)="add()">Add
+    selected</button>
+  <button type="submit" class="btn btn-primary mr-2" (click)="startCreateNewRole()">Create new</button>
+  <button type="button" class="btn btn-link" (click)="t.showControl$.next(null)">Cancel</button>
+</div>

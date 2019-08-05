@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { Observable } from 'rxjs';
-import { InfPersistentItem, InfEntityAssociation, InfRole, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage } from '../sdk';
+import { InfPersistentItem, InfEntityAssociation, InfRole, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, InfTemporalEntity } from '../sdk';
 import { mergeMap, filter } from 'rxjs/operators';
 import { infRoot, infDefinitions } from './inf.config';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
@@ -71,8 +71,8 @@ class InfTemporalEntitySelections extends Selector {
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
 
-  public by_pk_entity$ = this.selector<ByPk<InfPersistentItem>>('by_pk_entity')
-  public by_fk_class$ = this.selector<ByPk<InfPersistentItem>>('by_fk_class')
+  public by_pk_entity$ = this.selector<InfTemporalEntity>('by_pk_entity')
+  public by_fk_class$ = this.selector<ByPk<InfTemporalEntity>>('by_fk_class')
 
 }
 
@@ -154,6 +154,7 @@ class InfTextPropertySelections extends Selector {
   ) { super(ngRedux, pkProject$, configs, model) }
 
   public by_pk_entity$ = this.selector<InfTextProperty>('by_pk_entity')
+  public by_fk_concerned_entity__fk_class_field$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity__fk_class_field')
   public by_fk_concerned_entity$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity')
 }
 

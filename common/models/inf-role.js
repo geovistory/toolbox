@@ -1,5 +1,6 @@
 'use strict';
 const _ = require('lodash')
+const Promise = require('bluebird');
 
 module.exports = function (InfRole) {
 
@@ -100,6 +101,23 @@ module.exports = function (InfRole) {
   }
 
 
+  InfRole.findOrCreateInfRoles = function (pk_project, roles, ctx) {
+    return new Promise((resolve, reject) => {
+      // ctx = { ...ctx, req: _.omit(ctx.req, ['body']) }
+      const promiseArray = roles.map((role, i) => {
+
+        ctx.req.body = ctx.req.body[i];
+
+        return InfRole.findOrCreateInfRole(pk_project, role, ctx)
+      })
+      Promise.map(promiseArray, (promise) => promise)
+        .catch(err => reject(err))
+        .then(res => {
+          return resolve(_.flatten(res))
+        })
+    })
+  };
+
   InfRole.findOrCreateInfRole = function (projectId, role, ctx) {
     return new Promise((resolve, reject) => {
 
@@ -109,7 +127,7 @@ module.exports = function (InfRole) {
         fk_entity: role.fk_entity,
         fk_temporal_entity: role.fk_temporal_entity,
         fk_property: role.fk_property,
-        notes: role.notes,
+        // notes: role.notes,
       };
 
       let requestedRole = (ctx && ctx.req && ctx.req.body) ? ctx.req.body : role;
@@ -491,6 +509,15 @@ module.exports = function (InfRole) {
           "time_primitive": {
             "$relation": {
               "name": "time_primitive",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          },
+          "place": {
+            "$relation": {
+              "name": "place",
               "joinType": "left join",
               "orderBy": [{
                 "pk_entity": "asc"

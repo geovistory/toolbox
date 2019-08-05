@@ -19,10 +19,6 @@ export interface DfhTextPropertyInterface {
   "dfh_fk_is_subclass_of"?: number;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
 }
 
 export class DfhTextProperty implements DfhTextPropertyInterface {
@@ -43,10 +39,6 @@ export class DfhTextProperty implements DfhTextPropertyInterface {
   "dfh_fk_is_subclass_of": number;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   constructor(data?: DfhTextPropertyInterface) {
     Object.assign(this, data);
   }
@@ -147,22 +139,6 @@ export class DfhTextProperty implements DfhTextPropertyInterface {
         "entity_version": {
           name: 'entity_version',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

@@ -15,12 +15,9 @@ export interface DfhClassInterface {
   "dfh_pk_class"?: number;
   "dfh_identifier_in_namespace"?: string;
   "dfh_standard_label"?: string;
+  "dfh_fk_system_type"?: number;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   ingoing_properties?: DfhProperty[];
   outgoing_properties?: DfhProperty[];
   labels?: DfhLabel[];
@@ -36,12 +33,9 @@ export class DfhClass implements DfhClassInterface {
   "dfh_pk_class": number;
   "dfh_identifier_in_namespace": string;
   "dfh_standard_label": string;
+  "dfh_fk_system_type": number;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   ingoing_properties?: DfhProperty[];
   outgoing_properties?: DfhProperty[];
   labels?: DfhLabel[];
@@ -96,6 +90,10 @@ export class DfhClass implements DfhClassInterface {
           name: 'dfh_standard_label',
           type: 'string'
         },
+        "dfh_fk_system_type": {
+          name: 'dfh_fk_system_type',
+          type: 'number'
+        },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
@@ -103,22 +101,6 @@ export class DfhClass implements DfhClassInterface {
         "entity_version": {
           name: 'entity_version',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

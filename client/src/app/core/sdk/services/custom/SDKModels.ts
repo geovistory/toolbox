@@ -14,6 +14,7 @@ import { ProTextProperty } from '../../models/ProTextProperty';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { DfhClass } from '../../models/DfhClass';
 import { DfhProperty } from '../../models/DfhProperty';
+import { DfhPropertyView } from '../../models/DfhPropertyView';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhTextProperty } from '../../models/DfhTextProperty';
 import { DatChunk } from '../../models/DatChunk';
@@ -56,6 +57,7 @@ export class SDKModels {
     ProInfoProjRel: ProInfoProjRel,
     DfhClass: DfhClass,
     DfhProperty: DfhProperty,
+    DfhPropertyView: DfhPropertyView,
     DfhLabel: DfhLabel,
     DfhTextProperty: DfhTextProperty,
     DatChunk: DatChunk,

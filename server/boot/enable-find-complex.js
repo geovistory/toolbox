@@ -7,6 +7,7 @@ var include = [
   "SysClassField",
   "ProProject",
   "ProQuery",
+  "ProDfhClassProjRel",
   "DfhClass",
   "DfhLabel",
   "DfhClassProfileView",

@@ -62,6 +62,7 @@ import { ProTextPropertyApi } from './services/custom/ProTextProperty';
 import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
 import { DfhClassApi } from './services/custom/DfhClass';
 import { DfhPropertyApi } from './services/custom/DfhProperty';
+import { DfhPropertyViewApi } from './services/custom/DfhPropertyView';
 import { DfhLabelApi } from './services/custom/DfhLabel';
 import { DfhTextPropertyApi } from './services/custom/DfhTextProperty';
 import { DatChunkApi } from './services/custom/DatChunk';
@@ -127,6 +128,7 @@ export class SDKBrowserModule {
         ProInfoProjRelApi,
         DfhClassApi,
         DfhPropertyApi,
+        DfhPropertyViewApi,
         DfhLabelApi,
         DfhTextPropertyApi,
         DatChunkApi,

@@ -19,10 +19,6 @@ export interface DfhLabelInterface {
   "com_fk_system_type"?: number;
   "inf_fk_language"?: number;
   "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
 }
 
 export class DfhLabel implements DfhLabelInterface {
@@ -43,10 +39,6 @@ export class DfhLabel implements DfhLabelInterface {
   "com_fk_system_type": number;
   "inf_fk_language": number;
   "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   constructor(data?: DfhLabelInterface) {
     Object.assign(this, data);
   }
@@ -147,22 +139,6 @@ export class DfhLabel implements DfhLabelInterface {
         "entity_version": {
           name: 'entity_version',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

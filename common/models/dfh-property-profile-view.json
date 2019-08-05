@@ -1,12 +1,12 @@
 {
   "name": "DfhPropertyProfileView",
-  "base": "DfhEntity",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "data_for_history",
-      "table": "property_profile_view"
+      "table": "v_property_profile_view"
     }
   },
   "mixins": {
@@ -16,6 +16,20 @@
     }
   },
   "properties": {
+    "is_inherited": {
+      "type": "boolean"
+    },
+    "dfh_has_domain": {
+      "type": "number",
+      "required": true
+    },
+    "fk_property": {
+      "type": "number"
+    },
+    "dfh_has_range": {
+      "type": "number",
+      "required": true
+    },
     "pk_entity": {
       "type": "number",
       "id": true,
@@ -32,6 +46,30 @@
     },
     "dfh_pk_property": {
       "type": "number"
+    },
+    "dfh_identifier_in_namespace": {
+      "type": "string"
+    },
+    "dfh_standard_label": {
+      "type": "string"
+    },
+    "dfh_fk_property_of_origin": {
+      "type": "number"
+    },
+    "dfh_domain_instances_min_quantifier": {
+      "type": "number"
+    },
+    "dfh_domain_instances_max_quantifier": {
+      "type": "number"
+    },
+    "dfh_range_instances_min_quantifier": {
+      "type": "number"
+    },
+    "dfh_range_instances_max_quantifier": {
+      "type": "number"
+    },
+    "identity_defining": {
+      "type": "boolean"
     }
   },
   "validations": [],
@@ -42,8 +80,15 @@
       "principalId": "$everyone",
       "permission": "DENY",
       "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
     }
   ],
-  "methods": {
-  }
+  "methods": {}
 }

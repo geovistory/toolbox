@@ -102,7 +102,7 @@
             (onLabelChange)="onLabelChange.emit({teEn: $event, cla: classConfig?.label})">
           </gv-te-ent-label>
         </div> -->
-
+        <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async"></gv-onto-class-info>
 
         <div type *ngIf="(_type$ | async)">
           <gv-type [basePath]="basePath.concat('_type')"></gv-type>
@@ -110,30 +110,33 @@
 
         <gv-class-info class="text-muted small ml-2" [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
 
-        <div settings>
-          <!-- <div class="btn-group" ngbDropdown placement="bottom-right" [autoClose]="'outside'">
-        <button class="btn btn-link no-caret" ngbDropdownToggle>
-          <i class="fa fa-cogs"></i>
-        </button>
-        <div ngbDropdownMenu aria-labelledby="dropdown" class="dropdown-menu">
-
-          <div class="dropdown-divider" *ngIf="!(isViewMode$ | async)"></div>
-          <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
-
-          <button class="dropdown-item text-danger" (click)="toggleRemoveVerification()" *ngIf="!(isViewMode$ | async)">
-            <i class="fa fa-trash"></i>
-            Remove
+        <div fxFlex fxLayout="row" fxLayoutAlign="end center">
+          <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+            <mat-icon>more_vert</mat-icon>
           </button>
+          <mat-menu #mainMenu="matMenu" xPosition="before">
 
-        </div>
-      </div> -->
-        </div>
+            <!-- toggle onto info -->
+            <button mat-menu-item (click)="$event.stopPropagation();">
+              <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggle('showOntoInfo');">
+                Ontology Info
+              </mat-slide-toggle>
+            </button>
 
+            <!-- remove -->
+            <!-- <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
+              <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
+              <button mat-menu-item (click)="toggleRemoveVerification();" *ngIf="!(isViewMode$ | async)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Remove</span>
+              </button> -->
+
+          </mat-menu>
+        </div>
       </gv-detail-top-bar>
 
 
       <gv-detail-content>
-
         <div class="gv-tile">
 
           <gv-tile-header *ngIf="(showPropertiesHeader$ | async)" (close)="toggle('showProperties')">
@@ -170,7 +173,7 @@
 
           </div>
         </div>
-<!--
+
 
         <div class="gv-tile">
 
@@ -181,9 +184,10 @@
           </gv-tile-header>
 
           <div class="gv-tile-body">
-            <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$"></gv-properties-tree>
+            <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$">
+            </gv-properties-tree>
           </div>
-        </div> -->
+        </div>
 
       </gv-detail-content>
     </as-split-area>

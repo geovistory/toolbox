@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatIconModule, MatMenuModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatPaginatorModule } from '@angular/material';
+import { MatButtonModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatIconModule, MatMenuModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatPaginatorModule, MatListModule, MatRadioModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
@@ -103,16 +103,11 @@ import { ExistenceTimeModalComponent } from './existence-time/existence-time-mod
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
 import { AddRoleComponent } from './new-components/add-role/add-role.component';
-import { AppellationListComponent } from './new-components/appellation-list/appellation-list.component';
-import { EntityPreviewListComponent } from './new-components/entity-preview-list/entity-preview-list.component';
-import { LanguageListComponent } from './new-components/language-list/language-list.component';
 import { ListHeaderComponent } from './new-components/list-header/list-header.component';
-import { PlaceListComponent } from './new-components/place-list/place-list.component';
 import { PropertiesTreeComponent } from './new-components/properties-tree/properties-tree.component';
 import { PropertyTreeService } from './new-components/properties-tree/properties-tree.service';
 import { TemporalEntityAddListComponent } from './new-components/temporal-entity-add-list/temporal-entity-add-list.component';
 import { TemporalEntityListComponent } from './new-components/temporal-entity-list/temporal-entity-list.component';
-import { TextPropertyListComponent } from './new-components/text-property-list/text-property-list.component';
 import { TimeSpanListComponent } from './new-components/time-span-list/time-span-list.component';
 import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
 import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
@@ -161,6 +156,12 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { FieldComponent } from './new-components/field/field.component';
+import { OntoClassInfoComponent } from './new-components/onto-class-info/onto-class-info.component';
+import { OntoPropertyInfoComponent } from './new-components/onto-property-info/onto-property-info.component';
+import { LeafItemListComponent } from './new-components/leaf-item-list/leaf-item-list.component';
+import { LeafItemAddListComponent } from './new-components/leaf-item-add-list/leaf-item-add-list.component';
+import { ChooseClassDialogComponent } from './new-components/choose-class-dialog/choose-class-dialog.component';
 
 
 
@@ -216,7 +217,9 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     MatExpansionModule,
     MatTableModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatPaginatorModule,
+    MatListModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
     EntityPreviewModule,
@@ -332,16 +335,17 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     ContentTreeComponent,
     AddOrCreateEntityModal,
     PropertiesTreeComponent,
-    AppellationListComponent,
-    EntityPreviewListComponent,
     ListHeaderComponent,
-    LanguageListComponent,
     TemporalEntityListComponent,
     TemporalEntityAddListComponent,
-    PlaceListComponent,
     TimeSpanListComponent,
-    TextPropertyListComponent,
-    AddRoleComponent
+    AddRoleComponent,
+    FieldComponent,
+    OntoClassInfoComponent,
+    OntoPropertyInfoComponent,
+    LeafItemListComponent,
+    LeafItemAddListComponent,
+    ChooseClassDialogComponent
   ],
   providers: [
 
@@ -506,7 +510,8 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
   entryComponents: [
     LeafPeItViewModalComponent,
     ExistenceTimeModalComponent,
-    AddOrCreateEntityModal
+    AddOrCreateEntityModal,
+    ChooseClassDialogComponent
   ]
 })
 export class Information2Module { }

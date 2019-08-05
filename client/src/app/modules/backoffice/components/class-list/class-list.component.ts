@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DfhClassProfileView, DfhLabel, SysConfig, SysSystemRelevantClass, U } from 'app/core';
-import { DfhService } from 'app/core/dfh/dfh.service';
+import { DfhSelector } from 'app/core/dfh/dfh.service';
 import { SystemSelector } from 'app/core/sys/sys.service';
 import { omit, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -66,19 +66,19 @@ export class ClassListComponent  implements OnInit, OnDestroy {
   infFkLanguage = 18889;
 
   constructor(
-    private dfhService: DfhService,
+    private dfhService: DfhSelector,
     private dfhActions: DfhActions,
     private sysService: SystemSelector
   ) {
 
     this.dfhActions.klass.load();
-    this.dfhActions.label.load('CLASS_LABELS');
+    this.dfhActions.label.loadLabelesOfClasses(null);
 
     this.sysService.system_relevant_class.load();
 
     this.tableData$ = combineLatest(
-      this.dfhService.class$.by_dfh_pk_class$,
-      this.dfhService.label$.by_dfh_fk_class$,
+      this.dfhService.class$.by_dfh_pk_class$.all$,
+      this.dfhService.label$.by_dfh_fk_class$.all$,
       this.sysService.system_relevant_class$.by_fk_class$.all$,
       this.pendingRows$,
       this.showRemovedClasses$

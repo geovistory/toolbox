@@ -111,7 +111,8 @@
         "alternativesNotInProjectByTeEntPk",
         "changeRoleProjectRelation",
         "addToProjectWithTeEnt",
-        "addToProject"
+        "addToProject",
+        "findOrCreateInfRoles"
       ]
     }
   ],
@@ -152,6 +153,49 @@
       "description": "Find or create an information role version.",
       "http": {
         "path": "/findOrCreate",
+        "verb": "post"
+      }
+    },
+    "findOrCreateInfRoles": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "InfRole"
+          ],
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfRole"
+        ],
+        "root": true
+      },
+      "description": "Find or create information role.",
+      "http": {
+        "path": "/find-or-create-many",
         "verb": "post"
       }
     },

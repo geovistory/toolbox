@@ -1,16 +1,16 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PropertyListComponentInterface, ListDefinition, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { PropertyListComponentInterface, ListDefinition, EntityPreviewItem } from '../properties-tree/properties-tree.models';
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Observable } from 'rxjs';
 import { ActiveProjectService } from 'app/core';
 import { PropertyTreeService } from '../properties-tree/properties-tree.service';
 
 @Component({
-  selector: 'gv-text-property-list',
-  templateUrl: './text-property-list.component.html',
-  styleUrls: ['./text-property-list.component.scss']
+  selector: 'gv-entity-preview-list',
+  templateUrl: './entity-preview-list.component.html',
+  styleUrls: ['./entity-preview-list.component.scss']
 })
-export class TextPropertyListComponent implements OnInit {
+export class EntityPreviewListComponent implements OnInit, PropertyListComponentInterface {
 
   @Input() pkEntity: number;
 
@@ -21,8 +21,7 @@ export class TextPropertyListComponent implements OnInit {
   @Input() addButtonVisible;
   @Input() toggleButtonVisible;
 
-
-  items$: Observable<TextPropertyItem[]>
+  items$: Observable<EntityPreviewItem[]>
   itemsCount$: Observable<number>
 
   constructor(
@@ -31,7 +30,8 @@ export class TextPropertyListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.items$ = this.t.pipeTextPropertyItems(this.pkEntity)
+    this.items$ = this.t.pipeEntityPreviewList(this.listDefinition, this.pkEntity)
+    this.itemsCount$ = this.items$.map(i => (i || []).length)
   }
 
 }

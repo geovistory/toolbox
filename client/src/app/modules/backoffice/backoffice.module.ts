@@ -68,7 +68,7 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatInputModule,
-    ScrollDispatchModule
+    ScrollDispatchModule,
   ],
   providers: [
     ClassAPIActions,

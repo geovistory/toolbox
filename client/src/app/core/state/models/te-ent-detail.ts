@@ -20,6 +20,8 @@ export class TeEntDetail extends Entity  {
 
     loading?: boolean
 
+    showOntoInfo?= false;
+
     constructor(data?: TeEntDetail) {
         super()
         Object.assign(this, data);

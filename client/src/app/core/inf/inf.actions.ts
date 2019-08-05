@@ -233,6 +233,43 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
   }
 }
 
+export interface LoadAlternativeTextProperties extends LoadActionMeta { fkEntity: number, fkClassField: number };
+
+export class InfTextPropertyActionFactory extends InfActionFactory<Payload, InfTextProperty> {
+
+  // Suffixes of load action types
+  static readonly ALTERNATIVES = 'ALTERNATIVES';
+
+  loadAlternatives: (fkEntity, fkClassField, fkProject) => ActionResultObservable<InfTextProperty>;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): InfTextPropertyActionFactory {
+    Object.assign(this, this.createInfActions(infRoot, 'text_property'))
+
+    this.loadAlternatives = (fkEntity: number, fkClassField: number, pkProject: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadAlternativeTextProperties> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTextPropertyActionFactory.ALTERNATIVES,
+        meta: {
+          addPending,
+          pk: pkProject,
+          fkEntity,
+          fkClassField,
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfTextProperty>>(['resolved', addPending]).filter(x => !!x),
+        key: addPending
+      };
+    }
+
+    return this;
+  }
+}
 
 
 
@@ -249,7 +286,7 @@ export class InfActions {
   appellation = new StandardActionsFactory<Payload, InfAppellation>(this.ngRedux).createCrudActions(infRoot, 'appellation')
   place = new StandardActionsFactory<Payload, InfPlace>(this.ngRedux).createCrudActions(infRoot, 'place')
   time_primitive = new StandardActionsFactory<Payload, InfTimePrimitive>(this.ngRedux).createCrudActions(infRoot, 'time_primitive')
-  text_property = new StandardActionsFactory<Payload, InfTextProperty>(this.ngRedux).createCrudActions(infRoot, 'text_property')
+  text_property = new InfTextPropertyActionFactory(this.ngRedux).createActions()
 
   constructor(public ngRedux: NgRedux<IAppState>) { }
 

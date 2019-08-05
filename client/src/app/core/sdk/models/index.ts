@@ -13,6 +13,7 @@ export * from './ProTextProperty';
 export * from './ProInfoProjRel';
 export * from './DfhClass';
 export * from './DfhProperty';
+export * from './DfhPropertyView';
 export * from './DfhLabel';
 export * from './DfhTextProperty';
 export * from './DatChunk';

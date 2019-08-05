@@ -38,6 +38,32 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get all classes that are selected by at least one of the profiles used by the given project.
+   *
+   * @param {number} pkProject Project pk
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhClass` object.)
+   * </em>
+   */
+  public classesOfProjectProfiles(pkProject: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhClasses/classes-of-project-profiles";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Get all classes that are selected by the profile of the specified primary-key.
    *
    * @param {number} dfh_pk_profile Profile id

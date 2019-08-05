@@ -1,0 +1,49 @@
+<!-- Field Header, in case there are multiple different lists in this field (inherited properties) -->
+
+<div class="mat-tree-node  align-items-baseline">
+
+  <button mat-icon-button
+    (click)="treeControl.isExpanded(fieldDefinition) ? treeControl.collapse(fieldDefinition) : treeControl.expand(fieldDefinition)"
+    [attr.aria-label]="'toggle ' + fieldDefinition?.name" *ngIf="(itemsCount$ | async) > 0">
+    <mat-icon class="mat-icon-rtl-mirror">
+      {{treeControl.isExpanded(fieldDefinition) ? 'expand_more' : 'chevron_right'}}
+    </mat-icon>
+  </button>
+  <button mat-icon-button disabled *ngIf="!((itemsCount$ | async) > 0)"></button>
+
+  <div class="gv-field-header-label bg-transparent d-flex align-items-center gv-grow-1">
+    <a *ngIf="(showOntoInfo$|async)" class="badge badge-success mr-2" href="{{fieldDefinition.ontoInfoUrl}}"
+      target="_blank">
+      {{fieldDefinition.ontoInfoLabel}}
+    </a>
+    <span class="upper-case">
+      {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
+      <!-- {{fieldDefinition.label}} -->
+    </span>
+  </div>
+
+  <div *ngIf="showAddButton$ | async" class="btn btn-sm btn-link-gray" (click)="addClick()">
+    <i class="fa fa-plus"></i> Add
+  </div>
+
+</div>
+
+<span *ngIf="treeControl.isExpanded(fieldDefinition)">
+
+  <div class="mx-2 mb-3" *ngFor="let listDefWithCount of (listsWithCounts$ |async)">
+
+    <gv-leaf-item-list fxLayout="column" *ngIf="!is(listDefWithCount, 'temporal-entity') && !is(listDefWithCount, 'time-span')" fxLayoutAlign="space-between stretch"
+      [listDefinition]="listDefWithCount" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
+      [pkEntity]="pkEntity"></gv-leaf-item-list>
+
+    <gv-temporal-entity-list *ngIf="is(listDefWithCount, 'temporal-entity')" fxLayout="column" fxLayoutAlign="space-between stretch"
+      [listDefinition]="listDefWithCount" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
+      [pkEntity]="pkEntity" [appContext]="appContext"></gv-temporal-entity-list>
+
+    <gv-time-span-list *ngIf="is(listDefWithCount, 'time-span')" fxLayout="column" fxLayoutAlign="space-between stretch"
+      [listDefinition]="listDefWithCount" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
+      [pkEntity]="pkEntity"></gv-time-span-list>
+
+  </div>
+
+</span>

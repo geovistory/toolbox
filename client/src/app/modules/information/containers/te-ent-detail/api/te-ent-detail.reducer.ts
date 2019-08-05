@@ -40,6 +40,17 @@ export function teEntDetailReducer(state: TeEntDetail = INITIAL_STATE, a: Action
         };
         break;
 
+      /************************************************
+     * Reducer to toggle booleans.
+     * Useful to toggle visibiility of ui elements
+     ************************************************/
+
+    case TeEntDetailAPIActions.TOGGLE_BOOLEAN:
+      state = {
+        ...state,
+        [action.meta.keyToToggle]: !state[action.meta.keyToToggle]
+      }
+      break;
 
     /*****************************************************
     * Reducers called on destroy of component

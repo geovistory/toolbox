@@ -24,10 +24,6 @@ export interface DfhPropertyInterface {
   "identity_defining"?: boolean;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   domain_class?: DfhClass;
   range_class?: DfhClass;
   labels?: DfhLabel[];
@@ -52,10 +48,6 @@ export class DfhProperty implements DfhPropertyInterface {
   "identity_defining": boolean;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   domain_class?: DfhClass;
   range_class?: DfhClass;
   labels?: DfhLabel[];
@@ -154,22 +146,6 @@ export class DfhProperty implements DfhPropertyInterface {
         "entity_version": {
           name: 'entity_version',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

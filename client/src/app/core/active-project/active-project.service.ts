@@ -17,6 +17,8 @@ import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
 import { ProSelector } from 'app/core/pro/pro.service';
+import { DfhSelector } from '../dfh/dfh.service';
+import { SystemSelector } from '../sys/sys.service';
 
 
 
@@ -59,7 +61,9 @@ export class ActiveProjectService {
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
     private entityPreviewSocket: EntityPreviewSocket,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public dfh$: DfhSelector,
+    public sys$: SystemSelector
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);

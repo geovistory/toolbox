@@ -14,7 +14,8 @@ interface MetaData {
   pkClasses?: number[];
   config?: TeEntDetail
   settings?: StateSettings,
-  crm?: ProjectCrm
+  crm?: ProjectCrm,
+  keyToToggle?: string;
 };
 export type TeEntDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -26,6 +27,8 @@ export class TeEntDetailAPIActions extends TeEntActions {
   static readonly LOAD_SUCCEEDED = 'TeEntDetail::LOAD_SUCCEEDED';
   static readonly LOAD_FAILED = 'TeEntDetail::LOAD_FAILED';
 
+  static readonly TOGGLE_BOOLEAN = 'TeEntDetail::TOGGLE_BOOLEAN';
+
   static readonly DESTROY = 'TeEntDetail::DESTROY';
 
 
@@ -34,7 +37,7 @@ export class TeEntDetailAPIActions extends TeEntActions {
   *  Actions to manage temporal entity editor
   *********************************************************************/
 
- load = (pkEntity: number, pkProject: number, config: TeEntDetail, settings: StateSettings, crm:ProjectCrm): TeEntDetailAPIAction => ({
+  load = (pkEntity: number, pkProject: number, config: TeEntDetail, settings: StateSettings, crm: ProjectCrm): TeEntDetailAPIAction => ({
     type: TeEntDetailAPIActions.LOAD,
     meta: { pkEntity, pkProject, config, settings, crm },
     payload: null,
@@ -53,6 +56,19 @@ export class TeEntDetailAPIActions extends TeEntActions {
     error,
   })
 
+  /**********************************************
+ * Method to toggle visibility of ui elements
+ **********************************************/
+
+  /**
+   * Toggle booleans
+   * @param keyToToggle key of the property to toggle. E.g. 'showRightPanel' or 'showProperties'
+   */
+  toggleBoolean = (keyToToggle: string): TeEntDetailAPIAction => ({
+    type: TeEntDetailAPIActions.TOGGLE_BOOLEAN,
+    meta: { keyToToggle },
+    payload: null
+  })
 
   /*********************************************************************
   *  Method to distroy the slice of store
@@ -62,4 +78,7 @@ export class TeEntDetailAPIActions extends TeEntActions {
     meta: null,
     payload: null
   })
+
+
+
 }

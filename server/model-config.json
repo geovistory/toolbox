@@ -115,6 +115,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "DfhPropertyView": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "DfhLabel": {
     "dataSource": "postgres1",
     "public": true

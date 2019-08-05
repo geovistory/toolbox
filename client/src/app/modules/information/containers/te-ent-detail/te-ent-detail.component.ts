@@ -105,6 +105,7 @@ export class TeEntDetailComponent extends EntityBase implements TabLayoutCompone
   @select() _existenceTime_edit$: Observable<ExistenceTimeDetail>; // TODO check if needed
   @select() accentuation$: Observable<TeEntAccentuation>;
   @select() editing$: Observable<boolean>;
+  @select() showOntoInfo$: Observable<boolean>;
   @Output() onLabelChange = new EventEmitter<{ teEn: ClassInstanceLabel, cla: string }>();
 
   addOptionsTeEnt$: Observable<AddOption[]>;
@@ -117,7 +118,7 @@ export class TeEntDetailComponent extends EntityBase implements TabLayoutCompone
   /**
    * Other Store Observables
    */
-  showOntoInfo$: Observable<boolean>
+  // showOntoInfo$: Observable<boolean>
   showCommunityStats$: Observable<boolean>
   parentPropertyField$: Observable<PropertyField> = new BehaviorSubject(null);
 
@@ -257,7 +258,7 @@ export class TeEntDetailComponent extends EntityBase implements TabLayoutCompone
    * (to select observables from local store, use @select decorator)
    */
   initObservablesOutsideLocalStore() {
-    this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
+    // this.showOntoInfo$ = this.ngRedux.select<boolean>([...this.parentPeItStatePath, 'showOntoInfo']);
 
     if (this.asPeItChild) this.parentPropertyField$ = this.ngRedux.select<PropertyField>(this.parentPath.slice(0, (this.parentPath.length - 2)));
 
@@ -335,6 +336,14 @@ export class TeEntDetailComponent extends EntityBase implements TabLayoutCompone
   */
   toggleCardBody() {
     this.localStore.dispatch(this.actions.toggle())
+  }
+
+  /**
+  * Method to toggle booleans of state.
+  * Useful to toggle visibility of ui elements.
+  */
+  toggle(keyToToggle: string) {
+    this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
   }
 
   click() {

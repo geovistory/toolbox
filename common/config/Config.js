@@ -1,17 +1,17 @@
 /**
  * This config file contains parameters that refence to keys used in
  * the database.
- * 
+ *
  * It can be used by the server and by the client application.
- * 
+ *
  */
 const Config = {
 
     /**
      * This parameter maps the primary keys of classes
      * with the primary keys of the property leading to a type class.
-     * 
-     * Example: 
+     *
+     * Example:
      * histC8 Geographical Place --> histP8 has geographical place type
      */
     PK_CLASS_PK_HAS_TYPE_MAP: {
@@ -46,7 +46,13 @@ const Config = {
     /**
      * Primary Key of Namespace "Geovistory Ongoing"
      */
+    // This project is cloned when a new project is created
     PK_PROJECT_OF_TEMPLATE_PROJECT: 173,
 
+    // This project contains default cofigs: class_configs, labels
+    PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT: 375070,
+
+    // This project is the sandbox project that is cloned when a new account is created
+    PK_PROJECT_OF_SANDBOX_PROJECT: 375232
 }
 module.exports = Config;
