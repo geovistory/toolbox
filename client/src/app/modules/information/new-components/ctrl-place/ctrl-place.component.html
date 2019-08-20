@@ -1,0 +1,17 @@
+<div *ngIf="!(shouldLabelFloat$ | async)" class="click-container" (click)="initFocus()">
+
+</div>
+
+<div [hidden]="!(shouldLabelFloat$ | async)">
+  <div>
+    <span class="mat-caption text-muted mr-2">Lat:</span> <input type="number" [value]="lat"
+      (blur)="focused$.next(false)" (focus)="focused$.next(true)" (input)="latChanged($event.target.value)" #firstInput>
+  </div>
+  <div>
+    <span class="mat-caption text-muted mr-2">Long:</span> <input type="number" [value]="long"
+      (blur)="focused$.next(false)" (focus)="focused$.next(true)" (input)="longChanged($event.target.value)">
+  </div>
+  <!-- <button mat-icon-button>
+    <mat-icon>map</mat-icon>
+  </button> -->
+</div>

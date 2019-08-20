@@ -8,6 +8,7 @@ import { ProInfoProjRelApi } from "../sdk";
 import { ModifyActionMeta } from "../store/actions";
 import { StandardEpicsFactory } from "../store/StandardEpicsFactory";
 import { InfActionFactory } from "./inf-action-factory";
+import { pathOr } from "ramda";
 
 export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payload, Model> {
   constructor(
@@ -34,9 +35,11 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
 
           const meta = action.meta as any;
           // add is_in_project true
+
           meta.items = meta.items.map(i => ({
             ...i, entity_version_project_rels: [{
-              is_in_project: true
+              ...pathOr({},['entity_version_project_rels', 0], i),
+              is_in_project: true,
             }]
           }))
 
@@ -91,6 +94,39 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
 
       )
     }
+  }
+
+
+
+  /**
+   * This upsert epic overrides the standard upsert.
+   * In addition to the standard, it extends the items to upsert, so that
+   * they are added to the project.
+   */
+  createCustomUpsertEpic<T>(apiFn: (meta: T) => Observable<Model[]>, actionSuffix: string, onSuccessHook?: (data: Model[], pk?) => void) {
+    return (action$, store) => {
+      return action$.pipe(
+        ofType(this.actionPrefix + '.' + this.modelName + '::UPSERT' + (actionSuffix ? '::' + actionSuffix : '')),
+        mergeMap((action: FluxStandardAction<Payload, ModifyActionMeta<Model>>) => new Observable<Action>((globalActions) => {
+          const pendingKey = action.meta.addPending;
+          const meta = action.meta as any;
+          apiFn(meta).subscribe((data: Model[]) => {
+            if (onSuccessHook) {
+              onSuccessHook(data, action.meta.pk);
+              this.actions.upsertSucceeded([], pendingKey, action.meta.pk);
+            }
+            else {
+              this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
+            }
+          }, error => {
+            globalActions.next(this.notifications.addToast({
+              type: 'error',
+              options: { title: error.message }
+            }));
+            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+          });
+        })));
+    };
   }
 
 }

@@ -46,7 +46,7 @@ export class CzmlLabelGenerator {
         }
 
         this.d.scaleByDistance = {
-            nearFarScalar: [ 150, 2.0, 15000000, 0.5 ]
+            nearFarScalar: [ 150, 1.0, 15000000, 0.5 ]
             //[1.5e2, 1.0, 8.0e6, 0.6]
         }
 

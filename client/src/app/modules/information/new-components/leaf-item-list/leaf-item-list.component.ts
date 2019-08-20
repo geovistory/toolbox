@@ -1,11 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ListDefinition, PropertyListComponentInterface, ItemList, RoleItemBasics, EntityPreviewItem, TextPropertyItem, Item } from '../properties-tree/properties-tree.models';
+import { Component, Input, OnInit } from '@angular/core';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
 import { Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { ActiveProjectService } from '../../../../core';
-import { PropertyTreeService } from '../properties-tree/properties-tree.service';
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { ActiveProjectService } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, RoleItemBasics, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 
 @Component({
   selector: 'gv-leaf-item-list',
@@ -30,18 +31,19 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
   constructor(
     public p: ActiveProjectService,
-    public t: PropertyTreeService,
+    public t: PropertiesTreeService,
+    public i: InformationPipesService,
     public inf: InfActions
   ) { }
 
   ngOnInit() {
-    this.items$ = this.t.pipeList(this.listDefinition, this.pkEntity)
+    this.items$ = this.i.pipeList(this.listDefinition, this.pkEntity)
     this.itemsCount$ = this.items$.map(i => (i || []).length)
   }
 
 
   remove(item: Item) {
-    if (this.listDefinition.isIdentiyDefining && this.listDefinition.isOutgoing) {
+    if (this.listDefinition.isIdentityDefining && this.listDefinition.isOutgoing) {
       alert('Item can not be removed, since it is defining the identity of the connected temporal entity. You might want to replace the entire temporal entity.')
     } else {
       this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {

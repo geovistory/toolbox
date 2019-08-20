@@ -1,4 +1,5 @@
 import { TimePrimitive } from 'app/core';
+import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../../modules/information/new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 
 export class TimeSpan {
 
@@ -43,11 +44,41 @@ export class TimeSpan {
     return { min: min, max: max };
   }
 
+  static fromTimeSpanDialogData(d: CtrlTimeSpanDialogResult = {}): TimeSpan {
+    if (!d) d = {};
+    const x = {}
+    if (d['72']) x['p82'] = d['72'];
+    if (d['71']) x['p81'] = d['71'];
+    if (d['152']) x['p82a'] = d['152'];
+    if (d['150']) x['p81a'] = d['150'];
+    if (d['151']) x['p81b'] = d['151'];
+    if (d['153']) x['p82b'] = d['153'];
+    return new TimeSpan(x)
+  }
+
   constructor(data?) {
-    Object.assign(this, data);
-    this.tpKeys.forEach(key => {
-      if (this[key]) this[key] = new TimePrimitive(this[key]);
-    })
+    if (data) {
+      Object.keys(data).forEach(key => data[key] === undefined ? delete data[key] : '');
+      Object.assign(this, data);
+      this.tpKeys.forEach(key => {
+        if (this[key]) this[key] = new TimePrimitive(this[key]);
+      })
+    }
+  }
+
+
+  /**
+   * returns true if no TimePrimitive is there
+   */
+  isEmpty(): boolean {
+    return !this.isNotEmpty()
+  }
+  /**
+   * returns true if at least one TimePrimitive is there
+   */
+  isNotEmpty(): boolean {
+    if (this.p82 || this.p81 || this.p82a || this.p82b || this.p81a || this.p81b) return true
+    else return false
   }
 
 

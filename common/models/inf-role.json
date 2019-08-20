@@ -52,6 +52,12 @@
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
+    "range_temporal_entity": {
+      "type": "belongsTo",
+      "model": "InfTemporalEntity",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
     "appellation": {
       "type": "belongsTo",
       "model": "InfAppellation",

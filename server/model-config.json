@@ -38,6 +38,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "ProPropertyLabel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "PubAccount": {
     "dataSource": "postgres1",
     "public": true,

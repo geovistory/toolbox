@@ -4,13 +4,14 @@ import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { combineEpics, Epic } from 'redux-observable';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPersistentItemApi, ProInfoProjRelApi, InfTemporalEntity, InfTemporalEntityApi, InfRole, InfRoleApi, InfTextProperty, InfTextPropertyApi } from '../sdk';
-import { InfEntityAssoctiationActionFactory, FindEAByParams, InfActions, LoadByPkAction, InfPersistentItemActionFactory, ContentTreeMeta, InfTemporalEntityActionFactory, SourcesAndDigitalsOfEntityResult, SourcesAndDigitalsOfEntity, InfRoleActionFactory, LoadOutgoingAlternativeRoles, LoadIngoingAlternativeRoles, LoadAlternativeTextProperties, InfTextPropertyActionFactory } from './inf.actions';
+import { InfEntityAssoctiationActionFactory, FindEAByParams, InfActions, LoadByPkAction, InfPersistentItemActionFactory, ContentTreeMeta, InfTemporalEntityActionFactory, SourcesAndDigitalsOfEntityResult, SourcesAndDigitalsOfEntity, InfRoleActionFactory, LoadOutgoingAlternativeRoles, LoadIngoingAlternativeRoles, LoadAlternativeTextProperties, InfTextPropertyActionFactory, AddToProjectWithTeEntActionMeta } from './inf.actions';
 import { infRoot } from './inf.config';
 import { InfEntityAssociationSlice, InfPersistentItemSlice, InfTemporalEntitySlice, InfRoleSlice, InfTextPropertySlice } from './inf.models';
 import { DatActions } from '../dat/dat.actions';
 import { InfEpicsFactory } from './inf-epic-factory';
 import { ModifyActionMeta } from '../store/actions';
 import { ProActions } from '../pro/pro.actions';
+import { Stower, FlatObject } from '../store/stower';
 
 
 @Injectable()
@@ -50,8 +51,19 @@ export class InfEpics {
        *
        */
       infPersistentItemEpicsFactory.createLoadEpic<LoadByPkAction>(
-        (meta) => this.peItApi.nestedObjectOfProject(meta.pk, meta.pkEntity),
+        (meta) => this.peItApi.flatObjectOfProject(meta.pk, meta.pkEntity),
         InfPersistentItemActionFactory.NESTED_BY_PK,
+        (results, pk) => {
+
+          new Stower(this.infActions, this.datActions, this.proActions).stow(results as FlatObject, pk);
+          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          // flattener.persistent_item.flatten(results);
+          // storeFlattened(flattener.getFlattened(), pk);
+        }
+      ),
+      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkAction>(
+        (meta) => this.peItApi.typesOfProject(meta.pk),
+        InfPersistentItemActionFactory.TYPES_OF_PROJECT,
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.persistent_item.flatten(results);
@@ -109,6 +121,16 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), pk);
         }
       ),
+      infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
+        .addToProjectWithTeEnt(meta.pk, meta.pkRoles),
+        InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.role.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk);
+        }
+      ),
+
       infRoleEpicsFactory.createRemoveEpic(),
 
       /**

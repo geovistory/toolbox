@@ -22,6 +22,7 @@ import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
 import { DfhSelector } from '../dfh/dfh.service';
 import { ProSelector } from '../pro/pro.service';
+import { InfActions } from '../inf/inf.actions';
 
 
 
@@ -32,6 +33,7 @@ export class ActiveProjectEpics {
     private dat: DatSelector,
     private dfh: DfhSelector,
     private pro: ProSelector,
+    private inf: InfActions,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -138,6 +140,8 @@ export class ActiveProjectEpics {
         this.pro.dfh_class_proj_rel.load('', action.meta.pk_project)
         this.dfh.label.loadLabelesOfClasses(null);
         this.dfh.label.loadLabelesOfProperties(null);
+        this.pro.property_label.loadDefaultLabels(action.meta.pk_project)
+        this.inf.persistent_item.typesOfProject(action.meta.pk_project)
 
 
         combineLatest(

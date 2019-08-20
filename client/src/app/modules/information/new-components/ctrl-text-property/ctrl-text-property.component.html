@@ -1,0 +1,14 @@
+<div class="wrap">
+  <gv-quill-edit [quillDoc]="quillDoc" [matInputLike]="true" (quillDocChange)="quillDocChange($event)"
+    (blur)="focused$.next(false)" (focus)="focused$.next(true)">
+  </gv-quill-edit>
+
+  <div class="lang">
+    <div class="lang-helper-text" *ngIf="!fkLanguage && !c.focused">
+      Select a language
+    </div>
+    <gv-ctrl-language [formControl]="langCtrl" #c (blur)="focused$.next(false)" (focus)="focused$.next(true)">
+    </gv-ctrl-language>
+  </div>
+
+</div>

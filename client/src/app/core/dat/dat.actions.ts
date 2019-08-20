@@ -6,6 +6,7 @@ import { datRoot } from './dat.config';
 import { DigitalSlice, NamespaceSlice, ChunkSlice } from './dat.models';
 import { DatNamespace, DatChunk } from '../sdk';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
+import { ActionResolverService } from '../store/action-resolver.service';
 
 export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number };
 

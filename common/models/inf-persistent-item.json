@@ -74,6 +74,7 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
+        "typesOfProject",
         "typesOfClassesAndProject",
         "typesOfClassAndProject",
         "typesOfNamespaceNested",
@@ -83,11 +84,67 @@
         "findOrCreatePeIt",
         "typeNested",
         "addToProject",
-        "graphsOfProject"
+        "graphsOfProject",
+        "flatObjectOfProject"
       ]
     }
   ],
   "methods": {
+    "flatObjectOfProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the entity.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Get a flat object of entity.",
+      "http": {
+        "path": "/flat-object",
+        "verb": "get"
+      }
+    },
+    "typesOfProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Get a minimal nested object of all types in the project.",
+      "http": {
+        "path": "/types-of-project",
+        "verb": "get"
+      }
+    },
     "graphsOfProject": {
       "accepts": [
         {

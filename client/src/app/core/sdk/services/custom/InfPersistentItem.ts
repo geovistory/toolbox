@@ -35,6 +35,61 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get a flat object of entity.
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @param {number} pkEntity Pk of the entity.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfPersistentItem` object.)
+   * </em>
+   */
+  public flatObjectOfProject(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfPersistentItems/flat-object";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get a minimal nested object of all types in the project.
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfPersistentItem` object.)
+   * </em>
+   */
+  public typesOfProject(pkProject: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfPersistentItems/types-of-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Get e nested object of all information about the persistent in the project version.
    *
    * @param {number} pkProject Pk of the project.

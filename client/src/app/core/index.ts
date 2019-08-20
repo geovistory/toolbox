@@ -12,6 +12,8 @@ export { DateTimeCommons, GregorianDateTime, JulianDateTime, TimePrimitive } fro
 export { IAppState } from './store/model';
 export { U } from './util/util'
 export * from './util/custom-rxjs-operators';
+export * from './util/mergeMapOr';
+export * from './util/switchMapOr';
 export * from './sdk';
 export * from './sdk/models';
 export * from './sdk/services';

@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
 import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
-import { difference, groupBy, indexBy, path, values, without } from 'ramda';
+import { difference, groupBy, indexBy, path, values, without, equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { DatSelector } from '../dat/dat.service';
 import { InfSelector } from '../inf/inf.service';
-import { DatNamespace, DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual } from '../sdk';
+import { DatNamespace, DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual, InfLanguage } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
@@ -27,6 +27,7 @@ export class ActiveProjectService {
   project: ProProject;
 
   public activeProject$: Observable<ProjectDetail>;
+  public defaultLanguage$: Observable<InfLanguage>;
   public pkProject$: Observable<number>;
   public panels$: Observable<Panel[]>
   public uiIdSerial$: Observable<number>;
@@ -70,6 +71,7 @@ export class ActiveProjectService {
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).filter(p => p !== undefined);
+    this.defaultLanguage$ = this.activeProject$.pipe(filter((p) => (!!p && p.default_language) ? true : false), map(p => p.default_language))
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
     this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
@@ -207,6 +209,7 @@ export class ActiveProjectService {
 
     return this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pkEntity])
       .pipe(
+        distinctUntilChanged<EntityPreview>(equals),
         filter(prev => (!!prev))
       )
   }
@@ -348,7 +351,7 @@ export class ActiveProjectService {
       mergeMap(types => {
         return types.length ?
           combineLatest(types.map(type => this.streamEntityPreview(type.pk_entity))) :
-          new BehaviorSubject([])
+          new BehaviorSubject<EntityPreview[]>([])
       }),
       filter(pre => !pre.find(p => !(p.pk_entity))),
       tap(test => {

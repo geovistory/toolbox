@@ -1,5 +1,6 @@
 <div class="table-and-paginator-container mat-elevation-z4mx-2" *ngIf="itemsCount$ | async">
   <div class="table-container">
+    <mat-divider></mat-divider>
     <table mat-table [dataSource]="table.dataSource">
       <!-- Empty Column -->
       <ng-container matColumnDef="_empty_">
@@ -8,18 +9,23 @@
       </ng-container>
 
       <!-- Onto Class Info about the whole Column -->
-      <ng-container matColumnDef="_ontoInfo_">
-        <th mat-header-cell *matHeaderCellDef> </th>
-        <td mat-cell *matCellDef="let element">
-          <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass">
+      <ng-container matColumnDef="_classInfo_">
+        <th mat-header-cell *matHeaderCellDef> {{listDefinition.targetClassLabel}} </th>
+        <td mat-cell class="class-info-col pr-4" *matCellDef="let element">
+          <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="listDefinition.targetClass">
           </gv-onto-class-info>
+          <span class=" font-xs text-muted" [matTooltip]="'Temporal Entity ' + element._pkEntity_">
+            <i class="gv-entity-color fa fa-star-o"></i> {{listDefinition.targetClassLabel}}
+          </span>
         </td>
       </ng-container>
 
 
       <!-- Generic Cell Column -->
       <ng-container *ngFor="let column of (table.dataColumns$ | async)" [matColumnDef]="column">
-        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+        <th mat-header-cell *matHeaderCellDef>
+          {{column}}
+        </th>
         <td mat-cell *matCellDef="let element">
           <gv-onto-property-info class="mr-2" [pkProperty]="element[column].pkProperty" *ngIf="showOntoInfo$ | async">
           </gv-onto-property-info>
@@ -27,7 +33,7 @@
             {{element[column]?.label}}
           </span>
           <span *ngIf="element[column]?.entityPreview">
-            <gv-entity-preview [dragEnabled]="false" [preview]="element[column].entityPreview"></gv-entity-preview>
+            <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="true" [preview]="element[column].entityPreview"></gv-entity-preview>
           </span>
           <span class="text-muted small" *ngIf="element[column].itemsCount > 1">
             + {{element[column].itemsCount - 1}}
@@ -61,7 +67,7 @@
 
             <button mat-menu-item (click)="openInNewTab(element)">
               <mat-icon>tab</mat-icon>
-              Open in new Tab
+              Open {{listDefinition.targetClassLabel}} in new Tab
             </button>
 
             <button mat-menu-item (click)="remove(element)">
@@ -83,6 +89,8 @@
 
 
   </div>
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [hidden]="(itemsCount$ | async) <= 5">
+  <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="offset$ | async"
+    [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [hidden]="(itemsCount$ | async) <= 5" (page)="onPageChange($event)">
   </mat-paginator>
+  <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
 </div>

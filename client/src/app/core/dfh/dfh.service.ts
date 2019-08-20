@@ -6,8 +6,9 @@ import { DfhClass, DfhLabel, DfhPropertyProfileView, DfhPropertyView } from '../
 import { DfhActions } from './dfh.actions';
 import { dfhRoot, dfhDefinitions } from './dfh.config';
 import { ReducerConfigCollection } from '../store/reducer-factory';
-import { filter } from '../../../../node_modules/rxjs/operators';
+import { filter, distinctUntilChanged } from '../../../../node_modules/rxjs/operators';
 import { DfhClassSlice, DfhPropertyProfileViewSlice, DfhLabelSlice, DfhPropertyViewSlice } from './dfh.models';
+import { equals } from 'ramda';
 class Selector<Slice> {
 
   slice$ = this.ngRedux.select<Slice>([dfhRoot, this.model])
@@ -21,10 +22,14 @@ class Selector<Slice> {
   selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
     const all$ = this.ngRedux.select<ByPk<M>>([dfhRoot, this.model, indexKey])
-      .pipe(filter(x => !!x))
+    // .pipe(
+    //   distinctUntilChanged<ByPk<M>>(equals)
+    // )
 
     const key = (x): Observable<M> => this.ngRedux.select<M>([dfhRoot, this.model, indexKey, x])
-      .pipe(filter(x => !!x))
+    // .pipe(
+    //   distinctUntilChanged<M>(equals)
+    // )
 
     return { all$, key }
   }

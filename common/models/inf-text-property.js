@@ -8,9 +8,17 @@ module.exports = function (InfTextProperty) {
     return new Promise((resolve, reject) => {
       const promiseArray = items.map((item, i) => {
 
-        ctx.req.body = ctx.req.body[i];
+        const context = {
+          ...ctx,
+          req: {
+            ...ctx.req,
+            body: {
+              ...ctx.req.body[i]
+            }
+          }
+        }
 
-        return InfTextProperty.findOrCreateInfTextProperty(pk_project, item, ctx)
+        return InfTextProperty.findOrCreateInfTextProperty(pk_project, item, context)
       })
       Promise.map(promiseArray, (promise) => promise)
         .catch(err => reject(err))
@@ -73,7 +81,28 @@ module.exports = function (InfTextProperty) {
 
     InfTextProperty.dataSource.connector.execute(sql, params, (err, resultObjects) => {
       if (err) return cb(err, resultObjects);
-      cb(false, resultObjects)
+
+      if(resultObjects.length < 1) return cb(false, resultObjects)
+
+      const filter = {
+        where: [
+          'pk_entity', 'IN', resultObjects.map(i => i.pk_entity)
+        ],
+        include: {
+          "language": {
+            "$relation": {
+              "name": "language",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          }
+        }
+      }
+
+      return InfTextProperty.findComplex(filter, cb)
+
     });
   }
 };

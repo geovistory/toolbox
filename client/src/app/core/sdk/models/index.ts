@@ -5,6 +5,7 @@ export * from './SysClassHasTypeProperty';
 export * from './SysSystemRelevantClass';
 export * from './ProQuery';
 export * from './ProVisual';
+export * from './ProPropertyLabel';
 export * from './PubAccount';
 export * from './Email';
 export * from './ProProject';

@@ -52,10 +52,10 @@ export class PropertyFieldApiEpics {
                     combineLatest(
                         action.meta.eprs.map(data => this.eprApi.patchOrCreate(data))
                     )
-                        .subscribe((data: ProInfoProjRel[]) => {
+                        .subscribe((data ) => {
                             globalStore.next(this.loadingBarActions.completeLoading());
 
-                            c.localStore.dispatch(this.actions.updateOrderSucceeded(data));
+                            c.localStore.dispatch(this.actions.updateOrderSucceeded(data as any as ProInfoProjRel[]));
                         }, error => {
                             c.localStore.dispatch(this.actions.updateOrderFailed(cacheOldList));
                             globalStore.next(this.notificationActions.addToast({

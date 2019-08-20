@@ -64,13 +64,13 @@ export class StandardEpicsFactory<Payload, Model> {
         })));
     };
   }
-  createDeleteEpic(apiFn: (items: Model[]) => Observable<Model[]>) {
+  createDeleteEpic(apiFn: (meta: ModifyActionMeta<Model>) => Observable<Model[]>) {
     return (action$, store) => {
       return action$.pipe(
         ofType(this.actionPrefix + '.' + this.modelName + '::DELETE'),
         mergeMap((action: FluxStandardAction<Payload, ModifyActionMeta<Model>>) => new Observable<Action>((globalActions) => {
           const pendingKey = action.meta.addPending;
-          apiFn(action.meta.items).subscribe((data: Model[]) => {
+          apiFn(action.meta).subscribe((data: Model[]) => {
             this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
           }, error => {
             globalActions.next(this.notifications.addToast({

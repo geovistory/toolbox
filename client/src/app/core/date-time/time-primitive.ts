@@ -22,6 +22,7 @@ export class TimePrimitive {
 
   constructor(data?: ITimePrimitive) {
     Object.assign(this, data);
+    if((data as any).julian_day) this.julianDay = (data as any).julian_day
   }
 
   getGregorianDateTime(): GregorianDateTime {

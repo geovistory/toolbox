@@ -35,62 +35,62 @@ export class TeEntDetailAPIEpics {
 
   public createEpics(c: TeEntDetailComponent): Epic {
     return combineEpics(
-      this.createLoadTemporalEntityEditorEpic(c),
+      // this.createLoadTemporalEntityEditorEpic(c),
     );
   }
 
-  private createLoadTemporalEntityEditorEpic(c: TeEntDetailComponent): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(TeEntDetailAPIActions.LOAD),
-        tap((x) => {
+  // private createLoadTemporalEntityEditorEpic(c: TeEntDetailComponent): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(TeEntDetailAPIActions.LOAD),
+  //       tap((x) => {
 
-        }),
-        filter(action => ofSubstore(c.basePath)(action)),
-        switchMap((action: TeEntDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
+  //       }),
+  //       filter(action => ofSubstore(c.basePath)(action)),
+  //       switchMap((action: TeEntDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-          c.t.setTabLoading(true)
+  //         c.t.setTabLoading(true)
 
-          this.teEntService.getNestedObject(action.meta.pkEntity, action.meta.pkProject)
-            .subscribe((data) => {
-              const teEntDetail = createTeEntDetail(
-                action.meta.config,
-                data,
-                action.meta.crm,
-                action.meta.settings
-              )
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.loadSucceeded(teEntDetail));
-              c.t.setTabLoading(false)
+  //         this.teEntService.getNestedObject(action.meta.pkEntity, action.meta.pkProject)
+  //           .subscribe((data) => {
+  //             const teEntDetail = createTeEntDetail(
+  //               action.meta.config,
+  //               data,
+  //               action.meta.crm,
+  //               action.meta.settings
+  //             )
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             c.localStore.dispatch(this.actions.loadSucceeded(teEntDetail));
+  //             c.t.setTabLoading(false)
 
-            }, error => {
-              /**
-               * Emit the global action that shows some loading error message
-               */
-              // globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-              * Emit the local action on loading failed
-              */
-              c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-            })
-        })),
-        takeUntil(c.destroy$)
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //              * Emit the global action that shows some loading error message
+  //              */
+  //             // globalStore.next(this.loadingBarActions.completeLoading());
+  //             /**
+  //             * Emit the local action on loading failed
+  //             */
+  //             c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+  //           })
+  //       })),
+  //       takeUntil(c.destroy$)
+  //     )
+  //   }
+  // }
 
 
 }

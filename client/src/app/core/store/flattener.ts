@@ -2,14 +2,14 @@ import { InfEntityAssociation, InfPersistentItem, InfRole } from "app/core";
 import { InfActions } from "app/core/inf/inf.actions";
 import { InfEntityAssociationSlice, InfPersistentItemSlice, InfAppellationSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLanguageSlice } from "app/core/inf/inf.models";
 import { keys, omit, values } from "ramda";
-import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk, InfPlace, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLanguage } from "../sdk";
+import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk, InfPlace, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLanguage, ProPropertyLabel } from "../sdk";
 import { StandardActionsFactory } from "./actions";
 import { DatActions } from "../dat/dat.actions";
 import { DigitalSlice, ChunkSlice } from "../dat/dat.models";
 import { time_primitive } from "../state/services/_mock-data";
 import { ProActions } from "../pro/pro.actions";
 import { Injectable } from "../../../../node_modules/@angular/core";
-import { ProInfoProjRelSlice } from "../pro/pro.models";
+import { ProInfoProjRelSlice, ProPropertyLabelSlice } from "../pro/pro.models";
 
 export class ModelFlattener<Payload, Model> {
   constructor(
@@ -82,6 +82,7 @@ export class Flattener {
       items.forEach(item => {
         item = new InfTemporalEntity(item);
         this.role.flatten(item.te_roles)
+        this.role.flatten(item.ingoing_roles)
         this.text_property.flatten(item.text_properties)
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
@@ -162,6 +163,7 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfTextProperty(item);
+        this.language.flatten([item.language])
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
@@ -185,9 +187,20 @@ export class Flattener {
       })
     })
 
+  property_label = new ModelFlattener<ProPropertyLabelSlice, ProPropertyLabel>(
+    this.proActions.property_label,
+    ProPropertyLabel.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProPropertyLabel(item);
+        this.language.flatten([item.language])
+      })
+    })
+
   getFlattened(): FlattenerInterface {
     return {
       info_proj_rel: this.info_proj_rel,
+      property_label: this.property_label,
 
       persistent_item: this.persistent_item,
       temporal_entity: this.temporal_entity,

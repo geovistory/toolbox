@@ -1,27 +1,24 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FieldDefinition } from '../../../information/new-components/properties-tree/properties-tree.models';
-import { PropertyTreeService } from '../../../information/new-components/properties-tree/properties-tree.service';
-import { Observable, combineLatest } from '../../../../../../node_modules/rxjs';
-import { ActiveProjectService } from '../../../../core';
-import { DfhSelector } from '../../../../core/dfh/dfh.service';
-import { ProSelector } from '../../../../core/pro/pro.service';
-import { SystemSelector } from '../../../../core/sys/sys.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { combineLatest, Observable, of } from '../../../../../../node_modules/rxjs';
 import { map, mergeMap } from '../../../../../../node_modules/rxjs/operators';
+import { FieldDefinition } from '../../../information/new-components/properties-tree/properties-tree.models';
+import { ConfigurationPipesService } from '../../../information/new-services/configuration-pipes.service';
 
 interface FieldConfig extends FieldDefinition {
-  dfhStandardLabel: string,
-  labelTable: {
-    displayedColumns: string[],
-    rows: {
-      label: string,
-      language: string
-    }[]
-  },
-  classTable: {
-    displayedColumns: string[],
-    rows: {
-      label: string,
-    }[]
+  propertyField?: {
+    dfhStandardLabel: string,
+    isIdentityDefining: boolean,
+    labelTable: {
+      fkProperty: number,
+      fkDomainClass: number,
+      fkRangeClass: number
+    },
+    classTable: {
+      displayedColumns: string[],
+      rows: {
+        label: string,
+      }[]
+    }
   }
 }
 
@@ -40,60 +37,56 @@ export class ClassConfigComponent implements OnInit {
   fields$: Observable<FieldConfig[]>
 
   constructor(
-    private t: PropertyTreeService,
-    private dfh: DfhSelector,
-    private sys: SystemSelector,
-    private pro: ProSelector,
+    private c: ConfigurationPipesService
   ) {
   }
-
+  getKey(_, item) {
+    return _;
+  }
   ngOnInit() {
 
-    // this.dfh.klass.loadClassesOfProjectProfiles(this.fkProject);
 
-    // this.pro.class_field_config.load('', this.fkProject)
-    // this.pro.dfh_class_proj_rel.load('', this.fkProject)
-
-    // this.dfh.label.loadLabelesOfClasses(null);
-    // this.dfh.label.loadLabelesOfProperties(null);
-
-    // this.sys.system_relevant_class.load();
-    // this.sys.class_has_type_property.load();
-    // this.dfh.property_view.load()
-    // this.dfh.label.loadLabelesOfClasses(null);
-    // this.dfh.label.loadLabelesOfProperties(null);
-
-
-    this.classLabel$ = this.t.pipeLabelOfClass(this.fkClass)
-    this.fields$ = this.t.pipeFieldDefinitions(this.fkClass, this.fkAppContext).pipe(
+    this.classLabel$ = this.c.pipeLabelOfClass(this.fkClass)
+    this.fields$ = this.c.pipeFieldDefinitions(this.fkClass, this.fkAppContext).pipe(
       mergeMap(fields => combineLatest(fields
         //Pipe aspects of each field
-        .map(field => combineLatest(
-          this.t.pipeDfhProperyStandardLabel(field.pkProperty),
+        .map(field => {
 
-        ).pipe(
-          map(([dfhStandardLabel]) => {
-            const f: FieldConfig = {
-              ...field,
-              dfhStandardLabel,
-              labelTable: {
-                displayedColumns: ['label', 'language'],
-                rows: [
-                  { label: 'Bla', language: 'en' }
-                ]
-              },
-              classTable: {
-                displayedColumns: ['label'],
-                rows: [
-                  { label: 'Bla' }
-                ]
-              }
-            }
-            return f;
+          // If this field is a class Field
+          if (!field.pkProperty) return of({
+            ...field
           })
-        )
+
+          // If this field is a property field
+          return combineLatest(
+            this.c.pipeDfhProperyStandardLabel(field.pkProperty)
+          ).pipe(
+            map(([dfhStandardLabel]) => {
+              const f: FieldConfig = {
+                ...field,
+                propertyField: {
+                  isIdentityDefining: field.listDefinitions[0].isIdentityDefining,
+                  dfhStandardLabel,
+                  labelTable: {
+                    fkProperty: field.pkProperty,
+                    fkDomainClass: (field.isOutgoing ? this.fkClass : null),
+                    fkRangeClass: (field.isOutgoing ? null : this.fkClass)
+                  },
+                  classTable: {
+                    displayedColumns: ['label'],
+                    rows: field.listDefinitions.map(ld => ({
+                      label: ld.targetClassLabel
+                    }))
+                  }
+                }
+              }
+              return f;
+            })
+          )
+        }
         )))
     )
   }
+
 
 }

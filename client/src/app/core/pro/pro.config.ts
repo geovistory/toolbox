@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { ProClassFieldConfig, ProDfhClassProjRel } from "../sdk";
+import { ProClassFieldConfig, ProDfhClassProjRel, ProPropertyLabel } from "../sdk";
 
 export const proRoot = 'pro';
 
@@ -35,6 +35,22 @@ export const proDefinitions: ReducerConfigCollection = {
       {
         keyInStore: 'fk_project__enabled_in_entities',
         groupByFn: (d: ProDfhClassProjRel): string => d.fk_project + '_' + d.enabled_in_entities
+      }
+    ]
+  },
+  property_label: {
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item: ProPropertyLabel) => item.pk_entity.toString()
+    },
+    groupBy: [
+      {
+        keyInStore: 'fk_project__fk_property__fk_domain_class__fk_range_class',
+        groupByFn: (d: ProPropertyLabel): string => d.fk_project + '_' + d.fk_property + '_' + d.fk_domain_class + '_' + d.fk_range_class
+      },
+      {
+        keyInStore: 'fk_project__fk_property__fk_domain_class__fk_range_class__fk_system_type',
+        groupByFn: (d: ProPropertyLabel): string => d.fk_project + '_' + d.fk_property + '_' + d.fk_domain_class + '_' + d.fk_range_class + '_' + d.fk_system_type
       }
     ]
   },

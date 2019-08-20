@@ -1,0 +1,29 @@
+<!-- <div *ngIf="!shouldLabelFloat" class="click-container" (click)="openMenu()"></div>
+
+<div class="gv-cursor-text" [hidden]="!shouldLabelFloat" [ngClass]="{'d-flex': shouldLabelFloat}">
+  <div class="d-flex align-items-center" *ngIf="value" (click)="openMenu()">
+    {{typeLabel$ | async}}
+  </div>
+
+  <div class="ml-auto">
+    <button mat-icon-button (click)="clearForm()">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-icon-button [matMenuTriggerFor]="appMenu" (menuOpened)="onFocus()" (menuClosed)="onBlur()">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-menu #appMenu="matMenu" xPosition="before">
+  <button *ngFor="let node of typeOptions$ | async" mat-menu-item (click)="onSelect(node)">
+    {{node.label}}
+  </button>
+</mat-menu> -->
+
+<mat-select (selectionChange)="onSelect($event)" (openedChange)="menuToggled($event)">
+  <mat-option *ngFor="let node of typeOptions$ | async" [value]="node.data.pkType">
+    <span *ngIf="node.data.pkType"> {{node.label}} </span>
+    <i *ngIf="!node.data.pkType"> {{node.label}} </i>
+  </mat-option>
+</mat-select>

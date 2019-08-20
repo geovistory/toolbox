@@ -37,8 +37,11 @@
         </gv-onto-class-info>
         <gv-entity-preview *ngIf="listDefinition.listType === 'entity-preview'" [preview]="item.preview"
           [dragEnabled]="false"></gv-entity-preview>
-
-        <span *ngIf="['appellation', 'language', 'place', 'text-property'].includes(listDefinition.listType)">
+        <span *ngIf="listDefinition.listType === 'text-property'">
+          {{item.label}} <span class="mat-caption text-muted">{{item.language.notes}}
+            {{item?.role?.is_in_project_count}}</span>
+        </span>
+        <span *ngIf="['appellation', 'language', 'place'].includes(listDefinition.listType)">
           {{item.label}} {{item?.role?.is_in_project_count}}
         </span>
       </td>
@@ -92,6 +95,7 @@
 <div class="my-3">
   <button [disabled]="(selectedCount$ | async) < 1" type="submit" class="btn btn-primary mr-2" (click)="add()">Add
     selected</button>
-  <button type="submit" class="btn btn-primary mr-2" (click)="startCreateNewRole()">Create new</button>
+  <button type="submit" class="btn btn-primary mr-2"
+    (click)="t.showControl$.next(null); t.showCreateRole$.next(listDefinition)">Create new</button>
   <button type="button" class="btn btn-link" (click)="t.showControl$.next(null)">Cancel</button>
 </div>

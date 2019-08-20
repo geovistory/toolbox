@@ -39,127 +39,127 @@ export class PeItDetailAPIEpics {
 
   public createEpics(c: PeItDetailComponent): Epic {
     return combineEpics(
-      this.createLoadPersistentEntityEditorEpic(c),
-      this.createRemovePeItEpic(c)
+      // this.createLoadPersistentEntityEditorEpic(c),
+      // this.createRemovePeItEpic(c)
     );
   }
 
 
-  private createLoadPersistentEntityEditorEpic(c: PeItDetailComponent): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(PeItDetailAPIActions.LOAD),
-        tap((x) => {
+  // private createLoadPersistentEntityEditorEpic(c: PeItDetailComponent): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(PeItDetailAPIActions.LOAD),
+  //       tap((x) => {
 
-        }),
-        filter(action => ofSubstore(c.basePath)(action)),
-        switchMap((action: PeItDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
+  //       }),
+  //       filter(action => ofSubstore(c.basePath)(action)),
+  //       switchMap((action: PeItDetailAPIAction) => new Observable<FluxStandardAction<any>>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-          c.t.setTabLoading(true)
+  //         c.t.setTabLoading(true)
 
-          /**
-           * Do some api call
-           */
-          this.peItService.getNestedObject(action.meta.pkEntity, action.meta.pkProject)
-            /**
-             * Subscribe to the api call
-             */
-            .subscribe((data) => {
-              const peItDetail = createPeItDetail(
-                action.meta.config,
-                data,
-                action.meta.crm,
-                action.meta.settings
-              )
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.loadSucceeded(peItDetail));
-              c.t.setTabLoading(false)
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.peItService.getNestedObject(action.meta.pkEntity, action.meta.pkProject)
+  //           /**
+  //            * Subscribe to the api call
+  //            */
+  //           .subscribe((data) => {
+  //             const peItDetail = createPeItDetail(
+  //               action.meta.config,
+  //               data,
+  //               action.meta.crm,
+  //               action.meta.settings
+  //             )
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             c.localStore.dispatch(this.actions.loadSucceeded(peItDetail));
+  //             c.t.setTabLoading(false)
 
 
-            }, error => {
-              /**
-               * Emit the global action that shows some loading error message
-               */
-              // globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-              * Emit the local action on loading failed
-              */
-              c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
-            })
-        })),
-        takeUntil(c.destroy$)
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //              * Emit the global action that shows some loading error message
+  //              */
+  //             // globalStore.next(this.loadingBarActions.completeLoading());
+  //             /**
+  //             * Emit the local action on loading failed
+  //             */
+  //             c.localStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
+  //           })
+  //       })),
+  //       takeUntil(c.destroy$)
+  //     )
+  //   }
+  // }
 
-  /**
-   * Epic to remove a peIt from project
-   */
-  private createRemovePeItEpic(c: PeItDetailComponent): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(PeItDetailAPIActions.REMOVE_PE_IT),
-        filter(action => ofSubstore(c.basePath)(action)),
-        switchMap((action: PeItDetailAPIAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.eprApi.updateEprAttributes(action.meta.pkProject, action.meta.pkEntity, {
-            is_in_project: false
-          } as ProInfoProjRel)
-            /**
-             * Subscribe to the api call
-             */
-            .subscribe((data) => {
+  // /**
+  //  * Epic to remove a peIt from project
+  //  */
+  // private createRemovePeItEpic(c: PeItDetailComponent): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(PeItDetailAPIActions.REMOVE_PE_IT),
+  //       filter(action => ofSubstore(c.basePath)(action)),
+  //       switchMap((action: PeItDetailAPIAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.eprApi.updateEprAttributes(action.meta.pkProject, action.meta.pkEntity, {
+  //           is_in_project: false
+  //         } as ProInfoProjRel)
+  //           /**
+  //            * Subscribe to the api call
+  //            */
+  //           .subscribe((data) => {
 
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              /**
-               * Emit the local action on loading succeeded
-               */
-              c.localStore.dispatch(this.actions.removePeItSucceded());
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             c.localStore.dispatch(this.actions.removePeItSucceded());
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              c.localStore.dispatch(this.actions.removePeItFailed(error.message));
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             c.localStore.dispatch(this.actions.removePeItFailed(error.message));
 
-            })
-        })),
-        takeUntil(c.destroy$)
-      )
-    }
-  }
+  //           })
+  //       })),
+  //       takeUntil(c.destroy$)
+  //     )
+  //   }
+  // }
 
 
 }

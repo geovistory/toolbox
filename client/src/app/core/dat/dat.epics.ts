@@ -45,7 +45,7 @@ export class DatEpics {
         (meta) => this.digitalApi.bulkUpsert(meta.pk, meta.items)
       ),
       digitalEpicsFactory.createDeleteEpic(
-        (items) => this.digitalApi.bulkDelete(items.map(item => item.pk_entity))
+        (meta) => this.digitalApi.bulkDelete(meta.items.map(item => item.pk_entity))
       ),
 
       // Chunk

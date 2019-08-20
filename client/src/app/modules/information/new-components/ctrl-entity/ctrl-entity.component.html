@@ -1,0 +1,9 @@
+<div *ngIf="empty" class="click-container" (click)="openModal()">
+
+</div>
+<div *ngIf="shouldLabelFloat" class="d-flex">
+  <gv-entity-preview [preview]="entityPreview$ | async" (click)="openModal()"></gv-entity-preview>
+  <button class="ml-auto" mat-icon-button (click)="openModal()" [disabled]="disabled">
+    <mat-icon>edit</mat-icon>
+  </button>
+</div>

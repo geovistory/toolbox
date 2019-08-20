@@ -1,16 +1,16 @@
 <div class="card-body" *ngIf="loadingAlternatives$ | async">
-  <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(t.showControl$ | async).label}}…
+  <i class="fa fa-spinner fa-pulse"></i> Searching for existing {{(t.showControl$ | async).targetClassLabel}}…
 </div>
 
 <!-- Step 1: Form for adding existing roles -->
 
-<div *ngIf="alternatives$|async" class="p-2">
-  <h5 class="mb-3">
-    We found information in the repository of Geovistory :-)
-  </h5>
+<div *ngIf="(alternatives$|async) && !(loadingAlternatives$ | async)" class="p-2">
+  <h4 class="mb-3">
+    We found other {{(t.showControl$ | async).targetClassLabel}}s in the repository of Geovistory :-)
+  </h4>
   <div class="mb-3">
-    Take over items from the list below by selecting them and clicking on 'Add selected' – or
-    create a new item by clicking on 'Create new'.
+    Select and add {{(t.showControl$ | async).targetClassLabel}}s from the list below, <br>
+    or create a new one.
   </div>
 
   <gv-temporal-entity-add-list *ngIf="(t.showControl$ | async).listType == 'temporal-entity'" fxLayout="column"
@@ -26,6 +26,10 @@
 
 
 <!-- Step 2: Form for creating new roles -->
+
+<!-- <gv-create-role-form *ngIf="!alternatives$|async"  [listDefinition]="t.showControl$ | async" [pkEntity]="pkEntity" #c></gv-create-role-form> -->
+
+
 <!-- <form [formGroup]="createForm" (ngSubmit)="createRoles()" *ngIf="(_property_field_form$ | async)?._role_create_list">
 
   <div class="my-3 text-white d-flex">

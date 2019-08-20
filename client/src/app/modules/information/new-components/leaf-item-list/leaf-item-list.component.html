@@ -4,15 +4,17 @@
       <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass" *ngIf="showOntoInfo$ | async">
       </gv-onto-class-info>
 
-      <gv-entity-preview *ngIf="listDefinition.listType === 'entity-preview'" [preview]="item.preview"
+      <gv-entity-preview *ngIf="listDefinition.listType === 'entity-preview'" [preview]="item?.preview"
         [dragEnabled]="false"></gv-entity-preview>
-
-      <span *ngIf="['appellation', 'language', 'place', 'text-property'].includes(listDefinition.listType)">
+      <span *ngIf="listDefinition.listType === 'text-property'">
+        {{item.label}} <span class="mat-caption text-muted">{{item?.language.notes}}</span>
+      </span>
+      <span *ngIf="['appellation', 'language', 'place'].includes(listDefinition.listType)">
         {{item.label}}
       </span>
 
       <mat-menu #appMenu="matMenu">
-        <button mat-menu-item  *ngIf="listDefinition.listType === 'entity-preview'" (click)="openInNewTab(item)">
+        <button mat-menu-item *ngIf="listDefinition.listType === 'entity-preview'" (click)="openInNewTab(item)">
           <mat-icon>tab</mat-icon>
           Open in new Tap
         </button>

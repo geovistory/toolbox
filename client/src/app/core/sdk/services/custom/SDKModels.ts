@@ -6,6 +6,7 @@ import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
 import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
 import { ProQuery } from '../../models/ProQuery';
 import { ProVisual } from '../../models/ProVisual';
+import { ProPropertyLabel } from '../../models/ProPropertyLabel';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
 import { ProProject } from '../../models/ProProject';
@@ -49,6 +50,7 @@ export class SDKModels {
     SysSystemRelevantClass: SysSystemRelevantClass,
     ProQuery: ProQuery,
     ProVisual: ProVisual,
+    ProPropertyLabel: ProPropertyLabel,
     PubAccount: PubAccount,
     Email: Email,
     ProProject: ProProject,

@@ -3,10 +3,12 @@ import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/t
 import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { first, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { TimeSpanService } from '../../new-services/time-span.service';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
-import { PropertyTreeService } from '../properties-tree/properties-tree.service';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number
@@ -17,7 +19,6 @@ interface ListDefinitionWithItemCount extends ListDefinition {
   styleUrls: ['./field.component.scss']
 })
 export class FieldComponent implements OnInit {
-
 
   destroy$ = new Subject<boolean>();
 
@@ -34,31 +35,32 @@ export class FieldComponent implements OnInit {
   itemsCount$;
 
   constructor(
-    public t: PropertyTreeService,
-    public dialog: MatDialog
-  ) {
-    // this.t.pipeEntityPreviewList(l, this.pkEntity).pipe(map(x => x.length))
-  }
+    public t: PropertiesTreeService,
+    public i: InformationPipesService,
+    public dialog: MatDialog,
+    private timeSpan: TimeSpanService,
+  ) {  }
 
   ngOnInit() {
 
     this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
-      return this.t.pipeList(l, this.pkEntity).pipe(
-        map((items) => ({
-          ...l, itemsCount: items.length
-        }))
+      return this.i.pipeListLength(l, this.pkEntity).pipe(
+        map((itemsCount) => ({ ...l, itemsCount }))
       )
     })).pipe(
       map(lists => lists.filter((list: any) => list.itemsCount > 0))
     )
+    this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
 
     this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
 
     this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
       .pipe(map(([n, r]) => {
         if (r) return false;
+
         if (this.fieldDefinition.targetMaxQuantity === -1) return true;
         if (this.fieldDefinition.targetMaxQuantity <= n) return false
+        if (this.fieldDefinition.listType == 'time-span' && 1 <= n) return false
         return true;
       }))
 
@@ -70,7 +72,12 @@ export class FieldComponent implements OnInit {
   };
 
   addClick() {
-    if (this.fieldDefinition.targetClasses && this.fieldDefinition.targetClasses.length > 1) {
+    if (this.fieldDefinition.listType === 'time-span') {
+      this.i.pipeItemTimeSpan(this.pkEntity).pipe(first(), takeUntil(this.destroy$)).subscribe(item => {
+        this.timeSpan.openModal(item, this.pkEntity)
+      })
+    }
+    else if (this.fieldDefinition.targetClasses && this.fieldDefinition.targetClasses.length > 1) {
       // show a select list
       const data: ChooseClassDialogData = {
         pkClasses: this.fieldDefinition.targetClasses,
@@ -87,6 +94,10 @@ export class FieldComponent implements OnInit {
     else {
       this.t.showControl$.next(this.fieldDefinition.listDefinitions[0])
     }
+  }
+
+  editTimeSpan() {
+
   }
 
   ngOnDestroy() {

@@ -1,5 +1,6 @@
 var _ = require('lodash');
 const Promise = require('bluebird');
+const Config = require('../../common/config/Config')
 
 module.exports = function (app) {
   var Role = app.models.Role;
@@ -230,6 +231,38 @@ module.exports = function (app) {
     })
   });
 
+
+  // Role.registerResolver('config_project_or_member', function (role, context, cb) {
+
+  //   //Q: Is the user logged in? (there will be an accessToken with an ID if so)
+  //   var accountId = context.accessToken.userId;
+  //   if (!accountId) {
+  //     //A: No, user is NOT logged in: callback with FALSE
+  //     return process.nextTick(() => cb(null, false));
+  //   }
+
+  //   getPkProject(context, function (err, pkProject) {
+  //     if (err) return cb(err);
+
+  //     if (!pkProject) {
+  //       // A: No. This request does not provide a PK of the project
+  //       return process.nextTick(() => cb(null, false));
+  //     }
+
+  //     // Q: Is the current project the default config project?
+  //     if(pkProject === Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
+
+  //       // A: Yes. Let the request pass.
+  //       return cb(null, true);
+
+  //     }
+
+  //     // Q: Is the current logged-in user associated with this Project?
+  //     // Step 1: lookup the requested project
+  //     Role.isAssociatedWithProject(accountId, pkProject, cb);
+
+  //   })
+  // });
 };
 
 

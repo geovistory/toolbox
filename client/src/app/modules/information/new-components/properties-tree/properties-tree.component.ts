@@ -1,19 +1,20 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material';
-import { SysConfig } from 'app/core';
+import { ActiveProjectService, SysConfig } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ListDefinition, ListType, FieldDefinition, ClassFieldConfig } from './properties-tree.models';
-import { PropertyTreeService } from './properties-tree.service';
-import { pathOr } from 'ramda';
+import { FieldDefinition } from './properties-tree.models';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { PropertiesTreeService } from './properties-tree.service';
+import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 
 @Component({
   selector: 'gv-properties-tree',
   templateUrl: './properties-tree.component.html',
   styleUrls: ['./properties-tree.component.scss'],
   providers: [
-    PropertyTreeService
+    PropertiesTreeService
   ]
 })
 export class PropertiesTreeComponent implements OnInit, OnDestroy {
@@ -31,14 +32,17 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   dataSource = new MatTreeNestedDataSource<FieldDefinition>();
 
   constructor(
-    public t: PropertyTreeService,
-  ) {  }
+    public t: PropertiesTreeService,
+    public c: ConfigurationPipesService,
+    public p: ActiveProjectService
+  ) { }
 
   ngOnInit() {
-    combineLatest(this.pkClass$, this.pkEntity$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
-      .subscribe(([pkClass, pkEntity]) => {
 
-        this.tree$ = this.t.pipeFieldDefinitions(pkClass, this.appContext)
+    combineLatest(this.pkClass$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
+      .subscribe(([pkClass]) => {
+
+        this.tree$ = this.c.pipeFieldDefinitions(pkClass, this.appContext)
 
         this.tree$.pipe(takeUntil(this.destroy$)).subscribe(data => {
           this.dataSource.data = data;
@@ -51,4 +55,6 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
+
 }

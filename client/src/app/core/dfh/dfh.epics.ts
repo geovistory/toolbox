@@ -57,8 +57,8 @@ export class DfhEpics {
       }),
 
       // Label Deleter
-      dfhLabelEpicsFactory.createDeleteEpic((items) => {
-        return this.labelApi.bulkDelete(items)
+      dfhLabelEpicsFactory.createDeleteEpic((meta) => {
+        return this.labelApi.bulkDelete(meta.items)
       }),
 
       // Load all property profile views

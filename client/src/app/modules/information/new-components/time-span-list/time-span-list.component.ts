@@ -1,9 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { PropertyListComponentInterface, ListDefinition, TimeSpanItem } from '../properties-tree/properties-tree.models';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Observable, of } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActiveProjectService } from 'app/core';
-import { PropertyTreeService } from '../properties-tree/properties-tree.service';
+import { Observable, of, Subject } from 'rxjs';
+import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { InfActions } from '../../../../core/inf/inf.actions';
+import { ListDefinition, TimeSpanItem } from '../properties-tree/properties-tree.models';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { TimeSpanService } from '../../new-services/time-span.service';
 
 @Component({
   selector: 'gv-time-span-list',
@@ -12,9 +16,10 @@ import { PropertyTreeService } from '../properties-tree/properties-tree.service'
 })
 export class TimeSpanListComponent implements OnInit {
 
+  destroy$ = new Subject<boolean>();
+
   @Input() pkEntity: number;
 
-  @Input() listDefinition: ListDefinition;
   @Input() treeControl: NestedTreeControl<ListDefinition>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$;
@@ -25,14 +30,32 @@ export class TimeSpanListComponent implements OnInit {
   item$: Observable<TimeSpanItem>
   itemsCount$: Observable<number>
 
+  item: TimeSpanItem
   constructor(
     public p: ActiveProjectService,
-    public t: PropertyTreeService
+    public t: InformationPipesService,
+    private timeSpan: TimeSpanService
   ) { }
 
   ngOnInit() {
-    this.item$ = this.t.pipeTimeSpanItem(this.pkEntity)
+    this.item$ = this.t.pipeItemTimeSpan(this.pkEntity)
     this.itemsCount$ = of(1)
+    this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key('72_300593').pipe(takeUntil(this.destroy$)).subscribe(a=>{
+
+    })
+    this.item$.pipe(takeUntil(this.destroy$)).subscribe(item => {
+      this.item = item
+    })
+  }
+
+  openModal() {
+    this.timeSpan.openModal(this.item, this.pkEntity)
+  }
+
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 }

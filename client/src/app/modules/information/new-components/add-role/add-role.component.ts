@@ -3,7 +3,9 @@ import { ActiveProjectService, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { first, takeUntil, map } from 'rxjs/operators';
-import { PropertyTreeService } from '../properties-tree/properties-tree.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
+import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 
 @Component({
   selector: 'gv-add-role',
@@ -22,7 +24,9 @@ export class AddRoleComponent implements OnInit, OnDestroy {
   appContext: number = SysConfig.PK_UI_CONTEXT_ADD;
 
   constructor(
-    public t: PropertyTreeService,
+    public t: PropertiesTreeService,
+    public i: InformationPipesService,
+    public b: InformationBasicPipesService,
     public p: ActiveProjectService,
     public inf: InfActions
   ) {
@@ -48,6 +52,8 @@ export class AddRoleComponent implements OnInit, OnDestroy {
         }
       }
 
+
+
     })
   }
 
@@ -55,10 +61,8 @@ export class AddRoleComponent implements OnInit, OnDestroy {
     this.loadingAlternatives$.next(true);
     this.inf.text_property.loadAlternatives(this.pkEntity, listDefinition.fkClassField, pkProject).resolved$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(resolved => {
-        this.loadingAlternatives$.next(false);
-      });
-    this.alternatives$ = this.t.pipeAlternativeTextPropertyList(listDefinition, this.pkEntity);
+      .subscribe(resolved => { this.updateUiAfterLoading(); });
+    this.alternatives$ = this.i.pipeAltListTextProperty(listDefinition, this.pkEntity);
   }
 
   /**
@@ -68,10 +72,8 @@ export class AddRoleComponent implements OnInit, OnDestroy {
     this.loadingAlternatives$.next(true);
     this.inf.role.loadIngoingAlternatives(this.pkEntity, listDefinition.pkProperty, pkProject).resolved$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(resolved => {
-        this.loadingAlternatives$.next(false);
-      });
-    this.alternatives$ = this.t.pipeAlternativeIngoingRoles(listDefinition.pkProperty, this.pkEntity);
+      .subscribe(resolved => { this.updateUiAfterLoading(); });
+    this.alternatives$ = this.b.pipeAlternativeIngoingRoles(listDefinition.pkProperty, this.pkEntity);
   }
 
   /**
@@ -80,10 +82,23 @@ export class AddRoleComponent implements OnInit, OnDestroy {
   private loadRolesOutgoing(listDefinition, pkProject: number) {
     this.loadingAlternatives$.next(true);
     this.inf.role.loadOutgoingAlternatives(this.pkEntity, listDefinition.pkProperty, pkProject).resolved$
-      .pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-        this.loadingAlternatives$.next(false);
-      });
-    this.alternatives$ = this.t.pipeAlternativeOutgoingRoles(listDefinition.pkProperty, this.pkEntity);
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(resolved => { this.updateUiAfterLoading(); });
+    this.alternatives$ = this.b.pipeAlternativeOutgoingRoles(listDefinition.pkProperty, this.pkEntity);
+  }
+
+  private updateUiAfterLoading() {
+    this.alternatives$.pipe(first(), takeUntil(this.destroy$)).subscribe(
+      alt => {
+        if (alt.length > 0) {
+          this.loadingAlternatives$.next(false);
+        }
+        else {
+          this.t.showCreateRole$.next(this.t.showControl$.value);
+          this.t.showControl$.next(null);
+        }
+      }
+    );
   }
 
   ngOnDestroy() {

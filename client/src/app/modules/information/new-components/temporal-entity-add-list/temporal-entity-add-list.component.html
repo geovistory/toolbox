@@ -1,110 +1,135 @@
-<div class="my-3 text-white d-flex">
-  <h4 class="gv-grow-1 align-self-center m-0">
-    {{(t.showControl$ | async).label}} found in other projects
-  </h4>
+<div class="table-and-paginator-container mat-elevation-z4mx-2" *ngIf="itemsCount$ | async">
+  <div class="table-container">
+    <mat-divider></mat-divider>
+    <table mat-table [dataSource]="table.dataSource">
+      <!-- Empty Column -->
+      <ng-container matColumnDef="_empty_">
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *matCellDef="let element"> </td>
+      </ng-container>
+
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="_checkbox_">
+        <th mat-header-cell class="select-col pr-4" *matHeaderCellDef> Select
+          <!-- <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+          </mat-checkbox> -->
+        </th>
+        <td mat-cell class="select-col pr-4" *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row._role_.pk_entity) : null"
+            [checked]="selection.isSelected(row._role_.pk_entity)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Radio Button Column -->
+      <ng-container matColumnDef="_radiobutton_">
+        <th mat-header-cell class="select-col pr-4" *matHeaderCellDef> Select
+
+        </th>
+        <td mat-cell class="select-col pr-4" *matCellDef="let row">
+          <mat-radio-button (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row._role_.pk_entity) : null"
+            [checked]="selection.isSelected(row._role_.pk_entity)" [aria-label]="select">
+          </mat-radio-button>
+        </td>
+      </ng-container>
+
+      <!-- Onto Class Info about the whole Column -->
+      <ng-container matColumnDef="_classInfo_">
+        <th mat-header-cell *matHeaderCellDef> {{listDefinition.targetClassLabel}} </th>
+        <td mat-cell class="class-info-col pr-4" *matCellDef="let element">
+          <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="listDefinition.targetClass">
+          </gv-onto-class-info>
+          <span class=" font-xs text-muted" [matTooltip]="'Temporal Entity ' + element._pkEntity_">
+            <i class="gv-entity-color fa fa-star-o"></i> {{listDefinition.targetClassLabel}}
+          </span>
+        </td>
+      </ng-container>
+
+
+      <!-- Generic Cell Column -->
+      <ng-container *ngFor="let column of (table.dataColumns$ | async)" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef>
+          {{column}}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <gv-onto-property-info class="mr-2" [pkProperty]="element[column].pkProperty" *ngIf="showOntoInfo$ | async">
+          </gv-onto-property-info>
+          <span *ngIf="!element[column]?.entityPreview">
+            {{element[column]?.label}}
+          </span>
+          <span *ngIf="element[column]?.entityPreview">
+            <gv-entity-preview [dragEnabled]="false" [preview]="element[column].entityPreview"></gv-entity-preview>
+          </span>
+          <span class="text-muted small" *ngIf="element[column].itemsCount > 1">
+            + {{element[column].itemsCount - 1}}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- project Column -->
+      <ng-container matColumnDef="_projects_">
+        <th mat-header-cell *matHeaderCellDef> Used By </th>
+        <td mat-cell *matCellDef="let item">
+          {{item['_role_'].is_in_project_count}} {{item['_role_'].is_in_project_count == 1 ? 'Project' : 'Projects'}}
+        </td>
+      </ng-container>
+
+      <!-- Action Column -->
+      <ng-container matColumnDef="_actions_" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="action-cell">
+          <mat-menu #appMenu="matMenu">
+
+            <div class="dropdown-header">Columns</div>
+
+            <button *ngFor="let col of (table.dataColumns$ | async)" mat-menu-item
+              (click)="table.toggleCol(col); $event.stopPropagation(); ">
+              <mat-checkbox color="accent" [checked]="((table.dataColumnsMap$ | async ) || {})[col]">
+                {{col}}
+              </mat-checkbox>
+            </button>
+
+          </mat-menu>
+
+          <button mat-icon-button [matMenuTriggerFor]="appMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let element" class="action-cell">
+          <!-- <mat-menu #teEnMenu="matMenu">
+
+
+            <button mat-menu-item (click)="openInNewTab(element)">
+              <mat-icon>tab</mat-icon>
+              Open {{listDefinition.targetClassLabel}} in new Tab
+            </button>
+
+          </mat-menu>
+          <button mat-icon-button aria-label="Actions on table row" [matMenuTriggerFor]="teEnMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button> -->
+        </td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="(table.displayedColumns$ | async)"></tr>
+      <tr mat-row *matRowDef="let row; columns: (table.displayedColumns$ | async);"></tr>
+    </table>
+
+
+  </div>
+  <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="offset$ | async"
+    [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [hidden]="(itemsCount$ | async) <= 5"
+    (page)="onPageChange($event)">
+  </mat-paginator>
 </div>
+
 <div class="my-3">
-  Select and add {{(t.showControl$ | async).label}} from the list below, <br>
-  or create a new one.
-</div>
-
-<div FxFlex>
-
-  <mat-accordion class="drop-list" cdkDropList (cdkDropListDropped)="t.updateOrder($event, items$)">
-    <div *ngFor="let item of (items$ | async)" class="d-flex">
-      <div class="px-3 border-right d-flex align-items-center">
-        <input type="checkbox">
-      </div>
-      <mat-expansion-panel class="gv-grow-1" cdkDrag (opened)="item.panelOpenState = true" (closed)="item.panelOpenState = false">
-        <mat-expansion-panel-header collapsedHeight="75px">
-          <mat-panel-title *ngIf="!item.panelOpenState" class="main d-flex">
-            <!-- Role Labels -->
-            <div class="gv-grow-1 pr-3" *ngFor="let p of item?.properties; let i = index">
-              <div class="text-muted font-xs">
-                {{p?.listDefinition?.label}}
-              </div>
-              <div *ngFor="let jtem of p?.items">
-                <div *ngIf="jtem.target === 'appellation' || jtem.target !== 'language'">
-                  {{jtem?.label}}
-                </div>
-                <div *ngIf="jtem.target === 'time-span'">
-                  <!-- {{getExTLabel(jtem?.exTimeLabel)}} -->
-                </div>
-                <div *ngIf="jtem.target === 'entity-preview'">
-                  <gv-entity-preview [dragEnabled]="false" [preview]="jtem.preview"></gv-entity-preview>
-                </div>
-              </div>
-            </div>
-
-            <div class="d-flex font-xs text-muted flex-column justify-content-between">
-
-              <!-- Class info -->
-              <div>
-                <div class="align-self-center">
-                  <i class="gv-entity-color fa fa-star-o"></i>
-                  {{(t.showControl$ | async)?.targetClassLabel}}
-                </div>
-              </div>
-
-              <div class="text-right" *ngIf="label?.hasMore">
-                More…
-              </div>
-            </div>
-
-          </mat-panel-title>
-
-
-          <mat-panel-title *ngIf="item.panelOpenState" class="main d-flex flex-column">
-            <!-- Header -->
-            <div class="d-flex font-lg text-gray-400">
-
-              <!-- Class info -->
-              <div class="gv-grow-1 gv-pointer  d-flex  justify-content-start'">
-                <div class="align-self-center">
-                  <i class="text-gray-400" class="gv-entity-color fa fa-star-o"></i>
-                  {{(t.showControl$ | async)?.targetClassLabel}}
-                </div>
-              </div>
-
-              <!-- Buttons -->
-              <div class="btn-group" role="group" aria-label="Basic example">
-                <ng-content select="[buttons]"></ng-content>
-                <!-- <button type="button" class="btn btn-link-gray" title="Minimize">
-                  <i class="fa fa-compress"></i>
-                </button> -->
-              </div>
-            </div>
-
-          </mat-panel-title>
-
-
-        </mat-expansion-panel-header>
-        <!-- Role Labels -->
-        <div class="gv-grow-1 mt-3" *ngFor="let p of item?.properties; let i = index">
-          <div class="text-muted font-xs">
-            {{p?.listDefinition?.label}}
-          </div>
-          <div *ngFor="let jtem of p?.items">
-            <div *ngIf="jtem.target === 'appellation' || jtem.target !== 'language'">
-              {{jtem?.label}}
-            </div>
-            <div *ngIf="jtem.target === 'time-span'">
-              <!-- {{getExTLabel(jtem?.exTimeLabel)}} -->
-            </div>
-            <div *ngIf="jtem.target === 'entity-preview'">
-              <gv-entity-preview [dragEnabled]="false" [preview]="jtem.preview"></gv-entity-preview>
-            </div>
-          </div>
-        </div>
-      </mat-expansion-panel>
-    </div>
-  </mat-accordion>
-</div>
-
-<div class="">
-<!--
-  <button [disabled]="!!selected.length" type="submit" class="btn btn-primary mr-2">Add selected</button>
-  <button type="submit" class="btn btn-primary mr-2" (click)="startCreateNewRole()">Create new</button> -->
+  <button [disabled]="(selectedCount$ | async) < 1" type="submit" class="btn btn-primary mr-2" (click)="add()">Add
+    selected ({{(selectedCount$ | async) || 0}} )</button>
+  <button type="submit" class="btn btn-primary mr-2"
+    (click)="t.showControl$.next(null); t.showCreateRole$.next(listDefinition)">Create new</button>
   <button type="button" class="btn btn-link" (click)="t.showControl$.next(null)">Cancel</button>
-
 </div>

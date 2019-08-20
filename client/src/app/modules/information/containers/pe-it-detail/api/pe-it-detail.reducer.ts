@@ -16,26 +16,28 @@ export function peItDetailReducer(state: PeItDetail = INITIAL_STATE, a: Action):
     /*****************************************************
     * Reducers to manage entity editor
     *****************************************************/
-    case PeItDetailAPIActions.LOAD:
-      state = {
-        loading: true,
-      };
-      break;
-
-    case PeItDetailAPIActions.LOAD_SUCCEEDED:
+    case PeItDetailAPIActions.INIT:
       state = {
         ...state,
-        ...action.meta.peItDetail,
+        ...action.meta.config,
         loading: false,
       };
       break;
 
-    case PeItDetailAPIActions.LOAD_FAILED:
-      state = {
-        ...state,
-        loading: false,
-      };
-      break;
+    // case PeItDetailAPIActions.LOAD_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     ...action.meta.peItDetail,
+    //     loading: false,
+    //   };
+    //   break;
+
+    // case PeItDetailAPIActions.LOAD_FAILED:
+    //   state = {
+    //     ...state,
+    //     loading: false,
+    //   };
+    //   break;
 
 
 

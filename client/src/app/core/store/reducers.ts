@@ -48,6 +48,7 @@ export const pendingRequestReducer = (state = {}, action) => {
   return state;
 }
 
+
 export const resolvedRequestReducer = (state = {}, action) => {
 
   if (action && action.meta && action.meta.removePending) {
@@ -60,24 +61,35 @@ export const resolvedRequestReducer = (state = {}, action) => {
   return state;
 }
 
+export const cleanupResolved = (state = {}, action) => {
+
+  if (action && action.type === 'CLEAN_UP_RESOLVED') {
+    const uuid = action.meta.uuid;
+    state = {
+      ...omit([uuid], state)
+    }
+  }
+  return state;
+}
+
 export const rootReducer = composeReducers(
   defaultFormReducer(),
   combineReducers({
     account: createAccountReducer(),
     backoffice: backofficeReducer,
     loadingBar: loadingBarReducer,
-    projects: createProjectsReducer(),
-    sys: createSysReducer(),
-    dfh: createDfhReducer(),
     activeProject: createActiveProjectReducer(),
     routes: routerReducer,
     information: informationReducer,
     sources: sourceListReducer,
     sandboxState: sandboxStateReducer,
+    projects: createProjectsReducer(),
+    sys: createSysReducer(),
+    dfh: createDfhReducer(),
     inf: createInfReducer(),
     dat: createDatReducer(),
     pro: createProReducer(),
     pending: pendingRequestReducer,
-    resolved: resolvedRequestReducer,
+    resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
   })
 )

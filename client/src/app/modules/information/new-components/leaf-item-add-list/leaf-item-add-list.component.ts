@@ -5,8 +5,9 @@ import { first, takeUntil, map } from '../../../../../../node_modules/rxjs/opera
 import { ActiveProjectService, InfRole, InfTextProperty } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ItemList, ListDefinition, Item, RoleItemBasics, TextPropertyItem } from '../properties-tree/properties-tree.models';
-import { PropertyTreeService } from '../properties-tree/properties-tree.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { MatSelectionList, MatListOption, MatTableDataSource } from '../../../../../../node_modules/@angular/material';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
 
 @Component({
@@ -40,12 +41,13 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   constructor(
     public p: ActiveProjectService,
-    public t: PropertyTreeService,
+    public i: InformationPipesService,
+    public t: PropertiesTreeService,
     public inf: InfActions
   ) { }
 
   ngOnInit() {
-    this.items$ = this.t.pipeAlternativeList(this.listDefinition, this.pkEntity)
+    this.items$ = this.i.pipeAltList(this.listDefinition, this.pkEntity)
     this.itemsCount$ = this.items$.map(i => (i || []).length)
 
 

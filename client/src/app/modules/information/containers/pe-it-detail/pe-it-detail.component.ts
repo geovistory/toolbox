@@ -6,7 +6,7 @@ import { AddOption, ClassInstanceLabel, CollapsedExpanded, PeItDetail, PropertyF
 import { TextPropertyField } from 'app/core/state/models/text-property-field';
 import { RootEpics } from 'app/core/store/epics';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, Subject, of } from 'rxjs';
 import { filter, first, takeUntil, map, distinctUntilChanged, tap } from 'rxjs/operators';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { EntityBase } from '../../entity/entity.base';
@@ -18,6 +18,10 @@ import { peItDetailReducer } from './api/pe-it-detail.reducer';
 import { pathOr } from 'ramda';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -32,8 +36,10 @@ import { MentioningListOf } from 'app/modules/annotation/components/mentioning-l
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeItDetailComponent extends EntityBase implements AfterViewInit, SubstoreComponent, TabLayoutComponentInterface {
+export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponentInterface {
+  destroy$ = new Subject<boolean>();
 
+  @Input() basePath: string[];
 
   @Output() remove = new EventEmitter<number>();
   @Output() onLabelChange = new EventEmitter<ClassInstanceLabel>();
@@ -50,7 +56,8 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
   @Input() pkEntity: number;
   @Input() tab: Tab;
 
-  @select() pkEntity$: Observable<number>;
+  // Visibility of header in left area
+  @select() showHeader$: Observable<boolean>;
 
   // Visibility of right area
   @select() showRightArea$: Observable<boolean>;
@@ -88,59 +95,60 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
   activeTabIndex$: Observable<number>;
   tabs$: Observable<string[]>;
 
-  // Visibility of container elements, set by function below
-  // showRightPanel$: Observable<boolean>;
-  // showLeftPanel$: Observable<boolean>;
 
-  // array of pks of loading leaf-pe-its
-  pksOfloadingLeafPeIts: number[] = [];
 
   uiContext: UiContext;
 
-  /**
-   * Class properties that filled by a store observable
-   */
-  peItState: PeItDetail;
-
-  // if this variable is set, only that child is shown, all other elements are hidden
-  isolatedChild: string;
-
-
-  sourcePeIt$: Observable<InfPersistentItem>
-  title$: Observable<string>
+  // sourcePeIt$: Observable<InfPersistentItem>
+  title$: Observable<string>;
+  classLabel$: Observable<string>;
+  tabTitle$: Observable<string>;
+  fkClass$: Observable<number>;
+  pkEntity$: Observable<number>
 
   t: TabLayout;
   listOf: MentioningListOf;
 
   constructor(
-    protected rootEpics: RootEpics,
-    protected epics: PeItDetailAPIEpics,
+    // protected rootEpics: RootEpics,
+    // protected epics: PeItDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     protected actions: PeItDetailAPIActions,
-    private p: ActiveProjectService,
-    protected fb: FormBuilder,
-    protected entityEpics: EntityAPIEpics,
+    // protected fb: FormBuilder,
+    // protected entityEpics: EntityAPIEpics,
+    private matDialog: MatDialog,
     public ref: ChangeDetectorRef,
+    private p: ActiveProjectService,
+    private i: InformationPipesService,
+    private b: InformationBasicPipesService,
     private inf: InfActions
   ) {
-    super(ngRedux, fb, rootEpics, entityEpics);
-    console.log('PeItEditableComponent')
+    // super(ngRedux, fb, rootEpics, entityEpics);
+    // console.log('PeItEditableComponent')
 
   }
 
-  initStore(): void {
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItDetailReducer);
+  // initStore(): void {
 
-  }
+  // }
 
 
   getBasePath = () => this.basePath;
 
 
-  init() {
+  ngOnInit() {
     this.basePath = this.getBasePath();
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItDetailReducer);
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
+    this.t.setTabLoading(true)
+
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.inf.persistent_item.loadNestedObject(pkProject, this.pkEntity).resolved$
+        .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
+          this.t.setTabLoading(false)
+        })
+    })
 
     this.showRightArea$.pipe(first(b => b !== undefined), takeUntil(this.destroy$)).subscribe((b) => {
       this.t.setShowRightArea(b)
@@ -148,38 +156,21 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
 
     this.listOf = { pkEntity: this.pkEntity, type: 'entity' }
 
-    this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    combineLatest(
-      this.p.pkProject$,
-      this.p.crm$
-    ).pipe(first((x => !x.includes(undefined) && !!this.tab)), takeUntil(this.destroy$))
-      .subscribe(([pkProject, crm]) => {
+    this.localStore.dispatch(this.actions.init(this.tab.data.peItDetailConfig.peItDetail))
 
-        this.inf.persistent_item.loadNestedObject(pkProject, this.pkEntity)
-
-        // TDOD: Delete this and the load epic as well
-        this.localStore.dispatch(this.actions.load(
-          this.pkEntity,
-          pkProject,
-          this.tab.data.peItDetailConfig.peItDetail,
-          this.tab.data.peItDetailConfig.stateSettings,
-          crm
-        ))
+    this.title$ = this.i.pipeLabelOfEntity(this.pkEntity)
+    this.fkClass$ = this.b.pipeClassOfEntity(this.pkEntity)
+    this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
+    this.tabTitle$ = combineLatest(this.classLabel$, this.title$).pipe(
+      map(([classLabel, entityLabel]) => classLabel + ' ' + entityLabel)
+    )
+    this.tabTitle$.pipe(takeUntil(this.destroy$))
+      .subscribe((tabTitle) => {
+        this.t.setTabTitle(tabTitle)
       })
 
-    this.title$ = this._fields$.pipe(
-      map(fields => U.labelFromFieldList(fields, { path: [], fieldsMax: 1, rolesMax: 1 })),
-      map(label => pathOr('', ['parts', '0', 'roleLabels', '0', 'string'], label)),
-      distinctUntilChanged((a, b) => a === b),
-    )
-    this.title$.pipe(takeUntil(this.destroy$)).subscribe((label) => {
-      this.t.setTabTitle(label)
-    })
-
-
-    this.initPeItSubscriptions()
-
+    this.pkEntity$ = of(this.pkEntity)
 
     this.activeTab$ = combineLatest(this.showMap$, this.showSectionList$, this.showMentionedEntities$, this.showSources$)
       .pipe(
@@ -197,89 +188,31 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
       )
 
     this.activeTabIndex$ = combineLatest(this.activeTab$, this.tabs$)
-    .pipe(
-      map(([activeTab, tabs]) => tabs.indexOf(activeTab))
-    )
+      .pipe(
+        map(([activeTab, tabs]) => tabs.indexOf(activeTab))
+      )
   }
 
+  openRemoveDialog() {
+    this.tabTitle$.pipe(first(), takeUntil(this.destroy$)).subscribe(tabTitle => {
 
-  /**
-   * init subscriptions to observables in the store
-   * subscribe all here, so it is only subscribed once on init and not multiple times on user interactions
-   */
-  initPeItSubscriptions() {
-    this.localStore.select<PeItDetail>('').pipe(
-      filter(d => (!!d)),
-      takeUntil(this.destroy$)).subscribe(d => {
-        this.peItState = d;
-        this.isolatedChild = U.extractFieldKeyForIsolation(d._fields);
-      })
-  }
-
-  ngAfterViewInit(): void {
-    // setTimeout(() => {
-    //   this.afterViewInit = true;
-    // }, 2000)
-  }
-
-  addOptionSelected($event) {
-
-    const o: AddOption = $event.item;
-
-    // if this option is already added
-    if (o.added) {
-
-      this.stopSelectProperty();
-
-    } else {
-
-      if (o.uiElement.propertyFieldKey) {
-
-        // if this is a role set
-
-        // prepare the PropertyField
-
-        const newPropertyField = {
-          ...new PropertyField(this.classConfig.propertyFields[o.uiElement.propertyFieldKey]),
-          toggle: 'expanded' as CollapsedExpanded,
-          rolesNotInProjectLoading: true,
-          roleStatesInOtherProjectsVisible: false,
-          _property_field_form: new PropertyFieldForm()
-        }
-
-        this.addPropertyField(newPropertyField, undefined)
-
-      } else if (o.uiElement.fk_class_field) {
-
-        const crm = this.ngRedux.getState().activeProject.crm;
-        const fieldKey = o.uiElement.propSetKey;
-        let field;
-
-        switch (crm.fieldList[fieldKey].type) {
-
-          case 'TextPropertyField':
-
-            const fkClassField = crm.fieldList[fieldKey].fkClassField;
-            field = new TextPropertyField({
-              textPropertyDetailList: {},
-              fkClassField,
-              pkUiContext: this.uiContext.pk_entity,
-              createOrAdd: {}
-            })
-
-            break;
-        }
-
-        // if this is a class field
-        this.addPropSet(o.uiElement.propSetKey, field)
+      const data: ConfirmDialogData = {
+        noBtnText: 'Cancel',
+        yesBtnText: 'Remove',
+        yesBtnColor: 'warn',
+        title: 'Remove ' + tabTitle,
+        paragraphs: ['Are you sure?'],
 
       }
+      const dialog = this.matDialog.open(ConfirmDialogComponent, { data })
+      dialog.afterClosed().pipe(first(), takeUntil(this.destroy$)).subscribe(confirmed => {
+        if (confirmed) this.onRemove()
+      })
 
-    }
-
+    })
   }
 
-  rightTabIndexChange(i:number){
+  rightTabIndexChange(i: number) {
     this.tabs$.pipe(first()).subscribe(tabs => {
       this.show(tabs[i]);
     })
@@ -301,7 +234,7 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
 
   onRemove = () => {
     combineLatest(
-      this.p.inf$.persistent_item$.by_pk_entity$.key(this.peItState.pkEntity),
+      this.p.inf$.persistent_item$.by_pk_entity$.key(this.pkEntity),
       this.p.pkProject$
     )
       .pipe(first(), takeUntil(this.destroy$)).subscribe(([peIt, pkProject]) => {
@@ -311,11 +244,9 @@ export class PeItDetailComponent extends EntityBase implements AfterViewInit, Su
       })
   }
 
-  onAnnotate() {
-    if (this.localStore.getState().showMentionedEntities === false) {
-      this.toggle('showMentionedEntities');
-    }
-    this.localStore.dispatch(this.actions.startCreateMentioning())
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
 }

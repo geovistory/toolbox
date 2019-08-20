@@ -1,6 +1,6 @@
 /* Replace with your SQL commands */
 CREATE TABLE projects.property_label (
-  pk_entity serial PRIMARY KEY,
+  pk_entity  integer NOT NULL DEFAULT nextval('projects.entity_pk_entity_seq'::regclass),
   label text,
   fk_project int,
   fk_language int,
@@ -11,7 +11,7 @@ CREATE TABLE projects.property_label (
   FOREIGN KEY (fk_project) REFERENCES projects.project (pk_entity),
   FOREIGN KEY (fk_domain_class) REFERENCES data_for_history.class (dfh_pk_class),
   FOREIGN KEY (fk_range_class) REFERENCES data_for_history.class (dfh_pk_class),
-  FOREIGN KEY (fk_property) REFERENCES data_for_history.property (dfh_pk_property),
+--  FOREIGN KEY (fk_property) REFERENCES data_for_history.property (dfh_pk_property),
   FOREIGN KEY (fk_system_type) REFERENCES system.system_type (pk_entity),
   FOREIGN KEY (fk_language) REFERENCES information.language (pk_entity)
 )

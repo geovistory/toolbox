@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, ViewChild } from '@angular/core';
 import { EntityPreview, ActiveProjectService } from 'app/core';
+import { MatMenuTrigger } from '../../../../../node_modules/@angular/material';
 
 @Component({
   selector: 'gv-entity-preview',
@@ -18,7 +19,7 @@ export class EntityPreviewComponent implements OnInit {
 
   }
 
-  click(){
-    if(this.openTabOnClick) this.p.addEntityTab(this.preview)
+  openInNewTab(){
+    this.p.addEntityTab(this.preview)
   }
 }

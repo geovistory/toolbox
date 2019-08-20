@@ -2,8 +2,7 @@
 
 <mat-dialog-content>
 
-  <button mat-button *ngFor="let item of (options$ | async)" (click)="select(item.pkClass)"> {{item.pkClass}}:
-    {{item.label}} </button>
+  <button mat-button *ngFor="let item of (options$ | async)" (click)="select(item.pkClass)"> {{item.label}} </button>
 
 </mat-dialog-content>
 

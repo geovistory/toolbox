@@ -1,8 +1,8 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfAppellation,
   InfTemporalEntity,
+  InfAppellation,
   WarEntityPreview,
   InfLanguage,
   InfPersistentItem,
@@ -26,6 +26,7 @@ export interface InfRoleInterface {
   "tmsp_last_modification"?: string;
   "sys_period"?: string;
   entity_version_project_rels?: ProInfoProjRel[];
+  range_temporal_entity?: InfTemporalEntity;
   appellation?: InfAppellation;
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
@@ -51,6 +52,7 @@ export class InfRole implements InfRoleInterface {
   "tmsp_last_modification": string;
   "sys_period": string;
   entity_version_project_rels?: ProInfoProjRel[];
+  range_temporal_entity?: InfTemporalEntity;
   appellation?: InfAppellation;
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
@@ -153,6 +155,14 @@ export class InfRole implements InfRoleInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
+        },
+        range_temporal_entity: {
+          name: 'range_temporal_entity',
+          type: 'InfTemporalEntity',
+          model: 'InfTemporalEntity',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
         },
         appellation: {
           name: 'appellation',

@@ -1,7 +1,7 @@
-import { EntityPreview, InfRole, ProInfoProjRel, ActiveProjectService, InfTimePrimitive, TimePrimitive, InfTextProperty, ProClassFieldConfig, InfEntityAssociation, InfTemporalEntity } from "app/core";
 import { NestedTreeControl } from "@angular/cdk/tree";
+import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from "app/core";
 import { Observable } from "rxjs";
-import { PropertyTreeService } from "./properties-tree.service";
+import { PropertiesTreeService } from "./properties-tree.service";
 
 export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity';
 
@@ -17,6 +17,7 @@ export interface ClassFieldConfig extends ProClassFieldConfig {
 }
 
 export interface FieldDefinition {
+  listType: ListType
   label: string;
   ontoInfoUrl: string
   ontoInfoLabel: string
@@ -36,7 +37,9 @@ export interface ListDefinition {
   pkProperty: number
   fkPropertyOfOrigin: number // TODO remove after pkProperty Change
   isOutgoing: boolean
-  isIdentiyDefining: boolean
+  isIdentityDefining: boolean
+  sourceClass: number
+
   targetClass: number
   targetClassLabel?: string
   targetMaxQuantity?: number
@@ -75,7 +78,7 @@ export interface TemporalEntityItem extends RoleItemBasics {
 }
 export interface TemporalEntityCellDefinition {
   fieldDefinition: FieldDefinition,
-  lists: TemporalEntityProperties[]
+  lists: EntityProperties[]
   cellValue: TemporalEntityCellValue
 }
 export interface TemporalEntityCellValue {
@@ -89,21 +92,22 @@ export interface EntityPreviewItem extends RoleItemBasics {
   preview: EntityPreview
 }
 
-export interface TemporalEntityProperties {
+export interface EntityProperties {
   listDefinition: ListDefinition,
-  items: AppellationItem[] | LanguageItem[] | EntityPreviewItem[] | TimeSpanItem[]
+  items: ItemList
 }
 
 export interface TextPropertyItem extends ItemBasics {
   textProperty: InfTextProperty;
+  language: InfLanguage
 }
 
 export interface TimeSpanItem {
   label: string
-  properties: TimeSpanProperties[]
+  properties: TimeSpanProperty[]
 }
 
-export interface TimeSpanProperties {
+export interface TimeSpanProperty {
   listDefinition: ListDefinition,
   items: TimePrimitiveItem[]
 }
@@ -122,7 +126,7 @@ export interface PropertyListComponentInterface {
 
   items$: Observable<ItemList>
   p: ActiveProjectService,
-  t: PropertyTreeService
+  t: PropertiesTreeService
 
 }
 
@@ -137,7 +141,7 @@ export interface AddListComponentInterface {
 
   items$: Observable<ItemList>
   p: ActiveProjectService,
-  t: PropertyTreeService
+  t: PropertiesTreeService
 
 }
 
