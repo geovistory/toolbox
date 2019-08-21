@@ -15,7 +15,7 @@ echo ''
 # if $DB_ENV = review and the recreation process is not skipped
 
 
-if [ $DB_ENV = 'review' ] && [ $RESTORE_DB = 'on' ]
+if [ $DB_ENV = 'review' ] && [ RESTORE_DB= 'on' ]
 then
   echo '================ Recreate database for review app ================'
   echo ''
