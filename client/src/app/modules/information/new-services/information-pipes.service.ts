@@ -204,7 +204,10 @@ export class InformationPipesService {
   @spyTag pipeListTemporalEntity<T>(listDefinition: ListDefinition, pkEntity: number, appContext: number, limit?: number, offset?: number): Observable<TemporalEntityItem[]> {
     // pipe the field definitions of the target class.
     // pipe the roles leading to the temporal entities
-    // for each of the temporal entities, use the field definitions to get the roles
+
+    // => once this is done
+    // for each of the roles get the project rel for the ord num
+    //
 
     return this.pipeListRoles(listDefinition, pkEntity).pipe(
       limitOffset(limit, offset),
