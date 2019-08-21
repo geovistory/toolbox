@@ -25,7 +25,7 @@ then
   echo ''
   echo '             ================ Step 2 ================'
   echo 'Drop all schemas of review database'
-  echo ''  
+  echo ''
   psql $review_db_url -f dropSchemas.sql
   echo ''
   echo '             ================ Step 3 ================'
@@ -33,8 +33,8 @@ then
   echo 'time pg_dump -Fc $GEOV_STAG_DATABASE_URL > dumpfile'
   time pg_dump  -Fc $GEOV_STAG_DATABASE_URL > dumpfile;
 
-  echo 'time pg_restore --no-owner  --clean -d $DATABASE_URL dumpfile;'
-  time pg_restore --no-owner  --clean -d $DATABASE_URL dumpfile;
+  echo 'time pg_restore -j 6 --no-owner  --clean -d $DATABASE_URL dumpfile;'
+  time pg_restore -j 6 --no-owner  --clean -d $DATABASE_URL dumpfile;
 
   echo 'rm -f dumpfile'
   rm -f dumpfile
