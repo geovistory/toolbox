@@ -1412,9 +1412,13 @@ module.exports = function (InfPersistentItem) {
     const connector = InfPersistentItem.dataSource.connector;
     connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);
+      if (result.length === 0) return cb(false, result)
 
-      const entities = result.find(row => row.model === 'geos').json_agg.map(pk => parseInt(pk));
-      const geoQuery = new PeItFlatObject(InfPersistentItem.app.models).createGeoQuery(pkProject, entities)
+      const geoPks = result.find(row => row.model === 'geos').json_agg;
+
+      if (!geoPks || geoPks.length === 0) return cb(false, result)
+
+      const geoQuery = new PeItFlatObject(InfPersistentItem.app.models).createGeoQuery(pkProject,  geoPks.map(pk => parseInt(pk)))
       connector.execute(geoQuery.sql, geoQuery.params, (err, geoResult) => {
         if (err) return cb(err);
         const final = {}
