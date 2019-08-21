@@ -33,7 +33,7 @@ then
   echo '             ================ Step 2 ================'
   echo 'Drop all schemas of review database'
   echo ''
-  psql $review_db_url -f dropSchemas.sql
+  psql $review_db_url -f deployment/dropSchemas.sql
   echo ''
   echo '             ================ Step 3 ================'
   echo 'dumping staging and use it to restore review using this cmds:'
