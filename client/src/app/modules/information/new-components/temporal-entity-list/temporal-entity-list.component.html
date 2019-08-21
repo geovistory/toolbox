@@ -1,4 +1,4 @@
-<div class="table-and-paginator-container mat-elevation-z4mx-2" *ngIf="itemsCount$ | async">
+<div class="table-and-paginator-container mat-elevation-z4mx-2" [hidden]="!((itemsCount$ | async) > 0)">
   <div class="table-container">
     <mat-divider></mat-divider>
     <table mat-table [dataSource]="table.dataSource">
