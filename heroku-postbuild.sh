@@ -9,12 +9,13 @@ fi
 
 echo '======================== Database Copy Script ======================'
 echo 'Current environment: DB_ENV="'$DB_ENV'"'
+echo 'Restore db: $RESTORE_DB="'$RESTORE_DB'" (expected values: "on", "off")'
 echo ''
 
 # if $DB_ENV = review and the recreation process is not skipped
 
 
-if [ $DB_ENV = 'review' ]
+if [ $DB_ENV = 'review' ] && [ $RESTORE_DB = 'on' ]
 then
   echo '================ Recreate database for review app ================'
   echo ''
@@ -40,8 +41,8 @@ then
   echo 'time pg_dump -Fc $GEOV_STAG_DATABASE_URL > dumpfile'
   time pg_dump  -Fc $GEOV_STAG_DATABASE_URL > dumpfile;
 
-  echo 'time pg_restore -j 6 --no-owner  --clean -d $DATABASE_URL dumpfile;'
-  time pg_restore -j 6 --no-owner  --clean -d $DATABASE_URL dumpfile;
+  echo 'time pg_restore -j 6 --no-owner -d $DATABASE_URL dumpfile;'
+  time pg_restore -j 6 --no-owner -d $DATABASE_URL dumpfile;
 
   echo 'rm -f dumpfile'
   rm -f dumpfile
