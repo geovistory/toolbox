@@ -138,24 +138,6 @@ export class InformationPipesService {
 
   }
 
-  /**
-   * Pipe the temporal entities connected to given entity by roles that are in the current project
-   */
-  @spyTag pipeListTemporalEntity<T>(listDefinition: ListDefinition, pkEntity: number, appContext: number, limit?: number, offset?: number): Observable<TemporalEntityItem[]> {
-
-    return this.pipeListRoles(listDefinition, pkEntity).pipe(
-      limitOffset(limit, offset),
-      switchMap((roles) => {
-        return combineLatest(roles.map((r, i) => this.pipeItemTemporalEntity(r, listDefinition, appContext)))
-          .pipe(
-            map(nodes => nodes
-              .filter(node => !!node)
-              .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
-            ),
-            startWith([]))
-      }))
-  }
-
 
   @spyTag pipeListLanguage<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<LanguageItem[]> {
 
@@ -216,7 +198,26 @@ export class InformationPipesService {
       ))
   }
 
+  /**
+   * Pipe the temporal entities connected to given entity by roles that are in the current project
+   */
+  @spyTag pipeListTemporalEntity<T>(listDefinition: ListDefinition, pkEntity: number, appContext: number, limit?: number, offset?: number): Observable<TemporalEntityItem[]> {
+    // pipe the field definitions of the target class.
+    // pipe the roles leading to the temporal entities
+    // for each of the temporal entities, use the field definitions to get the roles
 
+    return this.pipeListRoles(listDefinition, pkEntity).pipe(
+      limitOffset(limit, offset),
+      switchMap((roles) => {
+        return combineLatest(roles.map((r, i) => this.pipeItemTemporalEntity(r, listDefinition, appContext)))
+          .pipe(
+            map(nodes => nodes
+              .filter(node => !!node)
+              .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
+            ),
+            startWith([]))
+      }))
+  }
 
   /**
    * Pipe temporal entity item in the way it is defined by the active project
