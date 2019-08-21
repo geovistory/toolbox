@@ -6,6 +6,7 @@ import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEve
 import { InputForCzml, MapLayerPipesService } from '../../new-services/map-layer-pipes.service';
 import { tag } from '../../../../../../node_modules/rxjs-spy/operators';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { cache, spyTag } from '../../../../shared';
 
 
 
@@ -98,44 +99,37 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe()
 
 
-    this.b.pipeNoCache(this.pkEntity).pipe(
+    // this.b.pipeRelatedTemporalEntities(25957).pipe(
+    //   takeUntil(this.destroy$),
+    //   tag('c/pe-it-layer/czmls')
+    // ).subscribe()
+
+    // this.b.pipeRelatedTemporalEntities(25957).pipe(
+    //   takeUntil(this.destroy$),
+    //   tag('c/pe-it-layer/czmls')
+    // ).subscribe()
+
+    // this.b.pipeRelatedTemporalEntities(25957).pipe(
+    //   takeUntil(this.destroy$),
+    //   tag('c/pe-it-layer/czmls')
+    // ).subscribe()
+
+
+    this.pipeCzml(this.pkEntity).pipe(
       takeUntil(this.destroy$),
-      tag('c/pe-it-layer/czmls')
-    ).subscribe()
-
-    this.b.pipeNoCache(this.pkEntity).pipe(
-      takeUntil(this.destroy$),
-      tag('c/pe-it-layer/czmls')
-    ).subscribe()
-
-    // this.b.pipeRelatedTemporalEntities(25957).pipe(
-    //   takeUntil(this.destroy$),
-    //   tag('c/pe-it-layer/czmls')
-    // ).subscribe()
-
-    // this.b.pipeRelatedTemporalEntities(25957).pipe(
-    //   takeUntil(this.destroy$),
-    //   tag('c/pe-it-layer/czmls')
-    // ).subscribe()
-
-    // this.b.pipeRelatedTemporalEntities(25957).pipe(
-    //   takeUntil(this.destroy$),
-    //   tag('c/pe-it-layer/czmls')
-    // ).subscribe()
-
-
-    // this.m.pipeItem(this.pkEntity).pipe(
-    //   takeUntil(this.destroy$),
-    //   tag('c/pe-it-layer/czmls')
-    // ).subscribe((czmlPacket) => {
-    //   // this.layer.removeAll();
-    //   // czmlPacket.forEach(czmlPacket => this.update(czmlPacket))
-    //   // this.zoomToEntities()
-    // })
+    ).subscribe((czmlPacket) => {
+      this.layer.removeAll();
+      czmlPacket.forEach(czmlPacket => this.update(czmlPacket))
+      this.zoomToEntities()
+    })
 
 
   }
 
+
+  @cache @spyTag pipeCzml(pkEntity){
+    return this.m.pipeItem(pkEntity);
+  }
 
   // update or add a czml packet to the layer
   update(packet) {

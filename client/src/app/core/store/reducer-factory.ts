@@ -1,7 +1,8 @@
 import { U } from "app/core";
 import { FluxStandardAction } from "flux-standard-action";
-import { clone, indexBy, mergeDeepRight, omit, values } from "ramda";
+import { clone, indexBy, mergeDeepRight, omit, values, equals } from "ramda";
 import { combineReducers } from "redux";
+import { ByPk } from "./model";
 
 
 
@@ -73,6 +74,7 @@ export class ReducerFactory<Payload, Model> {
 
 
         case actionPrefix + '.' + modelName + '::LOAD_SUCCEEDED':
+          // If action state differs from
           state = facette(action, state, (innerState) => (
             {
               ...this.mergeItemsInState(config, innerState, action),
@@ -195,61 +197,193 @@ export class ReducerFactory<Payload, Model> {
     else return false;
   }
 
-  private deleteItemsFromState(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; }>, state: {}) {
-    const iKey = this.by(config.indexBy.keyInStore);
-    const keysToOmit = action.meta.items.map(item => config.indexBy.indexByFn(item));
-    state = {
-      ...state,
-      [iKey]: omit(keysToOmit, state[iKey])
-    };
-    if (config.groupBy && config.groupBy.length) {
-      config.groupBy.forEach(i => {
-        const gkey = this.by(i.keyInStore);
-        const g = {};
-        action.meta.items.forEach(item => {
-          try {
-            g[i.groupByFn(item)] = true;
-          }
-          catch (e) { }
-        });
-        const groupsToClean = Object.keys(g);
-        const gKey = clone(state[gkey]);
-        groupsToClean.forEach(group => {
-          gKey[group] = omit(keysToOmit, gKey[group]);
-          if (!Object.keys(gKey[group]).length)
-            delete gKey[group];
-        });
+  // private deleteItemsFromState(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; }>, state: {}) {
+  //   const iKey = this.by(config.indexBy.keyInStore);
+  //   const keysToOmit = action.meta.items.map(item => config.indexBy.indexByFn(item));
+  //   state = {
+  //     ...state,
+  //     [iKey]: omit(keysToOmit, state[iKey])
+  //   };
+  //   if (config.groupBy && config.groupBy.length) {
+  //     config.groupBy.forEach(i => {
+  //       const gkey = this.by(i.keyInStore);
+  //       const g = {};
+  //       action.meta.items.forEach(item => {
+  //         try {
+  //           g[i.groupByFn(item)] = true;
+  //         }
+  //         catch (e) { }
+  //       });
+  //       const groupsToClean = Object.keys(g);
+  //       const gKey = clone(state[gkey]);
+  //       groupsToClean.forEach(group => {
+  //         gKey[group] = omit(keysToOmit, gKey[group]);
+  //         if (!Object.keys(gKey[group]).length)
+  //           delete gKey[group];
+  //       });
+  //       state = {
+  //         ...state,
+  //         [gkey]: gKey
+  //       };
+  //     });
+  //   }
+  //   return state;
+  // }
+
+
+  deleteItemsFromState(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; }>, state) {
+    const items = action.meta.items;
+    // let state = {}
+    const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
+    const groups = groupBys.map(i => ({
+      groupIndexKey: this.by(i.keyInStore),
+      groupByFn: i.groupByFn,
+    }))
+    const mainIndexKey = this.by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
+
+    items.forEach((removedItem) => {
+      // get path segments of new item
+      const itemKey = config.indexBy.indexByFn(removedItem); // second segment e.g. '807060'
+
+      // get old item, if exists
+      let oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+      // Q: Does the item exists?
+      if (oldItem) {
+        // A: Yes. use old item does exist itemToSet
+
+        // remove the removedItem at path in main index
         state = {
           ...state,
-          [gkey]: gKey
-        };
-      });
+          [mainIndexKey]: {
+            ...omit([itemKey], state[mainIndexKey]),
+          }
+        }
+
+        // put the removedItem at path in the group index
+        groups.forEach(g => {
+          const groupKey = this.getGroupKeyOfItem(g.groupByFn, removedItem)
+          state = {
+            ...state,
+            [g.groupIndexKey]: {
+              ...state[g.groupIndexKey],
+              [groupKey]: {
+                ...omit([itemKey], (state[g.groupIndexKey] || {})[groupKey])
+              }
+            }
+          }
+        })
+      }
+
+
+    })
+
+    // cleanup main index
+    if (Object.keys(state[mainIndexKey]).length < 1) {
+      state = { ...omit([mainIndexKey], state) }
     }
+    // cleanup group indices
+    groups.forEach(g => {
+
+      // cleanup groups in group index
+      Object.keys(state[g.groupIndexKey]).forEach(groupKey => {
+
+        if (Object.keys(state[g.groupIndexKey][groupKey]).length < 1) {
+          state = {
+            ...state,
+            [g.groupIndexKey]: omit([groupKey], state[g.groupIndexKey])
+          }
+        }
+      })
+
+      // cleanup group index
+      if (Object.keys(state[g.groupIndexKey]).length < 1) {
+        state = { ...omit([g.groupIndexKey], state) }
+      }
+    })
+
     return state;
   }
+
 
   /**
    * This function is there to merge new items in the store including its indexes
    *
    * It bundles the logic for storing the results of a find, update or insert requests
    */
-  private mergeItemsInState(config: ReducerConfig, state: {}, action: FluxStandardAction<Payload, { items: Model[]; }>) {
-    const key = this.by(config.indexBy.keyInStore);
-    state = {
-      ...state,
-      [key]: mergeDeepRight(state[key], indexBy(config.indexBy.indexByFn, action.meta.items)),
-    };
-    if (config.groupBy && config.groupBy.length) {
-      config.groupBy.forEach(i => {
-        const key = this.by(i.keyInStore);
+  // private mergeItemsInState(config: ReducerConfig, state: {}, action: FluxStandardAction<Payload, { items: Model[]; }>) {
+  //   const key = this.by(config.indexBy.keyInStore);
+  //   state = {
+  //     ...state,
+  //     [key]: mergeDeepRight(state[key], indexBy(config.indexBy.indexByFn, action.meta.items)),
+  //   };
+  //   if (config.groupBy && config.groupBy.length) {
+  //     config.groupBy.forEach(i => {
+  //       const key = this.by(i.keyInStore);
+  //       state = {
+  //         ...state,
+  //         [key]: mergeDeepRight(state[key], this.groupBy(action.meta.items, i.groupByFn, config.indexBy.indexByFn)),
+  //       };
+  //     });
+  //   }
+  //   return state;
+  // }
+
+  mergeItemsInState(config: ReducerConfig, state, action: FluxStandardAction<Payload, { items: Model[]; }>) {
+    const items = action.meta.items;
+    // let state = {}
+    const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
+    const groups = groupBys.map(i => ({
+      groupIndexKey: this.by(i.keyInStore),
+      groupByFn: i.groupByFn,
+      // group: this.groupBy(action.meta.items, i.groupByFn, config.indexBy.indexByFn)
+    }))
+    items.forEach((newItem) => {
+      // get path segments of new item
+      const mainIndexKey = this.by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
+      const itemKey = config.indexBy.indexByFn(newItem); // second segment e.g. '807060'
+
+      // get old item, if exists
+      let oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+      let itemToSet;
+      // Q: Does the item exists, and is it deeply-equal to the new item?
+      if (oldItem && equals(newItem, oldItem)) {
+        // A: Yes. use old item as itemToSet
+        itemToSet = oldItem;
+      }
+      else {
+        // A: No. use new item as itemToSet
+        itemToSet = newItem;
+
+        // put the itemToSet at path in main index
         state = {
           ...state,
-          [key]: mergeDeepRight(state[key], this.groupBy(action.meta.items, i.groupByFn, config.indexBy.indexByFn)),
-        };
-      });
-    }
+          [mainIndexKey]: {
+            ...state[mainIndexKey],
+            [itemKey]: itemToSet
+          }
+        }
+
+        // put the itemToSet at path in the group index
+        groups.forEach(g => {
+          const groupKey = this.getGroupKeyOfItem(g.groupByFn, itemToSet)
+          state = {
+            ...state,
+            [g.groupIndexKey]: {
+              ...state[g.groupIndexKey],
+              [groupKey]: {
+                ...(state[g.groupIndexKey] || {})[groupKey],
+                [itemKey]: itemToSet
+              }
+            }
+          }
+        })
+      }
+
+
+    })
     return state;
   }
+
 
   /**
    * Creates object where the key returned by the configured indexByFn
@@ -271,11 +405,8 @@ export class ReducerFactory<Payload, Model> {
   groupBy(items: any[], groupByFn: (item) => string, indexByFn: (item) => string) {
     const groups = {}
     items.forEach(item => {
-      let groupKey;
       // if the group by key is not possible to create, the item won't be added to the index
-      try {
-        groupKey = groupByFn(item);
-      } catch (error) { }
+      const groupKey = this.getGroupKeyOfItem(groupByFn, item);
 
       if (groupKey) {
         const indexKey = indexByFn(item);
@@ -285,4 +416,15 @@ export class ReducerFactory<Payload, Model> {
     return groups;
   }
 
+
+
+
+  private getGroupKeyOfItem(groupByFn: (item: any) => string, item: any) {
+    let groupKey
+    try {
+      groupKey = groupByFn(item);
+    }
+    catch (error) { }
+    return groupKey;
+  }
 }

@@ -6,6 +6,7 @@ import { mergeMap, filter, distinctUntilChanged, switchMap, auditTime } from 'rx
 import { infRoot, infDefinitions } from './inf.config';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { equals } from 'ramda';
+import { tag } from '../../../../node_modules/rxjs-spy/operators';
 
 class Selector {
   constructor(
@@ -26,7 +27,7 @@ class Selector {
           path = [infRoot, this.model, indexKey];
         }
         return this.ngRedux.select<ByPk<M>>(path)
-          // .pipe(auditTime(1))
+        // .pipe(auditTime(1))
       })
     )
 
@@ -41,7 +42,10 @@ class Selector {
             path = [infRoot, this.model, indexKey, x];
           }
           return this.ngRedux.select<M>(path)
-            // .pipe(auditTime(1))
+            .pipe(
+              // distinctUntilChanged<M>(equals),
+              tag(`InfSelector::key::${path}`)
+            )
         })
       )
 
@@ -49,6 +53,8 @@ class Selector {
 
     return { all$, key }
   }
+
+
 }
 
 class InfPersistentItemSelections extends Selector {

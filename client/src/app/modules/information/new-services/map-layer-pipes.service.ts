@@ -11,6 +11,7 @@ import { QueryPoint, GeoEntity, GeoPresence } from '../../visuals/components/map
 import { getTemporalDistribution } from 'app/shared/classes/statistic-helpers';
 import { CzmlPacketGenerator } from 'app/shared/classes/czml-packet-generator';
 import { InformationPipesService } from './information-pipes.service';
+import { cache, spyTag } from '../../../shared';
 export interface InputForCzml {
   teEnPk: number
   teEnTimeSpan: TimeSpan
@@ -42,94 +43,94 @@ export class MapLayerPipesService {
           }))
         ))
       )),
-      // switchMapOr([], (items) => {
+      switchMapOr([], (items) => {
 
-      //   const presences = items.filter(i => i.teEn.fk_class == DfhConfig.CLASS_PK_PRESENCE)
-      //   const others = items.filter(i => i.teEn.fk_class != DfhConfig.CLASS_PK_PRESENCE)
+        const presences = items.filter(i => i.teEn.fk_class == DfhConfig.CLASS_PK_PRESENCE)
+        const others = items.filter(i => i.teEn.fk_class != DfhConfig.CLASS_PK_PRESENCE)
 
-      //   const presences$ = presences.map(item => this.pipeInfPlaceOfPresence(item.teEn.pk_entity)
-      //     .pipe(
-      //       map(place => {
-      //         const i: InputForCzml = {
-      //           teEnPk: item.teEn.pk_entity,
-      //           teEnTimeSpan: item.timeSpan,
-      //           geoEntity: {
-      //             presences: [{
-      //               time_span: item.timeSpan,
-      //               was_at: {
-      //                 lat: place.lat,
-      //                 long: place.long
-      //               }
-      //             }],
-      //             entity_label: 'Ort',
-      //             class_label: 'GeoPlace',
-      //             entity_type: 'peIt',
-      //             fk_class: 2,
-      //             fk_project: undefined,
-      //             fk_type: undefined,
-      //             time_span: undefined,
-      //             type_label: undefined,
-      //             pk_entity: pkEntity,
-      //           },
-      //           label: 'Georeference'
-      //         }
-      //         return [i];
-      //       })
-      //     )
-      //   )
+        const presences$ = presences.map(item => this.pipeInfPlaceOfPresence(item.teEn.pk_entity)
+          .pipe(
+            map(place => {
+              const i: InputForCzml = {
+                teEnPk: item.teEn.pk_entity,
+                teEnTimeSpan: item.timeSpan,
+                geoEntity: {
+                  presences: [{
+                    time_span: item.timeSpan,
+                    was_at: {
+                      lat: place.lat,
+                      long: place.long
+                    }
+                  }],
+                  entity_label: 'Place',
+                  class_label: 'GeoPlace',
+                  entity_type: 'peIt',
+                  fk_class: 2,
+                  fk_project: undefined,
+                  fk_type: undefined,
+                  time_span: undefined,
+                  type_label: undefined,
+                  pk_entity: pkEntity,
+                },
+                label: 'Georeference'
+              }
+              return [i];
+            })
+          )
+        )
 
-      //   const others$ = others.map(item => this.pipeRelatedGeoEntity(item.teEn.pk_entity)
-      //     .pipe(
-      //       map(peIts => peIts.filter(peIt => peIt.pk_entity !== pkEntity)),
-      //       switchMapOr([], (peIts) => combineLatest(
-      //         peIts.map(peIt => combineLatest(
-      //           this.p.streamEntityPreview(peIt.pk_entity),
-      //           this.pipePresences(peIt.pk_entity).pipe(
-      //             switchMapOr([], geoPresences => combineLatest(
-      //               geoPresences.map((geoPresence) => combineLatest(
-      //                 this.pipeInfPlaceOfPresence(geoPresence.pk_entity).pipe(filter(x => !!x)),
-      //                 this.b.pipeTimeSpan(geoPresence.pk_entity)
-      //               ).pipe(
-      //                 map(([place, time_span]) => ({
-      //                   time_span, was_at: {
-      //                     lat: place.lat,
-      //                     long: place.long
-      //                   }
-      //                 } as GeoPresence))
-      //               ))
-      //             ))
-      //           )
-      //         ).pipe(
-      //           map(([entityPreview, presences]) => {
+        const others$ = others.map(item => this.pipeRelatedGeoEntity(item.teEn.pk_entity)
+          .pipe(
+            map(peIts => peIts.filter(peIt => peIt.pk_entity !== pkEntity)),
+            switchMapOr([], (peIts) => combineLatest(
+              peIts.map(peIt => combineLatest(
+                this.p.streamEntityPreview(peIt.pk_entity),
+                this.pipePresences(peIt.pk_entity).pipe(
+                  switchMapOr([], geoPresences => combineLatest(
+                    geoPresences.map((geoPresence) => combineLatest(
+                      this.pipeInfPlaceOfPresence(geoPresence.pk_entity).pipe(filter(x => !!x)),
+                      this.b.pipeTimeSpan(geoPresence.pk_entity)
+                    ).pipe(
+                      map(([place, time_span]) => ({
+                        time_span, was_at: {
+                          lat: place.lat,
+                          long: place.long
+                        }
+                      } as GeoPresence))
+                    ))
+                  ))
+                )
+              ).pipe(
+                map(([entityPreview, presences]) => {
 
-      //             const i: InputForCzml = {
-      //               geoEntity: {
-      //                 ...entityPreview,
-      //                 presences,
-      //               },
-      //               teEnPk: item.teEn.pk_entity,
-      //               teEnTimeSpan: item.timeSpan,
-      //               label: 'abc',
-      //             }
-      //             return i
-      //           })
-      //         )
-      //         )
-      //       ))
-      //     ))
+                  const i: InputForCzml = {
+                    geoEntity: {
+                      ...entityPreview,
+                      presences,
+                    },
+                    teEnPk: item.teEn.pk_entity,
+                    teEnTimeSpan: item.timeSpan,
+                    label: 'abc',
+                  }
+                  return i
+                })
+              )
+              )
+            ))
+          ))
 
-      //   return combineLatest(...presences$, ...others$).pipe(
-      //     map(items => flatten(items).filter((item: InputForCzml) => !!item && !!item.geoEntity && item.geoEntity.presences.length > 0)),
-      //   )
-      // }),
-      // this.pipeQueryPoints(),
-      // this.pipeCzmlPackets(false),
+        return combineLatest(...presences$, ...others$).pipe(
+          map(items => flatten(items).filter((item: InputForCzml) => !!item && !!item.geoEntity && item.geoEntity.presences.length > 0)),
+        )
+      }),
+      this.toQueryPoints(),
+      this.toCzmlPackets(false),
     )
   }
 
 
 
-  pipeCzmlPackets(timeDynamic = true) {
+  toCzmlPackets(timeDynamic = true) {
     return pipe(
       map((points: QueryPoint[]) => {
         let minVal = Number.POSITIVE_INFINITY;
@@ -160,7 +161,7 @@ export class MapLayerPipesService {
     )
   }
 
-  pipeQueryPoints() {
+  toQueryPoints() {
     return pipe(
       map((items: InputForCzml[]) => {
         let geoList: { [key: number]: QueryPoint } = {};
@@ -202,7 +203,7 @@ export class MapLayerPipesService {
   }
 
 
-  pipeRelatedGeoEntity(pkEntity: number): Observable<InfPersistentItem[]> {
+  @spyTag @cache pipeRelatedGeoEntity(pkEntity: number): Observable<InfPersistentItem[]> {
     return this.p.inf$.role$.by_fk_temporal_entity$.key(pkEntity).pipe(
       switchMapOr([], (roles) => combineLatest(
         values(roles).map(role => this.p.inf$.persistent_item$.by_pk_entity$.key(role.fk_entity).pipe(
@@ -217,7 +218,7 @@ export class MapLayerPipesService {
    * pipes presences of a persistent item
    * @param pkEntity the pk_entity of the persistent item (usually a Geographical Place or Built Work)
    */
-  pipePresences(pkEntity: number): Observable<InfTemporalEntity[]> {
+  @spyTag @cache pipePresences(pkEntity: number): Observable<InfTemporalEntity[]> {
     // Get the properties leading to presences
     return this.c.pipeInheritedPropertyPks(147)
       .pipe(
@@ -236,7 +237,7 @@ export class MapLayerPipesService {
    * pipes the place (geo coordinates) of a presence
    * @param pkEntity the pk_entity of the presence
    */
-  pipeInfPlaceOfPresence(pkEntity: number): Observable<InfPlace> {
+  @spyTag @cache pipeInfPlaceOfPresence(pkEntity: number): Observable<InfPlace> {
     return this.b.pipeOutgoingRoles(148, pkEntity).pipe(
       switchMapOr(null, (roles) => this.p.inf$.place$.by_pk_entity$.key(roles[0].fk_entity)),
     )

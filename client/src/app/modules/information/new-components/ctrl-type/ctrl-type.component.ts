@@ -2,7 +2,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldControl, MatMenuTrigger, MatSelectChange, MatSelect } from '@angular/material';
-import { Subject, Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { Subject, Observable, BehaviorSubject, combineLatest, iif } from 'rxjs';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { switchMap, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ClassAndTypeNode } from '../classes-and-types-select/classes-and-types-select.component';

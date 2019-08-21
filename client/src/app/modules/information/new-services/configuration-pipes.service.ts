@@ -7,6 +7,7 @@ import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from "rx
 import * as Config from "../../../../../../common/config/Config";
 import { ClassFieldConfig, FieldDefinition, ListDefinition, ListType } from "../new-components/properties-tree/properties-tree.models";
 import { InformationBasicPipesService } from "./information-basic-pipes.service";
+import { cache } from "../../../shared";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class ConfigurationPipesService {
   * TODO: once identity of fk_property is changed, so that dfh_class_field_config only contains fk_property of original properties
   *  - Simplify this function by removing the whole merge map part and taking just the values of the by_fk_class__fk_app_context$.key()
   */
-  pipeClassFieldConfigs(pkClass: number, appContext: number, limit?: number): Observable<ClassFieldConfig[]> {
+  @cache pipeClassFieldConfigs(pkClass: number, appContext: number, limit?: number): Observable<ClassFieldConfig[]> {
     return this.p.pro$.class_field_config$.by_fk_class__fk_app_context$.key(pkClass + '_' + appContext).pipe(
       switchMap(ds => combineLatest(values(ds).map(d => {
         if (!d.fk_property) return of({ ...d, fk_property_of_origin: undefined });
@@ -64,7 +65,7 @@ export class ConfigurationPipesService {
    * Todo: once the pk_property of inherited properties is gone
    * change this
    */
-  pipeEnabledInheritedPropertiesOfPropertyField(field: ClassFieldConfig): Observable<DfhPropertyView[]> {
+  @cache pipeEnabledInheritedPropertiesOfPropertyField(field: ClassFieldConfig): Observable<DfhPropertyView[]> {
     return combineLatest(field.property_is_outgoing ?
       this.p.dfh$.property_view$.by_dfh_has_domain__fk_property$.key(field.fk_class + '_' + field.fk_property_of_origin) :
       this.p.dfh$.property_view$.by_dfh_has_range__fk_property$.key(field.fk_class + '_' + field.fk_property_of_origin),
@@ -84,7 +85,7 @@ export class ConfigurationPipesService {
  * input: a property of origin
  * observable: a
  */
-  pipeInheritedPropertyPks(pkProperty: number): Observable<number[]> {
+  @cache pipeInheritedPropertyPks(pkProperty: number): Observable<number[]> {
     return this.p.dfh$.property_view$.by_fk_property$.key(pkProperty).pipe(
       filter(i => !!i),
       map((x) => Object.keys(x).map(k => parseInt(k)))
@@ -92,7 +93,7 @@ export class ConfigurationPipesService {
   }
 
 
-  pipeLabelOfClass(pkClass: number): Observable<string> {
+  @cache pipeLabelOfClass(pkClass: number): Observable<string> {
     return combineLatest(
       this.p.dfh$.class$.by_dfh_pk_class$.key(pkClass).pipe(
         map(c => (c ? c.dfh_standard_label : '')),
@@ -112,7 +113,7 @@ export class ConfigurationPipesService {
    * TODO: When changing identity of properties, add optional paramaters for domain and range classes
    *
    */
-  pipeLabelOfProperty(fkProperty: number, fkDomainClass: number, fkRangeClass: number, isOutgoing: boolean, singular: boolean): Observable<string> {
+  @cache pipeLabelOfProperty(fkProperty: number, fkDomainClass: number, fkRangeClass: number, isOutgoing: boolean, singular: boolean): Observable<string> {
     const system_type = isOutgoing ? (singular ? 180 : 181) : (singular ? 182 : 183)
     return combineLatest(
       this.pipeDefaultLabelsOfPropertyAndSystemType(fkProperty, fkDomainClass, fkRangeClass, system_type).pipe(
@@ -131,7 +132,7 @@ export class ConfigurationPipesService {
   }
 
 
-  pipeDefaultLabelsOfPropertyAndSystemType(fkProperty: number, fkRangeClass: number | null, fkDomainClass: number | null, system_type): Observable<ProPropertyLabel[]> {
+  @cache pipeDefaultLabelsOfPropertyAndSystemType(fkProperty: number, fkRangeClass: number | null, fkDomainClass: number | null, system_type): Observable<ProPropertyLabel[]> {
     return this.p.pro$.property_label$.by_fk_project__fk_property__fk_domain_class__fk_range_class__fk_system_type$
       .key([Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT, fkProperty, fkRangeClass, fkDomainClass, system_type])
       .pipe(
@@ -141,7 +142,7 @@ export class ConfigurationPipesService {
   }
 
 
-  pipeDefaultLabelsOfProperty(fkProperty: number, fkRangeClass: number | null, fkDomainClass: number | null): Observable<ProPropertyLabel[]> {
+  @cache pipeDefaultLabelsOfProperty(fkProperty: number, fkRangeClass: number | null, fkDomainClass: number | null): Observable<ProPropertyLabel[]> {
     return this.p.pro$.property_label$.by_fk_project__fk_property__fk_domain_class__fk_range_class$
       .key([Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT, fkProperty, fkRangeClass, fkDomainClass])
       .pipe(
@@ -150,7 +151,7 @@ export class ConfigurationPipesService {
       )
   }
 
-  pipeProjectLabelsOfProperty(fkProperty: number, fkRangeClass: number | null, fkDomainClass: number | null): Observable<ProPropertyLabel[]> {
+  @cache pipeProjectLabelsOfProperty(fkProperty: number, fkRangeClass: number | null, fkDomainClass: number | null): Observable<ProPropertyLabel[]> {
     return this.p.pkProject$.pipe(
       switchMap(pkProject => this.p.pro$.property_label$.by_fk_project__fk_property__fk_domain_class__fk_range_class$
         .key([pkProject, fkProperty, fkRangeClass, fkDomainClass])
@@ -165,7 +166,7 @@ export class ConfigurationPipesService {
   /**
    * pipes the dfh_standard_label of the property with the given pk_property (of origin)
    */
-  pipeDfhProperyStandardLabel(fkOriginalProperty): Observable<string> {
+  @cache pipeDfhProperyStandardLabel(fkOriginalProperty): Observable<string> {
     return this.p.dfh$.property_view$.by_fk_property$.key(fkOriginalProperty).pipe(
       filter(i => !!i),
       map(p => values(p)[0].dfh_standard_label)
@@ -173,7 +174,7 @@ export class ConfigurationPipesService {
   }
 
 
-  pipeListTypeOfClass(targetClassPk: number): Observable<ListType> {
+  @cache pipeListTypeOfClass(targetClassPk: number): Observable<ListType> {
     return this.p.dfh$.class$.by_dfh_pk_class$.key(targetClassPk).pipe(
       filter(i => !!i),
       map(klass => {
@@ -205,7 +206,7 @@ export class ConfigurationPipesService {
    * returns an object where the keys are the pks of the Classes
    * used by the given project
    */
-  pipeSelectedClassesInProject(): Observable<{ [key: string]: any }> {
+  @cache pipeSelectedClassesInProject(): Observable<{ [key: string]: any }> {
     return combineLatest(
       this.pipeClassesEnabledInEntities(),
       this.pipeClassesRequiredBySources()
@@ -215,12 +216,12 @@ export class ConfigurationPipesService {
     )
   }
 
-  pipeClassesRequiredBySources() {
+  @cache pipeClassesRequiredBySources() {
     return this.p.sys$.system_relevant_class$.by_required$.key('true')
       .pipe(map(c => values(c).map(k => k.fk_class)))
   }
 
-  pipeClassesEnabledInEntities() {
+  @cache pipeClassesEnabledInEntities() {
     return this.p.pkProject$.switchMap(pkProject => this.p.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
       .pipe(
         switchMap((cs) => combineLatest(
@@ -233,7 +234,7 @@ export class ConfigurationPipesService {
     )
   }
 
-  pipeListDefinitionsOfField(field: ClassFieldConfig): Observable<ListDefinition[]> {
+  @cache pipeListDefinitionsOfField(field: ClassFieldConfig): Observable<ListDefinition[]> {
     if (field.fk_property) {
       const o = field.property_is_outgoing;
       return combineLatest(
@@ -344,7 +345,7 @@ export class ConfigurationPipesService {
   /**
    * Pipe the fields of given class for given app context
    */
-  pipeFieldDefinitions(pkClass: number, appContext: number): Observable<FieldDefinition[]> {
+  @cache pipeFieldDefinitions(pkClass: number, appContext: number): Observable<FieldDefinition[]> {
     return this.pipeClassFieldConfigs(pkClass, appContext).pipe(
       switchMap(fields => combineLatest(fields.map(field => this.pipeFieldDefinition(field))))
     )
@@ -353,7 +354,7 @@ export class ConfigurationPipesService {
   /**
    * Pipe the field definition with label, links to ontoMe, max quantity etc for given class-field-config
    */
-  pipeFieldDefinition(field: ClassFieldConfig): Observable<FieldDefinition> {
+  @cache pipeFieldDefinition(field: ClassFieldConfig): Observable<FieldDefinition> {
     if (field.fk_class_field) {
       const classField = this.getClassFieldListDefinition(field.fk_class_field);
       return of({ ...classField, listDefinitions: [classField], fkPropertyOfOrigin: undefined })
@@ -405,7 +406,7 @@ export class ConfigurationPipesService {
    * TODO this function will become superflous, once identity of properties is changed. This will be enough:
    * - this.p.dfh$.property_view$.by_dfh_pk_property$.key(field.fk_property_of_origin)
    */
-  pipePropertyOfOriginOrInherited(fkOropertyOfOrigin: number, fkProperty: number): Observable<DfhPropertyView> {
+  @cache pipePropertyOfOriginOrInherited(fkOropertyOfOrigin: number, fkProperty: number): Observable<DfhPropertyView> {
     return this.p.dfh$.property_view$.by_fk_property$.key(fkOropertyOfOrigin)
       .pipe(
         filter(i => !!i),
@@ -421,7 +422,7 @@ export class ConfigurationPipesService {
   /**
    *
    */
-  pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<{ typedClass: number, typeClass: number }[]> {
+  @cache pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<{ typedClass: number, typeClass: number }[]> {
     let classesByPk$: Observable<number[]>;
 
     if (enabledIn === 'sources') {
@@ -448,7 +449,7 @@ export class ConfigurationPipesService {
     )
   }
 
-  pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
+  @cache pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
     return this.p.sys$.class_has_type_property$.by_pk_typed_class$.key(pkTypedClass).pipe(
       map(x => {
         if (!x || Object.keys(x).length < 1) return undefined;
@@ -458,7 +459,7 @@ export class ConfigurationPipesService {
   }
 
 
-  pipeTypePropertyOfTypedClass(pkTypedClass): Observable<number> {
+  @cache pipeTypePropertyOfTypedClass(pkTypedClass): Observable<number> {
     return this.p.sys$.class_has_type_property$.by_pk_typed_class$.key(pkTypedClass).pipe(
       map(x => {
         if (!x || Object.keys(x).length < 1) return undefined;
