@@ -14,7 +14,11 @@ export class TimePrimitivePipe implements PipeTransform {
 
     const tp = new TimePrimitive(timePrimitive)
 
+    if (!tp) return null;
+
     const dt = tp.getDateTime();
+
+    if (!dt) return null;
 
     // This is a hack for dataPipe, because datePipe subtracts 1 year from BC
     // Probably to avoid the year 0

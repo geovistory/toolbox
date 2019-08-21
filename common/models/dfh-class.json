@@ -7,7 +7,7 @@
     "validateUpsert": true,
     "postgresql": {
       "schema": "data_for_history",
-      "table": "class"
+      "table": "v_class"
     }
   },
   "mixins": {
@@ -27,6 +27,9 @@
     },
     "dfh_standard_label": {
       "type": "string"
+    },
+    "dfh_fk_system_type": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -110,7 +113,9 @@
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
-      "property": []
+      "property": [
+        "classesOfProjectProfiles"
+      ]
     },
     {
       "principalType": "ROLE",
@@ -123,6 +128,31 @@
     }
   ],
   "methods": {
+    "classesOfProjectProfiles": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Project pk",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhClass"
+        ],
+        "root": true
+      },
+      "description": "Get all classes that are selected by at least one of the profiles used by the given project.",
+      "http": {
+        "path": "/classes-of-project-profiles",
+        "verb": "get"
+      }
+    },
     "classesOfProfile": {
       "accepts": [
         {

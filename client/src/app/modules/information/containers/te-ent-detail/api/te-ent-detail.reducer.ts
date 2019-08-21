@@ -8,7 +8,7 @@ const INITIAL_STATE = new TeEntDetail();
 
 export function teEntDetailReducer(state: TeEntDetail = INITIAL_STATE, a: Action): TeEntDetail {
 
-  state = teEntReducer(state, a);
+  // state = teEntReducer(state, a);
   const action = a as TeEntDetailAPIAction;
 
 
@@ -19,27 +19,28 @@ export function teEntDetailReducer(state: TeEntDetail = INITIAL_STATE, a: Action
     /*****************************************************
     * Reducers to manage temporal entity editor
     *****************************************************/
-    case TeEntDetailAPIActions.LOAD:
+
+
+    case TeEntDetailAPIActions.INIT:
       state = {
-        loading: true
+        ...state,
+        ...action.meta.config,
+        loading: false,
       };
       break;
 
-      case TeEntDetailAPIActions.LOAD_SUCCEEDED:
-        state = {
-          ...state,
-          ...action.meta.teEntDetail,
-          loading: false,
-        };
-        break;
 
-      case TeEntDetailAPIActions.LOAD_FAILED:
-        state = {
-          ...state,
-          loading: false,
-        };
-        break;
+    /************************************************
+   * Reducer to toggle booleans.
+   * Useful to toggle visibiility of ui elements
+   ************************************************/
 
+    case TeEntDetailAPIActions.TOGGLE_BOOLEAN:
+      state = {
+        ...state,
+        [action.meta.keyToToggle]: !state[action.meta.keyToToggle]
+      }
+      break;
 
     /*****************************************************
     * Reducers called on destroy of component

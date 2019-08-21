@@ -428,6 +428,7 @@ $gv-color-selected: #00ffff;
 .gv-flex-fh {
   @extend .gv-fh;
   @extend .d-flex;
+  height: 100%;
 }
 
 // full viewport height
@@ -807,9 +808,11 @@ gv-tile-header {
 .gv-field-header-label {
   font-size: $font-size-sm;
   font-weight: 600;
-  text-transform: uppercase;
   color: $secondary;
-  margin-bottom: 0.5rem;
+  // margin-bottom: 0.5rem;
+}
+.upper-case {
+  text-transform: uppercase;
 }
 
 /***************************
@@ -837,21 +840,21 @@ gv-tile-header {
     border-radius: 4px;
     overflow: hidden;
     padding: 0;
-    margin: 0 0 20px 40px;
+    // margin: 0 0 20px 40px;
   }
 
   .drag-box {
-    padding: 1rem;
+    padding: 0.3rem 0.3rem 0.3rem 1rem;
     border-bottom: solid 1px #ccc;
     color: rgba(0, 0, 0, 0.87);
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    // justify-content: space-between;
     box-sizing: border-box;
     cursor: move;
     background: white;
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .cdk-drag-preview {
@@ -1241,6 +1244,27 @@ gv-quill-edit.gv-quill-input-like {
     border: 0;
     height: $input-height-inner;
   }
+}
+
+gv-quill-edit.gv-quill-mat-input-like {
+  @extend gv-quill-edit.gv-hide-toolbar;
+
+  background-color: none;
+
+  .gv-editor {
+    height: auto;
+    border: 0;
+    background-color: none;
+
+    .ql-editor {
+      padding: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      border: 0;
+      height: 21px;
+    }
+  }
+
 }
 
 gv-quill-edit.gv-quill-textarea-like.gv-outer-form-control {
@@ -1907,8 +1931,11 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 @include gv-sidenav-accordion-theme($app-theme);
 @include gv-sidenav-accordion-typography($gv-typography);
 
-.mat-table thead {
+.mat-table.gv-head-gray thead {
   background: #f5f5f5;
+}
+.mat-paginator {
+  background: inherit
 }
 
 .mat-text-primary {
@@ -1920,6 +1947,10 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
 }
 
 .mat-text-warn {
+  color: mat-color($app-warn);
+}
+
+.mat-text-gray {
   color: mat-color($app-warn);
 }
 
@@ -1959,6 +1990,12 @@ mat-checkbox {
     .mat-icon {
       font-size: 20px !important;
     }
+  }
+}
+
+button {
+  mat-icon {
+    font-size: 20px !important;
   }
 }
 

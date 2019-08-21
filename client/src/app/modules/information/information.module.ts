@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatIconModule, MatMenuModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatPaginatorModule } from '@angular/material';
+import { MatAutocompleteModule, MatButtonModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatCardModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
@@ -103,16 +103,27 @@ import { ExistenceTimeModalComponent } from './existence-time/existence-time-mod
 import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
 import { AddRoleComponent } from './new-components/add-role/add-role.component';
-import { AppellationListComponent } from './new-components/appellation-list/appellation-list.component';
-import { EntityPreviewListComponent } from './new-components/entity-preview-list/entity-preview-list.component';
-import { LanguageListComponent } from './new-components/language-list/language-list.component';
+import { ChooseClassDialogComponent } from './new-components/choose-class-dialog/choose-class-dialog.component';
+import { CreateRoleFormComponent } from './new-components/create-role-form/create-role-form.component';
+import { CtrlAppellationComponent } from './new-components/ctrl-appellation/ctrl-appellation.component';
+import { CreateEntityModalComponent } from './new-components/ctrl-entity/create-entity-modal/create-entity-modal.component';
+import { CtrlEntityComponent } from './new-components/ctrl-entity/ctrl-entity.component';
+import { CtrlLanguageComponent } from './new-components/ctrl-language/ctrl-language.component';
+import { CtrlPlaceComponent } from './new-components/ctrl-place/ctrl-place.component';
+import { CtrlTextPropertyComponent } from './new-components/ctrl-text-property/ctrl-text-property.component';
+import { CtrlTimePrimitiveComponent } from './new-components/ctrl-time-primitive/ctrl-time-primitive.component';
+import { CtrlTimeSpanDialogComponent } from './new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { CtrlTimeSpanComponent } from './new-components/ctrl-time-span/ctrl-time-span.component';
+import { FieldComponent } from './new-components/field/field.component';
+import { LeafItemAddListComponent } from './new-components/leaf-item-add-list/leaf-item-add-list.component';
+import { LeafItemListComponent } from './new-components/leaf-item-list/leaf-item-list.component';
 import { ListHeaderComponent } from './new-components/list-header/list-header.component';
-import { PlaceListComponent } from './new-components/place-list/place-list.component';
+import { OntoClassInfoComponent } from './new-components/onto-class-info/onto-class-info.component';
+import { OntoPropertyInfoComponent } from './new-components/onto-property-info/onto-property-info.component';
 import { PropertiesTreeComponent } from './new-components/properties-tree/properties-tree.component';
-import { PropertyTreeService } from './new-components/properties-tree/properties-tree.service';
+import { InformationPipesService } from './new-services/information-pipes.service';
 import { TemporalEntityAddListComponent } from './new-components/temporal-entity-add-list/temporal-entity-add-list.component';
 import { TemporalEntityListComponent } from './new-components/temporal-entity-list/temporal-entity-list.component';
-import { TextPropertyListComponent } from './new-components/text-property-list/text-property-list.component';
 import { TimeSpanListComponent } from './new-components/time-span-list/time-span-list.component';
 import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
 import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
@@ -161,6 +172,11 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
+import { TimeSpanService } from './new-services/time-span.service';
+import { PropertiesTreeService } from './new-components/properties-tree/properties-tree.service';
+import { ClassesAndTypesSelectComponent } from './new-components/classes-and-types-select/classes-and-types-select.component';
+import { CtrlTypeComponent } from './new-components/ctrl-type/ctrl-type.component';
+import { TypeItemComponent } from './new-components/type-item/type-item.component';
 
 
 
@@ -216,13 +232,19 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     MatExpansionModule,
     MatTableModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatPaginatorModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCardModule,
+    MatAutocompleteModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
     EntityPreviewModule,
     AnnotationModule,
-    TileHeaderModule
-
+    TileHeaderModule,
   ],
   declarations: [
     InformationComponent,
@@ -332,16 +354,31 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     ContentTreeComponent,
     AddOrCreateEntityModal,
     PropertiesTreeComponent,
-    AppellationListComponent,
-    EntityPreviewListComponent,
     ListHeaderComponent,
-    LanguageListComponent,
     TemporalEntityListComponent,
     TemporalEntityAddListComponent,
-    PlaceListComponent,
     TimeSpanListComponent,
-    TextPropertyListComponent,
-    AddRoleComponent
+    AddRoleComponent,
+    FieldComponent,
+    OntoClassInfoComponent,
+    OntoPropertyInfoComponent,
+    LeafItemListComponent,
+    LeafItemAddListComponent,
+    ChooseClassDialogComponent,
+    CreateRoleFormComponent,
+
+    CtrlAppellationComponent,
+    CtrlLanguageComponent,
+    CtrlPlaceComponent,
+    CtrlEntityComponent,
+    CreateEntityModalComponent,
+    CtrlTextPropertyComponent,
+    CtrlTimeSpanComponent,
+    CtrlTimeSpanDialogComponent,
+    CtrlTimePrimitiveComponent,
+    ClassesAndTypesSelectComponent,
+    CtrlTypeComponent,
+    TypeItemComponent,
   ],
   providers: [
 
@@ -419,7 +456,9 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItSearchExistingAPIActions,
     PeItSearchExistingAPIEpics,
 
-    PropertyTreeService
+    InformationPipesService,
+    TimeSpanService,
+    PropertiesTreeService
 
   ],
   exports: [
@@ -501,12 +540,26 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItLabelComponent,
     ClassInfoComponent,
     EditorHeaderComponent,
-
+    CreateRoleFormComponent,
+    CtrlAppellationComponent,
+    CtrlLanguageComponent,
+    CtrlPlaceComponent,
+    CtrlEntityComponent,
+    CreateEntityModalComponent,
+    CtrlTextPropertyComponent,
+    CtrlTimeSpanComponent,
+    CtrlTimeSpanDialogComponent,
+    CtrlTimePrimitiveComponent,
+    CtrlTypeComponent,
+    ClassesAndTypesSelectComponent
   ],
   entryComponents: [
     LeafPeItViewModalComponent,
+    CreateEntityModalComponent,
     ExistenceTimeModalComponent,
-    AddOrCreateEntityModal
+    AddOrCreateEntityModal,
+    ChooseClassDialogComponent,
+    CtrlTimeSpanDialogComponent
   ]
 })
 export class Information2Module { }

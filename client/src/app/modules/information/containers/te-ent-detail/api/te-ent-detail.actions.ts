@@ -14,7 +14,8 @@ interface MetaData {
   pkClasses?: number[];
   config?: TeEntDetail
   settings?: StateSettings,
-  crm?: ProjectCrm
+  crm?: ProjectCrm,
+  keyToToggle?: string;
 };
 export type TeEntDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -22,9 +23,9 @@ export type TeEntDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 export class TeEntDetailAPIActions extends TeEntActions {
 
 
-  static readonly LOAD = 'TeEntDetail::LOAD';
-  static readonly LOAD_SUCCEEDED = 'TeEntDetail::LOAD_SUCCEEDED';
-  static readonly LOAD_FAILED = 'TeEntDetail::LOAD_FAILED';
+  static readonly INIT = 'TeEntDetail::INIT';
+
+  static readonly TOGGLE_BOOLEAN = 'TeEntDetail::TOGGLE_BOOLEAN';
 
   static readonly DESTROY = 'TeEntDetail::DESTROY';
 
@@ -34,25 +35,27 @@ export class TeEntDetailAPIActions extends TeEntActions {
   *  Actions to manage temporal entity editor
   *********************************************************************/
 
- load = (pkEntity: number, pkProject: number, config: TeEntDetail, settings: StateSettings, crm:ProjectCrm): TeEntDetailAPIAction => ({
-    type: TeEntDetailAPIActions.LOAD,
-    meta: { pkEntity, pkProject, config, settings, crm },
+  init = ( config: TeEntDetail): TeEntDetailAPIAction => ({
+    type: TeEntDetailAPIActions.INIT,
+    meta: {  config },
     payload: null,
   });
 
-  loadSucceeded = (teEntDetail: TeEntDetail): TeEntDetailAPIAction => ({
-    type: TeEntDetailAPIActions.LOAD_SUCCEEDED,
-    meta: { teEntDetail },
+
+
+  /**********************************************
+ * Method to toggle visibility of ui elements
+ **********************************************/
+
+  /**
+   * Toggle booleans
+   * @param keyToToggle key of the property to toggle. E.g. 'showRightPanel' or 'showProperties'
+   */
+  toggleBoolean = (keyToToggle: string): TeEntDetailAPIAction => ({
+    type: TeEntDetailAPIActions.TOGGLE_BOOLEAN,
+    meta: { keyToToggle },
     payload: null
   })
-
-  loadFailed = (error): TeEntDetailAPIAction => ({
-    type: TeEntDetailAPIActions.LOAD_FAILED,
-    meta: null,
-    payload: null,
-    error,
-  })
-
 
   /*********************************************************************
   *  Method to distroy the slice of store
@@ -62,4 +65,7 @@ export class TeEntDetailAPIActions extends TeEntActions {
     meta: null,
     payload: null
   })
+
+
+
 }

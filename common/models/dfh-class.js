@@ -5,7 +5,7 @@ const Config = require('../config/Config');
 module.exports = function (DfhClass) {
 
   /**
-   * Black list of classes that should never be directly used by users 
+   * Black list of classes that should never be directly used by users
    * to produce instances
    */
   const blackList = [
@@ -23,7 +23,7 @@ module.exports = function (DfhClass) {
   DfhClass.selectedPeItClassesOfProfile = function (dfh_pk_profile, cb) {
 
     const filter = {
-      /** 
+      /**
        * Select persistent items by pk_entity
        */
       "where": ["dfh_pk_class", "NOT IN", blackList],
@@ -59,11 +59,11 @@ module.exports = function (DfhClass) {
   }
 
 
-  /** 
-   * Query classes 
-   * 
+  /**
+   * Query classes
+   *
    * Of a specific profile. If no profile specified, retrieves all classes.
-   * 
+   *
    * include:
    * - text_properties
    */
@@ -111,6 +111,41 @@ module.exports = function (DfhClass) {
 
   }
 
+  /**
+   * Query classes
+   *
+   * Of a specific project
+   *
+   */
+  DfhClass.classesOfProjectProfiles = function (pkProject, cb) {
+
+    // TODO: join the pofiles added to a project somehow
+    const params = []// [4, 5, 8]
+    const sql = `
+      WITH tw1 AS (
+        SELECT dfh_fk_class
+        FROM data_for_history.class_profile_view
+        WHERE removed_from_api <> true
+        -- AND dfh_fk_profile IN ($1,$2)
+      )
+      SELECT t1.*
+      FROM
+        data_for_history.v_class t1,
+        tw1
+      WHERE
+        t1.dfh_pk_class = tw1.dfh_fk_class
+    `
+
+
+    DfhClass.dataSource.connector.execute(sql, params, (err, resultObjects) => {
+      if (err) return cb(err, resultObjects);
+      cb(false, resultObjects)
+    });
+
+
+  }
+
+
 
 
   /**
@@ -118,7 +153,7 @@ module.exports = function (DfhClass) {
    *    - Ingoing and Outgoing DfhProperties of Class, including
    *        - Boolean that indicates
    *    - Ui elements of the class
-   *    
+   *
    */
   DfhClass.propertiesAndUiElements = function (pk_class, fk_app_context, pk_project, cb) {
 
@@ -252,27 +287,27 @@ module.exports = function (DfhClass) {
 
   /**
    * Get a list of classes for the poject-settings > data-settings page.
-   * 
+   *
    * This list includes
    * - All classes that a user (project admin) can disable / enable
    *
    * This list excludes
    * - Inferred classes
    * - Classes in the technical profile
-   * 
+   *
    * Those relations are eager loaded for each class
    * - Text properties: used for displaying some class description
    * - Class profile view: used to distinguish teEnt from PeIt and to show profile names
    * - Proj rel: used to see if enabled or disabled for project
-   * 
+   *
    * @param pk_project the pk of the project
-   * 
+   *
    */
   // DfhClass.projectSettingsClassList = function (pk_project, cb) {
 
 
   //   const filter = {
-  //     /** 
+  //     /**
   //      * Select persistent items by pk_entity
   //      */
   //     select: {

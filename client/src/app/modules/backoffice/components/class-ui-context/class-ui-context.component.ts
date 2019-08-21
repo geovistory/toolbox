@@ -1,17 +1,15 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SysConfig, ProClassFieldConfig, IAppState, U } from 'app/core';
+import { IAppState, ProClassFieldConfig, SysConfig } from 'app/core';
+import { RootEpics } from 'app/core/store/epics';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { pathOr } from 'ramda';
-import { addMiddleware, removeMiddleware } from 'redux-dynamic-middlewares';
-import { Observable, Subscription, Subject } from 'rxjs';
-
-import { ClassDetail, Container, ClassUiContext } from '../../backoffice.models';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { ClassUiContext, Container } from '../../backoffice.models';
 import { ClassUiContextAPIActions } from './api/class-ui-context.actions';
 import { ClassUiContextAPIEpics } from './api/class-ui-context.epics';
 import { classUiContextReducer } from './api/class-ui-context.reducer';
-import { RootEpics } from 'app/core/store/epics';
 
 
 
@@ -61,7 +59,8 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
     private rootEpics: RootEpics,
     private epics: ClassUiContextAPIEpics,
     private ngRedux: NgRedux<IAppState>,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog
   ) {
     super()
 
@@ -151,6 +150,7 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
           pk_entity: undefined,
           fk_project: undefined,
           fk_property: undefined,
+          fk_class: undefined,
           property_is_outgoing: undefined,
           fk_app_context: this.pkUiContext,
           fk_class_for_class_field: this.pkClass,
@@ -174,4 +174,6 @@ export class ClassUiContextComponent extends ClassUiContextAPIActions implements
 
     if (uiPropConfs.length) this.updateUiContextConfig(uiPropConfs);
   }
+
+
 }

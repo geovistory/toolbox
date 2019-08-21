@@ -22,10 +22,8 @@ class Selector<Slice> {
   selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
     const all$ = this.ngRedux.select<ByPk<M>>([sysRoot, this.model, indexKey])
-      .pipe(filter(x => !!x))
 
     const key = (x): Observable<M> => this.ngRedux.select<M>([sysRoot, this.model, indexKey, x])
-      .pipe(filter(x => !!x))
 
     return { all$, key }
   }
@@ -42,6 +40,7 @@ class SysSystemRelevantClassSelections extends Selector<SysRelevantClassSlice> {
   public by_pk_entity$ = this.selector<SysSystemRelevantClass>('by_pk_entity');
   public by_fk_class$ = this.selector<ByPk<SysSystemRelevantClass>>('by_fk_class');
   public by_required_by_sources$ = this.selector<ByPk<SysSystemRelevantClass>>('by_required_by_sources');
+  public by_required$ = this.selector<ByPk<SysSystemRelevantClass>>('by_required');
 
 }
 
@@ -56,6 +55,8 @@ class SysClassHasTypePropertySelections extends Selector<SysClassHasTypeProperty
   public by_pk_entity$ = this.selector<SysClassHasTypeProperty>('by_pk_entity');
   public by_fk_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_fk_class');
   public by_fk_property$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_fk_property');
+  public by_pk_type_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_type_class');
+  public by_pk_typed_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_typed_class');
 
 }
 

@@ -1,22 +1,46 @@
-import { EntityPreview, InfRole, ProInfoProjRel, ActiveProjectService, InfTimePrimitive, TimePrimitive, InfTextProperty } from "app/core";
 import { NestedTreeControl } from "@angular/cdk/tree";
+import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from "app/core";
 import { Observable } from "rxjs";
-import { PropertyTreeService } from "./properties-tree.service";
+import { PropertiesTreeService } from "./properties-tree.service";
 
 export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity';
 
 export type CreateControlType = 'role';
 
 /**
- * Node with nested structure.
+ * This interface is a intermediate solution, useful as long as
+ * the identity of properties is not changed to always using the
+ * identifier of the property of origin
  */
-export interface ListDefinition {
+export interface ClassFieldConfig extends ProClassFieldConfig {
+  fk_property_of_origin: number
+}
+
+export interface FieldDefinition {
   listType: ListType
   label: string;
   ontoInfoUrl: string
   ontoInfoLabel: string
   pkProperty: number
   isOutgoing: boolean
+  targetClasses?: number[]
+  targetMaxQuantity?: number
+  listDefinitions: ListDefinition[]
+}
+
+export interface ListDefinition {
+  listType: ListType
+  label: string;
+  ontoInfoUrl: string
+  ontoInfoLabel: string
+  fkClassField: number
+  pkProperty: number
+  fkPropertyOfOrigin: number // TODO remove after pkProperty Change
+  isOutgoing: boolean
+  isIdentityDefining: boolean
+  sourceClass: number
+
+  targetClass: number
   targetClassLabel?: string
   targetMaxQuantity?: number
 }
@@ -33,7 +57,7 @@ export interface RoleItemBasics extends ItemBasics {
 }
 
 export interface AppellationItem extends RoleItemBasics {
-
+  label: string
 }
 
 export interface LanguageItem extends RoleItemBasics {
@@ -50,31 +74,46 @@ export interface TimePrimitiveItem extends RoleItemBasics {
 }
 
 export interface TemporalEntityItem extends RoleItemBasics {
-  properties: TemporalEntityProperties[]
+  cellDefinitions: TemporalEntityCellDefinition[]
+}
+export interface TemporalEntityCellDefinition {
+  fieldDefinition: FieldDefinition,
+  lists: EntityProperties[]
+  cellValue: TemporalEntityCellValue
+}
+export interface TemporalEntityCellValue {
+  pkProperty: number
+  label: string
+  entityPreview: EntityPreview
+  itemsCount: number
 }
 
 export interface EntityPreviewItem extends RoleItemBasics {
   preview: EntityPreview
 }
 
-export interface TemporalEntityProperties {
+export interface EntityProperties {
   listDefinition: ListDefinition,
-  items: AppellationItem[] | LanguageItem[] | EntityPreviewItem[]
+  items: ItemList
 }
 
 export interface TextPropertyItem extends ItemBasics {
   textProperty: InfTextProperty;
+  language: InfLanguage
 }
 
 export interface TimeSpanItem {
-  properties: TimeSpanProperties[]
+  label: string
+  properties: TimeSpanProperty[]
 }
 
-export interface TimeSpanProperties {
+export interface TimeSpanProperty {
   listDefinition: ListDefinition,
   items: TimePrimitiveItem[]
- }
+}
 
+export type Item = AppellationItem | EntityPreviewItem | LanguageItem | PlaceItem | TextPropertyItem | TimeSpanItem;
+export type ItemList = Item[];
 
 export interface PropertyListComponentInterface {
   pkEntity: number;
@@ -85,9 +124,9 @@ export interface PropertyListComponentInterface {
   addButtonVisible;
   toggleButtonVisible;
 
-  items$: Observable<ItemBasics[]>
+  items$: Observable<ItemList>
   p: ActiveProjectService,
-  t: PropertyTreeService
+  t: PropertiesTreeService
 
 }
 
@@ -100,8 +139,21 @@ export interface AddListComponentInterface {
   addButtonVisible;
   toggleButtonVisible;
 
-  items$: Observable<ItemBasics[]>
+  items$: Observable<ItemList>
   p: ActiveProjectService,
-  t: PropertyTreeService
+  t: PropertiesTreeService
 
 }
+
+
+/**
+ * This interface is used for creating objects containing all the
+ * information related to a temporal entity that should be removed
+ * from project, when the temporal entity is removed
+ */
+export interface TemporalEntityRemoveProperties {
+  temporalEntity: InfTemporalEntity
+  roles: InfRole[]
+  textProperties: InfTextProperty[]
+}
+

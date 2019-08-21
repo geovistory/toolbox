@@ -3,9 +3,9 @@ import { LoopBackConfig, IAppState } from 'app/core';
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { environment } from 'environments/environment';
 import { Action } from 'redux';
-import { ActionsObservable, combineEpics, Epic, StateObservable } from 'redux-observable';
+import { ActionsObservable, combineEpics, Epic, StateObservable, ofType } from 'redux-observable';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { mergeMap, filter, tap } from 'rxjs/operators';
 import { ActiveProjectEpics } from '../active-project/active-project.epics';
 import { DfhEpics } from '../dfh/dfh.epics';
 import { InfEpics } from '../inf/inf.epics';
@@ -13,6 +13,8 @@ import { LoadingBarEpics } from '../loading-bar/api/loading-bar.epics';
 import { SysEpics } from '../sys/sys.epics';
 import { DatEpics } from 'app/core/dat/dat.epics';
 import { ProEpics } from '../pro/pro.epics';
+import { SucceedActionMeta } from './actions';
+import { ActionResolverService } from './action-resolver.service';
 
 @Injectable()
 export class RootEpics {
@@ -28,10 +30,13 @@ export class RootEpics {
     private dfhEpics: DfhEpics,
     private infEpics: InfEpics,
     private datEpics: DatEpics,
-    private proEpics: ProEpics
+    private proEpics: ProEpics,
+    private actionResolver: ActionResolverService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
+
+
 
 
     this.rootEpicStream$ = new BehaviorSubject(combineEpics(
@@ -43,7 +48,9 @@ export class RootEpics {
       this.infEpics.createEpics(),
       this.datEpics.createEpics(),
       this.proEpics.createEpics(),
-    ));
+      // important: this needs to be the last epic in
+      this.actionResolver.createEpics()
+      ));
 
     this.rootEpic = (
       action$: ActionsObservable<Action>,

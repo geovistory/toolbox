@@ -8,10 +8,10 @@ import { values } from 'ramda';
 @Injectable()
 export class ValidationService {
 
-  /** The control must not have invalid child controls. 
+  /** The control must not have invalid child controls.
    * Good for nesting custom form controls.
-   * Pass in the formGroup.controls of the control-component you are testing. 
-   * 
+   * Pass in the formGroup.controls of the control-component you are testing.
+   *
    */
   static noInvalidChildrenValidator(childControls: { [key: string]: AbstractControl }): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
@@ -112,11 +112,11 @@ export class ValidationService {
       if (firstField.value && secondField.value) {
 
         // get the julian day of the end of the first time primitive
-        const firstTp: TimePrimitive = U.infRole2TimePrimitive(firstField.value[0]);
+        const firstTp = new TimePrimitive(firstField.value);
         const firstJulianDay = firstTp.getDateTime().getJulianDay();
 
         // get the julian day of the begin of the second time primitive
-        const secondTp: TimePrimitive = U.infRole2TimePrimitive(secondField.value[0]);
+        const secondTp = new TimePrimitive(secondField.value);
         const secondJulianDay = secondTp.getDateTime().getJulianDay();
 
         // validate fields
@@ -160,11 +160,11 @@ export class ValidationService {
       if (firstField.value && secondField.value) {
 
         // get the julian day of the end of the first time primitive
-        const firstTp: TimePrimitive = U.infRole2TimePrimitive(firstField.value[0]);
+        const firstTp = new TimePrimitive(firstField.value);
         const firstJulianDay = firstTp.getDateTime().getEndOf(firstTp.duration).getJulianDay();
 
         // get the julian day of the begin of the second time primitive
-        const secondTp: TimePrimitive = U.infRole2TimePrimitive(secondField.value[0]);
+        const secondTp = new TimePrimitive(secondField.value);
         const secondJulianDay = secondTp.getDateTime().getEndOf(secondTp.duration).getJulianDay();
 
         // validate fields
@@ -208,11 +208,11 @@ export class ValidationService {
       if (firstField.value && secondField.value) {
 
         // get the julian day of the begin of the first time primitive
-        const firstTp: TimePrimitive = U.infRole2TimePrimitive(firstField.value[0]);
+        const firstTp = new TimePrimitive(firstField.value);
         const firstJulianDay = firstTp.getDateTime().getJulianDay();
 
         // get the julian day of the end of the second time primitive
-        const secondTp: TimePrimitive = U.infRole2TimePrimitive(secondField.value[0]);
+        const secondTp = new TimePrimitive(secondField.value);
         const secondJulianDay = secondTp.getDateTime().getEndOf(secondTp.duration).getJulianDay();
 
         // validate fields

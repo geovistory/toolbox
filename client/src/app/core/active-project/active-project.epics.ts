@@ -20,6 +20,9 @@ import { SystemSelector } from '../sys/sys.service';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
 import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
+import { DfhSelector } from '../dfh/dfh.service';
+import { ProSelector } from '../pro/pro.service';
+import { InfActions } from '../inf/inf.actions';
 
 
 
@@ -28,6 +31,9 @@ export class ActiveProjectEpics {
   constructor(
     private sys: SystemSelector,
     private dat: DatSelector,
+    private dfh: DfhSelector,
+    private pro: ProSelector,
+    private inf: InfActions,
     private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
@@ -127,7 +133,15 @@ export class ActiveProjectEpics {
 
         this.sys.system_relevant_class.load();
         this.sys.class_has_type_property.load();
-        this.dat.namespace.load('', action.meta.pk_project)
+        this.dat.namespace.load('', action.meta.pk_project);
+        this.dfh.property_view.load()
+        this.dfh.klass.loadClassesOfProjectProfiles(action.meta.pk_project);
+        this.pro.class_field_config.load('', action.meta.pk_project)
+        this.pro.dfh_class_proj_rel.load('', action.meta.pk_project)
+        this.dfh.label.loadLabelesOfClasses(null);
+        this.dfh.label.loadLabelesOfProperties(null);
+        this.pro.property_label.loadDefaultLabels(action.meta.pk_project)
+        this.inf.persistent_item.typesOfProject(action.meta.pk_project)
 
 
         combineLatest(
@@ -139,7 +153,10 @@ export class ActiveProjectEpics {
           this.sysHasTypePropsApi.find(),
           this.sys.system_relevant_class$.by_fk_class$.all$,
           this.sys.class_has_type_property$.slice$,
-          this.dat.namespace$.by_fk_project$.key(action.meta.pk_project)
+          this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
+          this.dfh.property_view$.by_dfh_pk_property$.all$,
+          this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,
+          this.dfh.class$.by_dfh_pk_class$.all$
         )
           .pipe(filter((res) => !res.includes(undefined)))
           .subscribe((res) => {

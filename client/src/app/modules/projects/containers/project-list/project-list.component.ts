@@ -7,7 +7,7 @@ import { SysConfig } from '../../../../core/config/sys-config';
 import { ProjectsActions } from '../../api/projects.actions';
 import { IProjectList } from '../../projects.model';
 import { Router } from '@angular/router';
-
+import * as Config from '../../../../../../../common/config/Config';
 
 
 @Component({
@@ -22,6 +22,7 @@ export class ProjectListComponent implements OnInit {
   loadingComplete = false;
 
 
+  config = Config;
 
   constructor(
     private accountApi: PubAccountApi,

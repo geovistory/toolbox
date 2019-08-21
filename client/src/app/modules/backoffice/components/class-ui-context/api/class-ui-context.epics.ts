@@ -70,7 +70,7 @@ export class ClassUiContextAPIEpics {
 
         combineLatest(
           action.meta.uiPropConfigs.map(data => this.classFieldConfigApi.patchOrCreate(data))
-        ).subscribe((data: ProClassFieldConfig[]) => {
+        ).subscribe(() => {
 
           subStore.dispatch(this.actions.loadClassUiContext());
 

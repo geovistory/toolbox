@@ -1,0 +1,8 @@
+<div FxFlex *ngIf="itemsCount$ | async">
+  <ul cdkDropList class="drop-list" (cdkDropListDropped)="t.updateOrder($event, items$)">
+    <li *ngFor="let item of (items$ | async)" class="drag-box">
+      <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass" *ngIf="showOntoInfo$ | async"></gv-onto-class-info>
+      <gv-entity-preview [preview]="item.preview" [dragEnabled]="false"></gv-entity-preview>
+    </li>
+  </ul>
+</div>

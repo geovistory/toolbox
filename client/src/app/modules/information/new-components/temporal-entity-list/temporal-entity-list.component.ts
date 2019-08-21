@@ -1,20 +1,21 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
-import { PropertyListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
+import { PropertyListComponentInterface, ListDefinition, TemporalEntityItem, FieldDefinition, TemporalEntityCellValue } from '../properties-tree/properties-tree.models';
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Observable, Subject } from 'rxjs';
-import { ActiveProjectService } from 'app/core';
-import { PropertyTreeService } from '../properties-tree/properties-tree.service';
-import { MatTableDataSource, MatPaginator } from '../../../../../../node_modules/@angular/material';
-import { first, map, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { clone, indexBy, mapObjIndexed } from 'ramda';
-interface Cell {
-  listDefinition: ListDefinition,
-  items: any[],
-  label: string
-}
+import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
+import { ActiveProjectService, EntityPreview, InfRole } from 'app/core';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { MatTableDataSource, MatPaginator, PageEvent } from '../../../../../../node_modules/@angular/material';
+import { first, map, switchMap, takeUntil, startWith, distinct } from '../../../../../../node_modules/rxjs/operators';
+import { clone, indexBy, mapObjIndexed, sum, omit } from 'ramda';
+import { InfActions } from '../../../../core/inf/inf.actions';
+import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
-interface Row {
-  [colName: string]: Cell
+
+export interface Row {
+  _pkEntity_: number
+  _role_: InfRole
+  [colName: string]: TemporalEntityCellValue | number | InfRole
 }
 
 @Component({
@@ -40,80 +41,149 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   items$: Observable<TemporalEntityItem[]>
   itemsCount$: Observable<number>
 
-  // table view
-  dataColumnsMap: { [key: string]: boolean };
-  checkedDataColumns: string[];
-  dataColumns: string[];
-  displayedColumns: string[];
 
-  dataSource = new MatTableDataSource<Row>();
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  table: TemporalEntityTable;
+  limit$ = new BehaviorSubject(5)
+  offset$ = new BehaviorSubject(0);
 
   constructor(
     public p: ActiveProjectService,
-    public t: PropertyTreeService
+    public c: ConfigurationPipesService,
+    public t: PropertiesTreeService,
+    public i: InformationPipesService,
+    public inf: InfActions
+
   ) { }
 
   ngOnInit() {
-    this.items$ = this.t.pipeTemporalEntityList(this.listDefinition, this.pkEntity, this.appContext)
 
-    // get columns of this temporal entity
-    const listDefs$ = this.p.crm$.pipe(
-      first(c => !!c),
-      map(crm => {
-        const p = crm.properties[this.listDefinition.pkProperty];
-        return this.listDefinition.isOutgoing ? p.dfh_has_range : p.dfh_has_domain;
-      }),
-      switchMap(targetClass => this.t.pipeListDefinitions(targetClass, this.appContext))
+    this.items$ = combineLatest(
+      this.limit$.pipe(),
+      this.offset$.pipe()
+    ).pipe(
+      switchMap(([limit, offset]) => this.i.pipeListTemporalEntity(this.listDefinition, this.pkEntity, this.appContext, limit, offset)
+      )
     )
 
-    listDefs$.pipe(first(listDefinitions => listDefinitions.length > 0), takeUntil(this.destroy$)).subscribe((listDefinitions) => {
+    // get columns of this temporal entity
+    const columDefs$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext)
+    this.table = new TemporalEntityTable(this.items$, columDefs$, this.destroy$, this.listDefinition, {
+      columnsBefore: ['_classInfo_'],
+      columnsAfter: ['_actions_']
+    });
 
-      this.dataColumnsMap = mapObjIndexed((val, key, obj) => true, indexBy((l) => l.label, listDefinitions))
-      this.dataColumns = Object.keys(this.dataColumnsMap)
-      this.updateColumnParams();
-      this.itemsCount$ = this.items$.map(i => (i || []).length)
+    // get length of items
+    this.itemsCount$ = this.i.pipeListLength(this.listDefinition, this.pkEntity)
 
-      this.items$.pipe(
-        map((items) => items.map(item => {
-          const row: Row = {};
-          item.properties.forEach((p) => {
-            row[p.listDefinition.label] = {
-              items: p.items,
-              label: p.items.length ? p.items[0].label : '',
-              listDefinition: p.listDefinition
-            }
-          })
-          return row;
-        }))
+  }
 
-      ).pipe(takeUntil(this.destroy$)).subscribe((rows) => {
-        this.dataSource.data = rows;
-      })
+  onPageChange(e: PageEvent) {
+    this.offset$.next(e.pageIndex)
+    this.limit$.next(e.pageSize)
+  }
+
+
+  remove(item: Row) {
+    // remove the temporal entity and all the roles, text-properties loaded in app cache
+    // so that they are removed from project's app cache
+    combineLatest(
+      this.i.pipeTemporalEntityRemoveProperties(item._pkEntity_),
+      this.p.pkProject$
+    ).pipe(first(), takeUntil(this.destroy$)).subscribe(([d, pkProject]) => {
+
+      this.inf.temporal_entity.remove([d.temporalEntity], pkProject);
+      if (d.roles.length) this.inf.role.remove(d.roles, pkProject);
+      if (d.textProperties.length) this.inf.text_property.remove(d.textProperties, pkProject)
+
     })
 
+    // remove the temporal entity using a backend-function that removes all related roles,
+    // text-properties, even if not loaded in app cache
   }
 
-
-  toggleCol(x: string) {
-    this.dataColumnsMap[x] = !this.dataColumnsMap[x];
-    this.updateColumnParams()
-  }
-
-  updateColumnParams() {
-    this.checkedDataColumns = []
-    for (const key in this.dataColumnsMap) {
-      if (this.dataColumnsMap[key]) {
-        this.checkedDataColumns.push(key);
-      }
-    }
-    if (this.checkedDataColumns.length === 0) this.checkedDataColumns.push('empty')
-    this.displayedColumns = [...this.checkedDataColumns, 'actions'];
+  openInNewTab(item: Row) {
+    this.p.addEntityTeEnTab(item._pkEntity_)
   }
 
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+}
+
+
+
+export class TemporalEntityTable {
+
+  public dataSource = new MatTableDataSource<Row>();
+
+  // table view
+  dataColumnsMap$ = new BehaviorSubject<{ [key: string]: boolean }>({});
+
+  dataColumns$: Observable<string[]>;
+  displayedColumns$: Observable<string[]>;
+
+  constructor(
+    public items$: Observable<TemporalEntityItem[]>,
+    public columDefs$: Observable<FieldDefinition[]>,
+    public destroy$,
+    public listDefinition,
+    customColumns: { columnsBefore: string[], columnsAfter: string[] }
+  ) {
+
+    // get array of data column names
+    this.dataColumns$ = this.dataColumnsMap$.pipe(first(), map(d => Object.keys(d)))
+
+    this.displayedColumns$ = combineLatest(this.dataColumnsMap$).pipe(
+      map(([dataColumnsMap]) => {
+
+        let checked = []
+        for (const key in dataColumnsMap) {
+          if (dataColumnsMap[key]) checked.push(key);
+        }
+        checked = [...customColumns.columnsBefore, ...checked, ...customColumns.columnsAfter]
+        if (checked.length === 0) checked.push('_empty_')
+
+        return checked
+
+      })
+    )
+
+    this.columDefs$.pipe(first(fs => fs.length > 0), takeUntil(destroy$)).subscribe((fieldDefinitions) => {
+      const dataColumnsMap = mapObjIndexed((val, key, obj) => true, indexBy((l) => l.label, fieldDefinitions))
+      const circularField = fieldDefinitions.find(f => f.pkProperty === listDefinition.fkPropertyOfOrigin);
+      if (circularField) {
+        // hideCircularField
+        const circularCol = circularField.label;
+        dataColumnsMap[circularCol] = false;
+      }
+      this.dataColumnsMap$.next(dataColumnsMap)
+    })
+
+
+    this.items$.pipe(
+      map((items) => items.map(item => {
+        const _pkEntity_ = this.listDefinition.isOutgoing ? item.role.fk_entity : item.role.fk_temporal_entity;
+        const _role_ = item.role;
+
+        const row: Row = { _pkEntity_, _role_ };
+        item.cellDefinitions.forEach((cellDefinition) => {
+          row[cellDefinition.fieldDefinition.label] = cellDefinition.cellValue
+        })
+        return row;
+      }))
+    ).pipe(takeUntil(this.destroy$)).subscribe((rows) => {
+      this.dataSource.data = rows;
+    })
+
+  }
+
+  toggleCol(x: string) {
+    this.dataColumnsMap$.pipe(first()).subscribe(map => {
+      map[x] = !map[x];
+      this.dataColumnsMap$.next(map)
+    })
+  }
+
+
 }

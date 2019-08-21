@@ -54,6 +54,7 @@ import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypePro
 import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
 import { ProQueryApi } from './services/custom/ProQuery';
 import { ProVisualApi } from './services/custom/ProVisual';
+import { ProPropertyLabelApi } from './services/custom/ProPropertyLabel';
 import { PubAccountApi } from './services/custom/PubAccount';
 import { EmailApi } from './services/custom/Email';
 import { ProProjectApi } from './services/custom/ProProject';
@@ -62,6 +63,7 @@ import { ProTextPropertyApi } from './services/custom/ProTextProperty';
 import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
 import { DfhClassApi } from './services/custom/DfhClass';
 import { DfhPropertyApi } from './services/custom/DfhProperty';
+import { DfhPropertyViewApi } from './services/custom/DfhPropertyView';
 import { DfhLabelApi } from './services/custom/DfhLabel';
 import { DfhTextPropertyApi } from './services/custom/DfhTextProperty';
 import { DatChunkApi } from './services/custom/DatChunk';
@@ -119,6 +121,7 @@ export class SDKBrowserModule {
         SysSystemRelevantClassApi,
         ProQueryApi,
         ProVisualApi,
+        ProPropertyLabelApi,
         PubAccountApi,
         EmailApi,
         ProProjectApi,
@@ -127,6 +130,7 @@ export class SDKBrowserModule {
         ProInfoProjRelApi,
         DfhClassApi,
         DfhPropertyApi,
+        DfhPropertyViewApi,
         DfhLabelApi,
         DfhTextPropertyApi,
         DatChunkApi,

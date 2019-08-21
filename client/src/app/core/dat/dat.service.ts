@@ -3,10 +3,11 @@ import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
-import { DatDigital, DatNamespace, DatChunk } from '../sdk';
+import { DatChunk, DatDigital, DatNamespace } from '../sdk';
 import { DatActions } from './dat.actions';
 import { datDefinitions, datRoot } from './dat.config';
-import { filter } from '../../../../node_modules/rxjs/operators';
+import { distinctUntilChanged } from '../../../../node_modules/rxjs/operators';
+import { equals } from 'ramda';
 
 class Selector {
   constructor(
@@ -18,10 +19,14 @@ class Selector {
   selector<M>(indexKey: string): { all$: Observable<M>, key: (x) => Observable<M> } {
 
     const all$ = this.ngRedux.select<M>([datRoot, this.model, indexKey])
-      .pipe(filter(x => !!x))
+    // .pipe(
+    //   distinctUntilChanged<M>(equals)
+    // )
 
     const key = (x): Observable<M> => this.ngRedux.select<M>([datRoot, this.model, indexKey, x])
-      .pipe(filter(x => !!x))
+    // .pipe(
+    //   distinctUntilChanged<M>(equals)
+    // )
 
     return { all$, key }
   }

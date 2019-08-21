@@ -3,6 +3,7 @@
 const Promise = require('bluebird');
 const Config = require('../config/Config');
 const _ = require('lodash')
+var PeItFlatObject = require("../classes/PeItFlatObject");
 
 module.exports = function (InfPersistentItem) {
 
@@ -27,28 +28,28 @@ module.exports = function (InfPersistentItem) {
       // Add F2 Expression, if this is a F4 Manifestation Singleton
       if (requestedPeIt.fk_class == 220) {
         requestedPeIt.domain_entity_associations = [
-          ...(requestedPeIt.domain_entity_associations ||  []),
+          ...(requestedPeIt.domain_entity_associations || []),
           { fk_property: 1016, range_pe_it: { fk_class: 218 } }
         ]
       }
       // Add F2 Expression, if this is a F3 Manifestation Product Type
       else if (requestedPeIt.fk_class == 219) {
         requestedPeIt.range_entity_associations = [
-          ...(requestedPeIt.range_entity_associations ||  []),
+          ...(requestedPeIt.range_entity_associations || []),
           { fk_property: 979, domain_pe_it: { fk_class: 218 } }
         ]
       }
       // Add F2 Expression, if this is a F5 Item
       else if (requestedPeIt.fk_class == 221) {
         requestedPeIt.range_entity_associations = [
-          ...(requestedPeIt.range_entity_associations ||  []),
+          ...(requestedPeIt.range_entity_associations || []),
           { fk_property: 1316, domain_pe_it: { fk_class: 218 } }
         ]
       }
       // Add F2 Expression, if this is a geovC4 Web Request
       else if (requestedPeIt.fk_class == 502) {
         requestedPeIt.range_entity_associations = [
-          ...(requestedPeIt.range_entity_associations ||  []),
+          ...(requestedPeIt.range_entity_associations || []),
           { fk_property: 1305, domain_pe_it: { fk_class: 218 } }
         ]
       }
@@ -225,61 +226,7 @@ module.exports = function (InfPersistentItem) {
     });
   }
 
-  // /**
-  //  * Check if authorized to relate type with namespace
-  //  * - pk_namespace must be of "Geovistory Ongoing"
-  //  * - or pk_project must be in fk_project of namespace
-  //  */
-  // InfPersistentItem.beforeRemote('findOrCreateType', function (context, obj, next) {
-  //   const pk_project = context.req.query.pk_project;
-  //   const pk_namespace = context.req.query.pk_namespace;
-  //   const errorMsg = 'You\'re not authorized to perform this action.';
-  //   // let pass if namespace is "Geovistory Ongoing"
-  //   if (pk_namespace == Config.PK_NAMESPACE__GEOVISTORY_ONGOING) {
-  //     next()
-  //   }
 
-  //   return InfPersistentItem.app.models.DatNamespace.findById(pk_namespace)
-  //     .then((nmsp) => {
-  //       // let pass if namespace belongs to project
-  //       if (nmsp && nmsp.fk_project == pk_project) {
-  //         next();
-  //       }
-  //       else return Promise.reject(new Error(errorMsg));;
-  //     })
-  //     .catch(() => {
-  //       return Promise.reject(new Error(errorMsg))
-  //     })
-
-  // });
-
-  // /**
-  //  * Remote method to create instances of E55 types.
-  //  *
-  //  * Adds a type_namespace_rel between peIt and namespace
-  //  *
-  //  */
-  // InfPersistentItem.findOrCreateType = function (pk_project, pk_namespace, data, ctx) {
-
-  //   // Add type_namespace_rel
-  //   return InfPersistentItem.findOrCreatePeIt(pk_project, data, ctx)
-  //     .then(resultingPeIts => {
-  //       const res = resultingPeIts[0]
-
-  //       const InfTypeNamespaceRel = InfPersistentItem.app.models.InfTypeNamespaceRel;
-  //       const x = new InfTypeNamespaceRel({
-  //         fk_persistent_item: res.pk_entity,
-  //         fk_namespace: pk_namespace
-  //       })
-
-  //       // create it in DB
-  //       return x.save().then(tyNaRel => {
-  //         return [res]
-  //       });
-
-  //     })
-
-  // }
 
 
 
@@ -292,7 +239,7 @@ module.exports = function (InfPersistentItem) {
    */
   InfPersistentItem.nestedObjectOfProject = function (pkProject, pkEntity, cb) {
 
-    const filter = {
+    let filter = {
       "where": ["pk_entity", "=", pkEntity],
       "include": InfPersistentItem.getIncludeObject(true, pkProject)
     }
@@ -534,11 +481,135 @@ module.exports = function (InfPersistentItem) {
 
     return {
       ...projectJoin,
-      "dfh_class": {
+      // "dfh_class": {
+      //   "$relation": {
+      //     "name": "dfh_class",
+      //     "joinType": "inner join",
+      //     "orderBy": [{ "pk_entity": "asc" }]
+      //   }
+      // },
+
+      "pi_roles": {
         "$relation": {
-          "name": "dfh_class",
-          "joinType": "inner join",
-          "orderBy": [{ "pk_entity": "asc" }]
+          "name": "pi_roles",
+          "joinType": "left join"
+        },
+        ...projectJoin,
+        "temporal_entity": {
+          "$relation": {
+            "name": "temporal_entity",
+            "joinType": "inner join",
+            // where: ['fk_class', '=', 2],
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          ...projectJoin,
+          "te_roles": {
+            "$relation": {
+              "name": "te_roles",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            ...projectJoin,
+            "appellation": {
+              "$relation": {
+                "name": "appellation",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "language": {
+              "$relation": {
+                "name": "language",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "time_primitive": {
+              "$relation": {
+                "name": "time_primitive",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "place": {
+              "$relation": {
+                "name": "place",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            /**
+             * this is to get the remotely related geo information from
+             * te_role
+             *  -> persistent_item
+             *    -> pi_roles
+             *      -> temporal_entity (Presence E93)
+             *        -> te_roles
+             *          -> place, time_primitive
+             */
+            persistent_item: {
+              $relation: {
+                name: 'persistent_item',
+                joinType: "left join",
+              },
+              pi_roles: {
+                $relation: {
+                  name: "pi_roles",
+                  joinType: "inner join"
+                },
+                ...projectJoin,
+                temporal_entity: {
+                  $relation: {
+                    name: 'temporal_entity',
+                    joinType: "inner join",
+                    where: ['fk_class', 'IN', [84]] // Presence – E93
+                  },
+                  te_roles: {
+                    $relation: {
+                      name: "te_roles",
+                      joinType: "inner join",
+                      where: ['fk_property', 'IN', [148, 71, 72, 150, 151, 152, 153]] // Properties leading to place or time_primitive
+                    },
+                    ...projectJoin,
+                    "place": {
+                      "$relation": {
+                        "name": "place",
+                        "joinType": "left join"
+                      }
+                    },
+                    "time_primitive": {
+                      "$relation": {
+                        "name": "time_primitive",
+                        "joinType": "left join"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "ingoing_roles": {
+            "$relation": {
+              "name": "ingoing_roles",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            ...projectJoin,
+          }
         }
       },
       domain_entity_associations: {
@@ -596,69 +667,6 @@ module.exports = function (InfPersistentItem) {
                     }]
                   }
                 }
-              }
-            }
-          }
-        }
-      },
-      "pi_roles": {
-        "$relation": {
-          "name": "pi_roles",
-          "joinType": "left join"
-        },
-        ...projectJoin,
-        "temporal_entity": {
-          "$relation": {
-            "name": "temporal_entity",
-            "joinType": "inner join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          },
-          ...projectJoin,
-          "te_roles": {
-            "$relation": {
-              "name": "te_roles",
-              "joinType": "inner join",
-              "orderBy": [{
-                "pk_entity": "asc"
-              }]
-            },
-            ...projectJoin,
-            "appellation": {
-              "$relation": {
-                "name": "appellation",
-                "joinType": "left join",
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }]
-              }
-            },
-            "language": {
-              "$relation": {
-                "name": "language",
-                "joinType": "left join",
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }]
-              }
-            },
-            "time_primitive": {
-              "$relation": {
-                "name": "time_primitive",
-                "joinType": "left join",
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }]
-              }
-            },
-            "place": {
-              "$relation": {
-                "name": "place",
-                "joinType": "left join",
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }]
               }
             }
           }
@@ -1320,4 +1328,118 @@ module.exports = function (InfPersistentItem) {
       cb(err, resultObjects);
     });
   }
+
+
+  InfPersistentItem.typesOfProject = function (pkProject, cb) {
+
+    // Get array of all peits that are types and in given project
+    const sql_stmt = `
+      SELECT 1, jsonb_agg(t3.pk_entity) as pk_type_array
+      FROM
+      "system".class_has_type_property t1,
+      data_for_history.v_property  t2,
+      information.persistent_item t3,
+      projects.info_proj_rel t4
+      WHERE t1.fk_property = t2.fk_property
+      AND t3.fk_class = t2.dfh_has_range
+      AND t4.fk_entity = t3.pk_entity
+      AND t4.is_in_project = true
+      AND t4.fk_project = $1
+      GROUP BY 1
+    `;
+
+    const params = [pkProject];
+    const connector = InfPersistentItem.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, result) => {
+      if (err) return cb(err);
+
+      if (!result || !result.length > 0 || !result[0].pk_type_array || result[0].pk_type_array.length < 1) return cb(false, [])
+
+      const projectJoin = {
+        "entity_version_project_rels": InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(true, pkProject)
+      }
+
+      let filter = {
+        "where": ["pk_entity", "IN", result[0].pk_type_array],
+        include: {
+          ...projectJoin,
+          "pi_roles": {
+            "$relation": {
+              "name": "pi_roles",
+              "joinType": "left join"
+            },
+            ...projectJoin,
+            "temporal_entity": {
+              "$relation": {
+                "name": "temporal_entity",
+                "joinType": "inner join",
+                // where: ['fk_class', '=', 2],
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+              "te_roles": {
+                "$relation": {
+                  "name": "te_roles",
+                  "joinType": "inner join",
+                  "orderBy": [{
+                    "pk_entity": "asc"
+                  }]
+                },
+                ...projectJoin,
+                "appellation": {
+                  "$relation": {
+                    "name": "appellation",
+                    "joinType": "left join",
+                    "orderBy": [{
+                      "pk_entity": "asc"
+                    }]
+                  },
+                },
+              }
+            }
+          }
+        }
+      }
+
+      return InfPersistentItem.findComplex(filter, cb);
+
+    });
+  }
+
+  InfPersistentItem.flatObjectOfProject = function (pkProject, pkEntity, cb) {
+    const mainQuery = new PeItFlatObject(InfPersistentItem.app.models).createMainQuery(pkProject, pkEntity)
+    const connector = InfPersistentItem.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      if (result.length === 0) return cb(false, result)
+
+      const geoPks = result.find(row => row.model === 'geos').json_agg;
+
+      if (!geoPks || geoPks.length === 0) return cb(false, result)
+
+      const geoQuery = new PeItFlatObject(InfPersistentItem.app.models).createGeoQuery(pkProject,  geoPks.map(pk => parseInt(pk)))
+      connector.execute(geoQuery.sql, geoQuery.params, (err, geoResult) => {
+        if (err) return cb(err);
+        const final = {}
+        const models = ["persistent_item", "role", "temporal_entity", "appellation", "time_primitive", "place", "info_proj_rel"]
+
+        result.forEach(row => {
+          if (models.indexOf(row.model) > -1) {
+            final[row.model] = row.json_agg;
+          }
+        })
+
+        geoResult.forEach(row => {
+          if (models.indexOf(row.model) > -1) {
+            final[row.model] = [...(final[row.model] || []), ...row.json_agg];
+          }
+        })
+
+        return cb(null, final)
+      })
+    })
+  }
+
 };
+

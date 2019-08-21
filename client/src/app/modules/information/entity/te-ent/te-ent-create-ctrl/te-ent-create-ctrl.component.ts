@@ -9,7 +9,6 @@ import { RootEpics } from 'app/core/store/epics';
 import { EntityAPIEpics } from '../../entity.epics';
 import { createExistenceTimeDetail } from 'app/core/state/services/state-creator';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { getTeEntAddOptions } from '../../../containers/te-ent-detail/te-ent-detail.component';
 
 @Component({
   selector: 'gv-te-ent-create-ctrl',
@@ -48,7 +47,7 @@ export class TeEntCreateCtrlComponent extends TeEntCtrlBase {
 
   onInitTeEntBaseChild(): void {
     // this.uiContext = this.classConfig.uiContexts[ComConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE];
-    this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, new BehaviorSubject({}), this._fields$)
+    // this.addOptionsTeEnt$ = getTeEntAddOptions(this.fkClass$, this.pkUiContext$, this.crm$, new BehaviorSubject({}), this._fields$)
   }
 
 

@@ -33,8 +33,6 @@ export class Entity {
     // the button to add a new property
     showAddAPropertyButton?= true;
 
-
-
     pkUiContext?: number;
     isViewMode?= false;
 

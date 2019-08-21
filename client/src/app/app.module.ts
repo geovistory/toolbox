@@ -36,7 +36,10 @@ import { DatModule } from './core/dat/dat.module';
 import { ProModule } from 'app/core/pro/pro.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { BasicModule } from './core/basic/basic.module';
-
+import { create } from "rxjs-spy";
+import { CyclePlugin } from '../../node_modules/rxjs-spy/plugin';
+const spy = create()
+spy.unplug(spy.find(CyclePlugin));
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
 
@@ -51,7 +54,7 @@ registerLocaleData(localeDeCh);
 @NgModule({
   declarations: [
     AppComponent
-  ],
+    ],
   imports: [
     BasicModule,
     StoreModule,

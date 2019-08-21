@@ -7,8 +7,8 @@ import { RootEpics } from 'app/core/store/epics';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, filter, first, takeWhile, takeUntil } from 'rxjs/operators';
-import { animate, state, style, transition, trigger } from '../../../../../../node_modules/@angular/animations';
-import { MatSort, MatTableDataSource, Sort, matExpansionAnimations } from '../../../../../../node_modules/@angular/material';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { MatSort, MatTableDataSource, Sort, matExpansionAnimations, MatDialog } from '@angular/material';
 import { ProDfhClassProjRel } from '../../../../core/sdk/models/ProDfhClassProjRel';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
@@ -16,6 +16,9 @@ import { EntityType, ProjectSettingsData } from './api/project-settings-data.mod
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
+import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
+import { equals } from 'ramda';
+import * as Config from '../../../../../../../common/config/Config';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -116,6 +119,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     private router: Router,
     private route: ActivatedRoute,
     public ref: ChangeDetectorRef,
+    private dialog: MatDialog
   ) {
     super();
     // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -167,7 +171,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.dataSource.sort = this.sort;
 
-    this.showBasicClasses$.takeUntil(this.destroy$).subscribe(showBasicClasses => {
+    combineLatest(this.showBasicClasses$, this.p.pkProject$).takeUntil(this.destroy$).subscribe(([showBasicClasses, pkProject]) => {
+
       if (showBasicClasses) this.displayedColumns = [
         'enabled_in_entities',
         'required_by_sources',
@@ -176,7 +181,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
         'subclassOf',
         'dfh_standard_label',
         'subclassOfType',
-        // 'expansion'
+
       ];
       else this.displayedColumns = [
         'enabled_in_entities',
@@ -185,8 +190,11 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
         'subclassOf',
         'dfh_standard_label',
         'subclassOfType',
-        // 'expansion'
       ];
+
+      if (pkProject === Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
+        this.displayedColumns.push('classConfig')
+      }
     })
   }
 
@@ -212,70 +220,73 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       this.profile$,
       this.sorting$,
       this.showBasicClasses$
-    ).subscribe((d) => {
-      const text: string = d[0],
-        items: ClassConfig[] = d[1],
-        subclassOf: string = d[2],
-        status: boolean = d[3],
-        profile: number = d[4],
-        sorting: Sort = d[5],
-        showBasicClasses: boolean = d[6];
+    ).pipe(
+      distinctUntilChanged(equals)
+    )
+      .subscribe((d) => {
+        const text: string = d[0],
+          items: ClassConfig[] = d[1],
+          subclassOf: string = d[2],
+          status: boolean = d[3],
+          profile: number = d[4],
+          sorting: Sort = d[5],
+          showBasicClasses: boolean = d[6];
 
-      const sortFn = (a, b) => {
-        let nameA;
-        let nameB;
-        if (typeof a[sorting.active] === 'string') {
-          nameA = a[sorting.active].toUpperCase(); // ignore upper and lowercase
-          nameB = b[sorting.active].toUpperCase(); // ignore upper and lowercase
-        } else if (typeof a[sorting.active] === 'boolean') {
-          nameA = a[sorting.active] ? 0 : 1;
-          nameB = b[sorting.active] ? 0 : 1;
+        const sortFn = (a, b) => {
+          let nameA;
+          let nameB;
+          if (typeof a[sorting.active] === 'string') {
+            nameA = a[sorting.active].toUpperCase(); // ignore upper and lowercase
+            nameB = b[sorting.active].toUpperCase(); // ignore upper and lowercase
+          } else if (typeof a[sorting.active] === 'boolean') {
+            nameA = a[sorting.active] ? 0 : 1;
+            nameB = b[sorting.active] ? 0 : 1;
+          }
+          if (nameA < nameB) return sorting.direction === 'asc' ? -1 : 1;
+          if (nameA > nameB) return sorting.direction === 'asc' ? 1 : -1;
+          // names are equal
+          return 0;
+        };
+
+        if (items && items.length) {
+
+          const mapped = items.map(i => ({
+            ...i,
+            enabled_in_entities: (!i.projRel ? false : i.projRel.enabled_in_entities),
+            subclassOf: (i.subclassOf || 'other'),
+            dfh_standard_label: i.dfh_standard_label + ' – ' + i.dfh_identifier_in_namespace
+          }))
+
+          this.filteredItems$.next(
+            (text === '' && subclassOf === undefined && status === undefined && profile === undefined && showBasicClasses === true) ?
+              mapped.sort(sortFn) :
+              mapped.filter(item => (
+                // filter for show basic classes
+                (showBasicClasses || !item.required_by_basics)
+                // filter for search term
+                && (text === '' ||
+                  (item.label + ' ' + item.dfh_standard_label + ' ' + item.scopeNote)
+                    .toLowerCase().indexOf(text.toLowerCase()) > -1)
+                // filter for subclassOf
+                && (subclassOf === undefined || item.subclassOf === subclassOf)
+                // filter for status
+                && (status === undefined || status === (!item.projRel ? false : item.projRel.enabled_in_entities))
+                // filter for profiles
+                && (profile === undefined || item.profilePks.indexOf(profile) > -1)
+              ))
+                .sort(sortFn)
+                // highlighting
+                .map((item) => ({
+                  ...item,
+                  label: this.highilghtPipe.transform(item.label, text),
+                  dfh_standard_label: this.highilghtPipe.transform(item.dfh_standard_label, text),
+                  scopeNote: this.highilghtPipe.transform(item.scopeNote, text),
+                }))
+          )
         }
-        if (nameA < nameB) return sorting.direction === 'asc' ? -1 : 1;
-        if (nameA > nameB) return sorting.direction === 'asc' ? 1 : -1;
-        // names are equal
-        return 0;
-      };
-
-      if (items && items.length) {
-
-        const mapped = items.map(i => ({
-          ...i,
-          enabled_in_entities: (!i.projRel ? false : i.projRel.enabled_in_entities),
-          subclassOf: (i.subclassOf || 'other'),
-          dfh_standard_label: i.dfh_standard_label + ' – ' + i.dfh_identifier_in_namespace
-        }))
-
-        this.filteredItems$.next(
-          (text === '' && subclassOf === undefined && status === undefined && profile === undefined && showBasicClasses === true) ?
-            mapped.sort(sortFn) :
-            mapped.filter(item => (
-              // filter for show basic classes
-              (showBasicClasses || !item.required_by_basics)
-              // filter for search term
-              && (text === '' ||
-                (item.label + ' ' + item.dfh_standard_label + ' ' + item.scopeNote)
-                  .toLowerCase().indexOf(text.toLowerCase()) > -1)
-              // filter for subclassOf
-              && (subclassOf === undefined || item.subclassOf === subclassOf)
-              // filter for status
-              && (status === undefined || status === (!item.projRel ? false : item.projRel.enabled_in_entities))
-              // filter for profiles
-              && (profile === undefined || item.profilePks.indexOf(profile) > -1)
-            ))
-              .sort(sortFn)
-              // highlighting
-              .map((item) => ({
-                ...item,
-                label: this.highilghtPipe.transform(item.label, text),
-                dfh_standard_label: this.highilghtPipe.transform(item.dfh_standard_label, text),
-                scopeNote: this.highilghtPipe.transform(item.scopeNote, text),
-              }))
-        )
-      }
 
 
-    })
+      })
 
   }
 
@@ -365,6 +376,17 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
         data: { pkProperty }
       })
 
+    })
+  }
+
+  openClassConfig(classItem: ClassConfig) {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(fkProject => {
+      const data: ClassConfigDialogData = {
+        fkAppContext: 45,
+        fkClass: classItem.dfh_pk_class,
+        fkProject
+      }
+      this.dialog.open(ClassConfigDialogComponent, { data })
     })
   }
 }

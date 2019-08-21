@@ -24,9 +24,7 @@ export type PeItDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 @Injectable()
 export class PeItDetailAPIActions extends PeItActions {
 
-  static readonly LOAD = 'PeItDetail::LOAD';
-  static readonly LOAD_SUCCEEDED = 'PeItDetail::LOAD_SUCCEEDED';
-  static readonly LOAD_FAILED = 'PeItDetail::LOAD_FAILED';
+  static readonly INIT = 'PeItDetail::INIT';
 
   static readonly REMOVE_PE_IT = 'PeItDetail::REMOVE_PE_IT';
   static readonly REMOVE_PE_IT_SUCCEEDED = 'PeItDetail::REMOVE_PE_IT_SUCCEEDED';
@@ -39,24 +37,24 @@ export class PeItDetailAPIActions extends PeItActions {
   *  Actions to manage entity editor
   *********************************************************************/
 
-  @dispatch() load = (pkEntity: number, pkProject: number, config: PeItDetail, settings: StateSettings, crm:ProjectCrm): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.LOAD,
-    meta: { pkEntity, pkProject, config, settings, crm },
+  @dispatch() init = (config: PeItDetail): PeItDetailAPIAction => ({
+    type: PeItDetailAPIActions.INIT,
+    meta: { config },
     payload: null,
   });
 
-  loadSucceeded = (peItDetail: PeItDetail): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.LOAD_SUCCEEDED,
-    meta: { peItDetail },
-    payload: null
-  })
+  // loadSucceeded = (peItDetail: PeItDetail): PeItDetailAPIAction => ({
+  //   type: PeItDetailAPIActions.LOAD_SUCCEEDED,
+  //   meta: { peItDetail },
+  //   payload: null
+  // })
 
-  loadFailed = (error): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.LOAD_FAILED,
-    meta: null,
-    payload: null,
-    error,
-  })
+  // loadFailed = (error): PeItDetailAPIAction => ({
+  //   type: PeItDetailAPIActions.LOAD_FAILED,
+  //   meta: null,
+  //   payload: null,
+  //   error,
+  // })
 
 
   /**********************************************

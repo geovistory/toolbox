@@ -44,6 +44,7 @@ import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
 import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
 import { DataModule } from '../data/data.module';
+import { ClassConfigModule } from '../class-config/class-config.module';
 
 
 
@@ -86,7 +87,8 @@ import { DataModule } from '../data/data.module';
     DetailTopBarModule,
     DetailContentModule,
     ConfirmDialogModule,
-    LanguageSearchTypeaheadModule
+    LanguageSearchTypeaheadModule,
+    ClassConfigModule
   ],
   declarations: [
     ProjectCreateComponent,

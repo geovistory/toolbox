@@ -2,29 +2,43 @@
 
 declare var Object: any;
 export interface DfhPropertyProfileViewInterface {
+  "is_inherited"?: boolean;
+  "dfh_has_domain": number;
+  "fk_property"?: number;
+  "dfh_has_range": number;
   "pk_entity"?: number;
   "is_enabled_in_profile"?: boolean;
   "dfh_profile_label"?: string;
   "removed_from_api"?: boolean;
   "dfh_pk_property"?: number;
-  "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
+  "dfh_identifier_in_namespace"?: string;
+  "dfh_standard_label"?: string;
+  "dfh_fk_property_of_origin"?: number;
+  "dfh_domain_instances_min_quantifier"?: number;
+  "dfh_domain_instances_max_quantifier"?: number;
+  "dfh_range_instances_min_quantifier"?: number;
+  "dfh_range_instances_max_quantifier"?: number;
+  "identity_defining"?: boolean;
 }
 
 export class DfhPropertyProfileView implements DfhPropertyProfileViewInterface {
+  "is_inherited": boolean;
+  "dfh_has_domain": number;
+  "fk_property": number;
+  "dfh_has_range": number;
   "pk_entity": number;
   "is_enabled_in_profile": boolean;
   "dfh_profile_label": string;
   "removed_from_api": boolean;
   "dfh_pk_property": number;
-  "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
+  "dfh_identifier_in_namespace": string;
+  "dfh_standard_label": string;
+  "dfh_fk_property_of_origin": number;
+  "dfh_domain_instances_min_quantifier": number;
+  "dfh_domain_instances_max_quantifier": number;
+  "dfh_range_instances_min_quantifier": number;
+  "dfh_range_instances_max_quantifier": number;
+  "identity_defining": boolean;
   constructor(data?: DfhPropertyProfileViewInterface) {
     Object.assign(this, data);
   }
@@ -58,6 +72,22 @@ export class DfhPropertyProfileView implements DfhPropertyProfileViewInterface {
       path: 'DfhPropertyProfileViews',
       idName: 'pk_entity',
       properties: {
+        "is_inherited": {
+          name: 'is_inherited',
+          type: 'boolean'
+        },
+        "dfh_has_domain": {
+          name: 'dfh_has_domain',
+          type: 'number'
+        },
+        "fk_property": {
+          name: 'fk_property',
+          type: 'number'
+        },
+        "dfh_has_range": {
+          name: 'dfh_has_range',
+          type: 'number'
+        },
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
@@ -78,25 +108,37 @@ export class DfhPropertyProfileView implements DfhPropertyProfileViewInterface {
           name: 'dfh_pk_property',
           type: 'number'
         },
-        "entity_version": {
-          name: 'entity_version',
+        "dfh_identifier_in_namespace": {
+          name: 'dfh_identifier_in_namespace',
+          type: 'string'
+        },
+        "dfh_standard_label": {
+          name: 'dfh_standard_label',
+          type: 'string'
+        },
+        "dfh_fk_property_of_origin": {
+          name: 'dfh_fk_property_of_origin',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
-          type: 'string'
+        "dfh_domain_instances_min_quantifier": {
+          name: 'dfh_domain_instances_min_quantifier',
+          type: 'number'
         },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
+        "dfh_domain_instances_max_quantifier": {
+          name: 'dfh_domain_instances_max_quantifier',
+          type: 'number'
         },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
+        "dfh_range_instances_min_quantifier": {
+          name: 'dfh_range_instances_min_quantifier',
+          type: 'number'
         },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
+        "dfh_range_instances_max_quantifier": {
+          name: 'dfh_range_instances_max_quantifier',
+          type: 'number'
+        },
+        "identity_defining": {
+          name: 'identity_defining',
+          type: 'boolean'
         },
       },
       relations: {

@@ -39,6 +39,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
+  @Output() focus = new EventEmitter<void>()
   @Output() htmlChange = new EventEmitter<string>()
   @Output() selectedDeltaChange = new EventEmitter<Delta>()
   @Output() nodeClick = new EventEmitter<QuillNodeHandler>()
@@ -77,6 +78,9 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   // Add styling and behavior of an Input element
   @HostBinding('class.gv-quill-input-like') @Input() inputLike = false;
+
+  // Add styling and behavior of an Input element
+  @HostBinding('class.gv-quill-mat-input-like') @Input() matInputLike = false;
 
   // Add styling and behavior of an Input element
   @HostBinding('class.gv-quill-textarea-like') @Input() textareaLike = false;
@@ -148,6 +152,9 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
     // register on blur handling
     this.registerOnBlur()
+
+    // register on focus handling
+    this.registerOnFocus()
 
     // register for text changes
     this.registerOnTextChange();
@@ -393,7 +400,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
     // if the user changed the content
     if (source == 'user') {
-      console.log('A user action triggered this change.');
+      // console.log('A user action triggered this change.');
 
 
       asyncScheduler.schedule(() => {
@@ -542,13 +549,23 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   // registers the on blur method
   registerOnBlur() {
-    this.editorElem.nativeElement.firstChild.onblur = () => {
-      this.onBlur();
-    }
+    // this.editorElem.nativeElement.firstChild.onblur = () => {
+    //   this.blur.emit()
+    // }
+    this.quillEditor.on('selection-change', (range, oldRange, source) => {
+      if (!range) {
+        this.blur.emit()
+      }
+    });
   }
 
-  onBlur() {
-    this.blur.emit()
+  // registers the on focus method
+  registerOnFocus() {
+    this.quillEditor.on('selection-change', (range, oldRange, source) => {
+      if (range) {
+        this.focus.emit()
+      }
+    });
   }
 
 

@@ -12,8 +12,8 @@ import { map } from 'rxjs/operators';
 import { InfRole } from '../../models/InfRole';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
+import { InfAppellation } from '../../models/InfAppellation';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
@@ -35,6 +35,40 @@ export class InfRoleApi extends BaseLoopBackApi {
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
     super(http,  connection,  models, auth, errorHandler);
+  }
+
+  /**
+   * Find or create information role.
+   *
+   * @param {number} pk_project Id of the project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{InfRole}` - data
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfRole` object.)
+   * </em>
+   */
+  public findOrCreateInfRoles(pk_project: any, data: any, customHeaders?: Function): Observable<InfRole[]> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfRoles/find-or-create-many";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instances: Array<InfRole>) =>
+        instances.map((instance: InfRole) => new InfRole(instance))
+    ));
   }
 
   /**

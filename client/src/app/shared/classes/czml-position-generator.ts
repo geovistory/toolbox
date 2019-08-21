@@ -42,7 +42,7 @@ export class CzmlPositionGenerator {
     // TODO make this time dynamic
     private setCartographicDegrees?(p: QueryPoint) {
         if (p.presences) {
-            const latLon = p.presences[0].was_at[0];
+            const latLon = p.presences[0].was_at;
 
             this.d.cartographicDegrees = [latLon.long, latLon.lat, 0]
 

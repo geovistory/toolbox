@@ -1,6 +1,8 @@
 export { FilterByKeyModule } from './pipes/filterByKey/filterByKey.module';
 
-export { StaticImplements } from './decorators/static-implements';
+export * from './decorators/class-decorators';
+
+export * from './decorators/method-decorators';
 
 export { InitPeItEditableStateModule } from './components/init-pe-it-editable-state/init-pe-it-editable-state.module';
 

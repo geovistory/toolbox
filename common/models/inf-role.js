@@ -1,5 +1,6 @@
 'use strict';
 const _ = require('lodash')
+const Promise = require('bluebird');
 
 module.exports = function (InfRole) {
 
@@ -100,6 +101,30 @@ module.exports = function (InfRole) {
   }
 
 
+  InfRole.findOrCreateInfRoles = function (pk_project, roles, ctx) {
+    return new Promise((resolve, reject) => {
+      const promiseArray = roles.map((role, i) => {
+
+        const context = {
+          ...ctx,
+          req: {
+            ...ctx.req,
+            body: {
+              ...ctx.req.body[i]
+            }
+          }
+        }
+
+        return InfRole.findOrCreateInfRole(pk_project, role, context)
+      })
+      Promise.map(promiseArray, (promise) => promise)
+        .catch(err => reject(err))
+        .then(res => {
+          return resolve(_.flatten(res))
+        })
+    })
+  };
+
   InfRole.findOrCreateInfRole = function (projectId, role, ctx) {
     return new Promise((resolve, reject) => {
 
@@ -109,7 +134,7 @@ module.exports = function (InfRole) {
         fk_entity: role.fk_entity,
         fk_temporal_entity: role.fk_temporal_entity,
         fk_property: role.fk_property,
-        notes: role.notes,
+        // notes: role.notes,
       };
 
       let requestedRole = (ctx && ctx.req && ctx.req.body) ? ctx.req.body : role;
@@ -211,20 +236,22 @@ module.exports = function (InfRole) {
 
         // find or create the appellation and the role pointing to it
         return InfAppellation.create(requestedRole.appellation)
-          .then((resultingEntity) => {
+          .then((res) => {
+            InfAppellation.findById(res.pk_entity).then((resultingEntity) => {
+              // … prepare the Role to create
+              dataObject.fk_entity = resultingEntity.pk_entity;
 
-            // … prepare the Role to create
-            dataObject.fk_entity = resultingEntity.pk_entity;
+              return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
+                .then((resultingRoles) => {
 
-            return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
-              .then((resultingRoles) => {
+                  let res = resultingRoles[0].toJSON();
+                  res.appellation = resultingEntity.toJSON();
 
-                let res = resultingRoles[0].toJSON();
-                res.appellation = resultingEntity.toJSON();
+                  resolve([res]);
 
-                resolve([res]);
-
-              })
+                })
+                .catch(err => reject(err))
+            })
               .catch(err => reject(err))
           })
           .catch(err => reject(err))
@@ -336,7 +363,8 @@ module.exports = function (InfRole) {
         /** Select roles with fk_entity and fk_property … */
         "where": [
           "fk_entity", "=", entityPk,
-          "and", "fk_property", "=", propertyPk
+          "and", "fk_property", "=", propertyPk,
+          "and", "is_in_project_count", ">", "0" // new
         ],
         "orderBy": [{
           "pk_entity": "asc"
@@ -355,9 +383,10 @@ module.exports = function (InfRole) {
               "$relation": {
                 "name": "te_roles",
                 "joinType": "left join",
-                  "orderBy": [{
+                "orderBy": [{
                   "pk_entity": "asc"
-                }]
+                }],
+                "where": ["is_in_project_count", ">", "0"]  // new
               },
               "language": {
                 "$relation": {
@@ -456,10 +485,7 @@ module.exports = function (InfRole) {
         "where": [
           "fk_temporal_entity", "=", teEntPk,
           "and", "fk_property", "=", propertyPk,
-          // "and", [
-          //   "is_community_favorite", "=", "true",
-          //   "or", "is_in_project_count", "=", "0"
-          // ]
+          "and", "is_in_project_count", ">", "0" // new
         ],
         "orderBy": [{
           "pk_entity": "asc"
@@ -491,6 +517,15 @@ module.exports = function (InfRole) {
           "time_primitive": {
             "$relation": {
               "name": "time_primitive",
+              "joinType": "left join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            }
+          },
+          "place": {
+            "$relation": {
+              "name": "place",
               "joinType": "left join",
               "orderBy": [{
                 "pk_entity": "asc"

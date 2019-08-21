@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { combineEpics, Epic } from 'redux-observable';
-import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel } from '../sdk';
-import { DfhActions } from './dfh.actions';
-import { ClassSlice, LabelSlice } from './dfh.models';
+import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel, DfhPropertyProfileView, DfhPropertyProfileViewApi, DfhPropertyView, DfhPropertyViewApi } from '../sdk';
+import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory } from './dfh.actions';
+import { DfhClassSlice, DfhLabelSlice, DfhPropertyProfileViewSlice, DfhPropertyViewSlice } from './dfh.models';
 import { SysConfig } from '../config/sys-config';
 import * as Config from '../../../../../common/config/Config';
-import { ModifyActionMeta } from '../store/actions';
+import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
+import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 
 
 
@@ -18,43 +18,55 @@ export class DfhEpics {
     private notification: NotificationsAPIActions,
     private classApi: DfhClassApi,
     private labelApi: DfhLabelApi,
+    private propProfileApi: DfhPropertyProfileViewApi,
+    private propertyViewApi: DfhPropertyViewApi
   ) { }
 
   public createEpics(): Epic {
-    const classEpicsFactory = new StandardEpicsFactory<ClassSlice, DfhClass>('dfh', 'klass', this.actions.klass, this.notification);
-    const labelEpicsFactory = new StandardEpicsFactory<LabelSlice, DfhLabel>('dfh', 'label', this.actions.label, this.notification);
+    const dfhClassEpicsFactory = new StandardEpicsFactory<DfhClassSlice, DfhClass>('dfh', 'klass', this.actions.klass, this.notification);
+    const dfhLabelEpicsFactory = new StandardEpicsFactory<DfhLabelSlice, DfhLabel>('dfh', 'label', this.actions.label, this.notification);
+    const dfhPropertyViewEpicsFactory = new StandardEpicsFactory<DfhPropertyViewSlice, DfhPropertyView>('dfh', 'property_view', this.actions.property_view, this.notification);
+    const dfhPropertyProfileViewEpicsFactory = new StandardEpicsFactory<DfhPropertyProfileViewSlice, DfhPropertyProfileView>('dfh', 'property_profile_view', this.actions.property_profile_view, this.notification);
 
     return combineEpics(
 
       // Class Loaders
-      classEpicsFactory.createLoadEpic((action) => this.classApi.classesOfProfile(null), ''),
+      dfhClassEpicsFactory.createLoadEpic((meta) => this.classApi.classesOfProfile(null), ''),
+      dfhClassEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classApi.classesOfProjectProfiles(meta.pk),
+        DfhClassActionFactory.CLASSES_OF_PROJECT_PROFILE
+      ),
 
       // Label Loaders
-      labelEpicsFactory.createLoadEpic((action) => this.labelApi.findComplex({
+      dfhLabelEpicsFactory.createLoadEpic((meta) => this.labelApi.findComplex({
         where: ['com_fk_system_type', '=', SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS]
-      }), 'CLASS_LABELS'),
+      }), DfhLabelActionFactory.LABELS_OF_CLASSES),
 
       // Label Loaders
-      labelEpicsFactory.createLoadEpic((action) => this.labelApi.findComplex({
+      dfhLabelEpicsFactory.createLoadEpic((meta) => this.labelApi.findComplex({
         where: ['com_fk_system_type', 'IN', [
           Config.PROPERTY_LABEL_SG,
           Config.PROPERTY_LABEL_PL,
           Config.PROPERTY_LABEL_INVERSED_SG,
           Config.PROPERTY_LABEL_INVERSED_PL
         ]]
-      }), 'PROPERTY_LABELS'),
+      }), DfhLabelActionFactory.LABELS_OF_PROPERTIES),
 
       // Label Upserter
-      labelEpicsFactory.createUpsertEpic<ModifyActionMeta<DfhLabel>>((meta) => {
+      dfhLabelEpicsFactory.createUpsertEpic<ModifyActionMeta<DfhLabel>>((meta) => {
         return this.labelApi.bulkReplaceOrCreate(meta.items)
       }),
 
       // Label Deleter
-      labelEpicsFactory.createDeleteEpic((items) => {
-        return this.labelApi.bulkDelete(items)
-      })
+      dfhLabelEpicsFactory.createDeleteEpic((meta) => {
+        return this.labelApi.bulkDelete(meta.items)
+      }),
 
-    );
+      // Load all property profile views
+      dfhPropertyProfileViewEpicsFactory.createLoadEpic(() => this.propProfileApi.find(), '', ),
+
+      // Load Property View
+      dfhPropertyViewEpicsFactory.createLoadEpic(() => this.propertyViewApi.find(), ''))
+
   }
 
 

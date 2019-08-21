@@ -1,11 +1,12 @@
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { concat, values } from 'ramda';
-import { OperatorFunction, pipe, UnaryFunction } from 'rxjs';
+import { concat, values, sort } from 'ramda';
+import { OperatorFunction, pipe, UnaryFunction, Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 import { FieldList, PeItDetail, PropertyField, RoleDetail, TeEntDetail } from '../state/models';
 import { U } from './util';
 import { EntityVersionsByPk } from '../active-project';
 import { ByPk } from '../store/model';
+import { InfRole } from 'app/core';
 
 type TeEnOrPeItDetail = TeEntDetail | PeItDetail;
 
@@ -125,3 +126,45 @@ export function getSpecificVersion<T>(versions: ByPk<T>, version): T {
   const ver = values(versions).find((v: any) => v.entity_version === version)
   return ver
 }
+
+/**
+ * limits the number of items in array
+ */
+export function limitTo<T>(limit?: number) {
+  return map((items: T[]) => {
+    if (!limit) return items
+    return items.slice(0, limit)
+  })
+}
+
+/**
+ * limits the number of items in array
+ */
+export function limitOffset<T>(limit?: number, offset?: number) {
+  return map((items: T[]) => {
+    if (!limit) return items
+    offset = offset ? offset : 0;
+    const start = limit * offset;
+    const end = start + limit;
+    return items.slice(start, end)
+  })
+}
+
+
+
+export function sortAbc<T>(stringFn: (x: T) => string) {
+  return map((l: T[]) => sort((a, b) => {
+    const textA = stringFn(a).toUpperCase(); // ignore upper and lowercase
+    const textB = stringFn(b).toUpperCase(); // ignore upper and lowercase
+    if (textA < textB) {
+      return -1;
+    }
+    if (textA > textB) {
+      return 1;
+    }
+    // names are equal
+    return 0;
+  }, l)
+  )
+}
+

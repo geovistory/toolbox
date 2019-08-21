@@ -76,11 +76,56 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "findOrCreateInfTextProperty"
+        "findOrCreateInfTextProperty",
+        "findOrCreateInfTextProperties",
+        "findAlternativeTextProperties"
       ]
     }
   ],
   "methods": {
+    "findOrCreateInfTextProperties": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "InfTextProperty"
+          ],
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfTextProperty"
+        ],
+        "root": true
+      },
+      "description": "Find or create information text properties.",
+      "http": {
+        "path": "/find-or-create-many",
+        "verb": "post"
+      }
+    },
     "findOrCreateInfTextProperty": {
       "accepts": [
         {
@@ -117,6 +162,56 @@
       "description": "Find or create a InfTextProperty and update the project relation if needed.",
       "http": {
         "path": "/findOrCreate",
+        "verb": "post"
+      }
+    },
+    "findAlternativeTextProperties": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "fk of the concerned entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkClassField",
+          "type": "number",
+          "required": true,
+          "description": "fk of the class field",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfTextProperty"
+        ],
+        "root": true
+      },
+      "description": "Find all InfTextProperties that are not yet added to the given project.",
+      "http": {
+        "path": "/findAlternativeTextProperties",
         "verb": "post"
       }
     }

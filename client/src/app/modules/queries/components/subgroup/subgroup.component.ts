@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, Optional, Self } from '@angular/core';
 import { flatten, omit, keys, equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, zip } from 'rxjs';
-import { mergeMap, takeUntil, distinctUntilChanged, delay } from 'rxjs/operators';
+import { mergeMap, takeUntil, distinctUntilChanged, delay, startWith, map } from 'rxjs/operators';
 import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { PropertyFilterComponent, propertyFilterRequiredValidator } from '../property-filter/property-filter.component';
 import { PropertyOption, propertiesRequiredValidator } from '../property-select/property-select.component';
@@ -269,22 +269,21 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
 
   ngAfterViewInit() {
 
+    const subgroups$ = this.subgroups.changes.pipe(startWith(this.subgroups), map(() => this.subgroups))
+    const classAndTypeSelects$ = this.classAndTypeSelects.changes.pipe(startWith(this.classAndTypeSelects), map(() => this.classAndTypeSelects))
+    const operatorSelects$ = this.operatorSelects.changes.pipe(startWith(this.operatorSelects), map(() => this.operatorSelects))
+
     // Observe if there is some invalid child components
-    zip<QueryList<SubgroupComponent>, QueryList<ClassAndTypeSelectComponent>, QueryList<PropertyFilterComponent>>
-      (
-      new BehaviorSubject(this.subgroups).merge(this.subgroups.changes),
-      new BehaviorSubject(this.classAndTypeSelects).merge(this.classAndTypeSelects.changes),
-      new BehaviorSubject(this.operatorSelects).merge(this.operatorSelects.changes)
-      ).pipe(
-        mergeMap(qlists => {
-          const validChangedEmitters = flatten(qlists.map((qlist: QueryList<any>) => qlist.map(a => new BehaviorSubject(a.valid).merge(a.validChanged))))
-          return combineLatest(validChangedEmitters as any as Observable<boolean>[])
-        }),
-        takeUntil(this.destroy$)
-      ).subscribe(x => {
-        // if one of the child components is not true (=valid), set valid to false else to true
-        this.setValid((x.filter(y => y !== true).length > 0 ? false : true))
-      })
+    zip(subgroups$, classAndTypeSelects$, operatorSelects$).pipe(
+      mergeMap(qlists => {
+        const validChangedEmitters = flatten(qlists.map((qlist: QueryList<any>) => qlist.map(a => new BehaviorSubject(a.valid).merge(a.validChanged))))
+        return combineLatest(validChangedEmitters as any as Observable<boolean>[])
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe(x => {
+      // if one of the child components is not true (=valid), set valid to false else to true
+      this.setValid((x.filter(y => y !== true).length > 0 ? false : true))
+    })
   }
 
   addSubgroup(i) {

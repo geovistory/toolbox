@@ -247,7 +247,45 @@ module.exports = function (InfTemporalEntity) {
       "include": InfTemporalEntity.getIncludeObject(ofProject, pkProject)
     }
 
-    return InfTemporalEntity.findComplex(filter, cb);
+    return InfTemporalEntity.findComplex(filter, cb)
+    // return InfTemporalEntity.findComplex(filter, (err, res) => {
+    //   if (err) return cb(err)
+
+    //   const promises = []
+    //   res.forEach(teEn => {
+    //     teEn.te_roles.forEach((role, ri) => {
+
+    //       if (
+    //         Object.keys(role.range_temporal_entity).length > 0
+    //         // &&
+    //         // role.range_temporal_entity.pk_entity !== teEn.pk_entity
+    //       ) {
+    //         const promise = new Promise((resolve, reject) => {
+
+
+    //           const filter = {
+    //             "where": ["pk_entity", "=", role.range_temporal_entity.pk_entity],
+    //             "include": InfTemporalEntity.getIncludeObject(ofProject, pkProject)
+    //           }
+
+    //           InfTemporalEntity.findComplex(filter, (err, res) => {
+    //             if (err) return cb(err);
+    //             role.range_temporal_entity = res[0]
+
+    //           })
+
+    //         })
+    //         promises.push(promise);
+    //       }
+    //     })
+    //   })
+
+    //   Promise.all(promises)
+    //     .then(() => {
+    //       cb(false, res)
+    //     })
+    //     .catch(err => cb(err))
+    // });
   }
 
 
@@ -319,16 +357,16 @@ module.exports = function (InfTemporalEntity) {
   }
 
   /**
-   * Internal function to create the include property of 
+   * Internal function to create the include property of
    * a filter object for findComplex()
-   * 
+   *
    * Usage: add the returned object to the include property of a persistent item relation
    * of findComplex() filter, e.g.:
    * {
    *    ...
    *    include: InfPersistentItem.getIncludeObject(true, 123)
    * }
-   * 
+   *
    * @param ofProject {boolean}
    * @param project {number}
    * @returns include object of findComplex filter
@@ -344,6 +382,7 @@ module.exports = function (InfTemporalEntity) {
         "entity_version_project_rels": InfTemporalEntity.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
       }
     }
+
 
 
     return {
@@ -392,6 +431,65 @@ module.exports = function (InfTemporalEntity) {
               "pk_entity": "asc"
             }]
           }
+        }
+      },
+      ingoing_roles: {
+        $relation: {
+          name: 'ingoing_roles',
+          joinType: 'left join'
+        },
+        ...projectJoin,
+        temporal_entity: {
+          $relation: {
+            name: 'temporal_entity',
+            joinType: 'left join'
+          },
+          "te_roles": {
+            "$relation": {
+              "name": "te_roles",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            ...projectJoin,
+            "appellation": {
+              "$relation": {
+                "name": "appellation",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "language": {
+              "$relation": {
+                "name": "language",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "time_primitive": {
+              "$relation": {
+                "name": "time_primitive",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            },
+            "place": {
+              "$relation": {
+                "name": "place",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              }
+            }
+          },
         }
       }
     }

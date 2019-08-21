@@ -21,8 +21,8 @@
 
 
 
-  <table mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true"
-    (matSortChange)="sortData($event)" class="mat-elevation-z1 w-100">
+  <table mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true" (matSortChange)="sortData($event)"
+    class="mat-elevation-z1 w-100">
     <!-- <table class="gv-flex-fh" mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true"
     (matSortChange)="sortData($event)" multiTemplateDataRows class="mat-elevation-z1"> -->
     <!-- Checkbox Column -->
@@ -104,6 +104,18 @@
 
         <button mat-button color="primary" *ngIf="element.subclassOfType" (click)="openControlledVocab(element)"> Manage
           Controlled Vocabulary </button>
+
+      </td>
+    </ng-container>
+
+
+    <!-- Edit -->
+    <ng-container matColumnDef="classConfig">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef > Configuration
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+
+        <button mat-button color="primary" *ngIf="!element.excluded_from_entities" (click)="openClassConfig(element)"> Configure Screens </button>
 
       </td>
     </ng-container>

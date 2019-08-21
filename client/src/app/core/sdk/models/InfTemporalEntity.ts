@@ -16,6 +16,7 @@ export interface InfTemporalEntityInterface {
   "sys_period"?: string;
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
+  ingoing_roles?: InfRole[];
   domain_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
 }
@@ -29,6 +30,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
   "sys_period": string;
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
+  ingoing_roles?: InfRole[];
   domain_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfTemporalEntityInterface) {
@@ -105,6 +107,14 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_temporal_entity'
+        },
+        ingoing_roles: {
+          name: 'ingoing_roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_entity'
         },
         domain_entity_associations: {
           name: 'domain_entity_associations',

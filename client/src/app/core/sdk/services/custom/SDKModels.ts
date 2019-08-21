@@ -6,6 +6,7 @@ import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
 import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
 import { ProQuery } from '../../models/ProQuery';
 import { ProVisual } from '../../models/ProVisual';
+import { ProPropertyLabel } from '../../models/ProPropertyLabel';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
 import { ProProject } from '../../models/ProProject';
@@ -14,6 +15,7 @@ import { ProTextProperty } from '../../models/ProTextProperty';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { DfhClass } from '../../models/DfhClass';
 import { DfhProperty } from '../../models/DfhProperty';
+import { DfhPropertyView } from '../../models/DfhPropertyView';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DfhTextProperty } from '../../models/DfhTextProperty';
 import { DatChunk } from '../../models/DatChunk';
@@ -48,6 +50,7 @@ export class SDKModels {
     SysSystemRelevantClass: SysSystemRelevantClass,
     ProQuery: ProQuery,
     ProVisual: ProVisual,
+    ProPropertyLabel: ProPropertyLabel,
     PubAccount: PubAccount,
     Email: Email,
     ProProject: ProProject,
@@ -56,6 +59,7 @@ export class SDKModels {
     ProInfoProjRel: ProInfoProjRel,
     DfhClass: DfhClass,
     DfhProperty: DfhProperty,
+    DfhPropertyView: DfhPropertyView,
     DfhLabel: DfhLabel,
     DfhTextProperty: DfhTextProperty,
     DatChunk: DatChunk,

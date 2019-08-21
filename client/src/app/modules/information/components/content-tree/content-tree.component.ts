@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
-import { ActiveProjectService, DatDigital, InfEntityAssociation, InfPersistentItem, latestVersion, SysConfig } from 'app/core';
+import { ActiveProjectService, DatDigital, InfEntityAssociation, InfPersistentItem, latestVersion, SysConfig, switchMapOr } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
@@ -176,8 +176,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     if (!pkRange) return new BehaviorSubject([])
     return this.p.inf$.entity_association$.by_fk_info_range$.key(pkRange).pipe(
       map(eas => values(eas).filter(ea => [1317, 1328, 1329, 1216].includes(ea.fk_property))),
-      filter(x => x.length > 0),
-      switchMap((eas) => {
+      // filter(x => x.length > 0),
+      switchMapOr([],(eas) => {
 
         const obs = eas.map(ea => {
           // Observe the children of this node
@@ -202,7 +202,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           }))
         )
       }),
-      startWith([])
+      // startWith([])
     )
   }
 

@@ -14,7 +14,7 @@ import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { takeUntil, first } from 'rxjs/operators';
 import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table/model/columns';
 import * as Conf from '../../../../../../../common/config/Config';
-import { DfhService } from '../../../../core/dfh/dfh.service';
+import { DfhSelector } from '../../../../core/dfh/dfh.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -84,7 +84,8 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   columns: Columns[] = [
     { key: 'dfh_has_domain', title: 'Domain pk' },
     { key: 'domain_standard_label', title: 'Domain' },
-    { key: 'dfh_pk_property', title: 'Property pk' },
+    { key: 'dfh_pk_property', title: 'PK Property' },
+    { key: 'dfh_fk_property_of_origin', title: 'FK Orig. Property' },
     { key: 'property_standard_label', title: 'Property' },
     { key: 'dfh_has_range', title: 'Range pk' },
     { key: 'range_standard_label', title: 'Range' },
@@ -105,7 +106,8 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
   checked = new Set([
     // 'dfh_has_domain',
     'domain_standard_label',
-    // 'dfh_pk_property',
+    'dfh_pk_property',
+    'dfh_fk_property_of_origin',
     'property_standard_label',
     // 'dfh_has_range',
     'range_standard_label',
@@ -130,7 +132,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
     private epics: PropertyListAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
     private keys: KeysPipe,
-    private dfhService: DfhService
+    private dfhService: DfhSelector
   ) {
     super()
     this.items$.pipe(
@@ -140,7 +142,7 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
 
     this.columnsCopy = this.columns;
     this.columns = this.columnsCopy.filter((column) => this.checked.has(column.key));
-    this.dfhService.label.load('PROPERTY_LABELS')
+    this.dfhService.label.loadLabelesOfProperties(null)
   }
 
   quantifierToText(q): string {
@@ -164,7 +166,8 @@ export class PropertyListComponent extends PropertyListAPIActions implements OnI
         range_standard_label: [rangeClass.dfh_identifier_in_namespace, rangeClass.dfh_standard_label].join(' '),
         key: item.key,
         profiles: item.value.property_profile_view.filter(p => p.removed_from_api === false).map(p => p.dfh_profile_label).join('; '),
-        removed_from_profiles: item.value.property_profile_view.filter(p => p.removed_from_api).map(p => p.dfh_profile_label).join('; ')
+        removed_from_profiles: item.value.property_profile_view.filter(p => p.removed_from_api).map(p => p.dfh_profile_label).join('; '),
+        dfh_fk_property_of_origin: item.value.dfh_fk_property_of_origin ? item.value.dfh_fk_property_of_origin : 'null'
       }
     })
   }

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { PropertyField } from 'app/core/state/models';
 import { ClassService } from './class.service';
 import { PropertyService } from './property.service';
 import { RoleService } from './role.service';
-import { U } from 'app/core';
+import { U, InfRole } from 'app/core';
 
 @Injectable()
 export class PropertyFieldListService {
@@ -17,7 +17,7 @@ export class PropertyFieldListService {
   ) { }
 
   //TODO Remove this in favor to initFieldList
-  initChildren(fkClass$, roles$, state$): BehaviorSubject<{ propertyFieldsWithRoles: PropertyField[], ingoingPropertyFields: PropertyField[], outgoingPropertyFields: PropertyField[] }> {
+  initChildren(fkClass$, roles$: Observable<InfRole[]>, state$): BehaviorSubject<{ propertyFieldsWithRoles: PropertyField[], ingoingPropertyFields: PropertyField[], outgoingPropertyFields: PropertyField[] }> {
     const subject: BehaviorSubject<{ propertyFieldsWithRoles: PropertyField[], ingoingPropertyFields: PropertyField[], outgoingPropertyFields: PropertyField[] }> = new BehaviorSubject(null)
 
     fkClass$.subscribe(fkClass => {

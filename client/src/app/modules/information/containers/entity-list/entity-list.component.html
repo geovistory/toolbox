@@ -3,11 +3,8 @@
   <gv-list-drawer-header>
 
     <div title>Your Entities</div>
-    <gv-class-and-type-selector buttons buttonClass="btn-primary btn-sm no-caret mr-0"
-      *ngIf="(p.classPksEnabledInEntities$ | async )&& (p.pkProject$ |async)"
-      [pkClasses]="p.classPksEnabledInEntities$ | async " [pkProject]="(p.pkProject$ |async)"
-      [basePath]="basePath.concat('classAndTypeSelector')" (select)="startCreate($event)" buttonText="+ Add"
-      placement="right" hasFilter="true"></gv-class-and-type-selector>
+
+    <gv-classes-and-types-select buttons enabledIn="entities" (select)="startCreate($event)"></gv-classes-and-types-select>
 
   </gv-list-drawer-header>
 

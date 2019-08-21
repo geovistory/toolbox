@@ -1,4 +1,4 @@
-<div [ngClass]="{'gv-flex-fh':!(showRemoveVerification$ | async)}" [hidden]="(showRemoveVerification$ | async)">
+<div class="gv-flex-fh">
   <as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': !t.showRightArea}" [direction]="'horizontal'"
     gutterSize="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
 
@@ -10,20 +10,13 @@
       <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true);"
         *ngIf="(showHeader$ | async)">
 
-        <!-- <span typeLabel *ngIf="(_type$ | async)?.label">{{(_type$ | async)?.label}}:</span> -->
 
+        <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
+        </gv-onto-class-info>
 
-        <!-- <gv-pe-it-label labels [children]="(_fields$ | async)" [classConfig]="classConfig" [labelInEdit]="labelInEdit"
-          (onLabelChange)="onLabelChange.emit($event)"></gv-pe-it-label> -->
+        <span class="text-muted small ml-2">{{classLabel$ | async}}</span>
 
-
-        <gv-class-info class="text-muted small ml-2" [classConfig]="classConfig" iconPrimary="true">
-        </gv-class-info>
-
-        <div class="ml-3 small text-muted" *ngIf="(_type$ | async)">
-          <gv-type [basePath]="basePath.concat('_type')"></gv-type>
-        </div>
-
+        <gv-type-item class="ml-3 small text-muted" [pkEntity]="pkEntity$|async"></gv-type-item>
 
         <div fxFlex fxLayout="row" fxLayoutAlign="end center">
           <button mat-icon-button [matMenuTriggerFor]="mainMenu">
@@ -31,7 +24,7 @@
           </button>
           <mat-menu #mainMenu="matMenu" xPosition="before">
 
-            <!-- is expression portion -->
+            <!-- toggle onto info -->
             <button mat-menu-item (click)="$event.stopPropagation();">
               <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggle('showOntoInfo');">
                 Ontology Info
@@ -39,10 +32,10 @@
             </button>
 
 
-            <!-- is expression portion or digital -->
+            <!-- remove -->
             <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
             <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
-            <button mat-menu-item (click)="toggleRemoveVerification();" *ngIf="!(isViewMode$ | async)">
+            <button mat-menu-item (click)="openRemoveDialog();" *ngIf="!(isViewMode$ | async)">
               <mat-icon color="warn">delete</mat-icon>
               <span>Remove</span>
             </button>
@@ -56,61 +49,16 @@
 
 
 
-        <!-- Property Tile -->
         <span class="gv-tile" *ngIf="(showProperties$ | async)">
-
-          <div class="gv-pe-it-title mx-2 mt-3">
-
-            <div class="gv-one-liner">
-              <h2>{{title$ | async}}</h2>
-            </div>
-
-            <div class="ml-auto">
-              <button class="btn btn-sm btn-link-gray" (click)="startSelectProperty()"
-                *ngIf="!(isViewMode$ | async) && (selectPropState$ | async) === 'init' && (showAddAPropertyButton$ | async)"
-                [ngClass]="{'invisible' : isolatedChild}">
-                <i class="fa fa-plus"></i> Add a field
-              </button>
-            </div>
-          </div>
-
-          <!-- Tile Body -->
-          <div class="gv-tile-body p-2">
-
-            <!-- Add a property UI -->
-            <div *ngIf="(!isolatedChild)">
-              <!-- Step 2 for adding new Property section -->
-              <gv-add-info-pe-it *ngIf="(selectPropState$ | async) === 'selectProp'" [uiElements]="uiElementsForAddInfo"
-                [classConfig]="classConfig" [addedChildren$]="_fields$" (addOptionSelected)="addOptionSelected($event)"
-                (cancel)="stopSelectProperty()"></gv-add-info-pe-it>
-            </div>
-
-            <!-- List of Fields -->
-            <div *ngFor="let item of (_fields$ | async) | keys | filterByKey:isolatedChild; trackBy:getKey">
-
-              <gv-text-property-field *ngIf="item.value.type === 'TextPropertyField'"
-                [basePath]="basePath.concat('_fields').concat(item.key)"></gv-text-property-field>
-
-              <gv-pe-it-property-field-editable *ngIf="item.value.type === 'PropertyField'" [parentPath]="basePath"
-                [index]="item.key" (onRemovePropertyField)="removePropertyField(item.key)">
-              </gv-pe-it-property-field-editable>
-
-            </div>
+          <div class="gv-one-liner mx-2 mt-3">
+            <h2><span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async}}</span></h2>
           </div>
 
 
-          <!-- <div class="gv-tile">
-
-            <gv-tile-header *ngIf="(showPropertiesHeader$ | async)" (close)="toggle('showProperties')">
-              <span title>
-                New Properties
-              </span>
-            </gv-tile-header>
-
-            <div class="gv-tile-body">
-              <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$"></gv-properties-tree>
-            </div>
-          </div> -->
+          <div class="gv-tile-body px-2">
+            <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$">
+            </gv-properties-tree>
+          </div>
 
         </span>
 
@@ -135,7 +83,8 @@
       }">
       <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
 
-        <mat-tab-group animationDuration="0ms" [selectedIndex]="activeTabIndex$ | async" (selectedIndexChange)="rightTabIndexChange($event)">
+        <mat-tab-group animationDuration="0ms" [selectedIndex]="activeTabIndex$ | async"
+          (selectedIndexChange)="rightTabIndexChange($event)">
           <mat-tab *ngIf="(showMapToggle$ | async)" label="Map and Timeline"> </mat-tab>
           <mat-tab *ngIf="(showSectionListToggle$ | async)" label="Sections & Digital Reproductions"
             (click)="show('showSectionList')"> </mat-tab>
@@ -146,8 +95,8 @@
 
         <div class="gv-tile" *ngIf="(activeTab$ | async) == 'showMap'">
           <div class="gv-tile-body">
-            <gv-map [path]="basePath"></gv-map>
-            <gv-pe-it-timeline [basePath]="basePath.concat('peItTimeline')"></gv-pe-it-timeline>
+            <!-- <gv-map [pkEntity]="pkEntity$|async"></gv-map> -->
+            <!-- <gv-pe-it-timeline [pkEntity]="pkEntity$|async"></gv-pe-it-timeline> -->
           </div>
         </div>
 
@@ -174,21 +123,4 @@
       </gv-detail-content>
     </as-split-area>
   </as-split>
-</div>
-
-<div class="d-flex flex-row justify-content-center" *ngIf="(showRemoveVerification$ | async)">
-  <div>
-    <div class="my-3">
-      <h2>
-        Remove <gv-pe-it-label class="d-inline-block mr-1" labels [children]="(_fields$ | async)"
-          [classConfig]="classConfig" [labelInEdit]="labelInEdit"></gv-pe-it-label>
-      </h2>
-
-      <gv-class-info class="mb-5" classInfo [classConfig]="classConfig" iconPrimary="true"></gv-class-info>
-
-      <p> Are you sure?</p>
-    </div>
-    <button class="btn btn-outline-danger" (click)="onRemove()">Remove</button>
-    <button class="btn btn-outline-secondary ml-2" (click)="toggleRemoveVerification()">Cancel</button>
-  </div>
 </div>

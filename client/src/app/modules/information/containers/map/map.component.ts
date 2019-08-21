@@ -1,5 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
-import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation, Output, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation, Output, EventEmitter, OnInit } from '@angular/core';
 import { IAppState, LoopBackConfig, U } from 'app/core';
 import { Subject, combineLatest, Observable } from 'rxjs';
 import { AcMapComponent, MapLayerProviderOptions, ViewerConfiguration } from '../../../gv-angular-cesium/angular-cesium-fork';
@@ -14,9 +14,10 @@ import { takeUntil, filter, startWith, map, first } from '../../../../../../node
   providers: [ViewerConfiguration],
   encapsulation: ViewEncapsulation.None,
 })
-export class MapComponent implements AfterViewInit, OnDestroy {
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() path: string[];
+  @Input() pkEntity: number;
+  @Input() timeFilter$: Observable<number>;
 
   @Output() close = new EventEmitter<void>();
 
@@ -68,7 +69,9 @@ export class MapComponent implements AfterViewInit, OnDestroy {
 
 
   }
+  ngOnInit() {
 
+  }
 
 
   ngAfterViewInit() {
@@ -113,14 +116,15 @@ export class MapComponent implements AfterViewInit, OnDestroy {
     imgLayers.remove(imgLayers.get(0), true)
 
     // register cursor position changes
-    this.ngRedux.select<number>([...this.path, 'peItTimeline', 'timeLineSettings', 'cursorPosition'])
-      .takeUntil(this.destroy$)
-      .subscribe(pos => {
-        if (pos) {
-          const julianDate = U.CesiumJulianDateFromJulianSecond(pos);
-          viewer.clockViewModel.currentTime = julianDate;
-        }
-      })
+    if (this.timeFilter$) {
+      this.timeFilter$.takeUntil(this.destroy$)
+        .subscribe(pos => {
+          if (pos) {
+            const julianDate = U.CesiumJulianDateFromJulianSecond(pos);
+            viewer.clockViewModel.currentTime = julianDate;
+          }
+        })
+    }
 
   }
 

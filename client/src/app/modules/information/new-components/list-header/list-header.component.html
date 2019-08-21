@@ -1,4 +1,4 @@
-<!-- Toggle Button -->
+<!-- Toggle Button
 <button mat-icon-button (click)="treeControl.isExpanded(listDefinition) ? treeControl.collapse(listDefinition) : treeControl.expand(listDefinition)" [attr.aria-label]="'toggle ' + listDefinition?.name" *ngIf="(itemsCount$ | async) > 0">
   <mat-icon class="mat-icon-rtl-mirror">
     {{treeControl.isExpanded(listDefinition) ? 'expand_more' : 'chevron_right'}}
@@ -20,4 +20,4 @@
 
 <div *ngIf="showAddButton$ | async" class="btn btn-sm btn-link-gray" (click)="addClick.emit()">
   <i class="fa fa-plus"></i> Add
-</div>
+</div> -->
