@@ -50,7 +50,7 @@ const Config = {
     PK_PROJECT_OF_TEMPLATE_PROJECT: 173,
 
     // This project contains default cofigs: class_configs, labels
-    PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT: 375070, // 375669,
+    PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT: 375669,
 
     // This project is the sandbox project that is cloned when a new account is created
     PK_PROJECT_OF_SANDBOX_PROJECT: 375232
