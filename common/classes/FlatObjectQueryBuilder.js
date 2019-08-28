@@ -878,6 +878,15 @@ class FlatObjectQueryBuilder {
         WHERE t1.fk_concerned_entity = tw1.pk_entity
         AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
       ),
+      tw4 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfLanguage')}
+        FROM
+          tw3
+        CROSS JOIN
+          information.v_language t1
+        WHERE t1.pk_entity = tw3.fk_language
+      ),
       ------------------------------------
       --- group parts by model
       ------------------------------------
@@ -928,13 +937,25 @@ class FlatObjectQueryBuilder {
           ) AS t1
         ) as t1
         GROUP BY true
+      ),
+      language AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfLanguage')} as objects
+          FROM (
+            SELECT * FROM tw4
+          ) AS t1
+        ) as t1
+        GROUP BY true
       )
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
           'persistent_item', persistent_item.json,
           'entity_association', entity_association.json,
-          'text_property', text_property.json
+          'text_property', text_property.json,
+          'language', language.json
         )),
         'pro', json_strip_nulls(json_build_object(
           'info_proj_rel', info_proj_rel.json
@@ -945,6 +966,7 @@ class FlatObjectQueryBuilder {
       persistent_item
       LEFT JOIN entity_association ON true
       LEFT JOIN text_property ON true
+      LEFT JOIN language ON true
       LEFT JOIN info_proj_rel ON true
     `
     return { sql, params: this.params }

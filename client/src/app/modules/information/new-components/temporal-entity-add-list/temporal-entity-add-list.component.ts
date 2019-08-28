@@ -3,7 +3,7 @@ import { ActiveProjectService, IAppState } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { SelectionModel } from '../../../../../../node_modules/@angular/cdk/collections';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
-import { first, map, switchMap, takeUntil, shareReplay } from '../../../../../../node_modules/rxjs/operators';
+import { first, map, switchMap, takeUntil, shareReplay, tap, distinctUntilChanged } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
@@ -14,6 +14,7 @@ import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, cre
 import { PaginateByParam } from 'app/core/store/actions';
 import { InfSelector } from '../../../../core/inf/inf.service';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
+import { equals } from 'ramda';
 
 @Component({
   selector: 'gv-temporal-entity-add-list',
@@ -103,6 +104,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
     const alternative = true;
     this.rows$ = combineLatest(pagination$, columns$).pipe(
+      distinctUntilChanged(equals),
       switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
         paginateBy,
         limit,

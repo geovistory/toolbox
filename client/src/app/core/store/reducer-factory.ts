@@ -298,7 +298,7 @@ export class ReducerFactory<Payload, Model> {
           }
         }
 
-        // put the removedItem at path in the group index
+        // delete the removedItem at path in the group index
         groups.forEach(g => {
           const groupKey = this.getGroupKeyOfItem(g.groupByFn, removedItem)
           state = {
@@ -310,6 +310,9 @@ export class ReducerFactory<Payload, Model> {
               }
             }
           }
+          // cleanup paginations
+          state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+
         })
       }
 
@@ -340,19 +343,19 @@ export class ReducerFactory<Payload, Model> {
       }
     })
 
-    // cleanup paginations
-    groups.forEach(g => {
+    // // cleanup paginations
+    // groups.forEach(g => {
 
-      // cleanup groups in group index
-      if (state[g.groupByKey]) {
-        Object.keys(state[g.groupByKey]).forEach(groupKey => {
+    //   // cleanup groups in group index
+    //   if (state[g.groupByKey]) {
+    //     Object.keys(state[g.groupByKey]).forEach(groupKey => {
 
-          state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+    //       state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
 
-        })
-      }
+    //     })
+    //   }
 
-    })
+    // })
 
 
     return state;
@@ -405,13 +408,13 @@ export class ReducerFactory<Payload, Model> {
             }
           }
           if (resetPaginations) {
-            state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+            // if there is some pagination, reset
+            state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey, true);
           }
         })
       }
     })
 
-    // if there is some pagination, reset
 
     return state;
   }
@@ -420,7 +423,7 @@ export class ReducerFactory<Payload, Model> {
   /**
    * resets pagination within a group, e.g. 'pag_by_fk_property'
    */
-  private resetPaginationsByGroup(groupByKey:string, state: any, groupKey: any) {
+  private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
     const paginateBy = pag(groupByKey);
     if (state[paginateBy] && state[paginateBy][groupKey]) {
       state = {
@@ -429,6 +432,7 @@ export class ReducerFactory<Payload, Model> {
           ...state[paginateBy],
           [groupKey]: {
             ...state[paginateBy][groupKey],
+            ...(!isUpsert ? {} : { count: state[paginateBy][groupKey].count + 1 }),
             rows: {},
             loading: {}
           }

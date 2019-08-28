@@ -191,11 +191,13 @@ export class InformationPipesService {
       switchMap(pkProject => this.p.inf$.text_property$.by_fk_concerned_entity__fk_class_field$.key(pkEntity + '_' + listDefinition.fkClassField)
         .pipe(
           map(textPropertyByPk => values(textPropertyByPk)),
-          switchMapOr([], textProperties => combineLatest(textProperties.map(textProperty => combineLatest(
-            this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + textProperty.pk_entity),
-            this.p.inf$.language$.by_pk_entity$.key(textProperty.fk_language)
-          )
-            .pipe(
+          switchMapOr([], textProperties => combineLatest(
+            textProperties.map(textProperty => combineLatest(
+              this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + textProperty.pk_entity)
+                .filter(x => !!x),
+              this.p.inf$.language$.by_pk_entity$.key(textProperty.fk_language)
+                .filter(x => !!x),
+            ).pipe(
               map(([projRel, language]) => {
                 const item: TextPropertyItem = {
                   projRel,
@@ -218,7 +220,7 @@ export class InformationPipesService {
   /**
    * Pipe the temporal entities connected to given entity by roles that are in the current project
    */
-  @spyTag @cache({ refCount: false }) pipeTemporalEntityTableRows<T>(
+  @spyTag pipeTemporalEntityTableRows<T>(
     paginateBy: PaginateByParam[],
     limit: number,
     offset: number,

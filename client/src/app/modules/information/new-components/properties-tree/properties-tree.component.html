@@ -9,7 +9,7 @@
 </mat-tree>
 
 <div *ngIf="(t.showControl$ | async)">
-  <gv-add-role [pkEntity]="pkEntity$ | async"></gv-add-role>
+  <gv-add-role [pkEntity]="pkEntity$ | async" [showOntoInfo$]="showOntoInfo$"></gv-add-role>
 </div>
 
 

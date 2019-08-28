@@ -94,6 +94,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     const columns$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext)
 
     this.rows$ = combineLatest(pagination$, columns$).pipe(
+      distinctUntilChanged(equals),
       switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
         paginateBy,
         limit,

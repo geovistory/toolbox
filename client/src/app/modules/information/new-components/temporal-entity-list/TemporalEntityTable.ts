@@ -10,7 +10,7 @@ export class TemporalEntityTable {
   public dataSource = new MatTableDataSource<TemporalEntityItem>();
   // table view
   dataColumnsMap$ = new BehaviorSubject<{ [key: string]: boolean; }>({});
-  dataColumns$ = new BehaviorSubject<string[]>([]);
+  dataColumns$ = new BehaviorSubject<{ name: string, fieldDefinition: FieldDefinition }[]>([]);
   displayedColumns$: Observable<string[]>;
 
   constructor(public rows$: Observable<TemporalEntityItem[]>, public columDefs$: Observable<FieldDefinition[]>, public destroy$, public listDefinition, customColumns: {
@@ -40,7 +40,8 @@ export class TemporalEntityTable {
         dataColumnsMap[circularCol] = false;
       }
       this.dataColumnsMap$.next(dataColumnsMap);
-      this.dataColumns$.next(Object.keys(dataColumnsMap));
+      const dataColumns = fieldDefinitions.map(fieldDefinition => ({ name: fieldDefinition.label, fieldDefinition }));
+      this.dataColumns$.next(dataColumns);
       this.rows$.pipe(takeUntil(this.destroy$)).subscribe((rows) => {
         this.dataSource.data = rows;
       });

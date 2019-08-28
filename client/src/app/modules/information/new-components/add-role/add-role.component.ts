@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectService, SysConfig, IAppState } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { BehaviorSubject, combineLatest, Subject, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject, of, Observable } from 'rxjs';
 import { first, takeUntil, map } from 'rxjs/operators';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
@@ -20,6 +20,7 @@ export class AddRoleComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() pkEntity: number
+  @Input() showOntoInfo$: Observable<boolean>;
 
   loadingAlternatives$ = new BehaviorSubject<boolean>(false);
 
