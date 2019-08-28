@@ -177,6 +177,7 @@ import { PropertiesTreeService } from './new-components/properties-tree/properti
 import { ClassesAndTypesSelectComponent } from './new-components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTypeComponent } from './new-components/ctrl-type/ctrl-type.component';
 import { TypeItemComponent } from './new-components/type-item/type-item.component';
+import { InformationBasicPipesService } from './new-services/information-basic-pipes.service';
 
 
 
@@ -457,6 +458,7 @@ import { TypeItemComponent } from './new-components/type-item/type-item.componen
     PeItSearchExistingAPIEpics,
 
     InformationPipesService,
+    InformationBasicPipesService,
     TimeSpanService,
     PropertiesTreeService
 

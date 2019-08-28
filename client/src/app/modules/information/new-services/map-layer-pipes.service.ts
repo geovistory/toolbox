@@ -203,7 +203,7 @@ export class MapLayerPipesService {
   }
 
 
-  @spyTag @cache pipeRelatedGeoEntity(pkEntity: number): Observable<InfPersistentItem[]> {
+  @spyTag @cache() pipeRelatedGeoEntity(pkEntity: number): Observable<InfPersistentItem[]> {
     return this.p.inf$.role$.by_fk_temporal_entity$.key(pkEntity).pipe(
       switchMapOr([], (roles) => combineLatest(
         values(roles).map(role => this.p.inf$.persistent_item$.by_pk_entity$.key(role.fk_entity).pipe(
@@ -218,12 +218,12 @@ export class MapLayerPipesService {
    * pipes presences of a persistent item
    * @param pkEntity the pk_entity of the persistent item (usually a Geographical Place or Built Work)
    */
-  @spyTag @cache pipePresences(pkEntity: number): Observable<InfTemporalEntity[]> {
+  @spyTag @cache() pipePresences(pkEntity: number): Observable<InfTemporalEntity[]> {
     // Get the properties leading to presences
     return this.c.pipeInheritedPropertyPks(147)
       .pipe(
         switchMap((props) => combineLatest(
-          props.map(prop => this.b.pipeIngoingRoles(prop, pkEntity).pipe(
+          props.map(prop => this.b.pipeIngoingRolesByProperty(prop, pkEntity).pipe(
             switchMapOr([], (roles) => combineLatest(
               roles.map(role => this.p.inf$.temporal_entity$.by_pk_entity$.key(role.fk_temporal_entity))
             ))
@@ -237,8 +237,8 @@ export class MapLayerPipesService {
    * pipes the place (geo coordinates) of a presence
    * @param pkEntity the pk_entity of the presence
    */
-  @spyTag @cache pipeInfPlaceOfPresence(pkEntity: number): Observable<InfPlace> {
-    return this.b.pipeOutgoingRoles(148, pkEntity).pipe(
+  @spyTag @cache() pipeInfPlaceOfPresence(pkEntity: number): Observable<InfPlace> {
+    return this.b.pipeOutgoingRolesByProperty(148, pkEntity).pipe(
       switchMapOr(null, (roles) => this.p.inf$.place$.by_pk_entity$.key(roles[0].fk_entity)),
     )
   }

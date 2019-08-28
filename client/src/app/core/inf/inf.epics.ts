@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
-import { combineEpics, Epic } from 'redux-observable';
-import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPersistentItemApi, ProInfoProjRelApi, InfTemporalEntity, InfTemporalEntityApi, InfRole, InfRoleApi, InfTextProperty, InfTextPropertyApi } from '../sdk';
-import { InfEntityAssoctiationActionFactory, FindEAByParams, InfActions, LoadByPkAction, InfPersistentItemActionFactory, ContentTreeMeta, InfTemporalEntityActionFactory, SourcesAndDigitalsOfEntityResult, SourcesAndDigitalsOfEntity, InfRoleActionFactory, LoadOutgoingAlternativeRoles, LoadIngoingAlternativeRoles, LoadAlternativeTextProperties, InfTextPropertyActionFactory, AddToProjectWithTeEntActionMeta } from './inf.actions';
-import { infRoot } from './inf.config';
-import { InfEntityAssociationSlice, InfPersistentItemSlice, InfTemporalEntitySlice, InfRoleSlice, InfTextPropertySlice } from './inf.models';
+import { combineEpics, Epic, ofType } from 'redux-observable';
+import { Action } from '../../../../node_modules/redux';
+import { Observable } from '../../../../node_modules/rxjs';
+import { mergeMap } from '../../../../node_modules/rxjs/operators';
 import { DatActions } from '../dat/dat.actions';
-import { InfEpicsFactory } from './inf-epic-factory';
-import { ModifyActionMeta } from '../store/actions';
+import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProActions } from '../pro/pro.actions';
-import { Stower, FlatObject } from '../store/stower';
+import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '../sdk';
+import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../store/actions';
+import { FlatObject, Stower } from '../store/stower';
+import { InfEpicsFactory } from './inf-epic-factory';
+import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindEAByParams, InfActions, InfEntityAssoctiationActionFactory, InfPersistentItemActionFactory, InfRoleActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadOutgoingAlternativeRoles, LoadPaginatedTeEnListMeta, PaginatedTeEnList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from './inf.actions';
+import { infRoot } from './inf.config';
+import { InfEntityAssociationSlice, InfPersistentItemSlice, InfRoleSlice, InfTemporalEntitySlice, InfTextPropertySlice } from './inf.models';
+import { SchemaObject } from '../store/model';
 
 
 @Injectable()
@@ -50,18 +53,30 @@ export class InfEpics {
        * Perstistent Item
        *
        */
-      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkAction>(
+      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkMeta>(
         (meta) => this.peItApi.flatObjectOfProject(meta.pk, meta.pkEntity),
         InfPersistentItemActionFactory.NESTED_BY_PK,
         (results, pk) => {
-
           new Stower(this.infActions, this.datActions, this.proActions).stow(results as FlatObject, pk);
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.persistent_item.flatten(results);
-          // storeFlattened(flattener.getFlattened(), pk);
         }
       ),
-      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkAction>(
+      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkMeta>(
+        (meta) => this.peItApi.ownProperties(meta.pk, meta.pkEntity),
+        InfPersistentItemActionFactory.MINIMAL_BY_PK,
+        (results, pk) => {
+          const schemas = results as any as SchemaObject;
+          // call action to store records
+          Object.keys(schemas).forEach(schema => {
+            let actions;
+            if (schema === 'inf') actions = this.infActions;
+            else if (schema === 'pro') actions = this.proActions;
+            if (actions) Object.keys(schemas[schema]).forEach(model => {
+              actions[model].loadSucceeded(schemas[schema][model], undefined, pk)
+            })
+          })
+        }
+      ),
+      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkMeta>(
         (meta) => this.peItApi.typesOfProject(meta.pk),
         InfPersistentItemActionFactory.TYPES_OF_PROJECT,
         (results, pk) => {
@@ -78,7 +93,7 @@ export class InfEpics {
        * Temporal Entity
        *
        */
-      infTemporalEntityEpicsFactory.createLoadEpic<LoadByPkAction>(
+      infTemporalEntityEpicsFactory.createLoadEpic<LoadByPkMeta>(
         (meta) => this.teEnApi.nestedObjectOfProject(meta.pk, meta.pkEntity),
         InfTemporalEntityActionFactory.NESTED_BY_PK,
         (results, pk) => {
@@ -86,6 +101,34 @@ export class InfEpics {
           flattener.temporal_entity.flatten(results);
           storeFlattened(flattener.getFlattened(), pk);
         }
+      ),
+      /**
+       * Epic to load paginated Temporal Entity List
+       */
+      (action$: FluxActionObservable<any, LoadPaginatedTeEnListMeta>, store) => action$.pipe(
+        ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
+        mergeMap(action => new Observable<Action>((globalActions) => {
+          const meta = action.meta;
+          const apiCal$ = this.teEnApi.temporalEntityList(
+            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.isOutgoing, meta.limit, meta.offset
+          )
+          const pkProject = meta.pk;
+          this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        }))
+      ),
+      /**
+       * Epic to load paginated Alternative Temporal Entity List
+       */
+      (action$: FluxActionObservable<any, LoadPaginatedTeEnListMeta>, store) => action$.pipe(
+        ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)),
+        mergeMap(action => new Observable<Action>((globalActions) => {
+          const meta = action.meta;
+          const apiCal$ = this.teEnApi.alternativeTemporalEntityList(
+            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.isOutgoing, meta.limit, meta.offset
+          )
+          const pkProject = null;
+          this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
+        }))
       ),
 
       infTemporalEntityEpicsFactory.createRemoveEpic(),
@@ -118,7 +161,7 @@ export class InfEpics {
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
       infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
@@ -127,7 +170,7 @@ export class InfEpics {
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
 
@@ -207,4 +250,46 @@ export class InfEpics {
   }
 
 
+  /**
+   * handles the update of store for paginated temporal entity lists.
+   * @param pkProject if null, list is handled as 'repo' list
+   */
+  private handleTemporalEntityListAction<M>(action, infTemporalEntityEpicsFactory: InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>, globalActions, apiCall$: Observable<any>, pkProject) {
+    const meta = action.meta;
+    const pendingKey = meta.addPending;
+    let paginateBy: PaginateByParam[] = [
+      { fk_property: meta.pkProperty },
+      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity }
+    ];
+    // call action to set pagination loading on true
+    this.infActions.role.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
+    // call api to load data
+    apiCall$.subscribe((data: PaginatedTeEnList) => {
+      // call action to store records
+      this.storeSchemaObject(data.schemas, pkProject);
+      // call action to store pagination
+      this.infActions.role.loadPageSucceeded(data.paginatedRoles, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+      // call action to conclude the pending request
+      infTemporalEntityEpicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
+    }, error => {
+      // call action to handle error
+      infTemporalEntityEpicsFactory.onError(globalActions, error, pendingKey, pkProject);
+    });
+  }
+
+  private storeSchemaObject(schemas: SchemaObject, pkProject) {
+    if (schemas && Object.keys(schemas).length > 0) {
+      Object.keys(schemas).forEach(schema => {
+        let actions;
+        if (schema === 'inf')
+          actions = this.infActions;
+        else if (schema === 'pro')
+          actions = this.proActions;
+        if (actions)
+          Object.keys(schemas[schema]).forEach(model => {
+            actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
+          });
+      });
+    }
+  }
 }

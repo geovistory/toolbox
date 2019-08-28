@@ -4,7 +4,7 @@ import { Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { first, takeUntil, map } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService, InfRole, InfTextProperty } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { ItemList, ListDefinition, Item, RoleItemBasics, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { ItemList, ListDefinition, Item, BasicRoleItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { MatSelectionList, MatListOption, MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
@@ -83,7 +83,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       )
     }
     else {
-      const roles: InfRole[] = this.selection.selected.map(option => (option as RoleItemBasics).role);
+      const roles: InfRole[] = this.selection.selected.map(option => (option as BasicRoleItem).role);
       this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.role.upsert(roles, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
           this.t.showControl$.next(null)

@@ -11,9 +11,6 @@ export interface InfTemporalEntityInterface {
   "fk_class": number;
   "notes"?: string;
   "pk_entity"?: number;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
   ingoing_roles?: InfRole[];
@@ -25,9 +22,6 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
   "fk_class": number;
   "notes": string;
   "pk_entity": number;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
   ingoing_roles?: InfRole[];
@@ -77,18 +71,6 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

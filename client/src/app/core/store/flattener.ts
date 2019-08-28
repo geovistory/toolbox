@@ -218,8 +218,14 @@ export class Flattener {
   }
 }
 
-export const storeFlattened = (flattened: FlattenerInterface, pk?) => {
+export const storeFlattened = (flattened: FlattenerInterface, pk?, type?: 'LOAD' | 'UPSERT') => {
   values(flattened).forEach(model => {
-    if (model.items) model.actions.loadSucceeded(model.items, undefined, pk)
+    if (model.items) {
+      if (type === 'UPSERT') {
+        model.actions.upsertSucceeded(model.items, undefined, pk)
+      } else {
+        model.actions.loadSucceeded(model.items, undefined, pk)
+      }
+    }
   })
 }

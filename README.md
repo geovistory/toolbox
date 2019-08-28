@@ -28,5 +28,5 @@ The common files provide:
 ## Client
 
 The Angular client:
-- GUI including app routing (so all urls are mapped by client)
+- GUI is a reactive single page app app (so all urls are mapped by client)
 - (In terms of SEO we may need to enable angular server side rendering, so that search engines get static html pages)

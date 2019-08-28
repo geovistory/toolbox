@@ -7,9 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService, ListType, SDKStorage, Tab } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { BasicService } from '../../../../core/basic/basic.service';
+import { InfActions } from '../../../../core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
-import { BasicService } from '../../../../core/basic/basic.service';
 
 export interface TabLayoutComponentInterface {
   t: TabLayout
@@ -137,6 +138,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     public p: ActiveProjectService,
     private activatedRoute: ActivatedRoute,
     private sdkStorage: SDKStorage,
+    private inf: InfActions,
     private basic: BasicService // this initiates the question if geolocalization is allowed
   ) {
 

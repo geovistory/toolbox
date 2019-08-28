@@ -3,6 +3,7 @@
 const Promise = require('bluebird');
 const Config = require('../config/Config');
 const _ = require('lodash')
+const helpers = require('../helpers');
 
 const toData = (prop) => {
   return typeof prop === 'function' ? prop() : prop;
@@ -66,8 +67,8 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
-                res.domain_pe_it = resultingPeIt;
+                let res = resultingEas[0];
+                res.domain_pe_it = helpers.toObject(resultingPeIt);
 
                 resolve([res]);
 
@@ -98,8 +99,8 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
-                res.range_pe_it = resultingPeIt;
+                let res = resultingEas[0];
+                res.range_pe_it = helpers.toObject(resultingPeIt);
 
                 resolve([res]);
 
@@ -130,8 +131,8 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
-                res.range_chunk = resultingObject;
+                let res = resultingEas[0];
+                res.range_chunk = helpers.toObject(resultingObject);
 
                 resolve([res]);
 
@@ -160,8 +161,8 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
-                res.domain_chunk = resultingObject;
+                let res = resultingEas[0];
+                res.domain_chunk = helpers.toObject(resultingObject);
 
                 resolve([res]);
 

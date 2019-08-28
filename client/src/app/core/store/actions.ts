@@ -1,16 +1,27 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, U } from 'app/core';
+import { IAppState, U, InfPersistentItem, InfRole, InfAppellation, InfTemporalEntity, InfTimePrimitive, InfPlace, ProInfoProjRel } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
+import { ActionsObservable } from '../../../../node_modules/redux-observable';
 
 export interface LoadActionMeta { addPending: string, pk?: number }
 export interface ModifyActionMeta<Model> { items: Model[], addPending: string, pk?: number }
 export interface SucceedActionMeta<Model> { items: Model[], removePending: string, pk?: number }
 export interface FailActionMeta { removePending: string, pk?: number }
 
+export interface PaginateByParam { [key: string]: number }
+export interface LoadPageMeta { paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number }
+export interface LoadPageSucceededMeta { pks: number[], count: number, paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number }
+
+
+
 export interface ActionResultObservable<Model> { pending$: Observable<boolean>, resolved$: Observable<SucceedActionMeta<Model>>, key: string }
+
+export type FluxActionObservable<Payload, Meta> = ActionsObservable<FluxStandardAction<Payload, Meta>>
+
+
 
 /**
  * A: Action Type (e.g. DfhAction)
@@ -50,6 +61,19 @@ export class StandardActionsFactory<Payload, Model> {
    * @param pk is used for facetting
    */
   failed: (error, removePending: string, pk?: number) => void;
+
+
+  /**
+   * @param pk is used for facetting
+   */
+  loadPage: (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
+
+  /**
+ * @param pk is used for facetting
+ */
+  loadPageSucceeded: (pks: number[], count: number, paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
+  loadPageFailed: (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
+
 
   actionPrefix: string;
   modelName: string;
@@ -148,23 +172,37 @@ export class StandardActionsFactory<Payload, Model> {
       this.ngRedux.dispatch(action)
     }
 
+
+    this.loadPage = (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => {
+      const action: FluxStandardAction<Payload, LoadPageMeta> = ({
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE',
+        meta: { paginateBy, limit, offset, pk },
+        payload: null,
+      })
+      this.ngRedux.dispatch(action)
+    }
+
+    this.loadPageSucceeded = (pks: number[], count: number, paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => {
+      const action: FluxStandardAction<Payload, LoadPageSucceededMeta> = ({
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
+        meta: { pks, paginateBy, count, limit, offset, pk },
+        payload: null,
+      })
+      this.ngRedux.dispatch(action)
+    }
+
+    this.loadPageFailed = (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => {
+      const action: FluxStandardAction<Payload, LoadPageMeta> = ({
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_FAILED',
+        meta: { paginateBy, limit, offset, pk },
+        payload: null,
+      })
+      this.ngRedux.dispatch(action)
+    }
+
     return this;
   }
 
 }
 
-/**
- * This class combines all the actions that are considered
- * to be root actions.
- *
- * Root actions are actions executed on the root slice of
- * the store (IAppState).
- *
- * This class is usefull to call rootActions from Components
- * and Epics that are connected to a substore and that do not
- * know the RootActions per se.
- */
-
-export class RootActions extends LoadingBarActions {
-
-}
+export interface SchemaObjectLoadActionMeta { removePending: string, pk?: number }

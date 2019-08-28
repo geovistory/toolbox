@@ -10,10 +10,6 @@ export interface InfAppellationInterface {
   "fk_class": number;
   "string"?: string;
   "pk_entity"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   entity_version_project_rels?: ProInfoProjRel[];
   roles?: InfRole[];
 }
@@ -23,10 +19,6 @@ export class InfAppellation implements InfAppellationInterface {
   "fk_class": number;
   "string": string;
   "pk_entity": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   entity_version_project_rels?: ProInfoProjRel[];
   roles?: InfRole[];
   constructor(data?: InfAppellationInterface) {
@@ -77,22 +69,6 @@ export class InfAppellation implements InfAppellationInterface {
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

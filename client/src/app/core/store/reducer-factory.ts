@@ -1,8 +1,8 @@
 import { U } from "app/core";
 import { FluxStandardAction } from "flux-standard-action";
-import { clone, indexBy, mergeDeepRight, omit, values, equals } from "ramda";
+import { clone, equals, indexBy, omit, values } from "ramda";
 import { combineReducers } from "redux";
-import { ByPk } from "./model";
+import { LoadPageMeta, PaginateByParam, LoadPageSucceededMeta } from "./actions";
 
 
 
@@ -61,94 +61,164 @@ export class ReducerFactory<Payload, Model> {
         return this.enFacette(modelName, config, action, innerState, outerState);
       }
 
-      switch (action.type) {
-        case actionPrefix + '.' + modelName + '::LOAD':
+      if (action.type === actionPrefix + '.' + modelName + '::LOAD') {
 
-          state = facette(action, state, (innerState) => ({
-            // TODO refactor this for partial lodings
-            ...omit([this.by(config.indexBy.keyInStore)], innerState),
-            loading: true
-          }));
+        state = facette(action, state, (innerState) => ({
+          // TODO refactor this for partial lodings
+          ...omit([by(config.indexBy.keyInStore)], innerState),
+          loading: true
+        }));
 
-          break;
-
-
-        case actionPrefix + '.' + modelName + '::LOAD_SUCCEEDED':
-          // If action state differs from
-          state = facette(action, state, (innerState) => (
-            {
-              ...this.mergeItemsInState(config, innerState, action),
-              loading: false
-            }))
-          break;
+      }
 
 
-        case actionPrefix + '.' + modelName + '::UPSERT':
-          state = facette(action, state, (innerState) => ({
-            ...innerState,
-            [this.updatingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
-          }))
-          break;
-
-        case actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED':
-          state = facette(action, state, (innerState) => ({
-            ... this.mergeItemsInState(config, innerState, action),
-            [this.updatingBy(config.indexBy.keyInStore)]:
-              omit(values(this.indexKeyObject(action, config)), innerState[this.updatingBy(config.indexBy.keyInStore)])
-          }))
-          break;
-
-        case actionPrefix + '.' + modelName + '::DELETE':
-          state = facette(action, state, (innerState) => ({
-            ...innerState,
-            [this.deletingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
-          }));
-          break;
-
-        case actionPrefix + '.' + modelName + '::DELETE_SUCCEEDED':
-
-          const deletingKey = this.deletingBy(config.indexBy.keyInStore)
-          state = facette(action, state, (innerState) => {
-            innerState = {
-              ...this.deleteItemsFromState(config, action, innerState),
-              [deletingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.deletingBy(config.indexBy.keyInStore)])
-            }
-            if (!Object.keys(innerState[deletingKey]).length) innerState = omit([deletingKey], innerState);
-            return innerState;
-          })
-
-          break;
-
-        case actionPrefix + '.' + modelName + '::REMOVE':
-          state = facette(action, state, (innerState) => ({
-            ...innerState,
-            [this.removingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
-          }));
-          break;
-
-        case actionPrefix + '.' + modelName + '::REMOVE_SUCCEEDED':
-
-          const removingKey = this.removingBy(config.indexBy.keyInStore)
-          state = facette(action, state, (innerState) => {
-            innerState = {
-              ...this.deleteItemsFromState(config, action, innerState),
-              [removingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.removingBy(config.indexBy.keyInStore)])
-            }
-            if (!Object.keys(innerState[removingKey]).length) innerState = omit([removingKey], innerState);
-            return innerState;
-          })
-          break;
-
-        case actionPrefix + '.' + modelName + '::FAILED':
-
-
-          state = facette(action, state, (innerState) => ({
-            ...innerState,
-            ...omit([this.by(config.indexBy.keyInStore)], innerState),
+      else if (action.type === actionPrefix + '.' + modelName + '::LOAD_SUCCEEDED') {
+        // If action state differs from
+        state = facette(action, state, (innerState) => (
+          {
+            ...this.mergeItemsInState(config, innerState, action),
             loading: false
-          }));
+          }))
+      }
 
-          break;
+
+      else if (action.type === actionPrefix + '.' + modelName + '::UPSERT') {
+        state = facette(action, state, (innerState) => ({
+          ...innerState,
+          [this.updatingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
+        }))
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED') {
+        state = facette(action, state, (innerState) => ({
+          ... this.mergeItemsInState(config, innerState, action, true),
+          [this.updatingBy(config.indexBy.keyInStore)]:
+            omit(values(this.indexKeyObject(action, config)), innerState[this.updatingBy(config.indexBy.keyInStore)])
+        }))
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::DELETE') {
+        state = facette(action, state, (innerState) => ({
+          ...innerState,
+          [this.deletingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
+        }));
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::DELETE_SUCCEEDED') {
+
+        const deletingKey = this.deletingBy(config.indexBy.keyInStore)
+        state = facette(action, state, (innerState) => {
+          innerState = {
+            ...this.deleteItemsFromState(config, action, innerState),
+            [deletingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.deletingBy(config.indexBy.keyInStore)])
+          }
+          if (!Object.keys(innerState[deletingKey]).length) innerState = omit([deletingKey], innerState);
+          return innerState;
+        })
+
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::REMOVE') {
+        state = facette(action, state, (innerState) => ({
+          ...innerState,
+          [this.removingBy(config.indexBy.keyInStore)]: this.indexKeyObject(action, config)
+        }));
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::REMOVE_SUCCEEDED') {
+
+        const removingKey = this.removingBy(config.indexBy.keyInStore)
+        state = facette(action, state, (innerState) => {
+          innerState = {
+            ...this.deleteItemsFromState(config, action, innerState),
+            [removingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.removingBy(config.indexBy.keyInStore)])
+          }
+          if (!Object.keys(innerState[removingKey]).length) innerState = omit([removingKey], innerState);
+          return innerState;
+        })
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::FAILED') {
+
+        state = facette(action, state, (innerState) => ({
+          ...innerState,
+          ...omit([by(config.indexBy.keyInStore)], innerState),
+          loading: false
+        }));
+
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE') {
+        const meta = action.meta as any as LoadPageMeta;
+        const paginateBy = paginatedBy(paginateName(meta.paginateBy))
+        const key = meta.paginateBy.map(p => values(p)[0]).join('_')
+        const fromTo = getFromTo(meta.limit, meta.offset);
+
+        state = facette(action, state, (innerState) => ({
+          ...innerState,
+          [paginateBy]: {
+            ...innerState[paginateBy],
+            [key]: {
+              ...(innerState[paginateBy] || {})[key],
+              loading: {
+                ...((innerState[paginateBy] || {})[key] || {}).loading,
+                [fromTo]: true
+              }
+            }
+          }
+        }));
+      }
+      else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_FAILED') {
+        const meta = action.meta as any as LoadPageMeta;
+        const paginateBy = paginatedBy(paginateName(meta.paginateBy))
+        const key = paginateKey(meta.paginateBy)
+        const fromTo = getFromTo(meta.limit, meta.offset);
+
+        state = facette(action, state, (innerState) => ({
+          ...innerState,
+          [paginateBy]: {
+            ...innerState[paginateBy],
+            [key]: {
+              ...(innerState[paginateBy] || {})[key],
+              loading: {
+                ...((innerState[paginateBy] || {})[key] || {}).loading,
+                [fromTo]: false
+              }
+            }
+          }
+        }));
+      }
+
+      else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_SUCCEEDED') {
+        const meta = action.meta as any as LoadPageSucceededMeta;
+        const paginateBy = paginatedBy(paginateName(meta.paginateBy))
+        const key = paginateKey(meta.paginateBy)
+        const start = getStart(meta.limit, meta.offset);
+        const fromTo = getFromTo(meta.limit, meta.offset);
+        const rows = {}
+        if (meta.pks) {
+          meta.pks.forEach((pk, i) => {
+            rows[start + i] = pk;
+          })
+        }
+        state = facette(action, state, (innerState) => ({
+          ...innerState,
+          [paginateBy]: {
+            ...innerState[paginateBy],
+            [key]: {
+              ...(innerState[paginateBy] || {})[key],
+              count: meta.count || 0,
+              rows: {
+                ...((innerState[paginateBy] || {})[key] || {}).rows,
+                ...rows
+              },
+              loading: {
+                ...((innerState[paginateBy] || {})[key] || {}).loading,
+                [fromTo]: false
+              }
+            }
+          }
+        }));
 
       }
 
@@ -159,10 +229,11 @@ export class ReducerFactory<Payload, Model> {
     return reducer;
   }
 
-  by = (name: string) => 'by_' + name;
-  updatingBy = (name: string) => 'updating_' + this.by(name);
-  deletingBy = (name: string) => 'deleting_' + this.by(name);
-  removingBy = (name: string) => 'removing_' + this.by(name);
+
+  updatingBy = (name: string) => 'updating_' + by(name);
+  deletingBy = (name: string) => 'deleting_' + by(name);
+  removingBy = (name: string) => 'removing_' + by(name);
+
 
 
   private deFacette(modelName: string, config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; pk?: number; }>, outerState: any, state: {}) {
@@ -197,38 +268,6 @@ export class ReducerFactory<Payload, Model> {
     else return false;
   }
 
-  // private deleteItemsFromState(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; }>, state: {}) {
-  //   const iKey = this.by(config.indexBy.keyInStore);
-  //   const keysToOmit = action.meta.items.map(item => config.indexBy.indexByFn(item));
-  //   state = {
-  //     ...state,
-  //     [iKey]: omit(keysToOmit, state[iKey])
-  //   };
-  //   if (config.groupBy && config.groupBy.length) {
-  //     config.groupBy.forEach(i => {
-  //       const gkey = this.by(i.keyInStore);
-  //       const g = {};
-  //       action.meta.items.forEach(item => {
-  //         try {
-  //           g[i.groupByFn(item)] = true;
-  //         }
-  //         catch (e) { }
-  //       });
-  //       const groupsToClean = Object.keys(g);
-  //       const gKey = clone(state[gkey]);
-  //       groupsToClean.forEach(group => {
-  //         gKey[group] = omit(keysToOmit, gKey[group]);
-  //         if (!Object.keys(gKey[group]).length)
-  //           delete gKey[group];
-  //       });
-  //       state = {
-  //         ...state,
-  //         [gkey]: gKey
-  //       };
-  //     });
-  //   }
-  //   return state;
-  // }
 
 
   deleteItemsFromState(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; }>, state) {
@@ -236,10 +275,10 @@ export class ReducerFactory<Payload, Model> {
     // let state = {}
     const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
     const groups = groupBys.map(i => ({
-      groupIndexKey: this.by(i.keyInStore),
+      groupByKey: by(i.keyInStore),
       groupByFn: i.groupByFn,
     }))
-    const mainIndexKey = this.by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
+    const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
 
     items.forEach((removedItem) => {
       // get path segments of new item
@@ -259,18 +298,21 @@ export class ReducerFactory<Payload, Model> {
           }
         }
 
-        // put the removedItem at path in the group index
+        // delete the removedItem at path in the group index
         groups.forEach(g => {
           const groupKey = this.getGroupKeyOfItem(g.groupByFn, removedItem)
           state = {
             ...state,
-            [g.groupIndexKey]: {
-              ...state[g.groupIndexKey],
+            [g.groupByKey]: {
+              ...state[g.groupByKey],
               [groupKey]: {
-                ...omit([itemKey], (state[g.groupIndexKey] || {})[groupKey])
+                ...omit([itemKey], (state[g.groupByKey] || {})[groupKey])
               }
             }
           }
+          // cleanup paginations
+          state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+
         })
       }
 
@@ -285,61 +327,50 @@ export class ReducerFactory<Payload, Model> {
     groups.forEach(g => {
 
       // cleanup groups in group index
-      Object.keys(state[g.groupIndexKey]).forEach(groupKey => {
+      Object.keys(state[g.groupByKey]).forEach(groupKey => {
 
-        if (Object.keys(state[g.groupIndexKey][groupKey]).length < 1) {
+        if (Object.keys(state[g.groupByKey][groupKey]).length < 1) {
           state = {
             ...state,
-            [g.groupIndexKey]: omit([groupKey], state[g.groupIndexKey])
+            [g.groupByKey]: omit([groupKey], state[g.groupByKey])
           }
         }
       })
 
       // cleanup group index
-      if (Object.keys(state[g.groupIndexKey]).length < 1) {
-        state = { ...omit([g.groupIndexKey], state) }
+      if (Object.keys(state[g.groupByKey]).length < 1) {
+        state = { ...omit([g.groupByKey], state) }
       }
     })
+
+    // // cleanup paginations
+    // groups.forEach(g => {
+
+    //   // cleanup groups in group index
+    //   if (state[g.groupByKey]) {
+    //     Object.keys(state[g.groupByKey]).forEach(groupKey => {
+
+    //       state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+
+    //     })
+    //   }
+
+    // })
+
 
     return state;
   }
 
-
-  /**
-   * This function is there to merge new items in the store including its indexes
-   *
-   * It bundles the logic for storing the results of a find, update or insert requests
-   */
-  // private mergeItemsInState(config: ReducerConfig, state: {}, action: FluxStandardAction<Payload, { items: Model[]; }>) {
-  //   const key = this.by(config.indexBy.keyInStore);
-  //   state = {
-  //     ...state,
-  //     [key]: mergeDeepRight(state[key], indexBy(config.indexBy.indexByFn, action.meta.items)),
-  //   };
-  //   if (config.groupBy && config.groupBy.length) {
-  //     config.groupBy.forEach(i => {
-  //       const key = this.by(i.keyInStore);
-  //       state = {
-  //         ...state,
-  //         [key]: mergeDeepRight(state[key], this.groupBy(action.meta.items, i.groupByFn, config.indexBy.indexByFn)),
-  //       };
-  //     });
-  //   }
-  //   return state;
-  // }
-
-  mergeItemsInState(config: ReducerConfig, state, action: FluxStandardAction<Payload, { items: Model[]; }>) {
+  mergeItemsInState(config: ReducerConfig, state, action: FluxStandardAction<Payload, { items: Model[]; }>, resetPaginations = false) {
     const items = action.meta.items;
-    // let state = {}
     const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
     const groups = groupBys.map(i => ({
-      groupIndexKey: this.by(i.keyInStore),
+      groupByKey: by(i.keyInStore),
       groupByFn: i.groupByFn,
-      // group: this.groupBy(action.meta.items, i.groupByFn, config.indexBy.indexByFn)
     }))
     items.forEach((newItem) => {
       // get path segments of new item
-      const mainIndexKey = this.by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
+      const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
       const itemKey = config.indexBy.indexByFn(newItem); // second segment e.g. '807060'
 
       // get old item, if exists
@@ -368,22 +399,48 @@ export class ReducerFactory<Payload, Model> {
           const groupKey = this.getGroupKeyOfItem(g.groupByFn, itemToSet)
           state = {
             ...state,
-            [g.groupIndexKey]: {
-              ...state[g.groupIndexKey],
+            [g.groupByKey]: {
+              ...state[g.groupByKey],
               [groupKey]: {
-                ...(state[g.groupIndexKey] || {})[groupKey],
+                ...(state[g.groupByKey] || {})[groupKey],
                 [itemKey]: itemToSet
               }
             }
           }
+          if (resetPaginations) {
+            // if there is some pagination, reset
+            state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey, true);
+          }
         })
       }
-
-
     })
+
+
     return state;
   }
 
+
+  /**
+   * resets pagination within a group, e.g. 'pag_by_fk_property'
+   */
+  private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
+    const paginateBy = pag(groupByKey);
+    if (state[paginateBy] && state[paginateBy][groupKey]) {
+      state = {
+        ...state,
+        [paginateBy]: {
+          ...state[paginateBy],
+          [groupKey]: {
+            ...state[paginateBy][groupKey],
+            ...(!isUpsert ? {} : { count: state[paginateBy][groupKey].count + 1 }),
+            rows: {},
+            loading: {}
+          }
+        }
+      };
+    }
+    return state;
+  }
 
   /**
    * Creates object where the key returned by the configured indexByFn
@@ -419,7 +476,7 @@ export class ReducerFactory<Payload, Model> {
 
 
 
-  private getGroupKeyOfItem(groupByFn: (item: any) => string, item: any) {
+  private getGroupKeyOfItem(groupByFn: (item: any) => string, item: any): string {
     let groupKey
     try {
       groupKey = groupByFn(item);
@@ -427,4 +484,24 @@ export class ReducerFactory<Payload, Model> {
     catch (error) { }
     return groupKey;
   }
+}
+
+export const by = (name: string) => 'by_' + name;
+export const paginateName = (pagBy: PaginateByParam[]) => pagBy.map(p => Object.keys(p)[0]).join('__');
+
+export const pag = (name: string) => 'pag_' + name;
+export const paginatedBy = (name: string) => pag(by(name));
+
+export const paginateKey = (pagBy: PaginateByParam[]) => pagBy.map(p => values(p)[0]).join('_');
+
+export function getFromTo(limit: number, offset: number) {
+  return getStart(limit, offset) + '_' + getEnd(limit, offset);
+}
+
+export function getEnd(limit: number, offset: number) {
+  return getStart(limit, offset) + limit;
+}
+
+export function getStart(limit: number, offset: number) {
+  return offset;
 }

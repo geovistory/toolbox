@@ -1,6 +1,7 @@
 'use strict';
 const _ = require('lodash')
 const Promise = require('bluebird');
+const helpers = require('../helpers');
 
 module.exports = function (InfRole) {
 
@@ -147,19 +148,19 @@ module.exports = function (InfRole) {
         //create the temporal_entity first
         const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
         return InfTemporalEntity.findOrCreateInfTemporalEntity(projectId, requestedRole.temporal_entity, ctxWithoutBody)
-          .then((resultingTeEnts) => {
+          .then((resultingEntities) => {
 
-            const resultingTeEnt = resultingTeEnts[0];
+            const resultingEntity = resultingEntities[0];
 
             // … prepare the Role to create
-            dataObject.fk_temporal_entity = resultingTeEnt.pk_entity;
+            dataObject.fk_temporal_entity = resultingEntity.pk_entity;
 
             // call the api to find or create the role that points to the teEnt
 
             InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
               .then((roles) => {
-                let res = roles[0].toJSON()
-                res.temporal_entity = resultingTeEnt;
+                let res = roles[0]
+                res.temporal_entity = helpers.toObject(resultingEntity);
                 resolve([res]);
               })
               .catch(err => reject(err))
@@ -177,18 +178,18 @@ module.exports = function (InfRole) {
 
         // find or create the peIt and the role pointing to it
         return InfPersistentItem.findOrCreatePeIt(projectId, requestedRole.persistent_item, ctxWithoutBody)
-          .then((resultingPeIts) => {
+          .then((resultingEntities) => {
 
-            const resultingPeIt = resultingPeIts[0];
+            const resultingEntity = resultingEntities[0];
 
             // … prepare the Role to create
-            dataObject.fk_entity = resultingPeIt.pk_entity;
+            dataObject.fk_entity = resultingEntity.pk_entity;
 
             return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
               .then((resultingRoles) => {
 
-                let res = resultingRoles[0].toJSON();
-                res.persistent_item = resultingPeIt.toJSON();
+                let res = resultingRoles[0];
+                res.persistent_item = helpers.toObject(resultingEntity);
 
                 resolve([res]);
 
@@ -216,8 +217,8 @@ module.exports = function (InfRole) {
             return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
               .then((resultingRoles) => {
 
-                let res = resultingRoles[0].toJSON();
-                res.place = resultingEntity.toJSON();
+                let res = resultingRoles[0];
+                res.place = helpers.toObject(resultingEntity);
 
                 resolve([res]);
 
@@ -244,8 +245,8 @@ module.exports = function (InfRole) {
               return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
                 .then((resultingRoles) => {
 
-                  let res = resultingRoles[0].toJSON();
-                  res.appellation = resultingEntity.toJSON();
+                  let res = resultingRoles[0];
+                  res.appellation = helpers.toObject(resultingEntity);
 
                   resolve([res]);
 
@@ -275,8 +276,8 @@ module.exports = function (InfRole) {
             return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
               .then((resultingRoles) => {
 
-                let res = resultingRoles[0].toJSON();
-                res.language = resultingEntity.toJSON();
+                let res = resultingRoles[0];
+                res.language = helpers.toObject(resultingEntity);
 
                 resolve([res]);
 
@@ -304,8 +305,8 @@ module.exports = function (InfRole) {
             return InfRole._findOrCreateByValue(InfRole, projectId, dataObject, requestedRole, ctxWithoutBody)
               .then((resultingRoles) => {
 
-                let res = resultingRoles[0].toJSON();
-                res.time_primitive = resultingEntity.toJSON();
+                let res = resultingRoles[0];
+                res.time_primitive = helpers.toObject(resultingEntity);
 
                 resolve([res]);
 
@@ -474,10 +475,10 @@ module.exports = function (InfRole) {
 
     const findThem = function (err, roles) {
 
-      const entitiesInProj = []
+      const rolesInProj = []
 
       for (var i = 0; i < roles.length; i++) {
-        entitiesInProj.push(roles[i].pk_entity)
+        rolesInProj.push(roles[i].pk_entity)
       }
 
       const filter = {
@@ -491,24 +492,20 @@ module.exports = function (InfRole) {
           "pk_entity": "asc"
         }],
         "include": {
-
           "language": {
             "$relation": {
               "name": "language",
               "joinType": "left join",
-              //"where": ["is_community_favorite", "=", "true"],
               "orderBy": [{
                 "pk_entity": "asc"
               }]
             }
-            //,...innerJoinThisProject, // … get project's version
 
           },
           "appellation": {
             "$relation": {
               "name": "appellation",
               "joinType": "left join",
-              //  "where": ["is_community_favorite", "=", "true"],
               "orderBy": [{
                 "pk_entity": "asc"
               }]
@@ -536,8 +533,8 @@ module.exports = function (InfRole) {
         }
       };
 
-      if (entitiesInProj.length > 0) {
-        filter.where = filter.where.concat(["and", "pk_entity", "NOT IN", entitiesInProj])
+      if (rolesInProj.length > 0) {
+        filter.where = filter.where.concat(["and", "pk_entity", "NOT IN", rolesInProj])
       }
 
       return InfRole.findComplex(filter, cb);

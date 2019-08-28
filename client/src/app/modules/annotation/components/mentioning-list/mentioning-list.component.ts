@@ -13,6 +13,7 @@ import { InfActions } from '../../../../core/inf/inf.actions';
 import { ByPk } from '../../../../core/store/model';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
+import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
 
 
 // this is not for state, only for the table view
@@ -195,7 +196,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
           mergeMap((rows) => {
             const ranges = rows.map(row => row.entityAssociation.fk_info_range)
             const pks = flatten(ranges) as any as number[]; // https://github.com/types/npm-ramda/issues/356
-            return combineLatest(pks.map(pk => this.p.streamEntityPreview(pk)))
+            return combineLatestOrEmpty(pks.map(pk => this.p.streamEntityPreview(pk)))
               .pipe(
                 filter(previews => !previews.find(p => p.loading)),
                 map(previews => {

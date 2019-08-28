@@ -1,19 +1,25 @@
 import { NgRedux } from "@angular-redux/store";
 import { Injectable } from "@angular/core";
-import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitOffset, limitTo, switchMapOr, SysConfig, TimePrimitive, U } from "app/core";
+import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitOffset, limitTo, sortAbc, switchMapOr, SysConfig, TimePrimitive, TimeSpan, U } from "app/core";
 import { Granularity } from "app/core/date-time/date-time-commons";
 import { CalendarType } from "app/core/date-time/time-primitive";
 import { InfSelector } from "app/core/inf/inf.service";
 import { DfhConfig } from "app/modules/information/shared/dfh-config";
-import { spyTag, cache } from "app/shared";
+import { cache, spyTag } from "app/shared";
 import { TimePrimitivePipe } from "app/shared/pipes/time-primitive/time-primitive.pipe";
 import { TimeSpanPipe } from "app/shared/pipes/time-span/time-span.pipe";
-import { omit, pathOr, sum, values } from "ramda";
-import { combineLatest, Observable, of } from "rxjs";
+import { groupBy, indexBy, omit, pathOr, pick, sum, values } from "ramda";
+import { combineLatest, iif, Observable, of } from "rxjs";
 import { filter, first, map, startWith, switchMap, tap } from "rxjs/operators";
-import { AppellationItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, PlaceItem, TemporalEntityCellDefinition, TemporalEntityItem, TemporalEntityRemoveProperties, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from "../new-components/properties-tree/properties-tree.models";
+import { tag } from "../../../../../node_modules/rxjs-spy/operators";
+import { PaginateByParam } from "../../../core/store/actions";
+import { combineLatestOrEmpty } from "../../../core/util/combineLatestOrEmpty";
+import { ClassAndTypeNode } from "../new-components/classes-and-types-select/classes-and-types-select.component";
+import { CtrlTimeSpanDialogResult } from "../new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component";
+import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TemporalEntityTableI, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from "../new-components/properties-tree/properties-tree.models";
 import { ConfigurationPipesService } from "./configuration-pipes.service";
 import { InformationBasicPipesService } from "./information-basic-pipes.service";
+// import { TemporalEntityTableRow } from "../new-components/temporal-entity-list/TemporalEntityTable";
 
 @Injectable()
 /**
@@ -60,12 +66,12 @@ export class InformationPipesService {
 
       case 'time-span':
         return combineLatest(
-          this.b.pipeOutgoingRoles(72, pkEntity),
-          this.b.pipeOutgoingRoles(71, pkEntity),
-          this.b.pipeOutgoingRoles(150, pkEntity),
-          this.b.pipeOutgoingRoles(151, pkEntity),
-          this.b.pipeOutgoingRoles(152, pkEntity),
-          this.b.pipeOutgoingRoles(153, pkEntity)
+          this.b.pipeOutgoingRolesByProperty(72, pkEntity),
+          this.b.pipeOutgoingRolesByProperty(71, pkEntity),
+          this.b.pipeOutgoingRolesByProperty(150, pkEntity),
+          this.b.pipeOutgoingRolesByProperty(151, pkEntity),
+          this.b.pipeOutgoingRolesByProperty(152, pkEntity),
+          this.b.pipeOutgoingRolesByProperty(153, pkEntity)
         ).pipe(
           tap((x) => {
 
@@ -94,18 +100,24 @@ export class InformationPipesService {
 
   @spyTag pipeListRoles(listDefinition: ListDefinition, pkEntity: number): Observable<InfRole[]> {
     return (listDefinition.isOutgoing ?
-      this.b.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity) :
-      this.b.pipeIngoingRoles(listDefinition.pkProperty, pkEntity)
+      this.b.pipeOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity) :
+      this.b.pipeIngoingRolesByProperty(listDefinition.pkProperty, pkEntity)
     )
   }
 
+  @spyTag pipeListBasicRoleItems(listDefinition: ListDefinition, pkEntity: number, pkProject: number): Observable<BasicRoleItem[]> {
+    return (listDefinition.isOutgoing ?
+      this.b.pipeOutgoingBasicRoleItemsByProperty(listDefinition.pkProperty, pkEntity, pkProject) :
+      this.b.pipeIngoingBasicRoleItemsByProperty(listDefinition.pkProperty, pkEntity, pkProject)
+    )
+  }
 
   /**
    * Pipe the items in appellation field
    */
   @spyTag pipeListAppellation<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<AppellationItem[]> {
     if (listDefinition.isOutgoing) {
-      return this.b.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.b.pipeOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity).pipe(
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
@@ -122,9 +134,10 @@ export class InformationPipesService {
   @spyTag pipeListEntityPreview<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<EntityPreviewItem[]> {
 
     return (listDefinition.isOutgoing ?
-      this.b.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity) :
-      this.b.pipeIngoingRoles(listDefinition.pkProperty, pkEntity)
+      this.b.pipeOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity) :
+      this.b.pipeIngoingRolesByProperty(listDefinition.pkProperty, pkEntity)
     ).pipe(
+      tag(`before-${pkEntity}-${listDefinition.pkProperty}-${listDefinition.targetClass}`),
       switchMap((roles) => {
         return combineLatest(roles.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
           .pipe(
@@ -133,8 +146,11 @@ export class InformationPipesService {
               .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1),
               limitTo(limit),
             ),
-            startWith([]))
-      }))
+            startWith([])
+          )
+      }),
+      tag(`after-${pkEntity}-${listDefinition.pkProperty}-${listDefinition.targetClass}`),
+    )
 
   }
 
@@ -142,7 +158,7 @@ export class InformationPipesService {
   @spyTag pipeListLanguage<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<LanguageItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.b.pipeOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity).pipe(
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
@@ -159,7 +175,7 @@ export class InformationPipesService {
   @spyTag pipeListPlace<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<PlaceItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.b.pipeOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity).pipe(
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
@@ -175,11 +191,13 @@ export class InformationPipesService {
       switchMap(pkProject => this.p.inf$.text_property$.by_fk_concerned_entity__fk_class_field$.key(pkEntity + '_' + listDefinition.fkClassField)
         .pipe(
           map(textPropertyByPk => values(textPropertyByPk)),
-          switchMapOr([], textProperties => combineLatest(textProperties.map(textProperty => combineLatest(
-            this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + textProperty.pk_entity),
-            this.p.inf$.language$.by_pk_entity$.key(textProperty.fk_language)
-          )
-            .pipe(
+          switchMapOr([], textProperties => combineLatest(
+            textProperties.map(textProperty => combineLatest(
+              this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + textProperty.pk_entity)
+                .filter(x => !!x),
+              this.p.inf$.language$.by_pk_entity$.key(textProperty.fk_language)
+                .filter(x => !!x),
+            ).pipe(
               map(([projRel, language]) => {
                 const item: TextPropertyItem = {
                   projRel,
@@ -198,144 +216,274 @@ export class InformationPipesService {
       ))
   }
 
+
   /**
    * Pipe the temporal entities connected to given entity by roles that are in the current project
    */
-  @spyTag pipeListTemporalEntity<T>(listDefinition: ListDefinition, pkEntity: number, appContext: number, limit?: number, offset?: number): Observable<TemporalEntityItem[]> {
-    // pipe the field definitions of the target class.
-    // pipe the roles leading to the temporal entities
+  @spyTag pipeTemporalEntityTableRows<T>(
+    paginateBy: PaginateByParam[],
+    limit: number,
+    offset: number,
+    pkProject: number,
+    listDefinition: ListDefinition,
+    fieldDefinitions: FieldDefinition[],
+    alternative = false): Observable<TemporalEntityItem[]> {
 
-    // => once this is done
-    // for each of the roles get the project rel for the ord num
-    //
+    const propertyItemType = this.propertyItemType(fieldDefinitions)
 
-    return this.pipeListRoles(listDefinition, pkEntity).pipe(
-      limitOffset(limit, offset),
-      switchMap((roles) => {
-        return combineLatest(roles.map((r, i) => this.pipeItemTemporalEntity(r, listDefinition, appContext)))
-          .pipe(
-            map(nodes => nodes
-              .filter(node => !!node)
-              .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
-            ),
-            startWith([]))
-      }))
+    const targetEntityOfRoleItem = (r: BasicRoleItem) => r.isOutgoing ? r.role.fk_entity : r.role.fk_temporal_entity;
+
+    // prepare page loader
+    const pageLoader$ = alternative ? this.infRepo.role$.pagination$ : this.p.inf$.role$.pagination$;
+
+    // prepare basic role item loader
+    const basicRoleItemLoader = (pkRole, isOutgoing, pkProject) => {
+      return alternative ?
+        this.b.pipeAlternativeBasicRoleItemByPkRole(pkRole, isOutgoing) :
+        this.b.pipeBasicRoleItemByPkRole(pkProject, pkRole, isOutgoing)
+    }
+
+    // prepare TeEnRow loader
+    const rowLoader = (targetEntityPk, fieldDefinitions, propertyItemType, pkProject) => {
+      return alternative ?
+        this.pipeItemTeEnRow(targetEntityPk, fieldDefinitions, propertyItemType, null, true) :
+        this.pipeItemTeEnRow(targetEntityPk, fieldDefinitions, propertyItemType, pkProject, false)
+    }
+
+
+
+    const paginatedRolePks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+
+    const rows$ = paginatedRolePks$.pipe(
+      switchMap((paginatedRolePks) => combineLatest(
+        paginatedRolePks.map(pkRole => basicRoleItemLoader(pkRole, listDefinition.isOutgoing, pkProject)
+          .pipe(filter(x => !!x))
+        )
+      ).pipe(
+        switchMap((teEnRoles) => combineLatestOrEmpty(
+          teEnRoles.map((basicRoleItem) => rowLoader(
+            targetEntityOfRoleItem(basicRoleItem),
+            fieldDefinitions,
+            propertyItemType,
+            pkProject
+          ).pipe(
+            map(row => {
+              const item: TemporalEntityItem = {
+                ...basicRoleItem,
+                row,
+                pkEntity: targetEntityOfRoleItem(basicRoleItem)
+              };
+              return item
+            })
+          ))
+        )),
+      )),
+
+    )
+    return rows$
+  }
+
+
+
+  @spyTag pipeItemTeEnRow(pkEntity: number, fieldDefinitions: FieldDefinition[], propertyItemType: PropertyItemTypeMap, pkProject: number, repo: boolean): Observable<TemporalEntityRow> {
+
+    // pipe outgoing roles
+    const outgoingRoles$ = repo ? this.b.pipeRepoOutgoingRoles(pkEntity) : this.b.pipeOutgoingRoles(pkEntity);
+    // pipe ingoing roles
+    const ingoingRoles$ = repo ? this.b.pipeRepoIngoingRoles(pkEntity) : this.b.pipeIngoingRoles(pkEntity);
+
+
+    // pipe all roles with leaf items
+    const outgoingItems$: Observable<RoleItem[]> = outgoingRoles$.pipe(
+      switchMap(roles => combineLatestOrEmpty(
+        roles.map(r => {
+          return this.pipeItem(propertyItemType, r, pkProject);
+        })
+      ))
+
+    )
+    const ingoingItems$: Observable<RoleItem[]> = ingoingRoles$.pipe(
+      switchMapOr([], roles => combineLatest(
+        roles.map(r => {
+          return this.pipeItem(propertyItemType, r, pkProject);
+        })
+      ))
+
+    )
+
+    const sortItems = repo ?
+      (item: RoleItem[]) => item.sort((a, b) => a.role.is_in_project_count > b.role.is_in_project_count ? 1 : -1) :
+      (item: RoleItem[]) => item;
+
+
+    return combineLatest(outgoingItems$, ingoingItems$).pipe(
+
+      map(([outgoingItems, ingoingItems]) => {
+        const groupedOut = groupBy((i) => (i.role ? i.role.fk_property.toString() : undefined), outgoingItems);
+        const groupedIn = groupBy((i) => (i.role ? i.role.fk_property.toString() : undefined), ingoingItems);
+        return { groupedOut, groupedIn }
+      }),
+      // auditTime(10),
+      map((d) => {
+        const row: TemporalEntityRow = {}
+
+        fieldDefinitions.forEach(fieldDefinition => {
+
+          let cell: TemporalEntityCell;
+          fieldDefinition.listDefinitions.forEach(listDefinition => {
+            if (!listDefinition.fkClassField) {
+              if (listDefinition.isOutgoing) {
+                if (d.groupedOut[listDefinition.pkProperty]) {
+                  const items = sortItems(d.groupedOut[listDefinition.pkProperty])
+                  cell = {
+                    itemsCount: items.length,
+                    entityPreview: listDefinition.listType === 'entity-preview' ?
+                      (items[0] as EntityPreviewItem).preview : undefined,
+                    label: items[0].label,
+                    pkProperty: listDefinition.pkProperty
+                  }
+                }
+              } else {
+                if (d.groupedIn[listDefinition.pkProperty]) {
+                  const items = sortItems(d.groupedIn[listDefinition.pkProperty])
+
+                  cell = {
+                    itemsCount: items.length,
+                    entityPreview: listDefinition.listType === 'entity-preview' ?
+                      (items[0] as EntityPreviewItem).preview : undefined,
+                    label: items[0].label,
+                    pkProperty: listDefinition.pkProperty
+                  }
+                }
+              }
+            }
+            else if (listDefinition.listType == 'time-span') {
+
+              const t = pick(['71', '72', '150', '151', '152', '153'], d.groupedOut);
+              const keys = Object.keys(t);
+              const itemsCount = keys.length;
+
+              let label;
+              if (itemsCount > 0) {
+                const timeSpanKeys: CtrlTimeSpanDialogResult = {}
+                keys.forEach(key => { timeSpanKeys[key] = t[key][0].timePrimitive })
+                const timeSpan = TimeSpan.fromTimeSpanDialogData(timeSpanKeys);
+                label = this.timeSpanPipe.transform(timeSpan);
+              }
+              cell = {
+                itemsCount,
+                label,
+                entityPreview: undefined,
+                pkProperty: undefined
+              }
+            }
+          })
+
+
+          row[fieldDefinition.label] = cell;
+        })
+        return row
+      })
+
+
+    )
+    // TODO: pipe all text properties
+
+  }
+
+  @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfRole, pkProject: number) {
+    let $: Observable<RoleItem>;
+    const itemType = propertyItemType[(r.fk_property + '_' + true)];
+    let listType;
+    if (!itemType) {
+      $ = of({
+        projRel: undefined,
+        ordNum: undefined,
+        label: 'Error in data',
+        role: undefined,
+        isOutgoing: undefined,
+        error: 'Error in data'
+      })
+    } else {
+      const { listType, isOutgoing } = itemType;
+      if (listType === 'appellation')
+        $ = this.pipeItemAppellation(r);
+      else if (listType === 'entity-preview')
+        $ = this.pipeItemEntityPreview(r, isOutgoing);
+      else if (listType === 'temporal-entity')
+        $ = this.pipeItemEntityPreview(r, isOutgoing);
+      else if (listType === 'language')
+        $ = this.pipeItemLanguage(r);
+      else if (listType === 'place')
+        $ = this.pipeItemPlace(r);
+      else if (listType === 'time-primitive')
+        $ = this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
+      else if (listType === 'time-span')
+        $ = this.pipeItemTimePrimitive(r, pkProject);
+    }
+
+    return $.pipe(tag(`pipeItemTeEnRow-item-${listType}-${r.fk_entity}`));
   }
 
   /**
-   * Pipe temporal entity item in the way it is defined by the active project
+   * TODO: instead of this we'd need a property -> itemType map where
+   * also time-primitve is a type
    */
-  @spyTag pipeItemTemporalEntity(role: InfRole, listDefinition: ListDefinition, appContext: number): Observable<TemporalEntityItem> {
-    return combineLatest(
-      this.p.pkProject$,
-      this.p.dfh$.property_view$.by_dfh_pk_property$.key(listDefinition.pkProperty)
-    ).pipe(first(p => !!p)).switchMap(([pkProject, p]) => {
-      // const p = values(props)[0]
-      const targetClass = listDefinition.isOutgoing ? p.dfh_has_range : p.dfh_has_domain;
-      const targetInstance = listDefinition.isOutgoing ? role.fk_entity : role.fk_temporal_entity;
-      return combineLatest(
-        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity),
-        this.c.pipeFieldDefinitions(targetClass, appContext).pipe(
-          switchMap((fieldDefinitions) => this.pipeTemporalEntityCellDefinitions(fieldDefinitions, targetInstance))
-        )
-      )
-    }).pipe(
+  propertyItemType(fieldDefinitions: FieldDefinition[]): PropertyItemTypeMap {
+    const itemTypes: {
+      pkProperty: number,
+      listType: ListType,
+      isOutgoing: boolean
+    }[] = []
 
-      map(([
-        projRel,
-        cellDefinitions,
-      ]) => {
-        const node: TemporalEntityItem = {
-          role,
-          projRel,
-          ordNum: projRel.ord_num_of_domain,
-          cellDefinitions,
-          label: pathOr('', ['0', 'items', '0', 'label'], cellDefinitions)
-        }
-        return node
-      }))
-  }
-
-
-  @spyTag pipeTemporalEntityCellDefinitions(fieldDefinitions: FieldDefinition[], fkEntity: number): Observable<TemporalEntityCellDefinition[]> {
-    return combineLatest(fieldDefinitions.map(fieldDef => combineLatest(fieldDef.listDefinitions
-      .map(listDef => this.pipeEntityProperties(listDef, fkEntity)))
-      .pipe(
-        map(lists => {
-          let values: ItemList = [];
-          lists.forEach(list => { values = [...values, ...list.items] })
-
-          return {
-            fieldDefinition: fieldDef,
-            lists,
-            cellValue: {
-              label: values.length ? values[0].label : undefined,
-              entityPreview: lists.length && values.length && (lists[0].listDefinition.listType === 'entity-preview' || lists[0].listDefinition.listType === 'temporal-entity') ?
-                (values[0] as EntityPreviewItem).preview :
-                undefined,
-              itemsCount: sum(lists.map(l => l.items.length)),
-              pkProperty: fieldDef.pkProperty
-            }
-          }
+    fieldDefinitions.forEach(fieldDefinition => {
+      fieldDefinition.listDefinitions.forEach(listDefinition => {
+        itemTypes.push({
+          pkProperty: listDefinition.pkProperty,
+          listType: listDefinition.listType,
+          isOutgoing: listDefinition.isOutgoing
         })
-      )
-    ))
+      })
+    })
 
+    DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.forEach(pkProperty => {
+      itemTypes.push({
+        pkProperty, listType: 'time-primitive', isOutgoing: true
+      })
+    })
+
+    return indexBy((l) => l.pkProperty + '_' + l.isOutgoing, itemTypes)
   }
+
 
   @spyTag pipeEntityProperties(listDef: ListDefinition, fkEntity: number, limit?: number): Observable<EntityProperties> {
-    if (listDef.listType === 'appellation') return this.pipeListAppellation(listDef, fkEntity, limit)
-      .pipe(
-        tap((x) => {
 
-        }),
-        map((items) => this.getEntityProperties(listDef, items)))
+    if (listDef.listType === 'appellation') return this.pipeListAppellation(listDef, fkEntity, limit)
+      .pipe(map((items) => this.getEntityProperties(listDef, items)))
 
     else if (listDef.listType === 'language') return this.pipeListLanguage(listDef, fkEntity, limit)
-      .pipe(
-        tap((x) => {
-
-        }),
-        map((items) => this.getEntityProperties(listDef, items)))
+      .pipe(map((items) => this.getEntityProperties(listDef, items)))
 
     else if (listDef.listType === 'place') return this.pipeListPlace(listDef, fkEntity, limit)
-      .pipe(
-        tap((x) => {
+      .pipe(map((items) => this.getEntityProperties(listDef, items)))
 
-        }),
-        map((items) => this.getEntityProperties(listDef, items)))
     else if (listDef.listType === 'text-property') return this.pipeListTextProperty(listDef, fkEntity, limit)
-      .pipe(
-        tap((x) => {
+      .pipe(map((items) => this.getEntityProperties(listDef, items)))
 
-        }),
-        map((items) => this.getEntityProperties(listDef, items)))
     else if (listDef.listType === 'entity-preview' || listDef.listType === 'temporal-entity') return this.pipeListEntityPreview(listDef, fkEntity, limit)
-      .pipe(
-        tap((x) => {
-
-        }),
-        map((items) => this.getEntityProperties(listDef, items)))
-
+      .pipe(map((items) => this.getEntityProperties(listDef, items)))
 
     else if (listDef.listType === 'time-span') return this.pipeItemTimeSpan(fkEntity)
-      .pipe(
-        tap((x) => {
-
-        }),
-        map((item) => {
-          const items = item.properties.find(p => p.items.length > 0) ? [{
-            label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item)),
-            properties: [] // TODO check if the properties or the item are really not needed
-          }] : []
-          return {
-            listDefinition: listDef,
-            items
-          }
-        }))
-
-
-
+      .pipe(map((item) => {
+        const items = item.properties.find(p => p.items.length > 0) ? [{
+          label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item)),
+          properties: [] // TODO check if the properties or the item are really not needed
+        }] : []
+        return {
+          listDefinition: listDef,
+          items
+        }
+      }))
 
     else return of(null)
   }
@@ -493,6 +641,51 @@ export class InformationPipesService {
       }))
   }
 
+  /**
+   * @param pk
+   */
+  @spyTag pipeItemTimePrimitive(role: InfRole, pkProject): Observable<TimePrimitiveItem> {
+    if (pkProject) {
+      return combineLatest(
+        this.p.inf$.time_primitive$.by_pk_entity$.key(role.fk_entity).filter(x => !!x),
+        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity).filter(x => !!x)
+      ).pipe(
+        map(([infTimePrimitive, projRel]) => {
+          if (!infTimePrimitive) return null;
+          const timePrimitive = new TimePrimitive({
+            julianDay: infTimePrimitive.julian_day,
+            calendar: ((projRel.calendar || 'gregorian') as CalendarType ),
+            duration: (infTimePrimitive.duration as Granularity)
+          })
+          const node: TimePrimitiveItem = {
+            ordNum: undefined,
+            projRel: undefined,
+            role,
+            timePrimitive,
+            label: this.timePrimitivePipe.transform(timePrimitive)
+          }
+          return node
+        }))
+    } else {
+      return this.infRepo.time_primitive$.by_pk_entity$.key(role.fk_entity).filter(x => !!x).pipe(
+        map(infTimePrimitive => {
+          const timePrimitive = new TimePrimitive({
+            julianDay: infTimePrimitive.julian_day,
+            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType ),
+            duration: (infTimePrimitive.duration as Granularity)
+          })
+          const node: TimePrimitiveItem = {
+            ordNum: undefined,
+            projRel: undefined,
+            role,
+            timePrimitive,
+            label: this.timePrimitivePipe.transform(timePrimitive)
+          }
+          return node
+        })
+      )
+    }
+  }
 
 
   /*********************************************************************
@@ -531,24 +724,6 @@ export class InformationPipesService {
       this.b.pipeAlternativeIngoingRoles(listDefinition.pkProperty, pkEntity) :
       this.b.pipeAlternativeIngoingRoles(listDefinition.pkProperty, pkEntity)
     )
-  }
-
-  /**
-   * Pipe the temporal entities connected to given entity by alternative roles (= roles not in active project)
-   */
-  @spyTag pipeAltListTemporalEntity<T>(listDefinition: ListDefinition, pkEntity: number, appContext: number, limit?: number, offset?: number): Observable<TemporalEntityItem[]> {
-
-    return this.pipeAltListRoles(listDefinition, pkEntity).pipe(
-      limitOffset(limit, offset),
-      switchMap((roles) => {
-        return combineLatest(roles.map((r, i) => this.pipeRepoItemTemporalEntity(r, listDefinition, appContext)))
-          .pipe(
-            map(nodes => nodes
-              .filter(node => !!node)
-              .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
-            ),
-            startWith([]))
-      }))
   }
 
   /**
@@ -659,86 +834,6 @@ export class InformationPipesService {
   /**
    * Pipe repository temporal entity item in the way it is defined by the repository
    */
-  @spyTag pipeRepoItemTemporalEntity(role: InfRole, listDefinition: ListDefinition, appContext: number): Observable<TemporalEntityItem> {
-    return combineLatest(
-      this.p.pkProject$,
-      this.p.dfh$.property_view$.by_dfh_pk_property$.key(listDefinition.pkProperty
-      )).pipe(first(p => !!p)).switchMap(([pkProject, p]) => {
-        const targetClass = listDefinition.isOutgoing ? p.dfh_has_range : p.dfh_has_domain;
-        const targetInstance = listDefinition.isOutgoing ? role.fk_entity : role.fk_temporal_entity;
-        return combineLatest(
-          this.c.pipeFieldDefinitions(targetClass, appContext).switchMap((fieldDefinitions) => this.pipeRepoTemporalEntityCellDefinitions(fieldDefinitions, targetInstance))
-        )
-      }).pipe(
-
-        map(([
-          cellDefinitions,
-        ]) => {
-          const node: TemporalEntityItem = {
-            role,
-            projRel: undefined,
-            ordNum: undefined,
-            cellDefinitions,
-            label: pathOr('', ['0', 'items', '0', 'label'], cellDefinitions)
-          }
-          return node
-        }))
-  }
-
-
-  @spyTag pipeRepoTemporalEntityCellDefinitions(fieldDefinitions: FieldDefinition[], fkEntity: number): Observable<TemporalEntityCellDefinition[]> {
-    return combineLatest(fieldDefinitions.map(fieldDef => combineLatest(fieldDef.listDefinitions
-      .map(listDef => this.pipeRepoTemporalEntityProperties(listDef, fkEntity)))
-      .pipe(
-        map(lists => {
-          let values: ItemList = [];
-          lists.forEach(list => { values = [...values, ...list.items] })
-
-          return {
-            fieldDefinition: fieldDef,
-            lists,
-            cellValue: {
-              label: values.length ? values[0].label : undefined,
-              entityPreview: lists.length && values.length && lists[0].listDefinition.listType === 'entity-preview' ? (values[0] as EntityPreviewItem).preview : undefined,
-              itemsCount: sum(lists.map(l => l.items.length)),
-              pkProperty: fieldDef.pkProperty
-            }
-          }
-        })
-      )
-    ))
-
-  }
-
-  @spyTag pipeRepoTemporalEntityProperties(listDef: ListDefinition, fkEntity: number): Observable<EntityProperties> {
-    if (listDef.listType === 'appellation') return this.pipeRepoListAppellation(listDef, fkEntity)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-    else if (listDef.listType === 'language') return this.pipeRepoListLanguage(listDef, fkEntity)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-    else if (listDef.listType === 'place') return this.pipeRepoListPlace(listDef, fkEntity)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-    else if (listDef.listType === 'entity-preview' || listDef.listType === 'temporal-entity') return this.pipeRepoListEntityPreview(listDef, fkEntity)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-
-    else if (listDef.listType === 'time-span') return this.pipeRepoItemTimeSpan(fkEntity)
-      .pipe(
-        map((item) => {
-          const items = item.properties.find(p => p.items.length > 0) ? [{
-            label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item)),
-            properties: [] // TODO check if the properties or the item are really not needed
-          }] : []
-          return {
-            listDefinition: listDef,
-            items
-          }
-        }))
-
-    else return of(null)
-  }
 
 
   /**
@@ -747,7 +842,7 @@ export class InformationPipesService {
   @spyTag pipeRepoListAppellation<T>(listDefinition: ListDefinition, pkEntity): Observable<AppellationItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.b.pipeRepoOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity).pipe(
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
@@ -763,7 +858,7 @@ export class InformationPipesService {
   @spyTag pipeRepoListLanguage<T>(listDefinition: ListDefinition, pkEntity): Observable<LanguageItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.b.pipeRepoOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity).pipe(
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
@@ -779,7 +874,7 @@ export class InformationPipesService {
   @spyTag pipeRepoListPlace<T>(listDefinition: ListDefinition, pkEntity): Observable<PlaceItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity).pipe(
+      return this.b.pipeRepoOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity).pipe(
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
@@ -795,8 +890,8 @@ export class InformationPipesService {
   @spyTag pipeRepoListEntityPreview<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
 
     return (listDefinition.isOutgoing ?
-      this.b.pipeRepoOutgoingRoles(listDefinition.pkProperty, pkEntity) :
-      this.b.pipeRepoIngoingRoles(listDefinition.pkProperty, pkEntity)
+      this.b.pipeRepoOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity) :
+      this.b.pipeRepoIngoingRolesByProperty(listDefinition.pkProperty, pkEntity)
     ).pipe(
       switchMap((roles) => {
         return combineLatest(roles.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
@@ -824,7 +919,7 @@ export class InformationPipesService {
           switchMap(fieldDefinitions => {
 
             return combineLatest(fieldDefinitions.map(fieldDef =>
-              this.b.pipeRepoOutgoingRoles(fieldDef.pkProperty, pkEntity)
+              this.b.pipeRepoOutgoingRolesByProperty(fieldDef.pkProperty, pkEntity)
                 .pipe(
                   switchMapOr([], roles => combineLatest(
                     roles.map(role =>
@@ -922,4 +1017,45 @@ export class InformationPipesService {
       ))
     )
   }
+
+  @spyTag
+  @cache({ refCount: false })
+  pipeClassesAndTypes(enabledIn: 'entities' | 'sources') {
+    return this.c.pipeTypeAndTypedClasses(enabledIn).pipe(
+      switchMap(items => combineLatestOrEmpty(
+        items.map(item => this.c.pipeLabelOfClass(item.typedClass).pipe(
+          tag('xyz-2'),
+          map(label => ({
+            label,
+            data: { pkClass: item.typedClass, pkType: null }
+          } as ClassAndTypeNode)),
+          switchMap(node => iif(
+            () => !!item.typeClass,
+            this.b.pipePersistentItemPksByClass(item.typeClass).pipe(
+              switchMap(typePks => combineLatestOrEmpty(
+                typePks.map(pkType => this.pipeLabelOfEntity(pkType).pipe(
+                  map(label => ({
+                    label, data: { pkClass: item.typedClass, pkType }
+                  } as ClassAndTypeNode))
+                ))
+              ).pipe(
+                sortAbc(node => node.label),
+              )),
+              map(children => {
+                node.children = children
+                return node
+              })
+            ),
+            of({ ...node, children: [] })
+          )
+          )
+        ))
+      ).pipe(
+        sortAbc((node) => node.label),
+        tag('xyz-3')
+      )),
+      tag('xyz-1'),
+    )
+  }
+
 }

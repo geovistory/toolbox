@@ -85,45 +85,7 @@ export class ClassesAndTypesSelectComponent implements OnInit {
   ngOnInit() {
     if (!this.enabledIn) throw 'You must provide enabledIn input';
 
-    this.data$ = this.c.pipeTypeAndTypedClasses(this.enabledIn).pipe(
-      tap((x) => {
-
-      }),
-      switchMapOr([], items => combineLatest(
-        items.map(item => this.c.pipeLabelOfClass(item.typedClass).pipe(
-          tap((x) => {
-
-          }),
-          map(label => ({
-            label,
-            data: { pkClass: item.typedClass, pkType: null }
-          } as ClassAndTypeNode)),
-          switchMap(node => this.b.pipePersistentItemPksByClass(item.typeClass).pipe(
-            tap((x) => {
-
-            }),
-            switchMapOr([], typePks => combineLatest(
-              typePks.map(pkType => this.i.pipeLabelOfEntity(pkType).pipe(
-                map(label => ({
-                  label, data: { pkClass: item.typedClass, pkType }
-                } as ClassAndTypeNode))
-              ))
-            ).pipe(
-              sortAbc(node => node.label),
-            )),
-            map(children => {
-              node.children = children
-              return node
-            })
-          ))
-        ))
-      ).pipe(
-        tap((x) => {
-
-        }),
-        sortAbc((node) => node.label)
-      ))
-    )
+    this.data$ = this.i.pipeClassesAndTypes(this.enabledIn)
 
     this.data$.pipe(takeUntil(this.destroy$)).subscribe(d => {
       this.dataSource.data = d;

@@ -2,11 +2,11 @@ import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Outpu
 import { U } from 'app/core';
 import { Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEvent, PickOptions } from '../../../gv-angular-cesium/angular-cesium-fork';
-import { InputForCzml, MapLayerPipesService } from '../../new-services/map-layer-pipes.service';
 import { tag } from '../../../../../../node_modules/rxjs-spy/operators';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 import { cache, spyTag } from '../../../../shared';
+import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEvent, PickOptions } from '../../../gv-angular-cesium/angular-cesium-fork';
+import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { MapLayerPipesService } from '../../new-services/map-layer-pipes.service';
 
 
 
@@ -127,7 +127,7 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  @cache @spyTag pipeCzml(pkEntity){
+  pipeCzml(pkEntity) {
     return this.m.pipeItem(pkEntity);
   }
 

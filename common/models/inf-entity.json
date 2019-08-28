@@ -6,25 +6,6 @@
       "type": "number",
       "id": true,
       "generated": true
-    },
-    "notes": {
-      "type": "string",
-      "required": false
-    },
-    "tmsp_creation": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
-    },
-    "tmsp_last_modification": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
-    },
-    "sys_period": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
     }
   },
   "relations": {

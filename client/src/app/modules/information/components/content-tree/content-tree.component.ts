@@ -161,9 +161,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
 
   private typeLabelOfExprPortion(pkExpressionPortion: number) {
-    // return this.p.streamEntityPreview(pkExpressionPortion).pipe(
-    //   map(preview => preview.type_label),
-    //   startWith('')    )
     return this.p.inf$.entity_association$.by_fk_property__fk_info_domain$.key('1320_' + pkExpressionPortion)
       .pipe(filter(rByPk => !!rByPk && Object.keys(rByPk).length > 0),
         map(rByPk => values(rByPk)[0]),

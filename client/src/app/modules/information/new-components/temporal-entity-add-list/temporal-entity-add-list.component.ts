@@ -1,15 +1,20 @@
-import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
-import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { AddListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { MatPaginator, PageEvent } from '../../../../../../node_modules/@angular/material';
-import { TemporalEntityTable, Row } from '../temporal-entity-list/temporal-entity-list.component';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActiveProjectService, IAppState } from 'app/core';
+import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { SelectionModel } from '../../../../../../node_modules/@angular/cdk/collections';
-import { map, startWith, first, takeUntil, switchMap } from '../../../../../../node_modules/rxjs/operators';
+import { PageEvent } from '../../../../../../node_modules/@angular/material';
+import { first, map, switchMap, takeUntil, shareReplay, tap, distinctUntilChanged } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { AddListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
+import { TemporalEntityTable } from "../temporal-entity-list/TemporalEntityTable";
+import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
+import { PaginateByParam } from 'app/core/store/actions';
+import { InfSelector } from '../../../../core/inf/inf.service';
+import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
+import { equals } from 'ramda';
 
 @Component({
   selector: 'gv-temporal-entity-add-list',
@@ -30,13 +35,16 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   @Input() appContext: number
 
-  items$: Observable<TemporalEntityItem[]>
+  rows$: Observable<TemporalEntityItem[]>
+  items$;
   itemsCount$: Observable<number>
 
 
+
   table: TemporalEntityTable;
-  limit$ = new BehaviorSubject(5)
-  offset$ = new BehaviorSubject(0);
+  limit$ = new BehaviorSubject(temporalEntityListDefaultLimit)
+  pageIndex$ = new BehaviorSubject(temporalEntityListDefaultPageIndex);
+  offset$: Observable<number>;
 
   selectedCount$: Observable<number>
   selection: SelectionModel<number>;
@@ -47,47 +55,77 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
     public c: ConfigurationPipesService,
     public i: InformationPipesService,
     public t: PropertiesTreeService,
-    public inf: InfActions
-  ) { }
+    public inf: InfActions,
+    private ngRedux: NgRedux<IAppState>
+  ) {
+    this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
+      map(([limit, pageIndex]) => limit * pageIndex)
+    )
+  }
 
   ngOnInit() {
-    this.items$ = combineLatest(
-      this.limit$.pipe(),
-      this.offset$.pipe()
-    ).pipe(
-      switchMap(([limit, offset]) => this.i.pipeAltListTemporalEntity(this.listDefinition, this.pkEntity, this.appContext, limit, offset)
-      )
-    )
+    const infRepo = new InfSelector(this.ngRedux, of('repo'))
 
-
-    // get columns of this temporal entity
-    const columDefs$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext)
-
-
-    // SELECTION
+    // selection stuff
     const allowMultiSelect = this.listDefinition.targetMaxQuantity === 1 ? false : true;
-
-    let customCols;
-    allowMultiSelect ?
-      customCols = { columnsBefore: ['_checkbox_', '_classInfo_'], columnsAfter: ['_projects_', '_actions_'] } :
-      customCols = { columnsBefore: ['_radiobutton_', '_classInfo_'], columnsAfter: ['_projects_', '_actions_'] };
-    this.table = new TemporalEntityTable(this.items$, columDefs$, this.destroy$, this.listDefinition, customCols);
-
-    this.itemsCount$ = this.i.pipeAltListLength(this.listDefinition, this.pkEntity)
-
     const initialSelection = [];
     this.selection = new SelectionModel<number>(allowMultiSelect, initialSelection);
     this.selectedCount$ = this.selection.changed.pipe(
       map(s => s.source.selected.length)
     )
+
+    // custom temporal entity table columns
+    let customCols;
+    allowMultiSelect ?
+      customCols = { columnsBefore: ['_checkbox_', '_classInfo_'], columnsAfter: ['_projects_', '_actions_'] } :
+      customCols = { columnsBefore: ['_radiobutton_', '_classInfo_'], columnsAfter: ['_projects_', '_actions_'] };
+
+    // table loading ect
+    const pagination$ = combineLatest(
+      this.limit$.pipe(),
+      this.offset$.pipe(),
+      this.p.pkProject$
+    ).pipe(shareReplay({ refCount: true, bufferSize: 1 }))
+
+    const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity)
+
+    pagination$.pipe(
+      switchMap(([limit, offset]) => {
+        return infRepo.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset)
+      }, ([limit, offset, pkProject], loadNeeded) => {
+        if (loadNeeded) {
+          this.inf.temporal_entity.loadPaginatedAlternativeList(pkProject, this.pkEntity, this.listDefinition.pkProperty, this.listDefinition.isOutgoing, limit, offset)
+        }
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe()
+
+    const columns$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext)
+
+    const alternative = true;
+    this.rows$ = combineLatest(pagination$, columns$).pipe(
+      distinctUntilChanged(equals),
+      switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
+        paginateBy,
+        limit,
+        offset,
+        pkProject,
+        this.listDefinition,
+        columns,
+        alternative
+      )),
+      shareReplay({ refCount: true, bufferSize: 1 }),
+    )
+
+    this.table = new TemporalEntityTable(this.rows$, columns$, this.destroy$, this.listDefinition, customCols);
+
+    this.itemsCount$ = infRepo.role$.pagination$.pipeCount(paginateBy)
   }
 
   onPageChange(e: PageEvent) {
-    this.offset$.next(e.pageIndex)
+    this.pageIndex$.next(e.pageIndex)
     this.limit$.next(e.pageSize)
   }
-
-
 
   ngOnDestroy() {
     this.destroy$.next(true);

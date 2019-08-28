@@ -43,7 +43,7 @@ module.exports = function (InfTextProperty) {
 
       InfTextProperty._findOrCreateByValue(InfTextProperty, pkProject, dataObject, requestedObj, ctxWithoutBody)
         .then(textProperties => {
-          const txtProp = textProperties[0].toJSON();
+          const txtProp = textProperties[0];
           InfTextProperty.app.models.InfLanguage.findById(txtProp.fk_language)
             .then(language => {
               txtProp.language = language;

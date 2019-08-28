@@ -37,6 +37,7 @@ export const pendingRequestReducer = (state = {}, action) => {
       ...state,
       [uuid]: true
     }
+    // console.log('add ' + uuid + ' ' + Date.now())
   }
 
   if (action && action.meta && action.meta.removePending) {
@@ -68,6 +69,7 @@ export const cleanupResolved = (state = {}, action) => {
     state = {
       ...omit([uuid], state)
     }
+    // console.log('resolve ' + uuid + ' ' + Date.now().toString())
   }
   return state;
 }

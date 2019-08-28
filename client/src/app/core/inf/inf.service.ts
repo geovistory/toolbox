@@ -1,12 +1,12 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, IAppState } from 'app/core/store/model';
-import { Observable } from 'rxjs';
-import { InfPersistentItem, InfEntityAssociation, InfRole, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, InfTemporalEntity } from '../sdk';
-import { mergeMap, filter, distinctUntilChanged, switchMap, auditTime } from 'rxjs/operators';
-import { infRoot, infDefinitions } from './inf.config';
-import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
-import { equals } from 'ramda';
+import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollection } from 'app/core/store/reducer-factory';
+import { combineLatest, iif, Observable, of } from 'rxjs';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
+import { InfAppellation, InfEntityAssociation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '../sdk';
+import { PaginateByParam } from '../store/actions';
+import { infDefinitions, infRoot } from './inf.config';
 
 class Selector {
   constructor(
@@ -54,6 +54,113 @@ class Selector {
     return { all$, key }
   }
 
+  paginationSelector<M>() {
+    // const key = (by: PaginateByParam[]): Observable<M> => this.pkProject$.pipe(
+    //   switchMap(pk => {
+    //     let path: any[];
+    //     const pagBy = paginatedBy(paginateName(by))
+    //     const key = paginateKey(by)
+    //     if (this.configs[this.model].facetteByPk) {
+    //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
+    //     } else {
+    //       path = [infRoot, this.model, pagBy, key];
+    //     }
+    //     return this.ngRedux.select<M>(path)
+    //       .pipe(
+    //         // distinctUntilChanged<M>(equals),
+    //         tag(`InfSelector::key::${path}`)
+    //       )
+    //   })
+    // )
+
+    const pipePage = (by: PaginateByParam[], limit: number, offset: number): Observable<M[]> => this.pkProject$.pipe(
+      switchMap(pk => {
+        let path: any[];
+        const pagBy = paginatedBy(paginateName(by))
+        const key = paginateKey(by)
+        if (this.configs[this.model].facetteByPk) {
+          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
+        } else {
+          path = [infRoot, this.model, pagBy, key];
+        }
+        return this.ngRedux.select<number>([...path, 'count'])
+          .pipe(
+            filter(count => count !== undefined),
+            switchMap(count => {
+              const start = offset;
+              const end = count <= (start + limit) ? count : (start + limit);
+              const obs$: Observable<M>[] = [];
+              for (let i = start; i < end; i++) {
+                obs$.push(
+                  this.ngRedux.select<M>([...path, 'rows', i]).filter(x => !!x)
+                )
+              }
+              return combineLatest(obs$)
+            })
+          )
+      })
+    )
+
+    const pipePageLoadNeeded = (by: PaginateByParam[], limit: number, offset: number): Observable<boolean> => this.pkProject$.pipe(
+      switchMap(pk => {
+        let path: any[];
+        const pagBy = paginatedBy(paginateName(by))
+        const key = paginateKey(by)
+        if (this.configs[this.model].facetteByPk) {
+          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
+        } else {
+          path = [infRoot, this.model, pagBy, key];
+        }
+        return this.ngRedux.select<boolean>([...path, 'loading', getFromTo(limit, offset)]).pipe(
+          switchMap(loading => iif(
+            // Q: is it already loading?
+            () => loading == true,
+            // A: yes. so no loading needed
+            of(false),
+            // Q: What's the length of the list?
+            this.ngRedux.select<number>([...path, 'count']).pipe(
+              switchMap(count => {
+                // A: there is no information about the length, loading needed
+                if (count === undefined) return of(true);
+                // A: Length is 0, no loading needed
+                if (count === 0) return of(false);
+
+                // A: there is information about the length, so select all items in the requested segement
+                const start = offset;
+                const end = count <= (start + limit) ? count : (start + limit);
+                const obs$: Observable<M>[] = [];
+                for (let i = start; i < end; i++) {
+                  obs$.push(
+                    this.ngRedux.select<M>([...path, 'rows', i])
+                  )
+                }
+                // Emit true if at least one of the requested items is still undefined
+                return combineLatest(obs$).pipe(first(), map(pks => pks.includes(undefined)))
+              })
+            )
+          ))
+        )
+      })
+    )
+
+    const pipeCount = (by: PaginateByParam[]): Observable<number> => this.pkProject$.pipe(
+      switchMap(pk => {
+        let path: any[];
+        const pagBy = paginatedBy(paginateName(by))
+        const key = paginateKey(by)
+        if (this.configs[this.model].facetteByPk) {
+          path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
+        } else {
+          path = [infRoot, this.model, pagBy, key];
+        }
+        return this.ngRedux.select<number>([...path, 'count']).pipe(map(c => c ? c : 0))
+      })
+    )
+
+    return { pipePage, pipePageLoadNeeded, pipeCount }
+
+  }
+
 
 }
 
@@ -92,7 +199,7 @@ class InfEntityAssociationSelections extends Selector {
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
 
-  public by_pk_entity$ = this.selector<ByPk<InfEntityAssociation>>('by_pk_entity')
+  public by_pk_entity$ = this.selector<InfEntityAssociation>('by_pk_entity')
   public by_fk_property$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_property')
   public by_fk_info_domain$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_info_domain')
   public by_fk_info_range$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_info_range')
@@ -110,12 +217,15 @@ class InfRoleSelections extends Selector {
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
 
-  public by_pk_entity$ = this.selector<ByPk<InfRole>>('by_pk_entity')
+  public by_pk_entity$ = this.selector<InfRole>('by_pk_entity')
   public by_fk_property$ = this.selector<ByPk<InfRole>>('by_fk_property')
   public by_fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_entity')
   public by_fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_temporal_entity')
   public by_fk_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_temporal_entity')
   public by_fk_property__fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_entity')
+
+  public pagination$ = this.paginationSelector<number>()
+
 
 }
 

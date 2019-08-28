@@ -384,36 +384,44 @@ module.exports = function (InfEntity) {
 
       const ProInfoProjRel = Model.app.models.ProInfoProjRel;
 
-      const filter = {
-        where: dataObject,
-        include: {
-          relation: "entity_version_project_rels",
-          scope: {
-            where: {
-              fk_project: projectId
-            }
+      const find = function (pk_entity) {
+
+        const filter = {
+          where: ['pk_entity', '=', pk_entity],
+          include: {
+            "entity_version_project_rels": ProInfoProjRel.getJoinObject(true, projectId)
           }
         }
-      }
 
-      const find = function (pk_entity) {
         //find the entity and include the epr
-        return Model.findOne({
-          where: {
-            pk_entity: pk_entity
-          },
-          include: {
-            relation: "entity_version_project_rels",
-            scope: {
-              where: {
-                fk_project: projectId
-              }
-            }
+        Model.findComplex(filter, (
+          (err, res) => {
+            if (err) {
+              reject(err)
+            };
+            resolve(res)
+
           }
-        }).then((res) => {
-          resolve([res]);
-        })
-          .catch(err => reject(err));
+        ))
+
+        // return Model.findOne({
+        //   where: {
+        //     pk_entity: pk_entity
+        //   },
+        //   include: {
+        //     relation: "entity_version_project_rels",
+        //     scope: {
+        //       where: {
+        //         fk_project: projectId
+        //       }
+        //     }
+        //   }
+        // }).then((res) => {
+        //   console.log('findOne',res.toJSON())
+        //   resolve([res]);
+
+        // })
+        //   .catch(err => reject(err));
       }
 
       // Find or create an entity with this values
@@ -456,10 +464,16 @@ module.exports = function (InfEntity) {
                 "fk_project": projectId,
 
                 // use the requested value, or the existing or true
-                "is_in_project": [reqEpr.is_in_project, existingEpr.is_in_project, true].find(item => item !== undefined),
+                "is_in_project": [
+                  reqEpr.is_in_project,
+                  // existingEpr.is_in_project,
+                  true].find(item => item !== undefined),
 
                 // use the requested value, or the existing or false
-                "is_standard_in_project": [reqEpr.is_standard_in_project, existingEpr.is_standard_in_project, false].find(item => item !== undefined),
+                "is_standard_in_project": [
+                  reqEpr.is_standard_in_project,
+                  // existingEpr.is_standard_in_project,
+                  false].find(item => item !== undefined),
 
                 // use the requested value, or the existing or undefined
                 "calendar": reqEpr.calendar || existingEpr.calendar || undefined,

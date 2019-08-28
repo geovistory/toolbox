@@ -2,8 +2,32 @@
 
 const Promise = require('bluebird');
 const _ = require('lodash')
+const helpers = require('../helpers');
+var FlatObjectQueryBuilder = require("../classes/FlatObjectQueryBuilder");
 
 module.exports = function (InfTemporalEntity) {
+
+  InfTemporalEntity.temporalEntityList = function (fkProject, fkSourceEntity, fkProperty, isOutgoing, limit, offset, cb) {
+    const mainQuery = new FlatObjectQueryBuilder(InfTemporalEntity.app.models).createTemporalEntityListQuery(fkProject, fkSourceEntity, fkProperty, isOutgoing, limit, offset)
+    const connector = InfTemporalEntity.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      const item = result[0];
+      const data = !item ? {} : item.data
+      return cb(false, data)
+    })
+  }
+
+  InfTemporalEntity.alternativeTemporalEntityList = function (fkProject, fkSourceEntity, fkProperty, isOutgoing, limit, offset, cb) {
+    const mainQuery = new FlatObjectQueryBuilder(InfTemporalEntity.app.models).createAlternativeTemporalEntityListQuery(fkProject, fkSourceEntity, fkProperty, isOutgoing, limit, offset)
+    const connector = InfTemporalEntity.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      const item = result[0];
+      const data = !item ? {} : item.data
+      return cb(false, data)
+    })
+  }
 
   InfTemporalEntity.changeTeEntProjectRelation = function (pkProject, isInProject, data, ctx) {
     let requestedTeEnt;
@@ -94,10 +118,10 @@ module.exports = function (InfTemporalEntity) {
             te_roles: resolvedRoles
           }
           InfTemporalEntity._findOrCreateTeEnt(InfTemporalEntity, pkProject, teEnWithResolvedRoles, ctxWithoutBody)
-            .then((resultingTeEnts) => {
+            .then((resultingEntities) => {
 
               //TODO pick first item of array
-              const resultingTeEnt = resultingTeEnts[0];
+              const resultingEntity = resultingEntities[0];
 
               // if there are roles going out of the teEnt …
               if (requestedTeEnt.te_roles) {
@@ -110,7 +134,7 @@ module.exports = function (InfTemporalEntity) {
                 // returned together with all nested items
                 Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
                   // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
-                  role.fk_temporal_entity = resultingTeEnt.pk_entity;
+                  role.fk_temporal_entity = resultingEntity.pk_entity;
 
                   // find or create the Entity and the role pointing to the Entity
                   return InfRole.findOrCreateInfRole(pkProject, role, ctxWithoutBody);
@@ -118,7 +142,7 @@ module.exports = function (InfTemporalEntity) {
                   .then((roles) => {
 
                     //attach the roles to resultingTeEnt
-                    let res = resultingTeEnt.toJSON();
+                    let res = helpers.toObject(resultingEntity);
                     res.te_roles = [];
                     for (var i = 0; i < roles.length; i++) {
                       const role = roles[i];
@@ -134,7 +158,7 @@ module.exports = function (InfTemporalEntity) {
                   })
                   .catch(err => reject(err))
               } else {
-                resolve(resultingTeEnts);
+                resolve(resultingEntities);
               }
             })
             .catch(err => {

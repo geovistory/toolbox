@@ -7,7 +7,7 @@ import { DatActions, DigitalActionsFactory, LoadVersionAction, ChunkActionsFacto
 import { datRoot } from './dat.config';
 import { DigitalSlice, NamespaceSlice, ChunkSlice } from './dat.models';
 import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
-import { LoadByPkAction, InfActions } from '../inf/inf.actions';
+import { LoadByPkMeta, InfActions } from '../inf/inf.actions';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { ProActions } from '../pro/pro.actions';
 
