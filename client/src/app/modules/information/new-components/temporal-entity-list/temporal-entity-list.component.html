@@ -1,4 +1,4 @@
-<div class="table-and-paginator-container mat-elevation-z4mx-2" *ngIf="((table.dataColumns$ | async).length > 0)">
+<div class="table-and-paginator-container" *ngIf="((table.dataColumns$ | async).length > 0)">
   <div class="table-container">
     <mat-divider></mat-divider>
     <table mat-table [dataSource]="table.dataSource">
@@ -14,7 +14,7 @@
         <td mat-cell class="class-info-col pr-4" *matCellDef="let element">
           <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="listDefinition.targetClass">
           </gv-onto-class-info>
-          <span class=" font-xs text-muted" [matTooltip]="'Temporal Entity ' + element._pkEntity_">
+          <span class=" font-xs text-muted" [matTooltip]="'Temporal Entity ' + element.pkEntity">
             <i class="gv-entity-color fa fa-star-o"></i> {{listDefinition.targetClassLabel}}
           </span>
         </td>
@@ -27,16 +27,18 @@
           {{column}}
         </th>
         <td mat-cell *matCellDef="let element">
-          <gv-onto-property-info class="mr-2" [pkProperty]="element[column].pkProperty" *ngIf="showOntoInfo$ | async">
-          </gv-onto-property-info>
-          <span *ngIf="!element[column]?.entityPreview">
-            {{element[column]?.label}}
+          <!-- <gv-onto-property-info class="mr-2" [pkProperty]="element.row[column].pkProperty"
+            *ngIf="showOntoInfo$ | async">
+          </gv-onto-property-info> -->
+          <span *ngIf="!element.row[column]?.entityPreview">
+            {{element.row[column]?.label}}
           </span>
-          <span *ngIf="element[column]?.entityPreview">
-            <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="true" [preview]="element[column].entityPreview"></gv-entity-preview>
+          <span *ngIf="element.row[column]?.entityPreview">
+            <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="true"
+              [preview]="element.row[column].entityPreview"></gv-entity-preview>
           </span>
-          <span class="text-muted small" *ngIf="element[column].itemsCount > 1">
-            + {{element[column].itemsCount - 1}}
+          <span class="text-muted small" *ngIf="element.row[column]?.itemsCount > 1">
+            + {{element.row[column]?.itemsCount - 1}}
           </span>
         </td>
       </ng-container>
@@ -89,8 +91,9 @@
 
 
   </div>
-  <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="offset$ | async"
-    [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [hidden]="(itemsCount$ | async) <= 5" (page)="onPageChange($event)">
+  <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="pageIndex$ | async"
+    [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [hidden]="(itemsCount$ | async) <= 5"
+    (page)="onPageChange($event)">
   </mat-paginator>
   <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
 </div>

@@ -3,7 +3,8 @@
 const Promise = require('bluebird');
 const Config = require('../config/Config');
 const _ = require('lodash')
-var PeItFlatObject = require("../classes/PeItFlatObject");
+var FlatObjectQueryBuilder = require("../classes/FlatObjectQueryBuilder");
+const helpers = require('../helpers');
 
 module.exports = function (InfPersistentItem) {
 
@@ -60,10 +61,10 @@ module.exports = function (InfPersistentItem) {
 
 
       InfPersistentItem._findOrCreatePeIt(InfPersistentItem, pkProject, dataObject, ctxWithoutBody)
-        .then((resultingPeIts) => {
+        .then((resultingEntities) => {
           // pick first item of array
-          const resultingPeIt = resultingPeIts[0];
-          const res = resultingPeIt.toJSON();
+          const resultingEntity = resultingEntities[0];
+          const res = helpers.toObject(resultingEntity);
 
           // Array of Promises
           const promiseArray = []
@@ -81,7 +82,7 @@ module.exports = function (InfPersistentItem) {
             // returned together with all nested items
             const promise = Promise.map(requestedPeIt.pi_roles.filter(role => (role)), (role) => {
               // use the pk_entity from the created peIt to set the fk_entity of the role
-              role.fk_entity = resultingPeIt.pk_entity;
+              role.fk_entity = resultingEntity.pk_entity;
               // find or create the teEnt and the role pointing to the teEnt
               return InfRole.findOrCreateInfRole(pkProject, role, ctxWithoutBody);
             }).then((roles) => {
@@ -118,7 +119,7 @@ module.exports = function (InfPersistentItem) {
             // returned together with all nested items
             const promise = Promise.map(requestedPeIt.text_properties.filter(item => (item)), (item) => {
               // use the pk_entity from the created peIt to set the fk_concerned_entity of the item
-              item.fk_concerned_entity = resultingPeIt.pk_entity;
+              item.fk_concerned_entity = resultingEntity.pk_entity;
               // find or create the item
               return InfTextProperty.findOrCreateInfTextProperty(pkProject, item, ctxWithoutBody);
             }).then((items) => {
@@ -154,7 +155,7 @@ module.exports = function (InfPersistentItem) {
             // returned together with all nested items
             const promise = Promise.map(requestedPeIt.domain_entity_associations.filter(item => (item)), (item) => {
               // use the pk_entity from the created peIt to set the fk_info_domain of the item
-              item.fk_info_domain = resultingPeIt.pk_entity;
+              item.fk_info_domain = resultingEntity.pk_entity;
               // find or create the item
               return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item, ctxWithoutBody);
             }).then((items) => {
@@ -190,7 +191,7 @@ module.exports = function (InfPersistentItem) {
             // returned together with all nested items
             const promise = Promise.map(requestedPeIt.range_entity_associations.filter(item => (item)), (item) => {
               // use the pk_entity from the created peIt to set the fk_info_range of the item
-              item.fk_info_range = resultingPeIt.pk_entity;
+              item.fk_info_range = resultingEntity.pk_entity;
               // find or create the item
               return InfEntityAssociation.findOrCreateInfEntityAssociation(pkProject, item, ctxWithoutBody);
             }).then((items) => {
@@ -1407,8 +1408,19 @@ module.exports = function (InfPersistentItem) {
     });
   }
 
+  InfPersistentItem.ownProperties = function (pkProject, pkEntity, cb) {
+    const mainQuery = new FlatObjectQueryBuilder(InfPersistentItem.app.models).createPeItOwnPropertiesQuery(pkProject, pkEntity)
+    const connector = InfPersistentItem.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      const item = result[0];
+      const data = !item ? {} : item.data
+      return cb(false, data)
+    })
+  }
+
   InfPersistentItem.flatObjectOfProject = function (pkProject, pkEntity, cb) {
-    const mainQuery = new PeItFlatObject(InfPersistentItem.app.models).createMainQuery(pkProject, pkEntity)
+    const mainQuery = new FlatObjectQueryBuilder(InfPersistentItem.app.models).createPeItMainQuery(pkProject, pkEntity)
     const connector = InfPersistentItem.dataSource.connector;
     connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);
@@ -1418,11 +1430,22 @@ module.exports = function (InfPersistentItem) {
 
       if (!geoPks || geoPks.length === 0) return cb(false, result)
 
-      const geoQuery = new PeItFlatObject(InfPersistentItem.app.models).createGeoQuery(pkProject,  geoPks.map(pk => parseInt(pk)))
+      const geoQuery = new FlatObjectQueryBuilder(InfPersistentItem.app.models).createPeItGeoQuery(pkProject, geoPks.map(pk => parseInt(pk)))
       connector.execute(geoQuery.sql, geoQuery.params, (err, geoResult) => {
         if (err) return cb(err);
         const final = {}
-        const models = ["persistent_item", "role", "temporal_entity", "appellation", "time_primitive", "place", "info_proj_rel"]
+        const models = [
+          "persistent_item",
+          "role",
+          "entity_association",
+          "temporal_entity",
+          "appellation",
+          "language",
+          "time_primitive",
+          "place",
+          "text_property",
+          "info_proj_rel",
+        ]
 
         result.forEach(row => {
           if (models.indexOf(row.model) > -1) {
@@ -1432,7 +1455,7 @@ module.exports = function (InfPersistentItem) {
 
         geoResult.forEach(row => {
           if (models.indexOf(row.model) > -1) {
-            final[row.model] = [...(final[row.model] || []), ...row.json_agg];
+            final[row.model] = [...(final[row.model] || []), ...row.json_agg];
           }
         })
 
@@ -1440,6 +1463,7 @@ module.exports = function (InfPersistentItem) {
       })
     })
   }
+
 
 };
 

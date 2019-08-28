@@ -11,10 +11,6 @@ declare var Object: any;
 export interface InfPersistentItemInterface {
   "fk_class": number;
   "pk_entity"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   entity_version_project_rels?: ProInfoProjRel[];
   pi_roles?: InfRole[];
   dfh_class?: DfhClass;
@@ -26,10 +22,6 @@ export interface InfPersistentItemInterface {
 export class InfPersistentItem implements InfPersistentItemInterface {
   "fk_class": number;
   "pk_entity": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   entity_version_project_rels?: ProInfoProjRel[];
   pi_roles?: InfRole[];
   dfh_class?: DfhClass;
@@ -76,22 +68,6 @@ export class InfPersistentItem implements InfPersistentItemInterface {
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
       },
       relations: {

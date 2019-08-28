@@ -45,6 +45,10 @@ export interface ListDefinition {
   targetMaxQuantity?: number
 }
 
+export interface PropertyItemTypeMap {
+  [key: string]: { listType: ListType, isOutgoing: boolean }
+}
+
 export interface ItemBasics {
   projRel: ProInfoProjRel
   ordNum: number
@@ -52,43 +56,51 @@ export interface ItemBasics {
 }
 
 // Items connected through a role
-export interface RoleItemBasics extends ItemBasics {
+export interface BasicRoleItem extends ItemBasics {
   role: InfRole
+  isOutgoing?: boolean
+  error?: string
 }
 
-export interface AppellationItem extends RoleItemBasics {
+export interface AppellationItem extends BasicRoleItem {
   label: string
 }
 
-export interface LanguageItem extends RoleItemBasics {
+export interface LanguageItem extends BasicRoleItem {
   label: string
 }
 
-export interface PlaceItem extends RoleItemBasics {
+export interface PlaceItem extends BasicRoleItem {
   label: string
 }
 
-export interface TimePrimitiveItem extends RoleItemBasics {
+export interface TimePrimitiveItem extends BasicRoleItem {
   label: string
   timePrimitive: TimePrimitive;
 }
 
-export interface TemporalEntityItem extends RoleItemBasics {
-  cellDefinitions: TemporalEntityCellDefinition[]
+export interface TemporalEntityTableI {
+  rows$: Observable<TemporalEntityItem[]>
+  columns$: Observable<FieldDefinition[]>
 }
-export interface TemporalEntityCellDefinition {
-  fieldDefinition: FieldDefinition,
-  lists: EntityProperties[]
-  cellValue: TemporalEntityCellValue
+export interface TemporalEntityItem extends BasicRoleItem {
+  row: TemporalEntityRow
+  pkEntity: number; // pk of TemporalEntity
 }
-export interface TemporalEntityCellValue {
+// export interface TemporalEntityCellDefinition {
+//   fieldDefinition: FieldDefinition,
+//   lists: EntityProperties[]
+//   cellValue: TemporalEntityCellValue
+// }
+export interface TemporalEntityRow { [key: string]: TemporalEntityCell }
+export interface TemporalEntityCell {
   pkProperty: number
   label: string
   entityPreview: EntityPreview
   itemsCount: number
 }
 
-export interface EntityPreviewItem extends RoleItemBasics {
+export interface EntityPreviewItem extends BasicRoleItem {
   preview: EntityPreview
 }
 
@@ -111,7 +123,7 @@ export interface TimeSpanProperty {
   listDefinition: ListDefinition,
   items: TimePrimitiveItem[]
 }
-
+export type RoleItem = AppellationItem | EntityPreviewItem | LanguageItem | PlaceItem | TimePrimitiveItem;
 export type Item = AppellationItem | EntityPreviewItem | LanguageItem | PlaceItem | TextPropertyItem | TimeSpanItem;
 export type ItemList = Item[];
 

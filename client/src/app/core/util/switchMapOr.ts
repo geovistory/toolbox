@@ -19,19 +19,6 @@ export function switchMapOr<I, O>(defaultValue: O, elseOutput: (s: I) => Observa
       }),
       tag(`switchMapOr`)
     )
-    // const [mapToDefault$, mapToElseOutput$] = partition(source, conditionForDefault)
-
-    // const default$ = mapToDefault$.pipe(
-    //   delay(0),
-    //   mapTo(defaultValue),
-    //   tag(`switchMapOr::mapToDefault`)
-    // )
-    // const elseOutput$ = mapToElseOutput$.pipe(
-    //   switchMap(value => elseOutput(value)),
-    //   tag(`switchMapOr::mapToElseOutput`)
-    // )
-
-    // return merge(default$, elseOutput$)
 
   }
 }

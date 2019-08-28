@@ -1,10 +1,10 @@
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
-import { ofType } from 'redux-observable';
-import { Observable } from 'rxjs';
+import { ofType, ActionsObservable } from 'redux-observable';
+import { Observable, Subscriber } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { LoadActionMeta, ModifyActionMeta, StandardActionsFactory } from './actions';
+import { LoadActionMeta, ModifyActionMeta, StandardActionsFactory, FluxActionObservable } from './actions';
 
 export class StandardEpicsFactory<Payload, Model> {
   constructor(
@@ -14,27 +14,23 @@ export class StandardEpicsFactory<Payload, Model> {
     public notifications: NotificationsAPIActions) { }
 
 
-  createLoadEpic<T>(apiFn: (meta: T) => Observable<Model[]>, actionSuffix: string, onSuccessHook?: (data: Model[], pk?) => void) {
-    return (action$, store) => {
+  createLoadEpic<T>(apiFn: (meta: T) => Observable<Model[]>, actionSuffix: string, onSuccessHook?: (data: Model[], pk?, initialMeta?: T) => void) {
+    return (action$: FluxActionObservable<Payload, LoadActionMeta>, store) => {
       return action$.pipe(
-        ofType(this.actionPrefix + '.' + this.modelName + '::LOAD' + (actionSuffix ? '::' + actionSuffix : '')),
-        mergeMap((action: FluxStandardAction<Payload, LoadActionMeta>) => new Observable<Action>((globalActions) => {
+        ofType(this.type('LOAD', actionSuffix)),
+        mergeMap((action) => new Observable<Action>((globalActions) => {
           const pendingKey = action.meta.addPending;
           const meta = action.meta as any as T;
           apiFn(meta).subscribe((data: Model[]) => {
             if (onSuccessHook) {
-              onSuccessHook(data, action.meta.pk);
+              onSuccessHook(data, action.meta.pk, meta);
               this.actions.loadSucceeded([], pendingKey, action.meta.pk);
             }
             else {
               this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
             }
           }, error => {
-            globalActions.next(this.notifications.addToast({
-              type: 'error',
-              options: { title: error.message }
-            }));
-            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+            this.onError(globalActions, error, pendingKey, action.meta.pk)
           });
         })));
     };
@@ -55,11 +51,7 @@ export class StandardEpicsFactory<Payload, Model> {
               this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
             }
           }, error => {
-            globalActions.next(this.notifications.addToast({
-              type: 'error',
-              options: { title: error.message }
-            }));
-            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+            this.onError(globalActions, error, pendingKey, action.meta.pk)
           });
         })));
     };
@@ -73,13 +65,28 @@ export class StandardEpicsFactory<Payload, Model> {
           apiFn(action.meta).subscribe((data: Model[]) => {
             this.actions.deleteSucceeded(action.meta.items, pendingKey, action.meta.pk);
           }, error => {
-            globalActions.next(this.notifications.addToast({
-              type: 'error',
-              options: { title: error.message }
-            }));
-            this.actions.failed({ status: '' + error.status }, pendingKey, action.meta.pk);
+            this.onError(globalActions, error, pendingKey, action.meta.pk)
           });
         })));
     };
+  }
+
+  /**
+   * Create the string used as action.type
+   */
+  type(operation: 'LOAD' | 'UPSERT' | ' DELETE', actionSuffix: string): string {
+    return this.actionPrefix + '.' + this.modelName + '::' + operation + (actionSuffix ? '::' + actionSuffix : '')
+  }
+
+  /**
+  * Create the onError logic for standard actions
+  * @param globalActions pass in the subscriber to the action$ stream
+  */
+  onError(globalActions: Subscriber<Action>, error, pendingKey, pkProject) {
+    globalActions.next(this.notifications.addToast({
+      type: 'error',
+      options: { title: error.message }
+    }));
+    this.actions.failed({ status: '' + error.status }, pendingKey, pkProject);
   }
 }

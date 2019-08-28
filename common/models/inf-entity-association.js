@@ -66,7 +66,7 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
+                let res = resultingEas;
                 res.domain_pe_it = resultingPeIt;
 
                 resolve([res]);
@@ -98,7 +98,7 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
+                let res = resultingEas;
                 res.range_pe_it = resultingPeIt;
 
                 resolve([res]);
@@ -130,7 +130,7 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
+                let res = resultingEas;
                 res.range_chunk = resultingObject;
 
                 resolve([res]);
@@ -160,7 +160,7 @@ module.exports = function (InfEntityAssociation) {
             InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
               .then((resultingEas) => {
 
-                let res = resultingEas[0].toJSON();
+                let res = resultingEas;
                 res.domain_chunk = resultingObject;
 
                 resolve([res]);

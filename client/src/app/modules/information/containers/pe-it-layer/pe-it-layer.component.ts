@@ -127,7 +127,7 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  @cache @spyTag pipeCzml(pkEntity){
+  @cache() @spyTag pipeCzml(pkEntity){
     return this.m.pipeItem(pkEntity);
   }
 

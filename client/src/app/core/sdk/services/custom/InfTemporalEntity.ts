@@ -34,6 +34,88 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get a flat object of temporal entities.
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @param {number} pkSourceEntity Pk of the source entity to which the temporal entities are related.
+   *
+   * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
+   *
+   * @param {boolean} isOutgoing If true, the source entity is domain, else range.
+   *
+   * @param {number} limit number of returned temporal entities.
+   *
+   * @param {number} offset offset of the segment of returned temporal entities.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfTemporalEntity` object.)
+   * </em>
+   */
+  public alternativeTemporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfTemporalEntities/paginated-list-alternatives";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null) _urlParams.pkSourceEntity = pkSourceEntity;
+    if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
+    if (typeof isOutgoing !== 'undefined' && isOutgoing !== null) _urlParams.isOutgoing = isOutgoing;
+    if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
+    if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get a flat object of temporal entities.
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @param {number} pkSourceEntity Pk of the source entity to which the temporal entities are related.
+   *
+   * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
+   *
+   * @param {boolean} isOutgoing If true, the source entity is domain, else range.
+   *
+   * @param {number} limit number of returned temporal entities.
+   *
+   * @param {number} offset offset of the segment of returned temporal entities.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfTemporalEntity` object.)
+   * </em>
+   */
+  public temporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfTemporalEntities/paginated-list";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null) _urlParams.pkSourceEntity = pkSourceEntity;
+    if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
+    if (typeof isOutgoing !== 'undefined' && isOutgoing !== null) _urlParams.isOutgoing = isOutgoing;
+    if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
+    if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Get e nested objects of all information about the temporal entities.
    *
    * @param {number} pkProject Pk of project.

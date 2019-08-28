@@ -1,18 +1,22 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { InfActions } from 'app/core/inf/inf.actions';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
 import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { first, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { filter, first, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { ActiveProjectService } from '../../../../core';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { TimeSpanService } from '../../new-services/time-span.service';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
+import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number
 }
+
 @Component({
   selector: 'gv-field',
   templateUrl: './field.component.html',
@@ -37,18 +41,52 @@ export class FieldComponent implements OnInit {
   constructor(
     public t: PropertiesTreeService,
     public i: InformationPipesService,
+    public p: ActiveProjectService,
+    public inf: InfActions,
     public dialog: MatDialog,
     private timeSpan: TimeSpanService,
-  ) {  }
+  ) { }
 
   ngOnInit() {
+    const limit = temporalEntityListDefaultLimit
+    const offset = temporalEntityListDefaultPageIndex
+    /**
+     * Trigger loading of temporal entity lists
+     */
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.fieldDefinition.listDefinitions.forEach(l => {
+        if (l.listType === 'temporal-entity') {
+          const paginateBy = createPaginateBy(l, this.pkEntity)
+          this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset).pipe(
+            filter(loadNeeded => loadNeeded === true),
+            takeUntil(this.destroy$)
+          ).subscribe(() => {
+            this.inf.temporal_entity.loadPaginatedList(
+              pkProject,
+              this.pkEntity,
+              l.pkProperty,
+              l.isOutgoing,
+              limit,
+              offset
+            )
+          })
+        }
+      })
+    })
+
 
     this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
-      return this.i.pipeListLength(l, this.pkEntity).pipe(
+      let obs$: Observable<number>;
+      if (l.listType === 'temporal-entity') {
+        obs$ = this.p.inf$.role$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
+      } else {
+        obs$ = this.i.pipeListLength(l, this.pkEntity)
+      }
+      return obs$.pipe(
         map((itemsCount) => ({ ...l, itemsCount }))
       )
     })).pipe(
-      map(lists => lists.filter((list: any) => list.itemsCount > 0))
+      map(lists => lists.filter((list: ListDefinitionWithItemCount) => list.itemsCount > 0))
     )
     this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
 

@@ -7,10 +7,11 @@ import { InfPersistentItemSlice } from './inf.models';
 import { FluxStandardAction } from 'flux-standard-action';
 import { infRoot } from './inf.config';
 import { InfActionFactory } from './inf-action-factory';
+import { SchemaObject } from '../store/model';
 
 type Payload = InfPersistentItemSlice;
 
-export interface LoadByPkAction extends LoadActionMeta { pkEntity: number };
+export interface LoadByPkMeta extends LoadActionMeta { pkEntity: number };
 export interface LoadTypesOfProjectAction extends LoadActionMeta { };
 type LoadNestetedPeItResult = InfPersistentItem[]
 
@@ -18,8 +19,10 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
 
   // Suffixes of load action types
   static readonly NESTED_BY_PK = 'NESTED_BY_PK';
+  static readonly MINIMAL_BY_PK = 'MINIMAL_BY_PK';
   static readonly TYPES_OF_PROJECT = 'TYPES_OF_PROJECT';
 
+  loadMinimal: (pkProject: number, pkEntity: number) => ActionResultObservable<SchemaObject>;
   loadNestedObject: (pkProject: number, pkEntity: number) => ActionResultObservable<LoadNestetedPeItResult>;
 
   typesOfProject: (pkProject: number) => void;
@@ -31,7 +34,7 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
 
     this.loadNestedObject = (pkProject: number, pkEntity: number) => {
       const addPending = U.uuid();
-      const action: FluxStandardAction<Payload, LoadByPkAction> = {
+      const action: FluxStandardAction<Payload, LoadByPkMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfPersistentItemActionFactory.NESTED_BY_PK,
         meta: { addPending, pk: pkProject, pkEntity },
         payload: null,
@@ -43,6 +46,21 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
         key: addPending
       };
     }
+    this.loadMinimal = (pkProject: number, pkEntity: number) => {
+      const addPending = U.uuid();
+      const action: FluxStandardAction<Payload, LoadByPkMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfPersistentItemActionFactory.MINIMAL_BY_PK,
+        meta: { addPending, pk: pkProject, pkEntity },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<SchemaObject>>(['resolved', addPending]).filter(x => !!x),
+        key: addPending
+      };
+    }
+
 
     this.typesOfProject = (pkProject: number) => {
       const action: FluxStandardAction<Payload, LoadTypesOfProjectAction> = {
@@ -56,13 +74,29 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
   }
 
 }
-
+export type PaginatedRoles = number[]
+export interface PaginatedTeEnList {
+  count: number,
+  schemas: SchemaObject,
+  paginatedRoles: PaginatedRoles
+}
+export interface LoadPaginatedTeEnListMeta extends LoadActionMeta {
+  pkSourceEntity: number // Pk of the source entity to which the temporal entities are related.
+  pkProperty: number // Pk of the property leading from source entity to the temporal entities.
+  isOutgoing: boolean // If true, the source entity is domain, else range.
+  limit: number // number of returned temporal entities.
+  offset: number // offset of the segment of returned temporal entities.
+}
 export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, InfTemporalEntity> {
 
   // Suffixes of load action types
   static readonly NESTED_BY_PK = 'NESTED_BY_PK';
+  static readonly PAGINATED_LIST = 'PAGINATED_LIST';
+  static readonly PAGINATED_ALTERNATIVE_LIST = 'PAGINATED_ALTERNATIVE_LIST';
 
   loadNestedObject: (pkProject: number, pkEntity: number) => ActionResultObservable<InfTemporalEntity[]>;
+  loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
+  loadPaginatedAlternativeList: (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
@@ -71,7 +105,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
 
     this.loadNestedObject = (pkProject: number, pkEntity: number) => {
       const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadByPkAction> = {
+      const action: FluxStandardAction<Payload, LoadByPkMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.NESTED_BY_PK,
         meta: { addPending, pk: pkProject, pkEntity },
         payload: null,
@@ -80,6 +114,52 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
         resolved$: this.ngRedux.select<SucceedActionMeta<InfTemporalEntity[]>>(['resolved', addPending]).filter(x => !!x),
+        key: addPending
+      };
+    }
+
+
+    this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadPaginatedTeEnListMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.PAGINATED_LIST,
+        meta: {
+          addPending,
+          pk: pkProject,
+          pkSourceEntity,
+          pkProperty,
+          isOutgoing,
+          limit,
+          offset
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).filter(x => !!x),
+        key: addPending
+      };
+    }
+    this.loadPaginatedAlternativeList = (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadPaginatedTeEnListMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST,
+        meta: {
+          addPending,
+          pk: pkProject,
+          pkSourceEntity,
+          pkProperty,
+          isOutgoing,
+          limit,
+          offset
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).filter(x => !!x),
         key: addPending
       };
     }

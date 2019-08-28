@@ -85,11 +85,44 @@
         "typeNested",
         "addToProject",
         "graphsOfProject",
-        "flatObjectOfProject"
+        "flatObjectOfProject",
+        "ownProperties"
       ]
     }
   ],
   "methods": {
+    "ownProperties": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the entity.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Get only miminal properties of persistent item.",
+      "http": {
+        "path": "/own-properties",
+        "verb": "get"
+      }
+    },
     "flatObjectOfProject": {
       "accepts": [
         {

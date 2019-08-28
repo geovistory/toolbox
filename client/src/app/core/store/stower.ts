@@ -12,7 +12,7 @@ export interface FlatObject {
   appellation?: InfAppellation[]
   time_primitive?: InfTimePrimitive[]
   place?: InfPlace[]
-  entity_version_project_rel?: ProInfoProjRel[]
+  info_proj_rel?: ProInfoProjRel[]
 }
 export class Stower {
   constructor(

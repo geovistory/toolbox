@@ -4,7 +4,7 @@ import { Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, RoleItemBasics, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, BasicRoleItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 
@@ -55,7 +55,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
         } else {
 
-          const role = (item as RoleItemBasics).role;
+          const role = (item as BasicRoleItem).role;
           this.inf.role.remove([role], pkProject)
 
         }

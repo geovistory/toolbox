@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { omit, values } from 'ramda';
 import { NgRedux } from '../../../../../node_modules/@angular-redux/store';
-import { combineLatest, merge, Observable, of, pipe } from '../../../../../node_modules/rxjs';
+import { combineLatest, merge, Observable, of, pipe, iif } from '../../../../../node_modules/rxjs';
 import { auditTime, filter, map, switchMap } from '../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService, IAppState, InfRole, InfTemporalEntity, InfTimePrimitive, TimePrimitive, TimeSpan } from '../../../core';
 import { Granularity } from '../../../core/date-time/date-time-commons';
@@ -9,6 +9,8 @@ import { CalendarType } from '../../../core/date-time/time-primitive';
 import { InfSelector } from '../../../core/inf/inf.service';
 import { switchMapOr } from '../../../core/util/switchMapOr';
 import { cache, spyTag } from 'app/shared';
+import { BasicRoleItem } from '../new-components/properties-tree/properties-tree.models';
+import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 
 
 
@@ -36,7 +38,7 @@ export class InformationBasicPipesService {
    * Project
   *********************************************************************/
 
-  @spyTag @cache pipeRelatedTemporalEntities(pkEntity: number): Observable<InfTemporalEntity[]> {
+  @spyTag @cache() pipeRelatedTemporalEntities(pkEntity: number): Observable<InfTemporalEntity[]> {
     return this.p.inf$.role$.by_fk_entity$.key(pkEntity).pipe(
       auditTime(1),
       switchMapOr([], (roles) => combineLatest(
@@ -49,10 +51,38 @@ export class InformationBasicPipesService {
     )
   }
 
+
+
+
+  /**
+ * Pipe roles of an entity
+ */
+  @spyTag @cache() pipeRoles(pkEntity: number, isOutgoing): Observable<InfRole[]> {
+    return isOutgoing ? this.pipeOutgoingRoles(pkEntity) : this.pipeIngoingRoles(pkEntity)
+  }
+
+
+  /**
+  * Pipe outgoing roles of an entity
+  */
+  @spyTag @cache() pipeOutgoingRoles(pkEntity): Observable<InfRole[]> {
+    return this.p.inf$.role$.by_fk_temporal_entity$
+      .key(pkEntity).pipe(map(roles => values(roles)))
+  }
+
+
+  /**
+   * Pipe ingoing roles of an entity
+   */
+  @spyTag @cache() pipeIngoingRoles(pkEntity): Observable<InfRole[]> {
+    return this.p.inf$.role$.by_fk_entity$
+      .key(pkEntity).pipe(map(roles => values(roles)))
+  }
+
   /**
    * Pipe outgoing roles of temporal entity
    */
-  @spyTag @cache pipeOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+  @spyTag @cache() pipeOutgoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
     return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
       .key(pkProperty + '_' + pkEntity).pipe(
         map(roles => values(roles))
@@ -63,15 +93,57 @@ export class InformationBasicPipesService {
   /**
    * Pipe ingoing roles of an entity
    */
-  @spyTag @cache pipeIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+  @spyTag @cache() pipeIngoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
     return this.p.inf$.role$.by_fk_property__fk_entity$
       .key(pkProperty + '_' + pkEntity).pipe(
         map(roles => values(roles))
       )
   }
 
+  /**
+ * Pipe outgoing roles of temporal entity
+ */
+  @spyTag @cache({ refCount: false }) pipeOutgoingBasicRoleItemsByProperty(pkProperty, pkEntity, pkProject: number): Observable<BasicRoleItem[]> {
+    return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
+      .key(pkProperty + '_' + pkEntity).pipe(
+        switchMap(roles => combineLatestOrEmpty(
+          values(roles).map(role => this.pipeBasicRoleItem(pkProject, role, true))
+        ))
+      )
+  }
 
-  @spyTag @cache pipeInfTimePrimitive(pkEntity: number): Observable<InfTimePrimitive> {
+
+
+  /**
+   * Pipe ingoing roles of an entity
+   */
+  @spyTag @cache({ refCount: false }) pipeIngoingBasicRoleItemsByProperty(pkProperty, pkEntity, pkProject: number): Observable<BasicRoleItem[]> {
+    return this.p.inf$.role$.by_fk_property__fk_entity$
+      .key(pkProperty + '_' + pkEntity).pipe(
+        switchMap(roles => combineLatestOrEmpty(
+          values(roles).map(role => this.pipeBasicRoleItem(pkProject, role, false))
+        ))
+      )
+  }
+
+  @spyTag @cache({ refCount: false }) private pipeBasicRoleItem(pkProject: number, role: InfRole, isOutgoing: boolean): Observable<BasicRoleItem> {
+    return this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity).pipe(
+      filter(x => !!x),
+      map(projRel => ({
+        projRel, role, label: '', ordNum: projRel.ord_num_of_range, isOutgoing
+      }))
+    );
+  }
+
+  @spyTag @cache({ refCount: false }) pipeBasicRoleItemByPkRole(pkProject: number, pkRole: number, isOutgoing: boolean): Observable<BasicRoleItem> {
+    return this.p.inf$.role$.by_pk_entity$
+      .key(pkRole).pipe(
+        switchMap(role => (!role) ? of(undefined) : this.pipeBasicRoleItem(pkProject, role, isOutgoing))
+      )
+  }
+
+
+  @spyTag @cache() pipeInfTimePrimitive(pkEntity: number): Observable<InfTimePrimitive> {
     return this.p.inf$.time_primitive$.by_pk_entity$.key(pkEntity)
   }
 
@@ -79,15 +151,15 @@ export class InformationBasicPipesService {
    * pipes the TimeSpan of a temporal entity
    * @param pkEntity the pk_entity of the termporal entity
    */
-  @spyTag @cache pipeTimeSpan(pkEntity: number): Observable<TimeSpan> {
+  @spyTag @cache() pipeTimeSpan(pkEntity: number): Observable<TimeSpan> {
     // Get the properties leading to presences
     return combineLatest(
-      this.pipeOutgoingRoles(72, pkEntity).pipe(this.timePrimitiveOfRoles()),
-      this.pipeOutgoingRoles(71, pkEntity).pipe(this.timePrimitiveOfRoles()),
-      this.pipeOutgoingRoles(150, pkEntity).pipe(this.timePrimitiveOfRoles()),
-      this.pipeOutgoingRoles(151, pkEntity).pipe(this.timePrimitiveOfRoles()),
-      this.pipeOutgoingRoles(152, pkEntity).pipe(this.timePrimitiveOfRoles()),
-      this.pipeOutgoingRoles(153, pkEntity).pipe(this.timePrimitiveOfRoles()),
+      this.pipeOutgoingRolesByProperty(72, pkEntity).pipe(this.timePrimitiveOfRoles()),
+      this.pipeOutgoingRolesByProperty(71, pkEntity).pipe(this.timePrimitiveOfRoles()),
+      this.pipeOutgoingRolesByProperty(150, pkEntity).pipe(this.timePrimitiveOfRoles()),
+      this.pipeOutgoingRolesByProperty(151, pkEntity).pipe(this.timePrimitiveOfRoles()),
+      this.pipeOutgoingRolesByProperty(152, pkEntity).pipe(this.timePrimitiveOfRoles()),
+      this.pipeOutgoingRolesByProperty(153, pkEntity).pipe(this.timePrimitiveOfRoles()),
 
     ).pipe(
       map(([_72, _71, _150, _151, _152, _153]) => new TimeSpan({
@@ -134,7 +206,7 @@ export class InformationBasicPipesService {
   /**
    * Pipes the fk_class of the given entity
    */
-  @spyTag @cache pipeClassOfEntity(pkEntity: number): Observable<number> {
+  @spyTag @cache() pipeClassOfEntity(pkEntity: number): Observable<number> {
     return merge(
       this.p.inf$.persistent_item$.by_pk_entity$.key(pkEntity).pipe(
         filter(e => !!e),
@@ -153,12 +225,27 @@ export class InformationBasicPipesService {
    * Repo
   *********************************************************************/
 
+  /**
+    * Pipe repo outgoing roles.
+    */
+  @spyTag @cache() pipeRepoOutgoingRoles(pkEntity): Observable<InfRole[]> {
+    return this.infRepo.role$.by_fk_temporal_entity$.key(pkEntity)
+      .pipe(map((inrepo) => values(inrepo)))
+  }
+
+  /**
+  * Pipe repo ingoing roles.
+  */
+  @spyTag @cache() pipeRepoIngoingRoles(pkEntity): Observable<InfRole[]> {
+    return this.infRepo.role$.by_fk_entity$.key(pkEntity)
+      .pipe(map((inrepo) => values(inrepo)))
+  }
 
   /**
     * Pipe repo outgoing roles.
     * If max quantity is limited, takes only max allowed number of roles, starting with highest is_in_project_count
     */
-  @spyTag @cache pipeRepoOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+  @spyTag @cache() pipeRepoOutgoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
       this.p.crm$.pipe(filter(x => !!x), map(crm => crm.properties[pkProperty].dfh_range_instances_max_quantifier)),
       this.infRepo.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
@@ -176,7 +263,7 @@ export class InformationBasicPipesService {
   * Pipe repo ingoing roles.
   * If max quantity is limited, takes only max allowed number of roles, starting with highest is_in_project_count
   */
-  @spyTag @cache pipeRepoIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+  @spyTag @cache() pipeRepoIngoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
       this.p.crm$.pipe(filter(x => !!x), map(crm => crm.properties[pkProperty].dfh_domain_instances_max_quantifier)),
       this.infRepo.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
@@ -195,10 +282,34 @@ export class InformationBasicPipesService {
    * Alternatives (Repo minus Project)
   *********************************************************************/
 
+  @spyTag @cache({ refCount: false }) pipeAlternativeBasicRoleItemByPkRole(pkRole: number, isOutgoing: boolean): Observable<BasicRoleItem> {
+    return combineLatest(
+      this.infRepo.role$.by_pk_entity$.key(pkRole),
+      this.p.inf$.role$.by_pk_entity$.key(pkRole),
+    )
+      .pipe(
+        map(([inrepo, inproject]) => {
+          if (inproject) {
+            return undefined
+          } else {
+            const i: BasicRoleItem = {
+              projRel: undefined,
+              role: inrepo,
+              ordNum: undefined,
+              isOutgoing,
+              label: ''
+            }
+            return i
+          }
+        })
+      )
+  }
+
+
   /**
      * Pipe alternative ingoing roles (= roles not in active project)
      */
-  @spyTag @cache pipeAlternativeIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+  @spyTag @cache() pipeAlternativeIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
       this.infRepo.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity),
       this.p.inf$.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity).pipe(
@@ -214,7 +325,7 @@ export class InformationBasicPipesService {
   /**
    * Pipe alternative outgoing roles (= roles not in active project)
    */
-  @spyTag @cache pipeAlternativeOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
+  @spyTag @cache() pipeAlternativeOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
       this.infRepo.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity),
       this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(
@@ -228,7 +339,7 @@ export class InformationBasicPipesService {
   /**
    * get array of pks of persistent items of a specific class
    */
-  @spyTag @cache pipePersistentItemPksByClass(pkClass): Observable<number[]> {
+  @spyTag @cache() pipePersistentItemPksByClass(pkClass): Observable<number[]> {
     return this.p.inf$.persistent_item$.by_fk_class$.key(pkClass).pipe(
       map(ob => {
         if (ob) return Object.keys(ob).map(k => parseInt(k));

@@ -11,16 +11,19 @@
   </button>
   <button mat-icon-button disabled *ngIf="!((itemsCount$ | async) > 0)"></button>
 
-  <div class="gv-field-header-label bg-transparent d-flex align-items-center gv-grow-1">
+  <div class="bg-transparent d-flex align-items-center gv-grow-1">
     <a *ngIf="(showOntoInfo$|async)" class="badge badge-success mr-2" href="{{fieldDefinition.ontoInfoUrl}}"
       target="_blank">
       {{fieldDefinition.ontoInfoLabel}}
     </a>
-    <span class="upper-case">
+    <span class="upper-case gv-field-header-label" >
       {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
       <span matTooltip="Required and not changeable (identity defining)" *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
         *
       </span>
+    </span>
+    <span class="ml-1 mat-caption text-muted">
+      ({{itemsCount$ | async}})
     </span>
   </div>
   <button mat-button [disabled]="!(showAddButton$ | async)"

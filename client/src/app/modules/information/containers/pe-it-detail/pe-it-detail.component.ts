@@ -1,27 +1,20 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { ActiveProjectService, IAppState, InfPersistentItem, U, UiContext, TabData, Tab } from 'app/core';
-import { AddOption, ClassInstanceLabel, CollapsedExpanded, PeItDetail, PropertyField, PropertyFieldForm, SubstoreComponent } from 'app/core/state/models';
-import { TextPropertyField } from 'app/core/state/models/text-property-field';
-import { RootEpics } from 'app/core/store/epics';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ActiveProjectService, IAppState, Tab, U, UiContext } from 'app/core';
+import { ClassInstanceLabel, PeItDetail, SubstoreComponent } from 'app/core/state/models';
+import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
-import { Observable, combineLatest, Subject, of } from 'rxjs';
-import { filter, first, takeUntil, map, distinctUntilChanged, tap } from 'rxjs/operators';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { InfActions } from '../../../../core/inf/inf.actions';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-import { EntityBase } from '../../entity/entity.base';
-import { EntityAPIEpics } from '../../entity/entity.epics';
+import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { slideInOut } from '../../shared/animations';
 import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
-import { PeItDetailAPIEpics } from './api/pe-it-detail.epics';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
-import { pathOr } from 'ramda';
-import { InfActions } from '../../../../core/inf/inf.actions';
-import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -144,7 +137,7 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
     this.t.setTabLoading(true)
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.inf.persistent_item.loadNestedObject(pkProject, this.pkEntity).resolved$
+      this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$
         .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
           this.t.setTabLoading(false)
         })
