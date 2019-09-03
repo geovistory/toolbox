@@ -15,9 +15,9 @@
   "private": true,
   "dependencies": {
     "@angular-devkit/build-angular": "^0.12.4",
-    "@angular-redux/form": "^9.0.0",
-    "@angular-redux/router": "^9.0.0",
-    "@angular-redux/store": "^9.0.0",
+    "@angular-redux/form": "^10.0.0",
+    "@angular-redux/router": "^10.0.0",
+    "@angular-redux/store": "^10.0.0",
     "@angular/animations": "~7.0.4",
     "@angular/cdk": "^7.3.7",
     "@angular/cli": "~8.3.2",
