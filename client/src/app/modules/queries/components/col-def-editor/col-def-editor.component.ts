@@ -10,46 +10,8 @@ import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 import { delay, map, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
 import { ColDefComponent } from '../col-def/col-def.component';
-
-export type QueryPathSegmentType = 'properties' | 'classes';
-
-export class QueryPathSegment {
-
-  type: QueryPathSegmentType
-
-  data: {
-
-    // for entities table
-    classes?: number[];
-    types?: number[];
-
-    // for role table
-    outgoingProperties?: number[]
-    ingoingProperties?: number[]
-
-  }
-
-  constructor(data: QueryPathSegment) {
-    Object.assign(this, data)
-  }
-}
-
-export class ColDef {
-  // has to be true on columns of the root table (the first entity_preview table)
-  ofRootTable?: boolean;
-  // If true, users cant edit this column
-  defaultType?: 'entity_preview' | 'entity_label' | 'class_label' | 'type_label';
-
-  colName?: string;
-
-  label?: string
-
-  queryPath?: QueryPathSegment[]
-
-  constructor(data: ColDef) {
-    Object.assign(this, data)
-  }
-}
+import { QueryPathSegment } from './QueryPathSegment';
+import { ColDef } from './ColDef';
 
 
 interface DynamicFormControl {
@@ -304,7 +266,7 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements Aft
   }
 
   /**
-   * 
+   *
    * @param i index of dynamic form control
    * @param e meta info about that control
    */

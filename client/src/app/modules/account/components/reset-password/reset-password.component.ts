@@ -1,12 +1,11 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { URLSearchParams } from '@angular/http';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PubAccountApi, ErrorHandler, LoopBackConfig } from 'app/core';
-import { environment } from 'environments/environment';
+import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { ErrorHandler, LoopBackConfig, PubAccountApi } from 'app/core';
+import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
+import { HttpClient } from '../../../../../../node_modules/@angular/common/http';
 
-import { HttpClient, HttpHeaders } from '../../../../../../node_modules/@angular/common/http';
 
 
 

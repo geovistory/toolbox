@@ -2,7 +2,7 @@ import { ObservableStore } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DfhClass, LoadingBarAction, LoadingBarActions } from 'app/core';
 import { DfhClassApi } from 'app/core/sdk/services/custom/DfhClass';
-import { Epic, ofType } from 'redux-observable';
+import { Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ClassDetail } from '../../../backoffice.models';

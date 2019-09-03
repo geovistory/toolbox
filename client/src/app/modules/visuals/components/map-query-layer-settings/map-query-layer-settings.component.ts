@@ -3,13 +3,15 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, Afte
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectService, ProQuery, latestEntityVersions, ValidationService } from 'app/core';
-import { ColDef, QueryPathSegment } from 'app/modules/queries/components/col-def-editor/col-def-editor.component';
+import { ColDef } from 'app/modules/queries/components/col-def-editor/ColDef';
 import { QueryService } from 'app/modules/queries/services/query.service';
 import { equals, keys, omit, pathOr } from 'ramda';
 import { combineLatest, merge, Observable, Subject, pipe, OperatorFunction } from 'rxjs';
 import { filter, map, takeUntil, tap, switchMap, first, delay } from 'rxjs/operators';
-import { FilterTree, FilterTreeData } from 'app/modules/queries/containers/query-detail/query-detail.component';
+
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { FilterTreeData } from 'app/modules/queries/containers/query-detail/FilterTree';
+import { QueryPathSegment } from 'app/modules/queries/components/col-def-editor/QueryPathSegment';
 
 
 
@@ -242,7 +244,7 @@ export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy,
     })
 
     // this.queryVersionCtrl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-    //   // deselect the selected Georeference Column if is not Presence 
+    //   // deselect the selected Georeference Column if is not Presence
     //   if (!this.isE93(this.geoCol)) {
     //     this.geoColCtrl.setValue(null);
     //   }

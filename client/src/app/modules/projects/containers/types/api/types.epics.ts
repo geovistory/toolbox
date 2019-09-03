@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, DatNamespaceApi, DatNamespace, SysConfig } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable, combineLatest } from 'rxjs';
 import { switchMap, takeUntil, filter, first } from 'rxjs/operators';
 import { TypesComponent } from '../types.component';

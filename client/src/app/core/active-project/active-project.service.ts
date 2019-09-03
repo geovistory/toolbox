@@ -3,7 +3,6 @@ import {of as observableOf,  BehaviorSubject, combineLatest, Observable, Subject
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
 import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { difference, groupBy, indexBy, path, values, without, equals } from 'ramda';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
@@ -16,10 +15,13 @@ import { LoopBackConfig } from '../sdk/lb.config';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ProjectDetail, Panel, PropertyList } from './active-project.models';
 import { ProSelector } from 'app/core/pro/pro.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { SystemSelector } from '../sys/sys.service';
+import { IAppState } from '../store/model';
+import { SysConfig } from '../config/sys-config';
+import { U } from '../util/util';
 
 
 

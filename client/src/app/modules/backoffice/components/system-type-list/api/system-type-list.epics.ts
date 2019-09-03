@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoadingBarActions } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SystemTypeListComponent } from '../system-type-list.component';

@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
-import { combineEpics, Epic } from 'redux-observable';
+import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { SysSystemRelevantClassApi } from '../sdk/services/custom/SysSystemRelevantClass';

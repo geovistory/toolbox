@@ -6,7 +6,7 @@ import { PropertyOption, PropertySelectModel } from '../components/property-sele
 import { combineLatest, OperatorFunction, Observable } from 'rxjs';
 import { ClassAndTypeSelectModel } from '../components/class-and-type-select/class-and-type-select.component';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { QueryPathSegment } from '../components/col-def-editor/col-def-editor.component';
+import { QueryPathSegment } from "../components/col-def-editor/QueryPathSegment";
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 @Injectable({

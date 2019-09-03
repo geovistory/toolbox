@@ -1,10 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, U, InfPersistentItem, InfRole, InfAppellation, InfTemporalEntity, InfTimePrimitive, InfPlace, ProInfoProjRel } from 'app/core';
+import { IAppState, U } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Observable, Subject } from 'rxjs';
-import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { ActionsObservable } from '../../../../node_modules/redux-observable';
+import { ActionsObservable } from 'redux-observable-es6-compat';
+import { Observable } from 'rxjs';
 
 export interface LoadActionMeta { addPending: string, pk?: number }
 export interface ModifyActionMeta<Model> { items: Model[], addPending: string, pk?: number }

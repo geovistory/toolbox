@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from './loading-bar.actions';

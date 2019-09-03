@@ -5,7 +5,7 @@ import { ofSubstore } from 'app/core/store/module';
 import { IVersion } from 'app/modules/information/components/version-picker/version-picker.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { TextEditorComponent } from '../text-editor.component';

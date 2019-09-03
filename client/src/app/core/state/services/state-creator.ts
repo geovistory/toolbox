@@ -18,25 +18,25 @@ import { TypeDetail } from '../models/type-detail';
 ***************************************************/
 
 export class StateSettings {
-    parentRolePk?: number;
-    parentPropertyField?: PropertyField;
+  parentRolePk?: number;
+  parentPropertyField?: PropertyField;
 
-    // If the provided pkUiContext points to a Create Context, the state creator
-    // produces other states, made for *-create-crl.component.ts
-    //
-    // If the provided pkUiContext points to a edtitable contest, the state creator
-    // produces states, made for *-editable.component.ts.
-    //
-    // By defaut, the state creator acts like it was in the dataunits editable context.
-    pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+  // If the provided pkUiContext points to a Create Context, the state creator
+  // produces other states, made for *-create-crl.component.ts
+  //
+  // If the provided pkUiContext points to a edtitable contest, the state creator
+  // produces states, made for *-editable.component.ts.
+  //
+  // By defaut, the state creator acts like it was in the dataunits editable context.
+  pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
-    // If the provided pkUiContext points to a editable context,
-    // you can set isViewMode to true to hide all editing functionalities from *-editable.component.ts.
-    isViewMode?: boolean;
+  // If the provided pkUiContext points to a editable context,
+  // you can set isViewMode to true to hide all editing functionalities from *-editable.component.ts.
+  isViewMode?: boolean;
 
-    constructor(data?: StateSettings) {
-        Object.assign(this, data);
-    }
+  constructor(data?: StateSettings) {
+    Object.assign(this, data);
+  }
 }
 
 /***************************************************
@@ -48,11 +48,11 @@ export class StateSettings {
  * @param pkUiContext the pk of the UiContext
  */
 export function isCreateContext(pkUiContext: number): boolean {
-    return [
-        SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
-        SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
-        SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
-    ].indexOf(pkUiContext) > -1;
+  return [
+    SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE,
+    SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
+    SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
+  ].indexOf(pkUiContext) > -1;
 }
 
 /**
@@ -60,19 +60,19 @@ export function isCreateContext(pkUiContext: number): boolean {
  * @param pkUiContext the pk of the UiContext
  */
 export function getCreateOfEditableContext(pkUiEditableContext: number): number {
-    switch (pkUiEditableContext) {
-        case SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE:
-            return SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
+  switch (pkUiEditableContext) {
+    case SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE:
+      return SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
-        case SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE:
-            return SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
+    case SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE:
+      return SysConfig.PK_UI_CONTEXT_SOURCES_CREATE;
 
-        case SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE:
-            return SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
+    case SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE:
+      return SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE;
 
-        default:
-            break;
-    }
+    default:
+      break;
+  }
 }
 
 
@@ -90,25 +90,25 @@ export function getCreateOfEditableContext(pkUiEditableContext: number): number 
 */
 export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, crm: ProjectCrm, settings?: StateSettings): PeItDetail {
 
-    // init settings (adds defaults, if not otherwise provided)
-    settings = new StateSettings(settings);
+  // init settings (adds defaults, if not otherwise provided)
+  settings = new StateSettings(settings);
 
-    // those only pollute the state unless we are in add mode.
-    // if (!settings.isAddMode) delete peIt.pi_roles;
+  // those only pollute the state unless we are in add mode.
+  // if (!settings.isAddMode) delete peIt.pi_roles;
 
-    const peItCleaned = omit(['pi_roles'], peIt);
+  const peItCleaned = omit(['pi_roles'], peIt);
 
-    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
+  options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
-    return new PeItDetail({
-        ...options,
-        selectPropState: 'init',
-        peIt: peItCleaned,
-        pkEntity: peIt.pk_entity,
-        fkClass: peIt.fk_class,
-        _fields: createFieldList(peIt.fk_class, peIt.pi_roles, peIt.text_properties, crm, settings),
-        _type: createTypeDetailOfEntity({}, peIt, crm, settings),
-    })
+  return new PeItDetail({
+    ...options,
+    selectPropState: 'init',
+    peIt: peItCleaned,
+    pkEntity: peIt.pk_entity,
+    fkClass: peIt.fk_class,
+    _fields: createFieldList(peIt.fk_class, peIt.pi_roles, peIt.text_properties, crm, settings),
+    _type: createTypeDetailOfEntity({}, peIt, crm, settings),
+  })
 }
 
 /**
@@ -121,21 +121,21 @@ export function createPeItDetail(options: PeItDetail, peIt: InfPersistentItem, c
 */
 export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity, crm: ProjectCrm, settings?: StateSettings): TeEntDetail {
 
-    if (!teEnt) return;
+  if (!teEnt) return;
 
-    // init settings (adds defaults, if not otherwise provided)
-    settings = new StateSettings(settings);
+  // init settings (adds defaults, if not otherwise provided)
+  settings = new StateSettings(settings);
 
-    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
+  options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
-    return new TeEntDetail({
-        ...options,
-        selectPropState: 'init',
-        teEnt: teEnt,
-        pkEntity: teEnt.pk_entity,
-        fkClass: teEnt.fk_class,
-        _fields: createFieldList(teEnt.fk_class, teEnt.te_roles, teEnt.text_properties, crm, settings)
-    });
+  return new TeEntDetail({
+    ...options,
+    selectPropState: 'init',
+    teEnt: teEnt,
+    pkEntity: teEnt.pk_entity,
+    fkClass: teEnt.fk_class,
+    _fields: createFieldList(teEnt.fk_class, teEnt.te_roles, teEnt.text_properties, crm, settings)
+  });
 }
 
 
@@ -148,31 +148,31 @@ export function createTeEntDetail(options: TeEntDetail, teEnt: InfTemporalEntity
 * @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createTypeDetailOfEntity(options: TypeDetail, entity: InfTemporalEntity | InfPersistentItem, crm: ProjectCrm, settings: StateSettings): TypeDetail {
-    // if for instances of this class we do not want types, return
-    if (!entity.fk_class || !crm.classHasTypeProperty.by_pk_typed_class[entity.fk_class]) return;
+  // if for instances of this class we do not want types, return
+  if (!entity.fk_class || !crm.classHasTypeProperty.by_pk_typed_class[entity.fk_class]) return;
 
-    let typeEntityAssociation: InfEntityAssociation;
+  let typeEntityAssociation: InfEntityAssociation;
 
-    // try to find domain entity association with type information
-    if (entity.domain_entity_associations) {
-        const property = U.obj2Arr(crm.classHasTypeProperty.by_pk_typed_class[entity.fk_class])[0].dfh_pk_property;
-        typeEntityAssociation = entity.domain_entity_associations
-            .find(ea => ea.fk_property === property);
-    }
+  // try to find domain entity association with type information
+  if (entity.domain_entity_associations) {
+    const property = U.obj2Arr(crm.classHasTypeProperty.by_pk_typed_class[entity.fk_class])[0].dfh_pk_property;
+    typeEntityAssociation = entity.domain_entity_associations
+      .find(ea => ea.fk_property === property);
+  }
 
-    return createTypeDetail(
-        {
-            _typeCtrl: {
-                pkTypedClass: entity.fk_class,
-                // If create mode, fetch type here. THis should be passed in by entity
-                entityAssociation: typeEntityAssociation
-            },
-            fkDomainEntity: entity.pk_entity
-        },
-        typeEntityAssociation,
-        crm,
-        settings
-    )
+  return createTypeDetail(
+    {
+      _typeCtrl: {
+        pkTypedClass: entity.fk_class,
+        // If create mode, fetch type here. THis should be passed in by entity
+        entityAssociation: typeEntityAssociation
+      },
+      fkDomainEntity: entity.pk_entity
+    },
+    typeEntityAssociation,
+    crm,
+    settings
+  )
 }
 
 /**
@@ -185,19 +185,19 @@ export function createTypeDetailOfEntity(options: TypeDetail, entity: InfTempora
 */
 export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociation, crm: ProjectCrm, settings: StateSettings): TypeDetail {
 
-    const roles = !assoc ? undefined : !assoc.range_pe_it ? undefined : assoc.range_pe_it.pi_roles;
+  const roles = !assoc ? undefined : !assoc.range_pe_it ? undefined : assoc.range_pe_it.pi_roles;
 
-    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
+  options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
-    return new TypeDetail({
-        ...options,
-        entityAssociation: assoc,
-        label: !roles ? '' : roles.filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
-            .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
-                .map(r => {
-                    return r.appellation.string;
-                })[0]).join(', ')
-    });
+  return new TypeDetail({
+    ...options,
+    entityAssociation: assoc,
+    label: !roles ? '' : roles.filter(r => r.temporal_entity.fk_class === DfhConfig.CLASS_PK_APPELLATION_USE)
+      .map(pir => pir.temporal_entity.te_roles.filter(ter => (ter && Object.keys((ter.appellation || {})).length))
+        .map(r => {
+          return r.appellation.string;
+        })[0]).join(', ')
+  });
 }
 
 /**
@@ -211,97 +211,97 @@ export function createTypeDetail(options: TypeDetail, assoc: InfEntityAssociatio
  */
 export function createFieldList(fkClass: number, roles: InfRole[], textProperties: InfTextProperty[], crm: ProjectCrm, settings?: StateSettings): FieldList {
 
-    // init settings (adds defaults, if not otherwise provided)
-    settings = new StateSettings(settings);
+  // init settings (adds defaults, if not otherwise provided)
+  settings = new StateSettings(settings);
 
 
-    const fields = [];
+  const fields = [];
 
-    // /** exclude the circular role */
-    if (roles) {
-        const i = roles.findIndex(role => (role.pk_entity === settings.parentRolePk));
-        if (i > -1) {
-            roles.splice(i, 1)
-        };
+  // /** exclude the circular role */
+  if (roles) {
+    const i = roles.findIndex(role => (role.pk_entity === settings.parentRolePk));
+    if (i > -1) {
+      roles.splice(i, 1)
+    };
+  }
+
+  // Get class config
+  const classConfig = crm.classes[fkClass];
+
+  const uiContext = classConfig.uiContexts[settings.pkUiContext];
+
+
+  if (isCreateContext(settings.pkUiContext)) {
+
+    // add a propertyField for each propertyField in this ui-context
+    if (uiContext && uiContext.uiElements) {
+      uiContext.uiElements.forEach(el => {
+
+        // if this is a element for a PropertyField
+        if (
+          el.propertyFieldKey
+        ) {
+          const propertyFieldDef = crm.fieldList[el.propertyFieldKey] as PropertyField;
+
+          // exclude the circular PropertyFields
+          if (!similarPropertyField(propertyFieldDef, settings.parentPropertyField)) {
+
+            // Generate propertyFields (like e.g. the names-section, the birth-section or the detailed-name secition)
+            const options = new PropertyField({ toggle: 'expanded' })
+            const newRole = {
+              fk_property: el.fk_property,
+              entity_version_project_rels: [{
+                is_in_project: true
+              }]
+            } as InfRole;
+
+            const propertyField = createPropertyField(Object.assign({}, propertyFieldDef, options), [newRole], crm, settings);
+            fields.push(propertyField);
+          }
+        } else if (el.fk_class_field) {
+          fields.push(createClassField(el.propSetKey, [], [], crm, settings))
+        }
+      });
+    }
+  } else {
+    let rolesByFkProp = {};
+    if (roles && roles.length) {
+      rolesByFkProp = groupBy((r) => r.fk_property.toString(), roles) as { [index: number]: InfRole[] }
     }
 
-    // Get class config
-    const classConfig = crm.classes[fkClass];
+    // for each uiElement in this ui-context
+    if (uiContext && uiContext.uiElements) {
+      uiContext.uiElements.forEach(el => {
 
-    const uiContext = classConfig.uiContexts[settings.pkUiContext];
+
+        // if this is a element for a PropertyField
+        if (el.propertyFieldKey) {
+          let rolesWithinQuantity: InfRole[] = [];
+
+          // enrich PropertyField with roles and RoleDetails
+
+          // Generate propertyFields (like e.g. the names-section, the birth-section or the detailed-name secition)
+          const options = new PropertyField({ ...crm.fieldList[el.propertyFieldKey] as PropertyField, toggle: 'expanded' })
+
+          rolesWithinQuantity = rolesByFkProp[el.fk_property];
 
 
-    if (isCreateContext(settings.pkUiContext)) {
 
-        // add a propertyField for each propertyField in this ui-context
-        if (uiContext && uiContext.uiElements) {
-            uiContext.uiElements.forEach(el => {
-
-                // if this is a element for a PropertyField
-                if (
-                    el.propertyFieldKey
-                ) {
-                    const propertyFieldDef = crm.fieldList[el.propertyFieldKey] as PropertyField;
-
-                    // exclude the circular PropertyFields
-                    if (!similarPropertyField(propertyFieldDef, settings.parentPropertyField)) {
-
-                        // Generate propertyFields (like e.g. the names-section, the birth-section or the detailed-name secition)
-                        const options = new PropertyField({ toggle: 'expanded' })
-                        const newRole = {
-                            fk_property: el.fk_property,
-                            entity_version_project_rels: [{
-                                is_in_project: true
-                            }]
-                        } as InfRole;
-
-                        const propertyField = createPropertyField(Object.assign({}, propertyFieldDef, options), [newRole], crm, settings);
-                        fields.push(propertyField);
-                    }
-                } else if (el.fk_class_field) {
-                    fields.push(createClassField(el.propSetKey, [], [], crm, settings))
-                }
-            });
-        }
-    } else {
-        let rolesByFkProp = {};
-        if (roles && roles.length) {
-            rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] }
+          if (rolesWithinQuantity && rolesWithinQuantity.length > 0) {
+            fields.push(createPropertyField(options, rolesWithinQuantity, crm, settings));
+          }
+        } else if (el.fk_class_field) {
+          fields.push(createClassField(el.propSetKey, roles, textProperties, crm, settings))
         }
 
-        // for each uiElement in this ui-context
-        if (uiContext && uiContext.uiElements) {
-            uiContext.uiElements.forEach(el => {
-
-
-                // if this is a element for a PropertyField
-                if (el.propertyFieldKey) {
-                    let rolesWithinQuantity: InfRole[] = [];
-
-                    // enrich PropertyField with roles and RoleDetails
-
-                    // Generate propertyFields (like e.g. the names-section, the birth-section or the detailed-name secition)
-                    const options = new PropertyField({ ...crm.fieldList[el.propertyFieldKey] as PropertyField, toggle: 'expanded' })
-
-                    rolesWithinQuantity = rolesByFkProp[el.fk_property];
-
-
-
-                    if (rolesWithinQuantity && rolesWithinQuantity.length > 0) {
-                        fields.push(createPropertyField(options, rolesWithinQuantity, crm, settings));
-                    }
-                } else if (el.fk_class_field) {
-                    fields.push(createClassField(el.propSetKey, roles, textProperties, crm, settings))
-                }
-
-            });
-        }
-
+      });
     }
 
-    if (!fields.length) return;
+  }
 
-    return indexBy(fieldKey, fields.filter(c => (c)));
+  if (!fields.length) return;
+
+  return indexBy(fieldKey, fields.filter(c => (c)));
 }
 
 
@@ -317,38 +317,38 @@ export function createFieldList(fkClass: number, roles: InfRole[], textPropertie
  */
 export function createClassField(fieldKey: string, rls: InfRole[], textProps: InfTextProperty[], crm: ProjectCrm, settings: StateSettings): Field {
 
-    switch (crm.fieldList[fieldKey].type) {
-        case 'ExistenceTimeDetail':
-            return createExistenceTimeDetail(new ExistenceTimeDetail({
-                fkClassField: crm.fieldList[fieldKey].fkClassField,
-                toggle: 'expanded',
-                pkUiContext: settings.pkUiContext
+  switch (crm.fieldList[fieldKey].type) {
+    case 'ExistenceTimeDetail':
+      return createExistenceTimeDetail(new ExistenceTimeDetail({
+        fkClassField: crm.fieldList[fieldKey].fkClassField,
+        toggle: 'expanded',
+        pkUiContext: settings.pkUiContext
 
-            }), rls, crm, settings);
+      }), rls, crm, settings);
 
-        case 'TextPropertyField':
+    case 'TextPropertyField':
 
-            const fkClassField = crm.fieldList[fieldKey].fkClassField;
+      const fkClassField = crm.fieldList[fieldKey].fkClassField;
 
-            // get array of textProps of that field
-            const t = !textProps ? [] : textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField)
+      // get array of textProps of that field
+      const t = !textProps ? [] : textProps.filter((txtProp) => txtProp.fk_class_field == fkClassField)
 
-            // if no textProps and not create mode, return
-            if (t.length === 0 && !isCreateContext(settings.pkUiContext)) return;
+      // if no textProps and not create mode, return
+      if (t.length === 0 && !isCreateContext(settings.pkUiContext)) return;
 
-            return createTextPropertyField(
-                new TextPropertyField({
-                    fkClassField,
-                    pkUiContext: settings.pkUiContext
-                }),
-                t,
-                crm,
-                settings
-            );
+      return createTextPropertyField(
+        new TextPropertyField({
+          fkClassField,
+          pkUiContext: settings.pkUiContext
+        }),
+        t,
+        crm,
+        settings
+      );
 
-        default:
-            break;
-    }
+    default:
+      break;
+  }
 }
 
 /***************************************************
@@ -367,30 +367,30 @@ export function createClassField(fieldKey: string, rls: InfRole[], textProps: In
  */
 export function createPropertyField(options: PropertyField, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): PropertyField {
 
-    if (!options.property) throw Error('Please provide options.property. This is important to add information about the target class of a PropertyField.');
+  if (!options.property) throw Error('Please provide options.property. This is important to add information about the target class of a PropertyField.');
 
-    // prepare _role_list
-    if (roles && roles.length) {
+  // prepare _role_list
+  if (roles && roles.length) {
 
-        const roleDetailArray = roles.map(role => createRoleDetail({
-            isOutgoing: options.isOutgoing,
-            targetClassPk: options.targetClassPk
-        }, role, crm, settings))
+    const roleDetailArray = roles.map(role => createRoleDetail({
+      isOutgoing: options.isOutgoing,
+      targetClassPk: options.targetClassPk
+    }, role, crm, settings))
 
-        const sortedByOrdNum = sortRoleDetailsByOrdNum(roleDetailArray);
+    const sortedByOrdNum = sortRoleDetailsByOrdNum(roleDetailArray);
 
-        options = {
-            ...options,
-            _role_list: indexBy(roleDetailKey, sortedByOrdNum)
-        }
+    options = {
+      ...options,
+      _role_list: indexBy(roleDetailKey, sortedByOrdNum)
     }
+  }
 
-    options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
+  options = { ...options, isViewMode: settings.isViewMode, pkUiContext: settings.pkUiContext }
 
-    return new PropertyField({
-        ...options,
-        targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
-    });
+  return new PropertyField({
+    ...options,
+    targetClassPk: options.isOutgoing ? options.property.dfh_has_range : options.property.dfh_has_domain,
+  });
 
 }
 
@@ -407,7 +407,7 @@ export function createPropertyField(options: PropertyField, roles: InfRole[], cr
  * @param settings state settings object.
  */
 export function createRoleDetailList(options: PropertyField, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): RoleDetailList {
-    return createPropertyField(options, roles, crm, settings)._role_list;
+  return createPropertyField(options, roles, crm, settings)._role_list;
 }
 
 /***************************************************
@@ -424,47 +424,47 @@ export function createRoleDetailList(options: PropertyField, roles: InfRole[], c
 */
 export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: InfRole[], crm: ProjectCrm, settings: StateSettings): ExistenceTimeDetail {
 
-    const rolesByFkProp = groupBy(prop('fk_property'), roles) as { [index: number]: InfRole[] };
-    const fieldList = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].propertyFields);
-    const fields: PropertyField[] = [];
-    const ext = new ExistenceTimeDetail(options)
+  const rolesByFkProp = groupBy((r) => r.fk_property.toString(), roles) as { [index: number]: InfRole[] };
+  const fieldList = clone(crm.classes[DfhConfig.ClASS_PK_TIME_SPAN].propertyFields);
+  const fields: PropertyField[] = [];
+  const ext = new ExistenceTimeDetail(options)
 
 
-    // if (isCreateContext(settings.pkUiContext)) return ext;
+  // if (isCreateContext(settings.pkUiContext)) return ext;
 
-    U.obj2Arr(fieldList).forEach((rs: PropertyField) => {
+  U.obj2Arr(fieldList).forEach((rs: PropertyField) => {
 
 
-        if (rolesByFkProp[rs.property.dfh_pk_property]) {
+    if (rolesByFkProp[rs.property.dfh_pk_property]) {
 
-            /**
-             * This is a shortcut method to take max one role per PropertyField
-             */
-            const role = rolesByFkProp[rs.property.dfh_pk_property][0]
+      /**
+       * This is a shortcut method to take max one role per PropertyField
+       */
+      const role = rolesByFkProp[rs.property.dfh_pk_property][0]
 
-            // if (settings.isAddMode) {
-            //     role.entity_version_project_rels = [{
-            //         is_in_project: true
-            //     } as InfEntityProjectRel]
-            // }
+      // if (settings.isAddMode) {
+      //     role.entity_version_project_rels = [{
+      //         is_in_project: true
+      //     } as InfEntityProjectRel]
+      // }
 
-            ext.roles = [...ext.roles, role]
-            fields.push(createPropertyField(new PropertyField(rs), [role], crm, settings));
-        }
-
-    })
-
-    if (!fields.length && !isCreateContext(settings.pkUiContext)) return null;
-    else {
-        ext._fields = indexBy(propertyFieldKey, fields)
+      ext.roles = [...ext.roles, role]
+      fields.push(createPropertyField(new PropertyField(rs), [role], crm, settings));
     }
 
-    options = { ...options, pkUiContext: settings.pkUiContext }
+  })
 
-    return new ExistenceTimeDetail({
-        ...ext,
-        ...options
-    });
+  if (!fields.length && !isCreateContext(settings.pkUiContext)) return null;
+  else {
+    ext._fields = indexBy(propertyFieldKey, fields)
+  }
+
+  options = { ...options, pkUiContext: settings.pkUiContext }
+
+  return new ExistenceTimeDetail({
+    ...ext,
+    ...options
+  });
 }
 
 
@@ -477,41 +477,41 @@ export function createExistenceTimeDetail(options: ExistenceTimeDetail, roles: I
  * @param settings setting object that is passed through the chain of create...() methods of the different state classes
  */
 export function createTextPropertyField(options: TextPropertyField, textProperties: InfTextProperty[], crm: ProjectCrm, settings: StateSettings): TextPropertyField {
-    const txtPropList = new TextPropertyField();
+  const txtPropList = new TextPropertyField();
 
-    const txtPropDetailOptions = new TextPropertyDetail({ fkClassField: options.fkClassField });
+  const txtPropDetailOptions = new TextPropertyDetail({ fkClassField: options.fkClassField });
 
-    if (isCreateContext(settings.pkUiContext)) {
-        txtPropList.textPropertyDetailList = {
-            _create: createTextPropertyDetail(
-                txtPropDetailOptions,
-                {} as InfTextProperty,
-                crm,
-                settings
-            )
-        }
-    } else {
-        txtPropList.textPropertyDetailList = indexBy(textPropertyDetailKey,
-            textProperties.map((infTextProp) => {
-
-                if (typeof infTextProp.quill_doc === 'string') {
-                    infTextProp.quill_doc = JSON.parse(infTextProp.quill_doc)
-                }
-
-                return createTextPropertyDetail(
-                    txtPropDetailOptions,
-                    infTextProp,
-                    crm,
-                    settings
-                )
-            })
-        )
+  if (isCreateContext(settings.pkUiContext)) {
+    txtPropList.textPropertyDetailList = {
+      _create: createTextPropertyDetail(
+        txtPropDetailOptions,
+        {} as InfTextProperty,
+        crm,
+        settings
+      )
     }
+  } else {
+    txtPropList.textPropertyDetailList = indexBy(textPropertyDetailKey,
+      textProperties.map((infTextProp) => {
 
-    return new TextPropertyField({
-        ...txtPropList,
-        ...options
-    });
+        if (typeof infTextProp.quill_doc === 'string') {
+          infTextProp.quill_doc = JSON.parse(infTextProp.quill_doc)
+        }
+
+        return createTextPropertyDetail(
+          txtPropDetailOptions,
+          infTextProp,
+          crm,
+          settings
+        )
+      })
+    )
+  }
+
+  return new TextPropertyField({
+    ...txtPropList,
+    ...options
+  });
 }
 
 
@@ -524,28 +524,28 @@ export function createTextPropertyField(options: TextPropertyField, textProperti
  * @param settings setting object that is passed through the chain of create...() methods of the different state classes
  */
 export function createTextPropertyDetail(options: TextPropertyDetail, textProperty: InfTextProperty, crm?: ProjectCrm, settings?: StateSettings): TextPropertyDetail {
-    const txtPropDetail = new TextPropertyDetail({ textProperty });
+  const txtPropDetail = new TextPropertyDetail({ textProperty });
 
-    switch (options.fkClassField) {
-        case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-            txtPropDetail.textareaLike = true;
-            txtPropDetail.inputLike = false;
-            break;
+  switch (options.fkClassField) {
+    case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
+      txtPropDetail.textareaLike = true;
+      txtPropDetail.inputLike = false;
+      break;
 
-        case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-        case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
-            txtPropDetail.textareaLike = false;
-            txtPropDetail.inputLike = true;
-            break;
+    case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
+    case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
+      txtPropDetail.textareaLike = false;
+      txtPropDetail.inputLike = true;
+      break;
 
-        default:
-            break;
-    }
+    default:
+      break;
+  }
 
-    return new TextPropertyDetail({
-        ...txtPropDetail,
-        ...options
-    });
+  return new TextPropertyDetail({
+    ...txtPropDetail,
+    ...options
+  });
 }
 
 /***************************************************
@@ -562,140 +562,140 @@ export function createTextPropertyDetail(options: TextPropertyDetail, textProper
  */
 export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: InfRole, crm: ProjectCrm, settings?: StateSettings): RoleDetail {
 
-    // init settings (adds defaults, if not otherwise provided)
-    settings = new StateSettings(settings);
+  // init settings (adds defaults, if not otherwise provided)
+  settings = new StateSettings(settings);
 
-    if (!role) return undefined;
+  if (!role) return undefined;
 
 
-    const roleDetail: RoleDetail = {
-        role: new InfRole(role),
-        isCircular: false,
-        ...options
-    };
+  const roleDetail: RoleDetail = {
+    role: new InfRole(role),
+    isCircular: false,
+    ...options
+  };
 
-    if (role && role.entity_version_project_rels && role.entity_version_project_rels[0]) {
-        // TODO uncomment as soon as we have the corresponding data model
-        // role.entity_version_project_rels[0].is_display_role_for_domain
-        roleDetail.isDisplayRoleForDomain = null
-        roleDetail.isDisplayRoleForRange = role.entity_version_project_rels[0].is_standard_in_project;
+  if (role && role.entity_version_project_rels && role.entity_version_project_rels[0]) {
+    // TODO uncomment as soon as we have the corresponding data model
+    // role.entity_version_project_rels[0].is_display_role_for_domain
+    roleDetail.isDisplayRoleForDomain = null
+    roleDetail.isDisplayRoleForRange = role.entity_version_project_rels[0].is_standard_in_project;
+  }
+
+  const targetClassConfig = crm.classes[options.targetClassPk];
+
+  /** If role leads to TeEnt or Presence */
+  if ((
+    targetClassConfig
+    && (targetClassConfig.subclassOf === 'teEnt' || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE)
+  ) || role.temporal_entity && role.temporal_entity.pk_entity
+  ) {
+    // add the parent role pk of the roleDetail to the peEnt
+    settings.parentRolePk = role.pk_entity;
+    settings.parentPropertyField = crm
+      .fieldList[propertyFieldKeyFromParams(role.fk_property, options.isOutgoing)] as PropertyField;
+
+    // if we are in create mode we need the fk_class
+    if (isCreateContext(settings.pkUiContext)) {
+      roleDetail.role.temporal_entity = role.temporal_entity = {
+        ...role.temporal_entity,
+        fk_class: options.targetClassPk
+      }
     }
 
-    const targetClassConfig = crm.classes[options.targetClassPk];
+    roleDetail._teEnt = createTeEntDetail(undefined, role.temporal_entity, crm, settings);
 
-    /** If role leads to TeEnt or Presence */
-    if ((
-        targetClassConfig
-        && (targetClassConfig.subclassOf === 'teEnt' || targetClassConfig.dfh_pk_class == DfhConfig.CLASS_PK_PRESENCE)
-    ) || role.temporal_entity && role.temporal_entity.pk_entity
-    ) {
-        // add the parent role pk of the roleDetail to the peEnt
-        settings.parentRolePk = role.pk_entity;
-        settings.parentPropertyField = crm
-            .fieldList[propertyFieldKeyFromParams(role.fk_property, options.isOutgoing)] as PropertyField;
+  } else if (
+    /** If role leads to Appe */
+    // else if (role.appellation && Object.keys(role.appellation).length){
+    options.targetClassPk == DfhConfig.CLASS_PK_APPELLATION
+    || (role.appellation && role.appellation.pk_entity)
+  ) {
 
-        // if we are in create mode we need the fk_class
-        if (isCreateContext(settings.pkUiContext)) {
-            roleDetail.role.temporal_entity = role.temporal_entity = {
-                ...role.temporal_entity,
-                fk_class: options.targetClassPk
-            }
-        }
-
-        roleDetail._teEnt = createTeEntDetail(undefined, role.temporal_entity, crm, settings);
-
-    } else if (
-        /** If role leads to Appe */
-        // else if (role.appellation && Object.keys(role.appellation).length){
-        options.targetClassPk == DfhConfig.CLASS_PK_APPELLATION
-        || (role.appellation && role.appellation.pk_entity)
-    ) {
-
-        // if we are in create mode we need the fk_class
-        if (isCreateContext(settings.pkUiContext)) {
-            roleDetail.role.appellation = {
-                ...role.appellation,
-                fk_class: options.targetClassPk
-            }
-        }
-
-        roleDetail._appe = createAppeDetail(undefined, role.appellation, crm, settings);
-
-    } else if (
-        /** If role leads to Language */
-        // else if (role.language && Object.keys(role.language).length){
-        options.targetClassPk == DfhConfig.CLASS_PK_LANGUAGE
-        || (role.language && role.language.pk_entity)
-    ) {
-
-        // if we are in create mode we need the fk_class
-        if (isCreateContext(settings.pkUiContext)) {
-            roleDetail.role.language = {
-                ...role.language,
-                fk_class: options.targetClassPk
-            }
-        }
-
-        roleDetail._lang = createLangDetail(undefined, role.language, crm, settings);
-
-    } else if (
-        /** If role leads to Place (in the sense of geo coordinates!) */
-        // else if (role.place && Object.keys(role.place).length){
-        options.targetClassPk == DfhConfig.CLASS_PK_PLACE
-        || (role.place && role.place.pk_entity)
-    ) {
-
-        // if we are in create mode we need the fk_class
-        if (isCreateContext(settings.pkUiContext)) {
-            roleDetail.role.place = {
-                ...role.place,
-                fk_class: options.targetClassPk
-            }
-        }
-
-        roleDetail._place = createPlaceDetail(undefined, role.place, crm, settings);
-
-    } else if (
-        /** If role leads to TimePrimitive */
-        options.targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE
-        || (role.time_primitive && role.time_primitive.pk_entity)
-    ) {
-
-        // if we are in create mode we need the fk_class
-        if (isCreateContext(settings.pkUiContext)) {
-            roleDetail.role.time_primitive = {
-                ...role.time_primitive,
-                fk_class: options.targetClassPk
-            }
-        }
-
-        roleDetail._timePrimitive = createTimePrimitveDetail(undefined, role.time_primitive, crm, settings);
-
-    } else {
-
-        // check if it is circular
-        if (
-            // if not creat mode and the pk's of both roles are the same
-            (settings.parentRolePk && !isCreateContext(settings.pkUiContext) && role.pk_entity === settings.parentRolePk) ||
-            // or if we are in create mode and the initialized role has a fk_entity
-            // (means this is the circular role added upon start creating a new information)
-            (isCreateContext(settings.pkUiContext) && role.fk_entity)
-        ) {
-            roleDetail.isCircular = true;
-        }
-
-        roleDetail._leaf_peIt = {
-            fkClass: options.targetClassPk,
-            pkEntity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
-            peIt: {
-                fk_class: options.targetClassPk,
-                pk_entity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
-            } as InfPersistentItem
-        } as PeItDetail;
-
+    // if we are in create mode we need the fk_class
+    if (isCreateContext(settings.pkUiContext)) {
+      roleDetail.role.appellation = {
+        ...role.appellation,
+        fk_class: options.targetClassPk
+      }
     }
 
-    return new RoleDetail(roleDetail);
+    roleDetail._appe = createAppeDetail(undefined, role.appellation, crm, settings);
+
+  } else if (
+    /** If role leads to Language */
+    // else if (role.language && Object.keys(role.language).length){
+    options.targetClassPk == DfhConfig.CLASS_PK_LANGUAGE
+    || (role.language && role.language.pk_entity)
+  ) {
+
+    // if we are in create mode we need the fk_class
+    if (isCreateContext(settings.pkUiContext)) {
+      roleDetail.role.language = {
+        ...role.language,
+        fk_class: options.targetClassPk
+      }
+    }
+
+    roleDetail._lang = createLangDetail(undefined, role.language, crm, settings);
+
+  } else if (
+    /** If role leads to Place (in the sense of geo coordinates!) */
+    // else if (role.place && Object.keys(role.place).length){
+    options.targetClassPk == DfhConfig.CLASS_PK_PLACE
+    || (role.place && role.place.pk_entity)
+  ) {
+
+    // if we are in create mode we need the fk_class
+    if (isCreateContext(settings.pkUiContext)) {
+      roleDetail.role.place = {
+        ...role.place,
+        fk_class: options.targetClassPk
+      }
+    }
+
+    roleDetail._place = createPlaceDetail(undefined, role.place, crm, settings);
+
+  } else if (
+    /** If role leads to TimePrimitive */
+    options.targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE
+    || (role.time_primitive && role.time_primitive.pk_entity)
+  ) {
+
+    // if we are in create mode we need the fk_class
+    if (isCreateContext(settings.pkUiContext)) {
+      roleDetail.role.time_primitive = {
+        ...role.time_primitive,
+        fk_class: options.targetClassPk
+      }
+    }
+
+    roleDetail._timePrimitive = createTimePrimitveDetail(undefined, role.time_primitive, crm, settings);
+
+  } else {
+
+    // check if it is circular
+    if (
+      // if not creat mode and the pk's of both roles are the same
+      (settings.parentRolePk && !isCreateContext(settings.pkUiContext) && role.pk_entity === settings.parentRolePk) ||
+      // or if we are in create mode and the initialized role has a fk_entity
+      // (means this is the circular role added upon start creating a new information)
+      (isCreateContext(settings.pkUiContext) && role.fk_entity)
+    ) {
+      roleDetail.isCircular = true;
+    }
+
+    roleDetail._leaf_peIt = {
+      fkClass: options.targetClassPk,
+      pkEntity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
+      peIt: {
+        fk_class: options.targetClassPk,
+        pk_entity: roleDetail.role ? roleDetail.role.fk_entity : undefined,
+      } as InfPersistentItem
+    } as PeItDetail;
+
+  }
+
+  return new RoleDetail(roleDetail);
 }
 
 
@@ -714,45 +714,45 @@ export function createRoleDetail(options: RoleDetail = new RoleDetail(), role: I
  */
 export function createEntityAssociationDetail(options: EntityAssociationDetail = new EntityAssociationDetail(), ea: InfEntityAssociation, crm: ProjectCrm, settings?: StateSettings): EntityAssociationDetail {
 
-    if (!ea) return undefined;
+  if (!ea) return undefined;
 
-    // init settings (adds defaults, if not otherwise provided)
-    settings = new StateSettings(settings);
+  // init settings (adds defaults, if not otherwise provided)
+  settings = new StateSettings(settings);
 
-    let peItTemplate = new InfPersistentItem();
+  let peItTemplate = new InfPersistentItem();
 
-    if (isCreateContext(settings.pkUiContext)) {
-        options.propertyConfig = crm.fieldList[propertyFieldKeyFromParams(ea.fk_property, options.isOutgoing)] as PropertyField;
-        options.targetClassConfig = crm.classes[options.propertyConfig.targetClassPk];
-        if (options.targetClassConfig.subclassOf = 'peIt') {
-            peItTemplate.fk_class = options.targetClassConfig.dfh_pk_class;
-        }
+  if (isCreateContext(settings.pkUiContext)) {
+    options.propertyConfig = crm.fieldList[propertyFieldKeyFromParams(ea.fk_property, options.isOutgoing)] as PropertyField;
+    options.targetClassConfig = crm.classes[options.propertyConfig.targetClassPk];
+    if (options.targetClassConfig.subclassOf = 'peIt') {
+      peItTemplate.fk_class = options.targetClassConfig.dfh_pk_class;
     }
+  }
 
-    if (ea.domain_pe_it) {
-        peItTemplate = {
-            ...peItTemplate,
-            ...ea.domain_pe_it
-        }
+  if (ea.domain_pe_it) {
+    peItTemplate = {
+      ...peItTemplate,
+      ...ea.domain_pe_it
     }
+  }
 
-    if (ea.range_pe_it) {
-        peItTemplate = {
-            ...peItTemplate,
-            ...ea.range_pe_it
-        }
+  if (ea.range_pe_it) {
+    peItTemplate = {
+      ...peItTemplate,
+      ...ea.range_pe_it
     }
+  }
 
-    return new EntityAssociationDetail({
-        entityAssociation: new InfEntityAssociation(ea),
-        ...options,
-        _peIt: createPeItDetail(
-            {},
-            peItTemplate,
-            crm,
-            settings
-        )
-    })
+  return new EntityAssociationDetail({
+    entityAssociation: new InfEntityAssociation(ea),
+    ...options,
+    _peIt: createPeItDetail(
+      {},
+      peItTemplate,
+      crm,
+      settings
+    )
+  })
 
 }
 
@@ -766,8 +766,8 @@ export function createEntityAssociationDetail(options: EntityAssociationDetail =
  * @param settings state settings object.
  */
 export function createEntityAssociationList(options: PropertyField, eas: InfEntityAssociation[], crm: ProjectCrm, settings?: StateSettings): EntityAssociationList {
-    settings = new StateSettings(settings);
-    return indexBy((eaDetail) => ('' + eaDetail.entityAssociation.pk_entity), eas.map(ea => createEntityAssociationDetail(options, ea, crm, settings)))
+  settings = new StateSettings(settings);
+  return indexBy((eaDetail) => ('' + eaDetail.entityAssociation.pk_entity), eas.map(ea => createEntityAssociationDetail(options, ea, crm, settings)))
 }
 
 /***************************************************
@@ -783,10 +783,10 @@ export function createEntityAssociationList(options: PropertyField, eas: InfEnti
  * @param settings setting object that is passed through the chain of create...() methods of the different state classes
  */
 export function createAppeDetail(options: AppeDetail, dbData: InfAppellation, crm: ProjectCrm, settings: StateSettings): AppeDetail {
-    return new AppeDetail({
-        ...options,
-        appellation: dbData,
-    });
+  return new AppeDetail({
+    ...options,
+    appellation: dbData,
+  });
 }
 
 /**
@@ -798,10 +798,10 @@ export function createAppeDetail(options: AppeDetail, dbData: InfAppellation, cr
 * @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createLangDetail(options: LangDetail, language: InfLanguage, crm: ProjectCrm, settings: StateSettings): LangDetail {
-    return new LangDetail({
-        ...options,
-        language
-    });
+  return new LangDetail({
+    ...options,
+    language
+  });
 }
 
 
@@ -814,7 +814,7 @@ export function createLangDetail(options: LangDetail, language: InfLanguage, crm
 * @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createPlaceDetail(options: PlaceDetail, dbData: InfPlace, crm: ProjectCrm, settings: StateSettings): PlaceDetail {
-    return new PlaceDetail({ ...options, place: dbData });
+  return new PlaceDetail({ ...options, place: dbData });
 }
 
 /**
@@ -826,7 +826,7 @@ export function createPlaceDetail(options: PlaceDetail, dbData: InfPlace, crm: P
 * @param settings setting object that is passed through the chain of create...() methods of the different state classes
 */
 export function createTimePrimitveDetail(options: TimePrimitveDetail, dbData: InfTimePrimitive, crm: ProjectCrm, settings: StateSettings): TimePrimitveDetail {
-    return new TimePrimitveDetail({ ...options, timePrimitive: dbData });
+  return new TimePrimitveDetail({ ...options, timePrimitive: dbData });
 }
 
 
@@ -846,17 +846,17 @@ export function createTimePrimitveDetail(options: TimePrimitveDetail, dbData: In
  */
 export function fieldKey(field: Field): string {
 
-    switch (field.type) {
-        case 'PropertyField':
-            return propertyFieldKey(field as PropertyField);
+  switch (field.type) {
+    case 'PropertyField':
+      return propertyFieldKey(field as PropertyField);
 
-        case 'ExistenceTimeDetail':
-        case 'TextPropertyField':
-            return '_field_' + (field as TextPropertyDetail).fkClassField;
+    case 'ExistenceTimeDetail':
+    case 'TextPropertyField':
+      return '_field_' + (field as TextPropertyDetail).fkClassField;
 
-        default:
-            break;
-    }
+    default:
+      break;
+  }
 }
 
 /**
@@ -884,10 +884,10 @@ export function textPropertyDetailKey(txtPropDetail: TextPropertyDetail) { retur
  * @param propertyField
  */
 export function propertyFieldKey(propertyField: PropertyField) {
-    return propertyFieldKeyFromParams(propertyField.property.dfh_pk_property, propertyField.isOutgoing)
+  return propertyFieldKeyFromParams(propertyField.property.dfh_pk_property, propertyField.isOutgoing)
 }
 export function propertyFieldKeyFromParams(fkProp: number, isOutgoing: boolean) {
-    return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
+  return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
 }
 
 
@@ -908,20 +908,20 @@ export const pkEntityKey = (entity) => ('_' + entity.pk_entity);
  * @param b PropertyField to compare with (typically the parent PropertyField in the tree)
  */
 export function similarPropertyField(a: PropertyField, b: PropertyField): boolean {
-    if (!a || !b) return false;
+  if (!a || !b) return false;
 
-    if (
-        (
-            a.property.dfh_pk_property === b.property.dfh_pk_property ||
-            (
-                a.property.dfh_fk_property_of_origin &&
-                a.property.dfh_fk_property_of_origin === b.property.dfh_fk_property_of_origin
-            )
-        )
-        && a.isOutgoing != b.isOutgoing
-    ) return true;
+  if (
+    (
+      a.property.dfh_pk_property === b.property.dfh_pk_property ||
+      (
+        a.property.dfh_fk_property_of_origin &&
+        a.property.dfh_fk_property_of_origin === b.property.dfh_fk_property_of_origin
+      )
+    )
+    && a.isOutgoing != b.isOutgoing
+  ) return true;
 
-    else return false;
+  else return false;
 }
 
 /**
@@ -934,16 +934,16 @@ export function similarPropertyField(a: PropertyField, b: PropertyField): boolea
  */
 export function sortRoleDetailsByOrdNum(roleDetailArray: RoleDetail[]): RoleDetail[] {
 
-    const diff = (rdA: RoleDetail, rdB: RoleDetail) => {
+  const diff = (rdA: RoleDetail, rdB: RoleDetail) => {
 
-        const a = rdA.role.entity_version_project_rels ? rdA.role.entity_version_project_rels[0].ord_num_of_domain : undefined;
-        const b = rdB.role.entity_version_project_rels ? rdB.role.entity_version_project_rels[0].ord_num_of_domain : undefined;
+    const a = rdA.role.entity_version_project_rels ? rdA.role.entity_version_project_rels[0].ord_num_of_domain : undefined;
+    const b = rdB.role.entity_version_project_rels ? rdB.role.entity_version_project_rels[0].ord_num_of_domain : undefined;
 
-        if (a === undefined || b === undefined) return 0;
+    if (a === undefined || b === undefined) return 0;
 
-        return a - b;
-    }
+    return a - b;
+  }
 
-    return sort(diff, roleDetailArray);
+  return sort(diff, roleDetailArray);
 }
 

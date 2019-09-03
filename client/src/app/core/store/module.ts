@@ -8,7 +8,7 @@ import { AccountActions } from 'app/modules/account/api/account.actions';
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { equals } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
-import { createEpicMiddleware } from 'redux-observable';
+import { createEpicMiddleware } from 'redux-observable-es6-compat';
 import { ActiveProjectModule } from '../active-project/active-project.module';
 import { StandardActionsFactory } from './actions';
 import { RootEpics } from './epics';

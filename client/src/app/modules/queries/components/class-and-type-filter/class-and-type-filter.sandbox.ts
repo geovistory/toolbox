@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { ClassAndTypeFilterComponent } from './class-and-type-filter.component';
-import { FilterTree } from '../../containers/query-detail/query-detail.component';
+import { FilterTree } from "../../containers/query-detail/FilterTree";
 
 // create a BehaviorSubject that emits first null, and after 1 sec [21, 61]
 const pkClasses$ = new BehaviorSubject(null)
@@ -37,7 +37,7 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field>
-                        <gv-class-and-type-filter placeholder="Enter Foo" name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$" 
+                        <gv-class-and-type-filter placeholder="Enter Foo" name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$"
                         #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-class-and-type-filter>
                         <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
                     </mat-form-field>
@@ -88,8 +88,8 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
-                        <gv-class-and-type-filter name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$" 
-                        #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-class-and-type-filter>               
+                        <gv-class-and-type-filter name="control" [(ngModel)]="model" #control="ngModel" [pkClasses$]="pkClasses$"
+                        #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-class-and-type-filter>
                 </form>
             </div>
             <div>

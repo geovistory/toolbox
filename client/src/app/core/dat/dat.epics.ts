@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
-import { combineEpics, Epic } from 'redux-observable';
+import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, DatChunk, DatChunkApi } from '../sdk';
 import { DatActions, DigitalActionsFactory, LoadVersionAction, ChunkActionsFactory, LoadChunksOfDigitalAction } from './dat.actions';

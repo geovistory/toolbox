@@ -8,7 +8,7 @@ import { QueriesModule } from '../../queries.module';
 import { ColDefComponent } from './col-def.component';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { PropertyOption } from '../property-select/property-select.component';
-import { ColDef } from '../col-def-editor/col-def-editor.component';
+import { ColDef } from "../col-def-editor/ColDef";
 
 const options$ = new BehaviorSubject(null)
 options$.pipe(first(), delay(1000)).subscribe(() => {
@@ -88,7 +88,7 @@ export default sandboxOf(ColDefComponent, {
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100">
                         <mat-label>Entity classes and types</mat-label>
-                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$" 
+                        <gv-col-def name="control" [(ngModel)]="model" #control="ngModel" [propertyOptions$]="options$"
                         #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-col-def>
                         <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
                     </mat-form-field>

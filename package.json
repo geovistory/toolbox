@@ -53,8 +53,7 @@
     "socket.io": "^2.2.0",
     "sql-formatter": "^2.3.2",
     "strong-error-handler": "^2.0.0",
-    "tracer": "^0.8.11",
-    "typescript": "^2.6.1"
+    "tracer": "^0.8.11"
   },
   "devDependencies": {
     "eslint": "^3.17.1",

@@ -235,7 +235,7 @@ export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl im
               }))
               )
             ) :
-          new BehaviorSubject([])
+          new BehaviorSubject<any>([])
       }),
       map(classesWithTypes => classesWithTypes.map(c => new TreeNode<TreeNodeData>(
         {

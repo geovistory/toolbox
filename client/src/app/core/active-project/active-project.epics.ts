@@ -7,7 +7,7 @@ import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';

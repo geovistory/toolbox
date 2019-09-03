@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Action } from '../../../../node_modules/redux';
 import { Observable } from '../../../../node_modules/rxjs';
 import { mergeMap } from '../../../../node_modules/rxjs/operators';

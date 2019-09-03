@@ -3,7 +3,7 @@ import { ProInfoProjRel, ProInfoProjRelApi, LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { startsWith } from 'ramda';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { InformationComponent } from '../entity-list.component';

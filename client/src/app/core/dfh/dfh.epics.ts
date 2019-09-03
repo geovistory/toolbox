@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
-import { combineEpics, Epic } from 'redux-observable';
+import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel, DfhPropertyProfileView, DfhPropertyProfileViewApi, DfhPropertyView, DfhPropertyViewApi } from '../sdk';
 import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory } from './dfh.actions';
 import { DfhClassSlice, DfhLabelSlice, DfhPropertyProfileViewSlice, DfhPropertyViewSlice } from './dfh.models';

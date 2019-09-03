@@ -3,7 +3,7 @@ import { sandboxOf } from 'angular-playground';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
-import { FilterTree } from '../../containers/query-detail/query-detail.component';
+import { FilterTree } from "../../containers/query-detail/FilterTree";
 import { QueriesModule } from '../../queries.module';
 import { PropertyOption, PropertySelectComponent } from './property-select.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
