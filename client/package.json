@@ -20,7 +20,7 @@
     "@angular-redux/store": "^9.0.0",
     "@angular/animations": "~7.0.4",
     "@angular/cdk": "^7.3.6",
-    "@angular/cli": "~7.0.7",
+    "@angular/cli": "~8.3.2",
     "@angular/common": "~7.0.4",
     "@angular/compiler": "~7.0.4",
     "@angular/compiler-cli": "~7.0.4",
