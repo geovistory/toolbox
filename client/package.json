@@ -14,7 +14,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/build-angular": "^0.12.4",
     "@angular-redux/form": "^10.0.0",
     "@angular-redux/router": "^10.0.0",
     "@angular-redux/store": "^10.0.0",
@@ -74,10 +73,10 @@
     "redux-observable": "^1.1.0",
     "rxjs": "^6.5.2",
     "socket.io-client": "^2.2.0",
-    "typescript": "^3.6.2",
-    "zone.js": "^0.8.29"
+    "zone.js": "^0.9.1"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^0.803.2",
     "@angular/language-service": "6.1.0",
     "@types/cesium": "^1.59.0",
     "@types/color": "^3.0.0",
@@ -106,6 +105,7 @@
     "ts-mockito": "^2.4.2",
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2",
+    "typescript": "^3.4.5",
     "typings-quill-delta": "0.0.2"
   }
 }

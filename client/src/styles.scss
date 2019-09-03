@@ -1233,7 +1233,10 @@ gv-quill-edit.gv-hide-toolbar {
 }
 
 gv-quill-edit.gv-quill-input-like {
-  @extend gv-quill-edit.gv-hide-toolbar;
+  .ql-toolbar,
+  .ql-tooltip {
+    display: none;
+  }
 
   .gv-editor {
     height: auto;
@@ -1247,7 +1250,10 @@ gv-quill-edit.gv-quill-input-like {
 }
 
 gv-quill-edit.gv-quill-mat-input-like {
-  @extend gv-quill-edit.gv-hide-toolbar;
+  .ql-toolbar,
+  .ql-tooltip {
+    display: none;
+  }
 
   background-color: none;
 
@@ -1264,7 +1270,6 @@ gv-quill-edit.gv-quill-mat-input-like {
       height: 21px;
     }
   }
-
 }
 
 gv-quill-edit.gv-quill-textarea-like.gv-outer-form-control {
@@ -1272,7 +1277,10 @@ gv-quill-edit.gv-quill-textarea-like.gv-outer-form-control {
 }
 
 gv-quill-edit.gv-quill-textarea-like {
-  @extend gv-quill-edit.gv-hide-toolbar;
+  .ql-toolbar,
+  .ql-tooltip {
+    display: none;
+  }
 
   .gv-editor {
     height: auto;
@@ -1935,7 +1943,7 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
   background: #f5f5f5;
 }
 .mat-paginator {
-  background: inherit
+  background: inherit;
 }
 
 .mat-text-primary {
