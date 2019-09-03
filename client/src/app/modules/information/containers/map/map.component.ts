@@ -22,8 +22,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Output() close = new EventEmitter<void>();
 
-  @ViewChild(PeItLayerComponent) peItLayer: PeItLayerComponent;
-  @ViewChild(AcMapComponent) acMap: AcMapComponent;
+  @ViewChild(PeItLayerComponent, { static: true }) peItLayer: PeItLayerComponent;
+  @ViewChild(AcMapComponent, { static: true }) acMap: AcMapComponent;
 
   // DataSouce used to fly to the extent of all entities
   peItDataSource;

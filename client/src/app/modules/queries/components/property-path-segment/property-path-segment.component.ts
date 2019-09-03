@@ -55,7 +55,7 @@ export class PropertyPathSegmentComponent implements AfterViewInit, OnDestroy, C
 
   model: QueryPathSegment = {type:'properties', data:{}};
 
-  @ViewChild('f') formGroup: NgForm;
+  @ViewChild('f', { static: true }) formGroup: NgForm;
 
   // emits true on destroy of this component
   autofilled?: boolean;

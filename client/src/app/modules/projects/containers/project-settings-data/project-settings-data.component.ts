@@ -40,8 +40,8 @@ import * as Config from '../../../../../../../common/config/Config';
 })
 export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions implements OnInit, OnDestroy, SubstoreComponent {
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(DetailContentComponent) detailContentComponent: DetailContentComponent;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(DetailContentComponent, { static: true }) detailContentComponent: DetailContentComponent;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();

@@ -57,7 +57,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(forwardRef(() => ClassAndTypeFilterComponent)) filterComponent: ClassAndTypeFilterComponent;
+  @ViewChild(forwardRef(() => ClassAndTypeFilterComponent), { static: true }) filterComponent: ClassAndTypeFilterComponent;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();

@@ -57,8 +57,8 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   bodies$ = new Subject<PanelBodyDirective[]>();
   destroy$ = new Subject<boolean>();
 
-  @ViewChild(CdkPortal) portal: CdkPortal;
-  @ContentChild(OnActivateTabDirective) child: OnActivateTabDirective;
+  @ViewChild(CdkPortal, { static: true }) portal: CdkPortal;
+  @ContentChild(OnActivateTabDirective, /* TODO: check correctness of static flag */ { static: true }) child: OnActivateTabDirective;
 
   private host: PanelBodyDirective;
 
@@ -123,7 +123,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   @ViewChildren(PanelBodyDirective) panelBodies !: QueryList<PanelBodyDirective>;
-  @ViewChild('list') list: MatDrawer;
+  @ViewChild('list', { static: true }) list: MatDrawer;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();

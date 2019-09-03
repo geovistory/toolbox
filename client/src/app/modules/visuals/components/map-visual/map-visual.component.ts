@@ -24,7 +24,7 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
   destroy$ = new Subject<boolean>();
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(AcMapComponent) acMap: AcMapComponent;
+  @ViewChild(AcMapComponent, { static: true }) acMap: AcMapComponent;
 
   // initialize a private variable _settings, it's a BehaviorSubject
   _settings$ = new BehaviorSubject<MapVisualSettings>(null);

@@ -27,10 +27,10 @@ export class CoreTable<T> implements AfterViewInit, OnInit {
 
   @Output() select = new Subject<T[]>();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(CdkVirtualScrollViewport) viewport: CdkVirtualScrollViewport;
-  @ViewChild(CoreTableMenuComponent) tableMenu: CoreTableMenuComponent;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(CdkVirtualScrollViewport, /* TODO: check static flag */ { static: true }) viewport: CdkVirtualScrollViewport;
+  @ViewChild(CoreTableMenuComponent, { static: false }) tableMenu: CoreTableMenuComponent;
   @ViewChildren(CoreTableFilterComponent) filters: QueryList<CoreTableFilterComponent>;
 
   dataSource: CoreTableDataSource<T>;

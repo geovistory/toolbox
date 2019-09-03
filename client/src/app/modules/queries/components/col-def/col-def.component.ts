@@ -171,7 +171,7 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
   }
 })
 export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
-  @ViewChild(QueryPathControlComponent) queryPathControl: QueryPathControlComponent;
+  @ViewChild(QueryPathControlComponent, { static: false }) queryPathControl: QueryPathControlComponent;
 
   metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
 

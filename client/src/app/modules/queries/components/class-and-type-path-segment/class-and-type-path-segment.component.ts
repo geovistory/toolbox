@@ -53,7 +53,7 @@ export class ClassAndTypePathSegmentComponent implements AfterViewInit, OnDestro
 
   @Output() remove = new EventEmitter<void>();
 
-  @ViewChild('f') formGroup: NgForm;
+  @ViewChild('f', { static: true }) formGroup: NgForm;
 
   model: QueryPathSegment;
 

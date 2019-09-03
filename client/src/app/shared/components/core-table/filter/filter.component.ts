@@ -20,8 +20,8 @@ import { filter, map } from 'rxjs/operators';
 export class CoreTableFilterComponent implements AfterViewInit {
   @Output() change: Observable<(text: string) => boolean>;
 
-  @ViewChild(MatInput) input: MatInput;
-  @ViewChild(MatMenuTrigger) menu: MatMenuTrigger;
+  @ViewChild(MatInput, { static: false }) input: MatInput;
+  @ViewChild(MatMenuTrigger, { static: true }) menu: MatMenuTrigger;
 
   filter = new FormControl();
   operation = new FormControl();

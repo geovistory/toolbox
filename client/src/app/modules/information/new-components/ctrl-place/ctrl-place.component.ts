@@ -89,7 +89,7 @@ export class CtrlPlaceComponent implements OnDestroy, ControlValueAccessor, MatF
     this.value$.next(value)
   }
 
-  @ViewChild('firstInput') firstInput: ElementRef;
+  @ViewChild('firstInput', { static: true }) firstInput: ElementRef;
 
   focused$ = new BehaviorSubject(this.focused);
   value$ = new BehaviorSubject(this.model); // needed for rx way of checking should label float

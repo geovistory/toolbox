@@ -34,7 +34,7 @@ export class AddInfoPeItComponent implements OnInit, OnDestroy {
   @Output() addOptionSelected = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<void>();
 
-  @ViewChild('instance') instance: NgbTypeahead;
+  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
   term: string;

@@ -45,7 +45,7 @@ export class EntityAssociationCreateOrAddComponent extends EntityAssociationAPIA
   // on cancel
   @Output() cancel = new EventEmitter<void>();
 
-  @ViewChild('f') form: NgForm;
+  @ViewChild('f', { static: true }) form: NgForm;
 
   ea; // model of ngForm control
 

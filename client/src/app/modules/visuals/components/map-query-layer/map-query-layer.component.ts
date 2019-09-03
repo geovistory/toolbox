@@ -50,7 +50,7 @@ export class MapQueryLayerComponent implements OnInit, AfterViewInit, OnDestroy 
   destroy$ = new Subject<boolean>();
 
   @Input() acMap: AcMapComponent;
-  @ViewChild('czmlDesc') acCzml; // type is AcCzmlDescComponent
+  @ViewChild('czmlDesc', { static: true }) acCzml; // type is AcCzmlDescComponent
 
   data$ = new BehaviorSubject<QueryLayer>(null);
 

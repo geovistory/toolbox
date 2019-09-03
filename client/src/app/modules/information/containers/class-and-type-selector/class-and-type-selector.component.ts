@@ -66,7 +66,7 @@ export class ClassAndTypeSelectorComponent extends ClassAndTypeSelectorAPIAction
   selectedItem: TreeviewItem;
 
   config: TreeviewConfig;
-  @ViewChild(DropdownTreeviewComponent) dropdownTreeviewComponent: DropdownTreeviewComponent;
+  @ViewChild(DropdownTreeviewComponent, { static: false }) dropdownTreeviewComponent: DropdownTreeviewComponent;
   private dropdownTreeviewSelectI18n: ClassAndTypeSelectorI18n;
 
   constructor(

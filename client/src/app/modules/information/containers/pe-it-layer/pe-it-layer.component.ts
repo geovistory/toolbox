@@ -24,7 +24,7 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Output() readyToShow: EventEmitter<void> = new EventEmitter();
 
-  @ViewChild(AcLayerComponent) layer: AcLayerComponent;
+  @ViewChild(AcLayerComponent, { static: true }) layer: AcLayerComponent;
 
 
 

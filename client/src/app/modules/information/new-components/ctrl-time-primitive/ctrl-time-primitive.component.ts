@@ -30,8 +30,8 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
 
   model: CtrlModel;
 
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  @ViewChild('yearInput') yearInput: ElementRef;
+  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+  @ViewChild('yearInput', { static: true }) yearInput: ElementRef;
 
 
   @Output() blur = new EventEmitter<void>();

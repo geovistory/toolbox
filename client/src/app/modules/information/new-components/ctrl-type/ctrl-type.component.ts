@@ -27,7 +27,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   static nextId = 0;
 
   model: CtrlModel;
-  @ViewChild(MatSelect) matSelect: MatSelect;
+  @ViewChild(MatSelect, { static: true }) matSelect: MatSelect;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();

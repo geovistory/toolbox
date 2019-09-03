@@ -292,7 +292,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   dragNodeExpandOverNode: any;
   dragNodeExpandOverTime: number;
   dragNodeExpandOverArea: string;
-  @ViewChild('emptyItem') emptyItem: ElementRef;
+  @ViewChild('emptyItem', { static: true }) emptyItem: ElementRef;
 
 
   private transformer = (node: EntityAssociationNode, level: number): ContentTreeNode => {

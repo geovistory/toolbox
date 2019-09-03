@@ -58,7 +58,7 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
   classConfig: ClassConfig;
 
 
-  @ViewChild('f') form: NgForm;
+  @ViewChild('f', { static: true }) form: NgForm;
 
   constructor(
     protected rootEpics: RootEpics,

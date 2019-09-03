@@ -22,7 +22,7 @@ import { EntityAPIEpics } from '../../entity.epics';
 })
 export class PeItCreateFormComponent extends PeItFormBase {
 
-  @ViewChild('f') form: NgForm;
+  @ViewChild('f', { static: true }) form: NgForm;
 
   @Input() createBtn: boolean;
   @Input() cancelBtn: boolean;

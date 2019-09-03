@@ -79,8 +79,8 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   // if false, the toolbar defined in html will be hidden
   showDefaultToolbar = true;
 
-  @ViewChild('editor') editorElem: ElementRef;
-  @ViewChild('toolbar') toolbar: ElementRef;
+  @ViewChild('editor', { static: true }) editorElem: ElementRef;
+  @ViewChild('toolbar', { static: true }) toolbar: ElementRef;
 
   // Add styling and behavior of an Input element
   @HostBinding('class.gv-quill-input-like') @Input() inputLike = false;

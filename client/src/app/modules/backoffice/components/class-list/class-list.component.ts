@@ -41,7 +41,7 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
   dataSource = new MatTableDataSource();
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   // columns of the table
   displayedColumns: string[] = [
