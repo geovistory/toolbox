@@ -26,7 +26,6 @@
     "@angular/core": "^8.2.4",
     "@angular/flex-layout": "^8.0.0-beta.27",
     "@angular/forms": "^8.2.4",
-    "@angular/http": "^7.2.15",
     "@angular/material": "^8.1.4",
     "@angular/platform-browser": "^8.2.4",
     "@angular/platform-browser-dynamic": "^8.2.4",
@@ -73,10 +72,11 @@
     "redux-observable": "^1.1.0",
     "rxjs": "^6.5.2",
     "socket.io-client": "^2.2.0",
-    "zone.js": "^0.9.1"
+    "tslib": "^1.10.0",
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.803.2",
+    "@angular-devkit/build-angular": "~0.803.2",
     "@angular/language-service": "6.1.0",
     "@types/cesium": "^1.59.0",
     "@types/color": "^3.0.0",
@@ -90,7 +90,7 @@
     "@types/redux-logger": "^3.0.7",
     "@types/socket.io-client": "^1.4.29",
     "angular-playground": "^5.8.4",
-    "codelyzer": "^5.1.0",
+    "codelyzer": "^5.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",

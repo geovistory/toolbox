@@ -29,15 +29,15 @@ const routes: Routes = [
       indexRoute,
       {
         path: 'home',
-        loadChildren: './modules/home/home.module#HomeModule'
+        loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
       },
       {
         path: '',
-        loadChildren: './modules/account/account.module#AccountModule',
+        loadChildren: () => import('./modules/account/account.module').then(m => m.AccountModule),
       },
       {
         path: 'projects',
-        loadChildren: './modules/projects/projects.module#ProjectsModule',
+        loadChildren: () => import('./modules/projects/projects.module').then(m => m.ProjectsModule),
         // line above instead of loadChildren: getProjectModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
         canActivate: [AuthGuard]
       },
@@ -48,7 +48,7 @@ const routes: Routes = [
       },
       {
         path: 'backoffice',
-        loadChildren: './modules/backoffice/backoffice.module#BackofficeModule',
+        loadChildren: () => import('./modules/backoffice/backoffice.module').then(m => m.BackofficeModule),
         canActivate: [AuthGuard, SystemAdminGuard]
         // canActivate: [AdminGuard]
       },
