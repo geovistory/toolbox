@@ -1,3 +1,5 @@
+
+import {filter} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/store/actions';
 import { InfPersistentItem, InfEntityAssociation, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital } from '../sdk';
@@ -42,7 +44,7 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<LoadNestetedPeItResult>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<LoadNestetedPeItResult>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -56,7 +58,7 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<SchemaObject>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<SchemaObject>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -113,7 +115,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfTemporalEntity[]>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfTemporalEntity[]>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -137,7 +139,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -159,7 +161,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -268,7 +270,7 @@ export class InfEntityAssoctiationActionFactory extends InfActionFactory<Payload
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<SourcesAndDigitalsOfEntityResult>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<SourcesAndDigitalsOfEntityResult>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -315,7 +317,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -335,7 +337,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -354,7 +356,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -392,7 +394,7 @@ export class InfTextPropertyActionFactory extends InfActionFactory<Payload, InfT
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfTextProperty>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfTextProperty>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }

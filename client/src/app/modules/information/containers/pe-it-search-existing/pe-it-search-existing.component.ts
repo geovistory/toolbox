@@ -106,7 +106,7 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
       })
 
     // set hitsFound true, once there are some hits
-    this.persistentItems$.takeUntil(this.destroy$).subscribe((i) => {
+    this.persistentItems$.pipe(takeUntil(this.destroy$)).subscribe((i) => {
       if (i && i.length > 0) this.hitsFound = true
     })
   }

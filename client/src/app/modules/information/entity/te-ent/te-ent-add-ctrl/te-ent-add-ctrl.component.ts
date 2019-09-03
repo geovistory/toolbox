@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
@@ -74,7 +76,7 @@ export class TeEntAddCtrlComponent extends TeEntCtrlBase {
   }
 
   subscribeFormChanges(): void {
-    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(formVal => {
+    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formVal => {
 
       // build the role
       const role = new InfRole(this.parentRole);

@@ -126,7 +126,7 @@ export abstract class EntityBase implements OnInit, OnDestroy, SubstoreComponent
 
 
   initSubscriptions() {
-    this._fields$.takeUntil(this.destroy$).subscribe(fields => {
+    this._fields$.pipe(takeUntil(this.destroy$)).subscribe(fields => {
       this.propertyFields = fields;
     })
 

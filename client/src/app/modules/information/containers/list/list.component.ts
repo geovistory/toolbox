@@ -98,7 +98,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
         this.searchProject();
       });
 
-    this.collectionSize$.takeUntil(this.destroy$).subscribe(d => { this.collectionSize = d })
+    this.collectionSize$.pipe(takeUntil(this.destroy$)).subscribe(d => { this.collectionSize = d })
 
   }
 

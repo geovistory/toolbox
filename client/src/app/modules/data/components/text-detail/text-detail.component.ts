@@ -146,7 +146,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
      * Annotation
      */
     // show the annotate button when some delta is selected
-    this.showAnnotateBtn$ = this.selectedDelta$.map(d => (!!d))
+    this.showAnnotateBtn$ = this.selectedDelta$.pipe(map(d => (!!d)))
     this.listOf = { pkEntity: this.pkEntity, type: 'digital-text' }
   }
 

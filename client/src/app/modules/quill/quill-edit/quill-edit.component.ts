@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+
+import {of as observableOf,  asyncScheduler, BehaviorSubject, Observable, Subscription, timer, Subject } from 'rxjs';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import Delta from 'quill/node_modules/quill-delta';
-import { asyncScheduler, BehaviorSubject, Observable, Subscription, timer } from 'rxjs';
-import { distinct, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { distinct, filter, map, takeUntil, tap, merge } from 'rxjs/operators';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
 import { QuillNodeHandler } from '../quill-node-handler';
 import { DeltaI, Ops, QuillDoc } from '../quill.models';
@@ -17,7 +18,9 @@ export type ChunksPks = number[]
   templateUrl: './quill-edit.component.html',
   styleUrls: ['./quill-edit.component.scss']
 })
-export class QuillEditComponent implements OnInit, OnChanges {
+export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
+
+  destroy$ = new Subject<boolean>();
 
   // the Data containing a standard jsQuill-Delta object and a latestId
   @Input() quillDoc: QuillDoc;
@@ -31,15 +34,18 @@ export class QuillEditComponent implements OnInit, OnChanges {
   // Editor Config object. If none provided, it will use a default.
   @Input() editorConfig: any;
 
+  @Input() _annotationsVisible$ = new Subject<boolean>();
   @Input() annotationsVisible$: Observable<boolean>;
 
   @Input() annotatedNodes$: Observable<AnnotatedOps>;
 
+  @Input() _chunksToHighlight$ = new Subject<ChunksPks>();
   @Input() chunksToHighlight$: Observable<ChunksPks>
 
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
   @Output() focus = new EventEmitter<void>()
+  @Output() textLengthChange = new EventEmitter<number>()
   @Output() htmlChange = new EventEmitter<string>()
   @Output() selectedDeltaChange = new EventEmitter<Delta>()
   @Output() nodeClick = new EventEmitter<QuillNodeHandler>()
@@ -92,11 +98,23 @@ export class QuillEditComponent implements OnInit, OnChanges {
     public dialog: MatDialog
   ) {
     this.Quill = quillService.Quill;
+
+    // Pass the values of annotationsVisible$ to _annotationsVisible$
+    if (this.annotationsVisible$) this.annotationsVisible$.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      this._annotationsVisible$.next(value)
+    })
+
+    // Pass the values of chunksToHighlight$ to _chunksToHighlight$
+    if (this.chunksToHighlight$) this.chunksToHighlight$.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      this._chunksToHighlight$.next(value)
+    })
   }
 
   /**
    * It is possible to change the input:
    * - quillDoc
+   * - readOnly
+   * - creatingAnnotation
    *
    * All other inputs have to be there on init
    *
@@ -204,6 +222,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
   private registerOnTextChange() {
     this.quillEditor.on('text-change', (delta, oldDelta, source) => {
       this.contentChanged(delta, oldDelta, source);
+      this.textLengthChange.emit((this.quillEditor.getLength() - 1))
     });
   }
 
@@ -307,19 +326,7 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
   private initContents() {
 
-    // set the initial contents
-    // if (this.ops && this.ops.length > 0) {
-
     this.quillEditor.setContents(this.ops);
-
-    // } else {
-    //   this.latestId = this.latestId + 1;
-    //   this.quillEditor.setContents([{
-    //     attributes: { id: this.latestId },
-    //     insert: "\n"
-    //   }])
-    // }
-
 
     // create the nodeSelctionMap
     if (this.creatingAnnotation) {
@@ -400,8 +407,6 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
     // if the user changed the content
     if (source == 'user') {
-      // console.log('A user action triggered this change.');
-
 
       asyncScheduler.schedule(() => {
 
@@ -494,9 +499,9 @@ export class QuillEditComponent implements OnInit, OnChanges {
 
           const id = node.attributes.charid.value;
 
-          const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.map(nodes => nodes[id]) : Observable.of(null);
+          const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.pipe(map(nodes => nodes[id])) : observableOf(null);
 
-          const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this.annotationsVisible$, this.chunksToHighlight$, this.creatingAnnotation)
+          const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this._annotationsVisible$, this._chunksToHighlight$, this.creatingAnnotation)
 
           // subscribe for events of nodehandler
           this.nodeSubs.set(node, {
@@ -623,4 +628,8 @@ export class QuillEditComponent implements OnInit, OnChanges {
     });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 }

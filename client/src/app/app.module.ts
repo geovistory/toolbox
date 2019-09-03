@@ -15,11 +15,11 @@ import { environment } from 'environments/environment';
 import 'hammerjs';
 import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
-import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
 import { create } from "rxjs-spy";
-import { CyclePlugin } from '../../node_modules/rxjs-spy/plugin';
+import { CyclePlugin } from 'rxjs-spy/plugin';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveAccountService, AuthGuard, EntityEditorService, LoopBackConfig, SDKBrowserModule, ValidationDirectivesModule } from './core';
@@ -34,11 +34,11 @@ import { StoreModule } from './core/store/module';
 import { SysModule } from './core/sys/sys.module';
 import { AccountModule } from './modules/account/account.module';
 import { BackofficeModule } from './modules/backoffice/backoffice.module';
-import { AngularCesiumModule } from './modules/gv-angular-cesium/angular-cesium-fork';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
+import { AngularCesiumModule } from 'angular-cesium';
 
 const spy = create()
 spy.unplug(spy.find(CyclePlugin));

@@ -18,7 +18,7 @@ import { ActiveProjectModule } from 'app/core/active-project';
   ],
   exports: [
     InitStateComponent,
-    NgReduxFormModule
+    // NgReduxFormModule
   ]
 })
 export class InitStateModule { }

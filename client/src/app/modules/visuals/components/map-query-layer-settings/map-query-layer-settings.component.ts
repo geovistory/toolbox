@@ -342,8 +342,8 @@ export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy,
 
     // this.geoColOptions$ = this.colOptions$.map(cols => cols.sort((a, b) => a.isGeo ? -1 : 1))
     // this.temporalColOptions$ = this.colOptions$.map(cols => cols.sort((a, b) => a.isTemporal ? -1 : 1))
-    this.geoColOptions$ = this.colOptions$.map(cols => cols.filter(a => a.isGeo))
-    this.temporalColOptions$ = this.colOptions$.map(cols => cols.filter(a => a.isTemporal))
+    this.geoColOptions$ = this.colOptions$.pipe(map(cols => cols.filter(a => a.isGeo)))
+    this.temporalColOptions$ = this.colOptions$.pipe(map(cols => cols.filter(a => a.isTemporal)))
   }
 
   ngAfterViewInit() {

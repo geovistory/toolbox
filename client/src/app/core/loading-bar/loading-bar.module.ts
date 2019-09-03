@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoadingBarComponent } from './components/loading-bar/loading-bar.component';
 import { LoadingBarActions } from './api/loading-bar.actions';
 import { LoadingBarEpics } from './api/loading-bar.epics';
-import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 
 @NgModule({
   imports: [

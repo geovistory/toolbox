@@ -1,18 +1,19 @@
-import { Component, OnDestroy, Input, OnInit, forwardRef, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Subject, Observable, combineLatest } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, InfTextProperty, U, FieldLabel, CollapsedExpanded } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
-import { TextPropertyFieldAPIEpics } from './api/text-property-field.epics';
-import { TextPropertyFieldAPIActions } from './api/text-property-field.actions';
-import { textPropertyListReducer } from './api/text-property-field.reducer';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup, FormBuilder, FormControl, Validators, NgForm } from '@angular/forms';
-import { TextPropertyField } from 'app/core/state/models/text-property-field';
+
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { CollapsedExpanded, FieldLabel, IAppState, InfTextProperty, SubstoreComponent, U } from 'app/core';
 import { TextPropertyDetailList } from 'app/core/state/models/text-property-detail-list';
+import { TextPropertyField } from 'app/core/state/models/text-property-field';
 import { isCreateContext } from 'app/core/state/services/state-creator';
-import { first, takeUntil } from 'rxjs/operators';
-import { slideInOut } from '../../shared/animations';
+import { RootEpics } from 'app/core/store/epics';
 import { dropLast } from 'ramda';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { slideInOut } from '../../shared/animations';
+import { TextPropertyFieldAPIActions } from './api/text-property-field.actions';
+import { TextPropertyFieldAPIEpics } from './api/text-property-field.epics';
+import { textPropertyListReducer } from './api/text-property-field.reducer';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -88,10 +89,10 @@ export class TextPropertyFieldComponent extends TextPropertyFieldAPIActions impl
     this.localStore = this.ngRedux.configureSubStore(this.basePath, textPropertyListReducer);
     this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.isCreateContext$ = this.pkUiContext$.map(pk => isCreateContext(pk));
-    this.addButtonVisible$ = this.isCreateContext$.map(bool => !bool);
-    this.showFieldHeader$ = this.createOrAdd$.map(bool => !bool);
-    this.ngRedux.select<number>([...dropLast(2, this.basePath), 'pkEntity']).takeUntil(this.destroy$).subscribe(
+    this.isCreateContext$ = this.pkUiContext$.pipe(map(pk => isCreateContext(pk)));
+    this.addButtonVisible$ = this.isCreateContext$.pipe(map(bool => !bool));
+    this.showFieldHeader$ = this.createOrAdd$.pipe(map(bool => !bool));
+    this.ngRedux.select<number>([...dropLast(2, this.basePath), 'pkEntity']).pipe(takeUntil(this.destroy$)).subscribe(
       d => { this.pkConcernedEntity = d }
     )
 

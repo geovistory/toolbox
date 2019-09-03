@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnDestroy, Output, OnInit, AfterViewInit } from '@angular/core';
-import { TimeSpan, ActiveProjectService } from 'app/core';
-import { TimeLineData, TimeLineSettings, TimeLineRow } from 'app/modules/timeline/models/timeline';
-import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
+
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActiveProjectService, TimeSpan } from 'app/core';
+import { TimeLineData, TimeLineRow, TimeLineSettings } from 'app/modules/timeline/models/timeline';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 export interface TimeLineDataSetSettings {
   queryPk: number
@@ -99,8 +100,8 @@ export class TimelineVisualComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.data$.takeUntil(this.destroy$).subscribe(d => this._data$.next(d))
-    this.settings$.takeUntil(this.destroy$).subscribe(d => this._settings$.next(d))
+    this.data$.pipe(takeUntil(this.destroy$)).subscribe(d => this._data$.next(d))
+    this.settings$.pipe(takeUntil(this.destroy$)).subscribe(d => this._settings$.next(d))
   }
 
   ngOnDestroy() {

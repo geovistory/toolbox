@@ -1,4 +1,4 @@
-import { ToastOptions } from 'ng2-toasty';
+import { ToastOptions } from '@cime/ngx-toasty';
 
 // Interface of this slice of store
 export interface NotificationsI {

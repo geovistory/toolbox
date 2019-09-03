@@ -6,11 +6,12 @@ import { MatDrawer } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService, ListType, SDKStorage, Tab } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { BasicService } from '../../../../core/basic/basic.service';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
+
 
 export interface TabLayoutComponentInterface {
   t: TabLayout
@@ -62,7 +63,7 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   private host: PanelBodyDirective;
 
   constructor() {
-    combineLatest(this.active$, this.panelId$, this.bodies$).takeUntil(this.destroy$)
+    combineLatest(this.active$, this.panelId$, this.bodies$).pipe(takeUntil(this.destroy$))
       .subscribe(([active, panelId, panelBodies]) => {
         // const oldHost = this.host;
         const newHost = panelBodies.find(item => item.gvPanelId === panelId)
@@ -167,7 +168,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.p.initProject(id);
     this.p.initProjectCrm(id);
 
-    this.allTabs$ = this.p.panels$.map(panels => {
+    this.allTabs$ = this.p.panels$.pipe(map(panels => {
       let allTabs = []
       panels.forEach((panel, panelIndex) => {
         allTabs = [...allTabs, ...[...panel.tabs].map((tab, tabIndex) => {
@@ -181,19 +182,19 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
         })]
       })
       return allTabs
-    })
+    }))
 
 
   }
 
   ngAfterViewInit() {
-    this.panelBodies.changes.takeUntil(this.destroy$)
+    this.panelBodies.changes.pipe(takeUntil(this.destroy$))
       .subscribe(a => {
         const b = this.panelBodies.toArray()
         this.panelBodies$.next(b)
       })
 
-    this.list._closedStream.takeUntil(this.destroy$).subscribe(e => {
+    this.list._closedStream.pipe(takeUntil(this.destroy$)).subscribe(e => {
       this.p.setListType('')
     })
   }

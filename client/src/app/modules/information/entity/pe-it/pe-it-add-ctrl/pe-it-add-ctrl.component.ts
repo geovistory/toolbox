@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
@@ -77,7 +79,7 @@ export class PeItAddCtrlComponent extends PeItCtrlBase {
 
   subscribeFormChanges(): void {
 
-    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(formVal => {
+    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(formVal => {
 
       // build a peIt with all pi_roles given by the form's controls
       const peIt = new InfPersistentItem(this.peItState.peIt);

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatButtonModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule, MatCardModule } from '@angular/material';
+import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatPaginatorModule, MatRadioModule, MatSelectModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule } from '@angular/material';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
@@ -21,16 +21,16 @@ import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-d
 import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
 import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
 import { DndModule } from 'ng2-dnd';
-import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
+import { AngularCesiumModule } from '../../../../node_modules/angular-cesium';
 import { AngularSplitModule } from '../../../../node_modules/angular-split';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { AnnotationModule } from '../annotation/annotation.module';
-import { GvAngularCesiumModule } from '../gv-angular-cesium/angular-cesium.module';
 import { QuillModule } from '../quill';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
 import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.epics';
@@ -70,7 +70,6 @@ import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing
 import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
 import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
 import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
-import { PolygonsEditorLayerComponent } from './containers/polygons-editor-layer/polygons-editor-layer.component';
 import { ReprosAPIActions } from './containers/repros/api/repros.actions';
 import { ReprosAPIEpics } from './containers/repros/api/repros.epics';
 import { ReprosComponent } from './containers/repros/repros.component';
@@ -104,6 +103,7 @@ import { ExistenceTimeActions } from './existence-time/existence-time.actions';
 import { InformationRoutingModule } from './information-routing.module';
 import { AddRoleComponent } from './new-components/add-role/add-role.component';
 import { ChooseClassDialogComponent } from './new-components/choose-class-dialog/choose-class-dialog.component';
+import { ClassesAndTypesSelectComponent } from './new-components/classes-and-types-select/classes-and-types-select.component';
 import { CreateRoleFormComponent } from './new-components/create-role-form/create-role-form.component';
 import { CtrlAppellationComponent } from './new-components/ctrl-appellation/ctrl-appellation.component';
 import { CreateEntityModalComponent } from './new-components/ctrl-entity/create-entity-modal/create-entity-modal.component';
@@ -114,6 +114,7 @@ import { CtrlTextPropertyComponent } from './new-components/ctrl-text-property/c
 import { CtrlTimePrimitiveComponent } from './new-components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent } from './new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanComponent } from './new-components/ctrl-time-span/ctrl-time-span.component';
+import { CtrlTypeComponent } from './new-components/ctrl-type/ctrl-type.component';
 import { FieldComponent } from './new-components/field/field.component';
 import { LeafItemAddListComponent } from './new-components/leaf-item-add-list/leaf-item-add-list.component';
 import { LeafItemListComponent } from './new-components/leaf-item-list/leaf-item-list.component';
@@ -121,10 +122,14 @@ import { ListHeaderComponent } from './new-components/list-header/list-header.co
 import { OntoClassInfoComponent } from './new-components/onto-class-info/onto-class-info.component';
 import { OntoPropertyInfoComponent } from './new-components/onto-property-info/onto-property-info.component';
 import { PropertiesTreeComponent } from './new-components/properties-tree/properties-tree.component';
-import { InformationPipesService } from './new-services/information-pipes.service';
+import { PropertiesTreeService } from './new-components/properties-tree/properties-tree.service';
 import { TemporalEntityAddListComponent } from './new-components/temporal-entity-add-list/temporal-entity-add-list.component';
 import { TemporalEntityListComponent } from './new-components/temporal-entity-list/temporal-entity-list.component';
 import { TimeSpanListComponent } from './new-components/time-span-list/time-span-list.component';
+import { TypeItemComponent } from './new-components/type-item/type-item.component';
+import { InformationBasicPipesService } from './new-services/information-basic-pipes.service';
+import { InformationPipesService } from './new-services/information-pipes.service';
+import { TimeSpanService } from './new-services/time-span.service';
 import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
 import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
 import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
@@ -172,12 +177,6 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { TimeSpanService } from './new-services/time-span.service';
-import { PropertiesTreeService } from './new-components/properties-tree/properties-tree.service';
-import { ClassesAndTypesSelectComponent } from './new-components/classes-and-types-select/classes-and-types-select.component';
-import { CtrlTypeComponent } from './new-components/ctrl-type/ctrl-type.component';
-import { TypeItemComponent } from './new-components/type-item/type-item.component';
-import { InformationBasicPipesService } from './new-services/information-basic-pipes.service';
 
 
 
@@ -187,11 +186,12 @@ import { InformationBasicPipesService } from './new-services/information-basic-p
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    GvAngularCesiumModule,
+    // GvAngularCesiumModule,
+    AngularCesiumModule,
     AngularSplitModule,
     DetailContentModule,
     DetailTopBarModule,
-    NgReduxFormModule,
+    // NgReduxFormModule,
     SlimLoadingBarModule,
     NgbModule,
     // ElasticInputModule,
@@ -256,7 +256,6 @@ import { InformationBasicPipesService } from './new-services/information-basic-p
     // PeIt specific user interfaces
     MapComponent,
     PeItLayerComponent,
-    PolygonsEditorLayerComponent,
     ReprosComponent,
 
     // Add Modal

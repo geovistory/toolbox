@@ -3,8 +3,8 @@ import { URLSearchParams } from '@angular/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PubAccountApi, ErrorHandler, LoopBackConfig } from 'app/core';
 import { environment } from 'environments/environment';
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
-import { Observable } from 'rxjs/Rx';
+import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { Observable } from 'rxjs';
 
 import { HttpClient, HttpHeaders } from '../../../../../../node_modules/@angular/common/http';
 

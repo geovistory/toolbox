@@ -1,14 +1,15 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, Optional, Self } from '@angular/core';
-import { flatten, omit, keys, equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject, zip } from 'rxjs';
-import { mergeMap, takeUntil, distinctUntilChanged, delay, startWith, map } from 'rxjs/operators';
-import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
-import { PropertyFilterComponent, propertyFilterRequiredValidator } from '../property-filter/property-filter.component';
-import { PropertyOption, propertiesRequiredValidator } from '../property-select/property-select.component';
-import { ControlValueAccessor, NgControl, FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
+import { equals, flatten, keys } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject, zip } from 'rxjs';
+import { delay, distinctUntilChanged, map, merge, mergeMap, startWith, takeUntil } from 'rxjs/operators';
+import { FilterTree, FilterTreeData } from '../../containers/query-detail/query-detail.component';
 import { ClassAndTypeSelectComponent } from '../class-and-type-select/class-and-type-select.component';
+import { PropertyFilterComponent } from '../property-filter/property-filter.component';
+import { PropertyOption } from '../property-select/property-select.component';
 interface DynamicFormControl {
   key: string,
   component: 'class-and-type-filter' | 'property-filter' | 'subgroup',
@@ -276,7 +277,7 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
     // Observe if there is some invalid child components
     zip(subgroups$, classAndTypeSelects$, operatorSelects$).pipe(
       mergeMap(qlists => {
-        const validChangedEmitters = flatten(qlists.map((qlist: QueryList<any>) => qlist.map(a => new BehaviorSubject(a.valid).merge(a.validChanged))))
+        const validChangedEmitters = flatten(qlists.map((qlist: QueryList<any>) => qlist.map(a => new BehaviorSubject(a.valid).pipe(merge(a.validChanged)))))
         return combineLatest(validChangedEmitters as any as Observable<boolean>[])
       }),
       takeUntil(this.destroy$)

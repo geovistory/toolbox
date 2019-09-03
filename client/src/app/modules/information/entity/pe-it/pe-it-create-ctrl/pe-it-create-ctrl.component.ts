@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, forwardRef, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
@@ -49,13 +51,13 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
 
   initFormCtrls(): void {
     // add type control
-    this._type$.takeUntil(this.destroy$).subscribe((typeDetail) => {
+    this._type$.pipe(takeUntil(this.destroy$)).subscribe((typeDetail) => {
       if (typeDetail && typeDetail._typeCtrl) {
         this.formGroup.addControl('_typeCtrl', new FormControl(typeDetail._typeCtrl.entityAssociation))
       }
     })
     // add controls for each propertyField of _fields
-    this._fields$.takeUntil(this.destroy$).subscribe(propertyFieldList => {
+    this._fields$.pipe(takeUntil(this.destroy$)).subscribe(propertyFieldList => {
       U.obj2KeyValueArr(propertyFieldList).forEach(item => {
         this.formGroup.addControl(item.key, new FormControl(
           item.value.roles,
@@ -75,7 +77,7 @@ export class PeItCreateCtrlComponent extends PeItCtrlBase {
 
     const s = this.localStore.getState();
 
-    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(val => {
+    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
 
       // build a peIt with all pi_roles given by the form's controls
       const peIt = new InfPersistentItem();

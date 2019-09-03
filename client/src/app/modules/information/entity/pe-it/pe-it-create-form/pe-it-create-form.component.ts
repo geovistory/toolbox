@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormBuilder, NgForm } from '@angular/forms';
@@ -45,7 +47,7 @@ export class PeItCreateFormComponent extends PeItFormBase {
 
   onInitPeItBaseChild(): void {
 
-    this.form.valueChanges.takeUntil(this.destroy$).subscribe(val => {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
       const displayAppeUse: InfTemporalEntity = U.getFirstAppeTeEntOfPeIt(val.peIt)
       this.labelInEdit = U.getDisplayAppeLabelOfTeEnt(displayAppeUse);
       this.formChange.emit(this.form)

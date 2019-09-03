@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NotificationsComponent } from './components/notifications.component';
 import { NotificationsAPIActions } from './components/api/notifications.actions';
 import { NotificationsAPIEpics } from './components/api/notifications.epics';
-import { ToastyModule } from 'ng2-toasty'
+import { ToastyModule } from '@cime/ngx-toasty'
 
 @NgModule({
   imports: [

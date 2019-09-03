@@ -112,7 +112,7 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
       })
     )
-    this.tableData$.takeUntil(this.destroy$).subscribe(data => {
+    this.tableData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.dataSource.data = data;
     })
   }

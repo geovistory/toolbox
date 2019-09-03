@@ -1,12 +1,13 @@
+
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEvent, PickOptions } from 'angular-cesium';
 import { U } from 'app/core';
-import { Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { from as observableFrom, Observable, Subject } from 'rxjs';
+import { filter, map, merge, takeUntil } from 'rxjs/operators';
 import { tag } from '../../../../../../node_modules/rxjs-spy/operators';
-import { cache, spyTag } from '../../../../shared';
-import { AcLayerComponent, AcMapComponent, AcNotification, ActionType, CesiumEvent, PickOptions } from '../../../gv-angular-cesium/angular-cesium-fork';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 import { MapLayerPipesService } from '../../new-services/map-layer-pipes.service';
+
 
 
 
@@ -72,18 +73,18 @@ export class PeItLayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initCzmlStream() {
-    this.czmlPackets$ = Observable.from([
+    this.czmlPackets$ = observableFrom([
       U.acNotificationFromPacket({
         id: 'document',
         version: '1.0'
       }, ActionType.ADD_UPDATE)
-    ]).merge(this.updater$);
+    ]).pipe(merge(this.updater$));
   }
 
   private initLayer() {
     const camera = this.acMap.getCameraService().getCamera();
     camera.setView({ destination: Cesium.Cartesian3.fromDegrees(-117.16, 32.71, 15000.0) });
-    const scene = this.acMap.getCesiumSerivce().getScene();
+    const scene = this.acMap.getCesiumService().getScene();
 
     const initLayer$ = new Subject();
 

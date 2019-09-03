@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ToastyService, ToastyConfig } from 'ng2-toasty';
+import { ToastyService, ToastyConfig } from '@cime/ngx-toasty';
 import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil, filter, mergeMap } from 'rxjs/operators';

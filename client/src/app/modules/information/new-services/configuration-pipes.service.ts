@@ -1,13 +1,14 @@
+
 import { Injectable } from "@angular/core";
-import { DfhPropertyView, ProPropertyLabel, SysConfig, ActiveProjectService, limitTo, switchMapOr } from "app/core";
+import { ActiveProjectService, DfhPropertyView, limitTo, ProPropertyLabel, SysConfig } from "app/core";
 import { DfhConfig } from "app/modules/information/shared/dfh-config";
-import { indexBy, uniq, values, intersection } from "ramda";
+import { indexBy, uniq, values } from "ramda";
 import { combineLatest, Observable, of } from "rxjs";
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import * as Config from "../../../../../../common/config/Config";
+import { cache, spyTag } from "../../../shared";
 import { ClassFieldConfig, FieldDefinition, ListDefinition, ListType } from "../new-components/properties-tree/properties-tree.models";
 import { InformationBasicPipesService } from "./information-basic-pipes.service";
-import { cache, spyTag } from "../../../shared";
 
 @Injectable({
   providedIn: 'root'
@@ -38,10 +39,10 @@ export class ConfigurationPipesService {
       switchMap(ds => combineLatest(values(ds).map(d => {
         if (!d.fk_property) return of({ ...d, fk_property_of_origin: undefined });
         // Join the fk_property_of_origin
-        return this.p.dfh$.property_view$.by_dfh_pk_property$.key(d.fk_property).pipe(filter(i => !!i)).map(p => ({
+        return this.p.dfh$.property_view$.by_dfh_pk_property$.key(d.fk_property).pipe(filter(i => !!i)).pipe(map(p => ({
           ...d,
           fk_property_of_origin: p.fk_property
-        }))
+        })))
 
       })).pipe(
         map((ds) => ds.sort((a, b) => (a.ord_num > b.ord_num ? 1 : -1))),
@@ -222,7 +223,7 @@ export class ConfigurationPipesService {
   }
 
   @spyTag @cache({ refCount: false }) pipeClassesEnabledInEntities() {
-    return this.p.pkProject$.switchMap(pkProject => this.p.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
+    return this.p.pkProject$.pipe(switchMap(pkProject => this.p.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
       .pipe(
         switchMap((cs) => combineLatest(
           values(cs).map(c => this.p.dfh$.class$.by_pk_entity$.key(c.fk_entity).pipe(
@@ -231,7 +232,7 @@ export class ConfigurationPipesService {
           ))
         ))
       )
-    )
+    ))
   }
 
   @spyTag @cache({ refCount: false }) pipeListDefinitionsOfField(field: ClassFieldConfig): Observable<ListDefinition[]> {

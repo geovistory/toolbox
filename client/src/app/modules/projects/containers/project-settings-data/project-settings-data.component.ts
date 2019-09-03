@@ -125,7 +125,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
     // this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
-    this.filteredItems$.takeUntil(this.destroy$).subscribe(items => {
+    this.filteredItems$.pipe(takeUntil(this.destroy$)).subscribe(items => {
       this.dataSource.data = items;
     })
   }
@@ -171,7 +171,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.dataSource.sort = this.sort;
 
-    combineLatest(this.showBasicClasses$, this.p.pkProject$).takeUntil(this.destroy$).subscribe(([showBasicClasses, pkProject]) => {
+    combineLatest(this.showBasicClasses$, this.p.pkProject$).pipe(takeUntil(this.destroy$)).subscribe(([showBasicClasses, pkProject]) => {
 
       if (showBasicClasses) this.displayedColumns = [
         'enabled_in_entities',

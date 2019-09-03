@@ -6,7 +6,7 @@ import { BackofficeRoutingModule } from './backoffice-routing.module';
 import { ClassListComponent } from './components/class-list/class-list.component';
 import { ClassComponent } from './components/class/class.component';
 import { MainComponent } from './components/main/main.component';
-import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
+import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { KeysModule } from '../../shared/pipes/keys.module';
 import { ClassAPIEpics } from './components/class/api/class.epics';
 import { ClassAPIActions } from './components/class/api/class.actions';

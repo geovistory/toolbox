@@ -1,4 +1,3 @@
-import { provideReduxForms } from '@angular-redux/form';
 // Angular-redux ecosystem stuff.
 // @angular-redux/form and @angular-redux/router are optional
 // extensions that sync form and route location state between
@@ -94,6 +93,6 @@ export class StoreModule {
         // }
 
         // Enable syncing of Angular form state with our Redux store.
-        provideReduxForms(ngRedux);
+        // provideReduxForms(ngRedux);
     }
 }
