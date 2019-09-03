@@ -7,7 +7,8 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatInput, MatMenuTrigger } from '@angular/material';
+import { MatInput } from '@angular/material/input';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { merge, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 

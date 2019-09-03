@@ -39,7 +39,16 @@ import { AccountListAPIEpics } from './components/account-list/api/account-list.
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 import { WarehouseAPIEpics } from './components/warehouse/api/warehouse.epics';
 import { WarehouseAPIActions } from './components/warehouse/api/warehouse.actions';
-import { MatButtonModule, MatDividerModule, MatCardModule, MatProgressBarModule, MatTableModule, MatCheckboxModule, MatProgressSpinnerModule, MatSortModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { HasTypeComponent } from './components/has-type/has-type.component';
 import { HasTypeAPIActions } from './components/has-type/api/has-type.actions';
 import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';

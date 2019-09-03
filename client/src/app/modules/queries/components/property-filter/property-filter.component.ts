@@ -1,7 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { AfterViewInit, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } from '@angular/forms';
-import { MatFormFieldControl, MatSelectChange } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatSelectChange } from '@angular/material/select';
 import { TreeNode } from '@angular/router/src/utils/tree';
 import { ActiveProjectService } from 'app/core';
 import { equals, keys, pick } from 'ramda';

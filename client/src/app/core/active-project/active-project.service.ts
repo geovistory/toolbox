@@ -2,7 +2,7 @@
 import {of as observableOf,  BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
 import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { difference, groupBy, indexBy, path, values, without, equals } from 'ramda';

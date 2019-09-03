@@ -8,7 +8,8 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { Subject } from 'rxjs';
 import { coerceBoolean } from './coerce-boolean';
 import { CoreTableDataSource } from './data-source';

@@ -2,7 +2,7 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CdkPortal } from '@angular/cdk/portal';
 import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { MatDrawer } from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService, ListType, SDKStorage, Tab } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';

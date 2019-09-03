@@ -1,7 +1,7 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, AfterViewInit } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectService, ProQuery, latestEntityVersions, ValidationService } from 'app/core';
 import { ColDef, QueryPathSegment } from 'app/modules/queries/components/col-def-editor/col-def-editor.component';
 import { QueryService } from 'app/modules/queries/services/query.service';

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy, Optional, Self, Output, EventEmitt
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { ControlValueAccessor, NgControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { keys } from 'ramda';
 import { QueryPathMetaInfo } from '../query-path-control/query-path-control.component';

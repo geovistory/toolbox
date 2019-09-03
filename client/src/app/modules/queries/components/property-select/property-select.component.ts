@@ -1,5 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, Optional, Self, Directive } from '@angular/core';
-import { MatOption, MatSelectChange, MatFormFieldControl } from '@angular/material';
+import { MatOption } from '@angular/material/core';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatSelectChange } from '@angular/material/select';
 import { ActiveProjectService } from 'app/core';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { equals, uniq } from 'ramda';

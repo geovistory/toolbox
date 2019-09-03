@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatDialogModule, MatProgressBarModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ProgressDialogComponent } from './progress-dialog.component';
 
 @NgModule({

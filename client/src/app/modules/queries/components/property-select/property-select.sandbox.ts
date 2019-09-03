@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FilterTree } from '../../containers/query-detail/query-detail.component';
 import { QueriesModule } from '../../queries.module';
 import { PropertyOption, PropertySelectComponent } from './property-select.component';
-import { MatFormFieldModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { first, delay } from 'rxjs/operators';
 
 

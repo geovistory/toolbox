@@ -2,7 +2,7 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { equals, flatten, keys } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, zip } from 'rxjs';
 import { delay, distinctUntilChanged, map, merge, mergeMap, startWith, takeUntil } from 'rxjs/operators';

@@ -3,7 +3,7 @@ import { CoreTable } from 'app/shared/components/core-table/table';
 import { Observable, of, Subject } from 'rxjs';
 import { delay, exhaustMap, filter, map, tap, takeUntil, first } from 'rxjs/operators';
 import { ColDef } from '../col-def-editor/col-def-editor.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 import { ActiveProjectService } from 'app/core';
 

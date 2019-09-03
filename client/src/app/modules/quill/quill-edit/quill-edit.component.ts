@@ -1,7 +1,7 @@
 
 import {of as observableOf,  asyncScheduler, BehaviorSubject, Observable, Subscription, timer, Subject } from 'rxjs';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import Delta from 'quill/node_modules/quill-delta';
 import { distinct, filter, map, takeUntil, tap, merge } from 'rxjs/operators';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';

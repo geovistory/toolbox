@@ -2,7 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, Optional, OnDestroy, Se
 import { ColDef, QueryPathSegment } from '../col-def-editor/col-def-editor.component';
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlattener, MatTreeFlatDataSource, MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material/tree';
 import { FormBuilder, FormControl, ControlValueAccessor, NgControl, FormGroup, Validators } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { takeUntil, filter, map, delay, takeWhile } from 'rxjs/operators';

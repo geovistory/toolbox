@@ -1,7 +1,7 @@
 
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, Input, ElementRef, AfterViewInit, OnDestroy, ContentChild, Output } from '@angular/core';
-import { MatDrawer, MatDrawerContainer } from '@angular/material';
+import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
 import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({

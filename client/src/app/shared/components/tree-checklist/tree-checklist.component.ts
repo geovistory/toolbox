@@ -1,7 +1,7 @@
 import { CollectionViewer, DataSource, SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatTreeFlattener } from '@angular/material';
+import { MatTreeFlattener } from '@angular/material/tree';
 import { indexBy, symmetricDifference } from 'ramda';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';

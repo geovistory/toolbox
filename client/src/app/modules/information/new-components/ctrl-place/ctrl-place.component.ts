@@ -1,7 +1,7 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ElementRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { InfPlace } from 'app/core';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
