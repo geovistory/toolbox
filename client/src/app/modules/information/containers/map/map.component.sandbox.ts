@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 
 import { MapComponent } from './map.component';
 import { Information2Module } from '../../information.module';
-import { ViewerConfiguration } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
+import { ViewerConfiguration } from 'angular-cesium';
 
 
 export default sandboxOf(MapComponent, {
@@ -25,7 +25,7 @@ export default sandboxOf(MapComponent, {
         <div class="d-flex flex-column gv-grow-1">
           <div class="gv-grow-1">
               <gv-map></gv-map>
-          </div>        
+          </div>
         </div>
       </div>
     `

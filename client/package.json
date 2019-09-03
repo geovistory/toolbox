@@ -10,7 +10,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "playground": "node --max_old_space_size=8192 node_modules/.bin/angular-playground"
+    "playground": "node --max_old_space_size=16000 node_modules/.bin/angular-playground"
   },
   "private": true,
   "dependencies": {
@@ -88,7 +88,7 @@
     "@types/quill": "^2.0.2",
     "@types/ramda": "0.25.36",
     "@types/socket.io-client": "^1.4.29",
-    "angular-playground": "^5.8.4",
+    "angular-playground": "^6.0.1",
     "codelyzer": "^5.0.1",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
