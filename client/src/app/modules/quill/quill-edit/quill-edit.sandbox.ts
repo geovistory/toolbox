@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { QuillModule } from '..';
 import { QuillDoc } from '../quill.models';
 import { QuillEditComponent } from './quill-edit.component';
-import { textBüchel, wikiRats, _33095characters } from './quill-edit.sandbox.mock';
+import { textBüchel, _33095characters } from './quill-edit.sandbox.mock';
 import { ChangeDetectorRef } from '../../../../../node_modules/@angular/core';
 
 

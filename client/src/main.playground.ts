@@ -64,6 +64,8 @@ PlaygroundModule
     ]
   });
 
+
+
 Cesium.buildModuleUrl.setBaseUrl('/assets/cesium/'); // If youre using Cesium version >= 1.42.0 add this line
 
 platformBrowserDynamic().bootstrapModule(PlaygroundModule);

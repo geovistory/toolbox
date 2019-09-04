@@ -1,8 +1,7 @@
-import { Component, HostListener } from '@angular/core';
-import { EntityEditorService, LoopBackConfig } from './core';
-import { NgRedux, select } from '@angular-redux/store';
+import { Component } from '@angular/core';
 import { environment } from 'environments/environment';
 import { MatDialog } from '../../node_modules/@angular/material';
+import { LoopBackConfig } from './core';
 import { FeedbackDialogComponent } from './modules/user-feedback/components/feedback-dialog/feedback-dialog.component';
 
 @Component({

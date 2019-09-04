@@ -10,7 +10,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "playground": "node --max_old_space_size=16000 node_modules/.bin/angular-playground"
+    "playground": "node --max_old_space_size=16384 node_modules/.bin/angular-playground"
   },
   "private": true,
   "dependencies": {
@@ -51,7 +51,6 @@
     "geodesy": "^1.1.1",
     "hammerjs": "^2.0.8",
     "heatmap.js": "^2.0.5",
-    "install": "^0.13.0",
     "json-string-mapper": "^1.0.0",
     "lodash": "^4.17.15",
     "lodash.get": "^4.4.2",
@@ -62,7 +61,6 @@
     "ngx-json-viewer": "^2.4.0",
     "ngx-socket-io": "^2.1.1",
     "ngx-treeview": "^6.0.2",
-    "npm": "^6.11.2",
     "primitive-primitives": "0.0.6",
     "quill": "^1.3.6",
     "ramda": "0.25.0",
@@ -90,6 +88,8 @@
     "@types/socket.io-client": "^1.4.29",
     "angular-playground": "^6.0.1",
     "codelyzer": "^5.0.1",
+    "concurrently": "^4.1.2",
+    "install": "^0.13.0",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",
@@ -98,6 +98,8 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "node-sass": "^4.12.0",
+    "npm": "^6.11.2",
     "protractor": "^5.4.2",
     "rxjs-spy": "^7.5.1",
     "rxjs-tslint-rules": "^4.24.3",

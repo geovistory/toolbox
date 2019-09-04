@@ -152,6 +152,11 @@
       "sourceRoot": "src",
       "projectType": "application",
       "architect": {
+        "test": {
+          "scripts": [
+              "./node_modules/cesium/Build/Cesium/Cesium.js"
+            ]
+        },
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
