@@ -4,7 +4,7 @@
   <!-------------------------------------------------------------------
        Text Editor
     -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
+  <as-split-area [size]="t.splitSizeLeft" class="gv-flex-fh">
 
     <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea"
       (openRight)="t.setShowRightArea(true); annotationsVisible$.next(true);">
@@ -40,7 +40,7 @@
     </gv-detail-top-bar>
     <gv-detail-content>
 
-      <gv-quill-edit class="gv-grow-1 d-flex flex-column gv-quill-borderless" [quillDoc]="quillDoc$ | async"
+      <gv-quill-edit class="gv-flex-fh gv-quill-borderless" [quillDoc]="quillDoc$ | async"
         [readOnly]="(readOnly$ | async)" [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="annotatedNodes$"
         [accentuatedNodes$]="accentuatedNodes$" [creatingAnnotation]="false"
         (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
@@ -52,7 +52,7 @@
   <!-------------------------------------------------------------------
       Annotations
     -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeRight">
+  <as-split-area [size]="t.splitSizeRight" class="gv-flex-fh">
     <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
       Annotations
       <span class="ml-auto">

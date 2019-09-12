@@ -346,7 +346,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
       value$
     }
 
-    timer(300).pipe(takeUntil(done$)).subscribe(() => {
+    timer(200).pipe(takeUntil(done$)).subscribe(() => {
       progDialog = this.openProgressDialog(progDialogData)
     })
 
