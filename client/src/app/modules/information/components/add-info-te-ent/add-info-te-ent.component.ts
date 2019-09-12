@@ -22,7 +22,7 @@ export class AddInfoTeEntComponent implements OnInit, OnDestroy {
   @Output() addOptionSelected = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<any>();
 
-  @ViewChild('instance') instance: NgbTypeahead;
+  @ViewChild('instance', { static: true }) instance: NgbTypeahead;
   focus$ = new Subject<string>();
   click$ = new Subject<string>();
 

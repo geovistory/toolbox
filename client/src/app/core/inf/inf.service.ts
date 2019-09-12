@@ -92,7 +92,7 @@ class Selector {
               const obs$: Observable<M>[] = [];
               for (let i = start; i < end; i++) {
                 obs$.push(
-                  this.ngRedux.select<M>([...path, 'rows', i]).filter(x => !!x)
+                  this.ngRedux.select<M>([...path, 'rows', i]).pipe(filter(x => !!x))
                 )
               }
               return combineLatest(obs$)

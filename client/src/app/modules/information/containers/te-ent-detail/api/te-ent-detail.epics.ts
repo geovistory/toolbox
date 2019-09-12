@@ -5,7 +5,7 @@ import { ofSubstore } from 'app/core/store/module';
 import { TeEntService } from 'app/modules/information/shared/te-ent.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { startsWith } from 'ramda';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TeEntDetailAPIActions, TeEntDetailAPIAction } from './te-ent-detail.actions';

@@ -1,4 +1,3 @@
-import { provideReduxForms } from '@angular-redux/form';
 // Angular-redux ecosystem stuff.
 // @angular-redux/form and @angular-redux/router are optional
 // extensions that sync form and route location state between
@@ -9,7 +8,7 @@ import { AccountActions } from 'app/modules/account/api/account.actions';
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { equals } from 'ramda';
 import dynamicMiddlewares from 'redux-dynamic-middlewares';
-import { createEpicMiddleware } from 'redux-observable';
+import { createEpicMiddleware } from 'redux-observable-es6-compat';
 import { ActiveProjectModule } from '../active-project/active-project.module';
 import { StandardActionsFactory } from './actions';
 import { RootEpics } from './epics';
@@ -94,6 +93,6 @@ export class StoreModule {
         // }
 
         // Enable syncing of Angular form state with our Redux store.
-        provideReduxForms(ngRedux);
+        // provideReduxForms(ngRedux);
     }
 }

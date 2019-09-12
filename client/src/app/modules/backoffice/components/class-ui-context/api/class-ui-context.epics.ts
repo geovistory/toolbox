@@ -2,7 +2,7 @@ import { ObservableStore } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ProClassFieldConfig, DfhClass, LoadingBarAction, LoadingBarActions, DfhProperty, U, SysClassFieldApi, SysClassField } from 'app/core';
 import { DfhClassApi } from 'app/core/sdk/services/custom/DfhClass';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { ProClassFieldConfigApi } from 'app/core/sdk';

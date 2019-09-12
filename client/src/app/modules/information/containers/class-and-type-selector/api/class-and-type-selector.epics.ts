@@ -4,7 +4,7 @@ import { NotificationsAPIActions } from 'app/core/notifications/components/api/n
 import { ofSubstore } from 'app/core/store/module';
 import { TreeviewItem, TreeItem } from 'ngx-treeview';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ClassAndTypeSelectorComponent } from '../class-and-type-selector.component';

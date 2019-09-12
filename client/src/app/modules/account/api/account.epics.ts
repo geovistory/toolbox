@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { IAppState, LoadingBarActions, PubAccountApi } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { AccountAction, AccountActions } from './account.actions';

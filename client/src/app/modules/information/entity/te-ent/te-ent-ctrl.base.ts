@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder } from '@angular/forms';
@@ -63,7 +65,7 @@ export abstract class TeEntCtrlBase extends EntityBase implements ControlValueAc
     // gets called by base class onInit
     initStore() {
         this.localStore = this.ngRedux.configureSubStore(this.basePath, teEntReducer);
-        this.localStore.select<TeEntDetail>('').takeUntil(this.destroy$).subscribe(d => {
+        this.localStore.select<TeEntDetail>('').pipe(takeUntil(this.destroy$)).subscribe(d => {
             this.teEntState = d
         })
     }

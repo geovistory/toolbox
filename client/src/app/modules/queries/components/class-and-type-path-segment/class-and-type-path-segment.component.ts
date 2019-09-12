@@ -1,16 +1,16 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, AfterViewInit, Directive, OnInit } from '@angular/core';
 import { ControlValueAccessor, NgControl, NgForm, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil, delay } from 'rxjs/operators';
-import { FilterTreeData, FilterTree } from '../../containers/query-detail/query-detail.component';
 import { QueryService } from '../../services/query.service';
-import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
+import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
 import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel, classOrTypeRequiredCondition } from '../class-and-type-select/class-and-type-select.component';
 import { equals } from 'ramda';
 import { classAndTypeFilterRequiredValidator } from '../class-and-type-filter/class-and-type-filter.component';
+import { FilterTreeData, FilterTree } from '../../containers/query-detail/FilterTree';
 
 /** At least one class or type must be selected */
 export function classAndTypePathSegmentRequiredValidator(): ValidatorFn {
@@ -53,7 +53,7 @@ export class ClassAndTypePathSegmentComponent implements AfterViewInit, OnDestro
 
   @Output() remove = new EventEmitter<void>();
 
-  @ViewChild('f') formGroup: NgForm;
+  @ViewChild('f', { static: true }) formGroup: NgForm;
 
   model: QueryPathSegment;
 

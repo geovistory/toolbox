@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 
 import { LoopBackConfig } from 'app/core/sdk/lb.config';
 import { ActiveAccountService, PubAccountApi } from 'app/core';

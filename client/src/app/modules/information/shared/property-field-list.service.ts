@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, zip } from 'rxjs';
 
 import { PropertyField } from 'app/core/state/models';
 import { ClassService } from './class.service';
@@ -16,13 +16,13 @@ export class PropertyFieldListService {
     private roleService: RoleService
   ) { }
 
-  //TODO Remove this in favor to initFieldList
+  // TODO Remove this in favor to initFieldList
   initChildren(fkClass$, roles$: Observable<InfRole[]>, state$): BehaviorSubject<{ propertyFieldsWithRoles: PropertyField[], ingoingPropertyFields: PropertyField[], outgoingPropertyFields: PropertyField[] }> {
     const subject: BehaviorSubject<{ propertyFieldsWithRoles: PropertyField[], ingoingPropertyFields: PropertyField[], outgoingPropertyFields: PropertyField[] }> = new BehaviorSubject(null)
 
     fkClass$.subscribe(fkClass => {
-      if (fkClass)
-        Observable.zip(
+      if (fkClass) {
+        zip(
           // Generate ingoing and outgoing properties
           this.classService.getIngoingProperties(fkClass),
           this.classService.getOutgoingProperties(fkClass),
@@ -45,6 +45,7 @@ export class PropertyFieldListService {
           subject.next({ propertyFieldsWithRoles, ingoingPropertyFields, outgoingPropertyFields });
 
         })
+      }
     })
 
 

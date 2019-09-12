@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 import { LoopBackConfig, PubAccountApi } from 'app/core';
 import { environment } from 'environments/environment';
 

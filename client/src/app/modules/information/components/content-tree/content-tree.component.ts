@@ -1,6 +1,6 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { ActiveProjectService, DatDigital, InfEntityAssociation, InfPersistentItem, latestVersion, SysConfig, switchMapOr } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
@@ -292,7 +292,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   dragNodeExpandOverNode: any;
   dragNodeExpandOverTime: number;
   dragNodeExpandOverArea: string;
-  @ViewChild('emptyItem') emptyItem: ElementRef;
+  @ViewChild('emptyItem', { static: true }) emptyItem: ElementRef;
 
 
   private transformer = (node: EntityAssociationNode, level: number): ContentTreeNode => {

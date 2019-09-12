@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LoadingBarActions, DfhProperty } from 'app/core';
 import { DfhPropertyApi } from 'app/core/sdk/services/custom/DfhProperty';
 import { FluxStandardAction } from 'flux-standard-action';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import * as Config from '../../../../../../../../common/config/Config';

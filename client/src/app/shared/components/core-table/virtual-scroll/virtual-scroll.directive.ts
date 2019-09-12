@@ -8,7 +8,7 @@ import {
   OnChanges,
   OnDestroy,
 } from '@angular/core';
-import { MatTable } from '@angular/material';
+import { MatTable } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { CoreTableDataSource } from '../data-source';
 import { CoreTableVirtualScrollStrategy } from './virtual-scroll.strategy';
@@ -28,7 +28,7 @@ export class CoreTableFixedVirtualScrollDirective
   @Input() rowHeight = 48;
   @Input() offset = 56;
 
-  @ContentChild(MatTable) table: MatTable<any>;
+  @ContentChild(MatTable, /* TODO: add static flag */ { static: false }) table: MatTable<any>;
 
   scrollStrategy: CoreTableVirtualScrollStrategy;
 

@@ -1,6 +1,6 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface AddOrCreateEntityModalData {
   basePath: string[];

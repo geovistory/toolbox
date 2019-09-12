@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { InfPersistentItemApi, InfPersistentItem, IAppState } from 'app/core';
@@ -39,7 +41,7 @@ export class LeafPeItViewModalComponent implements OnInit, OnDestroy {
     this.peItModal$ = this.ngRedux.select(['activeProject', 'peItModals', this.pkEntity]);
     this.loading$ = this.ngRedux.select(['activeProject', 'peItModals', this.pkEntity, 'loading']);
 
-    this.peItModal$.takeUntil(this.destroy$).subscribe(p => {
+    this.peItModal$.pipe(takeUntil(this.destroy$)).subscribe(p => {
       this.peItState = p;
       if (
         this.peItState && this.peItState.peIt &&

@@ -1,11 +1,10 @@
 <as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" [useTransition]="t.useTransition"
   (dragEnd)="t.onResizeArea($event)">
 
-
   <!-------------------------------------------------------------------
        Text Editor
     -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
+  <as-split-area [size]="t.splitSizeLeft" class="gv-flex-fh">
 
     <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea"
       (openRight)="t.setShowRightArea(true); annotationsVisible$.next(true);">
@@ -16,7 +15,6 @@
       </gv-version-picker>
 
       <span class="ml-auto">
-
         <button class="btn btn-sm btn-link" (click)="annotate()" *ngIf="(showAnnotateBtn$|async)">
           <i class="fa fa-plus" aria-hidden="true"></i> Annotate…
         </button>
@@ -42,11 +40,11 @@
     </gv-detail-top-bar>
     <gv-detail-content>
 
-      <gv-quill-edit class="gv-grow-1 d-flex flex-column gv-quill-borderless" [quillDoc]="(digital$ | async)?.quill_doc"
+      <gv-quill-edit class="gv-flex-fh gv-quill-borderless" [quillDoc]="quillDoc$ | async"
         [readOnly]="(readOnly$ | async)" [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="annotatedNodes$"
-        [chunksToHighlight$]="chunksToHighlightInText$" [creatingAnnotation]="false"
+        [accentuatedNodes$]="accentuatedNodes$" [creatingAnnotation]="false"
         (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
-        (nodeMouseleave)="textNodeMouseleave($event)"></gv-quill-edit>
+        (nodeMouseleave)="textNodeMouseleave()"></gv-quill-edit>
 
     </gv-detail-content>
   </as-split-area>
@@ -54,7 +52,7 @@
   <!-------------------------------------------------------------------
       Annotations
     -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeRight">
+  <as-split-area [size]="t.splitSizeRight" class="gv-flex-fh">
     <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
       Annotations
       <span class="ml-auto">
@@ -64,10 +62,10 @@
       </span>
     </gv-detail-top-bar>
     <gv-detail-content>
-        <gv-mentioning-list class="gv-tile" [create$]="createAnnotation$" [chunk$]="chunk$"
-          [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
-          (rowMouseenter)="mentioningRowMousenter($event)"
-          (rowMouseleave)="mentioningRowMouseleave($event)" (dataChange)="mentioningListChange($event)">
+      <gv-mentioning-list class="gv-tile" [create$]="createAnnotation$" [chunk$]="chunk$"
+        [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
+        (rowMouseenter)="mentioningRowMousenter($event)" (rowMouseleave)="mentioningRowMouseleave($event)"
+        (dataChange)="mentioningListChange($event)">
       </gv-mentioning-list>
     </gv-detail-content>
 

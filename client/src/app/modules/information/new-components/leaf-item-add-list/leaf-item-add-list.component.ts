@@ -1,12 +1,13 @@
-import { Component, Input, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { SelectionModel } from '../../../../../../node_modules/@angular/cdk/collections';
-import { Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { first, takeUntil, map } from '../../../../../../node_modules/rxjs/operators';
+
+import { SelectionModel } from '@angular/cdk/collections';
+import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService, InfRole, InfTextProperty } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { ItemList, ListDefinition, Item, BasicRoleItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { MatSelectionList, MatListOption, MatTableDataSource } from '../../../../../../node_modules/@angular/material';
+import { BasicRoleItem, Item, ItemList, ListDefinition, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 
 
@@ -48,7 +49,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.items$ = this.i.pipeAltList(this.listDefinition, this.pkEntity)
-    this.itemsCount$ = this.items$.map(i => (i || []).length)
+    this.itemsCount$ = this.items$.pipe(map(i => (i || []).length))
 
 
     this.items$.pipe(takeUntil(this.destroy$)).subscribe(items => {

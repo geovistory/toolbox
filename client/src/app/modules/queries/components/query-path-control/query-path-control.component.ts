@@ -1,13 +1,13 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, ValidatorFn } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, merge, Observable, of, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil, delay } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
-import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/col-def-editor.component';
+import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/QueryPathSegment';
 import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
 import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
@@ -52,7 +52,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
-  
+
   metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
 
 
@@ -206,7 +206,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
 
   // When user adds a next path segment
-  addSegment?() {
+  addSegment() {
     const type = this.dynamicFormControls[this.dynamicFormControls.length - 1].type === 'classes' ? 'properties' : 'classes';
     this.addCtrl(new QueryPathSegment({ type, data: {} }), this.dynamicFormControls.length)
   }

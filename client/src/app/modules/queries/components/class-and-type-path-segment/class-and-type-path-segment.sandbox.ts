@@ -1,12 +1,12 @@
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { QueriesModule } from '../../queries.module';
 import { ClassAndTypePathSegmentComponent } from './class-and-type-path-segment.component';
 import { BehaviorSubject } from 'rxjs';
 import { first, delay } from 'rxjs/operators';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
-import { QueryPathSegment } from '../col-def-editor/col-def-editor.component';
+import { QueryPathSegment } from "../col-def-editor/QueryPathSegment";
 
 
 

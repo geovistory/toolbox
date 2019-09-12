@@ -8,7 +8,10 @@ import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, filter, first, takeWhile, takeUntil } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { MatSort, MatTableDataSource, Sort, matExpansionAnimations, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { matExpansionAnimations } from '@angular/material/expansion';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { ProDfhClassProjRel } from '../../../../core/sdk/models/ProDfhClassProjRel';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
@@ -40,8 +43,8 @@ import * as Config from '../../../../../../../common/config/Config';
 })
 export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions implements OnInit, OnDestroy, SubstoreComponent {
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(DetailContentComponent) detailContentComponent: DetailContentComponent;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(DetailContentComponent, { static: true }) detailContentComponent: DetailContentComponent;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -125,7 +128,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
     // this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
 
-    this.filteredItems$.takeUntil(this.destroy$).subscribe(items => {
+    this.filteredItems$.pipe(takeUntil(this.destroy$)).subscribe(items => {
       this.dataSource.data = items;
     })
   }
@@ -171,7 +174,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.dataSource.sort = this.sort;
 
-    combineLatest(this.showBasicClasses$, this.p.pkProject$).takeUntil(this.destroy$).subscribe(([showBasicClasses, pkProject]) => {
+    combineLatest(this.showBasicClasses$, this.p.pkProject$).pipe(takeUntil(this.destroy$)).subscribe(([showBasicClasses, pkProject]) => {
 
       if (showBasicClasses) this.displayedColumns = [
         'enabled_in_entities',

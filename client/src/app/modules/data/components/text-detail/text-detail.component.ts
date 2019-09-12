@@ -1,17 +1,18 @@
-import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
+import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActiveProjectService, DatChunk, DatDigital, getSpecificVersion, IAppState, latestVersion, SubstoreComponent } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { filter, first, map, takeUntil, take } from 'rxjs/operators';
 import { SucceedActionMeta } from 'app/core/store/actions';
-import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
-import { QuillEditComponent, AnnotatedOps, ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
-import { MentioningListOf, MentioningListComponent, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
-import { QuillNodeHandler } from 'app/modules/quill/quill-node-handler';
-import { TabBase } from 'app/shared/components/tab-layout/tab-layout.models';
-import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { RootEpics } from 'app/core/store/epics';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { TabBase } from 'app/shared/components/tab-layout/tab-layout.models';
+import { BehaviorSubject, combineLatest, Observable, Subject, timer } from 'rxjs';
+import { delay, filter, first, map, takeUntil, switchMap, skipWhile, distinctUntilChanged } from 'rxjs/operators';
+import { MentioningListOf, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
+import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
+import { ChunksPks, IndexedCharids, QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
+import { MatDialog } from '@angular/material';
+import { ProgressDialogData, ProgressMode, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
 
 
 export interface Version {
@@ -31,8 +32,8 @@ export interface Version {
 export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(QuillEditComponent) quillEdit: QuillEditComponent;
-  @ViewChild(MentioningListComponent) mentioningList: MentioningListComponent;
+  @ViewChild(QuillEditComponent, { static: false }) quillEdit: QuillEditComponent;
+  // @ViewChild(MentioningListComponent, { static: true }) mentioningList: MentioningListComponent;
 
 
   // emits true on destroy of this component
@@ -44,14 +45,21 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   // path to the substore
   @Input() basePath: string[];
 
+  // flag true during saving process
+  saving = false;
+
   // Primary key of the text digital to be viewed or edited
   @Input() pkEntity: number;
+
+  // Selected Version
   version$ = new BehaviorSubject<number>(1);
 
-  // select observables of substore properties
-  @select() showRightArea$: Observable<boolean>;
+  // Quill Doc passed to quill-edit
+  quillDoc$: Observable<QuillDoc>;
 
+  // The digital of this.version$
   digital$: Observable<DatDigital>;
+
   latestVersion$: Observable<DatDigital>;
 
   versions$: Observable<Version[]>;
@@ -63,10 +71,10 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   createAnnotation$ = new BehaviorSubject<boolean>(false);
   chunk$ = new BehaviorSubject<DatChunk>(null);
 
-  annotatedNodes$ = new BehaviorSubject<AnnotatedOps>({})
+  annotatedNodes$ = new BehaviorSubject<IndexedCharids<number[]>>({})
   annotationsVisible$ = new BehaviorSubject<boolean>(false);
 
-  chunksToHighlightInText$ = new BehaviorSubject<ChunksPks>([]);
+  accentuatedNodes$ = new BehaviorSubject<IndexedCharids<true>>([]);
   chunksToHighlightInList$ = new BehaviorSubject<ChunksPks>([]);
 
   // TODO check if needed
@@ -79,7 +87,8 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
     protected rootEpics: RootEpics,
     public ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
-    public ref: ChangeDetectorRef
+    public ref: ChangeDetectorRef,
+    public dialog: MatDialog
   ) {
 
   }
@@ -91,7 +100,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
 
     /**
-     * initialize the editor with the latest version
+     * initialize the editor with the latest (!) version
      */
     this.p.dat$.digital.loadVersion(this.pkEntity).resolved$.subscribe(result => {
       // set the latest version as the initial version shown in editor
@@ -143,15 +152,42 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
 
 
     /**
+     * Pipe the quill_doc passed to editor, skipping updates during or after save process
+     */
+    this.quillDoc$ = this.version$.pipe(
+      distinctUntilChanged(),
+      filter((v) => {
+        return !this.saving
+      }),
+      switchMap(version => this.p.dat$.digital$.by_pk_entity__entity_version$.key(this.pkEntity + '_' + version).pipe(
+        filter(d => !!d),
+        map(d => d.quill_doc)
+      ))
+    )
+
+    /**
      * Annotation
      */
     // show the annotate button when some delta is selected
-    this.showAnnotateBtn$ = this.selectedDelta$.map(d => (!!d))
+    this.showAnnotateBtn$ = this.selectedDelta$.pipe(map(d => (!!d)))
     this.listOf = { pkEntity: this.pkEntity, type: 'digital-text' }
+
+    // TODO find out why this is needed
+    this.showAnnotateBtn$.pipe(delay(0), takeUntil(this.destroy$)).subscribe(() => {
+      this.ref.detectChanges()
+    })
+    // TODO find out why this is needed
+    this.t.showRightArea$.pipe(delay(0), takeUntil(this.destroy$)).subscribe(() => {
+      this.ref.detectChanges()
+    })
+    // TODO find out why this is needed
+    this.chunk$.pipe(delay(0), takeUntil(this.destroy$)).subscribe(() => {
+      this.ref.detectChanges()
+    })
   }
 
   mentioningListChange(rows: Row[]) {
-    const annotatedNodes: AnnotatedOps = {}
+    const annotatedNodes: IndexedCharids<number[]> = {}
     rows.forEach(row => {
       (row.domainChunk.quill_doc as QuillDoc).ops.forEach(op => {
         const id = op.attributes.charid
@@ -162,23 +198,27 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   }
 
   mentioningRowMousenter(row: Row) {
-    this.chunksToHighlightInText$.next(row.domainChunk ? [row.domainChunk.pk_entity] : []);
+    const charid: IndexedCharids<true> = {}
+    if (row.domainChunk) {
+      (row.domainChunk.quill_doc as QuillDoc).ops.forEach(op => {
+        charid[op.attributes.charid] = true;
+      })
+    }
+    this.accentuatedNodes$.next(charid);
   }
   mentioningRowMouseleave(row: Row) {
-    this.chunksToHighlightInText$.next([]);
+    this.accentuatedNodes$.next([]);
   }
   // mentioningRowClick(row: Row) {
   //   this.chunksToHighlightInText$.next(row.domainChunk ? [row.domainChunk.pk_entity] : []);
   // }
 
-  textNodeMouseenter(qnh: QuillNodeHandler) {
+  textNodeMouseenter(chunkPks: number[]) {
     if (this.annotationsVisible$.value) {
-      qnh.annotatedChunks$.pipe(first()).subscribe(chunkPks => {
-        this.chunksToHighlightInList$.next(chunkPks)
-      })
+      this.chunksToHighlightInList$.next(chunkPks)
     }
   }
-  textNodeMouseleave(qnh: QuillNodeHandler) {
+  textNodeMouseleave() {
     this.chunksToHighlightInList$.next([])
   }
 
@@ -207,8 +247,18 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
    * When user saves the text
    */
   save() {
-
+    this.saving = true
+    const data: ProgressDialogData = {
+      title: 'Saving Document',
+      mode$: new BehaviorSubject<ProgressMode>('indeterminate'),
+      hideValue: true,
+      value$: new BehaviorSubject(0)
+    }
+    const dialog = this.dialog.open(ProgressDialogComponent, {
+      width: '250px', data, disableClose: true
+    });
     this.digital$.pipe(first(), takeUntil(this.destroy$)).subscribe(digital => {
+      const timer$ = timer(500)
 
       // Prepare the digital to save
       const quill_doc = this.quillEdit.quillDoc;
@@ -220,12 +270,22 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
       } as DatDigital;
 
       // Persist the update in the database
-      this.p.dat$.digital.upsert([digitalToSave], digital.fk_namespace)
+      const resolved$ = this.p.dat$.digital.upsert([digitalToSave], digital.fk_namespace).resolved$.pipe(
+        filter(res => !!res)
+      )
 
-        // Set the version shown in editor to the new version
-        .resolved$.pipe(takeUntil(this.destroy$)).subscribe(results => {
-          this.setVersion(results);
-        })
+      // Set the version shown in editor to the new version
+      resolved$.pipe(takeUntil(this.destroy$)).subscribe(results => {
+        this.setVersion(results);
+        this.saving = false
+      })
+
+      // wait until timer has passed and the api call is resolved$
+      combineLatest([resolved$, timer$]).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(() => {
+        dialog.close()
+      })
 
     })
   }
@@ -242,8 +302,8 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
 
   private latestIdReducer(a: Op, b: Op): Op {
     const idOf = (op: Op): string => op.attributes.charid || op.attributes.blockid;
-    const aId = parseInt(idOf(a));
-    const bId = parseInt(idOf(b));
+    const aId = parseInt(idOf(a), 10);
+    const bId = parseInt(idOf(b), 10);
     return aId > bId ? a : b;
   }
 
@@ -267,7 +327,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
 
   private quillDocForChunk(): QuillDoc {
     const latestOp: Op = this.selectedDelta$.value.ops.reduce(this.latestIdReducer);
-    const latestId: number = parseInt(latestOp.attributes.charid || latestOp.attributes.blockid);
+    const latestId: number = parseInt(latestOp.attributes.charid || latestOp.attributes.blockid, 10);
     const ops: Ops = this.selectedDelta$.value.ops;
     const quill_doc: QuillDoc = { ops, latestId };
     return quill_doc;

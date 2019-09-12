@@ -6,7 +6,8 @@ import { omit, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { DfhActions } from 'app/core/dfh/dfh.actions';
-import { MatTableDataSource, MatSort } from '@angular/material';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 interface TableRow {
   dfh_pk_class: number,
@@ -41,7 +42,7 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
   dataSource = new MatTableDataSource();
 
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   // columns of the table
   displayedColumns: string[] = [
@@ -112,7 +113,7 @@ export class ClassListComponent  implements OnInit, OnDestroy {
 
       })
     )
-    this.tableData$.takeUntil(this.destroy$).subscribe(data => {
+    this.tableData$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.dataSource.data = data;
     })
   }

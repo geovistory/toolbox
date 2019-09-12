@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActiveProjectService, TimeSpan, U, WarEntityPreview, EntityPreview } from 'app/core';
-import { AcMapComponent, AcNotification, ActionType } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
+import { AcMapComponent, AcNotification, ActionType } from 'angular-cesium';
 import { CzmlPacketGenerator } from 'app/shared/classes/czml-packet-generator';
 import { CzmlPacket } from 'app/shared/classes/czml-types';
 import { getTemporalDistribution, TemporalDistribution } from 'app/shared/classes/statistic-helpers';
@@ -8,7 +8,6 @@ import { values } from 'ramda';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QueryLayer } from '../map-visual/map-visual.component';
-import { AcCzmlDescComponent } from '../../../gv-angular-cesium/angular-cesium-fork/src/angular-cesium/components/ac-czml-desc/ac-czml-desc.component';
 
 export interface GeoPresence {
   time_span: TimeSpan,
@@ -51,7 +50,7 @@ export class MapQueryLayerComponent implements OnInit, AfterViewInit, OnDestroy 
   destroy$ = new Subject<boolean>();
 
   @Input() acMap: AcMapComponent;
-  @ViewChild(AcCzmlDescComponent) acCzml: AcCzmlDescComponent;
+  @ViewChild('czmlDesc', { static: true }) acCzml; // type is AcCzmlDescComponent
 
   data$ = new BehaviorSubject<QueryLayer>(null);
 

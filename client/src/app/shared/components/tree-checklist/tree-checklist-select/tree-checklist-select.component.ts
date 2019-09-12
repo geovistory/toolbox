@@ -4,7 +4,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 
 @Component({
   selector: 'gv-tree-checklist-select',
@@ -23,7 +23,7 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  @ContentChild(TreeChecklistComponent) treeChecklist: TreeChecklistComponent;
+  @ContentChild(TreeChecklistComponent, /* TODO: check static flag */ { static: true }) treeChecklist: TreeChecklistComponent;
   @Output() selectionChange = new EventEmitter<TreeNode<any>[]>();
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();

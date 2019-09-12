@@ -188,7 +188,7 @@ export const propertyFieldReducer =
         // update the eprs of of the roles in _role_list
         const updateEprs = (list: RoleDetailList, eprs: ProInfoProjRel[]): RoleDetailList => {
           const newVal: RoleDetailList = {}
-          const newEprsByPk = indexBy(prop('pk_entity'), eprs);
+          const newEprsByPk = indexBy((e) => e.pk_entity.toString(), eprs);
           U.obj2KeyValueArr(list).forEach(item => {
             const roleD = item.value;
             const oldEpr = roleD.role.entity_version_project_rels[0];

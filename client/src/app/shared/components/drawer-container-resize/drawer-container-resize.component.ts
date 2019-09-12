@@ -1,5 +1,7 @@
+
+import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, Input, ElementRef, AfterViewInit, OnDestroy, ContentChild, Output } from '@angular/core';
-import { MatDrawer, MatDrawerContainer } from '@angular/material';
+import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
 import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -19,8 +21,8 @@ export class DrawerContainerResizeComponent implements AfterViewInit, OnDestroy 
 
   parentOffsetLeft;
 
-  @ViewChild('sliderWrapper') sliderWrapper: ElementRef;
-  @ContentChild(MatDrawer) drawer: MatDrawer;
+  @ViewChild('sliderWrapper', { static: true }) sliderWrapper: ElementRef;
+  @ContentChild(MatDrawer, /* TODO: check static flag */ { static: false }) drawer: MatDrawer;
 
   showSlider$ = new BehaviorSubject(false);
   initSliderVal;
@@ -32,14 +34,13 @@ export class DrawerContainerResizeComponent implements AfterViewInit, OnDestroy 
   ngAfterViewInit() {
     this.showSlider$.next(this.drawer.opened);
 
-    this.drawer.openedStart.takeUntil(this.destroy$).subscribe(val => {
+    this.drawer.openedStart.pipe(takeUntil(this.destroy$)).subscribe(val => {
       if (this.initMarginLeft === undefined) this.initMarginLeft = this.drawer._width - (this.draggableWidth / 2);
-      console.log('initSliderVal', this.initSliderVal)
       this.showSlider$.next(this.drawer.opened);
 
 
     })
-    this.drawer.closedStart.takeUntil(this.destroy$).subscribe(val => {
+    this.drawer.closedStart.pipe(takeUntil(this.destroy$)).subscribe(val => {
       this.showSlider$.next(this.drawer.opened);
     })
   }

@@ -1,15 +1,14 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { AfterViewInit, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn, Validators } from '@angular/forms';
-import { MatFormFieldControl, MatSelectChange } from '@angular/material';
-import { TreeNode } from '@angular/router/src/utils/tree';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatSelectChange } from '@angular/material/select';
 import { ActiveProjectService } from 'app/core';
 import { equals, keys, pick } from 'ramda';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { delay, map, takeUntil, tap } from 'rxjs/operators';
-import { FilterTree } from '../../containers/query-detail/query-detail.component';
+import { delay, map, takeUntil } from 'rxjs/operators';
+import { FilterTree } from "../../containers/query-detail/FilterTree";
 import { QueryService } from '../../services/query.service';
-import { TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredCondition, propertiesRequiredValidator, PropertyOption } from '../property-select/property-select.component';
 
 interface DynamicFormControl {
@@ -43,7 +42,7 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
 
   model: FilterTree;
   // the flattened selection
-  selected: TreeNode<TreeNodeData>[]
+  // selected: TreeNode<TreeNodeData>[]
 
   // emits true on destroy of this component
   autofilled?: boolean;

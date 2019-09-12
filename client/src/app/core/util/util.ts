@@ -5,7 +5,6 @@ import { TimeSpan } from 'app/core/time-span/time-span';
 import { QuillDoc } from 'app/modules/quill';
 import { indexBy, omit } from 'ramda';
 import * as Config from '../../../../../common/config/Config';
-import { AcEntity, AcNotification, ActionType } from '../../modules/gv-angular-cesium/angular-cesium-fork';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { SysConfig } from '../config/sys-config';
 import { Granularity } from '../date-time/date-time-commons';
@@ -16,6 +15,7 @@ import { TextPropertyField } from '../state/models/text-property-field';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { ByPk } from 'app/core/store/model';
 import { TimeSpanItem } from '../../modules/information/new-components/properties-tree/properties-tree.models';
+import { ActionType, AcNotification, AcEntity } from '../../../../node_modules/angular-cesium';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator

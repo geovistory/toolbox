@@ -1,7 +1,7 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self, Directive } from '@angular/core';
 import { ControlValueAccessor, NgControl, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectService } from 'app/core';
 import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -235,7 +235,7 @@ export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl im
               }))
               )
             ) :
-          new BehaviorSubject([])
+          new BehaviorSubject<any>([])
       }),
       map(classesWithTypes => classesWithTypes.map(c => new TreeNode<TreeNodeData>(
         {

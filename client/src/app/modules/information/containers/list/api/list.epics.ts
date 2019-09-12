@@ -3,7 +3,7 @@ import { LoadingBarActions, WarEntityPreviewApi } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { ofSubstore } from 'app/core/store/module';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { ListComponent } from '../list.component';

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { InfPersistentItem, SubstoreComponent, U } from 'app/core';
 import { TreeviewItem } from 'ngx-treeview';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { EntityActions } from './entity.actions';

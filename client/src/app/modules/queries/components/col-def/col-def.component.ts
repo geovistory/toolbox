@@ -1,17 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, Optional, OnDestroy, Self, ViewChild, AfterViewInit } from '@angular/core';
-import { ColDef, QueryPathSegment } from '../col-def-editor/col-def-editor.component';
-import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlattener, MatTreeFlatDataSource, MatFormFieldControl } from '@angular/material';
-import { FormBuilder, FormControl, ControlValueAccessor, NgControl, FormGroup, Validators } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { takeUntil, filter, map, delay, takeWhile } from 'rxjs/operators';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { equals } from 'ramda';
-import { ValidationService } from 'app/core';
-import { QueryPathMetaInfo, QueryPathControlComponent } from '../query-path-control/query-path-control.component';
-import { PropertyOption } from '../property-select/property-select.component';
-import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { delay, filter, takeUntil } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
+import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
+import { ColDef } from "../col-def-editor/ColDef";
+import { PropertyOption } from '../property-select/property-select.component';
+import { QueryPathControlComponent, QueryPathMetaInfo } from '../query-path-control/query-path-control.component';
+import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
 
 
 // tslint:disable: member-ordering
@@ -171,7 +170,7 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
   }
 })
 export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
-  @ViewChild(QueryPathControlComponent) queryPathControl: QueryPathControlComponent;
+  @ViewChild(QueryPathControlComponent, { static: false }) queryPathControl: QueryPathControlComponent;
 
   metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
 

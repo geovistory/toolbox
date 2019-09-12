@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LoadingBarActions, InfPersistentItemApi, InfPersistentItem, U } from 'app/core';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';

@@ -4,7 +4,7 @@ import { DatActions } from 'app/core/dat/dat.actions';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { proRoot } from 'app/core/pro/pro.config';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
-import { combineEpics, Epic } from 'redux-observable';
+import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProPropertyLabel, ProPropertyLabelApi } from '../sdk';
 import { LoadActionMeta, ModifyActionMeta } from '../store/actions';

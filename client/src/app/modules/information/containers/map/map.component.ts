@@ -1,11 +1,12 @@
+
 import { NgRedux } from '@angular-redux/store';
-import { AfterViewInit, Component, Input, OnDestroy, ViewChild, ViewEncapsulation, Output, EventEmitter, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { IAppState, LoopBackConfig, U } from 'app/core';
-import { Subject, combineLatest, Observable } from 'rxjs';
-import { AcMapComponent, MapLayerProviderOptions, ViewerConfiguration } from '../../../gv-angular-cesium/angular-cesium-fork';
-import { PeItLayerComponent } from '../pe-it-layer/pe-it-layer.component';
 import { BasicService } from 'app/core/basic/basic.service';
-import { takeUntil, filter, startWith, map, first } from '../../../../../../node_modules/rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, startWith, takeUntil } from 'rxjs/operators';
+import { AcMapComponent, MapLayerProviderOptions, ViewerConfiguration } from 'angular-cesium';
+import { PeItLayerComponent } from '../pe-it-layer/pe-it-layer.component';
 
 @Component({
   selector: 'gv-map',
@@ -21,8 +22,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Output() close = new EventEmitter<void>();
 
-  @ViewChild(PeItLayerComponent) peItLayer: PeItLayerComponent;
-  @ViewChild(AcMapComponent) acMap: AcMapComponent;
+  @ViewChild(PeItLayerComponent, { static: true }) peItLayer: PeItLayerComponent;
+  @ViewChild(AcMapComponent, { static: true }) acMap: AcMapComponent;
 
   // DataSouce used to fly to the extent of all entities
   peItDataSource;
@@ -117,7 +118,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // register cursor position changes
     if (this.timeFilter$) {
-      this.timeFilter$.takeUntil(this.destroy$)
+      this.timeFilter$.pipe(takeUntil(this.destroy$))
         .subscribe(pos => {
           if (pos) {
             const julianDate = U.CesiumJulianDateFromJulianSecond(pos);

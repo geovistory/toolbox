@@ -5,7 +5,7 @@ import { createPeItDetail } from 'app/core/state/services/state-creator';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { SectionDetailComponent } from '../section-detail.component';

@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActiveProjectService, Tab } from 'app/core';
 import { Observable, Subject } from 'rxjs';
@@ -24,8 +26,8 @@ export class TabHandleComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.title$ = this.p.getTabTitle(this.tab.path)
     this.loading$ = this.p.getTabLoading(this.tab.path)
-    this.title$.takeUntil(this.destroy$).subscribe(t => this.ref.detectChanges()) 
-    this.loading$.takeUntil(this.destroy$).subscribe(t => this.ref.detectChanges())
+    this.title$.pipe(takeUntil(this.destroy$)).subscribe(t => this.ref.detectChanges()) 
+    this.loading$.pipe(takeUntil(this.destroy$)).subscribe(t => this.ref.detectChanges())
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);

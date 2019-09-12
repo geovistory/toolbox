@@ -7,7 +7,7 @@ import { clone, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
 import { ClassAndTypeFilterComponent } from '../../components/class-and-type-filter/class-and-type-filter.component';
-import { ColDef } from '../../components/col-def-editor/col-def-editor.component';
+import { ColDef } from "../../components/col-def-editor/ColDef";
 import { PropertyOption } from '../../components/property-select/property-select.component';
 import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
@@ -16,26 +16,8 @@ import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-deta
 import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
 import { TabLayoutComponentInterface } from '../../../projects/containers/project-edit/project-edit.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
+import { FilterTree } from './FilterTree';
 
-export type SubGroupType = 'property' | 'classAndType'
-export interface FilterTreeData {
-  subgroup?: SubGroupType;
-  operator?: string;
-
-  // inherited from ClassesAndTypes:
-  classes?: number[]
-  types?: number[]
-
-  // inherited from PropertySelectModel:
-  outgoingProperties?: number[]
-  ingoingProperties?: number[]
-}
-export class FilterTree {
-
-  constructor(public data: FilterTreeData = {}, public children: FilterTree[] = []) {
-
-  }
-}
 
 export interface GvQuery {
   filter: FilterTree,
@@ -57,7 +39,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(forwardRef(() => ClassAndTypeFilterComponent)) filterComponent: ClassAndTypeFilterComponent;
+  @ViewChild(forwardRef(() => ClassAndTypeFilterComponent), { static: true }) filterComponent: ClassAndTypeFilterComponent;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();

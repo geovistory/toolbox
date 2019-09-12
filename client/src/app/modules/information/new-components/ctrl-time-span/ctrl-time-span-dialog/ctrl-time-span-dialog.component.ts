@@ -205,11 +205,11 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
         key: '_' + f.items[0].formControlDef.listDefinition.pkProperty + '_outgoing',
         val: f
       }))
-      this.f = mapObjIndexed((val, key, obj) => val.val, indexBy((f) => f.key, ar))
+      this.f = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.val, indexBy((f) => f.key, ar))
 
       this.cName = mapObjIndexed((val, key, obj) => val.items[0].formControlDef.formControlName, this.f)
       this.active = mapObjIndexed((val, key, obj) => false, this.f)
-      this.properties = mapObjIndexed((val, key, obj) => val.key, indexBy((f) => f.val.listDefinitions[0].pkProperty.toString(), ar))
+      this.properties = mapObjIndexed((val: { key: string; val: FormPart; }, key, obj) => val.key, indexBy((f) => f.val.listDefinitions[0].pkProperty.toString(), ar))
 
       const f: TimeSpanFormDef = { formParts };
       this.formDef$.next(f);

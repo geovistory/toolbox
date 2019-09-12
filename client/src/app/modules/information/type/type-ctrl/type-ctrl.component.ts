@@ -51,7 +51,7 @@ export class TypeCtrlComponent extends TypeCtrlAPIActions implements OnInit, OnD
   // mark control as touched
   @Output() touched = new EventEmitter<void>();
 
-  @ViewChild(DropdownTreeviewComponent) dropdownTreeviewComponent: DropdownTreeviewComponent;
+  @ViewChild(DropdownTreeviewComponent, { static: true }) dropdownTreeviewComponent: DropdownTreeviewComponent;
   private dropdownTreeviewSelectI18n: DropdownTreeviewSelectI18n;
 
   // the value given by writeValue;

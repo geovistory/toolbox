@@ -1,25 +1,29 @@
 @import "../../../../../styles.scss";
 .left {
-    display: flex;
+  cursor: grab;
+  display: flex;
+  overflow: hidden;
+  .icon {
+    min-width: 1rem;
+    padding-right: 0.2rem;
+  }
+  .label {
+    text-overflow: ellipsis;
+    flex-wrap: nowrap;
+    white-space: nowrap;
     overflow: hidden;
-    .icon {
-        min-width: 1rem;
-        padding-right: .2rem;
-    }
-    .label {
-        text-overflow: ellipsis;
-        flex-wrap: nowrap;
-        white-space: nowrap;
-        overflow: hidden;
-    }
+  }
 }
-
+.left :active {
+  cursor: grabbing;
+}
 .right {
-    width: 1rem;
-    line-height: initial;
-    padding: 0 0.7rem 0 0.5rem;
-    margin-left: auto;
-    font-size: $font-size-sm;
-    @extend .btn;
-    @extend .btn-link-gray;
+  cursor: pointer;
+  width: 1rem;
+  line-height: initial;
+  padding: 0 0.7rem 0 0.5rem;
+  margin-left: auto;
+  font-size: $font-size-sm;
+  @extend .btn;
+  @extend .btn-link-gray;
 }

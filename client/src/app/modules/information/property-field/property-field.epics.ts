@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ProInfoProjRel, ProInfoProjRelApi, LoadingBarAction, LoadingBarActions, InfRoleApi, InfRole } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { equals } from 'ramda';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { PropertyField } from 'app/core/state/models';

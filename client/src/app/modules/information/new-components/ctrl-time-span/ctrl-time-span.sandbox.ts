@@ -1,5 +1,6 @@
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatDialogModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { Information2Module } from '../../information.module';
 import { CtrlTimeSpanComponent } from './ctrl-time-span.component';

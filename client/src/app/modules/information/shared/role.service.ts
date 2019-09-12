@@ -70,7 +70,7 @@ export class RoleService {
 
   /**
    * Adds roles to given role sets and assigns generic options for all PropertyFields
-   * 
+   *
    * @param {InfRole[]} roles array of roles a PeIti
    * @param {PropertyField[]} ingoingPropertyFields array of ingoing properties (depending on context)
    * @param {PropertyField[]} outgoingPropertyFields array of outgoing properties (depending on context)
@@ -82,7 +82,7 @@ export class RoleService {
     // declare array that will be returned
     const propertyFields: PropertyField[] = [];
 
-    const rolesByFkProp = groupBy(prop('fk_property'), roles)
+    const rolesByFkProp = groupBy((r) => r.fk_property.toString(), roles)
 
     // enrich role sets with roles
     ingoingPropertyFields.forEach(rs => {
@@ -138,9 +138,9 @@ export class RoleService {
 
   /**
    * Returns true, if this is the display role for the project
-   * @param isOutgoing 
-   * @param isDisplayRoleForDomain 
-   * @param isDisplayRoleForRange 
+   * @param isOutgoing
+   * @param isDisplayRoleForDomain
+   * @param isDisplayRoleForRange
    * @returns boolen
    */
   static isDisplayRole(isOutgoing: boolean, isDisplayRoleForDomain: boolean, isDisplayRoleForRange: boolean): boolean {

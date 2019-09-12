@@ -1,11 +1,11 @@
-import { Component, Input, OnDestroy, Output, EventEmitter, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { CoreTable } from 'app/shared/components/core-table/table';
-import { Observable, of, Subject } from 'rxjs';
-import { delay, exhaustMap, filter, map, tap, takeUntil, first } from 'rxjs/operators';
-import { ColDef } from '../col-def-editor/col-def-editor.component';
-import { MatDialog } from '@angular/material';
-import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService } from 'app/core';
+import { CoreTable } from 'app/shared/components/core-table/table';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs/operators';
+import { ColDef } from '../col-def-editor/ColDef';
+import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 
 export interface Example {
   id: number;

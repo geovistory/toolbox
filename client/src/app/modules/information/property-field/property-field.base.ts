@@ -1,4 +1,6 @@
 
+import {takeUntil} from 'rxjs/operators';
+
 
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
@@ -176,7 +178,7 @@ export abstract class PropertyFieldBase implements OnInit, OnDestroy, ControlVal
         this.formValPath = [...this.basePath, 'formGroup'];
 
 
-        this._role_list$.takeUntil(this.destroy$).subscribe(d => {
+        this._role_list$.pipe(takeUntil(this.destroy$)).subscribe(d => {
             this._role_list = d;
 
             if (!this.userIsDragging) this.roleDetails = U.obj2KeyValueArr(d);

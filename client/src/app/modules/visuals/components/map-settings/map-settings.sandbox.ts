@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { VisualsModule } from '../../visuals.module';

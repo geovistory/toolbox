@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { Component, OnDestroy } from '@angular/core';
 import { IAppState, ProjectDetail } from 'app/core';
@@ -18,8 +20,8 @@ export class ProjectSettingsCollaboratorsComponent implements OnDestroy {
   constructor(
     private ngRedux: NgRedux<IAppState>
   ) {
-    this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
-    this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
+    this.ngRedux.select<ProjectDetail>('activeProject').pipe(takeUntil(this.destroy$)).subscribe(p => this.project = p)
+    this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).pipe(takeUntil(this.destroy$)).subscribe(p => this.projectLabel = p)
  }
 
   ngOnDestroy(): void {

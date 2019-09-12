@@ -1,7 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { MatDialog, MatFormFieldControl } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { SysConfig, EntityPreview, ActiveProjectService } from 'app/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { CreateEntityModalComponent } from './create-entity-modal/create-entity-modal.component';

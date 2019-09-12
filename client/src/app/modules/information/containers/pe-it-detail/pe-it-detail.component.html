@@ -101,22 +101,22 @@
         </div>
 
         <!-- Section List. Sections of a source -->
-        <div class="gv-tile" *ngIf="(activeTab$ | async) == 'showSectionList'">
+        <gv-content-tree *ngIf="(activeTab$ | async) == 'showSectionList'" class="gv-tile gv-flex-fh" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
+        </gv-content-tree>
+        <!-- <div class="gv-tile" *ngIf="(activeTab$ | async) == 'showSectionList'">
 
           <div class="gv-tile-body">
-            <gv-content-tree class="gv-tile" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
-            </gv-content-tree>
           </div>
-        </div>
+        </div> -->
 
         <!-- Show Sources (where this PeIt is annotated) -->
-        <div class="gv-tile" *ngIf="(showSources$ | async)">
+        <gv-mentioning-list  *ngIf="(showSources$ | async)" class="gv-tile" [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
+        </gv-mentioning-list>
+        <!-- <div class="gv-tile">
 
           <div class="gv-tile-body">
-            <gv-mentioning-list class="gv-tile" [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
-            </gv-mentioning-list>
           </div>
-        </div>
+        </div> -->
 
 
 

@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActiveProjectService, LoopBackConfig, U } from 'app/core';
-import { AcMapComponent, MapLayerProviderOptions } from 'app/modules/gv-angular-cesium/angular-cesium-fork';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, takeUntil, filter } from 'rxjs/operators';
 import { MapQueryLayerSettings } from '../map-query-layer-settings/map-query-layer-settings.component';
 import { MapVisualSettings } from '../map-settings/map-settings.component';
 import { TimelineVisualSettings, TimeLineDataSetSettings } from '../timeline-visual/timeline-visual.component';
+import { AcMapComponent, MapLayerProviderOptions } from '../../../../../../node_modules/angular-cesium';
 
 
 export interface QueryLayer {
@@ -24,7 +24,7 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
   destroy$ = new Subject<boolean>();
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(AcMapComponent) acMap: AcMapComponent;
+  @ViewChild(AcMapComponent, { static: true }) acMap: AcMapComponent;
 
   // initialize a private variable _settings, it's a BehaviorSubject
   _settings$ = new BehaviorSubject<MapVisualSettings>(null);
@@ -52,8 +52,8 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.data$.takeUntil(this.destroy$).subscribe(d => this._data$.next(d))
-    this.settings$.takeUntil(this.destroy$).subscribe(d => this._settings$.next(d))
+    this.data$.pipe(takeUntil(this.destroy$)).subscribe(d => this._data$.next(d))
+    this.settings$.pipe(takeUntil(this.destroy$)).subscribe(d => this._settings$.next(d))
 
     this._settings$.pipe(
       takeUntil(this.destroy$)

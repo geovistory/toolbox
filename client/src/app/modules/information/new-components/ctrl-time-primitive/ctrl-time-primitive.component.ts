@@ -1,7 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, ElementRef } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators, FormControl } from '@angular/forms';
-import { MatFormFieldControl, MatMenuTrigger } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { Subject } from 'rxjs';
 import { GregorianDateTime, InfTimePrimitive, JulianDateTime, ValidationService } from '../../../../core';
@@ -30,8 +31,8 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
 
   model: CtrlModel;
 
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  @ViewChild('yearInput') yearInput: ElementRef;
+  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+  @ViewChild('yearInput', { static: true }) yearInput: ElementRef;
 
 
   @Output() blur = new EventEmitter<void>();

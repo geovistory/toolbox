@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { QueriesModule } from '../../queries.module';
 import { PropertyPathSegmentComponent } from './property-path-segment.component';

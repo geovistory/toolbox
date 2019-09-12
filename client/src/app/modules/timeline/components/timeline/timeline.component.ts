@@ -51,7 +51,7 @@ export class TimelineComponent implements OnInit, OnChanges, OnDestroy {
 
   @HostBinding('style.width') outerWidth = '100%';
 
-  @ViewChild('header') h;
+  @ViewChild('header', { static: true }) h;
 
   timeline: Timeline;
 

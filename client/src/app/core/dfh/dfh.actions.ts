@@ -1,3 +1,5 @@
+
+import {filter} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, ActionResultObservable, SucceedActionMeta, LoadActionMeta } from 'app/core/store/actions';
 import { DfhClass, DfhLabel, DfhPropertyProfileView } from '../sdk';
@@ -35,7 +37,7 @@ export class DfhClassActionFactory extends StandardActionsFactory<Payload, DfhCl
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<DfhClass>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<DfhClass>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -71,7 +73,7 @@ export class DfhLabelActionFactory extends StandardActionsFactory<Payload, DfhLa
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<DfhLabel>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<DfhLabel>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -88,7 +90,7 @@ export class DfhLabelActionFactory extends StandardActionsFactory<Payload, DfhLa
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<DfhLabel>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<DfhLabel>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }

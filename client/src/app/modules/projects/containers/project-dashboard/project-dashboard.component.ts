@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegmentGroup, UrlSegment } from '@angular/router';
 import { ActiveProjectService, IAppState, ProjectCrm, ProjectDetail, WarEntityPreviewApi } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
+import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { omit } from 'ramda';
@@ -55,8 +55,8 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     this.p.initProject(this.id);
     this.p.initProjectCrm(this.id);
 
-    this.ngRedux.select<ProjectDetail>('activeProject')
-      .takeUntil(this.destroy$).subscribe(p => this.project = p)
+    this.ngRedux.select<ProjectDetail>('activeProject').pipe(
+      takeUntil(this.destroy$)).subscribe(p => this.project = p)
 
   }
 

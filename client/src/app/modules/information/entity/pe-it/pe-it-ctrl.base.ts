@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { dispatch, NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, FormBuilder } from '@angular/forms';
@@ -67,7 +69,7 @@ export abstract class PeItCtrlBase extends EntityBase implements ControlValueAcc
     // gets called by base class onInit
     initStore() {
         this.localStore = this.ngRedux.configureSubStore(this.basePath, peItReducer);
-        this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(d => {
+        this.localStore.select<PeItDetail>('').pipe(takeUntil(this.destroy$)).subscribe(d => {
             this.peItState = d
         })
     }

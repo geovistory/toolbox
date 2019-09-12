@@ -1,6 +1,7 @@
+
 import { NgRedux } from "@angular-redux/store";
 import { Injectable } from "@angular/core";
-import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitOffset, limitTo, sortAbc, switchMapOr, SysConfig, TimePrimitive, TimeSpan, U } from "app/core";
+import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, SysConfig, TimePrimitive, TimeSpan, U } from "app/core";
 import { Granularity } from "app/core/date-time/date-time-commons";
 import { CalendarType } from "app/core/date-time/time-primitive";
 import { InfSelector } from "app/core/inf/inf.service";
@@ -8,15 +9,15 @@ import { DfhConfig } from "app/modules/information/shared/dfh-config";
 import { cache, spyTag } from "app/shared";
 import { TimePrimitivePipe } from "app/shared/pipes/time-primitive/time-primitive.pipe";
 import { TimeSpanPipe } from "app/shared/pipes/time-span/time-span.pipe";
-import { groupBy, indexBy, omit, pathOr, pick, sum, values } from "ramda";
+import { groupBy, indexBy, omit, pick, values } from "ramda";
 import { combineLatest, iif, Observable, of } from "rxjs";
-import { filter, first, map, startWith, switchMap, tap } from "rxjs/operators";
+import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { tag } from "../../../../../node_modules/rxjs-spy/operators";
 import { PaginateByParam } from "../../../core/store/actions";
 import { combineLatestOrEmpty } from "../../../core/util/combineLatestOrEmpty";
 import { ClassAndTypeNode } from "../new-components/classes-and-types-select/classes-and-types-select.component";
 import { CtrlTimeSpanDialogResult } from "../new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component";
-import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TemporalEntityTableI, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from "../new-components/properties-tree/properties-tree.models";
+import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from "../new-components/properties-tree/properties-tree.models";
 import { ConfigurationPipesService } from "./configuration-pipes.service";
 import { InformationBasicPipesService } from "./information-basic-pipes.service";
 // import { TemporalEntityTableRow } from "../new-components/temporal-entity-list/TemporalEntityTable";
@@ -193,10 +194,10 @@ export class InformationPipesService {
           map(textPropertyByPk => values(textPropertyByPk)),
           switchMapOr([], textProperties => combineLatest(
             textProperties.map(textProperty => combineLatest(
-              this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + textProperty.pk_entity)
-                .filter(x => !!x),
-              this.p.inf$.language$.by_pk_entity$.key(textProperty.fk_language)
-                .filter(x => !!x),
+              this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + textProperty.pk_entity).pipe(
+                filter(x => !!x)),
+              this.p.inf$.language$.by_pk_entity$.key(textProperty.fk_language).pipe(
+                filter(x => !!x)),
             ).pipe(
               map(([projRel, language]) => {
                 const item: TextPropertyItem = {
@@ -534,7 +535,7 @@ export class InformationPipesService {
                   map(roles => values(roles)),
                   switchMapOr([], roles => combineLatest(
                     roles.map(role => combineLatest(
-                      this.p.inf$.time_primitive$.by_pk_entity$.key(role.fk_entity).filter(x => !!x),
+                      this.p.inf$.time_primitive$.by_pk_entity$.key(role.fk_entity).pipe(filter(x => !!x)),
                       this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity)
                     ).pipe(map(([infTimePrimitive, projRel]) => {
                       const timePrimitive = new TimePrimitive({
@@ -647,8 +648,8 @@ export class InformationPipesService {
   @spyTag pipeItemTimePrimitive(role: InfRole, pkProject): Observable<TimePrimitiveItem> {
     if (pkProject) {
       return combineLatest(
-        this.p.inf$.time_primitive$.by_pk_entity$.key(role.fk_entity).filter(x => !!x),
-        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity).filter(x => !!x)
+        this.p.inf$.time_primitive$.by_pk_entity$.key(role.fk_entity).pipe(filter(x => !!x)),
+        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity).pipe(filter(x => !!x))
       ).pipe(
         map(([infTimePrimitive, projRel]) => {
           if (!infTimePrimitive) return null;
@@ -667,7 +668,7 @@ export class InformationPipesService {
           return node
         }))
     } else {
-      return this.infRepo.time_primitive$.by_pk_entity$.key(role.fk_entity).filter(x => !!x).pipe(
+      return this.infRepo.time_primitive$.by_pk_entity$.key(role.fk_entity).pipe(filter(x => !!x)).pipe(
         map(infTimePrimitive => {
           const timePrimitive = new TimePrimitive({
             julianDay: infTimePrimitive.julian_day,

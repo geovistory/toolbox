@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { CtrlTypeComponent } from './ctrl-type.component';
 import { Information2Module } from '../../information.module';

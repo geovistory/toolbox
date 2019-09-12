@@ -1,10 +1,10 @@
+
+import {of as observableOf,  BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { IAppState, Panel, ProjectDetail, PropertyList, SysConfig, U } from 'app/core';
+import { MatDialog } from '@angular/material/dialog';
 import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { difference, groupBy, indexBy, path, values, without, equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
@@ -15,10 +15,13 @@ import { LoopBackConfig } from '../sdk/lb.config';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ProjectDetail, Panel, PropertyList } from './active-project.models';
 import { ProSelector } from 'app/core/pro/pro.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { SystemSelector } from '../sys/sys.service';
+import { IAppState } from '../store/model';
+import { SysConfig } from '../config/sys-config';
+import { U } from '../util/util';
 
 
 
@@ -70,7 +73,7 @@ export class ActiveProjectService {
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
-    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).filter(p => p !== undefined);
+    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(filter(p => p !== undefined));
     this.defaultLanguage$ = this.activeProject$.pipe(filter((p) => (!!p && p.default_language) ? true : false), map(p => p.default_language))
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
@@ -242,7 +245,7 @@ export class ActiveProjectService {
    * @param forceReload
    */
   loadPeItGraphs(pkEntities: number[], forceReload?: boolean): Observable<InfPersistentItem[]> {
-    if (!pkEntities || pkEntities.length == 0) return Observable.of([]);
+    if (!pkEntities || pkEntities.length == 0) return observableOf([]);
 
     let pkEntitiesToReload = pkEntities;
 
@@ -274,7 +277,7 @@ export class ActiveProjectService {
      * @param forceReload
      */
   loadTeEnGraphs(pkEntities: number[], forceReload?: boolean): Observable<InfTemporalEntity[]> {
-    if (!pkEntities || pkEntities.length == 0) return Observable.of([]);
+    if (!pkEntities || pkEntities.length == 0) return observableOf([]);
 
 
     let pkEntitiesToReload = pkEntities;
@@ -293,7 +296,7 @@ export class ActiveProjectService {
 
     return combineLatest(
       pkEntities.map(pk => this.ngRedux.select<InfTemporalEntity>(['activeProject', 'teEnGraphs', pk]))
-    ).filter(items => items.filter(item => !item).length === 0)
+    ).pipe(filter(items => items.filter(item => !item).length === 0))
 
   }
 
@@ -442,7 +445,7 @@ export class ActiveProjectService {
       map(prps => prps.map(prop => prop.dfh_pk_property))
     )
 
-    return pks$.map(pks => roles.filter(role => pks.includes(role.fk_property)))
+    return pks$.pipe(map(pks => roles.filter(role => pks.includes(role.fk_property))))
   }
 
   /************************************************************************************

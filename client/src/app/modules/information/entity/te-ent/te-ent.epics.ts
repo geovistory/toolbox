@@ -2,7 +2,7 @@ import { ObservableStore } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { equals } from 'ramda';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TeEntDetail } from 'app/core/state/models';

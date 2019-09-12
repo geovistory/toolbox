@@ -12,7 +12,7 @@ export class QuillViewComponent implements OnChanges {
 
   @Input() formatItalic: boolean;
 
-  @ViewChild('editor') editorElem: ElementRef;
+  @ViewChild('editor', { static: true }) editorElem: ElementRef;
 
   Quill;
 

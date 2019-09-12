@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, EventEmitter, Output, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
@@ -71,7 +73,7 @@ export class EntityAssociationCreateCtrlComponent extends EntityAssociationAPIAc
 
   initFormCtrls(): void {
     // add peIt control
-    this._peIt$.takeUntil(this.destroy$).subscribe((peItDetail) => {
+    this._peIt$.pipe(takeUntil(this.destroy$)).subscribe((peItDetail) => {
       if (peItDetail) {
         this.formGroup.addControl('_peItCtrl', new FormControl(peItDetail.peIt, [Validators.required]))
       }
@@ -85,7 +87,7 @@ export class EntityAssociationCreateCtrlComponent extends EntityAssociationAPIAc
 
     const s = this.localStore.getState();
 
-    this.formGroup.valueChanges.takeUntil(this.destroy$).subscribe(val => {
+    this.formGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(val => {
 
 
       if (this.formGroup.valid) {

@@ -92,7 +92,7 @@ export class LeafPeItViewComponent extends LeafPeItViewAPIActions implements OnI
     this.localStore = this.ngRedux.configureSubStore(this.basePath, leafPeItViewReducer);
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(p => {
+    this.localStore.select<PeItDetail>('').pipe(takeUntil(this.destroy$)).subscribe(p => {
       this.peItState = p;
       if (this.peItState && this.peItState.fkClass) {
         this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.peItState.fkClass];

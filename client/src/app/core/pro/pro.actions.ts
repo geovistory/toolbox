@@ -1,3 +1,5 @@
+
+import {filter} from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { IAppState, ProInfoProjRel, ProClassFieldConfig, ProDfhClassProjRel, ProPropertyLabel, U } from 'app/core';
@@ -35,7 +37,7 @@ export class ProPropertyLabelActionFactory extends StandardActionsFactory<Payloa
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<ProPropertyLabel>>(['resolved', addPending]).filter(x => !!x),
+        resolved$: this.ngRedux.select<SucceedActionMeta<ProPropertyLabel>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }

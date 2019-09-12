@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, NgModule } from '@angular/core';
-import { MatButtonModule, MatCheckboxModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { sandboxOf } from 'angular-playground';
 import { Observable, of } from 'rxjs';
 import { delay, map, startWith } from 'rxjs/operators';

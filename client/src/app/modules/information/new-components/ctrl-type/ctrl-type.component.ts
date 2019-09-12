@@ -1,7 +1,9 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatFormFieldControl, MatMenuTrigger, MatSelectChange, MatSelect } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { MatSelectChange, MatSelect } from '@angular/material/select';
 import { Subject, Observable, BehaviorSubject, combineLatest, iif } from 'rxjs';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { switchMap, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
@@ -27,7 +29,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   static nextId = 0;
 
   model: CtrlModel;
-  @ViewChild(MatSelect) matSelect: MatSelect;
+  @ViewChild(MatSelect, { static: true }) matSelect: MatSelect;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();

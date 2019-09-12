@@ -19,11 +19,6 @@
     "md": "node_modules/db-migrate/bin/db-migrate --config server/migrate-db-config.json --migrations-dir server/migrations down"
   },
   "dependencies": {
-    "@angular-devkit/build-angular": "^0.7.3",
-    "@angular/cli": "6.1.1",
-    "@angular/compiler": "6.1.0",
-    "@angular/compiler-cli": "6.1.0",
-    "@angular/core": "6.1.2",
     "@mean-expert/loopback-sdk-builder": "kleiolab/loopback-sdk-builder#fix-missing-targetClass",
     "@mean-expert/model": "^1.0.9",
     "@types/socket.io": "^2.1.2",
@@ -58,8 +53,7 @@
     "socket.io": "^2.2.0",
     "sql-formatter": "^2.3.2",
     "strong-error-handler": "^2.0.0",
-    "tracer": "^0.8.11",
-    "typescript": "^2.6.1"
+    "tracer": "^0.8.11"
   },
   "devDependencies": {
     "eslint": "^3.17.1",

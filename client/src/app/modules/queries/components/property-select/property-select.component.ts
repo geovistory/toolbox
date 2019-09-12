@@ -1,15 +1,15 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren, Optional, Self, Directive } from '@angular/core';
-import { MatOption, MatSelectChange, MatFormFieldControl } from '@angular/material';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { AfterViewInit, ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatSelectChange } from '@angular/material/select';
 import { ActiveProjectService } from 'app/core';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { equals, uniq } from 'ramda';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil, distinctUntilChanged } from 'rxjs/operators';
-import { FilterTree } from '../../containers/query-detail/query-detail.component';
-import { ControlValueAccessor, NgControl, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
-import { TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
-import { TreeNode } from '@angular/router/src/utils/tree';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { FilterTree } from "../../containers/query-detail/FilterTree";
 
 export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean, pk: number, label: string };
 
@@ -51,7 +51,7 @@ class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFo
 
   model: PropertySelectModel;
   // the flattened selection
-  selected: TreeNode<TreeNodeData>[]
+  // selected: TreeNode<TreeNodeData>[]
 
   // emits true on destroy of this component
   autofilled?: boolean;

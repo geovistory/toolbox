@@ -2,15 +2,16 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { CdkPortal } from '@angular/cdk/portal';
 import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
-import { MatDrawer } from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { ActiveProjectService, ListType, SDKStorage, Tab } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { BasicService } from '../../../../core/basic/basic.service';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
+
 
 export interface TabLayoutComponentInterface {
   t: TabLayout
@@ -56,13 +57,13 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   bodies$ = new Subject<PanelBodyDirective[]>();
   destroy$ = new Subject<boolean>();
 
-  @ViewChild(CdkPortal) portal: CdkPortal;
-  @ContentChild(OnActivateTabDirective) child: OnActivateTabDirective;
+  @ViewChild(CdkPortal, { static: true }) portal: CdkPortal;
+  @ContentChild(OnActivateTabDirective, /* TODO: check correctness of static flag */ { static: false }) child: OnActivateTabDirective;
 
   private host: PanelBodyDirective;
 
   constructor() {
-    combineLatest(this.active$, this.panelId$, this.bodies$).takeUntil(this.destroy$)
+    combineLatest(this.active$, this.panelId$, this.bodies$).pipe(takeUntil(this.destroy$))
       .subscribe(([active, panelId, panelBodies]) => {
         // const oldHost = this.host;
         const newHost = panelBodies.find(item => item.gvPanelId === panelId)
@@ -122,7 +123,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   @ViewChildren(PanelBodyDirective) panelBodies !: QueryList<PanelBodyDirective>;
-  @ViewChild('list') list: MatDrawer;
+  @ViewChild('list', { static: true }) list: MatDrawer;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -152,10 +153,11 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
         this.sdkStorage.remove(storagePrefix + id)
       } else {
 
-        this.p.setPanels(x.panels, x.uiIdSerial, x.panelSerial, x.focusedPanel
-        )
+        // TODO uncomment the following line in order to activate restoring of tabs from last session.
+        // this.p.setPanels(x.panels, x.uiIdSerial, x.panelSerial, x.focusedPanel)
       }
     })
+
     // Subscribe to the panels until just before the project edit is destroyed
     combineLatest(
       this.p.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$
@@ -167,7 +169,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.p.initProject(id);
     this.p.initProjectCrm(id);
 
-    this.allTabs$ = this.p.panels$.map(panels => {
+    this.allTabs$ = this.p.panels$.pipe(map(panels => {
       let allTabs = []
       panels.forEach((panel, panelIndex) => {
         allTabs = [...allTabs, ...[...panel.tabs].map((tab, tabIndex) => {
@@ -181,19 +183,19 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
         })]
       })
       return allTabs
-    })
+    }))
 
 
   }
 
   ngAfterViewInit() {
-    this.panelBodies.changes.takeUntil(this.destroy$)
+    this.panelBodies.changes.pipe(takeUntil(this.destroy$))
       .subscribe(a => {
         const b = this.panelBodies.toArray()
         this.panelBodies$.next(b)
       })
 
-    this.list._closedStream.takeUntil(this.destroy$).subscribe(e => {
+    this.list._closedStream.pipe(takeUntil(this.destroy$)).subscribe(e => {
       this.p.setListType('')
     })
   }

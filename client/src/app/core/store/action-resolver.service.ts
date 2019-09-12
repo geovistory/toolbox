@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActionsObservable, combineEpics, Epic } from '../../../../node_modules/redux-observable';
+import { ActionsObservable, combineEpics, Epic } from 'redux-observable-es6-compat';
 import { of } from '../../../../node_modules/rxjs';
 import { filter, switchMap } from '../../../../node_modules/rxjs/operators';
 

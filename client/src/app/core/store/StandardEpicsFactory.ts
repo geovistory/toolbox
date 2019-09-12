@@ -1,7 +1,7 @@
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
-import { ofType, ActionsObservable } from 'redux-observable';
+import { ofType, ActionsObservable } from 'redux-observable-es6-compat';
 import { Observable, Subscriber } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { LoadActionMeta, ModifyActionMeta, StandardActionsFactory, FluxActionObservable } from './actions';

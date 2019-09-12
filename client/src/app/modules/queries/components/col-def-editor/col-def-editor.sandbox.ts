@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
@@ -7,7 +7,8 @@ import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { PropertyOption } from '../property-select/property-select.component';
-import { ColDef, ColDefEditorComponent } from '../col-def-editor/col-def-editor.component';
+import { ColDefEditorComponent } from '../col-def-editor/col-def-editor.component';
+import { ColDef } from "../col-def-editor/ColDef";
 
 const options$ = new BehaviorSubject(null)
 options$.pipe(first(), delay(1000)).subscribe(() => {

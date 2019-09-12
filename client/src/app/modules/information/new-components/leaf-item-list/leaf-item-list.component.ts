@@ -1,3 +1,5 @@
+
+import {map} from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
 import { Observable, Subject } from '../../../../../../node_modules/rxjs';
@@ -38,7 +40,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
   ngOnInit() {
     this.items$ = this.i.pipeList(this.listDefinition, this.pkEntity)
-    this.itemsCount$ = this.items$.map(i => (i || []).length)
+    this.itemsCount$ = this.items$.pipe(map(i => (i || []).length))
   }
 
 

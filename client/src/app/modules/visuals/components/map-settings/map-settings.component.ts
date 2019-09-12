@@ -1,7 +1,7 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl, FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import { pathOr, equals } from 'ramda';
 import { Subject } from 'rxjs';
 import { MapQueryLayerSettings } from '../map-query-layer-settings/map-query-layer-settings.component';

@@ -37,8 +37,8 @@
     </ng-container>
     <!-- actions Column -->
     <ng-container matColumnDef="actions">
-      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> </th>
-      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+      <th mat-header-cell class="actions-col" style="flex: 0 1 0%" *matHeaderCellDef> </th>
+      <td mat-cell class="actions-col" style="flex: 0 1 0%" *matCellDef="let element">
 
         <button mat-icon-button [matMenuTriggerFor]="mainMenu">
           <mat-icon>more_vert</mat-icon>
@@ -58,40 +58,31 @@
       (mouseenter)="rowMouseenter.emit(element)" (mouseleave)="rowMouseleave.emit(element)"
       [ngClass]="{'gv-bg-highlight': element.highlight}"></tr>
   </table>
-
-  <i class="alert alert-light" *ngIf="!(data$ | async)?.length && ofType === 'ofSource'">
+  <!--
+  <i class="alert alert-light" *ngIf="!(data$ | async)?.length && listOf?.type === 'ofSource'">
     <p>Add links between this Source and Entities (right side panel).</p>
     <p>By creating such links, you state what Entities are mentioned in this Source.</p>
     <p>To add links to more specific sections of this source (e.g. a page or even words in a transctiption), use
       «Sections and digital reproductions».</p>
 
-  </i>
+  </i> -->
 
-  <i class="alert alert-light" *ngIf="!(data$ | async)?.length && ofType === 'ofSection'">
-    <p>Add links between this Section and Entities (right side panel).</p>
-    <p>By creating such links, you state what Entities are mentioned in this Section.</p>
-
-    To annotate an Entity in a transcription of this section:
-    <ol>
-      <li>Go to «Digital reproductions -> Text»</li>
-      <li>Select some word(s) </li>
-      <li>click on annotate.</li>
+  <span class="p-3" *ngIf="!(data$ | async)?.length && listOf?.type === 'digital-text'">
+    <p class="mat-h4">Annotate entities mentioned in this text:</p>
+    <ol class="mat-body">
+      <li>Select some word(s) in the text to the left</li>
+      <li>Click on 'Annotate...' in the menu over the text.</li>
+      <li>Follow the instructions that then appear.</li>
     </ol>
-
-    Soon you will be able to link Entities with:
-    <ul>
-      <li>Cells of tables.</li>
-      <li>Spots in images.</li>
-    </ul>
-  </i>
-  <i class="alert alert-light" *ngIf="!(data$ | async)?.length && ofType === 'ofEntity'">
+  </span>
+  <!-- <i class="alert alert-light" *ngIf="!(data$ | async)?.length && listOf?.type === 'ofEntity'">
     Link this Entity with
     <ul>
       <li>Sources (Books, Articles, Manuscripts, etc.), or</li>
       <li>Sections (Pages, Chapters, Sheets, etc.).</li>
     </ul>
     By creating such links, you state in where the Entity is mentioned.
-  </i>
+  </i> -->
 </div>
 
 <!-- Create -->

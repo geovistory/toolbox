@@ -8,7 +8,7 @@ import { HasTypePropertyReadable } from "../../../../core/state/models/has-type-
 import { HasTypeAPIEpics } from './api/has-type.epics';
 import { HasTypeAPIActions } from './api/has-type.actions';
 import { hasTypeReducer } from './api/has-type.reducer';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
 
 

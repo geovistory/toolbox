@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import { LoopBackConfig, IAppState } from 'app/core';
+import { IAppState, LoopBackConfig } from 'app/core';
+import { DatEpics } from 'app/core/dat/dat.epics';
 import { AccountEpics } from 'app/modules/account/api/account.epics';
 import { environment } from 'environments/environment';
 import { Action } from 'redux';
-import { ActionsObservable, combineEpics, Epic, StateObservable, ofType } from 'redux-observable';
+import { ActionsObservable, combineEpics, Epic, StateObservable } from 'redux-observable-es6-compat';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { mergeMap, filter, tap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { ActiveProjectEpics } from '../active-project/active-project.epics';
 import { DfhEpics } from '../dfh/dfh.epics';
 import { InfEpics } from '../inf/inf.epics';
 import { LoadingBarEpics } from '../loading-bar/api/loading-bar.epics';
-import { SysEpics } from '../sys/sys.epics';
-import { DatEpics } from 'app/core/dat/dat.epics';
 import { ProEpics } from '../pro/pro.epics';
-import { SucceedActionMeta } from './actions';
+import { SysEpics } from '../sys/sys.epics';
 import { ActionResolverService } from './action-resolver.service';
 
 @Injectable()

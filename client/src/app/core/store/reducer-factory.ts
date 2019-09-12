@@ -20,7 +20,8 @@ export interface ReducerConfig {
   groupBy?: {
     keyInStore: string;
     groupByFn: (item) => string;
-  }[]
+  }[],
+  equals?: (itemA, itemB) => boolean
 }
 
 export interface Meta<Model> { items: Model[], pk?: number }
@@ -377,7 +378,8 @@ export class ReducerFactory<Payload, Model> {
       let oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
       let itemToSet;
       // Q: Does the item exists, and is it deeply-equal to the new item?
-      if (oldItem && equals(newItem, oldItem)) {
+      const equalsFn = config.equals || equals
+      if (oldItem && equalsFn(newItem, oldItem)) {
         // A: Yes. use old item as itemToSet
         itemToSet = oldItem;
       }

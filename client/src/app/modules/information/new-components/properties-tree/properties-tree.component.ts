@@ -1,6 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatTreeNestedDataSource } from '@angular/material';
+import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ActiveProjectService, SysConfig } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

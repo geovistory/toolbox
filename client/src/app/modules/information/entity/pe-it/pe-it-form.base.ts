@@ -1,3 +1,5 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Input, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
@@ -53,7 +55,7 @@ export abstract class PeItFormBase extends EntityBase implements OnInit {
     initStore() {
 
         this.localStore = this.ngRedux.configureSubStore(this.basePath, peItReducer);
-        this.localStore.select<PeItDetail>('').takeUntil(this.destroy$).subscribe(d => {
+        this.localStore.select<PeItDetail>('').pipe(takeUntil(this.destroy$)).subscribe(d => {
             this.peItState = d
         })
     }

@@ -20,7 +20,7 @@ export function typesReducer(state: Types = INITIAL_STATE, a: Action): Types {
     case TypesAPIActions.LOAD_SUCCEEDED:
       state = {
         ...state,
-        items: indexBy(prop('pk_entity'), action.meta.types)
+        items: indexBy(i => i.pk_entity.toString(), action.meta.types)
       };
       break;
     case TypesAPIActions.LOAD_FAILED:
