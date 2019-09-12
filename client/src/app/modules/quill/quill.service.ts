@@ -1,100 +1,23 @@
 /// <reference types="quill" />
 
-import { Injectable, ChangeDetectorRef } from '@angular/core';
-
+import { Injectable, Renderer2 } from '@angular/core';
 import Quill from 'quill';
 import Delta from 'quill/node_modules/quill-delta';
-import { DeltaI, Op } from './quill.models';
-import { Observable, BehaviorSubject, Subject, asapScheduler, asyncScheduler } from '../../../../node_modules/rxjs';
 import { clone } from 'ramda';
+import { asapScheduler, asyncScheduler, BehaviorSubject, Observable, Subject } from '../../../../node_modules/rxjs';
+import { IndexedCharids } from './quill-edit/quill-edit.component';
+import { DeltaI, Op, Ops } from './quill.models';
+import { Blot } from 'parchment/dist/src/blot/abstract/blot';
 
 const Inline = Quill.import('blots/inline');
+const Block = Quill.import('blots/block');
 
-class NodeBlot extends Inline {
+const OriginalTextBlot = Quill.import('blots/text');
 
-  static blotName = 'charid';
-  static tagName = 'span';
+const Registry = Quill.import('parchment')
+const Blockid = new Registry.Attributor.Attribute('blockid', 'blockid', {});
+Registry.register(Blockid);
 
-
-  static create(value) {
-    const node = super.create();
-    // add id here
-    node.setAttribute('charid', value);
-
-    return node;
-  }
-
-  static formats(node) {
-    // We will only be called with a node already
-    // determined to be a blot, so we do
-    // not need to check ourselves
-    return node.getAttribute('charid');
-  }
-}
-
-Quill.register(NodeBlot, false);
-
-// const Block = Quill.import('blots/block');
-
-// class CustomBlock extends Block {
-
-//   constructor(domNode, x) {
-//     super(domNode);
-//     domNode.setAttribute('node', 999);
-//     this.cache = {};
-//   }
-
-//   static create(value) {
-//     const node = super.create()
-//     node.setAttribute("node", value)
-//     return node
-//   }
-
-//   // static formats(node) {
-//   //   // We will only be called with a node already
-//   //   // determined to be a blot, so we do
-//   //   // not need to check ourselves
-//   //   return node.getAttribute('node');
-//   // }
-
-//   // split(index, force = false) {
-//   //   if (force && (index === 0 || index >= this.length() - 1)) {
-//   //     const clone = this.clone()
-//   //     clone.domNode.node = '999'
-//   //     if (index === 0) {
-//   //       this.parent.insertBefore(clone, this)
-//   //       return this
-//   //     }
-//   //     this.parent.insertBefore(clone, this.next)
-//   //     return clone
-//   //   }
-//   //   const next = super.split(index, force)
-//   //   next.domNode.node = '999'
-//   //   this.cache = {}
-//   //   return next
-//   // }
-// }
-// CustomBlock.blotName = "block"
-// CustomBlock.tagName = "p"
-
-// Quill.register(CustomBlock, false);
-
-const Parchment = Quill.import("parchment")
-
-// const QidAttribute = new Parchment.Attributor.Attribute('node', 'block-node')
-const QidAttribute = new Parchment.Attributor.Attribute('blockid', 'blockid', {
-  // scope: Parchment.Scope.INLINE,
-});
-Parchment.register(QidAttribute);
-
-
-Quill.register({
-  'attributors/attribute/blockid': QidAttribute
-}, true);
-
-// Quill.register({
-//   'formats/node': QidAttribute,
-// }, true);
 
 
 export type TokenType = 'regChar' | 'sepChar' | undefined;
@@ -107,28 +30,413 @@ export interface CharacterizeResult {
   latestId: number
 };
 export interface CharacerizeFeedback {
-  progress: Observable<number>, // progress starting with 0 ending with 1
-  result: Observable<CharacterizeResult>
+  formatText$: Observable<FormatTextParams>,
+  deltaLength: number,
+  latestId$: Observable<number>
 }
+
+export interface FormatTextParams {
+  start: number
+  length: number
+  formats: {
+    charid?: number,
+    blockid?: number
+  }
+}
+
+type UpdateType = 'before' | 'after' | 'replace';
 
 @Injectable()
 export class QuillService {
 
-  readonly SEPARATOR_REGEX = /[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]/
-
-  readonly BEGINING_SEPARATOR = /^[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,1}/
-  readonly BEGINING_WORD = /^[\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,}/
-
   Quill = Quill;
 
-  constructor() { }
+  // index of nodes, where key = charid, value = Node
+  domNodes: { [key: number]: Node } = {};
+
+  // index of nodes, where key = charid, value = array of numbers (e.g. pk_entity of chunks)
+  highlightNodes: IndexedCharids<number[]> = {};
+
+  // index of click Callbacks, needed for removing eventListeners
+  clickCbIndex: { [key: number]: () => void } = {}
+
+  // index of mouseenter Callbacks, needed for removing eventListeners
+  mouseenterCbIndex: { [key: number]: () => void } = {}
+
+  // index of mouseleave Callbacks, needed for removing eventListeners
+  mouseleaveCbIndex: { [key: number]: () => void } = {}
+
+  // emits the charid of the clicked highlighted node
+  highlightClicked$ = new Subject<number>();
+
+  // emits the charid of the mouseentered highlighted node
+  highlightMouseentered$ = new Subject<number>();
+
+  // emits the charid of the mouseleft highlighted node
+  highlightMouseleft$ = new Subject<number>();
+
+  nodeBlot;
+  textBlot;
+  containerBlot;
+  editor;
+  latestId: number;
+  updateContents: () => void;
+
+  constructor(private renderer: Renderer2) {
+
+
+    this.nodeBlot = this.createNodeBlot(this)
+    this.Quill.register(this.nodeBlot, false);
+
+    this.textBlot = this.createTextBlot(this)
+    this.Quill.register(this.textBlot, false);
+
+    // this.Quill.register(this.createInlineBlot(this), false);
+    // this.Quill.register(this.createBlockBlot(this), false);
+
+    this.Quill.register({ 'attributors/attribute/blockid': Blockid }, true);
+
+  }
+
+  createTextBlot = (service: QuillService) => {
+    return class TextBlot extends OriginalTextBlot {
+
+      // static create(value: string): Text {
+      //   return document.createTextNode(value);
+      // }
+
+      // constructor(node: Node, supressCharId: boolean = false) {
+      //   super(node);
+      //   this.text = this.statics.value(this.domNode);
+
+      //   // add a charid if there is no parent
+      //   // if (!this.parent && !supressCharId) this.addCharid();
+      // }
+
+      /**
+      * Make this text blot a child of a new NodeBlot with a charid
+      */
+      // addCharid() {
+      //   const scroll = service.editor.editor.scroll
+      //   const cursorPos: number = service.editor.getSelection().index;
+      //   service.latestId++;
+
+      //   // // Update the Delta (model)
+      //   // (service.editor.editor.delta.ops as Ops)
+      //   //   .splice(offset, 0, { insert: this.text, attributes: { charid: service.latestId } });
+
+      //   /*
+      //   * Update the DOM (view)
+      //   */
+      //   // Get the parent Blot
+      //   const parentBlot = this.domNode.parentElement.__blot.blot;
+      //   // Get the next Blot
+      //   const next = null; // ;
+      //   // Create Node Blot
+      //   const newNodeBlot = Registry.create('charid', service.latestId);
+      //   // Create Node Blot suppressing the adding of a charid
+      //   const newTextBlot = new service.textBlot(service.textBlot.create(this.text), true);
+      //   // Append this TextBlot to NodeBlot
+      //   newNodeBlot.appendChild(newTextBlot);
+      //   // Insert Node Blot into parent Blot and before next Blot
+      //   newNodeBlot.insertInto(parentBlot, next)
+
+      //   this.domNode.data = '';
+      //   this.text = '';
+
+      //   setTimeout(() => {
+      //     const offset = this.offset(scroll);
+
+      //     // Update the cursor position
+      //     const cursor: number = service.editor.getSelection().index;
+      //     service.editor.setSelection(cursor + 1);
+
+      //     // Remove this from DOM
+      //     this.remove()
+      //   });
+
+
+
+      // }
+
+      // private getParentBlot() {
+      //   // const recursiveQuery = (element) => {
+      //   //   element.
+      //   // }
+      //   // recursiveQuery(this.domNode.parentElement)
+      // }
+
+      splitChars(mutations: MutationRecord[]) {
+        const mutation = mutations[0]
+        const oldValue = mutation.oldValue;
+        const newValue = this.statics.value(this.domNode);
+        let offset = this.offset(service.editor.editor.scroll);
+        const range = service.editor.getSelection();
+        const updateType = this.retrieveUpdateType(range, newValue, oldValue);
+        let newText;
+
+
+        if (updateType === 'after') {
+          newText = newValue.charAt(1);
+          offset++;
+        } else if (updateType === 'before') {
+          newText = newValue.charAt(0);
+        }
+
+
+        // Update the DOM (view)
+        this.parent.addNodeBlot(newText, updateType)
+        this.domNode.data = oldValue;
+
+        // Update the blot (controller)
+        this.text = oldValue;
+
+
+        // Update the editor (delta and history)
+        service.editor.scroll.update('user')
+
+        // Update the cursor position
+        service.editor.setSelection(offset + 1)
+        // if (offset !== 1)
+        // else {
+        //   setTimeout(() => {
+        //     service.editor.setSelection(offset + 1)
+        //   })
+        // }
+
+        // Trigger updateContents event for the exceptional case that
+        // text-change event is not triggered
+        // if (offset === 1) service.updateContents();
+
+      }
+
+      update(mutations, context) {
+        const _this = this;
+        if (mutations.some(function (mutation) {
+          return mutation.type === 'characterData' && mutation.target === _this.domNode;
+        })) {
+
+          if (this.domNode.textContent.length > 1) {
+            this.splitChars(mutations)
+          } else {
+            this.text = this.statics.value(this.domNode);
+          }
+        }
+      };
+
+      /**
+       * Finds out wether the new character was added before (left) or after (right)
+       * of the character.
+       *
+       * Unfortunately the range given by quill is indifferent, on second line onwards,
+       * so that we have to rely on the characters. Therefore this function returns
+       * a wrong value, if the characters are equal and the new character was added
+       * before the old one, from second line onwards. This is a rare case and the
+       * effect is not crutial: The new character is added after instead of before
+       * the old one, which makes the cursor 'jumping over' the old and new characters
+       * and which can lead to unwanted wholes in annotations.
+       */
+      private retrieveUpdateType(range, newText, oldText): UpdateType {
+        const c0 = newText.charAt(0);
+        const c1 = newText.charAt(1);
+        if (c0 !== c1) {
+          if (oldText === newText.charAt(0)) return 'after';
+          if (oldText === newText.charAt(1)) return 'before';
+        } else {
+          if (service.editor.editor.delta.length() == 2) return 'after';
+          if (range.index > 1) return 'after';
+          return 'before'
+        }
+
+        // if (offset + 2 === range.index) return 'after';
+        // else if (offset + 1 === range.index) return 'before';
+        // else console.error('Could not retrieve UpdateType on splitting charid blot')
+      }
+    }
+  }
+
+  createNodeBlot = (service: QuillService) => {
+    return class NodeBlot extends Inline {
+
+      static blotName = 'charid';
+      static tagName = 'span';
+
+
+
+      static create(value) {
+        const node = super.create();
+        // add id here
+        node.setAttribute('charid', value);
+
+        service.addDomNode(value, node)
+
+        return node;
+      }
+
+
+      static formats(node) {
+        // We will only be called with a node already
+        // determined to be a blot, so we do
+        // not need to check ourselves
+        return node.getAttribute('charid');
+      }
+
+      addNodeBlot(newText: string, updateType: UpdateType) {
+
+        const newNodeBlot = Registry.create('charid', ++service.latestId);
+        const newTextBlot = new service.textBlot(service.textBlot.create(newText), true);
+        newNodeBlot.appendChild(newTextBlot)
+        const next = updateType === 'after' ? this.next : this;
+        this.parent.insertBefore(newNodeBlot, next);
+
+        return newNodeBlot;
+      }
+
+
+      remove() {
+        if (this.domNode.innerHTML !== '') {
+          service.removeDomNode(this.domNode.getAttribute('charid'))
+        }
+
+        if (this.domNode.parentNode != null) {
+          this.domNode.parentNode.removeChild(this.domNode);
+        }
+        this.detach();
+      }
+
+      detach() {
+        const value = this.domNode.getAttribute('charid')
+        // service.removeDomNode(value)
+        super.detach()
+      }
+      attach() {
+        const value = this.domNode.getAttribute('charid')
+        // service.addDomNode(value, this.domNode)
+        super.attach()
+      }
+      // split(index: number, force: boolean = false) {
+
+      //   const x = super.split(index, force);
+      //   if(x)
+      //   return x
+
+      // }
+
+      split(index: number, force: boolean = false): NodeBlot {
+        if (!force) {
+          if (index === 0) return this;
+          if (index === this.length()) return this.next;
+        }
+        let after = this.clone();
+        this.parent.insertBefore(after, this.next);
+        this.children.forEachAt(index, this.length(), function (child, offset, length) {
+          child = child.split(offset, force);
+          after.appendChild(child);
+        });
+
+        // Update domNode index
+        if (force) {
+          const value = this.domNode.getAttribute('charid')
+          service.removeDomNode(value)
+          service.addDomNode(value, after.domNode)
+        }
+        return after;
+      }
+
+      update(mutations: MutationRecord[], context: { [key: string]: any }): void {
+        super.update(mutations, context);
+      }
+
+
+      constructor(public domNode) {
+        super(domNode)
+      }
+    }
+  }
+
+  /**
+   * adds a domNode to the index this.domNodes
+   */
+  private addDomNode(key: number, value: Node) {
+    if (!this.domNodes[key]) this.domNodes[key] = value;
+  }
+
+  /**
+  * removes a domNode to the index this.domNodes
+  */
+  private removeDomNode(key: number) {
+    delete this.domNodes[key];
+  }
+
+
+  /**
+   * Enables the highlighting of the node with given charid
+   * Extracts the DomNode from "domNodes" where the key matches charid.
+   * - adds class for highlighting
+   * - adds event listeners for click, mouseenter, mouseleave
+   */
+  highlightNode(charid: number) {
+    const x = Registry;
+    const n = this.domNodes[charid];
+    if (n) {
+      this.renderer.addClass(n, 'gv-quill-text-highlight');
+      this.clickCbIndex[charid] = () => { this.highlightClicked$.next(charid) }
+      n.addEventListener('click', this.clickCbIndex[charid])
+      this.mouseenterCbIndex[charid] = () => { this.highlightMouseentered$.next(charid) }
+      n.addEventListener('mouseenter', this.mouseenterCbIndex[charid])
+      this.mouseleaveCbIndex[charid] = () => { this.highlightMouseleft$.next(charid) }
+      n.addEventListener('mouseleave', this.mouseleaveCbIndex[charid])
+    }
+  }
+
+  createHighlightCallback(charid) {
+    return this.domNodes[charid]
+  }
+
+  /**
+   * Disables the highlighting of the node with given charid
+   * Extracts the DomNode from "domNodes" where the key matches charid.
+   * - removes class for highlighting
+   * - removes event listeners for click, mouseenter, mouseleave
+   */
+  unlightNode(charid: number) {
+    const n = this.domNodes[charid];
+    if (n) {
+      this.renderer.removeClass(n, 'gv-quill-text-highlight');
+      n.removeEventListener('click', this.clickCbIndex[charid])
+      n.removeEventListener('mouseenter', this.mouseenterCbIndex[charid])
+      n.removeEventListener('mouseleave', this.mouseleaveCbIndex[charid])
+    }
+  }
+
+  /**
+   * Enables accent of the node with given charid
+   * - adds class for accent
+   */
+  accentuateNode(charid: number) {
+    const n = this.domNodes[charid];
+    if (n) {
+      this.renderer.addClass(n, 'gv-quill-text-accent');
+    }
+  }
+  /**
+   * Disables accent of the node with given charid
+   * - removes class for accent
+   */
+  unaccentuateNode(charid: number) {
+    const n = this.domNodes[charid];
+    if (n) {
+      this.renderer.removeClass(n, 'gv-quill-text-accent');
+    }
+  }
 
   /**
    * Creates a insert operation for each character on content change event.
    */
   characterizeContentChange(delta: DeltaI, oldDelta: DeltaI, latestId: number): CharacerizeFeedback {
-    const progress = new BehaviorSubject<number>(0);
-    const result = new Subject<CharacterizeResult>();
+    const latestId$ = new Subject<number>();
+    const formatText$ = new Subject<FormatTextParams>();
+    const deltaLength = delta.length();
 
     if (delta.ops.filter(op => op.hasOwnProperty('retain')).length > 1) {
       console.warn('more than one retain', clone(delta.ops))
@@ -139,10 +447,8 @@ export class QuillService {
       const newDelta = new Delta();
 
       const done = () => {
-        progress.next(1);
-        result.next({ delta: newDelta, latestId: latestId });
-        progress.complete();
-        result.complete()
+        latestId$.next(latestId);
+        latestId$.complete()
       }
 
 
@@ -150,10 +456,6 @@ export class QuillService {
       if (this.isInsert(delta)) {
         let id = latestId * 1;
         let newOps: any[] = [];
-
-
-        // length of ops array used to generate progress feedback
-        const origOpsLength = delta.ops.length;
 
         // init newOps and oldOps
         if (this.beginsWithRetain(delta)) {
@@ -164,27 +466,35 @@ export class QuillService {
           newOps = this.initOpsThatEndWithRetains(delta)
         }
 
+        // get initial retain
+        // TODO: if approach with formatText$ is more performant
+        // than making one big delta, delete newOps and
+        // retrieve retain value more directly
+        let retain = newOps.length < 1 ? 0 : newOps[0].retain;
+
         // number of syncronously executed calls of addRetainOp()
         let syncAddRetainOpCalls = 0;
 
         const addRetainOp = () => {
 
           syncAddRetainOpCalls++;
+          // take the first operation
+          const op = delta.ops[0];
 
-          const insert = delta.ops[0].insert;
-          if (insert) {
+          // if this is a insert operation
+          if (op.insert) {
 
             // drop first n characters of string
-            delta.ops[0].insert = insert.substring(1);
+            delta.ops[0].insert = op.insert.substring(1);
 
             id = id + 1;
 
-            // add the chars to the precedingToken
-            newOps.push({
-              retain: 1,
-              attributes: { charid: id, blockid: id }
-            } as Op)
-
+            formatText$.next({
+              start: retain,
+              length: 1,
+              formats: { charid: id, blockid: id }
+            })
+            retain++;
           }
 
           // if op.insert is now empty, remove the op
@@ -194,14 +504,13 @@ export class QuillService {
           if (delta.ops.length) {
 
             // make syncronous calls for batches of 100
-            if (syncAddRetainOpCalls < 100) {
+            if (syncAddRetainOpCalls < 10000) {
               // synchronously call recursive function
               addRetainOp()
 
             } else {
               syncAddRetainOpCalls = 0;
 
-              progress.next((origOpsLength - delta.ops.length) / origOpsLength);
 
               // asynchronously call recursive function
               // to prevent 'maximum callstack exeeded' exceptions
@@ -212,7 +521,7 @@ export class QuillService {
             }
 
           } else {
-            newDelta.ops = newOps;
+            // newDelta.ops = newOps;
             latestId = id;
             done()
           }
@@ -230,8 +539,7 @@ export class QuillService {
 
     });
 
-    // return { delta: newDelta, latestId: latestId };
-    return { progress, result }
+    return { latestId$: latestId$, formatText$, deltaLength }
   }
 
   /**
@@ -338,10 +646,114 @@ export class QuillService {
     }
   }
 
+  createEditor = (el, config, updateContents) => {
+    this.editor = new this.Quill(el, config)
+    this.updateContents = updateContents;
+    return this.editor
+  }
+
+  createEnterHandle() {
+    const BLOCK = Registry.Scope.BLOCK;
+    const USER = 'user';
+    const SILENT = 'silent';
+    const _this = this;
+    return function (range, context) {
+      const lineFormats = Object.keys(context.format).reduce(
+        (formats, format) => {
+          if (
+            Registry.query(format, BLOCK) &&
+            !Array.isArray(context.format[format])
+          ) {
+            formats[format] = context.format[format];
+          }
+          return formats;
+        },
+        {},
+      );
+      const delta = new Delta()
+        .retain(range.index)
+        .delete(range.length)
+        .insert('\n', lineFormats);
+      this.quill.updateContents(delta, USER);
+      this.quill.setSelection(range.index + 1, SILENT);
+      this.quill.focus();
+
+      Object.keys(context.format).forEach(name => {
+        if (lineFormats[name] != null) return;
+        if (Array.isArray(context.format[name])) return;
+        // Geovistory customization for charid
+        if (name === 'charid' || name === 'code' || name === 'link') return;
+        this.quill.format(name, context.format[name], USER);
+      });
+
+    }
+  }
+
+  // readonly SEPARATOR_REGEX = /[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]/
+  // readonly BEGINING_SEPARATOR = /^[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,1}/
+  // readonly BEGINING_WORD = /^[\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,}/
+
+  // /**
+  //  * Blot factories
+  //  */
+  // createHighlightBlot = (service: QuillService) => {
+  //   return class HighlightBlot extends Inline {
+
+  //     static blotName = 'highlight';
+  //     static tagName = 'span';
+
+  //     clickFunction;
 
 
+  //     static create(value: number[]) {
+  //       const node = super.create();
+  //       node.setAttribute('highlight', value);
+  //       return node;
+  //     }
+
+  //     static formats(node) {
+  //       return node.getAttribute('highlight');
+  //     }
 
 
+  //     remove() {
+  //       if (this.domNode.parentNode != null) {
+  //         this.domNode.removeEventListener('click', this.clickFunction)
+  //         this.domNode.parentNode.removeChild(this.domNode);
+  //       }
+  //       this.detach();
+  //     }
+
+  //     constructor(public domNode: Node) {
+  //       super(domNode)
+  //       this.clickFunction = service.onHighlightClick(this)
+  //       domNode.addEventListener('click', this.clickFunction)
+  //     }
+  //   }
+  // }
+  // private onHighlightClick = (blot) => (event) => {
+  //   console.log(event, blot)
+  // }
 
 
+}
+
+function makeBlot(node: Node): Blot {
+  let blot = Registry.find(node);
+  if (blot == null) {
+    try {
+      blot = Registry.create(node);
+    } catch (e) {
+      blot = Registry.create(Registry.Scope.INLINE);
+      [].slice.call(node.childNodes).forEach(function (child: Node) {
+        // @ts-ignore
+        blot.domNode.appendChild(child);
+      });
+      if (node.parentNode) {
+        node.parentNode.replaceChild(blot.domNode, node);
+      }
+      blot.attach();
+    }
+  }
+  return blot;
 }

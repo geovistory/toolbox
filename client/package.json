@@ -10,7 +10,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "playground": "node --max_old_space_size=16384 node_modules/.bin/angular-playground"
+    "playground": "node --max_old_space_size=8192 node_modules/.bin/angular-playground"
   },
   "private": true,
   "dependencies": {

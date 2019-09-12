@@ -550,7 +550,7 @@ module.exports = function (InfEntityAssociation) {
                 // Load the Digital
                 InfEntityAssociation.app.models.DatDigital.findById(ea.fk_data_domain, (err, res) => {
                   if (err) reject(err);
-                  else resolve([res]);
+                  else resolve([helpers.toObject(res)]);
                 })
               }
               else {

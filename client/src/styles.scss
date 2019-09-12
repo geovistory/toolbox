@@ -1171,6 +1171,12 @@ gv-timeline.gv-timeline-dark {
  * Quill
  ***************************/
 
+.ql-editor {
+  [highlight] {
+    background-color: $gv-color-highlighted
+  }
+}
+
 gv-quill-view {
   .ql-container.ql-snow {
     height: auto;
@@ -1426,20 +1432,6 @@ gv-map {
   border-radius: $btn-border-radius-lg;
 }
 
-/***************************
- * Highlighting
- ***************************/
-
-.gv-bg-highlight {
-  background-color: hsla(271, 68%, 80%, 0.5);
-}
-.mat-row.gv-bg-highlight {
-  background-color: rgba(223, 213, 232, 0.5);
-}
-
-.gv-bg-highlight-2 {
-  background-color: hsla(271, 68%, 80%, 0.9);
-}
 
 /**************************
 * Ngx easy table vertical scroll
@@ -2026,4 +2018,21 @@ button {
   @extend .border;
   @extend .border-success;
   @extend .rounded-circle;
+}
+
+/***************************
+ * Highlighting
+ ***************************/
+
+ .gv-quill-text-highlight {
+  background-color: hsla(271, 68%, 80%, 0.5);
+}
+.gv-quill-text-highlight:hover {
+  background-color: hsla(271, 68%, 80%, 0.9);
+}
+.gv-quill-text-accent {
+  background-color: mat-color($app-accent);
+}
+.mat-row.gv-bg-highlight {
+  background-color: rgba(223, 213, 232, 0.5);
 }

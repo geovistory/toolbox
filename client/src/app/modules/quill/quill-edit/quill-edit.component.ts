@@ -1,22 +1,26 @@
 
-import {of as observableOf,  asyncScheduler, BehaviorSubject, Observable, Subscription, timer, Subject } from 'rxjs';
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, Renderer2, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import Delta from 'quill/node_modules/quill-delta';
-import { distinct, filter, map, takeUntil, tap, merge } from 'rxjs/operators';
+import { clone, sum } from 'ramda';
+import { combineLatest, merge, Observable, of, Subject, Subscription, timer, BehaviorSubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
 import { QuillNodeHandler } from '../quill-node-handler';
 import { DeltaI, Ops, QuillDoc } from '../quill.models';
 import { QuillService } from '../quill.service';
 
 // the array of numbers are the pk_entities of the chunks
-export interface AnnotatedOps { [nodeId: string]: number[] }
+export interface IndexedCharids<M> { [charid: number]: M }
 export type ChunksPks = number[]
 
 @Component({
   selector: 'gv-quill-edit',
   templateUrl: './quill-edit.component.html',
-  styleUrls: ['./quill-edit.component.scss']
+  styleUrls: ['./quill-edit.component.scss'],
+  providers: [
+    QuillService
+  ]
 })
 export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -34,13 +38,14 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   // Editor Config object. If none provided, it will use a default.
   @Input() editorConfig: any;
 
-  @Input() _annotationsVisible$ = new Subject<boolean>();
   @Input() annotationsVisible$: Observable<boolean>;
+  _annotationsVisible$: Observable<boolean>;
 
-  @Input() annotatedNodes$: Observable<AnnotatedOps>;
+  @Input() annotatedNodes$: Observable<IndexedCharids<number[]>>;
+  _highlightedNodes: Observable<IndexedCharids<number[]>>;
 
-  @Input() _chunksToHighlight$ = new Subject<ChunksPks>();
-  @Input() chunksToHighlight$: Observable<ChunksPks>
+  @Input() accentuatedNodes$: Observable<IndexedCharids<true>>;
+  _accentuatedNodes$: Observable<IndexedCharids<true>>
 
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
@@ -48,9 +53,9 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   @Output() textLengthChange = new EventEmitter<number>()
   @Output() htmlChange = new EventEmitter<string>()
   @Output() selectedDeltaChange = new EventEmitter<Delta>()
-  @Output() nodeClick = new EventEmitter<QuillNodeHandler>()
-  @Output() nodeMouseenter = new EventEmitter<QuillNodeHandler>()
-  @Output() nodeMouseleave = new EventEmitter<QuillNodeHandler>()
+  @Output() nodeClick = new EventEmitter<number[]>()
+  @Output() nodeMouseenter = new EventEmitter<number[]>()
+  @Output() nodeMouseleave = new EventEmitter<number[]>()
 
 
   // needed for creating annotation: maps nodeid with object containing isSelected-boolean and op (from Delta.ops)
@@ -62,17 +67,13 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   // the editor object
   quillEditor: any;
 
-  private Quill;
-
-  // Next node inerted will get id = latestId + 1
-  private latestId: number;
+  // flag to prevent updating
+  initializingContent = true;
 
   // The Operations object
   private ops: Ops;
 
   private html: string;
-
-  private nodeSubs = new Map<Node, { nh: QuillNodeHandler, subs: Subscription[] }>(); // the DOM Node, subscriptions on this nodes events
 
   showTokenIds = false;
 
@@ -92,23 +93,9 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   @HostBinding('class.gv-quill-textarea-like') @Input() textareaLike = false;
 
   constructor(
-    private ref: ChangeDetectorRef,
     private quillService: QuillService,
-    private renderer: Renderer2,
     public dialog: MatDialog
-  ) {
-    this.Quill = quillService.Quill;
-
-    // Pass the values of annotationsVisible$ to _annotationsVisible$
-    if (this.annotationsVisible$) this.annotationsVisible$.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this._annotationsVisible$.next(value)
-    })
-
-    // Pass the values of chunksToHighlight$ to _chunksToHighlight$
-    if (this.chunksToHighlight$) this.chunksToHighlight$.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this._chunksToHighlight$.next(value)
-    })
-  }
+  ) { }
 
   /**
    * It is possible to change the input:
@@ -152,7 +139,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-
     // init quillDoc
     this.initQuillDoc();
 
@@ -182,6 +168,12 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
     // init contents
     this.initContents();
+
+    // init highlighting
+    this.initHighlighting()
+
+    // init clipboard (copy & paste)
+    this.initClipboard()
 
   }
 
@@ -226,33 +218,35 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+
   private initEditor() {
-    this.quillEditor = new this.Quill(this.editorElem.nativeElement, this.editorConfig);
+    const cb = () => {
+      this.updateComponent()
+    }
+    this.quillEditor = this.quillService.createEditor(this.editorElem.nativeElement, this.editorConfig, cb);
   }
-
-  // private initNodeSubscriptions() {
-
-  //   // unsubscribe from node subscriptions
-  //   this.nodeSubs.forEach(node => {
-  //     node.subs.forEach((sub: Subscription) => {
-  //       sub.unsubscribe();
-  //     });
-  //     node.nh.destroy()
-  //   });
-  //   // reset nodeSubs
-  //   this.nodeSubs = new Map<Node, { nh: QuillNodeHandler, subs: Subscription[] }>()
-  // }
 
   private initEditorConfig() {
     // set default editor config
+    const enterHandler = this.quillService.createEnterHandle()
     const defaultEditorConfig = {
       theme: 'snow',
       modules: {
-        toolbar: this.toolbar.nativeElement
+        toolbar: this.toolbar.nativeElement,
+        keyboard: {
+          bindings: {
+            enter: {
+              key: 'Enter', // Enter Key
+              shiftKey: null,
+              handler: enterHandler
+            }
+          }
+        }
       },
       // See list of formats: https://quilljs.com/docs/formats/
       formats: [
         // Inline formats
+        // 'highlight',
         'charid',
         'bold', 'italic', 'link', 'size', 'strike', 'underline',
         // Block formats
@@ -294,29 +288,26 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     this.quillDoc = (this.quillDoc && 'latestId' in this.quillDoc && 'ops' in this.quillDoc && this.quillDoc.ops.length) ?
       this.quillDoc : {
         latestId: 1,
-        ops: [{
-          attributes: { blockid: 1 },
-          insert: "\n"
-        }]
+        ops: []
       };
-    this.latestId = this.quillDoc.latestId;
+    this.quillService.latestId = this.quillDoc.latestId;
     this.ops = this.quillDoc.ops;
   }
 
   /**
-   * Compares a QuillDoc with this.contents and this.latestId
+   * Compares a QuillDoc with this.contents and this.quillService.latestId
    *
    * If the given quillDoc is different then the one from the component
    * returns true, else false.
    * @param qd
    */
   private quillDocIsDifferent(qd: QuillDoc) {
-    if (this.latestId !== qd.latestId || this.ops !== qd.ops) return true;
+    if (this.quillService.latestId !== qd.latestId || this.ops !== qd.ops || this.ops.length !== qd.ops.length) return true;
     else return false;
   }
 
   private validateInputs() {
-    if (this.latestId < 0) {
+    if (this.quillService.latestId < 0) {
       throw new Error('LatestId must be 0 or higher');
     }
     if (this.inputLike && this.textareaLike) {
@@ -325,22 +316,93 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private initContents() {
+    this.initializingContent = true;
+    const length = this.ops.length;
 
-    this.quillEditor.setContents(this.ops);
+    // Make sure previous content is deleted
+    if (length === 0) {
+      this.quillEditor.setContents([{ insert: '\n', }
+      ], 'api');
+    } else {
+      this.quillEditor.setContents([], 'api')
+    }
+    // Clear histroy to prevent user from going back (e.g. to previous version)
+    this.quillEditor.history.clear();
 
-    // create the nodeSelctionMap
-    if (this.creatingAnnotation) {
-      this.ops.forEach(op => {
-        if (op.attributes && op.attributes.node) {
 
-          // add it to the nodeSelctionMap
-          this.nodeSelctionMap.set(op.attributes.node, {
-            isSelected: false,
-            op
-          })
+    /**
+     * Progress Dialog
+     */
+    const batchsize = 500;
+    const iterations = length / batchsize;
+    const done$ = new Subject();
+    const value$ = new BehaviorSubject(0);
 
-        }
-      });
+    let progDialog;
+    let i = 0;
+    const progDialogData: ProgressDialogData = {
+      title: 'Opening Document',
+      mode$: new BehaviorSubject<ProgressMode>('determinate'),
+      value$
+    }
+
+    timer(300).pipe(takeUntil(done$)).subscribe(() => {
+      progDialog = this.openProgressDialog(progDialogData)
+    })
+
+    const addBatch = () => {
+      const start = i * batchsize;
+      const end = start + batchsize;
+      const nextDeltaChunk = this.ops.slice(start, end)
+      i++;
+      // const nextDeltaChunk = remainingOps.splice(0, batchsize);
+      const existingContentLength = this.quillEditor.getLength() - 1;
+      if (existingContentLength > 0) nextDeltaChunk.unshift({ retain: existingContentLength })
+      this.quillEditor.updateContents(nextDeltaChunk, 'api');
+      if (end <= length) {
+        value$.next(Math.round(i / iterations * 100))
+        setTimeout(() => {
+          addBatch();
+        }, 0)
+      } else {
+        this.cleanupNewLine()
+
+        done$.next(true)
+        value$.next(1)
+        if (progDialog) progDialog.close();
+        this.initializingContent = false;
+        this.updateComponent()
+      }
+    }
+    addBatch()
+
+
+
+
+    // // For empty documents
+    // if (this.ops.length === 0) {
+    //   this.quillEditor.format('blockid', this.quillService.latestId)
+    // }
+
+
+  }
+
+  /**
+   * cleanup the newline at end of document if second last element
+   * is also a newline (having a blockid)
+   */
+  cleanupNewLine() {
+    const ops: Ops = this.quillEditor.editor.delta.ops;
+    if (ops.length > 1) {
+      const last = ops[ops.length - 1]
+      const secondLast = ops[ops.length - 2]
+
+      if (
+        last.insert === '\n' && !last.attributes &&
+        secondLast.insert === '\n' && secondLast.attributes && secondLast.attributes.blockid
+      ) {
+        this.quillEditor.deleteText((ops.length - 1), 1, 'api')
+      }
     }
   }
 
@@ -403,55 +465,240 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     // }
   }
 
+  /**
+   * Initializes highlighting mechanism
+   *
+   * @param highlightNodes$ is observable indexOps where keys are charid's, that should be highlighted.
+   * @param showHighlight$ is observable boolean used to toggle highlighing.
+   */
+  initHighlighting() {
+    let highlighted: IndexedCharids<number[]> = {}
+    let accentuated: IndexedCharids<true> = {}
+
+    // Pass the values of annotationsVisible$ to _annotationsVisible$
+    this._annotationsVisible$ = merge((this.annotationsVisible$ || of(false)))
+
+    // Pass the values of annotatedNodes$ to _annotatedNodes$
+    this._highlightedNodes = merge((this.annotatedNodes$ || of({})))
+
+    // Pass the values of accentuatedNodes$ to _accentuatedNodes$
+    this._accentuatedNodes$ = merge((this.accentuatedNodes$ || of([])))
+
+    /**
+     * Manage highlighting and mouse event registration
+     */
+    combineLatest([this._annotationsVisible$, this._highlightedNodes]).pipe(takeUntil(this.destroy$))
+      .subscribe(([show, newHighlighted]) => {
+        if (show) {
+          const oldHighlighted = clone(highlighted)
+
+          // if annotationsVisible is true, enable highlighting
+          for (const charid in newHighlighted) {
+            // if new highlightNode
+            if (newHighlighted.hasOwnProperty(charid)) {
+              if (!highlighted.hasOwnProperty(charid)) {
+                // enable highlighting for this new node
+                this.quillService.highlightNode(parseInt(charid, 10))
+              }
+              // remove from old nodes so that the remaining nodes are the deleted nodes
+              delete oldHighlighted[charid]
+            }
+
+          }
+
+          // for all remaining nodes, i.e. the removed nodes
+          for (const charid in oldHighlighted) {
+            // disable their highlighting
+            if (oldHighlighted.hasOwnProperty(charid)) {
+              this.quillService.unlightNode(parseInt(charid, 10));
+            }
+          }
+          highlighted = newHighlighted;
+
+        } else {
+          // if annotationsVisible is false, disable highlighting
+          for (const charid in highlighted) {
+            if (highlighted.hasOwnProperty(charid)) {
+              this.quillService.unlightNode(parseInt(charid, 10))
+            }
+          }
+          highlighted = {}
+        }
+      })
+
+    /**
+     * Manage accentuation
+     */
+    this._accentuatedNodes$.pipe(takeUntil(this.destroy$))
+      .subscribe(newAccentuated => {
+        const oldAccentuated = clone(accentuated)
+
+        // if annotationsVisible is true, enable accent
+        for (const charid in newAccentuated) {
+          // if new accentuateNode
+          if (newAccentuated.hasOwnProperty(charid)) {
+            if (!accentuated.hasOwnProperty(charid)) {
+              // enable accent for this new node
+              this.quillService.accentuateNode(parseInt(charid, 10))
+            }
+            // remove from old nodes so that the remaining nodes are the deleted nodes
+            delete oldAccentuated[charid]
+          }
+
+        }
+
+        // for all remaining nodes, i.e. the removed nodes
+        for (const charid in oldAccentuated) {
+          // disable their accent
+          if (oldAccentuated.hasOwnProperty(charid)) {
+            this.quillService.unaccentuateNode(parseInt(charid, 10));
+          }
+        }
+        accentuated = newAccentuated;
+      })
+
+    // Subscribe to dom events triggerd by the highlighted nodes
+    this.quillService.highlightClicked$.pipe(takeUntil(this.destroy$)).subscribe((charid) => {
+      this.nodeClick.emit(highlighted[charid])
+    })
+    this.quillService.highlightMouseentered$.pipe(takeUntil(this.destroy$)).subscribe((charid) => {
+      this.nodeMouseenter.emit(highlighted[charid])
+    })
+    this.quillService.highlightMouseleft$.pipe(takeUntil(this.destroy$)).subscribe((charid) => {
+      this.nodeMouseleave.emit(highlighted[charid])
+    })
+  }
+
+
+  initClipboard() {
+    this.quillEditor.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
+      const d = new Delta();
+
+      for (let i = 0; i < node.data.length; i++) {
+        this.quillService.latestId++
+        d.insert(node.data.charAt(i), { charid: this.quillService.latestId });
+      }
+
+      return d
+    });
+  }
+
+
   contentChanged(delta, oldDelta, source) {
 
     // if the user changed the content
-    if (source == 'user') {
+    // if (source == 'user') {
 
-      asyncScheduler.schedule(() => {
+    //   asyncScheduler.schedule(() => {
 
-        const feedback = this.quillService.characterizeContentChange(delta, oldDelta, this.latestId);
+    //     const feedback = this.quillService.characterizeContentChange(delta, oldDelta, this.quillService.latestId);
 
-        const progDialogData: ProgressDialogData = {
-          title: 'Processing entered text',
-          mode$: new BehaviorSubject<ProgressMode>('determinate'),
-          value$: new BehaviorSubject(0)
+    //     /**
+    //      * Progress Dialog
+    //      */
+    //     const progDialogData: ProgressDialogData = {
+    //       title: 'Processing entered text',
+    //       mode$: new BehaviorSubject<ProgressMode>('determinate'),
+    //       value$: new BehaviorSubject(0)
+    //     }
+    //     let progDialog;
+
+    //     const done$ = feedback.latestId$;
+
+
+    //     timer(20).pipe(takeUntil(done$)).subscribe(() => {
+    //       progDialog = this.openProgressDialog(progDialogData)
+    //     })
+
+    //     /**
+    //      * End of Progress Dialog
+    //      */
+
+    //     /**
+    //      * Apply charaterization
+    //      */
+    //     let i = 0;
+    //     feedback.formatText$.pipe(takeUntil(done$)).subscribe((f) => {
+    //       i++;
+    //       this.quillEditor.formatText(f.start, f.length, f.formats, 'api')
+    //       progDialogData.value$.next(Math.round(i / feedback.deltaLength * 100))
+    //     })
+
+
+    //     feedback.latestId$.pipe(first(), takeUntil(this.destroy$)).subscribe(latestId => {
+
+    //       this.quillService.latestId = latestId;
+
+    //       this.updateComponent()
+
+    //       if (progDialog) progDialog.close()
+
+    //     })
+    //   })
+
+    // }
+    let updateComponent = true;
+    if (
+      delta.ops &&
+      delta.ops.length < 5 // exclude large deltas from copy & paste
+    ) {
+      const inserts = delta.ops.filter(op => !!op.insert);
+      if (inserts.length === 1 && inserts[0].insert) {
+        const insertOp = inserts[0];
+
+
+        // is this a new character ?
+        if (insertOp.insert !== '\n' &&
+          (!insertOp.attributes || !insertOp.attributes.charid
+            || insertOp.attributes.charid < this.quillService.latestId
+          )
+        ) {
+          // Add charid if needed
+          updateComponent = false
+          const retainOp = delta.ops.find(op => !!op.retain);
+          const retain = retainOp ? retainOp.retain : 0;
+          this.quillEditor.formatText((retain), 1, { charid: ++this.quillService.latestId }, 'api')
         }
-        let progDialog;
-        const done$ = feedback.progress.pipe(filter(p => p === 1), map(() => true))
-        timer(20).pipe(takeUntil(done$)).subscribe(() => {
-          progDialog = this.openProgressDialog(progDialogData)
-        })
+        // is this a new line break ?
+        else if (insertOp.insert === '\n' &&
+          (!insertOp.attributes || !insertOp.attributes.blockid
+            || insertOp.attributes.blockid <= this.quillService.latestId
+          )
+        ) {
+          // Add blockid if needed
+          updateComponent = false
+          const retain = sum(delta.ops.map(op => op.retain || 0));
+          let index, blockid;
 
-        feedback.progress.pipe(
-          map(n => Math.round(n * 100)),
-          distinct()
-        ).subscribe(percent => {
-          progDialogData.value$.next(percent)
-          // console.log('progress', percent)
-        })
+          if (
+            this.quillService.editor.getLength() > 1
+          ) {
+            index = retain + 1;
+          } else {
+            index = retain;
+          }
+          // exceptional case that the retain is bigger because of line formatting of block
+          // TODO: find a way this works also, if ops[retain - 1] is a character,
+          if (this.quillEditor.editor.delta.ops[retain - 1] &&
+            this.quillEditor.editor.delta.ops[retain - 1].attributes &&
+            insertOp.attributes &&
+            insertOp.attributes.blockid &&
+            this.quillEditor.editor.delta.ops[retain - 1].attributes.blockid === insertOp.attributes.blockid
+          ) {
+            index = retain;
+          }
 
-
-        feedback.result.pipe(
-          tap(() => {
-            progDialogData.mode$.next('indeterminate')
-          })
-        ).subscribe(res => {
-
-          const nodenizeResult = res;
-
-          this.latestId = nodenizeResult.latestId;
-
-          this.quillEditor.updateContents(nodenizeResult.delta)
-
-          this.updateComponent()
-
-          if (progDialog) progDialog.close()
-
-        })
-      })
-
+          if (this.quillService.editor.getLength() > 1) {
+            blockid = ++this.quillService.latestId;
+          } else {
+            blockid = this.quillService.latestId;
+          }
+          this.quillEditor.formatText((index), 1, { blockid }, 'api')
+        }
+      }
     }
+
+    if (updateComponent && !this.initializingContent) this.updateComponent()
 
   };
 
@@ -478,79 +725,12 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   updateContents() {
     this.ops = this.quillEditor.getContents().ops;
     this.quillDoc = {
-      latestId: this.latestId,
+      latestId: this.quillService.latestId,
       ops: this.ops
     }
     this.quillDocChange.emit(this.quillDoc)
   }
 
-
-  /**
-   * called when QuillJs adds some nodes, i.e. when user edits the text
-   * @param
-   */
-  onDomChange($event: MutationRecord): void {
-    // if added nodes
-    if ($event.addedNodes.length) {
-      const node = $event.addedNodes[0] as any;
-      if (node.attributes && node.attributes.charid) {
-
-        if (!this.nodeSubs.has(node)) {
-
-          const id = node.attributes.charid.value;
-
-          const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.pipe(map(nodes => nodes[id])) : observableOf(null);
-
-          const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this._annotationsVisible$, this._chunksToHighlight$, this.creatingAnnotation)
-
-          // subscribe for events of nodehandler
-          this.nodeSubs.set(node, {
-            nh: qnh,
-            subs: [
-              qnh.onMouseEnter.subscribe((nh: QuillNodeHandler) => {
-                this.nodeMouseenter.emit(qnh)
-              }),
-              qnh.onMouseLeave.subscribe((nh: QuillNodeHandler) => {
-                this.nodeMouseleave.emit(qnh)
-              }),
-              qnh.onClick.subscribe((nh: QuillNodeHandler) => {
-                this.nodeClick.emit(qnh)
-                // console.log({ click: nh })
-              }),
-              qnh.onSelectedChange.subscribe((nh: QuillNodeHandler) => {
-                // console.log({ onSelectedChange: nh })
-                this.changeAnnotatedDelta(nh);
-              }),
-            ]
-          })
-        }
-
-      }
-    }
-
-    // if removed nodes
-    if ($event.removedNodes.length) {
-      const node = $event.removedNodes[0] as any;
-      if (node.attributes && node.attributes.charid) {
-        const id = node.attributes.charid.value;
-
-        if (
-          this.nodeSubs.has(node) &&
-          !node.offsetParent // this is a hacky way to find out if the node has really been removed
-        ) {
-          // unsubscribe
-          const nodeSub = this.nodeSubs.get(node);
-          nodeSub.subs.forEach((sub: Subscription) => {
-            sub.unsubscribe()
-          });
-          nodeSub.nh.destroy();
-
-          // delete nodeSub
-          this.nodeSubs.delete(node);
-        }
-      }
-    }
-  }
 
   // registers the on blur method
   registerOnBlur() {
@@ -632,4 +812,74 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
+
+  // /**
+  //  * called when QuillJs adds some nodes, i.e. when user edits the text
+  //  * @param
+  //  */
+  // onDomChange($event: MutationRecord): void {
+  //   // if added nodes
+  //   if ($event.addedNodes.length) {
+  //     const node = $event.addedNodes[0] as any;
+  //     if (node.attributes && node.attributes.charid) {
+
+  //       if (!this.nodeSubs.has(node)) {
+
+  //         const id = node.attributes.charid.value;
+
+  //         const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.pipe(map(nodes => nodes[id])) : observableOf(null);
+
+  //         const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this._annotationsVisible$, this._accentuatedNodes$, this.creatingAnnotation)
+
+  //         // subscribe for events of nodehandler
+  //         this.nodeSubs.set(node, {
+  //           nh: qnh,
+  //           subs: [
+  //             qnh.onMouseEnter.subscribe((nh: QuillNodeHandler) => {
+  //               this.nodeMouseenter.emit(qnh)
+  //             }),
+  //             qnh.onMouseLeave.subscribe((nh: QuillNodeHandler) => {
+  //               this.nodeMouseleave.emit(qnh)
+  //             }),
+  //             qnh.onClick.subscribe((nh: QuillNodeHandler) => {
+  //               this.nodeClick.emit(qnh)
+  //               // console.log({ click: nh })
+  //             }),
+  //             qnh.onSelectedChange.subscribe((nh: QuillNodeHandler) => {
+  //               // console.log({ onSelectedChange: nh })
+  //               this.changeAnnotatedDelta(nh);
+  //             }),
+  //           ]
+  //         })
+  //       }
+
+  //     }
+  //   }
+
+  //   // if removed nodes
+  //   if ($event.removedNodes.length) {
+  //     const node = $event.removedNodes[0] as any;
+  //     if (node.attributes && node.attributes.charid) {
+  //       const id = node.attributes.charid.value;
+
+  //       if (
+  //         this.nodeSubs.has(node) &&
+  //         !node.offsetParent // this is a hacky way to find out if the node has really been removed
+  //       ) {
+  //         // unsubscribe
+  //         const nodeSub = this.nodeSubs.get(node);
+  //         nodeSub.subs.forEach((sub: Subscription) => {
+  //           sub.unsubscribe()
+  //         });
+  //         nodeSub.nh.destroy();
+
+  //         // delete nodeSub
+  //         this.nodeSubs.delete(node);
+  //       }
+  //     }
+  //   }
+  // }
+
+
 }

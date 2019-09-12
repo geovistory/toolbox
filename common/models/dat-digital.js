@@ -1,5 +1,6 @@
 'use strict';
 const Promise = require('bluebird');
+var FlatObjectQueryBuilder = require("../classes/FlatObjectQueryBuilder");
 
 module.exports = function (DatDigital) {
   DatDigital.bulkDelete = function (pks, ctx, cb) {
@@ -31,16 +32,14 @@ module.exports = function (DatDigital) {
 
 
   /**
-   * Returns all version with given pkEntity
-   * @param {*} pkEntity
-   * @param {*} cb
+   * Returns version with given pkEntity and entityVersion
    */
   DatDigital.getVersion = function (pkEntity, entityVersion, context, cb) {
     const accountId = context.req.accessToken.userId;
 
     const params = [pkEntity, accountId];
     if (entityVersion) params.push(entityVersion);
-
+    const q = new FlatObjectQueryBuilder(DatDigital.app.models);
     const sql = `
     WITH namespaces AS (
       SELECT pk_entity pk_namespace
@@ -50,28 +49,14 @@ module.exports = function (DatDigital) {
     ),
      versions AS(
       SELECT
-      pk_entity,
-      entity_version,
-      fk_namespace,
-      metadata,
-      pk_text,
-      quill_doc,
-      string,
-      fk_system_type
-      from data.digital
-       JOIN namespaces n ON n.pk_namespace = digital.fk_namespace
+      ${q.createSelect('t1', 'DatDigital')}
+      from data.digital t1
+       JOIN namespaces n ON n.pk_namespace = t1.fk_namespace
       UNION
       SELECT
-      pk_entity,
-      entity_version,
-      fk_namespace,
-      metadata,
-      pk_text,
-      quill_doc,
-      string,
-      fk_system_type
-      from data.digital_vt
-      JOIN namespaces n ON n.pk_namespace = digital_vt.fk_namespace
+      ${q.createSelect('t2', 'DatDigital')}
+      from data.digital_vt t2
+      JOIN namespaces n ON n.pk_namespace = t2.fk_namespace
     )
     SELECT * FROM versions
     WHERE pk_entity = $1 ${entityVersion ? 'AND entity_version = $3' : ''}

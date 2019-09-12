@@ -58,7 +58,7 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();
 
   @ViewChild(CdkPortal, { static: true }) portal: CdkPortal;
-  @ContentChild(OnActivateTabDirective, /* TODO: check correctness of static flag */ { static: true }) child: OnActivateTabDirective;
+  @ContentChild(OnActivateTabDirective, /* TODO: check correctness of static flag */ { static: false }) child: OnActivateTabDirective;
 
   private host: PanelBodyDirective;
 
@@ -153,10 +153,11 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
         this.sdkStorage.remove(storagePrefix + id)
       } else {
 
-        this.p.setPanels(x.panels, x.uiIdSerial, x.panelSerial, x.focusedPanel
-        )
+        // TODO uncomment the following line in order to activate restoring of tabs from last session.
+        // this.p.setPanels(x.panels, x.uiIdSerial, x.panelSerial, x.focusedPanel)
       }
     })
+
     // Subscribe to the panels until just before the project edit is destroyed
     combineLatest(
       this.p.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$

@@ -1,11 +1,18 @@
-import { ReducerConfigCollection } from "app/core/store/reducer-factory";
+import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
+import { DatDigital } from '../sdk';
 
 export const datRoot = 'dat';
 export const facetteByPk = 'by_namespace';
 
 export const datDefinitions: ReducerConfigCollection = {
   digital: {
-    // facetteByPk,
+    equals: (newItem: DatDigital, oldItem: DatDigital) => {
+      if (!oldItem.quill_doc && newItem.quill_doc) return false;
+      return (
+        newItem.pk_entity === oldItem.pk_entity &&
+        newItem.entity_version === oldItem.entity_version
+      )
+    },
     indexBy: {
       keyInStore: 'pk_entity__entity_version',
       indexByFn: (item) => item.pk_entity.toString() + '_' + item.entity_version.toString()
