@@ -157,22 +157,22 @@ $table-primary: $table-dark; //#50596c !default;
                 color: $table-dark;
             }
             &-pagination {
-                & /deep/ .ngx-pagination .current {
+                & ::ng-deep .ngx-pagination .current {
                     background: $table-grey-lighter;
                     color: $table-dark;
                 }
-                & /deep/ pagination-template>ul {
+                & ::ng-deep pagination-template>ul {
                     -webkit-padding-start: 0;
                     -webkit-margin-before: 7px;
                 }
-                & /deep/ pagination-template>ul>li {
+                & ::ng-deep pagination-template>ul>li {
                     border: 1px solid $table-grey;
                     background: $table-dark;
                 }
-                & /deep/ pagination-template>ul>li.current {
+                & ::ng-deep pagination-template>ul>li.current {
                     border: 1px solid $table-dark;
                 }
-                & /deep/ pagination-template>ul>li>a {
+                & ::ng-deep pagination-template>ul>li>a {
                     color: $table-grey-lighter;
                 }
                 &-wrapper {
@@ -249,20 +249,20 @@ $table-primary: $table-dark; //#50596c !default;
             padding: 4px;
         }
         &-style {
-            & /deep/ .ngx-pagination .current {
+            & ::ng-deep .ngx-pagination .current {
                 background: $table-blue;
             }
-            & /deep/ pagination-template>ul {
+            & ::ng-deep pagination-template>ul {
                 -webkit-padding-start: 0;
                 -webkit-margin-before: 0;
             }
-            & /deep/ pagination-template>ul>li {
+            & ::ng-deep pagination-template>ul>li {
                 border: 1px solid $table-grey;
             }
-            & /deep/ pagination-template>ul>li.current {
+            & ::ng-deep pagination-template>ul>li.current {
                 border: 1px solid $table-dark;
             }
-            & /deep/ pagination-template>ul>li>a {
+            & ::ng-deep pagination-template>ul>li>a {
                 color: $table-dark;
             }
         }
@@ -480,7 +480,7 @@ $table-primary: $table-dark; //#50596c !default;
         font-family: $font-family-base;
         label {
           margin-bottom: 0;
-        } 
+        }
     }
     &-pagination {
         li {
@@ -497,5 +497,5 @@ $table-primary: $table-dark; //#50596c !default;
     }
 }
 
-/* End of adaptions 
+/* End of adaptions
 *********************/

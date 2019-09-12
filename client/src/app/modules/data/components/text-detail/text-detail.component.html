@@ -44,7 +44,7 @@
         [readOnly]="(readOnly$ | async)" [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="annotatedNodes$"
         [accentuatedNodes$]="accentuatedNodes$" [creatingAnnotation]="false"
         (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
-        (nodeMouseleave)="textNodeMouseleave($event)"></gv-quill-edit>
+        (nodeMouseleave)="textNodeMouseleave()"></gv-quill-edit>
 
     </gv-detail-content>
   </as-split-area>
