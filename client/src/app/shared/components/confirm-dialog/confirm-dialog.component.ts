@@ -9,8 +9,9 @@ export interface ConfirmDialogData {
   noBtnColor?: 'primary' | 'warn' | 'accent'
 
   yesBtnText: string;
-  yesBtnColor?: 'primary' | 'warn' | 'accent' 
+  yesBtnColor?: 'primary' | 'warn' | 'accent'
 
+  hideNoButton?: boolean;
 
 }
 

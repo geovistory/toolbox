@@ -10,10 +10,14 @@
       (openRight)="t.setShowRightArea(true); annotationsVisible$.next(true);">
 
       <!--  *ngIf="(readOnly$|async)" -->
-      <gv-version-picker class="d-inline-block" [versionList]="(versions$ | async)"
+      <gv-version-picker class="d-inline-block ml-2" [versionList]="(versions$ | async)"
         [selectedVersion]="(digital$ | async)?.entity_version" (versionChange)="changeVersion($event)">
       </gv-version-picker>
 
+      <div class="ml-3 mat-caption"
+        [ngClass]="{'mat-text-warn':(textLength/maxLength > 0.9), 'text-muted': (textLength/maxLength <= 0.9)}">
+        {{textLength}} / {{maxLength}} characters
+      </div>
       <span class="ml-auto">
         <button class="btn btn-sm btn-link" (click)="annotate()" *ngIf="(showAnnotateBtn$|async)">
           <i class="fa fa-plus" aria-hidden="true"></i> Annotate…
@@ -42,7 +46,7 @@
 
       <gv-quill-edit class="gv-flex-fh gv-quill-borderless" [quillDoc]="quillDoc$ | async"
         [readOnly]="(readOnly$ | async)" [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="annotatedNodes$"
-        [accentuatedNodes$]="accentuatedNodes$" [creatingAnnotation]="false"
+        [accentuatedNodes$]="accentuatedNodes$" [creatingAnnotation]="false" (textLengthChange)="textLength = $event"
         (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
         (nodeMouseleave)="textNodeMouseleave()"></gv-quill-edit>
 

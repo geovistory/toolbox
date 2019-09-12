@@ -45,7 +45,7 @@ export class SettingsListComponent implements OnInit {
             ]
           },
           {
-            title: 'Ontology Settings',
+            title: 'Ontology Settings (advanced)',
             items: [
               {
                 onClickFnName: 'openClassesSettings',

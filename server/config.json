@@ -11,7 +11,7 @@
     },
     "json": {
       "strict": false,
-      "limit": "1000kb"
+      "limit": "2000kb"
     },
     "urlencoded": {
       "extended": true,

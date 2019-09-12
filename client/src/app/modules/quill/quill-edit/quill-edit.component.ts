@@ -47,6 +47,9 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   @Input() accentuatedNodes$: Observable<IndexedCharids<true>>;
   _accentuatedNodes$: Observable<IndexedCharids<true>>
 
+  // Max number of characters
+  @Input() maxLength = 30000;
+
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
   @Output() focus = new EventEmitter<void>()
@@ -91,6 +94,10 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
   // Add styling and behavior of an Input element
   @HostBinding('class.gv-quill-textarea-like') @Input() textareaLike = false;
+
+  // Array of event handlers where key is name of event, and value is the hanlder
+  // Needed for calling .off(...) on destroy (https://quilljs.com/docs/api/#off)
+  eventHandlers: { name: string; handler: any }[] = []
 
   constructor(
     private quillService: QuillService,
@@ -148,17 +155,8 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     // init editor config (https://quilljs.com/docs/configuration/)
     this.initEditorConfig();
 
-    // init node handlers, e.g. to register click event on a node
-    // this.initNodeSubscriptions();
-
     // init the editor
     this.initEditor();
-
-    // register on blur handling
-    this.registerOnBlur()
-
-    // register on focus handling
-    this.registerOnFocus()
 
     // register for text changes
     this.registerOnTextChange();
@@ -178,12 +176,26 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
+  addHandler(name: string, handler) {
+    this.quillEditor.on(name, handler)
+    this.eventHandlers.push({ name, handler })
+  }
+
+  private registerOnTextChange() {
+    this.addHandler('text-change', (delta, oldDelta, source) => {
+      this.contentChanged(delta, oldDelta, source);
+      this.textLengthChange.emit((this.quillEditor.getLength() - 1))
+    })
+  }
 
   private registerOnSelectionChange() {
 
-    this.quillEditor.on('selection-change', (range, oldRange, source) => {
+    this.addHandler('selection-change', (range, oldRange, source) => {
       if (range) {
+        this.focus.emit()
+
         if (range.length == 0) {
+
           // console.log('User cursor is on', range.index);
           this.selectedDeltaChange.emit(null);
         } else {
@@ -191,6 +203,8 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
           this.selectedDeltaChange.emit(delta);
         }
       } else {
+        this.blur.emit()
+
         // console.log('Cursor not in the editor');
         this.selectedDeltaChange.emit(null);
 
@@ -211,19 +225,14 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     return ops;
   }
 
-  private registerOnTextChange() {
-    this.quillEditor.on('text-change', (delta, oldDelta, source) => {
-      this.contentChanged(delta, oldDelta, source);
-      this.textLengthChange.emit((this.quillEditor.getLength() - 1))
-    });
-  }
+
 
 
   private initEditor() {
     const cb = () => {
       this.updateComponent()
     }
-    this.quillEditor = this.quillService.createEditor(this.editorElem.nativeElement, this.editorConfig, cb);
+    this.quillEditor = this.quillService.createEditor(this.editorElem.nativeElement, this.editorConfig, cb, this.maxLength);
   }
 
   private initEditorConfig() {
@@ -378,13 +387,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
 
 
-
-    // // For empty documents
-    // if (this.ops.length === 0) {
-    //   this.quillEditor.format('blockid', this.quillService.latestId)
-    // }
-
-
   }
 
   /**
@@ -445,24 +447,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     this.editorConfig.theme = 'bubble';
     // disable all formatting (no bold, italic etc.)
     this.editorConfig.formats = ['charid', 'blockid'];
-    // // disable tabs and linebreak keys
-    // this.editorConfig['modules'] = {
-    //   ...this.editorConfig['modules'],
-    //   keyboard: {
-    //     bindings: {
-    //       tab: {
-    //         key: 9, // Tab Key
-    //         handler: function () {
-    //         }
-    //       },
-    //       enter: {
-    //         key: 13, // Enter Key
-    //         handler: function () {
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
   }
 
   /**
@@ -571,73 +555,43 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
 
   initClipboard() {
-    this.quillEditor.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
+    // this.quillEditor.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
+    // const d = new Delta();
+
+
+
+    //   return d
+    // });
+
+    this.quillEditor.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta: Delta): Delta => {
       const d = new Delta();
-
-      for (let i = 0; i < node.data.length; i++) {
-        this.quillService.latestId++
-        d.insert(node.data.charAt(i), { charid: this.quillService.latestId });
+      if (delta.ops.length > 0) {
+        for (let index = 0; index < delta.ops.length; index++) {
+          const op = delta.ops[index];
+          if (op.insert && typeof op.insert === 'string') {
+            for (let i = 0; i < op.insert.length; i++) {
+              const char = op.insert.charAt(i);
+              if (char !== '\n') {
+                d.insert(char, { ...op.attributes, charid: ++this.quillService.latestId });
+              } else {
+                d.insert(char, { ...op.attributes, blockid: ++this.quillService.latestId })
+              }
+            }
+          } else {
+            d.ops.push(op)
+          }
+        }
       }
-
-      return d
+      return d;
     });
   }
 
 
   contentChanged(delta, oldDelta, source) {
 
-    // if the user changed the content
-    // if (source == 'user') {
-
-    //   asyncScheduler.schedule(() => {
-
-    //     const feedback = this.quillService.characterizeContentChange(delta, oldDelta, this.quillService.latestId);
-
-    //     /**
-    //      * Progress Dialog
-    //      */
-    //     const progDialogData: ProgressDialogData = {
-    //       title: 'Processing entered text',
-    //       mode$: new BehaviorSubject<ProgressMode>('determinate'),
-    //       value$: new BehaviorSubject(0)
-    //     }
-    //     let progDialog;
-
-    //     const done$ = feedback.latestId$;
-
-
-    //     timer(20).pipe(takeUntil(done$)).subscribe(() => {
-    //       progDialog = this.openProgressDialog(progDialogData)
-    //     })
-
-    //     /**
-    //      * End of Progress Dialog
-    //      */
-
-    //     /**
-    //      * Apply charaterization
-    //      */
-    //     let i = 0;
-    //     feedback.formatText$.pipe(takeUntil(done$)).subscribe((f) => {
-    //       i++;
-    //       this.quillEditor.formatText(f.start, f.length, f.formats, 'api')
-    //       progDialogData.value$.next(Math.round(i / feedback.deltaLength * 100))
-    //     })
-
-
-    //     feedback.latestId$.pipe(first(), takeUntil(this.destroy$)).subscribe(latestId => {
-
-    //       this.quillService.latestId = latestId;
-
-    //       this.updateComponent()
-
-    //       if (progDialog) progDialog.close()
-
-    //     })
-    //   })
-
-    // }
     let updateComponent = true;
+
+
     if (
       delta.ops &&
       delta.ops.length < 5 // exclude large deltas from copy & paste
@@ -698,6 +652,11 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
+    const length = this.quillEditor.editor.delta.ops.length - 1;
+    if (length > this.maxLength) {
+      this.quillEditor.history.undo()
+    }
+
     if (updateComponent && !this.initializingContent) this.updateComponent()
 
   };
@@ -732,26 +691,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
 
-  // registers the on blur method
-  registerOnBlur() {
-    // this.editorElem.nativeElement.firstChild.onblur = () => {
-    //   this.blur.emit()
-    // }
-    this.quillEditor.on('selection-change', (range, oldRange, source) => {
-      if (!range) {
-        this.blur.emit()
-      }
-    });
-  }
-
-  // registers the on focus method
-  registerOnFocus() {
-    this.quillEditor.on('selection-change', (range, oldRange, source) => {
-      if (range) {
-        this.focus.emit()
-      }
-    });
-  }
 
 
   changeAnnotatedDelta(qnh: QuillNodeHandler) {
@@ -809,77 +748,11 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.eventHandlers.forEach(d => {
+      this.quillEditor.off(d.name, d.handler)
+    })
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
-
-  // /**
-  //  * called when QuillJs adds some nodes, i.e. when user edits the text
-  //  * @param
-  //  */
-  // onDomChange($event: MutationRecord): void {
-  //   // if added nodes
-  //   if ($event.addedNodes.length) {
-  //     const node = $event.addedNodes[0] as any;
-  //     if (node.attributes && node.attributes.charid) {
-
-  //       if (!this.nodeSubs.has(node)) {
-
-  //         const id = node.attributes.charid.value;
-
-  //         const annotatedEntities$ = this.annotatedNodes$ ? this.annotatedNodes$.pipe(map(nodes => nodes[id])) : observableOf(null);
-
-  //         const qnh = new QuillNodeHandler(this.renderer, node, annotatedEntities$, this._annotationsVisible$, this._accentuatedNodes$, this.creatingAnnotation)
-
-  //         // subscribe for events of nodehandler
-  //         this.nodeSubs.set(node, {
-  //           nh: qnh,
-  //           subs: [
-  //             qnh.onMouseEnter.subscribe((nh: QuillNodeHandler) => {
-  //               this.nodeMouseenter.emit(qnh)
-  //             }),
-  //             qnh.onMouseLeave.subscribe((nh: QuillNodeHandler) => {
-  //               this.nodeMouseleave.emit(qnh)
-  //             }),
-  //             qnh.onClick.subscribe((nh: QuillNodeHandler) => {
-  //               this.nodeClick.emit(qnh)
-  //               // console.log({ click: nh })
-  //             }),
-  //             qnh.onSelectedChange.subscribe((nh: QuillNodeHandler) => {
-  //               // console.log({ onSelectedChange: nh })
-  //               this.changeAnnotatedDelta(nh);
-  //             }),
-  //           ]
-  //         })
-  //       }
-
-  //     }
-  //   }
-
-  //   // if removed nodes
-  //   if ($event.removedNodes.length) {
-  //     const node = $event.removedNodes[0] as any;
-  //     if (node.attributes && node.attributes.charid) {
-  //       const id = node.attributes.charid.value;
-
-  //       if (
-  //         this.nodeSubs.has(node) &&
-  //         !node.offsetParent // this is a hacky way to find out if the node has really been removed
-  //       ) {
-  //         // unsubscribe
-  //         const nodeSub = this.nodeSubs.get(node);
-  //         nodeSub.subs.forEach((sub: Subscription) => {
-  //           sub.unsubscribe()
-  //         });
-  //         nodeSub.nh.destroy();
-
-  //         // delete nodeSub
-  //         this.nodeSubs.delete(node);
-  //       }
-  //     }
-  //   }
-  // }
-
 
 }
