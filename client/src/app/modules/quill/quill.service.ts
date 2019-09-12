@@ -8,9 +8,12 @@ import { asapScheduler, asyncScheduler, BehaviorSubject, Observable, Subject } f
 import { IndexedCharids } from './quill-edit/quill-edit.component';
 import { DeltaI, Op, Ops } from './quill.models';
 import { Blot } from 'parchment/dist/src/blot/abstract/blot';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 
 const Inline = Quill.import('blots/inline');
 const Block = Quill.import('blots/block');
+const OriginalClipboard = Quill.import('modules/clipboard');
 
 const OriginalTextBlot = Quill.import('blots/text');
 
@@ -75,6 +78,11 @@ export class QuillService {
   // emits the charid of the mouseleft highlighted node
   highlightMouseleft$ = new Subject<number>();
 
+
+  // max number of characters allowed in text
+  maxLength = Number.POSITIVE_INFINITY;
+
+  clipboard;
   nodeBlot;
   textBlot;
   containerBlot;
@@ -82,14 +90,19 @@ export class QuillService {
   latestId: number;
   updateContents: () => void;
 
-  constructor(private renderer: Renderer2) {
+  constructor(
+    private renderer: Renderer2,
+    private dialog: MatDialog
+  ) {
 
+    this.clipboard = this.extendClipboard(this)
+    this.Quill.register('modules/clipboard', this.clipboard, true);
 
     this.nodeBlot = this.createNodeBlot(this)
-    this.Quill.register(this.nodeBlot, false);
+    this.Quill.register(this.nodeBlot, true);
 
     this.textBlot = this.createTextBlot(this)
-    this.Quill.register(this.textBlot, false);
+    this.Quill.register(this.textBlot, true);
 
     // this.Quill.register(this.createInlineBlot(this), false);
     // this.Quill.register(this.createBlockBlot(this), false);
@@ -98,73 +111,71 @@ export class QuillService {
 
   }
 
+  extendClipboard = (service: QuillService) => {
+    return class Clipboard extends OriginalClipboard {
+
+
+      onPaste(e) {
+
+        if (e.defaultPrevented || !this.quill.isEnabled()) return;
+        let range = this.quill.getSelection();
+        let delta = new Delta().retain(range.index);
+        let scrollTop = this.quill.scrollingContainer.scrollTop;
+        this.container.focus()
+        this.quill.selection.update('silent');
+
+        this.getPastedLength(e, (pastedLength) => {
+          const replacedLength = range.length;
+          const newLength = pastedLength + this.quill.getLength() - 1 - replacedLength;
+
+          // Check length
+          if (newLength <= service.maxLength) {
+            // Length is ok, proceed
+            setTimeout(() => {
+              delta = delta.concat(this.convert()).delete(range.length);
+              this.quill.updateContents(delta, 'user');
+              // range.length contributes to delta.length()
+              this.quill.setSelection(delta.length() - range.length, 'silent');
+              this.quill.scrollingContainer.scrollTop = scrollTop;
+              this.quill.focus();
+            }, 1);
+          } else {
+            // To long, open dialog
+            const dialogData: MatDialogConfig<ConfirmDialogData> = {
+              data: {
+                title: 'Pasted text too long. Sorry.',
+                paragraphs: [
+                  `This text is limited to ${service.maxLength} characters, while:`,
+                  `${pastedLength} (pasted) + ${this.quill.getLength() - 1} (existing) - ${replacedLength} (replaced) = ${newLength} characters`
+                ],
+                hideNoButton: true,
+                noBtnText: '',
+                yesBtnText: 'Close',
+                yesBtnColor: 'primary'
+              }
+            }
+            service.dialog.open(ConfirmDialogComponent, dialogData)
+            this.container.innerHTML = '';
+          }
+        })
+
+
+      }
+
+      getPastedLength(e: ClipboardEvent, callback) {
+        if (e && e.clipboardData && e.clipboardData.getData && e.clipboardData.getData('Text')) {
+          callback(e.clipboardData.getData('Text').length)
+        } else {
+          setTimeout(() => {
+            callback(this.container.innerText.length)
+          }, 1)
+        }
+      }
+
+    }
+  }
   createTextBlot = (service: QuillService) => {
     return class TextBlot extends OriginalTextBlot {
-
-      // static create(value: string): Text {
-      //   return document.createTextNode(value);
-      // }
-
-      // constructor(node: Node, supressCharId: boolean = false) {
-      //   super(node);
-      //   this.text = this.statics.value(this.domNode);
-
-      //   // add a charid if there is no parent
-      //   // if (!this.parent && !supressCharId) this.addCharid();
-      // }
-
-      /**
-      * Make this text blot a child of a new NodeBlot with a charid
-      */
-      // addCharid() {
-      //   const scroll = service.editor.editor.scroll
-      //   const cursorPos: number = service.editor.getSelection().index;
-      //   service.latestId++;
-
-      //   // // Update the Delta (model)
-      //   // (service.editor.editor.delta.ops as Ops)
-      //   //   .splice(offset, 0, { insert: this.text, attributes: { charid: service.latestId } });
-
-      //   /*
-      //   * Update the DOM (view)
-      //   */
-      //   // Get the parent Blot
-      //   const parentBlot = this.domNode.parentElement.__blot.blot;
-      //   // Get the next Blot
-      //   const next = null; // ;
-      //   // Create Node Blot
-      //   const newNodeBlot = Registry.create('charid', service.latestId);
-      //   // Create Node Blot suppressing the adding of a charid
-      //   const newTextBlot = new service.textBlot(service.textBlot.create(this.text), true);
-      //   // Append this TextBlot to NodeBlot
-      //   newNodeBlot.appendChild(newTextBlot);
-      //   // Insert Node Blot into parent Blot and before next Blot
-      //   newNodeBlot.insertInto(parentBlot, next)
-
-      //   this.domNode.data = '';
-      //   this.text = '';
-
-      //   setTimeout(() => {
-      //     const offset = this.offset(scroll);
-
-      //     // Update the cursor position
-      //     const cursor: number = service.editor.getSelection().index;
-      //     service.editor.setSelection(cursor + 1);
-
-      //     // Remove this from DOM
-      //     this.remove()
-      //   });
-
-
-
-      // }
-
-      // private getParentBlot() {
-      //   // const recursiveQuery = (element) => {
-      //   //   element.
-      //   // }
-      //   // recursiveQuery(this.domNode.parentElement)
-      // }
 
       splitChars(mutations: MutationRecord[]) {
         const mutation = mutations[0]
@@ -176,37 +187,41 @@ export class QuillService {
         let newText;
 
 
-        if (updateType === 'after') {
-          newText = newValue.charAt(1);
-          offset++;
-        } else if (updateType === 'before') {
-          newText = newValue.charAt(0);
+        if (service.editor.getLength() <= service.maxLength) {
+
+          if (updateType === 'after') {
+            newText = newValue.charAt(1);
+            offset++;
+          } else if (updateType === 'before') {
+            newText = newValue.charAt(0);
+          }
+
+
+          // Update the DOM (view)
+          this.parent.addNodeBlot(newText, updateType)
+          this.domNode.data = oldValue;
+
+          // Update the blot (controller)
+          this.text = oldValue;
+
+
+          // Update the editor (delta and history)
+          service.editor.scroll.update('user')
+
+          // Update the cursor position
+          service.editor.setSelection(offset + 1)
+
+        } else {
+
+          // Update the DOM (view)
+          this.domNode.data = oldValue;
+
+          // Update the blot (controller)
+          this.text = oldValue;
+
+          // Update the cursor position
+          service.editor.setSelection(offset + 1)
         }
-
-
-        // Update the DOM (view)
-        this.parent.addNodeBlot(newText, updateType)
-        this.domNode.data = oldValue;
-
-        // Update the blot (controller)
-        this.text = oldValue;
-
-
-        // Update the editor (delta and history)
-        service.editor.scroll.update('user')
-
-        // Update the cursor position
-        service.editor.setSelection(offset + 1)
-        // if (offset !== 1)
-        // else {
-        //   setTimeout(() => {
-        //     service.editor.setSelection(offset + 1)
-        //   })
-        // }
-
-        // Trigger updateContents event for the exceptional case that
-        // text-change event is not triggered
-        // if (offset === 1) service.updateContents();
 
       }
 
@@ -646,8 +661,9 @@ export class QuillService {
     }
   }
 
-  createEditor = (el, config, updateContents) => {
-    this.editor = new this.Quill(el, config)
+  createEditor = (el, editorConfig, updateContents, maxLength) => {
+    this.maxLength = maxLength
+    this.editor = new this.Quill(el, editorConfig)
     this.updateContents = updateContents;
     return this.editor
   }
@@ -658,6 +674,7 @@ export class QuillService {
     const SILENT = 'silent';
     const _this = this;
     return function (range, context) {
+
       const lineFormats = Object.keys(context.format).reduce(
         (formats, format) => {
           if (
@@ -689,71 +706,5 @@ export class QuillService {
     }
   }
 
-  // readonly SEPARATOR_REGEX = /[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]/
-  // readonly BEGINING_SEPARATOR = /^[^\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,1}/
-  // readonly BEGINING_WORD = /^[\p{Sc}\p{So}\p{Mn}\p{P}\p{Z}À-ÿ\w]{0,}/
 
-  // /**
-  //  * Blot factories
-  //  */
-  // createHighlightBlot = (service: QuillService) => {
-  //   return class HighlightBlot extends Inline {
-
-  //     static blotName = 'highlight';
-  //     static tagName = 'span';
-
-  //     clickFunction;
-
-
-  //     static create(value: number[]) {
-  //       const node = super.create();
-  //       node.setAttribute('highlight', value);
-  //       return node;
-  //     }
-
-  //     static formats(node) {
-  //       return node.getAttribute('highlight');
-  //     }
-
-
-  //     remove() {
-  //       if (this.domNode.parentNode != null) {
-  //         this.domNode.removeEventListener('click', this.clickFunction)
-  //         this.domNode.parentNode.removeChild(this.domNode);
-  //       }
-  //       this.detach();
-  //     }
-
-  //     constructor(public domNode: Node) {
-  //       super(domNode)
-  //       this.clickFunction = service.onHighlightClick(this)
-  //       domNode.addEventListener('click', this.clickFunction)
-  //     }
-  //   }
-  // }
-  // private onHighlightClick = (blot) => (event) => {
-  //   console.log(event, blot)
-  // }
-
-
-}
-
-function makeBlot(node: Node): Blot {
-  let blot = Registry.find(node);
-  if (blot == null) {
-    try {
-      blot = Registry.create(node);
-    } catch (e) {
-      blot = Registry.create(Registry.Scope.INLINE);
-      [].slice.call(node.childNodes).forEach(function (child: Node) {
-        // @ts-ignore
-        blot.domNode.appendChild(child);
-      });
-      if (node.parentNode) {
-        node.parentNode.replaceChild(blot.domNode, node);
-      }
-      blot.attach();
-    }
-  }
-  return blot;
 }

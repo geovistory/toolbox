@@ -77,6 +77,11 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   accentuatedNodes$ = new BehaviorSubject<IndexedCharids<true>>([]);
   chunksToHighlightInList$ = new BehaviorSubject<ChunksPks>([]);
 
+  // number of characters of text
+  textLength: number;
+  // max number of characters
+  maxLength = 30000;
+
   // TODO check if needed
   readOnly$;
   listOf: MentioningListOf;

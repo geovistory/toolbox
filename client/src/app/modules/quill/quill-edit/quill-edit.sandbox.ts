@@ -6,13 +6,15 @@ import { QuillDoc } from '../quill.models';
 import { QuillEditComponent, IndexedCharids } from './quill-edit.component';
 import { textBüchel, _33095characters, wikiRats } from './quill-edit.sandbox.mock';
 import { ChangeDetectorRef } from '../../../../../node_modules/@angular/core';
+import { ConfirmDialogModule } from 'app/shared/components/confirm-dialog/confirm-dialog.module';
 
 
 
 export default sandboxOf(QuillEditComponent, {
   imports: [
     DomChangeModule,
-    QuillModule
+    QuillModule,
+    ConfirmDialogModule
   ],
   providers: [
     ChangeDetectorRef
@@ -38,12 +40,70 @@ export default sandboxOf(QuillEditComponent, {
         </div>
     `
   })
-  .add('Quill-Edit | New text ', {
+  .add('Quill-Edit | Max Length 5', {
     context: {
       blurCount: 0,
       quillDoc: {
         latestId: 7,
         contents: {}
+      }
+    },
+    template: `
+        <div class="container">
+            <div class="row">
+                <div class="col-6">
+                    <gv-quill-edit [quillDoc]="quillDoc" [maxLength]="5"
+                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"  (textLengthChange)="length = $event"></gv-quill-edit>
+                </div>
+                <div class="col-6 font-sm" style="height:500px;">
+                    <p>
+                      Characters: {{length}} / 5
+                    </p>
+                    <strong>
+                    Latest Token Id: {{quillDoc.latestId}}
+                    </strong>
+                    <br>
+
+                    <strong>
+                    HTML:
+                    </strong>
+                    <br>
+                    <pre>
+                    {{html}}
+                    </pre>
+
+                    <strong>
+                    Blur Count: {{blurCount}}
+                    </strong>
+                    <br>
+                    <strong>
+                    Blur Count: {{blurCount}}
+                    </strong>
+                    <br>
+
+                    <strong>
+                    JSON:
+                    </strong>
+
+                    <pre>
+                    {{quillDoc | json:2}}
+                    </pre>
+                </div>
+            </div>
+        </div>
+        `
+  })
+  .add('Quill-Edit | New text ', {
+    context: {
+      blurCount: 0,
+      quillDoc: {
+        latestId: 1,
+        contents: {
+          'insert': '\n',
+          'attributes': {
+            blockid: 1
+          }
+        }
       }
     },
     template: `
