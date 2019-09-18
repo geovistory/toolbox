@@ -14,6 +14,6 @@
 
 
 <div *ngIf="(t.showCreateRole$ | async)">
-  <gv-create-role-form [listDefinition]="t.showCreateRole$ | async"
-    [pkEntity]="pkEntity$ | async" #c></gv-create-role-form>
+  <gv-form-create-role [listDefinition]="t.showCreateRole$ | async"
+    [pkEntity]="pkEntity$ | async" #c></gv-form-create-role>
 </div>

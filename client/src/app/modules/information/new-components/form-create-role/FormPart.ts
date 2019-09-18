@@ -8,7 +8,7 @@ import { ListDefinition } from '../properties-tree/properties-tree.models';
 import { MergeDef } from './form-create-role.component';
 
 /**
- * Factory for an array of form controls and
+ * Factory for a part of the form that can contain multiple FormItems
  */
 export class FormPart {
   this$ = new BehaviorSubject(this)
@@ -24,6 +24,16 @@ export class FormPart {
 
   public items: FormItem[] = []
 
+  /**
+   *
+   * @param formGroup the root form group
+   * @param title the title of this form part
+   * @param listDefinitions the listDefinitions, needed to create FormItems
+   * @param initVal the initial value for this form part
+   * @param required wgheter or not a value of this formPart is required
+   * @param resultTemplate TODO: this is probably on the wrong level, belongs to the parent instead
+   * @param mergeDef TODO: this is probably on the wrong level, belongs to the parent instead
+   */
   constructor(
     public formGroup: FormGroup,
     public title: string,
@@ -31,7 +41,7 @@ export class FormPart {
     public initVal: FormPartInitValue,
     public resultTemplate,
     public mergeDef: MergeDef,
-    public required = true
+    public required = true,
   ) {
     // Q: is there an initial value
     if (this.initVal && this.initVal.initListDefinition) {

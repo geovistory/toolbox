@@ -1,0 +1,48 @@
+<!-- <div class="mat-caption text-muted">level {{formArrayFactory.level}} {{formArrayFactory.factoryType}}
+  {{formArrayFactory?.config.placeholder}}
+  isList {{formArrayFactory?.config.isList}}
+  listType
+  {{ formArrayFactory?.config?.data.fieldDefinition.listType}}
+
+  <span *ngIf="formArrayFactory?.config.required">*</span>
+
+  <span>
+    {{ formArrayFactory?.children.length}}/ {{formArrayFactory?.config.maxLength | json}}
+  </span>
+
+</div> -->
+<div class="gv-full-with" *ngIf="showTitle">
+  <div class="left-col">
+    <div class="gv-ellipsis mat-h4 m-0 mat-text-secondary">
+      {{formArrayFactory?.config.placeholder}}
+    </div>
+  </div>
+  <div class="right-col" *ngIf="showAddBtn">
+    <button mat-icon-button (click)="add()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>
+<mat-divider *ngIf="showTitle" class="mb-3"></mat-divider>
+
+
+<div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with"
+  [ngStyle]="{'padding-left.px': paddingLeft }">
+
+  <mat-divider *ngIf="i > 0"></mat-divider>
+
+  <gv-form-array *ngIf="child.factoryType==='array'" [formArrayFactory]="child" class="left-col"></gv-form-array>
+
+  <!-- Control as leaf node of nested form-->
+  <gv-form-control *ngIf="child.factoryType === 'control'" [formControlFactory]="child" class="left-col">
+  </gv-form-control>
+
+  <button mat-button class="right-col" *ngIf="showRemoveBtn" (click)="remove(i)">
+    <mat-icon>remove</mat-icon>
+  </button>
+
+</div>
+
+<div *ngIf="showTitle && formArrayFactory?.children.length > 0" class="mb-5">
+
+</div>

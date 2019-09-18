@@ -110,6 +110,11 @@ button:focus {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+// https://stackblitz.com/edit/typescript-zozfey
+.gv-full-with {
+  display: flex;
+  flex-direction: row;
+}
 
 .gv-ellipsis {
   white-space: nowrap;
@@ -1175,7 +1180,7 @@ gv-timeline.gv-timeline-dark {
 
 .ql-editor {
   [highlight] {
-    background-color: $gv-color-highlighted
+    background-color: $gv-color-highlighted;
   }
 }
 
@@ -1433,7 +1438,6 @@ gv-map {
   border: 3px solid #dcdede95;
   border-radius: $btn-border-radius-lg;
 }
-
 
 /**************************
 * Ngx easy table vertical scroll
@@ -1954,8 +1958,12 @@ $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
   color: mat-color($app-warn);
 }
 
-.mat-text-gray {
-  color: mat-color($app-warn);
+$foreground: map-get($app-theme, foreground);
+.mat-text-disabled {
+  color: mat-color($foreground, disabled-text);
+}
+.mat-text-secondary {
+  color: mat-color($foreground, secondary-text);
 }
 
 .mat-bg-primary {
@@ -2028,7 +2036,7 @@ button {
  * Highlighting
  ***************************/
 
- .gv-quill-text-highlight {
+.gv-quill-text-highlight {
   background-color: hsla(271, 68%, 80%, 0.5);
 }
 .gv-quill-text-highlight:hover {

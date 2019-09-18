@@ -1,0 +1,14 @@
+<!-- <div class="mat-caption text-muted">level {{formGroupFactory.level}} {{formGroupFactory.factoryType}}
+  {{formGroupFactory?.config.placeholder}}</div> -->
+
+<!-- Array as intermediate node of nested form-->
+
+<h3>
+  Add {{formGroupFactory?.childConfig.placeholder}}
+</h3>
+
+<div *ngIf="formGroupFactory.child.factoryType === 'array'" [formGroup]="formGroupFactory.control">
+  <div formArrayName="childControl">
+    <gv-form-array [formArrayFactory]="formGroupFactory.child"></gv-form-array>
+  </div>
+</div>

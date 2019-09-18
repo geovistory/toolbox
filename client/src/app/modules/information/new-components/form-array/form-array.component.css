@@ -1,0 +1,23 @@
+.left-col {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  flex: 1 1 0;
+  /* background: #6EAFF7; */
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.right-col {
+  display: flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.right-col>.mat-button,
+.right-col.mat-button {
+  padding: 0 5px;
+  min-width: 40px;
+  padding-right: 5px;
+}

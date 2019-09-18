@@ -1,7 +1,7 @@
 import { sandboxOf } from 'angular-playground';
 
 import { Information2Module } from '../../information.module';
-import { CreateRoleFormComponent } from './create-role-form.component';
+import { FormCreateRoleComponent } from './form-create-role.component';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { ListDefinition } from '../properties-tree/properties-tree.models';
 
@@ -171,14 +171,14 @@ const listDefPresence: ListDefinition = {
 };
 
 
-export default sandboxOf(CreateRoleFormComponent, {
+export default sandboxOf(FormCreateRoleComponent, {
   declareComponent: false,
   imports: [
     InitStateModule,
     Information2Module
   ]
 })
-  .add('Create Role Form | Spelling ', {
+  .add('Form Create Role | Spelling ', {
     context: {
       pkEntity: 82537,
       listDefinition: listDefSpelling,
@@ -189,7 +189,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
                 <form #f="ngForm">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
                 </form>
             </div>
             <div>
@@ -206,7 +206,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | Language ', {
+  .add('Form Create Role | Language ', {
     context: {
       pkEntity: 82537,
       listDefinition: listDefLanguage,
@@ -217,7 +217,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
                 <form #f="ngForm">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
                 </form>
             </div>
             <div>
@@ -234,7 +234,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | Place ', {
+  .add('Form Create Role | Place ', {
     context: {
       pkEntity: 82537,
       listDefinition: listDefPlace,
@@ -245,7 +245,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
                 <form #f="ngForm">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
                 </form>
             </div>
             <div>
@@ -262,7 +262,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | Had Departure Place', {
+  .add('Form Create Role | Had Departure Place', {
     context: {
       pkEntity: 150724,
       listDefinition: listDefDeparturePlace,
@@ -273,7 +273,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
                 <form #f="ngForm">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
                 </form>
             </div>
             <div>
@@ -290,7 +290,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | Had Participants (Domain PeIt & Range TeEn !!)', {
+  .add('Form Create Role | Had Participants (Domain PeIt & Range TeEn !!)', {
     context: {
       pkEntity: 150724,
       listDefinition: listDefHadParticipants,
@@ -301,7 +301,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
                 <form #f="ngForm">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
                 </form>
             </div>
             <div>
@@ -318,7 +318,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | Appellation use for language ', {
+  .add('Form Create Role | Appellation use for language ', {
     context: {
       pkEntity: 299923,
       listDefinition: listDefAppellationUse,
@@ -328,7 +328,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <gv-init-state [projectFromApi]="24" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
             </div>
             <div>
               <p>Form.valid: {{c?.formGroup?.valid | json}}</p>
@@ -344,7 +344,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | Appellation use for language of Ship Voyage ', {
+  .add('Form Create Role | Appellation use for language of Ship Voyage ', {
     context: {
       pkEntity: 150723,
       listDefinition: listDefAppellationUseOfTeEn,
@@ -354,7 +354,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <gv-init-state [projectFromApi]="24" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
             </div>
             <div>
               <p>Form.valid: {{c?.formGroup?.valid | json}}</p>
@@ -370,7 +370,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | Birth ', {
+  .add('Form Create Role | Birth ', {
     context: {
       pkEntity: 82129,
       listDefinition: listDefBirth,
@@ -380,7 +380,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <gv-init-state [projectFromApi]="24" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
             </div>
             <div>
               <p>Form.valid: {{c?.formGroup?.valid | json}}</p>
@@ -397,7 +397,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         </div>`
   })
 
-  .add('Create Role Form | Presence ', {
+  .add('Form Create Role | Presence ', {
     context: {
       pkEntity: 82129,
       listDefinition: listDefPresence,
@@ -407,7 +407,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <gv-init-state [projectFromApi]="24" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
             </div>
             <div>
               <p>Form.valid: {{c?.formGroup?.valid | json}}</p>
@@ -423,7 +423,7 @@ export default sandboxOf(CreateRoleFormComponent, {
             </div>
         </div>`
   })
-  .add('Create Role Form | TextProperty ', {
+  .add('Form Create Role | TextProperty ', {
     context: {
       pkEntity: 82129,
       listDefinition: listDefTextProperty,
@@ -433,7 +433,7 @@ export default sandboxOf(CreateRoleFormComponent, {
         <gv-init-state [projectFromApi]="24" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex">
-                  <gv-create-role-form [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-create-role-form>
+                  <gv-form-create-role [listDefinition]="listDefinition" [pkEntity]="pkEntity" #c></gv-form-create-role>
             </div>
             <div>
               <p>Form.valid: {{c?.formGroup?.valid | json}}</p>

@@ -1,0 +1,12 @@
+<span *ngIf="formFactory?.formGroup">
+
+  <form [formGroup]="formFactory?.formGroup">
+    <gv-form-group [formGroupFactory]="formFactory.formGroupFactory"></gv-form-group>
+  </form>
+
+  <button mat-flat-button color="primary" [disabled]="submitted && formFactory?.formGroup.invalid" (click)="submit()">Create
+  </button>
+
+  <button mat-button type="button" class="ml-2">Cancel</button>
+
+</span>

@@ -123,7 +123,7 @@ import { InformationRoutingModule } from './information-routing.module';
 import { AddRoleComponent } from './new-components/add-role/add-role.component';
 import { ChooseClassDialogComponent } from './new-components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './new-components/classes-and-types-select/classes-and-types-select.component';
-import { CreateRoleFormComponent } from './new-components/create-role-form/create-role-form.component';
+import { FormCreateRoleComponent } from './new-components/form-create-role/form-create-role.component';
 import { CtrlAppellationComponent } from './new-components/ctrl-appellation/ctrl-appellation.component';
 import { CreateEntityModalComponent } from './new-components/ctrl-entity/create-entity-modal/create-entity-modal.component';
 import { CtrlEntityComponent } from './new-components/ctrl-entity/ctrl-entity.component';
@@ -196,7 +196,11 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-
+import { FormCreateEntityComponent } from './new-components/form-create-entity/form-create-entity.component';
+import { FormFactoryModule } from '../form-factory/form-factory.module';
+import { FormGroupComponent } from './new-components/form-group/form-group.component';
+import { FormArrayComponent } from './new-components/form-array/form-array.component';
+import { FormControlComponent } from './new-components/form-control/form-control.component';
 
 
 @NgModule({
@@ -205,7 +209,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    // GvAngularCesiumModule,
+    FormFactoryModule,
     AngularCesiumModule,
     AngularSplitModule,
     DetailContentModule,
@@ -384,7 +388,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     LeafItemListComponent,
     LeafItemAddListComponent,
     ChooseClassDialogComponent,
-    CreateRoleFormComponent,
+    FormCreateRoleComponent,
 
     CtrlAppellationComponent,
     CtrlLanguageComponent,
@@ -398,6 +402,10 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     ClassesAndTypesSelectComponent,
     CtrlTypeComponent,
     TypeItemComponent,
+    FormCreateEntityComponent,
+    FormGroupComponent,
+    FormArrayComponent,
+    FormControlComponent
   ],
   providers: [
 
@@ -560,7 +568,7 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     PeItLabelComponent,
     ClassInfoComponent,
     EditorHeaderComponent,
-    CreateRoleFormComponent,
+    FormCreateRoleComponent,
     CtrlAppellationComponent,
     CtrlLanguageComponent,
     CtrlPlaceComponent,
@@ -571,7 +579,11 @@ import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-pri
     CtrlTimeSpanDialogComponent,
     CtrlTimePrimitiveComponent,
     CtrlTypeComponent,
-    ClassesAndTypesSelectComponent
+    ClassesAndTypesSelectComponent,
+    FormCreateEntityComponent,
+    FormGroupComponent,
+    FormArrayComponent,
+    FormControlComponent
   ],
   entryComponents: [
     LeafPeItViewModalComponent,

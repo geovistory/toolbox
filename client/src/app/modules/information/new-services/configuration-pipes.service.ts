@@ -1,14 +1,14 @@
 
-import { Injectable } from "@angular/core";
-import { ActiveProjectService, DfhPropertyView, limitTo, ProPropertyLabel, SysConfig } from "app/core";
-import { DfhConfig } from "app/modules/information/shared/dfh-config";
-import { indexBy, uniq, values } from "ramda";
-import { combineLatest, Observable, of } from "rxjs";
+import { Injectable } from '@angular/core';
+import { ActiveProjectService, DfhPropertyView, limitTo, ProPropertyLabel, SysConfig } from 'app/core';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { indexBy, uniq, values } from 'ramda';
+import { combineLatest, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import * as Config from "../../../../../../common/config/Config";
-import { cache, spyTag } from "../../../shared";
-import { ClassFieldConfig, FieldDefinition, ListDefinition, ListType } from "../new-components/properties-tree/properties-tree.models";
-import { InformationBasicPipesService } from "./information-basic-pipes.service";
+import * as Config from '../../../../../../common/config/Config';
+import { cache, spyTag } from '../../../shared';
+import { ClassFieldConfig, FieldDefinition, ListDefinition, ListType } from '../new-components/properties-tree/properties-tree.models';
+import { InformationBasicPipesService } from './information-basic-pipes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,15 +45,16 @@ export class ConfigurationPipesService {
         })))
 
       })).pipe(
-        map((ds) => ds.sort((a, b) => (a.ord_num > b.ord_num ? 1 : -1))),
+        map((items) => items.sort((a, b) => (a.ord_num > b.ord_num ? 1 : -1))),
         limitTo(limit),
-        map((ds: ClassFieldConfig[]) => {
+        map((items: ClassFieldConfig[]) => {
           const o = {}
           const fields = []
-          ds.forEach(d => {
-            if (!o[d.fk_property_of_origin]) {
+          items.forEach(d => {
+            const k = d.fk_property_of_origin || d.fk_class_field;
+            if (!o[k]) {
               fields.push(d)
-              o[d.fk_property_of_origin] = true
+              o[k] = true
             }
           })
           return fields;
@@ -89,7 +90,7 @@ export class ConfigurationPipesService {
   @spyTag @cache({ refCount: false }) pipeInheritedPropertyPks(pkProperty: number): Observable<number[]> {
     return this.p.dfh$.property_view$.by_fk_property$.key(pkProperty).pipe(
       filter(i => !!i),
-      map((x) => Object.keys(x).map(k => parseInt(k)))
+      map((x) => Object.keys(x).map(k => parseInt(k, 10)))
     )
   }
 
@@ -238,15 +239,20 @@ export class ConfigurationPipesService {
   @spyTag @cache({ refCount: false }) pipeListDefinitionsOfField(field: ClassFieldConfig): Observable<ListDefinition[]> {
     if (field.fk_property) {
       const o = field.property_is_outgoing;
-      return combineLatest(
-        this.pipeEnabledInheritedPropertiesOfPropertyField(field)
-      ).pipe(
-        switchMap(([ps]) => combineLatest(
+      return combineLatest([
+        this.pipeEnabledInheritedPropertiesOfPropertyField(field),
+        this.p.dfh$.property_view$.by_dfh_pk_property$.key(field.fk_property_of_origin),
+      ]).pipe(
+        switchMap(([ps, propOfOrigin]) => combineLatest(
           ps
             .map(p => {
+              // TODO once pkProperty concept is changed, simplify this.
+              const prop = propOfOrigin || p;
               const targetClass = o ? p.dfh_has_range : p.dfh_has_domain;
               const sourceClass = o ? p.dfh_has_domain : p.dfh_has_range;
-              const maxQ = field.property_is_outgoing ? p.dfh_range_instances_max_quantifier : p.dfh_domain_instances_max_quantifier;
+              const targetMaxQuantity = o ?
+                prop.dfh_range_instances_max_quantifier :
+                prop.dfh_domain_instances_max_quantifier;
 
               return combineLatest(
                 this.pipeLabelOfClass(targetClass),
@@ -256,7 +262,7 @@ export class ConfigurationPipesService {
                   field.property_is_outgoing ? field.fk_class : null,
                   field.property_is_outgoing ? null : field.fk_class,
                   field.property_is_outgoing,
-                  (maxQ === 1)
+                  (targetMaxQuantity === 1)
                 )
               ).pipe(
                 map(([targetClassLabel, listType, label]) => {
@@ -266,7 +272,7 @@ export class ConfigurationPipesService {
                     targetClass,
                     sourceClass,
                     targetClassLabel,
-                    targetMaxQuantity: o ? p.dfh_range_instances_max_quantifier : p.dfh_domain_instances_max_quantifier,
+                    targetMaxQuantity,
                     label,
                     pkProperty: p.dfh_pk_property,
                     fkPropertyOfOrigin: field.fk_property_of_origin,
@@ -307,7 +313,8 @@ export class ConfigurationPipesService {
           label: 'When',
           fkClassField: pkClassField,
           ontoInfoLabel: 'P4',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/4'
+          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/4',
+          targetMaxQuantity: 1
         }
       case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
         return {
@@ -316,7 +323,8 @@ export class ConfigurationPipesService {
           label: 'Entity Definition',
           fkClassField: pkClassField,
           ontoInfoLabel: 'P3',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3'
+          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3',
+          targetMaxQuantity: -1
         }
       case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
         return {
@@ -325,7 +333,8 @@ export class ConfigurationPipesService {
           label: 'Exact Reference',
           fkClassField: pkClassField,
           ontoInfoLabel: 'P3',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3'
+          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3',
+          targetMaxQuantity: -1
         }
       case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
         return {
@@ -334,7 +343,8 @@ export class ConfigurationPipesService {
           label: 'Short Title',
           fkClassField: pkClassField,
           ontoInfoLabel: 'P3',
-          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3'
+          ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/3',
+          targetMaxQuantity: -1
         }
       default:
         break;
@@ -386,7 +396,8 @@ export class ConfigurationPipesService {
                   ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/' + p.dfh_pk_property,
                   pkProperty: field.fk_property_of_origin,
                   targetClasses: listDefinitions.map(l => l.targetClass),
-                  targetMaxQuantity: maxQ
+                  targetMaxQuantity: maxQ,
+                  isIdentityDefining: listDefinitions.some(l => l.isIdentityDefining)
                 }
                 return fieldDefinition;
               })
