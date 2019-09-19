@@ -346,6 +346,10 @@ $gv-color-selected: #00ffff;
 .gv-scroll-y-auto {
   overflow-y: auto;
 }
+.gv-overflow-hidden {
+  overflow: hidden;
+}
+
 
 .gv-table-scroll-y {
   @extend .gv-flex-fh;

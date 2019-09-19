@@ -11,10 +11,10 @@ import { FormGroupFactory } from './form-group-factory';
  * Factory for a formArray, being an intermediate node of the nested form
  *
  */
-export class FormArrayFactory<A> extends AbstractControlFactory {
+export class FormArrayFactory<C, A> extends AbstractControlFactory {
   factoryType: FactoryType = 'array';
   control: FormArray
-  children: (FormControlFactory | FormArrayFactory<A>)[] = []
+  children: (FormControlFactory<C> | FormArrayFactory<C, A>)[] = []
 
   childConfigs: FormNodeConfig<any, any, any>[] = []
   // this is only needed if this is a list Factory (having only one type of children)
@@ -26,7 +26,7 @@ export class FormArrayFactory<A> extends AbstractControlFactory {
     public globalConfig: FormFactoryGlobal<any, any, any>,
     public config: FormArrayConfig<A>,
     public level: number,
-    private parent: FormGroupFactory | FormArrayFactory<A>
+    private parent: FormGroupFactory | FormArrayFactory<C, A>
   ) {
     super()
 
@@ -111,14 +111,15 @@ export class FormArrayFactory<A> extends AbstractControlFactory {
     if (i.control) return new FormControlFactory(this.globalConfig, i.control, this.level + 1, this)
   }
 
-  private add(i: number, c: FormNodeConfig<any, any, any>) {
+  add(i: number, c: FormNodeConfig<any, any, any>) {
     const f = this.create(c)
     this.children.splice(i, 0, f)
     this.control.insert(i, f.control)
     this.childConfigs.splice(i, 0, c)
 
     this.childFactoryValues$.pipe(first()).subscribe(vs$ => {
-      this.childFactoryValues$.next([...vs$, f.valueChanges$])
+      vs$.splice(i, 0, f.valueChanges$)
+      this.childFactoryValues$.next(vs$)
     })
   }
 

@@ -7,7 +7,7 @@ import { FormGroupFactory } from './form-group-factory';
 /**
  * Factory for a formControl, being the leaf element of the nested form
  */
-export class FormControlFactory extends AbstractControlFactory {
+export class FormControlFactory<M> extends AbstractControlFactory {
   factoryType: FactoryType = 'control';
 
   public control: FormControl
@@ -15,9 +15,9 @@ export class FormControlFactory extends AbstractControlFactory {
 
   constructor(
     public globalConfig: FormFactoryGlobal<any, any, any>,
-    public config: FormControlConfig<any>,
+    public config: FormControlConfig<M>,
     private level: number,
-    private parent?: FormGroupFactory | FormArrayFactory<any>
+    private parent?: FormGroupFactory | FormArrayFactory<any, any>
   ) {
     super()
     const validators = config.required ? [Validators.required] : []

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
-import { FormArrayData } from '../form-create-entity/form-create-entity.component';
+import { FormArrayData, LocalNodeConfig, FormControlData, LocalFormArrayFactory, LocalFormControlFactory } from '../form-create-entity/form-create-entity.component';
+import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
+import { FormArrayConfig, FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
 
 @Component({
   selector: 'gv-form-array',
@@ -9,8 +11,43 @@ import { FormArrayData } from '../form-create-entity/form-create-entity.componen
 })
 export class FormArrayComponent implements OnInit {
 
-  @Input() formArrayFactory: FormArrayFactory<FormArrayData>
+  @Input() formArrayFactory: LocalFormArrayFactory
 
+
+  wrapInCard(child: LocalFormArrayFactory | LocalFormControlFactory) {
+    if (child.factoryType !== 'array') return false
+    else {
+      const c = child as LocalFormArrayFactory
+      return (
+        c.config.data.fieldDefinition.listType === 'temporal-entity' &&
+        c.config.isList === false
+      )
+    }
+  }
+
+  isFormArray(child: LocalFormArrayFactory | LocalFormControlFactory) {
+    return child.factoryType === 'array'
+  }
+
+  isFormControl(child: LocalFormArrayFactory | LocalFormControlFactory) {
+    if (child.factoryType === 'control') {
+      const c = child as LocalFormControlFactory
+      if (c.config.data.controlType !== 'ctrl-target-class') {
+        return true
+      }
+    }
+    return false
+  }
+
+  isCtrlTargetClass(child: LocalFormArrayFactory | LocalFormControlFactory) {
+    if (child.factoryType === 'control') {
+      const c = child as LocalFormControlFactory
+      if (c.config.data.controlType === 'ctrl-target-class') {
+        return true
+      }
+    }
+    return false
+  }
 
 
   get showAddBtn() {
@@ -22,7 +59,7 @@ export class FormArrayComponent implements OnInit {
   }
 
   get showRemoveBtn() {
-    return this.itemNumberFlexible || this.isTemporalEntityList
+    return (this.itemNumberFlexible || this.isTemporalEntityList)
   }
 
   get paddingLeft() {
@@ -48,6 +85,11 @@ export class FormArrayComponent implements OnInit {
     return this.formArrayFactory.level
   }
 
+  ctrlTargetClassIsDisabled(configs: LocalNodeConfig[]) {
+    // disable if no config is not disabled
+    return !configs.some(c => !c.disabled)
+  }
+
   constructor() { }
 
   ngOnInit() {
@@ -58,6 +100,29 @@ export class FormArrayComponent implements OnInit {
   }
   remove(i) {
     this.formArrayFactory.onRemove(i)
+  }
+
+  addSpecific(i, d: FormControlData, j) {
+
+    const configs = d.nodeConfigs
+    const config = configs[j];
+
+    if (d.fieldDefinition.targetMaxQuantity === 1) {
+      const disabledConfig = configs.find(c => c.disabled === true)
+      if (disabledConfig) {
+        // remove the previously selected child
+        this.formArrayFactory.onRemove(i + 1)
+        // enable the previously disabled config in options menu
+        disabledConfig.disabled = false;
+      }
+    }
+
+    // add the selected child
+    this.formArrayFactory.add(i + 1, config)
+
+    // disable the selected config
+    config.disabled = true;
+
   }
 
 }

@@ -8,7 +8,6 @@ export interface FormFactory {
   formGroupFactory: FormGroupFactory
 }
 export interface FormGroupConfig<M> {
-  placeholder: string
   data: M // custom data depending on implementation
 }
 export interface FormArrayConfig<M> {
@@ -38,12 +37,15 @@ export interface FormNodeConfig<G, A, C> {
   control?: FormControlConfig<C>
 
   id?: string
+
+  disabled?: boolean
 }
 
 /**
  * Interface for the public API of the module
  */
 export interface FormFactoryConfig<G, A, C> {
+  hideTitle?: boolean;
   rootFormGroup$: Observable<FormGroupConfig<G>>
   getChildNodeConfigs?: (config?: FormNodeConfig<G, A, C>) => Observable<FormNodeConfig<G, A, C>[]>
 }

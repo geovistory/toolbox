@@ -73,6 +73,7 @@ export class StandardActionsFactory<Payload, Model> {
   loadPageSucceeded: (pks: number[], count: number, paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
   loadPageFailed: (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
 
+  succeeded: (items: Model[], removePending: string, pk?: number) => void;
 
   actionPrefix: string;
   modelName: string;
@@ -135,6 +136,20 @@ export class StandardActionsFactory<Payload, Model> {
       })
       this.ngRedux.dispatch(action)
     }
+
+    /**
+     * this action is not model specific but pendingKey specific.
+     * Reducer will add whole meta part to the resolved key
+     */
+    this.succeeded = (items: Model[], removePending: string, pk?: number) => {
+      const action: FluxStandardAction<Payload, SucceedActionMeta<Model>> = ({
+        type: 'general::UPSERT_SUCCEEDED',
+        meta: { items, removePending, pk },
+        payload: null
+      })
+      this.ngRedux.dispatch(action)
+    }
+
 
     /**
     * Call the Redux Action to delete model instances.

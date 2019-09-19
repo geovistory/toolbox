@@ -10,7 +10,7 @@ import { FormControlData } from '../form-create-entity/form-create-entity.compon
 })
 export class FormControlComponent implements OnInit {
 
-  @Input() formControlFactory: FormControlFactory
+  @Input() formControlFactory: FormControlFactory<FormControlData>
 
   public config: FormControlConfig<FormControlData>
   constructor() { }

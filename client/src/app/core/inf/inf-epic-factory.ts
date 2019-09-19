@@ -46,7 +46,7 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
           apiFn(meta).subscribe((data: Model[]) => {
             if (onSuccessHook) {
               onSuccessHook(data, action.meta.pk);
-              this.actions.upsertSucceeded([], pendingKey, action.meta.pk);
+              this.actions.succeeded(data, pendingKey, action.meta.pk);
             }
             else {
               this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);

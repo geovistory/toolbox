@@ -4,9 +4,13 @@
     <gv-form-group [formGroupFactory]="formFactory.formGroupFactory"></gv-form-group>
   </form>
 
-  <button mat-flat-button color="primary" [disabled]="submitted && formFactory?.formGroup.invalid" (click)="submit()">Create
+
+  <button *ngIf="!hideButtons" mat-flat-button color="primary" [disabled]="(submitted && formFactory?.formGroup.invalid) || saving"
+    (click)="submit()">
+    <span *ngIf="!saving">Create</span>
+    <span *ngIf="saving">Saving</span>
   </button>
 
-  <button mat-button type="button" class="ml-2">Cancel</button>
+  <button *ngIf="!hideButtons" mat-button type="button" class="ml-2" (click)="cancel.emit()">Cancel</button>
 
 </span>

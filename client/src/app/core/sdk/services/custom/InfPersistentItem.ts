@@ -35,6 +35,40 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   }
 
   /**
+   * Find or create many information persistent items.
+   *
+   * @param {number} pk_project Pk of the project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{InfPersistentItem}` - data
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfPersistentItem` object.)
+   * </em>
+   */
+  public findOrCreateInfPersistentItems(pk_project: any, data: any, customHeaders?: Function): Observable<InfPersistentItem[]> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfPersistentItems/find-or-create-many";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instances: Array<InfPersistentItem>) =>
+        instances.map((instance: InfPersistentItem) => new InfPersistentItem(instance))
+    ));
+  }
+
+  /**
    * Get only miminal properties of persistent item.
    *
    * @param {number} pkProject Pk of the project.

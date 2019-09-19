@@ -81,16 +81,60 @@
         "typesOfNamespaceClassAndProject",
         "typesByClassAndProject",
         "nestedObjectOfProject",
-        "findOrCreatePeIt",
         "typeNested",
         "addToProject",
         "graphsOfProject",
         "flatObjectOfProject",
-        "ownProperties"
+        "ownProperties",
+        "findOrCreatePeIt",
+        "findOrCreateInfPersistentItems"
       ]
     }
   ],
   "methods": {
+    "findOrCreateInfPersistentItems": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "InfPersistentItem"
+          ],
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfPersistentItem"
+        ],
+        "root": true
+      },
+      "description": "Find or create many information persistent items.",
+      "http": {
+        "path": "/find-or-create-many",
+        "verb": "post"
+      }
+    },
     "ownProperties": {
       "accepts": [
         {

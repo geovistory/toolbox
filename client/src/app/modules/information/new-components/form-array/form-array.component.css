@@ -5,7 +5,7 @@
   flex: 1 1 0;
   /* background: #6EAFF7; */
   flex-direction: column;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .right-col {

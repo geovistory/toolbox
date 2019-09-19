@@ -311,6 +311,7 @@ export class ConfigurationPipesService {
           ...template,
           listType: 'time-span',
           label: 'When',
+          isOutgoing: true,
           fkClassField: pkClassField,
           ontoInfoLabel: 'P4',
           ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/4',

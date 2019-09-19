@@ -345,7 +345,7 @@ export default sandboxOf(QuillEditComponent, {
       blurCount: 0,
       quillDoc: wikiRats,
       showOutput: false,
-      showAnnotations: new BehaviorSubject(true),
+      annotationsVisible$: new BehaviorSubject(true),
       annotatedNodes$: new BehaviorSubject({
         45: [123],
         46: [123],
@@ -356,7 +356,7 @@ export default sandboxOf(QuillEditComponent, {
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [quillDoc]="quillDoc" [annotatedNodes$]="annotatedNodes$"
+                    <gv-quill-edit [quillDoc]="quillDoc" [annotatedNodes$]="annotatedNodes$" [annotationsVisible$]="annotationsVisible$"
                     (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"  (textLengthChange)=" length = $event"></gv-quill-edit>
                 </div>
                 <div class="col-6 font-sm" style="height:500px;">
@@ -370,7 +370,7 @@ export default sandboxOf(QuillEditComponent, {
 
                     <div>
                         <label>
-                            <input type="checkbox" [(ngModel)]="showEnableQuillNodeHandles" />
+                            <input type="checkbox" (click)="annotationsVisible$.next(!annotationsVisible$.value)" />
                             Show Annotations
                         </label>
                     </div>

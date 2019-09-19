@@ -9,6 +9,30 @@ const helpers = require('../helpers');
 module.exports = function (InfPersistentItem) {
 
 
+  InfPersistentItem.findOrCreateInfPersistentItems = function (pk_project, items, ctx) {
+    return new Promise((resolve, reject) => {
+      const promiseArray = items.map((item, i) => {
+
+        const context = {
+          ...ctx,
+          req: {
+            ...ctx.req,
+            body: {
+              ...ctx.req.body[i]
+            }
+          }
+        }
+
+        return InfPersistentItem.findOrCreatePeIt(pk_project, item, context)
+      })
+      Promise.map(promiseArray, (promise) => promise)
+        .catch(err => reject(err))
+        .then(res => {
+          return resolve(_.flatten(res))
+        })
+    })
+  };
+
   InfPersistentItem.findOrCreatePeIt = function (pkProject, data, ctx, cb) {
     return new Promise((resolve, reject) => {
 
@@ -226,9 +250,6 @@ module.exports = function (InfPersistentItem) {
 
     });
   }
-
-
-
 
 
   /**
