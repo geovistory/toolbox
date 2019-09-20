@@ -1,21 +1,32 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, Input, OnDestroy, OnInit, HostBinding, ChangeDetectorRef } from '@angular/core';
-import { ActiveProjectService, ClassConfig, SysConfig, IAppState, InfPersistentItem, U } from 'app/core';
+import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActiveProjectService, IAppState, InfPersistentItem, SysConfig, U, SysClassHasTypePropertyInterface, sortAbc } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, first, map, takeUntil, tap } from 'rxjs/operators';
+import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { values } from 'ramda';
+import { combineLatest, Observable, Subject, of, BehaviorSubject } from 'rxjs';
+import { filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { InfActions } from '../../../../core/inf/inf.actions';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { TypeAddFormComponent } from '../type-add-form/type-add-form.component';
+import { TypeEditFormComponent } from '../type-edit-form/type-edit-form.component';
 import { TypesAPIActions } from './api/types.actions';
 import { TypesAPIEpics } from './api/types.epics';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
-import { TypeEditFormComponent } from '../type-edit-form/type-edit-form.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { TypeAddFormComponent } from '../type-add-form/type-add-form.component';
-import { InfSelector } from '../../../../core/inf/inf.service';
-import { InfActions } from '../../../../core/inf/inf.actions';
-import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { InformationBasicPipesService } from 'app/modules/information/new-services/information-basic-pipes.service';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/information/new-components/properties-tree-dialog/properties-tree-dialog.component';
+
+interface TypeItem {
+  pkEntity: number
+  label: string,
+  definition?: string
+}
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -42,12 +53,14 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   @Input() pkProperty: number;
 
   //  type class
-  typeClass$: Observable<ClassConfig>;
-  typedClass$: Observable<ClassConfig>;
+  typeClassPk$: Observable<number>;
+  typedClassPk$: Observable<number>;
+  typeClassLabel$: Observable<string>;
+  typedClassLabel$: Observable<string>;
 
 
   // types
-  @select() items$: Observable<{ [key: string]: InfPersistentItem }>;
+  items$: Observable<TypeItem[]>;
 
   // flag indicatig if add form is visible
   @select() add$: Observable<boolean>;
@@ -68,6 +81,9 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     public inf: InfActions,
     public dialog: MatDialog,
     public ref: ChangeDetectorRef,
+    public c: ConfigurationPipesService,
+    public b: InformationBasicPipesService,
+    public i: InformationPipesService
   ) {
     super();
   }
@@ -80,20 +96,49 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
-    this.typedClass$ = combineLatest(this.p.classes$, this.p.hasTypeProperties$).pipe(
-      first(d => !d.includes(undefined)),
-      map(([classes, hasTypeProps]) => classes[hasTypeProps[this.pkProperty].pk_typed_class]),
-      tap((klass) => {
-        this.t.setTabTitle(klass.label + ' Types')
-      })
+    const hasTypeProp$ = this.p.sys$.class_has_type_property$.by_dfh_pk_property$.key(this.pkProperty).pipe(
+      filter(object => !!object && Object.keys(object).length > 0),
+      map((object) => values(object)[0]),
+      shareReplay({ bufferSize: 1, refCount: true })
     )
 
-    this.typeClass$ = combineLatest(this.p.classes$, this.p.hasTypeProperties$).pipe(
-      first(d => !d.includes(undefined)),
-      map(([classes, hasTypeProps]) => classes[hasTypeProps[this.pkProperty].pk_type_class])
+    this.typeClassPk$ = hasTypeProp$.pipe(
+      map(item => item.pk_type_class),
+      shareReplay({ bufferSize: 1, refCount: true })
+
+    )
+    this.typedClassPk$ = hasTypeProp$.pipe(
+      map(item => item.pk_typed_class),
+      shareReplay({ bufferSize: 1, refCount: true })
     )
 
-    this.loadTypes();
+    this.typedClassLabel$ = hasTypeProp$.pipe(
+      switchMap((hasTypeProp) => this.c.pipeLabelOfClass(hasTypeProp.pk_typed_class).pipe(
+        tap((typedClassLabel) => {
+          this.t.setTabTitle(typedClassLabel + ' Types')
+        })
+      )),
+    )
+
+    this.typeClassLabel$ = hasTypeProp$.pipe(
+      switchMap((hasTypeProp) => this.c.pipeLabelOfClass(hasTypeProp.pk_type_class)),
+    )
+
+    this.items$ = this.typeClassPk$.pipe(
+      switchMap(typeClassPk => this.b.pipePersistentItemPksByClass(typeClassPk).pipe(
+        switchMap(typePks => combineLatestOrEmpty(
+          typePks.map(pkEntity => this.i.pipeLabelOfEntity(pkEntity).pipe(
+            map(label => ({
+              pkEntity,
+              label
+            } as TypeItem))
+          ))
+        ).pipe(
+          sortAbc(n => n.label),
+        ))
+      ))
+    )
+    // this.loadTypes();
 
   }
 
@@ -103,14 +148,14 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     this.destroy$.unsubscribe();
   }
 
-  loadTypes() {
-    combineLatest(this.typeClass$, this.p.pkProject$).pipe(
-      filter(d => !d.includes(undefined)),
-      takeUntil(this.destroy$)
-    ).subscribe(([pkTypeClass, pkProject]) => {
-      this.load(pkProject, pkTypeClass.dfh_pk_class)
-    })
-  }
+  // loadTypes() {
+  //   combineLatest(this.typeClass$, this.p.pkProject$).pipe(
+  //     filter(d => !d.includes(undefined)),
+  //     takeUntil(this.destroy$)
+  //   ).subscribe(([pkTypeClass, pkProject]) => {
+  //     this.load(pkProject, pkTypeClass.dfh_pk_class)
+  //   })
+  // }
 
   /**
    * called when user creates a new type
@@ -122,88 +167,43 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   /**
    * called when user clicks on edit
    */
-  edit(type: InfPersistentItem) {
-    this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pkProject => {
-
-      this.openEditForm(pkProject, type)
-
-      const dialogRef = this.dialog.open(TypeEditFormComponent, {
-        height: '90%',
-        width: '90%',
-        data: { basePath: [...this.basePath, 'edit'] }
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        this.stopEdit();
-      });
-
-    })
-  }
-
-  /**
-   * called when user stops editing a type
-   */
-  stopEdit() {
-    this.closeEditForm()
-    this.loadTypes()
-  }
-
-
-  remove(type: InfPersistentItem) {
-    this.getLabel(type)
-
-    const dialogData: ConfirmDialogData = {
-      title: 'Remove "' + this.getLabel(type) + '"',
-      paragraphs: [
-        'Are you sure?'
-      ],
-      yesBtnText: 'Remove',
-      yesBtnColor: 'warn',
-      noBtnText: 'Cancel',
+  edit(type: TypeItem) {
+    const data: PropertiesTreeDialogData = {
+      appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
+      pkClass$: this.typeClassPk$,
+      pkEntity$: of(type.pkEntity),
+      readonly$: new BehaviorSubject(false),
+      showOntoInfo$: new BehaviorSubject(false),
     }
-
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: dialogData
+    const dialogRef = this.dialog.open(PropertiesTreeDialogComponent, {
+      height: '90%',
+      width: '90%',
+      data
     });
 
-    dialogRef.afterClosed().subscribe(confirmed => {
-      if (confirmed) {
-        this.p.removePeIt(type.pk_entity);
-      }
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
     });
   }
 
-  getLabel = (peIt: InfPersistentItem) => U.stringForPeIt(peIt);
+
+
+  remove(type: TypeItem) {
+    this.p.openRemovePeItDialog(type.label, type.pkEntity)
+  }
 
   /**
    * called when user clicks on add
    */
   addOrCreate() {
+    this.typeClassPk$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkClass => {
 
-    this.typeClass$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(typeClass => {
-      this.openAddForm({
-        classAndTypePk: {
-          pkClass: typeClass.dfh_pk_class,
-          pkType: undefined
-        },
-        pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE,
+      this.p.openModalCreateOrAddEntity({
+        classAndTypePk: { pkClass, pkType: undefined },
+        pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
+      }).subscribe((entity: InfPersistentItem) => {
       })
     })
-
-    const dialogRef = this.dialog.open(TypeAddFormComponent, {
-      height: '90%',
-      width: '90%',
-      data: { basePath: [...this.basePath, 'add'] }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.added(result);
-      } else {
-        this.closeAddForm()
-      }
-    });
 
   }
 }

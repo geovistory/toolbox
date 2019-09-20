@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormGroupFactory } from '../core/form-group-factory';
+import { FormArrayFactory } from '../core/form-array-factory';
+import { FormControlFactory } from '../core/form-control-factory';
 
 export interface FormFactory {
   formGroup: FormGroup;
@@ -10,8 +12,8 @@ export interface FormFactory {
 export interface FormGroupConfig<M> {
   data: M // custom data depending on implementation
 }
-export interface FormArrayConfig<M> {
-  data: M // custom data depending on implementation
+export interface FormArrayConfig<A> {
+  data: A // custom data depending on implementation
 
   placeholder: string
   isList?: boolean;
@@ -21,14 +23,20 @@ export interface FormArrayConfig<M> {
   // If this is a list, the number defines how many children are added on init
   addOnInit?: number;
 
-  mapValue: (d) => any
+  mapValue: (d) => any;
+
+
 }
 export interface FormControlConfig<M> {
   placeholder: string
   data: M // custom data depending on implementation
   required: boolean;
+  initValue? // initial value of the control
 
   mapValue: (d) => any
+
+  // gets called when removed
+  removeHook?: () => any
 }
 
 export interface FormNodeConfig<G, A, C> {

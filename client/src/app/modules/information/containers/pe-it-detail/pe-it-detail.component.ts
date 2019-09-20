@@ -187,22 +187,14 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   }
 
   openRemoveDialog() {
-    this.tabTitle$.pipe(first(), takeUntil(this.destroy$)).subscribe(tabTitle => {
-
-      const data: ConfirmDialogData = {
-        noBtnText: 'Cancel',
-        yesBtnText: 'Remove',
-        yesBtnColor: 'warn',
-        title: 'Remove ' + tabTitle,
-        paragraphs: ['Are you sure?'],
-
-      }
-      const dialog = this.matDialog.open(ConfirmDialogComponent, { data })
-      dialog.afterClosed().pipe(first(), takeUntil(this.destroy$)).subscribe(confirmed => {
-        if (confirmed) this.onRemove()
+    this.tabTitle$
+      .pipe(first(), takeUntil(this.destroy$))
+      .subscribe(tabTitle => {
+        this.p.openRemovePeItDialog(tabTitle, this.pkEntity)
+          .pipe(takeUntil(this.destroy$)).subscribe(() => {
+            this.close.emit()
+          })
       })
-
-    })
   }
 
   rightTabIndexChange(i: number) {
@@ -223,18 +215,6 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   */
   toggle(keyToToggle: string) {
     this.localStore.dispatch(this.actions.toggleBoolean(keyToToggle))
-  }
-
-  onRemove = () => {
-    combineLatest(
-      this.p.inf$.persistent_item$.by_pk_entity$.key(this.pkEntity),
-      this.p.pkProject$
-    )
-      .pipe(first(), takeUntil(this.destroy$)).subscribe(([peIt, pkProject]) => {
-        this.inf.persistent_item.remove([peIt], pkProject).resolved$.pipe(first()).subscribe(() => {
-          this.close.emit()
-        })
-      })
   }
 
   ngOnDestroy() {

@@ -1040,7 +1040,7 @@ export class InformationPipesService {
                   } as ClassAndTypeNode))
                 ))
               ).pipe(
-                sortAbc(node => node.label),
+                sortAbc(n => n.label),
               )),
               map(children => {
                 node.children = children

@@ -128,9 +128,11 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
   }
 
   onRemove(i) {
+
     this.children.splice(i, 1)
     this.childConfigs.splice(i, 1)
     this.control.removeAt(i)
+
 
     this.childFactoryValues$.pipe(first()).subscribe(vs$ => {
       vs$.splice(i, 1)

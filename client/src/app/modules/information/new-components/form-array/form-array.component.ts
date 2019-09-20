@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, OnDestroy } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormArrayData, LocalNodeConfig, FormControlData, LocalFormArrayFactory, LocalFormControlFactory } from '../form-create-entity/form-create-entity.component';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
@@ -9,7 +9,7 @@ import { FormArrayConfig, FormControlConfig } from 'app/modules/form-factory/ser
   templateUrl: './form-array.component.html',
   styleUrls: ['./form-array.component.css']
 })
-export class FormArrayComponent implements OnInit {
+export class FormArrayComponent implements OnInit, OnDestroy {
 
   @Input() formArrayFactory: LocalFormArrayFactory
 
@@ -123,6 +123,12 @@ export class FormArrayComponent implements OnInit {
     // disable the selected config
     config.disabled = true;
 
+  }
+
+  ngOnDestroy() {
+    if (this.formArrayFactory.config.data.removeHook) {
+      this.formArrayFactory.config.data.removeHook(this.formArrayFactory.config.data)
+    }
   }
 
 }

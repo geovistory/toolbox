@@ -29,7 +29,7 @@ export class ChooseClassDialogComponent implements OnInit {
     })))))
   }
 
-  select(pkClass:number) {
+  select(pkClass: number) {
     this.dialogRef.close(pkClass);
   }
 

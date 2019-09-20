@@ -42,12 +42,13 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from './shared/pipes/keys.module';
 import { AngularCesiumModule } from 'angular-cesium';
 
-const spy = create()
-spy.unplug(spy.find(CyclePlugin));
+// const spy = create()
+// spy.unplug(spy.find(CyclePlugin));
 // spy.unplug(spy.find(GraphPlugin));
 // spy.plug(
 //   new GraphPlugin({ keptDuration: -1 }),
 // );
+
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
 

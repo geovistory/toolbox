@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { clone, flatten, values } from 'ramda';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { auditTime, first, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { auditTime, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
@@ -18,6 +18,9 @@ export interface FormArrayData {
   fieldDefinition?: FieldDefinition
   listDefinition?: ListDefinition
   customCtrlLabel?: string
+  stringPartId?: number
+  // gets called when removed
+  removeHook?: (x: FormArrayData) => any
 }
 interface FormGroupData {
   pkClass: number
@@ -31,6 +34,7 @@ export interface FormControlData {
 }
 export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
 
+export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
 export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData>;
 export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayData>
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
@@ -43,6 +47,7 @@ export type LocalFormControlFactory = FormControlFactory<FormControlData>
 export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   @Input() pkClass: number
+  @Input() appContext: number;
 
   @Input() hideButtons: boolean;
   @Input() hideTitle: boolean;
@@ -67,6 +72,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.pkClass) throw new Error('You must provide a pkClass as @Input() on FormCreateEntityComponent');
+    if (!this.appContext) throw new Error('You must provide a appContext as @Input() on FormCreateEntityComponent');
 
     this.formFactory$ = this.formFactoryService.create<FormGroupData, FormArrayData, FormControlData>({
       hideTitle: this.hideTitle,
@@ -152,7 +158,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     )
   }
 
-  private timeSpanCtrl(arrayConfig: FormArrayConfig<FormArrayData>): Observable<LocalNodeConfig[]> {
+  private timeSpanCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const controlConfig: LocalNodeConfig = {
       control: {
         placeholder: arrayConfig.data.fieldDefinition.label,
@@ -179,7 +185,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return of([controlConfig]);
   }
 
-  private placeCtrl(arrayConfig: FormArrayConfig<FormArrayData>): Observable<LocalNodeConfig[]> {
+  private placeCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const listDefinition = arrayConfig.data.listDefinition;
     const controlConfig: LocalNodeConfig = {
       control: {
@@ -207,32 +213,37 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
 
-  private languageCtrl(arrayConfig: FormArrayConfig<FormArrayData>): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.listDefinition;
-    const controlConfig: LocalNodeConfig = {
-      control: {
-        placeholder: listDefinition.label,
-        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
-        data: { controlType: 'ctrl-language' },
-        mapValue: (val) => {
-          if (!val) return null;
-          const value: InfRole = {
-            ...{} as any,
-            fk_entity: undefined,
-            fk_property: listDefinition.pkProperty,
-            language: {
-              ...val,
-              fk_class: listDefinition.targetClass,
-            },
-          };
-          return value;
+  private languageCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    return this.p.defaultLanguage$.pipe(map(defaultLanguage => {
+
+      const listDefinition = arrayConfig.data.listDefinition;
+      const controlConfig: LocalNodeConfig = {
+        control: {
+          placeholder: listDefinition.label,
+          required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+          data: { controlType: 'ctrl-language' },
+          initValue: defaultLanguage,
+          mapValue: (val) => {
+            if (!val) return null;
+            const value: InfRole = {
+              ...{} as any,
+              fk_entity: undefined,
+              fk_property: listDefinition.pkProperty,
+              language: {
+                ...val,
+                fk_class: listDefinition.targetClass,
+              },
+            };
+            return value;
+          }
         }
-      }
-    };
-    return of([controlConfig]);
+      };
+      return [controlConfig];
+    })
+    )
   }
 
-  private appellationCtrl(arrayConfig: FormArrayConfig<FormArrayData>): Observable<LocalNodeConfig[]> {
+  private appellationCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
 
     const listDefinition = arrayConfig.data.listDefinition;
     const controlConfig: LocalNodeConfig = {
@@ -257,27 +268,35 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     };
     return of([controlConfig]);
   }
-  private textPropertyCtrl(arrayConfig: FormArrayConfig<FormArrayData>): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.listDefinition;
-    const controlConfig: LocalNodeConfig = {
-      control: {
-        placeholder: listDefinition.label,
-        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
-        data: { controlType: 'ctrl-text-property' },
-        mapValue: (val) => {
-          if (!val) return null;
-
-          const value: InfTextProperty = {
-            ...val,
-            fk_class_field: listDefinition.fkClassField,
-          };
-          return value;
-        }
+  private textPropertyCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    return this.p.defaultLanguage$.pipe(map(defaultLanguage => {
+      const listDefinition = arrayConfig.data.listDefinition;
+      const initValue: InfTextProperty = {
+        fk_language: defaultLanguage.pk_entity,
+        language: defaultLanguage,
+        ...{} as any
       }
-    };
-    return of([controlConfig]);
+      const controlConfig: LocalNodeConfig = {
+        control: {
+          placeholder: listDefinition.label,
+          required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+          data: { controlType: 'ctrl-text-property' },
+          initValue,
+          mapValue: (val) => {
+            if (!val) return null;
+
+            const value: InfTextProperty = {
+              ...val,
+              fk_class_field: listDefinition.fkClassField,
+            };
+            return value;
+          }
+        }
+      };
+      return [controlConfig];
+    }))
   }
-  private entityCtrl(arrayConfig: FormArrayConfig<FormArrayData>): Observable<LocalNodeConfig[]> {
+  private entityCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const listDefinition = arrayConfig.data.listDefinition;
     const controlConfig: LocalNodeConfig = {
       control: {
@@ -305,8 +324,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return of([controlConfig]);
   }
 
-  private getListArrayConfig(arrayConfig: FormArrayConfig<FormArrayData>, listType: ListType): Observable<LocalNodeConfig[]> {
-    return this.c.pipeFieldDefinitions(arrayConfig.data.pkClass, 45).pipe(
+  private getListArrayConfig(arrayConfig: LocalArrayConfig, listType: ListType): Observable<LocalNodeConfig[]> {
+    return this.c.pipeFieldDefinitions(arrayConfig.data.pkClass, this.appContext).pipe(
       auditTime(100), mergeMap(fieldDefinitions => {
         return new Observable<LocalNodeConfig[]>(subscriber => {
 
@@ -318,7 +337,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             const createArrayConfig = (listDefinition: ListDefinition, customCtrlLabel?: string, customPlaceholder?: string): LocalNodeConfig => {
 
               const childListType = listDefinition.listType;
-              const id = this.searchStringPartId++;
+              const stringPartId = this.searchStringPartId++;
               const mapValue = (x): MapValueItem => {
 
                 if (listType === 'temporal-entity') {
@@ -333,7 +352,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   }
                   else if (childListType === 'appellation') {
 
-                    const roles: InfRole[] = this.appellationsHook(x, id);
+                    const roles: InfRole[] = this.appellationsHook(x, stringPartId);
                     return {
                       key: getRoleKey(listType, listDefinition),
                       value: roles
@@ -358,7 +377,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                   } else if (childListType === 'text-property') {
 
-                    const textProps: InfTextProperty[] = this.textPropHook(x, id);
+                    const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
                     return { key: 'text_properties', value: textProps }
 
                   }
@@ -367,7 +386,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                   if (childListType === 'text-property') {
 
-                    const textProps: InfTextProperty[] = this.textPropHook(x, id);
+                    const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
                     return { key: 'text_properties', value: textProps }
 
                   } else if (childListType === 'temporal-entity') {
@@ -386,6 +405,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 throw new Error(`No mapValue defined for ${childListType} as child of ${listType}`)
               }
 
+
+              const removeHook = (data: FormArrayData) => {
+                const id = data.stringPartId;
+                if (id && this.searchStringParts[id]) delete this.searchStringParts[id];
+                this.emitNewSearchString();
+              }
+
               const required = listDefinition.isIdentityDefining;
               const maxLength = listDefinition.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMaxQuantity;
               const addOnInit = maxLength === 1 ? 1 : required ? 1 : 0;
@@ -401,9 +427,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                     pkClass: listDefinition.targetClass,
                     fieldDefinition: f,
                     listDefinition,
-                    customCtrlLabel
+                    customCtrlLabel,
+                    stringPartId,
+                    removeHook
                   },
-                  mapValue
+                  mapValue,
                 },
                 id: U.uuid()
               }
@@ -489,7 +517,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return combineLatest(this.c.pipeListTypeOfClass(nodeConfig.group.data.pkClass), this.c.pipeLabelOfClass(nodeConfig.group.data.pkClass)).pipe(auditTime(10), map(([listType, label]) => {
       const mapFn = createContainerMapValue(nodeConfig.group.data.pkClass)
       const mapValue = (x) => {
-        this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '))
+        this.emitNewSearchString();
         return mapFn(x)
       }
       if (listType === 'entity-preview') listType = 'persistent-item';
@@ -514,6 +542,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       }
       return childConfs;
     }));
+  }
+
+  private emitNewSearchString() {
+    this.searchString.emit(values(this.searchStringParts).filter(string => !!string).join(' '));
   }
 
   submit() {
@@ -578,7 +610,7 @@ function getRoleKey(listType: ListType, listDefinition: ListDefinition) {
   }
 }
 
-function getContainerArrayConfig(arrayConfig: FormArrayConfig<FormGroupData>): Observable<LocalNodeConfig[]> {
+function getContainerArrayConfig(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
   const mapValue = createContainerMapValue(arrayConfig.data.pkClass);
   return of([{ array: { ...arrayConfig, isList: false, mapValue } }]);
 }
