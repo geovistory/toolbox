@@ -160,17 +160,13 @@ export class QuillService {
         const newValue = this.statics.value(this.domNode);
         let offset = this.offset(this.editorService.quillEditor.editor.scroll);
         const range = this.editorService.quillEditor.getSelection();
-        const updateType = this.retrieveUpdateType(range, newValue, oldValue);
-        let newText;
+        const [updateType, newText] = this.retrieveUpdateType(range, newValue, oldValue);
 
 
         if (this.editorService.quillEditor.getLength() <= this.editorService.maxLength) {
 
           if (updateType === 'after') {
-            newText = newValue.charAt(1);
             offset++;
-          } else if (updateType === 'before') {
-            newText = newValue.charAt(0);
           }
 
 
@@ -228,16 +224,16 @@ export class QuillService {
        * the old one, which makes the cursor 'jumping over' the old and new characters
        * and which can lead to unwanted wholes in annotations.
        */
-      private retrieveUpdateType(range, newText, oldText): UpdateType {
-        const c0 = newText.charAt(0);
-        const c1 = newText.charAt(1);
+      private retrieveUpdateType(range, newText, oldText): [UpdateType, string] {
+        const c0 = newText.substring(0, 1);
+        const c1 = newText.substring(1, 2);
         if (c0 !== c1) {
-          if (oldText === newText.charAt(0)) return 'after';
-          if (oldText === newText.charAt(1)) return 'before';
+          if (oldText === c0) return ['after', c1];
+          if (oldText === c1) return ['before', c0];
         } else {
-          if (this.editorService.quillEditor.editor.delta.length() == 2) return 'after';
-          if (range.index > 1) return 'after';
-          return 'before'
+          if (this.editorService.quillEditor.editor.delta.length() == 2) return ['after', c1];
+          if (range.index > 1) return ['after', c1];
+          return ['before', c0]
         }
 
         // if (offset + 2 === range.index) return 'after';

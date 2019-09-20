@@ -1,4 +1,4 @@
-<div class="h-100" gdGap="10px" gdRows="40px auto 40px" gdColumns="50 50" gdAreas="header | content | footer" *ngIf="classAndTypePk$ | async">
+<div class="h-100" gdGap="10px" gdRows="40px auto 40px" gdColumns="50 50" gdAreas="header | content | footer" *ngIf="(classAndTypePk$ | async) && (pkUiContext$ | async)">
   <div class="ellipsis" gdArea="header">
     <!-- Header -->
     <h2 class="mat-h1">Add a {{classConfig?.label}}</h2>
@@ -8,7 +8,8 @@
       <!-- Left -->
       <div fxFlex="60" fxLayout="column" class="gv-overflow-hidden">
         <div class="gv-scroll-y-auto p-1">
-          <gv-form-create-entity class="w-100" [pkClass]="(classAndTypePk$ | async).pkClass" hideTitle="true" hideButtons="true" (cancel)="cancel.emit()"
+          <gv-form-create-entity class="w-100" [pkClass]="(classAndTypePk$ | async).pkClass" [appContext]="pkUiContext$ | async"
+            hideTitle="true" hideButtons="true" (cancel)="cancel.emit()"
             (saved)="done.emit($event)" (searchString)="searchStringChange($event)" #f>
           </gv-form-create-entity>
         </div>

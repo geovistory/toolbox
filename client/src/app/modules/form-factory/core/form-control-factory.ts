@@ -21,7 +21,7 @@ export class FormControlFactory<M> extends AbstractControlFactory {
   ) {
     super()
     const validators = config.required ? [Validators.required] : []
-    this.control = new FormControl(null, validators)
+    this.control = new FormControl(config.initValue || null, validators)
 
     this.control.valueChanges.pipe(
       map(item => this.config.mapValue(item)),
