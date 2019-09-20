@@ -336,7 +336,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     // Clear histroy to prevent user from going back (e.g. to previous version)
     this.quillEditor.history.clear();
 
-    this.quillEditorService.batchInsertContent('Opening Document',this.ops)
+    this.quillEditorService.batchInsertContent('Opening Document', this.ops)
 
   }
 
@@ -357,13 +357,16 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
         bindings: {
           tab: {
             key: 9, // Tab Key
-            handler: function () {
-            }
+            handler: function () { }
           },
           enter: {
             key: 13, // Enter Key
-            handler: function () {
-            }
+            handler: function () { }
+          },
+          enterShift: {
+            key: 13, // Enter Key
+            shiftKey: true,
+            handler: function () { }
           }
         }
       }

@@ -7,8 +7,8 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 })
 export class DetailContentComponent implements OnInit {
 
-  @HostBinding('class.gv-flex-fh') fh = true;
-  @HostBinding('class.gv-scroll-y-auto') scroll = true;
+  // @HostBinding('class.gv-flex-fh') fh = true;
+  @HostBinding('class.gv-scroll-y-container') scroll = true;
 
   constructor() { }
 

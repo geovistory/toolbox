@@ -121,7 +121,12 @@ button:focus {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-
+td.gv-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 0;
+}
 // generate .bg-gray-* classes
 @each $color, $value in $grays {
   @include bg-variant(".bg-gray-#{$color}", $value);
@@ -438,6 +443,15 @@ $gv-color-selected: #00ffff;
   @extend .gv-fh;
   @extend .d-flex;
   height: 100%;
+  overflow: hidden;
+}
+
+.gv-scroll-y-container{
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0%;
+  height: 100%;
+  overflow-y: auto
 }
 
 // full viewport height
@@ -1696,7 +1710,7 @@ as-split.gv-split-style {
     transition: opacity 0.3s;
     opacity: 0;
     position: absolute;
-    z-index: 100;
+    z-index: 101;
   }
 
   .as-split-gutter-icon {
@@ -1705,7 +1719,7 @@ as-split.gv-split-style {
     transition: opacity 0.3s;
     opacity: 0;
     position: absolute;
-    z-index: 100;
+    z-index: 101;
   }
 
   ::ng-deep .as-split-gutter.is-dragged .as-split-gutter-icon,
