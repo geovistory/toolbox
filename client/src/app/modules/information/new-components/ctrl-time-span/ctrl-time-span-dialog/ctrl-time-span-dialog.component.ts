@@ -6,13 +6,11 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup } from '../../../.
 import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../../node_modules/@angular/material';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../../node_modules/rxjs';
 import { debounceTime, first, mergeMap, takeUntil } from '../../../../../../../node_modules/rxjs/operators';
-import { DfhConfig } from '../../../shared/dfh-config';
-import { MergeDef } from '../../create-role-form/create-role-form.component';
-import { FormPart } from '../../create-role-form/FormPart';
-import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
-import { FieldDefinition } from '../../properties-tree/properties-tree.models';
-import { InformationPipesService } from '../../../new-services/information-pipes.service';
 import { ConfigurationPipesService } from '../../../new-services/configuration-pipes.service';
+import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
+import { MergeDef } from '../../form-create-role/form-create-role.component';
+import { FormPart } from '../../form-create-role/FormPart';
+import { FieldDefinition } from '../../properties-tree/properties-tree.models';
 
 export interface CtrlTimeSpanDialogResult {
   // key is the dfh_pk_property, expressing what the time primitive means for the time span

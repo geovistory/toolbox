@@ -3,7 +3,7 @@ import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalE
 import { Observable } from "rxjs";
 import { PropertiesTreeService } from "./properties-tree.service";
 
-export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity';
+export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity' | 'persistent-item';
 
 export type CreateControlType = 'role';
 
@@ -26,6 +26,8 @@ export interface FieldDefinition {
   targetClasses?: number[]
   targetMaxQuantity?: number
   listDefinitions: ListDefinition[]
+  isIdentityDefining: boolean
+
 }
 
 export interface ListDefinition {

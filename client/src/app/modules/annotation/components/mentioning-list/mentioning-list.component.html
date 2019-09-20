@@ -1,7 +1,7 @@
 <div class="d-flex flex-column" *ngIf="!(create$ |async)">
 
 
-  <table mat-table [dataSource]="dataSource" matSort matSortDisableClear="false" class="mat-elevation-z0">
+  <table mat-table [dataSource]="dataSource" matSort matSortDisableClear="false" class="mat-elevation-z0 w-100">
     <!-- digital Column -->
     <ng-container matColumnDef="digital">
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="digitalLabel">
@@ -18,7 +18,7 @@
         <span *ngIf="listOf.type === 'digital-text'">Annotated Text</span>
         <span *ngIf="listOf.type === 'entity'">Annotated Text</span>
       </th>
-      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element"> {{element.domainLabel}} </td>
+      <td mat-cell style="flex: 0 1 0%" class="gv-ellipsis" *matCellDef="let element"> {{element.domainLabel}} </td>
     </ng-container>
 
     <!-- propertyLabel Column -->
@@ -36,9 +36,9 @@
       </td>
     </ng-container>
     <!-- actions Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell class="actions-col" style="flex: 0 1 0%" *matHeaderCellDef> </th>
-      <td mat-cell class="actions-col" style="flex: 0 1 0%" *matCellDef="let element">
+    <ng-container matColumnDef="actions" stickyEnd>
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let element">
 
         <button mat-icon-button [matMenuTriggerFor]="mainMenu">
           <mat-icon>more_vert</mat-icon>

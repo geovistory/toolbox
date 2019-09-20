@@ -1,15 +1,14 @@
 /// <reference types="quill" />
 
-import { Injectable, Renderer2 } from '@angular/core';
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import Quill from 'quill';
 import Delta from 'quill/node_modules/quill-delta';
 import { clone } from 'ramda';
-import { asapScheduler, asyncScheduler, BehaviorSubject, Observable, Subject } from '../../../../node_modules/rxjs';
-import { IndexedCharids } from './quill-edit/quill-edit.component';
-import { DeltaI, Op, Ops } from './quill.models';
-import { Blot } from 'parchment/dist/src/blot/abstract/blot';
-import { MatDialog, MatDialogConfig } from '@angular/material';
-import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { asapScheduler, asyncScheduler, Observable, Subject } from '../../../../node_modules/rxjs';
+import { DeltaI } from './quill.models';
+import { QuillEditorRegistryService } from './services/quill-editor-registry.service';
 
 const Inline = Quill.import('blots/inline');
 const Block = Quill.import('blots/block');
@@ -54,55 +53,25 @@ export class QuillService {
 
   Quill = Quill;
 
-  // index of nodes, where key = charid, value = Node
-  domNodes: { [key: number]: Node } = {};
 
-  // index of nodes, where key = charid, value = array of numbers (e.g. pk_entity of chunks)
-  highlightNodes: IndexedCharids<number[]> = {};
-
-  // index of click Callbacks, needed for removing eventListeners
-  clickCbIndex: { [key: number]: () => void } = {}
-
-  // index of mouseenter Callbacks, needed for removing eventListeners
-  mouseenterCbIndex: { [key: number]: () => void } = {}
-
-  // index of mouseleave Callbacks, needed for removing eventListeners
-  mouseleaveCbIndex: { [key: number]: () => void } = {}
-
-  // emits the charid of the clicked highlighted node
-  highlightClicked$ = new Subject<number>();
-
-  // emits the charid of the mouseentered highlighted node
-  highlightMouseentered$ = new Subject<number>();
-
-  // emits the charid of the mouseleft highlighted node
-  highlightMouseleft$ = new Subject<number>();
-
-
-  // max number of characters allowed in text
-  maxLength = Number.POSITIVE_INFINITY;
 
   clipboard;
   nodeBlot;
   textBlot;
-  containerBlot;
-  editor;
-  latestId: number;
-  updateContents: () => void;
 
   constructor(
-    private renderer: Renderer2,
-    private dialog: MatDialog
+    private reg: QuillEditorRegistryService,
   ) {
 
-    this.clipboard = this.extendClipboard(this)
+    this.clipboard = this.extendClipboard(this.reg)
     this.Quill.register('modules/clipboard', this.clipboard, true);
 
-    this.nodeBlot = this.createNodeBlot(this)
+    this.textBlot = this.createTextBlot(this.reg)
+    this.Quill.register(this.textBlot, true);
+
+    this.nodeBlot = this.createNodeBlot(this.reg)
     this.Quill.register(this.nodeBlot, true);
 
-    this.textBlot = this.createTextBlot(this)
-    this.Quill.register(this.textBlot, true);
 
     // this.Quill.register(this.createInlineBlot(this), false);
     // this.Quill.register(this.createBlockBlot(this), false);
@@ -111,16 +80,19 @@ export class QuillService {
 
   }
 
-  extendClipboard = (service: QuillService) => {
+  extendClipboard = (registry: QuillEditorRegistryService) => {
     return class Clipboard extends OriginalClipboard {
 
+      get editorService() {
+        return registry.getService(this.quill.editor.scroll.domNode)
+      }
 
       onPaste(e) {
 
         if (e.defaultPrevented || !this.quill.isEnabled()) return;
-        let range = this.quill.getSelection();
+        const range = this.quill.getSelection();
         let delta = new Delta().retain(range.index);
-        let scrollTop = this.quill.scrollingContainer.scrollTop;
+        const scrollTop = this.quill.scrollingContainer.scrollTop;
         this.container.focus()
         this.quill.selection.update('silent');
 
@@ -129,15 +101,17 @@ export class QuillService {
           const newLength = pastedLength + this.quill.getLength() - 1 - replacedLength;
 
           // Check length
-          if (newLength <= service.maxLength) {
+          if (newLength <= this.editorService.maxLength) {
             // Length is ok, proceed
             setTimeout(() => {
               delta = delta.concat(this.convert()).delete(range.length);
-              this.quill.updateContents(delta, 'user');
-              // range.length contributes to delta.length()
-              this.quill.setSelection(delta.length() - range.length, 'silent');
-              this.quill.scrollingContainer.scrollTop = scrollTop;
-              this.quill.focus();
+              // this.quill.updateContents(delta, 'user');
+              this.editorService.batchInsertContent('Pasting Content', delta.ops, () => {
+                // range.length contributes to delta.length()
+                this.quill.setSelection(delta.length() - range.length, 'silent');
+                this.quill.scrollingContainer.scrollTop = scrollTop;
+                this.quill.focus();
+              })
             }, 1);
           } else {
             // To long, open dialog
@@ -145,7 +119,7 @@ export class QuillService {
               data: {
                 title: 'Pasted text too long. Sorry.',
                 paragraphs: [
-                  `This text is limited to ${service.maxLength} characters, while:`,
+                  `This text is limited to ${this.editorService.maxLength} characters, while:`,
                   `${pastedLength} (pasted) + ${this.quill.getLength() - 1} (existing) - ${replacedLength} (replaced) = ${newLength} characters`
                 ],
                 hideNoButton: true,
@@ -154,7 +128,7 @@ export class QuillService {
                 yesBtnColor: 'primary'
               }
             }
-            service.dialog.open(ConfirmDialogComponent, dialogData)
+            this.editorService.dialog.open(ConfirmDialogComponent, dialogData)
             this.container.innerHTML = '';
           }
         })
@@ -174,20 +148,23 @@ export class QuillService {
 
     }
   }
-  createTextBlot = (service: QuillService) => {
+  createTextBlot = (registry: QuillEditorRegistryService) => {
     return class TextBlot extends OriginalTextBlot {
+      get editorService() {
+        return registry.getService(this.scroll.domNode)
+      }
 
       splitChars(mutations: MutationRecord[]) {
         const mutation = mutations[0]
         const oldValue = mutation.oldValue;
         const newValue = this.statics.value(this.domNode);
-        let offset = this.offset(service.editor.editor.scroll);
-        const range = service.editor.getSelection();
+        let offset = this.offset(this.editorService.quillEditor.editor.scroll);
+        const range = this.editorService.quillEditor.getSelection();
         const updateType = this.retrieveUpdateType(range, newValue, oldValue);
         let newText;
 
 
-        if (service.editor.getLength() <= service.maxLength) {
+        if (this.editorService.quillEditor.getLength() <= this.editorService.maxLength) {
 
           if (updateType === 'after') {
             newText = newValue.charAt(1);
@@ -206,10 +183,10 @@ export class QuillService {
 
 
           // Update the editor (delta and history)
-          service.editor.scroll.update('user')
+          this.editorService.quillEditor.scroll.update('user')
 
           // Update the cursor position
-          service.editor.setSelection(offset + 1)
+          this.editorService.quillEditor.setSelection(offset + 1)
 
         } else {
 
@@ -220,7 +197,7 @@ export class QuillService {
           this.text = oldValue;
 
           // Update the cursor position
-          service.editor.setSelection(offset + 1)
+          this.editorService.quillEditor.setSelection(offset + 1)
         }
 
       }
@@ -258,7 +235,7 @@ export class QuillService {
           if (oldText === newText.charAt(0)) return 'after';
           if (oldText === newText.charAt(1)) return 'before';
         } else {
-          if (service.editor.editor.delta.length() == 2) return 'after';
+          if (this.editorService.quillEditor.editor.delta.length() == 2) return 'after';
           if (range.index > 1) return 'after';
           return 'before'
         }
@@ -270,8 +247,18 @@ export class QuillService {
     }
   }
 
-  createNodeBlot = (service: QuillService) => {
+  createNodeBlot = (registry: QuillEditorRegistryService) => {
+    const textBlot = this.textBlot;
     return class NodeBlot extends Inline {
+
+
+      get editorService() {
+        const find = (node) => {
+          return node.scroll ? node.scroll : node.parent ? find(node.parent) : undefined
+        }
+        const scroll = find(this)
+        return scroll ? registry.getService(scroll.domNode) : undefined
+      }
 
       static blotName = 'charid';
       static tagName = 'span';
@@ -283,7 +270,7 @@ export class QuillService {
         // add id here
         node.setAttribute('charid', value);
 
-        service.addDomNode(value, node)
+        // this.editorService.addDomNode(value, node)
 
         return node;
       }
@@ -298,8 +285,8 @@ export class QuillService {
 
       addNodeBlot(newText: string, updateType: UpdateType) {
 
-        const newNodeBlot = Registry.create('charid', ++service.latestId);
-        const newTextBlot = new service.textBlot(service.textBlot.create(newText), true);
+        const newNodeBlot = Registry.create('charid', ++this.editorService.latestId);
+        const newTextBlot = new textBlot(textBlot.create(newText), true);
         newNodeBlot.appendChild(newTextBlot)
         const next = updateType === 'after' ? this.next : this;
         this.parent.insertBefore(newNodeBlot, next);
@@ -310,7 +297,7 @@ export class QuillService {
 
       remove() {
         if (this.domNode.innerHTML !== '') {
-          service.removeDomNode(this.domNode.getAttribute('charid'))
+          this.editorService.removeDomNode(this.domNode.getAttribute('charid'))
         }
 
         if (this.domNode.parentNode != null) {
@@ -321,13 +308,15 @@ export class QuillService {
 
       detach() {
         const value = this.domNode.getAttribute('charid')
-        // service.removeDomNode(value)
+        // this.editorService.removeDomNode(value)
         super.detach()
       }
       attach() {
-        const value = this.domNode.getAttribute('charid')
-        // service.addDomNode(value, this.domNode)
         super.attach()
+        const value = this.domNode.getAttribute('charid')
+        if (this.editorService) {
+          this.editorService.addDomNode(value, this.domNode)
+        }
       }
       // split(index: number, force: boolean = false) {
 
@@ -342,7 +331,7 @@ export class QuillService {
           if (index === 0) return this;
           if (index === this.length()) return this.next;
         }
-        let after = this.clone();
+        const after = this.clone();
         this.parent.insertBefore(after, this.next);
         this.children.forEachAt(index, this.length(), function (child, offset, length) {
           child = child.split(offset, force);
@@ -352,8 +341,8 @@ export class QuillService {
         // Update domNode index
         if (force) {
           const value = this.domNode.getAttribute('charid')
-          service.removeDomNode(value)
-          service.addDomNode(value, after.domNode)
+          this.editorService.removeDomNode(value)
+          this.editorService.addDomNode(value, after.domNode)
         }
         return after;
       }
@@ -369,81 +358,6 @@ export class QuillService {
     }
   }
 
-  /**
-   * adds a domNode to the index this.domNodes
-   */
-  private addDomNode(key: number, value: Node) {
-    if (!this.domNodes[key]) this.domNodes[key] = value;
-  }
-
-  /**
-  * removes a domNode to the index this.domNodes
-  */
-  private removeDomNode(key: number) {
-    delete this.domNodes[key];
-  }
-
-
-  /**
-   * Enables the highlighting of the node with given charid
-   * Extracts the DomNode from "domNodes" where the key matches charid.
-   * - adds class for highlighting
-   * - adds event listeners for click, mouseenter, mouseleave
-   */
-  highlightNode(charid: number) {
-    const x = Registry;
-    const n = this.domNodes[charid];
-    if (n) {
-      this.renderer.addClass(n, 'gv-quill-text-highlight');
-      this.clickCbIndex[charid] = () => { this.highlightClicked$.next(charid) }
-      n.addEventListener('click', this.clickCbIndex[charid])
-      this.mouseenterCbIndex[charid] = () => { this.highlightMouseentered$.next(charid) }
-      n.addEventListener('mouseenter', this.mouseenterCbIndex[charid])
-      this.mouseleaveCbIndex[charid] = () => { this.highlightMouseleft$.next(charid) }
-      n.addEventListener('mouseleave', this.mouseleaveCbIndex[charid])
-    }
-  }
-
-  createHighlightCallback(charid) {
-    return this.domNodes[charid]
-  }
-
-  /**
-   * Disables the highlighting of the node with given charid
-   * Extracts the DomNode from "domNodes" where the key matches charid.
-   * - removes class for highlighting
-   * - removes event listeners for click, mouseenter, mouseleave
-   */
-  unlightNode(charid: number) {
-    const n = this.domNodes[charid];
-    if (n) {
-      this.renderer.removeClass(n, 'gv-quill-text-highlight');
-      n.removeEventListener('click', this.clickCbIndex[charid])
-      n.removeEventListener('mouseenter', this.mouseenterCbIndex[charid])
-      n.removeEventListener('mouseleave', this.mouseleaveCbIndex[charid])
-    }
-  }
-
-  /**
-   * Enables accent of the node with given charid
-   * - adds class for accent
-   */
-  accentuateNode(charid: number) {
-    const n = this.domNodes[charid];
-    if (n) {
-      this.renderer.addClass(n, 'gv-quill-text-accent');
-    }
-  }
-  /**
-   * Disables accent of the node with given charid
-   * - removes class for accent
-   */
-  unaccentuateNode(charid: number) {
-    const n = this.domNodes[charid];
-    if (n) {
-      this.renderer.removeClass(n, 'gv-quill-text-accent');
-    }
-  }
 
   /**
    * Creates a insert operation for each character on content change event.
@@ -661,50 +575,41 @@ export class QuillService {
     }
   }
 
-  createEditor = (el, editorConfig, updateContents, maxLength) => {
-    this.maxLength = maxLength
-    this.editor = new this.Quill(el, editorConfig)
-    this.updateContents = updateContents;
-    return this.editor
+}
+
+export function createEnterHandle() {
+  const BLOCK = Registry.Scope.BLOCK;
+  const USER = 'user';
+  const SILENT = 'silent';
+  return function (range, context) {
+
+    const lineFormats = Object.keys(context.format).reduce(
+      (formats, format) => {
+        if (
+          Registry.query(format, BLOCK) &&
+          !Array.isArray(context.format[format])
+        ) {
+          formats[format] = context.format[format];
+        }
+        return formats;
+      },
+      {},
+    );
+    const delta = new Delta()
+      .retain(range.index)
+      .delete(range.length)
+      .insert('\n', lineFormats);
+    this.quill.updateContents(delta, USER);
+    this.quill.setSelection(range.index + 1, SILENT);
+    this.quill.focus();
+
+    Object.keys(context.format).forEach(name => {
+      if (lineFormats[name] != null) return;
+      if (Array.isArray(context.format[name])) return;
+      // Geovistory customization for charid
+      if (name === 'charid' || name === 'code' || name === 'link') return;
+      this.quill.format(name, context.format[name], USER);
+    });
+
   }
-
-  createEnterHandle() {
-    const BLOCK = Registry.Scope.BLOCK;
-    const USER = 'user';
-    const SILENT = 'silent';
-    const _this = this;
-    return function (range, context) {
-
-      const lineFormats = Object.keys(context.format).reduce(
-        (formats, format) => {
-          if (
-            Registry.query(format, BLOCK) &&
-            !Array.isArray(context.format[format])
-          ) {
-            formats[format] = context.format[format];
-          }
-          return formats;
-        },
-        {},
-      );
-      const delta = new Delta()
-        .retain(range.index)
-        .delete(range.length)
-        .insert('\n', lineFormats);
-      this.quill.updateContents(delta, USER);
-      this.quill.setSelection(range.index + 1, SILENT);
-      this.quill.focus();
-
-      Object.keys(context.format).forEach(name => {
-        if (lineFormats[name] != null) return;
-        if (Array.isArray(context.format[name])) return;
-        // Geovistory customization for charid
-        if (name === 'charid' || name === 'code' || name === 'link') return;
-        this.quill.format(name, context.format[name], USER);
-      });
-
-    }
-  }
-
-
 }

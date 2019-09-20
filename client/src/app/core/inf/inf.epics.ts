@@ -70,9 +70,11 @@ export class InfEpics {
             let actions;
             if (schema === 'inf') actions = this.infActions;
             else if (schema === 'pro') actions = this.proActions;
-            if (actions) Object.keys(schemas[schema]).forEach(model => {
-              actions[model].loadSucceeded(schemas[schema][model], undefined, pk)
-            })
+            if (actions) {
+              Object.keys(schemas[schema]).forEach(model => {
+                actions[model].loadSucceeded(schemas[schema][model], undefined, pk)
+              })
+            }
           })
         }
       ),
@@ -85,7 +87,14 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), pk);
         }
       ),
-
+      infPersistentItemEpicsFactory.createUpsertEpic<ModifyActionMeta<InfPersistentItem>>((meta) => this.peItApi
+        .findOrCreateInfPersistentItems(meta.pk, meta.items),
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.persistent_item.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        }
+      ),
       infPersistentItemEpicsFactory.createRemoveEpic(),
 
 
@@ -130,7 +139,14 @@ export class InfEpics {
           this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
         }))
       ),
-
+      infTemporalEntityEpicsFactory.createUpsertEpic<ModifyActionMeta<InfTemporalEntity>>((meta) => this.teEnApi
+        .findOrCreateInfTemporalEntities(meta.pk, meta.items),
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.temporal_entity.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        }
+      ),
       infTemporalEntityEpicsFactory.createRemoveEpic(),
 
 
@@ -281,14 +297,13 @@ export class InfEpics {
     if (schemas && Object.keys(schemas).length > 0) {
       Object.keys(schemas).forEach(schema => {
         let actions;
-        if (schema === 'inf')
-          actions = this.infActions;
-        else if (schema === 'pro')
-          actions = this.proActions;
-        if (actions)
+        if (schema === 'inf') actions = this.infActions;
+        else if (schema === 'pro') actions = this.proActions;
+        if (actions) {
           Object.keys(schemas[schema]).forEach(model => {
             actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
           });
+        }
       });
     }
   }

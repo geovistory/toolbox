@@ -90,6 +90,30 @@ module.exports = function (InfTemporalEntity) {
 
   }
 
+  InfTemporalEntity.findOrCreateInfTemporalEntities = function (pk_project, items, ctx) {
+    return new Promise((resolve, reject) => {
+      const promiseArray = items.map((item, i) => {
+
+        const context = {
+          ...ctx,
+          req: {
+            ...ctx.req,
+            body: {
+              ...ctx.req.body[i]
+            }
+          }
+        }
+
+        return InfTemporalEntity.findOrCreateInfTemporalEntity(pk_project, item, context)
+      })
+      Promise.map(promiseArray, (promise) => promise)
+        .catch(err => reject(err))
+        .then(res => {
+          return resolve(_.flatten(res))
+        })
+    })
+  };
+
 
   InfTemporalEntity.findOrCreateInfTemporalEntity = function (pkProject, data, ctx) {
     return new Promise((resolve, reject) => {
@@ -110,7 +134,7 @@ module.exports = function (InfTemporalEntity) {
 
       const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-      InfTemporalEntity.resolveRoleValues(requestedTeEnt.te_roles)
+      InfTemporalEntity.resolveRoleValues(pkProject, requestedTeEnt.te_roles, ctxWithoutBody)
         .then(resolvedRoles => {
 
           const teEnWithResolvedRoles = {
@@ -120,10 +144,16 @@ module.exports = function (InfTemporalEntity) {
           InfTemporalEntity._findOrCreateTeEnt(InfTemporalEntity, pkProject, teEnWithResolvedRoles, ctxWithoutBody)
             .then((resultingEntities) => {
 
-              //TODO pick first item of array
+              // pick first item of array
               const resultingEntity = resultingEntities[0];
+              const res = helpers.toObject(resultingEntity);
 
-              // if there are roles going out of the teEnt …
+              // Array of Promises
+              const promiseArray = []
+
+              /******************************************
+              * te_roles (= outgoing_roles)
+              ******************************************/
               if (requestedTeEnt.te_roles) {
 
                 // prepare parameters
@@ -132,7 +162,7 @@ module.exports = function (InfTemporalEntity) {
                 //… filter roles that are truthy (not null), iterate over them,
                 // return the promise that the teEnt will be
                 // returned together with all nested items
-                Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
+                const promise = Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
                   // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
                   role.fk_temporal_entity = resultingEntity.pk_entity;
 
@@ -151,15 +181,60 @@ module.exports = function (InfTemporalEntity) {
                       }
                     }
 
-                    // console.log(res)
+                    resolve([res]);
+
+                  })
+                  .catch(err => reject(err))
+
+                // add promise for pi_roles
+                promiseArray.push(promise)
+
+              }
+
+              /******************************************
+              * ingoing_roles
+              ******************************************/
+              if (requestedTeEnt.ingoing_roles) {
+
+                // prepare parameters
+                const InfRole = InfTemporalEntity.app.models.InfRole;
+
+                //… filter roles that are truthy (not null), iterate over them,
+                // return the promise that the teEnt will be
+                // returned together with all nested items
+                const promise = Promise.map(requestedTeEnt.ingoing_roles.filter(role => (role)), (role) => {
+                  // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
+                  role.fk_entity = resultingEntity.pk_entity;
+
+                  // find or create the Entity and the role pointing to the Entity
+                  return InfRole.findOrCreateInfRole(pkProject, role, ctxWithoutBody);
+                })
+                  .then((roles) => {
+
+                    //attach the roles to resultingTeEnt
+                    let res = helpers.toObject(resultingEntity);
+                    res.ingoing_roles = [];
+                    for (var i = 0; i < roles.length; i++) {
+                      const role = roles[i];
+                      if (role && role[0]) {
+                        res.ingoing_roles.push(role[0]);
+                      }
+                    }
 
                     resolve([res]);
 
                   })
                   .catch(err => reject(err))
-              } else {
-                resolve(resultingEntities);
+
+                // add promise for pi_roles
+                promiseArray.push(promise)
+
               }
+
+              if (promiseArray.length === 0) return resolve([res]);
+              else return Promise.map(promiseArray, (promise) => promise).then(() => {
+                resolve([res])
+              });
             })
             .catch(err => {
               reject(err)
@@ -171,7 +246,7 @@ module.exports = function (InfTemporalEntity) {
     });
   }
 
-  InfTemporalEntity.resolveRoleValues = function (te_roles) {
+  InfTemporalEntity.resolveRoleValues = function (pkProject, te_roles, ctxWithoutBody) {
     return new Promise((resolve, reject) => {
       if (!te_roles || !te_roles.length) resolve([])
 
@@ -247,6 +322,20 @@ module.exports = function (InfTemporalEntity) {
             })
           }
 
+          // // Temporal Entity
+          // if (role.temporal_entity && Object.keys(role.temporal_entity).length) {
+
+          //   return new Promise((res, rej) => {
+          //     InfTemporalEntity.findOrCreateInfTemporalEntity(pkProject, role.temporal_entity, ctxWithoutBody)
+          //       .then(obj => {
+          //         const fk_entity = obj[0].pk_entity;
+          //         res({
+          //           fk_property: role.fk_property,
+          //           fk_entity
+          //         })
+          //       })
+          //   })
+          // }
         })
       ).then(resolvedRoles => {
         resolve([...te_roles_with_fk_entity, ...resolvedRoles]);

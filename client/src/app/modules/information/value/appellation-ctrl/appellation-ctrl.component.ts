@@ -4,7 +4,6 @@ import { InfAppellation, InfRole } from 'app/core';
 import { QuillDoc } from 'app/modules/quill/quill.models';
 import { pick } from 'ramda';
 import { Subject } from 'rxjs';
-import { QuillService } from '../../../quill/quill.service';
 
 @Component({
   selector: 'gv-appellation-ctrl',
@@ -38,7 +37,7 @@ export class AppellationCtrlComponent implements OnDestroy, ControlValueAccessor
     placeholder: 'Start typing...'
   }
 
-  constructor(private quillService: QuillService) { }
+  constructor() { }
 
 
 

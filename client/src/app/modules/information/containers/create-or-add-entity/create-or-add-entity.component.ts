@@ -44,7 +44,7 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
   @select() pkNamespace$: Observable<number>;
 
   // emits the nested PeIt or TeEn, no matter if created, added, opened or selected!
-  @Output() done = new EventEmitter<InfPersistentItem |  InfTemporalEntity>();
+  @Output() done = new EventEmitter<InfPersistentItem | InfTemporalEntity>();
 
   // on cancel
   @Output() cancel = new EventEmitter<void>();
@@ -111,13 +111,10 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
   }
 
   /**
-   * gets called by create peIt control, also when the form is not valid.
-   * May contain invalid peIt, that allows to retrieve some string
-   * to search for existing peIts
-   * @param peIt
+   * gets called on change of the search string.
    */
-  onValueChange(peIt: InfPersistentItem) {
-    this.searchString$.next(U.stringForPeIt(peIt))
+  searchStringChange(term: string) {
+    this.searchString$.next(term)
   }
 
   ngOnDestroy() {
