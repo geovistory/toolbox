@@ -26,7 +26,7 @@ export class TypesAPIEpics {
     return combineEpics(
       this.createLoadTypesEpic(c),
       this.createOpenEditFormEpic(c),
-      this.createUpsertInfProjRelEpic(c),
+      // this.createUpsertInfProjRelEpic(c),
     );
   }
 
@@ -147,20 +147,20 @@ export class TypesAPIEpics {
    * This should be replaced with a better method, once all the information
    * data (peIt, roles, ect.) is also centrally stored in 'activeProject'
    */
-  private createUpsertInfProjRelEpic(c: TypesComponent): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        ofType(ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED),
-        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          combineLatest(c.typeClass$, c.p.pkProject$).pipe(first(d => !d.includes(undefined)), takeUntil(c.destroy$))
-            .subscribe(([klass, pkProject]) => {
-              c.localStore.dispatch(this.actions.load(pkProject, klass.dfh_pk_class));
-            })
-        })),
-        takeUntil(c.destroy$)
-      )
-    }
-  }
+  // private createUpsertInfProjRelEpic(c: TypesComponent): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       ofType(ActiveProjectActions.UPSERT_ENTITY_PROJ_REL_SUCCEEDED),
+  //       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         combineLatest(c.typeClass$, c.p.pkProject$).pipe(first(d => !d.includes(undefined)), takeUntil(c.destroy$))
+  //           .subscribe(([klass, pkProject]) => {
+  //             c.localStore.dispatch(this.actions.load(pkProject, klass.dfh_pk_class));
+  //           })
+  //       })),
+  //       takeUntil(c.destroy$)
+  //     )
+  //   }
+  // }
 
 
 }

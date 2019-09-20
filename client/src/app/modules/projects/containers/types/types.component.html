@@ -1,28 +1,43 @@
 <gv-detail-top-bar>
   <div class="ml-2">
-    Controlled Vocabulary for {{(typedClass$ | async)?.label}}
+    Controlled Vocabulary for {{(typedClassLabel$ | async)}}
   </div>
 </gv-detail-top-bar>
 <gv-detail-content class="p-3 gv-scroll-y-auto">
 
 
-  <h3 mat-subheader>
-    <span class="gv-grow-1">{{(typedClass$ | async)?.label}} Types</span>
-    <button mat-icon-button color="primary" (click)="addOrCreate()">
-      <mat-icon aria-label="Edit type">add_circle</mat-icon>
+  <div class="mat-h1 d-flex">
+    <span>{{(typedClassLabel$ | async)}} Types</span>
+    <button class="ml-auto" mat-button (click)="addOrCreate()">
+      <mat-icon aria-label="Edit type">add_circle_outline</mat-icon> Add
     </button>
-  </h3>
+  </div>
+
+  <p class="mat-body" *ngIf="!(items$|async) || (items$|async)?.length < 1">
+    Create and manage a controlled vocabulary for the class {{(typedClassLabel$ | async)}}.
+    <br>
+    <br>
+    A controlled vocabulary is a set of types. For example:
+    <br>
+    'City' and 'Village' could be types of the class Geographical Place.
+    <br>
+    <br>
+    Add a first type by clicking on
+    <button mat-button (click)="addOrCreate()">
+      <mat-icon aria-label="Edit type">add_circle_outline</mat-icon> Add
+    </button>
+  </p>
 
   <mat-list>
-    <mat-list-item *ngFor="let type of (items$ | async) | keys">
+    <mat-list-item *ngFor="let type of (items$ | async) ">
 
-      <span class="gv-grow-1">{{getLabel(type.value)}} </span>
+      <span class="gv-grow-1">{{type.label}} </span>
 
-      <button mat-icon-button color="primary" class="mr-2" (click)=edit(type.value)>
+      <button mat-icon-button class="mr-2" (click)=edit(type)>
         <mat-icon aria-label="Edit type">edit</mat-icon>
       </button>
 
-      <button mat-icon-button color="primary" (click)=remove(type.value)>
+      <button mat-icon-button (click)=remove(type)>
         <mat-icon aria-label="Remove type">delete</mat-icon>
       </button>
 

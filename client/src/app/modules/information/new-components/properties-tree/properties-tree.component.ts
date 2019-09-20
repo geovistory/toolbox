@@ -5,7 +5,6 @@ import { ActiveProjectService, SysConfig } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { FieldDefinition } from './properties-tree.models';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { PropertiesTreeService } from './properties-tree.service';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 
@@ -23,7 +22,7 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   @Input() pkEntity$: Observable<number>
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() appContext: number = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE
+  @Input() appContext: number;
   @Input() readonly$ = new BehaviorSubject(false);
 
   tree$: Observable<FieldDefinition[]>
@@ -38,6 +37,7 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.appContext = this.appContext || SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
     combineLatest(this.pkClass$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
       .subscribe(([pkClass]) => {

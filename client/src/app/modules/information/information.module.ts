@@ -1,4 +1,3 @@
-import { NgReduxFormModule } from '@angular-redux/form';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkTreeModule } from '@angular/cdk/tree';
 import { CommonModule } from '@angular/common';
@@ -25,6 +24,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
+import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
@@ -40,7 +40,6 @@ import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-d
 import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
 import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
 import { DndModule } from 'ng2-dnd';
-import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
 import { AngularCesiumModule } from '../../../../node_modules/angular-cesium';
@@ -50,6 +49,7 @@ import { TileHeaderModule } from '../../shared/components/tile-header/tile-heade
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { AnnotationModule } from '../annotation/annotation.module';
+import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
 import { AppeLangCreateCtrlAPIActions } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.actions';
 import { AppeLangCreateCtrlAPIEpics } from './appe-lang/appe-lang-create-ctrl/api/appe-lang-create-ctrl.epics';
@@ -123,7 +123,6 @@ import { InformationRoutingModule } from './information-routing.module';
 import { AddRoleComponent } from './new-components/add-role/add-role.component';
 import { ChooseClassDialogComponent } from './new-components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './new-components/classes-and-types-select/classes-and-types-select.component';
-import { FormCreateRoleComponent } from './new-components/form-create-role/form-create-role.component';
 import { CtrlAppellationComponent } from './new-components/ctrl-appellation/ctrl-appellation.component';
 import { CreateEntityModalComponent } from './new-components/ctrl-entity/create-entity-modal/create-entity-modal.component';
 import { CtrlEntityComponent } from './new-components/ctrl-entity/ctrl-entity.component';
@@ -135,11 +134,17 @@ import { CtrlTimeSpanDialogComponent } from './new-components/ctrl-time-span/ctr
 import { CtrlTimeSpanComponent } from './new-components/ctrl-time-span/ctrl-time-span.component';
 import { CtrlTypeComponent } from './new-components/ctrl-type/ctrl-type.component';
 import { FieldComponent } from './new-components/field/field.component';
+import { FormArrayComponent } from './new-components/form-array/form-array.component';
+import { FormControlComponent } from './new-components/form-control/form-control.component';
+import { FormCreateEntityComponent } from './new-components/form-create-entity/form-create-entity.component';
+import { FormCreateRoleComponent } from './new-components/form-create-role/form-create-role.component';
+import { FormGroupComponent } from './new-components/form-group/form-group.component';
 import { LeafItemAddListComponent } from './new-components/leaf-item-add-list/leaf-item-add-list.component';
 import { LeafItemListComponent } from './new-components/leaf-item-list/leaf-item-list.component';
 import { ListHeaderComponent } from './new-components/list-header/list-header.component';
 import { OntoClassInfoComponent } from './new-components/onto-class-info/onto-class-info.component';
 import { OntoPropertyInfoComponent } from './new-components/onto-property-info/onto-property-info.component';
+import { PropertiesTreeDialogComponent } from './new-components/properties-tree-dialog/properties-tree-dialog.component';
 import { PropertiesTreeComponent } from './new-components/properties-tree/properties-tree.component';
 import { PropertiesTreeService } from './new-components/properties-tree/properties-tree.service';
 import { TemporalEntityAddListComponent } from './new-components/temporal-entity-add-list/temporal-entity-add-list.component';
@@ -196,11 +201,6 @@ import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
 import { PlaceViewComponent } from './value/place-view/place-view.component';
 import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { FormCreateEntityComponent } from './new-components/form-create-entity/form-create-entity.component';
-import { FormFactoryModule } from '../form-factory/form-factory.module';
-import { FormGroupComponent } from './new-components/form-group/form-group.component';
-import { FormArrayComponent } from './new-components/form-array/form-array.component';
-import { FormControlComponent } from './new-components/form-control/form-control.component';
 
 
 @NgModule({
@@ -405,7 +405,8 @@ import { FormControlComponent } from './new-components/form-control/form-control
     FormCreateEntityComponent,
     FormGroupComponent,
     FormArrayComponent,
-    FormControlComponent
+    FormControlComponent,
+    PropertiesTreeDialogComponent,
   ],
   providers: [
 
@@ -591,7 +592,8 @@ import { FormControlComponent } from './new-components/form-control/form-control
     ExistenceTimeModalComponent,
     AddOrCreateEntityModal,
     ChooseClassDialogComponent,
-    CtrlTimeSpanDialogComponent
+    CtrlTimeSpanDialogComponent,
+    PropertiesTreeDialogComponent
   ]
 })
 export class Information2Module { }

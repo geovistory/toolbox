@@ -1,11 +1,11 @@
 
-import {of as observableOf,  BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { of as observableOf, BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { difference, groupBy, indexBy, path, values, without, equals } from 'ramda';
-import { distinctUntilChanged, filter, first, map, mergeMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, mergeMap, tap, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
 import { DatSelector } from '../dat/dat.service';
@@ -22,6 +22,9 @@ import { SystemSelector } from '../sys/sys.service';
 import { IAppState } from '../store/model';
 import { SysConfig } from '../config/sys-config';
 import { U } from '../util/util';
+import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { InfActions } from '../inf/inf.actions';
+import { SucceedActionMeta } from '../store/actions';
 
 
 
@@ -67,7 +70,8 @@ export class ActiveProjectService {
     private entityPreviewSocket: EntityPreviewSocket,
     public dialog: MatDialog,
     public dfh$: DfhSelector,
-    public sys$: SystemSelector
+    public sys$: SystemSelector,
+    public inf: InfActions
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -456,18 +460,19 @@ export class ActiveProjectService {
   }
 
   removePeIt(pk_entity: number) {
-    this.pkProject$.pipe(first(pk => !!pk)).subscribe(fk_project => {
-
-      const epr: ProInfoProjRel = {
-        fk_project,
-        fk_entity: pk_entity,
-        is_in_project: false,
-        ...{} as any
-      }
-
-      this.ngRedux.dispatch(this.actions.upsertEntityProjRel(epr))
-
-    })
+    const s = new Subject<SucceedActionMeta<InfPersistentItem>>();
+    combineLatest(
+      this.inf$.persistent_item$.by_pk_entity$.key(pk_entity).pipe(filter(x => !!x)),
+      this.pkProject$,
+    )
+      .pipe(first())
+      .subscribe(([persistentItem, pkProject]) => {
+        this.inf.persistent_item.remove([persistentItem], pkProject)
+          .resolved$
+          .pipe()
+          .subscribe(res => s.next(res))
+      })
+    return s;
   }
 
 
@@ -672,12 +677,40 @@ export class ActiveProjectService {
       height: '90%',
       width: '90%',
       data: { basePath: ['activeProject', 'addModal'] }
-    }).afterClosed().subscribe(result => {
+    }).afterClosed().pipe(first()).subscribe(result => {
       this.ngRedux.dispatch(this.actions.closeAddForm());
       if (result) observable.next(result)
     });
 
     return observable;
+  }
+  /**
+   * Opens dialog to get confirmation before removing
+   * peIt from project. If user confirms, the dialog
+   * removes peIt and closes
+   */
+  openRemovePeItDialog(entityLabel: string, pkEntity: number) {
+    const s = new Subject<void>();
+
+    const data: ConfirmDialogData = {
+      noBtnText: 'Cancel',
+      yesBtnText: 'Remove',
+      yesBtnColor: 'warn',
+      title: 'Remove ' + entityLabel,
+      paragraphs: ['Are you sure?'],
+
+    }
+    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    dialog.afterClosed().pipe(first()).subscribe(confirmed => {
+      if (confirmed) {
+        this.removePeIt(pkEntity).pipe(first(success => !!success)).subscribe(() => {
+          // removed
+          s.next()
+        })
+      }
+    })
+
+    return s;
   }
 
 }
