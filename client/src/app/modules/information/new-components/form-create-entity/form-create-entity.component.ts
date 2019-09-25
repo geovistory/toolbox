@@ -1,18 +1,18 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, SysConfig } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
+import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { clone, flatten, values } from 'ramda';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { auditTime, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
+import { auditTime, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
-import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 export interface FormArrayData {
   pkClass: number
   fieldDefinition?: FieldDefinition
@@ -82,18 +82,17 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       getChildNodeConfigs: this.getChildNodeConfigs
     }, this.destroy$)
 
-    console.log('formFactory', this.formFactory$)
 
     this.formFactory$.pipe(
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
       this.formFactory = v
     })
-    this.formFactory$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe((v) => {
-      console.log(v)
-    })
+    // this.formFactory$.pipe(
+    //   takeUntil(this.destroy$)
+    // ).subscribe((v) => {
+    //   console.log(v)
+    // })
 
   }
 
@@ -565,16 +564,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       })
 
     } else {
-      const recursiveMarkAsTouched = (f: FormArray) => {
-        f.controls.forEach((c: FormArray) => {
-          c.markAsTouched()
-          if (c.controls) recursiveMarkAsTouched(c)
-        })
-
-      }
       const f = this.formFactory.formGroup.controls.childControl as FormArray;
-      recursiveMarkAsTouched(f)
-
+      U.recursiveMarkAsTouched(f)
     }
   }
 

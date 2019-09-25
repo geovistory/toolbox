@@ -1,4 +1,4 @@
-import { Component, OnInit, ContentChild, Output, EventEmitter, AfterContentInit, OnDestroy, Input, Optional, Self } from '@angular/core';
+import { Component, OnInit, ContentChild, Output, EventEmitter, AfterContentInit, OnDestroy, Input, Optional, Self, ChangeDetectorRef } from '@angular/core';
 import { TreeChecklistComponent, TreeNode } from '../tree-checklist.component';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -31,6 +31,8 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
   @Input() compareWith: (a: TreeNode<any>, b: TreeNode<any>) => boolean;
 
   selectionChange$ = new BehaviorSubject<TreeNode<any>[]>([]);
+
+  selectedText$ = new BehaviorSubject<string>('');
 
   stateChanges = new Subject<void>();
   focused = false;
@@ -82,12 +84,9 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
     this.treeChecklist.setSelection(nodes);
   }
 
-  get selectedText(): string {
-    return this.value.map(node => node.data.label).join(', ')
-  }
-
   constructor(
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -104,6 +103,18 @@ export class TreeChecklistSelectComponent implements ControlValueAccessor, MatFo
         this.onSelectionChange(selected)
       })
 
+    this.treeChecklist.selected$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((nodes) => {
+        const t = this.createSelectedText(nodes)
+        this.selectedText$.next(t)
+        this.changeDetectorRef.detectChanges()
+      })
+  }
+
+  createSelectedText(nodes: TreeNode<any>[]): string {
+    if (!nodes || !nodes.length) return '';
+    return nodes.map(node => node.data.label).join(', ')
   }
 
   onSelectionChange(selected) {

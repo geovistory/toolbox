@@ -49,10 +49,7 @@ export class ResultTableComponent extends CoreTable<Example> implements OnDestro
       tap(() => dataRefreshs++),
       takeUntil(this.$destroy)
     ).subscribe(data => {
-      // if (dataRefreshs === 1) {
-      //   this.set(data);
-      // } else {
-      // }
+
       this.dataSource.allData = data;
 
       if (data.length === 0) {

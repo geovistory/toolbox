@@ -1,11 +1,11 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ActiveProjectService, ProQuery, IAppState, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { clone, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
-import { filter, first, map, takeUntil } from 'rxjs/operators';
+import { filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
 import { ClassAndTypeFilterComponent } from '../../components/class-and-type-filter/class-and-type-filter.component';
 import { ColDef } from "../../components/col-def-editor/ColDef";
 import { PropertyOption } from '../../components/property-select/property-select.component';
@@ -17,6 +17,8 @@ import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/
 import { TabLayoutComponentInterface } from '../../../projects/containers/project-edit/project-edit.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { FilterTree } from './FilterTree';
+import { QueryFilterComponent, FilterDefinition } from '../../components/query-filter/query-filter.component';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 
 export interface GvQuery {
@@ -39,7 +41,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
 
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  @ViewChild(forwardRef(() => ClassAndTypeFilterComponent), { static: true }) filterComponent: ClassAndTypeFilterComponent;
+  @ViewChild(forwardRef(() => QueryFilterComponent), { static: true }) filterComponent: QueryFilterComponent;
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -64,8 +66,8 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
 
   firstFormGroup: FormGroup;
-  filterCtrl: FormControl;
-
+  filterCtrl: AbstractControl;
+  filter$ = new BehaviorSubject<FilterDefinition>(null);
   secondFormGroup: FormGroup;
   columnsCtrl: FormControl;
 
@@ -90,21 +92,22 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   t: TabLayout;
 
+  filterDef$ = new Subject()
   constructor(
     protected rootEpics: RootEpics,
     private epics: QueryDetailAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     private fb: FormBuilder,
     public p: ActiveProjectService,
-    public ref: ChangeDetectorRef
+    public ref: ChangeDetectorRef,
+    private i: InformationPipesService
+
   ) {
     super()
 
     // Prepare first form group
-    this.filterCtrl = new FormControl(new FilterTree()) // TODO add validato
-    this.firstFormGroup = this.fb.group({
-      filterCtrl: this.filterCtrl
-    });
+    // this.filterCtrl = new FormControl(new FilterTree()) // TODO add validato
+    this.firstFormGroup = this.fb.group({});
 
     // Prepare second form group
     this.columnsCtrl = new FormControl([
@@ -153,14 +156,22 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     this.t.defaultSizeRight = 50;
 
     if (this.pkEntity) this.loadExistingQuery();
-    if (!this.pkEntity) this.t.setTabTitle('New Query*');
+    if (!this.pkEntity) {
+      this.t.setTabTitle('New Query*');
+      this.filterDef$ = new BehaviorSubject(undefined)
+    }
 
     this.pending$ = this.loadingPages$.pipe(
       map(pages => !!values(pages).find(loading => loading === true))
     )
 
+    this.filterComponent.formFactory$.pipe(takeUntil(this.destroy$)).subscribe(f => {
+      this.filterCtrl = f.formGroup;
+      this.firstFormGroup.addControl('filterCtrl', this.filterCtrl)
+    })
+
     this.comQuery$.pipe(filter(q => !!q), takeUntil(this.destroy$)).subscribe(comQuery => {
-      this.filterCtrl.setValue(comQuery.query.filter)
+      this.filterDef$.next(comQuery.query.filter)
       this.columnsCtrl.setValue(comQuery.query.columns);
       this.nameCtrl.setValue(comQuery.name);
       this.descriptionCtrl.setValue(comQuery.description);
@@ -170,21 +181,22 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   }
 
   ngAfterViewInit() {
-    // get the propertyOptions from the filter defined in the first step
-    this.filterComponent.propertyOptions$.pipe(
-      filter(o => o !== null),
-      takeUntil(this.destroy$)
-    ).subscribe(x =>
-      this.propertyOptions$.next(x)
-    );
+
 
     // get the selectedClassesAndTypes from the filter defined in the first step
-    this.filterComponent.selectedClassesAndTypes$.pipe(
+    this.filterComponent.formFactory$.pipe(
       filter(o => o !== null),
+      switchMap(f => f.formGroupFactory.valueChanges$),
       takeUntil(this.destroy$)
-    ).subscribe(x =>
-      this.classesAndTypes$.next(x)
-    );
+    ).subscribe((x: FilterDefinition) => {
+      this.filter$.next(x)
+      this.classesAndTypes$.next(x.data)
+    });
+    const propertyOptions$: Observable<PropertyOption[]> = this.i.getPropertyOptions$(this.classesAndTypes$)
+    propertyOptions$.pipe(takeUntil(this.destroy$))
+      .subscribe((x) => {
+        this.propertyOptions$.next(x)
+      });
 
   }
 
@@ -195,7 +207,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   onRun() {
     if (this.firstFormGroup.invalid) {
-      return values(this.firstFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
+      return this.filterComponent.markAllAsTouched();
     }
 
     if (this.secondFormGroup.invalid) {
@@ -205,7 +217,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pk => {
       this.t.setShowRightArea(true);
       this.colDefsCopy = clone(this.columnsCtrl.value)
-      this.filterQueryCopy = clone(this.filterCtrl.value)
+      this.filterQueryCopy = clone(this.filter$.value)
       this.displayedColumns = this.colDefsCopy.map(col => col.label);
       this.runInit(pk, {
         filter: this.filterQueryCopy,
@@ -250,7 +262,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       name: this.thirdFormGroup.controls.nameCtrl.value,
       description: this.thirdFormGroup.controls.descriptionCtrl.value,
       query: {
-        filter: this.filterCtrl.value,
+        filter: this.filter$.value,
         columns: this.columnsCtrl.value
       }
     } as ProQuery
@@ -275,7 +287,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
     let valid = true;
     if (this.firstFormGroup.invalid) {
-      values(this.firstFormGroup.controls).forEach(ctrl => { ctrl.markAsTouched() })
+      this.filterComponent.markAllAsTouched();
       valid = false;
     }
 
@@ -313,7 +325,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     this.p.pkProject$.pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       this.colDefsCopy = clone(this.columnsCtrl.value)
-      this.filterQueryCopy = clone(this.filterCtrl.value)
+      this.filterQueryCopy = clone(this.filter$.value)
       this.displayedColumns = this.colDefsCopy.map(col => col.label);
 
       this.download(

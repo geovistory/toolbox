@@ -99,6 +99,7 @@ export interface ProjectDetail extends ProjectPreview {
 
   // Conceptional Reference Model
   crm?: ProjectCrm,
+  initializingProject?: boolean;
 
   /******************************************************************
    * Information Cache

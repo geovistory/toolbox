@@ -1,3 +1,3 @@
-<mat-select multiple (selectionChange)="selectionChange($event)" [disabled]="disabled" (openedChange)="onOpenedChange($event)">
-  <mat-option *ngFor="let o of options$ | async" [id]="o.propertyFieldKey" [value]="o">{{o.label}}</mat-option>
+<mat-select [formControl]="control" multiple [disabled]="disabled" [compareWith]="compareWith">
+  <mat-option *ngFor="let o of options$ | async" [value]="o">{{o.label}}</mat-option>
 </mat-select>

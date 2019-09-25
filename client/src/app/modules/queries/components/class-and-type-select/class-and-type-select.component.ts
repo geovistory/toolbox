@@ -4,8 +4,9 @@ import { ControlValueAccessor, NgControl, ValidatorFn, AbstractControl, NG_VALID
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectService } from 'app/core';
 import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinct, filter, map, mergeMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject, empty } from 'rxjs';
+import { distinct, filter, map, mergeMap, tap, switchMap, takeUntil } from 'rxjs/operators';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 export interface ClassAndTypeSelectModel {
   classes?: number[]
@@ -151,9 +152,7 @@ class ClassAndTypeSelectMatControl implements OnDestroy, ControlValueAccessor, M
 
   }
 
-  writeValue(value: ClassAndTypeSelectModel | null): void {
-    this.value = value;
-  }
+  writeValue(x): void { }
 
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -188,7 +187,7 @@ export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl im
   @Input() level = 0; // level of component nesting, 0...n
 
   // The options to select
-  optionsTree$ = of([]);
+  optionsTree$: Observable<TreeNode<TreeNodeData>[]>;
 
   @Input() pkClasses$: Observable<number[]>;
   @Input() showRemoveBtn = true;
@@ -202,70 +201,80 @@ export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl im
 
   valid = false;
 
+  cache: ClassAndTypeSelectModel = {
+    classes: [],
+    types: [],
+  }
+
+  cache$: BehaviorSubject<ClassAndTypeSelectModel>
 
   constructor(
     private p: ActiveProjectService,
+    private i: InformationPipesService,
     @Optional() @Self() public ngControl: NgControl
 
   ) {
     super(ngControl)
+    this.cache$ = new BehaviorSubject(this.cache)
   }
 
   ngOnInit() {
 
     this.optionsTree$ = this.pkClasses$.pipe(
-      filter(pks => pks !== null),
       distinct((pk) => pk),
-      mergeMap((pks) => {
-        return pks.length ?
-          combineLatest(
-            // get all type previews
-            this.p.streamTypePreviewsByClass(pks),
-            // get class configs
-            combineLatest(pks.map(pk => this.p.getClassConfig(pk)))
-              .pipe(
-                filter(d => d.every(x => (x && !!x.dfh_pk_class)))
-              )
-          )
-            // add type previews to class configs
-            .pipe(
-              map(([a, b]) => b.map(classConfig => ({
-                ...classConfig,
-                types: a[classConfig.dfh_pk_class] || []
-              }))
-              )
-            ) :
-          new BehaviorSubject<any>([])
-      }),
-      map(classesWithTypes => classesWithTypes.map(c => new TreeNode<TreeNodeData>(
+      switchMap(pkClasses => (!pkClasses || !pkClasses.length) ? of([]) : this.i.pipeClassesAndTypesOfClasses(pkClasses)),
+      map(nodes => nodes.map(node => new TreeNode<TreeNodeData>(
         {
-          id: 'class_' + c.dfh_pk_class,
-          label: c.label,
-          pkClass: c.dfh_pk_class
+          id: 'class_' + node.data.pkClass,
+          label: node.label,
+          pkClass: node.data.pkClass
         },
         [
-          ...c.types.map(type => new TreeNode<TreeNodeData>({
-            id: 'type_' + type.pk_entity,
-            label: type.entity_label,
-            pkType: type.pk_entity
+          ...node.children.map(typeNode => new TreeNode<TreeNodeData>({
+            id: 'type_' + typeNode.data.pkType,
+            label: typeNode.label,
+            pkType: typeNode.data.pkType
           }))
         ]
       ))
       ),
-      tap(x => {
-      })
-
     )
 
+    combineLatest(this.cache$, this.optionsTree$.pipe(filter(o => !!o))).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(([cache, optionsTree]) => {
+      const classes = []
+      const types = []
+      const options = this.treeToModel(optionsTree);
+      options.types.forEach((t) => {
+        if (cache && cache.types && this.cache.types.includes(t)) {
+          types.push(t)
+        }
+      })
+      options.classes.forEach((t) => {
+        if (cache && cache.classes && cache.classes.includes(t)) {
+          classes.push(t)
+        }
+      })
+      this.value = { classes, types }
+    })
+
+  }
+  writeValue(value: ClassAndTypeSelectModel | null): void {
+    this.cache = value;
+    this.cache$.next(this.cache)
   }
 
   selectionChange(val: TreeNode<TreeNodeData>[]) {
+    this.cache = this.treeToModel(val)
+    this.cache$.next(this.cache)
+  }
 
-    this.value = {
+  treeToModel(val: TreeNode<TreeNodeData>[]): ClassAndTypeSelectModel {
+    return {
       classes: val.filter(v => v.data.pkClass).map(v => v.data.pkClass),
       types: val.filter(v => v.data.pkType).map(v => v.data.pkType),
     }
-
   }
 
   setValid() {

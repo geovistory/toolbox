@@ -1,14 +1,14 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { AfterViewInit, ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, NgControl, NG_VALIDATORS, Validator, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelectChange } from '@angular/material/select';
 import { ActiveProjectService } from 'app/core';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { equals, uniq } from 'ramda';
-import { Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
+import { distinctUntilChanged, filter, map, takeUntil, first, startWith } from 'rxjs/operators';
 import { FilterTree } from "../../containers/query-detail/FilterTree";
 
 export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean, pk: number, label: string };
@@ -62,7 +62,9 @@ class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFo
   // tslint:disable-next-line: no-use-before-declare
   id = `property-select-${PropertySelectComponent.nextId++}`;
   describedBy = '';
-  onChange = (_: any) => { };
+  onChange = (_: any) => {
+    console.log('onChange called before registering')
+  };
   onTouched = () => { };
 
   get empty() {
@@ -160,13 +162,15 @@ class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFo
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class PropertySelectComponent extends PropertySelectMatControl implements AfterViewInit, OnDestroy, OnInit {
+export class PropertySelectComponent extends PropertySelectMatControl implements OnDestroy, OnInit {
 
   @HostBinding('class.d-flex') dflex = true;
 
   @Input() level = 0; // level of component nesting, 0...n
-  @Input() qtree: FilterTree; // TODO: remove this line
+  // @Input() qtree: FilterTree; // TODO: remove this line
   @Input() options$: Observable<PropertyOption[]>;
+
+  @Input() rootFormGroup: FormGroup;
 
   @Input()
   get value(): PropertySelectModel | null {
@@ -176,115 +180,76 @@ export class PropertySelectComponent extends PropertySelectMatControl implements
     return this.model;
   }
   set value(value: PropertySelectModel | null) {
-    this.model = value;
-    this.onChange(this.model)
+    if (!equals(this.model, value)) {
+      this.model = value;
+      this.onChange(this.model)
+    }
   }
 
-  // @Input() filterTreeData$: Observable<FilterTreeData>;
-  // @Input() selectedClasses$: Observable<number[]>;
+  get cachedKeys() {
+    const keysIn = (this.ingoingProperties || []).map(pk => propertyFieldKeyFromParams(pk, false))
+    const keysOut = (this.outgoingProperties || []).map(pk => propertyFieldKeyFromParams(pk, true))
+    return [...keysIn, ...keysOut]
+  }
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
   @Output() selectionChanged = new EventEmitter<PropertyOption[]>();
   @Output() modelChanged = new EventEmitter<FilterTree>();
 
-  @ViewChildren(MatOption) matOptions: QueryList<MatOption>;
+  control = new FormControl();
 
-  selected$: Observable<PropertyOption[]>;
+  keys$ = new BehaviorSubject<string[]>([])
+
 
   // selected: PropertyOption[];
-
+  ingoingProperties: number[]
+  outgoingProperties: number[]
   constructor(private ref: ChangeDetectorRef, public p: ActiveProjectService,
     @Optional() @Self() public ngControl: NgControl
   ) {
     super(ngControl)
+    this.control.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((selected: PropertyOption[]) => {
+        this.value = this.createValue(selected)
+      })
   }
 
   ngOnInit() {
-    const compare = (a, b) => {
-      return false;
-    }
-    this.options$.pipe(
-      distinctUntilChanged(compare),
-      filter(options => !!options),
-      map(options => options.filter(option => {
-        const selectedIds = this.getSelectedIds();
-        const thisId = option.propertyFieldKey
-        return selectedIds.indexOf(thisId) > -1
-      }))
-    ).subscribe(selected => {
-      this.setSelectedIds(selected);
-      // this.selectionChanged.emit(selected);
-    })
 
-
-  }
-  ngAfterViewInit() {
-
-    this.reselectMatOptions();
-
-    this.matOptions.changes.pipe(
-      // distinctUntilChanged(compare),
+    combineLatest(this.keys$, this.options$.pipe(filter(o => !!o))).pipe(
       takeUntil(this.destroy$)
-    ).subscribe(matOptions => {
-      this.reselectMatOptions();
+    ).subscribe(([keys, options]) => {
+      const controlVal: PropertyOption[] = []
+      options.forEach(o => {
+        if (keys.includes(o.propertyFieldKey)) {
+          controlVal.push(o)
+        }
+      })
+      this.control.setValue(controlVal)
     })
-
   }
 
   writeValue(value: PropertySelectModel | null): void {
+    this.ingoingProperties = !value ? [] : (value.ingoingProperties || []);
+    this.outgoingProperties = !value ? [] : (value.outgoingProperties || []);
 
-    this.value = value;
-    this.reselectMatOptions();
+    this.keys$.next(this.cachedKeys)
+  }
+
+  compareWith(a: PropertyOption, b: PropertyOption) {
+    return a && b && a.propertyFieldKey == b.propertyFieldKey;
+
   }
 
 
-  reselectMatOptions() {
-    if (this.matOptions && this.matOptions.length) {
-      let changed = false;
-      this.matOptions.forEach(matOption => {
-        if (
-          this.getSelectedIds().indexOf(matOption.id) > -1
-          && !matOption.selected
-        ) {
-          matOption.select()
-          changed = true;
-
-        };
-      });
-      if (changed) this.ref.detectChanges()
-    }
-  }
-
-  selectionChange(e: MatSelectChange) {
-
-    const newSelection = uniq(e.value) as PropertyOption[];
-
-    if (!equals(this.createSelectedIds(newSelection), this.getSelectedIds())) {
-      this.setSelectedIds(newSelection)
-    }
-    this.selectionChanged.emit(newSelection);
-  }
-
-  private createSelectedIds(selected: PropertyOption[]): string[] {
-    if (!selected) return [];
-    return selected.map(x => x.propertyFieldKey);
-  }
-
-  private getSelectedIds(): string[] {
-    return [
-      ...((this.model || {}).ingoingProperties || []).map(pk => propertyFieldKeyFromParams(pk, false)),
-      ...((this.model || {}).outgoingProperties || []).map(pk => propertyFieldKeyFromParams(pk, true)),
-    ]
-  }
-
-  setSelectedIds(selected: PropertyOption[]) {
-    this.value = {
-      ...this.model,
+  createValue(selected: PropertyOption[]): PropertySelectModel {
+    return {
       outgoingProperties: selected.filter(p => p.isOutgoing === true).map(p => p.pk),
       ingoingProperties: selected.filter(p => p.isOutgoing === false).map(p => p.pk),
     }
   }
+
 
   onOpenedChange(wasOpened) {
     if (wasOpened) {

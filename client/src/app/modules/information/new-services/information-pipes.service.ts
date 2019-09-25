@@ -9,9 +9,9 @@ import { DfhConfig } from "app/modules/information/shared/dfh-config";
 import { cache, spyTag } from "app/shared";
 import { TimePrimitivePipe } from "app/shared/pipes/time-primitive/time-primitive.pipe";
 import { TimeSpanPipe } from "app/shared/pipes/time-span/time-span.pipe";
-import { groupBy, indexBy, omit, pick, values } from "ramda";
-import { combineLatest, iif, Observable, of } from "rxjs";
-import { filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { groupBy, indexBy, omit, pick, values, equals, uniq, flatten } from "ramda";
+import { combineLatest, iif, Observable, of, empty } from "rxjs";
+import { filter, map, startWith, switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
 import { tag } from "../../../../../node_modules/rxjs-spy/operators";
 import { PaginateByParam } from "../../../core/store/actions";
 import { combineLatestOrEmpty } from "../../../core/util/combineLatestOrEmpty";
@@ -20,6 +20,8 @@ import { CtrlTimeSpanDialogResult } from "../new-components/ctrl-time-span/ctrl-
 import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from "../new-components/properties-tree/properties-tree.models";
 import { ConfigurationPipesService } from "./configuration-pipes.service";
 import { InformationBasicPipesService } from "./information-basic-pipes.service";
+import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 // import { TemporalEntityTableRow } from "../new-components/temporal-entity-list/TemporalEntityTable";
 
 @Injectable()
@@ -213,7 +215,7 @@ export class InformationPipesService {
           )),
           map(items => items.sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)),
           limitTo(limit),
-      )
+        )
       ))
   }
 
@@ -540,7 +542,7 @@ export class InformationPipesService {
                     ).pipe(map(([infTimePrimitive, projRel]) => {
                       const timePrimitive = new TimePrimitive({
                         julianDay: infTimePrimitive.julian_day,
-                        calendar: ((projRel.calendar || 'gregorian') as CalendarType ),
+                        calendar: ((projRel.calendar || 'gregorian') as CalendarType),
                         duration: (infTimePrimitive.duration as Granularity)
                       })
                       const item: TimePrimitiveItem = {
@@ -655,7 +657,7 @@ export class InformationPipesService {
           if (!infTimePrimitive) return null;
           const timePrimitive = new TimePrimitive({
             julianDay: infTimePrimitive.julian_day,
-            calendar: ((projRel.calendar || 'gregorian') as CalendarType ),
+            calendar: ((projRel.calendar || 'gregorian') as CalendarType),
             duration: (infTimePrimitive.duration as Granularity)
           })
           const node: TimePrimitiveItem = {
@@ -672,7 +674,7 @@ export class InformationPipesService {
         map(infTimePrimitive => {
           const timePrimitive = new TimePrimitive({
             julianDay: infTimePrimitive.julian_day,
-            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType ),
+            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType),
             duration: (infTimePrimitive.duration as Granularity)
           })
           const node: TimePrimitiveItem = {
@@ -928,7 +930,7 @@ export class InformationPipesService {
                         .pipe(map((infTimePrimitive) => {
                           const timePrimitive = new TimePrimitive({
                             julianDay: infTimePrimitive.julian_day,
-                            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType ),
+                            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType),
                             duration: (infTimePrimitive.duration as Granularity)
                           })
                           const item: TimePrimitiveItem = {
@@ -1023,40 +1025,122 @@ export class InformationPipesService {
   @cache({ refCount: false })
   pipeClassesAndTypes(enabledIn: 'entities' | 'sources') {
     return this.c.pipeTypeAndTypedClasses(enabledIn).pipe(
-      switchMap(items => combineLatestOrEmpty(
-        items.map(item => this.c.pipeLabelOfClass(item.typedClass).pipe(
-          tag('xyz-2'),
-          map(label => ({
-            label,
-            data: { pkClass: item.typedClass, pkType: null }
-          } as ClassAndTypeNode)),
-          switchMap(node => iif(
-            () => !!item.typeClass,
-            this.b.pipePersistentItemPksByClass(item.typeClass).pipe(
-              switchMap(typePks => combineLatestOrEmpty(
-                typePks.map(pkType => this.pipeLabelOfEntity(pkType).pipe(
-                  map(label => ({
-                    label, data: { pkClass: item.typedClass, pkType }
-                  } as ClassAndTypeNode))
-                ))
-              ).pipe(
-                sortAbc(n => n.label),
-              )),
-              map(children => {
-                node.children = children
-                return node
-              })
-            ),
-            of({ ...node, children: [] })
-          )
-          )
-        ))
-      ).pipe(
-        sortAbc((node) => node.label),
-        tag('xyz-3')
-      )),
-      tag('xyz-1'),
+      switchMap(items => this.pipeClassAndTypeNodes(items)),
     )
+  }
+
+  @spyTag
+  @cache({ refCount: false })
+  pipeClassesAndTypesOfClasses(classes: number[]) {
+    return this.c.pipeTypeAndTypedClassesOfTypedClasses(classes).pipe(
+      switchMap(items => this.pipeClassAndTypeNodes(items)),
+    )
+  }
+
+  @spyTag
+  @cache({ refCount: false })
+  pipeClassAndTypeNodes(typeAndTypedClasses: { typedClass: number; typeClass: number; }[]): Observable<ClassAndTypeNode[]> {
+    return combineLatestOrEmpty(
+      typeAndTypedClasses.map(item => this.c.pipeLabelOfClass(item.typedClass).pipe(
+        map(label => ({
+          label,
+          data: { pkClass: item.typedClass, pkType: null }
+        } as ClassAndTypeNode)),
+        switchMap(node => iif(
+          () => !!item.typeClass,
+          this.b.pipePersistentItemPksByClass(item.typeClass).pipe(
+            switchMap(typePks => combineLatestOrEmpty(
+              typePks.map(pkType => this.pipeLabelOfEntity(pkType).pipe(
+                map(label => ({
+                  label, data: { pkClass: item.typedClass, pkType }
+                } as ClassAndTypeNode))
+              ))
+            ).pipe(
+              sortAbc(n => n.label),
+            )),
+            map(children => {
+              node.children = children
+              return node
+            })
+          ),
+          of({ ...node, children: [] } as ClassAndTypeNode)
+        )
+        )
+      ))
+    ).pipe(
+      sortAbc((node) => node.label),
+    )
+  }
+
+  /**
+   * returns array of pk_class of all classes and typed classes.
+   * @param classesAndTypes a object containing {classes: [], types[]}
+   */
+  pipeClassesFromClassesAndTypes(classesAndTypes: ClassAndTypeSelectModel): Observable<number[]> {
+    const typedClasses$ = (!classesAndTypes || !classesAndTypes.types || !classesAndTypes.types.length) ?
+      of([] as number[]) :
+      this.b.pipeClassesOfPersistentItems(classesAndTypes.types)
+        .pipe(
+          filter((pks) => !!pks),
+          switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses))
+        )
+    return typedClasses$.pipe(
+      map(typedClasses => uniq([...typedClasses, ...(classesAndTypes || { classes: [] }).classes || []]))
+    )
+  }
+
+  pipePropertyOptionsFromClassesAndTypes(classesAndTypes: ClassAndTypeSelectModel): Observable<PropertyOption[]> {
+    return this.pipeClassesFromClassesAndTypes(classesAndTypes).pipe(
+      switchMap(classes => this.pipePropertyOptionsFormClasses(classes))
+    )
+  }
+
+  @cache({ refCount: false })
+  pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
+    return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE).pipe(switchMap(classFields => {
+      const fields = classFields.filter(f => !!f.fk_property);
+      return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfProperty(field.fk_property_of_origin, field.property_is_outgoing ? field.fk_class : null, field.property_is_outgoing ? null : field.fk_class, field.property_is_outgoing, true).pipe(map(label => {
+        const o: PropertyOption = {
+          isOutgoing: field.property_is_outgoing,
+          label,
+          pk: field.fk_property,
+          propertyFieldKey: '_' + field.fk_property + '_' + (field.property_is_outgoing ? 'outgoing' : 'ingoing')
+        };
+        return o;
+      }))));
+    })))).pipe(map(y => flatten<PropertyOption>(y)));
+  }
+
+  @cache({ refCount: false })
+  pipePkClassesFromPropertySelectModel(model: PropertySelectModel): Observable<number[]> {
+    return combineLatestOrEmpty(
+      [
+        this.c.pipeTargetClassesOfProperties(model.outgoingProperties, true),
+        this.c.pipeTargetClassesOfProperties(model.ingoingProperties, false),
+      ]
+    ).pipe(
+      map(([out, ing]) => uniq([...out, ...ing]))
+    )
+  }
+
+  getPropertyOptions$(classTypes$: Observable<ClassAndTypeSelectModel>): Observable<PropertyOption[]> {
+    return classTypes$.pipe<ClassAndTypeSelectModel, PropertyOption[]>(
+      // make sure only it passes only if data of the arrayClasses are changed (not children)
+      distinctUntilChanged<ClassAndTypeSelectModel>((a, b) => {
+        return equals(a, b);
+      }),
+      switchMap((x) => !x ? empty() : this.b.pipeClassesOfPersistentItems(x.types)
+        .pipe(
+          filter((pks) => !!pks),
+          switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses).pipe(
+            switchMap(typedClasses => {
+              const classes = uniq([...typedClasses, ...x.classes || []]);
+              return this.pipePropertyOptionsFormClasses(classes)
+            }))
+          )
+        )
+      )
+    );
   }
 
 }

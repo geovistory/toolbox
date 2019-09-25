@@ -19,7 +19,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AngularSplitModule } from 'angular-split';
-import { ValidationDirectivesModule } from 'app/core';
+import { ValidationDirectivesModule, ActiveProjectService } from 'app/core';
 import { PassiveLinkModule } from 'app/shared';
 import { CoreTableFilterModule } from 'app/shared/components/core-table/filter/filter.module';
 import { CoreTableMenuModule } from 'app/shared/components/core-table/menu/menu.module';
@@ -48,6 +48,14 @@ import { QueryDetailAPIEpics } from './containers/query-detail/api/query-detail.
 import { QueryDetailComponent } from './containers/query-detail/query-detail.component';
 import { QueryListComponent } from './containers/query-list/query-list.component';
 import { GvHelperComponentsModule } from '../../shared/components/gv-helper-components/gv-helper-components.module';
+import { QueryFilterComponent } from './components/query-filter/query-filter.component'
+import { QfFormGroupComponent } from './components/qf-form-group/qf-form-group.component';
+import { QfFormArrayComponent } from './components/qf-form-array/qf-form-array.component';
+import { QfFormControlComponent } from './components/qf-form-control/qf-form-control.component';
+import { FormFactoryModule } from '../form-factory/form-factory.module';
+import { ConfigurationPipesService } from '../information/new-services/configuration-pipes.service';
+import { InformationPipesService } from '../information/new-services/information-pipes.service';
+import { InformationBasicPipesService } from '../information/new-services/information-basic-pipes.service';
 
 const components = [
   QueryListComponent,
@@ -71,7 +79,10 @@ const components = [
   PropertyPathSegmentRequiredValidatorDirective,
   ClassAndTypeFilterRequiredValidatorDirective,
   ClassAndTypePathSegmentRequiredValidatorDirective,
-
+  QueryFilterComponent,
+  QfFormGroupComponent,
+  QfFormArrayComponent,
+  QfFormControlComponent
 ]
 
 @NgModule({
@@ -107,11 +118,16 @@ const components = [
     PassiveLinkModule,
     ValidationDirectivesModule,
     MatMenuModule,
-    GvHelperComponentsModule
+    GvHelperComponentsModule,
+    FormFactoryModule
   ],
   providers: [
     QueryDetailAPIActions,
-    QueryDetailAPIEpics
+    QueryDetailAPIEpics,
+    ConfigurationPipesService,
+    ActiveProjectService,
+    InformationPipesService,
+    InformationBasicPipesService
   ],
   declarations: components,
   exports: components,

@@ -31,7 +31,7 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
             pkClasses$
         },
         template: `
-        <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
+        <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
@@ -62,7 +62,7 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
     })
     .add('Class and type Filter | Preset ', {
         context: {
-            pkProject: 15,
+            pkProject: 24,
             sandboxState: {},
             model: {
                 data: {
@@ -111,7 +111,7 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
     })
     .add('Class and type Filter | Preset 2', {
         context: {
-            pkProject: 15,
+            pkProject: 24,
             sandboxState: {},
             model:
                 {

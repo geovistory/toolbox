@@ -12,19 +12,19 @@
 
     <div class="gv-query-path-segment" *ngFor="let segment of dynamicFormControls; let i = index; trackBy:getKey">
         <mat-icon>arrow_right_alt</mat-icon>
-        <mat-form-field *ngIf="segment.type === 'properties'">
+        <mat-form-field *ngIf="segment.properties">
             <mat-label>Properties</mat-label>
             <gv-property-path-segment [index]="i" class="gv-grow-1 d-flex flex-column" [formControl]="segment.ctrl"
-                [propertyOptions$]="segment.behaviorSubject" [disabled]="i < (dynamicFormControls.length-1)"
+                [propertyOptions$]="segment.properties.propertyOptions$" [disabled]="i < (dynamicFormControls.length-1)"
                 (focus)="onFocus()" (blur)="onBlur()">
             </gv-property-path-segment>
             <mat-error *ngIf="segment.ctrl.invalid && segment.ctrl.touched">Select or remove.</mat-error>
         </mat-form-field>
 
-        <mat-form-field *ngIf="segment.type === 'classes'">
+        <mat-form-field *ngIf="segment.classes">
             <mat-label>Classes</mat-label>
             <gv-class-and-type-path-segment [index]="i" class="gv-grow-1 d-flex flex-column"
-                [formControl]="segment.ctrl" [pkClasses$]="segment.behaviorSubject"
+                [formControl]="segment.ctrl" [pkClasses$]="segment.classes.pkClasses$"
                 [disabled]="i < (dynamicFormControls.length-1)" (focus)="onFocus()" (blur)="onBlur()">
             </gv-class-and-type-path-segment>
             <mat-error *ngIf="segment.ctrl.invalid && segment.ctrl.touched">Select or remove.</mat-error>

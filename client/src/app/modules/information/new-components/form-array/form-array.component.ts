@@ -99,7 +99,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     this.formArrayFactory.onAdd()
   }
   remove(i) {
-    this.formArrayFactory.onRemove(i)
+    this.formArrayFactory.remove(i)
   }
 
   addSpecific(i, d: FormControlData, j) {
@@ -111,7 +111,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
       const disabledConfig = configs.find(c => c.disabled === true)
       if (disabledConfig) {
         // remove the previously selected child
-        this.formArrayFactory.onRemove(i + 1)
+        this.formArrayFactory.remove(i + 1)
         // enable the previously disabled config in options menu
         disabledConfig.disabled = false;
       }

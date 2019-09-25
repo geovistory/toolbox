@@ -25,11 +25,17 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
         ...action.meta.projectPreview
       };
       break;
-
+    case ActiveProjectActions.PROJECT_LOAD_CRM:
+      state = {
+        ...state,
+        initializingProject: true
+      }
+      break;
     case ActiveProjectActions.PROJECT_CRM_LOADED:
       state = {
         ...state,
-        crm: action.payload.crm
+        crm: action.payload.crm,
+        initializingProject: false
       }
       break;
 

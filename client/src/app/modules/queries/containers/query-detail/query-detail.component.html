@@ -29,9 +29,7 @@
               </mat-error>
             </ng-template>
 
-            <gv-class-and-type-filter [pkClasses$]="p.classPksEnabledInEntities$" [showRemoveBtn]="false"
-              [formControl]="filterCtrl" #a [gvNoInvalidChildren]="a.formGroup.controls">
-            </gv-class-and-type-filter>
+            <gv-query-filter [filterDef$]="filterDef$"></gv-query-filter>
 
             <!-- <div><
             <button mat-flat-button color="primary" matStepperNext>Next</button>

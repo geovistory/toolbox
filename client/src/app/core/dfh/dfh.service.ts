@@ -1,14 +1,15 @@
 import { select, WithSubStore, NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/store/model';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject, empty } from 'rxjs';
 import { DfhClass, DfhLabel, DfhPropertyProfileView, DfhPropertyView } from '../sdk';
 import { DfhActions } from './dfh.actions';
 import { dfhRoot, dfhDefinitions } from './dfh.config';
 import { ReducerConfigCollection } from '../store/reducer-factory';
-import { filter, distinctUntilChanged } from '../../../../node_modules/rxjs/operators';
+import { filter, distinctUntilChanged, switchMap } from '../../../../node_modules/rxjs/operators';
 import { DfhClassSlice, DfhPropertyProfileViewSlice, DfhLabelSlice, DfhPropertyViewSlice } from './dfh.models';
 import { equals } from 'ramda';
+import { ShouldPauseService } from '../services/should-pause.service';
 class Selector<Slice> {
 
   slice$ = this.ngRedux.select<Slice>([dfhRoot, this.model])
@@ -16,22 +17,30 @@ class Selector<Slice> {
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public configs: ReducerConfigCollection,
-    public model: string
-  ) { }
+    public model: string,
+    public shouldPause$: Observable<boolean>
+  ) {
+  }
 
-  selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
+  selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M>, noPause: { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } } {
 
-    const all$ = this.ngRedux.select<ByPk<M>>([dfhRoot, this.model, indexKey])
-    // .pipe(
-    //   distinctUntilChanged<ByPk<M>>(equals)
-    // )
+    const allNoPause$ = this.ngRedux.select<ByPk<M>>([dfhRoot, this.model, indexKey]);
+    const all$ = this.shouldPause$.pipe(
+      switchMap(shouldPause => shouldPause ?
+        empty() :
+        allNoPause$
+      )
+    );
 
-    const key = (x): Observable<M> => this.ngRedux.select<M>([dfhRoot, this.model, indexKey, x])
-    // .pipe(
-    //   distinctUntilChanged<M>(equals)
-    // )
+    const keyNoPause = (x) => this.ngRedux.select<M>([dfhRoot, this.model, indexKey, x]);
+    const key = (x): Observable<M> => this.shouldPause$.pipe(
+      switchMap(shouldPause => shouldPause ?
+        empty() :
+        this.ngRedux.select<M>([dfhRoot, this.model, indexKey, x])
+      )
+    )
 
-    return { all$, key }
+    return { all$, key, noPause: { all$: allNoPause$, key: keyNoPause } }
   }
 }
 
@@ -72,9 +81,16 @@ class DfhLabelSelections extends Selector<DfhLabelSlice> {
 @Injectable()
 export class DfhSelector extends DfhActions {
 
-  class$ = new DfhClassSelections(this.ngRedux, dfhDefinitions, 'klass')
-  property_profile_view$ = new DfhPropertyProfileViewSelections(this.ngRedux, dfhDefinitions, 'property_profile_view')
-  property_view$ = new DfhPropertyViewSelections(this.ngRedux, dfhDefinitions, 'property_view')
-  label$ = new DfhLabelSelections(this.ngRedux, dfhDefinitions, 'label')
 
+  class$ = new DfhClassSelections(this.ngRedux, dfhDefinitions, 'klass', this.pause.shouldPause$)
+  property_profile_view$ = new DfhPropertyProfileViewSelections(this.ngRedux, dfhDefinitions, 'property_profile_view', this.pause.shouldPause$)
+  property_view$ = new DfhPropertyViewSelections(this.ngRedux, dfhDefinitions, 'property_view', this.pause.shouldPause$)
+  label$ = new DfhLabelSelections(this.ngRedux, dfhDefinitions, 'label', this.pause.shouldPause$)
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pause: ShouldPauseService
+  ) {
+    super(ngRedux)
+  }
 }

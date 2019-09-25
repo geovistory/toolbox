@@ -355,7 +355,6 @@ $gv-color-selected: #00ffff;
   overflow: hidden;
 }
 
-
 .gv-table-scroll-y {
   @extend .gv-flex-fh;
   @extend .gv-scroll-y-auto;
@@ -446,12 +445,12 @@ $gv-color-selected: #00ffff;
   overflow: hidden;
 }
 
-.gv-scroll-y-container{
+.gv-scroll-y-container {
   display: flex;
   flex-direction: column;
   flex: 1 0 0%;
   height: 100%;
-  overflow-y: auto
+  overflow-y: auto;
 }
 
 // full viewport height
@@ -1796,6 +1795,12 @@ as-split.gv-split-style.gv-hide-split-gutter {
 .gv-story-color {
   color: $green;
 }
+
+gv-qf-form-array {
+  position: relative;
+  display: block;
+}
+
 
 /************************************************************************************
 ** INCLUDE MATERIAL THEME

@@ -1,5 +1,5 @@
-import { FormGroup } from "@angular/forms";
-import { Subject } from 'rxjs';
+import { FormGroup } from '@angular/forms';
+import { Subject, asyncScheduler } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { FormArrayConfig, FormFactory, FormFactoryGlobal, FormGroupConfig } from '../services/form-factory.service';
 import { FormArrayFactory } from './form-array-factory';
@@ -37,11 +37,15 @@ export class FormGroupFactory extends AbstractControlFactory {
       this.config = d.config
       this.childConfig = d.childConfig[0].array
 
+      this.globalConfig.root = this
+
       if (this.childConfig) this.child = new FormArrayFactory(this.globalConfig, this.childConfig, this.level + 1, this);
 
       if (this.child) this.control = this.globalConfig.fb.group({ 'childControl': this.child.control });
 
-      this.formFactory$.next({ formGroup: this.control, formGroupFactory: this })
+      asyncScheduler.schedule(() => {
+        this.formFactory$.next({ formGroup: this.control, formGroupFactory: this })
+      }, 0)
 
       // TODO get his from config
       const mapFn = (x) => x

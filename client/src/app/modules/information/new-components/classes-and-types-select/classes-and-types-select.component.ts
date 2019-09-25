@@ -1,14 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FlatTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '../../../../../../node_modules/@angular/material';
-import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
-import { Observable, combineLatest, Subject } from '../../../../../../node_modules/rxjs';
-import { switchMapOr, sortAbc, ActiveProjectService } from '../../../../core';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '../../../../../../node_modules/@angular/material';
+import { Observable, Subject } from '../../../../../../node_modules/rxjs';
+import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ClassAndTypePk } from '../../containers/class-and-type-selector/api/class-and-type-selector.models';
-import { map, takeUntil, switchMap, tap } from '../../../../../../node_modules/rxjs/operators';
-import { sort } from 'ramda';
+import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 
 export interface ClassAndTypeNode {
   label: string;

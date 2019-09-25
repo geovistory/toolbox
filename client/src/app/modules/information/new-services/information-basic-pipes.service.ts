@@ -216,6 +216,28 @@ export class InformationBasicPipesService {
         map(e => e.fk_class)
       )
     )
+  }
+
+  /**
+   * Pipes distinct fk_classes of the given persistent items
+   */
+  @spyTag pipeClassesOfPersistentItems(pkEntities: number[]): Observable<number[]> {
+    return this.p.inf$.persistent_item$.by_pk_entity$.all$.pipe(
+      map((peIts) => {
+        if (!pkEntities || pkEntities.length === 0) {
+          return []
+        }
+        const classes = {};
+        const a = [];
+        pkEntities.forEach(typePk => {
+          if (!classes[peIts[typePk].fk_class]) {
+            classes[peIts[typePk].fk_class] = true;
+            a.push(peIts[typePk].fk_class)
+          }
+        })
+        return a;
+      })
+    )
 
   }
 

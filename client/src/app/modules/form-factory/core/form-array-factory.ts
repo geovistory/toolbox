@@ -26,7 +26,7 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
     public globalConfig: FormFactoryGlobal<any, any, any>,
     public config: FormArrayConfig<A>,
     public level: number,
-    private parent: FormGroupFactory | FormArrayFactory<C, A>
+    public parent: FormGroupFactory | FormArrayFactory<C, A>
   ) {
     super()
 
@@ -91,7 +91,7 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
           })
           removed.forEach(c => {
             const i = this.childConfigs.findIndex(oldC => oldC.id === c.id)
-            this.onRemove(i)
+            this.remove(i)
           })
 
           childConfigs.forEach((c, i) => {
@@ -128,6 +128,10 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
   }
 
   onRemove(i) {
+    this.remove(i)
+  }
+
+  remove(i) {
 
     this.children.splice(i, 1)
     this.childConfigs.splice(i, 1)
@@ -139,6 +143,15 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
       this.childFactoryValues$.next(vs$)
     })
 
+  }
+
+  removeAllChildren() {
+    while (this.children.length) {
+      this.remove(0)
+    }
+  }
+  removeLastChild() {
+    this.remove(this.children.length - 1)
   }
 }
 

@@ -1,0 +1,158 @@
+@import "../../../../../styles.scss";
+$top-horizontal-line: 30px;
+
+.full-with {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-col {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  flex: 1 1 0;
+  /* background: #6EAFF7; */
+  flex-direction: column;
+  /* overflow: hidden; */
+}
+
+.right-col {
+  display: flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.qf-arr-classes,
+.qf-arr-properties {
+  display: block;
+  position: relative;
+  /*temp*/
+}
+.qf-arr-classes {
+  // border: 1px dashed rgb(194, 48, 121);
+  // margin: 5px;
+  // padding: 5px;
+}
+
+.qf-arr-properties {
+  /*temp*/
+  // border: 1px dashed rgb(48, 82, 194);
+
+  .qf-prop-controls {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.qf-arr-subgroup {
+  /*temp*/
+  // border: 1px dashed rgb(18, 173, 52);
+  // padding: 5px;
+
+  position: relative;
+  display: flex;
+  margin-bottom: 40px;
+
+  .zero {
+    width: 23px;
+    height: 31px;
+    flex-shrink: 0;
+  }
+
+  .zero.line {
+    border-bottom: 1px solid $success;
+    border-left: 1px solid $success;
+  }
+
+  .first {
+    width: 1px;
+    flex-shrink: 0;
+    margin-top: $top-horizontal-line;
+    margin-bottom: 34px;
+    position: relative;
+    background-color: $success;
+    .subgroup-operation-container {
+      position: absolute;
+      bottom: 0;
+      top: 22px;
+      width: 46px;
+      left: -23px;
+      display: flex;
+      flex-direction: column;
+    }
+    .subgroup-operation-select {
+      font-size: 14px;
+      background: $white;
+      @extend .border;
+      @extend .border-success;
+      @extend .rounded;
+      @extend .px-1;
+      z-index: 1;
+      &::ng-deep .mat-select-arrow {
+        margin: 0;
+      }
+    }
+    .add-sibling-button {
+      position: absolute;
+      bottom: -24px;
+      left: -12px;
+    }
+    &.line {
+      margin-bottom: 0;
+    }
+  }
+
+  .second {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0%;
+    .sub-query-item {
+      position: relative;
+      display: flex;
+      align-items: start;
+      .subquery-left {
+        position: relative;
+        width: 35px;
+        padding: 0 0 0 5px;
+        .horizontal-line {
+          position: absolute;
+          top: $top-horizontal-line;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background-color: $success;
+          &.is-subgroup {
+            top: 62px;
+          }
+        }
+        .add-subgroup-button {
+          margin-top: 18px;
+        }
+      }
+      gv-qf-form-array {
+        margin-left: 0.75rem;
+        flex: 1 0 0%;
+        &.is-subgroup {
+          margin-top: 2rem;
+        }
+      }
+    }
+  }
+}
+
+.gv-qf-button-absolute-1 {
+  position: absolute;
+  right: -40px;
+  top: 0;
+}
+.gv-qf-button-absolute-2 {
+  position: absolute;
+  right: -80px;
+  top: 0;
+}
+.gv-qf-button-absolute-3 {
+  position: absolute;
+  right: -120px;
+  top: 0;
+}

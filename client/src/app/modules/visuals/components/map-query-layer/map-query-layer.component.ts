@@ -144,8 +144,8 @@ export class MapQueryLayerComponent implements OnInit, AfterViewInit, OnDestroy 
           const entityPreview = row[entityPreviewCol];
 
           // aggregate all the temporal entities
-          let temporalEntities: WarEntityPreview[];
-          if (temporalCol) temporalEntities = row[temporalCol];
+          let temporalEntities: WarEntityPreview[] = []
+          if (temporalCol) temporalEntities = Array.isArray(row[temporalCol]) ? row[temporalCol] : [row[temporalCol]];
 
           geoList = {
             ...geoList,
