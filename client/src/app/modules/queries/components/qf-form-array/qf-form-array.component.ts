@@ -114,7 +114,7 @@ export class QfFormArrayComponent implements OnInit {
     const pkClasses$ = arraySubgroup.pkClasses$
     const propertyOptions$ = arraySubgroup.propertyOptions$
     if (pkClasses$) {
-      return this.createSubfroupWithPkClasses(pkClasses$, initVal)
+      return this.createSubgroupWithPkClasses(pkClasses$, initVal)
     } else if (propertyOptions$) {
       return this.createSubgroupWithProperties(propertyOptions$, initVal)
     }
@@ -164,19 +164,12 @@ export class QfFormArrayComponent implements OnInit {
       distinctUntilChanged((a, b) => {
         return equals(a.data, b.data)
       }),
-      switchMap((x) => combineLatestOrEmpty(
-        [
-          this.c.pipeTargetClassesOfProperties(x.data.outgoingProperties, true),
-          this.c.pipeTargetClassesOfProperties(x.data.ingoingProperties, false),
-        ]
-      ).pipe(
-        map(([out, ing]) => uniq([...out, ...ing]))
-      ))
+      switchMap((x) => this.i.pipePkClassesFromPropertySelectModel(x.data))
     )
-    return this.createSubfroupWithPkClasses(pkClasses$, initVal)
+    return this.createSubgroupWithPkClasses(pkClasses$, initVal)
   }
 
-  private createSubfroupWithPkClasses(pkClasses$: Observable<number[]>, initVal: FilterDefNode) {
+  private createSubgroupWithPkClasses(pkClasses$: Observable<number[]>, initVal: FilterDefNode) {
     return {
       array: {
         placeholder: '',

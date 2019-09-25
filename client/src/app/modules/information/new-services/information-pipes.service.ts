@@ -21,7 +21,7 @@ import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, Fi
 import { ConfigurationPipesService } from "./configuration-pipes.service";
 import { InformationBasicPipesService } from "./information-basic-pipes.service";
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { PropertyOption } from 'app/modules/queries/components/property-select/property-select.component';
+import { PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 // import { TemporalEntityTableRow } from "../new-components/temporal-entity-list/TemporalEntityTable";
 
 @Injectable()
@@ -1072,6 +1072,57 @@ export class InformationPipesService {
     )
   }
 
+  /**
+   * returns array of pk_class of all classes and typed classes.
+   * @param classesAndTypes a object containing {classes: [], types[]}
+   */
+  pipeClassesFromClassesAndTypes(classesAndTypes: ClassAndTypeSelectModel): Observable<number[]> {
+    const typedClasses$ = (!classesAndTypes || !classesAndTypes.types || !classesAndTypes.types.length) ?
+      of([] as number[]) :
+      this.b.pipeClassesOfPersistentItems(classesAndTypes.types)
+        .pipe(
+          filter((pks) => !!pks),
+          switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses))
+        )
+    return typedClasses$.pipe(
+      map(typedClasses => uniq([...typedClasses, ...classesAndTypes.classes || []]))
+    )
+  }
+
+  pipePropertyOptionsFromClassesAndTypes(classesAndTypes: ClassAndTypeSelectModel): Observable<PropertyOption[]> {
+    return this.pipeClassesFromClassesAndTypes(classesAndTypes).pipe(
+      switchMap(classes => this.pipePropertyOptionsFormClasses(classes))
+    )
+  }
+
+  @cache({ refCount: false })
+  pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
+    return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE).pipe(switchMap(classFields => {
+      const fields = classFields.filter(f => !!f.fk_property);
+      return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfProperty(field.fk_property_of_origin, field.property_is_outgoing ? field.fk_class : null, field.property_is_outgoing ? null : field.fk_class, field.property_is_outgoing, true).pipe(map(label => {
+        const o: PropertyOption = {
+          isOutgoing: field.property_is_outgoing,
+          label,
+          pk: field.fk_property,
+          propertyFieldKey: '_' + field.fk_property + '_' + (field.property_is_outgoing ? 'outgoing' : 'ingoing')
+        };
+        return o;
+      }))));
+    })))).pipe(map(y => flatten<PropertyOption>(y)));
+  }
+
+  @cache({ refCount: false })
+  pipePkClassesFromPropertySelectModel(model: PropertySelectModel): Observable<number[]> {
+    return combineLatestOrEmpty(
+      [
+        this.c.pipeTargetClassesOfProperties(model.outgoingProperties, true),
+        this.c.pipeTargetClassesOfProperties(model.ingoingProperties, false),
+      ]
+    ).pipe(
+      map(([out, ing]) => uniq([...out, ...ing]))
+    )
+  }
+
   getPropertyOptions$(classTypes$: Observable<ClassAndTypeSelectModel>): Observable<PropertyOption[]> {
     return classTypes$.pipe<ClassAndTypeSelectModel, PropertyOption[]>(
       // make sure only it passes only if data of the arrayClasses are changed (not children)
@@ -1079,21 +1130,17 @@ export class InformationPipesService {
         return equals(a, b);
       }),
       switchMap((x) => !x ? empty() : this.b.pipeClassesOfPersistentItems(x.types)
-        .pipe(filter((pks) => !!pks), switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses).pipe(switchMap(typedClasses => {
-          const classes = uniq([...typedClasses, ...x.classes || []]);
-          return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE).pipe(switchMap(classFields => {
-            const fields = classFields.filter(f => !!f.fk_property);
-            return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfProperty(field.fk_property_of_origin, field.property_is_outgoing ? field.fk_class : null, field.property_is_outgoing ? null : field.fk_class, field.property_is_outgoing, true).pipe(map(label => {
-              const o: PropertyOption = {
-                isOutgoing: field.property_is_outgoing,
-                label,
-                pk: field.fk_property,
-                propertyFieldKey: '_' + field.fk_property + '_' + (field.property_is_outgoing ? 'outgoing' : 'ingoing')
-              };
-              return o;
-            }))));
-          })))).pipe(map(y => flatten<PropertyOption>(y)));
-        }))))));
+        .pipe(
+          filter((pks) => !!pks),
+          switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses).pipe(
+            switchMap(typedClasses => {
+              const classes = uniq([...typedClasses, ...x.classes || []]);
+              return this.pipePropertyOptionsFormClasses(classes)
+            }))
+          )
+        )
+      )
+    );
   }
 
 }

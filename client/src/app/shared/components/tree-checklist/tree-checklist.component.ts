@@ -165,9 +165,7 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
       }
     })
     this.changeDetectorRef.detectChanges();
-    if (symmetricDifference(this.extractNodeIds(this.selected), this.extractNodeIds(this.checklistSelection.selected)).length > 0) {
-      this.selected = this.checklistSelection.selected
-    };
+    this.selected = this.checklistSelection.selected
   }
 
   setSelection(nodes: TreeNode<any>[]) {

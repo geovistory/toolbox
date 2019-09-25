@@ -4,20 +4,25 @@ import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, V
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, merge, Observable, of, Subject, combineLatest } from 'rxjs';
-import { filter, first, map, switchMap, takeUntil, delay } from 'rxjs/operators';
+import { filter, first, map, switchMap, takeUntil, delay, tap } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
 import { QueryPathSegment, QueryPathSegmentType } from '../col-def-editor/QueryPathSegment';
 import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
-import { PropertyOption } from '../property-select/property-select.component';
+import { PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 
 interface DynamicFormControl {
   key: string,
-  type: QueryPathSegmentType,
   ctrl: FormControl,
-  behaviorSubject: BehaviorSubject<any>
+  properties?: {
+    propertyOptions$: Observable<PropertyOption[]>
+  }
+  classes?: {
+    pkClasses$: Observable<number[]>
+  }
 }
 
 export interface QueryPathMetaInfo {
@@ -41,7 +46,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   @ViewChildren(PropertyPathSegmentComponent) propertyPathSegments: QueryList<PropertyPathSegmentComponent>;
   @ViewChildren(ClassAndTypePathSegmentComponent) classAndTypePathSegments: QueryList<ClassAndTypePathSegmentComponent>;
 
-  @Input() propertyOptions$: BehaviorSubject<PropertyOption[]>;
+  propertyOptions$: Observable<PropertyOption[]>;
 
   // For root element of path
   @Input() classesAndTypes$: Observable<ClassAndTypeSelectModel>;
@@ -133,7 +138,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   get showAddBtn() {
 
-    if (this.dynamicFormControls.length === 0) return false;
+    if (this.dynamicFormControls.length === 0) return true;
 
     if (this.dynamicFormControls[this.dynamicFormControls.length - 1].ctrl.valid) return true;
 
@@ -146,7 +151,8 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     fb: FormBuilder,
-    private q: QueryService
+    private q: QueryService,
+    private i: InformationPipesService
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -174,14 +180,18 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnInit() {
-    this.propertyOptions$.pipe(takeUntil(this.destroy$))
-      .subscribe(options => { this.propertyOptionsBehaviorSubject$.next(options) })
+    if (!this.classesAndTypes$) throw new Error('please provide classesAndTypes$ input')
 
     this.pkClasses$ = this.classesAndTypes$.pipe(
-      this.q.classesFromClassesAndTypes()
+      switchMap(classesAndTypes => this.i.pipeClassesFromClassesAndTypes(classesAndTypes))
     )
+
+    this.propertyOptions$ = this.pkClasses$.pipe(switchMap(classes => this.i.pipePropertyOptionsFormClasses(classes)))
+
     this.classesAndTypes$.pipe(takeUntil(this.destroy$))
-      .subscribe(selection => { this.preselectedClasses.setValue(selection) })
+      .subscribe(selection => {
+        this.preselectedClasses.setValue(selection)
+      })
 
 
   }
@@ -191,7 +201,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
     this.formGroup.valueChanges.pipe(delay(0)).subscribe(controls => {
       if (controls && typeof controls === 'object' && Object.keys(controls).length) {
         const newVal: QueryPathSegment[] = this.dynamicFormControls.map(dynCtrl => ({
-          type: dynCtrl.type,
+          type: dynCtrl.classes ? 'classes' : 'properties',
           ...(dynCtrl.ctrl.value || {})
         }))
 
@@ -207,48 +217,15 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   // When user adds a next path segment
   addSegment() {
-    const type = this.dynamicFormControls[this.dynamicFormControls.length - 1].type === 'classes' ? 'properties' : 'classes';
+    const d = this.dynamicFormControls
+    const l = d.length
+    const type = l === 0 ? 'properties' : d[l - 1].classes ? 'properties' : 'classes';
     this.addCtrl(new QueryPathSegment({ type, data: {} }), this.dynamicFormControls.length)
   }
 
+
   removeSegmentByIndex?(i: number) {
     this.removeCtrl(i);
-  }
-
-  getPkClassesObservable(i: number): BehaviorSubject<number[]> {
-    const s = new BehaviorSubject(null);
-
-    this.afterViewInit$.pipe(first(b => b === true), takeUntil(this.destroy$))
-      .subscribe(() => {
-        merge(of(true), this.propertyPathSegments.changes).pipe(
-          switchMap(() => {
-            const component = this.propertyPathSegments.find(segment => segment.index === (i - 1));
-            if (!component) return null;
-            return component.pkClasses$
-          }),
-          filter(val => val !== null),
-          takeUntil(this.destroy$)
-        ).subscribe(pkClasses => { s.next(pkClasses) })
-      })
-
-    return s;
-  }
-  getPropertyOptionsObservable(i: number): BehaviorSubject<PropertyOption[]> {
-    const s = new BehaviorSubject(null);
-    this.afterViewInit$.pipe(first(b => b === true), takeUntil(this.destroy$))
-      .subscribe(() => {
-        merge(of(true), this.propertyPathSegments.changes).pipe(
-          switchMap(() => {
-            const component = this.classAndTypePathSegments.find(segment => segment.index === (i - 1));
-            if (!component) return null;
-            return component.propertyOptions$
-          }),
-          filter(val => val !== null),
-          takeUntil(this.destroy$)
-        ).subscribe(propertyOptions => { s.next(propertyOptions) })
-      })
-
-    return s;
   }
 
 
@@ -278,7 +255,9 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
     ctrlsToRemove.forEach(ctrlName => this.formGroup.removeControl(ctrlName));
 
     // add controls
-    (value || []).forEach((segment, index) => { this.addCtrl(segment, index); })
+    (value || []).forEach((segment, index) => {
+      this.addCtrl(segment, index);
+    })
 
     this.value = value;
 
@@ -286,15 +265,58 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
 
 
-  private getBehaviorSubject(type: string, index: any) {
+  private getSelectOptions$(type: string, index: any): {
+    properties?: {
+      propertyOptions$: Observable<PropertyOption[]>
+    }
+    classes?: {
+      pkClasses$: Observable<number[]>
+    }
+  } {
 
     if (type === 'properties') {
-      if (index === 0) return this.propertyOptionsBehaviorSubject$;
-      return this.getPropertyOptionsObservable(index);
+      return {
+        properties: {
+          propertyOptions$: this.getPropertyOptionsObservable(index)
+        }
+      }
     } else if (type === 'classes') {
-      return this.getPkClassesObservable(index);
+      return {
+        classes: {
+          pkClasses$: this.getPkClassesObservable(index)
+        }
+      }
     }
   }
+  getPkClassesObservable(i: number): Observable<number[]> {
+    const previousCtrl = this.dynamicFormControls[i - 1].ctrl
+    const val: QueryPathSegment = previousCtrl.value;
+    return merge(of(val.data), previousCtrl.valueChanges.pipe(map((value: QueryPathSegment) => value.data)))
+      .pipe(
+        tap((x) => {
+
+        }),
+        switchMap((value: PropertySelectModel) => this.i.pipePkClassesFromPropertySelectModel(value)),
+        tap((x) => {
+
+        }),
+      )
+  }
+  getPropertyOptionsObservable(i: number): Observable<PropertyOption[]> {
+    let classesAndTypes$: Observable<ClassAndTypeSelectModel>
+    if (i === 0) {
+      classesAndTypes$ = this.classesAndTypes$
+    } else {
+      const previousCtrl = this.dynamicFormControls[i - 1].ctrl
+      const val: QueryPathSegment = previousCtrl.value;
+      classesAndTypes$ = merge(of(val.data), previousCtrl.valueChanges.pipe(map((value: QueryPathSegment) => value.data)))
+    }
+
+    return classesAndTypes$.pipe(
+      switchMap((value: ClassAndTypeSelectModel) => this.i.pipePropertyOptionsFromClassesAndTypes(value))
+    )
+  }
+
 
   retrieveType(segment: QueryPathSegment): QueryPathSegmentType {
     if (segment && segment.type) {
@@ -324,11 +346,10 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
     const type = this.retrieveType(segment);
     const validator = this.retrieveValidator(type)
 
-    const c = {
-      type,
+    const c: DynamicFormControl = {
       key: '_' + index,
       ctrl: new FormControl(segment, [validator]),
-      behaviorSubject: this.getBehaviorSubject(type, index)
+      ... this.getSelectOptions$(type, index)
     }
     this.dynamicFormControls.push(c)
     this.formGroup.addControl(c.key, c.ctrl)

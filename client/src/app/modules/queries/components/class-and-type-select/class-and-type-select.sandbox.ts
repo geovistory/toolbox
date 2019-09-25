@@ -24,7 +24,7 @@ export default sandboxOf(ClassAndTypeSelectComponent, {
 })
     .add('Class and type Select | Empty ', {
         context: {
-            pkProject: 15,
+            pkProject: 21,
             sandboxState: {},
             model: {},
             pkClasses$
@@ -61,7 +61,7 @@ export default sandboxOf(ClassAndTypeSelectComponent, {
     })
     .add('Class and type Select | Preselected ', {
         context: {
-            pkProject: 15,
+            pkProject: 21,
             sandboxState: {},
             model: {
                 classes: [
