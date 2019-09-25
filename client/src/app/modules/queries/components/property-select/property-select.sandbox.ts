@@ -1,17 +1,16 @@
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
-import { FilterTree } from "../../containers/query-detail/FilterTree";
+import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { PropertyOption, PropertySelectComponent } from './property-select.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { first, delay } from 'rxjs/operators';
 
 
 const options$ = new BehaviorSubject(null)
-options$.pipe(first(), delay(1000)).subscribe(() => {
+options$.pipe(first(), delay(3000)).subscribe(() => {
     options$.next([
         {
             label: 'A',
@@ -33,7 +32,7 @@ export default sandboxOf(PropertySelectComponent, {
 })
     .add('Properties Select | Preselected ', {
         context: {
-            pkProject: 15,
+            pkProject: 24,
             sandboxState: {},
             model: {
                 outgoingProperties: [1192]
@@ -41,32 +40,33 @@ export default sandboxOf(PropertySelectComponent, {
             options$
         },
         template: `
-        <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
+        <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState">
+          <div class="d-flex justify-content-center mt-5">
+              <div style="width:430px;height:400px" class="d-flex mr-4">
+                  <form #f="ngForm" class="gv-grow-1">
+                      <mat-form-field>
+                          <gv-property-select placeholder="Select Properties" name="control" [(ngModel)]="model" #control="ngModel"  [options$]="options$" gvPropertiesRequired></gv-property-select>
+                          <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
+                      </mat-form-field>
+                  </form>
+              </div>
+              <div>
+                  <p>Form.valid: {{f.valid | json}}</p>
 
-        <div class="d-flex justify-content-center mt-5">
-            <div style="width:430px;height:400px" class="d-flex mr-4">
-                <form #f="ngForm" class="gv-grow-1">
-                    <mat-form-field>
-                        <gv-property-select placeholder="Select Properties" name="control" [(ngModel)]="model" #control="ngModel"  [options$]="options$" gvPropertiesRequired></gv-property-select>
-                        <mat-error *ngIf="control.invalid">You must enter a value</mat-error>
-                    </mat-form-field>
-                </form>
-            </div>
-            <div>
-                <p>Form.valid: {{f.valid | json}}</p>
+                  <p>Form.touched: {{f.touched | json}}</p>
 
-                <p>Form.touched: {{f.touched | json}}</p>
+                  <p>Form.dirty: {{f.dirty | json}}</p>
 
-                <p>Form.dirty: {{f.dirty | json}}</p>
+                  <p>Form.value </p>
+                  <pre>
+                      {{f.value | json}}
+                  </pre>
 
-                <p>Form.value </p>
-                <pre>
-                    {{f.value | json}}
-                </pre>
+                  Invalid: {{control.invalid | json}}
 
-                Invalid: {{control.invalid | json}}
+              </div>
+          </div>
+        </gv-init-state>`
 
-            </div>
-        </div>`
     })
 

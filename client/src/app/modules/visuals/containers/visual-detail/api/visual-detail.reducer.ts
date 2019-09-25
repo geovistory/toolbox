@@ -9,7 +9,7 @@ const INITIAL_STATE = new VisualDetail();
 export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Action): VisualDetail {
 
   const action = a as VisualDetailAPIAction;
-
+  let key
   switch (action.type) {
 
     /*****************************************************
@@ -26,7 +26,7 @@ export function visualDetailReducer(state: VisualDetail = INITIAL_STATE, a: Acti
     * Load existing visual
     *****************************************************/
     case VisualDetailAPIActions.LOAD_PREVIEW:
-      let key = (action.meta.pkEntity + '_' + action.meta.version);
+      key = (action.meta.pkEntity + '_' + action.meta.version);
       state = {
         ...state,
         queryResByVersion: {

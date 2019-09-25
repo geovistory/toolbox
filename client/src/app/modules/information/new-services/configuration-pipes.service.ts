@@ -2,13 +2,14 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectService, DfhPropertyView, limitTo, ProPropertyLabel, SysConfig } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { indexBy, uniq, values } from 'ramda';
+import { indexBy, uniq, values, flatten } from 'ramda';
 import { combineLatest, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap, flatMap } from 'rxjs/operators';
 import * as Config from '../../../../../../common/config/Config';
 import { cache, spyTag } from '../../../shared';
 import { ClassFieldConfig, FieldDefinition, ListDefinition, ListType } from '../new-components/properties-tree/properties-tree.models';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
+import { combineLatestOrEmpty } from 'app/modules/form-factory/core/form-factory.models';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ import { InformationBasicPipesService } from './information-basic-pipes.service'
 export class ConfigurationPipesService {
 
   constructor(
-    private b: InformationBasicPipesService,
+    // private b: InformationBasicPipesService,
     private p: ActiveProjectService,
   ) { }
 
@@ -36,7 +37,7 @@ export class ConfigurationPipesService {
   */
   @spyTag @cache({ refCount: false }) pipeClassFieldConfigs(pkClass: number, appContext: number, limit?: number): Observable<ClassFieldConfig[]> {
     return this.p.pro$.class_field_config$.by_fk_class__fk_app_context$.key(pkClass + '_' + appContext).pipe(
-      switchMap(ds => combineLatest(values(ds).map(d => {
+      switchMap(ds => combineLatestOrEmpty(values(ds).map(d => {
         if (!d.fk_property) return of({ ...d, fk_property_of_origin: undefined });
         // Join the fk_property_of_origin
         return this.p.dfh$.property_view$.by_dfh_pk_property$.key(d.fk_property).pipe(filter(i => !!i)).pipe(map(p => ({
@@ -208,7 +209,7 @@ export class ConfigurationPipesService {
    * returns an object where the keys are the pks of the Classes
    * used by the given project
    */
-  @spyTag @cache({ refCount: false }) pipeSelectedClassesInProject(): Observable<{ [key: string]: any }> {
+  @spyTag @cache({ refCount: false }) pipeSelectedClassesInProject(): Observable<{ [key: string]: number }> {
     return combineLatest(
       this.pipeClassesEnabledInEntities(),
       this.pipeClassesRequiredBySources()
@@ -228,6 +229,7 @@ export class ConfigurationPipesService {
       .pipe(
         switchMap((cs) => combineLatest(
           values(cs).map(c => this.p.dfh$.class$.by_pk_entity$.key(c.fk_entity).pipe(
+            filter(item => !!item),
             map(dfhc => values(dfhc)[0].dfh_pk_class),
             // startWith(0)
           ))
@@ -436,28 +438,36 @@ export class ConfigurationPipesService {
    *
    */
   @spyTag @cache({ refCount: false }) pipeTypeAndTypedClasses(enabledIn?: 'entities' | 'sources'): Observable<{ typedClass: number, typeClass: number }[]> {
-    let classesByPk$: Observable<number[]>;
+
+    let pks$: Observable<number[]>[];
+
+    const fromSources$ = this.p.sys$.system_relevant_class$.by_required_by_sources$.key('true').pipe(
+      map(classes => values(classes).map(k => k.fk_class)),
+    )
+
+    const fromEntities$ = this.pipeClassesEnabledInEntities()
 
     if (enabledIn === 'sources') {
-      classesByPk$ = this.p.sys$.system_relevant_class$.by_required_by_sources$.key('true').pipe(
-        map(classes => values(classes).map(k => k.fk_class)),
-
-      )
+      pks$ = [fromSources$];
     } else if (enabledIn === 'entities') {
-      classesByPk$ = this.pipeClassesEnabledInEntities()
+      pks$ = [fromEntities$];
+    } else {
+      pks$ = [fromSources$, fromEntities$]
     }
 
-    return classesByPk$.pipe(
-      tap((x) => {
+    return combineLatest(pks$).pipe(
+      map(arrayOfPkArrays => uniq(flatten<number>(arrayOfPkArrays))),
+      switchMap(pks => this.pipeTypeAndTypedClassesOfTypedClasses(pks))
+    )
+  }
 
-      }),
-      switchMap(pks => combineLatest(
-        pks.map(pk => this.p.sys$.class_has_type_property$.by_pk_typed_class$.key(pk).pipe(
-          map(x => ({
-            typedClass: pk,
-            typeClass: !x ? undefined : values(x)[0].pk_type_class
-          }))
-        ))
+  @spyTag @cache({ refCount: false }) pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<{ typedClass: number, typeClass: number }[]> {
+    return combineLatest(
+      pkTypedClasses.map(pk => this.p.sys$.class_has_type_property$.by_pk_typed_class$.key(pk).pipe(
+        map(x => ({
+          typedClass: pk,
+          typeClass: !x ? undefined : values(x)[0].pk_type_class
+        }))
       ))
     )
   }
@@ -467,6 +477,26 @@ export class ConfigurationPipesService {
       map(x => {
         if (!x || Object.keys(x).length < 1) return undefined;
         else return values(x)[0].pk_type_class
+      })
+    )
+  }
+
+  @spyTag @cache({ refCount: false }) pipeTypedClassesOfTypeClasses(pkTypeClasses: number[]): Observable<number[]> {
+    return this.p.sys$.class_has_type_property$.by_pk_type_class$.all$.pipe(
+      map(x => {
+        if (!pkTypeClasses || pkTypeClasses.length == 0) {
+          return []
+        }
+        const typeClasses = {}
+        const a = []
+        pkTypeClasses.forEach(pkTypeClass => {
+          if (!typeClasses[pkTypeClass] && x && Object.keys(x).length > 0) {
+            typeClasses[pkTypeClass] = true;
+            const typedClass = values(x[pkTypeClass])[0].pk_typed_class
+            a.push(typedClass)
+          }
+        })
+        return a;
       })
     )
   }
@@ -481,4 +511,48 @@ export class ConfigurationPipesService {
     )
   }
 
+  @spyTag @cache({ refCount: false }) pipeTargetClassesOfPropertiesOfOrigin(pkOrigProperties: number[], isOutgoing: boolean): Observable<number[]> {
+    return this.p.dfh$.property_view$.by_fk_property$.all$.pipe(
+      map(x => {
+        if (!pkOrigProperties || !pkOrigProperties.length) return [];
+
+        const res = []
+        const targetClasses = {};
+        pkOrigProperties.forEach(pkProp => {
+          const p = x[pkProp];
+          if (p && Object.keys(p).length > 0) {
+            const prop = values(p)[0];
+            const targetClass = isOutgoing ? prop.dfh_has_range : prop.dfh_has_domain;
+            if (!targetClasses[targetClass]) {
+              targetClasses[targetClass] = true;
+              res.push(targetClass)
+            }
+          }
+        })
+        return res;
+      })
+    )
+  }
+
+  @spyTag @cache({ refCount: false }) pipeTargetClassesOfProperties(pkProperties: number[], isOutgoing: boolean): Observable<number[]> {
+    return this.p.dfh$.property_view$.by_dfh_pk_property$.all$.pipe(
+      map(x => {
+        if (!pkProperties || !pkProperties.length) return [];
+
+        const res = []
+        const targetClasses = {};
+        pkProperties.forEach(pkProp => {
+          const prop = x[pkProp];
+          if (prop && Object.keys(prop).length > 0) {
+            const targetClass = isOutgoing ? prop.dfh_has_range : prop.dfh_has_domain;
+            if (!targetClasses[targetClass]) {
+              targetClasses[targetClass] = true;
+              res.push(targetClass)
+            }
+          }
+        })
+        return res;
+      })
+    )
+  }
 }

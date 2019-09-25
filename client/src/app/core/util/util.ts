@@ -16,6 +16,7 @@ import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { ByPk } from 'app/core/store/model';
 import { TimeSpanItem } from '../../modules/information/new-components/properties-tree/properties-tree.models';
 import { ActionType, AcNotification, AcEntity } from '../../../../node_modules/angular-cesium';
+import { FormArray } from '@angular/forms';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator
@@ -1338,9 +1339,16 @@ export class U {
 
     timeSpanItem.properties.forEach(p => {
       const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.pkProperty]
-      if(p.items && p.items.length) t[key] = p.items[0].timePrimitive
+      if (p.items && p.items.length) t[key] = p.items[0].timePrimitive
     })
     return t;
+  }
+
+  static recursiveMarkAsTouched = (f: FormArray) => {
+    f.controls.forEach((c: FormArray) => {
+      c.markAsTouched()
+      if (c.controls) U.recursiveMarkAsTouched(c)
+    })
   }
 
 }

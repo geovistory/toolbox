@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormGroupFactory } from '../core/form-group-factory';
 import { FormArrayFactory } from '../core/form-array-factory';
@@ -31,6 +31,7 @@ export interface FormControlConfig<M> {
   placeholder: string
   data: M // custom data depending on implementation
   required: boolean;
+  validators?: ValidatorFn[]
   initValue? // initial value of the control
 
   mapValue: (d) => any
@@ -64,6 +65,7 @@ export interface FormFactoryConfig<G, A, C> {
  */
 export interface FormFactoryGlobal<G, A, C> extends FormFactoryConfig<G, A, C> {
   fb: FormBuilder
+  root?: FormGroupFactory
   destroy$: Observable<boolean>
 }
 

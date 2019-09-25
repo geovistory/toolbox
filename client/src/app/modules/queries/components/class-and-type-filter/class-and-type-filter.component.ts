@@ -35,7 +35,6 @@ export class ClassAndTypeFilterRequiredValidatorDirective implements Validator {
   }
 }
 
-
 // tslint:disable: member-ordering
 class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<FilterTree> {
   static nextId = 0;

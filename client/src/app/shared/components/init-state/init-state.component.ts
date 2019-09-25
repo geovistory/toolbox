@@ -44,7 +44,7 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private ngRedux: NgRedux<any>,
-    private activeProjectService: ActiveProjectService
+    public p: ActiveProjectService
   ) { }
 
   ngOnInit() {
@@ -87,8 +87,8 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
      * Init project with api call
      */
     if (this.projectFromApi) {
-      this.activeProjectService.initProject(this.projectFromApi);
-      this.activeProjectService.initProjectCrm(this.projectFromApi);
+      this.p.initProject(this.projectFromApi);
+      this.p.initProjectCrm(this.projectFromApi);
       const crmLoaded = new Subject<boolean>();
       this.waitForAll.push(crmLoaded)
 

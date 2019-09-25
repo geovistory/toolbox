@@ -154,9 +154,9 @@ export class ActiveProjectEpics {
           this.sys.system_relevant_class$.by_fk_class$.all$,
           this.sys.class_has_type_property$.slice$,
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
-          this.dfh.property_view$.by_dfh_pk_property$.all$,
+          this.dfh.property_view$.by_dfh_pk_property$.noPause.all$,
           this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,
-          this.dfh.class$.by_dfh_pk_class$.all$
+          this.dfh.class$.by_dfh_pk_class$.noPause.all$
         )
           .pipe(filter((res) => !res.includes(undefined)))
           .subscribe((res) => {

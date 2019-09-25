@@ -25,6 +25,7 @@ import { U } from '../util/util';
 import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { InfActions } from '../inf/inf.actions';
 import { SucceedActionMeta } from '../store/actions';
+import { ShouldPauseService } from '../services/should-pause.service';
 
 
 
@@ -50,6 +51,7 @@ export class ActiveProjectService {
   public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
   public comVisualLoading$: Observable<boolean>
   public datNamespaces$: Observable<DatNamespace[]>
+  public initializingProject$: Observable<boolean>;
 
   // emits true if no toolbox panel is opened
   public dashboardVisible$: Observable<boolean>;
@@ -71,13 +73,15 @@ export class ActiveProjectService {
     public dialog: MatDialog,
     public dfh$: DfhSelector,
     public sys$: SystemSelector,
-    public inf: InfActions
+    public inf: InfActions,
+    public shouldPause: ShouldPauseService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(filter(p => p !== undefined));
+    this.initializingProject$ = ngRedux.select<boolean>(['activeProject', 'initializingProject']);
     this.defaultLanguage$ = this.activeProject$.pipe(filter((p) => (!!p && p.default_language) ? true : false), map(p => p.default_language))
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
@@ -99,6 +103,10 @@ export class ActiveProjectService {
     this.inf$ = new InfSelector(ngRedux, this.pkProject$);
     this.dat$ = new DatSelector(ngRedux);
     this.pro$ = new ProSelector(ngRedux);
+
+    this.initializingProject$.subscribe(bool => {
+      this.shouldPause.shouldPause$.next(bool)
+    })
 
     this.classPksEnabledInEntities$ = this.crm$.pipe(
       first(d => !!d),
