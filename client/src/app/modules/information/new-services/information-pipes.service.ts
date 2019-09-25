@@ -1085,7 +1085,7 @@ export class InformationPipesService {
           switchMap(typeClasses => this.c.pipeTypedClassesOfTypeClasses(typeClasses))
         )
     return typedClasses$.pipe(
-      map(typedClasses => uniq([...typedClasses, ...classesAndTypes.classes || []]))
+      map(typedClasses => uniq([...typedClasses, ...(classesAndTypes || { classes: [] }).classes || []]))
     )
   }
 

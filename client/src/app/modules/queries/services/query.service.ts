@@ -27,61 +27,61 @@ export class QueryService {
     ))
   }
 
-  propertiesOfClassesAndTypes(level?: number) {
-    return switchMap((classesAndTypes: ClassAndTypeSelectModel) => combineLatest(this.p.crm$, this.p.typesByPk$).pipe(
-      filter(([crm, typesByPk]) => (!!crm && !!typesByPk)),
-      map(([crm, typesByPk]) => {
-        const l = level;
-        if (classesAndTypes === null) return null;
-        const props: PropertyOption[] = []
-        const classPks = indexBy((pk) => pk.toString(), classesAndTypes.classes);
-        classesAndTypes.types.forEach(typePk => {
-          const typedClassPk = typesByPk[typePk].fk_typed_class;
-          if (typedClassPk && !classPks[typedClassPk]) {
-            classPks[typedClassPk] = typedClassPk;
-          }
-        })
+  // propertiesOfClassesAndTypes(level?: number) {
+  //   return switchMap((classesAndTypes: ClassAndTypeSelectModel) => combineLatest(this.p.crm$, this.p.typesByPk$).pipe(
+  //     filter(([crm, typesByPk]) => (!!crm && !!typesByPk)),
+  //     map(([crm, typesByPk]) => {
+  //       const l = level;
+  //       if (classesAndTypes === null) return null;
+  //       const props: PropertyOption[] = []
+  //       const classPks = indexBy((pk) => pk.toString(), classesAndTypes.classes);
+  //       classesAndTypes.types.forEach(typePk => {
+  //         const typedClassPk = typesByPk[typePk].fk_typed_class;
+  //         if (typedClassPk && !classPks[typedClassPk]) {
+  //           classPks[typedClassPk] = typedClassPk;
+  //         }
+  //       })
 
-        Object.keys(classPks).forEach(pkClass => {
-          const classConfig = crm.classes[pkClass];
-          const uiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
-          if (classConfig.uiContexts && classConfig.uiContexts[uiContext]) {
-            (classConfig.uiContexts[uiContext].uiElements || []).forEach(ele => {
-              if (ele.propertyFieldKey) {
-                props.push({
-                  propertyFieldKey: ele.propertyFieldKey,
-                  isOutgoing: ele.property_is_outgoing,
-                  pk: ele.fk_property,
-                  label: classConfig.propertyFields[ele.propertyFieldKey].label.default
-                })
-              }
-            })
-          }
-        })
+  //       Object.keys(classPks).forEach(pkClass => {
+  //         const classConfig = crm.classes[pkClass];
+  //         const uiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+  //         if (classConfig.uiContexts && classConfig.uiContexts[uiContext]) {
+  //           (classConfig.uiContexts[uiContext].uiElements || []).forEach(ele => {
+  //             if (ele.propertyFieldKey) {
+  //               props.push({
+  //                 propertyFieldKey: ele.propertyFieldKey,
+  //                 isOutgoing: ele.property_is_outgoing,
+  //                 pk: ele.fk_property,
+  //                 label: classConfig.propertyFields[ele.propertyFieldKey].label.default
+  //               })
+  //             }
+  //           })
+  //         }
+  //       })
 
-        // add sorting here
+  //       // add sorting here
 
-        return props
-      })
-    ))
-  }
+  //       return props
+  //     })
+  //   ))
+  // }
 
-  classesFromClassesAndTypes() {
-    return switchMap((classesAndTypes: ClassAndTypeSelectModel) => combineLatest(this.p.crm$, this.p.typesByPk$).pipe(
-      filter(([crm, typesByPk]) => (!!crm && !!typesByPk)),
-      map(([crm, typesByPk]) => {
-        if (classesAndTypes === null) return null;
-        const classPks = indexBy((pk) => pk.toString(), classesAndTypes.classes);
-        classesAndTypes.types.forEach(typePk => {
-          const typedClassPk = typesByPk[typePk].fk_typed_class;
-          if (typedClassPk && !classPks[typedClassPk]) {
-            classPks[typedClassPk] = typedClassPk;
-          }
-        })
-        return values(classPks)
-      })
-    ))
-  }
+  // classesFromClassesAndTypes() {
+  //   return switchMap((classesAndTypes: ClassAndTypeSelectModel) => combineLatest(this.p.crm$, this.p.typesByPk$).pipe(
+  //     filter(([crm, typesByPk]) => (!!crm && !!typesByPk)),
+  //     map(([crm, typesByPk]) => {
+  //       if (classesAndTypes === null) return null;
+  //       const classPks = indexBy((pk) => pk.toString(), classesAndTypes.classes);
+  //       classesAndTypes.types.forEach(typePk => {
+  //         const typedClassPk = typesByPk[typePk].fk_typed_class;
+  //         if (typedClassPk && !classPks[typedClassPk]) {
+  //           classPks[typedClassPk] = typedClassPk;
+  //         }
+  //       })
+  //       return values(classPks)
+  //     })
+  //   ))
+  // }
 
   propertyModelToPropertyOptions(model: PropertySelectModel): PropertyOption[] {
     return [

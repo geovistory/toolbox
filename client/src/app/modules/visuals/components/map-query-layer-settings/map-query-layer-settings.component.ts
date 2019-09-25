@@ -12,6 +12,7 @@ import { filter, map, takeUntil, tap, switchMap, first, delay } from 'rxjs/opera
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { FilterTreeData } from 'app/modules/queries/containers/query-detail/FilterTree';
 import { QueryPathSegment } from 'app/modules/queries/components/col-def-editor/QueryPathSegment';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 
 
@@ -168,7 +169,8 @@ export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy,
     @Optional() @Self() public ngControl: NgControl,
     fb: FormBuilder,
     public p: ActiveProjectService,
-    public q: QueryService
+    public q: QueryService,
+    private i: InformationPipesService
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -301,11 +303,11 @@ export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy,
     this.p.reloadTypesForClassesInProject();
 
     const rootIsGeo$ = rootClasses$.pipe(
-      this.q.classesFromClassesAndTypes(),
+      switchMap(classesAndTypes => this.i.pipeClassesFromClassesAndTypes(classesAndTypes)),
       this.q.classesAreGeo()
     )
     const rootIsTemporal$ = rootClasses$.pipe(
-      this.q.classesFromClassesAndTypes(),
+      switchMap(classesAndTypes => this.i.pipeClassesFromClassesAndTypes(classesAndTypes)),
       this.q.classesAreTemporal()
     )
     const cols$: Observable<ColDef[]> = this.comQuery$.pipe(

@@ -218,7 +218,7 @@ export class ClassAndTypeFilterComponent extends ClassAndTypeFilterMatControl im
   selectedClassesAndTypes$ = new BehaviorSubject<ClassAndTypeSelectModel | null>(null);
 
   // the propertyOptions get derived from the selectedClasses
-  propertyOptions$ = new BehaviorSubject<PropertyOption[] | null>(null);
+  // propertyOptions$ = new BehaviorSubject<PropertyOption[] | null>(null);
 
   get selectedClassesAndTypes() {
     return this.selectedClassesAndTypes$.value;
@@ -260,31 +260,31 @@ export class ClassAndTypeFilterComponent extends ClassAndTypeFilterMatControl im
 
   ngOnInit() {
 
-    this.selectedClassesAndTypes$.pipe(
-      tap((d) => {
-        if (this.level === 0) {
-          const l = this.level
-        } else {
-          const l = this.level
-        }
+    // this.selectedClassesAndTypes$.pipe(
+    //   tap((d) => {
+    //     if (this.level === 0) {
+    //       const l = this.level
+    //     } else {
+    //       const l = this.level
+    //     }
 
-      }),
-      this.q.propertiesOfClassesAndTypes(this.level),
-      tap((d) => {
-        if (this.level === 0) {
-          if (d !== null && d.length === 0) {
-            // Problem
-            const x = 'problem'
-          }
-          const l = this.level
-        } else {
-          const l = this.level
-        }
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe(propertyOptions => {
-      this.propertyOptions$.next(propertyOptions)
-    })
+    //   }),
+    //   this.q.propertiesOfClassesAndTypes(this.level),
+    //   tap((d) => {
+    //     if (this.level === 0) {
+    //       if (d !== null && d.length === 0) {
+    //         // Problem
+    //         const x = 'problem'
+    //       }
+    //       const l = this.level
+    //     } else {
+    //       const l = this.level
+    //     }
+    //   }),
+    //   takeUntil(this.destroy$)
+    // ).subscribe(propertyOptions => {
+    //   this.propertyOptions$.next(propertyOptions)
+    // })
 
   }
 

@@ -50,6 +50,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
 
   // For root element of path
   @Input() classesAndTypes$: Observable<ClassAndTypeSelectModel>;
+  _classesAndTypes$ = new BehaviorSubject<ClassAndTypeSelectModel>({});
   pkClasses$: Observable<number[]>;
   preselectedClasses = new FormControl({ disabled: true });
 
@@ -182,17 +183,20 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit() {
     if (!this.classesAndTypes$) throw new Error('please provide classesAndTypes$ input')
 
-    this.pkClasses$ = this.classesAndTypes$.pipe(
+    this.classesAndTypes$.pipe(takeUntil(this.destroy$)).subscribe(d => {
+      this._classesAndTypes$.next(d)
+    })
+
+    this.pkClasses$ = this._classesAndTypes$.pipe(
       switchMap(classesAndTypes => this.i.pipeClassesFromClassesAndTypes(classesAndTypes))
     )
 
     this.propertyOptions$ = this.pkClasses$.pipe(switchMap(classes => this.i.pipePropertyOptionsFormClasses(classes)))
 
-    this.classesAndTypes$.pipe(takeUntil(this.destroy$))
+    this._classesAndTypes$.pipe(takeUntil(this.destroy$))
       .subscribe(selection => {
         this.preselectedClasses.setValue(selection)
       })
-
 
   }
 
@@ -305,7 +309,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
   getPropertyOptionsObservable(i: number): Observable<PropertyOption[]> {
     let classesAndTypes$: Observable<ClassAndTypeSelectModel>
     if (i === 0) {
-      classesAndTypes$ = this.classesAndTypes$
+      classesAndTypes$ = this._classesAndTypes$
     } else {
       const previousCtrl = this.dynamicFormControls[i - 1].ctrl
       const val: QueryPathSegment = previousCtrl.value;

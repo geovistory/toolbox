@@ -1,16 +1,17 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { delay, filter, takeUntil } from 'rxjs/operators';
+import { delay, filter, takeUntil, switchMap } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 import { ColDef } from "../col-def-editor/ColDef";
 import { PropertyOption } from '../property-select/property-select.component';
 import { QueryPathControlComponent, QueryPathMetaInfo } from '../query-path-control/query-path-control.component';
 import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 
 // tslint:disable: member-ordering
@@ -169,7 +170,7 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
     '[attr.aria-describedby]': 'describedBy',
   }
 })
-export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
+export class ColDefComponent extends ColDefMatControl implements AfterViewInit, OnInit {
   @ViewChild(QueryPathControlComponent, { static: false }) queryPathControl: QueryPathControlComponent;
 
   metaInfoChange$ = new BehaviorSubject<QueryPathMetaInfo>({});
@@ -189,7 +190,8 @@ export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
 
   constructor(@Optional() @Self() public ngControl: NgControl,
     fb: FormBuilder,
-    private q: QueryService) {
+    private q: QueryService,
+    private i: InformationPipesService) {
     super(ngControl, fb)
 
     this.formGroup.valueChanges.pipe(delay(0), takeUntil(this.destroy$))
@@ -214,7 +216,7 @@ export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
 
     const classes$ = this.classesAndTypes$.pipe(
       filter(() => (this.model && this.model.defaultType === 'entity_preview')),
-      this.q.classesFromClassesAndTypes()
+      switchMap(classesAndTypes => this.i.pipeClassesFromClassesAndTypes(classesAndTypes))
     )
 
     const isTemporal$ = classes$.pipe(this.q.classesAreTemporal())
@@ -229,8 +231,10 @@ export class ColDefComponent extends ColDefMatControl implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.queryPathControl) this.queryPathControl.metaInfoChange$.pipe(takeUntil(this.destroy$))
+    if (this.queryPathControl) {
+      this.queryPathControl.metaInfoChange$.pipe(takeUntil(this.destroy$))
       .subscribe(d => this.metaInfoChange$.next(d))
+    }
   }
 
   onBlur() {

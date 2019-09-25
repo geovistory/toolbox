@@ -125,7 +125,7 @@ export class ClassAndTypePathSegmentComponent implements AfterViewInit, OnDestro
   selectedClassesAndTypes$ = new BehaviorSubject<ClassAndTypeSelectModel | null>(null);
 
   // the propertyOptions get derived from the selectedClasses
-  propertyOptions$ = new BehaviorSubject<PropertyOption[] | null>(null);
+  // propertyOptions$ = new BehaviorSubject<PropertyOption[] | null>(null);
 
   get selectedClassesAndTypes() {
     return this.selectedClassesAndTypes$.value;
@@ -142,12 +142,12 @@ export class ClassAndTypePathSegmentComponent implements AfterViewInit, OnDestro
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
-    this.selectedClassesAndTypes$.pipe(
-      this.q.propertiesOfClassesAndTypes(),
-      takeUntil(this.destroy$)
-    ).subscribe(propertyOptions => {
-      this.propertyOptions$.next(propertyOptions)
-    })
+    // this.selectedClassesAndTypes$.pipe(
+    //   this.q.propertiesOfClassesAndTypes(),
+    //   takeUntil(this.destroy$)
+    // ).subscribe(propertyOptions => {
+    //   this.propertyOptions$.next(propertyOptions)
+    // })
 
   }
 
