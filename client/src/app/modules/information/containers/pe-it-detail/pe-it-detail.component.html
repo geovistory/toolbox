@@ -51,7 +51,11 @@
 
         <span class="gv-tile" *ngIf="(showProperties$ | async)">
           <div class="gv-one-liner mx-2 mt-3">
-            <h2><span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async}}</span></h2>
+            <h2>
+              <span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async}}</span>
+              <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
+            </h2>
+
           </div>
 
 
@@ -101,7 +105,8 @@
         </div>
 
         <!-- Section List. Sections of a source -->
-        <gv-content-tree *ngIf="(activeTab$ | async) == 'showSectionList'" class="gv-tile gv-flex-fh" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
+        <gv-content-tree *ngIf="(activeTab$ | async) == 'showSectionList'" class="gv-tile gv-flex-fh"
+          [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
         </gv-content-tree>
         <!-- <div class="gv-tile" *ngIf="(activeTab$ | async) == 'showSectionList'">
 
@@ -110,7 +115,8 @@
         </div> -->
 
         <!-- Show Sources (where this PeIt is annotated) -->
-        <gv-mentioning-list  *ngIf="(showSources$ | async)" class="gv-tile" [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
+        <gv-mentioning-list *ngIf="(showSources$ | async)" class="gv-tile"
+          [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
         </gv-mentioning-list>
         <!-- <div class="gv-tile">
 

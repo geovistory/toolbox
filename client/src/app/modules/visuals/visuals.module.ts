@@ -30,7 +30,7 @@ import { VisualDetailAPIActions } from './containers/visual-detail/api/visual-de
 import { VisualDetailAPIEpics } from './containers/visual-detail/api/visual-detail.epics';
 import { VisualDetailComponent } from './containers/visual-detail/visual-detail.component';
 import { VisualListComponent } from './containers/visual-list/visual-list.component';
-import { AngularCesiumModule } from '../../../../node_modules/angular-cesium';
+import { AngularCesiumModule, CesiumService } from '../../../../node_modules/angular-cesium';
 
 const components = [
   VisualDetailComponent,
@@ -73,7 +73,8 @@ const components = [
   ],
   providers: [
     VisualDetailAPIActions,
-    VisualDetailAPIEpics
+    VisualDetailAPIEpics,
+    CesiumService
   ],
   declarations: components,
   exports: components

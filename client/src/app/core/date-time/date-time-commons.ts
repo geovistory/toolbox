@@ -147,7 +147,7 @@ export class DateTimeCommons {
     }
 
     // resulting day
-    const day = runningDay - 30 * (month - 1) - (lc + mc);
+    let day = runningDay - 30 * (month - 1) - (lc + mc);
 
     // check if month and day still valid
     if (month > 12 || day < 1) {
@@ -166,10 +166,10 @@ export class DateTimeCommons {
       }
 
       // month correction
-      const mc = monthCorrenctions[month - 1];
+      mc = monthCorrenctions[month - 1];
 
       // resulting day
-      const day = runningDay - 30 * (month - 1) - (lc + mc);
+      day = runningDay - 30 * (month - 1) - (lc + mc);
 
     }
 
@@ -218,7 +218,7 @@ export class DateTimeCommons {
   getDate(): Date | null {
 
     // validate
-    if (!this.year && this.year !== 0) return null;
+    if (!this.year && this.year !== 0) return null;
     if (this.day && !this.month) return null;
     if (this.hours && !this.day) return null;
     if (this.minutes && !this.hours) return null;

@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AcMapComponent, CesiumService, MapLayerProviderOptions, ViewerConfiguration } from 'angular-cesium';
 import { ActiveProjectService, LoopBackConfig, U } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { map, takeUntil, filter } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { MapQueryLayerSettings } from '../map-query-layer-settings/map-query-layer-settings.component';
 import { MapVisualSettings } from '../map-settings/map-settings.component';
-import { TimelineVisualSettings, TimeLineDataSetSettings } from '../timeline-visual/timeline-visual.component';
-import { AcMapComponent, MapLayerProviderOptions } from '../../../../../../node_modules/angular-cesium';
+import { TimeLineDataSetSettings, TimelineVisualSettings } from '../timeline-visual/timeline-visual.component';
 
 
 export interface QueryLayer {
@@ -17,7 +17,11 @@ export interface QueryLayer {
   selector: 'gv-map-visual',
   templateUrl: './map-visual.component.html',
   styleUrls: ['./map-visual.component.scss'],
-  encapsulation: ViewEncapsulation.Emulated
+  encapsulation: ViewEncapsulation.Emulated,
+  providers: [
+    ViewerConfiguration,
+    CesiumService
+  ]
 })
 export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
   // emits true on destroy of this component
@@ -44,7 +48,22 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  constructor(private p: ActiveProjectService) {
+  constructor(
+    private p: ActiveProjectService,
+    viewerConf: ViewerConfiguration
+  ) {
+
+    viewerConf.viewerOptions = {
+      fullscreenButton: false,
+      geocoder: false,
+      homeButton: false,
+      infoBox: false,
+      baseLayerPicker: false,
+      sceneMode: Cesium.SceneMode.SCENE2D
+      // skyAtmosphere: false,
+      // shadows: true
+    }
+
   }
 
   trackByfn(_, item: QueryLayer) {
@@ -52,6 +71,8 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+
+
     this.data$.pipe(takeUntil(this.destroy$)).subscribe(d => this._data$.next(d))
     this.settings$.pipe(takeUntil(this.destroy$)).subscribe(d => this._settings$.next(d))
 
@@ -109,7 +130,11 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-
+    // improve contrast
+    // https://stackoverflow.com/questions/56636467/is-it-normal-this-dark-image-in-cesium
+    const cesiumService = this.acMap.getCesiumService();
+    const scene = cesiumService.getScene()
+    scene.highDynamicRange = false
   }
 
   onTimeCursorChange(n: number) {

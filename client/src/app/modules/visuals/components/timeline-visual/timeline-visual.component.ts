@@ -1,6 +1,6 @@
 
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, TimeSpan } from 'app/core';
+import { ActiveProjectService, TimeSpan, EntityPreview } from 'app/core';
 import { TimeLineData, TimeLineRow, TimeLineSettings } from 'app/modules/timeline/models/timeline';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
@@ -72,17 +72,19 @@ export class TimelineVisualComponent implements OnInit, OnDestroy {
             // TODO add different types of timeline visualizations here
 
             if (dataSet.temporalCol) {
-              dataSetRows = rows.map(row => {
-                const e = row[dataSet.temporalCol];
-                const tlrow: TimeLineRow = {
-                  accentuation: 'none',
-                  label: e.class_label + ' ' + e.entity_label,
-                  existenceTime: new TimeSpan(e.time_span),
-                  color: dataSet.color
-                }
-                return tlrow;
-
-              })
+              dataSetRows = rows
+                .map(row => {
+                  const entityPreview: EntityPreview = row[dataSet.temporalCol];
+                  const tlrow: TimeLineRow = {
+                    entityPreview,
+                    accentuation: 'none',
+                    label: entityPreview.class_label + ' ' + entityPreview.entity_label,
+                    existenceTime: new TimeSpan(entityPreview.time_span),
+                    color: dataSet.color
+                  }
+                  return tlrow;
+                })
+                .sort((a, b) => (a.existenceTime.earliestDay > b.existenceTime.earliestDay ? 1 : -1))
             }
           }
 

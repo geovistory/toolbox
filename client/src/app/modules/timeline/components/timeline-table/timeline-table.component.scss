@@ -1,0 +1,47 @@
+@import "../../../../shared/components/core-table/table";
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+@include base;
+@include progress;
+cdk-virtual-scroll-viewport {
+  height: 100%;
+}
+
+::ng-deep
+  .cdk-virtual-scroll-orientation-vertical
+  .cdk-virtual-scroll-content-wrapper {
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.mat-row {
+  min-height: 36px;
+}
+.mat-header-row {
+  min-height: 41px;
+  height: 41px;
+}
+
+.mat-column-label {
+  flex: 1 1 25%;
+  div {
+    max-width: 260px;
+  }
+  border-right: 1px solid #e0e0e0;
+
+  &.mat-header-cell {
+    padding-left: 10px;
+  }
+}
+.mat-column-time {
+  flex: 1 0 75%;
+  padding-right: 0;
+}
+
+.x-axis {
+  user-select: none;
+}
