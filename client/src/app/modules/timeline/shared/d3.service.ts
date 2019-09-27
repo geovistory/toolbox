@@ -59,7 +59,7 @@ export class D3Service {
 
   }
 
-  applyRangeEmitterOnKeyDown(mouseDownElement, relativeToElement): Observable<RangeChangeEvent> {
+  applyRangeEmitterOnKeyDown(mouseDownElement: HTMLElement, relativeToElement: HTMLElement): Observable<RangeChangeEvent> {
     return new Observable(observer => {
 
       const d3element = d3.select(mouseDownElement);

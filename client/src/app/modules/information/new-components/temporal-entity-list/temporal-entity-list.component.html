@@ -14,9 +14,10 @@
         <td mat-cell class="class-info-col pr-4" *matCellDef="let element">
           <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="listDefinition.targetClass">
           </gv-onto-class-info>
-          <span class=" font-xs text-muted" [matTooltip]="'Temporal Entity ' + element.pkEntity">
+          <span class="font-xs text-muted" [matTooltip]="'Temporal Entity ' + element.pkEntity">
             <i class="gv-entity-color fa fa-star-o"></i> {{listDefinition.targetClassLabel}}
           </span>
+          <span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2"> {{element.pkEntity}}</span>
         </td>
       </ng-container>
 

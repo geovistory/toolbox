@@ -1,5 +1,6 @@
 import { TimePrimitive } from 'app/core';
 import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../../modules/information/new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { pick } from 'ramda';
 
 export class TimeSpan {
 
@@ -12,6 +13,23 @@ export class TimeSpan {
   p81b?: TimePrimitive; // begin of the end | right inner bound | surely to
   p82b?: TimePrimitive; // end of the end | right outer bound | not after
 
+
+  get earliestDay() {
+
+    if (this.isEmpty()) return null;
+
+    let min = Number.POSITIVE_INFINITY;
+
+    this.tpKeys.forEach(key => {
+      if (this[key]) {
+        const current = this[key].julianDay;
+        // if this timePrimitive is earlier than min, set this as new min
+        min = current < min ? current : min;
+      }
+    })
+
+    return min;
+  }
 
   /**
   * get the earliest and latest TimePrimitive of given array of TimePrimitives

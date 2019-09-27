@@ -16,9 +16,8 @@ export const names = ['Jon Snow', 'Daenerys Targaryen', 'Arya Stark', 'Brandon S
     template: `
     <div style="padding:50px">
         <gv-result-table
-        [examples]="examples | async"
-        [pending]="pending | async"
-        [sticky]="sticky"
+        [data$]="examples"
+        [pending$]="pending"
         ></gv-result-table>
     </div>
     <button mat-raised-button color="primary" (click)="fetch()">Fake fetch</button>

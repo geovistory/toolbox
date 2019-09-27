@@ -57,25 +57,25 @@ export class PeItTimelineComponent extends PeItTimelineAPIActions implements OnI
 
   ngOnInit() {
 
-    this.timeLineData$ = this.b.pipeRelatedTemporalEntities(this.pkEntity).pipe(
-      switchMapOr([], (teEns) => combineLatest(
-        teEns.map(teEn => (combineLatest(
-          this.b.pipeTimeSpan(teEn.pk_entity),
-          this.i.pipeLabelOfEntity(teEn.pk_entity),
-          this.i.pipeClassLabelOfEntity(teEn.pk_entity)
-        )).pipe(
-          map(([timeSpan, teEnLabel, classLabel]) => {
-            const timeLineRow: TimeLineRow = {
-              accentuation: 'none',
-              existenceTime: timeSpan,
-              label: classLabel + ' ' + teEnLabel
-            }
-            return timeLineRow
-          })
-        ))
-      )),
-      map(rows => ({ rows }))
-    )
+    // this.timeLineData$ = this.b.pipeRelatedTemporalEntities(this.pkEntity).pipe(
+    //   switchMapOr([], (teEns) => combineLatest(
+    //     teEns.map(teEn => (combineLatest(
+    //       this.b.pipeTimeSpan(teEn.pk_entity),
+    //       this.i.pipeLabelOfEntity(teEn.pk_entity),
+    //       this.i.pipeClassLabelOfEntity(teEn.pk_entity)
+    //     )).pipe(
+    //       map(([timeSpan, teEnLabel, classLabel]) => {
+    //         const timeLineRow: TimeLineRow = {
+    //           accentuation: 'none',
+    //           existenceTime: timeSpan,
+    //           label: classLabel + ' ' + teEnLabel
+    //         }
+    //         return timeLineRow
+    //       })
+    //     ))
+    //   )),
+    //   map(rows => ({ rows }))
+    // )
 
     // subscribe to PropertyFields and create TimeLineData
     // this.ngRedux.select<FieldList>([...dropLast(1, this.basePath), '_fields'])

@@ -1,0 +1,79 @@
+<cdk-virtual-scroll-viewport coreTableVirtualScroll [rowHeight]="options.rowHeight" [offset]="options.headerHeight">
+  <mat-table matSort [dataSource]="dataSource">
+
+
+    <ng-container matColumnDef="label">
+      <mat-header-cell *matHeaderCellDef>
+        <button mat-icon-button (click)="onZoomOut()" matTooltip="Zoom Out">
+          <mat-icon>zoom_out</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onZoomIn()" matTooltip="Zoom In">
+          <mat-icon>zoom_in</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onZoomToExtent()"  matTooltip="Zoom to all items">
+          <mat-icon>all_out</mat-icon>
+        </button>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row;">
+        <gv-entity-preview [preview]="row.entityPreview" dragEnabled="false" openTabOnClick="true">
+        </gv-entity-preview>
+        <!-- <div class="gv-ellipsis"> {{row.index}} {{row.label}}</div> -->
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="time">
+      <mat-header-cell class="header" *matHeaderCellDef gvDimensionChange
+        (onDimensionsChange)="onDimensionsChange($event)" #headerElement>
+        <!-- xAxis fixed top-->
+        <svg [attr.width]="options.width" [attr.height]="options.headerHeight" *ngIf="timeline">
+          <!-- rect to catch mousedown events -->
+          <svg:rect [attr.width]="options.width" [attr.height]="options.headerHeight" opacity="0"
+            [rangeEmitterOnMouseDown]="headerElement" (onRangeChange)="onChangeCursorPosition($event)"></svg:rect>
+
+          <g class="x-axis x-axis-julian" [xAxisVisual]="timeline.xAxis"></g>
+          <g class="x-axis x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg"></g>
+          <g *ngIf="timeline && options.cursorPosition" [cursorHeaderVisual]="{
+            timeline: timeline,
+            julianSecond: options.cursorPosition,
+            bodyHeight: options.bodyHeight,
+            headerHeight:  options.headerHeight
+          }"></g>
+        </svg>
+
+      </mat-header-cell>
+      <mat-cell class="body" *matCellDef="let row">
+        <svg [attr.width]="options.width" [attr.height]="options.rowHeight" draggableXAxis (onDrag)="onDrag($event)"
+          (onDragStart)="onDragStart()" (onDragEnd)="onDragEnd()">
+          <!-- xAxis ticks on rows-->
+          <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
+          <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
+          <!-- time span -->
+          <g class="row" [teEntVisual]="{row:row, timeline:timeline}"></g>
+
+          <g *ngIf="timeline && options.cursorPosition" [cursorLineVisual]="{
+            timeline: timeline,
+            julianSecond: options.cursorPosition,
+            bodyHeight: options.rowHeight
+          }"></g>
+
+
+        </svg>
+      </mat-cell>
+    </ng-container>
+
+    <!-- <ng-container matColumnDef="progress">
+      <mat-header-cell *matHeaderCellDef [attr.colspan]="columns.length">
+        <mat-progress-bar mode="indeterminate" [class.show]="pending$ | async">
+        </mat-progress-bar>
+      </mat-header-cell>
+    </ng-container> -->
+
+
+    <mat-header-row *matHeaderRowDef="columns; sticky: sticky" [style.top.px]="headerTop$ | async">
+    </mat-header-row>
+    <!-- <mat-header-row class="core-table-progress" *matHeaderRowDef="['progress']; sticky: sticky"
+      [style.top.px]="(headerTop$ | async) + 56">
+    </mat-header-row> -->
+    <mat-row *matRowDef="let row; columns: columns"></mat-row>
+  </mat-table>
+</cdk-virtual-scroll-viewport>
