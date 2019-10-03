@@ -11,8 +11,6 @@ import { FeedbackDialogComponent } from './modules/user-feedback/components/feed
 })
 export class AppComponent {
 
-
-
   constructor(public dialog: MatDialog) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);

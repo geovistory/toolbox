@@ -41,8 +41,8 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
 
   urlTemplateProvider = MapLayerProviderOptions.UrlTemplateImagery;
   /** Configuration for Carto Basemap */
-  cartoUrl = LoopBackConfig.getPath() + '/cartodb-basemaps-proxy?s={s}&z={z}&x={x}&y={y}';
-
+  // cartoUrl = LoopBackConfig.getPath() + '/cartodb-basemaps-proxy?s={s}&z={z}&x={x}&y={y}';
+  cartoUrl = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}@2x.png'
   queryLayers$: Observable<QueryLayer[]>;
   timeLineVisualSettings$: Observable<TimelineVisualSettings>;
 
@@ -58,7 +58,7 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
       geocoder: false,
       homeButton: false,
       infoBox: false,
-      // baseLayerPicker: false,
+      baseLayerPicker: false,
       sceneMode: Cesium.SceneMode.SCENE2D
       // skyAtmosphere: false,
       // shadows: true
