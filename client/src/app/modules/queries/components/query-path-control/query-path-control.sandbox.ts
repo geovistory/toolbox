@@ -38,11 +38,11 @@ export default sandboxOf(QueryPathControlComponent, {
   .add('Query Path | Empty ', {
     context: {
       classesAndTypes$: of({
-        classes: [21, 61],
+        classes: [523],
         types: []
       } as ClassAndTypeSelectModel),
       options$,
-      pkProject: 24,
+      pkProject: 374840,
       model: [],
     },
     template: `

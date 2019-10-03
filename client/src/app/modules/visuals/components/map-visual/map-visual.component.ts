@@ -58,7 +58,7 @@ export class MapVisualComponent implements OnInit, OnDestroy, AfterViewInit {
       geocoder: false,
       homeButton: false,
       infoBox: false,
-      baseLayerPicker: false,
+      // baseLayerPicker: false,
       sceneMode: Cesium.SceneMode.SCENE2D
       // skyAtmosphere: false,
       // shadows: true
