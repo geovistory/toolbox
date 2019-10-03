@@ -80,7 +80,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   // number of characters of text
   textLength: number;
   // max number of characters
-  maxLength = 30000;
+  maxLength = 10000;
 
   // TODO check if needed
   readOnly$;
