@@ -295,9 +295,15 @@ export class TreeChecklistComponent implements OnInit, OnDestroy, AfterViewInit 
   nodeSelectionToggle(node: TreeNode<any>): void {
     this.checklistSelection.toggle(node);
     const descendants = this.treeControl.getDescendants(node);
-    this.checklistSelection.isSelected(node)
-      ? this.checklistSelection.select(...descendants, node)
-      : this.checklistSelection.deselect(...descendants, node);
+    const isSelected = this.checklistSelection.isSelected(node);
+
+    if (descendants.length) {
+      if (isSelected) {
+        this.checklistSelection.select(...descendants);
+      } else {
+        this.checklistSelection.deselect(...descendants);
+      }
+    }
 
     this.selected = this.checklistSelection.selected;
 

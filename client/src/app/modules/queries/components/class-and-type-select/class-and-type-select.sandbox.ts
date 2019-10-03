@@ -10,26 +10,26 @@ import { first, delay } from 'rxjs/operators';
 // create a BehaviorSubject that emits first null, and after 1 sec [21, 61]
 const pkClasses$ = new BehaviorSubject(null)
 pkClasses$.pipe(first(), delay(1000)).subscribe(() => {
-    pkClasses$.next([21, 61])
+  pkClasses$.next([21, 61, 523, 442, 68, 363])
 })
 
 export default sandboxOf(ClassAndTypeSelectComponent, {
-    declareComponent: false,
-    imports: [
-        QueriesModule,
-        MatFormFieldModule,
-        FormsModule,
-        InitStateModule
-    ]
+  declareComponent: false,
+  imports: [
+    QueriesModule,
+    MatFormFieldModule,
+    FormsModule,
+    InitStateModule
+  ]
 })
-    .add('Class and type Select | Empty ', {
-        context: {
-            pkProject: 21,
-            sandboxState: {},
-            model: {},
-            pkClasses$
-        },
-        template: `
+  .add('Class and type Select | Empty ', {
+    context: {
+      pkProject: 374840,
+      sandboxState: {},
+      model: {},
+      pkClasses$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -58,20 +58,20 @@ export default sandboxOf(ClassAndTypeSelectComponent, {
 
             </div>
         </div>`
-    })
-    .add('Class and type Select | Preselected ', {
-        context: {
-            pkProject: 21,
-            sandboxState: {},
-            model: {
-                classes: [
-                    21
-                ],
-                types: []
-            },
-            pkClasses$
-        },
-        template: `
+  })
+  .add('Class and type Select | Preselected ', {
+    context: {
+      pkProject: 21,
+      sandboxState: {},
+      model: {
+        classes: [
+          21
+        ],
+        types: []
+      },
+      pkClasses$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -99,4 +99,4 @@ export default sandboxOf(ClassAndTypeSelectComponent, {
 
             </div>
         </div>`
-    })
+  })

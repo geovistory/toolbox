@@ -245,7 +245,7 @@ export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl im
     ).subscribe(([cache, optionsTree]) => {
       const classes = []
       const types = []
-      const options = this.treeToModel(optionsTree);
+      const options = this.nestedTreeToModel(optionsTree);
       options.types.forEach((t) => {
         if (cache && cache.types && this.cache.types.includes(t)) {
           types.push(t)
@@ -266,16 +266,49 @@ export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl im
   }
 
   selectionChange(val: TreeNode<TreeNodeData>[]) {
-    this.cache = this.treeToModel(val)
+    this.cache = this.flatTreeToModel(val)
     this.cache$.next(this.cache)
   }
 
-  treeToModel(val: TreeNode<TreeNodeData>[]): ClassAndTypeSelectModel {
+  /**
+   * Converts the array of nodes to this.model of this component, containing
+   * an array of classes and an array of types. In comparison to
+   * this.nestedTreeToModel this function ignores children of the single nodes.
+   *
+   * This is useful for converting selection model sent by the tree-checklist-select
+   * component to the model of this component, since there the selected nodes
+   * are on the root level of the array (although they can contain not selected children,
+   * that need to be ignored.)
+   */
+  flatTreeToModel(val: TreeNode<TreeNodeData>[]): ClassAndTypeSelectModel {
     return {
       classes: val.filter(v => v.data.pkClass).map(v => v.data.pkClass),
       types: val.filter(v => v.data.pkType).map(v => v.data.pkType),
     }
   }
+
+  /**
+   * Converts the nested tree to this.model, containing
+   * an array of classes and an array of types. Children of the nodes are
+   * recursivley mapped.
+   */
+  nestedTreeToModel(val: TreeNode<TreeNodeData>[]): ClassAndTypeSelectModel {
+    const classes = []
+    const types = []
+
+    const recursive = (nodes: TreeNode<TreeNodeData>[]) => {
+      nodes.forEach(node => {
+        if (node.data.pkClass) classes.push(node.data.pkClass)
+        if (node.data.pkType) types.push(node.data.pkType)
+        if (node.children) recursive(node.children.value)
+      })
+    }
+
+    recursive(val);
+
+    return { classes, types }
+  }
+
 
   setValid() {
     this.valid = [
