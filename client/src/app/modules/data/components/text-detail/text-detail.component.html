@@ -44,7 +44,7 @@
     </gv-detail-top-bar>
     <gv-detail-content>
 
-      <gv-quill-edit class="gv-flex-fh gv-quill-borderless" [quillDoc]="quillDoc$ | async"
+      <gv-quill-edit class="gv-flex-fh gv-quill-borderless" [quillDoc]="quillDoc$ | async" [maxLength]="maxLength"
         [readOnly]="(readOnly$ | async)" [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="annotatedNodes$"
         [accentuatedNodes$]="accentuatedNodes$" [creatingAnnotation]="false" (textLengthChange)="textLength = $event"
         (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"

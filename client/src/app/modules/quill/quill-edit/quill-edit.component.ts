@@ -49,7 +49,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   _accentuatedNodes$: Observable<IndexedCharids<true>>
 
   // Max number of characters
-  @Input() maxLength = 30000;
+  @Input() maxLength = 10000;
 
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
