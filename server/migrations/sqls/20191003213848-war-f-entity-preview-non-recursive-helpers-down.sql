@@ -1,0 +1,2 @@
+--1
+DROP FUNCTION warehouse.entity_preview_non_recursive__refresh

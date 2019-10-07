@@ -282,7 +282,7 @@ class FlatObjectQueryBuilder {
       LEFT JOIN info_proj_rel ON true
 
     `
-    logFn(sql, this.params)
+    // logFn(sql, this.params)
     return { sql, params: this.params }
   }
 
@@ -569,7 +569,7 @@ class FlatObjectQueryBuilder {
       LEFT JOIN time_primitive ON true
       LEFT JOIN place ON true;
     `
-    logFn(sql, this.params)
+    // logFn(sql, this.params)
     return { sql, params: this.params }
   }
 
@@ -834,7 +834,7 @@ class FlatObjectQueryBuilder {
     UNION ALL
     SELECT 'geos' as model, json_agg(pk_entity), count(*) from geo_persistent_items GROUP BY true;
     `
-    logFn(sql, this.params)
+    // logFn(sql, this.params)
     return { sql, params: this.params }
   }
 

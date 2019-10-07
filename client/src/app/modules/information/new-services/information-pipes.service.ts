@@ -638,7 +638,7 @@ export class InformationPipesService {
           projRel: undefined,
           role,
           preview,
-          label: preview.entity_label
+          label: preview.entity_label || ''
         }
         return node
       }))
