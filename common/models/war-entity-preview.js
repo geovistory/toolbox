@@ -50,7 +50,7 @@ module.exports = function (WarEntityPreview) {
         console.log(socket.id + ' emitted entityPreview: ' + entityPreview.pk_entity + ' ' + entityPreview.entity_label + ' for project ' + cache.currentProjectPk)
       }
 
-      // Get a entityPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks 
+      // Get a entityPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks
       socket.on('addToStrem', (data) => {
         let { pk_project, pks } = data;
 
@@ -94,7 +94,7 @@ module.exports = function (WarEntityPreview) {
       });
 
       const streamSub = WarEntityPreview.stream.subscribe(entityPreview => {
-        // check if the changed entityPreview is in object of streamed pks 
+        // check if the changed entityPreview is in object of streamed pks
         if (
           cache.streamedPks[entityPreview.pk_entity] &&
           entityPreview.fk_project == cache.currentProjectPk
@@ -120,7 +120,7 @@ module.exports = function (WarEntityPreview) {
       socket.on('disconnect', () => {
         console.log(socket.id + ' disconnected')
 
-        // Unsubscribe the db listener 
+        // Unsubscribe the db listener
         streamSub.unsubscribe()
 
       })
@@ -185,7 +185,7 @@ module.exports = function (WarEntityPreview) {
     }
 
     var sql_stmt = `
-        select 
+        select
         fk_project,
         pk_entity,
         fk_class,
@@ -253,7 +253,7 @@ module.exports = function (WarEntityPreview) {
   });
 
   /**
-   * Search for existing entities. 
+   * Search for existing entities.
    * If not found for the given project, the repo version is returned
    */
   WarEntityPreview.searchExisting = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
@@ -307,7 +307,7 @@ module.exports = function (WarEntityPreview) {
     }
 
     var sql_stmt = `
-      WITH q AS ( select 
+      WITH q AS ( select
         fk_project,
         project,
         pk_entity,
@@ -334,7 +334,7 @@ module.exports = function (WarEntityPreview) {
         ` + ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') + `
         ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
       )
-      SELECT 
+      SELECT
         q.fk_project,
         q.project,
         q.pk_entity,
@@ -348,17 +348,17 @@ module.exports = function (WarEntityPreview) {
         q.full_text_headline,
         q.class_label_headline,
         q.entity_label_headline,
-        q.type_label_headline, 
-        count(q.pk_entity) OVER() AS total_count, 
+        q.type_label_headline,
+        count(q.pk_entity) OVER() AS total_count,
         to_json(array_agg(epr.fk_project)) projects
       FROM q
       JOIN (
         SELECT fk_project, fk_entity
-        FROM projects.info_proj_rel 
+        FROM projects.info_proj_rel
         WHERE is_in_project = true
       ) epr ON epr.fk_entity = q.pk_entity
       WHERE rank = 1
-      GROUP BY 
+      GROUP BY
         q.fk_project,
         q.project,
         q.pk_entity,
@@ -418,16 +418,16 @@ module.exports = function (WarEntityPreview) {
 
 
   /**
-   * Internal function to create the include property of 
+   * Internal function to create the include property of
    * a filter object for findComplex()
-   * 
+   *
    * Usage: add the returned object to the include property of a persistent item relation
    * of findComplex() filter, e.g.:
    * {
    *    ...
    *    include: InfPersistentItem.getIncludeObject(true, 123)
    * }
-   * 
+   *
    * @param ofProject {boolean}
    * @param project {number}
    * @returns include object of findComplex filter
@@ -497,7 +497,10 @@ module.exports = function (WarEntityPreview) {
 
 
   WarEntityPreview.createAll = function (cb) {
-    const sql_stmt = 'SELECT warehouse.entity_preview__create_all();'
+    const sql_stmt = `
+      SELECT warehouse.entity_preview_non_recursive__refresh();
+      SELECT warehouse.entity_preview__update_from_non_recursive();
+    `
     const connector = WarEntityPreview.dataSource.connector;
 
     var hrstart = process.hrtime()

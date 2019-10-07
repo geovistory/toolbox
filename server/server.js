@@ -28,19 +28,21 @@ app.start = function () {
       console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
 
-    /**********************************************************
-    * Setup the queue for warehouse update requests
-    **********************************************************/
     // Connect to Postgres
     const client = new Client({
       connectionString: app.datasources.postgres1.connector.settings.url,
     })
     client.connect()
 
+
+    /**********************************************************
+    * Setup the queue for warehouse update requests
+    **********************************************************/
     const queue = [];
     let working = false;
     let skipped = 0;
     let executed = 0;
+    let needs_update_from_non_recursive = true;
     const nextFromQue = () => {
 
       if (!working && queue.length) {
@@ -53,6 +55,7 @@ app.start = function () {
     \u{1b}[31m ${err ? err : ''}  \u{1b}[0m
           `)
           working = false
+          needs_update_from_non_recursive = true;
           nextFromQue();
         })
       }
@@ -91,6 +94,30 @@ app.start = function () {
       }
       //dbEventEmitter.emit(msg.channel, payload);
     });
+
+
+    /**********************************************************
+     * Setup the continuous warehouse update job
+     * waiting 1 sec between finishing and restarting
+    **********************************************************/
+    const updateEntityPreviewsContinuously = () => {
+      if (needs_update_from_non_recursive) {
+
+        const sql = `SELECT warehouse.entity_preview__update_from_non_recursive();`
+        client.query(sql, (err, res) => {
+          if (err) console.log(err)
+          else needs_update_from_non_recursive = false;
+          setTimeout(() => {
+            updateEntityPreviewsContinuously();
+          }, 1000)
+        })
+      } else {
+        setTimeout(() => {
+          updateEntityPreviewsContinuously();
+        }, 1000)
+      }
+    }
+    updateEntityPreviewsContinuously();
 
     // Designate which channels we are listening on. Add additional channels with multiple lines.
     client.query('LISTEN warehouse_update_request');

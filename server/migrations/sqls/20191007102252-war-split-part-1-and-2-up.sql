@@ -1,0 +1,11 @@
+-- 1 create function entity_preview__labels__create_temporary ();
+-- 2 create function entity_preview__labels__add_missing ();
+-- 3 create function entity_preview__labels__remove_superfluous ();
+-- 4 create function entity_preview__labels__update_modified ();
+-- 5 create function entity_preview__labels__update_all ();
+
+-- 1 create function entity_preview__full_text__create_temporary ();
+-- 2 create function entity_preview__full_text__add_missing ();
+-- 3 create function entity_preview__full_text__remove_superfluous ();
+-- 4 create function entity_preview__full_text__update_modified ();
+-- 5 create function entity_preview__full_text__update_all ();
