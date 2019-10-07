@@ -2,6 +2,7 @@
 
 var app = require('../../server/server');
 var _ = require('lodash');
+var logSql = require("../../server/scripts/log-deserialized-sql");
 
 
 module.exports = function (WarEntityPreview) {
@@ -274,8 +275,8 @@ module.exports = function (WarEntityPreview) {
     var offset = limit * (page - 1);
 
     if (searchString) {
-      var queryString = searchString.trim(' ').split(' ').map(word => {
-        return word + ':*'
+      var queryString = searchString.trim(' ').replace('\n', '').split(' ').map(word => {
+        return `'${word}':*`.toLowerCase()
       }).join(' & ');
     } else {
       var queryString = '';
@@ -307,7 +308,11 @@ module.exports = function (WarEntityPreview) {
     }
 
     var sql_stmt = `
-      WITH q AS ( select
+      WITH
+      tw1 AS (
+        SELECT $1::tsquery q
+      ),
+      tw2 AS ( select
         fk_project,
         project,
         pk_entity,
@@ -318,64 +323,74 @@ module.exports = function (WarEntityPreview) {
         type_label,
         fk_type,
         time_span,
-        ts_headline(full_text, q) as full_text_headline,
-        ts_headline(class_label, q) as class_label_headline,
-        ts_headline(entity_label, q) as entity_label_headline,
-        ts_headline(type_label, q) as type_label_headline,
+        ts_headline(full_text, tw1.q) as full_text_headline,
+        ts_headline(class_label, tw1.q) as class_label_headline,
+        ts_headline(entity_label, tw1.q) as entity_label_headline,
+        ts_headline(type_label, tw1.q) as type_label_headline,
         ROW_NUMBER () OVER (
             PARTITION BY pk_entity
             ORDER BY project DESC
             ) as rank
-        from warehouse.entity_preview, to_tsquery($1) q
+        from
+          warehouse.entity_preview,
+          tw1
         WHERE 1=1
-        ` + (queryString === '' ? '' : 'AND ts_vector @@ q') + `
+        ` + (queryString === '' ? '' : 'AND ts_vector @@ tw1.q') + `
         AND (fk_project = $4 OR fk_project IS NULL)
         ${whereEntityType}
         ` + ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') + `
-        ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
+        ORDER BY ts_rank(ts_vector, tw1.q) DESC, entity_label asc
       )
       SELECT
-        q.fk_project,
-        q.project,
-        q.pk_entity,
-        q.fk_class,
-        q.entity_label,
-        q.class_label,
-        q.entity_type,
-        q.type_label,
-        q.fk_type,
-        q.time_span,
-        q.full_text_headline,
-        q.class_label_headline,
-        q.entity_label_headline,
-        q.type_label_headline,
-        count(q.pk_entity) OVER() AS total_count,
+        tw2.fk_project,
+        tw2.project,
+        tw2.pk_entity,
+        tw2.fk_class,
+        tw2.entity_label,
+        tw2.class_label,
+        tw2.entity_type,
+        tw2.type_label,
+        tw2.fk_type,
+        tw2.time_span,
+        tw2.full_text_headline,
+        tw2.class_label_headline,
+        tw2.entity_label_headline,
+        tw2.type_label_headline,
+        count(tw2.pk_entity) OVER() AS total_count,
         to_json(array_agg(epr.fk_project)) projects
-      FROM q
+      FROM tw2
       JOIN (
         SELECT fk_project, fk_entity
         FROM projects.info_proj_rel
         WHERE is_in_project = true
-      ) epr ON epr.fk_entity = q.pk_entity
+      ) epr ON epr.fk_entity = tw2.pk_entity
       WHERE rank = 1
       GROUP BY
-        q.fk_project,
-        q.project,
-        q.pk_entity,
-        q.fk_class,
-        q.entity_label,
-        q.class_label,
-        q.entity_type,
-        q.type_label,
-        q.fk_type,
-        q.time_span,
-        q.full_text_headline,
-        q.class_label_headline,
-        q.entity_label_headline,
-        q.type_label_headline
+        tw2.fk_project,
+        tw2.project,
+        tw2.pk_entity,
+        tw2.fk_class,
+        tw2.entity_label,
+        tw2.class_label,
+        tw2.entity_type,
+        tw2.type_label,
+        tw2.fk_type,
+        tw2.time_span,
+        tw2.full_text_headline,
+        tw2.class_label_headline,
+        tw2.entity_label_headline,
+        tw2.type_label_headline
       LIMIT $2
       OFFSET $3;
     `
+
+    //  sql_stmt = `
+    //   SELECT $$ 'eins):*' & 'zweiss:*' $$::tsquery q;
+    // `
+    // params = []
+
+    logSql(sql_stmt, params);
+
 
     const connector = WarEntityPreview.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {

@@ -90,13 +90,13 @@ app.start = function () {
           break;
         case 'entity_preview_updated':
           app.models.WarEntityPreview.stream.next(payload);
-          console.log(`
-Entity Preview updated:
-        pk_entity: ${payload.pk_entity}
-        fk_project: ${payload.fk_project}
-        class_label: ${payload.class_label}
-        entity_label: ${payload.entity_label}
-`)
+//           console.log(`
+// Entity Preview updated:
+//         pk_entity: ${payload.pk_entity}
+//         fk_project: ${payload.fk_project}
+//         class_label: ${payload.class_label}
+//         entity_label: ${payload.entity_label}
+// `)
           break;
         default:
           break;
