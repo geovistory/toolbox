@@ -42,7 +42,8 @@ app.start = function () {
     let working = false;
     let skipped = 0;
     let executed = 0;
-    let needs_update_from_non_recursive = true;
+    let needs_update_for_labels = true;
+    let needs_update_for_full_text = true;
     const nextFromQue = () => {
 
       if (!working && queue.length) {
@@ -50,12 +51,13 @@ app.start = function () {
         const fn = queue.pop();
         client.query('select ' + fn, (err, res) => {
           console.log(`
-\u{1b}[32m Warehouse update   Nr. ${(executed++)} \u{1b}[34m ${new Date().toString()}
+\u{1b}[32m Warehouse update request  Nr. ${(executed++)} \u{1b}[34m ${new Date().toString()}
     \u{1b}[33m Function call:  \u{1b}[0m ${fn}
     \u{1b}[31m ${err ? err : ''}  \u{1b}[0m
           `)
           working = false
-          needs_update_from_non_recursive = true;
+          needs_update_for_labels = true;
+          needs_update_for_full_text = true;
           nextFromQue();
         })
       }
@@ -88,6 +90,13 @@ app.start = function () {
           break;
         case 'entity_preview_updated':
           app.models.WarEntityPreview.stream.next(payload);
+          console.log(`
+Entity Preview updated:
+        pk_entity: ${payload.pk_entity}
+        fk_project: ${payload.fk_project}
+        class_label: ${payload.class_label}
+        entity_label: ${payload.entity_label}
+`)
           break;
         default:
           break;
@@ -97,27 +106,68 @@ app.start = function () {
 
 
     /**********************************************************
-     * Setup the continuous warehouse update job
-     * waiting 1 sec between finishing and restarting
+     * Setup the continuous update job for entity_preview cols:
+     *  - fk_class
+     *  - entity_type
+     *  - class_label
+     *  - entity_label
+     *  - time_span
+     *  - fk_entity_label
+     *  - fk_type
+     *  - type_label
+     * waiting 0 sec between finishing and restarting
     **********************************************************/
-    const updateEntityPreviewsContinuously = () => {
-      if (needs_update_from_non_recursive) {
+    const updateEntityPreviewLabels = () => {
+      if (needs_update_for_labels) {
 
-        const sql = `SELECT warehouse.entity_preview__update_from_non_recursive();`
+        const sql = `SELECT warehouse.entity_preview__labels__update_all();`
         client.query(sql, (err, res) => {
           if (err) console.log(err)
-          else needs_update_from_non_recursive = false;
+          else {
+            needs_update_for_labels = false;
+            console.log(`\u{1b}[36m Entity Preview labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`)
+          }
           setTimeout(() => {
-            updateEntityPreviewsContinuously();
-          }, 1000)
+            updateEntityPreviewLabels();
+          }, 0)
         })
       } else {
         setTimeout(() => {
-          updateEntityPreviewsContinuously();
-        }, 1000)
+          updateEntityPreviewLabels();
+        }, 0)
       }
     }
-    updateEntityPreviewsContinuously();
+    updateEntityPreviewLabels();
+
+    /**********************************************************
+       * Setup the continuous update job for entity_preview cols:
+       *  - own_full_text
+       *  - related_full_texts
+       *  - full_text
+       *  - ts_vector
+       * waiting 10 sec between finishing and restarting
+      **********************************************************/
+    const updateEntityPreviewFullText = () => {
+      if (needs_update_for_full_text) {
+
+        const sql = `SELECT warehouse.entity_preview__full_text__update_all();`
+        client.query(sql, (err, res) => {
+          if (err) console.log(err)
+          else {
+            console.log(`\u{1b}[36m Entity Preview full text updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`);
+            needs_update_for_full_text = false;
+          }
+          setTimeout(() => {
+            updateEntityPreviewFullText();
+          }, 10000)
+        })
+      } else {
+        setTimeout(() => {
+          updateEntityPreviewFullText();
+        }, 10000)
+      }
+    }
+    updateEntityPreviewFullText();
 
     // Designate which channels we are listening on. Add additional channels with multiple lines.
     client.query('LISTEN warehouse_update_request');

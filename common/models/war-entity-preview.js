@@ -499,7 +499,7 @@ module.exports = function (WarEntityPreview) {
   WarEntityPreview.createAll = function (cb) {
     const sql_stmt = `
       SELECT warehouse.entity_preview_non_recursive__refresh();
-      SELECT warehouse.entity_preview__update_from_non_recursive();
+      SELECT warehouse.entity_preview__update_all();
     `
     const connector = WarEntityPreview.dataSource.connector;
 

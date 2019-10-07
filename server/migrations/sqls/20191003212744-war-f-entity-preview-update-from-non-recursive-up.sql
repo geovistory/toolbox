@@ -1,2 +1,2 @@
 ALTER FUNCTION warehouse.entity_preview__create_all
-RENAME TO entity_preview__update_from_non_recursive;
+RENAME TO entity_preview__update_all;
