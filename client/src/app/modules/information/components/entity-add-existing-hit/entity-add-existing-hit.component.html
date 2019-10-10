@@ -21,13 +21,11 @@
         </i>
       </div>
     </div>
-    <div *ngIf="!selectRoleRange">
-      <button type="button" name="button" (click)="open()" class="btn btn-primary btn-sm" *ngIf="isInProject">Open</button>
-      <button type="button" name="button" (click)="add()" class="btn btn-primary btn-sm" *ngIf="!isInProject">Add ...</button>
-    </div>
-    <div *ngIf="selectRoleRange">
-      <button type="button" name="button" (click)="open()" class="btn btn-primary btn-sm" *ngIf="isInProject">Select</button>
-      <button type="button" name="button" (click)="add()" class="btn btn-primary btn-sm" *ngIf="!isInProject">Select</button>
+    <div>
+      <button type="button" name="button" (click)="open()" mat-flat-button color="primary"
+        *ngIf="isInProject">{{alreadyInProjectBtnText}}</button>
+      <button type="button" name="button" (click)="add()" mat-flat-button color="primary"
+        *ngIf="!isInProject">{{notInProjectBtnText}}</button>
     </div>
   </div>
 </div>

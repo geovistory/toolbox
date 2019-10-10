@@ -3,10 +3,10 @@ import { FlatTreeControl } from '../../../../../../node_modules/@angular/cdk/tre
 import { MatTreeFlatDataSource, MatTreeFlattener } from '../../../../../../node_modules/@angular/material';
 import { Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { ClassAndTypePk } from '../../containers/class-and-type-selector/api/class-and-type-selector.models';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { ClassAndTypePk } from '../../containers/create-or-add-entity/create-or-add-entity.component';
 
 export interface ClassAndTypeNode {
   label: string;

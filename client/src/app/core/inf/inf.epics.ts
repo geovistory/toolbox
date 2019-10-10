@@ -11,7 +11,7 @@ import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPe
 import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../store/actions';
 import { FlatObject, Stower } from '../store/stower';
 import { InfEpicsFactory } from './inf-epic-factory';
-import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindEAByParams, InfActions, InfEntityAssoctiationActionFactory, InfPersistentItemActionFactory, InfRoleActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadOutgoingAlternativeRoles, LoadPaginatedTeEnListMeta, PaginatedTeEnList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from './inf.actions';
+import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindEAByParams, InfActions, InfEntityAssoctiationActionFactory, InfPersistentItemActionFactory, InfRoleActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadOutgoingAlternativeRoles, LoadPaginatedTeEnListMeta, PaginatedTeEnList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult, LoadTypeOfProjectAction } from './inf.actions';
 import { infRoot } from './inf.config';
 import { InfEntityAssociationSlice, InfPersistentItemSlice, InfRoleSlice, InfTemporalEntitySlice, InfTextPropertySlice } from './inf.models';
 import { SchemaObject } from '../store/model';
@@ -81,6 +81,15 @@ export class InfEpics {
       infPersistentItemEpicsFactory.createLoadEpic<LoadByPkMeta>(
         (meta) => this.peItApi.typesOfProject(meta.pk),
         InfPersistentItemActionFactory.TYPES_OF_PROJECT,
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.persistent_item.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk);
+        }
+      ),
+      infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
+        (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
+        InfPersistentItemActionFactory.TYPE_OF_PROJECT,
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.persistent_item.flatten(results);

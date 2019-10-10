@@ -1,7 +1,7 @@
 import { PeItDetail } from 'app/core';
 import { Action } from 'redux';
-import { peItReducer } from '../../../entity/pe-it/pe-it.reducer';
 import { PeItDetailAPIAction, PeItDetailAPIActions } from './pe-it-detail.actions';
+import { peItReducer } from './pe-it.reducer';
 
 const INITIAL_STATE = new PeItDetail();
 

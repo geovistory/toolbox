@@ -8,7 +8,7 @@
 
   <div class="mat-h1 d-flex">
     <span>{{(typedClassLabel$ | async)}} Types</span>
-    <button class="ml-auto" mat-button (click)="addOrCreate()">
+    <button class="ml-auto" mat-button (click)="onAddOrCreate()">
       <mat-icon aria-label="Edit type">add_circle_outline</mat-icon> Add
     </button>
   </div>
@@ -23,7 +23,7 @@
     <br>
     <br>
     Add a first type by clicking on
-    <button mat-button (click)="addOrCreate()">
+    <button mat-button (click)="onAddOrCreate()">
       <mat-icon aria-label="Edit type">add_circle_outline</mat-icon> Add
     </button>
   </p>
@@ -33,11 +33,11 @@
 
       <span class="gv-grow-1">{{type.label}} </span>
 
-      <button mat-icon-button class="mr-2" (click)=edit(type)>
+      <button mat-icon-button class="mr-2" (click)=onEdit(type)>
         <mat-icon aria-label="Edit type">edit</mat-icon>
       </button>
 
-      <button mat-icon-button (click)=remove(type)>
+      <button mat-icon-button (click)=onRemove(type)>
         <mat-icon aria-label="Remove type">delete</mat-icon>
       </button>
 

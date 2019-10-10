@@ -2,8 +2,8 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { TeEntDetail, ProjectCrm } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { TeEntActions } from '../../../entity/te-ent/te-ent.actions';
 import { StateSettings } from 'app/core/state/services/state-creator';
+import { TeEntActions } from './te-ent.actions'
 
 type Payload = TeEntDetail;
 interface MetaData {
@@ -35,9 +35,9 @@ export class TeEntDetailAPIActions extends TeEntActions {
   *  Actions to manage temporal entity editor
   *********************************************************************/
 
-  init = ( config: TeEntDetail): TeEntDetailAPIAction => ({
+  init = (config: TeEntDetail): TeEntDetailAPIAction => ({
     type: TeEntDetailAPIActions.INIT,
-    meta: {  config },
+    meta: { config },
     payload: null,
   });
 

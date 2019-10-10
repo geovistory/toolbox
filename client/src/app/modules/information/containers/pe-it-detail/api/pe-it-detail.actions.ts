@@ -2,9 +2,9 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { TeEntDetail, PeItDetail, ProjectCrm } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
-import { PeItActions } from '../../../entity/pe-it/pe-it.actions';
 import { StateSettings } from '../../../../../core/state/services/state-creator';
+import { PeItActions } from './pe-it.actions';
+import { ClassAndTypePk } from '../../create-or-add-entity/create-or-add-entity.component';
 
 type Payload = PeItDetail;
 interface MetaData {

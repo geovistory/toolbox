@@ -1,7 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DfhClass, DatNamespace, InfPersistentItem, PeItDetail } from 'app/core';
-import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
+import { DatNamespace, DfhClass, InfPersistentItem, PeItDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Types } from './types.models';
 
@@ -12,7 +11,6 @@ interface MetaData {
   type?: InfPersistentItem,
   peItDetail?: PeItDetail,
   namespace?: DatNamespace;
-  create?: CreateOrAddEntity;
   pkTypeClass?: number;
   pkProject?: number;
   tabTitle?: string;
@@ -21,105 +19,105 @@ export type TypesAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
 export class TypesAPIActions {
-  static readonly LOAD = 'Types::LOAD';
-  static readonly LOAD_STARTED = 'Types::LOAD_STARTED';
-  static readonly LOAD_SUCCEEDED = 'Types::LOAD_SUCCEEDED';
-  static readonly LOAD_FAILED = 'Types::LOAD_FAILED';
+  // static readonly LOAD = 'Types::LOAD';
+  // static readonly LOAD_STARTED = 'Types::LOAD_STARTED';
+  // static readonly LOAD_SUCCEEDED = 'Types::LOAD_SUCCEEDED';
+  // static readonly LOAD_FAILED = 'Types::LOAD_FAILED';
 
-  static readonly OPEN_ADD_FORM = 'Types::OPEN_ADD_FORM';
-  static readonly CLOSE_ADD_FORM = 'Types::CLOSE_ADD_FORM';
+  // static readonly OPEN_ADD_FORM = 'Types::OPEN_ADD_FORM';
+  // static readonly CLOSE_ADD_FORM = 'Types::CLOSE_ADD_FORM';
 
-  static readonly CREATE = 'Types::CREATE';
-  static readonly CREATE_STARTED = 'Types::CREATE_STARTED';
-  static readonly CREATE_SUCCEEDED = 'Types::CREATE_SUCCEEDED';
-  static readonly CREATE_FAILED = 'Types::CREATE_FAILED';
+  // static readonly CREATE = 'Types::CREATE';
+  // static readonly CREATE_STARTED = 'Types::CREATE_STARTED';
+  // static readonly CREATE_SUCCEEDED = 'Types::CREATE_SUCCEEDED';
+  // static readonly CREATE_FAILED = 'Types::CREATE_FAILED';
 
-  static readonly OPEN_EDIT_FORM = 'Types::OPEN_EDIT_FORM';
-  static readonly OPEN_EDIT_FORM_SUCCEEDED = 'Types::OPEN_EDIT_FORM_SUCCEEDED';
-  static readonly OPEN_EDIT_FORM_FAILED = 'Types::OPEN_EDIT_FORM_FAILED';
+  // static readonly OPEN_EDIT_FORM = 'Types::OPEN_EDIT_FORM';
+  // static readonly OPEN_EDIT_FORM_SUCCEEDED = 'Types::OPEN_EDIT_FORM_SUCCEEDED';
+  // static readonly OPEN_EDIT_FORM_FAILED = 'Types::OPEN_EDIT_FORM_FAILED';
 
-  static readonly CLOSE_EDIT_FORM = 'Types::CLOSE_EDIT_FORM';
+  // static readonly CLOSE_EDIT_FORM = 'Types::CLOSE_EDIT_FORM';
 
   static readonly SET_TAB_TITLE = 'Types::SET_TAB_TITLE';
 
   static readonly DESTROY = 'Types::DESTROY';
 
-  @dispatch()
-  load = (pkProject: number, pkTypeClass: number): TypesAPIAction => ({
-    type: TypesAPIActions.LOAD,
-    meta: { pkProject, pkTypeClass },
-    payload: null,
-  });
+//   @dispatch()
+//   load = (pkProject: number, pkTypeClass: number): TypesAPIAction => ({
+//     type: TypesAPIActions.LOAD,
+//     meta: { pkProject, pkTypeClass },
+//     payload: null,
+//   });
 
-  loadSucceeded = (types: InfPersistentItem[]): TypesAPIAction => ({
-    type: TypesAPIActions.LOAD_SUCCEEDED,
-    meta: { types },
-    payload: null
-  })
+//   loadSucceeded = (types: InfPersistentItem[]): TypesAPIAction => ({
+//     type: TypesAPIActions.LOAD_SUCCEEDED,
+//     meta: { types },
+//     payload: null
+//   })
 
-  loadFailed = (error): TypesAPIAction => ({
-    type: TypesAPIActions.LOAD_FAILED,
-    meta: null,
-    payload: null,
-    error,
-  })
+//   loadFailed = (error): TypesAPIAction => ({
+//     type: TypesAPIActions.LOAD_FAILED,
+//     meta: null,
+//     payload: null,
+//     error,
+//   })
 
-  /*********************************************************************
- *  Methods related to the add form
- *********************************************************************/
-  @dispatch()
-  openAddForm = (create: CreateOrAddEntity): TypesAPIAction => ({
-    type: TypesAPIActions.OPEN_ADD_FORM,
-    meta: { create },
-    payload: null
-  })
+//   /*********************************************************************
+//  *  Methods related to the add form
+//  *********************************************************************/
+//   @dispatch()
+//   openAddForm = (create: CreateOrAddEntity): TypesAPIAction => ({
+//     type: TypesAPIActions.OPEN_ADD_FORM,
+//     meta: { create },
+//     payload: null
+//   })
 
-  @dispatch()
-  closeAddForm = (): TypesAPIAction => ({
-    type: TypesAPIActions.CLOSE_ADD_FORM,
-    meta: null,
-    payload: null
-  })
-
-
-  @dispatch()
-  createSucceeded = (type: InfPersistentItem): TypesAPIAction => ({
-    type: TypesAPIActions.CREATE_SUCCEEDED,
-    meta: { type },
-    payload: null
-  })
-
-  /*********************************************************************
-   *  Methods related to the edit form
-   *********************************************************************/
+//   @dispatch()
+//   closeAddForm = (): TypesAPIAction => ({
+//     type: TypesAPIActions.CLOSE_ADD_FORM,
+//     meta: null,
+//     payload: null
+//   })
 
 
-  @dispatch()
-  openEditForm = (pkProject: number, type: InfPersistentItem): TypesAPIAction => ({
-    type: TypesAPIActions.OPEN_EDIT_FORM,
-    meta: { pkProject, type },
-    payload: null
-  })
+//   @dispatch()
+//   createSucceeded = (type: InfPersistentItem): TypesAPIAction => ({
+//     type: TypesAPIActions.CREATE_SUCCEEDED,
+//     meta: { type },
+//     payload: null
+//   })
 
-  openEditFormSucceeded = (peItDetail: PeItDetail): TypesAPIAction => ({
-    type: TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED,
-    meta: { peItDetail },
-    payload: null
-  })
+//   /*********************************************************************
+//    *  Methods related to the edit form
+//    *********************************************************************/
 
-  openEditFormFailed = (error): TypesAPIAction => ({
-    type: TypesAPIActions.OPEN_EDIT_FORM_FAILED,
-    meta: null,
-    payload: null,
-    error
-  })
 
-  @dispatch()
-  closeEditForm = (): TypesAPIAction => ({
-    type: TypesAPIActions.CLOSE_EDIT_FORM,
-    meta: null,
-    payload: null
-  })
+//   @dispatch()
+//   openEditForm = (pkProject: number, type: InfPersistentItem): TypesAPIAction => ({
+//     type: TypesAPIActions.OPEN_EDIT_FORM,
+//     meta: { pkProject, type },
+//     payload: null
+//   })
+
+//   openEditFormSucceeded = (peItDetail: PeItDetail): TypesAPIAction => ({
+//     type: TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED,
+//     meta: { peItDetail },
+//     payload: null
+//   })
+
+//   openEditFormFailed = (error): TypesAPIAction => ({
+//     type: TypesAPIActions.OPEN_EDIT_FORM_FAILED,
+//     meta: null,
+//     payload: null,
+//     error
+//   })
+
+//   @dispatch()
+//   closeEditForm = (): TypesAPIAction => ({
+//     type: TypesAPIActions.CLOSE_EDIT_FORM,
+//     meta: null,
+//     payload: null
+//   })
 
 
   /*********************************************************************

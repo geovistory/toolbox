@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { PeItDetail, TeEntDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Information } from './entity-list.models';
-import { ClassAndTypePk } from '../../class-and-type-selector/api/class-and-type-selector.models';
+import { ClassAndTypePk } from '../../create-or-add-entity/create-or-add-entity.component';
 
 type Payload = Information;
 interface MetaData {

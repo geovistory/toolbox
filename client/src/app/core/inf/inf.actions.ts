@@ -1,5 +1,5 @@
 
-import {filter} from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/store/actions';
 import { InfPersistentItem, InfEntityAssociation, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital } from '../sdk';
@@ -15,6 +15,7 @@ type Payload = InfPersistentItemSlice;
 
 export interface LoadByPkMeta extends LoadActionMeta { pkEntity: number };
 export interface LoadTypesOfProjectAction extends LoadActionMeta { };
+export interface LoadTypeOfProjectAction extends LoadActionMeta { pkEntity: number };
 type LoadNestetedPeItResult = InfPersistentItem[]
 
 export class InfPersistentItemActionFactory extends InfActionFactory<Payload, InfPersistentItem> {
@@ -23,11 +24,13 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
   static readonly NESTED_BY_PK = 'NESTED_BY_PK';
   static readonly MINIMAL_BY_PK = 'MINIMAL_BY_PK';
   static readonly TYPES_OF_PROJECT = 'TYPES_OF_PROJECT';
+  static readonly TYPE_OF_PROJECT = 'TYPE_OF_PROJECT';
 
   loadMinimal: (pkProject: number, pkEntity: number) => ActionResultObservable<SchemaObject>;
   loadNestedObject: (pkProject: number, pkEntity: number) => ActionResultObservable<LoadNestetedPeItResult>;
 
   typesOfProject: (pkProject: number) => void;
+  typeOfProject: (pkProject: number, pkEntity: number) => ActionResultObservable<LoadNestetedPeItResult>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
@@ -72,6 +75,24 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
       };
       this.ngRedux.dispatch(action)
     }
+
+
+    this.typeOfProject = (pkProject: number, pkEntity: number) => {
+      const addPending = U.uuid();
+
+      const action: FluxStandardAction<Payload, LoadTypeOfProjectAction> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfPersistentItemActionFactory.TYPE_OF_PROJECT,
+        meta: { addPending, pk: pkProject, pkEntity },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<LoadNestetedPeItResult>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
+    }
+
     return this;
   }
 
@@ -408,7 +429,7 @@ export class InfTextPropertyActionFactory extends InfActionFactory<Payload, InfT
 @Injectable()
 export class InfActions {
 
-  persistent_item = new InfPersistentItemActionFactory(this.ngRedux).createActions();;
+  persistent_item = new InfPersistentItemActionFactory(this.ngRedux).createActions();
   entity_association = new InfEntityAssoctiationActionFactory(this.ngRedux).createActions()
   temporal_entity = new InfTemporalEntityActionFactory(this.ngRedux).createActions()
   role = new InfRoleActionFactory(this.ngRedux).createActions()

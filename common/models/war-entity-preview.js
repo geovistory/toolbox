@@ -257,7 +257,7 @@ module.exports = function (WarEntityPreview) {
    * Search for existing entities.
    * If not found for the given project, the repo version is returned
    */
-  WarEntityPreview.searchExisting = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
+  WarEntityPreview.searchExisting = function (pkProject, searchString, pkClasses, entityType, limit, page, cb) {
 
     // Check that limit does not exceed maximum
     if (limit > 200) {
@@ -283,12 +283,7 @@ module.exports = function (WarEntityPreview) {
     }
 
 
-    var params = [
-      queryString,
-      limit,
-      offset,
-      projectId
-    ];
+    var params = [];
 
     // project filter
     let whereProject;
@@ -307,39 +302,63 @@ module.exports = function (WarEntityPreview) {
       params = [...params, ...pkClasses]
     }
 
+    const addParam = (val) => {
+      params.push(val)
+      return '$' + params.length
+    }
+
+
     var sql_stmt = `
       WITH
+      -- filter the repo versions, add the fk_project of given project, if is_in_project
+      -- this ensures we allways search in the full repo full-text (finds more)
+      -- and it includes the information, whether the entity is in project or not
       tw1 AS (
-        SELECT $1::tsquery q
-      ),
-      tw2 AS ( select
-        fk_project,
-        project,
-        pk_entity,
-        fk_class,
-        entity_label,
-        class_label,
-        entity_type,
-        type_label,
-        fk_type,
-        time_span,
-        ts_headline(full_text, tw1.q) as full_text_headline,
-        ts_headline(class_label, tw1.q) as class_label_headline,
-        ts_headline(entity_label, tw1.q) as entity_label_headline,
-        ts_headline(type_label, tw1.q) as type_label_headline,
-        ROW_NUMBER () OVER (
-            PARTITION BY pk_entity
-            ORDER BY project DESC
-            ) as rank
-        from
-          warehouse.entity_preview,
-          tw1
-        WHERE 1=1
-        ` + (queryString === '' ? '' : 'AND ts_vector @@ tw1.q') + `
-        AND (fk_project = $4 OR fk_project IS NULL)
+        SELECT
+          COALESCE(t2.fk_project, t1.fk_project) fk_project,
+          COALESCE(t2.fk_project, t1.project) project,
+          t1.pk_entity,
+          t1.fk_class,
+          t1.entity_label,
+          t1.class_label,
+          t1.entity_type,
+          t1.type_label,
+          t1.fk_type,
+          t1.time_span,
+          t1.full_text,
+          t1.ts_vector
+        FROM warehouse.entity_preview t1
+        LEFT JOIN projects.info_proj_rel t2 ON t1.pk_entity = t2.fk_entity
+          AND t2.fk_project = ${addParam(pkProject)}
+          AND t2.is_in_project = true
+        WHERE t1.fk_project IS NULL
+        ` + (queryString === '' ? '' : `AND t1.ts_vector @@ ${addParam(queryString)}::tsquery`) + `
         ${whereEntityType}
-        ` + ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') + `
-        ORDER BY ts_rank(ts_vector, tw1.q) DESC, entity_label asc
+        ` + ((pkClasses && pkClasses.length) ? `AND t1.fk_class IN (${pkClassParamNrs})` : '') + `
+      ),
+      tw2 AS (
+        select
+          t1.fk_project,
+          t1.project,
+          t1.pk_entity,
+          t1.fk_class,
+          t1.entity_label,
+          t1.class_label,
+          t1.entity_type,
+          t1.type_label,
+          t1.fk_type,
+          t1.time_span,
+          ts_headline(t1.full_text, ${addParam(queryString)}::tsquery) as full_text_headline,
+          ts_headline(t1.class_label, ${addParam(queryString)}::tsquery) as class_label_headline,
+          ts_headline(t1.entity_label, ${addParam(queryString)}::tsquery) as entity_label_headline,
+          ts_headline(t1.type_label, ${addParam(queryString)}::tsquery) as type_label_headline,
+          ROW_NUMBER () OVER (
+            PARTITION BY t1.pk_entity
+            ORDER BY
+              t1.project DESC
+          ) as rank
+        from  tw1 t1
+        ORDER BY ts_rank(ts_vector, ${addParam(queryString)}::tsquery) DESC, entity_label asc
       )
       SELECT
         tw2.fk_project,
@@ -380,9 +399,10 @@ module.exports = function (WarEntityPreview) {
         tw2.class_label_headline,
         tw2.entity_label_headline,
         tw2.type_label_headline
-      LIMIT $2
-      OFFSET $3;
+      LIMIT ${addParam(limit)}
+      OFFSET ${addParam(offset)};
     `
+
 
     //  sql_stmt = `
     //   SELECT $$ 'eins):*' & 'zweiss:*' $$::tsquery q;

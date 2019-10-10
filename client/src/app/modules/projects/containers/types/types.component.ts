@@ -1,26 +1,20 @@
-import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, IAppState, InfPersistentItem, SysConfig, U, SysClassHasTypePropertyInterface, sortAbc } from 'app/core';
+import { ActiveProjectService, IAppState, sortAbc, SysConfig } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
-import { RootEpics } from 'app/core/store/epics';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/information/new-components/properties-tree-dialog/properties-tree-dialog.component';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/information/new-services/information-basic-pipes.service';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { values } from 'ramda';
-import { combineLatest, Observable, Subject, of, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { TypeAddFormComponent } from '../type-add-form/type-add-form.component';
-import { TypeEditFormComponent } from '../type-edit-form/type-edit-form.component';
-import { TypesAPIActions } from './api/types.actions';
-import { TypesAPIEpics } from './api/types.epics';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
-import { InformationBasicPipesService } from 'app/modules/information/new-services/information-basic-pipes.service';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
-import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/information/new-components/properties-tree-dialog/properties-tree-dialog.component';
 
 interface TypeItem {
   pkEntity: number
@@ -37,7 +31,7 @@ interface TypeItem {
   templateUrl: './types.component.html',
   styleUrls: ['./types.component.css']
 })
-export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   // emits true on destroy of this component
@@ -62,20 +56,20 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   // types
   items$: Observable<TypeItem[]>;
 
-  // flag indicatig if add form is visible
-  @select() add$: Observable<boolean>;
+  // // flag indicatig if add form is visible
+  // @select() add$: Observable<boolean>;
 
-  // object containing data for edit form. If truthy, edit form is visible.
-  @select() edit$: Observable<InfPersistentItem>;
+  // // object containing data for edit form. If truthy, edit form is visible.
+  // @select() edit$: Observable<InfPersistentItem>;
 
   // flag indicatig if loaing info is visible
-  @select() loading$: Observable<boolean>;
+  // @select() loading$: Observable<boolean>;
 
   t: TabLayout;
 
   constructor(
-    protected rootEpics: RootEpics,
-    private epics: TypesAPIEpics,
+    // protected rootEpics: RootEpics,
+    // private epics: TypesAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
     public inf: InfActions,
@@ -85,14 +79,13 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
     public b: InformationBasicPipesService,
     public i: InformationPipesService
   ) {
-    super();
   }
 
   getBasePath = () => this.basePath;
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
@@ -143,7 +136,6 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   }
 
   ngOnDestroy() {
-    this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
@@ -157,21 +149,62 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   //   })
   // }
 
-  /**
-   * called when user creates a new type
-   */
-  added(type: InfPersistentItem) {
-    this.createSucceeded(type);
-  }
+  // /**
+  //  * called when user creates a new type
+  //  */
+  // added(type: InfPersistentItem) {
+  //   this.createSucceeded(type);
+  // }
 
   /**
    * called when user clicks on edit
    */
-  edit(type: TypeItem) {
+  onEdit(type: TypeItem) {
+    this.edit(type.pkEntity)
+  }
+
+  /**
+   * called when user clicks on remove
+   */
+  onRemove(type: TypeItem) {
+    this.p.openRemovePeItDialog(type.label, type.pkEntity)
+  }
+
+  /**
+   * called when user clicks on add
+  */
+  onAddOrCreate() {
+    this.typeClassPk$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkClass => {
+
+      this.p.openModalCreateOrAddEntity({
+        alreadyInProjectBtnText: 'Edit',
+        notInProjectClickBehavior: 'addToProject',
+        notInProjectBtnText: 'Add',
+        classAndTypePk: { pkClass, pkType: undefined },
+        pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
+      }).subscribe(result => {
+        if (result.action === 'added' || result.action === 'created') {
+          this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+            this.inf.persistent_item.typeOfProject(pkProject, result.pkEntity)
+          })
+        } else if (result.action === 'alreadyInProjectClicked') {
+          this.edit(result.pkEntity)
+        }
+      })
+    })
+  }
+
+
+
+  /**
+   * Opens dialog for editing type
+   * @param pkEntity
+   */
+  edit(pkEntity: number) {
     const data: PropertiesTreeDialogData = {
       appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
       pkClass$: this.typeClassPk$,
-      pkEntity$: of(type.pkEntity),
+      pkEntity$: of(pkEntity),
       readonly$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),
     }
@@ -187,23 +220,4 @@ export class TypesComponent extends TypesAPIActions implements OnInit, OnDestroy
   }
 
 
-
-  remove(type: TypeItem) {
-    this.p.openRemovePeItDialog(type.label, type.pkEntity)
-  }
-
-  /**
-   * called when user clicks on add
-   */
-  addOrCreate() {
-    this.typeClassPk$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkClass => {
-
-      this.p.openModalCreateOrAddEntity({
-        classAndTypePk: { pkClass, pkType: undefined },
-        pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
-      }).subscribe((entity: InfPersistentItem) => {
-      })
-    })
-
-  }
 }

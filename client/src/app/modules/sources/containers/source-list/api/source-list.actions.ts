@@ -2,8 +2,8 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { SourceList } from './source-list.models';
-import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
 import { ProjectCrm, PeItDetail } from 'app/core';
+import { ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 
 type Payload = SourceList;
 interface MetaData {

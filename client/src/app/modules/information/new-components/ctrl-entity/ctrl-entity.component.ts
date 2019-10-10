@@ -3,10 +3,11 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { SysConfig, EntityPreview, ActiveProjectService } from 'app/core';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { CreateEntityModalComponent } from './create-entity-modal/create-entity-modal.component';
-import { takeUntil, first, filter, mergeMap, distinctUntilChanged } from '../../../../../../node_modules/rxjs/operators';
+import { ActiveProjectService, EntityPreview, SysConfig } from 'app/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, filter, mergeMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { AddOrCreateEntityModal, AddOrCreateEntityModalData } from '../../components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { CreateOrAddEntityEvent } from '../../containers/create-or-add-entity/create-or-add-entity.component';
 
 type CtrlModel = number // pkEntity
 
@@ -112,9 +113,12 @@ export class CtrlEntityComponent implements OnDestroy, ControlValueAccessor, Mat
 
   openModal() {
     if (!this.disabled) {
-      this.dialog.open(CreateEntityModalComponent, {
+      this.dialog.open<AddOrCreateEntityModal, AddOrCreateEntityModalData, CreateOrAddEntityEvent>(AddOrCreateEntityModal, {
         minWidth: '800px',
         data: {
+          alreadyInProjectBtnText: 'Select',
+          notInProjectClickBehavior: 'selectOnly',
+          notInProjectBtnText: 'Select',
           classAndTypePk: {
             pkClass: this.pkClass,
             pkType: undefined
@@ -122,8 +126,8 @@ export class CtrlEntityComponent implements OnDestroy, ControlValueAccessor, Mat
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
         }
       }).afterClosed()
-        .pipe(takeUntil(this.destroy$)).subscribe(chosenEntity => {
-          if (chosenEntity) this.value = chosenEntity
+        .pipe(takeUntil(this.destroy$)).subscribe(result => {
+          if (result && result.pkEntity) this.value = result.pkEntity
         });
     }
   }

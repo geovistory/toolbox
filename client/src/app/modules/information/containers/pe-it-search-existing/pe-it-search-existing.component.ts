@@ -1,57 +1,45 @@
-import { Component, OnDestroy, Input, OnInit, EventEmitter, Output } from '@angular/core';
-import { Subject, Observable, combineLatest } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, InfPersistentItem, ClassConfig, ActiveProjectService } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
-import { PeItSearchExisting } from './api/pe-it-search-existing.models';
-import { PeItSearchExistingAPIEpics } from './api/pe-it-search-existing.epics';
-import { PeItSearchExistingAPIActions } from './api/pe-it-search-existing.actions';
-import { peItSearchExistingReducer } from './api/pe-it-search-existing.reducer';
-import { debounceTime, takeUntil, filter, first } from 'rxjs/operators';
+import { select } from '@angular-redux/store';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActiveProjectService, InfPersistentItem, WarEntityPreviewApi } from 'app/core';
+import { combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
+import { debounceTime, first, takeUntil, map } from 'rxjs/operators';
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: peItSearchExistingReducer
-})
+
 @Component({
   selector: 'gv-pe-it-search-existing',
   templateUrl: './pe-it-search-existing.component.html',
   styleUrls: ['./pe-it-search-existing.component.css']
 })
-export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class PeItSearchExistingComponent implements OnInit, OnDestroy {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // local store of this component
-  localStore: ObservableStore<PeItSearchExisting>;
+  // // local store of this component
+  // localStore: ObservableStore<PeItSearchExisting>;
 
   // path to the substore
-  @Input() basePath: string[];
+  // @Input() basePath: string[];
 
-  @Input() selectPeItMode: boolean;
-
-  @select() pkClass$: Observable<number>;
-  @select() pkNamespace$: Observable<number>;
-
+  @Input() alreadyInProjectBtnText: string;
+  @Input() notInProjectBtnText: string;
+  @Input() pkClass: number;
   @Input() searchString$: Observable<string>;
 
   // select observables of substore properties
-  @select() loading$: Observable<boolean>;
+  loading$ = new BehaviorSubject<boolean>(false);
 
   // Hits
-  @select() persistentItems$: Observable<InfPersistentItem[]>;
+  persistentItems$ = new BehaviorSubject<InfPersistentItem[]>([]);
 
-  //
-  @select() collectionSize$: Observable<number>;
-
+  // Total count of hits
+  collectionSize$ = new BehaviorSubject<number>(0);
 
   @Output() onAddExisting = new EventEmitter<number>();
   @Output() onOpenExisting = new EventEmitter<number>();
 
   // Search
   pkProject: number;
-  pkClass: number;
   searchString = '';
   minSearchStringLength = 2;
   pkNamespace: number;
@@ -61,72 +49,83 @@ export class PeItSearchExistingComponent extends PeItSearchExistingAPIActions im
   limit = 3; // max number of results on a page
   page = 1; // current page
 
-  classConfig: ClassConfig;
-
   hitsFound = false;
+  hitsTo$: Observable<number>;
 
   constructor(
-    protected rootEpics: RootEpics,
-    private epics: PeItSearchExistingAPIEpics,
-    public ngRedux: NgRedux<IAppState>,
-    private projectService: ActiveProjectService
+    // protected rootEpics: RootEpics,
+    // private epics: PeItSearchExistingAPIEpics,
+    // public ngRedux: NgRedux<IAppState>,
+    private entityPreviewApi: WarEntityPreviewApi,
+    private p: ActiveProjectService
   ) {
-    super()
-
   }
 
-  getBasePath = () => this.basePath;
+  // getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, peItSearchExistingReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+    // this.localStore = this.ngRedux.configureSubStore(this.basePath, peItSearchExistingReducer);
+    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    // if (!this.pkClass) throw Error('please provide a pkClass')
-    combineLatest(this.pkClass$, this.projectService.pkProject$, this.pkNamespace$).pipe(
-      first(([pkClass, pkProject]) => (!!pkClass && !!pkProject)), // make sure pkClass and pkProject are there. pkNamespace is optional.
-      takeUntil(this.destroy$))
-      .subscribe(([pkClass, pkProject, pkNamespace]) => {
-        this.pkClass = pkClass;
-        this.pkProject = pkProject;
-        this.pkNamespace = pkNamespace ? pkNamespace : null;
-        this.classConfig = this.ngRedux.getState().activeProject.crm.classes[this.pkClass];
+    if (!this.pkClass) throw Error('please provide a pkClass')
+    if (!this.searchString$) throw Error('please provide a searchString$')
+    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
+    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
 
-        this.searchString$.pipe(
-          debounceTime(400),
-          takeUntil(this.destroy$)
-        ).subscribe(newValue => {
-          this.searchString = newValue;
-          if (newValue.length >= this.minSearchStringLength) {
-            this.page = 1;
-            this.search(pkProject, this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
-          } else {
-            this.searchFailed();
-          }
-        });
-      })
+
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.pkProject = pkProject;
+
+      this.searchString$.pipe(
+        debounceTime(400),
+        takeUntil(this.destroy$)
+      ).subscribe(newValue => {
+        this.searchString = newValue;
+        if (newValue.length >= this.minSearchStringLength) {
+          this.page = 1;
+          this.search();
+        } else {
+          this.persistentItems$.next([])
+          this.collectionSize$.next(0)
+        }
+      });
+    })
 
     // set hitsFound true, once there are some hits
     this.persistentItems$.pipe(takeUntil(this.destroy$)).subscribe((i) => {
       if (i && i.length > 0) this.hitsFound = true
     })
+
+    this.hitsTo$ = this.collectionSize$.pipe(
+      map(collectionSize => {
+        const upper = (this.limit * (this.page - 1)) + this.limit;
+        return upper > collectionSize ? collectionSize : upper;
+      })
+    )
   }
 
   ngOnDestroy() {
-    this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
 
   pageChange() {
-    this.search(this.pkProject, this.searchString, this.limit, this.page, this.pkClass, this.pkNamespace);
+    this.search()
+  }
+
+  search() {
+    this.entityPreviewApi.searchExisting(this.pkProject, this.searchString, [this.pkClass], null, this.limit, this.page)
+      .subscribe((result) => {
+        this.persistentItems$.next(result.data)
+        this.collectionSize$.next(result.totalCount)
+      }, error => {
+        this.persistentItems$.next([])
+        this.collectionSize$.next(0)
+      })
   }
 
   hitsFrom() {
     return (this.limit * (this.page - 1)) + 1;
-  }
-  hitsTo() {
-    const upper = (this.limit * (this.page - 1)) + this.limit;
-    return upper > this.collectionSize ? this.collectionSize : upper;
   }
 
 

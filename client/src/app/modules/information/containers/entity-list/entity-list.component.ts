@@ -5,11 +5,11 @@ import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent, SysC
 import { RootEpics } from 'app/core/store/epics';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
 import { InformationAPIActions } from './api/entity-list.actions';
 import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
+import { ClassAndTypePk } from '../create-or-add-entity/create-or-add-entity.component';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -73,13 +73,16 @@ export class InformationComponent extends InformationAPIActions implements OnIni
         this.p.setListType('')
 
         this.p.openModalCreateOrAddEntity({
+          alreadyInProjectBtnText: 'Open',
+          notInProjectClickBehavior: 'addToProject',
+          notInProjectBtnText: 'Add and Open',
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
-        }).subscribe((entity: InfPersistentItem | InfTemporalEntity) => {
+        }).subscribe(result => {
           if (classConfig.subclassOf === 'peIt') {
-            this.p.addEntityPeItTab(entity.pk_entity)
+            this.p.addEntityPeItTab(result.pkEntity)
           } else {
-            this.p.addEntityTeEnTab(entity.pk_entity)
+            this.p.addEntityTeEnTab(result.pkEntity)
           }
         })
 

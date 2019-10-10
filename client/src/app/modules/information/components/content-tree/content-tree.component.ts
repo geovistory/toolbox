@@ -174,7 +174,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     return this.p.inf$.entity_association$.by_fk_info_range$.key(pkRange).pipe(
       map(eas => values(eas).filter(ea => [1317, 1328, 1329, 1216].includes(ea.fk_property))),
       // filter(x => x.length > 0),
-      switchMapOr([],(eas) => {
+      switchMapOr([], (eas) => {
 
         const obs = eas.map(ea => {
           // Observe the children of this node
@@ -505,17 +505,21 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       this.p.openModalCreateOrAddEntity({
+        notInProjectClickBehavior: 'addToProject',
+        alreadyInProjectBtnText: 'Select',
+        notInProjectBtnText: 'Add',
         classAndTypePk: {
           pkClass: DfhConfig.CLASS_PK_EXPRESSION_PORTION,
           pkType: undefined
         },
         pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE,
-      }).subscribe((expPortion: InfPersistentItem) => {
+      }).subscribe((result) => {
+
         // TODO: Integrate this in the create or add entity component
-        this.inf.persistent_item.loadNestedObject(pkProject, expPortion.pk_entity)
+        this.inf.persistent_item.loadNestedObject(pkProject, result.pkEntity)
 
         this.inf.entity_association.upsert([{
-          fk_info_domain: expPortion.pk_entity,
+          fk_info_domain: result.pkEntity,
           fk_info_range: pkParent,
           fk_property: this.isPartOfProp(parentIsF2Expression)
         } as InfEntityAssociation], pkProject)
@@ -567,7 +571,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
   openText(node: ContentTreeNode) {
-   this.p.addTextTab(node.entityAssociation.fk_data_domain)
+    this.p.addTextTab(node.entityAssociation.fk_data_domain)
   }
 
   openExpressionPortion(node: ContentTreeNode) {

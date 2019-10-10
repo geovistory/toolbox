@@ -638,7 +638,7 @@ export class InformationPipesService {
           projRel: undefined,
           role,
           preview,
-          label: preview.entity_label || ''
+          label: preview.entity_label || ''
         }
         return node
       }))
@@ -971,6 +971,8 @@ export class InformationPipesService {
 
   /**
    * Pipes the label of given entity
+   * This will use entity previews for getting strings of related temporal entities
+   * So this may take a little while
    */
   @spyTag pipeLabelOfEntity(fkEntity: number): Observable<string> {
     return this.b.pipeClassOfEntity(fkEntity).pipe(
@@ -991,11 +993,10 @@ export class InformationPipesService {
             })
           )))
         ))
-
-
       ))
-
   }
+
+
   /**
    * Pipes the class label of given entity
    */

@@ -1,7 +1,7 @@
 import { DatChunk, DfhProperty, InfLanguage, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProQuery, ProVisual, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
 import { EntityPreview, EntityPreviewList, FieldList, PeItDetail, PeItDetailList, PropertyFieldList, TeEntDetail } from 'app/core/state/models';
 import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
-import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
+// import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
 import { QueryDetail } from 'app/modules/queries/containers/query-detail/api/query-detail.models';
 import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
@@ -178,11 +178,11 @@ export interface ProjectDetail extends ProjectPreview {
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   contrVocabSettings?: { [uiId: string]: Types }
 
-  /******************************************************************
-   * Layout – Modals
-   */
+  // /******************************************************************
+  //  * Layout – Modals
+  //  */
 
-  addModal?: CreateOrAddEntity;
+  // addModal?: CreateOrAddEntity;
 
 
   /******************************************************************
