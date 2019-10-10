@@ -838,7 +838,6 @@ class FlatObjectQueryBuilder {
     return { sql, params: this.params }
   }
 
-
   createPeItOwnPropertiesQuery(fk_project, pk_entity) {
     const sql = `
       WITH tw1 AS (
@@ -972,6 +971,8 @@ class FlatObjectQueryBuilder {
     return { sql, params: this.params }
 
   }
+
+
   createPeItGeoQuery(fk_project, pkEntities) {
     const sql = `
     WITH tw1 AS (

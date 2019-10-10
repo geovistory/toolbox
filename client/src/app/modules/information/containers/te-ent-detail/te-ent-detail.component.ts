@@ -9,12 +9,10 @@ import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { RootEpics } from '../../../../core/store/epics';
-import { EntityAPIEpics } from '../../entity/entity.epics';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { slideInOut } from '../../shared/animations';
 import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
-import { TeEntDetailAPIEpics } from './api/te-ent-detail.epics';
 import { teEntDetailReducer } from './api/te-ent-detail.reducer';
 
 
@@ -54,8 +52,7 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   constructor(
     protected rootEpics: RootEpics,
-    protected entityEpics: EntityAPIEpics,
-    protected epics: TeEntDetailAPIEpics,
+    // protected epics: TeEntDetailAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
     protected actions: TeEntDetailAPIActions,
     protected fb: FormBuilder,

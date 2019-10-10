@@ -1,10 +1,8 @@
 import { DatDigital } from 'app/core';
 import { TypeDetail } from 'app/core/state/models/type-detail';
-import { ClassAndTypeSelector } from '../information/containers/class-and-type-selector/api/class-and-type-selector.models';
-import { CreateOrAddEntity } from '../information/containers/create-or-add-entity/api/create-or-add-entity.models';
-import { List } from '../information/containers/list/api/list.models';
-import Delta from 'quill/node_modules/quill-delta';
 import { IVersion } from 'app/modules/data/components/version-picker/version-picker.component';
+import Delta from 'quill/node_modules/quill-delta';
+import { List } from '../information/containers/list/api/list.models';
 
 
 /**
@@ -78,13 +76,13 @@ export interface ISourceListState {
     // the list of sources (search result)
     list?: List,
     // if source being created
-    create?: CreateOrAddEntity,
+    // create?: CreateOrAddEntity,
     // the source being edited
     edit?: ISourceDetailState,
     // the source being removed
     remove?: ISourceSearchHitState
     // class and type selector
-    classAndTypeSelector?: ClassAndTypeSelector;
+    // classAndTypeSelector?: ClassAndTypeSelector;
 }
 
 /**

@@ -4,8 +4,6 @@ import { ActiveProjectActions } from './active-project.action';
 import { ActiveProjectEpics } from './active-project.epics';
 import { ActiveProjectService } from './active-project.service';
 import { SocketsModule } from '../sockets/sockets.module';
-import { PeItService } from 'app/modules/information/shared/pe-it.service';
-import { EprService } from 'app/modules/information/shared/epr.service';
 
 
 @NgModule({
@@ -13,6 +11,6 @@ import { EprService } from 'app/modules/information/shared/epr.service';
         CommonModule,
         SocketsModule
     ],
-    providers: [ActiveProjectActions, ActiveProjectEpics, ActiveProjectService, PeItService, EprService]
+    providers: [ActiveProjectActions, ActiveProjectEpics, ActiveProjectService]
 })
 export class ActiveProjectModule { }

@@ -1,5 +1,4 @@
-import { InfEntityAssociation, InfPersistentItem } from '../../sdk';
-import { TypeCtrl } from 'app/modules/information/type/type-ctrl/api/type-ctrl.models';
+import { InfEntityAssociation } from '../../sdk';
 
 export class TypeDetail {
 
@@ -10,7 +9,7 @@ export class TypeDetail {
     editing?= false;
     loading?= false;
     fkDomainEntity?: number;
-    _typeCtrl?: TypeCtrl;
+    _typeCtrl?;
 
     constructor(data?: TypeDetail) {
         Object.assign(this, data);

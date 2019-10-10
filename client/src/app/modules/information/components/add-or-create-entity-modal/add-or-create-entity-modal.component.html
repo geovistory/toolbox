@@ -1,4 +1,7 @@
 <mat-dialog-content>
-  <gv-create-or-add-entity class="gv-flex-fh" [basePath]="basePath" (done)="added($event)" (cancel)="closeAddForm()">
+  <gv-create-or-add-entity class="gv-flex-fh" [alreadyInProjectBtnText]="data.alreadyInProjectBtnText"
+    [notInProjectBtnText]="data.notInProjectBtnText" [classAndTypePk]="data.classAndTypePk"
+    [pkUiContext]="data.pkUiContext" [notInProjectClickBehavior]="data.notInProjectClickBehavior"
+    (done)="onCreateOrAdd($event)" (cancel)="closeAddForm()">
   </gv-create-or-add-entity>
 </mat-dialog-content>

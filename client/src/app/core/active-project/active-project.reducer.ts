@@ -237,22 +237,22 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
 
       break;
 
-    /*****************************************************
-    * Layout -- Modals
-    *****************************************************/
-    case ActiveProjectActions.OPEN_ADD_FORM:
-      state = {
-        ...state,
-        addModal: action.meta.createOrAddEntity
-      };
-      break;
+    // /*****************************************************
+    // * Layout -- Modals
+    // *****************************************************/
+    // case ActiveProjectActions.OPEN_ADD_FORM:
+    //   state = {
+    //     ...state,
+    //     addModal: action.meta.createOrAddEntity
+    //   };
+    //   break;
 
-    case ActiveProjectActions.CLOSE_ADD_FORM:
-      state = {
-        ...state,
-        addModal: undefined
-      };
-      break;
+    // case ActiveProjectActions.CLOSE_ADD_FORM:
+    //   state = {
+    //     ...state,
+    //     addModal: undefined
+    //   };
+    //   break;
 
     /************************************************************************************
     * Data cache

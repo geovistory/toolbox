@@ -1,6 +1,5 @@
-import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntityPreview, IAppState } from 'app/core';
+import { EntityPreview } from 'app/core';
 import { EntitySearchHit } from '../../containers/list/api/list.models';
 
 @Component({
@@ -12,10 +11,9 @@ export class EntityAddExistingHitComponent implements OnInit {
 
   @Input() hit: EntitySearchHit;
 
-  /**
-   * True if this is about selecting a pe-it as range of a role
-   */
-  @Input() selectRoleRange: boolean;
+
+  @Input() alreadyInProjectBtnText: string;
+  @Input() notInProjectBtnText: string;
 
   /**
   * flag to indicate if this search hit is in the context of a project-wide
@@ -39,11 +37,12 @@ export class EntityAddExistingHitComponent implements OnInit {
 
 
 
-  constructor(
-    private ngRedux: NgRedux<IAppState>
-  ) { }
+  constructor(  ) { }
 
   ngOnInit() {
+    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
+    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
+
     this.projectsCount = this.hit.projects ? this.hit.projects.length : undefined;
 
     if (this.hit.fk_project) {

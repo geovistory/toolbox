@@ -1,4 +1,3 @@
-import { ClassAndTypeSelector } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
 import { List } from 'app/modules/information/containers/list/api/list.models';
 
 // Class of this slice of store
@@ -7,8 +6,8 @@ export class SourceList implements SourceList {
     // the list of sources (search result)
     list?: List;
 
-    // class and type selector
-    classAndTypeSelector?: ClassAndTypeSelector;
+    // // class and type selector
+    // classAndTypeSelector?: ClassAndTypeSelector;
 
     loading?: boolean;
 

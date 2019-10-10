@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { DatSelector } from 'app/core/dat/dat.service';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { PeItService } from 'app/modules/information/shared/pe-it.service';
+// import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
 import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
@@ -34,7 +34,7 @@ export class ActiveProjectEpics {
     private dfh: DfhSelector,
     private pro: ProSelector,
     private inf: InfActions,
-    private peItService: PeItService,
+    // private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
     private teEnApi: InfTemporalEntityApi,
     private infProjRelApi: ProInfoProjRelApi,
@@ -58,7 +58,7 @@ export class ActiveProjectEpics {
       this.createLoadProjectEpic(),
       this.createLoadCrmEpic(),
       this.createLoadProjectUpdatedEpic(),
-      this.createLoadEntityDetailForModalEpic(),
+      // this.createLoadEntityDetailForModalEpic(),
       this.createLoadChunkEpic(),
       this.createLoadPeItGraphEpic(),
       this.createLoadTeEnGraphEpic(),
@@ -281,79 +281,79 @@ export class ActiveProjectEpics {
     }
   }
 
-  private createLoadEntityDetailForModalEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
+  // private createLoadEntityDetailForModalEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-          const p = this.ngRedux.getState().activeProject;
+  //         const p = this.ngRedux.getState().activeProject;
 
-          /**
-           * TODO: change this to something generic for PeIt and TeEn
-           */
-          this.peItService.getNestedObject(action.meta.pk_entity, action.meta.pk_project)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data) => {
-              if (data) {
-                const peItDetail: PeItDetail = createPeItDetail(
-                  {
-                    showRightArea: false,
+  //         /**
+  //          * TODO: change this to something generic for PeIt and TeEn
+  //          */
+  //         this.peItService.getNestedObject(action.meta.pk_entity, action.meta.pk_project)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data) => {
+  //             if (data) {
+  //               const peItDetail: PeItDetail = createPeItDetail(
+  //                 {
+  //                   showRightArea: false,
 
-                    showProperties: true,
-                    showMapToggle: true
-                  },
-                  data,
-                  p.crm,
-                  { isViewMode: true, pkUiContext: action.meta.pk_ui_context }
-                )
-                /**
-                 * Emit the global action that completes the loading bar
-                 */
-                globalStore.next(this.loadingBarActions.completeLoading());
-                /**
-                 * Emit the local action on loading succeeded
-                 */
-                globalStore.next(this.actions.loadPeItDetailsForModalSucceeded(peItDetail));
-              } else {
-                globalStore.next(this.loadingBarActions.completeLoading());
-                globalStore.next(this.notificationActions.addToast({
-                  type: 'error',
-                  options: {
-                    title: 'Failed loading related item ' + action.meta.pk_entity
-                  }
-                }));
-              }
+  //                   showProperties: true,
+  //                   showMapToggle: true
+  //                 },
+  //                 data,
+  //                 p.crm,
+  //                 { isViewMode: true, pkUiContext: action.meta.pk_ui_context }
+  //               )
+  //               /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //               globalStore.next(this.loadingBarActions.completeLoading());
+  //               /**
+  //                * Emit the local action on loading succeeded
+  //                */
+  //               globalStore.next(this.actions.loadPeItDetailsForModalSucceeded(peItDetail));
+  //             } else {
+  //               globalStore.next(this.loadingBarActions.completeLoading());
+  //               globalStore.next(this.notificationActions.addToast({
+  //                 type: 'error',
+  //                 options: {
+  //                   title: 'Failed loading related item ' + action.meta.pk_entity
+  //                 }
+  //               }));
+  //             }
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loaEntitytDetailsForModalFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loaEntitytDetailsForModalFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
   private createLoadTypesEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(

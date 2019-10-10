@@ -45,7 +45,6 @@ import { ProjectSettingsDataAPIActions } from './containers/project-settings-dat
 import { ProjectSettingsDataAPIEpics } from './containers/project-settings-data/api/project-settings-data.epics';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
 import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
-import { TypeAddFormComponent } from './containers/type-add-form/type-add-form.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
 import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
@@ -113,7 +112,6 @@ import { ClassConfigModule } from '../class-config/class-config.module';
     ProjectSettingsProfileComponent,
     SideNavComponent,
     TypesComponent,
-    TypeAddFormComponent,
     TypeEditFormComponent,
     TabBodyComponent,
     PanelBodyDirective,
@@ -131,8 +129,7 @@ import { ClassConfigModule } from '../class-config/class-config.module';
     TypeEditFormAPIEpics
   ],
   entryComponents: [
-    TypeEditFormComponent,
-    TypeAddFormComponent
+    TypeEditFormComponent
   ]
 })
 export class ProjectsModule { }

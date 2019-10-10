@@ -1,25 +1,27 @@
-<div class="h-100" gdGap="10px" gdRows="40px auto 40px" gdColumns="50 50" gdAreas="header | content | footer" *ngIf="(classAndTypePk$ | async) && (pkUiContext$ | async)">
+<div class="h-100" gdGap="10px" gdRows="40px auto 40px" gdColumns="50 50" gdAreas="header | content | footer"
+  *ngIf="classAndTypePk && pkUiContext">
   <div class="ellipsis" gdArea="header">
     <!-- Header -->
-    <h2 class="mat-h1">Add a {{classConfig?.label}}</h2>
+    <h2 class="mat-h1">Add a {{classLabel$ | async}}</h2>
   </div>
   <div class="gv-overflow-hidden" gdArea="content">
-    <div fxFlex fxLayout="row" class="mr-3" >
+    <div fxFlex fxLayout="row" class="mr-3">
       <!-- Left -->
       <div fxFlex="60" fxLayout="column" class="gv-overflow-hidden">
         <div class="gv-scroll-y-auto p-1">
-          <gv-form-create-entity class="w-100" [pkClass]="(classAndTypePk$ | async).pkClass" [appContext]="pkUiContext$ | async"
-            hideTitle="true" hideButtons="true" (cancel)="cancel.emit()"
-            (saved)="done.emit($event)" (searchString)="searchStringChange($event)" #f>
+          <gv-form-create-entity class="w-100" [pkClass]="classAndTypePk.pkClass" [appContext]="pkUiContext"
+            hideTitle="true" hideButtons="true" (cancel)="cancel.emit()" (saved)="onCreated($event)"
+            (searchString)="searchStringChange($event)" #f>
           </gv-form-create-entity>
         </div>
       </div>
 
       <div fxFlex class="gv-scroll-y-auto ml-5">
         <!-- Right -->
-        <gv-pe-it-search-existing [basePath]="basePath.concat('searchExisting')" [selectPeItMode]="selectPeItMode"
-          [searchString$]="searchString$" (onAddExisting)="onAddExisting($event)"
-          (onOpenExisting)="onOpenExisting($event)" (onSelect)="onOpenExisting($event)"></gv-pe-it-search-existing>
+        <gv-pe-it-search-existing [alreadyInProjectBtnText]="alreadyInProjectBtnText" [pkClass]="classAndTypePk.pkClass"
+          [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
+          (onAddExisting)="onNotInProjectClicked($event)" (onOpenExisting)="onAlreadyInProjectClicked($event)">
+        </gv-pe-it-search-existing>
 
       </div>
     </div>
@@ -30,48 +32,12 @@
     <button mat-flat-button color="primary"
       [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="f?.submit()">
       <span *ngIf="!f?.saving">Create</span>
-      <span *ngIf="f?.saving">Saving</span>
+      <div *ngIf="f?.saving" style="margin: 6px;">
+        <mat-spinner diameter="20"></mat-spinner>
+      </div>
     </button>
 
     <button mat-button type="button" class="ml-2" (click)="f?.cancel.emit()">Cancel</button>
 
   </div>
 </div>
-
-<!-- Header -->
-<!-- <section class="m-3 mt-5 row gv-flex-shrink-0">
-  <div class="col">
-    <h2>Add a {{classConfig?.label}}</h2>
-  </div>
-</section> -->
-<!--
-<mat-dialog-content>
-  <div class="d-flex flex-row gv-grow-1 pb-1" style="flex-basis:100%">
-
-    <div class="gv-grow-1" style="flex-basis:50%;" *ngIf="classAndTypePk$ | async">
-
-      <gv-form-create-entity [pkClass]="(classAndTypePk$ | async).pkClass" class="w-100" (cancel)="cancel.emit()"
-        (saved)="done.emit($event)" (searchString)="searchStringChange($event)" #f>
-      </gv-form-create-entity>
-
-      <button mat-flat-button color="primary"
-        [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="f?.submit()">
-        <span *ngIf="!f?.saving">Create</span>
-        <span *ngIf="f?.saving">Saving</span>
-      </button>
-
-      <button mat-button type="button" class="ml-2" (click)="f?.cancel.emit()">Cancel</button>
-
-    </div>
-
-
-    <div class="ml-5 mt-5 pl-5 gv-grow-1" style="flex-basis:50%;">
-      <h4 class="mat-h3 mb-3">...or select an existing {{classConfig?.label}}</h4>
-
-      <gv-pe-it-search-existing [basePath]="basePath.concat('searchExisting')" [selectPeItMode]="selectPeItMode"
-        [searchString$]="searchString$" (onAddExisting)="onAddExisting($event)"
-        (onOpenExisting)="onOpenExisting($event)" (onSelect)="onOpenExisting($event)"></gv-pe-it-search-existing>
-    </div>
-
-  </div>
-</mat-dialog-content> -->

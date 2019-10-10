@@ -1,5 +1,5 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
 import { ActiveProjectService, IAppState, Tab, U, UiContext } from 'app/core';
 import { ClassInstanceLabel, PeItDetail, SubstoreComponent } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
@@ -29,7 +29,7 @@ import { peItDetailReducer } from './api/pe-it-detail.reducer';
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponentInterface {
+export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponentInterface, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() basePath: string[];

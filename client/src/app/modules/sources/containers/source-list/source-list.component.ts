@@ -4,13 +4,13 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ActiveProjectService, EntityPreview, IAppState, ProjectCrm, SubstoreComponent, SysConfig, U, InfPersistentItem } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { SystemSelector } from 'app/core/sys/sys.service';
-import { ClassAndTypePk } from 'app/modules/information/containers/class-and-type-selector/api/class-and-type-selector.models';
 import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, tap, takeUntil } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
+import { ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 
 
 @WithSubStore({
@@ -81,10 +81,13 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
         this.p.setListType('')
 
         this.p.openModalCreateOrAddEntity({
+          alreadyInProjectBtnText: 'Open',
+          notInProjectClickBehavior: 'addToProject',
+          notInProjectBtnText: 'Add and Open',
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
-        }).subscribe((entity: InfPersistentItem) => {
-          this.p.addSourceTab(entity.pk_entity)
+        }).subscribe(result => {
+          this.p.addSourceTab(result.pkEntity)
         })
 
       })

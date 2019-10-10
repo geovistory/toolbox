@@ -1,112 +1,75 @@
-import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ClassConfig, IAppState, InfEntityAssociation, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, PeItDetail, SubstoreComponent, TeEntDetail, U, ActiveProjectService } from 'app/core';
-import { RootEpics } from 'app/core/store/epics';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { ActiveProjectService, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity } from 'app/core';
+import { SchemaObject } from 'app/core/store/model';
+import { Observable, Subject, timer, of, BehaviorSubject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import * as Config from '../../../../../../../common/config/Config';
-import { ClassAndTypePk } from '../class-and-type-selector/api/class-and-type-selector.models';
-import { CreateOrAddEntityAPIActions } from './api/create-or-add-entity.actions';
-import { CreateOrAddEntityAPIEpics } from './api/create-or-add-entity.epics';
-import { CreateOrAddEntity } from './api/create-or-add-entity.models';
-import { createOrAddEntityReducer } from './api/create-or-add-entity.reducer';
+import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { MatDialog } from '@angular/material';
+import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: createOrAddEntityReducer
-})
+export interface ClassAndTypePk { pkClass: number, pkType: number };
+
+export type CreateOrAddEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
+export type NotInProjectClickBehavior = 'addToProject' | 'selectOnly';
+
+export interface CreateOrAddEntityEvent {
+  action: CreateOrAddEntityAction,
+  pkEntity: number
+}
+
+
 @Component({
   selector: 'gv-create-or-add-entity',
   templateUrl: './create-or-add-entity.component.html',
   styleUrls: ['./create-or-add-entity.component.css']
 })
-export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // local store of this component
-  localStore: ObservableStore<CreateOrAddEntity>;
 
-  // path to the substore
-  @Input() basePath: string[];
-  @Input() selectPeItMode: boolean;
+  @Input() classAndTypePk: ClassAndTypePk;
+  @Input() pkUiContext: number;
+  @Input() alreadyInProjectBtnText: string;
+  @Input() notInProjectBtnText: string;
+  @Input() notInProjectClickBehavior: NotInProjectClickBehavior;
 
-  // select observables of substore properties
-  @select() loading$: Observable<boolean>;
-  @select() createPeItForm$: Observable<PeItDetail>;
-  @select() createTeEnForm$: Observable<TeEntDetail>;
 
-  // class of the peIt to add or create
-  @select() classAndTypePk$: Observable<ClassAndTypePk>;
-  @select() pkUiContext$: Observable<number>;
-  @select() pkNamespace$: Observable<number>;
-
-  // emits the nested PeIt or TeEn, no matter if created, added, opened or selected!
-  @Output() done = new EventEmitter<InfPersistentItem | InfTemporalEntity>();
+  // emits the nested PeIt or TeEn, no matter if 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added' !
+  @Output() done = new EventEmitter<CreateOrAddEntityEvent>();
 
   // on cancel
   @Output() cancel = new EventEmitter<void>();
 
-  peIt: InfPersistentItem;
-  teEn: InfTemporalEntity;
-
-
   searchString$ = new Subject<string>();
 
-  classConfig: ClassConfig;
-
+  classLabel$: Observable<string>;
 
   @ViewChild('f', { static: true }) form: NgForm;
 
   constructor(
-    protected rootEpics: RootEpics,
-    private epics: CreateOrAddEntityAPIEpics,
-    public ngRedux: NgRedux<IAppState>,
     private peItApi: InfPersistentItemApi,
-    private teEnApi: InfTemporalEntityApi,
-    private p: ActiveProjectService
+    private p: ActiveProjectService,
+    private c: ConfigurationPipesService,
+    private dialog: MatDialog
   ) {
-    super()
+    // super()
   }
 
-  getBasePath = () => this.basePath;
+  // getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, createOrAddEntityReducer);
-    this.rootEpics.addEpic(this.epics.createEpics(this));
+    // this.localStore = this.ngRedux.configureSubStore(this.basePath, createOrAddEntityReducer);
+    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
+    if (!this.classAndTypePk || !this.classAndTypePk.pkClass) throw new Error('You must provide classAndTypePk as Component @Input().')
+    if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')
+    if (!this.notInProjectBtnText) throw Error('please provide a notInProjectBtnText')
+    if (!this.notInProjectClickBehavior) throw Error('please provide a notInProjectClickBehavior')
 
-    combineLatest(this.classAndTypePk$, this.pkUiContext$, this.p.crm$).pipe(
-      first((d) => {
-        return ((d[0] && d[1] && d[2]) ? true : false)
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe((d) => {
-
-      const pkClass = d[0].pkClass;
-      const pkType = d[0].pkType;
-      const pkUiContext = d[1];
-      const crm = d[2];
-      // if (!pkClass) throw Error('please provide a pkClass.');
-      // if (!pkUiContext) throw Error('please provide a pkUiContext.');
-
-      this.classConfig = crm.classes[pkClass];
-
-      // create the entityAssociation for the type
-      const domainEntityAssociations: InfEntityAssociation[] = [];
-      if (pkType) {
-        domainEntityAssociations.push({
-          fk_info_domain: undefined,
-          fk_property: Config.PK_CLASS_PK_HAS_TYPE_MAP[pkClass],
-          fk_info_range: pkType
-        } as InfEntityAssociation)
-      }
-
-      this.initCreateForm(pkClass, domainEntityAssociations, crm, pkUiContext);
-
-    })
+    this.classLabel$ = this.c.pipeLabelOfClass(this.classAndTypePk.pkClass)
 
   }
 
@@ -118,40 +81,43 @@ export class CreateOrAddEntityComponent extends CreateOrAddEntityAPIActions impl
   }
 
   ngOnDestroy() {
-    this.destroy();
+    // this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onAddExisting(pkEntity: number) {
-    this.peItApi.addToProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
-      (peIts) => { this.done.emit(peIts[0]) }
-    )
+  onNotInProjectClicked(pkEntity: number) {
+    if (this.notInProjectClickBehavior == 'selectOnly') {
+      this.done.emit({
+        action: 'notInProjectClicked',
+        pkEntity
+      })
+    }
+    else if (this.notInProjectClickBehavior == 'addToProject') {
+      this.p.addPeItToProject(pkEntity, (schemaObject: SchemaObject) => {
+        this.done.emit({
+          action: 'added',
+          pkEntity
+        })
+      })
+    }
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  onOpenExisting(pkEntity: number) {
-    this.peItApi.nestedObjectOfProject(this.ngRedux.getState().activeProject.pk_project, pkEntity).subscribe(
-      (peIts) => { this.done.emit(peIts[0]) }
-    )
+  onAlreadyInProjectClicked(pkEntity: number) {
+    this.done.emit({
+      action: 'alreadyInProjectClicked',
+      pkEntity
+    })
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
-  submitCreateForm() {
-    // Create PeIt
-    if (this.form.form.valid && this.form.form.value.peIt) {
-      this.peItApi.findOrCreatePeIt(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.peIt).subscribe(
-        (peIts) => { this.done.emit(peIts[0]) }
-      )
-    }
-
-    // Find or create TeEn
-    if (this.form.form.valid && this.form.form.value.teEn) {
-      this.teEnApi.findOrCreateInfTemporalEntity(this.ngRedux.getState().activeProject.pk_project, this.form.form.value.teEn.temporal_entity).subscribe(
-        (teEns) => { this.done.emit(teEns[0]) }
-      )
-    }
+  onCreated(entity: InfPersistentItem | InfTemporalEntity) {
+    this.done.emit({
+      action: 'created',
+      pkEntity: entity.pk_entity
+    })
   }
 
 }

@@ -1334,7 +1334,7 @@ module.exports = function (InfPersistentItem) {
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       if (err) return cb(err, resultObjects);
 
-      InfPersistentItem.nestedObjectOfProject(pk_project, pk_entity, (err, result) => {
+      InfPersistentItem.ownProperties(pk_project, pk_entity, (err, result) => {
         cb(err, result)
       })
 
@@ -1351,7 +1351,74 @@ module.exports = function (InfPersistentItem) {
     });
   }
 
+  /**
+   * Includes only appellations of persistent items
+   */
+  InfPersistentItem.getTypeIncludeObject = function (pkProject) {
+    const projectJoin = {
+      "entity_version_project_rels": InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(true, pkProject)
+    }
+    return {
+      ...projectJoin,
+      "pi_roles": {
+        "$relation": {
+          "name": "pi_roles",
+          "joinType": "left join"
+        },
+        ...projectJoin,
+        "temporal_entity": {
+          "$relation": {
+            "name": "temporal_entity",
+            "joinType": "inner join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          },
+          "te_roles": {
+            "$relation": {
+              "name": "te_roles",
+              "joinType": "inner join",
+              "orderBy": [{
+                "pk_entity": "asc"
+              }]
+            },
+            ...projectJoin,
+            "appellation": {
+              "$relation": {
+                "name": "appellation",
+                "joinType": "left join",
+                "orderBy": [{
+                  "pk_entity": "asc"
+                }]
+              },
+            },
+          }
+        }
+      },
+      text_properties: {
+        "$relation": {
+          "name": "text_properties",
+          "joinType": "left join",
+          "orderBy": [{ "pk_entity": "asc" }]
+        },
+        ...projectJoin,
+        "language": {
+          "$relation": {
+            "name": "language",
+            "joinType": "left join",
+            "orderBy": [{
+              "pk_entity": "asc"
+            }]
+          }
+        }
+      }
+    }
+  }
 
+  /**
+   * Get all types of project with all appellations
+   * and all text properties
+   */
   InfPersistentItem.typesOfProject = function (pkProject, cb) {
 
     // Get array of all peits that are types and in given project
@@ -1377,57 +1444,31 @@ module.exports = function (InfPersistentItem) {
 
       if (!result || !result.length > 0 || !result[0].pk_type_array || result[0].pk_type_array.length < 1) return cb(false, [])
 
-      const projectJoin = {
-        "entity_version_project_rels": InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(true, pkProject)
-      }
-
       let filter = {
         "where": ["pk_entity", "IN", result[0].pk_type_array],
-        include: {
-          ...projectJoin,
-          "pi_roles": {
-            "$relation": {
-              "name": "pi_roles",
-              "joinType": "left join"
-            },
-            ...projectJoin,
-            "temporal_entity": {
-              "$relation": {
-                "name": "temporal_entity",
-                "joinType": "inner join",
-                // where: ['fk_class', '=', 2],
-                "orderBy": [{
-                  "pk_entity": "asc"
-                }]
-              },
-              "te_roles": {
-                "$relation": {
-                  "name": "te_roles",
-                  "joinType": "inner join",
-                  "orderBy": [{
-                    "pk_entity": "asc"
-                  }]
-                },
-                ...projectJoin,
-                "appellation": {
-                  "$relation": {
-                    "name": "appellation",
-                    "joinType": "left join",
-                    "orderBy": [{
-                      "pk_entity": "asc"
-                    }]
-                  },
-                },
-              }
-            }
-          }
-        }
+        include: InfPersistentItem.getTypeIncludeObject(pkProject)
       }
 
       return InfPersistentItem.findComplex(filter, cb);
 
     });
   }
+
+  /**
+   * Get all type of project with all appellations
+   * and all text properties
+   */
+  InfPersistentItem.typeOfProject = function (pkProject, pkType, cb) {
+
+    let filter = {
+      "where": ["pk_entity", '=', pkType],
+      include: InfPersistentItem.getTypeIncludeObject(pkProject)
+    }
+
+    return InfPersistentItem.findComplex(filter, cb);
+
+  }
+
 
   InfPersistentItem.ownProperties = function (pkProject, pkEntity, cb) {
     const mainQuery = new FlatObjectQueryBuilder(InfPersistentItem.app.models).createPeItOwnPropertiesQuery(pkProject, pkEntity)

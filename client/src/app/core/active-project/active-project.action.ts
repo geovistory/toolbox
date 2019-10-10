@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ProjectCrm, ProjectDetail, Tab, ListType, TypePeIt, ProjectPreview, Panel } from './active-project.models';
-import { DatChunk, InfTemporalEntity, InfPersistentItem, ProQuery, ProVisual, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
-import { EntityPreview, PeItDetail, HasTypePropertyReadable } from '../state/models';
-import { InfActions } from 'app/core/inf/inf.actions';
-import { IAppState } from 'app/core/store/model';
-import { NgRedux } from '@angular-redux/store';
-import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
+import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProQuery, ProVisual } from '../sdk';
+import { EntityPreview, HasTypePropertyReadable, PeItDetail } from '../state/models';
+import { ListType, Panel, ProjectCrm, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
 
 export interface ComQueryV extends ProQuery {
   versions: number[];
@@ -62,7 +58,7 @@ interface MetaData {
   tab?: Tab;
 
   // Layout Modals
-  createOrAddEntity?: CreateOrAddEntity; // Check if this really belongt in state
+  // createOrAddEntity?: CreateOrAddEntity; // Check if this really belongt in state
 };
 type Payload = ProjectDetail;
 export type ActiveProjectAction = FluxStandardAction<Payload, MetaData>;
@@ -217,24 +213,24 @@ export class ActiveProjectActions {
   }
 
 
-  /************************************************************************************
-   * Layout -- Modals
-  ************************************************************************************/
-  // create or add entity modal
-  static readonly OPEN_ADD_FORM = 'ActiveProject::OPEN_ADD_FORM';
-  static readonly CLOSE_ADD_FORM = 'ActiveProject::CLOSE_ADD_FORM';
+  // /************************************************************************************
+  //  * Layout -- Modals
+  // ************************************************************************************/
+  // // create or add entity modal
+  // static readonly OPEN_ADD_FORM = 'ActiveProject::OPEN_ADD_FORM';
+  // static readonly CLOSE_ADD_FORM = 'ActiveProject::CLOSE_ADD_FORM';
 
-  openAddForm = (createOrAddEntity: CreateOrAddEntity): ActiveProjectAction => ({
-    type: ActiveProjectActions.OPEN_ADD_FORM,
-    meta: { createOrAddEntity },
-    payload: null
-  })
+  // openAddForm = (createOrAddEntity: CreateOrAddEntity): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.OPEN_ADD_FORM,
+  //   meta: { createOrAddEntity },
+  //   payload: null
+  // })
 
-  closeAddForm = (): ActiveProjectAction => ({
-    type: ActiveProjectActions.CLOSE_ADD_FORM,
-    meta: null,
-    payload: null
-  })
+  // closeAddForm = (): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.CLOSE_ADD_FORM,
+  //   meta: null,
+  //   payload: null
+  // })
 
 
   /************************************************************************************

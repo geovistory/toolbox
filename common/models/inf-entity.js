@@ -400,7 +400,6 @@ module.exports = function (InfEntity) {
               reject(err)
             };
             resolve(res)
-
           }
         ))
 
@@ -458,6 +457,7 @@ module.exports = function (InfEntity) {
                 }
               }
 
+
               // create a new epr
               var newEpr = new ProInfoProjRel({
                 "fk_entity": resultingEntity.pk_entity,
@@ -499,7 +499,9 @@ module.exports = function (InfEntity) {
 
                 // create it in DB
                 return newEpr.save()
-                  .catch((err) => reject(err))
+                  .catch((err) => {
+                    reject(err)
+                  })
                   .then(resultingEpr => {
                     return find(resultingEpr.fk_entity)
                   });

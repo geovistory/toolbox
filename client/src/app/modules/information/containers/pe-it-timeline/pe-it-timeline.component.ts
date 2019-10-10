@@ -1,20 +1,13 @@
-import { NgRedux, ObservableStore, WithSubStore, select } from '@angular-redux/store';
+import { NgRedux, ObservableStore, select } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ExistenceTimeDetail, FieldList, IAppState, PropertyField, SubstoreComponent, TeEntAccentuation, U, switchMapOr } from 'app/core';
+import { IAppState, SubstoreComponent, TeEntAccentuation } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { TimeLineData, TimeLineRow, TimeLineSettings } from 'app/modules/timeline/models/timeline';
-import { equals, dropLast } from 'ramda';
-import { Subject, Observable, combineLatest } from 'rxjs';
-import { TeEntActions } from '../../entity/te-ent/te-ent.actions';
-import { teEntReducer } from '../../entity/te-ent/te-ent.reducer';
-import { StateToDataService } from '../../shared/state-to-data.service';
+import { Observable, Subject } from 'rxjs';
+import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { PeItTimelineAPIActions } from './api/pe-it-timeline.actions';
 import { PeItTimeline } from './api/pe-it-timeline.models';
-import { peItTimelineReducer } from './api/pe-it-timeline.reducer';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
-import { map } from '../../../../../../node_modules/rxjs/operators';
-import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 
 // @WithSubStore({
 //   basePathMethodName: 'getBasePath',

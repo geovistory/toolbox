@@ -1,7 +1,7 @@
 import { InfPersistentItem } from 'app/core/sdk';
 import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
 import { Entity } from './entity';
-import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
+// import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
 import { PeItTimeline } from 'app/modules/information/containers/pe-it-timeline/api/pe-it-timeline.models';
 
 export interface PeItDetailList { [pk_entity: number]: PeItDetail };
@@ -92,7 +92,7 @@ export class PeItDetail extends Entity {
 
 
     // reproductions of a section
-    repros?: Repros;
+    // repros?: Repros;
 
     /** Timeline */
     peItTimeLine?: PeItTimeline;

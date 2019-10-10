@@ -19,7 +19,12 @@ export class EntityPreviewComponent implements OnInit {
 
   }
 
-  openInNewTab(){
+  openInNewTab() {
     this.p.addEntityTab(this.preview)
+  }
+  addAndOpenInNewTab() {
+    this.p.addPeItToProject(this.preview.pk_entity, () => {
+      this.p.addEntityTab(this.preview)
+    })
   }
 }

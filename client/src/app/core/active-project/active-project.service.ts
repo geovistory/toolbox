@@ -1,16 +1,16 @@
 
-import { of as observableOf, BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { of as observableOf, BehaviorSubject, combineLatest, Observable, Subject, timer } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AddOrCreateEntityModal } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { AddOrCreateEntityModal, AddOrCreateEntityModalData } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { difference, groupBy, indexBy, path, values, without, equals } from 'ramda';
-import { distinctUntilChanged, filter, first, map, mergeMap, tap, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, mergeMap, tap, switchMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/api/create-or-add-entity.models';
+// import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/create-or-add-entity.componen';
 import { DatSelector } from '../dat/dat.service';
 import { InfSelector } from '../inf/inf.service';
-import { DatNamespace, DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual, InfLanguage } from '../sdk';
+import { DatNamespace, DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual, InfLanguage, InfPersistentItemApi } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
@@ -19,13 +19,15 @@ import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, 
 import { ProSelector } from 'app/core/pro/pro.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { SystemSelector } from '../sys/sys.service';
-import { IAppState } from '../store/model';
+import { IAppState, SchemaObject } from '../store/model';
 import { SysConfig } from '../config/sys-config';
 import { U } from '../util/util';
 import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { InfActions } from '../inf/inf.actions';
 import { SucceedActionMeta } from '../store/actions';
 import { ShouldPauseService } from '../services/should-pause.service';
+import { CreateOrAddEntityEvent, ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
+import { ProgressDialogData, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
 
 
 
@@ -74,6 +76,7 @@ export class ActiveProjectService {
     public dfh$: DfhSelector,
     public sys$: SystemSelector,
     public inf: InfActions,
+    private peItApi: InfPersistentItemApi,
     public shouldPause: ShouldPauseService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -483,6 +486,27 @@ export class ActiveProjectService {
     return s;
   }
 
+  addPeItToProject(pkEntity: number, cb: (schemaObject: SchemaObject) => any) {
+    this.pkProject$.pipe(first()).subscribe(pkProject => {
+      const timer$ = timer(200)
+      const call$ = this.peItApi.addToProject(pkProject, pkEntity)
+      let dialogRef;
+      timer$.pipe(takeUntil(call$)).subscribe(() => {
+        const data: ProgressDialogData = {
+          title: 'Adding entity to your project',
+          hideValue: true, mode$: new BehaviorSubject('indeterminate'), value$: new BehaviorSubject(0)
+        }
+        dialogRef = this.dialog.open(ProgressDialogComponent, { data })
+      })
+      call$.subscribe(
+        (schemaObject: SchemaObject) => {
+          cb(schemaObject)
+          if (dialogRef) dialogRef.close()
+        }
+      )
+    })
+  }
+
 
   /************************************************************************************
   * Mentioning
@@ -676,19 +700,22 @@ export class ActiveProjectService {
   /**
    * Returns an observable that emits the added entity
    */
-  openModalCreateOrAddEntity(config: CreateOrAddEntity) {
-    const observable = new Subject();
+  openModalCreateOrAddEntity(config: AddOrCreateEntityModalData) {
+    const observable = new Subject<CreateOrAddEntityEvent>();
 
-    this.ngRedux.dispatch(this.actions.openAddForm(config));
+    // this.ngRedux.dispatch(this.actions.openAddForm(config));
 
-    const dialogRef = this.dialog.open(AddOrCreateEntityModal, {
-      height: '90%',
-      width: '90%',
-      data: { basePath: ['activeProject', 'addModal'] }
-    }).afterClosed().pipe(first()).subscribe(result => {
-      this.ngRedux.dispatch(this.actions.closeAddForm());
-      if (result) observable.next(result)
-    });
+    this.dialog.open<AddOrCreateEntityModal, AddOrCreateEntityModalData, CreateOrAddEntityEvent>(
+      AddOrCreateEntityModal,
+      {
+        height: '90%',
+        width: '90%',
+        data: config
+      })
+      .afterClosed().pipe(first()).subscribe(result => {
+        // this.ngRedux.dispatch(this.actions.closeAddForm());
+        if (result) observable.next(result)
+      });
 
     return observable;
   }
