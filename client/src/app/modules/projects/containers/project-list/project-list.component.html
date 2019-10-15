@@ -18,7 +18,7 @@
         <div  *ngFor="let project of projects" class="card mt-2" [ngClass]="{
           'bg-info': (project.pk_project == config.PK_PROJECT_OF_TEMPLATE_PROJECT),
           'bg-success': (project.pk_project == config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT),
-          'bg-warn': (project.pk_project) == config.PK_PROJECT_OF_SANDBOX_PROJECT
+          'bg-warning': (project.pk_project) == config.PK_PROJECT_OF_SANDBOX_PROJECT
         }">
           <div class="card-body">
             <h4 class="card-title">{{project?.label}}

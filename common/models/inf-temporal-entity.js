@@ -172,7 +172,6 @@ module.exports = function (InfTemporalEntity) {
                   .then((roles) => {
 
                     //attach the roles to resultingTeEnt
-                    let res = helpers.toObject(resultingEntity);
                     res.te_roles = [];
                     for (var i = 0; i < roles.length; i++) {
                       const role = roles[i];
@@ -181,12 +180,12 @@ module.exports = function (InfTemporalEntity) {
                       }
                     }
 
-                    resolve([res]);
+                    return true;
 
                   })
                   .catch(err => reject(err))
 
-                // add promise for pi_roles
+                // add promise for outgoing_roles
                 promiseArray.push(promise)
 
               }
@@ -212,7 +211,6 @@ module.exports = function (InfTemporalEntity) {
                   .then((roles) => {
 
                     //attach the roles to resultingTeEnt
-                    let res = helpers.toObject(resultingEntity);
                     res.ingoing_roles = [];
                     for (var i = 0; i < roles.length; i++) {
                       const role = roles[i];
@@ -221,12 +219,12 @@ module.exports = function (InfTemporalEntity) {
                       }
                     }
 
-                    resolve([res]);
+                    return true;
 
                   })
                   .catch(err => reject(err))
 
-                // add promise for pi_roles
+                // add promise for ingoing_roles
                 promiseArray.push(promise)
 
               }

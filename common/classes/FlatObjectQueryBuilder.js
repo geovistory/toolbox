@@ -24,9 +24,9 @@ class FlatObjectQueryBuilder {
       tw1 AS (
        SELECT count(*)
        FROM
-         information.v_role t1,
-         projects.info_proj_rel t2,
-       information.temporal_entity t3
+          information.v_role t1,
+          projects.info_proj_rel t2,
+          information.temporal_entity t3
        WHERE
          ${mainWhere}
        GROUP BY TRUE
@@ -116,7 +116,21 @@ class FlatObjectQueryBuilder {
         WHERE
           tw4.fk_entity = t1.pk_entity
       ),
-
+      -- ingoing_roles of temporal_entity
+      tw9 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfRole')},
+          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw3
+          CROSS JOIN information.v_role t1,
+          projects.info_proj_rel t2
+        WHERE
+          tw3.pk_entity = t1.fk_entity
+          AND t1.pk_entity = t2.fk_entity
+          AND t2.is_in_project = true
+          AND t2.fk_project = ${this.addParam(fkProject)}
+      ),
       ------------------------------------
       --- group parts by model
       ------------------------------------
@@ -141,6 +155,11 @@ class FlatObjectQueryBuilder {
             proj_rel
             FROM
             tw4
+            UNION ALL
+            SELECT
+            proj_rel
+            FROM
+            tw9
           ) AS t1
         ) as t1
         GROUP BY true
@@ -162,6 +181,11 @@ class FlatObjectQueryBuilder {
             *
             FROM
             tw4
+            UNION ALL
+            SELECT
+            *
+            FROM
+            tw9
           ) AS t1
         ) as t1
         GROUP BY true

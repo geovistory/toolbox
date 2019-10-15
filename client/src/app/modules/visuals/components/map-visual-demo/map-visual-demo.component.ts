@@ -56,7 +56,20 @@ export class MapVisualDemoComponent implements OnInit {
     }
     this.queryRes$.next(this.createQueryRes(rows))
   }
-
+  add10000() {
+    let rows = this.getRows(this.queryRes$.value);
+    for (let i = 0; i < 2000; i++) {
+      rows = [...rows, ...fiveRows]
+    }
+    this.queryRes$.next(this.createQueryRes(rows))
+  }
+  add100000() {
+    let rows = this.getRows(this.queryRes$.value);
+    for (let i = 0; i < 20000; i++) {
+      rows = [...rows, ...fiveRows]
+    }
+    this.queryRes$.next(this.createQueryRes(rows))
+  }
   setSettingsTemporal() {
     this.settings$.next(this.settingsTemporal)
   }

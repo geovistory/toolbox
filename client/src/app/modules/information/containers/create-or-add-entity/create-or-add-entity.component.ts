@@ -3,10 +3,11 @@ import { NgForm } from '@angular/forms';
 import { ActiveProjectService, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity } from 'app/core';
 import { SchemaObject } from 'app/core/store/model';
 import { Observable, Subject, timer, of, BehaviorSubject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, takeUntil, map, filter } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { MatDialog } from '@angular/material';
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
+import { DfhConfig } from '../../shared/dfh-config';
 
 export interface ClassAndTypePk { pkClass: number, pkType: number };
 
@@ -47,6 +48,8 @@ export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
 
   classLabel$: Observable<string>;
 
+  classType$: Observable<string>;
+
   @ViewChild('f', { static: true }) form: NgForm;
 
   constructor(
@@ -70,6 +73,14 @@ export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
     if (!this.notInProjectClickBehavior) throw Error('please provide a notInProjectClickBehavior')
 
     this.classLabel$ = this.c.pipeLabelOfClass(this.classAndTypePk.pkClass)
+    this.classType$ = this.p.dfh$.class$.by_dfh_pk_class$.key(this.classAndTypePk.pkClass).pipe(
+      filter(klass => !!klass),
+      map(klass => {
+        const systype = klass.dfh_fk_system_type;
+        if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM) return 'peIt';
+        else return 'teEnt';
+      })
+    )
 
   }
 

@@ -18,7 +18,8 @@
 
       <div fxFlex class="gv-scroll-y-auto ml-5">
         <!-- Right -->
-        <gv-pe-it-search-existing [alreadyInProjectBtnText]="alreadyInProjectBtnText" [pkClass]="classAndTypePk.pkClass"
+        <gv-pe-it-search-existing *ngIf="(classType$ | async) === 'peIt'"
+          [alreadyInProjectBtnText]="alreadyInProjectBtnText" [pkClass]="classAndTypePk.pkClass"
           [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
           (onAddExisting)="onNotInProjectClicked($event)" (onOpenExisting)="onAlreadyInProjectClicked($event)">
         </gv-pe-it-search-existing>
