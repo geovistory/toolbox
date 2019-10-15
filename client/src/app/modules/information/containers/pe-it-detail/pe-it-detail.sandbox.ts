@@ -1,6 +1,5 @@
 import { sandboxOf } from 'angular-playground';
 import { ProProject } from 'app/core';
-import { InitPeItEditableStateModule } from 'app/shared';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { Information2Module } from '../../information.module';
@@ -8,7 +7,6 @@ import { PeItDetailComponent } from './pe-it-detail.component';
 
 export default sandboxOf(PeItDetailComponent, {
   imports: [
-    InitPeItEditableStateModule,
     InitStateModule,
     Information2Module
   ],
