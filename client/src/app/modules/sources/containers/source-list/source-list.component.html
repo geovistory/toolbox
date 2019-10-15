@@ -5,6 +5,6 @@
     <gv-classes-and-types-select buttons enabledIn="sources" (select)="startCreate($event)"></gv-classes-and-types-select>
   </gv-list-drawer-header>
 
-  <gv-list [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)" [pkAllowedClasses$]="pkClassesOfAddBtn$">    </gv-list>
+  <gv-list class="gv-flex-fh" [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)" [pkAllowedClasses$]="pkClassesOfAddBtn$">    </gv-list>
 
 </div>

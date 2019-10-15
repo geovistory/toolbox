@@ -10,8 +10,10 @@ module.exports = function (ProProject) {
 
   /**
   * Project.createWithLabelAndDescription -
-  * Create a new Project, associate it with an account and add a Label and a
-  * Text Property.
+  * - Create a new Project
+  * - associate it with an account and
+  * - add a Label and a Text Property
+  * - add clone everything from
   *
   * @param  {integer} accountId Id of account to associate project with
   * @param  {string} fk_language: Id of language used for

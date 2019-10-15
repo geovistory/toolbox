@@ -29,10 +29,25 @@ module.exports = function (PubAccount) {
     });
   };
 
-
-  //send verification email after registration
+  /**
+   * after registration
+  * - send verification email
+  * - clone sandbox project
+  */
   PubAccount.afterRemote('create', function (context, account, next) {
     console.log('> account.afterRemote create triggered');
+
+    // Clone sandbox project
+    const sql = 'SELECT commons.clone_sandbox_project($1);';
+    const params = [account.id]
+    PubAccount.dataSource.connector.execute(sql, params, (err) => {
+      if (err) console.error(`Error while cloning sandbox project for account with id ${account.id} :`, err);
+      else {
+
+      }
+    });
+
+    // Send verification email
 
     var baseUrl = urlBuilder.getBaseUrl();
 
@@ -61,6 +76,7 @@ module.exports = function (PubAccount) {
       next();
 
     });
+
   });
 
 

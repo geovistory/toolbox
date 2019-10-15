@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { PropertiesTreeService } from "./properties-tree.service";
 
 export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity' | 'persistent-item';
+export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' ;
 
 export type CreateControlType = 'role';
 
@@ -48,8 +49,9 @@ export interface ListDefinition {
 }
 
 export interface PropertyItemTypeMap {
-  [key: string]: { listType: ListType, isOutgoing: boolean }
+  [key: string]: { listType: ItemType, isOutgoing: boolean }
 }
+
 
 export interface ItemBasics {
   projRel: ProInfoProjRel

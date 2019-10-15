@@ -72,19 +72,29 @@ export class TimelineVisualComponent implements OnInit, OnDestroy {
             // TODO add different types of timeline visualizations here
 
             if (dataSet.temporalCol) {
-              dataSetRows = rows
-                .map(row => {
-                  const entityPreview: EntityPreview = row[dataSet.temporalCol];
-                  const tlrow: TimeLineRow = {
-                    entityPreview,
-                    accentuation: 'none',
-                    label: entityPreview.class_label + ' ' + entityPreview.entity_label,
-                    existenceTime: new TimeSpan(entityPreview.time_span),
-                    color: dataSet.color
-                  }
-                  return tlrow;
-                })
-                .sort((a, b) => (a.existenceTime.earliestDay > b.existenceTime.earliestDay ? 1 : -1))
+              dataSetRows = [];
+              const addRow = (entityPreview: EntityPreview) => {
+                const row: TimeLineRow = {
+                  entityPreview,
+                  accentuation: 'none',
+                  label: entityPreview.class_label + ' ' + entityPreview.entity_label,
+                  existenceTime: new TimeSpan(entityPreview.time_span),
+                  color: dataSet.color
+                }
+                dataSetRows.push(row)
+              }
+              rows.forEach(row => {
+                const value = row[dataSet.temporalCol];
+                // if the temporal column is the root entity, we have no array
+                // else we have an array
+                if (Array.isArray(value)) {
+                  (value as EntityPreview[]).forEach(e => addRow(e))
+                } else {
+                  addRow(value)
+                }
+              })
+
+              dataSetRows.sort((a, b) => (a.existenceTime.earliestDay > b.existenceTime.earliestDay ? 1 : -1))
             }
           }
 

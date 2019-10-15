@@ -17,7 +17,7 @@ import { PaginateByParam } from "../../../core/store/actions";
 import { combineLatestOrEmpty } from "../../../core/util/combineLatestOrEmpty";
 import { ClassAndTypeNode } from "../new-components/classes-and-types-select/classes-and-types-select.component";
 import { CtrlTimeSpanDialogResult } from "../new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component";
-import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from "../new-components/properties-tree/properties-tree.models";
+import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, ItemType } from "../new-components/properties-tree/properties-tree.models";
 import { ConfigurationPipesService } from "./configuration-pipes.service";
 import { InformationBasicPipesService } from "./information-basic-pipes.service";
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
@@ -253,8 +253,6 @@ export class InformationPipesService {
         this.pipeItemTeEnRow(targetEntityPk, fieldDefinitions, propertyItemType, pkProject, false)
     }
 
-
-
     const paginatedRolePks$ = pageLoader$.pipePage(paginateBy, limit, offset)
 
     const rows$ = paginatedRolePks$.pipe(
@@ -300,7 +298,8 @@ export class InformationPipesService {
     const outgoingItems$: Observable<RoleItem[]> = outgoingRoles$.pipe(
       switchMap(roles => combineLatestOrEmpty(
         roles.map(r => {
-          return this.pipeItem(propertyItemType, r, pkProject);
+          const isOutgoing = true;
+          return this.pipeItem(propertyItemType, r, pkProject, isOutgoing);
         })
       ))
 
@@ -308,7 +307,8 @@ export class InformationPipesService {
     const ingoingItems$: Observable<RoleItem[]> = ingoingRoles$.pipe(
       switchMapOr([], roles => combineLatest(
         roles.map(r => {
-          return this.pipeItem(propertyItemType, r, pkProject);
+          const isOutgoing = false;
+          return this.pipeItem(propertyItemType, r, pkProject, isOutgoing);
         })
       ))
 
@@ -338,23 +338,22 @@ export class InformationPipesService {
               if (listDefinition.isOutgoing) {
                 if (d.groupedOut[listDefinition.pkProperty]) {
                   const items = sortItems(d.groupedOut[listDefinition.pkProperty])
+                  const firstItem = items[0];
                   cell = {
                     itemsCount: items.length,
-                    entityPreview: listDefinition.listType === 'entity-preview' ?
-                      (items[0] as EntityPreviewItem).preview : undefined,
-                    label: items[0].label,
+                    entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
+                    label: firstItem.label,
                     pkProperty: listDefinition.pkProperty
                   }
                 }
               } else {
                 if (d.groupedIn[listDefinition.pkProperty]) {
                   const items = sortItems(d.groupedIn[listDefinition.pkProperty])
-
+                  const firstItem = items[0];
                   cell = {
                     itemsCount: items.length,
-                    entityPreview: listDefinition.listType === 'entity-preview' ?
-                      (items[0] as EntityPreviewItem).preview : undefined,
-                    label: items[0].label,
+                    entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
+                    label: firstItem.label,
                     pkProperty: listDefinition.pkProperty
                   }
                 }
@@ -394,9 +393,9 @@ export class InformationPipesService {
 
   }
 
-  @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfRole, pkProject: number) {
+  @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfRole, pkProject: number, propIsOutgoing: boolean) {
     let $: Observable<RoleItem>;
-    const itemType = propertyItemType[(r.fk_property + '_' + true)];
+    const itemType = propertyItemType[(r.fk_property + '_' + propIsOutgoing)];
     let listType;
     if (!itemType) {
       $ = of({
@@ -409,20 +408,13 @@ export class InformationPipesService {
       })
     } else {
       const { listType, isOutgoing } = itemType;
-      if (listType === 'appellation')
-        $ = this.pipeItemAppellation(r);
-      else if (listType === 'entity-preview')
-        $ = this.pipeItemEntityPreview(r, isOutgoing);
-      else if (listType === 'temporal-entity')
-        $ = this.pipeItemEntityPreview(r, isOutgoing);
-      else if (listType === 'language')
-        $ = this.pipeItemLanguage(r);
-      else if (listType === 'place')
-        $ = this.pipeItemPlace(r);
-      else if (listType === 'time-primitive')
-        $ = this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
-      else if (listType === 'time-span')
-        $ = this.pipeItemTimePrimitive(r, pkProject);
+      if (listType === 'appellation') $ = this.pipeItemAppellation(r);
+      else if (listType === 'entity-preview') $ = this.pipeItemEntityPreview(r, isOutgoing);
+      // else if (listType === 'temporal-entity') $ = this.pipeItemEntityPreview(r, isOutgoing);
+      else if (listType === 'language') $ = this.pipeItemLanguage(r);
+      else if (listType === 'place') $ = this.pipeItemPlace(r);
+      else if (listType === 'time-primitive') $ = this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
+      else if (listType === 'time-span') $ = this.pipeItemTimePrimitive(r, pkProject);
     }
 
     return $.pipe(tag(`pipeItemTeEnRow-item-${listType}-${r.fk_entity}`));
@@ -435,15 +427,17 @@ export class InformationPipesService {
   propertyItemType(fieldDefinitions: FieldDefinition[]): PropertyItemTypeMap {
     const itemTypes: {
       pkProperty: number,
-      listType: ListType,
+      listType: ItemType,
       isOutgoing: boolean
     }[] = []
 
     fieldDefinitions.forEach(fieldDefinition => {
       fieldDefinition.listDefinitions.forEach(listDefinition => {
+        const listType: ItemType = listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'persistent-item' ?
+          'entity-preview' : listDefinition.listType;
         itemTypes.push({
           pkProperty: listDefinition.pkProperty,
-          listType: listDefinition.listType,
+          listType,
           isOutgoing: listDefinition.isOutgoing
         })
       })
@@ -628,7 +622,7 @@ export class InformationPipesService {
 
   @spyTag pipeItemEntityPreview(role: InfRole, isOutgoing: boolean): Observable<EntityPreviewItem> {
     return this.p.streamEntityPreview((isOutgoing ? role.fk_entity : role.fk_temporal_entity)).pipe(
-      filter(preview => !preview.loading && !!preview && !!preview.entity_type),
+      // filter(preview => !preview.loading && !!preview && !!preview.entity_type),
       map(preview => {
         if (!preview) {
           return null;
