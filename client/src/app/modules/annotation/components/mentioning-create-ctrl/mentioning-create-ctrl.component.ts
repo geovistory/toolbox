@@ -1,9 +1,9 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { EntityPreview, IAppState, DatChunk, InfEntityAssociation, ProjectCrm, U } from 'app/core';
-import { Subject } from 'rxjs';
+import { DatChunk, EntityPreview, IAppState, InfEntityAssociation } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { Subject } from 'rxjs';
 
 type CtrlModel = InfEntityAssociation;
 

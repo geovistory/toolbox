@@ -13,7 +13,7 @@
     </button>
   </div>
 
-  <p class="mat-body" *ngIf="!(items$|async) || (items$|async)?.length < 1">
+  <p class="mat-body" *ngIf="!(typePks$|async) || (typePks$|async)?.length < 1">
     Create and manage a controlled vocabulary for the class {{(typedClassLabel$ | async)}}.
     <br>
     <br>
@@ -29,9 +29,18 @@
   </p>
 
   <mat-list>
-    <mat-list-item *ngFor="let type of (items$ | async) ">
+    <h3 mat-subheader>Types</h3>
+    <mat-divider></mat-divider>
+    <mat-list-item *ngFor="let type of (items$ | async); trackBy:getTypePk ">
 
-      <span class="gv-grow-1">{{type.label}} </span>
+      <h4 mat-line>
+        <i *ngIf="!type.label" class="mat-text-secondary"> Please add a Term </i>
+        {{type.label}} <span  class="ml-2 mat-caption mat-text-secondary"> {{type.labelLanguage}} </span>
+      </h4>
+      <p mat-line>
+        <span *ngIf="type.definition"> {{type.definition}}</span>
+        <i *ngIf="!type.definition" class="mat-text-secondary"> Please add a definition </i>
+      </p>
 
       <button mat-icon-button class="mr-2" (click)=onEdit(type)>
         <mat-icon aria-label="Edit type">edit</mat-icon>

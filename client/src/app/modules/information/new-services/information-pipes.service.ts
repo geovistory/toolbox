@@ -223,7 +223,7 @@ export class InformationPipesService {
   /**
    * Pipe the temporal entities connected to given entity by roles that are in the current project
    */
-  @spyTag pipeTemporalEntityTableRows<T>(
+  @spyTag pipeTemporalEntityTableRows(
     paginateBy: PaginateByParam[],
     limit: number,
     offset: number,
@@ -256,7 +256,7 @@ export class InformationPipesService {
     const paginatedRolePks$ = pageLoader$.pipePage(paginateBy, limit, offset)
 
     const rows$ = paginatedRolePks$.pipe(
-      switchMap((paginatedRolePks) => combineLatest(
+      switchMap((paginatedRolePks) => combineLatestOrEmpty(
         paginatedRolePks.map(pkRole => basicRoleItemLoader(pkRole, listDefinition.isOutgoing, pkProject)
           .pipe(filter(x => !!x))
         )
@@ -343,7 +343,8 @@ export class InformationPipesService {
                     itemsCount: items.length,
                     entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
                     label: firstItem.label,
-                    pkProperty: listDefinition.pkProperty
+                    pkProperty: listDefinition.pkProperty,
+                    firstItem
                   }
                 }
               } else {
@@ -354,7 +355,8 @@ export class InformationPipesService {
                     itemsCount: items.length,
                     entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
                     label: firstItem.label,
-                    pkProperty: listDefinition.pkProperty
+                    pkProperty: listDefinition.pkProperty,
+                    firstItem
                   }
                 }
               }

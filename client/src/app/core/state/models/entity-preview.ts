@@ -28,6 +28,8 @@ export class EntityPreview {
     fk_type?: number;
     entity_type: EntityType;
     time_span?: TimeSpan;
+    first_second?: number;
+    last_second?: number;
 
     loading?: boolean;
 
