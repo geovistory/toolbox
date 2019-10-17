@@ -200,28 +200,28 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
   fromJulianDay(julianDay: number) {
 
     if (typeof julianDay === 'string') {
-      julianDay = parseInt(julianDay)
+      julianDay = parseInt(julianDay, 10)
     }
 
     // number of full 4 year cycles
-    let n4 = Math.floor((julianDay + (3 * 365)) / 1461);
+    const n4 = Math.floor((julianDay + (3 * 365)) / 1461);
 
     // number of days of the last uncomplete 4 years cycle
-    let r4 = (julianDay + (3 * 365)) % 1461;
+    const r4 = (julianDay + (3 * 365)) % 1461;
 
     // number of full years of the last uncomplete 4 years cycle
     let n1 = Math.floor(r4 / 365);
 
     // number of days in the last year
-    let runningDay = r4 % 365;
+    let dayOfYear = r4 % 365;
 
     if (n1 === 4) {
       n1 = 3;
-      runningDay = 365;
+      dayOfYear = 365;
     }
 
     // running year
-    let runningYear = 4 * n4 + n1;
+    const runningYear = 4 * n4 + n1;
 
     // if BC
     if (runningYear <= 4715) {
@@ -234,7 +234,7 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
 
     }
 
-    let monthDay = this.calcDateByRunningDay(runningDay, this.isLeapYear())
+    const monthDay = this.calcDateByRunningDay(dayOfYear, this.isLeapYear())
 
     // resulting month
     this.month = monthDay.month;

@@ -9,16 +9,19 @@ import { InformationBasicPipesService } from 'app/modules/information/new-servic
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { values } from 'ramda';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
+import { FieldDefinition, TemporalEntityItem } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
+import { createPaginateBy } from 'app/modules/information/new-components/temporal-entity-list/temporal-entity-list.component';
 
 interface TypeItem {
   pkEntity: number
   label: string,
+  labelLanguage: string,
   definition?: string
 }
 
@@ -55,7 +58,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
 
   // types
   items$: Observable<TypeItem[]>;
-
+  typePks$: Observable<number[]>;
   // // flag indicatig if add form is visible
   // @select() add$: Observable<boolean>;
 
@@ -82,6 +85,9 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   }
 
   getBasePath = () => this.basePath;
+  getTypePk(_, item: TypeItem) {
+    return item.pkEntity;
+  }
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
@@ -117,20 +123,152 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
       switchMap((hasTypeProp) => this.c.pipeLabelOfClass(hasTypeProp.pk_type_class)),
     )
 
-    this.items$ = this.typeClassPk$.pipe(
-      switchMap(typeClassPk => this.b.pipePersistentItemPksByClass(typeClassPk).pipe(
-        switchMap(typePks => combineLatestOrEmpty(
-          typePks.map(pkEntity => this.i.pipeLabelOfEntity(pkEntity).pipe(
-            map(label => ({
-              pkEntity,
-              label
-            } as TypeItem))
-          ))
-        ).pipe(
-          sortAbc(n => n.label),
+    this.typePks$ = this.typeClassPk$.pipe(
+      switchMap(typeClassPk => this.b.pipePersistentItemPksByClass(typeClassPk))
+    )
+    const appContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+
+    const appeAndDefFields$ = this.typeClassPk$.pipe(
+      // get editable field configs of this class
+      switchMap(pkClass => this.c.pipeClassFieldConfigs(pkClass, appContext).pipe(
+        // get editable fieldDefinitions
+        switchMap(fields => combineLatest(fields.map(field => this.c.pipeFieldDefinition(field))).pipe(
+          map(fieldDefinitions => {
+            let appeField: FieldDefinition, definitionField: FieldDefinition;
+            fieldDefinitions.forEach(f => {
+              // take only appellation for language, or ...
+              if (f.listDefinitions[0].fkPropertyOfOrigin === 1111) {
+                appeField = f;
+              }
+              // ... entit definition
+              else if (f.listDefinitions[0].fkClassField === 219) {
+                definitionField = f;
+              }
+            })
+            return { appeField, definitionField }
+          })
         ))
       ))
     )
+
+    const appeAndLangFields$ = appeAndDefFields$.pipe(
+      switchMap(appeAndDefFields =>
+        this.c.pipeFieldDefinitions(appeAndDefFields.appeField.listDefinitions[0].targetClass, appContext).pipe(
+          map(fieldDefs => fieldDefs.filter(f => f.listType === 'language' || f.listType === 'appellation'))
+        )
+      )
+    )
+
+    const itemsCache: { [pkEntity: number]: boolean } = {};
+
+    this.items$ = combineLatest(this.p.pkProject$, appeAndDefFields$, appeAndLangFields$, this.p.defaultLanguage$).pipe(
+      switchMap(([pkProject, appeAndDefFields, appeAndLangFields, defaultLanguage]) => this.typePks$.pipe(
+        switchMap(typePks => combineLatestOrEmpty(
+          typePks.map(pkEntity => {
+            // get appellation
+            const l = appeAndDefFields.appeField.listDefinitions[0],
+              limit = 10,
+              offset = 0,
+              paginateBy = createPaginateBy(l, pkEntity)
+
+            if (!itemsCache[pkEntity]) {
+              itemsCache[pkEntity] = true;
+              // trigger loading of data, id needed
+              // setTimeout(()=>{
+
+              // },10)
+              console.log('a', JSON.stringify({ paginateBy, limit, offset }))
+              this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset).pipe(
+                filter(loadNeeded => loadNeeded === true),
+                takeUntil(this.destroy$)
+              ).subscribe(() => {
+                console.log('b', JSON.stringify({ paginateBy, limit, offset }))
+                this.inf.temporal_entity.loadPaginatedList(
+                  pkProject,
+                  pkEntity,
+                  l.pkProperty,
+                  l.isOutgoing,
+                  limit,
+                  offset
+                )
+              })
+            }
+            // pipe the properties of the naming
+            const namings$: Observable<TemporalEntityItem[]> = this.i.pipeTemporalEntityTableRows(
+              paginateBy,
+              limit,
+              offset,
+              pkProject,
+              l,
+              appeAndLangFields
+            ).pipe(
+              map(items => items.filter(item => {
+                if (!item) return false;
+                const rs = values(item.row)
+                if (!rs || !rs.length) return false;
+                return !rs.includes(undefined);
+              }))
+            )
+
+            const definition$ = this.p.inf$.text_property$
+              .by_fk_concerned_entity__fk_class_field$.key(pkEntity + '_'
+                + appeAndDefFields.definitionField.listDefinitions[0].fkClassField).pipe(
+                  map(d => {
+                    const definitions = values(d);
+                    if (!definitions || !definitions.length) return { string: undefined }
+                    let definition = definitions.find(def => !!def && def.fk_language === defaultLanguage.pk_entity);
+                    definition = definition ? definition : definitions[0];
+                    return definition;
+                  })
+                )
+
+            return combineLatest(namings$, definition$).pipe(
+              map(([namings, definition]) => {
+                // get one naming of the naming of that type
+                let naming = namings.find(n =>
+                  !!values(n.row).find(r => (!!r && r.pkProperty === 1113 && r.firstItem.role.fk_entity === defaultLanguage.pk_entity))
+                )
+                naming = naming ? naming : namings[0];
+
+                // get the appellation string and the language.
+                let spelling, language;
+                if (naming) {
+                  spelling = values(naming.row).find(r => (r.pkProperty === 1113)).label;
+                  language = values(naming.row).find(r => (r.pkProperty === 1112)).label;
+                }
+
+                const item: TypeItem = {
+                  label: spelling,
+                  labelLanguage: language,
+                  pkEntity,
+                  definition: definition.string
+                }
+
+                return item;
+              })
+            )
+          }))
+        )
+      )),
+      sortAbc(n => n.label),
+    )
+
+
+
+    // this.items$ = this.typeClassPk$.pipe(
+    //   switchMap(typeClassPk => this.b.pipePersistentItemPksByClass(typeClassPk).pipe(
+    //     switchMap(typePks => combineLatestOrEmpty(
+    //       typePks.map(pkEntity => this.i.pipeLabelOfEntity(pkEntity).pipe(
+    //         map(label => ({
+    //           pkEntity,
+    //           label
+    //         } as TypeItem))
+    //       ))
+    //     ).pipe(
+    //       sortAbc(n => n.label),
+    //     ))
+    //   ))
+    // )
     // this.loadTypes();
 
   }

@@ -42,6 +42,12 @@
     },
     "time_span": {
       "type": "object"
+    },
+    "first_second": {
+      "type": "number"
+    },
+    "last_second": {
+      "type": "number"
     }
   },
   "relations": {

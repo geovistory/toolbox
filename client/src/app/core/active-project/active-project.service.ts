@@ -85,7 +85,7 @@ export class ActiveProjectService {
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(filter(p => p !== undefined));
     this.initializingProject$ = ngRedux.select<boolean>(['activeProject', 'initializingProject']);
-    this.defaultLanguage$ = this.activeProject$.pipe(filter((p) => (!!p && p.default_language) ? true : false), map(p => p.default_language))
+    this.defaultLanguage$ = ngRedux.select<InfLanguage>(['activeProject', 'default_language']);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
     this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
@@ -493,10 +493,11 @@ export class ActiveProjectService {
       let dialogRef;
       timer$.pipe(takeUntil(call$)).subscribe(() => {
         const data: ProgressDialogData = {
+
           title: 'Adding entity to your project',
           hideValue: true, mode$: new BehaviorSubject('indeterminate'), value$: new BehaviorSubject(0)
         }
-        dialogRef = this.dialog.open(ProgressDialogComponent, { data })
+        dialogRef = this.dialog.open(ProgressDialogComponent, { data, disableClose: true })
       })
       call$.subscribe(
         (schemaObject: SchemaObject) => {
@@ -653,7 +654,9 @@ export class ActiveProjectService {
             showTimeline: true,
             showTimelineToggle: true,
             showSources: false,
-            showSourcesToggle: true
+            showSourcesToggle: true,
+            showRightArea: false
+
           }
         }
 

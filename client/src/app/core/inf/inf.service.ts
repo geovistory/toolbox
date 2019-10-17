@@ -7,6 +7,7 @@ import { tag } from '../../../../node_modules/rxjs-spy/operators';
 import { InfAppellation, InfEntityAssociation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '../sdk';
 import { PaginateByParam } from '../store/actions';
 import { infDefinitions, infRoot } from './inf.config';
+import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
 
 class Selector {
   constructor(
@@ -95,7 +96,7 @@ class Selector {
                   this.ngRedux.select<M>([...path, 'rows', i]).pipe(filter(x => !!x))
                 )
               }
-              return combineLatest(obs$)
+              return combineLatestOrEmpty(obs$)
             })
           )
       })

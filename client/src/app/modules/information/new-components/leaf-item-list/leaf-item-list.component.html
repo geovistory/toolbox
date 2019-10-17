@@ -5,7 +5,7 @@
       </gv-onto-class-info>
 
       <gv-entity-preview *ngIf="listDefinition.listType === 'entity-preview'" [preview]="item?.preview"
-        [dragEnabled]="false"></gv-entity-preview>
+        [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
       <span *ngIf="listDefinition.listType === 'text-property'">
         {{item.label}} <span class="mat-caption text-muted">{{item?.language.notes}}</span>
       </span>
@@ -14,10 +14,10 @@
       </span>
 
       <mat-menu #appMenu="matMenu">
-        <button mat-menu-item *ngIf="listDefinition.listType === 'entity-preview'" (click)="openInNewTab(item)">
+        <!-- <button mat-menu-item *ngIf="listDefinition.listType === 'entity-preview'" (click)="openInNewTab(item)">
           <mat-icon>tab</mat-icon>
           Open in new Tap
-        </button>
+        </button> -->
 
         <button mat-menu-item (click)="remove(item)">
           <mat-icon>delete</mat-icon>

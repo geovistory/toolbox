@@ -427,7 +427,7 @@ export class ReducerFactory<Payload, Model> {
    */
   private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
     const paginateBy = pag(groupByKey);
-    if (state[paginateBy] && state[paginateBy][groupKey]) {
+    if (state[paginateBy] && state[paginateBy][groupKey] && state[paginateBy][groupKey].count !== undefined) {
       state = {
         ...state,
         [paginateBy]: {

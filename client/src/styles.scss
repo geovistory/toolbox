@@ -1832,13 +1832,13 @@ as-split.gv-split-style {
   }
 
   &.is-horizontal {
-    ::ng-deep .as-split-gutter-icon {
+    > ::ng-deep > .as-split-gutter > .as-split-gutter-icon {
       width: 13px !important;
       left: -6px;
       right: 6px;
     }
 
-    .as-split-gutter-icon {
+    > .as-split-gutter > .as-split-gutter-icon {
       width: 13px !important;
       left: -6px;
       right: 6px;
@@ -1846,13 +1846,13 @@ as-split.gv-split-style {
   }
 
   &.is-vertical {
-    ::ng-deep .as-split-gutter-icon {
+    > ::ng-deep > .as-split-gutter > .as-split-gutter-icon {
       height: 13px !important;
       top: -6px;
       bottom: 6px;
     }
 
-    .as-split-gutter-icon {
+    > .as-split-gutter > .as-split-gutter-icon {
       height: 13px !important;
       top: -6px;
       bottom: 6px;

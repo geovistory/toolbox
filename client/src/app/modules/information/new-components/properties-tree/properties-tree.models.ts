@@ -102,6 +102,7 @@ export interface TemporalEntityCell {
   label: string
   entityPreview: EntityPreview
   itemsCount: number
+  firstItem?: RoleItem
 }
 
 export interface EntityPreviewItem extends BasicRoleItem {

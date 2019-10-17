@@ -13,6 +13,9 @@
         <button mat-icon-button (click)="onZoomToExtent()"  matTooltip="Zoom to all items">
           <mat-icon>all_out</mat-icon>
         </button>
+        <div class="mat-caption text-muted">
+          {{data?.rows?.length}}
+        </div>
       </mat-header-cell>
       <mat-cell *matCellDef="let row;">
         <gv-entity-preview [preview]="row.entityPreview" dragEnabled="false" openTabOnClick="true">

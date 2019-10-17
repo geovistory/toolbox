@@ -155,8 +155,14 @@ export function limitOffset<T>(limit?: number, offset?: number) {
 
 export function sortAbc<T>(stringFn: (x: T) => string) {
   return map((l: T[]) => sort((a, b) => {
-    const textA = stringFn(a).toUpperCase(); // ignore upper and lowercase
-    const textB = stringFn(b).toUpperCase(); // ignore upper and lowercase
+    let textA = stringFn(a)
+    let textB = stringFn(b)
+
+    if (!textA) return -1;
+    if (!textB) return 1;
+
+    textA = textA.toUpperCase(); // ignore upper and lowercase
+    textB = textB.toUpperCase(); // ignore upper and lowercase
     if (textA < textB) {
       return -1;
     }

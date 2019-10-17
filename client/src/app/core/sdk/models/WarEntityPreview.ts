@@ -16,6 +16,8 @@ export interface WarEntityPreviewInterface {
   "type_label"?: string;
   "fk_type"?: number;
   "time_span"?: any;
+  "first_second"?: number;
+  "last_second"?: number;
   te_roles?: InfRole[];
   pi_roles?: InfRole[];
   domain_entity_associations?: InfEntityAssociation[];
@@ -33,6 +35,8 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   "type_label": string;
   "fk_type": number;
   "time_span": any;
+  "first_second": number;
+  "last_second": number;
   te_roles?: InfRole[];
   pi_roles?: InfRole[];
   domain_entity_associations?: InfEntityAssociation[];
@@ -106,6 +110,14 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
         "time_span": {
           name: 'time_span',
           type: 'any'
+        },
+        "first_second": {
+          name: 'first_second',
+          type: 'number'
+        },
+        "last_second": {
+          name: 'last_second',
+          type: 'number'
         },
       },
       relations: {
