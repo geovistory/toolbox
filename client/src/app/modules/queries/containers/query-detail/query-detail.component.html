@@ -6,7 +6,7 @@
   -------------------------------------------------------------------->
   <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-    <gv-detail-top-bar  [openRightAreaBtn]="!t.showRightArea" (openRight)="onRun()">
+    <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="onRun()">
       <span class="ml-2">
         Query
       </span>
@@ -103,7 +103,7 @@
   <as-split-area [size]="t.splitSizeRight" *ngIf="t.showRightArea" class="d-flex flex-column">
 
     <gv-detail-top-bar [closeRightAreaBtn]="true" (closeRight)="t.setShowRightArea(false)">
-      <span class="ml-2">{{fullCount$ | async}} Results</span>
+      <span class="ml-2">{{restable?.totalRecords}} Results</span>
 
       <div class="ml-auto mr-2">
         <button class="btn btn-sm btn-primary mr-3" [matMenuTriggerFor]="export_menu">Export</button>
@@ -115,8 +115,8 @@
       </div>
     </gv-detail-top-bar>
     <gv-detail-content>
-      <gv-result-table class="gv-flex-fh" [data$]="queryResults$" [pending$]="pending$" [colDef]="colDefsCopy"
-        [columns]="displayedColumns" [limit]="limit" (rangeChange)="onScroll($event)"></gv-result-table>
+      <gv-result-table class="gv-flex-fh" [definition$]="resultTableDef$" #restable>
+      </gv-result-table>
     </gv-detail-content>
 
 

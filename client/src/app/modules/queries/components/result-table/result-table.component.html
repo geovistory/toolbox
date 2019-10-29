@@ -1,77 +1,47 @@
-<cdk-virtual-scroll-viewport coreTableVirtualScroll>
-	<mat-table matSort [dataSource]="dataSource">
-		<!-- <ng-container matColumnDef="select">
-			<mat-header-cell *matHeaderCellDef>
-				<mat-checkbox
-          (change)="$event && toggleAll()"
-          [checked]="selectedAll"
-          [indeterminate]="indeterminate">
-				</mat-checkbox>
-			</mat-header-cell>
-			<mat-cell *matCellDef="let row">
-				<mat-checkbox
-          (click)="$event.stopPropagation()"
-          (change)="$event && toggle(row)"
-          [checked]="isSelected(row)">
-				</mat-checkbox>
-			</mat-cell>
-		</ng-container> -->
-		<!-- <ng-container matColumnDef="id">
-			<mat-header-cell *matHeaderCellDef>
-				<core-table-filter (change)="filter('id', $event)">
-					<div mat-sort-header>ID</div>
-				</core-table-filter>
-			</mat-header-cell>
-			<mat-cell *matCellDef="let row">{{ row.id }}</mat-cell>
-		</ng-container>
-		<ng-container matColumnDef="name">
-			<mat-header-cell *matHeaderCellDef>
-        <core-table-filter (change)="filter('name', $event)">
-          <div mat-sort-header>Name</div>
-        </core-table-filter>
-			</mat-header-cell>
-			<mat-cell *matCellDef="let row">{{ row.name }}</mat-cell>
-		</ng-container> -->
-		<!-- 		
-		<ng-container matColumnDef="actions">
-			<mat-header-cell *matHeaderCellDef>
-				<core-table-menu (clear)="clearFilters()"></core-table-menu>
-			</mat-header-cell>
-			<mat-cell *matCellDef="let row"></mat-cell>
-		</ng-container> -->
-
-
-		<ng-container *ngFor="let col of colDef" [matColumnDef]="col.label">
-			<mat-header-cell *matHeaderCellDef> {{col.label}} </mat-header-cell>
-			<mat-cell *matCellDef="let entity">
-
-				<span *ngIf="col.ofRootTable && col.defaultType === 'entity_preview'">
-					<gv-entity-preview [preview]="entity[col.label]" [dragEnabled]="false" (click)="p.addEntityTab(entity[col.label])">
-					</gv-entity-preview>
-				</span>
-				<span *ngIf="col.ofRootTable && col.defaultType !== 'entity_preview'">{{entity[col.label]}}</span>
-				<span *ngIf="!col.ofRootTable">
-					<button mat-raised-button
-						(click)="openDialog(entity[col.label])">{{entity[col.label]?.length}}</button>
-				</span>
-
-			</mat-cell>
-		</ng-container>
-
-
-		<ng-container matColumnDef="progress">
-			<mat-header-cell *matHeaderCellDef [attr.colspan]="columns.length">
-				<mat-progress-bar mode="indeterminate" [class.show]="pending$ | async">
-				</mat-progress-bar>
-			</mat-header-cell>
-		</ng-container>
-
-
-		<mat-header-row *matHeaderRowDef="columns; sticky: sticky" [style.top.px]="headerTop$ | async">
-		</mat-header-row>
-		<mat-header-row class="core-table-progress" *matHeaderRowDef="['progress']; sticky: sticky"
-			[style.top.px]="(headerTop$ | async) + 56">
-		</mat-header-row>
-		<mat-row *matRowDef="let row; columns: columns"></mat-row>
-	</mat-table>
-</cdk-virtual-scroll-viewport>
+<p-table #table [resizableColumns]="true" [columns]="displayedColumns$ | async" [value]="items" [scrollable]="true"
+  [rows]="limit" scrollHeight="100%" [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event);" [lazy]="true"
+  [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="pending">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns">
+        {{col}}
+      </th>
+    </tr>
+    <mat-progress-bar mode="indeterminate"  *ngIf="pending"> </mat-progress-bar>
+    <!-- <tr class="loading-bar" *ngIf="pending">
+      <th [attr.colspan]="columns.length">
+      </th>
+    </tr> -->
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns">
+    <tr style="height:48px">
+      <td *ngFor="let col of (definition$ | async)?.colDefs">
+        <span *ngIf="col.ofRootTable && col.defaultType === 'entity_preview'">
+          <gv-entity-preview [preview]="rowData[col.label]" [dragEnabled]="false" [openTabOnClick]="true">
+          </gv-entity-preview>
+        </span>
+        <span *ngIf="col.ofRootTable && col.defaultType !== 'entity_preview'">{{rowData[col.label]}}</span>
+        <span *ngIf="!col.ofRootTable">
+          <gv-entity-preview *ngIf="rowData[col.label]?.length === 1" [preview]="rowData[col.label][0]"
+            [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
+          <button *ngIf="rowData[col.label]?.length > 1" mat-raised-button
+            (click)="openDialog(rowData[col.label])">{{rowData[col.label]?.length}}</button>
+        </span>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- <ng-template pTemplate="loadingbody" let-columns="columns">
+    <tr style="height:48px; background:white;">
+      <td *ngFor="let col of columns">
+        <div class="loading-text"></div>
+      </td>
+    </tr>
+  </ng-template> -->
+  <!-- <ng-template pTemplate="footer" let-state>
+    <tr>
+      <td *ngIf="lazyLoadState" colspan="columns.lenght">
+        ~ {{lazyLoadState.first}} / {{totalRecords}}
+      </td>
+    </tr>
+  </ng-template> -->
+</p-table>

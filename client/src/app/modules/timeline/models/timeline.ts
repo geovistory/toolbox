@@ -3,8 +3,7 @@ import { TimeSpan, EntityPreview } from 'app/core';
 
 import { XAxisDefinition, IXAxisDefinition, XAxisOptions } from './x-axis-definition';
 import { DatePipe } from '@angular/common';
-
-
+import { Zoomer } from './zoomer';
 
 
 
@@ -30,6 +29,7 @@ export interface TimelineOptions {
   cursorPosition?: number; // julian day in seconds
   xAxisTopOptions: XAxisOptions
   xAxisRowOptions: XAxisOptions
+  zoomer: Zoomer
 }
 
 export type Accentuation = 'highlighted' | 'selected' | 'none';
@@ -83,6 +83,7 @@ export class Timeline {
 
   public options: TimelineOptions;
 
+
   static getExtent(rows, options): TemporalExtent {
     const timePrimitives = []
 
@@ -117,7 +118,6 @@ export class Timeline {
   }
 
 
-
   /**
    * Construct the TimeLineChart by passing in data (timePrimitives) and options
    * @param timePrimitives the timePrimitives that will be displayed on the timeline
@@ -133,16 +133,22 @@ export class Timeline {
 
 
   init(options: TimelineOptions) {
-
     this.options = options;
+    this.options.zoomer.rangeStart = 0;
+    this.options.zoomer.rangeEnd = options.width;
+    if (this.options.zoomer.currentLevel === undefined) {
+      this.options.zoomer.setExtent(options.domainStart, options.domainEnd);
+      this.options.zoomer.zoomToExtent();
+    }
 
     const switchBetweenCalendars = 2299161 * 24 * 60 * 60;
 
     /** xAxis fixed top */
     const xAxisTopOptions: IXAxisDefinition = {
       ...options.xAxisTopOptions,
-      domainStart: options.domainStart,
-      domainEnd: options.domainEnd,
+      zoomer: this.options.zoomer,
+      domainStart: this.options.zoomer.domainStart,
+      domainEnd: this.options.zoomer.domainEnd,
       containerWidth: options.width,
       tickSizeInner: 0,
       tickSizeOuter: 0,
@@ -169,8 +175,9 @@ export class Timeline {
     /** xAxis ticks on rows */
     const xAxisOnRows = {
       ...options.xAxisRowOptions,
-      domainStart: options.domainStart,
-      domainEnd: options.domainEnd,
+      zoomer: this.options.zoomer,
+      domainStart: this.options.zoomer.domainStart,
+      domainEnd: this.options.zoomer.domainEnd,
       containerWidth: options.width,
       containerHeight: options.height,
       tickSizeInner: tickSize,
@@ -197,30 +204,56 @@ export class Timeline {
 
   getZoomInExtent(): TemporalExtent {
 
-    const cursor = this.xAxis.scale(this.options.cursorPosition);
-    const rangeStart = this.xAxis.scale(this.options.domainStart)
-    const rangeEnd = this.xAxis.scale(this.options.domainEnd)
-    const minMax = rangeEnd - rangeStart;
-    const rangeDiff = minMax / this.options.zoomFactor;
-
+    this.options.zoomer.zoomIn()
     return {
-      firstSecond: this.xAxis.scale.invert(cursor - rangeDiff),
-      lastSecond: this.xAxis.scale.invert(cursor + rangeDiff)
+      firstSecond: this.options.zoomer.domainStart,
+      lastSecond: this.options.zoomer.domainEnd
     }
+    // const cursor = this.xAxis.scale(this.options.cursorPosition);
+    // const rangeStart = this.xAxis.scale(this.options.domainStart)
+    // const rangeEnd = this.xAxis.scale(this.options.domainEnd)
+    // const minMax = rangeEnd - rangeStart;
+    // const rangeDiff = minMax / this.options.zoomFactor;
+
+    // return {
+    //   firstSecond: this.xAxis.scale.invert(cursor - rangeDiff),
+    //   lastSecond: this.xAxis.scale.invert(cursor + rangeDiff)
+    // }
   }
 
   getZoomOutExtent(): TemporalExtent {
-
-    const cursor = this.xAxis.scale(this.options.cursorPosition);
-    const rangeStart = this.xAxis.scale(this.options.domainStart)
-    const rangeEnd = this.xAxis.scale(this.options.domainEnd)
-    const minMax = rangeEnd - rangeStart;
-    const rangeDiff = minMax / this.options.zoomFactor;
-
+    this.options.zoomer.zoomOut()
     return {
-      firstSecond: this.xAxis.scale.invert(cursor - (minMax / 2) - rangeDiff),
-      lastSecond: this.xAxis.scale.invert(cursor + (minMax / 2) + rangeDiff)
+      firstSecond: this.options.zoomer.domainStart,
+      lastSecond: this.options.zoomer.domainEnd
     }
+    // const cursor = this.xAxis.scale(this.options.cursorPosition);
+    // const rangeStart = this.xAxis.scale(this.options.domainStart)
+    // const rangeEnd = this.xAxis.scale(this.options.domainEnd)
+    // const minMax = rangeEnd - rangeStart;
+    // const rangeDiff = minMax / this.options.zoomFactor;
+
+    // return {
+    //   firstSecond: this.xAxis.scale.invert(cursor - (minMax / 2) - rangeDiff),
+    //   lastSecond: this.xAxis.scale.invert(cursor + (minMax / 2) + rangeDiff)
+    // }
+  }
+  getZoomToExtent(e: TemporalExtent): TemporalExtent {
+    this.options.zoomer.zoomTo(e.firstSecond, e.lastSecond)
+    return {
+      firstSecond: this.options.zoomer.domainStart,
+      lastSecond: this.options.zoomer.domainEnd
+    }
+    // const cursor = this.xAxis.scale(this.options.cursorPosition);
+    // const rangeStart = this.xAxis.scale(this.options.domainStart)
+    // const rangeEnd = this.xAxis.scale(this.options.domainEnd)
+    // const minMax = rangeEnd - rangeStart;
+    // const rangeDiff = minMax / this.options.zoomFactor;
+
+    // return {
+    //   firstSecond: this.xAxis.scale.invert(cursor - (minMax / 2) - rangeDiff),
+    //   lastSecond: this.xAxis.scale.invert(cursor + (minMax / 2) + rangeDiff)
+    // }
   }
 
   /**
@@ -229,11 +262,17 @@ export class Timeline {
    * @param rangeDiff pixels to move
    */
   move(rangeDiff) {
-    const rangeStart = this.xAxis.scale(this.options.domainStart)
-    const rangeEnd = this.xAxis.scale(this.options.domainEnd)
-    this.options.domainStart = this.xAxis.scale.invert(rangeStart + rangeDiff);
-    this.options.domainEnd = this.xAxis.scale.invert(rangeEnd + rangeDiff);
-    this.init(this.options)
+    const rangeStart = this.xAxis.scale(this.options.zoomer.domainStart)
+    const rangeEnd = this.xAxis.scale(this.options.zoomer.domainEnd)
+    const s = this.xAxis.scale.invert(rangeStart + rangeDiff);
+    const e = this.xAxis.scale.invert(rangeEnd + rangeDiff);
+    //
+    // end is julian second of day 3500-01-01
+    if ((rangeDiff < 0 && s > 0) || (rangeDiff > 0 && e < 2999409 * 86400)) {
+      this.options.zoomer.domainStart = s;
+      this.options.zoomer.domainEnd = e;
+      this.init(this.options)
+    }
   }
 
   changeCursorPosition(julianSecond: number): number {

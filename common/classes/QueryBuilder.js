@@ -22,9 +22,13 @@ class QueryBuilder {
     this.sql = '';
     this.tableAliases = [];
 
+    // variables for the query filter part (tw1)
+    this.filterWheres = [];
+    this.filterFroms = []
+
+    // variables for the query columns part
     this.selects = [];
     this.froms = [];
-    this.wheres = [];
     this.groupBys = [];
 
     this.limit = ''
@@ -37,10 +41,12 @@ class QueryBuilder {
 
 
     // root table where
-    this.wheres.push(this.createEntityWhere(query.filter, rootTableAlias, fkProject))
+    this.filterWheres.push(this.createEntityWhere(query.filter, rootTableAlias, fkProject))
 
     // root table from
-    this.froms.push(`warehouse.entity_preview ${rootTableAlias}`)
+    this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`)
+    this.froms.push(`tw1 ${rootTableAlias}`)
+
 
     // create froms and wheres according to filter definition
     this.createFilterFroms(query.filter, rootTableAlias, fkProject)
@@ -56,17 +62,26 @@ class QueryBuilder {
     this.createLimitAndOffset(query)
 
     this.sql = `
-        SELECT
-            ${this.joinSelects(this.selects)}
-
+      WITH tw1 AS (
+        -- apply the query filter
+        SELECT DISTINCT
+          t_1.pk_entity,
+          t_1.entity_type,
+          t_1.entity_label,
+          t_1.class_label,
+          t_1.type_label,
+          t_1.time_span
         FROM
-            ${this.joinFroms(this.froms)}
-
+          ${this.joinFroms(this.filterFroms)}
         WHERE
-            ${this.joinWheres(this.wheres, 'AND')}
-
-        GROUP BY
-            ${this.joinGroupBys(this.groupBys)}
+          ${this.joinWheres(this.filterWheres, 'AND')}
+      )
+      SELECT
+        ${this.joinSelects(this.selects)}
+      FROM
+        ${this.joinFroms(this.froms)}
+      GROUP BY
+        ${this.joinGroupBys(this.groupBys)}
         ${this.limit}
         ${this.offset}
         `
@@ -95,16 +110,15 @@ class QueryBuilder {
    * @param {*} query
    */
   createLimitAndOffset(query) {
-    if (
-      typeof query.limit !== 'number' ||
-      typeof query.offset !== 'number' ||
-      query.limit < 1 || query.offset < 0
-    ) return ''
 
+    if (typeof query.limit === 'number' && query.limit >= 0) {
+      this.limit = `LIMIT ${this.addParam(query.limit)}`
+    }
 
+    if (typeof query.offset === 'number' && query.offset >= 0) {
+      this.offset = `OFFSET ${this.addParam(query.offset)}`
+    }
 
-    this.limit = `LIMIT ${this.addParam(query.limit)}`
-    this.offset = `OFFSET ${this.addParam(query.offset)}`
     this.createFullCount()
   }
 
@@ -132,15 +146,15 @@ class QueryBuilder {
 
         // JOIN roles
         if (this.isRolesJoin(segment)) {
-          this.joinRoles(segment, leftTableAlias, thisTableAlias, fkProject);
+          this.joinRoles(segment, leftTableAlias, thisTableAlias, fkProject, this.froms);
         }
         // JOIN Presences
         else if (this.isGeoEntityJoin(segment)) {
-          this.joinGeoEntity(segment, leftTableAlias, thisTableAlias, fkProject)
+          this.joinGeoEntity(segment, leftTableAlias, thisTableAlias, fkProject, this.froms)
         }
         // JOIN entities
         else if (this.isEntitesJoin(segment)) {
-          this.joinEntities(segment, leftTableAlias, thisTableAlias, fkProject);
+          this.joinEntities(segment, leftTableAlias, thisTableAlias, fkProject, this.froms);
         }
         leftTableAlias = thisTableAlias;
       })
@@ -215,18 +229,18 @@ class QueryBuilder {
     if (level > 0) {
       // JOIN roles
       if (this.isRolesJoin(node)) {
-        this.joinRoles(node, leftTableAlias, node._tableAlias, fkProject);
+        this.joinRoles(node, leftTableAlias, node._tableAlias, fkProject, this.filterFroms);
         leftTableAlias = node._tableAlias;
       }
       // JOIN entities
       else if (this.isEntitesJoin(node)) {
-        this.joinEntities(node, leftTableAlias, node._tableAlias, fkProject);
+        this.joinEntities(node, leftTableAlias, node._tableAlias, fkProject, this.filterFroms);
         leftTableAlias = node._tableAlias;
       }
 
     }
 
-    console.log(level)
+    // console.log(level)
 
     node.children.forEach(childNode => {
       if (this.isRolesJoin(childNode) || this.isEntitesJoin(childNode)) {
@@ -240,8 +254,8 @@ class QueryBuilder {
     })
   }
 
-  joinEntities(node, parentTableAlias, thisTableAlias, fkProject) {
-    this.froms.push(`
+  joinEntities(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
+    fromsArray.push(`
                     LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
                     (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
                     AND
@@ -249,14 +263,14 @@ class QueryBuilder {
                 `);
   }
 
-  joinGeoEntity(node, parentTableAlias, thisTableAlias, fkProject) {
+  joinGeoEntity(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
 
     const has_presence = thisTableAlias + '_has_presence';
     const presence = thisTableAlias + '_presence';
     const was_at = thisTableAlias + '_was_at';
     const place = thisTableAlias + '_place';
 
-    this.froms.push(`
+    fromsArray.push(`
 
             -- PEIT GEO ENTITY
             LEFT JOIN (
@@ -322,7 +336,7 @@ class QueryBuilder {
         `);
   }
 
-  joinRoles(node, parentTableAlias, thisTableAlias, fkProject) {
+  joinRoles(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
     const topLevelWheres = [];
     topLevelWheres.push(`
                 ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
@@ -343,7 +357,7 @@ class QueryBuilder {
                          ${this.joinWheres(secondLevelWheres, 'OR')}
                     )`);
     }
-    this.froms.push(`
+    fromsArray.push(`
                 LEFT JOIN warehouse.v_roles_per_project_and_repo ${thisTableAlias} ON
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
@@ -425,7 +439,7 @@ class QueryBuilder {
     })
 
     if (level === 0 && nodeWheres.length > 0) {
-      this.wheres.push(`
+      this.filterWheres.push(`
             -- filter wheres
             (
                 ${nodeWheres.join(`
@@ -451,7 +465,7 @@ class QueryBuilder {
    * @param {*} node
    */
   isEntitesJoin(node) {
-    if (!node || typeof node.data !== 'object') return false;
+    if (!node || typeof node.data !== 'object' || !node.data.classes) return false;
     return (node.data.classes || node.data.types)
   }
 
@@ -460,9 +474,9 @@ class QueryBuilder {
    * @param {*} node
    */
   isGeoEntityJoin(node) {
-    if (this.isEntitesJoin) {
+    if (this.isEntitesJoin(node)) {
       const classes = node.data.classes;
-      const types = node.data.types;
+      // const types = node.data.types;
 
       const geoClasses = classes.filter(pk => (!!this.GEO_CLASSES[pk]));
       // const noTypes = (!types || !types.length);

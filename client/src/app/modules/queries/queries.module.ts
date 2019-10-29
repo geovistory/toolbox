@@ -56,6 +56,7 @@ import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { ConfigurationPipesService } from '../information/new-services/configuration-pipes.service';
 import { InformationPipesService } from '../information/new-services/information-pipes.service';
 import { InformationBasicPipesService } from '../information/new-services/information-basic-pipes.service';
+import { TableModule } from 'primeng/table';
 
 const components = [
   QueryListComponent,
@@ -93,7 +94,7 @@ const components = [
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatTableModule,
+    TableModule,
     AngularSplitModule,
     DetailTopBarModule,
     DetailContentModule,

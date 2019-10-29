@@ -11,12 +11,11 @@ export type Granularity =
   '1 minute' |
   '1 second';
 
-export class DateTimeCommons {
-
+export abstract class DateTimeCommons {
 
   /**
-  * Properties
-  */
+   * Properties
+   */
   onDateChange: EventEmitter<YearMonthDay> = new EventEmitter();
 
   private _year?: number;
@@ -87,6 +86,8 @@ export class DateTimeCommons {
     Object.assign(this, data);
   }
 
+  abstract lengthOfMonth(): number;
+
   /**
   * Returns the running day for given month and day with consideration of the
   * isLeap boolean that indicates leap years. Inspired by:
@@ -103,7 +104,7 @@ export class DateTimeCommons {
     month = (month === undefined || month === null) ? 1 : month;
 
     // month corrections (note that january has index 0)
-    let monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
+    const monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
 
     // leap year correction
     let lc = 0;
@@ -113,7 +114,7 @@ export class DateTimeCommons {
     }
 
     // month correction
-    let mc = monthCorrenctions[month - 1];
+    const mc = monthCorrenctions[month - 1];
 
     return day + (30 * (month - 1)) + (lc + mc);
   }
@@ -131,7 +132,7 @@ export class DateTimeCommons {
   calcDateByRunningDay(runningDay: number, isLeap: boolean): { day: number, month: number } {
 
     // month corrections (note that january has index 0)
-    let monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
+    const monthCorrenctions = [-1, 0, -2, -1, -1, 0, 0, 1, +2, +2, +3, +3];
 
     // resulting month
     let month = Math.floor((runningDay + 1) / 30) + 1;
@@ -227,7 +228,7 @@ export class DateTimeCommons {
     // creat date
     const date = new Date()
 
-    date.setFullYear(this.year);
+    date.setFullYear(this.year < 0 ? this.year + 1 : this.year);
 
     date.setMonth((this.month ? (this.month - 1) : 0));
 
@@ -246,5 +247,165 @@ export class DateTimeCommons {
     const n = number.toString();
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
+
+
+  addYear() {
+    this.year++;
+    if (this.year === 0) this.year++;
+    if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  addMonth() {
+    this.month++;
+
+
+    if (this.month > 12) {
+      this.month = 1
+      this.addYear();
+    }
+    else if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  addDay() {
+    this.day++;
+    if (this.day > this.lengthOfMonth()) {
+      this.day = 1;
+      this.addMonth()
+    }
+  }
+
+  addHour() {
+    this.hours++;
+    if (this.hours > 23) {
+      this.hours = 0;
+      this.addDay()
+    }
+  }
+
+  addMinute() {
+    this.minutes++;
+    if (this.minutes > 59) {
+      this.minutes = 0;
+      this.addHour()
+    }
+  }
+
+  addSecond() {
+    this.seconds++;
+    if (this.seconds > 59) {
+      this.seconds = 0;
+      this.addMinute()
+    }
+  }
+
+
+
+
+  removeYear() {
+    this.year--;
+    if (this.year === 0) {
+      this.year = -1;
+    }
+    if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  removeMonth() {
+    this.month--;
+
+    if (this.month < 1) {
+      this.month = 12;
+      this.removeYear();
+    }
+    else if (this.day > this.lengthOfMonth()) {
+      this.day = this.lengthOfMonth()
+    }
+  }
+
+  removeDay() {
+    this.day--;
+    if (this.day < 1) {
+      this.removeMonth()
+      this.day = this.lengthOfMonth();
+    }
+  }
+
+
+  removeHour() {
+    this.hours--;
+    if (this.hours < 0 || !this.hours) {
+      this.hours = 23;
+      this.removeDay()
+    }
+  }
+
+  removeMinute() {
+    this.minutes--;
+    if (this.minutes < 0 || !this.minutes) {
+      this.minutes = 59;
+      this.removeHour()
+    }
+  }
+
+  removeSecond() {
+    this.seconds--;
+    if (this.seconds < 0 || !this.seconds) {
+      this.seconds = 59;
+      this.removeMinute()
+    }
+  }
+
+
+  addDays(quantity: number) {
+    for (let i = 0; i < quantity; i++) {
+      this.addDay();
+    };
+  }
+
+  addMonths(quantity: number) {
+    for (let i = 0; i < quantity; i++) {
+      this.addMonth();
+    };
+  }
+
+  addYears(quantity: number) {
+    for (let i = 0; i < quantity; i++) {
+      this.addYear();
+    };
+  }
+
+  add(duration: Granularity) {
+    if (duration === '1 year') {
+      this.addYear()
+    }
+    else if (duration === '1 month') {
+      this.addMonth()
+    }
+    else if (duration === '1 day') {
+      this.addDay()
+    }
+    else if (duration === '1 hour') {
+      this.addHour()
+    }
+    else if (duration === '1 minute') {
+      this.addMinute()
+    }
+    else if (duration === '1 second') {
+      this.addSecond()
+    }
+  }
+
+
+
+  toLastSecondOf(duration: Granularity) {
+    this.add(duration);
+    this.removeSecond();
+  }
+
 
 }

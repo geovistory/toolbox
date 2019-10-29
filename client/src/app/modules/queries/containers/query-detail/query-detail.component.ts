@@ -7,7 +7,7 @@ import { clone, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
 import { ClassAndTypeFilterComponent } from '../../components/class-and-type-filter/class-and-type-filter.component';
-import { ColDef } from "../../components/col-def-editor/ColDef";
+import { ColDef } from '../../components/col-def-editor/ColDef';
 import { PropertyOption } from '../../components/property-select/property-select.component';
 import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
@@ -16,13 +16,14 @@ import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-deta
 import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
 import { TabLayoutComponentInterface } from '../../../projects/containers/project-edit/project-edit.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-import { FilterTree } from './FilterTree';
+import { QueryFilter } from './FilterTree';
 import { QueryFilterComponent, FilterDefinition } from '../../components/query-filter/query-filter.component';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { ResultTableDefinition } from '../../components/result-table/result-table.component';
 
 
 export interface GvQuery {
-  filter: FilterTree,
+  filter: QueryFilter,
   columns: ColDef[],
   limit?: number,
   offset?: number
@@ -82,7 +83,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   propertyOptions$ = new BehaviorSubject<PropertyOption[]>(null);
   classesAndTypes$ = new BehaviorSubject<ClassAndTypeSelectModel>(null);
 
-
+  resultTableDef$ = new BehaviorSubject<ResultTableDefinition>(undefined)
 
   // result table
   colDefsCopy: ColDef[];
@@ -219,12 +220,11 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       this.colDefsCopy = clone(this.columnsCtrl.value)
       this.filterQueryCopy = clone(this.filter$.value)
       this.displayedColumns = this.colDefsCopy.map(col => col.label);
-      this.runInit(pk, {
-        filter: this.filterQueryCopy,
-        columns: this.colDefsCopy,
-        limit: this.limit,
-        offset: 0
-      });
+
+      this.resultTableDef$.next({
+        queryFilter: this.filterQueryCopy,
+        colDefs: this.colDefsCopy
+      })
     })
   }
 

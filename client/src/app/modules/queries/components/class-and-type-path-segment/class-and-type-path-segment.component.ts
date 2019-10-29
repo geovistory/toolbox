@@ -10,12 +10,12 @@ import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel, classOrTypeRequiredCondition } from '../class-and-type-select/class-and-type-select.component';
 import { equals } from 'ramda';
 import { classAndTypeFilterRequiredValidator } from '../class-and-type-filter/class-and-type-filter.component';
-import { FilterTreeData, FilterTree } from '../../containers/query-detail/FilterTree';
+import { FilterTreeData, QueryFilter } from '../../containers/query-detail/FilterTree';
 
 /** At least one class or type must be selected */
 export function classAndTypePathSegmentRequiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const model: FilterTree = control.value;
+    const model: QueryFilter = control.value;
     return model && model.data && classOrTypeRequiredCondition(model.data)
       ? { 'classAndTypePathSegmentRequired': { value: control.value } } : null
   };

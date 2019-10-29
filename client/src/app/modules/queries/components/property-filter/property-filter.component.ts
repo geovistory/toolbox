@@ -7,7 +7,7 @@ import { ActiveProjectService } from 'app/core';
 import { equals, keys, pick } from 'ramda';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
-import { FilterTree } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from "../../containers/query-detail/FilterTree";
 import { QueryService } from '../../services/query.service';
 import { propertiesRequiredCondition, propertiesRequiredValidator, PropertyOption } from '../property-select/property-select.component';
 
@@ -19,7 +19,7 @@ interface DynamicFormControl {
 /** At least one class or type must be selected */
 export function propertyFilterRequiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const model: FilterTree = control.value;
+    const model: QueryFilter = control.value;
     return model && model.data && propertiesRequiredCondition(model.data)
       ? { 'propertyFilterRequired': { value: control.value } } : null
   };
@@ -37,10 +37,10 @@ export class PropertyFilterRequiredValidatorDirective implements Validator {
 
 
 // tslint:disable: member-ordering
-class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<FilterTree> {
+class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryFilter> {
   static nextId = 0;
 
-  model: FilterTree;
+  model: QueryFilter;
   // the flattened selection
   // selected: TreeNode<TreeNodeData>[]
 
@@ -93,13 +93,13 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
   private _disabled = false;
 
   @Input()
-  get value(): FilterTree | null {
+  get value(): QueryFilter | null {
     // TODO
     if (!this.empty) return null;
 
     return this.model;
   }
-  set value(value: FilterTree | null) {
+  set value(value: QueryFilter | null) {
     if (!equals(this.model, value)) {
       this.model = value;
       this.onChange(this.model)
@@ -156,7 +156,7 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
 
   }
 
-  writeValue(value: FilterTree | null): void {
+  writeValue(value: QueryFilter | null): void {
     const data = !value ? {} : !value.data ? {} : value.data;
     const children = !value ? [] : !value.children ? [] : value.children;
 
@@ -177,7 +177,7 @@ class PropertyFilterMatControl implements OnDestroy, ControlValueAccessor, MatFo
   }
 
 
-  protected addCrtl(index: number, child: FilterTree) {
+  protected addCrtl(index: number, child: QueryFilter) {
     const f: DynamicFormControl = {
       key: '_' + index,
       ctrl: new FormControl(child)
@@ -223,8 +223,8 @@ export class PropertyFilterComponent extends PropertyFilterMatControl implements
   @HostBinding('class.flex-column') flexcolumn = true;
 
   @Input() level = 0; // level of component nesting, 0...n
-  @Input() qtree: FilterTree; // TODO remove this line
-  @Input() model: FilterTree;
+  @Input() qtree: QueryFilter; // TODO remove this line
+  @Input() model: QueryFilter;
   @Input() propertyOptions$: Observable<PropertyOption[]>;
 
 
@@ -313,7 +313,7 @@ export class PropertyFilterComponent extends PropertyFilterMatControl implements
 
 
   addChild() {
-    const child = new FilterTree({ subgroup: 'classAndType' })
+    const child = new QueryFilter({ subgroup: 'classAndType' })
     this.addCrtl(this.dynamicFormControls.length, child)
   }
 

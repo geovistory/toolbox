@@ -3,6 +3,8 @@ import { JulianDateTime, GregorianDateTime } from '../../../core';
 import { DatePipe } from '@angular/common';
 import { Granularity, DateTimeCommons } from 'app/core/date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
+import { Zoomer } from './zoomer';
+import { ScaleLinear } from 'd3';
 
 /**
  * Configurable API
@@ -24,6 +26,9 @@ export interface IXAxisDefinition extends XAxisOptions {
   domainStart: number,
   domainEnd: number,
 
+  // Zoomer
+  zoomer: Zoomer,
+
   // Boundaries representing the minimum and maximum julian second represented with the timeline
   minJulianSecond?: number;
   maxJulianSecond?: number;
@@ -41,8 +46,8 @@ export class XAxisDefinition implements IXAxisDefinition {
    */
 
   // Margins relative to canvas
-  marginLeft = 150;
-  marginRight = 10;
+  marginLeft = 0;
+  marginRight = 0;
   marginTop = 30;
   tickSizeInner = 6;
   tickSizeOuter = 6;
@@ -51,6 +56,8 @@ export class XAxisDefinition implements IXAxisDefinition {
   // Domain
   domainStart: number;
   domainEnd: number;
+
+  zoomer: Zoomer;
 
   // Boundaries representing the minimum and maximum julian second represented with the timeline
   minJulianSecond: number = Number.NEGATIVE_INFINITY;
@@ -74,7 +81,7 @@ export class XAxisDefinition implements IXAxisDefinition {
   calendar;
 
   // d3 Scale object
-  scale;
+  scale: ScaleLinear<number, number>;
 
   constructor(options: IXAxisDefinition, private datePipe: DatePipe) {
     Object.assign(this, options);
@@ -109,174 +116,202 @@ export class XAxisDefinition implements IXAxisDefinition {
      * Validates if a julianSecond is valid as tick and if yes, adds
      * it to the given ticks array
      */
-    const addTickIfValid = (ticks: Array<number>, julianSecond: number) => {
+    const addTickIfValid = (ticks: Array<number>, julianSecond: number): boolean => {
 
       // check if it is inside the domain
       if (!(julianSecond <= this.domainEnd &&
         julianSecond >= this.domainStart)) {
-        return;
+        return false;
       }
 
       // check if it is inside the calendar boundaries
       if (!(julianSecond <= this.maxJulianSecond &&
         julianSecond >= this.minJulianSecond)) {
-        return;
+        return false;
       }
 
 
       ticks.push(julianSecond)
-
-    }
-
-
-    const yearTicks = (t0, t1, step) => {
-      const y0 = this.newDateTime().fromJulianSecond(t0).year;
-      const y1 = this.newDateTime().fromJulianSecond(t1).year;
-      const diff = Math.abs(y1 - y0);
-      let ticks = [];
-
-      for (let i = 1; i < diff; i++) {
-        const year = y0 + i;
-        // if year is devisable by step
-        if ((year % step) === 0) {
-          addTickIfValid(ticks, this.newDateTime({ year: year }).getJulianSecond());
-        }
-      }
-      return ticks;
-    }
-
-
-    const monthTicks = (t0, t1, monthStep) => {
-      const dt0 = this.newDateTime().fromJulianSecond(t0);
-      const dt1 = this.newDateTime().fromJulianSecond(t1);
-      const ydiff = Math.abs(dt0.year - dt1.year);
-
-      let ticks = [];
-
-      for (let i = 0; i <= ydiff; i++) {
-        for (let m = 1; m <= 12; m = m + monthStep) {
-
-          const tickVal = this.newDateTime({
-            year: (dt0.year + i),
-            month: m
-          }).getJulianSecond()
-
-          addTickIfValid(ticks, tickVal);
-        }
-      }
-      return ticks;
-    }
-
-    const dayTicks = (t0, t1, gaps) => {
-      const dt0 = this.newDateTime().fromJulianSecond(t0);
-      const dt1 = this.newDateTime().fromJulianSecond(t1);
-      const ydiff = Math.abs(dt0.year - dt1.year);
-
-      let ticks = [];
-
-      for (let i = 0; i <= ydiff; i++) {
-        for (let m = 1; m <= 12; m++) {
-          const lengthOfMonth = this.newDateTime({
-            year: (dt0.year + i),
-            month: m
-          }).lengthOfMonth();
-
-          for (let g = 0; g < gaps; g++) {
-            const tickVal = this.newDateTime({
-              year: (dt0.year + i),
-              month: m,
-              day: Math.floor(lengthOfMonth / gaps * g + 1)
-            }).getJulianSecond()
-
-            addTickIfValid(ticks, tickVal);
-
-          }
-        }
-      }
-      return ticks;
+      return true;
     }
 
 
     this.scale.ticks = () => {
-      var t0 = this.domainStart,
-        t1 = this.domainEnd,
-        r = t1 < t0, //is reverse
-        t, // ticks
-        dSec = Math.abs(this.domainStart - this.domainEnd);
 
-      if (r) t = t0, t0 = t1, t1 = t;
+      // calculates the zoom level
+      const zoomLevel = this.zoomer.zoomLevel;
 
+      // date time of minimal julian second
+      const dt = this.newDateTime().fromJulianSecond(this.domainStart);
+      dt.hours = dt.minutes = dt.seconds = 0;
+      // the ticks as numers in julian second
+      const ticks: number[] = []
 
-      // Show years if resolution is more than 180000 secs per pixel
-      if (this.resolution > 180000) {
-        // dynamically step over years on increasing resolution
-        const step = Math.floor(this.resolution / 300000) + 1;
-        t = yearTicks(t0, t1, step);
+      if (zoomLevel.intervalUnit === 'days') {
+        // day level: show a line for each day
+        // create first tick
+        let julianSec = dt.getJulianSecond();
+        while (julianSec <= this.domainEnd) {
+          addTickIfValid(ticks, julianSec);
+          // proceed a month
+          dt.addDays(zoomLevel.intervalCount);
+          julianSec = dt.getJulianSecond()
+        }
       }
-      // Else show months if resolution is more than 30000
-      else if (this.resolution > 30000) {
-        // dynamically step over months on increasing resolution
-        const a = this.resolution / 30000;
-        const b = Math.floor(12 / a)
-        const step = Math.floor(12 / b);
+      else if (zoomLevel.intervalUnit === 'half-months') {
 
-        t = monthTicks(t0, t1, step);
+        // go to day 1 or 15 of month
+        if (dt.day !== 1 && dt.day !== 16) {
+          if (dt.day < 15) {
+            const daysToAdd = (15 - dt.day + 1);
+            dt.addDays(daysToAdd)
+          } else {
+            const daysToAdd = (dt.lengthOfMonth() - dt.day + 1);
+            dt.addDays(daysToAdd)
+          }
+        }
+        let julianSec = dt.getJulianSecond();
+        while (julianSec <= this.domainEnd) {
+          addTickIfValid(ticks, julianSec);
+          // proceed to day 1 or 15
+          if (dt.day < 15) {
+            const daysToAdd = (15 - dt.day + 1);
+            dt.addDays(daysToAdd)
+          } else {
+            const daysToAdd = (dt.lengthOfMonth() - dt.day + 1);
+            dt.addDays(daysToAdd)
+          }
+          julianSec = dt.getJulianSecond()
+        }
+
       }
-      else {
-        const gaps = Math.floor(30000 / this.resolution)
-        t = dayTicks(t0, t1, gaps);
+      else if (zoomLevel.intervalUnit === 'months') {
+
+        // go to first day of next month
+        if (dt.day !== 1) {
+          const daysToAdd = (dt.lengthOfMonth() - dt.day + 1);
+          dt.addDays(daysToAdd)
+        }
+
+        if (zoomLevel.intervalCount === 6) {
+          // go to january or july
+          if (dt.month !== 1 && dt.month !== 7) {
+            const goToMonth = dt.month < 7 ? 7 : 13;
+            const monthsToAdd = goToMonth - dt.month;
+            dt.addMonths(monthsToAdd)
+          }
+        }
+
+        // create first tick
+        let julianSec = dt.getJulianSecond();
+        while (julianSec <= this.domainEnd) {
+          addTickIfValid(ticks, julianSec);
+          // proceed a month
+          dt.addMonths(zoomLevel.intervalCount)
+          julianSec = dt.getJulianSecond()
+        }
+
+
+      } else if (zoomLevel.intervalUnit === 'years') {
+        if (dt.day !== 1) {
+          // go first day of next month
+          const daysTillEndOfMonth = (dt.lengthOfMonth() - dt.day + 1);
+          dt.addDays(daysTillEndOfMonth);
+        }
+
+        if (dt.month !== 1) {
+          // go to january of next year
+          const monthsTillEndOfYear = (13 - dt.month);
+          dt.addMonths(monthsTillEndOfYear);
+        }
+        const roundTo = dt.year > 0 ? zoomLevel.intervalCount : 0;
+        const yearsToRoundNr = roundTo - (dt.year % zoomLevel.intervalCount);
+        if (yearsToRoundNr !== zoomLevel.intervalCount) {
+          dt.addYears(yearsToRoundNr);
+        }
+
+
+        // create first tick
+        let julianSec = dt.getJulianSecond();
+        while (julianSec <= this.domainEnd) {
+          addTickIfValid(ticks, julianSec);
+          // add years
+          dt.addYears(zoomLevel.intervalCount);
+          julianSec = dt.getJulianSecond()
+        }
+
       }
 
+      return ticks.reverse();
 
-      // t = monthTicks(t0, t1);
-      // t = t ? t.range(t0, t1 + 1) : []; // inclusive stop
-      return r ? t.reverse() : t;
+
     };
 
     this.scale.tickFormat = (count) => {
+
+
+
       return (julianSecond) => {
         const dt = this.newDateTime().fromJulianSecond(julianSecond)
-        let duration: Granularity;
-        if (dt.year) { duration = '1 year' }
-        if (dt.month > 1) { duration = '1 month' }
-        if (dt.day > 1) { duration = '1 day' }
-        if (dt.hours > 0) { duration = '1 hour' }
-        if (dt.minutes > 0) { duration = '1 minute' }
-        if (dt.seconds > 0) { duration = '1 second' }
+        let stringFormat: string;
+        const u = this.zoomer.zoomLevel.intervalUnit;
 
-        const tp = new TimePrimitive({
-          duration,
-          calendar: this.calendar,
-          julianDay: dt.getJulianDay()
-        });
+        if (u === 'days' || u === 'half-months') {
+          stringFormat = this.getDateFormatString(dt.getJulianDay(), '1 day')
+        }
+        else if (u === 'months') {
+          stringFormat = this.getDateFormatString(dt.getJulianDay(), '1 month')
+        }
+        else {
+          stringFormat = this.getDateFormatString(dt.getJulianDay(), '1 year')
+        }
 
-        return this.datePipe.transform(dt.getDate(), tp.getShortesDateFormatString())
+        return this.datePipe.transform(dt.getDate(), stringFormat)
 
-
-        // switch (duration) {
-        //     case '1 year':
-        //         return dt.year;
-        //     case '1 month':
-        //         const ms = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Okt', 'Nov', 'Dec']
-        //         return ms[dt.month - 1];
-        //     case '1 day':
-        //         return dt.day;
-        //     case '1 hour':
-        //         return 'HH:mm';
-        //     case '1 minute':
-        //         return 'HH:mm';
-        //     case '1 second':
-        //         return 'HH:mm:ss';
-        //     default:
-        //         return '';
-        // }
-
-        // return julianSecond
       }
+
     }
 
   }
 
 
 
+  getDateFormatString(julianDay, granularity: Granularity): string {
+
+    if (julianDay <= 1721422) {
+      switch (granularity) {
+        case '1 year':
+          return 'y GG';
+        case '1 month':
+          return 'MMM, y GG';
+        case '1 day':
+          return 'MMM d, y GG';
+        case '1 hour':
+          return 'MMM d, y GG, HH';
+        case '1 minute':
+          return 'MMM d, y GG, HH:mm';
+        case '1 second':
+          return 'MMM d, y GG, HH:mm:ss';
+        default:
+          return '';
+      }
+    } else {
+      switch (granularity) {
+        case '1 year':
+          return 'y';
+        case '1 month':
+          return 'MMM, y';
+        case '1 day':
+          return 'MMM d, y';
+        case '1 hour':
+          return 'MMM d, y, HH';
+        case '1 minute':
+          return 'MMM d, y, HH:mm';
+        case '1 second':
+          return 'MMM d, y, HH:mm:ss';
+        default:
+          return '';
+      }
+    }
+  }
 }

@@ -9,7 +9,7 @@ import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creato
 import { equals, uniq } from 'ramda';
 import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, takeUntil, first, startWith } from 'rxjs/operators';
-import { FilterTree } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from "../../containers/query-detail/FilterTree";
 
 export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean, pk: number, label: string };
 
@@ -195,7 +195,7 @@ export class PropertySelectComponent extends PropertySelectMatControl implements
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
   @Output() selectionChanged = new EventEmitter<PropertyOption[]>();
-  @Output() modelChanged = new EventEmitter<FilterTree>();
+  @Output() modelChanged = new EventEmitter<QueryFilter>();
 
   control = new FormControl();
 

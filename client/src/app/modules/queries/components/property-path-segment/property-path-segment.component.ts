@@ -8,14 +8,14 @@ import { PropertyOption, PropertySelectModel, propertiesRequiredCondition } from
 import { QueryService } from '../../services/query.service';
 import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
 import { equals } from 'ramda';
-import { FilterTree } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from "../../containers/query-detail/FilterTree";
 import { propertyFilterRequiredValidator } from '../property-filter/property-filter.component';
 
 
 /** At least one property must be selected */
 export function propertyPathSegmentRequiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const model: FilterTree = control.value;
+    const model: QueryFilter = control.value;
     return model && model.data && propertiesRequiredCondition(model.data)
       ? { 'propertyPathSegmentRequired': { value: control.value } } : null
   };

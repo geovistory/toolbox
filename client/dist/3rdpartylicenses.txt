@@ -2229,6 +2229,8 @@ MIT
 
 @angular/material/slide-toggle
 
+@angular/material/slider
+
 @angular/material/sort
 
 @angular/material/stepper

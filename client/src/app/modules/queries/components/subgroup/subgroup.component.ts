@@ -9,7 +9,7 @@ import { delay, distinctUntilChanged, map, merge, mergeMap, startWith, takeUntil
 import { ClassAndTypeSelectComponent } from '../class-and-type-select/class-and-type-select.component';
 import { PropertyFilterComponent } from '../property-filter/property-filter.component';
 import { PropertyOption } from '../property-select/property-select.component';
-import { FilterTree, FilterTreeData } from '../../containers/query-detail/FilterTree';
+import { QueryFilter, FilterTreeData } from '../../containers/query-detail/FilterTree';
 interface DynamicFormControl {
   key: string,
   component: 'class-and-type-filter' | 'property-filter' | 'subgroup',
@@ -17,10 +17,10 @@ interface DynamicFormControl {
 }
 
 // tslint:disable: member-ordering
-class SubgroupMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<FilterTree>{
+class SubgroupMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryFilter>{
   static nextId = 0;
 
-  model: FilterTree;
+  model: QueryFilter;
 
 
   // emits true on destroy of this component
@@ -73,14 +73,14 @@ class SubgroupMatControl implements OnDestroy, ControlValueAccessor, MatFormFiel
   private _disabled = false;
 
   @Input()
-  get value(): FilterTree | null {
+  get value(): QueryFilter | null {
 
     // TODO: Adapt, when it is invalid and null is returned
     if (!this.empty) return null;
 
     return this.model;
   }
-  set value(value: FilterTree | null) {
+  set value(value: QueryFilter | null) {
     this.model = value;
     this.onChange(this.model)
   }
@@ -149,7 +149,7 @@ class SubgroupMatControl implements OnDestroy, ControlValueAccessor, MatFormFiel
     this.formGroup.addControl(f.key, f.ctrl)
   }
 
-  protected addCrtl(child: FilterTree, index: number, data: FilterTreeData) {
+  protected addCrtl(child: QueryFilter, index: number, data: FilterTreeData) {
     if ((child && child.data && child.data.subgroup)) {
       this.addSubgroupCtrl(index, child);
     } else {
@@ -167,10 +167,10 @@ class SubgroupMatControl implements OnDestroy, ControlValueAccessor, MatFormFiel
     this.formGroup.removeControl(key)
   }
 
-  writeValue(value: FilterTree | null): void {
+  writeValue(value: QueryFilter | null): void {
     const data = value && value.data ? value.data : {};
     const children = value && value.children && value.children.length ?
-      value.children : [new FilterTree()];
+      value.children : [new QueryFilter()];
 
 
 
@@ -228,20 +228,20 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
   @ViewChildren(ClassAndTypeSelectComponent) classAndTypeSelects: QueryList<ClassAndTypeSelectComponent>;
   @ViewChildren(PropertyFilterComponent) operatorSelects: QueryList<PropertyFilterComponent>;
 
-  @Input() qtree: FilterTree; // TODO remove this line
+  @Input() qtree: QueryFilter; // TODO remove this line
   @Input() level = 0; // level of component nesting, 0...n
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
 
-  @Input() model: FilterTree;
+  @Input() model: QueryFilter;
   @Input() propertyOptions$: Observable<PropertyOption[]>;
   @Input() pkClasses$: Observable<number[]>;
   @Input() hideParentLine = false;
 
 
   @Output() remove = new EventEmitter<void>();
-  @Output() merge = new EventEmitter<FilterTree>();
+  @Output() merge = new EventEmitter<QueryFilter>();
   @Output() validChanged = new EventEmitter<boolean>();
   valid: boolean;
 
@@ -253,7 +253,7 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
       .pipe(distinctUntilChanged(equals), delay(0), takeUntil(this.destroy$))
       .subscribe(() => {
         const data: FilterTreeData = (this.value || { data: {} }).data;
-        const children: FilterTree[] = []
+        const children: QueryFilter[] = []
         keys(this.formGroup.value).forEach(key => {
           const val = this.formGroup.value[key];
           if (key === 'subgroupOperatorCtrl') {
@@ -289,19 +289,19 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
 
   addSubgroup(i) {
     const childCopy = this.model.children[i];
-    this.model.children[i] = new FilterTree({
+    this.model.children[i] = new QueryFilter({
       subgroup: this.model.data.subgroup,
       operator: 'OR'
     }, [
         childCopy,
-        new FilterTree()
+        new QueryFilter()
       ])
 
   }
 
   addSibling() {
     const i = this.value.children.length;
-    this.addCrtl(new FilterTree(), i, this.value.data);
+    this.addCrtl(new QueryFilter(), i, this.value.data);
   }
 
   removeChild(i) {
@@ -312,7 +312,7 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
     else if (this.model.children.length === 1) this.merge.emit(this.dynamicFormControls[0].ctrl.value);
   }
 
-  mergeChild(i: number, child: FilterTree) {
+  mergeChild(i: number, child: QueryFilter) {
     this.removeCtrl(i);
     this.addCrtl(child, i, this.value.data);
   }

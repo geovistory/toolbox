@@ -12,7 +12,7 @@ export interface FilterTreeData {
   outgoingProperties?: number[]
   ingoingProperties?: number[]
 }
-export class FilterTree {
-  constructor(public data: FilterTreeData = {}, public children: FilterTree[] = []) {
+export class QueryFilter {
+  constructor(public data: FilterTreeData = {}, public children: QueryFilter[] = []) {
   }
 }
