@@ -56,6 +56,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
 import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
 import { DataModule } from '../data/data.module';
 import { ClassConfigModule } from '../class-config/class-config.module';
+import { AnalysisModule } from '../analysis/analysis.module';
 
 
 
@@ -91,6 +92,7 @@ import { ClassConfigModule } from '../class-config/class-config.module';
     Information2Module,
     QueriesModule,
     VisualsModule,
+    AnalysisModule,
     PortalModule,
     DrawerContainerResizeModule,
     AngularSplitModule,

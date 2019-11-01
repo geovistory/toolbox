@@ -31,6 +31,10 @@
           [ngClass]="{active:(p.list$ | async)==='visuals'}" (click)="setList('visuals')">
           <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Visuals
         </button>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='analysis'}" (click)="setList('analysis')">
+          <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Analysis
+        </button>
 
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='stories'}" (click)="setList('stories')">
@@ -62,6 +66,7 @@
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
         <gv-query-list *ngIf="(p.list$ | async) === 'queries'"></gv-query-list>
         <gv-visual-list *ngIf="(p.list$ | async) === 'visuals'"></gv-visual-list>
+        <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'"></gv-analysis-list>
         <div *ngIf="(p.list$ | async) === 'stories'">
           <gv-list-drawer-header>
             <div title>Your Stories</div>

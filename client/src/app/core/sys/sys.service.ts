@@ -1,12 +1,12 @@
 import { NgRedux } from '@angular-redux/store';
-import { SysClassHasTypeProperty } from 'app/core';
+import { SysClassHasTypeProperty, SysAnalysisType } from 'app/core';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { ByPk, IAppState } from '../store/model';
 import { SysActions } from './sys.actions';
 import { sysDefinitions, sysRoot } from './sys.config';
-import { SysClassHasTypePropertySlice, SysRelevantClassSlice } from './sys.models';
+import { SysClassHasTypePropertySlice, SysRelevantClassSlice, SysAnalysisTypeSlice } from './sys.models';
 
 class Selector<Slice> {
 
@@ -58,8 +58,20 @@ class SysClassHasTypePropertySelections extends Selector<SysClassHasTypeProperty
   ) { super(ngRedux, configs, model) }
 }
 
+// AnalysisType Selectors
+class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
+  public by_pk_entity$ = this.selector<SysAnalysisType>('by_pk_entity');
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
+}
+
+
 
 export class SystemSelector extends SysActions {
   system_relevant_class$ = new SysSystemRelevantClassSelections(this.ngRedux, sysDefinitions, 'system_relevant_class')
   class_has_type_property$ = new SysClassHasTypePropertySelections(this.ngRedux, sysDefinitions, 'class_has_type_property')
+  analysis_type$ = new SysAnalysisTypeSelections(this.ngRedux, sysDefinitions, 'analysis_type')
 }

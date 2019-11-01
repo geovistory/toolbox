@@ -133,6 +133,7 @@ export class ActiveProjectEpics {
 
         this.sys.system_relevant_class.load();
         this.sys.class_has_type_property.load();
+        this.sys.analysis_type.load();
         this.dat.namespace.load('', action.meta.pk_project);
         this.dfh.property_view.load()
         this.dfh.klass.loadClassesOfProjectProfiles(action.meta.pk_project);
@@ -153,6 +154,7 @@ export class ActiveProjectEpics {
           this.sysHasTypePropsApi.find(),
           this.sys.system_relevant_class$.by_fk_class$.all$,
           this.sys.class_has_type_property$.slice$,
+          this.sys.analysis_type$.slice$,
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
           this.dfh.property_view$.by_dfh_pk_property$.noPause.all$,
           this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,

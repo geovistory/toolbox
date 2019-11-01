@@ -53,5 +53,5 @@ export const proDefinitions: ReducerConfigCollection = {
         groupByFn: (d: ProPropertyLabel): string => d.fk_project + '_' + d.fk_property + '_' + d.fk_domain_class + '_' + d.fk_range_class + '_' + d.fk_system_type
       }
     ]
-  },
+  }
 }

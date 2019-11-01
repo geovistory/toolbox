@@ -1,0 +1,74 @@
+{
+  "name": "ProAnalysis",
+  "base": "ProEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "projects",
+      "table": "analysis"
+    }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string",
+      "required": false
+    },
+    "query_definition": {
+      "type": "object",
+      "required": true
+    },
+    "visual_definition": {
+      "type": "object",
+      "required": true
+    },
+    "query_results": {
+      "type": "object",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "fk_analysis_type": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "project": {
+      "type": "belongsTo",
+      "model": "ProProject",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_entity"
+    },
+    "account": {
+      "type": "belongsTo",
+      "model": "PubAccount",
+      "foreignKey": "fk_last_modifier",
+      "primaryKey": "id"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "findById"
+      ]
+    }
+  ],
+  "methods": {}
+}

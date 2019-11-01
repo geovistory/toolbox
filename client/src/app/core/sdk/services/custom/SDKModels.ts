@@ -4,6 +4,8 @@ import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel'
 import { SysClassField } from '../../models/SysClassField';
 import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
 import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
+import { SysAnalysisType } from '../../models/SysAnalysisType';
+import { ProAnalysis } from '../../models/ProAnalysis';
 import { ProQuery } from '../../models/ProQuery';
 import { ProVisual } from '../../models/ProVisual';
 import { ProPropertyLabel } from '../../models/ProPropertyLabel';
@@ -48,6 +50,8 @@ export class SDKModels {
     SysClassField: SysClassField,
     SysClassHasTypeProperty: SysClassHasTypeProperty,
     SysSystemRelevantClass: SysSystemRelevantClass,
+    SysAnalysisType: SysAnalysisType,
+    ProAnalysis: ProAnalysis,
     ProQuery: ProQuery,
     ProVisual: ProVisual,
     ProPropertyLabel: ProPropertyLabel,

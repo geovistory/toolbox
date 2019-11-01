@@ -22,7 +22,7 @@ export const sysDefinitions: ReducerConfigCollection = {
       },
       {
         keyInStore: 'required',
-        groupByFn: (d: SysSystemRelevantClass): string => (d.required_by_sources || d.required_by_entities ||  d.required_by_basics) ? 'true' : 'false'
+        groupByFn: (d: SysSystemRelevantClass): string => (d.required_by_sources || d.required_by_entities || d.required_by_basics) ? 'true' : 'false'
       }
     ]
   },
@@ -47,5 +47,13 @@ export const sysDefinitions: ReducerConfigCollection = {
         groupByFn: (d): string => d.pk_type_class.toString()
       }
     ]
+  },
+  analysis_type: {
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => {
+        return item.pk_entity.toString()
+      }
+    }
   }
 }

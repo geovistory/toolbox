@@ -1,0 +1,53 @@
+{
+  "name": "SysAnalysisType",
+  "base": "ProEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "system",
+      "table": "analysis_type"
+    }
+  },
+  "properties": {
+    "standard_label": {
+      "type": "string",
+      "required": false
+    },
+    "query_definition_schema": {
+      "type": "object",
+      "required": true
+    },
+    "visual_definition_schema": {
+      "type": "object",
+      "required": true
+    },
+    "query_results_schema": {
+      "type": "object",
+      "required": true
+    },
+    "rows_limit": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {}
+}
