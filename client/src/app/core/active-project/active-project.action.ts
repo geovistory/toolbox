@@ -55,7 +55,7 @@ interface MetaData {
   currentPanelIndex?: number
   previousTabIndex?: number
   currentTabIndex?: number
-  tab?: Tab;
+  tab?: Tab<any>;
 
   // Layout Modals
   // createOrAddEntity?: CreateOrAddEntity; // Check if this really belongt in state
@@ -176,7 +176,7 @@ export class ActiveProjectActions {
   }
 
   static ADD_TAB = 'ActiveProject::ADD_TAB';
-  addTab(tab: Tab): ActiveProjectAction {
+  addTab<TabData>(tab: Tab<TabData>): ActiveProjectAction {
     return {
       type: ActiveProjectActions.ADD_TAB,
       payload: null,

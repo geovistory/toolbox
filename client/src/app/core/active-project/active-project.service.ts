@@ -549,7 +549,7 @@ export class ActiveProjectService {
   closeTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.closeTab(panelIndex, tabIndex))
   }
-  addTab(tab: Tab) {
+  addTab<D>(tab: Tab<D>) {
     this.ngRedux.dispatch(this.actions.addTab(tab))
   }
   focusPanel(panelIndex: number) {

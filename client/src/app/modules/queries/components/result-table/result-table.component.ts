@@ -3,8 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService, ProQueryApi } from 'app/core';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { first, takeUntil, map } from 'rxjs/operators';
-import { QueryFilter } from '../../containers/query-detail/FilterTree';
-import { ColDef } from '../col-def-editor/ColDef';
+import { QueryFilter } from '../../../../../../../src/query/query-filter';
+import { ColDef } from '../../../../../../../src/query/col-def';
 import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 import { Table } from 'primeng/table';
 

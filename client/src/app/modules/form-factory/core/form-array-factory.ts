@@ -6,24 +6,26 @@ import { FormArrayConfig, FormFactoryGlobal, FormNodeConfig } from '../services/
 import { FormControlFactory } from './form-control-factory';
 import { AbstractControlFactory, combineLatestOrEmpty, FactoryType } from './form-factory.models';
 import { FormGroupFactory } from './form-group-factory';
+import { FormChildFactory } from './form-child-factory';
 
 /**
  * Factory for a formArray, being an intermediate node of the nested form
  *
  */
 export class FormArrayFactory<C, A> extends AbstractControlFactory {
+
   factoryType: FactoryType = 'array';
   control: FormArray
-  children: (FormControlFactory<C> | FormArrayFactory<C, A>)[] = []
+  children: (FormControlFactory<C> | FormArrayFactory<C, A> | FormChildFactory<C>)[] = []
 
-  childConfigs: FormNodeConfig<any, any, any>[] = []
+  childConfigs: FormNodeConfig<any, any, any, any>[] = []
   // this is only needed if this is a list Factory (having only one type of children)
-  defaultChildConfig: FormNodeConfig<any, any, any>
+  defaultChildConfig: FormNodeConfig<any, any, any, any>
 
   childFactoryValues$ = new BehaviorSubject<Observable<any>[]>([]);
 
   constructor(
-    public globalConfig: FormFactoryGlobal<any, any, any>,
+    public globalConfig: FormFactoryGlobal<any, any, any, any>,
     public config: FormArrayConfig<A>,
     public level: number,
     public parent: FormGroupFactory | FormArrayFactory<C, A>
@@ -106,21 +108,48 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
 
 
 
-  private create(i: FormNodeConfig<any, any, any>) {
+  private create(i: FormNodeConfig<any, any, any, any>): FormControlFactory<C> | FormArrayFactory<C, A> | FormChildFactory<C> {
     if (i.array) return new FormArrayFactory(this.globalConfig, i.array, this.level + 1, this)
     if (i.control) return new FormControlFactory(this.globalConfig, i.control, this.level + 1, this)
+    if (i.childFactory) return new FormChildFactory(this.globalConfig, i.childFactory, this.level + 1, this)
   }
 
-  add(i: number, c: FormNodeConfig<any, any, any>) {
+  add(i: number, c: FormNodeConfig<any, any, any, any>) {
     const f = this.create(c)
     this.children.splice(i, 0, f)
-    this.control.insert(i, f.control)
+    if (f.factoryType !== 'childFactory') {
+      this.control.insert(i, f.control)
+    }
+    else {
+      const childF = f as FormChildFactory<C>;
+      const count = 0;
+      childF.control$.pipe(takeUntil(this.globalConfig.destroy$))
+        .subscribe(c => {
+          count === 0 ?
+            this.control.insert(i, c) :
+            this.control.setControl(i, c)
+        })
+    }
     this.childConfigs.splice(i, 0, c)
 
     this.childFactoryValues$.pipe(first()).subscribe(vs$ => {
       vs$.splice(i, 0, f.valueChanges$)
       this.childFactoryValues$.next(vs$)
     })
+
+  }
+
+  /**
+   * add control at last position of array
+   */
+  append(c: FormNodeConfig<any, any, any, any>) {
+    this.add(this.control.length, c)
+  }
+  /**
+ * add control at first position of array
+ */
+  prepend(c: FormNodeConfig<any, any, any, any>) {
+    this.add(0, c)
   }
 
   onAdd() {
@@ -152,6 +181,13 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
   }
   removeLastChild() {
     this.remove(this.children.length - 1)
+  }
+
+  markAllAsTouched() {
+    this.control.markAsTouched()
+    this.children.forEach(child => {
+      child.markAllAsTouched()
+    })
   }
 }
 

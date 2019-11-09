@@ -1,0 +1,65 @@
+<as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" [useTransition]="true">
+
+
+  <!-------------------------------------------------------------------
+     Analysis Definition
+  -------------------------------------------------------------------->
+  <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
+
+    <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="run()">
+      <span class="ml-2 mat-caption mat-text-secondary">
+        Analysis Configuration
+      </span>
+      <ng-content select="[settingsTopBar]"> </ng-content>
+
+      <!-- <button mat-stroked-button class="ml-auto border-right-0" (click)="a.saveAnalysis()">Save</button> -->
+      <button mat-stroked-button color="primary" class="ml-auto border-right-0" (click)="run()">Run >></button>
+    </gv-detail-top-bar>
+    <gv-detail-content class="p-3">
+
+      <!-- <div *ngIf="(deleted$ | async)" class="alert alert-info">
+        The Analysis has been successfully deleted. To recover it, click on save.
+      </div> -->
+
+      <ng-content select="[analysis-settings]"></ng-content>
+
+    </gv-detail-content>
+  </as-split-area>
+
+  <!-------------------------------------------------------------------
+    Analysis Results
+  -------------------------------------------------------------------->
+  <as-split-area [size]="t.splitSizeRight" *ngIf="t.showRightArea" class="d-flex flex-column">
+
+    <gv-detail-top-bar [closeRightAreaBtn]="true" (closeRight)="t.setShowRightArea(false)">
+      <span class="ml-2 mat-caption mat-text-secondary">
+        Analysis Results
+      </span>
+
+      <ng-content select="[resultsTopBar]"> </ng-content>
+
+
+      <div class="ml-auto mr-2">
+        <!-- <button class="btn btn-sm btn-primary mr-3" [matMenuTriggerFor]="export_menu">Export</button>
+        <mat-menu #export_menu="matMenu">
+          <button mat-menu-item (click)="onDownload('json')">Download as JSON</button>
+          <button mat-menu-item (click)="onDownload('csv')">Download as CSV</button>
+        </mat-menu> -->
+      </div>
+    </gv-detail-top-bar>
+    <gv-detail-content>
+      <div class="h-100" [hidden]="a.loading || !(a.results$ |async)">
+        <ng-content select="[results]"></ng-content>
+      </div>
+      <div class="h-100 d-flex align-items-center justify-content-center mat-text-secondary"
+        *ngIf="!a.loading && !(a.results$ |async)">
+        Configure your analysis to the left and click on "Run".
+      </div>
+      <div class="h-100 d-flex align-items-center justify-content-center mat-text-secondary" *ngIf="a.loading">
+        Loading
+      </div>
+    </gv-detail-content>
+
+
+  </as-split-area>
+</as-split>

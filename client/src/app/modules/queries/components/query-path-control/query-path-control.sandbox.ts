@@ -8,7 +8,7 @@ import { BehaviorSubject, of } from 'rxjs';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { PropertyOption } from '../property-select/property-select.component';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
-import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
+import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
 import { ValidationDirectivesModule } from 'app/core/validation/validation.directives';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 

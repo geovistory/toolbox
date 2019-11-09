@@ -15,7 +15,7 @@ export class FormControlFactory<M> extends AbstractControlFactory {
 
 
   constructor(
-    public globalConfig: FormFactoryGlobal<any, any, any>,
+    public globalConfig: FormFactoryGlobal<any, any, any, any>,
     public config: FormControlConfig<M>,
     private level: number,
     private parent?: FormGroupFactory | FormArrayFactory<any, any>
@@ -27,5 +27,8 @@ export class FormControlFactory<M> extends AbstractControlFactory {
       map(item => this.config.mapValue(item)),
       takeUntil(this.globalConfig.destroy$)
     ).subscribe(x => this.valueChanges$.next(x))
+  }
+  markAllAsTouched() {
+    this.control.markAsTouched()
   }
 }

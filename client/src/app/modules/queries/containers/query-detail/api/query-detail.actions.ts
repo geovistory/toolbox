@@ -2,7 +2,7 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { QueryDetail, FileType } from './query-detail.models';
-import { GvQuery } from '../query-detail.component';
+import { GvQuery } from '../../../../../../../../src/query/query';
 import { ProQuery } from 'app/core';
 type Payload = QueryDetail;
 interface MetaData {

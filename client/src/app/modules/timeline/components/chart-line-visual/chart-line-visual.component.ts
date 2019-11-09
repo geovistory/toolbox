@@ -1,18 +1,9 @@
-import { Component, DoCheck, ElementRef, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { ScaleLinear } from 'd3';
+import { Subject } from 'rxjs';
+import { ChartLineData, ChartLine, ChartLinePoint } from '../../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface'
 import { D3Service } from '../../shared/d3.service';
-import { BehaviorSubject, Subject } from 'rxjs';
 
-export interface ChartLinePoint { x: number, y: number, data?: any }
-export interface ChartLine {
-  label: string
-  linePoints: ChartLinePoint[]
-}
-export interface ChartLineData {
-  activeLine: number
-  chartLines: ChartLine[]
-  mouseX?: number // the mouse x position
-}
 export interface ActiveLineClickEvent {
   clickedLineIndex: number
   clickedLine: ChartLine

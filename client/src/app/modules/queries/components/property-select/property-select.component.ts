@@ -9,7 +9,7 @@ import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creato
 import { equals, uniq } from 'ramda';
 import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, takeUntil, first, startWith } from 'rxjs/operators';
-import { QueryFilter } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from "../../../../../../../src/query/query-filter";
 
 export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean, pk: number, label: string };
 

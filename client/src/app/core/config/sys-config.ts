@@ -7,42 +7,48 @@
 export class SysConfig {
 
 
-    /***********************
-     * Ui Contexts
-    ************************/
+  /***********************
+   * Ui Contexts
+  ************************/
 
-    // Toolbox-wide context
-    static readonly PK_UI_CONTEXT_ADD = 47;
+  // Toolbox-wide context
+  static readonly PK_UI_CONTEXT_ADD = 47;
 
-    // Entities context
-    static readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = 45;
-    static readonly PK_UI_CONTEXT_DATAUNITS_CREATE = 46;
+  // Entities context
+  static readonly PK_UI_CONTEXT_DATAUNITS_EDITABLE = 45;
+  static readonly PK_UI_CONTEXT_DATAUNITS_CREATE = 46;
 
-    // Sources context
-    static readonly PK_UI_CONTEXT_SOURCES_EDITABLE = 210;
-    static readonly PK_UI_CONTEXT_SOURCES_CREATE = 211;
+  // Sources context
+  static readonly PK_UI_CONTEXT_SOURCES_EDITABLE = 210;
+  static readonly PK_UI_CONTEXT_SOURCES_CREATE = 211;
 
-    // Data Settings > Types context
-    static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = 212;
-    static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = 213;
-
-
-    /***********************
-     * Class Fields
-    ************************/
-
-    static readonly PK_CLASS_FIELD_WHEN = 48;
-    static readonly PK_CLASS_FIELD_SHORT_TITLE = 217;
-    static readonly PK_CLASS_FIELD_EXACT_REFERENCE = 218;
-    static readonly PK_CLASS_FIELD_ENTITY_DEFINITION = 219;
+  // Data Settings > Types context
+  static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE = 212;
+  static readonly PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE = 213;
 
 
-    /***********************
-     * System Types
-    ************************/
+  /***********************
+   * Class Fields
+  ************************/
 
-    static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION = 179;
-    static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL = 639;
-    static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
-    static readonly PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
+  static readonly PK_CLASS_FIELD_WHEN = 48;
+  static readonly PK_CLASS_FIELD_SHORT_TITLE = 217;
+  static readonly PK_CLASS_FIELD_EXACT_REFERENCE = 218;
+  static readonly PK_CLASS_FIELD_ENTITY_DEFINITION = 219;
+
+
+  /***********************
+   * System Types
+  ************************/
+
+  static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION = 179;
+  static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL = 639;
+  static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
+  static readonly PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
+
+  /***********************
+  * Analysis Types
+  ************************/
+
+  static readonly PK_ANALYSIS_TYPE__TIME_CONT = 3329;
 }

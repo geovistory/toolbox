@@ -4,9 +4,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { FormFactoryService } from './services/form-factory.service';
 import { CommonModule } from '@angular/common';
+import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, PortalModule],
   providers: [FormFactoryService]
 })
 export class FormFactoryModule { }

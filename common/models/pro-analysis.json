@@ -18,15 +18,7 @@
       "type": "string",
       "required": false
     },
-    "query_definition": {
-      "type": "object",
-      "required": true
-    },
-    "visual_definition": {
-      "type": "object",
-      "required": true
-    },
-    "query_results": {
+    "analysis_definition": {
       "type": "object",
       "required": true
     },
@@ -66,9 +58,61 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
+        "run",
         "findById"
       ]
     }
   ],
-  "methods": {}
+  "methods": {
+    "run": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "analysisType",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the analysis type.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "analysisDefinition",
+          "type": "object",
+          "required": false,
+          "description": "analysisDefinition object.",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProClassFieldConfig"
+        ],
+        "root": true
+      },
+      "description": "Run analysis",
+      "http": {
+        "path": "/run",
+        "verb": "post"
+      }
+    }
+  }
 }

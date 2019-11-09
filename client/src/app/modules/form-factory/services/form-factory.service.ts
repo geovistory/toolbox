@@ -1,13 +1,20 @@
-import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
+import { Injectable, Injector } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
+import { U } from 'app/core';
 import { Observable } from 'rxjs';
 import { FormGroupFactory } from '../core/form-group-factory';
 import { FormArrayFactory } from '../core/form-array-factory';
 import { FormControlFactory } from '../core/form-control-factory';
+import { FormChildFactory } from '../core/form-child-factory';
 
-export interface FormFactory {
-  formGroup: FormGroup;
-  formGroupFactory: FormGroupFactory
+export class FormFactory {
+  constructor(
+    public formGroup: FormGroup,
+    public formGroupFactory: FormGroupFactory
+  ) { }
+  markAllAsTouched() {
+    this.formGroupFactory.markAllAsTouched()
+  }
 }
 export interface FormGroupConfig<M> {
   data: M // custom data depending on implementation
@@ -39,12 +46,24 @@ export interface FormControlConfig<M> {
   // gets called when removed
   removeHook?: () => any
 }
+export interface FormChildFactoryConfig<Ch> {
+  component: any;
+  required: boolean;
+  validators?: ValidatorFn[]
+  initVal$?
+  data: Ch
 
-export interface FormNodeConfig<G, A, C> {
+  mapValue: (d) => any
+
+  // gets called when removed
+  removeHook?: () => any
+}
+
+export interface FormNodeConfig<G, A, C, Ch> {
   group?: FormGroupConfig<G>
   array?: FormArrayConfig<A>
   control?: FormControlConfig<C>
-
+  childFactory?: FormChildFactoryConfig<Ch>
   id?: string
 
   disabled?: boolean
@@ -53,31 +72,35 @@ export interface FormNodeConfig<G, A, C> {
 /**
  * Interface for the public API of the module
  */
-export interface FormFactoryConfig<G, A, C> {
+export interface FormFactoryConfig<G, A, C, Ch> {
   hideTitle?: boolean;
   rootFormGroup$: Observable<FormGroupConfig<G>>
-  getChildNodeConfigs?: (config?: FormNodeConfig<G, A, C>) => Observable<FormNodeConfig<G, A, C>[]>
+  getChildNodeConfigs?: (config?: FormNodeConfig<G, A, C, Ch>) => Observable<FormNodeConfig<G, A, C, Ch>[]>
 }
 
 /**
  * Interface for the internal global object shared and passed down the tree by
  * all Children Factories
  */
-export interface FormFactoryGlobal<G, A, C> extends FormFactoryConfig<G, A, C> {
+export interface FormFactoryGlobal<G, A, C, Ch> extends FormFactoryConfig<G, A, C, Ch> {
   fb: FormBuilder
   root?: FormGroupFactory
   destroy$: Observable<boolean>
+  _injector: Injector
 }
 
 
 @Injectable()
 export class FormFactoryService {
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    public _injector: Injector,
+  ) {
   }
 
-  create<G, A, C>(config: FormFactoryConfig<G, A, C>, destroy$: Observable<boolean>): Observable<FormFactory> {
+  create<G, A, C, Ch>(config: FormFactoryConfig<G, A, C, Ch>, destroy$: Observable<boolean>): Observable<FormFactory> {
     const level = 0;
-    const globalConfig = { ...config, fb: this.fb, destroy$ }
+    const globalConfig = { ...config, fb: this.fb, destroy$, _injector: this._injector }
     return new FormGroupFactory(globalConfig, level).formFactory$;
   }
 }

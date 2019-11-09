@@ -1,33 +1,24 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { AfterViewInit, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { ActiveProjectService, ProQuery, IAppState, SubstoreComponent } from 'app/core';
+import { AfterViewInit, ChangeDetectorRef, Component, forwardRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActiveProjectService, IAppState, ProQuery, SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 import { clone, values } from 'ramda';
-import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
-import { filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
-import { ClassAndTypeFilterComponent } from '../../components/class-and-type-filter/class-and-type-filter.component';
-import { ColDef } from '../../components/col-def-editor/ColDef';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
+import { TabLayoutComponentInterface } from '../../../projects/containers/project-edit/project-edit.component';
+import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
+import { ColDef } from '../../../../../../../src/query/col-def';
 import { PropertyOption } from '../../components/property-select/property-select.component';
+import { FilterDefinition, QueryFilterComponent } from '../../components/query-filter/query-filter.component';
+import { ResultTableDefinition } from '../../components/result-table/result-table.component';
 import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
 import { FileType, QueryDetail } from './api/query-detail.models';
 import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-detail.reducer';
-import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
-import { TabLayoutComponentInterface } from '../../../projects/containers/project-edit/project-edit.component';
-import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-import { QueryFilter } from './FilterTree';
-import { QueryFilterComponent, FilterDefinition } from '../../components/query-filter/query-filter.component';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
-import { ResultTableDefinition } from '../../components/result-table/result-table.component';
 
-
-export interface GvQuery {
-  filter: QueryFilter,
-  columns: ColDef[],
-  limit?: number,
-  offset?: number
-}
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -93,7 +84,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
   t: TabLayout;
 
-  filterDef$ = new Subject()
+  initVal$ = new Subject()
   constructor(
     protected rootEpics: RootEpics,
     private epics: QueryDetailAPIEpics,
@@ -159,7 +150,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     if (this.pkEntity) this.loadExistingQuery();
     if (!this.pkEntity) {
       this.t.setTabTitle('New Query*');
-      this.filterDef$ = new BehaviorSubject(undefined)
+      this.initVal$ = new BehaviorSubject(undefined)
     }
 
     this.pending$ = this.loadingPages$.pipe(
@@ -172,7 +163,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
     })
 
     this.comQuery$.pipe(filter(q => !!q), takeUntil(this.destroy$)).subscribe(comQuery => {
-      this.filterDef$.next(comQuery.query.filter)
+      this.initVal$.next(comQuery.query.filter)
       this.columnsCtrl.setValue(comQuery.query.columns);
       this.nameCtrl.setValue(comQuery.name);
       this.descriptionCtrl.setValue(comQuery.description);

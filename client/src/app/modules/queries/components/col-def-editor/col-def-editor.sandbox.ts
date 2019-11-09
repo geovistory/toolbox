@@ -8,7 +8,7 @@ import { QueriesModule } from '../../queries.module';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { PropertyOption } from '../property-select/property-select.component';
 import { ColDefEditorComponent } from '../col-def-editor/col-def-editor.component';
-import { ColDef } from "../col-def-editor/ColDef";
+import { ColDef } from "../../../../../../../src/query/col-def";
 
 const options$ = new BehaviorSubject(null)
 options$.pipe(first(), delay(1000)).subscribe(() => {

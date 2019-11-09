@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { ClassAndTypeFilterComponent } from './class-and-type-filter.component';
-import { QueryFilter } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from "../../../../../../../src/query/query-filter";
 
 // create a BehaviorSubject that emits first null, and after 1 sec [21, 61]
 const pkClasses$ = new BehaviorSubject(null)

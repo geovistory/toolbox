@@ -14,18 +14,6 @@
       "type": "string",
       "required": false
     },
-    "query_definition_schema": {
-      "type": "object",
-      "required": true
-    },
-    "visual_definition_schema": {
-      "type": "object",
-      "required": true
-    },
-    "query_results_schema": {
-      "type": "object",
-      "required": true
-    },
     "rows_limit": {
       "type": "number",
       "required": true

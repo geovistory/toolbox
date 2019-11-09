@@ -6,7 +6,7 @@ import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.co
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil, tap, delay } from 'rxjs/operators';
-import { QueryFilter, FilterTreeData } from '../../containers/query-detail/FilterTree';
+import { QueryFilter, QueryFilterData } from '../../../../../../../src/query/query-filter';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
 import { PropertyOption } from '../property-select/property-select.component';
@@ -303,7 +303,7 @@ export class ClassAndTypeFilterComponent extends ClassAndTypeFilterMatControl im
     this.validChanged.emit(this.valid)
   }
 
-  treeDataChange(treeData: FilterTreeData) {
+  treeDataChange(treeData: QueryFilterData) {
 
     this.selectedClassesAndTypes = {
       classes: treeData ? treeData.classes || [] : [],

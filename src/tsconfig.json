@@ -1,0 +1,28 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "outDir": "../dist",
+    "baseUrl": "./",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "target": "ES6",
+    "types": [],
+    "typeRoots": [
+      "../node_modules/@types"
+    ],
+    "module": "commonjs",
+  },
+  "exclude": [
+    "../node_modules",
+    "**/*.d.ts",
+    "**/typegen.ts"
+  ]
+}

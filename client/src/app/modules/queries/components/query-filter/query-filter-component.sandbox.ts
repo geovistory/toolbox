@@ -259,12 +259,12 @@ export default sandboxOf(QueryFilterComponent, {
     InitStateModule
   ]
 })
-.add('Query Filter Component | Empty ', {
-  context: {
-    pkProject: 24,
-    f: {},
-  },
-  template: `
+  .add('Query Filter Component | Empty ', {
+    context: {
+      pkProject: 24,
+      f: {},
+    },
+    template: `
       <gv-init-state [projectFromApi]="pkProject">
         <div class="d-flex justify-content-center mt-5">
             <div style="width:600px;height:400px" class="d-flex mr-4">
@@ -279,18 +279,18 @@ export default sandboxOf(QueryFilterComponent, {
             </div>
         </div>
       </gv-init-state>`
-})
+  })
   .add('Query Filter Component | Preset Short ', {
     context: {
       pkProject: 24,
       f: {},
-      filterDef$: of(filterDefShort)
+      initVal$: of(filterDefShort)
     },
     template: `
         <gv-init-state [projectFromApi]="pkProject">
           <div class="d-flex justify-content-center mt-5">
               <div style="width:600px;height:400px" class="d-flex mr-4">
-                  <gv-query-filter #c [filterDef$]="filterDef$"></gv-query-filter>
+                  <gv-query-filter #c [initVal$]="initVal$"></gv-query-filter>
               </div>
               <div>
                   <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
@@ -306,13 +306,13 @@ export default sandboxOf(QueryFilterComponent, {
     context: {
       pkProject: 24,
       f: {},
-      filterDef$: of(filterDefLong)
+      initVal$: of(filterDefLong)
     },
     template: `
         <gv-init-state [projectFromApi]="pkProject">
           <div class="d-flex justify-content-center mt-5">
               <div style="width:600px;height:400px" class="d-flex mr-4">
-                  <gv-query-filter #c [filterDef$]="filterDef$"></gv-query-filter>
+                  <gv-query-filter #c [initVal$]="initVal$"></gv-query-filter>
               </div>
               <div>
                   <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
@@ -328,13 +328,13 @@ export default sandboxOf(QueryFilterComponent, {
     context: {
       pkProject: 24,
       f: {},
-      filterDef$: of(filterDefLong2)
+      initVal$: of(filterDefLong2)
     },
     template: `
         <gv-init-state [projectFromApi]="pkProject">
           <div class="d-flex justify-content-center mt-5">
               <div style="width:600px;height:400px" class="d-flex mr-4">
-                  <gv-query-filter #c [filterDef$]="filterDef$"></gv-query-filter>
+                  <gv-query-filter #c [initVal$]="initVal$"></gv-query-filter>
               </div>
               <div>
                   <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>

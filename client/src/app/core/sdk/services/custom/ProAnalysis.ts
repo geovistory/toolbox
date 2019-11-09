@@ -32,6 +32,41 @@ export class ProAnalysisApi extends BaseLoopBackApi {
   }
 
   /**
+   * Run analysis
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @param {number} analysisType Pk of the analysis type.
+   *
+   * @param {object} data Request data.
+   *
+   *  - `analysisDefinition` – `{object}` - analysisDefinition object.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProAnalysis` object.)
+   * </em>
+   */
+  public run(pkProject: any, analysisType: any, analysisDefinition: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProAnalyses/run";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      analysisDefinition: analysisDefinition
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof analysisType !== 'undefined' && analysisType !== null) _urlParams.analysisType = analysisType;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `ProAnalysis`.
    */

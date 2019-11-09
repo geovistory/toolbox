@@ -7,10 +7,10 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, takeUntil, switchMap } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
-import { ColDef } from "../col-def-editor/ColDef";
+import { ColDef } from "../../../../../../../src/query/col-def";
 import { PropertyOption } from '../property-select/property-select.component';
 import { QueryPathControlComponent, QueryPathMetaInfo } from '../query-path-control/query-path-control.component';
-import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
+import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 

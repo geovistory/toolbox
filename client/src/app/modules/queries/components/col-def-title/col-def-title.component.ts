@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ColDef } from "../col-def-editor/ColDef";
+import { ColDef } from "../../../../../../../src/query/col-def";
 
 @Component({
   selector: 'gv-col-def-title',

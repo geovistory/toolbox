@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProAnalysis, ActiveProjectService } from 'app/core';
+import { ProAnalysis, ActiveProjectService, AnalysisTabData, SysConfig } from 'app/core';
 
 @Component({
   selector: 'gv-analysis-list',
@@ -17,23 +17,19 @@ export class AnalysisListComponent implements OnInit {
   }
 
   newTimelineContinuous() {
-    this.p.addTab({
+    this.p.addTab<AnalysisTabData>({
       active: true,
       component: 'analysis-detail',
       icon: 'analysis',
       pathSegment: 'analysisDetails',
-      data: { pkEntity }
+      data: {
+        fkAnalysisType: SysConfig.PK_ANALYSIS_TYPE__TIME_CONT
+      }
     })
   }
 
   open(pkEntity?: number) {
 
-    this.p.addTab({
-      active: true,
-      component: 'query-detail',
-      icon: 'query',
-      pathSegment: 'queryDetails',
-      data: { pkEntity }
-    })
+
   }
 }

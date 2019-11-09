@@ -166,6 +166,10 @@
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
           </gv-visual-detail>
 
+          <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis-detail'"
+            [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
+            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+          </gv-analysis-detail>
 
           <gv-project-settings-data class="gv-tab-content" *ngIf="tab.component=='classes-settings'"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">

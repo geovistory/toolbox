@@ -6,9 +6,9 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil, delay } from 'rxjs/operators';
 import { PropertyOption, PropertySelectModel, propertiesRequiredCondition } from '../property-select/property-select.component';
 import { QueryService } from '../../services/query.service';
-import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
+import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
 import { equals } from 'ramda';
-import { QueryFilter } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from "../../../../../../../src/query/query-filter";
 import { propertyFilterRequiredValidator } from '../property-filter/property-filter.component';
 
 

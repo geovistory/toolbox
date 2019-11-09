@@ -1,7 +1,7 @@
 import { sandboxOf } from 'angular-playground';
 import { BehaviorSubject } from 'rxjs';
 import { TimelineModule } from '../../timeline.module';
-import { ChartLineData, ChartLinePoint, ChartLine } from '../chart-line-visual/chart-line-visual.component';
+import { ChartLineData, ChartLinePoint, ChartLine } from '../../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface'
 import { TimelineChartComponent } from './timeline-chart.component';
 import { ship_voyages, ship_voyages_by_place, births_40k } from './timeline-chart.mock';
 import { few_births } from './timeline-chart.few-births.mock';
@@ -41,7 +41,7 @@ const data3$ = new BehaviorSubject<ChartLineData>({
 const births: ChartLinePoint[] = JSON.parse(births_40k);
 const data4$ = new BehaviorSubject<ChartLineData>({
   activeLine: 0,
-    chartLines: [
+  chartLines: [
     {
       label: 'Births',
       linePoints: births
@@ -51,7 +51,7 @@ const data4$ = new BehaviorSubject<ChartLineData>({
 
 const data5$ = new BehaviorSubject<ChartLineData>({
   activeLine: 0,
-    chartLines: [
+  chartLines: [
     {
       label: 'Births',
       linePoints: few_births

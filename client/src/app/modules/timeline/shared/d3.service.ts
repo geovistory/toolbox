@@ -1,14 +1,16 @@
+import { DatePipe } from '@angular/common';
 import { Injectable } from '@angular/core';
+import { U } from 'app/core';
 import * as d3 from 'd3';
 import { Observable } from 'rxjs';
-
+import { ChartLinePoint } from '../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface';
+import { ChartLineDefinition } from '../components/chart-line-visual/chart-line-visual.component';
 import { TimePrimitiveVisual } from '../models/time-primitive-visual';
-import { Timeline, TimeLineData, RangeChangeEvent } from '../models/timeline';
+import { RangeChangeEvent, Timeline, TimeLineData } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
-import { DatePipe } from '@angular/common';
-import { ChartLineDefinition, ChartLinePoint, ChartLine } from '../components/chart-line-visual/chart-line-visual.component';
 import { YAxisDefinition } from '../models/y-axis-definition';
-import { U } from 'app/core';
+
+
 
 @Injectable()
 export class D3Service {
@@ -127,9 +129,9 @@ export class D3Service {
     const d3element = d3.select(element);
 
     const axis = d3.axisLeft(yAxis.scale)
-    .tickSizeInner(yAxis.config.tickSizeInner)
-    .tickSizeOuter(yAxis.config.tickSizeOuter)
-    .tickPadding(yAxis.config.tickPadding);
+      .tickSizeInner(yAxis.config.tickSizeInner)
+      .tickSizeOuter(yAxis.config.tickSizeOuter)
+      .tickPadding(yAxis.config.tickPadding);
 
     d3element.attr('transform', `translate(${yAxis.config.marginLeft},0)`).call(axis);
   }

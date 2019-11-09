@@ -4,7 +4,7 @@ import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
-import { QueryFilter } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from "../../../../../../../src/query/query-filter";
 import { QueriesModule } from '../../queries.module';
 import { SubgroupComponent } from './subgroup.component';
 

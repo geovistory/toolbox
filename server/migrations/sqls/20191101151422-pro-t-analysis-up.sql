@@ -4,9 +4,7 @@ CREATE TABLE projects.analysis (
   fk_analysis_type INTEGER NOT NULL REFERENCES system.analysis_type (pk_entity),
   name text,
   description text,
-  query_definition jsonb,
-  visual_definition jsonb,
-  query_results jsonb)
+  analysis_definition jsonb)
 INHERITS (
   projects.entity
 );

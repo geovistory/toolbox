@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
-import { ActiveProjectService, IAppState, Tab, U, UiContext } from 'app/core';
+import { ActiveProjectService, IAppState, Tab, U, UiContext, PeItTabData } from 'app/core';
 import { ClassInstanceLabel, PeItDetail, SubstoreComponent } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
@@ -47,7 +47,7 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
    */
 
   @Input() pkEntity: number;
-  @Input() tab: Tab;
+  @Input() tab: Tab<PeItTabData>;
 
   // Visibility of header in left area
   @select() showHeader$: Observable<boolean>;

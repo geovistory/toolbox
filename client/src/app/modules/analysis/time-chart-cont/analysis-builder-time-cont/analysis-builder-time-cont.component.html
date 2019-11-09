@@ -1,0 +1,11 @@
+<gv-analysis-layout>
+
+  <gv-time-chart-cont-form analysis-settings #c>
+    <button mat-flat-button color="primary" (click)="a.runAnalysis()" matTooltip="Create Analysis">Run</button>
+  </gv-time-chart-cont-form>
+
+  <div results class="h-100">
+    <gv-timeline-chart [data$]="a.results$"></gv-timeline-chart>
+  </div>
+
+</gv-analysis-layout>

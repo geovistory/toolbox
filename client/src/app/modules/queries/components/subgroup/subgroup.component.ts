@@ -9,7 +9,7 @@ import { delay, distinctUntilChanged, map, merge, mergeMap, startWith, takeUntil
 import { ClassAndTypeSelectComponent } from '../class-and-type-select/class-and-type-select.component';
 import { PropertyFilterComponent } from '../property-filter/property-filter.component';
 import { PropertyOption } from '../property-select/property-select.component';
-import { QueryFilter, FilterTreeData } from '../../containers/query-detail/FilterTree';
+import { QueryFilter, QueryFilterData } from '../../../../../../../src/query/query-filter';
 interface DynamicFormControl {
   key: string,
   component: 'class-and-type-filter' | 'property-filter' | 'subgroup',
@@ -149,7 +149,7 @@ class SubgroupMatControl implements OnDestroy, ControlValueAccessor, MatFormFiel
     this.formGroup.addControl(f.key, f.ctrl)
   }
 
-  protected addCrtl(child: QueryFilter, index: number, data: FilterTreeData) {
+  protected addCrtl(child: QueryFilter, index: number, data: QueryFilterData) {
     if ((child && child.data && child.data.subgroup)) {
       this.addSubgroupCtrl(index, child);
     } else {
@@ -252,7 +252,7 @@ export class SubgroupComponent extends SubgroupMatControl implements OnDestroy, 
     this.formGroup.valueChanges
       .pipe(distinctUntilChanged(equals), delay(0), takeUntil(this.destroy$))
       .subscribe(() => {
-        const data: FilterTreeData = (this.value || { data: {} }).data;
+        const data: QueryFilterData = (this.value || { data: {} }).data;
         const children: QueryFilter[] = []
         keys(this.formGroup.value).forEach(key => {
           const val = this.formGroup.value[key];

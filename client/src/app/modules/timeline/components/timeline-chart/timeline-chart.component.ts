@@ -4,11 +4,11 @@ import { GregorianDateTime, JulianDateTime } from 'app/core';
 import { DimensionChangeEvent } from 'app/shared/directives/dimension-change/dimension-change.directive';
 import { merge, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { ChartLineData } from '../../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface'
 import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definition';
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';
-import { ChartLineData, ChartLineDefinition, ChartLineXAxisValueLabel } from '../chart-line-visual/chart-line-visual.component';
-
+import { ChartLineDefinition, ChartLineXAxisValueLabel } from '../chart-line-visual/chart-line-visual.component';
 
 @Component({
   selector: 'gv-timeline-chart',
@@ -150,7 +150,7 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
       domainStart: this.yMin,
       domainEnd: this.yMax,
       height: this.height,
-      marginTop: 15,
+      marginTop: 30,
       marginBottom: 30,
       marginLeft: 30,
       tickSizeInner: 5,

@@ -6,7 +6,7 @@ import { ClassAndTypePathSegmentComponent } from './class-and-type-path-segment.
 import { BehaviorSubject } from 'rxjs';
 import { first, delay } from 'rxjs/operators';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
-import { QueryPathSegment } from "../col-def-editor/QueryPathSegment";
+import { QueryPathSegment } from "../../../../../../../src/query/query-path-segment";
 
 
 

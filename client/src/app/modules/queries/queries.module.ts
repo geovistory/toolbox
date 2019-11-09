@@ -133,7 +133,8 @@ const components = [
   declarations: components,
   exports: components,
   entryComponents: [
-    ResultingEntitiesDialogComponent
+    ResultingEntitiesDialogComponent,
+    QueryFilterComponent
   ]
 
 })

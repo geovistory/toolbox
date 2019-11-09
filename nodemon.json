@@ -1,5 +1,10 @@
 {
   "verbose": true,
   "ext": "js,ts,json",
-  "watch": ["common", "server", "custom"]
+  "watch": [
+    "common",
+    "server",
+    "custom",
+    "dist"
+  ]
 }

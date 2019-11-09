@@ -1,6 +1,6 @@
 export type SubGroupType = 'property' | 'classAndType'
 
-export interface FilterTreeData {
+export interface QueryFilterData {
   subgroup?: SubGroupType;
   operator?: string;
 
@@ -13,6 +13,6 @@ export interface FilterTreeData {
   ingoingProperties?: number[]
 }
 export class QueryFilter {
-  constructor(public data: FilterTreeData = {}, public children: QueryFilter[] = []) {
+  constructor(public data: QueryFilterData = {}, public children: QueryFilter[] = []) {
   }
 }
