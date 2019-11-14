@@ -1,5 +1,5 @@
 'use strict';
-const AnalysisRemotes = require('../../dist/analysis/analysis-remotes')
+const AnalysisRemotes = require('../../server/dist/analysis/analysis-remotes')
   .AnalysisRemotes;
 module.exports = function(ProAnalysis) {
   /**
@@ -11,9 +11,13 @@ module.exports = function(ProAnalysis) {
 
   ProAnalysis.runAnalysisById = function(pkAnalysis) {};
 
-  /**
-   * Run a query devlivered as queryDefinition object by the caller.
-   *
-   */
-  ProAnalysis.runQueryDefinition = function(queryFilter, fkAnalysisType) {};
+  ProAnalysis.beforeRemote('create', function(ctx, unused, next) {
+    if (!ctx.args.options.accessToken.userId)
+      return Error('AccesToken.userId is missing.');
+
+    const v = AnalysisRemotes.validateProAnalysis(ctx.req.body);
+    if (v) return Error(v);
+
+    next();
+  });
 };

@@ -8,9 +8,10 @@ import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-facto
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { QueryFilter } from '../../../../../../../src/query/query-filter';
-import { QueryFilterComponent, QueryFilterInjectData, FormFactoryComponent } from 'app/modules/queries/components/query-filter/query-filter.component';
+import { QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { TimeChartContLine, TimeChartContInput } from '../../../../../../../src/analysis/time-chart-cont/input/time-chart-cont-input.interface';
+import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 export interface TccFormArrayData {
   type: 'lineArray' | 'line' | 'queryFilter'
 }
@@ -22,8 +23,9 @@ export interface TccFormGroupData {
 export interface TccFormControlData {
   type: 'lineLabel'
 }
-export interface TccFormChildData extends QueryFilterInjectData {
+export interface TccFormChildData {
   type: 'queryFilter'
+  queryFilter: QueryFilterInjectData
 }
 
 export type TccFormNodeConfig = FormNodeConfig<TccFormGroupData, TccFormArrayData, TccFormControlData, TccFormChildData>;
@@ -87,11 +89,14 @@ export const lineControlConfigs = (rootClasses$: Observable<number[]>): TccFormN
     childFactory: {
       component: QueryFilterComponent,
       required: true,
-      initVal$: of(undefined),
       data: {
         type: 'queryFilter',
-        rootClasses$
+        queryFilter: {
+          initVal$: of(undefined),
+          rootClasses$,
+        }
       },
+      getInjectData: (d) => (d.queryFilter),
       mapValue: (x) => x
     }
   },

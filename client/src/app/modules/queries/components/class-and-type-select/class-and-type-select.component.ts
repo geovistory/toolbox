@@ -1,17 +1,130 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self, Directive } from '@angular/core';
-import { ControlValueAccessor, NgControl, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { Component, Input, OnInit, Optional, Self, Directive } from '@angular/core';
+import { NgControl, AbstractControl, ValidatorFn, Validator, NG_VALIDATORS } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService } from 'app/core';
-import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
-import { BehaviorSubject, combineLatest, Observable, of, Subject, empty } from 'rxjs';
-import { distinct, filter, map, mergeMap, tap, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { AbstractChecklistControl } from 'app/shared/components/checklist-control/classes/abstract-checklist-control';
+import { NestedNode, ChecklistControlService } from 'app/shared/components/checklist-control/services/checklist-control.service';
+import { distinct, switchMap, map } from 'rxjs/operators';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { ClassAndTypeNode } from 'app/modules/information/new-components/classes-and-types-select/classes-and-types-select.component';
 
 export interface ClassAndTypeSelectModel {
   classes?: number[]
   types?: number[]
 }
+
+export interface NodeData {
+  label: string;
+  pkClass?: number;
+  pkType?: number;
+}
+export type ControlModel = ClassAndTypeSelectModel;
+
+@Component({
+  selector: 'gv-class-and-type-select',
+  templateUrl: './class-and-type-select.component.html',
+  styleUrls: ['./class-and-type-select.component.scss'],
+  providers: [
+    ChecklistControlService,
+    { provide: MatFormFieldControl, useExisting: ClassAndTypeSelectComponent }
+  ]
+})
+export class ClassAndTypeSelectComponent
+  extends AbstractChecklistControl<NodeData, ControlModel>
+  implements OnInit {
+  /** Inputs the tree without information about selection and expansion */
+  @Input() pkClasses$: Observable<number[]>;
+  selectedText$ = new BehaviorSubject<string>('');
+
+  constructor(
+    public s: ChecklistControlService<NodeData>,
+    @Optional() @Self() public ngControl: NgControl,
+    private i: InformationPipesService
+  ) {
+    super(s, ngControl);
+
+    s.getNodeId = (data: NodeData) => {
+      return data.pkClass + '_' + data.pkType;
+    };
+  }
+  ngOnInit() {
+    if (!this.pkClasses$) throw new Error('You must provide nestedTree$ input');
+
+    this.nestedTree$ = this.pkClasses$.pipe(
+      distinct((pk) => pk),
+      switchMap(pkClasses => (!pkClasses || !pkClasses.length) ? of([] as ClassAndTypeNode[]) : this.i.pipeClassesAndTypesOfClasses(pkClasses)),
+      map(nodes => nodes.map(node => {
+        const children: NestedNode<NodeData>[] = node.children.map(typeNode => ({
+          data: {
+            label: typeNode.label,
+            pkType: typeNode.data.pkType
+          },
+          children: []
+        }))
+        const t: NestedNode<NodeData> = {
+          data: {
+            label: node.label,
+            pkClass: node.data.pkClass
+          },
+          children
+        }
+        return t
+      })
+      )
+    )
+
+
+    this.s.dataSource.data = [];
+    this.nestedTree$.subscribe(tree => {
+      this.s.dataSource.data = tree;
+    });
+  }
+
+  /**
+   * input for write value
+   */
+  controlModelToDataArray(m: ControlModel): NodeData[] {
+    let selectedClasses: NodeData[] = [];
+    let selectedTypes: NodeData[] = [];
+    if (m && m.classes) {
+      selectedClasses = m.classes.map(pkClass => ({ pkClass, label: '' }));
+    }
+    if (m && m.types) {
+      selectedTypes = m.types.map(pkType => ({ pkType, label: '' }));
+    }
+    const treeNodeDatas: NodeData[] = [...selectedClasses, ...selectedTypes];
+    return treeNodeDatas;
+  }
+
+  /**
+   * output on value change
+   */
+  dataArrayToControlModel(ds: NodeData[]): ControlModel {
+    const classes: number[] = [],
+      types: number[] = [];
+    ds.forEach(d => {
+      if (d.pkClass) classes.push(d.pkClass);
+      else if (d.pkType) types.push(d.pkType);
+    });
+
+    this.selectedText$.next(ds.map(d => d.label).join(', '))
+
+    return { classes, types };
+  }
+
+
+
+  onOpen() {
+    this.focused = true;
+    //this.focus.emit();
+  }
+  onClose() {
+    this.focused = false;
+    this.onTouch();
+    //this.blur.emit();
+  }
+}
+
 
 export function classOrTypeRequiredCondition(model: ClassAndTypeSelectModel) {
   return (!model || !model ||
@@ -35,299 +148,3 @@ export class ClassOrTypeRequiredValidatorDirective implements Validator {
     return classOrTypeRequiredValidator()(control);
   }
 }
-
-export interface TreeNodeData {
-  id: string // id of the node
-  label: string
-  pkClass?: number
-  pkType?: number
-}
-
-// tslint:disable: member-ordering
-class ClassAndTypeSelectMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<ClassAndTypeSelectModel> {
-  static nextId = 0;
-
-  model: ClassAndTypeSelectModel;
-  // the flattened selection
-  selected: TreeNode<TreeNodeData>[]
-
-  // emits true on destroy of this component
-  autofilled?: boolean;
-  destroy$ = new Subject<boolean>();
-  stateChanges = new Subject<void>();
-  focused = false;
-  controlType = 'class-and-type-select';
-  // tslint:disable-next-line: no-use-before-declare
-  id = `class-and-type-select-${ClassAndTypeSelectComponent.nextId++}`;
-  describedBy = '';
-  onChange = (_: any) => { };
-  onTouched = () => { };
-
-  get empty() {
-    if (!this.model) return true;
-    return [
-      ...(this.model.classes || []),
-      ...(this.model.types || [])
-    ].length === 0;
-  }
-
-  get shouldLabelFloat() { return this.focused || !this.empty; }
-
-  @Input()
-  get placeholder(): string { return this._placeholder; }
-  set placeholder(value: string) {
-    this._placeholder = value;
-    this.stateChanges.next();
-  }
-  private _placeholder: string;
-
-  @Input()
-  get required(): boolean { return this._required; }
-  set required(value: boolean) {
-    this._required = coerceBooleanProperty(value);
-    this.stateChanges.next();
-  }
-  private _required = false;
-
-  @Input()
-  get disabled(): boolean { return this._disabled; }
-  set disabled(value: boolean) {
-    this._disabled = coerceBooleanProperty(value);
-
-    // TODO: this._disabled ? this.parts.disable() : this.parts.enable();
-    this.stateChanges.next();
-  }
-  private _disabled = false;
-
-  @Input()
-  get value(): ClassAndTypeSelectModel | null {
-    // TODO
-    if (!this.empty) return null;
-
-    return this.model;
-  }
-  set value(value: ClassAndTypeSelectModel | null) {
-    this.model = value;
-    const classes = !this.model ? [] : !this.model ? [] : this.model.classes || [];
-    const types = !this.model ? [] : !this.model ? [] : this.model.types || [];
-    this.selected = [
-      ...classes.map(pk => new TreeNode<TreeNodeData>({
-        id: 'class_' + pk,
-        label: ''
-      })),
-      ...types.map(pk => new TreeNode<TreeNodeData>({
-        id: 'type_' + pk,
-        label: ''
-      }))
-    ];
-
-    this.onChange(this.model)
-  }
-
-  get errorState() {
-    return this.ngControl.errors !== null && !!this.ngControl.touched;
-  }
-
-  constructor(
-    @Optional() @Self() public ngControl: NgControl
-  ) {
-    if (this.ngControl != null) {
-      this.ngControl.valueAccessor = this;
-    }
-  }
-
-  ngOnDestroy() {
-    this.stateChanges.complete();
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
-
-  setDescribedByIds(ids: string[]) {
-    this.describedBy = ids.join(' ');
-  }
-
-
-  onContainerClick(event: MouseEvent) {
-    // TODO: implement this
-
-  }
-
-  writeValue(x): void { }
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
-}
-// tslint:enable: member-ordering
-
-@Component({
-  selector: 'gv-class-and-type-select',
-  templateUrl: './class-and-type-select.component.html',
-  styleUrls: ['./class-and-type-select.component.scss'],
-  providers: [{ provide: MatFormFieldControl, useExisting: ClassAndTypeSelectComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
-})
-export class ClassAndTypeSelectComponent extends ClassAndTypeSelectMatControl implements OnInit {
-  @HostBinding('class.d-flex') dflex = true;
-
-  @Input() qtree; // TODO delete this
-  @Input() level = 0; // level of component nesting, 0...n
-
-  // The options to select
-  optionsTree$: Observable<TreeNode<TreeNodeData>[]>;
-
-  @Input() pkClasses$: Observable<number[]>;
-  @Input() showRemoveBtn = true;
-  @Input() disabled: boolean;
-
-  @Output() remove = new EventEmitter<void>();
-  @Output() validChanged = new EventEmitter<boolean>();
-  @Output() modelChanged = new EventEmitter<ClassAndTypeSelectModel>();
-  @Output() blur = new EventEmitter<void>();
-  @Output() focus = new EventEmitter<void>();
-
-  valid = false;
-
-  cache: ClassAndTypeSelectModel = {
-    classes: [],
-    types: [],
-  }
-
-  cache$: BehaviorSubject<ClassAndTypeSelectModel>
-
-  constructor(
-    private p: ActiveProjectService,
-    private i: InformationPipesService,
-    @Optional() @Self() public ngControl: NgControl
-
-  ) {
-    super(ngControl)
-    this.cache$ = new BehaviorSubject(this.cache)
-  }
-
-  ngOnInit() {
-
-    this.optionsTree$ = this.pkClasses$.pipe(
-      distinct((pk) => pk),
-      switchMap(pkClasses => (!pkClasses || !pkClasses.length) ? of([]) : this.i.pipeClassesAndTypesOfClasses(pkClasses)),
-      map(nodes => nodes.map(node => new TreeNode<TreeNodeData>(
-        {
-          id: 'class_' + node.data.pkClass,
-          label: node.label,
-          pkClass: node.data.pkClass
-        },
-        [
-          ...node.children.map(typeNode => new TreeNode<TreeNodeData>({
-            id: 'type_' + typeNode.data.pkType,
-            label: typeNode.label,
-            pkType: typeNode.data.pkType
-          }))
-        ]
-      ))
-      ),
-    )
-
-    combineLatest(this.cache$, this.optionsTree$.pipe(filter(o => !!o))).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(([cache, optionsTree]) => {
-      const classes = []
-      const types = []
-      const options = this.nestedTreeToModel(optionsTree);
-      options.types.forEach((t) => {
-        if (cache && cache.types && this.cache.types.includes(t)) {
-          types.push(t)
-        }
-      })
-      options.classes.forEach((t) => {
-        if (cache && cache.classes && cache.classes.includes(t)) {
-          classes.push(t)
-        }
-      })
-      this.value = { classes, types }
-    })
-
-  }
-  writeValue(value: ClassAndTypeSelectModel | null): void {
-    this.cache = value;
-    this.cache$.next(this.cache)
-  }
-
-  selectionChange(val: TreeNode<TreeNodeData>[]) {
-    this.cache = this.flatTreeToModel(val)
-    this.cache$.next(this.cache)
-  }
-
-  /**
-   * Converts the array of nodes to this.model of this component, containing
-   * an array of classes and an array of types. In comparison to
-   * this.nestedTreeToModel this function ignores children of the single nodes.
-   *
-   * This is useful for converting selection model sent by the tree-checklist-select
-   * component to the model of this component, since there the selected nodes
-   * are on the root level of the array (although they can contain not selected children,
-   * that need to be ignored.)
-   */
-  flatTreeToModel(val: TreeNode<TreeNodeData>[]): ClassAndTypeSelectModel {
-    return {
-      classes: val.filter(v => v.data.pkClass).map(v => v.data.pkClass),
-      types: val.filter(v => v.data.pkType).map(v => v.data.pkType),
-    }
-  }
-
-  /**
-   * Converts the nested tree to this.model, containing
-   * an array of classes and an array of types. Children of the nodes are
-   * recursivley mapped.
-   */
-  nestedTreeToModel(val: TreeNode<TreeNodeData>[]): ClassAndTypeSelectModel {
-    const classes = []
-    const types = []
-
-    const recursive = (nodes: TreeNode<TreeNodeData>[]) => {
-      nodes.forEach(node => {
-        if (node.data.pkClass) classes.push(node.data.pkClass)
-        if (node.data.pkType) types.push(node.data.pkType)
-        if (node.children) recursive(node.children.value)
-      })
-    }
-
-    recursive(val);
-
-    return { classes, types }
-  }
-
-
-  setValid() {
-    this.valid = [
-      ...(this.model.classes || []),
-      ...(this.model.types || [])
-    ].length > 0;
-    this.validChanged.emit(this.valid)
-  }
-
-  onBlur() {
-    this.onTouched();
-    this.blur.emit()
-    this.focused = false;
-  }
-
-  onFocus() {
-    this.focus.emit()
-    this.focused = true;
-  }
-
-}
-

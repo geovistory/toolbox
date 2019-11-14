@@ -26,6 +26,7 @@ export interface FormArrayConfig<A> {
   isList?: boolean;
   required?: boolean;
   maxLength?: number;
+  validators?: ValidatorFn[]
 
   // If this is a list, the number defines how many children are added on init
   addOnInit?: number;
@@ -38,6 +39,7 @@ export interface FormControlConfig<M> {
   placeholder: string
   data: M // custom data depending on implementation
   required: boolean;
+  disabled$?: Observable<boolean>;
   validators?: ValidatorFn[]
   initValue? // initial value of the control
 
@@ -50,10 +52,16 @@ export interface FormChildFactoryConfig<Ch> {
   component: any;
   required: boolean;
   validators?: ValidatorFn[]
-  initVal$?
   data: Ch
 
   mapValue: (d) => any
+
+  /**
+   * function that gets called when data is injected
+   * to child component. the data obbject will be passed
+   * in the paramter. The return value will be injected
+   */
+  getInjectData: (data: Ch) => any
 
   // gets called when removed
   removeHook?: () => any

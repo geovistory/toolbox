@@ -14,7 +14,7 @@ export class AnalysisService<I, O> {
   results$ = new BehaviorSubject<O>(null)
 
   loading: boolean;
-
+  fkAnalysisType: number
   constructor(
     private analysisApi: ProAnalysisApi,
     private dialog: MatDialog,
@@ -25,8 +25,9 @@ export class AnalysisService<I, O> {
     throw new Error('called befor registerOnRun')
   }
 
-  registerRunAnalysis(fn) {
+  registerRunAnalysis(fn, fkAnalysisType) {
     this.runAnalysis = fn
+    this.fkAnalysisType = fkAnalysisType
   }
 
   callApi(q: I) {
@@ -43,7 +44,7 @@ export class AnalysisService<I, O> {
       });
       this.loading = true;
 
-      this.analysisApi.run(pkProject, SysConfig.PK_ANALYSIS_TYPE__TIME_CONT, q).subscribe((r: O) => {
+      this.analysisApi.run(pkProject, this.fkAnalysisType, q).subscribe((r: O) => {
         this.results$.next(r);
         this.loading = false;
         dialog.close();

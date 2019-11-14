@@ -28,6 +28,20 @@ export class AnalysisListComponent implements OnInit {
     })
   }
 
+
+  newTable() {
+    this.p.addTab<AnalysisTabData>({
+      active: true,
+      component: 'analysis-detail',
+      icon: 'analysis',
+      pathSegment: 'analysisDetails',
+      data: {
+        fkAnalysisType: SysConfig.PK_ANALYSIS_TYPE__TABLE
+      }
+    })
+  }
+
+
   open(pkEntity?: number) {
 
 

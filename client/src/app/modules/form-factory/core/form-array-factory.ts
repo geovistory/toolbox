@@ -1,12 +1,13 @@
 import { FormArray } from '@angular/forms';
 import { clone } from 'ramda';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, merge, combineLatest, of } from 'rxjs';
+import { first, map, switchMap, takeUntil, startWith } from 'rxjs/operators';
 import { FormArrayConfig, FormFactoryGlobal, FormNodeConfig } from '../services/form-factory.service';
 import { FormControlFactory } from './form-control-factory';
-import { AbstractControlFactory, combineLatestOrEmpty, FactoryType } from './form-factory.models';
+import { AbstractControlFactory, combineLatestOrEmpty, FactoryType, StatusChange } from './form-factory.models';
 import { FormGroupFactory } from './form-group-factory';
 import { FormChildFactory } from './form-child-factory';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 /**
  * Factory for a formArray, being an intermediate node of the nested form
@@ -23,6 +24,7 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
   defaultChildConfig: FormNodeConfig<any, any, any, any>
 
   childFactoryValues$ = new BehaviorSubject<Observable<any>[]>([]);
+  childFactoryStatuses$ = new BehaviorSubject<Observable<StatusChange>[]>([]);
 
   constructor(
     public globalConfig: FormFactoryGlobal<any, any, any, any>,
@@ -33,7 +35,8 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
     super()
 
     this.children = []
-    this.control = this.globalConfig.fb.array([])
+    const validators = config.validators || []
+    this.control = this.globalConfig.fb.array([], validators)
 
     const childNodes$ = this.globalConfig.getChildNodeConfigs({ array: this.config })
     /**
@@ -104,6 +107,24 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
         }
         count++;
       });
+
+    // emit status changes
+    combineLatest(
+      merge(of(this.control.status), this.control.statusChanges),
+      this.childFactoryStatuses$.pipe(
+        switchMap(s$ => combineLatest(s$))
+      )
+    ).pipe(
+      map(([status, childStatuses]) => {
+        const s: StatusChange = {
+          status,
+          errors: this.control.errors,
+          children: childStatuses
+        }
+        return s
+      }),
+      takeUntil(this.globalConfig.destroy$)
+    ).subscribe(x => this.statusChanges$.next(x))
   }
 
 
@@ -116,7 +137,11 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
 
   add(i: number, c: FormNodeConfig<any, any, any, any>) {
     const f = this.create(c)
+
+    // add child factory
     this.children.splice(i, 0, f)
+
+    // add child control
     if (f.factoryType !== 'childFactory') {
       this.control.insert(i, f.control)
     }
@@ -130,11 +155,20 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
             this.control.setControl(i, c)
         })
     }
+
+    // add child config
     this.childConfigs.splice(i, 0, c)
 
+    // add value emitter
     this.childFactoryValues$.pipe(first()).subscribe(vs$ => {
       vs$.splice(i, 0, f.valueChanges$)
       this.childFactoryValues$.next(vs$)
+    })
+
+    // add status emitter
+    this.childFactoryStatuses$.pipe(first()).subscribe(s$ => {
+      s$.splice(i, 0, f.statusChanges$)
+      this.childFactoryStatuses$.next(s$)
     })
 
   }
@@ -172,6 +206,12 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
       this.childFactoryValues$.next(vs$)
     })
 
+    // remove status emitter
+    this.childFactoryStatuses$.pipe(first()).subscribe(s$ => {
+      s$.splice(i, 1)
+      this.childFactoryStatuses$.next(s$)
+    })
+
   }
 
   removeAllChildren() {
@@ -183,11 +223,39 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
     this.remove(this.children.length - 1)
   }
 
+
+  moveItemInArray(previousIndex: number, currentIndex: number) {
+    // move child control
+    const control = this.control.at(previousIndex);
+    this.control.removeAt(previousIndex);
+    this.control.insert(currentIndex, control);
+
+    // move child factory
+    moveItemInArray(this.children, previousIndex, currentIndex);
+
+    // move child config
+    moveItemInArray(this.childConfigs, previousIndex, currentIndex);
+
+    // move value emitter
+    this.childFactoryValues$.pipe(first()).subscribe(vs$ => {
+      moveItemInArray(vs$, previousIndex, currentIndex);
+      this.childFactoryValues$.next(vs$)
+    })
+
+    // move status emitter
+    this.childFactoryStatuses$.pipe(first()).subscribe(s$ => {
+      moveItemInArray(s$, previousIndex, currentIndex);
+      this.childFactoryStatuses$.next(s$)
+    })
+
+  }
+
   markAllAsTouched() {
     this.control.markAsTouched()
     this.children.forEach(child => {
       child.markAllAsTouched()
     })
   }
+
 }
 

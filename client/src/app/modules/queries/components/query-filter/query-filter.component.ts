@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit, Inject } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional } from '@angular/core';
 import { FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { U } from 'app/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
@@ -12,7 +12,7 @@ import { first, map, takeUntil, filter, switchMap } from 'rxjs/operators';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
-import { FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
+import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 
 export interface ArrSubgroupData {
   operator: 'AND' | 'OR',
@@ -96,13 +96,10 @@ export type QfFormControlFactory = FormControlFactory<QfFormControlData>;
 
 export interface QueryFilterInjectData {
   rootClasses$?: Observable<number[]>
+  initVal$: Observable<FilterDefinition>
 }
 
-export interface FormFactoryComponent {
-  initVal$?: Observable<FilterDefinition>
-  formFactory$: Observable<FormFactory>;
-  formFactory: FormFactory;
-}
+
 
 @Component({
   selector: 'gv-query-filter',
@@ -131,7 +128,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
   constructor(
     private ff: FormFactoryService,
     private c: ConfigurationPipesService,
-    @Inject(CONTAINER_DATA) public injectedData: QueryFilterInjectData & FormFactoryCompontentInjectData<Observable<FilterDefinition>>
+    @Optional() @Inject(CONTAINER_DATA) public injectedData: QueryFilterInjectData & FormFactoryCompontentInjectData<Observable<FilterDefinition>>
   ) {
     /**
      * this is used if the query filter gets injected by as child form factory

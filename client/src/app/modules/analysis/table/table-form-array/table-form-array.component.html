@@ -1,0 +1,141 @@
+<mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
+  <mat-list-item>
+    <div class="mat-headline" mat-line> Columns
+    </div>
+    <mat-menu #appMenu="matMenu">
+      <button mat-menu-item (click)="addPathColumn()">Custom Column</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="addDefaultColumn('entity_preview')">Entity Preview Column</button>
+      <button mat-menu-item (click)="addDefaultColumn('entity_label')">Entity Label Column</button>
+      <button mat-menu-item (click)="addDefaultColumn('class_label')">Class Label Column</button>
+      <button mat-menu-item (click)="addDefaultColumn('type_label')">Type Label Column</button>
+    </mat-menu>
+
+    <button class="ml-3" mat-flat-button color="primary" [matMenuTriggerFor]="appMenu">Add</button>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+  <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    <mat-error>
+      Please add at least one colum
+    </mat-error>
+
+  </mat-list-item>
+  <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    <mat-hint>
+      A good starting point is 'Entity Preview Column'
+    </mat-hint>
+  </mat-list-item>
+</mat-list>
+
+<ng-container *ngIf="formArrayFactory.config.data.columns">
+  <!-- <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
+
+    <mat-card class="mb-3">
+      <mat-card-header>
+        <mat-card-title *ngIf="child.config.data?.colDef">
+          {{getLabelForDefaulType(child.config.data?.colDef.defaultType)}}
+        </mat-card-title>
+
+      </mat-card-header>
+      <mat-card-content>
+
+
+        <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+        </gv-table-form-array>
+
+
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="warn" (click)="removeColumn(i)">Remove column</button>
+      </mat-card-actions>
+    </mat-card>
+  </div> -->
+
+  <mat-accordion cdkDropList (cdkDropListDropped)="columnDropped($event)">
+    <mat-expansion-panel cdkDrag *ngFor="let child of formArrayFactory.children; let i = index;"
+      (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title cdkDragHandle>
+          <gv-col-def-title [colDef]="child.valueChanges$ | async"></gv-col-def-title>
+        </mat-panel-title>
+        <mat-panel-description
+          *ngIf="(child.control.statusChanges | async )=== 'INVALID' && child.control.touched && !panelOpenState">
+          <mat-error>
+            Invalid, open for details.
+          </mat-error>
+          <!-- <span class="ml-auto d-flex align-items-center">
+            <gv-geo-col-signal class="mr-2" *ngIf="(dynCtrl.meta$ | async)?.isGeo"></gv-geo-col-signal>
+            <gv-time-col-signal class="mr-2" *ngIf="(dynCtrl.meta$ | async)?.isTemporal"></gv-time-col-signal>
+            <span *ngIf="dynCtrl.ctrl?.value?.defaultType">Default Column</span>
+            <span *ngIf="!dynCtrl.ctrl?.value?.defaultType">Custom Column</span>
+          </span> -->
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+      </gv-table-form-array>
+
+      <mat-action-row>
+        <button mat-button color="warn" class="ml-auto" (click)="removeColumn(i)">Remove column</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+</ng-container>
+
+<ng-container *ngIf="!formArrayFactory.config.data.columns">
+  <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
+
+    <mat-list *ngIf="child.config?.data?.filter" class="mb-4">
+      <mat-list-item>
+        <div class="mat-headline" mat-line> Filter
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+
+    <div *ngIf="child.config?.data.columnLabel">
+      <mat-divider></mat-divider>
+      <p class="mt-3 mb-3">
+        Name of the column
+      </p>
+    </div>
+
+
+    <div *ngIf="child.config?.data.path">
+      <mat-divider></mat-divider>
+      <p class="mt-3 mb-3">
+        Path to the content of this column
+      </p>
+    </div>
+
+    <!-- {{child.config?.data.type}}
+        {{formArrayFactory.config?.data.type}} -->
+
+    <!-- <div *ngIf="child.config?.data.type ==='columnLabel'" class="mat-headline pt-3">
+          Label of the col
+        </div> -->
+
+    <div class="gv-full-with" *ngIf="!formArrayFactory.config.data.columns">
+
+
+      <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+      </gv-table-form-array>
+
+      <gv-table-form-control *ngIf="child.factoryType ==='control'" [formControlFactory]="child" class="left-col">
+      </gv-table-form-control>
+
+      <ng-template *ngIf="child.factoryType ==='childFactory'" [cdkPortalOutlet]="child.portal" #outlet
+        (attached)="child.attached($event, outlet)"></ng-template>
+
+    </div>
+
+
+
+  </div>
+
+</ng-container>
+
+<div *ngIf="formArrayFactory.config.data.columns" class="mb-3 mt-5">
+  <ng-content></ng-content>
+
+</div>

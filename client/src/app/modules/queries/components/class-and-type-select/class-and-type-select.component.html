@@ -1,4 +1,37 @@
+<mat-menu #menu="matMenu" (closed)="onClose()">
+  <i *ngIf="s.treeControl.dataNodes.length===0" mat-menu-item>Nothing available</i>
+  <mat-tree [dataSource]="s.dataSource" [treeControl]="s.treeControl" (click)="$event.stopPropagation();">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+      <button mat-icon-button disabled></button>
+      <mat-checkbox class="checklist-leaf-node" [checked]="s.checklistSelection.isSelected(node)"
+        (change)="s.todoLeafItemSelectionToggle(node)">{{node.data.label}}</mat-checkbox>
+    </mat-tree-node>
 
-  <gv-tree-checklist-select class="w-100" (selectionChange)="selectionChange($event)" [value]="selected" [disabled]="disabled" (blur)="onBlur()" (focus)="onFocus()">
-    <gv-tree-checklist [treeData$]="optionsTree$"></gv-tree-checklist>
-  </gv-tree-checklist-select>
+
+    <mat-tree-node *matTreeNodeDef="let node; when: s.hasChild" matTreeNodePadding>
+      <button mat-icon-button (click)="s.toggleExpansion(node)" [attr.aria-label]="'toggle ' + node.filename">
+        <mat-icon class="mat-icon-rtl-mirror">
+          {{s.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+      <mat-checkbox [checked]="s.descendantsAllSelected(node)" [indeterminate]="s.descendantsPartiallySelected(node)"
+        (change)="s.todoItemSelectionToggle(node)">
+        {{node.data.label}}</mat-checkbox>
+    </mat-tree-node>
+  </mat-tree>
+
+</mat-menu>
+
+<button *ngIf="!disabled" class="trigger-btn" [matMenuTriggerFor]="menu" (menuOpened)="onOpen()">
+  <div class="select-value">
+    <div class="select-value-text">{{selectedText$|async}}</div>
+  </div>
+  <mat-icon class="arrow-drop-down">arrow_drop_down</mat-icon>
+</button>
+
+<button *ngIf="disabled" class="trigger-btn disabled">
+  <div class="select-value">
+    <div class="select-value-text">{{selectedText$|async}}</div>
+  </div>
+  <mat-icon class="arrow-drop-down">arrow_drop_down</mat-icon>
+</button>

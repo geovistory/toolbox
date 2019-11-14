@@ -27,6 +27,7 @@
     "module": "esnext",
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "_archive"
   ]
 }

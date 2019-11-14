@@ -2,14 +2,14 @@ import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { QueryDetail, FileType } from './query-detail.models';
-import { GvQuery } from '../../../../../../../../src/query/query';
+import { QueryDefinition } from '../../../../../../../../src/query/query';
 import { ProQuery } from 'app/core';
 type Payload = QueryDetail;
 interface MetaData {
   queryResults?: any[],
   pkProject?: number;
   pkEntity?: number;
-  query?: GvQuery;
+  query?: QueryDefinition;
   comQuery?: ProQuery;
   offset?: number
   limit?: number,
@@ -104,14 +104,14 @@ export class QueryDetailAPIActions {
 
 
   @dispatch()
-  runInit = (pkProject: number, query: GvQuery): QueryDetailAPIAction => ({
+  runInit = (pkProject: number, query: QueryDefinition): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.RUN_INIT,
     meta: { pkProject, query },
     payload: null,
   });
 
   @dispatch()
-  run = (pkProject: number, query: GvQuery): QueryDetailAPIAction => ({
+  run = (pkProject: number, query: QueryDefinition): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.RUN,
     meta: { pkProject, query },
     payload: null,
@@ -164,7 +164,7 @@ export class QueryDetailAPIActions {
   *********************************************************************/
 
   @dispatch()
-  download = (pkProject: number, query: GvQuery, filetype: FileType): QueryDetailAPIAction => ({
+  download = (pkProject: number, query: QueryDefinition, filetype: FileType): QueryDetailAPIAction => ({
     type: QueryDetailAPIActions.DOWNLOAD,
     meta: { pkProject, query, filetype },
     payload: null,

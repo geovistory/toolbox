@@ -1,21 +1,19 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService, ProQueryApi } from 'app/core';
-import { Observable, Subject, combineLatest } from 'rxjs';
-import { first, takeUntil, map } from 'rxjs/operators';
-import { QueryFilter } from '../../../../../../../src/query/query-filter';
-import { ColDef } from '../../../../../../../src/query/col-def';
-import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 import { Table } from 'primeng/table';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { QueryDefinition } from '../../../../../../../src/query/query';
+import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
+import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
+import { TableInput } from '../../../../../../../src/analysis/table/input/table-input.interface';
+import { TableOutput } from '../../../../../../../src/analysis/table/output/table-output.interface';
+import { ColDef } from '../../../../../../../src/query/col-def';
 
 export interface Example {
   id: number;
   name: string;
-}
-
-export interface ResultTableDefinition {
-  queryFilter: QueryFilter;
-  colDefs: ColDef[];
 }
 
 
@@ -26,44 +24,55 @@ export interface ResultTableDefinition {
 })
 export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   destroy$ = new Subject();
-  @Input() definition$: Observable<ResultTableDefinition>;
+  @Input() definition$: Observable<QueryDefinition>;
   @ViewChild('table', { static: false }) table: Table;
 
   displayedColumns$: Observable<string[]>;
-  items: any[];
-  pending: boolean;
+
+  definition: QueryDefinition;
+  colDefs: ColDef[] = [];
+
   limit = 50;
   lazyLoadState: {
     first: number,    // First row offset
     rows: number // Number of rows per page
   }
   pkProject: number;
+  items: any[];
+
   get totalRecords(): number {
-    if (!this.items || !this.items.length) return 0;
-    else return parseInt(this.items[0].full_count, 10)
+    const result = this.a.results$.value
+    if (!result || !result.rows.length) return 0;
+    else return result.full_count
   }
 
   constructor(
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    private queryApi: ProQueryApi
+    public a: AnalysisService<TableInput, TableOutput>
   ) {
 
   }
   ngOnInit() {
     this.displayedColumns$ = this.definition$.pipe(
-      map(def => def.colDefs.map(colDef => colDef.label))
+      map(def => def.columns.map(colDef => colDef.label))
     );
+
+    this.a.results$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      this.items = (res || { rows: [] }).rows;
+    })
 
   }
 
   ngAfterViewInit() {
     let count = 0;
     this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
+      this.definition = definition;
+      this.colDefs = definition.columns
       if (count > 0) {
-        this.table.reset();
         const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
         body.scrollTop = 0;
+        this.table.reset();
       }
       count++;
     })
@@ -74,26 +83,21 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
     rows: number // Number of rows per page
   }) {
     this.lazyLoadState = event;
-
-    combineLatest([this.p.pkProject$, this.definition$]).pipe(first(), takeUntil(this.destroy$))
-      .subscribe(([pkProject, definition]) => {
-        this.load(definition, event.first, event.rows, pkProject);
-      })
+    if (this.definition) this.load(this.definition, event.first, event.rows);
+    // combineLatest([this.p.pkProject$, this.definition$]).pipe(first(), takeUntil(this.destroy$))
+    //   .subscribe(([pkProject, definition]) => {
+    //   })
 
   }
-  private load(definition, offset: number, rows: number, pkProject: number) {
-    this.pending = true;
-    const q = {
-      filter: definition.queryFilter,
-      columns: definition.colDefs,
+  private load(definition: QueryDefinition, offset: number, rows: number) {
+
+    const queryDefinition = {
+      filter: definition.filter,
+      columns: definition.columns,
       offset: offset || 0,
       limit: rows
     };
-    this.queryApi.run(pkProject, q).pipe(first())
-      .subscribe(result => {
-        this.items = result;
-        this.pending = false;
-      });
+    this.a.callApi({ queryDefinition })
   }
 
 

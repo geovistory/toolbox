@@ -2,7 +2,7 @@
   <div class="gv-grow-1 d-flex align-items-center">
 
     <mat-form-field class="gv-grow-1">
-      <gv-class-and-type-select placeholder="Select Classes or Types" class="gv-grow-1" [pkClasses$]="pkClasses$" [level]="level + 1"
+      <gv-class-and-type-select placeholder="Select Classes or Types" class="gv-grow-1" [pkClasses$]="pkClasses$"
         [formControl]="classAndTypeCtrl" (focus)="onFocus()" (blur)="onBlur()">
       </gv-class-and-type-select>
     </mat-form-field>
@@ -18,7 +18,8 @@
 
   </div>
 
-  <gv-subgroup  *ngFor="let child of dynamicFormControls; let i = index" [formControl]="child.ctrl" [propertyOptions$]="propertyOptions$"
-    (remove)="removeChild(i)" [level]="level + 1" #c [gvNoInvalidChildren]="c.formGroup.controls"></gv-subgroup>                
-  
+  <gv-subgroup *ngFor="let child of dynamicFormControls; let i = index" [formControl]="child.ctrl"
+    [propertyOptions$]="propertyOptions$" (remove)="removeChild(i)" [level]="level + 1" #c
+    [gvNoInvalidChildren]="c.formGroup.controls"></gv-subgroup>
+
 </form>

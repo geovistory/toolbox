@@ -29,6 +29,7 @@ import { MatSliderModule, MatIconRegistry } from '@angular/material';
 import 'hammerjs';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { ChecklistControlModule } from 'app/shared/components/checklist-control/checklist-control.module';
 
 
 @NgModule()
@@ -76,7 +77,8 @@ PlaygroundModule
       ExampleTableModule,
       ValidationDirectivesModule,
       HttpClientModule,
-      MatIconRegistryModule
+      MatIconRegistryModule,
+      ChecklistControlModule
     ]
   });
 

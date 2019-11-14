@@ -1,66 +1,69 @@
 'use strict';
 
-module.exports = function (ProVisual) {
-    ProVisual.beforeRemote('create', function (ctx, unused, next) {
+module.exports = function(ProVisual) {
+  ProVisual.beforeRemote('create', function(ctx, unused, next) {
+    if (!ctx.args.options.accessToken.userId)
+      return Error('AccesToken.userId is missing.');
+    ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
 
-        if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
-        ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
+    next();
+  });
 
-        next()
-    })
+  ProVisual.beforeRemote('patchAttributes', function(ctx, unused, next) {
+    if (!ctx.args.options.accessToken.userId)
+      return Error('AccesToken.userId is missing.');
+    ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
 
-    ProVisual.beforeRemote('patchAttributes', function (ctx, unused, next) {
+    next();
+  });
 
-        if (!ctx.args.options.accessToken.userId) return Error('AccesToken.userId is missing.');
-        ctx.args.data.fk_last_modifier = ctx.args.options.accessToken.userId;
+  // ProVisual.findPerProject = function (fkProject, limit, offset, ctx, cb) {
 
-        next()
-    })
+  //     const sql = `
+  //         SELECT
+  //         latest.name,
+  //         latest.description,
+  //         latest.visual,
+  //         latest.fk_project,
+  //         latest.fk_last_modifier,
+  //         latest.pk_entity,
+  //         latest.entity_version,
+  //         latest.notes,
+  //         latest.tmsp_creation,
+  //         latest.tmsp_last_modification,
+  //         latest.sys_period,
+  //         vt.versions
+  //         FROM projects.visual latest
+  //         LEFT JOIN (
+  //             SELECT pk_entity, json_agg(entity_version ORDER BY entity_version DESC) versions
+  //             FROM projects.visual_vt
+  //             GROUP BY pk_entity
+  //         ) AS vt ON vt.pk_entity = latest.pk_entity
+  //         WHERE
+  //         latest.fk_project = $1
+  //     `
+  //     const params = [fkProject]
+  //     ProVisual.dataSource.connector.execute(sql, params, (err, resultObjects) => {
+  //         if (err) return cb(err, resultObjects);
+  //         cb(false, resultObjects)
+  //     });
 
+  // };
 
-    // ProVisual.findPerProject = function (fkProject, limit, offset, ctx, cb) {
+  ProVisual.findPerIdAndVersionAndProject = function(
+    fkProject,
+    pkEntity,
+    version,
+    ctx,
+    cb
+  ) {
+    const params = [];
+    const addPram = param => {
+      params.push(param);
+      return '$' + params.length;
+    };
 
-    //     const sql = `
-    //         SELECT
-    //         latest.name,
-    //         latest.description,
-    //         latest.visual,
-    //         latest.fk_project,
-    //         latest.fk_last_modifier,
-    //         latest.pk_entity,
-    //         latest.entity_version,
-    //         latest.notes,
-    //         latest.tmsp_creation,
-    //         latest.tmsp_last_modification,
-    //         latest.sys_period,
-    //         vt.versions
-    //         FROM projects.visual latest
-    //         LEFT JOIN ( 
-    //             SELECT pk_entity, json_agg(entity_version ORDER BY entity_version DESC) versions
-    //             FROM projects.visual_vt
-    //             GROUP BY pk_entity
-    //         ) AS vt ON vt.pk_entity = latest.pk_entity
-    //         WHERE 
-    //         latest.fk_project = $1
-    //     `
-    //     const params = [fkProject]
-    //     ProVisual.dataSource.connector.execute(sql, params, (err, resultObjects) => {
-    //         if (err) return cb(err, resultObjects);
-    //         cb(false, resultObjects)
-    //     });
-
-    // };
-
-
-    ProVisual.findPerIdAndVersionAndProject = function (fkProject, pkEntity, version, ctx, cb) {
-
-        const params = []
-        const addPram = (param) => {
-            params.push(param)
-            return '$' + params.length;
-        }
-
-        const sql = `
+    const sql = `
         WITH all_versions AS (
             SELECT *, true as is_latest from projects.visual latest
             UNION
@@ -80,25 +83,31 @@ module.exports = function (ProVisual) {
             all_versions.sys_period,
             vt.versions
             FROM all_versions
-            LEFT JOIN ( 
+            LEFT JOIN (
                 SELECT pk_entity, json_agg(entity_version ORDER BY entity_version DESC) versions
                 FROM all_versions
                 GROUP BY pk_entity
             ) AS vt ON vt.pk_entity = all_versions.pk_entity
-            WHERE all_versions.fk_project = ${addPram(fkProject)} 
-            ${pkEntity ? `AND all_versions.pk_entity = ${addPram(pkEntity)}` : ''}
-            ${version ?
-                `AND entity_version = ${addPram(version)}` :
-                `AND all_versions.is_latest = ${addPram(true)}`
+            WHERE all_versions.fk_project = ${addPram(fkProject)}
+            ${
+              pkEntity
+                ? `AND all_versions.pk_entity = ${addPram(pkEntity)}`
+                : ''
             }
-        `
+            ${
+              version
+                ? `AND entity_version = ${addPram(version)}`
+                : `AND all_versions.is_latest = ${addPram(true)}`
+            }
+        `;
 
-        ProVisual.dataSource.connector.execute(sql, params, (err, resultObjects) => {
-            if (err) return cb(err, resultObjects);
-            cb(false, resultObjects)
-        });
-
-    };
-
-
+    ProVisual.dataSource.connector.execute(
+      sql,
+      params,
+      (err, resultObjects) => {
+        if (err) return cb(err, resultObjects);
+        cb(false, resultObjects);
+      }
+    );
+  };
 };

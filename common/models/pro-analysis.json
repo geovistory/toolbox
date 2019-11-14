@@ -59,7 +59,9 @@
       "permission": "ALLOW",
       "property": [
         "run",
-        "findById"
+        "findById",
+        "create",
+        "patchAttributes"
       ]
     }
   ],

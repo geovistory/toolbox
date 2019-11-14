@@ -3,9 +3,6 @@
 declare var Object: any;
 export interface SysAnalysisTypeInterface {
   "standard_label"?: string;
-  "query_definition_schema": any;
-  "visual_definition_schema": any;
-  "query_results_schema": any;
   "rows_limit": number;
   "pk_entity"?: number;
   "entity_version"?: number;
@@ -17,9 +14,6 @@ export interface SysAnalysisTypeInterface {
 
 export class SysAnalysisType implements SysAnalysisTypeInterface {
   "standard_label": string;
-  "query_definition_schema": any;
-  "visual_definition_schema": any;
-  "query_results_schema": any;
   "rows_limit": number;
   "pk_entity": number;
   "entity_version": number;
@@ -63,18 +57,6 @@ export class SysAnalysisType implements SysAnalysisTypeInterface {
         "standard_label": {
           name: 'standard_label',
           type: 'string'
-        },
-        "query_definition_schema": {
-          name: 'query_definition_schema',
-          type: 'any'
-        },
-        "visual_definition_schema": {
-          name: 'visual_definition_schema',
-          type: 'any'
-        },
-        "query_results_schema": {
-          name: 'query_results_schema',
-          type: 'any'
         },
         "rows_limit": {
           name: 'rows_limit',

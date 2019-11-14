@@ -1,27 +1,30 @@
+<!-- {{(definition$ | async)?.columns | json}}
+{{(a.results$ |async)?.rows | json}} -->
 <p-table #table [resizableColumns]="true" [columns]="displayedColumns$ | async" [value]="items" [scrollable]="true"
   [rows]="limit" scrollHeight="100%" [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event);" [lazy]="true"
-  [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="pending">
+  [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading">
   <ng-template pTemplate="header" let-columns>
     <tr>
       <th *ngFor="let col of columns">
         {{col}}
       </th>
     </tr>
-    <mat-progress-bar mode="indeterminate"  *ngIf="pending"> </mat-progress-bar>
-    <!-- <tr class="loading-bar" *ngIf="pending">
+    <mat-progress-bar mode="indeterminate" *ngIf="a.loading"> </mat-progress-bar>
+    <!-- <tr class="loading-bar" *ngIf="a.loading">
       <th [attr.colspan]="columns.length">
       </th>
     </tr> -->
   </ng-template>
   <ng-template pTemplate="body" let-rowData let-columns="columns">
     <tr style="height:48px">
-      <td *ngFor="let col of (definition$ | async)?.colDefs">
+      <td *ngFor="let col of colDefs">
         <span *ngIf="col.ofRootTable && col.defaultType === 'entity_preview'">
           <gv-entity-preview [preview]="rowData[col.label]" [dragEnabled]="false" [openTabOnClick]="true">
           </gv-entity-preview>
         </span>
         <span *ngIf="col.ofRootTable && col.defaultType !== 'entity_preview'">{{rowData[col.label]}}</span>
         <span *ngIf="!col.ofRootTable">
+          <!-- {{rowData[col.label]?.length}} -->
           <gv-entity-preview *ngIf="rowData[col.label]?.length === 1" [preview]="rowData[col.label][0]"
             [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
           <button *ngIf="rowData[col.label]?.length > 1" mat-raised-button

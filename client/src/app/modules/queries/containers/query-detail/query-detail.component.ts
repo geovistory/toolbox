@@ -13,11 +13,11 @@ import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/
 import { ColDef } from '../../../../../../../src/query/col-def';
 import { PropertyOption } from '../../components/property-select/property-select.component';
 import { FilterDefinition, QueryFilterComponent } from '../../components/query-filter/query-filter.component';
-import { ResultTableDefinition } from '../../components/result-table/result-table.component';
 import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
 import { FileType, QueryDetail } from './api/query-detail.models';
 import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-detail.reducer';
+import { QueryDefinition } from '../../../../../../../src/query/query';
 
 
 @WithSubStore({
@@ -74,7 +74,7 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
   propertyOptions$ = new BehaviorSubject<PropertyOption[]>(null);
   classesAndTypes$ = new BehaviorSubject<ClassAndTypeSelectModel>(null);
 
-  resultTableDef$ = new BehaviorSubject<ResultTableDefinition>(undefined)
+  resultTableDef$ = new BehaviorSubject<QueryDefinition>(undefined)
 
   // result table
   colDefsCopy: ColDef[];
@@ -213,8 +213,8 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
       this.displayedColumns = this.colDefsCopy.map(col => col.label);
 
       this.resultTableDef$.next({
-        queryFilter: this.filterQueryCopy,
-        colDefs: this.colDefsCopy
+        filter: this.filterQueryCopy,
+        columns: this.colDefsCopy
       })
     })
   }

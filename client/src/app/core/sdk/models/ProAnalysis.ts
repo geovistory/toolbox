@@ -8,9 +8,7 @@ declare var Object: any;
 export interface ProAnalysisInterface {
   "name": string;
   "description"?: string;
-  "query_definition": any;
-  "visual_definition": any;
-  "query_results": any;
+  "analysis_definition": any;
   "fk_project": number;
   "fk_analysis_type": number;
   "pk_entity"?: number;
@@ -27,9 +25,7 @@ export interface ProAnalysisInterface {
 export class ProAnalysis implements ProAnalysisInterface {
   "name": string;
   "description": string;
-  "query_definition": any;
-  "visual_definition": any;
-  "query_results": any;
+  "analysis_definition": any;
   "fk_project": number;
   "fk_analysis_type": number;
   "pk_entity": number;
@@ -82,16 +78,8 @@ export class ProAnalysis implements ProAnalysisInterface {
           name: 'description',
           type: 'string'
         },
-        "query_definition": {
-          name: 'query_definition',
-          type: 'any'
-        },
-        "visual_definition": {
-          name: 'visual_definition',
-          type: 'any'
-        },
-        "query_results": {
-          name: 'query_results',
+        "analysis_definition": {
+          name: 'analysis_definition',
           type: 'any'
         },
         "fk_project": {

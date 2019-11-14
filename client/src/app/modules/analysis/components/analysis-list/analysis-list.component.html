@@ -2,7 +2,7 @@
   <div title>Your Analyses</div>
   <div buttons>
     <mat-menu #appMenu="matMenu">
-      <button mat-menu-item>
+      <button mat-menu-item (click)="newTable()">
         <mat-icon svgIcon="table-large"></mat-icon>
         <span>Table</span>
       </button>

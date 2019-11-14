@@ -2,14 +2,13 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
+import { NestedNode } from 'app/shared/components/checklist-control/services/checklist-control.service';
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil, tap, delay } from 'rxjs/operators';
+import { delay, takeUntil } from 'rxjs/operators';
 import { QueryFilter, QueryFilterData } from '../../../../../../../src/query/query-filter';
 import { QueryService } from '../../services/query.service';
-import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
-import { PropertyOption } from '../property-select/property-select.component';
+import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, NodeData } from '../class-and-type-select/class-and-type-select.component';
 
 interface DynamicFormControl {
   key: string,
@@ -41,7 +40,7 @@ class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, M
 
   model: QueryFilter;
   // the flattened selection
-  selected: TreeNode<TreeNodeData>[]
+  selected: NestedNode<NodeData>[]
 
   // emits true on destroy of this component
   autofilled?: boolean;
