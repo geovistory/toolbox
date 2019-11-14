@@ -224,7 +224,7 @@ export class QueryPathControlComponent implements OnInit, AfterViewInit, OnDestr
     const d = this.dynamicFormControls
     const l = d.length
     const type = l === 0 ? 'properties' : d[l - 1].classes ? 'properties' : 'classes';
-    this.addCtrl(new QueryPathSegment({ type, data: {} }), this.dynamicFormControls.length)
+    this.addCtrl({ type, data: {} }, this.dynamicFormControls.length)
   }
 
 

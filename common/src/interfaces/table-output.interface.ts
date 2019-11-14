@@ -1,4 +1,4 @@
-import { TableRow } from '../query-result/table-query-res.interface';
+import { TableRow } from './table-query-res.interface';
 
 export interface TableOutput {
   rows: TableRow[]

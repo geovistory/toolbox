@@ -12,33 +12,33 @@ import { ColDef } from "../../../../../../../src/query/col-def";
 
 const options$ = new BehaviorSubject(null)
 options$.pipe(first(), delay(1000)).subscribe(() => {
-    options$.next([
-        {
-            label: 'A',
-            isOutgoing: true,
-            pk: 85,
-            propertyFieldKey: propertyFieldKeyFromParams(85, true)
-        }
-    ] as PropertyOption[])
+  options$.next([
+    {
+      label: 'A',
+      isOutgoing: true,
+      pk: 85,
+      propertyFieldKey: propertyFieldKeyFromParams(85, true)
+    }
+  ] as PropertyOption[])
 })
 
 export default sandboxOf(ColDefComponent, {
-    declareComponent: false,
-    imports: [
-        QueriesModule,
-        MatFormFieldModule,
-        FormsModule,
-        InitStateModule
-    ]
+  declareComponent: false,
+  imports: [
+    QueriesModule,
+    MatFormFieldModule,
+    FormsModule,
+    InitStateModule
+  ]
 })
-    .add('Col Def | Empty ', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: {},
-            options$
-        },
-        template: `
+  .add('Col Def | Empty ', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: {},
+      options$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -68,19 +68,19 @@ export default sandboxOf(ColDefComponent, {
 
             </div>
         </div>`
-    })
-    .add('Col Def | Preset Default Column ', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: new ColDef({
-                ofRootTable: true,
-                defaultType: 'entity_preview',
-                label: 'Entity'
-            }),
-            options$
-        },
-        template: `
+  })
+  .add('Col Def | Preset Default Column ', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: {
+        ofRootTable: true,
+        defaultType: 'entity_preview',
+        label: 'Entity'
+      },
+      options$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -110,26 +110,26 @@ export default sandboxOf(ColDefComponent, {
 
             </div>
         </div>`
-    })
-    .add('Col Def | Preset Custom Col 1', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: new ColDef({
-                label: 'Fathers',
-                queryPath: [
-                    {
-                        data: {
-                            ingoingProperties: [],
-                            outgoingProperties: []
-                        },
-                        type: 'properties'
-                    }
-                ]
-            }),
-            options$
-        },
-        template: `
+  })
+  .add('Col Def | Preset Custom Col 1', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: {
+        label: 'Fathers',
+        queryPath: [
+          {
+            data: {
+              ingoingProperties: [],
+              outgoingProperties: []
+            },
+            type: 'properties'
+          }
+        ]
+      },
+      options$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -159,38 +159,38 @@ export default sandboxOf(ColDefComponent, {
 
             </div>
         </div>`
-    })
+  })
 
-    .add('Col Def | Preset Custom Col 2', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: new ColDef({
-                label: 'Father',
-                queryPath: [
-                    {
-                        data: {
-                            ingoingProperties: [],
-                            outgoingProperties: [
-                                85
-                            ]
-                        },
-                        type: 'properties'
-                    },
-                    {
-                        data: {
-                            types: [],
-                            classes: [
-                                21
-                            ]
-                        },
-                        type: 'classes'
-                    }
-                ]
-            }),
-            options$
-        },
-        template: `
+  .add('Col Def | Preset Custom Col 2', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: {
+        label: 'Father',
+        queryPath: [
+          {
+            data: {
+              ingoingProperties: [],
+              outgoingProperties: [
+                85
+              ]
+            },
+            type: 'properties'
+          },
+          {
+            data: {
+              types: [],
+              classes: [
+                21
+              ]
+            },
+            type: 'classes'
+          }
+        ]
+      },
+      options$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -220,4 +220,4 @@ export default sandboxOf(ColDefComponent, {
 
             </div>
         </div>`
-    })
+  })

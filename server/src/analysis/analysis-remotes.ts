@@ -13,12 +13,13 @@ export class AnalysisRemotes {
    * Returns a human readable code for the given analysis type
    * @param fkAnalysisType
    */
-  static getType(fkAnalysisType) {
+  static getType(fkAnalysisType: number) {
     if (fkAnalysisType === 3329) return 'time-chart-cont';
     if (fkAnalysisType === 3330) return 'table';
+    return undefined;
   };
 
-  static validateProAnalysis(analysis): { error: ErrorObj } | null {
+  static validateProAnalysis(analysis: any): { error: ErrorObj } | null {
     const type = AnalysisRemotes.getType(analysis.fk_analysis_type)
 
     const r = (v: { validObj?: any, error?: Ajv.ErrorObject[] }): { error: ErrorObj } | null => {
@@ -36,20 +37,20 @@ export class AnalysisRemotes {
     }
     else if ('table' === type) {
       return r(isValidTableQueryRes(analysis.analysis_definition))
-    } else {
-      Error('Anaylsis type not found.');
     }
+    return { error: { title: 'Anaylsis type not found.' } }
+
   }
 
 
-  constructor(private connector) { }
+  constructor(private connector: any) { }
   /**
    * Runs a analysis.
    * - Validates the inputs
    * - Checks if the analyisis not to heavy for a performant response
    * - Sends the response
    */
-  run(pkProject: number, fkAnalysisType: number, analysisDef) {
+  run(pkProject: number, fkAnalysisType: number, analysisDef: any) {
     const type = AnalysisRemotes.getType(fkAnalysisType)
 
     if ('time-chart-cont' === type) {
@@ -57,9 +58,10 @@ export class AnalysisRemotes {
     }
     else if ('table' === type) {
       return new AnalysisTable(this.connector, pkProject, analysisDef).run()
-    } else {
-      Error('Anaylsis type not found.');
     }
+
+    return Error('Anaylsis type not found.');
+
   }
 
 

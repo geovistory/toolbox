@@ -1,19 +1,26 @@
 import sqlFormatter from 'sql-formatter';
-import { ColDef } from './col-def';
+import { ColDef, ColDefWithAliases } from './col-def';
 import { QueryDefinition } from './query';
+import { QueryFilterData } from './query-filter';
 
 interface QueryNode {
-  data: {
-    // for entities table
-    classes?: number[];
-    types?: number[];
-    // for role table
-    outgoingProperties?: number[];
-    ingoingProperties?: number[];
-  }
-  children?: QueryNode[]
-  _tableAlias?: string
+  data: QueryFilterData
 }
+
+interface NestedQueryNode extends QueryNode {
+  children: NestedQueryNode[]
+}
+interface NestedQueryNodeWithAlias extends NestedQueryNode {
+  _tableAlias: string
+  children: NestedQueryNodeWithAlias[]
+
+}
+
+interface QueryNodeWithAlias extends QueryNode {
+  _tableAlias: string
+}
+
+
 
 
 export class SqlBuilder {
@@ -32,7 +39,7 @@ export class SqlBuilder {
   PK_E93_PRESENCE = 84;
   PK_P167_WAS_AT = 148;
 
-  params = [];
+  params: any[] = [];
   sql = '';
   tableAliases: string[] = [];
 
@@ -47,6 +54,7 @@ export class SqlBuilder {
 
   limit = '';
   offset = '';
+
 
   constructor() {
   }
@@ -64,13 +72,13 @@ export class SqlBuilder {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    this.createFilterFroms(query.filter, rootTableAlias, fkProject);
-    this.createFilterWheres(query.filter);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
+    this.createFilterWheres(filterWithAliases);
 
     // create froms and selects according to column definition
-    this.createColumnsFroms(query.columns, rootTableAlias, fkProject);
-    this.createColumnsSelects(query.columns, rootTableAlias, fkProject);
-    this.createColumnGroupBys(query.columns, rootTableAlias);
+    const columnsWithAliases = this.createColumnsFroms(query.columns, rootTableAlias, fkProject);
+    this.createColumnsSelects(columnsWithAliases, rootTableAlias, fkProject);
+    this.createColumnGroupBys(columnsWithAliases, rootTableAlias);
 
     // create limit, offset
     this.createLimitAndOffset(query);
@@ -136,8 +144,8 @@ export class SqlBuilder {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    this.createFilterFroms(query.filter, rootTableAlias, fkProject);
-    this.createFilterWheres(query.filter);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
+    this.createFilterWheres(filterWithAliases);
 
     this.sql = `
       WITH tw1 AS (
@@ -194,23 +202,23 @@ export class SqlBuilder {
   //   this.selects.push('(count(*) OVER())::Int AS full_count');
   // }
 
-  createColumnsFroms(columns: ColDef[], leftTableAlias: string, fkProject: number) {
-    columns.forEach(column => {
-      this.createColumnFroms(column, leftTableAlias, fkProject);
-    });
+  createColumnsFroms(columns: ColDef[], leftTableAlias: string, fkProject: number): ColDefWithAliases[] {
+    return columns.map(column => this.createColumnFroms(column, leftTableAlias, fkProject));
   }
 
-  createColumnFroms(column: ColDef, leftTableAlias: string, fkProject: number, level = 0) {
-    if (!column.ofRootTable) {
-      let thisTableAlias;
-      column.queryPath.forEach((segment, index) => {
-        console.log(level);
-        let node: QueryNode = segment;
-
-        if (this.isRolesJoin(segment) || this.isEntitesJoin(segment)) {
-          thisTableAlias = this.addTableAlias();
-          node._tableAlias = thisTableAlias;
-        }
+  createColumnFroms(column: ColDef, leftTableAlias: string, fkProject: number): ColDefWithAliases {
+    const colWithAliases: ColDefWithAliases = {
+      ...column,
+      queryPath: undefined
+    }
+    if (column && column.queryPath && !column.ofRootTable) {
+      let thisTableAlias: string;
+      colWithAliases.queryPath = column.queryPath.map((segment) => {
+        thisTableAlias = this.addTableAlias();
+        const node: QueryNodeWithAlias = {
+          ...segment,
+          _tableAlias: thisTableAlias
+        };
 
         // JOIN roles
         if (this.isRolesJoin(segment)) {
@@ -222,16 +230,6 @@ export class SqlBuilder {
             this.froms
           );
         }
-        // // JOIN Presences
-        // else if (this.isGeoEntityJoin(segment)) {
-        //   this.joinGeoEntity(
-        //     node,
-        //     leftTableAlias,
-        //     thisTableAlias,
-        //     fkProject,
-        //     this.froms
-        //   );
-        // }
         // JOIN entities
         else if (this.isEntitesJoin(segment)) {
           this.joinEntities(
@@ -243,21 +241,22 @@ export class SqlBuilder {
           );
         }
         leftTableAlias = thisTableAlias;
+
+        return node;
       });
     }
+    return colWithAliases
   }
 
-  createColumnsSelects(columns, leftTableAlias, fkProject) {
+  createColumnsSelects(columns: ColDefWithAliases[], leftTableAlias: string, fkProject: number) {
     columns.forEach(column => {
       if (column.ofRootTable) {
         if (column.defaultType === 'entity_label') {
-          this.selects.push(`${leftTableAlias}.entity_label AS "${column.label}"`);
-        } else if (column.defaultType === 'entity_type') {
-          this.selects.push(`${leftTableAlias}.entity_type AS "${column.label}"`);
+          this.selects.push(`${leftTableAlias}.entity_label AS "${column.id}"`);
         } else if (column.defaultType === 'class_label') {
-          this.selects.push(`${leftTableAlias}.class_label AS "${column.label}"`);
+          this.selects.push(`${leftTableAlias}.class_label AS "${column.id}"`);
         } else if (column.defaultType === 'type_label') {
-          this.selects.push(`${leftTableAlias}.type_label AS "${column.label}"`);
+          this.selects.push(`${leftTableAlias}.type_label AS "${column.id}"`);
         } else if (column.defaultType === 'entity_preview') {
 
           column.colNames = [
@@ -277,7 +276,7 @@ export class SqlBuilder {
                         'type_label', ${leftTableAlias}.type_label,
                         'time_span', ${leftTableAlias}.time_span,
                         'fk_project', ${leftTableAlias}.fk_project
-                      ) AS "${column.label}"`);
+                      ) AS "${column.id}"`);
 
         } else if (column.defaultType === 'temporal_distribution') {
 
@@ -290,13 +289,13 @@ export class SqlBuilder {
         // create a select for the last segment in the queryPath
         this.createColumnSelect(
           column.queryPath[column.queryPath.length - 1],
-          column.label
+          column.id
         );
       }
     });
   }
 
-  createColumnSelect(segment, columnLabel) {
+  createColumnSelect(segment: QueryNodeWithAlias, columnLabel: string) {
     if (this.isRolesJoin(segment)) {
     }
     //  else if (this.isGeoEntityJoin(segment)) {
@@ -325,43 +324,44 @@ export class SqlBuilder {
     }
   }
 
-  createFilterFroms(node: QueryNode, leftTableAlias: string, fkProject: number, level = 0) {
+  createFilterFroms(node: NestedQueryNode, leftTableAlias: string, fkProject: number, level = 0): NestedQueryNodeWithAlias {
+    const nodeWithAlias = {
+      ...node,
+      _tableAlias: this.addTableAlias()
+    }
+
     if (level > 0) {
       // JOIN roles
-      if (this.isRolesJoin(node)) {
+      if (this.isRolesJoin(nodeWithAlias)) {
         this.joinRoles(
-          node,
+          nodeWithAlias,
           leftTableAlias,
-          node._tableAlias,
+          nodeWithAlias._tableAlias,
           fkProject,
           this.filterFroms
         );
-        leftTableAlias = node._tableAlias;
+        leftTableAlias = nodeWithAlias._tableAlias;
       }
       // JOIN entities
-      else if (this.isEntitesJoin(node)) {
+      else if (this.isEntitesJoin(nodeWithAlias)) {
         this.joinEntities(
-          node,
+          nodeWithAlias,
           leftTableAlias,
-          node._tableAlias,
+          nodeWithAlias._tableAlias,
           fkProject,
           this.filterFroms
         );
-        leftTableAlias = node._tableAlias;
+        leftTableAlias = nodeWithAlias._tableAlias;
       }
     }
 
-    // console.log(level)
-
-    node.children.forEach(childNode => {
-      if (this.isRolesJoin(childNode) || this.isEntitesJoin(childNode)) {
-        childNode._tableAlias = this.addTableAlias();
-        this.createFilterFroms(childNode, leftTableAlias, fkProject, level + 1);
-      } else {
-        childNode._tableAlias = this.addTableAlias();
-        this.createFilterFroms(childNode, leftTableAlias, fkProject, level + 1);
-      }
-    });
+    const nestedNodeWithAlias = {
+      ...nodeWithAlias,
+      children: node.children.map(childNode => {
+        return this.createFilterFroms(childNode, leftTableAlias, fkProject, level + 1);
+      })
+    }
+    return nestedNodeWithAlias
   }
 
   joinEntities(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
@@ -463,14 +463,14 @@ export class SqlBuilder {
                 ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
                 `);
     const secondLevelWheres = [];
-    if (node.data.ingoingProperties.length) {
+    if (node.data.ingoingProperties && node.data.ingoingProperties.length) {
       secondLevelWheres.push(`
                     (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(
         node.data.ingoingProperties
       )}))
                     `);
     }
-    if (node.data.outgoingProperties.length) {
+    if (node.data.outgoingProperties && node.data.outgoingProperties.length) {
       secondLevelWheres.push(`
                     (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_temporal_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(
         node.data.outgoingProperties
@@ -488,7 +488,7 @@ export class SqlBuilder {
                 `);
   }
 
-  createEntityWhere(filter, tableAlias, fkProject) {
+  createEntityWhere(filter: QueryNode, tableAlias: string, fkProject: number) {
     const whereProject = `${tableAlias}.fk_project = ${this.addParam(
       fkProject
     )}`;
@@ -517,9 +517,9 @@ export class SqlBuilder {
         `;
   }
 
-  createFilterWheres(node, level = 0) {
-    let nodeWheres = [];
-    console.log(level);
+  createFilterWheres(node: NestedQueryNodeWithAlias, level = 0) {
+    let nodeWheres: string[] = [];
+    // console.log(level);
 
     node.children.forEach(childNode => {
       let childNodeWheres;
@@ -625,14 +625,12 @@ export class SqlBuilder {
   //   return false;
   // }
 
-  createColumnGroupBys(columns, parentTableAlias) {
+  createColumnGroupBys(columns: ColDefWithAliases[], parentTableAlias: string) {
     columns.forEach(column => {
       if (column.ofRootTable && !column.preventGroupBy) {
 
         if (column.defaultType === 'entity_label') {
           this.groupBys.push(`${parentTableAlias}.entity_label`);
-        } else if (column.defaultType === 'entity_type') {
-          this.groupBys.push(`${parentTableAlias}.entity_type`);
         } else if (column.defaultType === 'class_label') {
           this.groupBys.push(`${parentTableAlias}.class_label`);
         } else if (column.defaultType === 'type_label') {
@@ -649,30 +647,30 @@ export class SqlBuilder {
 
   // generic
 
-  addParam(val) {
+  addParam(val: any) {
     this.params.push(val);
     return '$' + this.params.length;
   }
 
-  addParams(vals) {
+  addParams(vals: any[]) {
     return vals.map(val => this.addParam(val)).join(',');
   }
 
-  joinWheres(wheres, operation) {
+  joinWheres(wheres: string[], operation: 'AND' | 'OR') {
     return wheres.join(`
             ${operation}
         `);
   }
-  joinFroms(froms) {
+  joinFroms(froms: string[]) {
     return froms.join(`
         `);
   }
-  joinSelects(selects) {
+  joinSelects(selects: string[]) {
     return selects.join(`,
         `);
   }
 
-  joinGroupBys(groupBys) {
+  joinGroupBys(groupBys: string[]) {
     return !!groupBys && groupBys.length
       ? `GROUP BY
       ${groupBys.join(`,

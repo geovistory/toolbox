@@ -12,9 +12,10 @@
   } {
     if (validate(candidate) === true) {
       return { validObj: candidate }
-    } else {
+    } else if (validate.errors) {
       return { error: validate.errors }
     }
+    return { error: undefined }
   }
 
    

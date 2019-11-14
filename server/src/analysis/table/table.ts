@@ -12,12 +12,12 @@ import { isValidTableQueryRes } from './query-result/table-query-res.validator';
 type Result = TableOutput;
 
 export class AnalysisTable extends Analysis<Result>   {
-  result: Result;
+  result: Result | undefined;
 
-  fullCount: number;
+  fullCount: number | undefined;
 
   constructor(
-    private connector,
+    private connector: any,
     private pkProject: number,
     private analysisDef: TableInput,
   ) {
@@ -26,7 +26,7 @@ export class AnalysisTable extends Analysis<Result>   {
   validateInputs(): Observable<HookResult<Result>> {
     const v = isValidTableInput(this.analysisDef);
     if (v.validObj) {
-      return of(null)
+      return of()
     }
     else {
       return of({
@@ -41,7 +41,7 @@ export class AnalysisTable extends Analysis<Result>   {
 
     const s$ = new Subject<HookResult<Result>>()
     const q = new SqlBuilder().buildCountQuery(this.analysisDef.queryDefinition, this.pkProject)
-    this.connector.execute(q.sql, q.params, (err, resultObjects) => {
+    this.connector.execute(q.sql, q.params, (err: any, resultObjects: any) => {
       if (err) {
         s$.next({
           error: {
@@ -64,7 +64,7 @@ export class AnalysisTable extends Analysis<Result>   {
     const s$ = new Subject<HookResult<Result>>()
     const q = new SqlBuilder().buildQuery(this.analysisDef.queryDefinition, this.pkProject)
 
-    this.connector.execute(q.sql, q.params, (err, resultObjects: TableQueryRes) => {
+    this.connector.execute(q.sql, q.params, (err: any, resultObjects: TableQueryRes) => {
       if (err) {
         s$.next({
           error: {
@@ -75,7 +75,14 @@ export class AnalysisTable extends Analysis<Result>   {
       }
       else {
         const v = isValidTableQueryRes(resultObjects)
-        if (v.validObj) {
+        if (typeof this.fullCount !== 'number') {
+          s$.next({
+            error: {
+              title: 'Something went wrong with counting the results.'
+            }
+          })
+        }
+        else if (v.validObj) {
           this.result = {
             full_count: this.fullCount,
             rows: v.validObj

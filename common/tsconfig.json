@@ -1,23 +1,27 @@
 {
-  "compileOnSave": true,
+  "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "./dist",
-    "baseUrl": "./src",
+    "outDir": "../dist",
+    "rootDir": "./src",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "target": "ES6",
     "types": [],
     "typeRoots": [
       "../../node_modules/@types"
     ],
-    "module": "commonjs",
-    "declaration": true,
     "declarationMap": true,
-    "composite": true,
   },
   "references": [],
+  "include": [
+    "./src/**/*.schema.json",
+    "./src/**/*.ts",
+  ],
   "exclude": [
     "../../node_modules",
     "**/*.d.ts",

@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
 export interface ErrorObj {
@@ -15,16 +15,17 @@ export abstract class Analysis<R> {
   destroy$ = new Subject<void>();
 
   promise: Promise<R>;
-  private resolver: (value?: R | PromiseLike<R>) => void;
-  private rejector: (reason?: any) => void;
+  private resolver!: ((value?: R | PromiseLike<R>) => void);
+  private rejector!: ((reason?: any) => void);
 
-  next: () => Observable<HookResult<R>>
+  next: (() => Observable<HookResult<R>>) | undefined
 
   constructor() {
     this.promise = new Promise((res, rej) => {
       this.resolver = res;
       this.rejector = rej;
     })
+
   }
 
   /**
@@ -41,7 +42,7 @@ export abstract class Analysis<R> {
       ).subscribe(hookRes => {
         if (hookRes && hookRes.error) {
           this.reject(hookRes.error)
-        } else {
+        } else if (hookRes.res) {
           this.resolve(hookRes.res)
         }
       })
@@ -54,19 +55,21 @@ export abstract class Analysis<R> {
     return switchMap((hookRes: HookResult<R>) => {
       if (hookRes && hookRes.error) {
         this.reject(hookRes.error)
+        const r: HookResult<R> = {}
+        return of(r)
       } else {
-        return h() as Observable<HookResult<R>>
+        return h()
       }
     })
   }
 
-  protected resolve(response) {
+  protected resolve(response: R) {
     this.resolver(response)
     this.destroy$.next();
   }
 
-  protected reject(msg) {
-    this.rejector(msg)
+  protected reject(error: ErrorObj) {
+    this.rejector(error)
     this.destroy$.next();
   }
 

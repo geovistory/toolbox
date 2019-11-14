@@ -1,23 +1,23 @@
-import { Observable, of, Subject, combineLatest } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 import { SqlBuilder } from '../../query/sql-builder';
 import { Analysis, HookResult } from '../analysis';
 import { TimeChartContInput } from './input/time-chart-cont-input.interface';
 import { isValidTimeChartContInput } from './input/time-chart-cont-input.validator';
-import { TimeChartContOutput, ChartLine } from './output/time-chart-cont-output.interface';
-import { isValidTimeChartContQueryRes } from './query-result/time-chart-cont-query-res.validator';
+import { ChartLine, TimeChartContOutput } from './output/time-chart-cont-output.interface';
 import { isValidTimeChartContOutput } from './output/time-chart-cont-output.validator';
-import { first, takeUntil, map } from 'rxjs/operators';
+import { isValidTimeChartContQueryRes } from './query-result/time-chart-cont-query-res.validator';
 
 
 
 type Result = TimeChartContOutput;
 
 export class AnalysisTimeChartCont extends Analysis<Result>   {
-  result: Result;
+  result: Result | undefined;
 
 
   constructor(
-    private connector,
+    private connector: any,
     private pkProject: number,
     private analysisDef: TimeChartContInput,
   ) {
@@ -26,7 +26,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
   validateInputs(): Observable<HookResult<Result>> {
     const v = isValidTimeChartContInput(this.analysisDef);
     if (v.validObj) {
-      return of(null)
+      return of()
     }
     else {
       return of({
@@ -43,7 +43,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
     combineLatest(this.analysisDef.lines.map((timeChartContLine, i) => {
       const q = new SqlBuilder().buildCountQuery(timeChartContLine.queryDefinition, this.pkProject)
       const q$ = new Subject();
-      this.connector.execute(q.sql, q.params, (err, resultObjects) => {
+      this.connector.execute(q.sql, q.params, (err: any, resultObjects: any) => {
         if (err) {
           s$.next({
             error: {
@@ -79,7 +79,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
     combineLatest(this.analysisDef.lines.map((timeChartContLine, i) => {
       const q = new SqlBuilder().buildQuery(timeChartContLine.queryDefinition, this.pkProject)
       const q$ = new Subject<ChartLine>();
-      this.connector.execute(q.sql, q.params, (err, resultObjects) => {
+      this.connector.execute(q.sql, q.params, (err: any, resultObjects: any) => {
         if (err) {
           s$.next({
             error: {

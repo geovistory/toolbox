@@ -83,10 +83,10 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
   get defaultLabel() { return 'New Column' }
   get defaultQueryPath() {
     return [
-      new QueryPathSegment({
+      {
         type: 'properties',
         data: {}
-      })
+      }
     ]
   }
 
@@ -233,7 +233,7 @@ export class ColDefComponent extends ColDefMatControl implements AfterViewInit, 
   ngAfterViewInit() {
     if (this.queryPathControl) {
       this.queryPathControl.metaInfoChange$.pipe(takeUntil(this.destroy$))
-      .subscribe(d => this.metaInfoChange$.next(d))
+        .subscribe(d => this.metaInfoChange$.next(d))
     }
   }
 

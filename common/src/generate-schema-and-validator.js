@@ -58,7 +58,12 @@ fromDir(__dirname, /.interface\.ts$/, function(hit) {
     throw new Error(`error when creating schema for ${interfaceName}`);
   }
   fs.writeFileSync(
-    path.join(hit.startPath, hit.filenamerest + '.schema.json'),
+    path.join(
+      hit.startPath,
+      '..',
+      'schemas',
+      hit.filenamerest + '.schema.json'
+    ),
     JSON.stringify(schema, null, 2)
   );
   console.log('created schema for ', interfaceName);
@@ -80,14 +85,20 @@ fromDir(__dirname, /.interface\.ts$/, function(hit) {
   } {
     if (validate(candidate) === true) {
       return { validObj: candidate }
-    } else {
+    } else if (validate.errors) {
       return { error: validate.errors }
     }
+    return { error: undefined }
   }
 
    `;
   fs.writeFileSync(
-    path.join(hit.startPath, hit.filenamerest + '.validator.ts'),
+    path.join(
+      hit.startPath,
+      '..',
+      'validators',
+      hit.filenamerest + '.validator.ts'
+    ),
     validatorScript
   );
   console.log('created validator for ', interfaceName);

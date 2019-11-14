@@ -103,29 +103,29 @@ export class QueryDetailComponent extends QueryDetailAPIActions implements OnIni
 
     // Prepare second form group
     this.columnsCtrl = new FormControl([
-      new ColDef({
+      {
         ofRootTable: true,
         defaultType: 'entity_preview',
         label: 'Entity'
-      }),
-      new ColDef({
+      },
+      {
         ofRootTable: true,
         defaultType: 'entity_label',
         colName: 'entity_label',
         label: 'Entity Label'
-      }),
-      new ColDef({
+      },
+      {
         ofRootTable: true,
         defaultType: 'class_label',
         colName: 'class_label',
         label: 'Class Label'
-      }),
-      new ColDef({
+      },
+      {
         ofRootTable: true,
         defaultType: 'type_label',
         colName: 'type_label',
         label: 'Type Label'
-      })
+      }
     ]) // TODO add validato
     this.secondFormGroup = this.fb.group({
       columnsContro: this.columnsCtrl

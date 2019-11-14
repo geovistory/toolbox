@@ -1,7 +1,7 @@
 export type QueryPathSegmentType = 'properties' | 'classes';
 
-export class QueryPathSegment {
-  type: QueryPathSegmentType;
+export interface QueryPathSegment {
+  type?: QueryPathSegmentType;
   data: {
     // for entities table
     classes?: number[];
@@ -10,7 +10,9 @@ export class QueryPathSegment {
     outgoingProperties?: number[];
     ingoingProperties?: number[];
   };
-  constructor(data: QueryPathSegment) {
-    Object.assign(this, data);
-  }
+}
+
+
+export interface QueryPathSegmentQueryBuilder extends QueryPathSegment {
+  _tableAlias: string
 }

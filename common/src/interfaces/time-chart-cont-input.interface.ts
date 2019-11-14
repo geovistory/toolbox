@@ -1,4 +1,4 @@
-import { QueryFilter } from '../../../query/query-filter';
+import { QueryFilter } from '../../../server/src/query/query-filter';
 
 /**
  * Input type definition for analysis of type:
@@ -18,6 +18,7 @@ export interface TimeChartContLine {
  * Note that the colums need to match an excact object.
  */
 type TimeChartQueryCols = [{
+  id: 'col_0',
   ofRootTable: true,
   preventGroupBy: true,
   defaultType: 'temporal_distribution'
