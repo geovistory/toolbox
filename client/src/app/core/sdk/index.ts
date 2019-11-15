@@ -52,6 +52,8 @@ import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldProp
 import { SysClassFieldApi } from './services/custom/SysClassField';
 import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
 import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
+import { SysAnalysisTypeApi } from './services/custom/SysAnalysisType';
+import { ProAnalysisApi } from './services/custom/ProAnalysis';
 import { ProQueryApi } from './services/custom/ProQuery';
 import { ProVisualApi } from './services/custom/ProVisual';
 import { ProPropertyLabelApi } from './services/custom/ProPropertyLabel';
@@ -119,6 +121,8 @@ export class SDKBrowserModule {
         SysClassFieldApi,
         SysClassHasTypePropertyApi,
         SysSystemRelevantClassApi,
+        SysAnalysisTypeApi,
+        ProAnalysisApi,
         ProQueryApi,
         ProVisualApi,
         ProPropertyLabelApi,

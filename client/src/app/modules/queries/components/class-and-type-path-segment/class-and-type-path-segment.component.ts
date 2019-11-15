@@ -5,17 +5,15 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil, delay } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
-import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
-import { PropertyOption } from '../property-select/property-select.component';
+import { QueryPathSegment, QueryFilterData, QueryFilter } from '../../../../../../../src/common/interfaces';
 import { ClassAndTypeSelectModel, classOrTypeRequiredCondition } from '../class-and-type-select/class-and-type-select.component';
 import { equals } from 'ramda';
 import { classAndTypeFilterRequiredValidator } from '../class-and-type-filter/class-and-type-filter.component';
-import { FilterTreeData, FilterTree } from '../../containers/query-detail/FilterTree';
 
 /** At least one class or type must be selected */
 export function classAndTypePathSegmentRequiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const model: FilterTree = control.value;
+    const model: QueryFilter = control.value;
     return model && model.data && classOrTypeRequiredCondition(model.data)
       ? { 'classAndTypePathSegmentRequired': { value: control.value } } : null
   };
@@ -167,7 +165,7 @@ export class ClassAndTypePathSegmentComponent implements AfterViewInit, OnDestro
   }
 
   // when tree data changes (object without children)
-  treeDataChange(treeData: FilterTreeData) {
+  treeDataChange(treeData: QueryFilterData) {
     this.selectedClassesAndTypes = {
       classes: (treeData || { classes: [] }).classes || [],
       types: (treeData || { types: [] }).types || []

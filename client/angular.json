@@ -24,6 +24,11 @@
                 "glob": "**/*",
                 "input": "node_modules/cesium/Build/Cesium",
                 "output": "./assets/cesium"
+              },
+              {
+                "glob": "mdi.svg",
+                "input": "node_modules/@mdi/angular-material",
+                "output": "./assets/mdi"
               }
             ],
             "styles": [
@@ -33,7 +38,8 @@
               "node_modules/quill/dist/quill.bubble.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/@cime/ngx-toasty/style-bootstrap.css",
-              "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
+              "node_modules/cesium/Build/Cesium/Widgets/widgets.css",
+              "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": [
               "node_modules/cesium/Build/Cesium/Cesium.js"
@@ -99,7 +105,8 @@
               "node_modules/quill/dist/quill.bubble.css",
               "node_modules/quill/dist/quill.snow.css",
               "node_modules/@cime/ngx-toasty/style-bootstrap.css",
-              "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
+              "node_modules/cesium/Build/Cesium/Widgets/widgets.css",
+              "node_modules/primeng/resources/primeng.min.css"
             ],
             "assets": [
               "src/assets",
@@ -154,8 +161,8 @@
       "architect": {
         "test": {
           "scripts": [
-              "./node_modules/cesium/Build/Cesium/Cesium.js"
-            ]
+            "./node_modules/cesium/Build/Cesium/Cesium.js"
+          ]
         },
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -172,6 +179,11 @@
                 "glob": "**/*",
                 "input": "node_modules/cesium/Build/Cesium",
                 "output": "./assets/cesium"
+              },
+              {
+                "glob": "mdi.svg",
+                "input": "node_modules/@mdi/angular-material",
+                "output": "./assets/mdi"
               }
             ],
             "styles": [

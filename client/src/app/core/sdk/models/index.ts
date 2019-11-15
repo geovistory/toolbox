@@ -3,6 +3,8 @@ export * from './SysClassFieldPropertyRel';
 export * from './SysClassField';
 export * from './SysClassHasTypeProperty';
 export * from './SysSystemRelevantClass';
+export * from './SysAnalysisType';
+export * from './ProAnalysis';
 export * from './ProQuery';
 export * from './ProVisual';
 export * from './ProPropertyLabel';

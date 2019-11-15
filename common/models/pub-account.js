@@ -7,6 +7,7 @@ var urlBuilder = new UrlBuilder();
 
 module.exports = function (PubAccount) {
 
+  // list all projects
   PubAccount.listProjects = function (id, cb) {
 
     const account = PubAccount.find({

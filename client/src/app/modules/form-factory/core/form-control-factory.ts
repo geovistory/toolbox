@@ -2,7 +2,7 @@ import { FormControl, Validators } from "@angular/forms";
 import { map, takeUntil } from 'rxjs/operators';
 import { FormControlConfig, FormFactoryGlobal } from '../services/form-factory.service';
 import { FormArrayFactory } from './form-array-factory';
-import { AbstractControlFactory, FactoryType } from './form-factory.models';
+import { AbstractControlFactory, FactoryType, StatusChange } from './form-factory.models';
 import { FormGroupFactory } from './form-group-factory';
 import { of, merge } from 'rxjs';
 /**
@@ -15,7 +15,7 @@ export class FormControlFactory<M> extends AbstractControlFactory {
 
 
   constructor(
-    public globalConfig: FormFactoryGlobal<any, any, any>,
+    public globalConfig: FormFactoryGlobal<any, any, any, any>,
     public config: FormControlConfig<M>,
     private level: number,
     private parent?: FormGroupFactory | FormArrayFactory<any, any>
@@ -27,5 +27,19 @@ export class FormControlFactory<M> extends AbstractControlFactory {
       map(item => this.config.mapValue(item)),
       takeUntil(this.globalConfig.destroy$)
     ).subscribe(x => this.valueChanges$.next(x))
+
+    merge(of(this.control.status), this.control.statusChanges).pipe(
+      map(status => {
+        const s: StatusChange = {
+          status,
+          errors: this.control.errors
+        }
+        return s
+      }),
+      takeUntil(this.globalConfig.destroy$)
+    ).subscribe(x => this.statusChanges$.next(x))
+  }
+  markAllAsTouched() {
+    this.control.markAsTouched()
   }
 }

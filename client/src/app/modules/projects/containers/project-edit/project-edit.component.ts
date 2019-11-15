@@ -33,7 +33,7 @@ export class OnActivateTabDirective {
 
 
 
-export interface TabBody extends Tab {
+export interface TabBody extends Tab<any> {
   panelId: number;
   panelIndex: number;
   tabIndex: number;
@@ -204,7 +204,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     return index; // or item.id
   }
 
-  trackByPath(index, item: Tab) {
+  trackByPath(index, item: Tab<any>) {
     return item.path.join('');
   }
 

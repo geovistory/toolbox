@@ -1,7 +1,7 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatIconModule, MatTableModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatTableModule, MatSliderModule, MatSelectModule, MatFormFieldModule, MatDividerModule, MatMenuModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CoreTableFilterModule } from 'app/shared/components/core-table/filter/filter.module';
 import { CoreTableMenuModule } from 'app/shared/components/core-table/menu/menu.module';
@@ -26,6 +26,10 @@ import { DraggableXAxisDirective } from './directives/draggable-x-axis.directive
 import { RangeEmitterOnMouseDownDirective } from './directives/range-emitter-on-mouse-down.directive';
 import { WrapTextDirective } from './directives/wrap-text.directive';
 import { D3Service } from './shared/d3.service';
+import { TimelineChartComponent } from './components/timeline-chart/timeline-chart.component';
+import { ChartLineVisualComponent } from './components/chart-line-visual/chart-line-visual.component';
+import { YAxisComponent } from './components/y-axis/y-axis.component';
+import { ZoomSliderComponent } from './components/zoom-slider/zoom-slider.component';
 
 @NgModule({
   imports: [
@@ -40,12 +44,18 @@ import { D3Service } from './shared/d3.service';
     ScrollingModule,
     MatIconModule,
     MatButtonModule,
+    MatSliderModule,
+    MatSelectModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatMenuModule,
     EntityPreviewModule
   ],
   declarations: [
     PointComponent,
     DraggableXAxisDirective,
     XAxisComponent,
+    YAxisComponent,
     LeftOuterVisualComponent,
     ExistenceTimeVisualComponent,
     TeEntVisualComponent,
@@ -57,13 +67,17 @@ import { D3Service } from './shared/d3.service';
     WrapTextDirective,
     RangeEmitterOnMouseDownDirective,
     TimelineTableComponent,
+    TimelineChartComponent,
     CursorHeaderVisualComponent,
     CursorLineVisualComponent,
+    ChartLineVisualComponent,
+    ZoomSliderComponent
   ],
   providers: [
     D3Service
   ],
   exports: [
+    TimelineChartComponent,
     TimelineTableComponent
   ]
 })

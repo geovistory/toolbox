@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, DfhPropertyView, limitTo, ProPropertyLabel, SysConfig } from 'app/core';
+import { ActiveProjectService, DfhPropertyView, limitTo, ProPropertyLabel, SysConfig, DfhClass } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { indexBy, uniq, values, flatten } from 'ramda';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -205,6 +205,9 @@ export class ConfigurationPipesService {
 
   }
 
+
+
+
   /**
    * returns an object where the keys are the pks of the Classes
    * used by the given project
@@ -220,7 +223,7 @@ export class ConfigurationPipesService {
   }
 
   @spyTag @cache({ refCount: false }) pipeClassesRequiredBySources() {
-    return this.p.sys$.system_relevant_class$.by_required$.key('true')
+    return this.p.sys$.system_relevant_class$.by_required_by_sources$.key('true')
       .pipe(map(c => values(c).map(k => k.fk_class)))
   }
 
@@ -230,13 +233,77 @@ export class ConfigurationPipesService {
         switchMap((cs) => combineLatest(
           values(cs).map(c => this.p.dfh$.class$.by_pk_entity$.key(c.fk_entity).pipe(
             filter(item => !!item),
-            map(dfhc => values(dfhc)[0].dfh_pk_class),
-            // startWith(0)
+            map(dfhc => values(dfhc)[0].dfh_pk_class)
           ))
         ))
       )
     ))
   }
+
+  /**
+  * returns an object where the keys are the pks of the TeEn Classes
+  * used by the given project
+  */
+  @spyTag @cache({ refCount: false }) pipeSelectedTeEnClassesInProject(): Observable<{ [key: string]: number }> {
+    return combineLatest(
+      this.pipeTeEnClassesEnabledInEntities(),
+      this.pipeTeEnClassesRequiredBySources()
+    ).pipe(
+      map(([a, b]) => indexBy((x) => x.toString(), uniq([...a, ...b]))),
+      startWith({})
+    )
+  }
+
+  /**
+   * Gets array of pk_class with teEn classes enabled in entities
+   */
+  @spyTag @cache({ refCount: false }) pipeTeEnClassesEnabledInEntities() {
+    return this.p.pkProject$.pipe(switchMap(pkProject => this.p.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
+      .pipe(
+        switchMap((cs) => combineLatest(
+          values(cs).map(c => this.p.dfh$.class$.by_pk_entity$.key(c.fk_entity).pipe(
+            filter(item => !!item),
+            map(dfhc => values(dfhc)[0])
+          ))
+        ).pipe(
+          map(dfhClasses => this.filterTeEnCasses(dfhClasses))
+        ))
+      )
+    ))
+  }
+
+  /**
+   * Filters array of DfhClass for TeEn Classes and returns array of pk_class
+   * @param dfhClasses array of DfhClass
+   * @returns returns array of pk_class where class is TeEn class
+   */
+  private filterTeEnCasses(dfhClasses: DfhClass[]): number[] {
+    const pks: number[] = [];
+    for (let i = 0; i < dfhClasses.length; i++) {
+      const c = dfhClasses[i];
+      if (c.dfh_fk_system_type === 9) pks.push(c.dfh_pk_class);
+    }
+    return pks;
+  }
+
+  /**
+   * Gets array of pk_class with teEn classes required by sources
+   */
+  @spyTag @cache({ refCount: false }) pipeTeEnClassesRequiredBySources() {
+    return this.p.sys$.system_relevant_class$.by_required_by_sources$.key('true')
+      .pipe(
+        switchMap((cs) => combineLatest(
+          values(cs).map(c => this.p.dfh$.class$.by_dfh_pk_class$.key(c.fk_class).pipe(
+            filter(item => !!item)
+          ))
+        ).pipe(
+          map(dfhClasses => {
+            return this.filterTeEnCasses(dfhClasses)
+          })
+        ))
+      )
+  }
+
 
   @spyTag @cache({ refCount: false }) pipeListDefinitionsOfField(field: ClassFieldConfig): Observable<ListDefinition[]> {
     if (field.fk_property) {

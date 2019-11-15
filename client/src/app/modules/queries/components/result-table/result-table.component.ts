@@ -1,10 +1,11 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService } from 'app/core';
-import { CoreTable } from 'app/shared/components/core-table/table';
+import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
+import { Table } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
-import { ColDef } from '../col-def-editor/ColDef';
+import { map, takeUntil } from 'rxjs/operators';
+import { ColDef, QueryDefinition, TableInput, TableOutput } from '../../../../../../../src/common/interfaces';
 import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 
 export interface Example {
@@ -18,61 +19,118 @@ export interface Example {
   templateUrl: './result-table.component.html',
   styleUrls: ['./result-table.component.scss']
 })
-export class ResultTableComponent extends CoreTable<Example> implements OnDestroy, AfterViewInit {
-  $destroy = new Subject();
-  @Input() data$: Observable<any[]>;
-  @Input() pending$: Observable<boolean>;
+export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
+  destroy$ = new Subject();
+  @Input() definition$: Observable<QueryDefinition>;
+  @ViewChild('table', { static: false }) table: Table;
 
-  @Input() colDef: ColDef[];
-  @Input() columns: string[];
-  @Input() limit: number;
+  displayedColumns$: Observable<string[]>;
 
-  sticky: boolean;
+  definition: QueryDefinition;
+  colDefs: ColDef[] = [];
 
-  @Output() rangeChange = new EventEmitter<{ start: number, end: number }>();
+  limit = 50;
+  lazyLoadState: {
+    first: number,    // First row offset
+    rows: number // Number of rows per page
+  }
+  pkProject: number;
+  items: any[];
 
-  headerTop$: Observable<number>;
+  get totalRecords(): number {
+    const result = this.a.results$.value
+    if (!result || !result.rows.length) return 0;
+    else return result.full_count
+  }
 
   constructor(
     public dialog: MatDialog,
-    private ref: ChangeDetectorRef,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public a: AnalysisService<TableInput, TableOutput>
   ) {
-    super();
+
   }
-
-  onInit() {
-    this.set([]);
-
-    let dataRefreshs = 0;
-    this.data$.pipe(
-      tap(() => dataRefreshs++),
-      takeUntil(this.$destroy)
-    ).subscribe(data => {
-
-      this.dataSource.allData = data;
-
-      if (data.length === 0) {
-        this.viewport.scrollTo({ top: 0, left: 0 })
-      }
-    })
-
-
-    this.headerTop$ = this.viewport.renderedRangeStream.pipe(
-      map(() => -this.viewport.getOffsetToRenderedContentStart())
+  ngOnInit() {
+    this.displayedColumns$ = this.definition$.pipe(
+      map(def => def.columns.map(colDef => colDef.label))
     );
 
-    // fake infinite scroll
+    this.a.results$.pipe(takeUntil(this.destroy$)).subscribe(res => {
+      this.items = (res || { rows: [] }).rows;
+    })
 
-    this.viewport.renderedRangeStream.subscribe(({ start, end }) => {
-      this.rangeChange.emit({ start, end })
-    });
   }
 
-  afterViewInit() {
-    this.sticky = true;
-    this.ref.detectChanges()
+  ngAfterViewInit() {
+    // let count = 0;
+    this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
+      this.definition = definition;
+      this.colDefs = definition.columns
+      // if (count > 0) {
+      const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
+      body.scrollTop = 0;
+      this.table.reset();
+      // }
+      // count++;
+    })
   }
+
+  loadDataOnScroll(event: {
+    first: number,    // First row offset
+    rows: number // Number of rows per page
+  }) {
+    this.lazyLoadState = event;
+    if (this.definition) this.load(this.definition, event.first, event.rows);
+    // combineLatest([this.p.pkProject$, this.definition$]).pipe(first(), takeUntil(this.destroy$))
+    //   .subscribe(([pkProject, definition]) => {
+    //   })
+
+  }
+  private load(definition: QueryDefinition, offset: number, rows: number) {
+
+    const queryDefinition = {
+      filter: definition.filter,
+      columns: definition.columns,
+      offset: offset || 0,
+      limit: rows
+    };
+    this.a.callApi({ queryDefinition })
+  }
+
+
+
+  // onInit() {
+  //   this.set([]);
+
+  //   let dataRefreshs = 0;
+  //   this.data$.pipe(
+  //     tap(() => dataRefreshs++),
+  //     takeUntil(this.$destroy)
+  //   ).subscribe(data => {
+
+  //     this.dataSource.allData = data;
+
+  //     if (data.length === 0) {
+  //       this.viewport.scrollTo({ top: 0, left: 0 })
+  //     }
+  //   })
+
+
+  //   this.headerTop$ = this.viewport.renderedRangeStream.pipe(
+  //     map(() => -this.viewport.getOffsetToRenderedContentStart())
+  //   );
+
+  //   // fake infinite scroll
+
+  //   this.viewport.renderedRangeStream.subscribe(({ start, end }) => {
+  //     this.rangeChange.emit({ start, end })
+  //   });
+  // }
+
+  // afterViewInit() {
+  //   this.sticky = true;
+  //   this.ref.detectChanges()
+  // }
 
   openDialog(entityPreviews): void {
     const dialogRef = this.dialog.open(ResultingEntitiesDialogComponent, {
@@ -88,7 +146,7 @@ export class ResultTableComponent extends CoreTable<Example> implements OnDestro
 
 
   ngOnDestroy() {
-    this.$destroy.next()
-    this.$destroy.unsubscribe()
+    this.destroy$.next()
+    this.destroy$.unsubscribe()
   }
 }

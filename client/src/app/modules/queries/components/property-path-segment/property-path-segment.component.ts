@@ -1,21 +1,20 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, AfterViewInit, Directive } from '@angular/core';
-import { ControlValueAccessor, NgControl, NgForm, ValidatorFn, AbstractControl, NG_VALIDATORS, Validator } from '@angular/forms';
+import { AfterViewInit, Component, Directive, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, NgControl, NgForm, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil, delay } from 'rxjs/operators';
-import { PropertyOption, PropertySelectModel, propertiesRequiredCondition } from '../property-select/property-select.component';
-import { QueryService } from '../../services/query.service';
-import { QueryPathSegment } from '../col-def-editor/QueryPathSegment';
 import { equals } from 'ramda';
-import { FilterTree } from "../../containers/query-detail/FilterTree";
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { delay, takeUntil } from 'rxjs/operators';
+import { QueryFilter, QueryPathSegment } from '../../../../../../../src/common/interfaces';
+import { QueryService } from '../../services/query.service';
 import { propertyFilterRequiredValidator } from '../property-filter/property-filter.component';
+import { propertiesRequiredCondition, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 
 
 /** At least one property must be selected */
 export function propertyPathSegmentRequiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const model: FilterTree = control.value;
+    const model: QueryFilter = control.value;
     return model && model.data && propertiesRequiredCondition(model.data)
       ? { 'propertyPathSegmentRequired': { value: control.value } } : null
   };
@@ -53,7 +52,7 @@ export class PropertyPathSegmentComponent implements AfterViewInit, OnDestroy, C
 
   @Output() remove = new EventEmitter<void>();
 
-  model: QueryPathSegment = {type:'properties', data:{}};
+  model: QueryPathSegment = { type: 'properties', data: {} };
 
   @ViewChild('f', { static: true }) formGroup: NgForm;
 

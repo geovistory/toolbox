@@ -1,0 +1,42 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build project",
+      "group": "build",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "-s",
+        "build"
+      ],
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Build project: watch",
+      "group": "build",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "-s",
+        "build:watch"
+      ],
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "Create schemas and validators of ts server",
+      "group": "build",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "create-schemas"
+      ],
+      "problemMatcher": "$tsc"
+    }
+  ]
+}

@@ -1,16 +1,25 @@
 import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { AbstractControl } from "@angular/forms";
+import { AbstractControl, ValidationErrors } from "@angular/forms";
+import { FormFactory } from '../services/form-factory.service';
 
-export type FactoryType = 'array' | 'control' | 'group'
+export type FactoryType = 'array' | 'control' | 'group' | 'childFactory'
+
+export interface StatusChange {
+  status: 'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'
+  errors?: ValidationErrors
+  children?: StatusChange[]
+}
 
 export abstract class AbstractControlFactory {
   factoryType: FactoryType
   control: AbstractControl
-
   valueChanges$ = new BehaviorSubject(undefined)
-}
+  statusChanges$ = new BehaviorSubject<StatusChange>(undefined)
 
+  abstract markAllAsTouched()
+
+}
 
 /**
  * Combine Latest or, if input is an empty array, emit empty array
@@ -23,4 +32,15 @@ export function combineLatestOrEmpty<I>(obs: Observable<I>[]) {
       return values;
     })
   );
+}
+
+
+export interface FormFactoryCompontentInjectData<M> {
+  initVal$: M
+}
+
+export interface FormFactoryComponent {
+  initVal$?: Observable<any>
+  formFactory$: Observable<FormFactory>;
+  formFactory: FormFactory;
 }

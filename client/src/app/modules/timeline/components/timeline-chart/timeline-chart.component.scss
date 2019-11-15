@@ -1,0 +1,41 @@
+@import "../../../../../styles.scss";
+
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.chart {
+  position: relative;
+  display: flex;
+  height: 10px;
+  flex: 1 1 0px;
+}
+
+.toolbar {
+  border-color: rgba(0, 0, 0, 0.12);
+  border-width: 1px;
+  border-style: solid;
+
+
+  display: flex;
+  flex: 0 0 50px;
+  align-items: center;
+  // justify-content: center;
+  mat-select {
+    width: 180px;
+  }
+}
+.toolbar-menu {
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+
+:host ::ng-deep .empty-select .mat-select-value-text {
+  color: $mat-color-secondary-text;
+}
+
+.x-axis {
+  user-select: none;
+}

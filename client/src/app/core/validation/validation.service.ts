@@ -22,6 +22,17 @@ export class ValidationService {
     };
   }
 
+  /**
+   * Validates the length of an array control value
+   * @param min minimum allowed length of array
+   * @param max maxumum allowed length of array
+   */
+  static arrayLengthValidator(min: number, max: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      return control.value.length >= min && control.value.length <= max
+        ? null : { 'invalidArrayLength': { value: control.value } }
+    };
+  }
 
 
   static hexColorValidator(): ValidatorFn {

@@ -1,0 +1,211 @@
+{
+    "$ref": "#/definitions/TableInput",
+    "definitions": {
+        "TableInput": {
+            "description": "Input type definition for analysis of type:\ntable",
+            "title": "TableInput",
+            "type": "object",
+            "properties": {
+                "queryDefinition": {
+                    "$ref": "#/definitions/QueryDefinition",
+                    "title": "queryDefinition"
+                }
+            },
+            "required": [
+                "queryDefinition"
+            ]
+        },
+        "QueryDefinition": {
+            "title": "QueryDefinition",
+            "type": "object",
+            "properties": {
+                "filter": {
+                    "$ref": "#/definitions/QueryFilter",
+                    "title": "filter"
+                },
+                "columns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ColDef"
+                    },
+                    "title": "columns"
+                },
+                "limit": {
+                    "type": "number",
+                    "title": "limit"
+                },
+                "offset": {
+                    "type": "number",
+                    "title": "offset"
+                }
+            },
+            "required": [
+                "columns",
+                "filter"
+            ]
+        },
+        "QueryFilter": {
+            "title": "QueryFilter",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/QueryFilterData",
+                    "title": "data"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/QueryFilter"
+                    },
+                    "title": "children",
+                    "default": []
+                }
+            },
+            "required": [
+                "children",
+                "data"
+            ]
+        },
+        "QueryFilterData": {
+            "title": "QueryFilterData",
+            "type": "object",
+            "properties": {
+                "subgroup": {
+                    "enum": [
+                        "classAndType",
+                        "property"
+                    ],
+                    "type": "string",
+                    "title": "subgroup"
+                },
+                "operator": {
+                    "type": "string",
+                    "title": "operator"
+                },
+                "classes": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "title": "classes"
+                },
+                "types": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "title": "types"
+                },
+                "outgoingProperties": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "title": "outgoingProperties"
+                },
+                "ingoingProperties": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "title": "ingoingProperties"
+                }
+            }
+        },
+        "ColDef": {
+            "title": "ColDef",
+            "type": "object",
+            "properties": {
+                "ofRootTable": {
+                    "type": "boolean",
+                    "title": "ofRootTable"
+                },
+                "preventGroupBy": {
+                    "type": "boolean",
+                    "title": "preventGroupBy"
+                },
+                "defaultType": {
+                    "enum": [
+                        "class_label",
+                        "entity_label",
+                        "entity_preview",
+                        "temporal_distribution",
+                        "type_label"
+                    ],
+                    "type": "string",
+                    "title": "defaultType"
+                },
+                "label": {
+                    "type": "string",
+                    "title": "label"
+                },
+                "id": {
+                    "type": "string",
+                    "title": "id"
+                },
+                "queryPath": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/QueryPathSegment"
+                    },
+                    "title": "queryPath"
+                }
+            },
+            "required": [
+                "id"
+            ]
+        },
+        "QueryPathSegment": {
+            "title": "QueryPathSegment",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "enum": [
+                        "classes",
+                        "properties"
+                    ],
+                    "type": "string",
+                    "title": "type"
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "classes": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            },
+                            "title": "classes"
+                        },
+                        "types": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            },
+                            "title": "types"
+                        },
+                        "outgoingProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            },
+                            "title": "outgoingProperties"
+                        },
+                        "ingoingProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            },
+                            "title": "ingoingProperties"
+                        }
+                    },
+                    "title": "data"
+                }
+            },
+            "required": [
+                "data"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -4,7 +4,9 @@ import { OnInit, OnDestroy, Directive, ElementRef, Output, EventEmitter } from '
 declare var require: any;
 const elementResizeDetectorMaker = require('element-resize-detector');
 
-
+export interface DimensionChangeEvent extends Event {
+  dimensions: { width: number, height: number }
+}
 @Directive({
   selector: '[gvDimensionChange]'
 })
@@ -12,7 +14,7 @@ export class DimensionChangeDirective implements OnInit, OnDestroy {
 
   public observer: any;
   private nativeElement;
-  @Output() onDimensionsChange: EventEmitter<any> = new EventEmitter();
+  @Output() onDimensionsChange: EventEmitter<DimensionChangeEvent> = new EventEmitter();
 
   constructor(public el: ElementRef) { }
 
@@ -25,7 +27,7 @@ export class DimensionChangeDirective implements OnInit, OnDestroy {
       const { offsetWidth: width, offsetHeight: height } = element;
       const dimensions = { width, height };
       event['dimensions'] = dimensions;
-      this.onDimensionsChange.emit(event);
+      this.onDimensionsChange.emit(event as DimensionChangeEvent);
     })
   }
 

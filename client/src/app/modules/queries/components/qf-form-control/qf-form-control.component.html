@@ -3,8 +3,8 @@
   <gv-class-and-type-select [formControl]="formControlFactory.control"
     [pkClasses$]="config?.data.ctrlClasses.pkClasses$" [required]="config?.required">
   </gv-class-and-type-select>
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
-    Please enter a value
+  <mat-error *ngIf="formControlFactory.control.hasError('classOrTypeRequired')">
+    Please select
   </mat-error>
 </mat-form-field>
 
@@ -24,18 +24,18 @@
 
 <mat-form-field *ngIf="config?.data.ctrlProperties" class="w-100" appearance="legacy">
   <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-property-select [formControl]="formControlFactory.control" [required]="config?.required" [rootFormGroup]="rootFormGroup"
-    [options$]="config?.data.ctrlProperties.options$">
+  <gv-property-select [formControl]="formControlFactory.control" [required]="config?.required"
+    [rootFormGroup]="rootFormGroup" [options$]="config?.data.ctrlProperties.options$">
   </gv-property-select>
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
-    Please enter a value
+  <mat-error *ngIf="formControlFactory.control.hasError('propertiesRequired')">
+    Please select
   </mat-error>
 </mat-form-field>
 
 
 
 <!-- Subgroup Operation -->
-<mat-select  *ngIf="config?.data.ctrlOperator"  [formControl]="formControlFactory.control"
+<mat-select *ngIf="config?.data.ctrlOperator" [formControl]="formControlFactory.control"
   class="subgroup-operation-select">
   <mat-option value="AND">and</mat-option>
   <mat-option value="OR">or</mat-option>

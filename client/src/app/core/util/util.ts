@@ -6,7 +6,7 @@ import { QuillDoc } from 'app/modules/quill';
 import { indexBy, omit } from 'ramda';
 import * as Config from '../../../../../common/config/Config';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
-import { SysConfig } from '../config/sys-config';
+import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
 import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysClassField } from '../sdk';

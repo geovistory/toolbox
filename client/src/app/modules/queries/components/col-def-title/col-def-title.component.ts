@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ColDef } from "../col-def-editor/ColDef";
+import { Component, Input, OnInit } from '@angular/core';
+import { ColDef } from '../../../../../../../src/common/interfaces';
 
 @Component({
   selector: 'gv-col-def-title',

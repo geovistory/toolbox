@@ -1,13 +1,13 @@
 import { dispatch, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Injectable, ChangeDetectorRef, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef } from '@angular/core';
+import { Tab } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Tab, SubstoreComponent } from 'app/core';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { TabBase } from './tab-layout.models';
+import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TabBase } from './tab-layout.models';
 import { tabBaseReducer } from './tab-layout.reducer';
 
-type Payload = Tab;
+type Payload = Tab<any>;
 interface MetaData {
   tabTitle?: string,
   loading?: boolean,
@@ -24,7 +24,6 @@ export class TabLayout {
   // local store of this component
   localStore: ObservableStore<TabBase>;
   basePath: string[];
-  getBasePath = () => this.basePath;
 
   /**
    * Stuff for handling split area rendering
@@ -47,6 +46,7 @@ export class TabLayout {
       this.setSplitSize(bool)
     })
   }
+  getBasePath = () => this.basePath;
 
   setSplitSize(bool) {
     this.splitSizeLeft = bool ? (100 - this.defaultSizeRight) : 100;

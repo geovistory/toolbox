@@ -12,7 +12,7 @@ import { Observable, Subject } from 'rxjs';
 export class TabHandleComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
-  @Input() tab: Tab;
+  @Input() tab: Tab<any>;
   @Output() activateTab = new EventEmitter<void>()
   @Output() closeTab = new EventEmitter<void>()
 
@@ -26,7 +26,7 @@ export class TabHandleComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.title$ = this.p.getTabTitle(this.tab.path)
     this.loading$ = this.p.getTabLoading(this.tab.path)
-    this.title$.pipe(takeUntil(this.destroy$)).subscribe(t => this.ref.detectChanges()) 
+    this.title$.pipe(takeUntil(this.destroy$)).subscribe(t => this.ref.detectChanges())
     this.loading$.pipe(takeUntil(this.destroy$)).subscribe(t => this.ref.detectChanges())
   }
   ngOnDestroy(): void {

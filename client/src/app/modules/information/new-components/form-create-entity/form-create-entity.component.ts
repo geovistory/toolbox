@@ -35,7 +35,7 @@ export interface FormControlData {
 export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
 
 export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
-export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData>;
+export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, any>;
 export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayData>
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
 
@@ -74,7 +74,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     if (!this.pkClass) throw new Error('You must provide a pkClass as @Input() on FormCreateEntityComponent');
     if (!this.appContext) throw new Error('You must provide a appContext as @Input() on FormCreateEntityComponent');
 
-    this.formFactory$ = this.formFactoryService.create<FormGroupData, FormArrayData, FormControlData>({
+    this.formFactory$ = this.formFactoryService.create<FormGroupData, FormArrayData, FormControlData, any>({
       hideTitle: this.hideTitle,
       rootFormGroup$: of({
         data: { pkClass: this.pkClass, }

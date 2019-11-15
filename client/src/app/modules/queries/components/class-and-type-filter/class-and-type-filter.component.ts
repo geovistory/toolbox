@@ -2,14 +2,13 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { TreeNode } from 'app/shared/components/tree-checklist/tree-checklist.component';
+import { NestedNode } from 'app/shared/components/checklist-control/services/checklist-control.service';
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { takeUntil, tap, delay } from 'rxjs/operators';
-import { FilterTree, FilterTreeData } from '../../containers/query-detail/FilterTree';
+import { delay, takeUntil } from 'rxjs/operators';
+import { QueryFilter, QueryFilterData } from '../../../../../../../src/common/interfaces';
 import { QueryService } from '../../services/query.service';
-import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, TreeNodeData } from '../class-and-type-select/class-and-type-select.component';
-import { PropertyOption } from '../property-select/property-select.component';
+import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, NodeData } from '../class-and-type-select/class-and-type-select.component';
 
 interface DynamicFormControl {
   key: string,
@@ -19,7 +18,7 @@ interface DynamicFormControl {
 /** At least one class or type must be selected */
 export function classAndTypeFilterRequiredValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const model: FilterTree = control.value;
+    const model: QueryFilter = control.value;
     return model && model.data && classOrTypeRequiredCondition(model.data)
       ? { 'classAndTypeFilterRequired': { value: control.value } } : null
   };
@@ -36,12 +35,12 @@ export class ClassAndTypeFilterRequiredValidatorDirective implements Validator {
 }
 
 // tslint:disable: member-ordering
-class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<FilterTree> {
+class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<QueryFilter> {
   static nextId = 0;
 
-  model: FilterTree;
+  model: QueryFilter;
   // the flattened selection
-  selected: TreeNode<TreeNodeData>[]
+  selected: NestedNode<NodeData>[]
 
   // emits true on destroy of this component
   autofilled?: boolean;
@@ -92,13 +91,13 @@ class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, M
   private _disabled = false;
 
   @Input()
-  get value(): FilterTree | null {
+  get value(): QueryFilter | null {
     // TODO
     if (!this.empty) return null;
 
     return this.model;
   }
-  set value(value: FilterTree | null) {
+  set value(value: QueryFilter | null) {
     this.model = value;
 
     this.onChange(this.model)
@@ -141,7 +140,7 @@ class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, M
 
   }
 
-  writeValue(value: FilterTree | null): void {
+  writeValue(value: QueryFilter | null): void {
     const data = !value ? {} : !value.data ? {} : value.data;
     const children = !value ? [] : !value.children ? [] : value.children;
     this.value = { data, children };
@@ -159,7 +158,7 @@ class ClassAndTypeFilterMatControl implements OnDestroy, ControlValueAccessor, M
     this.classAndTypeCtrl.setValue(data)
   }
 
-  protected addCrtl(index: number, child: FilterTree) {
+  protected addCrtl(index: number, child: QueryFilter) {
     const f: DynamicFormControl = {
       key: '_' + index,
       ctrl: new FormControl(child)
@@ -289,7 +288,7 @@ export class ClassAndTypeFilterComponent extends ClassAndTypeFilterMatControl im
   }
 
   addChild() {
-    const child = new FilterTree({ subgroup: 'property' })
+    const child = new QueryFilter({ subgroup: 'property' })
     this.addCrtl(this.dynamicFormControls.length, child)
 
   }
@@ -303,7 +302,7 @@ export class ClassAndTypeFilterComponent extends ClassAndTypeFilterMatControl im
     this.validChanged.emit(this.valid)
   }
 
-  treeDataChange(treeData: FilterTreeData) {
+  treeDataChange(treeData: QueryFilterData) {
 
     this.selectedClassesAndTypes = {
       classes: treeData ? treeData.classes || [] : [],

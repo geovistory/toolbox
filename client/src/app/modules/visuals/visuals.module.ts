@@ -31,6 +31,7 @@ import { VisualDetailAPIEpics } from './containers/visual-detail/api/visual-deta
 import { VisualDetailComponent } from './containers/visual-detail/visual-detail.component';
 import { VisualListComponent } from './containers/visual-list/visual-list.component';
 import { AngularCesiumModule, CesiumService } from '../../../../node_modules/angular-cesium';
+import { MapLayerDynamicPointsComponent } from './components/map-layer-dynamic-points/map-layer-dynamic-points.component';
 
 const components = [
   VisualDetailComponent,
@@ -41,7 +42,8 @@ const components = [
   MapVisualComponent,
   MapVisualDemoComponent,
   MapQueryLayerComponent,
-  TimelineVisualComponent
+  TimelineVisualComponent,
+  MapLayerDynamicPointsComponent
 ]
 
 @NgModule({
@@ -65,7 +67,6 @@ const components = [
     MccColorPickerModule,
     ControlMessagesModule,
     ValidationDirectivesModule,
-    // GvAngularCesiumModule,
     AngularCesiumModule,
     TimelineModule,
     PassiveLinkModule,

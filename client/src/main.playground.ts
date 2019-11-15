@@ -1,6 +1,6 @@
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -25,6 +25,20 @@ import { DndModule } from 'ng2-dnd';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { TreeviewModule } from 'ngx-treeview';
+import { MatSliderModule, MatIconRegistry } from '@angular/material';
+import 'hammerjs';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { ChecklistControlModule } from 'app/shared/components/checklist-control/checklist-control.module';
+
+
+@NgModule()
+export class MatIconRegistryModule {
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl('http://localhost:3000/assets/mdi/mdi.svg'));
+  }
+}
+
 
 PlaygroundModule
   .configure({
@@ -38,6 +52,7 @@ PlaygroundModule
       DfhModule,
       ProModule,
       MatDialogModule,
+      MatSliderModule, // needed because of https://github.com/angular/components/issues/4278
       NotificationsModule,
       SDKBrowserModule.forRoot(),
       NgbModule.forRoot(),
@@ -61,6 +76,9 @@ PlaygroundModule
       LoadingBarModule,
       ExampleTableModule,
       ValidationDirectivesModule,
+      HttpClientModule,
+      MatIconRegistryModule,
+      ChecklistControlModule
     ]
   });
 

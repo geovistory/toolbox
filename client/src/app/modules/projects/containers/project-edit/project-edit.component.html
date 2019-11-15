@@ -31,6 +31,10 @@
           [ngClass]="{active:(p.list$ | async)==='visuals'}" (click)="setList('visuals')">
           <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Visuals
         </button>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='analysis'}" (click)="setList('analysis')">
+          <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Analysis
+        </button>
 
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='stories'}" (click)="setList('stories')">
@@ -62,6 +66,7 @@
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
         <gv-query-list *ngIf="(p.list$ | async) === 'queries'"></gv-query-list>
         <gv-visual-list *ngIf="(p.list$ | async) === 'visuals'"></gv-visual-list>
+        <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'"></gv-analysis-list>
         <div *ngIf="(p.list$ | async) === 'stories'">
           <gv-list-drawer-header>
             <div title>Your Stories</div>
@@ -161,6 +166,10 @@
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
           </gv-visual-detail>
 
+          <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis-detail'"
+            [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
+            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+          </gv-analysis-detail>
 
           <gv-project-settings-data class="gv-tab-content" *ngIf="tab.component=='classes-settings'"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">

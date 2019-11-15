@@ -27,4 +27,4 @@ export class OuterVisualComponent extends TimePrimitiveVisual implements OnInit,
     this.d3Service.placeOuterVisualOnXAxis(this._element.nativeElement, this.outerOnXAxis.timeline, this);
   }
 
-} 
+}

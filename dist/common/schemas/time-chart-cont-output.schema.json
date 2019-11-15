@@ -1,0 +1,73 @@
+{
+    "$ref": "#/definitions/TimeChartContOutput",
+    "definitions": {
+        "TimeChartContOutput": {
+            "title": "TimeChartContOutput",
+            "type": "object",
+            "properties": {
+                "activeLine": {
+                    "type": "number",
+                    "title": "activeLine"
+                },
+                "chartLines": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ChartLine"
+                    },
+                    "title": "chartLines"
+                },
+                "mouseX": {
+                    "type": "number",
+                    "title": "mouseX"
+                }
+            },
+            "required": [
+                "activeLine",
+                "chartLines"
+            ]
+        },
+        "ChartLine": {
+            "title": "ChartLine",
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string",
+                    "title": "label"
+                },
+                "linePoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ChartLinePoint"
+                    },
+                    "title": "linePoints"
+                }
+            },
+            "required": [
+                "label",
+                "linePoints"
+            ]
+        },
+        "ChartLinePoint": {
+            "title": "ChartLinePoint",
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number",
+                    "title": "x"
+                },
+                "y": {
+                    "type": "number",
+                    "title": "y"
+                },
+                "data": {
+                    "title": "data"
+                }
+            },
+            "required": [
+                "x",
+                "y"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

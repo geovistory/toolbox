@@ -1,0 +1,32 @@
+{
+  "$ref": "#/definitions/TableOutput",
+  "definitions": {
+    "TableOutput": {
+      "title": "TableOutput",
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TableRow"
+          },
+          "title": "rows"
+        },
+        "full_count": {
+          "type": "number",
+          "title": "full_count"
+        }
+      },
+      "required": [
+        "full_count",
+        "rows"
+      ]
+    },
+    "TableRow": {
+      "title": "TableRow",
+      "type": "object",
+      "additionalProperties": {}
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

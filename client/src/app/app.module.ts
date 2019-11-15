@@ -6,8 +6,8 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { BrowserModule } from '@angular/platform-browser';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
@@ -41,6 +41,7 @@ import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
 import { AngularCesiumModule, ModuleConfiguration } from 'angular-cesium';
+import { HttpClientModule } from '@angular/common/http';
 
 // const spy = create()
 // spy.unplug(spy.find(CyclePlugin));
@@ -102,7 +103,8 @@ registerLocaleData(localeDeCh);
     ValidationDirectivesModule,
     MatButtonModule,
     MatIconModule,
-    UserFeedbackModule
+    UserFeedbackModule,
+    HttpClientModule,
   ],
   providers: [
     EntityEditorService,
@@ -122,7 +124,8 @@ registerLocaleData(localeDeCh);
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor() {
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.baseUrl + '/assets/mdi/mdi.svg'));
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
   }

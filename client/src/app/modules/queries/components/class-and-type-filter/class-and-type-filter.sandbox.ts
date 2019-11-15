@@ -6,31 +6,31 @@ import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { ClassAndTypeFilterComponent } from './class-and-type-filter.component';
-import { FilterTree } from "../../containers/query-detail/FilterTree";
+import { QueryFilter } from '../../../../../../../src/common/interfaces';
 
 // create a BehaviorSubject that emits first null, and after 1 sec [21, 61]
 const pkClasses$ = new BehaviorSubject(null)
 pkClasses$.pipe(first(), delay(1000)).subscribe(() => {
-    pkClasses$.next([21, 61])
+  pkClasses$.next([21, 61])
 })
 
 export default sandboxOf(ClassAndTypeFilterComponent, {
-    declareComponent: false,
-    imports: [
-        QueriesModule,
-        MatFormFieldModule,
-        FormsModule,
-        InitStateModule
-    ]
+  declareComponent: false,
+  imports: [
+    QueriesModule,
+    MatFormFieldModule,
+    FormsModule,
+    InitStateModule
+  ]
 })
-    .add('Class and type Filter | Empty ', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: {},
-            pkClasses$
-        },
-        template: `
+  .add('Class and type Filter | Empty ', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: {},
+      pkClasses$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -59,30 +59,30 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
 
             </div>
         </div>`
-    })
-    .add('Class and type Filter | Preset ', {
-        context: {
-            pkProject: 24,
-            sandboxState: {},
-            model: {
-                data: {
-                    classes: [
-                        21
-                    ],
-                    types: []
-                },
-                children: [{
-                    data: {
-                        subgroup: 'property'
-                    },
-                    children: [
-
-                    ]
-                }]
-            } as FilterTree,
-            pkClasses$
+  })
+  .add('Class and type Filter | Preset ', {
+    context: {
+      pkProject: 24,
+      sandboxState: {},
+      model: {
+        data: {
+          classes: [
+            21
+          ],
+          types: []
         },
-        template: `
+        children: [{
+          data: {
+            subgroup: 'property'
+          },
+          children: [
+
+          ]
+        }]
+      } as QueryFilter,
+      pkClasses$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -108,43 +108,43 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
 
             </div>
         </div>`
-    })
-    .add('Class and type Filter | Preset 2', {
-        context: {
-            pkProject: 24,
-            sandboxState: {},
-            model:
+  })
+  .add('Class and type Filter | Preset 2', {
+    context: {
+      pkProject: 24,
+      sandboxState: {},
+      model:
+        {
+          data: {
+            types: [],
+            classes: [
+              61
+            ]
+          },
+          children: [
+            {
+              data: {
+                operator: 'AND',
+                subgroup: 'property'
+              },
+              children: [
                 {
-                    data: {
-                        types: [],
-                        classes: [
-                            61
-                        ]
-                    },
-                    children: [
-                        {
-                            data: {
-                                operator: 'AND',
-                                subgroup: 'property'
-                            },
-                            children: [
-                                {
-                                    data: {
-                                        operator: 'IS',
-                                        ingoingProperties: [],
-                                        outgoingProperties: [
-                                            85
-                                        ]
-                                    },
-                                    children: []
-                                }
-                            ]
-                        }
+                  data: {
+                    operator: 'IS',
+                    ingoingProperties: [],
+                    outgoingProperties: [
+                      85
                     ]
-                } as FilterTree,
-            pkClasses$
-        },
-        template: `
+                  },
+                  children: []
+                }
+              ]
+            }
+          ]
+        } as QueryFilter,
+      pkClasses$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -169,5 +169,5 @@ export default sandboxOf(ClassAndTypeFilterComponent, {
 
             </div>
         </div>`
-    })
+  })
 

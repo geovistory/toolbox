@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil, tap, filter, auditTime } from 'rxjs/operators';
 import { TimeLineData, TimeLineRow, Timeline, TimelineOptions, TemporalExtent, RangeChangeEvent } from '../../models/timeline';
 import { D3Service } from '../../shared/d3.service';
+import { Zoomer } from '../../models/zoomer';
 
 interface TimeLineTableRow extends TimeLineRow {
   index: number
@@ -33,7 +34,7 @@ export class TimelineTableComponent extends CoreTable<TimeLineTableRow> implemen
 
   timeline: Timeline;
   options: TimelineOptions = {
-    width: 200,
+    width: undefined,
     bodyMaxHeight: 180,
     headerHeight: 41,
     domainStartDefault: 1721426 * 60 * 60 * 24,
@@ -57,7 +58,8 @@ export class TimelineTableComponent extends CoreTable<TimeLineTableRow> implemen
       marginLeft: 0,
       marginRight: 0,
       containerHeight: 36,
-    }
+    },
+    zoomer: new Zoomer(1721426 * 60 * 60 * 24, 2454000 * 60 * 60 * 24)
   };
   cursorChangeByDrag$ = new Subject<number>();
 
@@ -87,7 +89,7 @@ export class TimelineTableComponent extends CoreTable<TimeLineTableRow> implemen
       takeUntil(this.destroy$)
     ).subscribe(data => {
       this.data = data;
-      this.initTimeline()
+      // this.initTimeline()
 
       // TODO delete this line and uncomment the next, once the index is not needed anymore
       this.dataSource.allData = data.rows.map((r, index) => ({ ...r, index }));
@@ -160,8 +162,12 @@ export class TimelineTableComponent extends CoreTable<TimeLineTableRow> implemen
   }
 
   onDimensionsChange(event) {
-    const newWidth = event.dimensions.width - 24;
-    if (this.options.width !== newWidth) {
+    const newWidth = event.dimensions.width // - 24;
+    if (this.options.width === undefined) {
+      this.options.width = newWidth;
+      this.initTimeline();
+    }
+    else if (this.options.width !== newWidth) {
       this.options.width = newWidth;
       if (this.timeline) this.timeline.init(this.options)
       this.ref.detectChanges()
@@ -179,7 +185,8 @@ export class TimelineTableComponent extends CoreTable<TimeLineTableRow> implemen
   }
 
   onZoomToExtent() {
-    const e = this.temporalExtent
+    let e = this.temporalExtent
+    e = this.timeline.getZoomToExtent(e)
     this.drawExtent(e.firstSecond, e.lastSecond);
   }
 
@@ -194,10 +201,7 @@ export class TimelineTableComponent extends CoreTable<TimeLineTableRow> implemen
 * check if init is neded
 */
   private drawExtent(domainStart, domainEnd) {
-    if ((domainStart && domainEnd) &&
-      (this.options.domainStart !== domainStart || this.options.domainEnd !== domainEnd)) {
-      this.options.domainStart = domainStart;
-      this.options.domainEnd = domainEnd;
+    if ((domainStart && domainEnd)) {
       this.initTimeline();
     }
   }

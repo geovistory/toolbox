@@ -20,7 +20,7 @@ import { ProSelector } from 'app/core/pro/pro.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { SystemSelector } from '../sys/sys.service';
 import { IAppState, SchemaObject } from '../store/model';
-import { SysConfig } from '../config/sys-config';
+import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { U } from '../util/util';
 import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { InfActions } from '../inf/inf.actions';
@@ -549,7 +549,7 @@ export class ActiveProjectService {
   closeTab(panelIndex: number, tabIndex: number) {
     this.ngRedux.dispatch(this.actions.closeTab(panelIndex, tabIndex))
   }
-  addTab(tab: Tab) {
+  addTab<D>(tab: Tab<D>) {
     this.ngRedux.dispatch(this.actions.addTab(tab))
   }
   focusPanel(panelIndex: number) {

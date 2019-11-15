@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActiveProjectService, IAppState, Tab } from 'app/core';
+import { ActiveProjectService, IAppState, Tab, TeEntTabData } from 'app/core';
 import { TeEntDetail } from 'app/core/state/models';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
@@ -32,7 +32,7 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   @Input() basePath: string[];
   @Input() pkEntity: number;
-  @Input() tab: Tab;
+  @Input() tab: Tab<TeEntTabData>;
 
 
   localStore: ObservableStore<TeEntDetail>;

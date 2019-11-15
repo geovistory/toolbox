@@ -1,16 +1,18 @@
-import { Component, Input, OnDestroy, OnInit, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional } from '@angular/core';
+import { FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { U } from 'app/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormArrayConfig, FormFactory, FormFactoryConfig, FormFactoryService, FormGroupConfig, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { values } from 'd3';
-import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
-import { first, map, takeUntil, switchMap, mapTo, distinctUntilChanged, filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { first, map, takeUntil, filter, switchMap } from 'rxjs/operators';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormArray } from '@angular/forms';
-import { U } from 'app/core';
+import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
+import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 
 export interface ArrSubgroupData {
   operator: 'AND' | 'OR',
@@ -87,10 +89,17 @@ export interface QfFormControlData {
 }
 
 export type QfFormGroupConfig = FormGroupConfig<QfFormGroupData>
-export type QfFormNodeConfig = FormNodeConfig<QfFormGroupData, QfFormArrayData, QfFormControlData>;
+export type QfFormNodeConfig = FormNodeConfig<QfFormGroupData, QfFormArrayData, QfFormControlData, null>;
 export type QfFormGroupFactory = FormGroupFactory;
 export type QfFormArrayFactory = FormArrayFactory<QfFormControlData, QfFormArrayData>;
 export type QfFormControlFactory = FormControlFactory<QfFormControlData>;
+
+export interface QueryFilterInjectData {
+  rootClasses$?: Observable<number[]>
+  initVal$: Observable<FilterDefinition>
+}
+
+
 
 @Component({
   selector: 'gv-query-filter',
@@ -104,26 +113,46 @@ export type QfFormControlFactory = FormControlFactory<QfFormControlData>;
     }
   ]
 })
-export class QueryFilterComponent implements OnInit, OnDestroy {
+export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAccessor, FormFactoryComponent {
+
   destroy$ = new Subject<boolean>();
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory
 
-  @Input() filterDef$: Observable<FilterDefinition>
+  @Input() initVal$: Observable<FilterDefinition>
+  model$ = new BehaviorSubject<FilterDefinition>(null);
+  // If rootClasses$ is provided, the emitted array of pk_class will be used to
+  // set the classes in the root form control, users can select from.
+  @Input() rootClasses$: Observable<number[]>
 
   constructor(
     private ff: FormFactoryService,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    @Optional() @Inject(CONTAINER_DATA) public injectedData: QueryFilterInjectData & FormFactoryCompontentInjectData<Observable<FilterDefinition>>
   ) {
-
+    /**
+     * this is used if the query filter gets injected by as child form factory
+     */
+    if (injectedData) {
+      if (injectedData.initVal$) {
+        this.initVal$ = injectedData.initVal$
+      }
+      if (injectedData.rootClasses$) {
+        this.rootClasses$ = injectedData.rootClasses$
+      }
+    }
   }
 
 
 
   ngOnInit() {
-    this.filterDef$ = this.filterDef$ || new BehaviorSubject(null)
+    if (this.initVal$) {
+      this.initVal$.pipe(takeUntil(this.destroy$)).subscribe(f => {
+        this.model$.next(f)
+      })
+    }
 
-    this.filterDef$.pipe(takeUntil(this.destroy$)).subscribe(initVal => {
+    this.model$.pipe(takeUntil(this.destroy$)).subscribe(initVal => {
       this.initForm(initVal)
     })
   }
@@ -136,10 +165,18 @@ export class QueryFilterComponent implements OnInit, OnDestroy {
   initForm(initVal: any) {
     this.formFactory = undefined;
     // get all classes
-    const pkClasses$ = this.c.pipeSelectedClassesInProject().pipe(
-      map(x => values(x))
-    )
-    const config: FormFactoryConfig<QfFormGroupData, QfFormArrayData, QfFormControlData> = {
+    let pkClasses$: Observable<number[]>;
+
+    if (this.rootClasses$) {
+      // if the root classes are defined by input, use those
+      pkClasses$ = this.rootClasses$;
+    } else {
+      // else use the selected classes in this project
+      pkClasses$ = this.c.pipeSelectedClassesInProject().pipe(
+        map(x => values(x))
+      )
+    }
+    const config: FormFactoryConfig<QfFormGroupData, QfFormArrayData, QfFormControlData, null> = {
       rootFormGroup$: of({
         data: {
           initVal,
@@ -152,14 +189,19 @@ export class QueryFilterComponent implements OnInit, OnDestroy {
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
       this.formFactory$.next(v)
-      this.formFactory = v
+      this.formFactory = v;
     })
-
+    this.formFactory$.pipe(
+      filter(o => o !== null),
+      switchMap(f => f.formGroupFactory.valueChanges$),
+      takeUntil(this.destroy$)
+    ).subscribe((x: FilterDefinition) => {
+      this.onChange(x)
+    });
   }
 
 
   getChildNodeConfigs(n: QfFormNodeConfig): Observable<QfFormNodeConfig[]> {
-
     if (n.group) {
 
       const childConfigs: QfFormNodeConfig[] = [{
@@ -271,9 +313,6 @@ export class QueryFilterComponent implements OnInit, OnDestroy {
     } else {
       console.error(`No children found for:`, n)
     }
-
-
-
   }
 
   markAllAsTouched() {
@@ -281,6 +320,25 @@ export class QueryFilterComponent implements OnInit, OnDestroy {
     U.recursiveMarkAsTouched(f)
   }
 
+  onChange(value: FilterDefinition) { }
+
+  onTouch() { }
+
+  /***
+   * Control Value Accessor
+   */
+  writeValue(obj: FilterDefinition): void {
+    this.model$.next(obj)
+  }
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: any): void {
+    this.onTouch = fn
+  }
+  setDisabledState?(isDisabled: boolean): void {
+    throw new Error('Method not implemented.');
+  }
 }
 export function createSubgroupNodeConfig(arraySubgroup: QfArraySubgroup, initValue?: FilterDefNode) {
   const initVal = initValue || { data: {}, children: [] }
@@ -340,4 +398,6 @@ function createArrayClassesNodeConfig(pkClasses$: Observable<number[]>, initVal:
       }
     }
   }
+
+
 }

@@ -1,31 +1,3 @@
-<!-- <div class="mat-caption">
-  <p *ngIf="formArrayFactory.config.data.arrayClasses">
-    data.arrayClasses
-  </p>
-  <p *ngIf="formArrayFactory.config.data.arrayProperties">
-    data.arrayProperties
-  </p>
-  <p *ngIf="formArrayFactory.config.data.arraySubgroup">
-    data.arraySubgroup
-  </p>
-</div> -->
-
-<!-- o
-    <p class="mat-caption">
-      <span *ngIf="child.config.data?.ctrlClasses">
-        ctrlClasses
-      </span>
-      <span *ngIf="child.config.data?.ctrlOperator">
-        ctrlOperator
-      </span>
-      <span *ngIf="child.config.data?.ctrlProperties">
-        ctrlProperties
-      </span>
-      <span *ngIf="child.config.data?.ctrlCondition">
-        ctrlCondition
-      </span>
-    </p> -->
-
 <!-- CLASSES -->
 <div *ngIf="isArrayClasses" class="qf-arr-classes">
   <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with">
@@ -107,7 +79,7 @@
       formArrayFactory.children.length > 2 &&
       formArrayFactory?.control?.valid &&
       !childIsArraySubgroup(child)" class="gv-qf-button-absolute-3">
-        <button mat-icon-button (click)="splitSubfilter(i)" matTooltip="Remove">
+        <button mat-icon-button (click)="splitSubfilter(i)" matTooltip="Split">
           <mat-icon class="rotate-90">call_split</mat-icon>
         </button>
         <!-- l: {{formArrayFactory.children.length}}  -->

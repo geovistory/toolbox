@@ -1,11 +1,12 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
+import { ChecklistControlModule } from 'app/shared/components/checklist-control/checklist-control.module';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
+import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { ClassAndTypeSelectComponent } from './class-and-type-select.component';
-import { first, delay } from 'rxjs/operators';
 
 // create a BehaviorSubject that emits first null, and after 1 sec [21, 61]
 const pkClasses$ = new BehaviorSubject(null)
@@ -17,9 +18,10 @@ export default sandboxOf(ClassAndTypeSelectComponent, {
   declareComponent: false,
   imports: [
     QueriesModule,
+    ChecklistControlModule,
     MatFormFieldModule,
     FormsModule,
-    InitStateModule
+    InitStateModule,
   ]
 })
   .add('Class and type Select | Empty ', {
@@ -61,7 +63,7 @@ export default sandboxOf(ClassAndTypeSelectComponent, {
   })
   .add('Class and type Select | Preselected ', {
     context: {
-      pkProject: 21,
+      pkProject: 27,
       sandboxState: {},
       model: {
         classes: [

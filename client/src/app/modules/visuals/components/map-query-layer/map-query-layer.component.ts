@@ -34,10 +34,10 @@ export interface QueryPoint {
   // these are the entity_previews given by the default entity_preview column
   entities: WarEntityPreview[],
 
-  // these are the aggregated temporal entites gien by the temporal column
+  // these are the aggregated temporal entites given by the temporal column
   temporalEntities?: WarEntityPreview[],
 
-  // if temporal distribution is added, the point sizw can be made time dynamic
+  // if temporal distribution is added, the point size can be made time dynamic
   temporalDistribution?: TemporalDistribution,
 }
 

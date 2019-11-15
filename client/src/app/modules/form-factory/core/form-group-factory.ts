@@ -20,9 +20,10 @@ export class FormGroupFactory extends AbstractControlFactory {
   childConfig: FormArrayConfig<any>
 
   formFactory$ = new Subject<FormFactory>();
+  formFactory: FormFactory;
 
   constructor(
-    public globalConfig: FormFactoryGlobal<any, any, any>,
+    public globalConfig: FormFactoryGlobal<any, any, any, any>,
     private level: number
   ) {
     super()
@@ -44,7 +45,8 @@ export class FormGroupFactory extends AbstractControlFactory {
       if (this.child) this.control = this.globalConfig.fb.group({ 'childControl': this.child.control });
 
       asyncScheduler.schedule(() => {
-        this.formFactory$.next({ formGroup: this.control, formGroupFactory: this })
+        this.formFactory = new FormFactory(this.control, this)
+        this.formFactory$.next(this.formFactory)
       }, 0)
 
       // TODO get his from config
@@ -60,5 +62,9 @@ export class FormGroupFactory extends AbstractControlFactory {
     })
   }
 
+  markAllAsTouched() {
+    this.control.markAsTouched()
+    this.child.markAllAsTouched()
+  }
 
 }

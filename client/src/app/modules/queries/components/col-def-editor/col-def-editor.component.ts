@@ -10,8 +10,7 @@ import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 import { delay, map, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
 import { ColDefComponent } from '../col-def/col-def.component';
-import { QueryPathSegment } from './QueryPathSegment';
-import { ColDef } from './ColDef';
+import { QueryPathSegment, ColDef } from '../../../../../../../src/common/interfaces';
 
 
 interface DynamicFormControl {
@@ -103,7 +102,7 @@ class ColDefEditorMatControl implements OnDestroy, ControlValueAccessor, MatForm
   }
 
 
-  addCtrl(colDef: ColDef, index) {
+  addCtrl(colDef: Partial<ColDef>, index) {
 
     const c: DynamicFormControl = {
       key: '_' + index,
@@ -213,7 +212,7 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements Aft
       takeUntil(this.destroy$)
     ).subscribe(list => {
       list.forEach(item => {
-        item.meta$.pipe(delay(0),takeUntil(queryListChange$)).subscribe(meta => {
+        item.meta$.pipe(delay(0), takeUntil(queryListChange$)).subscribe(meta => {
           this.dynamicFormControls[item.i].meta$.next(meta)
         })
       })
@@ -233,16 +232,15 @@ export class ColDefEditorComponent extends ColDefEditorMatControl implements Aft
 
   addColumn() {
 
-    this.addCtrl(
-      new ColDef({
-        label: 'New Column',
-        queryPath: [
-          new QueryPathSegment({
-            type: 'properties',
-            data: {}
-          })
-        ]
-      }),
+    this.addCtrl({
+      label: 'New Column',
+      queryPath: [
+        {
+          type: 'properties',
+          data: {}
+        }
+      ]
+    },
       this.dynamicFormControls.length
     )
 

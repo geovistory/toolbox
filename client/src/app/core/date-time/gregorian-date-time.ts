@@ -11,159 +11,15 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
 
 
-  addYear() {
-    this.year++;
-    if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  addMonth() {
-    this.month++;
-
-
-    if (this.month > 12) {
-      this.month = 1
-      this.addYear();
-    }
-    else if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  addDay() {
-    this.day++;
-    if (this.day > this.lengthOfMonth()) {
-      this.day = 1;
-      this.addMonth()
-    }
-  }
-
-  addHour() {
-    this.hours++;
-    if (this.hours > 23) {
-      this.hours = 0;
-      this.addDay()
-    }
-  }
-
-  addMinute() {
-    this.minutes++;
-    if (this.minutes > 59) {
-      this.minutes = 0;
-      this.addHour()
-    }
-  }
-
-  addSecond() {
-    this.seconds++;
-    if (this.seconds > 59) {
-      this.seconds = 0;
-      this.addMinute()
-    }
-  }
-
-  removeYear() {
-    this.year--;
-    if(this.year ===0) {
-      this.year = -1;
-    }
-    if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  removeMonth() {
-    this.month--;
-
-    if (this.month < 1) {
-      this.month = 12;
-      this.removeYear();
-    }
-    else if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  removeDay() {
-    this.day--;
-    if (this.day < 1) {
-      this.removeMonth()
-      this.day = this.lengthOfMonth();
-    }
-  }
-
-
-  removeHour() {
-    this.hours--;
-    if (this.hours < 0  || !this.hours) {
-      this.hours = 23;
-      this.removeDay()
-    }
-  }
-
-  removeMinute() {
-    this.minutes--;
-    if (this.minutes < 0  || !this.minutes) {
-      this.minutes = 59;
-      this.removeHour()
-    }
-  }
-
-  removeSecond() {
-    this.seconds--;
-    if (this.seconds < 0 || !this.seconds) {
-      this.seconds = 59;
-      this.removeMinute()
-    }
-  }
-
-
-
-
-  add(duration: Granularity) {
-    if (duration === '1 year') {
-      this.addYear()
-    }
-    else if (duration === '1 month') {
-      this.addMonth()
-    }
-    else if (duration === '1 day') {
-      this.addDay()
-    }
-    else if (duration === '1 hour') {
-      this.addHour()
-    }
-    else if (duration === '1 minute') {
-      this.addMinute()
-    }
-    else if (duration === '1 second') {
-      this.addSecond()
-    }
-  }
-
-  toLastSecondOf(duration: Granularity) {
-    this.add(duration);
-    this.removeSecond();
-  }
-
-  getEndOf(duration: Granularity = this.getGranularity()): GregorianDateTime {
-
-    var dt = new GregorianDateTime(this);
-    dt.toLastSecondOf(duration);
-
-    return dt;
-  }
-
   lengthOfMonth() {
-    var y = this.year, m = this.month;
+    let y = this.year, m = this.month;
 
     if (!(m > 0) && !(m <= 12)) {
       return undefined;
     }
 
     // Assume not leap year by default (note zero index for Jan)
-    var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
     // If evenly divisible by 4 and not evenly divisible by 100,
     // or is evenly divisible by 400, then a leap year
@@ -173,6 +29,13 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     return daysInMonth[--m];
   }
 
+  getEndOf(duration: Granularity = this.getGranularity()): GregorianDateTime {
+
+    const dt = new GregorianDateTime(this);
+    dt.toLastSecondOf(duration);
+
+    return dt;
+  }
 
 
   /**
@@ -183,31 +46,31 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
    */
   getJulianDay() {
     // running day (conut of days that year)
-    var runningDay = this.calcRunningDay(this.month, this.day, this.isLeapYear());
+    const runningDay = this.calcRunningDay(this.month, this.day, this.isLeapYear());
 
     // running year
-    var runningYear = this.year - 1;
+    const runningYear = this.year - 1;
 
     // julian day of year 1 AD
-    var julianDay0 = 1721426;
+    const julianDay0 = 1721426;
 
     // number of full 400 year cycles
-    var n400 = Math.floor(runningYear / 400);
+    const n400 = Math.floor(runningYear / 400);
 
     // rest of division: number of years of the last uncomplete 400 years cycle
-    var r400 = runningYear % 400;
+    const r400 = runningYear % 400;
 
     // number of full 100 year cycles
-    var n100 = Math.floor(r400 / 100)
+    const n100 = Math.floor(r400 / 100)
 
     // rest of division: number of years of the last uncomplete 100 years cycle
-    var r100 = r400 % 100;
+    const r100 = r400 % 100;
 
     // number of full 4 year cycles
-    var n4 = Math.floor(r100 / 4)
+    const n4 = Math.floor(r100 / 4)
 
     // rest of division: number of full years of the last uncomplete 4 years cycle
-    var n1 = r100 % 4;
+    const n1 = r100 % 4;
 
     return julianDay0 + n400 * 146097 + n100 * 36524 + n4 * 1461 + n1 * 365 + runningDay;
   }
@@ -218,11 +81,11 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     if (typeof julianDay === 'string') {
       julianDay = parseInt(julianDay)
     }
-    
-    // julian day of year 1 AD
-    var julianDay0 = 1721426;
 
-    var firstDayOfGregorianCal = 2299161;
+    // julian day of year 1 AD
+    const julianDay0 = 1721426;
+
+    const firstDayOfGregorianCal = 2299161;
 
     // conversion of julian day earlier than the introduction of
     // the gregorian calendar October 15th of 1582 are calculated
@@ -238,16 +101,16 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
     else {
 
       // number of full 400 year cycles
-      var n400 = Math.floor((julianDay - julianDay0) / 146097);
+      const n400 = Math.floor((julianDay - julianDay0) / 146097);
 
       // number of days of the last uncomplete 400 years cycle
-      var r400 = (julianDay - julianDay0) % 146097;
+      const r400 = (julianDay - julianDay0) % 146097;
 
       // number of full 100 year cycles
-      var n100 = Math.floor(r400 / 36524);
+      let n100 = Math.floor(r400 / 36524);
 
       // number of days of the last uncomplete 100 years cycle
-      var r100 = r400 % 36524;
+      let r100 = r400 % 36524;
 
 
       if (n100 === 4) {
@@ -256,16 +119,16 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
       }
 
       // number of full 4 year cycles
-      var n4 = Math.floor(r100 / 1461);
+      const n4 = Math.floor(r100 / 1461);
 
       // number of days of the last uncomplete 4 years cycle
-      var r4 = r100 % 1461;
+      const r4 = r100 % 1461;
 
       // number of full years of the last uncomplete 4 years cycle
-      var n1 = Math.floor(r4 / 365);
+      let n1 = Math.floor(r4 / 365);
 
       // number of days in the last year
-      var runningDay = r4 % 365;
+      let runningDay = r4 % 365;
 
       if (n1 === 4) {
         n1 = 3;
@@ -273,12 +136,12 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
       }
 
       // running year
-      var runningYear = 400 * n400 + 100 * n100 + 4 * n4 + n1;
+      const runningYear = 400 * n400 + 100 * n100 + 4 * n4 + n1;
 
       // resulting year
       this.year = runningYear + 1;
 
-      var monthDay = this.calcDateByRunningDay(runningDay, this.isLeapYear())
+      const monthDay = this.calcDateByRunningDay(runningDay, this.isLeapYear())
 
       // resulting month
       this.month = monthDay.month;
@@ -296,7 +159,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
    * Returns true if given year is a leap year
    */
   isLeapYear(): boolean {
-    var year = this.year;
+    const year = this.year;
     // Return true if evenly divisible by 4 and not evenly divisible by 100,
     // or is evenly divisible by 400, then a leap year
     return ((!(year % 4) && year % 100) || !(year % 400)) ? true : false;
@@ -304,15 +167,15 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
   /**
    * returns julian day in seconds
-   * 
+   *
    * TODO: return julian day plus time in seconds
    */
-  getJulianSecond(){
-     let seconds = this.getJulianDay() * 60 * 60 * 24; // first second of the day
-     if (this.seconds > 0) seconds = seconds + this.seconds;
-     if (this.minutes > 0) seconds = seconds + this.minutes * 60;
-     if(this.hours > 0) seconds = seconds + this.hours * 60 * 60;
-     return seconds;
+  getJulianSecond() {
+    let seconds = this.getJulianDay() * 60 * 60 * 24; // first second of the day
+    if (this.seconds > 0) seconds = seconds + this.seconds;
+    if (this.minutes > 0) seconds = seconds + this.minutes * 60;
+    if (this.hours > 0) seconds = seconds + this.hours * 60 * 60;
+    return seconds;
   }
 
   /**
@@ -337,7 +200,7 @@ export class GregorianDateTime extends DateTimeCommons implements DateTime {
 
     // number of ours of the day
     this.minutes = Math.floor(secsOfHour / 60)
-    
+
     // secs of the last minute
     this.seconds = this.minutes % 60;
 

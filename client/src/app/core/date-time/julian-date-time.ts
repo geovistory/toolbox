@@ -14,134 +14,6 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
   * Methods
   */
 
-
-  addYear() {
-    this.year++;
-
-    if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  addMonth() {
-    this.month++;
-
-    if (this.month > 12) {
-      this.month = 1
-      this.addYear();
-    } else if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  addDay() {
-    this.day++;
-    if (this.day > this.lengthOfMonth()) {
-      this.day = 1;
-      this.addMonth()
-    }
-  }
-
-  addHour() {
-    this.hours++;
-    if (this.hours > 23) {
-      this.hours = 0;
-      this.addDay()
-    }
-  }
-
-  addMinute() {
-    this.minutes++;
-    if (this.minutes > 59) {
-      this.minutes = 0;
-      this.addHour()
-    }
-  }
-
-  addSecond() {
-    this.seconds++;
-    if (this.seconds > 59) {
-      this.seconds = 0;
-      this.addMinute()
-    }
-  }
-
-  removeYear() {
-    this.year--;
-    if (this.year === 0) {
-      this.year = -1;
-    }
-    if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  removeMonth() {
-    this.month--;
-
-    if (this.month < 1) {
-      this.month = 12;
-      this.removeYear();
-    } else if (this.day > this.lengthOfMonth()) {
-      this.day = this.lengthOfMonth()
-    }
-  }
-
-  removeDay() {
-    this.day--;
-    if (this.day < 1) {
-      this.removeMonth()
-      this.day = this.lengthOfMonth();
-    }
-  }
-
-
-  removeHour() {
-    this.hours--;
-    if (this.hours < 0) {
-      this.hours = 23;
-      this.removeDay()
-    }
-  }
-
-  removeMinute() {
-    this.minutes--;
-    if (this.minutes < 0) {
-      this.minutes = 59;
-      this.removeHour()
-    }
-  }
-
-  removeSecond() {
-    this.seconds--;
-    if (this.seconds < 0) {
-      this.seconds = 59;
-      this.removeMinute()
-    }
-  }
-
-
-  add(duration: Granularity) {
-    if (duration === '1 year') {
-      this.addYear()
-    } else if (duration === '1 month') {
-      this.addMonth()
-    } else if (duration === '1 day') {
-      this.addDay()
-    } else if (duration === '1 hour') {
-      this.addHour()
-    } else if (duration === '1 minute') {
-      this.addMinute()
-    } else if (duration === '1 second') {
-      this.addSecond()
-    }
-  }
-
-  toLastSecondOf(duration: Granularity) {
-    this.add(duration);
-    this.removeSecond();
-  }
-
   getEndOf(duration: Granularity = this.getGranularity()): JulianDateTime {
 
     const dt = new JulianDateTime(this);
@@ -176,21 +48,21 @@ export class JulianDateTime extends DateTimeCommons implements DateTime {
   getJulianDay() {
 
     // running day (conut of days that year)
-    var runningDay = this.calcRunningDay(this.month, this.day, this.isLeapYear());
-
+    const runningDay = this.calcRunningDay(this.month, this.day, this.isLeapYear());
+    let runningYear;
     if (this.year < 0) {
       // running year
-      var runningYear = 4716 + this.year;
+      runningYear = 4716 + this.year;
     } else {
       // running year
-      var runningYear = 4715 + this.year;
+      runningYear = 4715 + this.year;
     }
 
     // number of full 4 year cycles
-    var n4 = Math.floor(runningYear / 4)
+    const n4 = Math.floor(runningYear / 4)
 
     // rest of division: number of full years of the last uncomplete 4 years cycle
-    var n1 = runningYear % 4;
+    const n1 = runningYear % 4;
 
 
     return 1461 * n4 + 365 * (n1 - 3) + runningDay;

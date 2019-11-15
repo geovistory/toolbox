@@ -4,18 +4,21 @@
 
     <ng-container matColumnDef="label">
       <mat-header-cell *matHeaderCellDef>
-        <button mat-icon-button (click)="onZoomOut()" matTooltip="Zoom Out">
+        <button mat-icon-button (click)="onZoomOut()" matTooltip="Zoom Out" [disabled]="!options?.zoomer?.canZoomOut">
           <mat-icon>zoom_out</mat-icon>
         </button>
-        <button mat-icon-button (click)="onZoomIn()" matTooltip="Zoom In">
+        <button mat-icon-button (click)="onZoomIn()" matTooltip="Zoom In" [disabled]="!options?.zoomer?.canZoomIn">
           <mat-icon>zoom_in</mat-icon>
         </button>
-        <button mat-icon-button (click)="onZoomToExtent()"  matTooltip="Zoom to all items">
+        <button mat-icon-button (click)="onZoomToExtent()" matTooltip="Zoom to all items">
           <mat-icon>all_out</mat-icon>
         </button>
+        <!-- <div class="mat-caption text-muted">
+          z: {{options?.zoomer?.currentLevel}} |
+        </div>
         <div class="mat-caption text-muted">
           {{data?.rows?.length}}
-        </div>
+        </div> -->
       </mat-header-cell>
       <mat-cell *matCellDef="let row;">
         <gv-entity-preview [preview]="row.entityPreview" dragEnabled="false" openTabOnClick="true">
@@ -45,8 +48,7 @@
 
       </mat-header-cell>
       <mat-cell class="body" *matCellDef="let row">
-        <svg [attr.width]="options.width" [attr.height]="options.rowHeight" draggableXAxis (onDrag)="onDrag($event)"
-          (onDragStart)="onDragStart()" (onDragEnd)="onDragEnd()">
+        <svg [attr.width]="options.width" [attr.height]="options.rowHeight" draggableXAxis (onDrag)="onDrag($event)">
           <!-- xAxis ticks on rows-->
           <g class="x-axis-julian" [xAxisVisual]="timeline.xAxisTicks"></g>
           <g class="x-axis-gregorian" [xAxisVisual]="timeline.xAxisGregTicks"></g>
@@ -74,3 +76,4 @@
     <mat-row *matRowDef="let row; columns: columns"></mat-row>
   </mat-table>
 </cdk-virtual-scroll-viewport>
+<gv-zoom-slider [zoomer]="options.zoomer" (change)="this.initTimeline()"></gv-zoom-slider>
