@@ -6,7 +6,7 @@ import { NestedNode } from 'app/shared/components/checklist-control/services/che
 import { equals, keys } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { delay, takeUntil } from 'rxjs/operators';
-import { QueryFilter, QueryFilterData } from '../../../../../../../src/query/query-filter';
+import { QueryFilter, QueryFilterData } from '../../../../../../../src/common/interfaces';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredCondition, classOrTypeRequiredValidator, NodeData } from '../class-and-type-select/class-and-type-select.component';
 

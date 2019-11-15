@@ -1,15 +1,13 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, QueryList, Self, ViewChildren } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, NgControl, NG_VALIDATORS, Validator, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
-import { MatOption } from '@angular/material/core';
+import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { MatSelectChange } from '@angular/material/select';
 import { ActiveProjectService } from 'app/core';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { equals, uniq } from 'ramda';
-import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { distinctUntilChanged, filter, map, takeUntil, first, startWith } from 'rxjs/operators';
-import { QueryFilter } from "../../../../../../../src/query/query-filter";
+import { equals } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { QueryFilter } from '../../../../../../../src/common/interfaces';
 
 export interface PropertyOption { propertyFieldKey: string, isOutgoing: boolean, pk: number, label: string };
 

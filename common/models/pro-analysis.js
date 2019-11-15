@@ -1,5 +1,5 @@
 'use strict';
-const AnalysisRemotes = require('../../server/dist/analysis/analysis-remotes')
+const AnalysisRemotes = require('../../dist/server/analysis/analysis-remotes')
   .AnalysisRemotes;
 module.exports = function(ProAnalysis) {
   /**

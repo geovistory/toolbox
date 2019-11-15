@@ -1,17 +1,17 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { FormFactoryService, FormFactory, FormFactoryConfig, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { Subject, of, Observable, BehaviorSubject } from 'rxjs';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
-import { values, } from 'ramda';
-import { map, first, takeUntil } from 'rxjs/operators';
-import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
-import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
-import { QueryFilter } from '../../../../../../../src/query/query-filter';
-import { QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
-import { TimeChartContLine, TimeChartContInput } from '../../../../../../../src/analysis/time-chart-cont/input/time-chart-cont-input.interface';
+import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
+import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
+import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries/components/query-filter/query-filter.component';
+import { values } from 'ramda';
+import { Observable, of, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { TimeChartContInput, TimeChartContLine } from '../../../../../../../src/common/interfaces';
+
 export interface TccFormArrayData {
   type: 'lineArray' | 'line' | 'queryFilter'
 }
@@ -67,6 +67,7 @@ export const lineConfig = (): TccFormNodeConfig => ({
         queryDefinition: {
           filter,
           columns: [{
+            id: 'col_0',
             ofRootTable: true,
             preventGroupBy: true,
             defaultType: 'temporal_distribution'

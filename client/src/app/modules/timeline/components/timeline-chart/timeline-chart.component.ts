@@ -4,7 +4,7 @@ import { GregorianDateTime, JulianDateTime } from 'app/core';
 import { DimensionChangeEvent } from 'app/shared/directives/dimension-change/dimension-change.directive';
 import { merge, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ChartLineData } from '../../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface'
+import { ChartLineData } from '../../../../../../../src/common/interfaces';
 import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definition';
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';

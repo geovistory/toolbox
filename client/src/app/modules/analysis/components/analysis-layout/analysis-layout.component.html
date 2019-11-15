@@ -13,7 +13,8 @@
       <ng-content select="[settingsTopBar]"> </ng-content>
 
       <!-- <button mat-stroked-button class="ml-auto border-right-0" (click)="a.saveAnalysis()">Save</button> -->
-      <button mat-stroked-button color="primary" class="ml-auto border-right-0" (click)="run()">Run >></button>
+      <button mat-stroked-button color="primary" class="ml-auto border-right-0" [disabled]="a.loading"
+        (click)="run()">Run >></button>
     </gv-detail-top-bar>
     <gv-detail-content class="p-3">
 
@@ -48,15 +49,12 @@
       </div>
     </gv-detail-top-bar>
     <gv-detail-content>
-      <div class="h-100" [hidden]="a.loading || !(a.results$ |async)">
+      <div class="h-100" *ngIf="!(!(a.results$ |async) && !a.loading)">
         <ng-content select="[results]"></ng-content>
       </div>
       <div class="h-100 d-flex align-items-center justify-content-center mat-text-secondary"
-        *ngIf="!a.loading && !(a.results$ |async)">
+        *ngIf="!(a.results$ |async) && !a.loading">
         Configure your analysis to the left and click on "Run".
-      </div>
-      <div class="h-100 d-flex align-items-center justify-content-center mat-text-secondary" *ngIf="a.loading">
-        Loading
       </div>
     </gv-detail-content>
 

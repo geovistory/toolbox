@@ -1,4 +1,4 @@
-import { ChartLinePoint } from '../../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface'
+import { ChartLinePoint } from '../../../../../../../src/common/interfaces';
 
 export const few_births: ChartLinePoint[] = [
   {

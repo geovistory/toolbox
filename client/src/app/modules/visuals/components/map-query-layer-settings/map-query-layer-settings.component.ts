@@ -3,15 +3,13 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, Afte
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectService, ProQuery, latestEntityVersions, ValidationService } from 'app/core';
-import { ColDef } from '../../../../../../../src/query/col-def';
 import { QueryService } from 'app/modules/queries/services/query.service';
 import { equals, keys, omit, pathOr } from 'ramda';
 import { combineLatest, merge, Observable, Subject, pipe, OperatorFunction } from 'rxjs';
 import { filter, map, takeUntil, tap, switchMap, first, delay } from 'rxjs/operators';
 
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { QueryFilterData } from '../../../../../../../src/query/query-filter';
-import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
+import { ColDef, QueryFilterData, QueryPathSegment } from '../../../../../../../src/common/interfaces';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 

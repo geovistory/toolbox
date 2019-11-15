@@ -4,37 +4,37 @@ import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
-import { QueryFilter } from "../../../../../../../src/query/query-filter";
+import { ColDef, QueryFilter } from '../../../../../../../src/common/interfaces';
 import { QueriesModule } from '../../queries.module';
 import { SubgroupComponent } from './subgroup.component';
 
 
 const pkClasses$ = new BehaviorSubject(null)
 pkClasses$.pipe(first(), delay(1000)).subscribe(() => {
-    pkClasses$.next([21, 61])
+  pkClasses$.next([21, 61])
 })
 
 export default sandboxOf(SubgroupComponent, {
-    imports: [
-        QueriesModule,
-        InitStateModule,
-        MatFormFieldModule,
-        FormsModule
-    ],
-    declareComponent: false
+  imports: [
+    QueriesModule,
+    InitStateModule,
+    MatFormFieldModule,
+    FormsModule
+  ],
+  declareComponent: false
 })
-    .add('Subgroup | Preselected ', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: {
-                data: {
-                    subgroup: 'classAndType'
-                }
-            } as QueryFilter,
-            pkClasses$
-        },
-        template: `
+  .add('Subgroup | Preselected ', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: {
+        data: {
+          subgroup: 'classAndType'
+        }
+      } as QueryFilter,
+      pkClasses$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -63,5 +63,5 @@ export default sandboxOf(SubgroupComponent, {
 
             </div>
         </div>`
-    })
+  })
 

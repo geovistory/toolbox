@@ -10,9 +10,9 @@ import { QueryPathInjectData } from 'app/modules/queries/forms/query-path/query-
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { TableInput } from '../../../../../../../src/analysis/table/input/table-input.interface';
-import { QueryDefinition } from '../../../../../../../src/query/query';
+import { QueryDefinition, TableInput } from '../../../../../../../src/common/interfaces';
 import { TableFormArrayData, TableFormService } from './table-form.service';
+
 
 export interface TableFormGroupData {
   initVal$: Observable<QueryDefinition>;

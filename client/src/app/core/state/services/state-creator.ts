@@ -1,5 +1,5 @@
 import { ProjectCrm } from 'app/core/active-project';
-import { SysConfig } from 'app/core/config/sys-config';
+import { SysConfig } from 'app/core';
 import { InfAppellation, InfEntityAssociation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from 'app/core/sdk';
 import { U } from 'app/core/util/util';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';

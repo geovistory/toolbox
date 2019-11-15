@@ -1,15 +1,12 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService, ProQueryApi } from 'app/core';
-import { Table } from 'primeng/table';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
-import { QueryDefinition } from '../../../../../../../src/query/query';
-import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
+import { ActiveProjectService } from 'app/core';
 import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
-import { TableInput } from '../../../../../../../src/analysis/table/input/table-input.interface';
-import { TableOutput } from '../../../../../../../src/analysis/table/output/table-output.interface';
-import { ColDef } from '../../../../../../../src/query/col-def';
+import { Table } from 'primeng/table';
+import { Observable, Subject } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { ColDef, QueryDefinition, TableInput, TableOutput } from '../../../../../../../src/common/interfaces';
+import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 
 export interface Example {
   id: number;
@@ -65,16 +62,16 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    let count = 0;
+    // let count = 0;
     this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
       this.definition = definition;
       this.colDefs = definition.columns
-      if (count > 0) {
-        const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
-        body.scrollTop = 0;
-        this.table.reset();
-      }
-      count++;
+      // if (count > 0) {
+      const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
+      body.scrollTop = 0;
+      this.table.reset();
+      // }
+      // count++;
     })
   }
 

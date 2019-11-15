@@ -4,7 +4,7 @@ import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel, DfhPropertyProfileView, DfhPropertyProfileViewApi, DfhPropertyView, DfhPropertyViewApi } from '../sdk';
 import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory } from './dfh.actions';
 import { DfhClassSlice, DfhLabelSlice, DfhPropertyProfileViewSlice, DfhPropertyViewSlice } from './dfh.models';
-import { SysConfig } from '../config/sys-config';
+import { SysConfig } from '../../../../../src/common/config/sys-config';
 import * as Config from '../../../../../common/config/Config';
 import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';

@@ -1,18 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, of, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { map, first } from 'rxjs/operators';
-import { values } from 'd3';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
-import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
-import { TableFormNodeConfig } from './table-form.component';
-import { QueryPathFormComponent } from 'app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
-import { FilterDefinition, QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries/components/query-filter/query-filter.component';
-import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { QueryFilter } from '../../../../../../../src/query/query-filter';
-import { ColDef, ColDefDefaultType } from '../../../../../../../src/query/col-def';
-import { TableInput } from '../../../../../../../src/analysis/table/input/table-input.interface';
-import { Validators } from '@angular/forms';
 import { ValidationService } from 'app/core/validation/validation.service';
+import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { FilterDefinition, QueryFilterComponent } from 'app/modules/queries/components/query-filter/query-filter.component';
+import { QueryPathFormComponent } from 'app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
+import { values } from 'd3';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { TableInput, QueryPathSegment, ColDefDefaultType, ColDef, QueryFilter } from '../../../../../../../src/common/interfaces';
+import { TableFormNodeConfig } from './table-form.component';
+
 interface PathColumn {
   rootClasses$: Observable<number[]>,
   initVal$: Observable<QueryPathSegment[]>
@@ -23,7 +20,7 @@ interface RootColumn {
 export interface TableFormArrayData {
   root?: boolean;
   columns?: boolean;
-  colDef?: ColDef;
+  colDef?: Partial<ColDef>;
 }
 
 @Injectable({
@@ -102,9 +99,12 @@ export class TableFormService {
             placeholder: '',
             validators: [ValidationService.arrayLengthValidator(1, Number.POSITIVE_INFINITY)],
             required: true,
-            mapValue: (x: ColDef[]): ColDef[] => x.map((c, i) => {
-              c.id = 'col_' + i;
-              return c;
+            mapValue: (x: Partial<ColDef>[]): ColDef[] => x.map((c, i) => {
+              const colDef: ColDef = {
+                ...c,
+                id: 'col_' + i
+              }
+              return colDef;
             })
           }
         },
@@ -116,7 +116,7 @@ export class TableFormService {
    * Config of columns
    * columns is array of column
    */
-  columnConfig = (colDef: ColDef): TableFormNodeConfig => (
+  columnConfig = (colDef: Partial<ColDef>): TableFormNodeConfig => (
     {
       array: {
         data: {
@@ -124,7 +124,7 @@ export class TableFormService {
         },
         placeholder: '',
         required: true,
-        mapValue: ([label, queryPath]: [string, QueryPathSegment[]]): ColDef => ({
+        mapValue: ([label, queryPath]: [string, QueryPathSegment[]]): Partial<ColDef> => ({
           ...colDef,
           label,
           queryPath
@@ -140,7 +140,7 @@ export class TableFormService {
    * - columnLabel
    * - queryPath
    */
-  columnFieldsConfig = (colDef: ColDef): TableFormNodeConfig[] => {
+  columnFieldsConfig = (colDef: Partial<ColDef>): TableFormNodeConfig[] => {
     if (colDef.defaultType) {
       return [{
         control: {

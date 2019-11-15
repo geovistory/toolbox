@@ -1,8 +1,8 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { ColDef, ColDefDefaultType } from '../../../../../../../src/query/col-def';
+import { ColDef, ColDefDefaultType } from '../../../../../../../src/common/interfaces';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
 import { TableFormService } from '../table-form/table-form.service';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'gv-table-form-array',
@@ -22,7 +22,7 @@ export class TableFormArrayComponent implements OnInit {
    * adds a new columnConfig
    */
   addPathColumn() {
-    const colDef: ColDef = { label: 'New Column' }
+    const colDef: Partial<ColDef> = { label: 'New Column' }
     const conf = this.t.columnConfig(colDef)
     this.formArrayFactory.append(conf)
   }
@@ -34,7 +34,7 @@ export class TableFormArrayComponent implements OnInit {
   }
 
   addDefaultColumn(defaultType: ColDefDefaultType) {
-    const colDef: ColDef = {
+    const colDef: Partial<ColDef> = {
       defaultType,
       label: this.getLabelForDefaulType(defaultType),
       ofRootTable: true

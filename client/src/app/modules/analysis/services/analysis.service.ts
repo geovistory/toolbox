@@ -1,9 +1,9 @@
-import { Injectable, Output } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { ProAnalysisApi, SysConfig, ActiveProjectService } from 'app/core';
+import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ProgressDialogData, ProgressMode, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
-import { ErrorDialogData, ErrorDialogComponent } from 'app/shared/components/error-dialog/error-dialog.component';
+import { ActiveProjectService, ProAnalysisApi } from 'app/core';
+import { ErrorDialogComponent, ErrorDialogData } from 'app/shared/components/error-dialog/error-dialog.component';
+import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from 'app/shared/components/progress-dialog/progress-dialog.component';
+import { BehaviorSubject } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Injectable({
@@ -33,23 +33,23 @@ export class AnalysisService<I, O> {
   callApi(q: I) {
     this.p.pkProject$.pipe(first()).subscribe(pkProject => {
 
-      const data: ProgressDialogData = {
-        title: 'Creating Analysis ...',
-        mode$: new BehaviorSubject<ProgressMode>('indeterminate'),
-        hideValue: true,
-        value$: new BehaviorSubject(0)
-      }
-      const dialog = this.dialog.open(ProgressDialogComponent, {
-        width: '250px', data, disableClose: true
-      });
+      // const data: ProgressDialogData = {
+      //   title: 'Creating Analysis ...',
+      //   mode$: new BehaviorSubject<ProgressMode>('indeterminate'),
+      //   hideValue: true,
+      //   value$: new BehaviorSubject(0)
+      // }
+      // const dialog = this.dialog.open(ProgressDialogComponent, {
+      //   width: '250px', data, disableClose: true
+      // });
       this.loading = true;
 
       this.analysisApi.run(pkProject, this.fkAnalysisType, q).subscribe((r: O) => {
         this.results$.next(r);
         this.loading = false;
-        dialog.close();
+        // dialog.close();
       }, error => {
-        dialog.close();
+        // dialog.close();
         const d: ErrorDialogData = {
           title: 'Oops, something went wrong ...',
           subtitle: 'There was an error when creating the analysis. Sorry!',

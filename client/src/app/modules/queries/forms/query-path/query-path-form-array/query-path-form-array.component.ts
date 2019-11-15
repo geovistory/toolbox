@@ -5,7 +5,7 @@ import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-an
 import { switchMap, map, first } from 'rxjs/operators';
 import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory, QueryPathFormControlData } from '../query-path-form/query-path-form.component';
 import { PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
-import { QueryPathSegment } from '../../../../../../../../src/query/query-path-segment';
+import { QueryPathSegment } from '../../../../../../../../src/common/interfaces';
 
 @Component({
   selector: 'gv-query-path-form-array',

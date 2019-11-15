@@ -7,9 +7,9 @@ import { ActiveProjectService } from 'app/core';
 import { equals, keys, pick } from 'ramda';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { delay, map, takeUntil } from 'rxjs/operators';
-import { QueryFilter } from "../../../../../../../src/query/query-filter";
-import { QueryService } from '../../services/query.service';
 import { propertiesRequiredCondition, propertiesRequiredValidator, PropertyOption } from '../property-select/property-select.component';
+import { ColDef, QueryFilter } from '../../../../../../../src/common/interfaces';
+import { QueryService } from '../../services/query.service';
 
 interface DynamicFormControl {
   key: string,

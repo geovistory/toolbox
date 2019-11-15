@@ -27,12 +27,6 @@
       "path": "../common"
     }
   ],
-  "files": [
-    "src/query/query-filter.schema.json"
-  ],
-  "include": [
-    "**/*.schema.json"
-  ],
   "exclude": [
     "../node_modules",
     "**/*.d.ts",

@@ -1,11 +1,15 @@
 <gv-analysis-layout>
 
   <gv-time-chart-cont-form analysis-settings #c>
-    <button mat-flat-button color="primary" (click)="a.runAnalysis()" matTooltip="Create Analysis">Run</button>
+    <button mat-flat-button color="primary" (click)="a.runAnalysis()" [disabled]="a.loading"
+      matTooltip="Create Analysis">Run</button>
   </gv-time-chart-cont-form>
 
   <div results class="h-100">
-    <gv-timeline-chart [data$]="a.results$"></gv-timeline-chart>
+    <div class="h-100 d-flex align-items-center justify-content-center mat-text-secondary" *ngIf="a.loading">
+      Loading
+    </div>
+    <gv-timeline-chart *ngIf="!a.loading" [data$]="a.results$"></gv-timeline-chart>
   </div>
 
 </gv-analysis-layout>

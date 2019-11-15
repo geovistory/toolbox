@@ -1,14 +1,13 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
+import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
-import { ColDefComponent } from './col-def.component';
-import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { PropertyOption } from '../property-select/property-select.component';
-import { ColDef } from "../../../../../../../src/query/col-def";
+import { ColDefComponent } from './col-def.component';
 
 const options$ = new BehaviorSubject(null)
 options$.pipe(first(), delay(1000)).subscribe(() => {

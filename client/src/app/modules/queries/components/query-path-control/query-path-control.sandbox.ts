@@ -1,16 +1,16 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { QueriesModule } from '../../queries.module';
-import { QueryPathControlComponent } from './query-path-control.component';
-import { delay, first } from 'rxjs/operators';
-import { BehaviorSubject, of } from 'rxjs';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-import { PropertyOption } from '../property-select/property-select.component';
-import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
-import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
 import { ValidationDirectivesModule } from 'app/core/validation/validation.directives';
+import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
+import { BehaviorSubject, of } from 'rxjs';
+import { delay, first } from 'rxjs/operators';
+import { QueryPathSegment } from '../../../../../../../src/common/interfaces';
+import { QueriesModule } from '../../queries.module';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
+import { PropertyOption } from '../property-select/property-select.component';
+import { QueryPathControlComponent } from './query-path-control.component';
 
 
 const options$ = new BehaviorSubject(null)

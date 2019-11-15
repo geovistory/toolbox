@@ -16,6 +16,18 @@
       "problemMatcher": "$tsc"
     },
     {
+      "label": "Build project: watch",
+      "group": "build",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "-s",
+        "build:watch"
+      ],
+      "problemMatcher": "$tsc"
+    },
+    {
       "label": "Create schemas and validators of ts server",
       "group": "build",
       "type": "shell",

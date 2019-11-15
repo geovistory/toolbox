@@ -1,14 +1,11 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { SysConfig } from 'app/core';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { TableInput } from '../../../../../../../src/analysis/table/input/table-input.interface';
-import { TableOutput } from '../../../../../../../src/analysis/table/output/table-output.interface';
+import { Subject } from 'rxjs';
 import { AnalysisService } from '../../services/analysis.service';
 import { TableFormComponent } from '../table-form/table-form.component';
-import { SysConfig } from 'app/core';
-import { QueryDefinition } from '../../../../../../../src/query/query';
-
+import { QueryDefinition, TableInput, TableOutput } from '../../../../../../../src/common/interfaces'
 
 @Component({
   selector: 'gv-table-edit',

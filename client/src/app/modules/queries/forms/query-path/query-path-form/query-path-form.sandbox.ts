@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { QueriesModule } from 'app/modules/queries/queries.module';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject, of } from 'rxjs';
-import { QueryPathSegment } from '../../../../../../../../src/query/query-path-segment';
+import { QueryPathSegment } from '../../../../../../../../src/common/interfaces';
 import { QueryPathFormComponent } from './query-path-form.component';
 
 const initVal1: QueryPathSegment[] = [{

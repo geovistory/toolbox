@@ -1,15 +1,14 @@
-import { Component, OnDestroy, OnInit, ViewChild, HostBinding } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { SysConfig } from 'app/core';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { values } from 'ramda';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TimeChartContInput } from '../../../../../../../src/analysis/time-chart-cont/input/time-chart-cont-input.interface';
-import { ChartLineData, TimeChartContOutput } from '../../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface';
+import { ChartLineData, TimeChartContInput, TimeChartContOutput } from '../../../../../../../src/common/interfaces';
 import { AnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent } from '../time-chart-cont-form/time-chart-cont-form.component';
-import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
-import { SysConfig } from 'app/core';
 
 @Component({
   selector: 'gv-time-chart-cont-edit',

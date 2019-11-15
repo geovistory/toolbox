@@ -1,9 +1,9 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { FluxStandardAction } from 'flux-standard-action';
-import { QueryDetail, FileType } from './query-detail.models';
-import { QueryDefinition } from '../../../../../../../../src/query/query';
 import { ProQuery } from 'app/core';
+import { FluxStandardAction } from 'flux-standard-action';
+import { QueryDefinition } from '../../../../../../../../src/common/interfaces';
+import { FileType, QueryDetail } from './query-detail.models';
 type Payload = QueryDetail;
 interface MetaData {
   queryResults?: any[],

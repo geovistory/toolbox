@@ -5,12 +5,10 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil, delay } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
-import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
-import { PropertyOption } from '../property-select/property-select.component';
+import { QueryPathSegment, QueryFilterData, QueryFilter } from '../../../../../../../src/common/interfaces';
 import { ClassAndTypeSelectModel, classOrTypeRequiredCondition } from '../class-and-type-select/class-and-type-select.component';
 import { equals } from 'ramda';
 import { classAndTypeFilterRequiredValidator } from '../class-and-type-filter/class-and-type-filter.component';
-import { QueryFilterData, QueryFilter } from '../../../../../../../src/query/query-filter';
 
 /** At least one class or type must be selected */
 export function classAndTypePathSegmentRequiredValidator(): ValidatorFn {

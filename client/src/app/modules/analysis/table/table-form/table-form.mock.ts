@@ -1,4 +1,4 @@
-import { QueryDefinition } from '../../../../../../../src/query/query';
+import { QueryDefinition } from '../../../../../../../src/common/interfaces';
 
 export const mockQuery: QueryDefinition = {
   'filter': {
@@ -86,8 +86,8 @@ export const mockQuery: QueryDefinition = {
     //   'ofRootTable': true
     // },
     {
+      'id': 'col_0',
       'label': 'Type Label',
-      'colName': 'type_label',
       'queryPath': [
         {
           'data': {},
@@ -98,6 +98,7 @@ export const mockQuery: QueryDefinition = {
       'ofRootTable': true
     },
     {
+      'id': 'col_1',
       'label': 'Places of University',
       'queryPath': [
         {

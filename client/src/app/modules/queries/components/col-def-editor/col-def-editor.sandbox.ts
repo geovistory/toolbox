@@ -8,38 +8,38 @@ import { QueriesModule } from '../../queries.module';
 import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { PropertyOption } from '../property-select/property-select.component';
 import { ColDefEditorComponent } from '../col-def-editor/col-def-editor.component';
-import { ColDef } from "../../../../../../../src/query/col-def";
+import { ColDef } from '../../../../../../../src/common/interfaces';
 
 const options$ = new BehaviorSubject(null)
 options$.pipe(first(), delay(1000)).subscribe(() => {
-    options$.next([
-        {
-            label: 'A',
-            isOutgoing: true,
-            pk: 1192,
-            propertyFieldKey: propertyFieldKeyFromParams(1192, true)
-        }
-    ] as PropertyOption[])
+  options$.next([
+    {
+      label: 'A',
+      isOutgoing: true,
+      pk: 1192,
+      propertyFieldKey: propertyFieldKeyFromParams(1192, true)
+    }
+  ] as PropertyOption[])
 })
 
 
 export default sandboxOf(ColDefEditorComponent, {
-    declareComponent: false,
-    imports: [
-        QueriesModule,
-        MatFormFieldModule,
-        FormsModule,
-        InitStateModule
-    ]
+  declareComponent: false,
+  imports: [
+    QueriesModule,
+    MatFormFieldModule,
+    FormsModule,
+    InitStateModule
+  ]
 })
-    .add('Col Def | Empty ', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: [],
-            options$
-        },
-        template: `
+  .add('Col Def | Empty ', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: [],
+      options$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -69,76 +69,76 @@ export default sandboxOf(ColDefEditorComponent, {
 
             </div>
         </div>`
-    })
-    .add('Col Def | Preset ', {
-        context: {
-            pkProject: 15,
-            sandboxState: {},
-            model: [
-                {
-                    label: 'Entity',
-                    defaultType: 'entity_preview',
-                    ofRootTable: true
-                },
-                {
-                    label: 'Entity Label',
-                    colName: 'entity_label',
-                    defaultType: 'entity_label',
-                    ofRootTable: true
-                },
-                {
-                    label: 'Class Label',
-                    colName: 'class_label',
-                    defaultType: 'class_label',
-                    ofRootTable: true
-                },
-                {
-                    label: 'Type Label',
-                    colName: 'type_label',
-                    defaultType: 'type_label',
-                    ofRootTable: true
-                },
-                {
-                    label: 'Father',
-                    queryPath: [
-                        {
-                            data: {
-                                outgoingProperties: [
-                                    1192
-                                ],
-                                ingoingProperties: []
-                            }
-                        },
-                        {
-                            data: {
-                                classes: [
-                                    21
-                                ],
-                                types: []
-                            }
-                        },
-                        {
-                            data: {
-                                outgoingProperties: [],
-                                ingoingProperties: [
-                                    1192
-                                ]
-                            }
-                        },
-                        {
-                            data: {
-                                classes: [
-                                    365
-                                ],
-                                types: []
-                            }
-                        }
-                    ]
-                }
-            ],
-            options$
+  })
+  .add('Col Def | Preset ', {
+    context: {
+      pkProject: 15,
+      sandboxState: {},
+      model: [
+        {
+          label: 'Entity',
+          defaultType: 'entity_preview',
+          ofRootTable: true
         },
-        template: `
+        {
+          label: 'Entity Label',
+          colName: 'entity_label',
+          defaultType: 'entity_label',
+          ofRootTable: true
+        },
+        {
+          label: 'Class Label',
+          colName: 'class_label',
+          defaultType: 'class_label',
+          ofRootTable: true
+        },
+        {
+          label: 'Type Label',
+          colName: 'type_label',
+          defaultType: 'type_label',
+          ofRootTable: true
+        },
+        {
+          label: 'Father',
+          queryPath: [
+            {
+              data: {
+                outgoingProperties: [
+                  1192
+                ],
+                ingoingProperties: []
+              }
+            },
+            {
+              data: {
+                classes: [
+                  21
+                ],
+                types: []
+              }
+            },
+            {
+              data: {
+                outgoingProperties: [],
+                ingoingProperties: [
+                  1192
+                ]
+              }
+            },
+            {
+              data: {
+                classes: [
+                  365
+                ],
+                types: []
+              }
+            }
+          ]
+        }
+      ],
+      options$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject"></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -168,4 +168,4 @@ export default sandboxOf(ColDefEditorComponent, {
 
             </div>
         </div>`
-    })
+  })

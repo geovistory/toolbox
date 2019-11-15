@@ -9,7 +9,7 @@ import { delay, distinctUntilChanged, map, merge, mergeMap, startWith, takeUntil
 import { ClassAndTypeSelectComponent } from '../class-and-type-select/class-and-type-select.component';
 import { PropertyFilterComponent } from '../property-filter/property-filter.component';
 import { PropertyOption } from '../property-select/property-select.component';
-import { QueryFilter, QueryFilterData } from '../../../../../../../src/query/query-filter';
+import { ColDef, QueryFilter, QueryFilterData } from '../../../../../../../src/common/interfaces';
 interface DynamicFormControl {
   key: string,
   component: 'class-and-type-filter' | 'property-filter' | 'subgroup',

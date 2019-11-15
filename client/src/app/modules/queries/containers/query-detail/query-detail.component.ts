@@ -10,14 +10,13 @@ import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutComponentInterface } from '../../../projects/containers/project-edit/project-edit.component';
 import { ClassAndTypeSelectModel } from '../../components/class-and-type-select/class-and-type-select.component';
-import { ColDef } from '../../../../../../../src/query/col-def';
+import { ColDef, QueryDefinition } from '../../../../../../../src/common/interfaces';
 import { PropertyOption } from '../../components/property-select/property-select.component';
 import { FilterDefinition, QueryFilterComponent } from '../../components/query-filter/query-filter.component';
 import { QueryDetailAPIActions } from './api/query-detail.actions';
 import { QueryDetailAPIEpics } from './api/query-detail.epics';
 import { FileType, QueryDetail } from './api/query-detail.models';
 import { offsetOfPage, pageOfOffset, queryDetailReducer } from './api/query-detail.reducer';
-import { QueryDefinition } from '../../../../../../../src/query/query';
 
 
 @WithSubStore({

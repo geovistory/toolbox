@@ -7,7 +7,7 @@ import { BehaviorSubject, merge, Observable, of, Subject, combineLatest } from '
 import { filter, first, map, switchMap, takeUntil, delay, tap } from 'rxjs/operators';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypePathSegmentComponent, classAndTypePathSegmentRequiredValidator } from '../class-and-type-path-segment/class-and-type-path-segment.component';
-import { QueryPathSegment, QueryPathSegmentType } from '../../../../../../../src/query/query-path-segment';
+import { ColDef, QueryPathSegment, QueryPathSegmentType } from '../../../../../../../src/common/interfaces';
 import { PropertyPathSegmentComponent, propertyPathSegmentRequiredValidator } from '../property-path-segment/property-path-segment.component';
 import { PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';

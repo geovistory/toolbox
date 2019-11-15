@@ -1,17 +1,17 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { U } from 'app/core';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { delay, filter, takeUntil, switchMap } from 'rxjs/operators';
+import { delay, filter, switchMap, takeUntil } from 'rxjs/operators';
+import { ColDef, QueryPathSegmentType } from '../../../../../../../src/common/interfaces';
 import { QueryService } from '../../services/query.service';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
-import { ColDef } from "../../../../../../../src/query/col-def";
 import { PropertyOption } from '../property-select/property-select.component';
 import { QueryPathControlComponent, QueryPathMetaInfo } from '../query-path-control/query-path-control.component';
-import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 
 // tslint:disable: member-ordering
@@ -82,9 +82,10 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
 
   get defaultLabel() { return 'New Column' }
   get defaultQueryPath() {
+    const type: QueryPathSegmentType = 'properties'
     return [
       {
-        type: 'properties',
+        type,
         data: {}
       }
     ]
@@ -134,6 +135,7 @@ class ColDefMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldC
     this.value = {
       label,
       queryPath,
+      id: U.uuid(),
       // and all other, not changable properties
       ...(value || {})
     };

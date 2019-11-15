@@ -10,8 +10,7 @@ import { PropertyOption } from '../property-select/property-select.component';
 import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
 import { delay, map, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
 import { ColDefComponent } from '../col-def/col-def.component';
-import { QueryPathSegment } from '../../../../../../../src/query/query-path-segment';
-import { ColDef } from '../../../../../../../src/query/col-def';
+import { QueryPathSegment, ColDef } from '../../../../../../../src/common/interfaces';
 
 
 interface DynamicFormControl {
@@ -103,7 +102,7 @@ class ColDefEditorMatControl implements OnDestroy, ControlValueAccessor, MatForm
   }
 
 
-  addCtrl(colDef: ColDef, index) {
+  addCtrl(colDef: Partial<ColDef>, index) {
 
     const c: DynamicFormControl = {
       key: '_' + index,

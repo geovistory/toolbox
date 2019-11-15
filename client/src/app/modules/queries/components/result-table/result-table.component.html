@@ -19,16 +19,16 @@
     <tr style="height:48px">
       <td *ngFor="let col of colDefs">
         <span *ngIf="col.ofRootTable && col.defaultType === 'entity_preview'">
-          <gv-entity-preview [preview]="rowData[col.label]" [dragEnabled]="false" [openTabOnClick]="true">
+          <gv-entity-preview [preview]="rowData[col.id]" [dragEnabled]="false" [openTabOnClick]="true">
           </gv-entity-preview>
         </span>
-        <span *ngIf="col.ofRootTable && col.defaultType !== 'entity_preview'">{{rowData[col.label]}}</span>
+        <span *ngIf="col.ofRootTable && col.defaultType !== 'entity_preview'">{{rowData[col.id]}}</span>
         <span *ngIf="!col.ofRootTable">
-          <!-- {{rowData[col.label]?.length}} -->
-          <gv-entity-preview *ngIf="rowData[col.label]?.length === 1" [preview]="rowData[col.label][0]"
-            [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
-          <button *ngIf="rowData[col.label]?.length > 1" mat-raised-button
-            (click)="openDialog(rowData[col.label])">{{rowData[col.label]?.length}}</button>
+          <!-- {{rowData[col.id]?.length}} -->
+          <gv-entity-preview *ngIf="rowData[col.id]?.length === 1" [preview]="rowData[col.id][0]" [dragEnabled]="false"
+            [openTabOnClick]="true"></gv-entity-preview>
+          <button *ngIf="rowData[col.id]?.length > 1" mat-raised-button
+            (click)="openDialog(rowData[col.id])">{{rowData[col.id]?.length}}</button>
         </span>
       </td>
     </tr>
