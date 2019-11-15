@@ -10,7 +10,7 @@ import { ProAnalysis, ActiveProjectService, AnalysisTabData, SysConfig } from 'a
 export class AnalysisListComponent implements OnInit {
 
   items$: Observable<ProAnalysis[]>;
-
+  loading$
   constructor(public p: ActiveProjectService) { }
 
   ngOnInit() {
