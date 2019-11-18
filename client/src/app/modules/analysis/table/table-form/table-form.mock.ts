@@ -20,7 +20,8 @@ export const mockQuery: QueryDefinition = {
               'operator': 'IS',
               'ingoingProperties': [],
               'outgoingProperties': [
-                1189
+                1189,
+                1188
               ]
             },
             'children': [

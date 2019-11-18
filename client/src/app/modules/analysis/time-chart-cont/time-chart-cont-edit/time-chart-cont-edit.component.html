@@ -1,6 +1,6 @@
 <gv-analysis-layout>
 
-  <gv-time-chart-cont-form analysis-settings #c>
+  <gv-time-chart-cont-form analysis-settings #c [initVal$]="initVal$">
     <button mat-flat-button color="primary" (click)="a.runAnalysis()" [disabled]="a.loading"
       matTooltip="Create Analysis">Run</button>
   </gv-time-chart-cont-form>

@@ -59,9 +59,9 @@
       "permission": "ALLOW",
       "property": [
         "run",
-        "findById",
-        "create",
-        "patchAttributes"
+        "bulkUpsert",
+        "bulkDelete",
+        "findPerIdAndVersionAndProject"
       ]
     }
   ],
@@ -106,14 +106,146 @@
       "returns": {
         "arg": "data",
         "type": [
-          "ProClassFieldConfig"
+          "ProAnalysis"
         ],
         "root": true
       },
-      "description": "Run analysis",
+      "description": "Run analysis by sending all the necessary information to the api (no persisted analysis settings involved)",
       "http": {
         "path": "/run",
         "verb": "post"
+      }
+    },
+    "findPerIdAndVersionAndProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": false,
+          "description": "Pk of the visual",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "version",
+          "type": "number",
+          "required": false,
+          "description": "Entity version",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProVisual"
+        ],
+        "root": true
+      },
+      "description": "Find analysis of project, pk and version. If version is omitted, finds the latest version. If pkEntity omitted, finds all analyses of project, in latest version.",
+      "http": {
+        "path": "/find-per-id-and-project",
+        "verb": "get"
+      }
+    },
+    "bulkUpsert": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "ProAnalysis"
+          ],
+          "required": true,
+          "description": "Array ProAnalysis",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "ProAnalysis",
+        "root": true
+      },
+      "description": "Creates or updates instances of ProAnalysis.",
+      "http": {
+        "path": "/bulk-upsert",
+        "verb": "put"
+      }
+    },
+    "bulkDelete": {
+      "accepts": [
+        {
+          "arg": "pks",
+          "type": [
+            "number"
+          ],
+          "required": true,
+          "description": "Array of Primary Key of DatDigitals",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Project to which the ProAnalyses belong",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "boolean",
+        "root": true
+      },
+      "description": "Deletes instances of ProAnalysis.",
+      "http": {
+        "path": "/bulk-delete",
+        "verb": "put"
       }
     }
   }

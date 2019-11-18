@@ -14,10 +14,8 @@ export interface ProPropertyLabelInterface {
   "fk_range_class"?: number;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   language?: InfLanguage;
 }
 
@@ -31,10 +29,8 @@ export class ProPropertyLabel implements ProPropertyLabelInterface {
   "fk_range_class": number;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
-  "sys_period": string;
   language?: InfLanguage;
   constructor(data?: ProPropertyLabelInterface) {
     Object.assign(this, data);
@@ -105,20 +101,12 @@ export class ProPropertyLabel implements ProPropertyLabelInterface {
           name: 'entity_version',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
         "tmsp_creation": {
           name: 'tmsp_creation',
           type: 'string'
         },
         "tmsp_last_modification": {
           name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
           type: 'string'
         },
       },

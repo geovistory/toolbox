@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, MatFormFieldModule, MatInputModule, MatListModule, MatDividerModule, MatCardModule, MatExpansionModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, MatFormFieldModule, MatInputModule, MatListModule, MatDividerModule, MatCardModule, MatExpansionModule, MatDialogModule } from '@angular/material';
 import { ConfirmDialogModule } from 'app/shared/components/confirm-dialog/confirm-dialog.module';
 import { DetailContentModule } from 'app/shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
@@ -28,6 +28,8 @@ import { TableFormControlComponent } from './table/table-form-control/table-form
 import { TableEditComponent } from './table/table-edit/table-edit.component';
 import { TableFormService } from './table/table-form/table-form.service';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DialogCreateComponent } from './components/dialog-create/dialog-create.component';
+import { PassiveLinkModule } from 'app/shared';
 
 
 const components = [
@@ -44,7 +46,9 @@ const components = [
   TableFormComponent,
   TableFormGroupComponent,
   TableFormArrayComponent,
-  TableFormControlComponent
+  TableFormControlComponent,
+
+  DialogCreateComponent
 ]
 @NgModule({
   declarations: components,
@@ -67,6 +71,7 @@ const components = [
     MatInputModule,
     MatCardModule,
     MatExpansionModule,
+    MatDialogModule,
     ErrorDialogModule,
     ConfirmDialogModule,
     QueriesModule,
@@ -75,8 +80,12 @@ const components = [
     FormFactoryModule,
     PortalModule,
     AngularSplitModule,
-    DragDropModule
+    DragDropModule,
+    PassiveLinkModule
   ],
-  exports: components
+  exports: components,
+  entryComponents: [
+    DialogCreateComponent
+  ]
 })
 export class AnalysisModule { }

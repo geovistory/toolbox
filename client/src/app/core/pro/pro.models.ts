@@ -1,5 +1,5 @@
 import { ByPk } from "app/core/store/model";
-import { ProInfoProjRel, ProDfhClassProjRel, ProPropertyLabel } from "../sdk";
+import { ProInfoProjRel, ProDfhClassProjRel, ProPropertyLabel, ProAnalysis } from "../sdk";
 
 
 export interface ProInfoProjRelSlice {
@@ -20,10 +20,13 @@ export interface ProClassFieldConfigSlice {
   loading?: boolean
 }
 
-export interface ProPropertyLabelSlice  {
+export interface ProPropertyLabelSlice {
   by_pk_entity?: ProPropertyLabel;
   by_fk_project__fk_property__fk_domain_class__fk_range_class?: ByPk<ProPropertyLabel>;
   loading?: boolean
+}
+export interface ProAnalysisSlice {
+  by_pk_entity?: ProAnalysis;
 }
 
 export interface Pro {
@@ -31,6 +34,7 @@ export interface Pro {
   dfh_class_proj_rel?: ProDfhClassProjRelSlice;
   class_field_config?: ProClassFieldConfigSlice;
   property_label?: ProPropertyLabelSlice;
+  analysis?: ProAnalysisSlice;
 }
 
 

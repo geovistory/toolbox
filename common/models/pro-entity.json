@@ -21,11 +21,6 @@
       "type": "number",
       "generated": true
     },
-    "notes": {
-      "type": "string",
-      "required": false,
-      "hidden": true
-    },
     "tmsp_creation": {
       "type": "string",
       "generated": true
@@ -33,11 +28,6 @@
     "tmsp_last_modification": {
       "type": "string",
       "generated": true
-    },
-    "sys_period": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
     }
   },
   "validations": [],

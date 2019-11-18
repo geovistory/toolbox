@@ -26,7 +26,7 @@ export class AnalysisTable extends Analysis<Result>   {
     else {
       return of({
         error: {
-          title: 'Invalid analysis definition',
+          name: 'Invalid analysis definition',
           message: v.error
         }
       })
@@ -40,7 +40,7 @@ export class AnalysisTable extends Analysis<Result>   {
       if (err) {
         s$.next({
           error: {
-            title: `Error when counting the number of resulting rows`
+            name: `Error when counting the number of resulting rows`
           }
         })
       }
@@ -63,7 +63,7 @@ export class AnalysisTable extends Analysis<Result>   {
       if (err) {
         s$.next({
           error: {
-            title: `Error on query`,
+            name: `Error on query`,
             message: err
           }
         })
@@ -73,7 +73,7 @@ export class AnalysisTable extends Analysis<Result>   {
         if (typeof this.fullCount !== 'number') {
           s$.next({
             error: {
-              title: 'Something went wrong with counting the results.'
+              name: 'Something went wrong with counting the results.'
             }
           })
         }
@@ -86,7 +86,7 @@ export class AnalysisTable extends Analysis<Result>   {
         } else {
           s$.next({
             error: {
-              title: 'Invalid query results.',
+              name: 'Invalid query results.',
               message: v.error
             }
           })
@@ -107,7 +107,7 @@ export class AnalysisTable extends Analysis<Result>   {
     } else {
       return of({
         error: {
-          title: 'Invalid output.',
+          name: 'Invalid output.',
           message: v.error
         }
       })

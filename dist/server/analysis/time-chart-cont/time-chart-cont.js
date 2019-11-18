@@ -20,7 +20,7 @@ class AnalysisTimeChartCont extends analysis_1.Analysis {
         else {
             return rxjs_1.of({
                 error: {
-                    title: 'Invalid analysis definition',
+                    name: 'Invalid analysis definition',
                     message: v.error
                 }
             });
@@ -35,7 +35,7 @@ class AnalysisTimeChartCont extends analysis_1.Analysis {
                 if (err) {
                     s$.next({
                         error: {
-                            title: `Error when counting the number of resulting rows for line nr. ${i + 1}`
+                            name: `Error when counting the number of resulting rows for line nr. ${i + 1}`
                         }
                     });
                 }
@@ -46,7 +46,7 @@ class AnalysisTimeChartCont extends analysis_1.Analysis {
                     else {
                         s$.next({
                             error: {
-                                title: `Your query gives too large result. Please narrow down the filter for line nr. ${i + 1}`
+                                name: `Your query gives too large result. Please narrow down the filter for line nr. ${i + 1}`
                             }
                         });
                     }
@@ -68,7 +68,7 @@ class AnalysisTimeChartCont extends analysis_1.Analysis {
                 if (err) {
                     s$.next({
                         error: {
-                            title: `Error on query for line nr. ${i + 1}`,
+                            name: `Error on query for line nr. ${i + 1}`,
                             message: err
                         }
                     });
@@ -85,7 +85,7 @@ class AnalysisTimeChartCont extends analysis_1.Analysis {
                     else {
                         s$.next({
                             error: {
-                                title: 'Invalid query results.',
+                                name: 'Invalid query results.',
                                 message: v.error
                             }
                         });
@@ -110,7 +110,7 @@ class AnalysisTimeChartCont extends analysis_1.Analysis {
         else {
             return rxjs_1.of({
                 error: {
-                    title: 'Invalid output.',
+                    name: 'Invalid output.',
                     message: v.error
                 }
             });

@@ -177,7 +177,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
       )
     }
     const config: FormFactoryConfig<QfFormGroupData, QfFormArrayData, QfFormControlData, null> = {
-      rootFormGroup$: of({
+      rootFormGroup$: new BehaviorSubject({
         data: {
           initVal,
           pkClasses$
@@ -207,7 +207,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
       const childConfigs: QfFormNodeConfig[] = [{
         array: createArrayClassesNodeConfig(n.group.data.pkClasses$, n.group.data.initVal)
       }]
-      return of(childConfigs)
+      return new BehaviorSubject(childConfigs)
     } else if (n.array && n.array.data.arrayClasses) {
 
       const childConfigs: QfFormNodeConfig[] = [{
@@ -225,7 +225,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
         },
       }]
 
-      return of(childConfigs)
+      return new BehaviorSubject(childConfigs)
     } else if (n.array && n.array.data.arraySubgroup) {
       const initVal = n.array.data.arraySubgroup.initVal;
 
@@ -253,7 +253,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
         [null] : // add one child by default
         initVal.children
       ).map(child => createSubgroupNodeConfig(n.array.data.arraySubgroup, child));
-      return of([ctrlOperator, ...children])
+      return new BehaviorSubject([ctrlOperator, ...children])
 
     } else if (n.array && n.array.data.arrayProperties) {
       const arrayProperties = n.array.data.arrayProperties;

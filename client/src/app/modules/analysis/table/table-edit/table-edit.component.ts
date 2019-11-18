@@ -1,17 +1,17 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { SysConfig } from 'app/core';
+import { SysConfig, ActiveProjectService } from 'app/core';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
-import { Subject } from 'rxjs';
+import { Subject, of, Observable } from 'rxjs';
 import { AnalysisService } from '../../services/analysis.service';
 import { TableFormComponent } from '../table-form/table-form.component';
 import { QueryDefinition, TableInput, TableOutput } from '../../../../../../../src/common/interfaces'
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-table-edit',
   templateUrl: './table-edit.component.html',
   styleUrls: ['./table-edit.component.scss'],
-  providers: [AnalysisService]
 })
 export class TableEditComponent implements OnInit, OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;
@@ -20,15 +20,21 @@ export class TableEditComponent implements OnInit, OnDestroy {
 
   @ViewChild('c', { static: false }) formComponent: TableFormComponent
 
+  initVal$: Observable<QueryDefinition>
+
   queryDefinition$ = new Subject<QueryDefinition>()
 
   constructor(
-    private c: ConfigurationPipesService,
     public a: AnalysisService<TableInput, TableOutput>,
-    private ts: TabLayoutService
+    private ts: TabLayoutService,
+    p: ActiveProjectService
   ) {
-
-    this.ts.t.setTabTitle('New Analysis *')
+    if (this.a.pkEntity) {
+      this.initVal$ = p.pro$.analysis$.by_pk_entity$.key(this.a.pkEntity.toString()).pipe(
+        map(i => i.analysis_definition),
+        map((def: TableInput) => def.queryDefinition)
+      )
+    }
 
     this.a.registerRunAnalysis(() => {
       if (this.formComponent.formFactory.formGroup.valid) {
@@ -39,6 +45,45 @@ export class TableEditComponent implements OnInit, OnDestroy {
         this.formComponent.formFactory.markAllAsTouched()
       }
     }, SysConfig.PK_ANALYSIS_TYPE__TABLE)
+
+    this.a.registerCreateAnalysis(() => {
+      if (this.formComponent.formFactory.formGroup.valid) {
+        const q = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
+        return this.a.callCreateApi(q)
+      } else {
+        this.formComponent.formFactory.markAllAsTouched()
+        return of()
+      }
+    })
+
+    this.a.registerSaveAnalysis(() => {
+      if (this.formComponent.formFactory.formGroup.valid) {
+        const q = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
+        this.a.callSaveApi(q)
+      } else {
+        this.formComponent.formFactory.markAllAsTouched()
+      }
+    })
+
+    this.a.registerCopyAnalysis(() => {
+      if (this.formComponent.formFactory.formGroup.valid) {
+        const q = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
+        return this.a.callCopyApi(q)
+      } else {
+        this.formComponent.formFactory.markAllAsTouched()
+        return of()
+      }
+    })
+
+    this.a.registerRenameAnalysis(() => {
+      if (this.formComponent.formFactory.formGroup.valid) {
+        const q = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
+        this.a.callRenameApi(q)
+      } else {
+        this.formComponent.formFactory.markAllAsTouched()
+        of()
+      }
+    })
   }
 
   ngOnInit() { }

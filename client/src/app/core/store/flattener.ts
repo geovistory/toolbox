@@ -2,14 +2,14 @@ import { InfEntityAssociation, InfPersistentItem, InfRole } from "app/core";
 import { InfActions } from "app/core/inf/inf.actions";
 import { InfEntityAssociationSlice, InfPersistentItemSlice, InfAppellationSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLanguageSlice } from "app/core/inf/inf.models";
 import { keys, omit, values } from "ramda";
-import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk, InfPlace, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLanguage, ProPropertyLabel } from "../sdk";
+import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk, InfPlace, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLanguage, ProPropertyLabel, ProAnalysis } from "../sdk";
 import { StandardActionsFactory } from "./actions";
 import { DatActions } from "../dat/dat.actions";
 import { DigitalSlice, ChunkSlice } from "../dat/dat.models";
 import { time_primitive } from "../state/services/_mock-data";
 import { ProActions } from "../pro/pro.actions";
 import { Injectable } from "../../../../node_modules/@angular/core";
-import { ProInfoProjRelSlice, ProPropertyLabelSlice } from "../pro/pro.models";
+import { ProInfoProjRelSlice, ProPropertyLabelSlice, ProAnalysisSlice } from "../pro/pro.models";
 
 export class ModelFlattener<Payload, Model> {
   constructor(
@@ -47,11 +47,7 @@ interface FlattenerInterface {
  */
 export class Flattener {
 
-  constructor(
-    public infActions: InfActions,
-    public datActions: DatActions,
-    public proActions: ProActions
-  ) { }
+
 
   info_proj_rel = new ModelFlattener<ProInfoProjRelSlice, ProInfoProjRel>(
     this.proActions.info_proj_rel,
@@ -197,10 +193,24 @@ export class Flattener {
       })
     })
 
+  analysis = new ModelFlattener<ProAnalysisSlice, ProAnalysis>(
+    this.proActions.analysis,
+    ProAnalysis.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProAnalysis(item);
+      })
+    })
+  constructor(
+    public infActions: InfActions,
+    public datActions: DatActions,
+    public proActions: ProActions
+  ) { }
   getFlattened(): FlattenerInterface {
     return {
       info_proj_rel: this.info_proj_rel,
       property_label: this.property_label,
+      analysis: this.analysis,
 
       persistent_item: this.persistent_item,
       temporal_entity: this.temporal_entity,

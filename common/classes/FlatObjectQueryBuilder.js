@@ -1,4 +1,4 @@
-var logFn = require("../../server/scripts/log-deserialized-sql");
+var logFn = require('../../server/scripts/log-deserialized-sql');
 
 class FlatObjectQueryBuilder {
   constructor(models) {
@@ -6,10 +6,19 @@ class FlatObjectQueryBuilder {
     this.models = models;
   }
 
-  createTemporalEntityListQuery(fkProject, fkSourceEntity, fkProperty, isOutgoing, limit, offset) {
+  createTemporalEntityListQuery(
+    fkProject,
+    fkSourceEntity,
+    fkProperty,
+    isOutgoing,
+    limit,
+    offset
+  ) {
     const mainWhere = `
       --if isOutgoing join with fk_temporal_entity , else fk_entity
-      t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(fkSourceEntity)} --  add the pk_entity of the 'source' entity here
+      t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(
+      fkSourceEntity
+    )} --  add the pk_entity of the 'source' entity here
       AND t1.fk_property = ${this.addParam(fkProperty)} -- add the pk_property
       AND t2.fk_project = ${this.addParam(fkProject)} -- add the pk_project here
       -- ensure the target entity is a temporal entity
@@ -305,13 +314,19 @@ class FlatObjectQueryBuilder {
       LEFT JOIN place ON true
       LEFT JOIN info_proj_rel ON true
 
-    `
+    `;
     // logFn(sql, this.params)
-    return { sql, params: this.params }
+    return { sql, params: this.params };
   }
 
-  createAlternativeTemporalEntityListQuery(fkProject, fkSourceEntity, fkProperty, isOutgoing, limit, offset) {
-
+  createAlternativeTemporalEntityListQuery(
+    fkProject,
+    fkSourceEntity,
+    fkProperty,
+    isOutgoing,
+    limit,
+    offset
+  ) {
     const sql = `
       WITH
       -- alternative roles (that are in at least one other project)
@@ -322,7 +337,9 @@ class FlatObjectQueryBuilder {
         information.temporal_entity t2
         WHERE
         --if isOutgoing join with fk_temporal_entity , else fk_entity
-        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(fkSourceEntity)} --  add the pk_entity of the 'source' entity here
+        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(
+      fkSourceEntity
+    )} --  add the pk_entity of the 'source' entity here
         AND t1.fk_property = ${this.addParam(fkProperty)} -- add the pk_property
         -- ensure the target entity is a temporal entity
         AND t1.fk_temporal_entity = t2.pk_entity
@@ -335,9 +352,13 @@ class FlatObjectQueryBuilder {
         information.temporal_entity t3
         WHERE
         --if isOutgoing join with fk_temporal_entity , else fk_entity
-        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(fkSourceEntity)} --  add the pk_entity of the 'source' entity here
+        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(
+      fkSourceEntity
+    )} --  add the pk_entity of the 'source' entity here
         AND t1.fk_property = ${this.addParam(fkProperty)} -- add the pk_property
-        AND t2.fk_project = ${this.addParam(fkProject)} -- add the pk_project here
+        AND t2.fk_project = ${this.addParam(
+          fkProject
+        )} -- add the pk_project here
         -- ensure the target entity is a temporal entity
         AND t1.fk_temporal_entity = t3.pk_entity
         AND t1.pk_entity = t2.fk_entity
@@ -592,11 +613,10 @@ class FlatObjectQueryBuilder {
       LEFT JOIN language ON true
       LEFT JOIN time_primitive ON true
       LEFT JOIN place ON true;
-    `
+    `;
     // logFn(sql, this.params)
-    return { sql, params: this.params }
+    return { sql, params: this.params };
   }
-
 
   createPeItMainQuery(fk_project, pk_entity) {
     const sql = `
@@ -608,7 +628,9 @@ class FlatObjectQueryBuilder {
         information.v_persistent_item t1
       CROSS JOIN
         projects.info_proj_rel t2
-      WHERE t1.pk_entity = t2.fk_entity AND t2.is_in_project = true  AND t2.fk_project = ${this.addParam(fk_project)}
+      WHERE t1.pk_entity = t2.fk_entity AND t2.is_in_project = true  AND t2.fk_project = ${this.addParam(
+        fk_project
+      )}
       AND t1.pk_entity = ${this.addParam(pk_entity)}
     ),
     -- pi_roles
@@ -622,7 +644,9 @@ class FlatObjectQueryBuilder {
         information.v_role t1,
         projects.info_proj_rel t2
       WHERE tw1.pk_entity = t1.fk_entity
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
     ),
     -- temporal_entity
     tw3 AS (
@@ -635,7 +659,9 @@ class FlatObjectQueryBuilder {
         information.v_temporal_entity t1,
         projects.info_proj_rel t2
       WHERE tw2.fk_temporal_entity = t1.pk_entity
-      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+        fk_project
+      )}
     ),
     -- te_roles
     tw4 AS (
@@ -648,7 +674,9 @@ class FlatObjectQueryBuilder {
         information.v_role t1,
         projects.info_proj_rel t2
       WHERE  tw3.pk_entity = t1.fk_temporal_entity
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
     ),
     --appellation
     tw5 AS (
@@ -711,7 +739,9 @@ class FlatObjectQueryBuilder {
         information.v_role t1,
         projects.info_proj_rel t2
       WHERE t1.fk_entity = tw3.pk_entity
-      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+        fk_project
+      )}
     ),
     -- domain_entity_associations
     tw11 AS (
@@ -724,7 +754,9 @@ class FlatObjectQueryBuilder {
         information.v_entity_association t1,
         projects.info_proj_rel t2
       WHERE t1.fk_info_domain = tw1.pk_entity
-      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+        fk_project
+      )}
     ),
     -- text_properties
     tw12 AS (
@@ -737,7 +769,9 @@ class FlatObjectQueryBuilder {
         information.v_text_property t1,
         projects.info_proj_rel t2
       WHERE t1.fk_concerned_entity = tw1.pk_entity
-      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+        fk_project
+      )}
     ),
     ------------------------------------
     --- group parts by model
@@ -857,9 +891,9 @@ class FlatObjectQueryBuilder {
     SELECT 'info_proj_rel' as model, json_agg(proj_rel), count(*) from info_proj_rels GROUP BY true
     UNION ALL
     SELECT 'geos' as model, json_agg(pk_entity), count(*) from geo_persistent_items GROUP BY true;
-    `
+    `;
     // logFn(sql, this.params)
-    return { sql, params: this.params }
+    return { sql, params: this.params };
   }
 
   createPeItOwnPropertiesQuery(fk_project, pk_entity) {
@@ -872,7 +906,9 @@ class FlatObjectQueryBuilder {
           information.v_persistent_item t1
         CROSS JOIN
           projects.info_proj_rel t2
-        WHERE t1.pk_entity = t2.fk_entity AND t2.is_in_project = true  AND t2.fk_project = ${this.addParam(fk_project)}
+        WHERE t1.pk_entity = t2.fk_entity AND t2.is_in_project = true  AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
         AND t1.pk_entity = ${this.addParam(pk_entity)}
       ),
       -- domain_entity_associations
@@ -886,7 +922,9 @@ class FlatObjectQueryBuilder {
           information.v_entity_association t1,
           projects.info_proj_rel t2
         WHERE t1.fk_info_domain = tw1.pk_entity
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
       ),
       -- text_properties
       tw3 AS (
@@ -899,7 +937,9 @@ class FlatObjectQueryBuilder {
           information.v_text_property t1,
           projects.info_proj_rel t2
         WHERE t1.fk_concerned_entity = tw1.pk_entity
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
       ),
       tw4 AS (
         SELECT
@@ -991,11 +1031,9 @@ class FlatObjectQueryBuilder {
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
       LEFT JOIN info_proj_rel ON true
-    `
-    return { sql, params: this.params }
-
+    `;
+    return { sql, params: this.params };
   }
-
 
   createPeItGeoQuery(fk_project, pkEntities) {
     const sql = `
@@ -1007,7 +1045,9 @@ class FlatObjectQueryBuilder {
         information.v_persistent_item t1
       CROSS JOIN
         projects.info_proj_rel t2
-      WHERE t1.pk_entity = t2.fk_entity AND t2.is_in_project = true  AND t2.fk_project = ${this.addParam(fk_project)}
+      WHERE t1.pk_entity = t2.fk_entity AND t2.is_in_project = true  AND t2.fk_project = ${this.addParam(
+        fk_project
+      )}
       AND t1.pk_entity IN (${this.addParams(pkEntities)})
     ),
     -- pi_roles
@@ -1024,7 +1064,9 @@ class FlatObjectQueryBuilder {
         projects.info_proj_rel t2
       WHERE tw1.pk_entity = t1.fk_entity
       AND t3.fk_class = 84 AND t1.fk_temporal_entity = t3.pk_entity
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
     ),
     -- temporal_entity
     tw3 AS (
@@ -1037,7 +1079,9 @@ class FlatObjectQueryBuilder {
         information.v_temporal_entity t1,
         projects.info_proj_rel t2
       WHERE tw2.fk_temporal_entity = t1.pk_entity
-      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+        fk_project
+      )}
     ),
     -- te_roles
     tw4 AS (
@@ -1051,7 +1095,9 @@ class FlatObjectQueryBuilder {
         projects.info_proj_rel t2
       WHERE  tw3.pk_entity = t1.fk_temporal_entity
       AND t1.fk_property = ANY(ARRAY[148, 71, 72, 150, 151, 152, 153])
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(fk_project)}
+        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
     ),
     -- time_primitive
     tw5 AS (
@@ -1137,35 +1183,35 @@ class FlatObjectQueryBuilder {
     UNION ALL
     SELECT 'info_proj_rel' as model, json_agg(proj_rel), count(*) from info_proj_rels GROUP BY true
 
-    `
-    return { sql, params: this.params }
+    `;
+    return { sql, params: this.params };
   }
 
   /**
    * Helpers
    */
 
-  getColumns(model) {
-    const propDefs = this.models[model].definition.properties;
-    const columns = []
+  getColumns(modelName) {
+    const propDefs = this.models[modelName].definition.properties;
+    const columns = [];
     for (const colName in propDefs) {
       if (propDefs.hasOwnProperty(colName)) {
-        if (!propDefs[colName].hidden) columns.push(colName)
+        if (!propDefs[colName].hidden) columns.push(colName);
       }
     }
     return columns;
   }
   createSelect(alias, model) {
-    const columns = this.getColumns(model)
+    const columns = this.getColumns(model);
     return columns.map(c => alias + '.' + c).join(`,
-    `)
+    `);
   }
   createBuildObject(alias, model) {
-    const columns = this.getColumns(model)
+    const columns = this.getColumns(model);
     return ` jsonb_build_object(
       ${columns.map(c => `'${c}',${alias}.${c}`).join(`,
       `)}
-    ) `
+    ) `;
   }
   addParam(val) {
     this.params.push(val);
@@ -1175,8 +1221,5 @@ class FlatObjectQueryBuilder {
   addParams(vals) {
     return vals.map(val => this.addParam(val)).join(',');
   }
-
-
-
 }
 module.exports = FlatObjectQueryBuilder;

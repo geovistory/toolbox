@@ -24,7 +24,7 @@ export class StandardEpicsFactory<Payload, Model> {
           apiFn(meta).subscribe((data: Model[]) => {
             if (onSuccessHook) {
               onSuccessHook(data, action.meta.pk, meta);
-              this.actions.loadSucceeded([], pendingKey, action.meta.pk);
+              this.actions.succeeded(data, pendingKey, action.meta.pk);
             }
             else {
               this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
@@ -45,7 +45,7 @@ export class StandardEpicsFactory<Payload, Model> {
           apiFn(meta).subscribe((data: Model[]) => {
             if (onSuccessHook) {
               onSuccessHook(data, action.meta.pk);
-              this.actions.upsertSucceeded([], pendingKey, action.meta.pk);
+              this.actions.succeeded(data, pendingKey, action.meta.pk);
             }
             else {
               this.actions.upsertSucceeded(data, pendingKey, action.meta.pk);
