@@ -6,11 +6,11 @@ import { proRoot } from 'app/core/pro/pro.config';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProPropertyLabel, ProPropertyLabelApi } from '../sdk';
-import { LoadActionMeta, ModifyActionMeta } from '../store/actions';
+import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProPropertyLabel, ProPropertyLabelApi, ProAnalysis, ProAnalysisApi } from '../sdk';
+import { LoadActionMeta, ModifyActionMeta, LoadByPkANsVersionActionMeta } from '../store/actions';
 import { StandardEpicsFactory } from '../store/StandardEpicsFactory';
-import { ProActions, ProPropertyLabelActionFactory } from './pro.actions';
-import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProPropertyLabelSlice } from './pro.models';
+import { ProActions, ProPropertyLabelActionFactory, ProAnalysisActionFactory } from './pro.actions';
+import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProPropertyLabelSlice, ProAnalysisSlice } from './pro.models';
 
 
 @Injectable()
@@ -24,6 +24,7 @@ export class ProEpics {
     public classProjRelApi: ProDfhClassProjRelApi,
     public classFieldConfApi: ProClassFieldConfigApi,
     public propertyLabelApi: ProPropertyLabelApi,
+    public analysisApi: ProAnalysisApi,
   ) { }
 
   public createEpics(): Epic {
@@ -39,6 +40,9 @@ export class ProEpics {
 
     const proPropertyLabelEpicsFactory = new StandardEpicsFactory<ProPropertyLabelSlice, ProPropertyLabel>
       (proRoot, 'property_label', this.proActions.property_label, this.notification);
+
+    const proAnalysisEpicsFactory = new StandardEpicsFactory<ProAnalysisSlice, ProAnalysis>
+      (proRoot, 'analysis', this.proActions.analysis, this.notification);
 
 
 
@@ -64,7 +68,7 @@ export class ProEpics {
        */
       proProDfhClassProjRelEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classProjRelApi.getEnabledByProject(meta.pk), ''),
       /**
-      * ProProDfhClassProjRel
+      * ProPropertyLabel
       */
       proPropertyLabelEpicsFactory.createLoadEpic<LoadActionMeta>(
         (meta) => this.propertyLabelApi.getDefaultLabels(meta.pk),
@@ -83,9 +87,31 @@ export class ProEpics {
           storeFlattened(flattener.getFlattened(), pk);
         }
       ),
-      proPropertyLabelEpicsFactory.createDeleteEpic((meta) => this.propertyLabelApi.bulkDelete(meta.pk, meta.items))
+      proPropertyLabelEpicsFactory.createDeleteEpic((meta) => this.propertyLabelApi.bulkDelete(meta.pk, meta.items)),
+      /**
+      * ProAnalysis
+      */
+      proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
+        (meta) => this.analysisApi.findPerIdAndVersionAndProject(meta.pk, meta.pkEntity, meta.version),
+        ProAnalysisActionFactory.BY_PK_AND_VERSION,
+        (results) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.analysis.flatten(results);
+          storeFlattened(flattener.getFlattened());
+        }
+      ),
+      proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
+        (meta) => this.analysisApi.bulkUpsert(meta.pk, meta.items),
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.analysis.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk);
+        }
+      ),
+      proAnalysisEpicsFactory.createDeleteEpic(
+        (meta) => this.analysisApi.bulkDelete(meta.items.map(item => item.pk_entity), meta.pk),
+      ),
     )
-
   }
 
 

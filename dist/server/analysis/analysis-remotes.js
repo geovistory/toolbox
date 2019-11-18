@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const common_1 = require("../../common");
+const time_chart_cont_input_validator_1 = require("../../common/validators/time-chart-cont-input.validator");
 const table_1 = require("./table/table");
 const time_chart_cont_1 = require("./time-chart-cont/time-chart-cont");
-const time_chart_cont_input_validator_1 = require("../../common/validators/time-chart-cont-input.validator");
-const table_query_res_validator_1 = require("../../common/validators/table-query-res.validator");
 /**
  * This class handles remote methods for loopback.
  */
@@ -16,9 +16,9 @@ class AnalysisRemotes {
      * @param fkAnalysisType
      */
     static getType(fkAnalysisType) {
-        if (fkAnalysisType === 3329)
+        if (fkAnalysisType === common_1.SysConfig.PK_ANALYSIS_TYPE__TIME_CONT)
             return 'time-chart-cont';
-        if (fkAnalysisType === 3330)
+        if (fkAnalysisType === common_1.SysConfig.PK_ANALYSIS_TYPE__TABLE)
             return 'table';
         return undefined;
     }
@@ -28,10 +28,8 @@ class AnalysisRemotes {
         const r = (v) => {
             if (v.error)
                 return {
-                    error: {
-                        title: 'Invalid query results.',
-                        message: v.error
-                    }
+                    name: 'Invalid analysis definition',
+                    message: v.error
                 };
             else
                 return null;
@@ -40,9 +38,9 @@ class AnalysisRemotes {
             return r(time_chart_cont_input_validator_1.isValidTimeChartContInput(analysis.analysis_definition));
         }
         else if ('table' === type) {
-            return r(table_query_res_validator_1.isValidTableQueryRes(analysis.analysis_definition));
+            return r(common_1.isValidTableInput(analysis.analysis_definition));
         }
-        return { error: { title: 'Anaylsis type not found.' } };
+        return { name: 'Anaylsis type not found.' };
     }
     /**
      * Runs a analysis.

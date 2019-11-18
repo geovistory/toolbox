@@ -4,8 +4,11 @@ import { IAppState, U } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActionsObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 export interface LoadActionMeta { addPending: string, pk?: number }
+export interface LoadByPkANsVersionActionMeta { addPending: string, pk?: number, pkEntity: number, version: number }
+
 export interface ModifyActionMeta<Model> { items: Model[], addPending: string, pk?: number }
 export interface SucceedActionMeta<Model> { items: Model[], removePending: string, pk?: number }
 export interface FailActionMeta { removePending: string, pk?: number }
@@ -49,7 +52,7 @@ export class StandardActionsFactory<Payload, Model> {
   /**
    * @param pk is used for facetting
    */
-  delete: (items: Model[], pk?: number) => Observable<boolean>;
+  delete: (items: Model[], pk?: number) => ActionResultObservable<Model>;
 
   /**
    * @param pk is used for facetting
@@ -73,6 +76,10 @@ export class StandardActionsFactory<Payload, Model> {
   loadPageSucceeded: (pks: number[], count: number, paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
   loadPageFailed: (paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number) => void;
 
+  /**
+   * this action is not model specific but pendingKey specific.
+   * Reducer will add whole meta part to the resolved key.
+   */
   succeeded: (items: Model[], removePending: string, pk?: number) => void;
 
   actionPrefix: string;
@@ -162,7 +169,11 @@ export class StandardActionsFactory<Payload, Model> {
         payload: null
       })
       this.ngRedux.dispatch(action)
-      return this.ngRedux.select(['pending', addPending]);
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
     }
 
     this.deleteSucceeded = (items: Model[], removePending: string, pk?: number) => {

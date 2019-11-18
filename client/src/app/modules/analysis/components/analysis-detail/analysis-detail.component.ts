@@ -11,7 +11,8 @@ import { AnalysisService } from '../../services/analysis.service';
   selector: 'gv-analysis-detail',
   templateUrl: './analysis-detail.component.html',
   styleUrls: ['./analysis-detail.component.scss'],
-  providers: [TabLayoutService]
+  providers: [TabLayoutService, AnalysisService]
+
 })
 export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
   t: TabLayout;
@@ -33,19 +34,14 @@ export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComp
   constructor(
     public ref: ChangeDetectorRef,
     public p: ActiveProjectService,
-    private ts: TabLayoutService
+    private ts: TabLayoutService,
+    private a: AnalysisService<any, any>
   ) { }
 
   ngOnInit() {
+    this.a.pkEntity = this.pkEntity;
+    this.a.fkAnalysisType = this.fkAnalysisType;
     this.t = this.ts.create(this.basePath[2], this.ref, this.destroy$);
-    if (this.fkAnalysisType) {
-      this.analysisType$ = this.p.sys$.analysis_type$.by_pk_entity$.key(this.fkAnalysisType);
-      if (!this.pkEntity) {
-        this.analysisType$.pipe(filter(x => !!x), takeUntil(this.destroy$)).subscribe(d => {
-          this.t.setTabTitle('New ' + d.standard_label)
-        })
-      }
-    }
   }
 
   ngOnDestroy() {

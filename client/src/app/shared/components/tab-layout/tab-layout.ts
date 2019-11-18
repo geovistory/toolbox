@@ -21,8 +21,7 @@ export type TabBaseAPIAction = FluxStandardAction<Payload, MetaData>;
 })
 export class TabLayout {
 
-  // local store of this component
-  localStore: ObservableStore<TabBase>;
+  // pase path of this component
   basePath: string[];
 
   /**

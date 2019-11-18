@@ -94,7 +94,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
       offset: offset || 0,
       limit: rows
     };
-    this.a.callApi({ queryDefinition })
+    this.a.callRunApi({ queryDefinition })
   }
 
 

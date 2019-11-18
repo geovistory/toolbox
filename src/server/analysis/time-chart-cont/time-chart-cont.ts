@@ -28,7 +28,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
     else {
       return of({
         error: {
-          title: 'Invalid analysis definition',
+          name: 'Invalid analysis definition',
           message: v.error
         }
       })
@@ -44,7 +44,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
         if (err) {
           s$.next({
             error: {
-              title: `Error when counting the number of resulting rows for line nr. ${i + 1}`
+              name: `Error when counting the number of resulting rows for line nr. ${i + 1}`
             }
           })
         }
@@ -55,7 +55,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
           else {
             s$.next({
               error: {
-                title: `Your query gives too large result. Please narrow down the filter for line nr. ${i + 1}`
+                name: `Your query gives too large result. Please narrow down the filter for line nr. ${i + 1}`
               }
             })
           }
@@ -80,7 +80,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
         if (err) {
           s$.next({
             error: {
-              title: `Error on query for line nr. ${i + 1}`,
+              name: `Error on query for line nr. ${i + 1}`,
               message: err
             }
           })
@@ -96,7 +96,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
           } else {
             s$.next({
               error: {
-                title: 'Invalid query results.',
+                name: 'Invalid query results.',
                 message: v.error
               }
             })
@@ -126,7 +126,7 @@ export class AnalysisTimeChartCont extends Analysis<Result>   {
     } else {
       return of({
         error: {
-          title: 'Invalid output.',
+          name: 'Invalid output.',
           message: v.error
         }
       })

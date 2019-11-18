@@ -40,6 +40,6 @@ SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
 /***********************
 * Analysis Types
 ************************/
-SysConfig.PK_ANALYSIS_TYPE__TIME_CONT = 3329;
-SysConfig.PK_ANALYSIS_TYPE__TABLE = 3330;
+SysConfig.PK_ANALYSIS_TYPE__TIME_CONT = 3331;
+SysConfig.PK_ANALYSIS_TYPE__TABLE = 3332;
 //# sourceMappingURL=sys-config.js.map

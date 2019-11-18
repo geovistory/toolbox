@@ -13,10 +13,8 @@ export interface ProTextPropertyInterface {
   "fk_language": number;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   "fk_entity"?: number;
   project?: ProProject;
   language?: InfLanguage;
@@ -30,10 +28,8 @@ export class ProTextProperty implements ProTextPropertyInterface {
   "fk_language": number;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
-  "sys_period": string;
   "fk_entity": number;
   project?: ProProject;
   language?: InfLanguage;
@@ -95,20 +91,12 @@ export class ProTextProperty implements ProTextPropertyInterface {
           name: 'entity_version',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
         "tmsp_creation": {
           name: 'tmsp_creation',
           type: 'string'
         },
         "tmsp_last_modification": {
           name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
           type: 'string'
         },
         "fk_entity": {

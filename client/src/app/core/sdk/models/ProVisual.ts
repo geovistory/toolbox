@@ -13,10 +13,8 @@ export interface ProVisualInterface {
   "fk_last_modifier": number;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   account?: PubAccount;
   project?: ProProject;
 }
@@ -29,10 +27,8 @@ export class ProVisual implements ProVisualInterface {
   "fk_last_modifier": number;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
-  "sys_period": string;
   account?: PubAccount;
   project?: ProProject;
   constructor(data?: ProVisualInterface) {
@@ -96,20 +92,12 @@ export class ProVisual implements ProVisualInterface {
           name: 'entity_version',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
         "tmsp_creation": {
           name: 'tmsp_creation',
           type: 'string'
         },
         "tmsp_last_modification": {
           name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
           type: 'string'
         },
       },

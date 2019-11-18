@@ -6,10 +6,8 @@ export interface SysAnalysisTypeInterface {
   "rows_limit": number;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
-  "sys_period"?: string;
 }
 
 export class SysAnalysisType implements SysAnalysisTypeInterface {
@@ -17,10 +15,8 @@ export class SysAnalysisType implements SysAnalysisTypeInterface {
   "rows_limit": number;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
-  "sys_period": string;
   constructor(data?: SysAnalysisTypeInterface) {
     Object.assign(this, data);
   }
@@ -70,20 +66,12 @@ export class SysAnalysisType implements SysAnalysisTypeInterface {
           name: 'entity_version',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
         "tmsp_creation": {
           name: 'tmsp_creation',
           type: 'string'
         },
         "tmsp_last_modification": {
           name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
           type: 'string'
         },
       },

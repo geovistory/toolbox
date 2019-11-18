@@ -50,6 +50,6 @@ export class SysConfig {
   * Analysis Types
   ************************/
 
-  static readonly PK_ANALYSIS_TYPE__TIME_CONT = 3329;
-  static readonly PK_ANALYSIS_TYPE__TABLE = 3330;
+  static readonly PK_ANALYSIS_TYPE__TIME_CONT = 3331;
+  static readonly PK_ANALYSIS_TYPE__TABLE = 3332;
 }

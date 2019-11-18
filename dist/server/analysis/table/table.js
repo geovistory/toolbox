@@ -19,7 +19,7 @@ class AnalysisTable extends analysis_1.Analysis {
         else {
             return rxjs_1.of({
                 error: {
-                    title: 'Invalid analysis definition',
+                    name: 'Invalid analysis definition',
                     message: v.error
                 }
             });
@@ -32,7 +32,7 @@ class AnalysisTable extends analysis_1.Analysis {
             if (err) {
                 s$.next({
                     error: {
-                        title: `Error when counting the number of resulting rows`
+                        name: `Error when counting the number of resulting rows`
                     }
                 });
             }
@@ -53,7 +53,7 @@ class AnalysisTable extends analysis_1.Analysis {
             if (err) {
                 s$.next({
                     error: {
-                        title: `Error on query`,
+                        name: `Error on query`,
                         message: err
                     }
                 });
@@ -63,7 +63,7 @@ class AnalysisTable extends analysis_1.Analysis {
                 if (typeof this.fullCount !== 'number') {
                     s$.next({
                         error: {
-                            title: 'Something went wrong with counting the results.'
+                            name: 'Something went wrong with counting the results.'
                         }
                     });
                 }
@@ -77,7 +77,7 @@ class AnalysisTable extends analysis_1.Analysis {
                 else {
                     s$.next({
                         error: {
-                            title: 'Invalid query results.',
+                            name: 'Invalid query results.',
                             message: v.error
                         }
                     });
@@ -94,7 +94,7 @@ class AnalysisTable extends analysis_1.Analysis {
         else {
             return rxjs_1.of({
                 error: {
-                    title: 'Invalid output.',
+                    name: 'Invalid output.',
                     message: v.error
                 }
             });

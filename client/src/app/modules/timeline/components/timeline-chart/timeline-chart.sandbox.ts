@@ -1,10 +1,10 @@
 import { sandboxOf } from 'angular-playground';
 import { BehaviorSubject } from 'rxjs';
 import { TimelineModule } from '../../timeline.module';
-import { ChartLineData, ChartLinePoint, ChartLine } from '../../../../../../../src/analysis/time-chart-cont/output/time-chart-cont-output.interface'
 import { TimelineChartComponent } from './timeline-chart.component';
 import { ship_voyages, ship_voyages_by_place, births_40k } from './timeline-chart.mock';
 import { few_births } from './timeline-chart.few-births.mock';
+import { ChartLineData, ChartLinePoint, ChartLine } from '../../../../../../../src/common/interfaces';
 
 const data1$ = new BehaviorSubject<ChartLineData>({
   activeLine: null,

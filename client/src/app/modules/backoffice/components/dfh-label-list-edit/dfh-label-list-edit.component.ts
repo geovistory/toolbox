@@ -75,10 +75,11 @@ export class DfhLabelListEditComponent implements OnInit, OnDestroy {
   }
 
   delete(label: DfhLabel) {
-    this.dfhService.label.delete([label]).pipe(takeUntil(this.destroy$)).subscribe((pending) => {
-      if (pending) this.loading = true;
-      else this.loading = false
-    });
+    this.loading = true;
+    this.dfhService.label.delete([label]).resolved$.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loading = false
+      });
   }
 
 

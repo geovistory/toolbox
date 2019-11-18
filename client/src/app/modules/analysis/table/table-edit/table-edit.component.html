@@ -1,6 +1,6 @@
 <gv-analysis-layout>
 
-  <gv-table-form analysis-settings #c>
+  <gv-table-form analysis-settings #c [initVal$]="initVal$">
     <button mat-flat-button color="primary" (click)="a.runAnalysis()" matTooltip="Create Analysis">Run</button>
   </gv-table-form>
 

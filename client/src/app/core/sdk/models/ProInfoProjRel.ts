@@ -17,9 +17,7 @@ export interface ProInfoProjRelInterface {
   "fk_last_modifier": number;
   "pk_entity"?: number;
   "entity_version"?: number;
-  "notes"?: string;
   "tmsp_creation"?: string;
-  "sys_period"?: string;
 }
 
 export class ProInfoProjRel implements ProInfoProjRelInterface {
@@ -38,9 +36,7 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
   "fk_last_modifier": number;
   "pk_entity": number;
   "entity_version": number;
-  "notes": string;
   "tmsp_creation": string;
-  "sys_period": string;
   constructor(data?: ProInfoProjRelInterface) {
     Object.assign(this, data);
   }
@@ -134,16 +130,8 @@ export class ProInfoProjRel implements ProInfoProjRelInterface {
           name: 'entity_version',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
         "tmsp_creation": {
           name: 'tmsp_creation',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
           type: 'string'
         },
       },

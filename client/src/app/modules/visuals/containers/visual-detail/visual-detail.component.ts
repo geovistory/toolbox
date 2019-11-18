@@ -238,9 +238,7 @@ export class VisualDetailComponent extends VisualDetailAPIActions implements OnI
       },
       entity_version: undefined,
       fk_last_modifier: undefined,
-      notes: undefined,
       pk_entity: undefined,
-      sys_period: undefined,
       tmsp_creation: undefined,
       tmsp_last_modification: undefined
     }
