@@ -71,7 +71,7 @@ export default sandboxOf(TimelineChartComponent, {
     },
     template: `
     <p style="width: 800px; height: 400px; margin: 20px; padding: 5px; border: 1px dashed red;">
-        <gv-timeline-chart [data$]="data1$" ></gv-timeline-chart>
+        <gv-timeline-chart [data$]="data1$" [showCursor]="true" (cursorChange)="cursorPos=$event"></gv-timeline-chart>
     </p>
     <p style="margin: 20px;">
 

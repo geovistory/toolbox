@@ -5,7 +5,7 @@ export interface ChartLineData {
   chartLines: ChartLine[]
   mouseX?: number // the mouse x position
 }
-export interface ChartLinePoint { x: number, y: number, data?: any }
+export interface ChartLinePoint { x: number, y: number, data?: any, data_ref?: any }
 export interface ChartLine {
   label: string
   linePoints: ChartLinePoint[]

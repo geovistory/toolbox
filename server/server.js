@@ -3,23 +3,23 @@
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 
-var app = module.exports = loopback();
+var app = (module.exports = loopback());
 
 var enforce = require('express-sslify');
 
-const { Client } = require('pg')
+const { Client } = require('pg');
 const { Subject } = require('rxjs');
 
 /**
  * Enfoce using ssl (https) on staging and production
  */
 if (['production', 'staging'].includes(process.env.DB_ENV)) {
-  app.use(enforce.HTTPS({ trustProtoHeader: true }))
+  app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
 
-app.start = function () {
+app.start = function() {
   // start the web server
-  var server = app.listen(function () {
+  var server = app.listen(function() {
     app.emit('started', server);
     var baseUrl = app.get('url').replace(/\/$/, '');
     console.log('Web server listening at: %s', baseUrl);
@@ -31,9 +31,8 @@ app.start = function () {
     // Connect to Postgres
     const client = new Client({
       connectionString: app.datasources.postgres1.connector.settings.url,
-    })
-    client.connect()
-
+    });
+    client.connect();
 
     //     /**********************************************************
     //     * Setup the queue for warehouse update requests
@@ -46,6 +45,7 @@ app.start = function () {
     let needs_update_from_queue = true;
     let needs_update_for_labels = true;
     let needs_update_for_full_text = true;
+    let needs_update_for_statements = true;
     //     const nextFromQue = () => {
 
     //       if (!working && queue.length) {
@@ -87,27 +87,37 @@ app.start = function () {
       if (!workerWorking) {
         workerWorking = true;
         needs_update_from_queue = false;
-        client.query('SELECT warehouse.entity_preview_update_queue_worker()', (err, res) => {
-          workerWorking = false;
-          if (err) console.log(err)
-          // console.log(res.rows[0].entity_preview_update_queue_worker )
-          if (res && res.rows && res.rows.length && res.rows[0].entity_preview_update_queue_worker === true) {
-            needs_update_for_labels = true;
-            updateEntityPreviewLabels()
-            needs_update_for_full_text = true;
-            updateEntityPreviewFullText()
+        client.query(
+          'SELECT warehouse.entity_preview_update_queue_worker()',
+          (err, res) => {
+            workerWorking = false;
+            if (err) console.log(err);
+            // console.log(res.rows[0].entity_preview_update_queue_worker )
+            if (
+              res &&
+              res.rows &&
+              res.rows.length &&
+              res.rows[0].entity_preview_update_queue_worker === true
+            ) {
+              needs_update_for_labels = true;
+              updateEntityPreviewLabels();
+              needs_update_for_statements = true;
+              updateStatements();
+              needs_update_for_full_text = true;
+              updateEntityPreviewFullText();
+            }
+            if (needs_update_from_queue) callQueueWorker();
           }
-          if (needs_update_from_queue) callQueueWorker()
-        })
+        );
       }
-    }
+    };
     callQueueWorker();
 
     // initialize event streams on loopback models
     app.models.WarEntityPreview.stream = new Subject();
 
     // Listen for all pg_notify channel messages
-    client.on('notification', function (msg) {
+    client.on('notification', function(msg) {
       let payload = JSON.parse(msg.payload);
 
       // console.log(msg.channel, payload.fn)
@@ -115,7 +125,7 @@ app.start = function () {
       switch (msg.channel) {
         case 'queue_updated':
           needs_update_from_queue = true;
-          callQueueWorker()
+          callQueueWorker();
           break;
         case 'entity_preview_updated':
           app.models.WarEntityPreview.stream.next(payload);
@@ -133,8 +143,6 @@ app.start = function () {
       //dbEventEmitter.emit(msg.channel, payload);
     });
 
-
-
     /**********************************************************
      * Setup the continuous update job for entity_preview cols:
      *  - fk_class
@@ -145,66 +153,94 @@ app.start = function () {
      *  - fk_entity_label
      *  - fk_type
      *  - type_label
-    **********************************************************/
-    let labelsUpdating = false
+     **********************************************************/
+    let labelsUpdating = false;
     const updateEntityPreviewLabels = () => {
       if (!labelsUpdating) {
         labelsUpdating = true;
         needs_update_for_labels = false;
-        const sql = `SELECT warehouse.entity_preview__labels__update_all();`
+        const sql = `SELECT warehouse.entity_preview__labels__update_all();`;
         client.query(sql, (err, res) => {
           labelsUpdating = false;
-          if (err) console.log(err)
+          if (err) console.log(err);
           else {
-            console.log(`\u{1b}[36m Entity Preview labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`)
+            console.log(
+              `\u{1b}[36m Entity Preview labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+            );
           }
           if (needs_update_from_queue) updateEntityPreviewLabels();
-        })
+        });
       }
-    }
+    };
     updateEntityPreviewLabels();
 
     /**********************************************************
-       * Setup the continuous update job for entity_preview cols:
-       *  - own_full_text
-       *  - related_full_texts
-       *  - full_text
-       *  - ts_vector
-      **********************************************************/
-    let fullTextUpdating = false
+     * Setup the continuous update job for entity_preview cols:
+     *  - own_full_text
+     *  - related_full_texts
+     *  - full_text
+     *  - ts_vector
+     **********************************************************/
+    let fullTextUpdating = false;
     const updateEntityPreviewFullText = () => {
       if (!fullTextUpdating) {
-        fullTextUpdating = true
+        fullTextUpdating = true;
         needs_update_for_full_text = false;
-        const sql = `SELECT warehouse.entity_preview__full_text__update_all();`
+        const sql = `SELECT warehouse.entity_preview__full_text__update_all();`;
         client.query(sql, (err, res) => {
-          fullTextUpdating = false
-          if (err) console.log(err)
+          fullTextUpdating = false;
+          if (err) console.log(err);
           else {
-            console.log(`\u{1b}[36m Entity Preview full text updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`);
+            console.log(
+              `\u{1b}[36m Entity Preview full text updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+            );
           }
           if (needs_update_for_full_text) updateEntityPreviewFullText();
-        })
+        });
         // // delay a little
         // setTimeout(() => {
         // }, 2000)
       }
-    }
+    };
     updateEntityPreviewFullText();
+
+    /**********************************************************
+     * Setup the continuous update job for vm_statement
+     **********************************************************/
+    let statementsUpdating = false;
+    const updateStatements = () => {
+      if (!statementsUpdating) {
+        statementsUpdating = true;
+        needs_update_for_statements = false;
+        const sql = `REFRESH MATERIALIZED VIEW CONCURRENTLY warehouse.vm_statement;`;
+        client.query(sql, (err, res) => {
+          statementsUpdating = false;
+          if (err) console.log(err);
+          else {
+            console.log(
+              `\u{1b}[36m warehouse.vm_statement updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+            );
+          }
+          if (needs_update_for_statements) updateStatements();
+        });
+        // // delay a little
+        // setTimeout(() => {
+        // }, 2000)
+      }
+    };
+    updateStatements();
 
     // Designate which channels we are listening on. Add additional channels with multiple lines.
     client.query('LISTEN queue_updated');
     client.query('LISTEN entity_preview_updated');
-
   });
-
 
   return server;
 };
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
-boot(app, __dirname, function (err) {
+boot(app, __dirname, function(err) {
   if (err) throw err;
 
   // start the server if `$ node server.js`
@@ -214,6 +250,5 @@ boot(app, __dirname, function (err) {
     // add socket.io and emit it to be ready
     var io = require('socket.io')(server);
     app.emit('io-ready', io);
-
   }
 });

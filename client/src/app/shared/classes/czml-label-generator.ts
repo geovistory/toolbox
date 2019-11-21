@@ -1,7 +1,7 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
 import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
-import { CzmlLabel } from './czml-types';
+import { CzmlLabel } from '../../../../../src/common/interfaces/czml-types';
 
 export interface CzmlLabelGeneratorSettings {
 

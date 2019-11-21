@@ -1,4 +1,8 @@
 // start:ng42.barrel
+export * from './czml-types';
+export * from './map-and-time-cont-input.interface';
+export * from './map-and-time-cont-output.interface';
+export * from './map-and-time-cont-query-res.interface';
 export * from './query-filter.interface';
 export * from './table-input.interface';
 export * from './table-output.interface';

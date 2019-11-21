@@ -1,11 +1,15 @@
 <div class="chart" gvDimensionChange (onDimensionsChange)="onDimensionsChange($event)">
 
   <svg [attr.width]="width" [attr.height]="height" draggableXAxis (onDrag)="onDrag($event)"
-    *ngIf="chartLine?.config?.data">
+    *ngIf="chartLine?.config?.data" #referenceEl>
     <g class="x-axis x-axis-julian" [xAxisVisual]="xAxisJulian"></g>
     <g class="x-axis x-axis-gregorian" [xAxisVisual]="xAxisGreg"></g>
     <g [yAxisVisual]="yAxis"></g>
     <g [chartLineVisual]="chartLine"></g>
+    <!-- <rect [attr.width]="width" [attr.height]="20" [rangeEmitterOnMouseDown]="referenceEl"
+      [attr.transform]="'translate(0,'+ (height-marginTop) +')'" [attr.fill]="'blue'" opacity="0"
+      (onRangeChange)="onChangeCursorPosition($event)"></rect> -->
+
   </svg>
 
   <div class="toolbar-menu" *ngIf="width < 450 && chartLine?.config?.data">

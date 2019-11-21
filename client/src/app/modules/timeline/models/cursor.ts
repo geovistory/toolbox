@@ -1,10 +1,10 @@
 import { Timeline } from './timeline';
 
 export class Cursor {
-    constructor(
-        public timeline: Timeline,
-        public julianSecond: number,
-        public bodyHeight: number,
-        public headerHeight: number
-    ) { }
+  constructor(
+    public scaleX: d3.ScaleLinear<number, number>,
+    public julianSecond: number,
+    public bodyHeight: number,
+    public headerHeight: number
+  ) { }
 }

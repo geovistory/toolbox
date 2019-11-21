@@ -1,0 +1,2647 @@
+{
+    "$ref": "#/definitions/MapAndTimeContOutput",
+    "definitions": {
+        "MapAndTimeContOutput": {
+            "title": "MapAndTimeContOutput",
+            "type": "object",
+            "properties": {
+                "layers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MapAndTimeContLayer"
+                    },
+                    "title": "layers"
+                }
+            },
+            "required": [
+                "layers"
+            ]
+        },
+        "MapAndTimeContLayer": {
+            "title": "MapAndTimeContLayer",
+            "type": "object",
+            "properties": {
+                "map": {
+                    "$ref": "#/definitions/MapLayer",
+                    "title": "map"
+                },
+                "time": {
+                    "$ref": "#/definitions/TimeChartContOutput",
+                    "title": "time"
+                }
+            },
+            "required": [
+                "map",
+                "time"
+            ]
+        },
+        "MapLayer": {
+            "title": "MapLayer",
+            "type": "object",
+            "properties": {
+                "czml": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CzmlPacket"
+                    },
+                    "title": "czml"
+                }
+            },
+            "required": [
+                "czml"
+            ]
+        },
+        "CzmlPacket": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet",
+            "title": "CzmlPacket",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "title": "id"
+                },
+                "delete": {
+                    "type": "boolean",
+                    "title": "delete"
+                },
+                "name": {
+                    "type": "string",
+                    "title": "name"
+                },
+                "parent": {
+                    "type": "string",
+                    "title": "parent"
+                },
+                "description": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/String",
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "string": {
+                                    "type": "string",
+                                    "title": "string"
+                                },
+                                "reference": {
+                                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                                    "type": "string",
+                                    "title": "reference"
+                                }
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "title": "description"
+                },
+                "clock": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Clock",
+                    "$ref": "#/definitions/CzmlClock",
+                    "title": "clock"
+                },
+                "version": {
+                    "type": "string",
+                    "title": "version"
+                },
+                "availability": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/TimeIntervalCollection\n\nalso read 'availability' here:\nhttps://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet",
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "title": "availability"
+                },
+                "properties": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CustomProperties",
+                    "$ref": "#/definitions/CzmlCustomProperties",
+                    "title": "properties"
+                },
+                "position": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Position",
+                    "$ref": "#/definitions/CzmlPosition",
+                    "title": "position"
+                },
+                "orientation": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Orientation",
+                    "$ref": "#/definitions/CzmlOrientation",
+                    "title": "orientation"
+                },
+                "viewFrom": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ViewFrom",
+                    "$ref": "#/definitions/CzmlViewFrom",
+                    "title": "viewFrom"
+                },
+                "billboard": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Billboard",
+                    "$ref": "#/definitions/CzmlBillboard",
+                    "title": "billboard"
+                },
+                "box": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Box",
+                    "$ref": "#/definitions/CzmlBox",
+                    "title": "box"
+                },
+                "label": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Label",
+                    "$ref": "#/definitions/CzmlLabel",
+                    "title": "label"
+                },
+                "point": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Point",
+                    "$ref": "#/definitions/CzmlPoint",
+                    "title": "point"
+                }
+            },
+            "required": [
+                "id"
+            ]
+        },
+        "CzmlClock": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Clock",
+            "title": "CzmlClock",
+            "type": "object",
+            "properties": {
+                "interval": {
+                    "type": "string",
+                    "title": "interval"
+                },
+                "currentTime": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Time",
+                    "type": "array",
+                    "items": {},
+                    "title": "currentTime"
+                },
+                "multiplier": {
+                    "type": "number",
+                    "title": "multiplier"
+                },
+                "range": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ClockRange",
+                    "enum": [
+                        "CLAMPED",
+                        "LOOP_STOP",
+                        "UNBOUNDED"
+                    ],
+                    "type": "string",
+                    "title": "range"
+                },
+                "step": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ClockStep",
+                    "enum": [
+                        "SYSTEM_CLOCK",
+                        "SYSTEM_CLOCK_MULTIPLIER",
+                        "TICK_DEPENDENT"
+                    ],
+                    "type": "string",
+                    "title": "step"
+                }
+            }
+        },
+        "CzmlCustomProperties": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CustomProperties",
+            "title": "CzmlCustomProperties",
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/CzmlCustomProperty"
+            }
+        },
+        "CzmlCustomProperty": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CustomProperty",
+            "title": "CzmlCustomProperty",
+            "type": "object",
+            "properties": {
+                "boolean": {
+                    "type": "boolean",
+                    "title": "boolean"
+                },
+                "boundingRectangle": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BoundingRectangleValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "boundingRectangle"
+                },
+                "cartesian": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian3Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian"
+                },
+                "cartographicRadians": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CartographicValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartographicRadians"
+                },
+                "cartographicDegrees": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CartographicValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartographicDegrees"
+                },
+                "cartesian2": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian2Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian2"
+                },
+                "unitCartesian": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UnitCartesian3Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "unitCartesian"
+                },
+                "spherical": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/SphericalValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "spherical"
+                },
+                "unitSpherical": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UnitSphericalValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "unitSpherical"
+                },
+                "rgba": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/RgbaValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "rgba"
+                },
+                "rgbaf": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/RgbafValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "rgbaf"
+                },
+                "colorBlendMode": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ColorBlendModeValue",
+                    "enum": [
+                        "HIGHLIGHT",
+                        "MIX",
+                        "REPLACE"
+                    ],
+                    "type": "string",
+                    "title": "colorBlendMode"
+                },
+                "cornerType": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CornerTypeValue",
+                    "enum": [
+                        "BEVELED",
+                        "MITERED",
+                        "ROUNDED"
+                    ],
+                    "type": "string",
+                    "title": "cornerType"
+                },
+                "heightReference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HeightReferenceValue",
+                    "enum": [
+                        "CLAMP_TO_GROUND",
+                        "NONE",
+                        "RELATIVE_TO_GROUND"
+                    ],
+                    "type": "string",
+                    "title": "heightReference"
+                },
+                "horizontalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HorizontalOriginValue",
+                    "enum": [
+                        "CENTER",
+                        "LEFT",
+                        "RIGHT"
+                    ],
+                    "type": "string",
+                    "title": "horizontalOrigin"
+                },
+                "labelStyle": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LabelStyleValue",
+                    "enum": [
+                        "FILL",
+                        "FILL_AND_OUTLINE",
+                        "OUTLINE"
+                    ],
+                    "type": "string",
+                    "title": "labelStyle"
+                },
+                "number": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DoubleValue",
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {}
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "number"
+                },
+                "nearFarScalar": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalarValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "nearFarScalar"
+                },
+                "unitQuaternion": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UnitQuaternionValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "unitQuaternion"
+                },
+                "shadowMode": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ShadowModeValue",
+                    "enum": [
+                        "CAST_ONLY",
+                        "DISABLED",
+                        "ENABLED"
+                    ],
+                    "type": "string",
+                    "title": "shadowMode"
+                },
+                "string": {
+                    "type": "string",
+                    "title": "string"
+                },
+                "stripeOrientation": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/StripeOrientationValue",
+                    "enum": [
+                        "HORIZONTAL",
+                        "VERTICAL"
+                    ],
+                    "type": "string",
+                    "title": "stripeOrientation"
+                },
+                "wsen": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CartographicRectangleValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "wsen"
+                },
+                "wsenDegrees": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CartographicRectangleValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "wsenDegrees"
+                },
+                "uri": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UriValue",
+                    "type": "string",
+                    "title": "uri"
+                },
+                "verticalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/VerticalOriginValue",
+                    "enum": [
+                        "BASELINE",
+                        "BOTTOM",
+                        "CENTER",
+                        "TOP"
+                    ],
+                    "type": "string",
+                    "title": "verticalOrigin"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlPosition": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Position",
+            "title": "CzmlPosition",
+            "type": "object",
+            "properties": {
+                "referenceFrame": {
+                    "enum": [
+                        "FIXED",
+                        "INERTIAL"
+                    ],
+                    "type": "string",
+                    "title": "referenceFrame"
+                },
+                "cartesian": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian3Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian"
+                },
+                "cartographicDegrees": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CartographicValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartographicDegrees"
+                },
+                "cartographicRadians": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/CartographicValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartographicRadians"
+                },
+                "cartesianVelocity": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian3VelocityValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesianVelocity"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlOrientation": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Orientation",
+            "title": "CzmlOrientation",
+            "type": "object",
+            "properties": {
+                "unitQuaternion": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UnitQuaternionValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "unitQuaternion"
+                },
+                "velocityReference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "velocityReference"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlViewFrom": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ViewFrom",
+            "title": "CzmlViewFrom",
+            "type": "object",
+            "properties": {
+                "cartesian": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian3Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                }
+            }
+        },
+        "CzmlBillboard": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Billboard",
+            "title": "CzmlBillboard",
+            "type": "object",
+            "properties": {
+                "show": {
+                    "type": "boolean",
+                    "title": "show"
+                },
+                "image": {
+                    "$ref": "#/definitions/CzmlUri",
+                    "title": "image"
+                },
+                "scale": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "scale"
+                },
+                "pixelOffset": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/PixelOffset",
+                    "$ref": "#/definitions/CzmlPixelOffset",
+                    "title": "pixelOffset"
+                },
+                "eyeOffset": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/EyeOffset",
+                    "$ref": "#/definitions/CzmlEyeOffset",
+                    "title": "eyeOffset"
+                },
+                "horizontalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HorizontalOrigin",
+                    "$ref": "#/definitions/CzmlHorizontalOrigin",
+                    "title": "horizontalOrigin"
+                },
+                "verticalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/VerticalOrigin",
+                    "$ref": "#/definitions/CzmlVerticalOrigin",
+                    "title": "verticalOrigin"
+                },
+                "heightReference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HeightReference",
+                    "$ref": "#/definitions/CzmlHeightReference",
+                    "title": "heightReference"
+                },
+                "color": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "color"
+                },
+                "rotation": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "rotation"
+                },
+                "alignedAxis": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/AlignedAxis",
+                    "$ref": "#/definitions/CzmlAlignedAxis",
+                    "title": "alignedAxis"
+                },
+                "sizeInMeters": {
+                    "$ref": "#/definitions/Boolean",
+                    "title": "sizeInMeters"
+                },
+                "width": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "width"
+                },
+                "height": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "height"
+                },
+                "scaleByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "scaleByDistance"
+                },
+                "translucencyByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "translucencyByDistance"
+                },
+                "pixelOffsetScaleByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "pixelOffsetScaleByDistance"
+                },
+                "imageSubRegion": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BoundingRectangle",
+                    "$ref": "#/definitions/CzmlBoundingRectangle",
+                    "title": "imageSubRegion"
+                },
+                "distanceDisplayCondition": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DistanceDisplayCondition",
+                    "$ref": "#/definitions/CzmlDistanceDisplayCondition",
+                    "title": "distanceDisplayCondition"
+                },
+                "disableDepthTestDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "disableDepthTestDistance"
+                }
+            },
+            "required": [
+                "image"
+            ]
+        },
+        "CzmlUri": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Uri",
+            "title": "CzmlUri",
+            "type": "object",
+            "properties": {
+                "uri": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UriValue",
+                    "type": "string",
+                    "title": "uri"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                }
+            }
+        },
+        "CzmlDoubleI": {
+            "title": "CzmlDoubleI",
+            "type": "object",
+            "properties": {
+                "number": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DoubleValue",
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {}
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "number"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlPixelOffset": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/PixelOffset",
+            "title": "CzmlPixelOffset",
+            "type": "object",
+            "properties": {
+                "cartesian2": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian2Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian2"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlEyeOffset": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/EyeOffset",
+            "title": "CzmlEyeOffset",
+            "type": "object",
+            "properties": {
+                "cartesian": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian3Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlHorizontalOrigin": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HorizontalOrigin",
+            "title": "CzmlHorizontalOrigin",
+            "type": "object",
+            "properties": {
+                "horizontalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HorizontalOriginValue",
+                    "enum": [
+                        "CENTER",
+                        "LEFT",
+                        "RIGHT"
+                    ],
+                    "type": "string",
+                    "title": "horizontalOrigin"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlVerticalOrigin": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/VerticalOrigin",
+            "title": "CzmlVerticalOrigin",
+            "type": "object",
+            "properties": {
+                "verticalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/VerticalOriginValue",
+                    "enum": [
+                        "BASELINE",
+                        "BOTTOM",
+                        "CENTER",
+                        "TOP"
+                    ],
+                    "type": "string",
+                    "title": "verticalOrigin"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlHeightReference": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HeightReference",
+            "title": "CzmlHeightReference",
+            "type": "object",
+            "properties": {
+                "heightReference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HeightReferenceValue",
+                    "enum": [
+                        "CLAMP_TO_GROUND",
+                        "NONE",
+                        "RELATIVE_TO_GROUND"
+                    ],
+                    "type": "string",
+                    "title": "heightReference"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlColor": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+            "title": "CzmlColor",
+            "type": "object",
+            "properties": {
+                "rgba": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/RgbaValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "rgba"
+                },
+                "rgbaf": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/RgbafValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "rgbaf"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlAlignedAxis": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/AlignedAxis",
+            "title": "CzmlAlignedAxis",
+            "type": "object",
+            "properties": {
+                "unitCartesian": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UnitCartesian3Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "unitCartesian"
+                },
+                "unitSpherical": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/UnitSphericalValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "unitSpherical"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "velocityReference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "velocityReference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "Boolean": {
+            "title": "Boolean",
+            "type": "object"
+        },
+        "CzmlNearFarScalar": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+            "title": "CzmlNearFarScalar",
+            "type": "object",
+            "properties": {
+                "nearFarScalar": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalarValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "nearFarScalar"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlBoundingRectangle": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BoundingRectangle",
+            "title": "CzmlBoundingRectangle",
+            "type": "object",
+            "properties": {
+                "boundingRectangle": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BoundingRectangleValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "boundingRectangle"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlDistanceDisplayCondition": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DistanceDisplayCondition",
+            "title": "CzmlDistanceDisplayCondition",
+            "type": "object",
+            "properties": {
+                "distanceDisplayCondition": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DistanceDisplayConditionValue",
+                    "type": "array",
+                    "items": {},
+                    "title": "distanceDisplayCondition"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlBox": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Box",
+            "title": "CzmlBox",
+            "type": "object",
+            "properties": {
+                "show": {
+                    "$ref": "#/definitions/Boolean",
+                    "title": "show"
+                },
+                "dimensions": {
+                    "$ref": "#/definitions/CzmlBoxDimensions",
+                    "title": "dimensions"
+                },
+                "fill": {
+                    "$ref": "#/definitions/Boolean",
+                    "title": "fill"
+                },
+                "material": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Material",
+                    "$ref": "#/definitions/CzmlMaterial",
+                    "title": "material"
+                },
+                "outline": {
+                    "$ref": "#/definitions/Boolean",
+                    "title": "outline"
+                },
+                "outlineColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "outlineColor"
+                },
+                "outlineWidth": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "outlineWidth"
+                },
+                "shadows": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ShadowMode",
+                    "$ref": "#/definitions/CzmlShadowMode",
+                    "title": "shadows"
+                },
+                "distanceDisplayCondition": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DistanceDisplayCondition",
+                    "$ref": "#/definitions/CzmlDistanceDisplayCondition",
+                    "title": "distanceDisplayCondition"
+                }
+            },
+            "required": [
+                "dimensions"
+            ]
+        },
+        "CzmlBoxDimensions": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BoxDimensions\nhttps://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BoxDimensions",
+            "title": "CzmlBoxDimensions",
+            "type": "object",
+            "properties": {
+                "cartesian": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian3Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlMaterial": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Material",
+            "title": "CzmlMaterial",
+            "type": "object",
+            "properties": {
+                "solidColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/SolidColorMaterial",
+                    "$ref": "#/definitions/CzmlSolidColorMaterial",
+                    "title": "solidColor"
+                },
+                "image": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ImageMaterial",
+                    "$ref": "#/definitions/CzmlImageMaterial",
+                    "title": "image"
+                },
+                "grid": {
+                    "$ref": "#/definitions/CzmlGridMaterial",
+                    "title": "grid"
+                },
+                "stripe": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/StripeMaterial",
+                    "$ref": "#/definitions/CzmlStripeMaterial",
+                    "title": "stripe"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlSolidColorMaterial": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/SolidColorMaterial",
+            "title": "CzmlSolidColorMaterial",
+            "type": "object",
+            "properties": {
+                "color": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "color"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlImageMaterial": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ImageMaterial",
+            "title": "CzmlImageMaterial",
+            "type": "object",
+            "properties": {
+                "image": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Uri",
+                    "$ref": "#/definitions/CzmlUri",
+                    "title": "image"
+                },
+                "repeat": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Repeat",
+                    "$ref": "#/definitions/CzmlRepeat",
+                    "title": "repeat"
+                },
+                "color": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "color"
+                },
+                "transparent": {
+                    "type": "boolean",
+                    "title": "transparent"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlRepeat": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Repeat",
+            "title": "CzmlRepeat",
+            "type": "object",
+            "properties": {
+                "cartesian2": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian2Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian2"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlGridMaterial": {
+            "title": "CzmlGridMaterial",
+            "type": "object",
+            "properties": {
+                "color": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "color"
+                },
+                "cellAlpha": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "cellAlpha"
+                },
+                "lineCount": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LineCount",
+                    "$ref": "#/definitions/CzmlLineCount",
+                    "title": "lineCount"
+                },
+                "lineThickness": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LineThickness",
+                    "$ref": "#/definitions/CzmlLineThickness",
+                    "title": "lineThickness"
+                },
+                "lineOffset": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LineOffset",
+                    "$ref": "#/definitions/CzmlLineOffset",
+                    "title": "lineOffset"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlLineCount": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LineCount",
+            "title": "CzmlLineCount",
+            "type": "object",
+            "properties": {
+                "cartesian2": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian2Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian2"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlLineThickness": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LineThickness",
+            "title": "CzmlLineThickness",
+            "type": "object",
+            "properties": {
+                "cartesian2": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian2Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian2"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlLineOffset": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LineOffset",
+            "title": "CzmlLineOffset",
+            "type": "object",
+            "properties": {
+                "cartesian2": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian2Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian2"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlStripeMaterial": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/StripeMaterial",
+            "title": "CzmlStripeMaterial",
+            "type": "object",
+            "properties": {
+                "orientation": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/StripeOrientation",
+                    "$ref": "#/definitions/CzmlStripeOrientation",
+                    "title": "orientation"
+                },
+                "evenColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "evenColor"
+                },
+                "oddColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "oddColor"
+                },
+                "offset": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "offset"
+                },
+                "repeat": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "repeat"
+                }
+            }
+        },
+        "CzmlStripeOrientation": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/StripeOrientation",
+            "title": "CzmlStripeOrientation",
+            "type": "object",
+            "properties": {
+                "stripeOrientation": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/StripeOrientationValue",
+                    "enum": [
+                        "HORIZONTAL",
+                        "VERTICAL"
+                    ],
+                    "type": "string",
+                    "title": "stripeOrientation"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlShadowMode": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ShadowMode",
+            "title": "CzmlShadowMode",
+            "type": "object",
+            "properties": {
+                "shadowMode": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ShadowModeValue",
+                    "enum": [
+                        "CAST_ONLY",
+                        "DISABLED",
+                        "ENABLED"
+                    ],
+                    "type": "string",
+                    "title": "shadowMode"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                }
+            }
+        },
+        "CzmlLabel": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Label",
+            "title": "CzmlLabel",
+            "type": "object",
+            "properties": {
+                "show": {
+                    "$ref": "#/definitions/Boolean",
+                    "title": "show"
+                },
+                "text": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/String",
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "string": {
+                                    "type": "string",
+                                    "title": "string"
+                                },
+                                "reference": {
+                                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                                    "type": "string",
+                                    "title": "reference"
+                                }
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "title": "text"
+                },
+                "font": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/FontValue",
+                    "type": "string",
+                    "title": "font"
+                },
+                "style": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LabelStyle",
+                    "$ref": "#/definitions/CzmlLabelStyle",
+                    "title": "style"
+                },
+                "scale": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "scale"
+                },
+                "showBackground": {
+                    "$ref": "#/definitions/Boolean",
+                    "title": "showBackground"
+                },
+                "backgroundColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "backgroundColor"
+                },
+                "backgroundPadding": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BackgroundPadding",
+                    "$ref": "#/definitions/CzmlBackgroundPadding",
+                    "title": "backgroundPadding"
+                },
+                "pixelOffset": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/PixelOffset",
+                    "$ref": "#/definitions/CzmlPixelOffset",
+                    "title": "pixelOffset"
+                },
+                "eyeOffset": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/EyeOffset",
+                    "$ref": "#/definitions/CzmlEyeOffset",
+                    "title": "eyeOffset"
+                },
+                "horizontalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HorizontalOrigin",
+                    "$ref": "#/definitions/CzmlHorizontalOrigin",
+                    "title": "horizontalOrigin"
+                },
+                "verticalOrigin": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/VerticalOrigin",
+                    "$ref": "#/definitions/CzmlVerticalOrigin",
+                    "title": "verticalOrigin"
+                },
+                "heightReference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HeightReference",
+                    "$ref": "#/definitions/CzmlHeightReference",
+                    "title": "heightReference"
+                },
+                "fillColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "fillColor"
+                },
+                "outlineColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "outlineColor"
+                },
+                "outlineWidth": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "outlineWidth"
+                },
+                "translucencyByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "translucencyByDistance"
+                },
+                "pixelOffsetScaleByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "pixelOffsetScaleByDistance"
+                },
+                "scaleByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "scaleByDistance"
+                },
+                "distanceDisplayCondition": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DistanceDisplayCondition",
+                    "$ref": "#/definitions/CzmlDistanceDisplayCondition",
+                    "title": "distanceDisplayCondition"
+                },
+                "disableDepthTestDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "disableDepthTestDistance"
+                }
+            }
+        },
+        "CzmlLabelStyle": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LabelStyle",
+            "title": "CzmlLabelStyle",
+            "type": "object",
+            "properties": {
+                "labelStyle": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/LabelStyleValue",
+                    "enum": [
+                        "FILL",
+                        "FILL_AND_OUTLINE",
+                        "OUTLINE"
+                    ],
+                    "type": "string",
+                    "title": "labelStyle"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                }
+            }
+        },
+        "CzmlBackgroundPadding": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/BackgroundPadding",
+            "title": "CzmlBackgroundPadding",
+            "type": "object",
+            "properties": {
+                "cartesian2": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Cartesian2Value",
+                    "type": "array",
+                    "items": {},
+                    "title": "cartesian2"
+                },
+                "reference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/ReferenceValue",
+                    "type": "string",
+                    "title": "reference"
+                },
+                "epoch": {
+                    "type": "string",
+                    "title": "epoch"
+                },
+                "interpolationAlgorithm": {
+                    "enum": [
+                        "HERMITE",
+                        "LAGRANGE",
+                        "LINEAR"
+                    ],
+                    "type": "string",
+                    "title": "interpolationAlgorithm"
+                },
+                "interpolationDegree": {
+                    "type": "number",
+                    "title": "interpolationDegree"
+                },
+                "forwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "forwardExtrapolationType"
+                },
+                "forwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "forwardExtrapolationDuration"
+                },
+                "backwardExtrapolationType": {
+                    "enum": [
+                        "EXTRAPOLATE",
+                        "HOLD",
+                        "NONE"
+                    ],
+                    "type": "string",
+                    "title": "backwardExtrapolationType"
+                },
+                "backwardExtrapolationDuration": {
+                    "type": "number",
+                    "title": "backwardExtrapolationDuration"
+                }
+            }
+        },
+        "CzmlPoint": {
+            "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Point",
+            "title": "CzmlPoint",
+            "type": "object",
+            "properties": {
+                "show": {
+                    "$ref": "#/definitions/Boolean",
+                    "title": "show"
+                },
+                "pixelSize": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "pixelSize"
+                },
+                "heightReference": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/HeightReference",
+                    "$ref": "#/definitions/CzmlHeightReference",
+                    "title": "heightReference"
+                },
+                "color": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "color"
+                },
+                "outlineColor": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Color",
+                    "$ref": "#/definitions/CzmlColor",
+                    "title": "outlineColor"
+                },
+                "outlineWidth": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "outlineWidth"
+                },
+                "scaleByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "scaleByDistance"
+                },
+                "translucencyByDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/NearFarScalar",
+                    "$ref": "#/definitions/CzmlNearFarScalar",
+                    "title": "translucencyByDistance"
+                },
+                "distanceDisplayCondition": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/DistanceDisplayCondition",
+                    "$ref": "#/definitions/CzmlDistanceDisplayCondition",
+                    "title": "distanceDisplayCondition"
+                },
+                "disableDepthTestDistance": {
+                    "description": "https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Double",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CzmlDoubleI"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "title": "disableDepthTestDistance"
+                }
+            }
+        },
+        "TimeChartContOutput": {
+            "title": "TimeChartContOutput",
+            "type": "object",
+            "properties": {
+                "activeLine": {
+                    "type": "number",
+                    "title": "activeLine"
+                },
+                "chartLines": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ChartLine"
+                    },
+                    "title": "chartLines"
+                },
+                "mouseX": {
+                    "type": "number",
+                    "title": "mouseX"
+                }
+            },
+            "required": [
+                "activeLine",
+                "chartLines"
+            ]
+        },
+        "ChartLine": {
+            "title": "ChartLine",
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string",
+                    "title": "label"
+                },
+                "linePoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ChartLinePoint"
+                    },
+                    "title": "linePoints"
+                }
+            },
+            "required": [
+                "label",
+                "linePoints"
+            ]
+        },
+        "ChartLinePoint": {
+            "title": "ChartLinePoint",
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "number",
+                    "title": "x"
+                },
+                "y": {
+                    "type": "number",
+                    "title": "y"
+                },
+                "data": {
+                    "title": "data"
+                },
+                "data_ref": {
+                    "title": "data_ref"
+                }
+            },
+            "required": [
+                "x",
+                "y"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

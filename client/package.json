@@ -10,7 +10,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "playground": "node --max_old_space_size=8192 node_modules/.bin/angular-playground"
+    "playground": "node --max_old_space_size=16384 node_modules/.bin/angular-playground"
   },
   "private": true,
   "dependencies": {
@@ -41,7 +41,7 @@
     "angular-split": "^2.0.1",
     "angular2-elastic-input": "^1.4.2",
     "bootstrap": "4.3.1",
-    "cesium": "^1.60.0",
+    "cesium": "^1.63.1",
     "color": "^3.1.2",
     "core-js": "^2.6.9",
     "d3": "^5.11.0",
@@ -78,7 +78,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.2",
     "@angular/language-service": "6.1.0",
-    "@types/cesium": "^1.59.0",
+    "@types/cesium": "^1.59.2",
     "@types/color": "^3.0.0",
     "@types/d3": "^5.7.2",
     "@types/file-saver": "^2.0.1",

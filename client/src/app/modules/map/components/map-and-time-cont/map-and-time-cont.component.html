@@ -1,0 +1,14 @@
+<p>map-and-time-cont works!</p>
+<div style="height: 500px;width: 800px;">
+  <gv-map-czml-layers [data$]="mapData$" [julianSecondOfCursor$]="julianSecondOfCursor$">
+  </gv-map-czml-layers>
+</div>
+
+<div style="height: 300px;width: 800px;">
+  <gv-timeline-chart *ngFor="let line$ of (chartLines$|async)" [data$]="line$" [showCursor]=true
+    (cursorChange)="onCursorChange($event)"></gv-timeline-chart>
+</div>
+
+<pre>
+  {{data$|async|json}}
+</pre>

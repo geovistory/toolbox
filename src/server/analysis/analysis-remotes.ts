@@ -1,8 +1,8 @@
 import { isValidTableInput, SysConfig } from '../../common';
 import { isValidTimeChartContInput } from '../../common/validators/time-chart-cont-input.validator';
 import { ErrorObj } from './analysis';
-import { AnalysisTable } from './table/table';
-import { AnalysisTimeChartCont } from './time-chart-cont/time-chart-cont';
+import { AnalysisTable } from './table';
+import { AnalysisTimeChartCont } from './time-chart-cont';
 import Ajv = require('ajv');
 
 /**

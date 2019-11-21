@@ -72,9 +72,9 @@ fromDir(__dirname, /.interface\.ts$/, function(hit) {
    * generates validator
    */
   const validatorScript = `
-  import Ajv = require('ajv');
+  import Ajv from 'ajv';
   const ajv = new Ajv();
-  import { ${interfaceName} } from '../interfaces/${hit.filenamerest}.interface.js';
+  import { ${interfaceName} } from '../interfaces/${hit.filenamerest}.interface';
   import schema from '../schemas/${hit.filenamerest}.schema.json'
 
   // Compile the JSON schema into a validation function

@@ -1,7 +1,7 @@
 
-  import Ajv = require('ajv');
+  import Ajv from 'ajv';
   const ajv = new Ajv();
-  import { TableQueryRes } from '../interfaces/table-query-res.interface.js';
+  import { TableQueryRes } from '../interfaces/table-query-res.interface';
   import schema from '../schemas/table-query-res.schema.json'
 
   // Compile the JSON schema into a validation function

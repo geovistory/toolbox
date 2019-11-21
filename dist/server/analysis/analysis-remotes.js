@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("../../common");
 const time_chart_cont_input_validator_1 = require("../../common/validators/time-chart-cont-input.validator");
-const table_1 = require("./table/table");
-const time_chart_cont_1 = require("./time-chart-cont/time-chart-cont");
+const table_1 = require("./table");
+const time_chart_cont_1 = require("./time-chart-cont");
 /**
  * This class handles remote methods for loopback.
  */

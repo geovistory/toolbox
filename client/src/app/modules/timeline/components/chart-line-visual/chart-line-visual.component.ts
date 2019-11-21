@@ -17,9 +17,13 @@ export interface ChartLineDefinitionConfig {
   scaleY: ScaleLinear<number, number>;
   marginTop?: number;
   marginLeft?: number;
+  marginBottom?: number;
   width?: number;
   height?: number;
+  showCursor?: boolean,
+  cursorRangeX?: number;
   labelFn: ChartLineXAxisValueLabel
+  cursorChangeFn: (rangeX: number) => void
 }
 export class ChartLineDefinition {
 

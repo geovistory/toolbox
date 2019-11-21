@@ -2,12 +2,12 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@
 import { ActiveProjectService, TimeSpan, U, WarEntityPreview, EntityPreview } from 'app/core';
 import { AcMapComponent, AcNotification, ActionType } from 'angular-cesium';
 import { CzmlPacketGenerator } from 'app/shared/classes/czml-packet-generator';
-import { CzmlPacket } from 'app/shared/classes/czml-types';
 import { getTemporalDistribution, TemporalDistribution } from 'app/shared/classes/statistic-helpers';
 import { values } from 'ramda';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QueryLayer } from '../map-visual/map-visual.component';
+import { CzmlPacket } from '../../../../../../../src/common/interfaces';
 
 export interface GeoPresence {
   time_span: TimeSpan,

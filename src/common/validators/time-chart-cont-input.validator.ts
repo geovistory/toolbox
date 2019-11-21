@@ -1,7 +1,7 @@
 
-  import Ajv = require('ajv');
+  import Ajv from 'ajv';
   const ajv = new Ajv();
-  import { TimeChartContInput } from '../interfaces/time-chart-cont-input.interface.js';
+  import { TimeChartContInput } from '../interfaces/time-chart-cont-input.interface';
   import schema from '../schemas/time-chart-cont-input.schema.json'
 
   // Compile the JSON schema into a validation function

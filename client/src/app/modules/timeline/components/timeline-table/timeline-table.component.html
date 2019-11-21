@@ -39,7 +39,7 @@
           <g class="x-axis x-axis-julian" [xAxisVisual]="timeline.xAxis"></g>
           <g class="x-axis x-axis-gregorian" [xAxisVisual]="timeline.xAxisGreg"></g>
           <g *ngIf="timeline && options.cursorPosition" [cursorHeaderVisual]="{
-            timeline: timeline,
+            scaleX: timeline.xAxis.scale,
             julianSecond: options.cursorPosition,
             bodyHeight: options.bodyHeight,
             headerHeight:  options.headerHeight
@@ -56,7 +56,7 @@
           <g class="row" [teEntVisual]="{row:row, timeline:timeline}"></g>
 
           <g *ngIf="timeline && options.cursorPosition" [cursorLineVisual]="{
-            timeline: timeline,
+            scaleX: timeline.xAxis.scale,
             julianSecond: options.cursorPosition,
             bodyHeight: options.rowHeight
           }"></g>

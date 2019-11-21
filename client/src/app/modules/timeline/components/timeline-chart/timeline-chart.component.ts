@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { GregorianDateTime, JulianDateTime } from 'app/core';
 import { DimensionChangeEvent } from 'app/shared/directives/dimension-change/dimension-change.directive';
 import { merge, Observable, Subject } from 'rxjs';
@@ -9,7 +9,12 @@ import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definitio
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';
 import { ChartLineDefinition, ChartLineXAxisValueLabel } from '../chart-line-visual/chart-line-visual.component';
-
+import { RangeChangeEvent } from '../../models/timeline';
+export interface CursorChangeEvent {
+  julianDay: number
+  julianSecond: number
+  rangePx: number
+}
 @Component({
   selector: 'gv-timeline-chart',
   templateUrl: './timeline-chart.component.html',
@@ -31,6 +36,9 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
 
   width: number;
   height: number;
+  marginTop = 30;
+  xAxisHeight = 20;
+
   xAxisJulian: XAxisDefinition
   xAxisGreg: XAxisDefinition
   yAxis: YAxisDefinition
@@ -39,6 +47,11 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
 
   // Observables that change the chart
   @Input() data$: Observable<ChartLineData>;
+  @Input() showCursor: boolean;
+  @Output() cursorChange = new EventEmitter<CursorChangeEvent>();
+
+  cursorDomainX: number;
+
   dimension$ = new Subject<DimensionChangeEvent>();
   beforeRedraw$ = new Subject<void>();
   constructor(
@@ -73,6 +86,8 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
             if (this.yMax < chartLinePoint.y) this.yMax = chartLinePoint.y;
           }
         }
+
+        if (this.cursorDomainX === undefined) this.cursorDomainX = this.xMin;
 
 
         this.zoomer.setExtent(this.xMin, this.xMax)
@@ -109,6 +124,11 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
     this.initXAxis()
     this.initYAxis()
     this.initChartLine()
+    this.cursorChange.emit({
+      julianSecond: Math.round(this.cursorDomainX),
+      julianDay: Math.round((this.cursorDomainX / 86400)),
+      rangePx: Math.round(this.xAxisJulian.scale(this.cursorDomainX))
+    })
     this.ref.detectChanges()
 
   }
@@ -117,7 +137,7 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
 
 
     const xAxisOptions: IXAxisDefinition = {
-      marginTop: this.height - 30,
+      marginTop: this.height - this.marginTop,
       marginLeft: 30,
       marginRight: 0,
       zoomer: this.zoomer,
@@ -150,7 +170,7 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
       domainStart: this.yMin,
       domainEnd: this.yMax,
       height: this.height,
-      marginTop: 30,
+      marginTop: this.marginTop,
       marginBottom: 30,
       marginLeft: 30,
       tickSizeInner: 5,
@@ -173,10 +193,14 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
       scaleX: this.xAxisJulian.scale,
       scaleY: this.yAxis.scale,
       marginLeft: 31,
-      marginTop: 15,
+      marginBottom: this.marginTop,
+      marginTop: 0,
       width: this.width - 31,
-      height: this.height - 30,
-      labelFn: getLabel
+      height: this.height,
+      showCursor: this.showCursor,
+      cursorRangeX: this.xAxisJulian.scale(this.cursorDomainX),
+      labelFn: getLabel,
+      cursorChangeFn: (x) => this.onChangeCursorPosition(x)
     })
 
     this.chartLine.change$
@@ -196,11 +220,16 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
     const rangeEnd = this.xAxisJulian.scale(this.zoomer.domainEnd)
     const s = this.xAxisJulian.scale.invert(rangeStart + rangeDiff);
     const e = this.xAxisJulian.scale.invert(rangeEnd + rangeDiff);
-    //
+
     // end is julian second of day 3500-01-01
     if ((rangeDiff < 0 && s > 0) || (rangeDiff > 0 && e < 2999409 * 86400)) {
       this.zoomer.domainStart = s;
       this.zoomer.domainEnd = e;
+
+      // set bounds to cursor
+      if (this.cursorDomainX < s) this.cursorDomainX = s;
+      else if (this.cursorDomainX > e) this.cursorDomainX = e;
+
       this.redraw()
     }
   }
@@ -211,5 +240,14 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
    */
   compareWith(optionVal, selectedVal) {
     return selectedVal !== null ? selectedVal === optionVal : -1 === optionVal;
+  }
+
+  onChangeCursorPosition(rangeX: number) {
+    this.cursorDomainX = this.xAxisJulian.scale.invert(rangeX)
+    this.cursorChange.emit({
+      julianSecond: Math.round(this.cursorDomainX),
+      julianDay: Math.round((this.cursorDomainX / 86400)),
+      rangePx: rangeX
+    })
   }
 }

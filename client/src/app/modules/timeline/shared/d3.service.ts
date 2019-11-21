@@ -181,9 +181,9 @@ export class D3Service {
     this.rectangle(element, timeline, options);
   }
 
-  placeCursorOnXAxis(element, timeline: Timeline, julianSecond: number) {
+  placeCursorOnXAxis(element, scaleX: d3.ScaleLinear<number, number>, julianSecond: number) {
     const d3element = d3.select(element);
-    const x = timeline.xAxis.scale(julianSecond);
+    const x = scaleX.invert(julianSecond);
     d3element.attr('transform', 'translate(' + x + ', 0)')
   }
 
@@ -362,7 +362,7 @@ export class D3Service {
       .attr('x', config.marginLeft)
       .attr('y', config.marginTop)
       .attr('width', config.width)
-      .attr('height', config.height);
+      .attr('height', config.height - config.marginTop);
 
     // create a container for other things
     d3element.selectAll('.line-chart-container').remove();
@@ -534,6 +534,48 @@ export class D3Service {
       def.onActiveLineClick(chartData.activeLine, inspectedLinePoint)
     })
 
+    if (config.showCursor) {
+      const cursorLine = containerG
+        .append('line')
+        .style('stroke', 'gray')
+        .style('pointer-events', 'none')
+        .attr('x1', config.cursorRangeX)
+        .attr('y1', config.marginTop - 30)
+        .attr('x2', config.cursorRangeX)
+        .attr('y2', config.height - config.marginBottom);
+      // creates cursor handle
+      const cursorHandle = containerG
+        .append('g')
+        .attr('transform', `translate(${config.cursorRangeX - 8},${config.height - config.marginBottom})`)
+      cursorHandle.append('path')
+        .attr('transform', `rotate(180,8,10)`)
+        .attr('d', 'M8,0c4.922,0,8,1.275,8,5.849c0,6.79-4.819,11.667-7.103,13.759C8.557,19.921,8.299,20,8,20s-0.557-0.079-0.897-0.392C4.819,17.517,0,12.639,0,5.849C0,1.275,3.078,0,8,0')
+
+      // make cursor draggable
+      const started = () => {
+        /** Preventing propagation of dragstart to parent elements */
+        d3.event.sourceEvent.stopPropagation();
+        let lastX = config.cursorRangeX;
+        function dragged() {
+          let x;
+          if (d3.event.x <= config.marginLeft) x = config.marginLeft
+          else if (d3.event.x >= config.width + config.marginLeft) x = config.width + config.marginLeft
+          else x = d3.event.x;
+          cursorHandle
+            .attr('transform', `translate(${x - 8},${config.height - config.marginBottom})`)
+          cursorLine
+            .attr('x1', x)
+            .attr('x2', x)
+
+          if (lastX !== x) {
+            config.cursorChangeFn(x);
+            lastX = x
+          }
+        }
+        d3.event.on('drag', dragged)
+      }
+      cursorHandle.call(d3.drag().on('start', started));
+    }
 
     const setInspector = (rangeX: number, domainX: number, linePoint: ChartLinePoint) => {
 

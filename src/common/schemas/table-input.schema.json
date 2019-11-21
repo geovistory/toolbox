@@ -129,6 +129,7 @@
             "class_label",
             "entity_label",
             "entity_preview",
+            "space_and_time_cont",
             "temporal_distribution",
             "type_label"
           ],
