@@ -1,0 +1,38 @@
+<mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
+  <mat-list-item>
+    <div class="mat-headline" mat-line> Path </div>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+</mat-list>
+
+
+<ng-container>
+  <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
+
+    <mat-list *ngIf="child.config?.data?.filter" class="mb-4">
+      <mat-list-item>
+        <div class="mat-headline" mat-line> Filter
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+
+
+    <div class="gv-full-with">
+
+
+      <gv-map-and-time-cont-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
+      </gv-map-and-time-cont-form-array>
+
+      <gv-map-and-time-cont-form-control *ngIf="child.factoryType ==='control'" [formControlFactory]="child"
+        class="left-col">
+      </gv-map-and-time-cont-form-control>
+
+      <ng-template *ngIf="child.factoryType ==='childFactory'" [cdkPortalOutlet]="child.portal" #outlet
+        (attached)="child.attached($event, outlet)"></ng-template>
+
+    </div>
+
+  </div>
+
+</ng-container>

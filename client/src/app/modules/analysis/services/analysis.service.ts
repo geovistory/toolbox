@@ -88,12 +88,14 @@ export class AnalysisService<I, O> {
         this.loading = false;
         // dialog.close();
       }, error => {
+        this.loading = false;
+
         // dialog.close();
         const d: ErrorDialogData = {
           title: 'Oops, something went wrong ...',
           subtitle: 'There was an error when creating the analysis. Sorry!',
           errorReport: {
-            title: error.title,
+            title: error.name,
             json: error.message
           }
         }
@@ -148,12 +150,14 @@ export class AnalysisService<I, O> {
               pkEntity$.next(data.items[0].pk_entity)
               // dialog.close();
             }, error => {
+              this.saving = false;
+
               // dialog.close();
               const errorDialogData: ErrorDialogData = {
                 title: 'Oops, something went wrong ...',
                 subtitle: 'There was an error when saving the analysis. Sorry!',
                 errorReport: {
-                  title: error.title,
+                  title: error.name,
                   json: error.message
                 }
               }
@@ -196,11 +200,13 @@ export class AnalysisService<I, O> {
               }
             }))
           }, error => {
+            this.saving = false;
+
             const errorDialogData: ErrorDialogData = {
               title: 'Oops, something went wrong ...',
               subtitle: 'There was an error when saving the analysis. Sorry!',
               errorReport: {
-                title: error.title,
+                title: error.name,
                 json: error.message
               }
             }
@@ -269,12 +275,14 @@ export class AnalysisService<I, O> {
                 })
                 // dialog.close();
               }, error => {
+                this.saving = false;
+
                 // dialog.close();
                 const errorDialogData: ErrorDialogData = {
                   title: 'Oops, something went wrong ...',
                   subtitle: 'There was an error when saving the analysis. Sorry!',
                   errorReport: {
-                    title: error.title,
+                    title: error.name,
                     json: error.message
                   }
                 }
@@ -331,11 +339,13 @@ export class AnalysisService<I, O> {
                   }
                 }))
               }, error => {
+                this.saving = false;
+
                 const errorDialogData: ErrorDialogData = {
                   title: 'Oops, something went wrong ...',
                   subtitle: 'There was an error when saving the analysis. Sorry!',
                   errorReport: {
-                    title: error.title,
+                    title: error.name,
                     json: error.message
                   }
                 }
@@ -385,12 +395,14 @@ export class AnalysisService<I, O> {
                 }))
 
               }, error => {
+                this.saving = false;
+
                 // dialog.close();
                 const errorDialogData: ErrorDialogData = {
                   title: 'Oops, something went wrong ...',
                   subtitle: 'There was an error when deleting the analysis. Sorry!',
                   errorReport: {
-                    title: error.title,
+                    title: error.name,
                     json: error.message
                   }
                 }

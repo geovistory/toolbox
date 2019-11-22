@@ -1,14 +1,15 @@
 import { Observable, of, Subject } from 'rxjs';
-import { ChartLine, CzmlDoubleValue, CzmlPacket, CzmlSpatialValue, MapAndTimeContInput, MapAndTimeContOutput, MapAndTimeContQueryRes, MapLayer, TimeCzmlValue, TimeChartContOutput } from '../../common/interfaces';
+import { MapAndTimeContInput, MapAndTimeContOutput, MapAndTimeContQueryRes } from '../../common/interfaces';
 import { isValidMapAndTimeContInput } from '../../common/validators/map-and-time-cont-input.validator';
 import { isValidMapAndTimeContOutput } from '../../common/validators/map-and-time-cont-output.validator';
 import { isValidMapAndTimeContQueryRes } from '../../common/validators/map-and-time-cont-query-res.validator';
 import { SqlBuilder } from '../query/sql-builder';
 import { Analysis, HookResult } from './analysis';
+import { SqlBuilderMapAndTime } from '../query/sql-builder-map-and-time';
 
 type Result = MapAndTimeContOutput;
 
-export class MapAndTimeCont extends Analysis<Result>   {
+export class AnalysisMapAndTimeCont extends Analysis<Result>   {
   result: Result | undefined;
 
   fullCount: number | undefined;
@@ -46,9 +47,20 @@ export class MapAndTimeCont extends Analysis<Result>   {
           }
         })
       }
+
       else {
         this.fullCount = parseInt(resultObjects[0].count, 10);
-        s$.next()
+        if (this.fullCount < 100) {
+          s$.next()
+        }
+        else {
+          s$.next({
+            error: {
+              name: `Too many results: ${this.fullCount} (max: 100)`,
+              message: `Tipp: Restrict the filter to Geographical Places or Built Works that have the properties you are looking for in the 'Path' (you defined below the filter).`
+            }
+          })
+        }
       }
     });
     return s$;
@@ -59,7 +71,7 @@ export class MapAndTimeCont extends Analysis<Result>   {
   produceResult(): Observable<HookResult<Result>> {
 
     const s$ = new Subject<HookResult<Result>>()
-    const q = new SqlBuilder().buildQuery(this.analysisDef.queryDefinition, this.pkProject)
+    const q = new SqlBuilderMapAndTime().buildQuery(this.analysisDef.queryDefinition, this.pkProject)
 
     this.connector.execute(q.sql, q.params, (err: any, resultObjects: MapAndTimeContQueryRes) => {
       if (err) {
@@ -80,7 +92,7 @@ export class MapAndTimeCont extends Analysis<Result>   {
           })
         }
         else if (v.validObj) {
-          this.result = mapAndTimeContQueryResToOutput(v.validObj)
+          this.result = v.validObj
           s$.next()
         } else {
           s$.next({
@@ -115,105 +127,3 @@ export class MapAndTimeCont extends Analysis<Result>   {
 
 }
 
-
-const tempValsToCesiumDouble = (temporalVals: TimeCzmlValue[]): CzmlDoubleValue[] => {
-  const v: any[] = [];
-  temporalVals.forEach(t => {
-    v.push(t.iso_x)
-    v.push(t.y)
-  })
-  return v
-}
-
-const createPoint = (id: string, pointColorRgba: number[], spatialVal: CzmlSpatialValue, temporalVals: TimeCzmlValue[]): CzmlPacket => {
-
-  return {
-    id,
-    point: {
-      color: {
-        rgba: [255, 255, 255, 128],
-        forwardExtrapolationType: 'HOLD',
-        backwardExtrapolationType: 'HOLD'
-      },
-      outlineColor: {
-        rgba: pointColorRgba
-      },
-      outlineWidth: 3,
-      pixelSize: {
-        backwardExtrapolationType: 'HOLD',
-        forwardExtrapolationType: 'HOLD',
-        number: tempValsToCesiumDouble(temporalVals)
-      }
-    },
-    // label: {
-    //   horizontalOrigin: { horizontalOrigin: 'LEFT' },
-    //   fillColor: {
-    //     rgba: [20, 20, 20, 255]
-    //   },
-    //   outlineColor: {
-    //     rgba: [255, 255, 255, 230]
-    //   },
-    //   outlineWidth: 2,
-    //   pixelOffset: {
-    //     cartesian2: [12, -16]
-    //   },
-    //   scaleByDistance: {
-    //     nearFarScalar: [150, 1, 15000000, 0.5]
-    //   },
-    //   text: 'A'
-    // },
-    position: {
-      cartographicDegrees: [
-        spatialVal.lat, spatialVal.long, 0
-      ]
-    },
-    availability: '0000-00-00T00:00:00Z/9999-12-31T24:00:00Z'
-  }
-}
-
-
-
-/**
- * Converts a MapAndTimeContQueryRes to a MapAndTimeContOutput
- * TODO
- */
-export function mapAndTimeContQueryResToOutput(queryRes: MapAndTimeContQueryRes): MapAndTimeContOutput {
-  const czml: CzmlPacket[] = [{
-    'id': 'document',
-    'name': 'CZML Point - Time Dynamic',
-    'version': '1.0'
-  }];
-  const chartLines: ChartLine[] = []
-  const data_lookups: { [key: string]: number[] }[] = []
-  let id = 1;
-  queryRes.forEach(item => {
-    item.geo_positions.forEach(position => {
-      const color = [255, 255, 255, 128]
-      const temporalVals = item.temporal_data.timeCzmlValues
-      const c = createPoint(('_' + id++), color, position, temporalVals)
-      czml.push(c);
-    })
-    const chartLine: ChartLine = {
-      label: item.geo_entity_preview.entity_label,
-      linePoints: item.temporal_data.timeLinePoints
-    }
-    chartLines.push(chartLine)
-    data_lookups.push(item.temporal_data.data_lookup)
-  })
-
-  const map: MapLayer = { czml }
-  const time: TimeChartContOutput = {
-    activeLine: 0,
-    chartLines
-  }
-  const out: MapAndTimeContOutput = {
-    layers: [
-      {
-        map,
-        time,
-        data_lookups
-      }
-    ]
-  }
-  return out;
-}

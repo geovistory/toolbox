@@ -30,6 +30,12 @@ import { TableFormService } from './table/table-form/table-form.service';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DialogCreateComponent } from './components/dialog-create/dialog-create.component';
 import { PassiveLinkModule } from 'app/shared';
+import { MapAndTimeContEditComponent } from './map-and-time-cont/map-and-time-cont-edit/map-and-time-cont-edit.component';
+import { MapAndTimeContFormComponent } from './map-and-time-cont/map-and-time-cont-form/map-and-time-cont-form.component';
+import { MapAndTimeContFormGroupComponent } from './map-and-time-cont/map-and-time-cont-form-group/map-and-time-cont-form-group.component';
+import { MapAndTimeContFormArrayComponent } from './map-and-time-cont/map-and-time-cont-form-array/map-and-time-cont-form-array.component';
+import { MapAndTimeContFormControlComponent } from './map-and-time-cont/map-and-time-cont-form-control/map-and-time-cont-form-control.component';
+import { MapModule } from '../map/map.module';
 
 
 const components = [
@@ -47,6 +53,12 @@ const components = [
   TableFormGroupComponent,
   TableFormArrayComponent,
   TableFormControlComponent,
+
+  MapAndTimeContEditComponent,
+  MapAndTimeContFormComponent,
+  MapAndTimeContFormGroupComponent,
+  MapAndTimeContFormArrayComponent,
+  MapAndTimeContFormControlComponent,
 
   DialogCreateComponent
 ]
@@ -76,12 +88,13 @@ const components = [
     ConfirmDialogModule,
     QueriesModule,
     ReactiveFormsModule,
-    TimelineModule,
     FormFactoryModule,
     PortalModule,
     AngularSplitModule,
     DragDropModule,
-    PassiveLinkModule
+    PassiveLinkModule,
+    TimelineModule,
+    MapModule
   ],
   exports: components,
   entryComponents: [

@@ -48,7 +48,17 @@ export class AnalysisListComponent implements OnInit, OnDestroy {
       }
     })
   }
-
+  newMapAndTimeCont() {
+    this.p.addTab<AnalysisTabData>({
+      active: true,
+      component: 'analysis-detail',
+      icon: 'analysis',
+      pathSegment: 'analysisDetails',
+      data: {
+        fkAnalysisType: SysConfig.PK_ANALYSIS_TYPE__MAP_TIME_CONT
+      }
+    })
+  }
 
   open(item: ProAnalysis) {
     this.p.addTab<AnalysisTabData>({

@@ -122,29 +122,20 @@
         "entity_label",
         "entity_type",
         "fk_project",
-        "pk_entity",
-        "time_span"
+        "pk_entity"
       ]
     },
     "CzmlSpatialValue": {
       "title": "CzmlSpatialValue",
       "type": "object",
       "properties": {
-        "to": {
-          "type": "number",
-          "title": "to"
-        },
-        "lat": {
-          "type": "number",
-          "title": "lat"
-        },
         "from": {
           "type": "number",
           "title": "from"
         },
-        "long": {
+        "to": {
           "type": "number",
-          "title": "long"
+          "title": "to"
         },
         "iso_to": {
           "type": "string",
@@ -153,15 +144,19 @@
         "iso_from": {
           "type": "string",
           "title": "iso_from"
+        },
+        "lat": {
+          "type": "number",
+          "title": "lat"
+        },
+        "long": {
+          "type": "number",
+          "title": "long"
         }
       },
       "required": [
-        "from",
-        "iso_from",
-        "iso_to",
         "lat",
-        "long",
-        "to"
+        "long"
       ]
     },
     "ChartLinePoint": {

@@ -52,4 +52,5 @@ export class SysConfig {
 
   static readonly PK_ANALYSIS_TYPE__TIME_CONT = 3331;
   static readonly PK_ANALYSIS_TYPE__TABLE = 3332;
+  static readonly PK_ANALYSIS_TYPE__MAP_TIME_CONT = 3333;
 }

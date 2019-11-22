@@ -150,6 +150,7 @@ export class QuillService {
   }
   createTextBlot = (registry: QuillEditorRegistryService) => {
     return class TextBlot extends OriginalTextBlot {
+      text;
       get editorService() {
         return registry.getService(this.scroll.domNode)
       }

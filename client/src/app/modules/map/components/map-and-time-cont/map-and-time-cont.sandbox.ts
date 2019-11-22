@@ -2,7 +2,7 @@ import { sandboxOf } from 'angular-playground';
 import { BehaviorSubject } from 'rxjs';
 import { MapModule } from '../../map.module';
 import { MapAndTimeContComponent } from './map-and-time-cont.component';
-import { data1 } from './map-and-time-cont.mock';
+import { queryResults1 } from './map-and-time-cont.mock';
 
 
 export default sandboxOf(MapAndTimeContComponent, {
@@ -11,13 +11,12 @@ export default sandboxOf(MapAndTimeContComponent, {
 })
   .add('MapAndTimeContComponent | Preset ', {
     context: {
-      data$: new BehaviorSubject(data1)
+      data$: new BehaviorSubject(queryResults1)
     },
     template: `
-        <div style="width:800px;height:400px; margin: 30px;">
+        <div style="width:800px; height:800px; border: 1px dashed red;" class="m-4 p-1">
 
-          <gv-map-and-time-cont [data$]="data$">
-          </gv-map-and-time-cont>
+          <gv-map-and-time-cont [data$]="data$"></gv-map-and-time-cont>
 
         </div>
 

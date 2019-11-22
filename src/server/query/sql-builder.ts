@@ -204,6 +204,7 @@ export class SqlBuilder {
       params: this.params,
     };
   }
+
   /**
    * if there is limit and offset provided, this function adds:
    * - a limit

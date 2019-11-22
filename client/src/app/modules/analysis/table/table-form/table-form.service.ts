@@ -167,22 +167,26 @@ export class TableFormService {
             mapValue: (x: string): string => x
           }
         },
-        {
-          childFactory: {
-            component: QueryPathFormComponent,
-            data: {
-              path: {
-                rootClasses$: this.rootClasses$,
-                initVal$: this.prependFirstQueryPathSegment(colDef.queryPath)
-              }
-            },
-            required: true,
-            getInjectData: (data) => data.path,
-            mapValue: (x: QueryPathSegment[]): QueryPathSegment[] => this.dropFirstQueryPathSegment(x)
-          }
-        },
+        this.queryPathChildConfig(colDef),
       ]
     }
+  }
+
+  queryPathChildConfig(colDef: Partial<ColDef>): TableFormNodeConfig {
+    return {
+      childFactory: {
+        component: QueryPathFormComponent,
+        data: {
+          path: {
+            rootClasses$: this.rootClasses$,
+            initVal$: this.prependFirstQueryPathSegment(colDef.queryPath)
+          }
+        },
+        required: true,
+        getInjectData: (data) => data.path,
+        mapValue: (x: QueryPathSegment[]): QueryPathSegment[] => this.dropFirstQueryPathSegment(x)
+      }
+    };
   }
 
   /**

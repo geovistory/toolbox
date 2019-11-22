@@ -80,7 +80,7 @@ tw5 As (
         -- for czml we need to remove a very little ms here to that the x vals stay unique
         commons.julian_second__to_iso_8601 (t1.x1 + 1) iso_x1,
         commons.julian_second__to_iso_8601 (t1.x2) iso_x2,
-        json_strip_nulls (json_agg(t2.pk_entity)) As data,
+        coalesce(json_agg(t2.pk_entity) Filter (Where t2.pk_entity Is Not Null), '[]') As data,
         count(t2.pk_entity)
     From
         tw4 t1

@@ -1,14 +1,13 @@
-<p>map-and-time-cont works!</p>
-<div style="height: 500px;width: 800px;">
-  <gv-map-czml-layers [data$]="mapData$" [julianSecondOfCursor$]="julianSecondOfCursor$">
-  </gv-map-czml-layers>
-</div>
+<as-split unit="pixel" class="gv-split-style" [direction]="'vertical'" gutterSize="1" [useTransition]="true">
 
-<div style="height: 300px;width: 800px;">
-  <gv-timeline-chart *ngFor="let line$ of (chartLines$|async)" [data$]="line$" [showCursor]=true
-    (cursorChange)="onCursorChange($event)"></gv-timeline-chart>
-</div>
+  <as-split-area [size]="'*'" class="map">
+    <gv-map-czml-layers [data$]="mapData$" [julianSecondOfCursor$]="julianSecondOfCursor$">
+    </gv-map-czml-layers>
+  </as-split-area>
 
-<pre>
-  {{data$|async|json}}
-</pre>
+  <as-split-area [size]="120" class="timeline">
+    <gv-timeline-chart *ngFor="let line$ of (chartLines$|async)" [data$]="line$" [showCursor]=true
+      (cursorChange)="onCursorChange($event)"></gv-timeline-chart>
+  </as-split-area>
+
+</as-split>

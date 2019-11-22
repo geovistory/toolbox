@@ -6,7 +6,8 @@ const map_and_time_cont_output_validator_1 = require("../../common/validators/ma
 const map_and_time_cont_query_res_validator_1 = require("../../common/validators/map-and-time-cont-query-res.validator");
 const sql_builder_1 = require("../query/sql-builder");
 const analysis_1 = require("./analysis");
-class MapAndTimeCont extends analysis_1.Analysis {
+const sql_builder_map_and_time_1 = require("../query/sql-builder-map-and-time");
+class AnalysisMapAndTimeCont extends analysis_1.Analysis {
     constructor(connector, pkProject, analysisDef) {
         super();
         this.connector = connector;
@@ -40,7 +41,17 @@ class MapAndTimeCont extends analysis_1.Analysis {
             }
             else {
                 this.fullCount = parseInt(resultObjects[0].count, 10);
-                s$.next();
+                if (this.fullCount < 100) {
+                    s$.next();
+                }
+                else {
+                    s$.next({
+                        error: {
+                            name: `Too many results: ${this.fullCount} (max: 100)`,
+                            message: `Tipp: Restrict the filter to Geographical Places or Built Works that have the properties you are looking for in the 'Path' (you defined below the filter).`
+                        }
+                    });
+                }
             }
         });
         return s$;
@@ -50,7 +61,7 @@ class MapAndTimeCont extends analysis_1.Analysis {
      */
     produceResult() {
         const s$ = new rxjs_1.Subject();
-        const q = new sql_builder_1.SqlBuilder().buildQuery(this.analysisDef.queryDefinition, this.pkProject);
+        const q = new sql_builder_map_and_time_1.SqlBuilderMapAndTime().buildQuery(this.analysisDef.queryDefinition, this.pkProject);
         this.connector.execute(q.sql, q.params, (err, resultObjects) => {
             if (err) {
                 s$.next({
@@ -70,7 +81,7 @@ class MapAndTimeCont extends analysis_1.Analysis {
                     });
                 }
                 else if (v.validObj) {
-                    this.result = mapAndTimeContQueryResToOutput(v.validObj);
+                    this.result = v.validObj;
                     s$.next();
                 }
                 else {
@@ -100,101 +111,5 @@ class MapAndTimeCont extends analysis_1.Analysis {
         }
     }
 }
-exports.MapAndTimeCont = MapAndTimeCont;
-const tempValsToCesiumDouble = (temporalVals) => {
-    const v = [];
-    temporalVals.forEach(t => {
-        v.push(t.iso_x);
-        v.push(t.y);
-    });
-    return v;
-};
-const createPoint = (id, pointColorRgba, spatialVal, temporalVals) => {
-    return {
-        id,
-        point: {
-            color: {
-                rgba: [255, 255, 255, 128],
-                forwardExtrapolationType: 'HOLD',
-                backwardExtrapolationType: 'HOLD'
-            },
-            outlineColor: {
-                rgba: pointColorRgba
-            },
-            outlineWidth: 3,
-            pixelSize: {
-                backwardExtrapolationType: 'HOLD',
-                forwardExtrapolationType: 'HOLD',
-                number: tempValsToCesiumDouble(temporalVals)
-            }
-        },
-        // label: {
-        //   horizontalOrigin: { horizontalOrigin: 'LEFT' },
-        //   fillColor: {
-        //     rgba: [20, 20, 20, 255]
-        //   },
-        //   outlineColor: {
-        //     rgba: [255, 255, 255, 230]
-        //   },
-        //   outlineWidth: 2,
-        //   pixelOffset: {
-        //     cartesian2: [12, -16]
-        //   },
-        //   scaleByDistance: {
-        //     nearFarScalar: [150, 1, 15000000, 0.5]
-        //   },
-        //   text: 'A'
-        // },
-        position: {
-            cartographicDegrees: [
-                spatialVal.lat, spatialVal.long, 0
-            ]
-        },
-        availability: '0000-00-00T00:00:00Z/9999-12-31T24:00:00Z'
-    };
-};
-/**
- * Converts a MapAndTimeContQueryRes to a MapAndTimeContOutput
- * TODO
- */
-function mapAndTimeContQueryResToOutput(queryRes) {
-    const czml = [{
-            'id': 'document',
-            'name': 'CZML Point - Time Dynamic',
-            'version': '1.0'
-        }];
-    const chartLines = [];
-    const data_lookups = [];
-    let id = 1;
-    queryRes.forEach(item => {
-        item.geo_positions.forEach(position => {
-            const color = [255, 255, 255, 128];
-            const temporalVals = item.temporal_data.timeCzmlValues;
-            const c = createPoint(('_' + id++), color, position, temporalVals);
-            czml.push(c);
-        });
-        const chartLine = {
-            label: item.geo_entity_preview.entity_label,
-            linePoints: item.temporal_data.timeLinePoints
-        };
-        chartLines.push(chartLine);
-        data_lookups.push(item.temporal_data.data_lookup);
-    });
-    const map = { czml };
-    const time = {
-        activeLine: 0,
-        chartLines
-    };
-    const out = {
-        layers: [
-            {
-                map,
-                time,
-                data_lookups
-            }
-        ]
-    };
-    return out;
-}
-exports.mapAndTimeContQueryResToOutput = mapAndTimeContQueryResToOutput;
+exports.AnalysisMapAndTimeCont = AnalysisMapAndTimeCont;
 //# sourceMappingURL=map-and-time-cont.js.map
