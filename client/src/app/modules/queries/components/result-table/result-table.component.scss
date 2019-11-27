@@ -1,4 +1,4 @@
-@import "../../../../shared/components/core-table/table";
+@import '../../../../shared/components/core-table/table';
 
 :host {
   display: block;
@@ -19,4 +19,8 @@ cdk-virtual-scroll-viewport {
 
 mat-progress-bar {
   position: absolute;
+}
+
+::ng-deep .ui-table table {
+  table-layout: auto;
 }

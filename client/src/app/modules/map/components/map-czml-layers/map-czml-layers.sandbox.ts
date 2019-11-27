@@ -2,7 +2,7 @@ import { ViewerConfiguration } from 'angular-cesium';
 import { sandboxOf } from 'angular-playground';
 import { clone } from 'ramda';
 import { BehaviorSubject } from 'rxjs';
-import { MapCzmlLayersComponent } from './map-czml-layers.component';
+import { MapCzmlLayersComponent, MapLayer } from './map-czml-layers.component';
 import { MapModule } from '../../map.module';
 import { CzmlPacket } from '../../../../../../../src/common/interfaces';
 import { data2 } from './map-czml-layers.mock';
@@ -76,12 +76,10 @@ const createPoint = (pointColorRgba: number[]): CzmlPacket => {
     //   text: 'A'
     // },
     position: {
-      cartographicDegrees: [
-        getIso(-1), randomCoordinate(), randomCoordinate(), 0,
-        getIso(20), randomCoordinate(), randomCoordinate(), 0,
-      ]
-    },
-    availability: earliest.toISOString() + '/' + latest.toISOString()
+      cartographicDegrees: [randomCoordinate(), randomCoordinate(), 0]
+    }
+    // ,
+    // availability: earliest.toISOString() + '/' + latest.toISOString()
   }
 }
 const createPoints = (n: number, pointColorRgba: number[]) => {
@@ -101,13 +99,8 @@ const createLayerCzmlDoc = (): CzmlPacket[] => {
   }, ...createPoints(nPoints, pointColorRgba)];
 }
 
-export interface MapLayers {
-  layers: MapLayer[]
-}
-export interface MapLayer {
-  czml: CzmlPacket[],
-}
-const data: MapLayers = {
+
+const data: { layers: MapLayer[] } = {
   layers: [
     {
       czml: createLayerCzmlDoc(),

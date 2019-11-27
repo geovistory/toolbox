@@ -11,6 +11,14 @@ export const queryResults1: MapAndTimeContQueryRes = [
         'iso_to': null,
         'lat': 6.93194,
         'long': 79.84778
+      },
+      {
+        'from': null,
+        'to': null,
+        'iso_from': null,
+        'iso_to': null,
+        'lat': 7,
+        'long': 80
       }
     ],
     'geo_entity_preview': {

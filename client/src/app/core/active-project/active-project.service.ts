@@ -28,6 +28,7 @@ import { SucceedActionMeta } from '../store/actions';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { CreateOrAddEntityEvent, ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProgressDialogData, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
+import { EntityPreviewsPaginatedDialogData, EntityPreviewsPaginatedDialogComponent } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
 
 
 

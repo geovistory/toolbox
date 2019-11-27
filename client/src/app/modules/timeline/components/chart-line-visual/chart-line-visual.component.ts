@@ -1,15 +1,22 @@
 import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { ScaleLinear } from 'd3';
 import { Subject } from 'rxjs';
-
-import { ChartLineData, ChartLine, ChartLinePoint } from '../../../../../../../src/common/interfaces'
+import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../src/common/interfaces';
 import { D3Service } from '../../shared/d3.service';
+
 
 export interface ActiveLineClickEvent {
   clickedLineIndex: number
   clickedLine: ChartLine
   clickedLinePoint: ChartLinePoint
 }
+export interface CursorValues {
+  rangeX: number
+  domainX: number
+  linePoint?: ChartLinePoint,
+  activeLine?: ChartLine
+}
+
 export type ChartLineXAxisValueLabel = (domainX: number, domainY?: number, linePoint?: ChartLinePoint, activeLine?: ChartLine) => string
 export interface ChartLineDefinitionConfig {
   data: ChartLineData;
@@ -22,8 +29,7 @@ export interface ChartLineDefinitionConfig {
   height?: number;
   showCursor?: boolean,
   cursorRangeX?: number;
-  labelFn: ChartLineXAxisValueLabel
-  cursorChangeFn: (rangeX: number) => void
+  cursorInfoFn: (cursorValues: CursorValues) => void
 }
 export class ChartLineDefinition {
 

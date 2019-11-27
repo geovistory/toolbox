@@ -38,7 +38,7 @@
     "@redux-utilities/reduce-reducers": "^0.1.5",
     "@types/geodesy": "^1.2.2",
     "angular-cesium": "0.0.59",
-    "angular-split": "^2.0.1",
+    "angular-split": "^3.0.2",
     "angular2-elastic-input": "^1.4.2",
     "bootstrap": "4.3.1",
     "cesium": "^1.63.1",
@@ -78,7 +78,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.803.19",
     "@angular/language-service": "8.2.14",
-    "@types/cesium": "^1.59.2",
+    "@types/cesium": "^1.59.3",
     "@types/color": "^3.0.0",
     "@types/d3": "^5.7.2",
     "@types/file-saver": "^2.0.1",

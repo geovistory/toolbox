@@ -1,4 +1,4 @@
-import { MapLayers } from './map-czml-layers.sandbox';
+import { MapLayers } from './map-czml-layers.component';
 
 export const data2: MapLayers = {
   layers: [
@@ -175,12 +175,11 @@ export const data2: MapLayers = {
         },
         'position': {
           'cartographicDegrees': [
-            6.93194,
             79.84778,
+            6.93194,
             0
           ]
-        },
-        'availability': '0001-03-07T23:59:59Z/2000-10-14T00:00:00Z'
+        }
       }]
     }
   ]

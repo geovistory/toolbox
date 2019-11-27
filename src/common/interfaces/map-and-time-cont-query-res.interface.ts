@@ -11,6 +11,7 @@ interface EntityPreview {
   class_label: string;
   type_label?: string;
   fk_type?: number;
+  fk_class?: number;
   time_span?: object
   entity_type: 'peIt' | 'teEn'
 }

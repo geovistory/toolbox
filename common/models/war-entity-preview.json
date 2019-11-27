@@ -95,7 +95,8 @@
       "permission": "ALLOW",
       "property": [
         "search",
-        "searchExisting"
+        "searchExisting",
+        "paginatedListByPks"
       ]
     },
     {
@@ -245,8 +246,7 @@
       }
     },
     "createAll": {
-      "accepts": [
-      ],
+      "accepts": [],
       "returns": {
         "arg": "data",
         "type": "string",
@@ -256,6 +256,58 @@
       "http": {
         "path": "/create-all",
         "verb": "get"
+      }
+    },
+    "paginatedListByPks": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "pkProject, if none provided, searches in repo",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntities",
+          "type": [
+            "number"
+          ],
+          "required": true,
+          "description": "Array of pkEntities",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": true,
+          "description": "Max. number of results per page [default=10; max=200]",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "offset",
+          "type": "number",
+          "required": true,
+          "description": "Offset",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Gets ordered and paginated list of entity previews for given pkEntities.",
+      "http": {
+        "path": "/paginated-list-by-pks",
+        "verb": "put"
       }
     }
   }

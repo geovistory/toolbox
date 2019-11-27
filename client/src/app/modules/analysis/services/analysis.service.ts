@@ -147,6 +147,7 @@ export class AnalysisService<I, O> {
                   msg: `Analysis has been saved. Name: '${data.items[0].name}'`
                 }
               }))
+              this.pkEntity = data.items[0].pk_entity;
               pkEntity$.next(data.items[0].pk_entity)
               // dialog.close();
             }, error => {
@@ -262,6 +263,7 @@ export class AnalysisService<I, O> {
                     msg: `Analysis has been saved. Name: '${data.items[0].name}'`
                   }
                 }))
+                this.pkEntity = data.items[0].pk_entity;
                 pkEntity$.next(data.items[0].pk_entity)
                 this.p.addTab<AnalysisTabData>({
                   active: true,

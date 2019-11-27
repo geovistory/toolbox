@@ -16,9 +16,12 @@ export default sandboxOf(MapAndTimeContComponent, {
     template: `
         <div style="width:800px; height:800px; border: 1px dashed red;" class="m-4 p-1">
 
-          <gv-map-and-time-cont [data$]="data$"></gv-map-and-time-cont>
+          <gv-map-and-time-cont #c [data$]="data$"></gv-map-and-time-cont>
 
         </div>
+
+        <button (click)="c.selectGeometriesOfEntity(206099)">Select geometries of entity 206099</button>
+        <button (click)="c.selectGeometriesOfEntity()">Deselect geometries</button>
 
         `
   })

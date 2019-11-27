@@ -102,6 +102,10 @@
           "type": "number",
           "title": "fk_type"
         },
+        "fk_class": {
+          "type": "number",
+          "title": "fk_class"
+        },
         "time_span": {
           "type": "object",
           "properties": {},

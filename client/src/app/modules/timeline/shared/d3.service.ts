@@ -4,7 +4,7 @@ import { U } from 'app/core';
 import * as d3 from 'd3';
 import { Observable } from 'rxjs';
 import { ChartLinePoint } from '../../../../../../src/common/interfaces';
-import { ChartLineDefinition } from '../components/chart-line-visual/chart-line-visual.component';
+import { ChartLineDefinition, CursorValues } from '../components/chart-line-visual/chart-line-visual.component';
 import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 import { RangeChangeEvent, Timeline, TimeLineData } from '../models/timeline';
 import { XAxisDefinition } from '../models/x-axis-definition';
@@ -451,7 +451,7 @@ export class D3Service {
     // Create mouseover stuff
 
     // Create function that retrieves the data point from chartData for given range value on x axis
-    const bi = d3.bisector<ChartLinePoint, any>(d => d.x).left;
+    const bi = d3.bisector<ChartLinePoint, any>(d => d.x).right;
     const bisect = (xDomain: number, linePoints: ChartLinePoint[]) => {
       const index = bi(linePoints, xDomain);
       const a: ChartLinePoint = linePoints[index - 1];
@@ -461,78 +461,21 @@ export class D3Service {
       return xDomain - a.y > b.y - xDomain ? b : a;
     };
 
-    let inspectedLinePoint: ChartLinePoint;
 
-
-    // creates vertical line that appears on mouse move or touch
-    // container.selectAll('line').remove();
-    const verticalLine = containerG
-      .append('line')
-      .style('stroke-width', 0)
-      .style('stroke', 'gray')
-      .style('pointer-events', 'none')
-      .attr('x1', 0)
-      .attr('y1', config.marginTop)
-      .attr('x2', 0)
-      .attr('y2', config.height);
-    const circleRadius = 12;
-    const circleG = containerG
-      .append('g')
-      .attr('class', 'circle-group')
-      .style('visibility', 'hidden');
-    const circleBg = circleG
-      .append('circle')
-      .style('stroke-width', 0)
-      .style('fill', '#64ffda')
-      .style('opacity', 1)
-      .style('cursor', 'pointer')
-      .attr('cx', 0)
-      .attr('cy', 0)
-      .attr('r', circleRadius);
-    const circleStroke = circleG
-      .append('circle')
-      .style('stroke-width', 1)
-      .attr('class', 'mat-stroke-accent')
-      .style('fill', 'none')
-      .attr('cx', 0)
-      .attr('cy', 0)
-      .attr('r', circleRadius);
-    const circleText = circleG
-      .append('text')
-      .style('pointer-events', 'none')
-      .attr('text-anchor', 'middle')
-      .attr('alignment-baseline', 'central')
-      .attr('class', 'mat-caption')
-
-    const xAxisHoverLabel = containerG
-      .append('text')
-      .attr('transform', `translate(${config.width},${config.marginTop + 10})`)
-      .style('pointer-events', 'none')
-      .attr('text-anchor', 'end')
-      .attr('alignment-baseline', 'central')
-      .attr('class', 'mat-caption')
-      .text('')
-
-    const activeLineLabel = containerG
-      .append('text')
-      .attr('transform', `translate(${config.marginLeft + 10},${config.marginTop + 10})`)
-      .style('pointer-events', 'none')
-      .style('font-size', '14px')
-      .attr('fill', 'steelblue')
-      .attr('text-anchor', 'start')
-      .attr('alignment-baseline', 'central')
-      .attr('class', 'mat-caption')
-      .text('')
-
-    circleBg.on('mouseenter', () => {
-      circleStroke.style('stroke', 'black')
-    })
-    circleBg.on('mouseleave', () => {
-      circleStroke.style('stroke', 'unset')
-    })
-    circleBg.on('click', function () {
-      def.onActiveLineClick(chartData.activeLine, inspectedLinePoint)
-    })
+    const updateCursorInfo = () => {
+      const domainX = scaleX.invert(config.cursorRangeX)
+      let linePoint: ChartLinePoint;
+      if (activeLine) {
+        linePoint = bisect(domainX, activeLine.linePoints);
+      }
+      const cursorI: CursorValues = {
+        rangeX: config.cursorRangeX,
+        domainX,
+        linePoint,
+        activeLine
+      }
+      def.config.cursorInfoFn(cursorI)
+    }
 
     if (config.showCursor) {
       const cursorLine = containerG
@@ -555,7 +498,7 @@ export class D3Service {
       const started = () => {
         /** Preventing propagation of dragstart to parent elements */
         d3.event.sourceEvent.stopPropagation();
-        let lastX = config.cursorRangeX;
+
         function dragged() {
           let x;
           if (d3.event.x <= config.marginLeft) x = config.marginLeft
@@ -567,78 +510,24 @@ export class D3Service {
             .attr('x1', x)
             .attr('x2', x)
 
-          if (lastX !== x) {
-            config.cursorChangeFn(x);
-            lastX = x
+          if (config.cursorRangeX !== x) {
+            // config.cursorChangeFn(x);
+            config.cursorRangeX = x
+            updateCursorInfo()
           }
         }
         d3.event.on('drag', dragged)
       }
       cursorHandle.call(d3.drag().on('start', started));
+
+      updateCursorInfo()
+
     }
 
-    const setInspector = (rangeX: number, domainX: number, linePoint: ChartLinePoint) => {
-
-      const rangeY = scaleY(linePoint.y);
-      verticalLine
-        .attr('x1', rangeX)
-        .attr('x2', rangeX)
-        .style('stroke-width', 1);
-      circleG
-        .attr('transform', `translate(${rangeX},${rangeY})`)
-        .style('visibility', 'visible');
-      circleText
-        .text(linePoint.y.toString())
-    }
-    const unsetInspector = () => {
-      verticalLine
-        .attr('x1', 0)
-        .attr('x2', 0)
-        .style('stroke-width', 0);
-      circleG
-        .attr('transform', `translate(${0},${0})`)
-        .style('visibility', 'hidden');
-      circleText
-        .text('')
-    }
-    const setXAxisHoverLabel = (domainX: number, domainY: number, linePoint: ChartLinePoint) => {
-      xAxisHoverLabel.text(def.config.labelFn(domainX, domainY, linePoint, activeLine))
-    }
-    const unsetXAxisHoverLabel = () => {
-      xAxisHoverLabel.text('')
-    }
-    const setActiveLineLabel = () => {
-      activeLineLabel.text(activeLine.label)
-    }
-
-    // add inspector on redraw
-    if (activeLine && def.config.data.mouseX) {
-      const domainX = scaleX.invert(def.config.data.mouseX)
-      const linePoint = bisect(domainX, activeLine.linePoints);
-      setInspector(def.config.data.mouseX, domainX, linePoint)
-    }
-    if (activeLine) {
-      setActiveLineLabel()
-    }
-    // registers event listener for mouse move or touch move
-    containerSvg.on('mousemove touchmove', function () {
-      const [mouseX, mouseY] = d3.mouse(this);
-      const domainX = scaleX.invert(mouseX)
-      const domainY = scaleX.invert(mouseX)
-      if (activeLine) {
-        inspectedLinePoint = bisect(domainX, activeLine.linePoints);
-        setInspector(mouseX, domainX, inspectedLinePoint)
-      }
-      setXAxisHoverLabel(domainX, domainY, inspectedLinePoint)
-    })
-
-    containerSvg.on('mouseleave touchend', function () {
-      unsetInspector()
-      unsetXAxisHoverLabel()
-    })
 
     containerSvg.on('click', function () {
       if (activeLine) {
+        // updateCursorInfo()
         def.deactivateLine()
       }
     })
