@@ -1,7 +1,7 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatIconModule, MatTableModule, MatSliderModule, MatSelectModule, MatFormFieldModule, MatDividerModule, MatMenuModule } from '@angular/material';
+import { MatButtonModule, MatIconModule, MatTableModule, MatSliderModule, MatSelectModule, MatFormFieldModule, MatDividerModule, MatMenuModule, MatCardModule } from '@angular/material';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CoreTableFilterModule } from 'app/shared/components/core-table/filter/filter.module';
 import { CoreTableMenuModule } from 'app/shared/components/core-table/menu/menu.module';
@@ -30,6 +30,7 @@ import { TimelineChartComponent } from './components/timeline-chart/timeline-cha
 import { ChartLineVisualComponent } from './components/chart-line-visual/chart-line-visual.component';
 import { YAxisComponent } from './components/y-axis/y-axis.component';
 import { ZoomSliderComponent } from './components/zoom-slider/zoom-slider.component';
+import { PassiveLinkModule } from 'app/shared';
 
 @NgModule({
   imports: [
@@ -48,8 +49,10 @@ import { ZoomSliderComponent } from './components/zoom-slider/zoom-slider.compon
     MatSelectModule,
     MatDividerModule,
     MatFormFieldModule,
+    MatCardModule,
     MatMenuModule,
-    EntityPreviewModule
+    EntityPreviewModule,
+    PassiveLinkModule
   ],
   declarations: [
     PointComponent,

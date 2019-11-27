@@ -15,7 +15,7 @@ export class CursorLineVisualComponent implements DoCheck {
   constructor(private d3Service: D3Service, private _element: ElementRef) { }
 
   ngDoCheck() {
-    this.d3Service.placeCursorOnXAxis(this._element.nativeElement, this.cursor.timeline, this.cursor.julianSecond);
+    this.d3Service.placeCursorOnXAxis(this._element.nativeElement, this.cursor.scaleX, this.cursor.julianSecond);
   }
 
 }

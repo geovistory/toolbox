@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("../../common");
 const time_chart_cont_input_validator_1 = require("../../common/validators/time-chart-cont-input.validator");
-const table_1 = require("./table/table");
-const time_chart_cont_1 = require("./time-chart-cont/time-chart-cont");
+const table_1 = require("./table");
+const time_chart_cont_1 = require("./time-chart-cont");
+const map_and_time_cont_1 = require("./map-and-time-cont");
+const map_and_time_cont_input_validator_1 = require("../../common/validators/map-and-time-cont-input.validator");
 /**
  * This class handles remote methods for loopback.
  */
@@ -16,6 +18,8 @@ class AnalysisRemotes {
      * @param fkAnalysisType
      */
     static getType(fkAnalysisType) {
+        if (fkAnalysisType === common_1.SysConfig.PK_ANALYSIS_TYPE__MAP_TIME_CONT)
+            return 'map-time-cont';
         if (fkAnalysisType === common_1.SysConfig.PK_ANALYSIS_TYPE__TIME_CONT)
             return 'time-chart-cont';
         if (fkAnalysisType === common_1.SysConfig.PK_ANALYSIS_TYPE__TABLE)
@@ -40,6 +44,9 @@ class AnalysisRemotes {
         else if ('table' === type) {
             return r(common_1.isValidTableInput(analysis.analysis_definition));
         }
+        else if ('map-time-cont' === type) {
+            return r(map_and_time_cont_input_validator_1.isValidMapAndTimeContInput(analysis.analysis_definition));
+        }
         return { name: 'Anaylsis type not found.' };
     }
     /**
@@ -55,6 +62,9 @@ class AnalysisRemotes {
         }
         else if ('table' === type) {
             return new table_1.AnalysisTable(this.connector, pkProject, analysisDef).run();
+        }
+        else if ('map-time-cont' === type) {
+            return new map_and_time_cont_1.AnalysisMapAndTimeCont(this.connector, pkProject, analysisDef).run();
         }
         return Error('Anaylsis type not found.');
     }

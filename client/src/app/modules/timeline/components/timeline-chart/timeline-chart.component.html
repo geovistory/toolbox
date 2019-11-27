@@ -1,11 +1,15 @@
 <div class="chart" gvDimensionChange (onDimensionsChange)="onDimensionsChange($event)">
 
   <svg [attr.width]="width" [attr.height]="height" draggableXAxis (onDrag)="onDrag($event)"
-    *ngIf="chartLine?.config?.data">
+    *ngIf="chartLine?.config?.data" #referenceEl>
     <g class="x-axis x-axis-julian" [xAxisVisual]="xAxisJulian"></g>
     <g class="x-axis x-axis-gregorian" [xAxisVisual]="xAxisGreg"></g>
     <g [yAxisVisual]="yAxis"></g>
     <g [chartLineVisual]="chartLine"></g>
+    <!-- <rect [attr.width]="width" [attr.height]="20" [rangeEmitterOnMouseDown]="referenceEl"
+      [attr.transform]="'translate(0,'+ (height-marginTop) +')'" [attr.fill]="'blue'" opacity="0"
+      (onRangeChange)="onChangeCursorPosition($event)"></rect> -->
+
   </svg>
 
   <div class="toolbar-menu" *ngIf="width < 450 && chartLine?.config?.data">
@@ -42,7 +46,6 @@
   <span class="mat-body mx-2">
     Active:
   </span>
-  <!-- <mat-form-field> -->
   <mat-select [value]="chartLine?.config?.data.activeLine" [compareWith]="compareWith"
     [ngClass]="{'empty-select': !chartLine?.config?.data.activeLine}"
     (selectionChange)="chartLine.activateLine($event.value)">
@@ -51,6 +54,68 @@
       {{item.label}}
     </mat-option>
   </mat-select>
-  <!-- </mat-form-field> -->
-  <mat-divider class="h-100 ml-2" [vertical]="true"></mat-divider>
+  <mat-divider class="h-100 mx-2" [vertical]="true"></mat-divider>
+
 </div>
+
+<!--
+<div class="info-box mat-elevation-z3">
+  <div class="mat-h2">
+    Info
+  </div>
+  <div class="mat-caption mat-text-secondary">
+    Date
+  </div>
+  <p class="mat-body">
+    {{xInfo.label}}
+  </p>
+
+  <div class="mat-caption mat-text-secondary">
+    Active line
+  </div>
+  <p class="active-line-label">
+    {{chartLine?.config?.data?.chartLines[chartLine?.config?.data.activeLine]?.label}}
+  </p>
+  <div class="mat-caption mat-text-secondary" *ngIf="chartLine?.config?.data?.activeLine !== undefined">
+    Y-value of active line
+  </div>
+  <div class="y-axis-label" *ngIf="chartLine?.config?.data?.activeLine !== undefined">
+    {{yInfo.label}}
+  </div>
+</div> -->
+
+<mat-card class="info-box" *ngIf="showInfoBox">
+
+  <button class="close-btn" mat-icon-button (click)="showInfoBox=false; showInfoBtn=true">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <mat-card-subtitle>
+    Date
+  </mat-card-subtitle>
+  <mat-card-content>
+    {{cursorInfo.cursorDateLabel}}
+  </mat-card-content>
+  <mat-card-subtitle *ngIf="!cursorInfo.activeLine">
+    <i>Click a line to inspect</i>
+  </mat-card-subtitle>
+  <mat-card-subtitle *ngIf="cursorInfo.activeLine">
+    Active line
+  </mat-card-subtitle>
+  <mat-card-content *ngIf="cursorInfo.activeLine">
+    {{cursorInfo.activeLine?.label}}
+  </mat-card-content>
+  <mat-card-subtitle *ngIf="cursorInfo.activeLine">
+    Y-value of active line
+  </mat-card-subtitle>
+  <mat-card-content *ngIf="cursorInfo.activeLine">
+    {{cursorInfo.linePoint.y}} <a href class="ml-3 gv-passive-link" matTooltip="Show details"
+      (click)="onShowDetailsClick()"> show
+      details </a>
+  </mat-card-content>
+</mat-card>
+
+<button class="info-btn" [ngClass]="{'is-small': width < 450 }" mat-icon-button
+  (click)="showInfoBox=true; showInfoBtn=false" *ngIf="showInfoBtn">
+  <mat-icon>info</mat-icon>
+</button>

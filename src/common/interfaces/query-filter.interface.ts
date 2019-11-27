@@ -17,7 +17,7 @@ export class QueryFilter {
   }
 }
 
-export type ColDefDefaultType = 'entity_preview' | 'entity_label' | 'class_label' | 'type_label' | 'temporal_distribution';
+export type ColDefDefaultType = 'entity_preview' | 'entity_label' | 'class_label' | 'type_label' | 'temporal_distribution' | 'space_and_time_cont';
 
 export interface ColDef {
   // has to be true on columns of the root table (the first entity_preview table)

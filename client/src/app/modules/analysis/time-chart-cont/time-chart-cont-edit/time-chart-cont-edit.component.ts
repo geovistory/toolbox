@@ -6,9 +6,11 @@ import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.se
 import { values } from 'ramda';
 import { BehaviorSubject, Subject, of, Observable } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
-import { ChartLineData, TimeChartContInput, TimeChartContOutput } from '../../../../../../../src/common/interfaces';
+import { ChartLineData, TimeChartContInput, TimeChartContOutput, ChartLinePoint } from '../../../../../../../src/common/interfaces';
 import { AnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent } from '../time-chart-cont-form/time-chart-cont-form.component';
+import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
+import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
 
 @Component({
   selector: 'gv-time-chart-cont-edit',
@@ -42,7 +44,8 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
     private c: ConfigurationPipesService,
     public a: AnalysisService<TimeChartContInput, TimeChartContOutput>,
     private ts: TabLayoutService,
-    p: ActiveProjectService
+    p: ActiveProjectService,
+    private pagEntDialog: EntityPreviewsPaginatedDialogService
 
   ) {
     if (this.a.pkEntity) {
@@ -110,5 +113,17 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+  }
+
+  onShowDetailsClick($event: CursorInfo) {
+
+    this.pagEntDialog.open(
+      true,
+      $event.linePoint.data,
+      `${$event.linePoint.data.length} Entities available at ${$event.cursorDateLabel}`,
+      // [
+      //   `Selected date: ${$event.cursorDateLabel}`
+      // ]
+    )
   }
 }

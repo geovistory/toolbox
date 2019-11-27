@@ -5,6 +5,7 @@
   [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading">
   <ng-template pTemplate="header" let-columns>
     <tr>
+      <!-- <th style="width:0.1%; white-space: nowrap;">#</th> -->
       <th *ngFor="let col of columns">
         {{col}}
       </th>
@@ -15,8 +16,12 @@
       </th>
     </tr> -->
   </ng-template>
-  <ng-template pTemplate="body" let-rowData let-columns="columns">
+  <ng-template pTemplate="body" let-rowData let-index let-columns="columns">
     <tr style="height:48px">
+      <!-- <td style="width:0.1%; white-space: nowrap;">#
+        {{lazyLoadState?.first}}
+        {{index}}
+      </td> -->
       <td *ngFor="let col of colDefs">
         <span *ngIf="col.ofRootTable && col.defaultType === 'entity_preview'">
           <gv-entity-preview [preview]="rowData[col.id]" [dragEnabled]="false" [openTabOnClick]="true">

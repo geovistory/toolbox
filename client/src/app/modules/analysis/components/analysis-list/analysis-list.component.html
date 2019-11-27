@@ -10,13 +10,13 @@
         <mat-icon svgIcon="chart-bell-curve"></mat-icon>
         <span>Timeline (continuous)</span>
       </button>
-      <button mat-menu-item>
+      <!-- <button mat-menu-item>
         <mat-icon svgIcon="chart-bar"></mat-icon>
         <span>Timeline (by year)</span>
-      </button>
-      <button mat-menu-item>
+      </button> -->
+      <button mat-menu-item (click)="newMapAndTimeCont()">
         <mat-icon svgIcon="map-clock"></mat-icon>
-        <span>Map with timeline</span>
+        <span>Map with timeline (continuous)</span>
       </button>
     </mat-menu>
 
@@ -24,13 +24,10 @@
       Add
     </button>
   </div>
-
 </gv-list-drawer-header>
 
-
 <!-- Results count -->
-<div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)">
-</div>
+<div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)"></div>
 
 <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
 

@@ -138,6 +138,44 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
   }
 
   /**
+   * Gets ordered and paginated list of entity previews for given pkEntities.
+   *
+   * @param {number} pkProject pkProject, if none provided, searches in repo
+   *
+   * @param {number} limit Max. number of results per page [default=10; max=200]
+   *
+   * @param {number} offset Offset
+   *
+   * @param {object} data Request data.
+   *
+   *  - `pkEntities` – `{number}` - Array of pkEntities
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `WarEntityPreview` object.)
+   * </em>
+   */
+  public paginatedListByPks(pkProject: any, pkEntities: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/WarEntityPreviews/paginated-list-by-pks";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      pkEntities: pkEntities
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
+    if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `WarEntityPreview`.
    */

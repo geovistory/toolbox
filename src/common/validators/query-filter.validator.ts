@@ -1,7 +1,7 @@
 
-  import Ajv = require('ajv');
+  import Ajv from 'ajv';
   const ajv = new Ajv();
-  import { QueryFilter } from '../interfaces/query-filter.interface.js';
+  import { QueryFilter } from '../interfaces/query-filter.interface';
   import schema from '../schemas/query-filter.schema.json'
 
   // Compile the JSON schema into a validation function

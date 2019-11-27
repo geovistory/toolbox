@@ -210,26 +210,23 @@ class SqlBuilder {
                 }
             }
             else if (column.queryPath && column.queryPath.length) {
-                // create a select for the last segment in the queryPath
-                this.createColumnSelect(column.queryPath[column.queryPath.length - 1], column.id);
+                if (column.defaultType === 'space_and_time_cont') {
+                    this.selects.push(`commons.analysis__czml_and_temporal_distribution(
+                ${leftTableAlias}.pk_entity,
+                COALESCE( array_agg( ${column.id}.pk_entity ) FILTER ( WHERE ${column.id}.pk_entity IS NOT NULL ), ARRAY[]::integer[]  ),
+                ${fkProject}
+             ) as space_and_time_cont`);
+                }
+                else {
+                    // create a select for the last segment in the queryPath
+                    this.createColumnSelect(column.queryPath[column.queryPath.length - 1], column.id);
+                }
             }
         });
     }
     createColumnSelect(segment, columnLabel) {
         if (this.isRolesJoin(segment)) {
         }
-        //  else if (this.isGeoEntityJoin(segment)) {
-        //   this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
-        //             'pk_entity', ${segment._tableAlias}.pk_entity,
-        //             'entity_type', ${segment._tableAlias}.entity_type,
-        //             'entity_label', ${segment._tableAlias}.entity_label,
-        //             'class_label', ${segment._tableAlias}.class_label,
-        //             'type_label', ${segment._tableAlias}.type_label,
-        //             'time_span', ${segment._tableAlias}.time_span,
-        //             'presences', ${segment._tableAlias}.presences
-        //           )
-        //        ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnLabel}"`);
-        // }
         else if (this.isEntitesJoin(segment)) {
             this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
             'pk_entity', ${segment._tableAlias}.pk_entity,

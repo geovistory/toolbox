@@ -1,43 +1,41 @@
-'use strict'
+'use strict';
 
 var app = require('../../server/server');
 var _ = require('lodash');
-var logSql = require("../../server/scripts/log-deserialized-sql");
+var logSql = require('../../server/scripts/log-deserialized-sql');
 
-
-module.exports = function (WarEntityPreview) {
-
-  app.on('io-ready', (io) => {
-    io.of('/WarEntityPreview').on('connection', (socket) => {
-      console.log('new connection ' + socket.id)
+module.exports = function(WarEntityPreview) {
+  app.on('io-ready', io => {
+    io.of('/WarEntityPreview').on('connection', socket => {
+      console.log('new connection ' + socket.id);
 
       // Connection Cache
       const cache = {
         currentProjectPk: undefined, // the gevistory project
-        streamedPks: {} // the entityPreviews streamed
-      }
+        streamedPks: {}, // the entityPreviews streamed
+      };
 
       // Reset the set of streamed pks
       const resetStreamedPks = pkEntity => {
         cache.streamedPks = {};
-      }
+      };
 
       // Extend the set of streamed pks
       const extendStreamedPks = pkEntity => {
         cache.streamedPks[pkEntity] = true;
-      }
+      };
 
       // Manage the room (project) of the socket
       const safeJoin = newProjectPk => {
-        newProjectPk = newProjectPk.toString()
+        newProjectPk = newProjectPk.toString();
         if (newProjectPk !== cache.currentProjectPk) {
           socket.leave(cache.currentProjectPk);
 
-          console.log(socket.id + ' left project ' + cache.currentProjectPk)
+          console.log(socket.id + ' left project ' + cache.currentProjectPk);
 
           socket.join(newProjectPk);
 
-          console.log(socket.id + ' joined project ' + newProjectPk)
+          console.log(socket.id + ' joined project ' + newProjectPk);
 
           resetStreamedPks();
           cache.currentProjectPk = newProjectPk;
@@ -45,14 +43,22 @@ module.exports = function (WarEntityPreview) {
       };
 
       // emit entity preview
-      const emitPreview = (entityPreview) => {
+      const emitPreview = entityPreview => {
         socket.emit('entityPreview', entityPreview);
 
-        console.log(socket.id + ' emitted entityPreview: ' + entityPreview.pk_entity + ' ' + entityPreview.entity_label + ' for project ' + cache.currentProjectPk)
-      }
+        console.log(
+          socket.id +
+            ' emitted entityPreview: ' +
+            entityPreview.pk_entity +
+            ' ' +
+            entityPreview.entity_label +
+            ' for project ' +
+            cache.currentProjectPk
+        );
+      };
 
       // Get a entityPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks
-      socket.on('addToStrem', (data) => {
+      socket.on('addToStrem', data => {
         let { pk_project, pks } = data;
 
         if (!pk_project) return console.warn('Please provide a pk_project');
@@ -61,36 +67,64 @@ module.exports = function (WarEntityPreview) {
         safeJoin(pk_project);
 
         if (pks && pks.length) {
-
           // extend the object of streamed pks
           pks = pks.map(pk => pk.toString());
-          pks.forEach(pk => extendStreamedPks(pk))
+          pks.forEach(pk => extendStreamedPks(pk));
 
-          console.log('request for EntityPreviews ' + JSON.stringify(pks) + ' by project ' + cache.currentProjectPk)
+          console.log(
+            'request for EntityPreviews ' +
+              JSON.stringify(pks) +
+              ' by project ' +
+              cache.currentProjectPk
+          );
 
           // Query the entityPreview in DB
-          WarEntityPreview.findComplex({ where: ['fk_project', '=', pk_project, 'AND', 'pk_entity', 'IN', pks] }, (err, projectItems) => {
+          WarEntityPreview.findComplex(
+            {
+              where: [
+                'fk_project',
+                '=',
+                pk_project,
+                'AND',
+                'pk_entity',
+                'IN',
+                pks,
+              ],
+            },
+            (err, projectItems) => {
+              if (err) return new Error(err);
 
-            if (err) return new Error(err);
+              if (projectItems) {
+                // emit the ones found in Project
+                projectItems.forEach(item => emitPreview(item));
 
-            if (projectItems) {
-
-              // emit the ones found in Project
-              projectItems.forEach(item => emitPreview(item))
-
-              // query repo for the ones not (yet) in project
-              const notInProject = _.difference(pks, projectItems.map(item => item.pk_entity.toString()))
-              if (notInProject.length) {
-                WarEntityPreview.findComplex({ where: ['fk_project', 'IS NULL', 'AND', 'pk_entity', 'IN', notInProject] }, (err, repoItems) => {
-
-                  // emit the ones found in Repo
-                  if (repoItems) repoItems.forEach(item => emitPreview(item))
-
-                })
+                // query repo for the ones not (yet) in project
+                const notInProject = _.difference(
+                  pks,
+                  projectItems.map(item => item.pk_entity.toString())
+                );
+                if (notInProject.length) {
+                  WarEntityPreview.findComplex(
+                    {
+                      where: [
+                        'fk_project',
+                        'IS NULL',
+                        'AND',
+                        'pk_entity',
+                        'IN',
+                        notInProject,
+                      ],
+                    },
+                    (err, repoItems) => {
+                      // emit the ones found in Repo
+                      if (repoItems)
+                        repoItems.forEach(item => emitPreview(item));
+                    }
+                  );
+                }
               }
-
             }
-          })
+          );
         }
       });
 
@@ -100,45 +134,47 @@ module.exports = function (WarEntityPreview) {
           cache.streamedPks[entityPreview.pk_entity] &&
           entityPreview.fk_project == cache.currentProjectPk
         ) {
-          emitPreview(entityPreview)
+          emitPreview(entityPreview);
         }
-      })
+      });
 
       // As soon as the client closes the project
       socket.on('leaveProjectRoom', () => {
-
         // leave the room
-        socket.leave(cache.currentProjectPk)
+        socket.leave(cache.currentProjectPk);
 
-        console.log(socket.id + ' left project ' + cache.currentProjectPk)
+        console.log(socket.id + ' left project ' + cache.currentProjectPk);
 
         // reset cache
         cache.currentProjectPk = undefined;
-
-      })
+      });
 
       // As soon as the connection is closed
       socket.on('disconnect', () => {
-        console.log(socket.id + ' disconnected')
+        console.log(socket.id + ' disconnected');
 
         // Unsubscribe the db listener
-        streamSub.unsubscribe()
+        streamSub.unsubscribe();
+      });
+    });
+  });
 
-      })
-    })
-  })
-
-
-
-  WarEntityPreview.search = function (projectId, searchString, pkClasses, entityType, limit, page, cb) {
-
+  WarEntityPreview.search = function(
+    projectId,
+    searchString,
+    pkClasses,
+    entityType,
+    limit,
+    page,
+    cb
+  ) {
     // Check that limit does not exceed maximum
     if (limit > 200) {
       const err = {
-        'name': 'Max limit exceeded',
-        'status': 403,
-        'message': 'Max limit exceeded. The limit can not be bigger than 200.'
-      }
+        name: 'Max limit exceeded',
+        status: 403,
+        message: 'Max limit exceeded. The limit can not be bigger than 200.',
+      };
       cb(err);
     }
 
@@ -148,44 +184,46 @@ module.exports = function (WarEntityPreview) {
     var offset = limit * (page - 1);
 
     if (searchString) {
-      var queryString = searchString.trim(' ').split(' ').map(word => {
-        return word + ':*'
-      }).join(' & ');
+      var queryString = searchString
+        .trim(' ')
+        .split(' ')
+        .map(word => {
+          return word + ':*';
+        })
+        .join(' & ');
     } else {
       var queryString = '';
     }
 
-
-    var params = [
-      queryString,
-      limit,
-      offset
-    ];
+    var params = [queryString, limit, offset];
 
     // project filter
     let whereProject;
     if (projectId) {
-      params.push(projectId)
+      params.push(projectId);
       whereProject = 'AND fk_project = $' + params.length;
     } else {
       whereProject = 'AND fk_project IS NULL';
-    };
+    }
 
     // data unit type filter
     let whereEntityType = '';
     if (entityType) {
-      params.push(entityType)
+      params.push(entityType);
       whereEntityType = 'AND entity_type = $' + params.length;
-    };
+    }
 
     // class filter
     let pkClassParamNrs;
     if (pkClasses && pkClasses.length) {
-      pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + params.length + 1)).join(', ');
-      params = [...params, ...pkClasses]
+      pkClassParamNrs = pkClasses
+        .map((c, i) => '$' + (i + params.length + 1))
+        .join(', ');
+      params = [...params, ...pkClasses];
     }
 
-    var sql_stmt = `
+    var sql_stmt =
+      `
         select
         fk_project,
         pk_entity,
@@ -204,10 +242,16 @@ module.exports = function (WarEntityPreview) {
         from warehouse.entity_preview,
         to_tsquery($1) q
         WHERE 1=1
-        ` + (queryString === '' ? '' : 'AND ts_vector @@ q') + `
+        ` +
+      (queryString === '' ? '' : 'AND ts_vector @@ q') +
+      `
         ${whereProject}
         ${whereEntityType}
-        ` + ((pkClasses && pkClasses.length) ? `AND fk_class IN (${pkClassParamNrs})` : '') + `
+        ` +
+      (pkClasses && pkClasses.length
+        ? `AND fk_class IN (${pkClassParamNrs})`
+        : '') +
+      `
 
         ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
         LIMIT $2
@@ -220,9 +264,7 @@ module.exports = function (WarEntityPreview) {
     });
   };
 
-
-  WarEntityPreview.afterRemote('search', function (ctx, resultObjects, next) {
-
+  WarEntityPreview.afterRemote('search', function(ctx, resultObjects, next) {
     var totalCount = 0;
     if (resultObjects.length > 0) {
       totalCount = resultObjects[0].total_count;
@@ -234,38 +276,42 @@ module.exports = function (WarEntityPreview) {
       data = resultObjects.map(searchHit => {
         delete searchHit.total_count;
         return searchHit;
-      })
+      });
     }
 
     if (!ctx.res._headerSent) {
-
       ctx.res.set('X-Total-Count', totalCount);
 
       ctx.result = {
-        'totalCount': totalCount,
-        'data': data
-      }
+        totalCount: totalCount,
+        data: data,
+      };
       next();
-
     } else {
       next();
     }
-
   });
 
   /**
    * Search for existing entities.
    * If not found for the given project, the repo version is returned
    */
-  WarEntityPreview.searchExisting = function (pkProject, searchString, pkClasses, entityType, limit, page, cb) {
-
+  WarEntityPreview.searchExisting = function(
+    pkProject,
+    searchString,
+    pkClasses,
+    entityType,
+    limit,
+    page,
+    cb
+  ) {
     // Check that limit does not exceed maximum
     if (limit > 200) {
       const err = {
-        'name': 'Max limit exceeded',
-        'status': 403,
-        'message': 'Max limit exceeded. The limit can not be bigger than 200.'
-      }
+        name: 'Max limit exceeded',
+        status: 403,
+        message: 'Max limit exceeded. The limit can not be bigger than 200.',
+      };
       cb(err);
     }
 
@@ -275,13 +321,17 @@ module.exports = function (WarEntityPreview) {
     var offset = limit * (page - 1);
 
     if (searchString) {
-      var queryString = searchString.trim(' ').replace('\n', '').split(' ').map(word => {
-        return `'${word}':*`.toLowerCase()
-      }).join(' & ');
+      var queryString = searchString
+        .trim(' ')
+        .replace('\n', '')
+        .split(' ')
+        .map(word => {
+          return `'${word}':*`.toLowerCase();
+        })
+        .join(' & ');
     } else {
       var queryString = '';
     }
-
 
     var params = [];
 
@@ -291,24 +341,26 @@ module.exports = function (WarEntityPreview) {
     // data unit type filter
     let whereEntityType = '';
     if (entityType) {
-      params.push(entityType)
+      params.push(entityType);
       whereEntityType = 'AND entity_type = $' + params.length;
-    };
+    }
 
     // class filter
     let pkClassParamNrs;
     if (pkClasses && pkClasses.length) {
-      pkClassParamNrs = pkClasses.map((c, i) => '$' + (i + params.length + 1)).join(', ');
-      params = [...params, ...pkClasses]
+      pkClassParamNrs = pkClasses
+        .map((c, i) => '$' + (i + params.length + 1))
+        .join(', ');
+      params = [...params, ...pkClasses];
     }
 
-    const addParam = (val) => {
-      params.push(val)
-      return '$' + params.length
-    }
+    const addParam = val => {
+      params.push(val);
+      return '$' + params.length;
+    };
 
-
-    var sql_stmt = `
+    var sql_stmt =
+      `
       WITH
       -- filter the repo versions, add the fk_project of given project, if is_in_project
       -- this ensures we allways search in the full repo full-text (finds more)
@@ -332,9 +384,17 @@ module.exports = function (WarEntityPreview) {
           AND t2.fk_project = ${addParam(pkProject)}
           AND t2.is_in_project = true
         WHERE t1.fk_project IS NULL
-        ` + (queryString === '' ? '' : `AND t1.ts_vector @@ ${addParam(queryString)}::tsquery`) + `
+        ` +
+      (queryString === ''
+        ? ''
+        : `AND t1.ts_vector @@ ${addParam(queryString)}::tsquery`) +
+      `
         ${whereEntityType}
-        ` + ((pkClasses && pkClasses.length) ? `AND t1.fk_class IN (${pkClassParamNrs})` : '') + `
+        ` +
+      (pkClasses && pkClasses.length
+        ? `AND t1.fk_class IN (${pkClassParamNrs})`
+        : '') +
+      `
       ),
       tw2 AS (
         select
@@ -348,17 +408,27 @@ module.exports = function (WarEntityPreview) {
           t1.type_label,
           t1.fk_type,
           t1.time_span,
-          ts_headline(t1.full_text, ${addParam(queryString)}::tsquery) as full_text_headline,
-          ts_headline(t1.class_label, ${addParam(queryString)}::tsquery) as class_label_headline,
-          ts_headline(t1.entity_label, ${addParam(queryString)}::tsquery) as entity_label_headline,
-          ts_headline(t1.type_label, ${addParam(queryString)}::tsquery) as type_label_headline,
+          ts_headline(t1.full_text, ${addParam(
+            queryString
+          )}::tsquery) as full_text_headline,
+          ts_headline(t1.class_label, ${addParam(
+            queryString
+          )}::tsquery) as class_label_headline,
+          ts_headline(t1.entity_label, ${addParam(
+            queryString
+          )}::tsquery) as entity_label_headline,
+          ts_headline(t1.type_label, ${addParam(
+            queryString
+          )}::tsquery) as type_label_headline,
           ROW_NUMBER () OVER (
             PARTITION BY t1.pk_entity
             ORDER BY
               t1.project DESC
           ) as rank
         from  tw1 t1
-        ORDER BY ts_rank(ts_vector, ${addParam(queryString)}::tsquery) DESC, entity_label asc
+        ORDER BY ts_rank(ts_vector, ${addParam(
+          queryString
+        )}::tsquery) DESC, entity_label asc
       )
       SELECT
         tw2.fk_project,
@@ -401,8 +471,7 @@ module.exports = function (WarEntityPreview) {
         tw2.type_label_headline
       LIMIT ${addParam(limit)}
       OFFSET ${addParam(offset)};
-    `
-
+    `;
 
     //  sql_stmt = `
     //   SELECT $$ 'eins):*' & 'zweiss:*' $$::tsquery q;
@@ -411,16 +480,17 @@ module.exports = function (WarEntityPreview) {
 
     logSql(sql_stmt, params);
 
-
     const connector = WarEntityPreview.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
   };
 
-
-  WarEntityPreview.afterRemote('searchExisting', function (ctx, resultObjects, next) {
-
+  WarEntityPreview.afterRemote('searchExisting', function(
+    ctx,
+    resultObjects,
+    next
+  ) {
     var totalCount = 0;
     if (resultObjects.length > 0) {
       totalCount = resultObjects[0].total_count;
@@ -432,25 +502,21 @@ module.exports = function (WarEntityPreview) {
       data = resultObjects.map(searchHit => {
         delete searchHit.total_count;
         return searchHit;
-      })
+      });
     }
 
     if (!ctx.res._headerSent) {
-
       ctx.res.set('X-Total-Count', totalCount);
 
       ctx.result = {
-        'totalCount': totalCount,
-        'data': data
-      }
+        totalCount: totalCount,
+        data: data,
+      };
       next();
-
     } else {
       next();
     }
-
   });
-
 
   /**
    * Internal function to create the include property of
@@ -467,87 +533,144 @@ module.exports = function (WarEntityPreview) {
    * @param project {number}
    * @returns include object of findComplex filter
    */
-  WarEntityPreview.getTeEnIncludeObject = function (ofProject, pkProject) {
-
+  WarEntityPreview.getTeEnIncludeObject = function(ofProject, pkProject) {
     let projectJoin = {};
 
     // if a pkProject is provided, create the relation
     if (pkProject) {
       // get the join object. If ofProject is false, the join will be a left join.
       projectJoin = {
-        "entity_version_project_rels": WarEntityPreview.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
-      }
+        entity_version_project_rels: WarEntityPreview.app.models.ProInfoProjRel.getJoinObject(
+          ofProject,
+          pkProject
+        ),
+      };
     }
-
 
     return {
-      "te_roles": {
-        "$relation": {
-          "name": "te_roles",
-          "joinType": "inner join",
-          "orderBy": [{
-            "pk_entity": "asc"
-          }]
+      te_roles: {
+        $relation: {
+          name: 'te_roles',
+          joinType: 'inner join',
+          orderBy: [
+            {
+              pk_entity: 'asc',
+            },
+          ],
         },
         ...projectJoin,
-        "appellation": {
-          "$relation": {
-            "name": "appellation",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
+        appellation: {
+          $relation: {
+            name: 'appellation',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
+          },
         },
-        "language": {
-          "$relation": {
-            "name": "language",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
+        language: {
+          $relation: {
+            name: 'language',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
+          },
         },
-        "time_primitive": {
-          "$relation": {
-            "name": "time_primitive",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
+        time_primitive: {
+          $relation: {
+            name: 'time_primitive',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
+          },
         },
-        "place": {
-          "$relation": {
-            "name": "place",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
-        }
-      }
-    }
-  }
+        place: {
+          $relation: {
+            name: 'place',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
+          },
+        },
+      },
+    };
+  };
 
-
-  WarEntityPreview.createAll = function (cb) {
+  WarEntityPreview.createAll = function(cb) {
     const sql_stmt = `
       SELECT warehouse.entity_preview_non_recursive__refresh();
       SELECT warehouse.entity_preview__update_all();
-    `
+    `;
     const connector = WarEntityPreview.dataSource.connector;
 
-    var hrstart = process.hrtime()
+    var hrstart = process.hrtime();
 
     connector.execute(sql_stmt, [], (err, resultObjects) => {
       if (err) return cb(err);
 
       var hrend = process.hrtime(hrstart);
-      cb(null, `All entity previews have been updated. Time spent: ${hrend[0]}s ${parseInt(hrend[1] / 1000000)}ms`)
-
+      cb(
+        null,
+        `All entity previews have been updated. Time spent: ${
+          hrend[0]
+        }s ${parseInt(hrend[1] / 1000000)}ms`
+      );
     });
+  };
 
-  }
+  WarEntityPreview.paginatedListByPks = function(
+    pkProject,
+    pkEntities,
+    limit,
+    offset,
+    cb
+  ) {
+    if (!limit) limit = 10;
+    if (limit > 200) limit = 200;
+    if (!offset) offset = 0;
+    const params = [];
+    const addParam = param => {
+      params.push(param);
+      return '$' + params.length;
+    };
+    const sql_stmt = `
+      WITH tw1 AS (
+        SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+        FROM warehouse.entity_preview
+        WHERE pk_entity IN (${pkEntities.map(pk => addParam(pk)).join(',')})
+        AND fk_project = ${addParam(pkProject)}
+        UNION
+        SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+        FROM warehouse.entity_preview
+        WHERE pk_entity IN (${pkEntities.map(pk => addParam(pk)).join(',')})
+        AND fk_project IS NULL
+      ),
+      tw2 AS (
+        SELECT DISTINCT ON (pk_entity) *
+        FROM tw1
+      )
+      SELECT *
+      FROM tw2
+      ORDER BY entity_label, class_label
+      LIMIT ${addParam(limit)}
+      OFFSET ${addParam(offset)}
+    `;
+    const connector = WarEntityPreview.dataSource.connector;
 
-}
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) return cb(err);
+      cb(null, resultObjects);
+    });
+  };
+};

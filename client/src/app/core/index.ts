@@ -21,3 +21,4 @@ export * from './sdk/services/core';
 export * from './sdk/services/custom';
 export * from './active-project/active-project.models';
 export * from './state/models';
+export * from './cesium';

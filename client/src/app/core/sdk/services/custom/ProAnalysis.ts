@@ -5,7 +5,7 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter, } from '../../models/BaseModels';
+import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class ProAnalysisApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http, connection, models, auth, errorHandler);
+    super(http,  connection,  models, auth, errorHandler);
   }
 
   /**
@@ -54,7 +54,7 @@ export class ProAnalysisApi extends BaseLoopBackApi {
   public run(pkProject: any, analysisType: any, analysisDefinition: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/ProAnalyses/run";
+    "/ProAnalyses/run";
     let _routeParams: any = {};
     let _postBody: any = {
       analysisDefinition: analysisDefinition
@@ -87,7 +87,7 @@ export class ProAnalysisApi extends BaseLoopBackApi {
   public findPerIdAndVersionAndProject(pkProject: any, pkEntity: any = {}, version: any = {}, customHeaders?: Function): Observable<ProAnalysis[]> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/ProAnalyses/find-per-id-and-project";
+    "/ProAnalyses/find-per-id-and-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -96,7 +96,7 @@ export class ProAnalysisApi extends BaseLoopBackApi {
     if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<ProAnalysis>) =>
-      instances.map((instance: ProAnalysis) => new ProAnalysis(instance))
+        instances.map((instance: ProAnalysis) => new ProAnalysis(instance))
     ));
   }
 
@@ -121,7 +121,7 @@ export class ProAnalysisApi extends BaseLoopBackApi {
   public bulkUpsert(pkProject: any, data: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/ProAnalyses/bulk-upsert";
+    "/ProAnalyses/bulk-upsert";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -153,7 +153,7 @@ export class ProAnalysisApi extends BaseLoopBackApi {
   public bulkDelete(pks: any, pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/ProAnalyses/bulk-delete";
+    "/ProAnalyses/bulk-delete";
     let _routeParams: any = {};
     let _postBody: any = {
       pks: pks

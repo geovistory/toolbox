@@ -30,6 +30,7 @@ import 'hammerjs';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ChecklistControlModule } from 'app/shared/components/checklist-control/checklist-control.module';
+import { buildModuleUrl } from 'cesium';
 
 
 @NgModule()
@@ -83,7 +84,7 @@ PlaygroundModule
   });
 
 
-
+buildModuleUrl.setBaseUrl('/assets/cesium/')
 Cesium.buildModuleUrl.setBaseUrl('/assets/cesium/'); // If youre using Cesium version >= 1.42.0 add this line
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzODVhZjMzNC04ODE1LTRhZTYtYWMwMS0wOWZhZjUyYjQ1YTIiLCJpZCI6MTYyODgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NzAwOTE4NDR9.AKPArS_LoiwqgupddFnCqRoaq6IGA16MgzhSGZFlZ6c';
 

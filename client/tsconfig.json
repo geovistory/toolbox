@@ -12,6 +12,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "target": "es2015",
     "types": [
       "socket.io-client",

@@ -1,7 +1,7 @@
 
-  import Ajv = require('ajv');
+  import Ajv from 'ajv';
   const ajv = new Ajv();
-  import { TableInput } from '../interfaces/table-input.interface.js';
+  import { TableInput } from '../interfaces/table-input.interface';
   import schema from '../schemas/table-input.schema.json'
 
   // Compile the JSON schema into a validation function

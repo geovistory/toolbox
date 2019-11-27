@@ -17,6 +17,7 @@ import { DetailContentModule } from 'app/shared/components/detail-content/detail
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 import { MccColorPickerModule } from 'material-community-components';
+import { AngularCesiumModule, CesiumService } from '../../../../node_modules/angular-cesium';
 import { GvHelperComponentsModule } from '../../shared/components/gv-helper-components/gv-helper-components.module';
 import { TimelineModule } from '../timeline/timeline.module';
 import { MapBackgroundSettingsComponent } from './components/map-background-settings/map-background-settings.component';
@@ -30,8 +31,6 @@ import { VisualDetailAPIActions } from './containers/visual-detail/api/visual-de
 import { VisualDetailAPIEpics } from './containers/visual-detail/api/visual-detail.epics';
 import { VisualDetailComponent } from './containers/visual-detail/visual-detail.component';
 import { VisualListComponent } from './containers/visual-list/visual-list.component';
-import { AngularCesiumModule, CesiumService } from '../../../../node_modules/angular-cesium';
-import { MapLayerDynamicPointsComponent } from './components/map-layer-dynamic-points/map-layer-dynamic-points.component';
 
 const components = [
   VisualDetailComponent,
@@ -43,7 +42,7 @@ const components = [
   MapVisualDemoComponent,
   MapQueryLayerComponent,
   TimelineVisualComponent,
-  MapLayerDynamicPointsComponent
+
 ]
 
 @NgModule({

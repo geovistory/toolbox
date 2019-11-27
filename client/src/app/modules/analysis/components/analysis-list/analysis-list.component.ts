@@ -18,10 +18,10 @@ export class AnalysisListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.p.pro$.analysis.loadByIdAndVersion(pkProject, null, null)
+      this.items$ = this.p.pro$.analysis$.by_pk_entity$.all$.pipe(
+        map(all => values(all).filter(analysis => analysis.fk_project === pkProject))
+      )
     })
-    this.items$ = this.p.pro$.analysis$.by_pk_entity$.all$.pipe(
-      map(all => values(all))
-    )
   }
 
   newTimelineContinuous() {
@@ -48,7 +48,17 @@ export class AnalysisListComponent implements OnInit, OnDestroy {
       }
     })
   }
-
+  newMapAndTimeCont() {
+    this.p.addTab<AnalysisTabData>({
+      active: true,
+      component: 'analysis-detail',
+      icon: 'analysis',
+      pathSegment: 'analysisDetails',
+      data: {
+        fkAnalysisType: SysConfig.PK_ANALYSIS_TYPE__MAP_TIME_CONT
+      }
+    })
+  }
 
   open(item: ProAnalysis) {
     this.p.addTab<AnalysisTabData>({

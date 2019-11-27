@@ -61,6 +61,9 @@
         },
         "data": {
           "title": "data"
+        },
+        "data_ref": {
+          "title": "data_ref"
         }
       },
       "required": [
