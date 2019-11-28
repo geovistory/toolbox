@@ -8,6 +8,7 @@ import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from '
 import { MapAndTimeContInput } from '../../../../../../../src/common/interfaces';
 import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
+import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory
@@ -33,6 +34,7 @@ export class MapAndTimeContFormComponent implements OnInit, OnDestroy, FormFacto
 
   ngOnInit() {
     this.rootClasses$ = of(DfhConfig.CLASS_PKS_GEO_PE_IT)
+    this.t.rootClasses$ = this.rootClasses$;
 
     if (!this.initVal$) {
       const initVal: MapAndTimeContInput = {
@@ -86,12 +88,30 @@ export class MapAndTimeContFormComponent implements OnInit, OnDestroy, FormFacto
     } else if (n.array && n.array.data.root) {
 
       return this.initVal$.pipe(map(initVal => {
-        const x = this.t.queryDefinitionConfig(this.rootClasses$, of(initVal.queryDefinition.filter))
-        this.t.initPathSegments$ = this.t.selectedRootClasses$.pipe(map(classes => ([
-          { type: 'classes', data: { classes } }
-        ])))
-        return x.config
+
+        /**
+        * if the root classes are selected
+        */
+        if (initVal.queryDefinition && initVal.queryDefinition.filter) {
+
+          const x = this.t.queryDefinitionConfig(this.t.rootClasses$, of(initVal.queryDefinition.filter), initVal.queryDefinition.filter)
+          this.t.initPathSegments$ = this.t.selectedRootClasses$.pipe(map(classes => ([
+            { type: 'classes', data: { classes } }
+          ])))
+          return x.config
+        }
+
+        /**
+         * else, the root classes are not yet selected
+         */
+        else {
+          return [this.t.ctrlRootClassesConfig(this.t.rootClasses$, undefined, new BehaviorSubject(false))]
+        }
+
+
       }))
+
+
 
 
     }

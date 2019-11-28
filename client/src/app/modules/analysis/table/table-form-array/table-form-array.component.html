@@ -1,19 +1,48 @@
 <mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
   <mat-list-item>
-    <div class="mat-headline" mat-line> Columns
+    <div class="mat-headline" mat-line> Explore your entities
     </div>
-    <mat-menu #appMenu="matMenu">
-      <button mat-menu-item (click)="addPathColumn()">Custom Column</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="addDefaultColumn('entity_preview')">Entity Preview Column</button>
-      <button mat-menu-item (click)="addDefaultColumn('entity_label')">Entity Label Column</button>
-      <button mat-menu-item (click)="addDefaultColumn('class_label')">Class Label Column</button>
-      <button mat-menu-item (click)="addDefaultColumn('type_label')">Type Label Column</button>
+    <mat-menu #appMenu="matMenu" xPosition="before">
+
+      <button mat-menu-item [matMenuTriggerFor]="entityAttributes">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        Entity attributes
+      </button>
+      <button mat-menu-item (click)="addPathColumn()">
+        <mat-icon class="fa-rotate-90" svgIcon="transit-connection" color="primary"></mat-icon>
+        Path to related entities
+      </button>
     </mat-menu>
+
+    <mat-menu #entityAttributes="matMenu">
+      <button mat-menu-item (click)="addDefaultColumn('entity_preview')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('entity_preview')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('entity_label')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('entity_label')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('class_label')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('class_label')}}
+      </button>
+      <button mat-menu-item (click)="addDefaultColumn('type_label')">
+        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+        {{getLabelForDefaulType('type_label')}}
+      </button>
+    </mat-menu>
+
 
     <button class="ml-3" mat-flat-button color="primary" [matMenuTriggerFor]="appMenu">Add</button>
   </mat-list-item>
   <mat-divider></mat-divider>
+
+  <mat-list-item class="mat-text-secondary">
+    <div class="mat-text-secondary">
+      Add and configure columns of the resulting table.
+    </div>
+  </mat-list-item>
   <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
     <mat-error>
       Please add at least one colum
@@ -26,6 +55,8 @@
     </mat-hint>
   </mat-list-item>
 </mat-list>
+
+
 
 <ng-container *ngIf="formArrayFactory.config.data.columns">
   <!-- <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
@@ -56,8 +87,20 @@
       (opened)="panelOpenState = true" (closed)="panelOpenState = false">
       <mat-expansion-panel-header>
         <mat-panel-title cdkDragHandle>
-          <gv-col-def-title [colDef]="child.valueChanges$ | async"></gv-col-def-title>
+          <div class="d-flex align-items-center">
+            <mat-icon *ngIf="(child.valueChanges$ | async).defaultType" svgIcon="tag-outline" color="primary">
+            </mat-icon>
+            <mat-icon *ngIf="!(child.valueChanges$ | async).defaultType" class="fa-rotate-90"
+              svgIcon="transit-connection" color="primary"></mat-icon>
+
+            <div class="ml-3">
+              {{(child.valueChanges$ | async).label}}
+            </div>
+          </div>
         </mat-panel-title>
+        <mat-panel-description>
+          <span class="mat-caption"> {{child.valueChanges$ | async | coltype}}</span>
+        </mat-panel-description>
         <mat-panel-description
           *ngIf="(child.control.statusChanges | async )=== 'INVALID' && child.control.touched && !panelOpenState">
           <mat-error>
@@ -85,12 +128,38 @@
 <ng-container *ngIf="!formArrayFactory.config.data.columns">
   <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
 
+    <mat-list *ngIf="child.config?.data?.ctrlClasses" class="mb-4">
+      <mat-list-item>
+        <div class="mat-headline" mat-line *ngIf="!(child.config.disabled$ | async)">
+          Choose your entities
+        </div>
+        <div class="mat-headline" mat-line *ngIf="(child.config.disabled$ | async)"
+          [ngClass]="{'mat-text-secondary': (child.config.disabled$ | async)}">
+          Chosen entities
+        </div>
+        <button class="ml-3" mat-flat-button *ngIf="(child.config.disabled$ | async)"
+          (click)="removeQueryDefinition(child)">Revert</button>
+
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <!-- <mat-list-item class="mat-text-secondary" *ngIf="!(child.config.disabled$ | async)">
+        <div class="mat-text-secondary">
+          Select the classes and types you are interested in.
+        </div>
+      </mat-list-item> -->
+    </mat-list>
+
     <mat-list *ngIf="child.config?.data?.filter" class="mb-4">
       <mat-list-item>
-        <div class="mat-headline" mat-line> Filter
+        <div class="mat-headline" mat-line> Filter your entities
         </div>
       </mat-list-item>
       <mat-divider></mat-divider>
+      <mat-list-item class="mat-text-secondary">
+        <div class="mat-text-secondary">
+          Define, what conditions your entities must fulfill.
+        </div>
+      </mat-list-item>
     </mat-list>
 
     <div *ngIf="child.config?.data.columnLabel">
@@ -129,7 +198,17 @@
 
     </div>
 
-
+    <div *ngIf="child?.config?.data?.ctrlClasses">
+      <button mat-flat-button color="primary" *ngIf="!(child?.config?.disabled$|async) && child.control.valid"
+        class="mb-4" (click)="addQueryDefinition(child)">
+        Continue
+      </button>
+    </div>
+    <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+      <mat-error>
+        Please continue
+      </mat-error>
+    </mat-list-item>
 
   </div>
 

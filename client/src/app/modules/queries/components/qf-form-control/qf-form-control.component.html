@@ -1,6 +1,6 @@
 <mat-form-field *ngIf="config?.data.ctrlClasses" class="w-100" appearance="legacy">
   <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-class-and-type-select [formControl]="formControlFactory.control"
+  <gv-class-and-type-select [formControl]="formControlFactory.control" [disabled]="config?.disabled$ | async"
     [pkClasses$]="config?.data.ctrlClasses.pkClasses$" [required]="config?.required">
   </gv-class-and-type-select>
   <mat-error *ngIf="formControlFactory.control.hasError('classOrTypeRequired')">

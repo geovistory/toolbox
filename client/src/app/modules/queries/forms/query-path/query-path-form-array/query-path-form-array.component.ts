@@ -2,10 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { switchMap, map, first } from 'rxjs/operators';
+import { switchMap, map, first, mergeMap, shareReplay } from 'rxjs/operators';
 import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory, QueryPathFormControlData } from '../query-path-form/query-path-form.component';
 import { PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 import { QueryPathSegment } from '../../../../../../../../src/common/interfaces';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'gv-query-path-form-array',
@@ -49,13 +50,17 @@ export class QueryPathFormArrayComponent implements OnInit {
     const x = classesSegmentConfig(options$, disabled$)
     this.formArrayFactory.append(x.c)
   }
-  private getDisabled() {
+  private getDisabled(): BehaviorSubject<boolean> {
     const currentIndex = this.formArrayFactory.children.length + 1;
-    const disabled$ = this.formArrayFactory.childFactoryValues$.pipe(map(v => {
-      console.log(v.length, currentIndex)
-      return v.length > currentIndex
-    }));
-    return disabled$;
+    const b = new BehaviorSubject(false);
+    const disabled$ = this.formArrayFactory.childFactoryValues$.pipe(
+      map(v => {
+        console.log(v.length, currentIndex)
+        return v.length > currentIndex
+      }),
+    );
+    b.pipe(mergeMap(() => disabled$))
+    return b
   }
 
   addSegment() {

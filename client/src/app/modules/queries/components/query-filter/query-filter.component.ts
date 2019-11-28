@@ -43,6 +43,7 @@ export interface QfArrayProperties {
 export interface QfArrayClasses {
   pkClasses$?: Observable<number[]>
   initVal: FilterDefNode
+  disabled?: boolean
 }
 
 export interface QfArraySubgroup {
@@ -97,6 +98,7 @@ export type QfFormControlFactory = FormControlFactory<QfFormControlData>;
 export interface QueryFilterInjectData {
   rootClasses$?: Observable<number[]>
   initVal$: Observable<FilterDefinition>
+  disableRootCtrl?: boolean
 }
 
 
@@ -125,6 +127,8 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
   // set the classes in the root form control, users can select from.
   @Input() rootClasses$: Observable<number[]>
 
+  @Input() disableRootCtrl: boolean;
+
   constructor(
     private ff: FormFactoryService,
     private c: ConfigurationPipesService,
@@ -139,6 +143,9 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
       }
       if (injectedData.rootClasses$) {
         this.rootClasses$ = injectedData.rootClasses$
+      }
+      if (injectedData.disableRootCtrl) {
+        this.disableRootCtrl = injectedData.disableRootCtrl
       }
     }
   }
@@ -183,7 +190,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
           pkClasses$
         }
       }),
-      getChildNodeConfigs: this.getChildNodeConfigs
+      getChildNodeConfigs: (c) => this.getChildNodeConfigs(c)
     }
     this.ff.create(config, this.destroy$).pipe(
       first(), takeUntil(this.destroy$)
@@ -205,7 +212,11 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
     if (n.group) {
 
       const childConfigs: QfFormNodeConfig[] = [{
-        array: createArrayClassesNodeConfig(n.group.data.pkClasses$, n.group.data.initVal)
+        array: createArrayClassesNodeConfig(
+          n.group.data.pkClasses$,
+          n.group.data.initVal,
+          this.disableRootCtrl
+        )
       }]
       return new BehaviorSubject(childConfigs)
     } else if (n.array && n.array.data.arrayClasses) {
@@ -215,6 +226,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
           required: true,
           validators: [classOrTypeRequiredValidator()],
           placeholder: 'Select Classes and Types',
+          disabled$: new BehaviorSubject(n.array.data.arrayClasses.disabled),
           data: {
             ctrlClasses: {
               pkClasses$: n.array.data.arrayClasses.pkClasses$
@@ -377,13 +389,14 @@ export function createSubgroupNodeConfig(arraySubgroup: QfArraySubgroup, initVal
   return n;
 }
 
-function createArrayClassesNodeConfig(pkClasses$: Observable<number[]>, initVal: FilterDefNode): FormArrayConfig<QfFormArrayData> {
+function createArrayClassesNodeConfig(pkClasses$: Observable<number[]>, initVal: FilterDefNode, disabled?: boolean): FormArrayConfig<QfFormArrayData> {
   return {
     placeholder: '',
     data: {
       arrayClasses: {
         pkClasses$: pkClasses$,
-        initVal: initVal || { data: {}, children: [] }
+        initVal: initVal || { data: {}, children: [] },
+        disabled
       }
     },
     mapValue: (x) => {

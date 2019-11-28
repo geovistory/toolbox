@@ -179,9 +179,17 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
   append(c: FormNodeConfig<any, any, any, any>) {
     this.add(this.control.length, c)
   }
+
   /**
- * add control at first position of array
- */
+   * add control arrayat last position of array
+   */
+  appendMany(cs: FormNodeConfig<any, any, any, any>[]) {
+    cs.forEach(c => this.append(c))
+  }
+
+  /**
+   * add control at first position of array
+   */
   prepend(c: FormNodeConfig<any, any, any, any>) {
     this.add(0, c)
   }

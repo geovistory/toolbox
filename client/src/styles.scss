@@ -7,14 +7,14 @@
 * Bootstrap variables are customized in src/assets/scss/bootstrap-variables.scss
 */
 
-@import "src/assets/scss/bootstrap";
+@import 'src/assets/scss/bootstrap';
 $font-size-xs: 0.68rem;
 /**
 * Ngx easy table
 * Docs: https://ngx-easy-table.eu/#/styles
 */
 
-@import "src/assets/scss/ngx-easy-table";
+@import 'src/assets/scss/ngx-easy-table';
 /**
 * Components
 * Styles for one angular component or multiple angular components with
@@ -22,31 +22,31 @@ $font-size-xs: 0.68rem;
 */
 
 // Project List
-@import "src/assets/scss/components/_project_list";
+@import 'src/assets/scss/components/_project_list';
 // Project Dashboard
-@import "src/assets/scss/components/_project_dashboard";
+@import 'src/assets/scss/components/_project_dashboard';
 // List of Names or Additional Infos
-@import "src/assets/scss/components/_name_info_list";
+@import 'src/assets/scss/components/_name_info_list';
 // Name / Additional Info
-@import "src/assets/scss/components/_name_info";
+@import 'src/assets/scss/components/_name_info';
 // Name Part / Property Alternative
-@import "src/assets/scss/components/_namepart_infoproperty";
+@import 'src/assets/scss/components/_namepart_infoproperty';
 // Name Parts View
-@import "src/assets/scss/components/_name_parts_view";
+@import 'src/assets/scss/components/_name_parts_view';
 // Name Version
-@import "src/assets/scss/components/_name_version";
+@import 'src/assets/scss/components/_name_version';
 // Editor
-@import "src/assets/scss/components/_edit";
+@import 'src/assets/scss/components/_edit';
 // Project Entities
-@import "src/assets/scss/components/_project_entities";
+@import 'src/assets/scss/components/_project_entities';
 // Search hit
-@import "src/assets/scss/components/_search_hit";
+@import 'src/assets/scss/components/_search_hit';
 // Entity Add Modal
-@import "src/assets/scss/components/_entity_add_modal";
+@import 'src/assets/scss/components/_entity_add_modal';
 // Entity Add Modal
-@import "src/assets/scss/components/_version_modal";
+@import 'src/assets/scss/components/_version_modal';
 // Entity Add Modal
-@import "src/assets/scss/components/_appellation_label_editor";
+@import 'src/assets/scss/components/_appellation_label_editor';
 
 /**
 * Generic stuff
@@ -129,7 +129,7 @@ td.gv-ellipsis {
 }
 // generate .bg-gray-* classes
 @each $color, $value in $grays {
-  @include bg-variant(".bg-gray-#{$color}", $value);
+  @include bg-variant('.bg-gray-#{$color}', $value);
 }
 
 // generate btn-gray-* classes
@@ -162,7 +162,7 @@ td.gv-ellipsis {
 
 // generate text-gray-* classes
 @each $color, $value in $grays {
-  @include text-emphasis-variant(".text-gray-#{$color}", $value);
+  @include text-emphasis-variant('.text-gray-#{$color}', $value);
 }
 
 // generate .border-right* classes
@@ -340,7 +340,7 @@ $gv-color-selected: #00ffff;
 }
 
 .gv-highlight {
-  color: theme-color("success");
+  color: theme-color('success');
   font-weight: 600;
 }
 
@@ -391,7 +391,7 @@ $gv-color-selected: #00ffff;
   .dropdown-menu {
     margin: 0;
     border-top-right-radius: 0;
-    background-color: theme-color("secondary");
+    background-color: theme-color('secondary');
 
     .dropdown-item {
       color: $white;
@@ -401,7 +401,7 @@ $gv-color-selected: #00ffff;
     .dropdown-item:hover {
       color: $white;
       text-decoration: none;
-      background-color: darken(theme-color("secondary"), 10%);
+      background-color: darken(theme-color('secondary'), 10%);
     }
   }
 }
@@ -470,7 +470,7 @@ $gv-color-selected: #00ffff;
 }
 
 .gv-ul-sm {
-  color: theme-color("secondary");
+  color: theme-color('secondary');
   font-size: $font-size-sm;
   margin: 0;
   padding: 0;
@@ -482,7 +482,7 @@ $gv-color-selected: #00ffff;
 }
 
 .gv-li-inline::before {
-  content: "•";
+  content: '•';
   margin-right: 0.4rem;
 }
 
@@ -620,8 +620,8 @@ gv-property {
   margin: 0;
   padding: 0;
   z-index: 99998;
-  background-color: theme-color("info") !important;
-  color: theme-color("info") !important;
+  background-color: theme-color('info') !important;
+  color: theme-color('info') !important;
   box-shadow: 0 0 10px 0;
   height: 2px;
   opacity: 0;
@@ -1014,7 +1014,7 @@ gv-timeline-table {
   // }
 
   .separator-line {
-    stroke: theme-color("dark");
+    stroke: theme-color('dark');
   }
 
   .cover-rect {
@@ -1022,17 +1022,17 @@ gv-timeline-table {
   }
 
   .no-data-text {
-    fill: theme-color("secondary");
+    fill: theme-color('secondary');
     font-size: $font-size-sm;
   }
 
   .cursor-handle {
-    fill: theme-color("primary");
+    fill: theme-color('primary');
     stroke: $white; // fill-opacity: .8;
   }
 
   .cursor-line {
-    stroke: theme-color("primary");
+    stroke: theme-color('primary');
     stroke-width: 2;
   }
 
@@ -1139,7 +1139,7 @@ gv-timeline {
   // }
 
   .separator-line {
-    stroke: theme-color("dark");
+    stroke: theme-color('dark');
   }
 
   .cover-rect {
@@ -1147,17 +1147,17 @@ gv-timeline {
   }
 
   .no-data-text {
-    fill: theme-color("secondary");
+    fill: theme-color('secondary');
     font-size: $font-size-sm;
   }
 
   .cursor-handle {
-    fill: theme-color("primary");
+    fill: theme-color('primary');
     stroke: $white; // fill-opacity: .8;
   }
 
   .cursor-line {
-    stroke: theme-color("primary");
+    stroke: theme-color('primary');
     stroke-width: 2;
   }
 
@@ -1245,7 +1245,7 @@ gv-timeline.gv-timeline-dark {
   }
 
   .gv-open-path {
-    stroke: darken(theme-color("info"), 20%);
+    stroke: darken(theme-color('info'), 20%);
     fill: none;
   }
 
@@ -1256,16 +1256,16 @@ gv-timeline.gv-timeline-dark {
 
   .gv-closed-path.gv-inner,
   .gv-rectangle.gv-inner {
-    fill: lighten(theme-color("info"), 20%);
+    fill: lighten(theme-color('info'), 20%);
   }
 
   .gv-closed-path.gv-outer,
   .gv-rectangle.gv-outer {
-    fill: lighten(theme-color("info"), 50%);
+    fill: lighten(theme-color('info'), 50%);
   }
 
   .separator-line {
-    stroke: theme-color("dark");
+    stroke: theme-color('dark');
   }
 
   .cover-rect {
@@ -1273,17 +1273,17 @@ gv-timeline.gv-timeline-dark {
   }
 
   .no-data-text {
-    fill: theme-color("secondary");
+    fill: theme-color('secondary');
     font-size: $font-size-sm;
   }
 
   .cursor-handle {
-    fill: theme-color("primary");
+    fill: theme-color('primary');
     stroke: $white; // fill-opacity: .8;
   }
 
   .cursor-line {
-    stroke: theme-color("primary");
+    stroke: theme-color('primary');
     stroke-width: 2;
   }
 
@@ -1637,7 +1637,7 @@ ngx-table.sticky-header {
 
   .slider:before {
     position: absolute;
-    content: "";
+    content: '';
     height: 26px;
     width: 26px;
     left: 4px;
@@ -1906,12 +1906,12 @@ gv-qf-form-array {
 ** INCLUDE MATERIAL THEME
 ************************************************************************************/
 
-@import "~@angular/material/theming";
+@import '~@angular/material/theming';
 
 // Define a custom typography config that overrides the font-family as well as the
 // `headlines` and `body-1` levels.
 $gv-typography: mat-typography-config(
-  $font-family: $font-family-base
+  $font-family: $font-family-base,
 );
 
 // Plus imports for other components in your app.
@@ -1949,8 +1949,8 @@ $gv-mat-purple: (
     A100: $dark-primary-text,
     A200: $light-primary-text,
     A400: $light-primary-text,
-    A700: $light-primary-text
-  )
+    A700: $light-primary-text,
+  ),
 );
 $gv-mat-teal: (
   50: #dff6ed,
@@ -1981,8 +1981,8 @@ $gv-mat-teal: (
     A100: $dark-primary-text,
     A200: $dark-primary-text,
     A400: $dark-primary-text,
-    A700: $dark-primary-text
-  )
+    A700: $dark-primary-text,
+  ),
 );
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
@@ -2134,10 +2134,6 @@ mat-checkbox {
   }
 }
 
-.material-icons.md-18 {
-  font-size: 18px;
-}
-
 .gv-mat-icon-button-sm {
   width: 24px !important;
   height: 24px !important;
@@ -2160,13 +2156,35 @@ button:not(.mat-icon-button) {
     font-size: 20px !important;
   }
 }
+
+.mat-icon svg {
+  height: 24px;
+  width: 24px;
+}
 mat-icon {
   svg {
     overflow: unset;
     vertical-align: unset;
   }
 }
-
+mat-icon.mat-icon-sm,
+.material-icons.md-18 {
+  font-size: 18px;
+  svg {
+    height: 18px;
+    width: 18px;
+  }
+}
+/**
+* fix for inproper alignement
+* see: https://www.npmjs.com/package/@mdi/angular-material
+*/
+button.mat-menu-item {
+  line-height: 24px !important;
+}
+a.mat-menu-item > mat-icon {
+  margin-bottom: 14px;
+}
 .gv-btn-info {
   background: $white;
   @extend .border;
@@ -2206,20 +2224,6 @@ mat-icon {
 }
 
 /**
-* fix for inproper alignement
-* see: https://www.npmjs.com/package/@mdi/angular-material
-*/
-button.mat-menu-item {
-  line-height: 24px !important;
-}
-a.mat-menu-item > mat-icon {
-  margin-bottom: 14px;
-}
-.mat-icon svg {
-  height: 24px;
-  width: 24px;
-}
-/**
 * Styles for primeng table (virtual scroll table)
   */
 @mixin primeng-table-theme($theme) {
@@ -2227,7 +2231,7 @@ a.mat-menu-item > mat-icon {
   $foreground: map-get($theme, foreground);
 
   .ui-table {
-    background: mat-color($background, "card");
+    background: mat-color($background, 'card');
 
     .ui-table-thead {
       tr {

@@ -9,7 +9,7 @@ import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } fr
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { QueryPathSegment } from '../../../../../../../../src/common/interfaces';
 
@@ -59,7 +59,7 @@ export const rootConfig = (): QueryPathFormNodeConfig[] => ([{
  */
 export const classesSegmentConfig = (
   options$: Observable<number[]>,
-  disabled$: Observable<boolean>,
+  disabled$: BehaviorSubject<boolean>,
   initValue?: ClassAndTypeSelectModel
 ): {
   c: QueryPathFormNodeConfig,
@@ -96,7 +96,7 @@ export const classesSegmentConfig = (
  */
 export const propertiesSegmentConfig = (
   options$: Observable<PropertyOption[]>,
-  disabled$: Observable<boolean>,
+  disabled$: BehaviorSubject<boolean>,
   initValue?: PropertySelectModel
 ): {
   c: QueryPathFormNodeConfig,
@@ -195,7 +195,7 @@ export class QueryPathFormComponent implements OnInit, OnDestroy, FormFactoryCom
 
           const disabled = i == 0 || i < initValue.length - 1;
           if (segment.type === 'classes') {
-            const classesFn = classesSegmentConfig(cOptions$, of(disabled), {
+            const classesFn = classesSegmentConfig(cOptions$, new BehaviorSubject(disabled), {
               classes: segment.data.classes,
               types: segment.data.types
             })
@@ -204,7 +204,7 @@ export class QueryPathFormComponent implements OnInit, OnDestroy, FormFactoryCom
               switchMap((v: ClassAndTypeSelectModel) => this.i.pipePropertyOptionsFromClassesAndTypes(v))
             )
           } else if (segment.type === 'properties') {
-            const propsFn = propertiesSegmentConfig(pOptions$, of(disabled), {
+            const propsFn = propertiesSegmentConfig(pOptions$, new BehaviorSubject(disabled), {
               ingoingProperties: segment.data.ingoingProperties,
               outgoingProperties: segment.data.outgoingProperties
             })
