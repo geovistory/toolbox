@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { U } from 'app/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { FormGroupFactory } from '../core/form-group-factory';
 import { FormArrayFactory } from '../core/form-array-factory';
 import { FormControlFactory } from '../core/form-control-factory';
@@ -39,7 +39,7 @@ export interface FormControlConfig<M> {
   placeholder: string
   data: M // custom data depending on implementation
   required: boolean;
-  disabled$?: Observable<boolean>;
+  disabled$?: BehaviorSubject<boolean>;
   validators?: ValidatorFn[]
   initValue? // initial value of the control
 

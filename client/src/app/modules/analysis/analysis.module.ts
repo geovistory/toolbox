@@ -23,7 +23,7 @@ import { AngularSplitModule } from 'angular-split';
 import { AnalysisService } from './services/analysis.service';
 import { TableFormComponent } from './table/table-form/table-form.component';
 import { TableFormGroupComponent } from './table/table-form-group/table-form-group.component';
-import { TableFormArrayComponent } from './table/table-form-array/table-form-array.component';
+import { TableFormArrayComponent, ColtypePipe } from './table/table-form-array/table-form-array.component';
 import { TableFormControlComponent } from './table/table-form-control/table-form-control.component';
 import { TableEditComponent } from './table/table-edit/table-edit.component';
 import { TableFormService } from './table/table-form/table-form.service';
@@ -60,13 +60,15 @@ const components = [
   MapAndTimeContFormArrayComponent,
   MapAndTimeContFormControlComponent,
 
-  DialogCreateComponent
+  DialogCreateComponent,
+  ColtypePipe
 ]
 @NgModule({
   declarations: components,
   providers: [
     AnalysisService,
-    TableFormService
+    TableFormService,
+    ColtypePipe
   ],
   imports: [
     CommonModule,

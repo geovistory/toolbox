@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ValidationService } from 'app/core/validation/validation.service';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
-import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { FilterDefinition, QueryFilterComponent } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathFormComponent } from 'app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
 import { values } from 'd3';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TableInput, QueryPathSegment, ColDefDefaultType, ColDef, QueryFilter } from '../../../../../../../src/common/interfaces';
+import { ColDef, ColDefDefaultType, QueryFilter, QueryPathSegment, TableInput } from '../../../../../../../src/common/interfaces';
 import { TableFormNodeConfig } from './table-form.component';
 
 interface PathColumn {
@@ -46,16 +46,18 @@ export class TableFormService {
         root: true
       },
       placeholder: '',
-      mapValue: ([filter, columns]: [QueryFilter, ColDef[]]): TableInput => {
+      validators: [ValidationService.arrayLengthValidator(2, Number.POSITIVE_INFINITY)],
+      mapValue: ([rootClasses, columns, filter]: [ClassAndTypeSelectModel, ColDef[], QueryFilter]): TableInput => {
         return ({
           queryDefinition: {
+            columns,
             filter,
-            columns
           }
         });
       }
     }
   }]);
+
 
 
 
@@ -66,7 +68,7 @@ export class TableFormService {
    * - columns
    * @param rootClasses$ the classes that appear in the query filter root select dropdown
    */
-  queryDefinitionConfig = (rootClasses$: Observable<number[]>, initVal$: Observable<FilterDefinition>): {
+  queryDefinitionConfig = (rootClasses$: Observable<number[]>, initVal$: Observable<FilterDefinition>, initVal: FilterDefinition): {
     config: TableFormNodeConfig[],
     classAndTypeSelection$: Observable<ClassAndTypeSelectModel>
   } => {
@@ -74,23 +76,7 @@ export class TableFormService {
     return {
       classAndTypeSelection$,
       config: [
-        {
-          childFactory: {
-            component: QueryFilterComponent,
-            required: true,
-            data: {
-              filter: {
-                rootClasses$,
-                initVal$
-              }
-            },
-            getInjectData: (data) => data.filter,
-            mapValue: (x: FilterDefinition) => {
-              classAndTypeSelection$.next(x.data)
-              return x
-            }
-          }
-        },
+        this.ctrlRootClassesConfig(rootClasses$, initVal.data, new BehaviorSubject(true)),
         {
           array: {
             data: {
@@ -108,9 +94,50 @@ export class TableFormService {
             })
           }
         },
+        {
+          childFactory: {
+            component: QueryFilterComponent,
+            required: true,
+            data: {
+              filter: {
+                rootClasses$,
+                initVal$,
+                disableRootCtrl: true
+              }
+            },
+            getInjectData: (data) => data.filter,
+            mapValue: (x: FilterDefinition) => {
+              classAndTypeSelection$.next(x.data)
+              return x
+            }
+          }
+        },
+
       ]
     }
   }
+
+  /**
+ * Config of control for selecting the root classes
+ */
+  ctrlRootClassesConfig = (rootClasses$: Observable<number[]>, selectedRootClasses: ClassAndTypeSelectModel, disabled$: BehaviorSubject<boolean>): TableFormNodeConfig => {
+    return {
+      control: {
+        data: {
+          ctrlClasses: {
+            pkClasses$: rootClasses$,
+          },
+        },
+        disabled$,
+        validators: [classOrTypeRequiredValidator()],
+        initValue: selectedRootClasses,
+        placeholder: 'Select Classes / Types',
+        required: true,
+        mapValue: (x: string): string => x
+      }
+    }
+  }
+
 
   /**
    * Config of columns
@@ -218,5 +245,6 @@ export class TableFormService {
     const [first, ...rest] = segments
     return rest;
   }
+
 
 }

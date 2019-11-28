@@ -57,6 +57,8 @@ import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/conf
 import { DataModule } from '../data/data.module';
 import { ClassConfigModule } from '../class-config/class-config.module';
 import { AnalysisModule } from '../analysis/analysis.module';
+import { OntomeProfilesListComponent } from './components/ontome-profiles-list/ontome-profiles-list.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -101,7 +103,8 @@ import { AnalysisModule } from '../analysis/analysis.module';
     DetailContentModule,
     ConfirmDialogModule,
     LanguageSearchTypeaheadModule,
-    ClassConfigModule
+    ClassConfigModule,
+    HttpClientModule
   ],
   declarations: [
     ProjectCreateComponent,
@@ -119,7 +122,11 @@ import { AnalysisModule } from '../analysis/analysis.module';
     PanelBodyDirective,
     TabHandleComponent,
     SettingsListComponent,
-    OnActivateTabDirective
+    OnActivateTabDirective,
+    OntomeProfilesListComponent
+  ],
+  exports: [
+    OntomeProfilesListComponent
   ],
   providers: [
     ProjectsActions,

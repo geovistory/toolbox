@@ -57,6 +57,12 @@
         "/aster-proxy"
       ],
       "enabled": true
+    },
+    "./middleware/ontome-proxy": {
+      "paths": [
+        "/ontome-proxy"
+      ],
+      "enabled": true
     }
   },
   "files": {

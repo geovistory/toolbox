@@ -5,12 +5,14 @@ import { FormControlFactory } from 'app/modules/form-factory/core/form-control-f
 import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { QueryFilterInjectData } from 'app/modules/queries/components/query-filter/query-filter.component';
+import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { QueryFilterInjectData, CtrlClasses } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathInjectData } from 'app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { QueryDefinition, TableInput } from '../../../../../../../src/common/interfaces';
+import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
 
 
@@ -20,6 +22,7 @@ export interface TableFormGroupData {
 
 export interface TableFormControlData {
   columnLabel?: boolean,
+  ctrlClasses?: CtrlClasses
 }
 
 export interface TableFormChildData {
@@ -55,7 +58,12 @@ export class TableFormComponent implements OnInit, OnDestroy, FormFactoryCompone
     if (!this.initVal$) {
       const initVal: QueryDefinition = {
         filter: undefined,
-        columns: []
+        columns: [{
+          defaultType: 'entity_preview',
+          label: getLabelForDefaulType('entity_preview'),
+          ofRootTable: true,
+          id: 'col_0'
+        }]
       }
       this.initVal$ = new BehaviorSubject(initVal)
     }
@@ -95,11 +103,23 @@ export class TableFormComponent implements OnInit, OnDestroy, FormFactoryCompone
     } else if (n.array && n.array.data.root) {
 
       return this.initVal$.pipe(map(initVal => {
-        const x = this.t.queryDefinitionConfig(this.t.rootClasses$, of(initVal.filter))
-        this.t.initPathSegments$ = this.t.selectedRootClasses$.pipe(map(classes => ([
-          { type: 'classes', data: { classes } }
-        ])))
-        return x.config
+        /**
+         * if the root classes are selected
+         */
+        if (initVal.filter) {
+          const x = this.t.queryDefinitionConfig(this.t.rootClasses$, of(initVal.filter), initVal.filter)
+          this.t.initPathSegments$ = this.t.selectedRootClasses$.pipe(map(classes => ([
+            { type: 'classes', data: { classes } }
+          ])))
+          return x.config
+        }
+
+        /**
+         * else, the root classes are not yet selected
+         */
+        else {
+          return [this.t.ctrlRootClassesConfig(this.t.rootClasses$, undefined, new BehaviorSubject(false))]
+        }
       }))
 
 

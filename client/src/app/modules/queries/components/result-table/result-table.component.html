@@ -6,8 +6,14 @@
   <ng-template pTemplate="header" let-columns>
     <tr>
       <!-- <th style="width:0.1%; white-space: nowrap;">#</th> -->
-      <th *ngFor="let col of columns">
-        {{col}}
+      <th *ngFor="let col of colDefs">
+        <div class="d-flex">
+          <mat-icon *ngIf="col.defaultType" svgIcon="tag-outline" class="mat-text-secondary mat-icon-sm">
+          </mat-icon>
+          <mat-icon *ngIf="!col.defaultType" svgIcon="transit-connection"
+            class="mat-text-secondary mat-icon-sm fa-rotate-90"></mat-icon>
+          <span>{{col.label}}</span>
+        </div>
       </th>
     </tr>
     <mat-progress-bar mode="indeterminate" *ngIf="a.loading"> </mat-progress-bar>

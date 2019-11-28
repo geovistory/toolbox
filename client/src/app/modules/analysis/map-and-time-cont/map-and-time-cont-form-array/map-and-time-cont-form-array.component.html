@@ -1,4 +1,4 @@
-<mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
+<mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4 mb-5">
   <mat-list-item>
     <div class="mat-headline" mat-line> Path </div>
   </mat-list-item>
@@ -17,6 +17,27 @@
       <mat-divider></mat-divider>
     </mat-list>
 
+    <mat-list *ngIf="child.config?.data?.ctrlClasses" class="mb-4">
+      <mat-list-item>
+        <div class="mat-headline" mat-line *ngIf="!(child.config.disabled$ | async)">
+          Choose type of geographical entities
+        </div>
+        <div class="mat-headline" mat-line *ngIf="(child.config.disabled$ | async)"
+          [ngClass]="{'mat-text-secondary': (child.config.disabled$ | async)}">
+          Chosen geographical entities
+        </div>
+        <button class="ml-3" mat-flat-button *ngIf="(child.config.disabled$ | async)"
+          (click)="removeQueryDefinition(child)">Revert</button>
+
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <!-- <mat-list-item class="mat-text-secondary" *ngIf="!(child.config.disabled$ | async)">
+          <div class="mat-text-secondary">
+            Select the classes and types you are interested in.
+          </div>
+        </mat-list-item> -->
+    </mat-list>
+
 
     <div class="gv-full-with">
 
@@ -32,6 +53,19 @@
         (attached)="child.attached($event, outlet)"></ng-template>
 
     </div>
+
+    <div *ngIf="child?.config?.data?.ctrlClasses">
+      <button mat-flat-button color="primary" *ngIf="!(child?.config?.disabled$|async) && child.control.valid"
+        class="mb-4" (click)="addQueryDefinition(child)">
+        Continue
+      </button>
+    </div>
+    <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+      <mat-error>
+        Please continue
+      </mat-error>
+    </mat-list-item>
+
 
   </div>
 
