@@ -12,7 +12,6 @@ import { TableFormService } from '../../table/table-form/table-form.service';
   templateUrl: './map-and-time-cont-form-array.component.html',
   styleUrls: ['./map-and-time-cont-form-array.component.scss'],
   providers: [TableFormService]
-
 })
 export class MapAndTimeContFormArrayComponent implements OnInit {
   @Input() formArrayFactory: MapAndTimeContFormArrayFactory;

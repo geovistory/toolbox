@@ -10,8 +10,14 @@
     <i *ngIf="tab.icon =='source'" class="gv-icon gv-icon-source gv-source-color"></i>
     <i *ngIf="tab.icon =='query'" class="gv-icon gv-icon-query gv-query-color"></i>
     <i *ngIf="tab.icon =='visual'" class="gv-icon gv-icon-visual gv-visual-color"></i>
-    <i *ngIf="tab.icon =='analysis'" class="gv-icon gv-icon-visual gv-visual-color"></i>
     <i *ngIf="tab.icon =='settings'" class="fa fa-cogs gv-settings-color"></i>
+
+
+    <ng-container *ngIf="tab.icon =='analysis'">
+      <mat-icon class="mat-icon-sm gv-visual-color" [svgIcon]="tab?.data?.fkAnalysisType | analysisIcon">
+      </mat-icon>
+    </ng-container>
+
   </div>
   <div *ngIf="(loading$ | async )" class="icon">
     <span class="fa fa-pulse fa-spinner text-muted"></span>

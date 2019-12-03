@@ -36,6 +36,13 @@
           "title": "subgroup"
         },
         "operator": {
+          "enum": [
+            "AND",
+            "ENTITY_LABEL_CONTAINS",
+            "IS",
+            "IS NOT",
+            "OR"
+          ],
           "type": "string",
           "title": "operator"
         },
@@ -66,6 +73,10 @@
             "type": "number"
           },
           "title": "ingoingProperties"
+        },
+        "searchTerm": {
+          "type": "string",
+          "title": "searchTerm"
         }
       }
     }

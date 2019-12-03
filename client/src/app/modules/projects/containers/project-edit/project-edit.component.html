@@ -66,7 +66,7 @@
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
         <gv-query-list *ngIf="(p.list$ | async) === 'queries'"></gv-query-list>
         <gv-visual-list *ngIf="(p.list$ | async) === 'visuals'"></gv-visual-list>
-        <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'"></gv-analysis-list>
+        <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'" class="h-100 gv-flex-fh"></gv-analysis-list>
         <div *ngIf="(p.list$ | async) === 'stories'">
           <gv-list-drawer-header>
             <div title>Your Stories</div>

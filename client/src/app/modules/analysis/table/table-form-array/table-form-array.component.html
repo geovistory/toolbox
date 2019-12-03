@@ -1,9 +1,8 @@
 <mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
-  <mat-list-item>
+  <mat-list-item class="p-0">
     <div class="mat-headline" mat-line> Explore your entities
     </div>
     <mat-menu #appMenu="matMenu" xPosition="before">
-
       <button mat-menu-item [matMenuTriggerFor]="entityAttributes">
         <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
         Entity attributes
@@ -38,18 +37,20 @@
   </mat-list-item>
   <mat-divider></mat-divider>
 
-  <mat-list-item class="mat-text-secondary">
+  <mat-list-item class="p-0 mat-text-secondary">
     <div class="mat-text-secondary">
       Add and configure columns of the resulting table.
     </div>
   </mat-list-item>
-  <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+  <mat-list-item class="p-0"
+    *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
     <mat-error>
       Please add at least one colum
     </mat-error>
 
   </mat-list-item>
-  <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+  <mat-list-item class="p-0"
+    *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
     <mat-hint>
       A good starting point is 'Entity Preview Column'
     </mat-hint>
@@ -59,29 +60,6 @@
 
 
 <ng-container *ngIf="formArrayFactory.config.data.columns">
-  <!-- <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
-
-    <mat-card class="mb-3">
-      <mat-card-header>
-        <mat-card-title *ngIf="child.config.data?.colDef">
-          {{getLabelForDefaulType(child.config.data?.colDef.defaultType)}}
-        </mat-card-title>
-
-      </mat-card-header>
-      <mat-card-content>
-
-
-        <gv-table-form-array *ngIf="child.factoryType ==='array'" [formArrayFactory]="child" class="left-col">
-        </gv-table-form-array>
-
-
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button color="warn" (click)="removeColumn(i)">Remove column</button>
-      </mat-card-actions>
-    </mat-card>
-  </div> -->
-
   <mat-accordion cdkDropList (cdkDropListDropped)="columnDropped($event)">
     <mat-expansion-panel cdkDrag *ngFor="let child of formArrayFactory.children; let i = index;"
       (opened)="panelOpenState = true" (closed)="panelOpenState = false">
@@ -129,7 +107,7 @@
   <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
 
     <mat-list *ngIf="child.config?.data?.ctrlClasses" class="mb-4">
-      <mat-list-item>
+      <mat-list-item class="p-0">
         <div class="mat-headline" mat-line *ngIf="!(child.config.disabled$ | async)">
           Choose your entities
         </div>
@@ -150,12 +128,12 @@
     </mat-list>
 
     <mat-list *ngIf="child.config?.data?.filter" class="mb-4">
-      <mat-list-item>
+      <mat-list-item class="p-0">
         <div class="mat-headline" mat-line> Filter your entities
         </div>
       </mat-list-item>
       <mat-divider></mat-divider>
-      <mat-list-item class="mat-text-secondary">
+      <mat-list-item class="p-0 mat-text-secondary">
         <div class="mat-text-secondary">
           Define, what conditions your entities must fulfill.
         </div>
@@ -177,13 +155,6 @@
       </p>
     </div>
 
-    <!-- {{child.config?.data.type}}
-        {{formArrayFactory.config?.data.type}} -->
-
-    <!-- <div *ngIf="child.config?.data.type ==='columnLabel'" class="mat-headline pt-3">
-          Label of the col
-        </div> -->
-
     <div class="gv-full-with" *ngIf="!formArrayFactory.config.data.columns">
 
 
@@ -204,7 +175,8 @@
         Continue
       </button>
     </div>
-    <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    <mat-list-item class="p-0"
+      *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
       <mat-error>
         Please continue
       </mat-error>

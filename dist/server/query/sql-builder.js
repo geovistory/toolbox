@@ -267,84 +267,6 @@ class SqlBuilder {
                      ${this.createEntityWhere(node, thisTableAlias, fkProject)}
                 `);
     }
-    // joinGeoEntity(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
-    //   const has_presence = thisTableAlias + '_has_presence';
-    //   const presence = thisTableAlias + '_presence';
-    //   const was_at = thisTableAlias + '_was_at';
-    //   const place = thisTableAlias + '_place';
-    //   fromsArray.push(`
-    //           -- PEIT GEO ENTITY
-    //           LEFT JOIN (
-    //               SELECT
-    //               ${thisTableAlias}.*,
-    //               (
-    //                   SELECT jsonb_agg(${presence})
-    //                   -- ROLE P166 HAS PRESENCE
-    //                   FROM warehouse.v_roles_per_project_and_repo ${has_presence}
-    //                   -- E93 PRESENCE
-    //                   LEFT JOIN (
-    //                       SELECT ${presence}.pk_entity, ${presence}.fk_project, ${presence}.fk_class, ${presence}.time_span,
-    //                       (
-    //                           --SELECT COALESCE(
-    //                           --  json_agg(
-    //                           --      distinct jsonb_build_object(
-    //                           --        'lat',
-    //                           --        ${place}.lat,
-    //                           --        'long',
-    //                           --        ${place}.long
-    //                           --      )
-    //                           --  )
-    //                           --   FILTER ( WHERE ${place}.pk_entity IS NOT NULL ),
-    //                           --'[]'
-    //                           --) AS place
-    //                           SELECT
-    //                           jsonb_build_object(
-    //                             'lat',
-    //                             ${place}.lat,
-    //                             'long',
-    //                             ${place}.long
-    //                           ) place
-    //                           FROM
-    //                           -- ROLE P167 WAS AT
-    //                           warehouse.v_roles_per_project_and_repo ${was_at}
-    //                           -- PLACE
-    //                           JOIN information.v_place ${place} ON ${was_at}.fk_entity = ${place}.pk_entity
-    //                           WHERE ${was_at}.fk_project = ${this.addParam(
-    //     fkProject
-    //   )}
-    //                           AND ${presence}.pk_entity = ${was_at}.fk_temporal_entity
-    //                           AND ${was_at}.fk_property IN (${this.addParam(
-    //     this.PK_P167_WAS_AT
-    //   )}) -- ROLE P167 WAS AT
-    //                           LIMIT 1
-    //                       )  AS was_at
-    //                       FROM warehouse.entity_preview ${presence}
-    //                       WHERE ${presence}.fk_project = ${this.addParam(
-    //     fkProject
-    //   )}
-    //                       AND ${presence}.fk_class IS NOT NULL
-    //                       AND ${presence}.fk_class IN (${this.addParam(
-    //     this.PK_E93_PRESENCE
-    //   )}) -- E93 Presence
-    //                   ) AS ${presence} ON ${presence}.pk_entity = ${has_presence}.fk_temporal_entity
-    //                   WHERE ${has_presence}.fk_project = ${this.addParam(
-    //     fkProject
-    //   )}
-    //                   AND (
-    //                   (
-    //                       ${thisTableAlias}.pk_entity = ${has_presence}.fk_entity
-    //                       AND ${has_presence}.fk_property IN (${this.addParams(
-    //     this.P166_INHERITED_PKS
-    //   )})
-    //                   )
-    //                   )
-    //               ) as presences
-    //               FROM warehouse.entity_preview ${thisTableAlias}
-    //               WHERE ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
-    //               AND ${this.createEntityWhere(node, thisTableAlias, fkProject)}
-    //       ) AS ${thisTableAlias} ON ${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity
-    //       `);
-    // }
     joinRoles(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
         const topLevelWheres = [];
         topLevelWheres.push(`
@@ -412,6 +334,11 @@ class SqlBuilder {
                         ? 'IS NULL'
                         : 'IS NOT NULL'; // DEFAULT
                 nodeWheres.push(`${childNode._tableAlias}.fk_entity ${equals}`);
+            }
+            if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
+                const n = node;
+                console.log(n);
+                nodeWheres.push(`${childNode._tableAlias}.entity_label %iLike% ${this.addParam(childNode.data.searchTerm || '')}`);
             }
             if (childNodeWheres) {
                 let childrenSql;

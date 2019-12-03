@@ -653,13 +653,6 @@ ngb-pagination {
   }
 }
 
-.gv-icon-preview,
-.gv-icon-preview.fa {
-  // margin-right: 0.48rem;
-  // font-size: 1.8rem;
-  // color: #9d7ab3;
-}
-
 // data unit previews
 gv-entity-preview {
   display: inline-block;
@@ -2138,6 +2131,10 @@ mat-checkbox {
   width: 24px !important;
   height: 24px !important;
 
+  svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
   &::ng-deep .mat-button-wrapper {
     display: flex !important;
     align-items: center !important;
@@ -2316,4 +2313,8 @@ a.mat-menu-item > mat-icon {
 .custom-select.ng-touched.ng-valid {
   background: none;
   padding-right: inherit;
+}
+
+mat-list-item.p-0 .mat-list-item-content {
+  padding: 0 !important;
 }
