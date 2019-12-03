@@ -38,7 +38,7 @@ class SqlBuilder {
         this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`);
         this.froms.push(`tw1 ${rootTableAlias}`);
         // create froms and wheres according to filter definition
-        const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
+        const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
         this.createFilterWheres(filterWithAliases);
         // create froms and selects according to column definition
         const columnsWithAliases = this.createColumnsFroms(query.columns, rootTableAlias, fkProject);
@@ -98,7 +98,7 @@ class SqlBuilder {
         this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`);
         this.froms.push(`tw1 ${rootTableAlias}`);
         // create froms and wheres according to filter definition
-        const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
+        const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
         this.createFilterWheres(filterWithAliases);
         this.sql = `
       WITH tw1 AS (
@@ -240,8 +240,9 @@ class SqlBuilder {
        ) FILTER (WHERE ${segment._tableAlias}.pk_entity IS NOT NULL), '[]') AS "${columnLabel}"`);
         }
     }
-    createFilterFroms(node, leftTableAlias, fkProject, level = 0) {
-        const nodeWithAlias = Object.assign(Object.assign({}, node), { _tableAlias: this.addTableAlias() });
+    createFilterFroms(node, leftTableAlias, parentEntityTableAlias, fkProject, level = 0) {
+        let parEntTabAlias = parentEntityTableAlias;
+        const nodeWithAlias = Object.assign(Object.assign({}, node), { _tableAlias: this.addTableAlias(), _parentEntityTableAlias: parEntTabAlias });
         if (level > 0) {
             // JOIN roles
             if (this.isRolesJoin(nodeWithAlias)) {
@@ -251,11 +252,11 @@ class SqlBuilder {
             // JOIN entities
             else if (this.isEntitesJoin(nodeWithAlias)) {
                 this.joinEntities(nodeWithAlias, leftTableAlias, nodeWithAlias._tableAlias, fkProject, this.filterFroms);
-                leftTableAlias = nodeWithAlias._tableAlias;
+                parEntTabAlias = leftTableAlias = nodeWithAlias._tableAlias;
             }
         }
         const nestedNodeWithAlias = Object.assign(Object.assign({}, nodeWithAlias), { children: node.children.map(childNode => {
-                return this.createFilterFroms(childNode, leftTableAlias, fkProject, level + 1);
+                return this.createFilterFroms(childNode, leftTableAlias, parEntTabAlias, fkProject, level + 1);
             }) });
         return nestedNodeWithAlias;
     }
@@ -338,7 +339,7 @@ class SqlBuilder {
             if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
                 const n = node;
                 console.log(n);
-                nodeWheres.push(`${childNode._tableAlias}.entity_label %iLike% ${this.addParam(childNode.data.searchTerm || '')}`);
+                nodeWheres.push(`${childNode._parentEntityTableAlias}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm || ''}%`)}`);
             }
             if (childNodeWheres) {
                 let childrenSql;

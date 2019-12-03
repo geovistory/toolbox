@@ -11,8 +11,11 @@ interface NestedQueryNode extends QueryNode {
 }
 interface NestedQueryNodeWithAlias extends NestedQueryNode {
   _tableAlias: string
-  children: NestedQueryNodeWithAlias[]
 
+  // this keeps record of the next parent table that is joining entities
+  _parentEntityTableAlias: string;
+
+  children: NestedQueryNodeWithAlias[]
 }
 
 interface QueryNodeWithAlias extends QueryNode {
@@ -96,7 +99,7 @@ export class SqlBuilder {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
     this.createFilterWheres(filterWithAliases);
 
     // create froms and selects according to column definition
@@ -168,7 +171,7 @@ export class SqlBuilder {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
     this.createFilterWheres(filterWithAliases);
 
     this.sql = `
@@ -350,10 +353,13 @@ export class SqlBuilder {
     }
   }
 
-  createFilterFroms(node: NestedQueryNode, leftTableAlias: string, fkProject: number, level = 0): NestedQueryNodeWithAlias {
+  createFilterFroms(node: NestedQueryNode, leftTableAlias: string, parentEntityTableAlias: string, fkProject: number, level = 0): NestedQueryNodeWithAlias {
+    let parEntTabAlias = parentEntityTableAlias;
+
     const nodeWithAlias = {
       ...node,
-      _tableAlias: this.addTableAlias()
+      _tableAlias: this.addTableAlias(),
+      _parentEntityTableAlias: parEntTabAlias
     }
 
     if (level > 0) {
@@ -377,14 +383,15 @@ export class SqlBuilder {
           fkProject,
           this.filterFroms
         );
-        leftTableAlias = nodeWithAlias._tableAlias;
+        parEntTabAlias = leftTableAlias = nodeWithAlias._tableAlias;
+
       }
     }
 
     const nestedNodeWithAlias = {
       ...nodeWithAlias,
       children: node.children.map(childNode => {
-        return this.createFilterFroms(childNode, leftTableAlias, fkProject, level + 1);
+        return this.createFilterFroms(childNode, leftTableAlias, parEntTabAlias, fkProject, level + 1);
       })
     }
     return nestedNodeWithAlias
@@ -496,7 +503,7 @@ export class SqlBuilder {
 
         const n = node;
         console.log(n)
-        nodeWheres.push(`${childNode._tableAlias}.entity_label %iLike% ${this.addParam(childNode.data.searchTerm || '')}`);
+        nodeWheres.push(`${childNode._parentEntityTableAlias}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm || ''}%`)}`);
       }
 
       if (childNodeWheres) {

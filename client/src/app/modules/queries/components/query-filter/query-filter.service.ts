@@ -240,9 +240,9 @@ export class QueryFilterService {
           data: {
             ctrlCondition: {
               options: [
-                { value: 'ENTITY_LABEL_CONTAINS', label: 'label contains' },
-                { value: 'IS', label: 'has one of the properties' },
-                { value: 'IS NOT', label: 'has none of the properties' },
+                { value: 'ENTITY_LABEL_CONTAINS', label: 'Entity Label contains' },
+                { value: 'IS', label: 'Has one of the properties' },
+                { value: 'IS NOT', label: 'Has none of the properties' },
               ]
             }
           },

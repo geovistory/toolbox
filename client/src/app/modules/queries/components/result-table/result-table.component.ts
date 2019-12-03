@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService } from 'app/core';
 import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
@@ -46,7 +46,8 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    public a: AnalysisService<TableInput, TableOutput>
+    public a: AnalysisService<TableInput, TableOutput>,
+    private ref: ChangeDetectorRef
   ) {
 
   }
@@ -55,23 +56,27 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
       map(def => def.columns.map(colDef => colDef.label))
     );
 
+    let count = 0;
     this.a.results$.pipe(takeUntil(this.destroy$)).subscribe(res => {
       this.items = (res || { rows: [] }).rows;
+
+      // Hack for updating height of table on first load
+      if (res && count === 0) {
+        setTimeout(() => { this.ref.detectChanges() }, 100)
+        count++;
+      }
     })
 
   }
 
   ngAfterViewInit() {
-    // let count = 0;
     this.definition$.pipe(takeUntil(this.destroy$)).subscribe(definition => {
       this.definition = definition;
       this.colDefs = definition.columns
-      // if (count > 0) {
       const body = this.table.containerViewChild.nativeElement.getElementsByClassName('ui-table-scrollable-body')[0];
       body.scrollTop = 0;
       this.table.reset();
-      // }
-      // count++;
+
     })
   }
 
