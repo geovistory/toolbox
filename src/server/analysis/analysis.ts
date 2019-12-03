@@ -42,15 +42,20 @@ export abstract class Analysis<R> {
       ).subscribe(hookRes => {
         if (hookRes && hookRes.error) {
           this.reject(hookRes.error)
-        } else if (hookRes.res) {
+        } else if (hookRes.res !== undefined) {
           this.resolve(hookRes.res)
+        } else {
+          this.reject({
+            name: 'Oops, something went wrong'
+          })
         }
       })
 
     return this.promise;
   }
 
-  private applyHook = (hook: () => Observable<HookResult<R>>) => {
+
+  protected applyHook = (hook: () => Observable<HookResult<R>>) => {
     const h = hook;
     return switchMap((hookRes: HookResult<R>) => {
       if (hookRes && hookRes.error) {
@@ -97,6 +102,8 @@ export abstract class Analysis<R> {
     * of the query results.
     */
   abstract validateOutput(): Observable<HookResult<R>>
+
+
 }
 
 export interface HookResult<R> {

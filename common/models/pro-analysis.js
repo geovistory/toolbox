@@ -14,6 +14,15 @@ module.exports = function(ProAnalysis) {
     return new AnalysisRemotes(ProAnalysis.dataSource.connector).run(...params);
   };
 
+  /**
+   * Run and export an analysis.
+   */
+  ProAnalysis.runAndExport = (...params) => {
+    return new AnalysisRemotes(ProAnalysis.dataSource.connector).runAndExport(
+      ...params
+    );
+  };
+
   ProAnalysis.runAnalysisById = function(pkAnalysis) {};
 
   ProAnalysis.beforeRemote('bulkUpsert', function(ctx, unused, next) {

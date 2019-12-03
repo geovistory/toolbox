@@ -62,6 +62,7 @@ import { QueryPathFormComponent } from './forms/query-path/query-path-form/query
 import { MatTreeModule } from '@angular/material/tree';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { QueryFilterService } from './components/query-filter/query-filter.service';
+import { ErrorDialogModule } from 'app/shared/components/error-dialog/error-dialog.module';
 
 const components = [
   QueryListComponent,
@@ -132,7 +133,8 @@ const components = [
     GvHelperComponentsModule,
     FormFactoryModule,
     MatTreeModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ErrorDialogModule
   ],
   providers: [
     QueryDetailAPIActions,

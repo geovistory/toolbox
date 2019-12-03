@@ -67,6 +67,44 @@ export class ProAnalysisApi extends BaseLoopBackApi {
   }
 
   /**
+   * Run analysis by sending all the necessary information to the api (no persisted analysis settings involved)
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @param {number} analysisType Pk of the analysis type.
+   *
+   * @param {string} fileType Expected file type. Options: 'json', 'csv'.
+   *
+   * @param {object} data Request data.
+   *
+   *  - `analysisDefinition` – `{object}` - analysisDefinition object.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProAnalysis` object.)
+   * </em>
+   */
+  public runAndExport(pkProject: any, analysisType: any, analysisDefinition: any, fileType: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProAnalyses/run-and-export";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      analysisDefinition: analysisDefinition
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof analysisType !== 'undefined' && analysisType !== null) _urlParams.analysisType = analysisType;
+    if (typeof fileType !== 'undefined' && fileType !== null) _urlParams.fileType = fileType;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Find analysis of project, pk and version. If version is omitted, finds the latest version. If pkEntity omitted, finds all analyses of project, in latest version.
    *
    * @param {number} pkProject Pk of the project

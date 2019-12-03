@@ -316,7 +316,6 @@ export class QueryDetailAPIEpics {
               c.localStore.dispatch(this.actions.downloadSucceeded());
 
               if (action.meta.filetype === 'json') {
-
                 const blob = new Blob([data], { type: 'text/json' });
                 saveAs(blob, 'query-results.json')
 

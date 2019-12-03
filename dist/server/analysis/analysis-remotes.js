@@ -68,6 +68,19 @@ class AnalysisRemotes {
         }
         return Error('Anaylsis type not found.');
     }
+    /**
+     * Runs a analysis.
+     * - Validates the inputs
+     * - Checks if the analyisis not to heavy for a performant response
+     * - Sends the response
+     */
+    runAndExport(pkProject, fkAnalysisType, analysisDef, fileType) {
+        const type = AnalysisRemotes.getType(fkAnalysisType);
+        if ('table' === type) {
+            return new table_1.AnalysisTable(this.connector, pkProject, analysisDef).runAndExport(fileType);
+        }
+        return Error('Anaylsis type not exportable.');
+    }
 }
 exports.AnalysisRemotes = AnalysisRemotes;
 //# sourceMappingURL=analysis-remotes.js.map
