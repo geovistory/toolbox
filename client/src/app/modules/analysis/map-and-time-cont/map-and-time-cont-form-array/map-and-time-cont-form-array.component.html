@@ -1,5 +1,5 @@
 <mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4 mb-5">
-  <mat-list-item>
+  <mat-list-item class="p-0">
     <div class="mat-headline" mat-line> Path </div>
   </mat-list-item>
   <mat-divider></mat-divider>
@@ -10,7 +10,7 @@
   <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
 
     <mat-list *ngIf="child.config?.data?.filter" class="mb-4">
-      <mat-list-item>
+      <mat-list-item class="p-0">
         <div class="mat-headline" mat-line> Filter
         </div>
       </mat-list-item>
@@ -18,7 +18,7 @@
     </mat-list>
 
     <mat-list *ngIf="child.config?.data?.ctrlClasses" class="mb-4">
-      <mat-list-item>
+      <mat-list-item class="p-0">
         <div class="mat-headline" mat-line *ngIf="!(child.config.disabled$ | async)">
           Choose type of geographical entities
         </div>
@@ -60,7 +60,8 @@
         Continue
       </button>
     </div>
-    <mat-list-item *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    <mat-list-item class="p-0"
+      *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
       <mat-error>
         Please continue
       </mat-error>

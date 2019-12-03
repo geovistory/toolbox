@@ -22,7 +22,7 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
-    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, fkProject);
+    const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
     this.createFilterWheres(filterWithAliases);
 
     // create froms and selects according to column definition

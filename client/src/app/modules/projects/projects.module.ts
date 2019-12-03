@@ -59,6 +59,7 @@ import { ClassConfigModule } from '../class-config/class-config.module';
 import { AnalysisModule } from '../analysis/analysis.module';
 import { OntomeProfilesListComponent } from './components/ontome-profiles-list/ontome-profiles-list.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon.module';
 
 
 
@@ -104,7 +105,8 @@ import { HttpClientModule } from '@angular/common/http';
     ConfirmDialogModule,
     LanguageSearchTypeaheadModule,
     ClassConfigModule,
-    HttpClientModule
+    HttpClientModule,
+    AnalysisIconModule
   ],
   declarations: [
     ProjectCreateComponent,

@@ -1,8 +1,10 @@
 export type SubGroupType = 'property' | 'classAndType'
+export type SubgroupOperator = 'AND' | 'OR';
+export type ClassFilterCondition = 'IS' | 'IS NOT' | 'ENTITY_LABEL_CONTAINS';
 
 export interface QueryFilterData {
   subgroup?: SubGroupType;
-  operator?: string;
+  operator?: ClassFilterCondition | SubgroupOperator;
 
   // inherited from ClassesAndTypes:
   classes?: number[]
@@ -11,6 +13,10 @@ export interface QueryFilterData {
   // inherited from PropertySelectModel:
   outgoingProperties?: number[]
   ingoingProperties?: number[]
+
+  // used for string search
+  searchTerm?: string;
+
 }
 export class QueryFilter {
   constructor(public data: QueryFilterData = {}, public children: QueryFilter[] = []) {

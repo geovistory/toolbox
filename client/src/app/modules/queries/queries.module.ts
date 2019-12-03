@@ -61,6 +61,7 @@ import { QueryPathFormGroupComponent } from './forms/query-path/query-path-form-
 import { QueryPathFormComponent } from './forms/query-path/query-path-form/query-path-form.component';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { QueryFilterService } from './components/query-filter/query-filter.service';
 
 const components = [
   QueryListComponent,
@@ -139,7 +140,8 @@ const components = [
     ConfigurationPipesService,
     ActiveProjectService,
     InformationPipesService,
-    InformationBasicPipesService
+    InformationBasicPipesService,
+    QueryFilterService
   ],
   declarations: components,
   exports: components,

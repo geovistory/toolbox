@@ -42,6 +42,8 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from './shared/pipes/keys.module';
 import { AngularCesiumModule, ModuleConfiguration } from 'angular-cesium';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSortModule } from '@angular/material';
+import { AnalysisIconModule } from './shared/pipes/analysis-icon/analysis-icon.module';
 
 // const spy = create()
 // spy.unplug(spy.find(CyclePlugin));
@@ -104,7 +106,7 @@ registerLocaleData(localeDeCh);
     MatButtonModule,
     MatIconModule,
     UserFeedbackModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   providers: [
     EntityEditorService,

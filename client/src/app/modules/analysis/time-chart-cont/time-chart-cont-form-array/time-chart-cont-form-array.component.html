@@ -4,7 +4,7 @@
 
 <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
   <mat-list *ngIf="formArrayFactory.config.data.type==='lineArray'" [ngClass]="{'mt-5': (i>0)}">
-    <mat-list-item class="headline">
+    <mat-list-item class="p-0 headline">
       <div class="mat-headline" mat-line> Line #{{i+1}}</div>
       <button mat-icon-button *ngIf="formArrayFactory.config.data.type==='lineArray' && i > 0" (click)="removeLine(i)"
         matTooltip="Remove line">

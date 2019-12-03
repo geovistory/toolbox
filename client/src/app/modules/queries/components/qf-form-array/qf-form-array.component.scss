@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import '../../../../../styles.scss';
 $top-horizontal-line: 30px;
 
 .full-with {
@@ -45,6 +45,12 @@ $top-horizontal-line: 30px;
   }
 }
 
+.gv-condition-block {
+  border: 1px solid $success;
+  padding: 0.75rem;
+  margin-top: 1.25rem;
+}
+
 .qf-arr-subgroup {
   /*temp*/
   // border: 1px dashed rgb(18, 173, 52);
@@ -55,27 +61,30 @@ $top-horizontal-line: 30px;
   margin-bottom: 40px;
 
   .zero {
-    width: 23px;
+    width: 0.75rem;
     height: 31px;
     flex-shrink: 0;
+    &.line {
+      border-bottom: 1px solid $success;
+    }
   }
 
-  .zero.line {
-    border-bottom: 1px solid $success;
-    border-left: 1px solid $success;
-  }
+  // .zero.line {
+  //   border-bottom: 1px solid $success;
+  //   border-left: 1px solid $success;
+  // }
 
   .first {
     width: 1px;
     flex-shrink: 0;
-    margin-top: $top-horizontal-line;
+    // margin-top: $top-horizontal-line;
     margin-bottom: 34px;
     position: relative;
     background-color: $success;
     .subgroup-operation-container {
       position: absolute;
       bottom: 0;
-      top: 22px;
+      top: 45px;
       width: 46px;
       left: -23px;
       display: flex;
@@ -98,8 +107,8 @@ $top-horizontal-line: 30px;
       bottom: -24px;
       left: -12px;
     }
-    &.line {
-      margin-bottom: 0;
+    &.top-cut {
+      margin-top: 30px;
     }
   }
 
@@ -131,7 +140,7 @@ $top-horizontal-line: 30px;
         }
       }
       gv-qf-form-array {
-        margin-left: 0.75rem;
+        // margin-left: 0.75rem;
         flex: 1 0 0%;
         &.is-subgroup {
           margin-top: 2rem;
@@ -143,16 +152,16 @@ $top-horizontal-line: 30px;
 
 .gv-qf-button-absolute-1 {
   position: absolute;
-  right: -40px;
-  top: 0;
+  right: -31px;
+  top: 20px;
 }
 .gv-qf-button-absolute-2 {
   position: absolute;
-  right: -80px;
-  top: 0;
+  left: 12px;
+  bottom: -10px;
 }
 .gv-qf-button-absolute-3 {
   position: absolute;
-  right: -120px;
-  top: 0;
+  right: -31px;
+  top: 54px;
 }

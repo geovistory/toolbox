@@ -33,6 +33,15 @@
 </mat-form-field>
 
 
+<mat-form-field *ngIf="config?.data.ctrlSearchTerm" class="w-100" appearance="legacy">
+  <mat-label>{{config?.placeholder}}</mat-label>
+  <input matInput autocomplete="off" [formControl]="formControlFactory.control" [required]="config?.required" />
+  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+    Please enter a value
+  </mat-error>
+</mat-form-field>
+
+
 
 <!-- Subgroup Operation -->
 <mat-select *ngIf="config?.data.ctrlOperator" [formControl]="formControlFactory.control"
@@ -40,7 +49,3 @@
   <mat-option value="AND">and</mat-option>
   <mat-option value="OR">or</mat-option>
 </mat-select>
-
-<!-- <mat-form-field *ngIf="config?.data.ctrlOperator" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-</mat-form-field> -->

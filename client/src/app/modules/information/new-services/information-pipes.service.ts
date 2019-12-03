@@ -1120,6 +1120,21 @@ export class InformationPipesService {
     )
   }
 
+  getPkClassesFromPropertySelectModel$(model$: Observable<PropertySelectModel>): Observable<number[]> {
+    return model$.pipe(
+      switchMap(model => combineLatestOrEmpty(
+        [
+          this.c.pipeTargetClassesOfProperties(model.outgoingProperties, true),
+          this.c.pipeTargetClassesOfProperties(model.ingoingProperties, false),
+        ]
+      ).pipe(
+        map(([out, ing]) => uniq([...out, ...ing]))
+      ))
+    )
+  }
+
+
+
   getPropertyOptions$(classTypes$: Observable<ClassAndTypeSelectModel>): Observable<PropertyOption[]> {
     return classTypes$.pipe<ClassAndTypeSelectModel, PropertyOption[]>(
       // make sure only it passes only if data of the arrayClasses are changed (not children)

@@ -1,4 +1,4 @@
-@import "../../../../../styles.scss";
+@import '../../../../../styles.scss';
 .left {
   cursor: grab;
   display: flex;
@@ -8,6 +8,7 @@
     padding-right: 0.2rem;
   }
   .label {
+    max-width: 160px;
     text-overflow: ellipsis;
     flex-wrap: nowrap;
     white-space: nowrap;
