@@ -37,8 +37,13 @@ class Analysis {
             if (hookRes && hookRes.error) {
                 this.reject(hookRes.error);
             }
-            else if (hookRes.res) {
+            else if (hookRes.res !== undefined) {
                 this.resolve(hookRes.res);
+            }
+            else {
+                this.reject({
+                    name: 'Oops, something went wrong'
+                });
             }
         });
         return this.promise;

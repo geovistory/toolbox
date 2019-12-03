@@ -4,3 +4,7 @@ export interface TableOutput {
   rows: TableRow[]
   full_count: number
 };
+
+
+
+export type TableExportFileType = 'json' | 'csv'

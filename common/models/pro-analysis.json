@@ -59,6 +59,7 @@
       "permission": "ALLOW",
       "property": [
         "run",
+        "runAndExport",
         "bulkUpsert",
         "bulkDelete",
         "findPerIdAndVersionAndProject"
@@ -113,6 +114,65 @@
       "description": "Run analysis by sending all the necessary information to the api (no persisted analysis settings involved)",
       "http": {
         "path": "/run",
+        "verb": "post"
+      }
+    },
+    "runAndExport": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "analysisType",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the analysis type.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "analysisDefinition",
+          "type": "object",
+          "required": true,
+          "description": "analysisDefinition object.",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "fileType",
+          "type": "string",
+          "required": true,
+          "description": "Expected file type. Options: 'json', 'csv'.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProAnalysis"
+        ],
+        "root": true
+      },
+      "description": "Run analysis by sending all the necessary information to the api (no persisted analysis settings involved)",
+      "http": {
+        "path": "/run-and-export",
         "verb": "post"
       }
     },

@@ -81,6 +81,7 @@ $top-horizontal-line: 30px;
     margin-bottom: 34px;
     position: relative;
     background-color: $success;
+    z-index: 1;
     .subgroup-operation-container {
       position: absolute;
       bottom: 0;

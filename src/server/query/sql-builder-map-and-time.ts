@@ -76,7 +76,7 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
             'fk_project',
             t_1.fk_project
           )) geo_entity_preview,
-          jsonb_agg(${aliasOfEntityTable}.pk_entity) pk_entities,
+          coalesce(jsonb_agg(${aliasOfEntityTable}.pk_entity) Filter (Where ${aliasOfEntityTable}.pk_entity Is Not Null), '[]') As pk_entities,
           commons.analysis__time_chart_cont__czml_time_values(array_agg(${aliasOfEntityTable}.pk_entity), ${fkProject}) temporal_data
         FROM
           ${this.joinFroms(this.froms)}

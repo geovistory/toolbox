@@ -434,7 +434,7 @@ export class SqlBuilder {
                     )`);
     }
     fromsArray.push(`
-                LEFT JOIN warehouse.v_roles_per_project_and_repo ${thisTableAlias} ON
+                LEFT JOIN warehouse.vm_statement ${thisTableAlias} ON
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
   }
@@ -469,23 +469,28 @@ export class SqlBuilder {
   }
 
   createFilterWheres(node: NestedQueryNodeWithAlias, level = 0) {
-    let nodeWheres: string[] = [];
+    // let nodeWheres: string[] = [];
     // console.log(level);
 
-    node.children.forEach(childNode => {
-      let childNodeWheres;
+    const nodeWheres = node.children.map(childNode => {
+      // Where clauses of the children if this childNode
+      let subWheres;
+
       // climb into the tree up to the leaf
       if (childNode.children.length) {
-        childNodeWheres = this.createFilterWheres(childNode, level + 1);
+        subWheres = this.createFilterWheres(childNode, level + 1);
       }
+
+      // Where clause of this childNode
+      let where = '';
 
       // create the where clause for the entity table
       if (childNode.data.classes || childNode.data.types) {
-        nodeWheres.push(`${childNode._tableAlias}.pk_entity IS NOT NULL`);
+        where = `${childNode._tableAlias}.pk_entity IS NOT NULL`;
       }
 
       // create the where clause for the role table
-      if (
+      else if (
         (childNode.data.ingoingProperties && childNode.data.ingoingProperties.length) ||
         (childNode.data.outgoingProperties && childNode.data.outgoingProperties.length)
       ) {
@@ -496,35 +501,48 @@ export class SqlBuilder {
               ? 'IS NULL'
               : 'IS NOT NULL'; // DEFAULT
 
-        nodeWheres.push(`${childNode._tableAlias}.fk_entity ${equals}`);
+        where = `${childNode._tableAlias}.fk_entity ${equals}`;
       }
 
-      if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
+      else if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
 
-        const n = node;
-        console.log(n)
-        nodeWheres.push(`${childNode._parentEntityTableAlias}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm || ''}%`)}`);
+        // const n = node;
+        // console.log(n)
+        where = `${childNode._parentEntityTableAlias}.entity_label iLike ${this.addParam(`%${childNode.data.searchTerm || ''}%`)}`;
       }
 
-      if (childNodeWheres) {
-        let childrenSql;
+
+
+
+
+
+
+      if (subWheres) {
+        // let childrenSql;
+
         // if we are in a subgroup node
         if (childNode.data.subgroup) {
+
           // join the wheres of this subgroup's children
-          childrenSql = childNodeWheres.join(`
-                        ${childNode.data.operator}
-                    `);
+          where = `
+          (  -- subgroup
+              ${subWheres.join(`
+                ${childNode.data.operator}
+              `)}
+          )`
+
         } else {
           // get the first childNodeWhere of childNodeWheres
-          childrenSql = childNodeWheres.join('');
+          where = `
+            (
+              ${where}
+              AND
+              ${subWheres.join('')}
+            )`;
         }
-
-        nodeWheres.push(`
-                    (  -- subgroup
-                        ${childrenSql}
-                    )
-                `);
       }
+
+      return where
     });
 
     if (level === 0 && nodeWheres.length > 0) {

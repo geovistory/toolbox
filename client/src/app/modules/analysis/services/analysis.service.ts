@@ -8,6 +8,7 @@ import { NgRedux } from '@angular-redux/store';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
 import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'
@@ -419,6 +420,48 @@ export class AnalysisService<I, O> {
     })
 
     return deleted$
+  }
+
+
+  callDownloadApi(q: I, fileType: string) {
+    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
+      this.loading = true;
+
+      this.analysisApi.runAndExport(pkProject, this.fkAnalysisType, q, fileType).subscribe((r: O) => {
+        this.loading = false;
+
+        const data = r as any;
+
+        if (fileType === 'json') {
+          const blob = new Blob([data], {
+            type: 'text/json'
+          });
+          saveAs(blob, `table-export-${new Date().getTime()}.json`)
+
+        } else if (fileType === 'csv') {
+          const blob = new Blob([data], {
+            type: 'text/comma-separated-values'
+          });
+          saveAs(blob, `table-export-${new Date().getTime()}.csv`)
+        }
+
+
+      }, error => {
+        this.loading = false;
+        const d: ErrorDialogData = {
+          title: 'Oops, something went wrong ...',
+          subtitle: 'There was an error when downloading the data. Sorry!',
+          errorReport: {
+            title: error.name,
+            json: error.message
+          }
+        }
+        this.dialog.open(ErrorDialogComponent, {
+          data: d
+        });
+      })
+    })
+
   }
 
 

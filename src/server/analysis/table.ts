@@ -1,8 +1,11 @@
+
 import { Observable, of, Subject } from 'rxjs';
 import { SqlBuilder } from '../query/sql-builder';
 import { Analysis, HookResult } from './analysis';
-import { TableInput, TableOutput, TableQueryRes } from '../../common/interfaces'
+import { TableInput, TableOutput, TableQueryRes, TableExportFileType } from '../../common/interfaces'
 import { isValidTableInput, isValidTableQueryRes, isValidTableOutput } from '../../common/validators'
+import { takeUntil } from 'rxjs/operators';
+import * as json2csv from 'json2csv';
 
 type Result = TableOutput;
 
@@ -18,6 +21,33 @@ export class AnalysisTable extends Analysis<Result>   {
   ) {
     super()
   }
+
+  /**
+ * execute the request, apply all hooks, convert to exportable object,
+ * @return a promise useful for loopback
+ */
+  runAndExport(fileType: TableExportFileType): Promise<Result> {
+    this.validateInputs()
+      .pipe(
+        this.applyHook(() => this.checkFeasibility()),
+        this.applyHook(() => this.produceResult()),
+        this.applyHook(() => this.convertForExport(fileType)),
+        takeUntil(this.destroy$)
+      ).subscribe(hookRes => {
+        if (hookRes && hookRes.error) {
+          this.reject(hookRes.error)
+        } else if (hookRes.res !== undefined) {
+          this.resolve(hookRes.res)
+        } else {
+          this.reject({
+            name: 'Oops, something went wrong'
+          })
+        }
+      })
+
+    return this.promise;
+  }
+
   validateInputs(): Observable<HookResult<Result>> {
     const v = isValidTableInput(this.analysisDef);
     if (v.validObj) {
@@ -113,5 +143,116 @@ export class AnalysisTable extends Analysis<Result>   {
       })
     }
   }
+
+  /**
+  * Converts QueryRes to downloadable format;
+  */
+  convertForExport(filetype: TableExportFileType): Observable<HookResult<any>> {
+    const allowedFileTypes = ['json', 'csv', 'xls'];
+
+    if (allowedFileTypes.indexOf(filetype) === -1) {
+      return of({
+        error: {
+          name: `Filetype "${filetype}" is not supported.`
+        }
+      })
+    }
+    if (this.result) {
+      if (filetype === 'json') {
+
+        return of({
+          res: JSON.stringify({
+            columns: this.getColumnLabelMap(),
+            rows: this.result.rows
+          }, null, 2)
+        });
+
+      } else if (filetype === 'csv') {
+
+        const { fields, data } = this.flattenResults(this.result.rows);
+        try {
+          const parser = new json2csv.Parser({ fields });
+          const csv = parser.parse(data);
+          return of({ res: csv });
+        } catch (err) {
+          return of({
+            error: {
+              name: 'Error when creating csv.',
+              message: err
+            }
+          })
+        }
+
+      } else if (filetype === 'xls') {
+        const { fields, data } = this.flattenResults(this.result.rows);
+        try {
+          const parser = new json2csv.Parser({ fields, excelStrings: true });
+          const xls = parser.parse(data);
+          return of({ res: xls });
+        } catch (err) {
+          return of({
+            error: {
+              name: 'Error when creating csv.',
+              message: err
+            }
+          })
+        }
+      }
+    }
+    return of({
+      error: {
+        name: `Something went wrong when exporting data.`
+      }
+    })
+  }
+
+  private getColumnLabelMap() {
+    const columnLabelMap: { [colId: string]: string } = {}
+
+    // map col.id to colLabel
+    this.analysisDef.queryDefinition.columns.forEach(col => {
+      columnLabelMap[col.id] = col && col.label ? col.label : col.id
+    })
+    return columnLabelMap
+  }
+
+  private flattenResults(resultObjects: any[]) {
+    const fieldObj: { [key: string]: any } = {};
+    const columnLabelMap = this.getColumnLabelMap()
+
+    const flatResults = resultObjects.map(obj => {
+      const flat: { [key: string]: any } = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          const element = obj[key];
+          const colLabel = columnLabelMap[key]
+
+          if (typeof element === 'object') {
+            if (Array.isArray(element)) {
+              flat[colLabel] = element.length;
+              fieldObj[colLabel] = true;
+            }
+            else if (
+              element.hasOwnProperty('entity_label')
+            ) {
+              flat[colLabel] = [element.class_label, element.entity_label].filter(x => !!x).join(' ');
+              fieldObj[colLabel] = true;
+              // ignore {} objects
+            }
+          } else {
+            flat[colLabel] = element;
+            fieldObj[colLabel] = true;
+          }
+        }
+      }
+      return flat;
+    });
+
+
+    return {
+      fields: Object.keys(fieldObj),
+      data: flatResults,
+    };
+  };
 
 }

@@ -3,6 +3,23 @@
 <p-table #table [resizableColumns]="true" [columns]="displayedColumns$ | async" [value]="items" [scrollable]="true"
   [rows]="limit" scrollHeight="100%" [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event);" [lazy]="true"
   [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading" class="h-100">
+
+  <ng-template pTemplate="caption">
+
+    <div class="d-flex">
+      <button class="ml-auto" mat-flat-button [matMenuTriggerFor]="exportMenu">
+        <mat-icon svgIcon="download" color="primary"></mat-icon>
+        Download
+      </button>
+      <mat-menu #exportMenu="matMenu">
+        <button mat-menu-item (click)="download('json')">Download as JSON</button>
+        <button mat-menu-item (click)="download('csv')">Download as CSV</button>
+        <!-- <button  mat-menu-item (click)="onDownload('xlsx')">Download as Excel</button> -->
+      </mat-menu>
+    </div>
+    <mat-divider></mat-divider>
+  </ng-template>
+
   <ng-template pTemplate="header" let-columns>
     <tr>
       <!-- <th style="width:0.1%; white-space: nowrap;">#</th> -->

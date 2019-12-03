@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService, SysConfig } from 'app/core';
 import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
 import { Table } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
@@ -52,6 +52,9 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
   ngOnInit() {
+
+    this.a.fkAnalysisType = SysConfig.PK_ANALYSIS_TYPE__TABLE;
+
     this.displayedColumns$ = this.definition$.pipe(
       map(def => def.columns.map(colDef => colDef.label))
     );
@@ -102,6 +105,9 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.a.callRunApi({ queryDefinition })
   }
 
+  download(fileType: string) {
+    this.a.callDownloadApi({ queryDefinition: this.definition }, fileType)
+  }
 
 
   // onInit() {
