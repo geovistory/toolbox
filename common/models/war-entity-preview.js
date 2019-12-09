@@ -659,6 +659,7 @@ module.exports = function(WarEntityPreview) {
       tw2 AS (
         SELECT DISTINCT ON (pk_entity) *
         FROM tw1
+        ORDER BY pk_entity, fk_project
       )
       SELECT *
       FROM tw2
