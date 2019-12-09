@@ -40,9 +40,9 @@ export class TimeSpanListComponent implements OnInit {
   ngOnInit() {
     this.item$ = this.t.pipeItemTimeSpan(this.pkEntity)
     this.itemsCount$ = of(1)
-    this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key('72_300593').pipe(takeUntil(this.destroy$)).subscribe(a=>{
+    // this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key('72_300593').pipe(takeUntil(this.destroy$)).subscribe(a=>{
 
-    })
+    // })
     this.item$.pipe(takeUntil(this.destroy$)).subscribe(item => {
       this.item = item
     })

@@ -12,9 +12,9 @@
       </span>
       <ng-content select="[settingsTopBar]"> </ng-content>
 
-      <button mat-stroked-button class="ml-auto border-right-0" *ngIf="!pkAnalysis" [disabled]="a.saving"
-        (click)="create()">
-        <mat-icon svgIcon="content-save-outline"></mat-icon>
+      <button mat-stroked-button class="ml-auto border-right-0" color="primary" *ngIf="!pkAnalysis"
+        [disabled]="a.saving" (click)="create()">
+        <mat-icon svgIcon="content-save-outline" color="primary"></mat-icon>
         Save...
       </button>
 
@@ -32,8 +32,10 @@
         <button mat-menu-item (click)="delete()" color="warn">Delete</button>
       </mat-menu>
 
-      <button mat-stroked-button color="primary" class="border-right-0" [disabled]="a.loading" (click)="run()">Run
-        >></button>
+      <button mat-stroked-button color="primary" class="border-right-0" [disabled]="a.loading" (click)="run()">
+        <mat-icon svgIcon="arrow-right" color="primary"></mat-icon>
+        Run
+      </button>
     </gv-detail-top-bar>
     <gv-detail-content class="p-3">
 

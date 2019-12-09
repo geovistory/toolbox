@@ -128,7 +128,7 @@ export class InfEpics {
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
           const apiCal$ = this.teEnApi.temporalEntityList(
-            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.isOutgoing, meta.limit, meta.offset
+            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
           )
           const pkProject = meta.pk;
           this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
@@ -142,7 +142,7 @@ export class InfEpics {
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
           const apiCal$ = this.teEnApi.alternativeTemporalEntityList(
-            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.isOutgoing, meta.limit, meta.offset
+            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
           )
           const pkProject = null;
           this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
@@ -280,10 +280,11 @@ export class InfEpics {
    * @param pkProject if null, list is handled as 'repo' list
    */
   private handleTemporalEntityListAction<M>(action, infTemporalEntityEpicsFactory: InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>, globalActions, apiCall$: Observable<any>, pkProject) {
-    const meta = action.meta;
+    const meta: LoadPaginatedTeEnListMeta = action.meta;
     const pendingKey = meta.addPending;
-    let paginateBy: PaginateByParam[] = [
+    const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
+      { fk_target_class: meta.fkTargetClass },
       { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity }
     ];
     // call action to set pagination loading on true

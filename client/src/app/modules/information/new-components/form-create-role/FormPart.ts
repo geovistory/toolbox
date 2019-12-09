@@ -77,10 +77,17 @@ export class FormPart {
         else {
           // Q: This is a list that connects one role per item
           const initList = this.initVal.initListDefinition
-          const machingClass = initList.listType === 'temporal-entity' ? thisList.sourceClass : thisList.targetClass;
+          const initProperty = initList.pkProperty;
 
-          if (initList.pkProperty === thisList.pkProperty
-            && initList.targetClass === machingClass) {
+          // we neet to flip source and target, when the list type is a temporal entity
+          const initTarget = initList.listType === 'temporal-entity' ? initList.sourceClass : initList.targetClass;
+          const initSource = initList.listType === 'temporal-entity' ? initList.targetClass : initList.sourceClass;
+
+          if (
+            thisList.pkProperty === initProperty
+            && thisList.sourceClass === initSource
+            && thisList.targetClass === initTarget
+          ) {
             // Yes. It is matching a listDefinition, add a form item where the initial value is set (fixed)
             this.items.push({
               fixed: true,

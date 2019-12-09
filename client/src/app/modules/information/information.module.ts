@@ -35,7 +35,6 @@ import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { InfTimePrimitivePipeModule } from 'app/shared/pipes/inf-time-primitive/inf-time-primitive.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
-import { PeItStrModule } from 'app/shared/pipes/pe-it-str/pe-it-str.module';
 import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
 import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
@@ -235,7 +234,6 @@ import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
     TimelineModule,
     KeysModule,
     FilterByKeyModule,
-    PeItStrModule,
     HighlightModule,
     DndModule,
     QuillModule,

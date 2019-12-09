@@ -4,7 +4,6 @@ import { AccountListComponent } from './components/account-list/account-list.com
 import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
 import { ClassListComponent } from './components/class-list/class-list.component';
 import { ClassMainComponent } from './components/class-main/class-main.component';
-import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
 import { ClassComponent } from './components/class/class.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { MainComponent } from './components/main/main.component';
@@ -35,10 +34,6 @@ const routes: Routes = [
           {
             path: '',
             component: ClassMainComponent
-          },
-          {
-            path: 'ui-context/:pk_ui_context',
-            component: ClassUiContextComponent
           }
         ]
       },

@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
-import { DfhPropertyProfileView, DfhLabel } from '../sdk';
+import { DfhPropertyProfileView, DfhLabel, DfhClassProfileView, DfhPropertyView } from '../sdk';
 
 export const dfhRoot = 'dfh';
 
@@ -14,6 +14,18 @@ export const dfhDefinitions: ReducerConfigCollection = {
         keyInStore: 'pk_entity',
         groupByFn: (d: DfhLabel): string => d.pk_entity.toString()
       },
+    ]
+  },
+  class_profile_view: {
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item: DfhClassProfileView) => item.pk_entity.toString()
+    },
+    groupBy: [
+      {
+        keyInStore: 'by_dfh_pk_class',
+        groupByFn: (d: DfhClassProfileView): string => d.dfh_fk_class.toString()
+      }
     ]
   },
   label: {
@@ -52,21 +64,25 @@ export const dfhDefinitions: ReducerConfigCollection = {
   },
   property_view: {
     indexBy: {
-      keyInStore: 'dfh_pk_property',
-      indexByFn: (item: DfhPropertyProfileView) => item.dfh_pk_property.toString()
+      keyInStore: 'pk_entity',
+      indexByFn: (item: DfhPropertyView) => item.pk_entity.toString()
     },
     groupBy: [
       {
         keyInStore: 'fk_property',
-        groupByFn: (d: DfhPropertyProfileView): string => d.fk_property.toString()
+        groupByFn: (d: DfhPropertyView): string => d.fk_property.toString()
+      },
+      {
+        keyInStore: 'dfh_has_domain__fk_property__dfh_has_range',
+        groupByFn: (d: DfhPropertyView): string => d.dfh_has_domain + '_' + d.fk_property + '_' + d.dfh_has_range
       },
       {
         keyInStore: 'dfh_has_domain__fk_property',
-        groupByFn: (d: DfhPropertyProfileView): string => d.dfh_has_domain + '_' + d.fk_property
+        groupByFn: (d: DfhPropertyView): string => d.dfh_has_domain + '_' + d.fk_property
       },
       {
         keyInStore: 'dfh_has_range__fk_property',
-        groupByFn: (d: DfhPropertyProfileView): string => d.dfh_has_range + '_' + d.fk_property
+        groupByFn: (d: DfhPropertyView): string => d.dfh_has_range + '_' + d.fk_property
       }
     ]
   }

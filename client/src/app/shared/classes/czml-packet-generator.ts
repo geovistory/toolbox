@@ -1,36 +1,36 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
 import { CzmlLabelGenerator } from './czml-label-generator';
 import { CzmlPointGenerator } from './czml-point-generator';
 import { CzmlPositionGenerator } from './czml-position-generator';
 import { CzmlPacket } from '../../../../../src/common/interfaces/czml-types';
+import { QueryPoint } from 'app/modules/information/new-services/map-layer-pipes.service';
 
 // https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet
 
 export class CzmlPacketGenerator {
 
-    d: CzmlPacket;
+  d: CzmlPacket;
 
-    constructor(id: string) {
-        this.d = { id };
-    }
+  constructor(id: string) {
+    this.d = { id };
+  }
 
-    fromQueryPoint(p: QueryPoint, minVal = 1, maxVal = 10, minPx = 5, maxPx = 30): CzmlPacket {
+  fromQueryPoint(p: QueryPoint, minVal = 1, maxVal = 10, minPx = 5, maxPx = 30): CzmlPacket {
 
-        if (p.presences && p.presences.length) {
+    if (p.presences && p.presences.length) {
 
-            this.d.point = new CzmlPointGenerator({ minVal, maxVal, minPx, maxPx }).fromQueryPoint(p).toCzml();
+      this.d.point = new CzmlPointGenerator({ minVal, maxVal, minPx, maxPx }).fromQueryPoint(p).toCzml();
 
-            this.d.label = new CzmlLabelGenerator().fromQueryPoint(p).toCzml();
+      this.d.label = new CzmlLabelGenerator().fromQueryPoint(p).toCzml();
 
-            this.d.position = new CzmlPositionGenerator().fromQueryPoint(p).toCzml();
-
-        }
-
-        return this.d;
+      this.d.position = new CzmlPositionGenerator().fromQueryPoint(p).toCzml();
 
     }
+
+    return this.d;
+
+  }
 
 
 

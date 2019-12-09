@@ -65,6 +65,7 @@ export class FieldComponent implements OnInit {
               pkProject,
               this.pkEntity,
               l.pkProperty,
+              l.targetClass,
               l.isOutgoing,
               limit,
               offset

@@ -20,27 +20,27 @@ import { MccColorPickerModule } from 'material-community-components';
 import { AngularCesiumModule, CesiumService } from '../../../../node_modules/angular-cesium';
 import { GvHelperComponentsModule } from '../../shared/components/gv-helper-components/gv-helper-components.module';
 import { TimelineModule } from '../timeline/timeline.module';
-import { MapBackgroundSettingsComponent } from './components/map-background-settings/map-background-settings.component';
-import { MapQueryLayerSettingsComponent } from './components/map-query-layer-settings/map-query-layer-settings.component';
-import { MapQueryLayerComponent } from './components/map-query-layer/map-query-layer.component';
-import { MapSettingsComponent } from './components/map-settings/map-settings.component';
-import { MapVisualDemoComponent } from './components/map-visual-demo/map-visual-demo.component';
-import { MapVisualComponent } from './components/map-visual/map-visual.component';
+// import { MapBackgroundSettingsComponent } from './components/map-background-settings/map-background-settings.component';
+// import { MapQueryLayerSettingsComponent } from './components/map-query-layer-settings/map-query-layer-settings.component';
+// import { MapQueryLayerComponent } from './components/map-query-layer/map-query-layer.component';
+// import { MapSettingsComponent } from './components/map-settings/map-settings.component';
+// import { MapVisualDemoComponent } from './components/map-visual-demo/map-visual-demo.component';
+// import { MapVisualComponent } from './components/map-visual/map-visual.component';
 import { TimelineVisualComponent } from './components/timeline-visual/timeline-visual.component';
-import { VisualDetailAPIActions } from './containers/visual-detail/api/visual-detail.actions';
-import { VisualDetailAPIEpics } from './containers/visual-detail/api/visual-detail.epics';
-import { VisualDetailComponent } from './containers/visual-detail/visual-detail.component';
-import { VisualListComponent } from './containers/visual-list/visual-list.component';
+// import { VisualDetailAPIActions } from './containers/visual-detail/api/visual-detail.actions';
+// import { VisualDetailAPIEpics } from './containers/visual-detail/api/visual-detail.epics';
+// import { VisualDetailComponent } from './containers/visual-detail/visual-detail.component';
+// import { VisualListComponent } from './containers/visual-list/visual-list.component';
 
 const components = [
-  VisualDetailComponent,
-  VisualListComponent,
-  MapSettingsComponent,
-  MapQueryLayerSettingsComponent,
-  MapBackgroundSettingsComponent,
-  MapVisualComponent,
-  MapVisualDemoComponent,
-  MapQueryLayerComponent,
+  // VisualDetailComponent,
+  // VisualListComponent,
+  // MapSettingsComponent,
+  // MapQueryLayerSettingsComponent,
+  // MapBackgroundSettingsComponent,
+  // MapQueryLayerComponent,
+  // MapVisualComponent,
+  // MapVisualDemoComponent,
   TimelineVisualComponent,
 
 ]
@@ -72,8 +72,8 @@ const components = [
     GvHelperComponentsModule
   ],
   providers: [
-    VisualDetailAPIActions,
-    VisualDetailAPIEpics,
+    // VisualDetailAPIActions,
+    // VisualDetailAPIEpics,
     CesiumService
   ],
   declarations: components,

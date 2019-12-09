@@ -45,6 +45,7 @@ class ProInfoProjRelSelector extends Selector {
 class ProDfhClassProjRelSelector extends Selector {
   public by_fk_project__enabled_in_entities$ = this.selector<ByPk<ProDfhClassProjRel>>('by_fk_project__enabled_in_entities')
   public by_fk_project__fk_entity$ = this.selector<ProDfhClassProjRel>('by_fk_project__fk_entity')
+  public by_fk_project$ = this.selector<ProDfhClassProjRel>('by_fk_project')
 
   constructor(
     public ngRedux: NgRedux<IAppState>,
@@ -56,7 +57,8 @@ class ProDfhClassProjRelSelector extends Selector {
 
 class ProClassFieldConfigSelector extends Selector {
   public by_fk_class__fk_app_context$ = this.selector<ByPk<ProClassFieldConfig>>('by_fk_class__fk_app_context')
-  public by_fk_property__property_is_outgoing__fk_app_context$ = this.selector<ByPk<ProClassFieldConfig>>('by_fk_property__property_is_outgoing__fk_app_context')
+  public by_fk_property__fk_domain_class__fk_app_context$ = this.selector<ByPk<ProClassFieldConfig>>('fk_property__fk_domain_class__fk_app_context')
+  public by_fk_property__fk_range_class__fk_app_context$ = this.selector<ByPk<ProClassFieldConfig>>('fk_property__fk_range_class__fk_app_context')
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

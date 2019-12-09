@@ -10,6 +10,7 @@ class FlatObjectQueryBuilder {
     fkProject,
     fkSourceEntity,
     fkProperty,
+    fkTargetClass,
     isOutgoing,
     limit,
     offset
@@ -25,6 +26,7 @@ class FlatObjectQueryBuilder {
       AND t1.${isOutgoing ? 'fk_entity' : 'fk_temporal_entity'} = t3.pk_entity
       AND t1.pk_entity = t2.fk_entity
       AND t2.is_in_project = true
+      AND t3.fk_class = ${this.addParam(fkTargetClass)}
     `;
 
     const sql = `
@@ -323,6 +325,7 @@ class FlatObjectQueryBuilder {
     fkProject,
     fkSourceEntity,
     fkProperty,
+    fkTargetClass,
     isOutgoing,
     limit,
     offset
@@ -336,15 +339,18 @@ class FlatObjectQueryBuilder {
         information.v_role t1,
         information.temporal_entity t2
         WHERE
-        --if isOutgoing join with fk_temporal_entity , else fk_entity
-        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(
-      fkSourceEntity
-    )} --  add the pk_entity of the 'source' entity here
+        -- if isOutgoing join with fk_temporal_entity , else fk_entity
+        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =
+        ${this.addParam(fkSourceEntity)}
+        --  add the pk_entity of the 'source' entity here
         AND t1.fk_property = ${this.addParam(fkProperty)} -- add the pk_property
         -- ensure the target entity is a temporal entity
         AND t1.fk_temporal_entity = t2.pk_entity
+        -- ensure the target temporal entity has right class
+        AND t2.fk_class = ${this.addParam(fkTargetClass)}
+        -- ensure the role is in at least one project
         AND t1.is_in_project_count > 0
-        EXCEPT
+      EXCEPT
         SELECT t1.*
         FROM
         information.v_role t1,
@@ -352,15 +358,17 @@ class FlatObjectQueryBuilder {
         information.temporal_entity t3
         WHERE
         --if isOutgoing join with fk_temporal_entity , else fk_entity
-        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(
-      fkSourceEntity
-    )} --  add the pk_entity of the 'source' entity here
-        AND t1.fk_property = ${this.addParam(fkProperty)} -- add the pk_property
-        AND t2.fk_project = ${this.addParam(
-          fkProject
-        )} -- add the pk_project here
+        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =
+        ${this.addParam(fkSourceEntity)}
+        --  add the pk_entity of the 'source' entity here
+        AND t1.fk_property = ${this.addParam(fkProperty)}
+         -- add the pk_property
+        AND t2.fk_project = ${this.addParam(fkProject)}
+        -- add the pk_project here
         -- ensure the target entity is a temporal entity
         AND t1.fk_temporal_entity = t3.pk_entity
+        -- ensure the target temporal entity has right class
+        AND t3.fk_class = ${this.addParam(fkTargetClass)}
         AND t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
       ),
@@ -376,15 +384,16 @@ class FlatObjectQueryBuilder {
       -- roles
       tw2 AS (
         SELECT
-          t1.fk_property,
-          t1.fk_entity,
-          t1.fk_temporal_entity,
-          t1.is_in_project_count,
-          t1.is_standard_in_project_count,
-          t1.community_favorite_calendar,
-          t1.range_max_quantifier,
-          t1.domain_max_quantifier,
-          t1.pk_entity
+          ${this.createSelect('t1', 'InfRole')}
+          --t1.fk_property,
+          --t1.fk_entity,
+          --t1.fk_temporal_entity,
+          --t1.is_in_project_count,
+          --t1.is_standard_in_project_count,
+          --t1.community_favorite_calendar,
+          --t1.range_max_quantifier,
+          --t1.domain_max_quantifier,
+          --t1.pk_entity
         FROM
           tw0 t1
         LIMIT ${this.addParam(limit)} -- add limit
@@ -406,15 +415,16 @@ class FlatObjectQueryBuilder {
       -- outgoing_roles of temporal_entity
       tw4 AS (
         SELECT
-          t1.fk_property,
-          t1.fk_entity,
-          t1.fk_temporal_entity,
-          t1.is_in_project_count,
-          t1.is_standard_in_project_count,
-          t1.community_favorite_calendar,
-          t1.range_max_quantifier,
-          t1.domain_max_quantifier,
-          t1.pk_entity
+          ${this.createSelect('t1', 'InfRole')}
+          --t1.fk_property,
+          --t1.fk_entity,
+          --t1.fk_temporal_entity,
+          --t1.is_in_project_count,
+          --t1.is_standard_in_project_count,
+          --t1.community_favorite_calendar,
+          --t1.range_max_quantifier,
+          --t1.domain_max_quantifier,
+          --t1.pk_entity
         FROM
           tw3
           CROSS JOIN information.v_role t1

@@ -11,10 +11,10 @@ export interface ProClassFieldConfigInterface {
   "pk_entity"?: number;
   "fk_app_context": number;
   "fk_project"?: number;
-  "fk_class"?: number;
   "fk_property"?: number;
   "fk_class_field"?: number;
-  "property_is_outgoing"?: boolean;
+  "fk_domain_class"?: number;
+  "fk_range_class"?: number;
   "ord_num"?: number;
   "fk_class_for_class_field"?: number;
   app_context?: SysAppContext;
@@ -27,10 +27,10 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
   "pk_entity": number;
   "fk_app_context": number;
   "fk_project": number;
-  "fk_class": number;
   "fk_property": number;
   "fk_class_field": number;
-  "property_is_outgoing": boolean;
+  "fk_domain_class": number;
+  "fk_range_class": number;
   "ord_num": number;
   "fk_class_for_class_field": number;
   app_context?: SysAppContext;
@@ -82,10 +82,6 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           name: 'fk_project',
           type: 'number'
         },
-        "fk_class": {
-          name: 'fk_class',
-          type: 'number'
-        },
         "fk_property": {
           name: 'fk_property',
           type: 'number'
@@ -94,9 +90,13 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           name: 'fk_class_field',
           type: 'number'
         },
-        "property_is_outgoing": {
-          name: 'property_is_outgoing',
-          type: 'boolean'
+        "fk_domain_class": {
+          name: 'fk_domain_class',
+          type: 'number'
+        },
+        "fk_range_class": {
+          name: 'fk_range_class',
+          type: 'number'
         },
         "ord_num": {
           name: 'ord_num',

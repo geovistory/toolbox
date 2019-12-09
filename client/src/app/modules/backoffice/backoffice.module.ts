@@ -12,9 +12,6 @@ import { ClassAPIEpics } from './components/class/api/class.epics';
 import { ClassAPIActions } from './components/class/api/class.actions';
 import { DndModule } from 'ng2-dnd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ClassUiContextComponent } from './components/class-ui-context/class-ui-context.component';
-import { ClassUiContextAPIActions } from './components/class-ui-context/api/class-ui-context.actions';
-import { ClassUiContextAPIEpics } from './components/class-ui-context/api/class-ui-context.epics';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { NamespaceListAPIActions } from './components/namespace-list/api/namespace-list.actions';
 import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace-list.epics';
@@ -82,8 +79,6 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
   providers: [
     ClassAPIActions,
     ClassAPIEpics,
-    ClassUiContextAPIActions,
-    ClassUiContextAPIEpics,
     NamespaceListAPIActions,
     NamespaceListAPIEpics,
     SystemTypeListAPIActions,
@@ -104,7 +99,6 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
     ClassComponent,
     PropertyListComponent,
     ClassListComponent,
-    ClassUiContextComponent,
     NamespaceListComponent,
     SystemTypeListComponent,
     DfhLabelListEditComponent,

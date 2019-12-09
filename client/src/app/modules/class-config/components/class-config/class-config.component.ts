@@ -49,13 +49,15 @@ export class ClassConfigComponent implements OnInit {
     this.classLabel$ = this.c.pipeLabelOfClass(this.fkClass)
     this.fields$ = this.c.pipeFieldDefinitions(this.fkClass, this.fkAppContext).pipe(
       mergeMap(fields => combineLatest(fields
-        //Pipe aspects of each field
+        // Pipe aspects of each field
         .map(field => {
 
           // If this field is a class Field
-          if (!field.pkProperty) return of({
-            ...field
-          })
+          if (!field.pkProperty) {
+            return of({
+              ...field
+            })
+          }
 
           // If this field is a property field
           return combineLatest(

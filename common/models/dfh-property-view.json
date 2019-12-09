@@ -35,17 +35,11 @@
       "id": true,
       "generated": true
     },
-    "dfh_pk_property": {
-      "type": "number"
-    },
     "dfh_identifier_in_namespace": {
       "type": "string"
     },
     "dfh_standard_label": {
       "type": "string"
-    },
-    "dfh_fk_property_of_origin": {
-      "type": "number"
     },
     "dfh_domain_instances_min_quantifier": {
       "type": "number"

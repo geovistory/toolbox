@@ -18,12 +18,19 @@ export const proDefinitions: ReducerConfigCollection = {
     groupBy: [
       {
         keyInStore: 'fk_class__fk_app_context',
-        groupByFn: (d: ProClassFieldConfig): string => d.fk_class + '_' + d.fk_app_context
+        groupByFn: (d: ProClassFieldConfig): string => {
+          const fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field
+          return fk_class + '_' + d.fk_app_context
+        }
       },
       {
-        keyInStore: 'fk_property__property_is_outgoing__fk_app_context',
-        groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.property_is_outgoing + '_' + d.fk_app_context
-      }
+        keyInStore: 'fk_property__fk_domain_class__fk_app_context',
+        groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_domain_class + '_' + d.fk_app_context
+      },
+      {
+        keyInStore: 'fk_property__fk_range_class__fk_app_context',
+        groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_range_class + '_' + d.fk_app_context
+      },
     ]
   },
   dfh_class_proj_rel: {
@@ -35,8 +42,12 @@ export const proDefinitions: ReducerConfigCollection = {
       {
         keyInStore: 'fk_project__enabled_in_entities',
         groupByFn: (d: ProDfhClassProjRel): string => d.fk_project + '_' + d.enabled_in_entities
+      },
+      {
+        keyInStore: 'fk_project',
+        groupByFn: (d: ProDfhClassProjRel): string => d.fk_project.toString()
       }
-    ]
+    ],
   },
   property_label: {
     indexBy: {

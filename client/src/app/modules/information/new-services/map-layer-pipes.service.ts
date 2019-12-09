@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, InfPersistentItem, InfPlace, InfTemporalEntity, TimeSpan, EntityPreview } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfPlace, InfTemporalEntity, TimeSpan, EntityPreview, WarEntityPreview } from 'app/core';
 import { switchMapOr } from 'app/core/util/switchMapOr';
 import { flatten, values } from 'ramda';
 import { combineLatest, Observable, pipe } from '../../../../../node_modules/rxjs';
@@ -7,11 +7,41 @@ import { map, switchMap, tap, filter } from '../../../../../node_modules/rxjs/op
 import { DfhConfig } from '../shared/dfh-config';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
-import { QueryPoint, GeoEntity, GeoPresence } from '../../visuals/components/map-query-layer/map-query-layer.component';
-import { getTemporalDistribution } from 'app/shared/classes/statistic-helpers';
+import { getTemporalDistribution, TemporalDistribution } from 'app/shared/classes/statistic-helpers';
 import { CzmlPacketGenerator } from 'app/shared/classes/czml-packet-generator';
 import { InformationPipesService } from './information-pipes.service';
 import { cache, spyTag } from '../../../shared';
+
+export interface GeoPresence {
+  time_span: TimeSpan,
+  was_at: {
+    lat: number,
+    long: number
+  }
+}
+
+export interface GeoEntity extends EntityPreview {
+  presences: GeoPresence[],
+}
+
+export interface QueryPoint {
+  id;
+  color: string;
+  presences: GeoPresence[],
+  label: string,
+  labels?: {
+    time_span: TimeSpan,
+    label: string
+  }[],
+  // these are the entity_previews given by the default entity_preview column
+  entities: WarEntityPreview[],
+
+  // these are the aggregated temporal entites given by the temporal column
+  temporalEntities?: WarEntityPreview[],
+
+  // if temporal distribution is added, the point size can be made time dynamic
+  temporalDistribution?: TemporalDistribution,
+}
 export interface InputForCzml {
   teEnPk: number
   teEnTimeSpan: TimeSpan
@@ -230,7 +260,7 @@ export class MapLayerPipesService {
           ))
         )),
         map(arrArr => flatten(arrArr).filter(x => !!x) as any as InfTemporalEntity[]),
-    )
+      )
   }
 
   /**

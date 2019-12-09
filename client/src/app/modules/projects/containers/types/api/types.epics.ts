@@ -1,17 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LoadingBarActions, InfPersistentItemApi, DfhClassApi, InfPersistentItem, DatNamespaceApi, DatNamespace, SysConfig } from 'app/core';
-import { FluxStandardAction } from 'flux-standard-action';
-import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
-import { Observable, combineLatest } from 'rxjs';
-import { switchMap, takeUntil, filter, first } from 'rxjs/operators';
-import { TypesComponent } from '../types.component';
-import { TypesAPIActions, TypesAPIAction } from './types.actions';
-import * as Config from '../../../../../../../../common/config/Config';
+import { InfPersistentItemApi, LoadingBarActions } from 'app/core';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { Action } from 'redux';
-import { createPeItDetail } from 'app/core/state/services/state-creator';
-import { ActiveProjectActions, ActiveProjectAction } from '../../../../../core/active-project';
-import { ofSubstore } from 'app/core/store/module';
+import { combineEpics, Epic } from 'redux-observable-es6-compat';
+import { TypesComponent } from '../types.component';
+import { TypesAPIActions } from './types.actions';
 
 @Injectable()
 export class TypesAPIEpics {

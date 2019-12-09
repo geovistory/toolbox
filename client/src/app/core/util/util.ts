@@ -1,22 +1,20 @@
-import { ClassConfig, ProjectCrm, ProjectPreview } from 'app/core/active-project/active-project.models';
-import { AppeDetail, ClassInstanceFieldLabel, ClassInstanceLabel, ExistenceTimeDetail, FieldLabel, FieldList, LangDetail, PeItDetail, PlaceDetail, PropertyField, PropertyFieldList, RoleDetail, RoleDetailList, RoleLabel, TeEntDetail } from 'app/core/state/models';
-import { fieldKey, propertyFieldKey, propertyFieldKeyFromParams, roleDetailKey } from 'app/core/state/services/state-creator';
+import { FormArray } from '@angular/forms';
+import { ProjectPreview } from 'app/core/active-project/active-project.models';
+import { ExistenceTimeDetail, FieldLabel, FieldList, PeItDetail, PropertyField, RoleDetail, RoleDetailList, TeEntDetail } from 'app/core/state/models';
+import { ByPk } from 'app/core/store/model';
 import { TimeSpan } from 'app/core/time-span/time-span';
 import { QuillDoc } from 'app/modules/quill';
-import { indexBy, omit } from 'ramda';
+import { omit } from 'ramda';
 import * as Config from '../../../../../common/config/Config';
-import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
+import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/angular-cesium';
+import { TimeSpanItem } from '../../modules/information/new-components/properties-tree/properties-tree.models';
+import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
 import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysClassField } from '../sdk';
 import { Field } from '../state/models/field';
 import { TextPropertyField } from '../state/models/text-property-field';
-import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
-import { ByPk } from 'app/core/store/model';
-import { TimeSpanItem } from '../../modules/information/new-components/properties-tree/properties-tree.models';
-import { ActionType, AcNotification, AcEntity } from '../../../../node_modules/angular-cesium';
-import { FormArray } from '@angular/forms';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator
@@ -305,17 +303,17 @@ export class U {
     });
   }
 
-  /**
-   * Converts array of ingoing Property and array of outgoing Property to PropertyFieldList
-   * @param ingoingProperties
-   * @param outgoingProperties
-   */
-  static propertyFieldsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): PropertyFieldList {
-    return indexBy(propertyFieldKey, [
-      ...U.infProperties2PropertyFields(false, ingoingProperties),
-      ...U.infProperties2PropertyFields(true, outgoingProperties)
-    ])
-  };
+  // /**
+  //  * Converts array of ingoing Property and array of outgoing Property to PropertyFieldList
+  //  * @param ingoingProperties
+  //  * @param outgoingProperties
+  //  */
+  // static propertyFieldsFromProperties(ingoingProperties: DfhProperty[], outgoingProperties: DfhProperty[]): PropertyFieldList {
+  //   return indexBy(propertyFieldKey, [
+  //     ...U.infProperties2PropertyFields(false, ingoingProperties),
+  //     ...U.infProperties2PropertyFields(true, outgoingProperties)
+  //   ])
+  // };
 
   /**
    * Gets ord_num of PropertyField or null, if not available
@@ -448,157 +446,157 @@ export class U {
     } else return undefined;
   }
 
-  /**
-   * Converts a DfhClass to a ClassConfig
-   * @param dfhC
-   */
-  static classConfigFromDfhClass(dfhC: DfhClass, systemRelevantClass: SysSystemRelevantClass): ClassConfig {
+  // /**
+  //  * Converts a DfhClass to a ClassConfig
+  //  * @param dfhC
+  //  */
+  // static classConfigFromDfhClass(dfhC: DfhClass, systemRelevantClass: SysSystemRelevantClass): ClassConfig {
 
-    // extract class label. prefer eager loaded label over standard label.
-    const extractClassLabel = (c: DfhClass): string => {
-      if (c.labels && c.labels.length) return c.labels[0].dfh_label;
-      else return c.dfh_standard_label
-    }
+  //   // extract class label. prefer eager loaded label over standard label.
+  //   const extractClassLabel = (c: DfhClass): string => {
+  //     if (c.labels && c.labels.length) return c.labels[0].dfh_label;
+  //     else return c.dfh_standard_label
+  //   }
 
-    const extractSubclassOf = (c: DfhClass): 'peIt' | 'teEnt' | undefined => {
-      const systype = (!c.class_profile_view ? null :
-        !c.class_profile_view[0] ? null :
-          !c.class_profile_view[0].dfh_fk_system_type ? null :
-            c.class_profile_view[0].dfh_fk_system_type);
+  //   const extractSubclassOf = (c: DfhClass): 'peIt' | 'teEnt' | undefined => {
+  //     const systype = (!c.class_profile_view ? null :
+  //       !c.class_profile_view[0] ? null :
+  //         !c.class_profile_view[0].dfh_fk_system_type ? null :
+  //           c.class_profile_view[0].dfh_fk_system_type);
 
-      if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM) return 'peIt';
-      if (systype === DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY) return 'teEnt';
-      else return undefined;
-    }
+  //     if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM) return 'peIt';
+  //     if (systype === DfhConfig.PK_SYSTEM_TYPE_TEMPORAL_ENTITY) return 'teEnt';
+  //     else return undefined;
+  //   }
 
-    const extractIsInProject = (c: DfhClass): boolean => {
-      return !c.proj_rels ? false :
-        !c.proj_rels[0] ? false : c.proj_rels[0].enabled_in_entities;
-    }
+  //   const extractIsInProject = (c: DfhClass): boolean => {
+  //     return !c.proj_rels ? false :
+  //       !c.proj_rels[0] ? false : c.proj_rels[0].enabled_in_entities;
+  //   }
 
-    const cConf: ClassConfig = {
-      pkEntity: dfhC.pk_entity,
-      dfh_pk_class: dfhC.dfh_pk_class,
-      subclassOf: extractSubclassOf(dfhC),
-      profileLabels: dfhC.class_profile_view.map(prof => prof.dfh_profile_label).join(', '),
-      profilePks: dfhC.class_profile_view.map(prof => prof.dfh_fk_profile),
-      isInProject: extractIsInProject(dfhC),
-      projRel: U.getProjRel(dfhC),
-      label: extractClassLabel(dfhC),
-      dfh_standard_label: dfhC.dfh_standard_label,
-      changingProjRel: false,
-      scopeNote: !dfhC.text_properties ? '' : !dfhC.text_properties.length ? '' : dfhC.text_properties[0].dfh_text_property,
-      dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
-      uiContexts: {},
-      required_by_sources: systemRelevantClass ? systemRelevantClass.required_by_sources : false,
-      required_by_entities: systemRelevantClass ? systemRelevantClass.required_by_entities : false,
-      required_by_basics: systemRelevantClass ? systemRelevantClass.required_by_basics : false,
-      excluded_from_entities: systemRelevantClass ? systemRelevantClass.excluded_from_entities : false
-    };
+  //   const cConf: ClassConfig = {
+  //     pkEntity: dfhC.pk_entity,
+  //     dfh_pk_class: dfhC.dfh_pk_class,
+  //     subclassOf: extractSubclassOf(dfhC),
+  //     profileLabels: dfhC.class_profile_view.map(prof => prof.dfh_profile_label).join(', '),
+  //     profilePks: dfhC.class_profile_view.map(prof => prof.dfh_fk_profile),
+  //     isInProject: extractIsInProject(dfhC),
+  //     projRel: U.getProjRel(dfhC),
+  //     label: extractClassLabel(dfhC),
+  //     dfh_standard_label: dfhC.dfh_standard_label,
+  //     changingProjRel: false,
+  //     scopeNote: !dfhC.text_properties ? '' : !dfhC.text_properties.length ? '' : dfhC.text_properties[0].dfh_text_property,
+  //     dfh_identifier_in_namespace: dfhC.dfh_identifier_in_namespace,
+  //     uiContexts: {},
+  //     required_by_sources: systemRelevantClass ? systemRelevantClass.required_by_sources : false,
+  //     required_by_entities: systemRelevantClass ? systemRelevantClass.required_by_entities : false,
+  //     required_by_basics: systemRelevantClass ? systemRelevantClass.required_by_basics : false,
+  //     excluded_from_entities: systemRelevantClass ? systemRelevantClass.excluded_from_entities : false
+  //   };
 
-    if (dfhC.ingoing_properties || dfhC.outgoing_properties) {
-      cConf.propertyFields = U.propertyFieldsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
-    }
-    return cConf;
-  }
+  //   if (dfhC.ingoing_properties || dfhC.outgoing_properties) {
+  //     cConf.propertyFields = U.propertyFieldsFromProperties(dfhC.ingoing_properties, dfhC.outgoing_properties)
+  //   }
+  //   return cConf;
+  // }
 
   /**************************************************************************
    * Label Generator Functions
    **************************************************************************/
 
-  static labelFromFieldList(r: FieldList, settings: LabelGeneratorSettings): ClassInstanceLabel {
-    const max = !settings ? undefined : settings.fieldsMax;
-    const duChildren = U.obj2Arr(r);
+  // static labelFromFieldList(r: FieldList, settings: LabelGeneratorSettings): ClassInstanceLabel {
+  //   const max = !settings ? undefined : settings.fieldsMax;
+  //   const duChildren = U.obj2Arr(r);
 
-    // create array with max amount of labels
-    const sliced = max ? duChildren.slice(0, max) : duChildren;
+  //   // create array with max amount of labels
+  //   const sliced = max ? duChildren.slice(0, max) : duChildren;
 
-    return {
-      path: settings.path,
-      parts: sliced.map(c => U.labelFromField(c, { ...settings, path: [...settings.path, fieldKey(c)] })),
-      hasMore: (duChildren.length > 2)
-    }
-  }
-
-
-  static labelFromField(c: Field, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
-    if (c && c.type == 'PropertyField') return U.labelFromPropertyField(c as PropertyField, settings);
-    else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail, settings);
-    else if (c && c.type == 'TextPropertyField') return U.labelFromTextPropertyField(c as TextPropertyField, settings);
-
-    else return null;
-  }
+  //   return {
+  //     path: settings.path,
+  //     parts: sliced.map(c => U.labelFromField(c, { ...settings, path: [...settings.path, fieldKey(c)] })),
+  //     hasMore: (duChildren.length > 2)
+  //   }
+  // }
 
 
-  static labelFromPropertyField(r: PropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
-    const max = !settings ? undefined : settings.rolesMax;
+  // static labelFromField(c: Field, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+  //   if (c && c.type == 'PropertyField') return U.labelFromPropertyField(c as PropertyField, settings);
+  //   else if (c && c.type == 'ExistenceTimeDetail') return U.labelFromExTime(c as ExistenceTimeDetail, settings);
+  //   else if (c && c.type == 'TextPropertyField') return U.labelFromTextPropertyField(c as TextPropertyField, settings);
 
-    const roleDetails = U.obj2Arr(r._role_list);
-    const duChildLabel = new ClassInstanceFieldLabel({ path: settings.path });
-
-    // create array with max amount of labels
-    const spliced = max ? roleDetails.splice(0, max) : roleDetails;
-
-    duChildLabel.roleLabels = spliced.map(det => U.labelFromRoleDetail(det, { ...settings, path: [...settings.path, '_role_list', roleDetailKey(det)] }));
-
-    if (roleDetails.length > 1) duChildLabel.suffix = '(+' + (roleDetails.length - max) + ')';
-
-    duChildLabel.introducer = r.label.default;
-
-    return duChildLabel;
-  }
+  //   else return null;
+  // }
 
 
+  // static labelFromPropertyField(r: PropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+  //   const max = !settings ? undefined : settings.rolesMax;
 
-  static labelFromRoleDetail(r: RoleDetail, settings: LabelGeneratorSettings): RoleLabel {
-    const path = settings.path;
-    if (r) {
-      if (r._teEnt) {
-        let string = '';
-        if (r._teEnt._fields) {
-          const label = U.labelFromFieldList(r._teEnt._fields, settings);
-          if (label && label.parts && label.parts[0] && label.parts[0].roleLabels && label.parts[0].roleLabels[0] && label.parts[0].roleLabels[0].string) {
-            string = label.parts[0].roleLabels[0].string;
-          }
-        }
-        return {
-          path,
-          type: 'te-ent',
-          string
-        }
-      } else if (r._appe) return { path, type: 'appe', string: U.labelFromAppeDetail(r._appe) };
-      else if (r._lang) return { path, type: 'lang', string: U.labelFromLangDetail(r._lang) };
-      else if (r._place) return { path, type: 'place', string: U.labelFromPlaceDetail(r._place) };
-      else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', fkEntity: r.role.fk_entity };
+  //   const roleDetails = U.obj2Arr(r._role_list);
+  //   const duChildLabel = new ClassInstanceFieldLabel({ path: settings.path });
 
-      else {
-        console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
+  //   // create array with max amount of labels
+  //   const spliced = max ? roleDetails.splice(0, max) : roleDetails;
 
-      }
-    } else {
-      return new RoleLabel();
-    }
+  //   duChildLabel.roleLabels = spliced.map(det => U.labelFromRoleDetail(det, { ...settings, path: [...settings.path, '_role_list', roleDetailKey(det)] }));
 
-  }
+  //   if (roleDetails.length > 1) duChildLabel.suffix = '(+' + (roleDetails.length - max) + ')';
+
+  //   duChildLabel.introducer = r.label.default;
+
+  //   return duChildLabel;
+  // }
 
 
-  static labelFromAppeDetail(a: AppeDetail): string {
-    if (a && a.appellation && a.appellation.quill_doc) {
-      return U.stringFromAppellation(a.appellation);
-    } else return null;
-  }
 
-  static labelFromLangDetail(l: LangDetail): string {
-    if (l && l.language) return l.language.notes;
+  // static labelFromRoleDetail(r: RoleDetail, settings: LabelGeneratorSettings): RoleLabel {
+  //   const path = settings.path;
+  //   if (r) {
+  //     if (r._teEnt) {
+  //       let string = '';
+  //       if (r._teEnt._fields) {
+  //         const label = U.labelFromFieldList(r._teEnt._fields, settings);
+  //         if (label && label.parts && label.parts[0] && label.parts[0].roleLabels && label.parts[0].roleLabels[0] && label.parts[0].roleLabels[0].string) {
+  //           string = label.parts[0].roleLabels[0].string;
+  //         }
+  //       }
+  //       return {
+  //         path,
+  //         type: 'te-ent',
+  //         string
+  //       }
+  //     } else if (r._appe) return { path, type: 'appe', string: U.labelFromAppeDetail(r._appe) };
+  //     else if (r._lang) return { path, type: 'lang', string: U.labelFromLangDetail(r._lang) };
+  //     else if (r._place) return { path, type: 'place', string: U.labelFromPlaceDetail(r._place) };
+  //     else if (r._leaf_peIt) return { path, type: 'leaf-pe-it', fkEntity: r.role.fk_entity };
 
-    else return null;
-  }
+  //     else {
+  //       console.warn('labelFromRoleDetail: This kind of RoleDetail does not produce labels');
 
-  static labelFromPlaceDetail(p: PlaceDetail): string {
-    if (p && p.place) return 'WGS84: ' + p.place.lat + '°, ' + p.place.long + '°';
+  //     }
+  //   } else {
+  //     return new RoleLabel();
+  //   }
 
-    else return null;
-  }
+  // }
+
+
+  // static labelFromAppeDetail(a: AppeDetail): string {
+  //   if (a && a.appellation && a.appellation.quill_doc) {
+  //     return U.stringFromAppellation(a.appellation);
+  //   } else return null;
+  // }
+
+  // static labelFromLangDetail(l: LangDetail): string {
+  //   if (l && l.language) return l.language.notes;
+
+  //   else return null;
+  // }
+
+  // static labelFromPlaceDetail(p: PlaceDetail): string {
+  //   if (p && p.place) return 'WGS84: ' + p.place.lat + '°, ' + p.place.long + '°';
+
+  //   else return null;
+  // }
 
   static labelFromTimePrimitive(r: InfRole): TimePrimitive {
     if (r) return U.infRole2TimePrimitive(r)
@@ -606,83 +604,83 @@ export class U {
     else return null;
   }
 
-  static labelFromLeafPeIt(l: PeItDetail, settings: LabelGeneratorSettings): string {
-    if (l._fields) {
+  // static labelFromLeafPeIt(l: PeItDetail, settings: LabelGeneratorSettings): string {
+  //   if (l._fields) {
 
-      const p = U.labelFromFieldList(l._fields, { ...settings, path: [...settings.path, '_fields'] })
+  //     const p = U.labelFromFieldList(l._fields, { ...settings, path: [...settings.path, '_fields'] })
 
-      if (p && p.parts && p.parts[0] && p.parts[0].roleLabels && p.parts[0].roleLabels[0]) {
-        return p.parts[0].roleLabels[0].string;
-      }
-    } else return null;
-  }
+  //     if (p && p.parts && p.parts[0] && p.parts[0].roleLabels && p.parts[0].roleLabels[0]) {
+  //       return p.parts[0].roleLabels[0].string;
+  //     }
+  //   } else return null;
+  // }
 
-  static labelFromTextPropertyField(txtPropField: TextPropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
-    return new ClassInstanceFieldLabel({
-      path: settings.path,
-      introducer: '',
-      roleLabels: [{
-        path: undefined,
-        type: 'txt-prop',
-        string: U.obj2Arr(txtPropField.textPropertyDetailList).slice(0, settings.rolesMax).map(tD => (
-          U.stringFromQuillDoc(tD.textProperty.quill_doc)
-        )).join(', ')
-      }]
-    })
-  }
+  // static labelFromTextPropertyField(txtPropField: TextPropertyField, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+  //   return new ClassInstanceFieldLabel({
+  //     path: settings.path,
+  //     introducer: '',
+  //     roleLabels: [{
+  //       path: undefined,
+  //       type: 'txt-prop',
+  //       string: U.obj2Arr(txtPropField.textPropertyDetailList).slice(0, settings.rolesMax).map(tD => (
+  //         U.stringFromQuillDoc(tD.textProperty.quill_doc)
+  //       )).join(', ')
+  //     }]
+  //   })
+  // }
 
-  static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
-    let earliest: TimePrimitive, latest: TimePrimitive;
-    let eRoleDetail: RoleDetail, lRoleDetail;
+  // static labelFromExTime(e: ExistenceTimeDetail, settings: LabelGeneratorSettings): ClassInstanceFieldLabel {
+  //   let earliest: TimePrimitive, latest: TimePrimitive;
+  //   let eRoleDetail: RoleDetail, lRoleDetail;
 
-    if (e && e._fields) {
-      const c = e._fields;
-      const bOb = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
-      const eOb = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
-      const bOe = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
-      const eOe = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
-      const at = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
-      const ong = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
+  //   if (e && e._fields) {
+  //     const c = e._fields;
+  //     const bOb = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_BEGIN, true)];
+  //     const eOb = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_BEGIN, true)];
+  //     const bOe = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_BEGIN_OF_END, true)];
+  //     const eOe = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_END_OF_END, true)];
+  //     const at = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_AT_SOME_TIME_WITHIN, true)];
+  //     const ong = c[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_ONGOING_THROUGHOUT, true)];
 
-      // Get earliest date
-      const earliestArr = [bOb, eOb, at, ong, bOe, eOe].filter(rs => (rs))
-      if (earliestArr && earliestArr[0]) {
-        if (earliestArr[0]._role_list) {
-          const roleDetails = U.obj2Arr(earliestArr[0]._role_list);
-          if (roleDetails[0]) {
-            eRoleDetail = roleDetails[0];
-            earliest = U.labelFromTimePrimitive(eRoleDetail.role);
-          }
-        }
-      }
+  //     // Get earliest date
+  //     const earliestArr = [bOb, eOb, at, ong, bOe, eOe].filter(rs => (rs))
+  //     if (earliestArr && earliestArr[0]) {
+  //       if (earliestArr[0]._role_list) {
+  //         const roleDetails = U.obj2Arr(earliestArr[0]._role_list);
+  //         if (roleDetails[0]) {
+  //           eRoleDetail = roleDetails[0];
+  //           earliest = U.labelFromTimePrimitive(eRoleDetail.role);
+  //         }
+  //       }
+  //     }
 
-      // Get latest date
-      const latestArr = [eOe, bOe, at, ong, eOb, bOb].filter(rs => (rs))
-      if (latestArr && latestArr[0]) {
-        if (latestArr[0]._role_list) {
-          const roleDetails = U.obj2Arr(latestArr[0]._role_list);
-          if (roleDetails[0]) {
-            lRoleDetail = roleDetails[0];
-            // if latest equals earliest, don't add it
-            if (lRoleDetail != eRoleDetail) latest = U.labelFromTimePrimitive(lRoleDetail.role);
-          }
-        }
-      }
-    }
+  //     // Get latest date
+  //     const latestArr = [eOe, bOe, at, ong, eOb, bOb].filter(rs => (rs))
+  //     if (latestArr && latestArr[0]) {
+  //       if (latestArr[0]._role_list) {
+  //         const roleDetails = U.obj2Arr(latestArr[0]._role_list);
+  //         if (roleDetails[0]) {
+  //           lRoleDetail = roleDetails[0];
+  //           // if latest equals earliest, don't add it
+  //           if (lRoleDetail != eRoleDetail) latest = U.labelFromTimePrimitive(lRoleDetail.role);
+  //         }
+  //       }
+  //     }
+  //   }
 
-    if (!earliest && !latest) return null;
+  //   if (!earliest && !latest) return null;
 
-    return new ClassInstanceFieldLabel({
-      path: settings.path,
-      introducer: 'When',
-      roleLabels: [{
-        path: undefined,
-        type: 'ex-time',
-        exTimeLabel: { earliest, latest }
-      }]
-    })
+  //   return new ClassInstanceFieldLabel({
+  //     path: settings.path,
+  //     introducer: 'When',
+  //     roleLabels: [{
+  //       path: undefined,
+  //       type: 'ex-time',
+  //       exTimeLabel: { earliest, latest }
+  //     }]
+  //   })
 
-  }
+  // }
 
 
   static stringFromAppellation(appellation: InfAppellation): string {
@@ -726,163 +724,163 @@ export class U {
 
   }
 
-  static czmlPacketsFromPresences(presencesWithPath: { path: string[]; teEntDetail: TeEntDetail; }[]): {
-    earliestJulianDate: CesiumJulianDate,
-    latestJulianDate: CesiumJulianDate,
-    czmlPackets: any[]
-  } | null {
-    if (!presencesWithPath) return null;
+  // static czmlPacketsFromPresences(presencesWithPath: { path: string[]; teEntDetail: TeEntDetail; }[]): {
+  //   earliestJulianDate: CesiumJulianDate,
+  //   latestJulianDate: CesiumJulianDate,
+  //   czmlPackets: any[]
+  // } | null {
+  //   if (!presencesWithPath) return null;
 
 
-    const res: { earliestJulianDate: CesiumJulianDate, latestJulianDate: CesiumJulianDate, czmlPackets: any[] } = {
-      earliestJulianDate: undefined,
-      latestJulianDate: undefined,
-      czmlPackets: []
-    };
+  //   const res: { earliestJulianDate: CesiumJulianDate, latestJulianDate: CesiumJulianDate, czmlPackets: any[] } = {
+  //     earliestJulianDate: undefined,
+  //     latestJulianDate: undefined,
+  //     czmlPackets: []
+  //   };
 
-    presencesWithPath.forEach(presenceWithPath => {
+  //   presencesWithPath.forEach(presenceWithPath => {
 
-      const presence = presenceWithPath.teEntDetail;
+  //     const presence = presenceWithPath.teEntDetail;
 
-      // timeSpanActivated === false
-      const colorInactive = [255, 255, 255, 100];
+  //     // timeSpanActivated === false
+  //     const colorInactive = [255, 255, 255, 100];
 
-      // timeSpanActivated === true
-      const colorActive = [32, 201, 251, 200];
+  //     // timeSpanActivated === true
+  //     const colorActive = [32, 201, 251, 200];
 
-      // accentuation === 'selected'
-      const outlineColorSelected = [0, 255, 255, 255];
-      const outlineWidthSelected = 3;
+  //     // accentuation === 'selected'
+  //     const outlineColorSelected = [0, 255, 255, 255];
+  //     const outlineWidthSelected = 3;
 
-      // accentuation === 'highlighted'
-      const outlineColorHighlighted = [255, 206, 0, 255];
-      const outlineWidthHighlighted = 3;
+  //     // accentuation === 'highlighted'
+  //     const outlineColorHighlighted = [255, 206, 0, 255];
+  //     const outlineWidthHighlighted = 3;
 
-      // accentuation === 'none'
-      const outlineColorDefault = [26, 130, 95, 255]
-      const outlineWidthDefault = 1;
+  //     // accentuation === 'none'
+  //     const outlineColorDefault = [26, 130, 95, 255]
+  //     const outlineWidthDefault = 1;
 
-      // validate presence
-      if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
+  //     // validate presence
+  //     if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
 
-      // return false if no DateUnitChildren
-      if (!presence._fields) return null;
+  //     // return false if no DateUnitChildren
+  //     if (!presence._fields) return null;
 
-      // return false if no PropertyField leading to a Place
-      const placeSet = presence._fields[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
-      if (!placeSet || placeSet.type != 'PropertyField') return null;
+  //     // return false if no PropertyField leading to a Place
+  //     const placeSet = presence._fields[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
+  //     if (!placeSet || placeSet.type != 'PropertyField') return null;
 
-      // return false if no Place in first RoleDetail
-      const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
-      if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.place) return null;
+  //     // return false if no Place in first RoleDetail
+  //     const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
+  //     if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.place) return null;
 
-      // return false if no pk_entity in first RoleDetail
-      if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.pk_entity) return null;
+  //     // return false if no pk_entity in first RoleDetail
+  //     if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.pk_entity) return null;
 
-      let czmlPacket: any = {}
+  //     let czmlPacket: any = {}
 
-      // colors used for dynamic color change
-      let colorRgba: any[] = colorInactive;
+  //     // colors used for dynamic color change
+  //     let colorRgba: any[] = colorInactive;
 
-      // get the TimeSpan of that TeEnt
-      const exTime = U.timeSpanFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
-      if (exTime) {
+  //     // get the TimeSpan of that TeEnt
+  //     const exTime = U.timeSpanFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
+  //     if (exTime) {
 
-        const minMax = exTime.getMinMaxTimePrimitive();
+  //       const minMax = exTime.getMinMaxTimePrimitive();
 
-        const min = new Cesium.JulianDate(minMax.min.julianDay);
-        const max = new Cesium.JulianDate(minMax.max.getDateTime().getEndOf(minMax.max.duration).getJulianDay());
+  //       const min = new Cesium.JulianDate(minMax.min.julianDay);
+  //       const max = new Cesium.JulianDate(minMax.max.getDateTime().getEndOf(minMax.max.duration).getJulianDay());
 
-        const minStr = Cesium.JulianDate.toIso8601(min);
-        const maxStr = Cesium.JulianDate.toIso8601(max);
+  //       const minStr = Cesium.JulianDate.toIso8601(min);
+  //       const maxStr = Cesium.JulianDate.toIso8601(max);
 
-        const before = Cesium.JulianDate.addSeconds(min, -1, min);
-        const beforeStr = Cesium.JulianDate.toIso8601(before);
+  //       const before = Cesium.JulianDate.addSeconds(min, -1, min);
+  //       const beforeStr = Cesium.JulianDate.toIso8601(before);
 
-        const after = Cesium.JulianDate.addSeconds(max, 1, max);
-        const afterStr = Cesium.JulianDate.toIso8601(after);
+  //       const after = Cesium.JulianDate.addSeconds(max, 1, max);
+  //       const afterStr = Cesium.JulianDate.toIso8601(after);
 
-        colorRgba = [
-          beforeStr, ...colorInactive,
-          minStr, ...colorActive,
-          maxStr, ...colorActive,
-          afterStr, ...colorInactive,
-        ];
+  //       colorRgba = [
+  //         beforeStr, ...colorInactive,
+  //         minStr, ...colorActive,
+  //         maxStr, ...colorActive,
+  //         afterStr, ...colorInactive,
+  //       ];
 
-        if (res.earliestJulianDate === undefined || Cesium.JulianDate.greaterThan(res.earliestJulianDate, before)) {
-          res.earliestJulianDate = before;
-        }
+  //       if (res.earliestJulianDate === undefined || Cesium.JulianDate.greaterThan(res.earliestJulianDate, before)) {
+  //         res.earliestJulianDate = before;
+  //       }
 
-        if (res.latestJulianDate === undefined || Cesium.JulianDate.lessThan(res.latestJulianDate, after)) {
-          res.latestJulianDate = after;
-        }
-      }
+  //       if (res.latestJulianDate === undefined || Cesium.JulianDate.lessThan(res.latestJulianDate, after)) {
+  //         res.latestJulianDate = after;
+  //       }
+  //     }
 
-      const placeRole = placeRoleDetail.role;
-      const place = placeRole.place;
+  //     const placeRole = placeRoleDetail.role;
+  //     const place = placeRole.place;
 
-      czmlPacket = {
-        ...czmlPacket,
-        id: placeRole.pk_entity,
-        position: {
-          cartographicDegrees: [place.long, place.lat, 0]
-        },
-        point: {
-          color: {
-            rgba: colorRgba,
-            forwardExtrapolationType: 'HOLD',
-            backwardExtrapolationType: 'HOLD'
-          },
-          outlineColor: {
-            rgba: [255, 0, 0, 200]
-          },
-          outlineWidth: 3,
-          pixelSize: 15
-        },
-        properties: {
-          path: JSON.stringify(presenceWithPath.path)
-        }
-      }
+  //     czmlPacket = {
+  //       ...czmlPacket,
+  //       id: placeRole.pk_entity,
+  //       position: {
+  //         cartographicDegrees: [place.long, place.lat, 0]
+  //       },
+  //       point: {
+  //         color: {
+  //           rgba: colorRgba,
+  //           forwardExtrapolationType: 'HOLD',
+  //           backwardExtrapolationType: 'HOLD'
+  //         },
+  //         outlineColor: {
+  //           rgba: [255, 0, 0, 200]
+  //         },
+  //         outlineWidth: 3,
+  //         pixelSize: 15
+  //       },
+  //       properties: {
+  //         path: JSON.stringify(presenceWithPath.path)
+  //       }
+  //     }
 
-      switch (presence.accentuation) {
-        case 'selected':
-          czmlPacket.point.outlineColor.rgba = outlineColorSelected;
-          czmlPacket.point.outlineWidth = outlineWidthSelected;
-          break;
+  //     switch (presence.accentuation) {
+  //       case 'selected':
+  //         czmlPacket.point.outlineColor.rgba = outlineColorSelected;
+  //         czmlPacket.point.outlineWidth = outlineWidthSelected;
+  //         break;
 
-        case 'highlighted':
-          czmlPacket.point.outlineColor.rgba = outlineColorHighlighted;
-          czmlPacket.point.outlineWidth = outlineWidthHighlighted;
-          break;
+  //       case 'highlighted':
+  //         czmlPacket.point.outlineColor.rgba = outlineColorHighlighted;
+  //         czmlPacket.point.outlineWidth = outlineWidthHighlighted;
+  //         break;
 
-        default:
-          czmlPacket.point.outlineColor.rgba = outlineColorDefault;
-          czmlPacket.point.outlineWidth = outlineWidthDefault;
-          break;
-      }
+  //       default:
+  //         czmlPacket.point.outlineColor.rgba = outlineColorDefault;
+  //         czmlPacket.point.outlineWidth = outlineWidthDefault;
+  //         break;
+  //     }
 
-      res.czmlPackets.push(czmlPacket)
+  //     res.czmlPackets.push(czmlPacket)
 
-    })
+  //   })
 
-    if (res.earliestJulianDate == undefined) {
-      res.earliestJulianDate = Cesium.JulianDate.fromIso8601('1200-01-01');
-    }
+  //   if (res.earliestJulianDate == undefined) {
+  //     res.earliestJulianDate = Cesium.JulianDate.fromIso8601('1200-01-01');
+  //   }
 
-    if (res.latestJulianDate == undefined) {
-      res.latestJulianDate = Cesium.JulianDate.fromIso8601('2020-01-01');
-    }
+  //   if (res.latestJulianDate == undefined) {
+  //     res.latestJulianDate = Cesium.JulianDate.fromIso8601('2020-01-01');
+  //   }
 
-    const earliestStr = Cesium.JulianDate.toIso8601(res.earliestJulianDate);
-    const latestStr = Cesium.JulianDate.toIso8601(res.latestJulianDate);
-    const availability = [earliestStr, latestStr].join('/');
+  //   const earliestStr = Cesium.JulianDate.toIso8601(res.earliestJulianDate);
+  //   const latestStr = Cesium.JulianDate.toIso8601(res.latestJulianDate);
+  //   const availability = [earliestStr, latestStr].join('/');
 
-    // res.czmlPackets.forEach(packet => {
-    //     packet['availability'] = availability
-    // })
+  //   // res.czmlPackets.forEach(packet => {
+  //   //     packet['availability'] = availability
+  //   // })
 
-    return res;
-  }
+  //   return res;
+  // }
 
 
 
@@ -949,227 +947,227 @@ export class U {
   }
 
 
-  static czmlPacketsFromTeEnts(teEntsWithPath: { path: string[]; teEntDetail: TeEntDetail; }[], crm: ProjectCrm): {
-    earliestJulianDate: CesiumJulianDate,
-    latestJulianDate: CesiumJulianDate,
-    czmlPackets: any[]
-  } | null {
+  // static czmlPacketsFromTeEnts(teEntsWithPath: { path: string[]; teEntDetail: TeEntDetail; }[], crm: ProjectCrm): {
+  //   earliestJulianDate: CesiumJulianDate,
+  //   latestJulianDate: CesiumJulianDate,
+  //   czmlPackets: any[]
+  // } | null {
 
-    const res: {
-      earliestJulianDate: CesiumJulianDate,
-      latestJulianDate: CesiumJulianDate,
-      czmlPackets: any[]
-    } = {
-      earliestJulianDate: undefined,
-      latestJulianDate: undefined,
-      czmlPackets: []
-    };
+  //   const res: {
+  //     earliestJulianDate: CesiumJulianDate,
+  //     latestJulianDate: CesiumJulianDate,
+  //     czmlPackets: any[]
+  //   } = {
+  //     earliestJulianDate: undefined,
+  //     latestJulianDate: undefined,
+  //     czmlPackets: []
+  //   };
 
-    teEntsWithPath.forEach(teEntWithPath => {
-      const path = teEntWithPath.path;
-      const teEntDetail = teEntWithPath.teEntDetail;
-
-
-
-      // get leaf peIts...
-      U.obj2Arr(teEntDetail._fields).forEach(duChild => {
-        if (duChild.type === 'PropertyField') {
-          const rs = duChild as PropertyField;
-
-          // of class geographical place or built work
-          if (
-            rs.targetClassPk === DfhConfig.CLASS_PK_GEOGRAPHICAL_PLACE ||
-            rs.targetClassPk === DfhConfig.CLASS_PK_BUILT_WORK
-          ) {
-
-            // get leaf-peIts
-            U.obj2Arr(rs._role_list).forEach(roleDetail => {
-              if (roleDetail._leaf_peIt && !roleDetail._leaf_peIt.loading) {
-                // get presences of leaf-peIts
-                const presences = U.presencesFromPeIt(roleDetail._leaf_peIt, [])
-
-                presences.forEach(p => {
-
-                  const presence = p.teEntDetail;
-
-                  // timeSpanActivated === false
-                  const colorInactive = [255, 255, 255, 100];
-
-                  // timeSpanActivated === true
-                  const colorActive = [32, 201, 251, 200];
-
-                  // accentuation === 'selected'
-                  const outlineColorSelected = [0, 255, 255, 255];
-                  const outlineWidthSelected = 3;
-
-                  // accentuation === 'highlighted'
-                  const outlineColorHighlighted = [255, 206, 0, 255];
-                  const outlineWidthHighlighted = 3;
-
-                  // accentuation === 'none'
-                  const outlineColorDefault = [26, 130, 95, 255]
-                  const outlineWidthDefault = 1;
-
-                  // validate presence
-                  if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
-
-                  // return false if no DateUnitChildren
-                  if (!presence._fields) return null;
-
-                  // return false if no PropertyField leading to a Place
-                  const placeSet = presence._fields[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
-                  if (!placeSet || placeSet.type != 'PropertyField') return null;
-
-                  // return false if no Place in first RoleDetail
-                  const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
-                  if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.place) return null;
-
-                  // return false if no pk_entity in first RoleDetail
-                  if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.pk_entity) return null;
-
-                  let czmlPacket: any = {}
-
-                  // colors used for dynamic color change
-                  let colorRgba: any[] = colorInactive;
-
-                  // get the TimeSpan of initial TeEnt not the Presence
-                  const timeSpan = U.timeSpanFromExTimeDetail(teEntDetail._fields['_field_48'] as ExistenceTimeDetail);
-
-                  // TODO: compare the TimeSpan from initial teEnt with TimeSpan of the presence and figure out which presence
-                  // is best for displaying the teEnt on the map
-                  // const TimeSpan = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
-
-                  // TimeSpan of initial TeEnt not Presence!
-                  if (timeSpan) {
-
-                    const minMax = timeSpan.getMinMaxTimePrimitive();
-
-                    const min = new Cesium.JulianDate(minMax.min.julianDay, 0, Cesium.TimeStandard.TAI);
-                    const max = new Cesium.JulianDate(minMax.max.getDateTime()
-                      .getEndOf(minMax.max.duration).getJulianDay(), 86400, Cesium.TimeStandard.TAI);
-
-                    const minStr = Cesium.JulianDate.toIso8601(min);
-                    const maxStr = Cesium.JulianDate.toIso8601(max);
-
-                    const before = Cesium.JulianDate.addSeconds(min, -1, min);
-                    const beforeStr = Cesium.JulianDate.toIso8601(before);
-
-                    const after = Cesium.JulianDate.addSeconds(max, 1, max);
-                    const afterStr = Cesium.JulianDate.toIso8601(after);
-
-                    colorRgba = [
-                      beforeStr, ...colorInactive,
-                      minStr, ...colorActive,
-                      maxStr, ...colorActive,
-                      afterStr, ...colorInactive,
-                    ];
-
-                    if (res.earliestJulianDate === undefined || Cesium.JulianDate
-                      .greaterThan(res.earliestJulianDate, before)) {
-                      res.earliestJulianDate = before;
-                    }
-
-                    if (res.latestJulianDate === undefined || Cesium.JulianDate.lessThan(res.latestJulianDate, after)) {
-                      res.latestJulianDate = after;
-                    }
-                  }
-
-                  const placeRole = placeRoleDetail.role;
-                  const place = placeRole.place;
-
-                  czmlPacket = {
-                    ...czmlPacket,
-                    id: placeRole.pk_entity,
-                    position: {
-                      cartographicDegrees: [place.long, place.lat, 0]
-                    },
-                    point: {
-                      color: {
-                        rgba: colorRgba,
-                        forwardExtrapolationType: 'HOLD',
-                        backwardExtrapolationType: 'HOLD'
-                      },
-                      outlineColor: {
-                        rgba: [255, 0, 0, 200]
-                      },
-                      outlineWidth: 3,
-                      pixelSize: 15
-                    },
-                    label: {
-                      id: 'label of: ' + placeRole.pk_entity,
-                      text: crm.classes[teEntDetail.fkClass].label,
-                      font: '16pt "source sans pro"',
-                      horizontalOrigin: 'LEFT',
-                      fillColor: {
-                        rgba: [20, 20, 20, 255]
-                      },
-                      outlineColor: {
-                        rgba: [255, 255, 255, 230]
-                      },
-                      outlineWidth: 2,
-                      pixelOffset: {
-                        cartesian2: [12.0, -16.0]
-                      },
-                      scaleByDistance: {
-                        nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
-                      },
-                      translucencyByDistance: {
-                        nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
-                      },
-                      // this makes sense if the point also scales
-                      // pixelOffsetScaleByDistance: {
-                      //     nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
-                      // },
-                      style: 'FILL_AND_OUTLINE',
-                    },
-                    properties: {
-                      path: JSON.stringify(path) // path of initial teEnt (not presence)
-                    }
-                  }
-
-                  switch (teEntDetail.accentuation) {
-                    case 'selected':
-                      czmlPacket.point.outlineColor.rgba = outlineColorSelected;
-                      czmlPacket.point.outlineWidth = outlineWidthSelected;
-                      break;
-
-                    case 'highlighted':
-                      czmlPacket.point.outlineColor.rgba = outlineColorHighlighted;
-                      czmlPacket.point.outlineWidth = outlineWidthHighlighted;
-                      break;
-
-                    default:
-                      czmlPacket.point.outlineColor.rgba = outlineColorDefault;
-                      czmlPacket.point.outlineWidth = outlineWidthDefault;
-                      break;
-                  }
-
-                  res.czmlPackets.push(czmlPacket)
-
-                })
-
-                if (res.earliestJulianDate == undefined) {
-                  res.earliestJulianDate = Cesium.JulianDate.fromIso8601('1200-01-01');
-                }
-
-                if (res.latestJulianDate == undefined) {
-                  res.latestJulianDate = Cesium.JulianDate.fromIso8601('2020-01-01');
-                }
-
-              }
-            })
+  //   teEntsWithPath.forEach(teEntWithPath => {
+  //     const path = teEntWithPath.path;
+  //     const teEntDetail = teEntWithPath.teEntDetail;
 
 
-          }
 
-        }
-      })
+  //     // get leaf peIts...
+  //     U.obj2Arr(teEntDetail._fields).forEach(duChild => {
+  //       if (duChild.type === 'PropertyField') {
+  //         const rs = duChild as PropertyField;
+
+  //         // of class geographical place or built work
+  //         if (
+  //           rs.targetClassPk === DfhConfig.CLASS_PK_GEOGRAPHICAL_PLACE ||
+  //           rs.targetClassPk === DfhConfig.CLASS_PK_BUILT_WORK
+  //         ) {
+
+  //           // get leaf-peIts
+  //           U.obj2Arr(rs._role_list).forEach(roleDetail => {
+  //             if (roleDetail._leaf_peIt && !roleDetail._leaf_peIt.loading) {
+  //               // get presences of leaf-peIts
+  //               const presences = U.presencesFromPeIt(roleDetail._leaf_peIt, [])
+
+  //               presences.forEach(p => {
+
+  //                 const presence = p.teEntDetail;
+
+  //                 // timeSpanActivated === false
+  //                 const colorInactive = [255, 255, 255, 100];
+
+  //                 // timeSpanActivated === true
+  //                 const colorActive = [32, 201, 251, 200];
+
+  //                 // accentuation === 'selected'
+  //                 const outlineColorSelected = [0, 255, 255, 255];
+  //                 const outlineWidthSelected = 3;
+
+  //                 // accentuation === 'highlighted'
+  //                 const outlineColorHighlighted = [255, 206, 0, 255];
+  //                 const outlineWidthHighlighted = 3;
+
+  //                 // accentuation === 'none'
+  //                 const outlineColorDefault = [26, 130, 95, 255]
+  //                 const outlineWidthDefault = 1;
+
+  //                 // validate presence
+  //                 if (presence.fkClass != DfhConfig.CLASS_PK_PRESENCE) return null;
+
+  //                 // return false if no DateUnitChildren
+  //                 if (!presence._fields) return null;
+
+  //                 // return false if no PropertyField leading to a Place
+  //                 const placeSet = presence._fields[propertyFieldKeyFromParams(DfhConfig.PROPERTY_PK_WHERE_PLACE_IS_RANGE, true)] as PropertyField;
+  //                 if (!placeSet || placeSet.type != 'PropertyField') return null;
+
+  //                 // return false if no Place in first RoleDetail
+  //                 const placeRoleDetail = U.obj2Arr(placeSet._role_list)[0];
+  //                 if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.place) return null;
+
+  //                 // return false if no pk_entity in first RoleDetail
+  //                 if (!placeRoleDetail || !placeRoleDetail.role || !placeRoleDetail.role.pk_entity) return null;
+
+  //                 let czmlPacket: any = {}
+
+  //                 // colors used for dynamic color change
+  //                 let colorRgba: any[] = colorInactive;
+
+  //                 // get the TimeSpan of initial TeEnt not the Presence
+  //                 const timeSpan = U.timeSpanFromExTimeDetail(teEntDetail._fields['_field_48'] as ExistenceTimeDetail);
+
+  //                 // TODO: compare the TimeSpan from initial teEnt with TimeSpan of the presence and figure out which presence
+  //                 // is best for displaying the teEnt on the map
+  //                 // const TimeSpan = U.ExTimeFromExTimeDetail(presence._fields['_field_48'] as ExistenceTimeDetail);
+
+  //                 // TimeSpan of initial TeEnt not Presence!
+  //                 if (timeSpan) {
+
+  //                   const minMax = timeSpan.getMinMaxTimePrimitive();
+
+  //                   const min = new Cesium.JulianDate(minMax.min.julianDay, 0, Cesium.TimeStandard.TAI);
+  //                   const max = new Cesium.JulianDate(minMax.max.getDateTime()
+  //                     .getEndOf(minMax.max.duration).getJulianDay(), 86400, Cesium.TimeStandard.TAI);
+
+  //                   const minStr = Cesium.JulianDate.toIso8601(min);
+  //                   const maxStr = Cesium.JulianDate.toIso8601(max);
+
+  //                   const before = Cesium.JulianDate.addSeconds(min, -1, min);
+  //                   const beforeStr = Cesium.JulianDate.toIso8601(before);
+
+  //                   const after = Cesium.JulianDate.addSeconds(max, 1, max);
+  //                   const afterStr = Cesium.JulianDate.toIso8601(after);
+
+  //                   colorRgba = [
+  //                     beforeStr, ...colorInactive,
+  //                     minStr, ...colorActive,
+  //                     maxStr, ...colorActive,
+  //                     afterStr, ...colorInactive,
+  //                   ];
+
+  //                   if (res.earliestJulianDate === undefined || Cesium.JulianDate
+  //                     .greaterThan(res.earliestJulianDate, before)) {
+  //                     res.earliestJulianDate = before;
+  //                   }
+
+  //                   if (res.latestJulianDate === undefined || Cesium.JulianDate.lessThan(res.latestJulianDate, after)) {
+  //                     res.latestJulianDate = after;
+  //                   }
+  //                 }
+
+  //                 const placeRole = placeRoleDetail.role;
+  //                 const place = placeRole.place;
+
+  //                 czmlPacket = {
+  //                   ...czmlPacket,
+  //                   id: placeRole.pk_entity,
+  //                   position: {
+  //                     cartographicDegrees: [place.long, place.lat, 0]
+  //                   },
+  //                   point: {
+  //                     color: {
+  //                       rgba: colorRgba,
+  //                       forwardExtrapolationType: 'HOLD',
+  //                       backwardExtrapolationType: 'HOLD'
+  //                     },
+  //                     outlineColor: {
+  //                       rgba: [255, 0, 0, 200]
+  //                     },
+  //                     outlineWidth: 3,
+  //                     pixelSize: 15
+  //                   },
+  //                   label: {
+  //                     id: 'label of: ' + placeRole.pk_entity,
+  //                     text: crm.classes[teEntDetail.fkClass].label,
+  //                     font: '16pt "source sans pro"',
+  //                     horizontalOrigin: 'LEFT',
+  //                     fillColor: {
+  //                       rgba: [20, 20, 20, 255]
+  //                     },
+  //                     outlineColor: {
+  //                       rgba: [255, 255, 255, 230]
+  //                     },
+  //                     outlineWidth: 2,
+  //                     pixelOffset: {
+  //                       cartesian2: [12.0, -16.0]
+  //                     },
+  //                     scaleByDistance: {
+  //                       nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+  //                     },
+  //                     translucencyByDistance: {
+  //                       nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+  //                     },
+  //                     // this makes sense if the point also scales
+  //                     // pixelOffsetScaleByDistance: {
+  //                     //     nearFarScalar: [1.5e2, 1.0, 8.0e6, 0.6]
+  //                     // },
+  //                     style: 'FILL_AND_OUTLINE',
+  //                   },
+  //                   properties: {
+  //                     path: JSON.stringify(path) // path of initial teEnt (not presence)
+  //                   }
+  //                 }
+
+  //                 switch (teEntDetail.accentuation) {
+  //                   case 'selected':
+  //                     czmlPacket.point.outlineColor.rgba = outlineColorSelected;
+  //                     czmlPacket.point.outlineWidth = outlineWidthSelected;
+  //                     break;
+
+  //                   case 'highlighted':
+  //                     czmlPacket.point.outlineColor.rgba = outlineColorHighlighted;
+  //                     czmlPacket.point.outlineWidth = outlineWidthHighlighted;
+  //                     break;
+
+  //                   default:
+  //                     czmlPacket.point.outlineColor.rgba = outlineColorDefault;
+  //                     czmlPacket.point.outlineWidth = outlineWidthDefault;
+  //                     break;
+  //                 }
+
+  //                 res.czmlPackets.push(czmlPacket)
+
+  //               })
+
+  //               if (res.earliestJulianDate == undefined) {
+  //                 res.earliestJulianDate = Cesium.JulianDate.fromIso8601('1200-01-01');
+  //               }
+
+  //               if (res.latestJulianDate == undefined) {
+  //                 res.latestJulianDate = Cesium.JulianDate.fromIso8601('2020-01-01');
+  //               }
+
+  //             }
+  //           })
 
 
-    })
+  //         }
 
-    return res;
-  }
+  //       }
+  //     })
+
+
+  //   })
+
+  //   return res;
+  // }
 
 
 
@@ -1351,4 +1349,7 @@ export class U {
     })
   }
 
+  static propertyFieldKeyFromParams(fkProp: number, isOutgoing: boolean) {
+    return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
+  }
 }

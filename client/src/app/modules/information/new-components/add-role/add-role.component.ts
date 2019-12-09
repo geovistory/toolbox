@@ -73,7 +73,14 @@ export class AddRoleComponent implements OnInit, OnDestroy {
 
   private loadTemporalEntityList(listDefinition, pkProject: number): ActionResultObservable<any> {
     this.alternatives$ = this.infRepo.role$.pagination$.pipeCount(createPaginateBy(listDefinition, this.pkEntity))
-    return this.inf.temporal_entity.loadPaginatedAlternativeList(pkProject, this.pkEntity, listDefinition.pkProperty, listDefinition.isOutgoing, temporalEntityListDefaultLimit, 0);
+    return this.inf.temporal_entity.loadPaginatedAlternativeList(
+      pkProject,
+      this.pkEntity,
+      listDefinition.pkProperty,
+      listDefinition.targetClass,
+      listDefinition.isOutgoing,
+      temporalEntityListDefaultLimit,
+      0);
   }
 
   private loadTextProperties(listDefinition, pkProject: number): ActionResultObservable<any> {

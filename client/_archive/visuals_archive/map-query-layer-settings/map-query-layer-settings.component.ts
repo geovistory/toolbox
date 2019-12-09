@@ -298,7 +298,7 @@ export class MapQueryLayerSettingsComponent implements AfterViewInit, OnDestroy,
       })
     )
 
-    this.p.reloadTypesForClassesInProject();
+    // this.p.reloadTypesForClassesInProject();
 
     const rootIsGeo$ = rootClasses$.pipe(
       switchMap(classesAndTypes => this.i.pipeClassesFromClassesAndTypes(classesAndTypes)),

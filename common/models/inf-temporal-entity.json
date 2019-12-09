@@ -160,6 +160,15 @@
           }
         },
         {
+          "arg": "pkTargetClass",
+          "type": "number",
+          "required": true,
+          "description": "Fk class of the target temporal entities.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "isOutgoing",
           "type": "boolean",
           "required": true,
@@ -223,6 +232,15 @@
           "type": "number",
           "required": true,
           "description": "Pk of the property leading from source entity to the temporal entities.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkTargetClass",
+          "type": "number",
+          "required": true,
+          "description": "Fk class of the target temporal entities.",
           "http": {
             "source": "query"
           }

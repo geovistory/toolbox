@@ -107,11 +107,11 @@ export class ActiveProjectActions {
     }
   }
 
-  projectCrmLoaded(crm: ProjectCrm): ActiveProjectAction {
+  projectCrmLoaded(): ActiveProjectAction {
     return {
       type: ActiveProjectActions.PROJECT_CRM_LOADED,
       payload: {
-        crm
+        // crm
       },
       meta: null,
     }

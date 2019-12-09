@@ -1,27 +1,56 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { Component, HostBinding, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DfhClassProfileView, IAppState, ProjectDetail, ActiveProjectService, U, ClassConfig } from 'app/core';
-import { SubstoreComponent } from 'app/core/state/models/substore-component';
-import { RootEpics } from 'app/core/store/epics';
-import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, filter, first, takeWhile, takeUntil } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActiveProjectService, IAppState, U, SysSystemRelevantClass } from 'app/core';
+import { SubstoreComponent } from 'app/core/state/models/substore-component';
+import { RootEpics } from 'app/core/store/epics';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
+import { equals, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
+import * as Config from '../../../../../../../common/config/Config';
 import { ProDfhClassProjRel } from '../../../../core/sdk/models/ProDfhClassProjRel';
+import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
 import { EntityType, ProjectSettingsData } from './api/project-settings-data.models';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
-import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
-import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
-import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
-import { equals } from 'ramda';
-import * as Config from '../../../../../../../common/config/Config';
+import { ClassConfigDialogData, ClassConfigDialogComponent } from 'app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+
+export interface ClassItem {
+  pkEntity: number;
+  dfh_pk_class: number;
+
+  label: string;
+  dfh_standard_label: string;
+  scopeNote: string;
+  profilePks: number[];
+
+
+  projRel?: ProDfhClassProjRel;
+
+  subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
+
+  subclassOfType?: boolean; // true if subclass of E55 Type
+  dfh_identifier_in_namespace: string;
+
+  required_by_sources?: boolean
+  required_by_entities?: boolean
+  required_by_basics?: boolean
+  excluded_from_entities?: boolean
+
+}
+
+
+
+
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -58,19 +87,19 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   // select observables of substore properties
   @select() loading$: Observable<boolean>;
 
-  items$: Observable<ClassConfig[]>;
+  items$: Observable<ClassItem[]>;
 
   // columns of the table
   displayedColumns: string[] = [];
 
   // expanded element (row) of the table
-  expandedElement: ClassConfig | null;
+  expandedElement: ClassItem | null;
 
   // dataSource
   dataSource = new MatTableDataSource();
 
   // filtered ClassItems
-  filteredItems$ = new Subject<ClassConfig[]>();
+  filteredItems$ = new Subject<ClassItem[]>();
 
   // search string observable
   text$ = new BehaviorSubject<string>('');
@@ -119,10 +148,9 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     protected ngRedux: NgRedux<IAppState>,
     private highilghtPipe: HighlightPipe,
     private p: ActiveProjectService,
-    private router: Router,
-    private route: ActivatedRoute,
     public ref: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private c: ConfigurationPipesService
   ) {
     super();
     // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -141,59 +169,98 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
-    // // load the class list as soon as the pk_project is available
-    // this.ngRedux.select<ProjectDetail>(['activeProject', 'pk_project']).takeUntil(this.destroy$).subscribe(pk => {
-    //   if (pk) this.load();
-    // })
 
-    this.items$ = this.p.crm$.pipe(filter((crm) => !!crm && !!crm.classes), map(crm => U.objNr2Arr(crm.classes)))
+    this.items$ = this.p.dfh$.class$.by_dfh_pk_class$.all$.pipe(
+      switchMap(byPk => combineLatestOrEmpty(
+        values(byPk).map(dfhClass => combineLatest(
+          this.c.pipeLabelOfClass(dfhClass.dfh_pk_class),
+          this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_entity$
+            .key(this.p.state.pk_project + '_' + dfhClass.pk_entity),
+          this.p.sys$.class_has_type_property$.by_pk_typed_class$
+            .key(dfhClass.dfh_pk_class),
+          this.p.sys$.system_relevant_class$.by_fk_class$
+            .key(dfhClass.dfh_pk_class),
+          this.p.dfh$.class_profile_view$.by_dfh_pk_class$
+            .key(dfhClass.dfh_pk_class),
+        )
+          .pipe(
+            map(([label, projRel, type, sysClass, profiles]) => {
+              const {
+                pk_entity,
+                dfh_pk_class,
+                dfh_identifier_in_namespace,
+                dfh_standard_label
+              } = dfhClass;
 
-    // // load the profile Options as soon as the profiles are available
-    // this.ngRedux.select<DfhClassProfileView[]>(['activeProject', 'dataSettings', 'profiles']).takeUntil(this.destroy$).subscribe(profiles => {
-    //   if (profiles) {
-    //     this.profileOptions = [...this.profileOptions, ...profiles.map((p) => ({
-    //       value: p.dfh_fk_profile,
-    //       label: p.dfh_profile_label
-    //     }))]
-    //   }
-    // })
+
+              const s = values(sysClass);
+              const {
+                excluded_from_entities,
+                required_by_basics,
+                required_by_entities,
+                required_by_sources
+              } = s.length < 1 ? {} as SysSystemRelevantClass : s[0];
+
+              const pr = values(profiles)
+
+              const item: ClassItem = {
+                pkEntity: pk_entity,
+                dfh_pk_class,
+                dfh_identifier_in_namespace,
+                dfh_standard_label,
+
+                scopeNote: '', // TODO
+
+                label,
+                projRel,
+
+                subclassOfType: !!type,
+                subclassOf: dfhClass.dfh_fk_system_type === 8 ? 'peIt' : dfhClass.dfh_fk_system_type === 9 ? 'teEnt' : 'other',
+
+                excluded_from_entities,
+                required_by_basics,
+                required_by_entities,
+                required_by_sources,
+
+                profilePks: pr.map(p => p.dfh_fk_profile)
+              }
+              return item
+            })
+          )
+        )
+      ))
+    )
+
 
     this.initFilter();
 
     this.t.setTabTitle('Settings > Classes')
 
-    // This is needed to keep the table scrollable
-    // this.t.activated$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-    //   this.detailContentComponent.fh = this.detailContentComponent.scroll = false;
-    //   this.ref.detectChanges()
-    //   setTimeout(() => {
-    //     this.detailContentComponent.fh = this.detailContentComponent.scroll = true;
-    //     this.ref.detectChanges()
-    //   })
-    // })
-
     this.dataSource.sort = this.sort;
 
     combineLatest(this.showBasicClasses$, this.p.pkProject$).pipe(takeUntil(this.destroy$)).subscribe(([showBasicClasses, pkProject]) => {
 
-      if (showBasicClasses) this.displayedColumns = [
-        'enabled_in_entities',
-        'required_by_sources',
-        'required_by_basics',
-        'label',
-        'subclassOf',
-        'dfh_standard_label',
-        'subclassOfType',
-
-      ];
-      else this.displayedColumns = [
-        'enabled_in_entities',
-        'required_by_sources',
-        'label',
-        'subclassOf',
-        'dfh_standard_label',
-        'subclassOfType',
-      ];
+      if (showBasicClasses) {
+        this.displayedColumns = [
+          'enabled_in_entities',
+          'required_by_sources',
+          'required_by_basics',
+          'label',
+          'subclassOf',
+          'dfh_standard_label',
+          'subclassOfType',
+        ];
+      }
+      else {
+        this.displayedColumns = [
+          'enabled_in_entities',
+          'required_by_sources',
+          'label',
+          'subclassOf',
+          'dfh_standard_label',
+          'subclassOfType',
+        ];
+      }
 
       if (pkProject === Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
         this.displayedColumns.push('classConfig')
@@ -228,7 +295,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     )
       .subscribe((d) => {
         const text: string = d[0],
-          items: ClassConfig[] = d[1],
+          items: ClassItem[] = d[1],
           subclassOf: string = d[2],
           status: boolean = d[3],
           profile: number = d[4],
@@ -334,7 +401,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   /**
    * Called when user enables class
    */
-  enableClass(classItem: ClassConfig) {
+  enableClass(classItem: ClassItem) {
     const projRel = new ProDfhClassProjRel({
       pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
@@ -348,7 +415,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   /**
    * Called when user disables class
    */
-  disableClass(classItem: ClassConfig) {
+  disableClass(classItem: ClassItem) {
     const projRel = new ProDfhClassProjRel({
       pk_entity: classItem.projRel.pk_entity,
       fk_entity: classItem.pkEntity,
@@ -359,14 +426,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
 
-  /**
-   * Called when user clicks on customize
-   */
-  customizeClass(classItem: ClassConfig) {
-    this.router.navigate([classItem.dfh_pk_class], { relativeTo: this.route })
-  }
 
-  openControlledVocab(classItem: ClassConfig) {
+  openControlledVocab(classItem: ClassItem) {
     this.p.hasTypeProperties$.pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((hasTypeProperties) => {
 
       const pkProperty = U.objNr2Arr(hasTypeProperties).find(p => p.pk_type_class === classItem.dfh_pk_class).dfh_pk_property;
@@ -382,7 +443,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     })
   }
 
-  openClassConfig(classItem: ClassConfig) {
+  openClassConfig(classItem: ClassItem) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(fkProject => {
       const data: ClassConfigDialogData = {
         fkAppContext: 45,

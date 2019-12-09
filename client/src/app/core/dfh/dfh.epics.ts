@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel, DfhPropertyProfileView, DfhPropertyProfileViewApi, DfhPropertyView, DfhPropertyViewApi } from '../sdk';
+import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel, DfhPropertyProfileView, DfhPropertyProfileViewApi, DfhPropertyView, DfhPropertyViewApi, DfhClassProfileView, DfhClassProfileViewApi } from '../sdk';
 import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory } from './dfh.actions';
-import { DfhClassSlice, DfhLabelSlice, DfhPropertyProfileViewSlice, DfhPropertyViewSlice } from './dfh.models';
+import { DfhClassSlice, DfhLabelSlice, DfhPropertyProfileViewSlice, DfhPropertyViewSlice, DfhClassProfileViewSlice } from './dfh.models';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
 import * as Config from '../../../../../common/config/Config';
 import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
@@ -17,8 +17,9 @@ export class DfhEpics {
     private actions: DfhActions,
     private notification: NotificationsAPIActions,
     private classApi: DfhClassApi,
+    private classProfileApi: DfhClassProfileViewApi,
     private labelApi: DfhLabelApi,
-    private propProfileApi: DfhPropertyProfileViewApi,
+    private propertyProfileApi: DfhPropertyProfileViewApi,
     private propertyViewApi: DfhPropertyViewApi
   ) { }
 
@@ -27,6 +28,7 @@ export class DfhEpics {
     const dfhLabelEpicsFactory = new StandardEpicsFactory<DfhLabelSlice, DfhLabel>('dfh', 'label', this.actions.label, this.notification);
     const dfhPropertyViewEpicsFactory = new StandardEpicsFactory<DfhPropertyViewSlice, DfhPropertyView>('dfh', 'property_view', this.actions.property_view, this.notification);
     const dfhPropertyProfileViewEpicsFactory = new StandardEpicsFactory<DfhPropertyProfileViewSlice, DfhPropertyProfileView>('dfh', 'property_profile_view', this.actions.property_profile_view, this.notification);
+    const dfhClassProfileViewEpicsFactory = new StandardEpicsFactory<DfhClassProfileViewSlice, DfhClassProfileView>('dfh', 'class_profile_view', this.actions.class_profile_view, this.notification);
 
     return combineEpics(
 
@@ -35,6 +37,9 @@ export class DfhEpics {
       dfhClassEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classApi.classesOfProjectProfiles(meta.pk),
         DfhClassActionFactory.CLASSES_OF_PROJECT_PROFILE
       ),
+
+      // Class Profile Loaders
+      dfhClassProfileViewEpicsFactory.createLoadEpic(() => this.classProfileApi.find(), ''),
 
       // Label Loaders
       dfhLabelEpicsFactory.createLoadEpic((meta) => this.labelApi.findComplex({
@@ -62,10 +67,11 @@ export class DfhEpics {
       }),
 
       // Load all property profile views
-      dfhPropertyProfileViewEpicsFactory.createLoadEpic(() => this.propProfileApi.find(), '', ),
+      dfhPropertyProfileViewEpicsFactory.createLoadEpic(() => this.propertyProfileApi.find(), ''),
 
       // Load Property View
       dfhPropertyViewEpicsFactory.createLoadEpic(() => this.propertyViewApi.find(), ''))
+
 
   }
 

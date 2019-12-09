@@ -1,21 +1,21 @@
-import { NestedTreeControl } from "@angular/cdk/tree";
-import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from "app/core";
-import { Observable } from "rxjs";
-import { PropertiesTreeService } from "./properties-tree.service";
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { Observable } from 'rxjs';
+import { PropertiesTreeService } from './properties-tree.service';
 
 export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity' | 'persistent-item';
-export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' ;
+export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview';
 
 export type CreateControlType = 'role';
 
-/**
- * This interface is a intermediate solution, useful as long as
- * the identity of properties is not changed to always using the
- * identifier of the property of origin
- */
-export interface ClassFieldConfig extends ProClassFieldConfig {
-  fk_property_of_origin: number
-}
+// /**
+//  * This interface is a intermediate solution, useful as long as
+//  * the identity of properties is not changed to always using the
+//  * identifier of the property of origin
+//  */
+// export interface ProClassFieldConfig extends ProClassFieldConfig {
+//   fk_property_of_origin: number
+// }
 
 export interface FieldDefinition {
   listType: ListType
@@ -38,7 +38,7 @@ export interface ListDefinition {
   ontoInfoLabel: string
   fkClassField: number
   pkProperty: number
-  fkPropertyOfOrigin: number // TODO remove after pkProperty Change
+  // fkPropertyOfOrigin: number // TODO remove after pkProperty Change
   isOutgoing: boolean
   isIdentityDefining: boolean
   sourceClass: number

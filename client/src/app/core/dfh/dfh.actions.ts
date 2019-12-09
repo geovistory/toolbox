@@ -1,8 +1,8 @@
 
-import {filter} from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, ActionResultObservable, SucceedActionMeta, LoadActionMeta } from 'app/core/store/actions';
-import { DfhClass, DfhLabel, DfhPropertyProfileView } from '../sdk';
+import { DfhClass, DfhLabel, DfhPropertyProfileView, DfhClassProfileView } from '../sdk';
 import { DfhClassSlice } from './dfh.models';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState, U } from 'app/core';
@@ -108,6 +108,7 @@ export class DfhActions {
 
   label = new DfhLabelActionFactory(this.ngRedux).createActions();
   klass = new DfhClassActionFactory(this.ngRedux).createActions();
+  class_profile_view = new StandardActionsFactory<Payload, DfhClassProfileView>(this.ngRedux).createCrudActions(dfhRoot, 'class_profile_view');
   property_profile_view = new StandardActionsFactory<Payload, DfhPropertyProfileView>(this.ngRedux).createCrudActions(dfhRoot, 'property_profile_view');
   property_view = new StandardActionsFactory<Payload, DfhPropertyView>(this.ngRedux).createCrudActions(dfhRoot, 'property_view');
 

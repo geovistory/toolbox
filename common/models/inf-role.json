@@ -36,12 +36,6 @@
     },
     "community_favorite_calendar": {
       "type": "string"
-    },
-    "range_max_quantifier": {
-      "type": "number"
-    },
-    "domain_max_quantifier": {
-      "type": "number"
     }
   },
   "validations": [],

@@ -2,27 +2,20 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DatSelector } from 'app/core/dat/dat.service';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-// import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
-import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
+import { DfhSelector } from '../dfh/dfh.service';
+import { InfActions } from '../inf/inf.actions';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { DatChunk, DatChunkApi, DfhClass, DfhProperty, DfhPropertyApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProClassFieldConfig, ProDfhClassProjRelApi, ProInfoProjRelApi, ProProject, ProProjectApi, ProQueryApi, ProVisualApi, SysAppContext, SysAppContextApi, SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
-import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
-import { HasTypePropertyReadable, PeItDetail } from '../state/models';
-import { ByPk, IAppState } from '../store/model';
-import { SysClassHasTypePropertySlice } from '../sys/sys.models';
+import { ProSelector } from '../pro/pro.service';
+import { DatChunk, DatChunkApi, DfhPropertyApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProDfhClassProjRelApi, ProInfoProjRelApi, ProProject, ProProjectApi, ProQueryApi, ProVisualApi, SysAppContextApi, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
+import { IAppState } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { U } from '../util/util';
 import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
-import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { DfhSelector } from '../dfh/dfh.service';
-import { ProSelector } from '../pro/pro.service';
-import { InfActions } from '../inf/inf.actions';
 
 
 
@@ -137,6 +130,7 @@ export class ActiveProjectEpics {
         this.dat.namespace.load('', action.meta.pk_project);
         this.dfh.property_view.load()
         this.dfh.klass.loadClassesOfProjectProfiles(action.meta.pk_project);
+        this.dfh.class_profile_view.load();
         this.pro.class_field_config.load('', action.meta.pk_project)
         this.pro.dfh_class_proj_rel.load('', action.meta.pk_project)
         this.dfh.label.loadLabelesOfClasses(null);
@@ -156,79 +150,80 @@ export class ActiveProjectEpics {
           this.sys.class_has_type_property$.slice$,
           this.sys.analysis_type$.slice$,
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
-          this.dfh.property_view$.by_dfh_pk_property$.noPause.all$,
           this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,
-          this.dfh.class$.by_dfh_pk_class$.noPause.all$
+          this.dfh.property_view$.by_pk_entity$.noPause.all$,
+          this.dfh.class$.by_dfh_pk_class$.noPause.all$,
+          this.dfh.class_profile_view$.by_pk_entity$.noPause.all$,
         )
           .pipe(filter((res) => !res.includes(undefined)))
           .subscribe((res) => {
-            const classes: DfhClass[] = res[0],
-              outgoingProperties: DfhProperty[] = res[2],
-              ingoingProperties: DfhProperty[] = res[3],
-              classFields = res[4] as SysClassField[],
-              hasTypeProps: HasTypePropertyReadable[] = res[5],
-              systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6],
-              classHasTypeProperty: SysClassHasTypePropertySlice = res[7];
+            // const classes: DfhClass[] = res[0],
+            //   outgoingProperties: DfhProperty[] = res[2],
+            //   ingoingProperties: DfhProperty[] = res[3],
+            //   classFields = res[4] as SysClassField[],
+            //   hasTypeProps: HasTypePropertyReadable[] = res[5],
+            //   systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6],
+            //   classHasTypeProperty: SysClassHasTypePropertySlice = res[7];
 
 
-            const properties = {
-              ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
-              ...indexBy((prop) => prop.dfh_pk_property.toString(), outgoingProperties)
-            }
+            // const properties = {
+            //   ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
+            //   ...indexBy((prop) => prop.dfh_pk_property.toString(), outgoingProperties)
+            // }
 
-            const crm: ProjectCrm = {
-              classes: {},
-              fieldList: {},
-              properties,
-              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps),
-              classHasTypeProperty
-            }
+            // const crm: ProjectCrm = {
+            //   classes: {},
+            //   fieldList: {},
+            //   properties,
+            //   hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps),
+            //   classHasTypeProperty
+            // }
 
-            const hasTypePropertiesByTypeClass = indexBy((prop) => prop.pk_type_class.toString(), hasTypeProps)
+            // const hasTypePropertiesByTypeClass = indexBy((prop) => prop.pk_type_class.toString(), hasTypeProps)
 
-            classes.forEach((cla: DfhClass) => {
-              crm.classes[cla.dfh_pk_class] = {
-                ...U.classConfigFromDfhClass(
-                  cla,
-                  U.firstItemInIndexedGroup(systemRelevantClasses, cla.dfh_pk_class)
-                ),
-                subclassOfType: hasTypePropertiesByTypeClass[cla.dfh_pk_class] ? true : false
-              }
-              // create fieldList
-              crm.fieldList = {
-                ...indexBy(fieldKey, [
-                  ...U.infProperties2PropertyFields(false, ingoingProperties),
-                  ...U.infProperties2PropertyFields(true, outgoingProperties),
-                  ...U.comClassFields2Fields(classFields)
-                ])
-              }
-            })
+            // classes.forEach((cla: DfhClass) => {
+            //   crm.classes[cla.dfh_pk_class] = {
+            //     ...U.classConfigFromDfhClass(
+            //       cla,
+            //       U.firstItemInIndexedGroup(systemRelevantClasses, cla.dfh_pk_class)
+            //     ),
+            //     subclassOfType: hasTypePropertiesByTypeClass[cla.dfh_pk_class] ? true : false
+            //   }
+            //   // create fieldList
+            //   crm.fieldList = {
+            //     ...indexBy(fieldKey, [
+            //       ...U.infProperties2PropertyFields(false, ingoingProperties),
+            //       ...U.infProperties2PropertyFields(true, outgoingProperties),
+            //       ...U.comClassFields2Fields(classFields)
+            //     ])
+            //   }
+            // })
 
-            const uiContexts: SysAppContext[] = res[1];
+            // const uiContexts: SysAppContext[] = res[1];
 
-            uiContexts.forEach(uiCtxt => {
-              if (uiCtxt.class_field_config) {
-                uiCtxt.class_field_config.forEach(uiConf => {
+            // uiContexts.forEach(uiCtxt => {
+            //   if (uiCtxt.class_field_config) {
+            //     uiCtxt.class_field_config.forEach(uiConf => {
 
-                  // add propertyField configs to crm
-                  if (uiConf.fk_property) {
-                    // retrieve the classConfig
-                    const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
-                    this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                  } else if (uiConf.fk_class_field) {
-                    // add propSet configs to crm
-                    // retrieve the classConfig
-                    const cConf = crm.classes[uiConf.fk_class_for_class_field];
-                    this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                  }
+            //       // add propertyField configs to crm
+            //       if (uiConf.fk_property) {
+            //         // retrieve the classConfig
+            //         const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
+            //         this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
+            //       } else if (uiConf.fk_class_field) {
+            //         // add propSet configs to crm
+            //         // retrieve the classConfig
+            //         const cConf = crm.classes[uiConf.fk_class_for_class_field];
+            //         this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
+            //       }
 
-                })
-              }
-            })
+            //     })
+            //   }
+            // })
 
 
 
-            globalStore.next(this.actions.projectCrmLoaded(crm));
+            globalStore.next(this.actions.projectCrmLoaded());
             globalStore.next(this.loadingBarActions.completeLoading());
 
 
@@ -241,121 +236,48 @@ export class ActiveProjectEpics {
     )
   }
 
-  private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: SysAppContext, uiConf: ProClassFieldConfig) {
+  // private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: SysAppContext, uiConf: ProClassFieldConfig) {
 
-    if (!cConf || !uiCtxt || !uiConf) return;
+  //   if (!cConf || !uiCtxt || !uiConf) return;
 
-    // if this class has no ui Context object yet, add empty object
-    if (!cConf.uiContexts) cConf.uiContexts = {};
+  //   // if this class has no ui Context object yet, add empty object
+  //   if (!cConf.uiContexts) cConf.uiContexts = {};
 
-    // add the ui-context to the class in ProjectCrm
-    cConf.uiContexts[uiCtxt.pk_entity] = {
-      ...cConf.uiContexts[uiCtxt.pk_entity],
-      label: uiCtxt.label
-    }
+  //   // add the ui-context to the class in ProjectCrm
+  //   cConf.uiContexts[uiCtxt.pk_entity] = {
+  //     ...cConf.uiContexts[uiCtxt.pk_entity],
+  //     label: uiCtxt.label
+  //   }
 
-    // ui-context of this class
-    const cUiCtxt = cConf.uiContexts[uiCtxt.pk_entity];
+  //   // ui-context of this class
+  //   const cUiCtxt = cConf.uiContexts[uiCtxt.pk_entity];
 
-    // if this ui-context has no uiElements object yet, add empty array
-    if (!cUiCtxt.uiElements) cUiCtxt.uiElements = [];
+  //   // if this ui-context has no uiElements object yet, add empty array
+  //   if (!cUiCtxt.uiElements) cUiCtxt.uiElements = [];
 
-    const ordNum = (a: UiElement, b: UiElement) => {
-      if (!a || !b) return 0;
-      return a.ord_num - b.ord_num
-    };
+  //   const ordNum = (a: UiElement, b: UiElement) => {
+  //     if (!a || !b) return 0;
+  //     return a.ord_num - b.ord_num
+  //   };
 
-    // if this uiConf is enabled (has a ordNum)
-    if (uiConf.ord_num !== null) {
-      // add the ui-context-config to the uiElements
-      cUiCtxt.uiElements.push({
-        ord_num: uiConf.ord_num,
-        fk_property: uiConf.fk_property,
-        property_is_outgoing: uiConf.property_is_outgoing,
-        propertyFieldKey: uiConf.fk_property ? propertyFieldKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
-        fk_class_field: uiConf.fk_class_field,
-        class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
-        propSetKey: uiConf.fk_class_field ? ('_field_' + uiConf.fk_class_field) : undefined
-      })
+  //   // if this uiConf is enabled (has a ordNum)
+  //   if (uiConf.ord_num !== null) {
+  //     // add the ui-context-config to the uiElements
+  //     cUiCtxt.uiElements.push({
+  //       ord_num: uiConf.ord_num,
+  //       fk_property: uiConf.fk_property,
+  //       property_is_outgoing: uiConf.property_is_outgoing,
+  //       propertyFieldKey: uiConf.fk_property ? propertyFieldKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
+  //       fk_class_field: uiConf.fk_class_field,
+  //       class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
+  //       propSetKey: uiConf.fk_class_field ? ('_field_' + uiConf.fk_class_field) : undefined
+  //     })
 
-      // sort the array of uiElements by the ordNum
-      cUiCtxt.uiElements = sort(ordNum, cUiCtxt.uiElements)
-    }
-  }
-
-  // private createLoadEntityDetailForModalEpic(): Epic {
-  //   return (action$, store) => {
-  //     return action$.pipe(
-  //       /**
-  //        * Filter the actions that triggers this epic
-  //        */
-  //       ofType(ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL),
-  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-  //         /**
-  //          * Emit the global action that activates the loading bar
-  //          */
-  //         globalStore.next(this.loadingBarActions.startLoading());
-
-  //         const p = this.ngRedux.getState().activeProject;
-
-  //         /**
-  //          * TODO: change this to something generic for PeIt and TeEn
-  //          */
-  //         this.peItService.getNestedObject(action.meta.pk_entity, action.meta.pk_project)
-  //           /**
-  //          * Subscribe to the api call
-  //          */
-  //           .subscribe((data) => {
-  //             if (data) {
-  //               const peItDetail: PeItDetail = createPeItDetail(
-  //                 {
-  //                   showRightArea: false,
-
-  //                   showProperties: true,
-  //                   showMapToggle: true
-  //                 },
-  //                 data,
-  //                 p.crm,
-  //                 { isViewMode: true, pkUiContext: action.meta.pk_ui_context }
-  //               )
-  //               /**
-  //                * Emit the global action that completes the loading bar
-  //                */
-  //               globalStore.next(this.loadingBarActions.completeLoading());
-  //               /**
-  //                * Emit the local action on loading succeeded
-  //                */
-  //               globalStore.next(this.actions.loadPeItDetailsForModalSucceeded(peItDetail));
-  //             } else {
-  //               globalStore.next(this.loadingBarActions.completeLoading());
-  //               globalStore.next(this.notificationActions.addToast({
-  //                 type: 'error',
-  //                 options: {
-  //                   title: 'Failed loading related item ' + action.meta.pk_entity
-  //                 }
-  //               }));
-  //             }
-
-  //           }, error => {
-  //             /**
-  //             * Emit the global action that shows some loading error message
-  //             */
-  //             globalStore.next(this.loadingBarActions.completeLoading());
-  //             globalStore.next(this.notificationActions.addToast({
-  //               type: 'error',
-  //               options: {
-  //                 title: error.message
-  //               }
-  //             }));
-  //             /**
-  //              * Emit the local action on loading failed
-  //              */
-  //             globalStore.next(this.actions.loaEntitytDetailsForModalFailed({ status: '' + error.status }))
-  //           })
-  //       }))
-  //     )
+  //     // sort the array of uiElements by the ordNum
+  //     cUiCtxt.uiElements = sort(ordNum, cUiCtxt.uiElements)
   //   }
   // }
+
   private createLoadTypesEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(

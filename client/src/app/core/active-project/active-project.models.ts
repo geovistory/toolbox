@@ -3,14 +3,12 @@ import { EntityPreview, EntityPreviewList, FieldList, PeItDetail, PeItDetailList
 import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
 // import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
-import { QueryDetail } from 'app/modules/queries/containers/query-detail/api/query-detail.models';
-import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
+// import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
 import { Observable } from 'rxjs';
 import { Types } from '../../modules/projects/containers/types/api/types.models';
 import { TabBase } from '../../shared/components/tab-layout/tab-layout.models';
 import { Inf } from '../inf/inf.models';
 import { HasTypePropertyReadable } from '../state/models';
-import { StateSettings } from '../state/services/state-creator';
 
 export interface ProjectPreview {
   label?: string,
@@ -74,14 +72,14 @@ export interface PeItTabData {
   // Used by peIt detail state creato
   peItDetailConfig?: {
     peItDetail?: PeItDetail
-    stateSettings?: StateSettings
+    // stateSettings?: StateSettings
   }
 }
 export interface TeEntTabData {
   // Used by teEnt detail state creato
   teEntDetailConfig?: {
     teEntDetail?: TeEntDetail
-    stateSettings?: StateSettings
+    // stateSettings?: StateSettings
   }
 }
 export interface AnalysisTabData {
@@ -97,13 +95,13 @@ export interface TabData {
   // Used by peIt detail state creato
   peItDetailConfig?: {
     peItDetail?: PeItDetail
-    stateSettings?: StateSettings
+    // stateSettings?: StateSettings
   }
 
   // Used by teEnt detail state creato
   teEntDetailConfig?: {
     teEntDetail?: TeEntDetail
-    stateSettings?: StateSettings
+    // stateSettings?: StateSettingsÚ
   }
 }
 
@@ -186,11 +184,11 @@ export interface ProjectDetail extends ProjectPreview {
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   analysisDetails?: { [uiId: string]: any }
 
-  // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  queryDetails?: { [uiId: string]: QueryDetail }
+  // // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+  // queryDetails?: { [uiId: string]: QueryDetail }
 
-  // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  visualDetails?: { [uiId: string]: VisualDetail }
+  // // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+  // visualDetails?: { [uiId: string]: VisualDetail }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   classesSettings?: { [uiId: string]: ProjectSettingsData }

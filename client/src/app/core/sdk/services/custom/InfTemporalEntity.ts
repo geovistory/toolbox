@@ -76,6 +76,8 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    *
    * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
    *
+   * @param {number} pkTargetClass Fk class of the target temporal entities.
+   *
    * @param {boolean} isOutgoing If true, the source entity is domain, else range.
    *
    * @param {number} limit number of returned temporal entities.
@@ -91,7 +93,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTemporalEntity` object.)
    * </em>
    */
-  public alternativeTemporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
+  public alternativeTemporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, pkTargetClass: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfTemporalEntities/paginated-list-alternatives";
@@ -101,6 +103,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null) _urlParams.pkSourceEntity = pkSourceEntity;
     if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
+    if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null) _urlParams.pkTargetClass = pkTargetClass;
     if (typeof isOutgoing !== 'undefined' && isOutgoing !== null) _urlParams.isOutgoing = isOutgoing;
     if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
     if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
@@ -117,6 +120,8 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    *
    * @param {number} pkProperty Pk of the property leading from source entity to the temporal entities.
    *
+   * @param {number} pkTargetClass Fk class of the target temporal entities.
+   *
    * @param {boolean} isOutgoing If true, the source entity is domain, else range.
    *
    * @param {number} limit number of returned temporal entities.
@@ -132,7 +137,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTemporalEntity` object.)
    * </em>
    */
-  public temporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
+  public temporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, pkTargetClass: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/InfTemporalEntities/paginated-list";
@@ -142,6 +147,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null) _urlParams.pkSourceEntity = pkSourceEntity;
     if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
+    if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null) _urlParams.pkTargetClass = pkTargetClass;
     if (typeof isOutgoing !== 'undefined' && isOutgoing !== null) _urlParams.isOutgoing = isOutgoing;
     if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
     if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;

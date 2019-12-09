@@ -29,12 +29,6 @@
       "type": "number",
       "required": false
     },
-    "fk_class":{
-      "type": "number",
-      "required": false,
-      "generated": true,
-      "hidden": true
-    },
     "fk_property": {
       "type": "number",
       "required": false
@@ -43,8 +37,12 @@
       "type": "number",
       "required": false
     },
-    "property_is_outgoing": {
-      "type": "boolean",
+    "fk_domain_class": {
+      "type": "number",
+      "required": false
+    },
+    "fk_range_class": {
+      "type": "number",
       "required": false
     },
     "ord_num": {

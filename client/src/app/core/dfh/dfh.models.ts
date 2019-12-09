@@ -1,14 +1,14 @@
-import { DfhClass, DfhLabel, DfhPropertyProfileView, DfhPropertyView } from "../sdk";
+import { DfhClass, DfhLabel, DfhPropertyProfileView, DfhPropertyView, DfhClassProfileView } from "../sdk";
 import { ByPk } from "app/core/store/model";
 
 export class DfhClassSlice {
-    by_dfh_pk_class?: ByPk<DfhClass>;
-    loading?: boolean;
+  by_dfh_pk_class?: ByPk<DfhClass>;
+  loading?: boolean;
 }
 
 export class DfhLabelSlice {
-    by_dfh_pk_label?: ByPk<DfhLabel>;
-    loading?: boolean;
+  by_dfh_pk_label?: ByPk<DfhLabel>;
+  loading?: boolean;
 }
 
 export class DfhPropertyProfileViewSlice {
@@ -24,11 +24,18 @@ export class DfhPropertyViewSlice {
   loading?: boolean;
 }
 
+export class DfhClassProfileViewSlice {
+  dfh_fk_profile__fk_class?: ByPk<DfhClassProfileView>;
+  loading?: boolean;
+}
+
+
+
 
 
 export interface Dfh {
-    cla?: DfhClassSlice;
-    property_profile_view?: DfhPropertyProfileViewSlice;
-    property_view?: DfhPropertyViewSlice;
-    label?: DfhLabelSlice;
+  cla?: DfhClassSlice;
+  property_profile_view?: DfhPropertyProfileViewSlice;
+  property_view?: DfhPropertyViewSlice;
+  label?: DfhLabelSlice;
 }

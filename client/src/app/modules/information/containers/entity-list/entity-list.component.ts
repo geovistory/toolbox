@@ -10,6 +10,7 @@ import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
 import { ClassAndTypePk } from '../create-or-add-entity/create-or-add-entity.component';
+import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -41,13 +42,16 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   pkClassesInProject;
   pkUiContextCreate = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
+  pkAllowedClasses$ = this.c.pipeClassesEnabledInEntities();
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: InformationAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     public activatedRoute: ActivatedRoute,
     public router: Router,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public c: ConfigurationPipesService
   ) {
     super()
 

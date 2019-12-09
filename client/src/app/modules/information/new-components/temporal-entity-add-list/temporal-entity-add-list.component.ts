@@ -94,7 +94,14 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
         return infRepo.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset)
       }, ([limit, offset, pkProject], loadNeeded) => {
         if (loadNeeded) {
-          this.inf.temporal_entity.loadPaginatedAlternativeList(pkProject, this.pkEntity, this.listDefinition.pkProperty, this.listDefinition.isOutgoing, limit, offset)
+          this.inf.temporal_entity.loadPaginatedAlternativeList(
+            pkProject,
+            this.pkEntity,
+            this.listDefinition.pkProperty,
+            this.listDefinition.targetClass,
+            this.listDefinition.isOutgoing,
+            limit,
+            offset)
         }
       }),
       takeUntil(this.destroy$)

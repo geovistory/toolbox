@@ -1,17 +1,16 @@
-import { InfEntityAssociation, InfPersistentItem, InfRole } from "app/core";
-import { InfActions } from "app/core/inf/inf.actions";
-import { InfEntityAssociationSlice, InfPersistentItemSlice, InfAppellationSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLanguageSlice } from "app/core/inf/inf.models";
-import { keys, omit, values } from "ramda";
-import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk, InfPlace, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLanguage, ProPropertyLabel, ProAnalysis } from "../sdk";
-import { StandardActionsFactory } from "./actions";
-import { DatActions } from "../dat/dat.actions";
-import { DigitalSlice, ChunkSlice } from "../dat/dat.models";
-import { time_primitive } from "../state/services/_mock-data";
-import { ProActions } from "../pro/pro.actions";
-import { Injectable } from "../../../../node_modules/@angular/core";
-import { ProInfoProjRelSlice, ProPropertyLabelSlice, ProAnalysisSlice } from "../pro/pro.models";
+import { InfEntityAssociation, InfPersistentItem, InfRole } from 'app/core';
+import { InfActions } from 'app/core/inf/inf.actions';
+import { InfAppellationSlice, InfEntityAssociationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice } from 'app/core/inf/inf.models';
+import { keys, omit, values } from 'ramda';
+import { DatActions } from '../dat/dat.actions';
+import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
+import { ProActions } from '../pro/pro.actions';
+import { ProAnalysisSlice, ProInfoProjRelSlice, ProPropertyLabelSlice } from '../pro/pro.models';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProInfoProjRel, ProPropertyLabel } from '../sdk';
+import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
+  items: Model[]
   constructor(
     public actions: StandardActionsFactory<Payload, Model>,
     public modelDefinition: any,
@@ -33,7 +32,6 @@ export class ModelFlattener<Payload, Model> {
     return true;
   }
 
-  items: Model[]
 }
 
 interface FlattenerInterface {

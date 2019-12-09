@@ -7,10 +7,8 @@ export interface DfhPropertyViewInterface {
   "fk_property"?: number;
   "dfh_has_range": number;
   "pk_entity"?: number;
-  "dfh_pk_property"?: number;
   "dfh_identifier_in_namespace"?: string;
   "dfh_standard_label"?: string;
-  "dfh_fk_property_of_origin"?: number;
   "dfh_domain_instances_min_quantifier"?: number;
   "dfh_domain_instances_max_quantifier"?: number;
   "dfh_range_instances_min_quantifier"?: number;
@@ -24,10 +22,8 @@ export class DfhPropertyView implements DfhPropertyViewInterface {
   "fk_property": number;
   "dfh_has_range": number;
   "pk_entity": number;
-  "dfh_pk_property": number;
   "dfh_identifier_in_namespace": string;
   "dfh_standard_label": string;
-  "dfh_fk_property_of_origin": number;
   "dfh_domain_instances_min_quantifier": number;
   "dfh_domain_instances_max_quantifier": number;
   "dfh_range_instances_min_quantifier": number;
@@ -86,10 +82,6 @@ export class DfhPropertyView implements DfhPropertyViewInterface {
           name: 'pk_entity',
           type: 'number'
         },
-        "dfh_pk_property": {
-          name: 'dfh_pk_property',
-          type: 'number'
-        },
         "dfh_identifier_in_namespace": {
           name: 'dfh_identifier_in_namespace',
           type: 'string'
@@ -97,10 +89,6 @@ export class DfhPropertyView implements DfhPropertyViewInterface {
         "dfh_standard_label": {
           name: 'dfh_standard_label',
           type: 'string'
-        },
-        "dfh_fk_property_of_origin": {
-          name: 'dfh_fk_property_of_origin',
-          type: 'number'
         },
         "dfh_domain_instances_min_quantifier": {
           name: 'dfh_domain_instances_min_quantifier',

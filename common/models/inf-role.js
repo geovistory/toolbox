@@ -5,101 +5,101 @@ const helpers = require('../helpers');
 
 module.exports = function (InfRole) {
 
-  InfRole.changeRoleProjectRelation = function (pkProject, isInProject, role, ctx) {
+  // InfRole.changeRoleProjectRelation = function (pkProject, isInProject, role, ctx) {
 
-    let requestedRole;
+  //   let requestedRole;
 
-    if (ctx && ctx.req && ctx.req.body) {
-      requestedRole = ctx.req.body;
-    } else {
-      requestedRole = role;
-    }
+  //   if (ctx && ctx.req && ctx.req.body) {
+  //     requestedRole = ctx.req.body;
+  //   } else {
+  //     requestedRole = role;
+  //   }
 
-    const ctxWithoutBody = _.omit(ctx, ['req.body']);
+  //   const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-    return InfRole.changeProjectRelation(pkProject, isInProject, requestedRole, ctxWithoutBody)
-      .then(resultingEpr => {
+  //   return InfRole.changeProjectRelation(pkProject, isInProject, requestedRole, ctxWithoutBody)
+  //     .then(resultingEpr => {
 
-        // attatch the new epr to the Role
-        if (requestedRole.entity_version_project_rels && resultingEpr) {
-          requestedRole.entity_version_project_rels = [resultingEpr];
-        }
+  //       // attatch the new epr to the Role
+  //       if (requestedRole.entity_version_project_rels && resultingEpr) {
+  //         requestedRole.entity_version_project_rels = [resultingEpr];
+  //       }
 
-        if (requestedRole.temporal_entity) {
-          //add the temporal_entity to the project
-          const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
-          return InfTemporalEntity.changeTeEntProjectRelation(pkProject, isInProject, requestedRole.temporal_entity, ctxWithoutBody)
-            .then((results) => {
-              requestedRole.temporal_entity = results[0];
-              return [requestedRole];
-            })
-            .catch((err) => {
-              console.log(err);
-              return err;
-            })
-        } else if (requestedRole.persistent_item) {
-          if (requestedRole.persistent_item.entity_version_project_rels) {
-            //add the persistent_item to the project
-            const InfPersistentItem = InfRole.app.models.InfPersistentItem;
-            return InfPersistentItem.changePeItProjectRelation(pkProject, isInProject, requestedRole.persistent_item, ctxWithoutBody)
-              .then((results) => {
-                requestedRole.persistent_item = results[0];
-                return [requestedRole];
-              })
-              .catch((err) => {
-                console.log(err);
-                return err;
-              })
-          } else {
-            return [requestedRole];
-          }
-        }
+  //       if (requestedRole.temporal_entity) {
+  //         //add the temporal_entity to the project
+  //         const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
+  //         return InfTemporalEntity.changeTeEntProjectRelation(pkProject, isInProject, requestedRole.temporal_entity, ctxWithoutBody)
+  //           .then((results) => {
+  //             requestedRole.temporal_entity = results[0];
+  //             return [requestedRole];
+  //           })
+  //           .catch((err) => {
+  //             console.log(err);
+  //             return err;
+  //           })
+  //       } else if (requestedRole.persistent_item) {
+  //         if (requestedRole.persistent_item.entity_version_project_rels) {
+  //           //add the persistent_item to the project
+  //           const InfPersistentItem = InfRole.app.models.InfPersistentItem;
+  //           return InfPersistentItem.changePeItProjectRelation(pkProject, isInProject, requestedRole.persistent_item, ctxWithoutBody)
+  //             .then((results) => {
+  //               requestedRole.persistent_item = results[0];
+  //               return [requestedRole];
+  //             })
+  //             .catch((err) => {
+  //               console.log(err);
+  //               return err;
+  //             })
+  //         } else {
+  //           return [requestedRole];
+  //         }
+  //       }
 
-        else if (requestedRole.appellation) {
-          if (requestedRole.appellation.entity_version_project_rels) {
+  //       else if (requestedRole.appellation) {
+  //         if (requestedRole.appellation.entity_version_project_rels) {
 
-            //add the appellation to the project
-            const InfAppellation = InfRole.app.models.InfAppellation;
-            return InfAppellation.changeProjectRelation(pkProject, isInProject, requestedRole.appellation, ctxWithoutBody)
-              .then((results) => {
-                requestedRole.appellation.entity_version_project_rels = [results];
-                return [requestedRole];
-              })
-              .catch((err) => {
-                console.log(err);
-                return err;
-              })
-          } else {
-            return [requestedRole];
-          }
-        } else if (requestedRole.language) {
-          if (requestedRole.language.entity_version_project_rels) {
+  //           //add the appellation to the project
+  //           const InfAppellation = InfRole.app.models.InfAppellation;
+  //           return InfAppellation.changeProjectRelation(pkProject, isInProject, requestedRole.appellation, ctxWithoutBody)
+  //             .then((results) => {
+  //               requestedRole.appellation.entity_version_project_rels = [results];
+  //               return [requestedRole];
+  //             })
+  //             .catch((err) => {
+  //               console.log(err);
+  //               return err;
+  //             })
+  //         } else {
+  //           return [requestedRole];
+  //         }
+  //       } else if (requestedRole.language) {
+  //         if (requestedRole.language.entity_version_project_rels) {
 
-            //add the language to the project
-            const InfLanguage = InfRole.app.models.InfLanguage;
-            return InfLanguage.changeProjectRelation(pkProject, isInProject, requestedRole.language, ctxWithoutBody)
-              .then((results) => {
-                requestedRole.entity_version_project_rels = [results];
-                return [requestedRole];
-              })
-              .catch((err) => {
-                console.log(err);
-                return err;
-              })
-          } else {
-            return [requestedRole];
-          }
-        } else {
-          return [requestedRole];
-        }
+  //           //add the language to the project
+  //           const InfLanguage = InfRole.app.models.InfLanguage;
+  //           return InfLanguage.changeProjectRelation(pkProject, isInProject, requestedRole.language, ctxWithoutBody)
+  //             .then((results) => {
+  //               requestedRole.entity_version_project_rels = [results];
+  //               return [requestedRole];
+  //             })
+  //             .catch((err) => {
+  //               console.log(err);
+  //               return err;
+  //             })
+  //         } else {
+  //           return [requestedRole];
+  //         }
+  //       } else {
+  //         return [requestedRole];
+  //       }
 
-      })
-      .catch((err) => {
+  //     })
+  //     .catch((err) => {
 
-      });
+  //     });
 
 
-  }
+  // }
 
 
   InfRole.findOrCreateInfRoles = function (pk_project, roles, ctx) {

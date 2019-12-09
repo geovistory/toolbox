@@ -1094,18 +1094,20 @@ export class InformationPipesService {
 
   @cache({ refCount: false })
   pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
-    return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE).pipe(switchMap(classFields => {
-      const fields = classFields.filter(f => !!f.fk_property);
-      return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfProperty(field.fk_property_of_origin, field.property_is_outgoing ? field.fk_class : null, field.property_is_outgoing ? null : field.fk_class, field.property_is_outgoing, true).pipe(map(label => {
-        const o: PropertyOption = {
-          isOutgoing: field.property_is_outgoing,
-          label,
-          pk: field.fk_property,
-          propertyFieldKey: '_' + field.fk_property + '_' + (field.property_is_outgoing ? 'outgoing' : 'ingoing')
-        };
-        return o;
-      }))));
-    })))).pipe(map(y => flatten<PropertyOption>(y)));
+    return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE)
+      .pipe(switchMap(classFields => {
+        const fields = classFields.filter(f => !!f.fk_property);
+        return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfProperty(field.fk_property, field.fk_domain_class, field.fk_range_class, true).pipe(map(label => {
+          const isOutgoing = !!field.fk_domain_class;
+          const o: PropertyOption = {
+            isOutgoing,
+            label,
+            pk: field.fk_property,
+            propertyFieldKey: '_' + field.fk_property + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
+          };
+          return o;
+        }))));
+      })))).pipe(map(y => flatten<PropertyOption>(y)));
   }
 
   @cache({ refCount: false })

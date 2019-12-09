@@ -43,7 +43,7 @@ export class ActiveProjectService {
   public uiIdSerial$: Observable<number>;
   public panelSerial$: Observable<number>;
   public focusedPanel$: Observable<number>;
-  public crm$: Observable<ProjectCrm>
+  // public crm$: Observable<ProjectCrm>
   public classes$: Observable<ClassConfigList>
   public hasTypeProperties$: Observable<HasTypePropertyList>
   public list$: Observable<ListType>; // type of list displayed in left panel
@@ -63,7 +63,7 @@ export class ActiveProjectService {
     return this.ngRedux.getState().activeProject;
   }
 
-  classPksEnabledInEntities$: Observable<number[]>
+  // classPksEnabledInEntities$: Observable<number[]>
 
   inf$: InfSelector;
   dat$: DatSelector;
@@ -78,7 +78,7 @@ export class ActiveProjectService {
     public sys$: SystemSelector,
     public inf: InfActions,
     private peItApi: InfPersistentItemApi,
-    public shouldPause: ShouldPauseService
+    public shouldPause: ShouldPauseService,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -91,7 +91,7 @@ export class ActiveProjectService {
     this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
     this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
     this.focusedPanel$ = ngRedux.select<number>(['activeProject', 'focusedPanel']);
-    this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
+    // this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
     this.hasTypeProperties$ = ngRedux.select<HasTypePropertyList>(['activeProject', 'crm', 'hasTypeProperties']);
     this.classes$ = ngRedux.select<ClassConfigList>(['activeProject', 'crm', 'classes']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
@@ -110,20 +110,24 @@ export class ActiveProjectService {
 
     this.initializingProject$.subscribe(bool => {
       this.shouldPause.shouldPause$.next(bool)
+
+
     })
 
-    this.classPksEnabledInEntities$ = this.crm$.pipe(
-      first(d => !!d),
-      map(crm => {
-        const classPksEnabledInEntities: number[] = []
-        for (const key in crm.classes) {
-          if (crm.classes[key] && crm.classes[key].isInProject) {
-            classPksEnabledInEntities.push(crm.classes[key].dfh_pk_class);
-          }
-        }
-        return classPksEnabledInEntities;
-      })
-    )
+
+
+    // this.classPksEnabledInEntities$ = this.crm$.pipe(
+    //   first(d => !!d),
+    //   map(crm => {
+    //     const classPksEnabledInEntities: number[] = []
+    //     for (const key in crm.classes) {
+    //       if (crm.classes[key] && crm.classes[key].isInProject) {
+    //         classPksEnabledInEntities.push(crm.classes[key].dfh_pk_class);
+    //       }
+    //     }
+    //     return classPksEnabledInEntities;
+    //   })
+    // )
 
     this.datNamespaces$ = this.pkProject$.pipe(
       mergeMap(pro => this.dat$.namespace$.by_fk_project$.key(pro)),
@@ -396,12 +400,12 @@ export class ActiveProjectService {
     );
   }
 
-  reloadTypesForClassesInProject() {
-    this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
-      .subscribe((classesInProject) => {
-        this.streamTypePreviewsByClass(classesInProject)
-      })
-  }
+  // reloadTypesForClassesInProject() {
+  //   this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
+  //     .subscribe((classesInProject) => {
+  //       this.streamTypePreviewsByClass(classesInProject)
+  //     })
+  // }
 
   loadQueries() {
     this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {

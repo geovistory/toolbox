@@ -85,7 +85,14 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
         return this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset)
       }, ([limit, offset, pkProject], loadNeeded) => {
         if (loadNeeded) {
-          this.inf.temporal_entity.loadPaginatedList(pkProject, this.pkEntity, this.listDefinition.pkProperty, this.listDefinition.isOutgoing, limit, offset)
+          this.inf.temporal_entity.loadPaginatedList(
+            pkProject,
+            this.pkEntity,
+            this.listDefinition.pkProperty,
+            this.listDefinition.targetClass,
+            this.listDefinition.isOutgoing,
+            limit,
+            offset)
         }
       }),
       takeUntil(this.destroy$)
@@ -151,6 +158,7 @@ export function createPaginateBy(listDefinition: ListDefinition, pkEntity: numbe
   if (listDefinition.listType === 'temporal-entity') {
     return [
       { fk_property: listDefinition.pkProperty },
+      { fk_target_class: listDefinition.targetClass },
       { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity }
     ];
   }
