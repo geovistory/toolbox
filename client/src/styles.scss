@@ -285,38 +285,38 @@ td.gv-ellipsis {
 * Headings
 */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6 {
-  // font-weight: $font-weight-light;
-  color: $gray-700;
+// h1,
+// h2,
+// h3,
+// h4,
+// h5,
+// h6,
+// .h1,
+// .h2,
+// .h3,
+// .h4,
+// .h5,
+// .h6 {
+//   // font-weight: $font-weight-light;
+//   color: $gray-700;
 
-  small,
-  .small {
-    // font-weight: $font-weight-light;
-  }
-}
+//   small,
+//   .small {
+//     // font-weight: $font-weight-light;
+//   }
+// }
 
-h4,
-h5,
-.h4,
-.h5 {
-  color: $gray-800;
-}
+// h4,
+// h5,
+// .h4,
+// .h5 {
+//   color: $gray-800;
+// }
 
-h6,
-.h6 {
-  color: $gray-700;
-}
+// h6,
+// .h6 {
+//   color: $gray-700;
+// }
 
 // Custom Variables
 $gv-color-highlighted: #ffce00;
@@ -1903,9 +1903,13 @@ gv-qf-form-array {
 @import '~@angular/material/theming';
 
 // Define a custom typography config that overrides the font-family as well as the
-// `headlines` and `body-1` levels.
+// `title` and `body-2` and `button` levels to have a wheight of 600 instead of 500
+// because Source Sans Pro does not have 500
 $gv-typography: mat-typography-config(
   $font-family: $font-family-base,
+  $title: mat-typography-level(20px, 32px, 600),
+  $body-2: mat-typography-level(14px, 24px, 600),
+  $button: mat-typography-level(14px, 14px, 600),
 );
 
 // Plus imports for other components in your app.
@@ -2318,4 +2322,8 @@ a.mat-menu-item > mat-icon {
 
 mat-list-item.p-0 .mat-list-item-content {
   padding: 0 !important;
+}
+
+mat-dialog-actions {
+  box-sizing: content-box;
 }

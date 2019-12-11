@@ -46,6 +46,15 @@ export interface ClassItem {
   required_by_basics?: boolean
   excluded_from_entities?: boolean
 
+  profiles: {
+    label: string,
+    fkProfile: number,
+    removedFromApi: boolean
+  }[]
+  removedFromAllProfiles: boolean
+
+  changingProjRel?: boolean
+
 }
 
 
@@ -142,12 +151,13 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   t: TabLayout;
 
 
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: ProjectSettingsDataAPIEpics,
     protected ngRedux: NgRedux<IAppState>,
     private highilghtPipe: HighlightPipe,
-    private p: ActiveProjectService,
+    public p: ActiveProjectService,
     public ref: ChangeDetectorRef,
     private dialog: MatDialog,
     private c: ConfigurationPipesService
@@ -171,7 +181,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
 
     this.items$ = this.p.dfh$.class$.by_dfh_pk_class$.all$.pipe(
-      switchMap(byPk => combineLatestOrEmpty(
+      switchMap((byPk) => combineLatestOrEmpty(
         values(byPk).map(dfhClass => combineLatest(
           this.c.pipeLabelOfClass(dfhClass.dfh_pk_class),
           this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_entity$
@@ -222,6 +232,12 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
                 required_by_entities,
                 required_by_sources,
 
+                removedFromAllProfiles: !pr.some(p => p.removed_from_api === false),
+                profiles: pr.map(p => ({
+                  label: p.dfh_profile_label,
+                  removedFromApi: p.removed_from_api,
+                  fkProfile: p.dfh_fk_profile,
+                })),
                 profilePks: pr.map(p => p.dfh_fk_profile)
               }
               return item
@@ -248,6 +264,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
           'label',
           'subclassOf',
           'dfh_standard_label',
+          'profiles',
           'subclassOfType',
         ];
       }
@@ -258,6 +275,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
           'label',
           'subclassOf',
           'dfh_standard_label',
+          'profiles',
           'subclassOfType',
         ];
       }
@@ -409,7 +427,13 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       enabled_in_entities: true
     })
 
-    this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
+    this.p.changingClassProjRel[classItem.pkEntity] = true;
+
+    this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
+      .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
+        if (resolved) this.p.changingClassProjRel[classItem.pkEntity] = false;
+      })
+    // this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
 
   /**
@@ -423,24 +447,29 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       enabled_in_entities: false
     })
 
-    this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
+    this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
+      .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
+        if (resolved) this.p.changingClassProjRel[classItem.pkEntity] = false;
+      })
+    // this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
 
 
   openControlledVocab(classItem: ClassItem) {
-    this.p.hasTypeProperties$.pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((hasTypeProperties) => {
+    this.p.sys$.class_has_type_property$.by_pk_type_class$.key(classItem.dfh_pk_class)
+      .pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((hasTypeProperties) => {
 
-      const pkProperty = U.objNr2Arr(hasTypeProperties).find(p => p.pk_type_class === classItem.dfh_pk_class).dfh_pk_property;
+        const pkProperty = values(hasTypeProperties).find(p => p.pk_type_class === classItem.dfh_pk_class).dfh_pk_property;
 
-      this.p.addTab({
-        active: true,
-        component: 'contr-vocab-settings',
-        icon: 'settings',
-        pathSegment: 'contrVocabSettings',
-        data: { pkProperty }
+        this.p.addTab({
+          active: true,
+          component: 'contr-vocab-settings',
+          icon: 'settings',
+          pathSegment: 'contrVocabSettings',
+          data: { pkProperty }
+        })
+
       })
-
-    })
   }
 
   openClassConfig(classItem: ClassItem) {
@@ -450,7 +479,13 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
         fkClass: classItem.dfh_pk_class,
         fkProject
       }
-      this.dialog.open(ClassConfigDialogComponent, { data })
+      this.dialog.open(ClassConfigDialogComponent, {
+        data,
+        height: 'calc(100% - 30px)',
+        width: 'calc(100% - 30px)',
+        maxWidth: '100%',
+        maxHeight: '100%'
+      })
     })
   }
 }

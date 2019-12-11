@@ -65,7 +65,8 @@
             <gv-entity-preview [dragEnabled]="false" [preview]="element.row[column.name].entityPreview">
             </gv-entity-preview>
           </span>
-          <span class="text-muted small" *ngIf="element.row[column.name]?.itemsCount > 1">
+          <span class="text-muted small"
+            *ngIf="element.row[column.name]?.itemsCount > 1 && !element.row[column.name]?.isTimeSpan">
             + {{element.row[column.name].itemsCount - 1}}
           </span>
         </td>

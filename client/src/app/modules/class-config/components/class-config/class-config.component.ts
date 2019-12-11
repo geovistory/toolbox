@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, HostBinding } from '@angular/core';
 import { combineLatest, Observable, of } from '../../../../../../node_modules/rxjs';
 import { map, mergeMap } from '../../../../../../node_modules/rxjs/operators';
 import { FieldDefinition } from '../../../information/new-components/properties-tree/properties-tree.models';
@@ -18,7 +18,12 @@ interface FieldConfig extends FieldDefinition {
       rows: {
         label: string,
       }[]
-    }
+    },
+    targetClasses: {
+      label: string,
+      pkClass: number
+    }[]
+
   }
 }
 
@@ -28,6 +33,8 @@ interface FieldConfig extends FieldDefinition {
   styleUrls: ['./class-config.component.scss']
 })
 export class ClassConfigComponent implements OnInit {
+
+  @HostBinding('class.mat-typography') true;
 
   @Input() fkAppContext: number
   @Input() fkClass: number
@@ -79,7 +86,11 @@ export class ClassConfigComponent implements OnInit {
                     rows: field.listDefinitions.map(ld => ({
                       label: ld.targetClassLabel
                     }))
-                  }
+                  },
+                  targetClasses: field.listDefinitions.map(ld => ({
+                    pkClass: ld.targetClass,
+                    label: ld.targetClassLabel
+                  }))
                 }
               }
               return f;

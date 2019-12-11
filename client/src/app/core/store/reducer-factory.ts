@@ -92,7 +92,9 @@ export class ReducerFactory<Payload, Model> {
 
       else if (action.type === actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED') {
         state = facette(action, state, (innerState) => ({
-          ... this.mergeItemsInState(config, innerState, action, true),
+          ... this.mergeItemsInState(config, innerState, action
+            // , true
+          ),
           [this.updatingBy(config.indexBy.keyInStore)]:
             omit(values(this.indexKeyObject(action, config)), innerState[this.updatingBy(config.indexBy.keyInStore)])
         }))
@@ -287,9 +289,10 @@ export class ReducerFactory<Payload, Model> {
 
       // get old item, if exists
       let oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+
       // Q: Does the item exists?
       if (oldItem) {
-        // A: Yes. use old item does exist itemToSet
+        // A: Yes. use old item does exist
 
         // remove the removedItem at path in main index
         state = {
@@ -311,8 +314,8 @@ export class ReducerFactory<Payload, Model> {
               }
             }
           }
-          // cleanup paginations
-          state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+          // // cleanup paginations
+          // state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
 
         })
       }
@@ -362,21 +365,27 @@ export class ReducerFactory<Payload, Model> {
     return state;
   }
 
-  mergeItemsInState(config: ReducerConfig, state, action: FluxStandardAction<Payload, { items: Model[]; }>, resetPaginations = false) {
+  mergeItemsInState(config: ReducerConfig, state, action: FluxStandardAction<Payload, { items: Model[]; }>
+    // , resetPaginations = false
+  ) {
     const items = action.meta.items;
     const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
     const groups = groupBys.map(i => ({
       groupByKey: by(i.keyInStore),
       groupByFn: i.groupByFn,
     }))
+
+    const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
+
     items.forEach((newItem) => {
       // get path segments of new item
-      const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
       const itemKey = config.indexBy.indexByFn(newItem); // second segment e.g. '807060'
 
       // get old item, if exists
       let oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+
       let itemToSet;
+
       // Q: Does the item exists, and is it deeply-equal to the new item?
       const equalsFn = config.equals || equals
       if (oldItem && equalsFn(newItem, oldItem)) {
@@ -396,23 +405,36 @@ export class ReducerFactory<Payload, Model> {
           }
         }
 
-        // put the itemToSet at path in the group index
+        // iterate over the group indexes
         groups.forEach(g => {
-          const groupKey = this.getGroupKeyOfItem(g.groupByFn, itemToSet)
+          // remove the oldItem from all group indexes
+          const oldGroupKey = this.getGroupKeyOfItem(g.groupByFn, oldItem)
           state = {
             ...state,
             [g.groupByKey]: {
               ...state[g.groupByKey],
-              [groupKey]: {
-                ...(state[g.groupByKey] || {})[groupKey],
+              [oldGroupKey]: {
+                ...omit([itemKey], (state[g.groupByKey] || {})[oldGroupKey])
+              }
+            }
+          }
+
+          // add the itemToSet to all group indexes
+          const newGroupKey = this.getGroupKeyOfItem(g.groupByFn, itemToSet)
+          state = {
+            ...state,
+            [g.groupByKey]: {
+              ...state[g.groupByKey],
+              [newGroupKey]: {
+                ...(state[g.groupByKey] || {})[newGroupKey],
                 [itemKey]: itemToSet
               }
             }
           }
-          if (resetPaginations) {
-            // if there is some pagination, reset
-            state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey, true);
-          }
+          // if (resetPaginations) {
+          //   // if there is some pagination, reset
+          //   state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey, true);
+          // }
         })
       }
     })
@@ -424,6 +446,7 @@ export class ReducerFactory<Payload, Model> {
 
   /**
    * resets pagination within a group, e.g. 'pag_by_fk_property'
+   * TODO: check if can be deleted
    */
   private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
     const paginateBy = pag(groupByKey);

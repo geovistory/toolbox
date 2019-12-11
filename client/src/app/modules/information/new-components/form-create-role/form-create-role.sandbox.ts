@@ -8,7 +8,6 @@ import { ListDefinition } from '../properties-tree/properties-tree.models';
 // ROLES LEADING TO VALUES
 const listDefSpelling: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 1113,
   isIdentityDefining: true,
   isOutgoing: true,
   label: "Spelling",
@@ -24,7 +23,6 @@ const listDefSpelling: ListDefinition = {
 
 const listDefLanguage: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 1112,
   isIdentityDefining: true,
   isOutgoing: true,
   label: "Used in Language",
@@ -40,7 +38,6 @@ const listDefLanguage: ListDefinition = {
 
 const listDefPlace: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 148,
   isIdentityDefining: true,
   isOutgoing: true,
   label: "Was present at",
@@ -56,7 +53,6 @@ const listDefPlace: ListDefinition = {
 
 const listDefTextProperty: ListDefinition = {
   fkClassField: 123,
-  fkPropertyOfOrigin: undefined,
   isIdentityDefining: true,
   isOutgoing: true,
   label: "Exact Reference",
@@ -72,7 +68,6 @@ const listDefTextProperty: ListDefinition = {
 
 const listDefHadParticipants: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 1359,
   isIdentityDefining: false,
   isOutgoing: false,
   label: "had participants",
@@ -87,7 +82,6 @@ const listDefHadParticipants: ListDefinition = {
 }
 const listDefDeparturePlace: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 1335,
   isIdentityDefining: false,
   isOutgoing: true,
   label: "has departure place",
@@ -107,7 +101,6 @@ const listDefDeparturePlace: ListDefinition = {
 /// ROLES LEADING TO TE ENs
 const listDefAppellationUse: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 1111,
   isIdentityDefining: true,
   isOutgoing: false,
   label: "Bibliographic References",
@@ -123,7 +116,6 @@ const listDefAppellationUse: ListDefinition = {
 
 const listDefAppellationUseOfTeEn: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 1111,
   isIdentityDefining: true,
   isOutgoing: false,
   label: "Has appellation",
@@ -141,7 +133,6 @@ const listDefAppellationUseOfTeEn: ListDefinition = {
 
 const listDefBirth: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 86,
   isIdentityDefining: true,
   isOutgoing: false,
   label: "Has Birth",
@@ -156,7 +147,6 @@ const listDefBirth: ListDefinition = {
 };
 const listDefPresence: ListDefinition = {
   fkClassField: undefined,
-  fkPropertyOfOrigin: 147,
   isIdentityDefining: true,
   isOutgoing: false,
   label: "Was present at",

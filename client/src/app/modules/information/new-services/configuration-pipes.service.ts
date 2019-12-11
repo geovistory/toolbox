@@ -683,14 +683,14 @@ export class ConfigurationPipesService {
         const res = []
         const targetClasses = {};
         pkProperties.forEach(pkProp => {
-          const prop = values(x[pkProp])[0];
-          if (prop && Object.keys(prop).length > 0) {
+          const props = values(x[pkProp]);
+          props.forEach(prop => {
             const targetClass = isOutgoing ? prop.dfh_has_range : prop.dfh_has_domain;
             if (!targetClasses[targetClass]) {
               targetClasses[targetClass] = true;
               res.push(targetClass)
             }
-          }
+          })
         })
         return res;
       })

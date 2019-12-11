@@ -67,18 +67,22 @@ export interface BasicRoleItem extends ItemBasics {
 }
 
 export interface AppellationItem extends BasicRoleItem {
+  fkClass: number;
   label: string
 }
 
 export interface LanguageItem extends BasicRoleItem {
+  fkClass: number;
   label: string
 }
 
 export interface PlaceItem extends BasicRoleItem {
+  fkClass: number;
   label: string
 }
 
 export interface TimePrimitiveItem extends BasicRoleItem {
+  fkClass: number;
   label: string
   timePrimitive: TimePrimitive;
 }
@@ -88,6 +92,7 @@ export interface TemporalEntityTableI {
   columns$: Observable<FieldDefinition[]>
 }
 export interface TemporalEntityItem extends BasicRoleItem {
+  // fkClass: number; // fk_class of TemporalEntity
   row: TemporalEntityRow
   pkEntity: number; // pk of TemporalEntity
 }
@@ -103,10 +108,12 @@ export interface TemporalEntityCell {
   entityPreview: EntityPreview
   itemsCount: number
   firstItem?: RoleItem
+  isTimeSpan?: boolean;
 }
 
 export interface EntityPreviewItem extends BasicRoleItem {
   preview: EntityPreview
+  fkClass: number
 }
 
 export interface EntityProperties {

@@ -4,7 +4,7 @@ import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/t
 import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { filter, first, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { filter, first, map, takeUntil, distinctUntilChanged, tap } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService } from '../../../../core';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { TimeSpanService } from '../../new-services/time-span.service';
@@ -12,6 +12,8 @@ import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-cla
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
+import { equals, keys } from 'ramda';
+import { PaginationService } from '../../new-services/pagination.service';
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number
@@ -45,6 +47,7 @@ export class FieldComponent implements OnInit {
     public inf: InfActions,
     public dialog: MatDialog,
     private timeSpan: TimeSpanService,
+    private pag: PaginationService
   ) { }
 
   ngOnInit() {
@@ -56,21 +59,7 @@ export class FieldComponent implements OnInit {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.fieldDefinition.listDefinitions.forEach(l => {
         if (l.listType === 'temporal-entity') {
-          const paginateBy = createPaginateBy(l, this.pkEntity)
-          this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset).pipe(
-            filter(loadNeeded => loadNeeded === true),
-            takeUntil(this.destroy$)
-          ).subscribe(() => {
-            this.inf.temporal_entity.loadPaginatedList(
-              pkProject,
-              this.pkEntity,
-              l.pkProperty,
-              l.targetClass,
-              l.isOutgoing,
-              limit,
-              offset
-            )
-          })
+          this.pag.temporalEntity.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
       })
     })
@@ -92,6 +81,7 @@ export class FieldComponent implements OnInit {
     this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
 
     this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
+
 
     this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
       .pipe(map(([n, r]) => {

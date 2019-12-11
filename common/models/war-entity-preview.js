@@ -258,6 +258,8 @@ module.exports = function(WarEntityPreview) {
         OFFSET $3;
         `;
 
+    logSql(sql_stmt, params);
+
     const connector = WarEntityPreview.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);

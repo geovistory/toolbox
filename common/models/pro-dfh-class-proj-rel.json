@@ -49,7 +49,7 @@
       "property": [
         "create",
         "getEnabledByProject",
-        "patchAttributes"
+        "bulkUpsert"
       ]
     }
   ],
@@ -84,6 +84,47 @@
       "http": {
         "path": "/get-enabled-by-project",
         "verb": "get"
+      }
+    },
+    "bulkUpsert": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "ProDfhClassProjRel"
+          ],
+          "required": true,
+          "description": "Array ProDfhClassProjRel",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "ProDfhClassProjRel",
+        "root": true
+      },
+      "description": "Creates or updates instances of ProDfhClassProjRel.",
+      "http": {
+        "path": "/bulk-upsert",
+        "verb": "put"
       }
     }
   }

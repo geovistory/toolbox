@@ -1,63 +1,69 @@
 'use strict';
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 const Config = require('../config/Config');
 
-module.exports = function (DfhClass) {
+module.exports = function(DfhClass) {
+  // /**
+  //  * Black list of classes that should never be directly used by users
+  //  * to produce instances
+  //  */
+  // const blackList = [
+  //   75, // Actor Appellation
+  //   364, // Geographical Place Type
+  //   443, // Built work Type
+  // ];
 
-  /**
-   * Black list of classes that should never be directly used by users
-   * to produce instances
-   */
-  const blackList = [
-    75, // Actor Appellation
-    364, // Geographical Place Type
-    443 // Built work Type
-  ]
+  // /**
+  //  * the pk of the technical profile
+  //  * used to exclude classes of that profile
+  //  */
+  // const technicalProfilePk = 5;
 
-  /**
-   * the pk of the technical profile
-   * used to exclude classes of that profile
-   */
-  const technicalProfilePk = 5;
+  // DfhClass.selectedPeItClassesOfProfile = function(dfh_pk_profile, cb) {
+  //   const filter = {
+  //     /**
+  //      * Select persistent items by pk_entity
+  //      */
+  //     where: ['dfh_pk_class', 'NOT IN', blackList],
+  //     orderBy: [
+  //       {
+  //         pk_entity: 'asc',
+  //       },
+  //     ],
+  //     include: {
+  //       class_profile_view: {
+  //         $relation: {
+  //           select: 'false',
+  //           name: 'class_profile_view',
+  //           joinType: 'inner join',
+  //           where: [
+  //             'dfh_profile_association_type',
+  //             '=',
+  //             'selected',
+  //             'and',
+  //             'dfh_type_label',
+  //             '=',
+  //             'Persistent Item',
+  //           ],
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       text_properties: {
+  //         $relation: {
+  //           name: 'text_properties',
+  //           joinType: 'left join',
+  //         },
+  //       },
+  //     },
+  //   };
 
-  DfhClass.selectedPeItClassesOfProfile = function (dfh_pk_profile, cb) {
-
-    const filter = {
-      /**
-       * Select persistent items by pk_entity
-       */
-      "where": ["dfh_pk_class", "NOT IN", blackList],
-      "orderBy": [{
-        "pk_entity": "asc"
-      }],
-      "include": {
-        "class_profile_view": {
-          "$relation": {
-            select: "false",
-            "name": "class_profile_view",
-            "joinType": "inner join",
-            "where": [
-              "dfh_profile_association_type", "=", "selected", "and",
-              "dfh_type_label", "=", "Persistent Item"
-            ],
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
-        },
-        "text_properties": {
-          "$relation": {
-            "name": "text_properties",
-            "joinType": "left join"
-          }
-        }
-      }
-    }
-
-    return DfhClass.findComplex(filter, cb)
-
-  }
-
+  //   return DfhClass.findComplex(filter, cb);
+  // };
 
   /**
    * Query classes
@@ -67,26 +73,31 @@ module.exports = function (DfhClass) {
    * include:
    * - text_properties
    */
-  DfhClass.classesOfProfile = function (dfh_pk_profile, cb) {
-
+  DfhClass.classesOfProfile = function(dfh_pk_profile, cb) {
     const filter = {
-      "orderBy": [{
-        "pk_entity": "asc"
-      }],
-      "include": {
-        "class_profile_view": {
-          "$relation": {
+      orderBy: [
+        {
+          pk_entity: 'asc',
+        },
+      ],
+      include: {
+        class_profile_view: {
+          $relation: {
             // select: "false",
-            "name": "class_profile_view",
-            "joinType": "inner join",
-            "where": [
-              ...(dfh_pk_profile ? ["and", "dfh_fk_profile", "=", dfh_pk_profile] : [])
+            name: 'class_profile_view',
+            joinType: 'inner join',
+            where: [
+              ...(dfh_pk_profile
+                ? ['and', 'dfh_fk_profile', '=', dfh_pk_profile]
+                : []),
             ],
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
-          }
-        }
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
+          },
+        },
         // },
         // "text_properties": {
         //   "$relation": {
@@ -104,12 +115,11 @@ module.exports = function (DfhClass) {
         //     ]
         //   }
         // }
-      }
-    }
+      },
+    };
 
-    return DfhClass.findComplex(filter, cb)
-
-  }
+    return DfhClass.findComplex(filter, cb);
+  };
 
   /**
    * Query classes
@@ -117,173 +127,185 @@ module.exports = function (DfhClass) {
    * Of a specific project
    *
    */
-  DfhClass.classesOfProjectProfiles = function (pkProject, cb) {
+  DfhClass.classesOfProjectProfiles = function(pkProject, cb) {
+    const q = new FlatObjectQueryBuilder(DfhClass.app.models);
 
     // TODO: join the pofiles added to a project somehow
-    const params = []// [4, 5, 8]
+    const params = []; // [4, 5, 8]
+    // const sql = `
+    //   WITH tw1 AS (
+    //     SELECT dfh_fk_class
+    //     FROM data_for_history.class_profile_view
+    //     WHERE removed_from_api <> true
+    //     -- AND dfh_fk_profile IN ($1,$2)
+    //   )
+    //   SELECT t1.*
+    //   FROM
+    //     data_for_history.v_class t1,
+    //     tw1
+    //   WHERE
+    //     t1.dfh_pk_class = tw1.dfh_fk_class
+    // `;
     const sql = `
-      WITH tw1 AS (
-        SELECT dfh_fk_class
-        FROM data_for_history.class_profile_view
-        WHERE removed_from_api <> true
-        -- AND dfh_fk_profile IN ($1,$2)
-      )
-      SELECT t1.*
+      SELECT
+        ${q.createSelect('t1', 'DfhClass')}
       FROM
-        data_for_history.v_class t1,
-        tw1
-      WHERE
-        t1.dfh_pk_class = tw1.dfh_fk_class
-    `
-
+        data_for_history.v_class t1;
+      `;
 
     DfhClass.dataSource.connector.execute(sql, params, (err, resultObjects) => {
       if (err) return cb(err, resultObjects);
-      cb(false, resultObjects)
+      cb(false, resultObjects);
     });
+  };
 
+  // /**
+  //  * Gets:
+  //  *    - Ingoing and Outgoing DfhProperties of Class, including
+  //  *        - Boolean that indicates
+  //  *    - Ui elements of the class
+  //  *
+  //  */
+  // DfhClass.propertiesAndUiElements = function(
+  //   pk_class,
+  //   fk_app_context,
+  //   pk_project,
+  //   cb
+  // ) {
+  //   const propertiesSelect = {
+  //     include: [
+  //       'dfh_pk_property',
+  //       'dfh_identifier_in_namespace',
+  //       'dfh_has_domain',
+  //       'dfh_has_range',
+  //       'dfh_fk_property_of_origin',
+  //       'dfh_domain_instances_min_quantifier',
+  //       'dfh_domain_instances_max_quantifier',
+  //       'dfh_range_instances_min_quantifier',
+  //       'dfh_range_instances_max_quantifier',
+  //       'identity_defining',
+  //     ],
+  //   };
 
-  }
+  //   const property_profile_view = {
+  //     $relation: {
+  //       name: 'property_profile_view',
+  //       joinType: 'inner join',
+  //       // "where": [
+  //       //   "removed_from_api", "=", "false"
+  //       // ],
+  //       select: {
+  //         include: ['removed_from_api', 'dfh_profile_label'],
+  //       },
+  //     },
+  //   };
 
+  //   const labels = {
+  //     $relation: {
+  //       name: 'labels',
+  //       joinType: 'left join',
+  //       select: { include: ['dfh_label', 'com_fk_system_type'] },
+  //       where: [
+  //         'com_fk_system_type',
+  //         'IN',
+  //         [
+  //           Config.PROPERTY_LABEL_SG,
+  //           Config.PROPERTY_LABEL_PL,
+  //           Config.PROPERTY_LABEL_INVERSED_SG,
+  //           Config.PROPERTY_LABEL_INVERSED_PL,
+  //         ],
+  //       ],
+  //     },
+  //   };
 
+  //   const class_field_config = isOutgoing => {
+  //     return {
+  //       $relation: {
+  //         name: 'class_field_config',
+  //         joinType: 'left join',
+  //         where: [
+  //           'property_is_outgoing',
+  //           '=',
+  //           JSON.stringify(isOutgoing),
+  //           'AND',
+  //           'fk_project',
+  //           ...(pk_project ? ['=', pk_project] : ['IS NULL']),
+  //           'AND',
+  //           'fk_app_context',
+  //           '=',
+  //           fk_app_context,
+  //         ],
+  //       },
+  //     };
+  //   };
 
+  //   const filter = {
+  //     select: {
+  //       include: [
+  //         'dfh_pk_class',
+  //         'dfh_identifier_in_namespace',
+  //         'dfh_standard_label',
+  //       ],
+  //     },
+  //     include: {
+  //       class_profile_view: {
+  //         $relation: {
+  //           name: 'class_profile_view',
+  //           joinType: 'inner join',
+  //           where: ['dfh_profile_association_type', '=', 'selected'],
+  //           select: { include: ['dfh_fk_system_type', 'dfh_type_label'] },
+  //         },
+  //       },
+  //       ingoing_properties: {
+  //         $relation: {
+  //           name: 'ingoing_properties',
+  //           joinType: 'left join',
+  //           select: propertiesSelect,
+  //         },
+  //         property_profile_view,
+  //         class_field_config: class_field_config(false),
+  //         labels,
+  //       },
+  //       outgoing_properties: {
+  //         $relation: {
+  //           name: 'outgoing_properties',
+  //           joinType: 'left join',
+  //           select: propertiesSelect,
+  //         },
+  //         property_profile_view,
+  //         class_field_config: class_field_config(true),
+  //         labels,
+  //       },
+  //       class_field_configs: {
+  //         $relation: {
+  //           name: 'class_field_configs',
+  //           joinType: 'left join',
+  //           where: ['fk_app_context', '=', fk_app_context],
+  //         },
+  //         class_field: {
+  //           $relation: {
+  //             name: 'class_field',
+  //             joinType: 'left join',
+  //             orderBy: [{ pk_entity: 'asc' }],
+  //           },
+  //           class_field_property_rel: {
+  //             $relation: {
+  //               name: 'class_field_property_rel',
+  //               joinType: 'left join',
+  //               orderBy: [{ pk_entity: 'asc' }],
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   };
 
-  /**
-   * Gets:
-   *    - Ingoing and Outgoing DfhProperties of Class, including
-   *        - Boolean that indicates
-   *    - Ui elements of the class
-   *
-   */
-  DfhClass.propertiesAndUiElements = function (pk_class, fk_app_context, pk_project, cb) {
+  //   if (pk_class) {
+  //     filter.where = ['dfh_pk_class', '=', pk_class];
+  //   }
 
-    const propertiesSelect = {
-      include: [
-        "dfh_pk_property",
-        "dfh_identifier_in_namespace",
-        "dfh_has_domain",
-        "dfh_has_range",
-        "dfh_fk_property_of_origin",
-        "dfh_domain_instances_min_quantifier",
-        "dfh_domain_instances_max_quantifier",
-        "dfh_range_instances_min_quantifier",
-        "dfh_range_instances_max_quantifier",
-        "identity_defining"
-      ]
-    };
-
-    const property_profile_view = {
-      "$relation": {
-        "name": "property_profile_view",
-        "joinType": "inner join",
-        // "where": [
-        //   "removed_from_api", "=", "false"
-        // ],
-        select: {
-          include: ["removed_from_api", "dfh_profile_label"]
-        }
-      }
-    };
-
-
-    const labels = {
-      "$relation": {
-        "name": "labels",
-        "joinType": "left join",
-        select: { include: ["dfh_label", "com_fk_system_type"] },
-        "where": [
-          "com_fk_system_type", "IN", [
-            Config.PROPERTY_LABEL_SG,
-            Config.PROPERTY_LABEL_PL,
-            Config.PROPERTY_LABEL_INVERSED_SG,
-            Config.PROPERTY_LABEL_INVERSED_PL
-          ]
-        ]
-      }
-    };
-
-    const class_field_config = (isOutgoing) => {
-      return {
-        "$relation": {
-          "name": "class_field_config",
-          "joinType": "left join",
-          "where": [
-            "property_is_outgoing", "=", JSON.stringify(isOutgoing), 'AND',
-            "fk_project", ...(pk_project ? ['=', pk_project] : ['IS NULL']), 'AND',
-            "fk_app_context", '=', fk_app_context
-          ],
-        }
-      }
-    }
-
-    const filter = {
-      select: {
-        include: ["dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
-      },
-      "include": {
-        "class_profile_view": {
-          "$relation": {
-            "name": "class_profile_view",
-            "joinType": "inner join",
-            "where": [
-              "dfh_profile_association_type", "=", "selected"
-            ],
-            select: { include: ['dfh_fk_system_type', 'dfh_type_label'] }
-          }
-        },
-        "ingoing_properties": {
-          "$relation": {
-            "name": "ingoing_properties",
-            "joinType": "left join",
-            select: propertiesSelect,
-          },
-          property_profile_view,
-          class_field_config: class_field_config(false),
-          labels,
-        },
-        "outgoing_properties": {
-          "$relation": {
-            "name": "outgoing_properties",
-            "joinType": "left join",
-            select: propertiesSelect,
-          },
-          property_profile_view,
-          class_field_config: class_field_config(true),
-          labels
-        },
-        "class_field_configs": {
-          "$relation": {
-            "name": "class_field_configs",
-            "joinType": "left join",
-            where: ["fk_app_context", '=', fk_app_context]
-          },
-          class_field: {
-            $relation: {
-              name: "class_field",
-              joinType: "left join",
-              "orderBy": [{ "pk_entity": "asc" }]
-            },
-            "class_field_property_rel": {
-              $relation: {
-                name: "class_field_property_rel",
-                joinType: "left join",
-                "orderBy": [{ "pk_entity": "asc" }]
-              }
-            }
-          }
-        },
-      }
-    }
-
-    if (pk_class) {
-      filter.where = [
-        'dfh_pk_class', '=', pk_class
-      ]
-    }
-
-    return DfhClass.findComplex(filter, cb);
-
-  }
+  //   return DfhClass.findComplex(filter, cb);
+  // };
 
   /**
    * Get a list of classes for the poject-settings > data-settings page.
@@ -304,7 +326,6 @@ module.exports = function (DfhClass) {
    *
    */
   // DfhClass.projectSettingsClassList = function (pk_project, cb) {
-
 
   //   const filter = {
   //     /**
@@ -368,6 +389,4 @@ module.exports = function (DfhClass) {
   //   return DfhClass.findComplex(filter, cb)
 
   // }
-
-
 };

@@ -16,9 +16,10 @@
       target="_blank">
       {{fieldDefinition.ontoInfoLabel}}
     </a>
-    <span class="upper-case gv-field-header-label" >
+    <span class="upper-case gv-field-header-label">
       {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
-      <span matTooltip="Required and not changeable (identity defining)" *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+      <span matTooltip="Required and not changeable (identity defining)"
+        *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
         *
       </span>
     </span>
@@ -26,8 +27,7 @@
       ({{itemsCount$ | async}})
     </span>
   </div>
-  <button mat-button [disabled]="!(showAddButton$ | async)"
-    (click)="addClick()">
+  <button mat-button [disabled]="!(showAddButton$ | async)" (click)="addClick()">
     <mat-icon>add_circle_outline</mat-icon> Add
   </button>
 

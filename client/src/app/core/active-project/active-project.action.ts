@@ -72,16 +72,16 @@ export class ActiveProjectActions {
   /************************************************************************************
    * CRM and Config (metadata, crm)
   ************************************************************************************/
-  static LOAD_PROJECT = 'ActiveProject::LOAD_PROJECT';
-  static LOAD_PROJECT_FAILED = 'ActiveProject::LOAD_PROJECT_FAILED';
-  static ACTIVE_PROJECT_UPDATED = 'ActiveProject::ACTIVE_PROJECT_UPDATED';
-  static PROJECT_LOAD_CRM = 'ActiveProject::PROJECT_LOAD_CRM';
-  static PROJECT_CRM_LOADED = 'ActiveProject::PROJECT_CRM_LOADED';
+  static LOAD_PROJECT_BASICS = 'ActiveProject::LOAD_PROJECT_BASICS';
+  static LOAD_PROJECT_BASICS_FAILED = 'ActiveProject::LOAD_PROJECT_BASICS_FAILED';
+  static LOAD_PROJECT_BASICS_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_BASICS_SUCCEEDED';
+  static LOAD_PROJECT_CONFIG = 'ActiveProject::LOAD_PROJECT_CONFIG';
+  static LOAD_PROJECT_CONFIG_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_CONFIG_SUCCEEDED';
 
 
-  loadProject(pk_project: number): ActiveProjectAction {
+  loadProjectBasics(pk_project: number): ActiveProjectAction {
     return {
-      type: ActiveProjectActions.LOAD_PROJECT,
+      type: ActiveProjectActions.LOAD_PROJECT_BASICS,
       payload: null,
       meta: {
         pk_project
@@ -89,17 +89,17 @@ export class ActiveProjectActions {
     }
   }
 
-  activeProjectUpdated(projectPreview: ProjectPreview): ActiveProjectAction {
+  loadProjectBasiscsSucceded(projectPreview: ProjectPreview): ActiveProjectAction {
     return {
-      type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
+      type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
       payload: null,
       meta: { projectPreview },
     }
   }
 
-  activeProjectLoadCrm(pk_project: number): ActiveProjectAction {
+  loadProjectConfig(pk_project: number): ActiveProjectAction {
     return {
-      type: ActiveProjectActions.PROJECT_LOAD_CRM,
+      type: ActiveProjectActions.LOAD_PROJECT_CONFIG,
       payload: null,
       meta: {
         pk_project
@@ -107,9 +107,9 @@ export class ActiveProjectActions {
     }
   }
 
-  projectCrmLoaded(): ActiveProjectAction {
+  loadProjectConfigSucceeded(): ActiveProjectAction {
     return {
-      type: ActiveProjectActions.PROJECT_CRM_LOADED,
+      type: ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED,
       payload: {
         // crm
       },
@@ -643,31 +643,31 @@ export class ActiveProjectActions {
   }
 
 
-  /*********************************************************************
-   *  Methods to manage enabling and disabling a class for the project
-   *********************************************************************/
-  static readonly UPSERT_CLASS_PROJ_REL = 'ActiveProject::UPSERT_CLASS_PROJ_REL';
-  static readonly UPSERT_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_SUCCEEDED';
-  static readonly UPSERT_CLASS_PROJ_REL_FAILED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_FAILED';
+  // /*********************************************************************
+  //  *  Methods to manage enabling and disabling a class for the project
+  //  *********************************************************************/
+  // static readonly UPSERT_CLASS_PROJ_REL = 'ActiveProject::UPSERT_CLASS_PROJ_REL';
+  // static readonly UPSERT_CLASS_PROJ_REL_SUCCEEDED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_SUCCEEDED';
+  // static readonly UPSERT_CLASS_PROJ_REL_FAILED = 'ActiveProject::UPSERT_CLASS_PROJ_REL_FAILED';
 
-  upsertClassProjRel = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
-    type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL,
-    meta: { projRel, dfh_pk_class },
-    payload: null,
-  });
+  // upsertClassProjRel = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL,
+  //   meta: { projRel, dfh_pk_class },
+  //   payload: null,
+  // });
 
-  upsertClassProjRelSucceeded = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
-    type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED,
-    meta: { projRel, dfh_pk_class },
-    payload: null
-  })
+  // upsertClassProjRelSucceeded = (projRel: ProDfhClassProjRel, dfh_pk_class: number): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED,
+  //   meta: { projRel, dfh_pk_class },
+  //   payload: null
+  // })
 
-  upsertClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
-    type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED,
-    meta: { dfh_pk_class },
-    payload: null,
-    error,
-  })
+  // upsertClassProjRelFailed = (error, dfh_pk_class: number): ActiveProjectAction => ({
+  //   type: ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED,
+  //   meta: { dfh_pk_class },
+  //   payload: null,
+  //   error,
+  // })
 
 
   /*********************************************************************

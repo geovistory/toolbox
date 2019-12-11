@@ -48,8 +48,8 @@ export class ActiveProjectEpics {
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return combineEpics(
-      this.createLoadProjectEpic(),
-      this.createLoadCrmEpic(),
+      this.createLoadProjectBasicsEpic(),
+      this.createLoadProjectConfigEpic(),
       this.createLoadProjectUpdatedEpic(),
       // this.createLoadEntityDetailForModalEpic(),
       this.createLoadChunkEpic(),
@@ -68,7 +68,7 @@ export class ActiveProjectEpics {
       // this.createDisableCreatingMentioningEpic(),
       this.createSplitPanelActivateTabEpic(),
       this.createAddTabCloseListEpic(),
-      this.createChangeClassProjRelEpic(),
+      // this.createChangeClassProjRelEpic(),
       this.createUpsertEntityProjRelEpic()
     );
   }
@@ -79,10 +79,10 @@ export class ActiveProjectEpics {
    * - on loaded dispaches an action that reduces the project into the store
    * - on fail dispaches an action that shows an error notification
    */
-  private createLoadProjectEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+  private createLoadProjectBasicsEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
 
-      ofType(ActiveProjectActions.LOAD_PROJECT),
+      ofType(ActiveProjectActions.LOAD_PROJECT_BASICS),
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         /**
        * Emit the global action that activates the loading bar
@@ -92,7 +92,7 @@ export class ActiveProjectEpics {
         this.projectApi.getBasics(action.meta.pk_project)
           .subscribe(
             (data: ProProject[]) => {
-              globalStore.next(this.actions.activeProjectUpdated(U.proProjectToProjectPreview(data[0])))
+              globalStore.next(this.actions.loadProjectBasiscsSucceded(U.proProjectToProjectPreview(data[0])))
             },
             error => {
               globalStore.next(this.notificationActions.addToast({
@@ -112,15 +112,15 @@ export class ActiveProjectEpics {
   */
   private createLoadProjectUpdatedEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
-      ofType(ActiveProjectActions.ACTIVE_PROJECT_UPDATED),
+      ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED),
       mapTo(this.loadingBarActions.completeLoading())
     )
   }
 
-  private createLoadCrmEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+  private createLoadProjectConfigEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
 
-      ofType(ActiveProjectActions.PROJECT_LOAD_CRM),
+      ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG),
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
@@ -223,7 +223,7 @@ export class ActiveProjectEpics {
 
 
 
-            globalStore.next(this.actions.projectCrmLoaded());
+            globalStore.next(this.actions.loadProjectConfigSucceeded());
             globalStore.next(this.loadingBarActions.completeLoading());
 
 
@@ -774,59 +774,59 @@ export class ActiveProjectEpics {
    */
 
 
-  /**
-   * Epic to handle enabling and disabling of a class for project
-   * @param c
-   */
-  private createChangeClassProjRelEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.UPSERT_CLASS_PROJ_REL),
-        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
+  // /**
+  //  * Epic to handle enabling and disabling of a class for project
+  //  * @param c
+  //  */
+  // private createChangeClassProjRelEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.UPSERT_CLASS_PROJ_REL),
+  //       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-          /**
-           * Prepare api call
-           */
-          let apiCall;
-          // update existing projRel
-          if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
-          // create new projRel
-          else apiCall = this.projRelApi.create(action.meta.projRel);
+  //         /**
+  //          * Prepare api call
+  //          */
+  //         let apiCall;
+  //         // update existing projRel
+  //         if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
+  //         // create new projRel
+  //         else apiCall = this.projRelApi.create(action.meta.projRel);
 
-          /**
-           * Subscribe to the api call
-           */
-          apiCall.subscribe((data) => {
-            /**
-             * Emit the global action that completes the loading bar
-             */
-            globalStore.next(this.loadingBarActions.completeLoading());
-            /**
-             * Emit the local action on loading succeeded
-             */
-            globalStore.next(this.actions.upsertClassProjRelSucceeded(data, action.meta.dfh_pk_class));
+  //         /**
+  //          * Subscribe to the api call
+  //          */
+  //         apiCall.subscribe((data) => {
+  //           /**
+  //            * Emit the global action that completes the loading bar
+  //            */
+  //           globalStore.next(this.loadingBarActions.completeLoading());
+  //           /**
+  //            * Emit the local action on loading succeeded
+  //            */
+  //           globalStore.next(this.actions.upsertClassProjRelSucceeded(data, action.meta.dfh_pk_class));
 
-          }, error => {
-            /**
-             * Emit the global action that shows some loading error message
-             */
-            // globalStore.next(this.loadingBarActions.completeLoading());
-            /**
-            * Emit the local action on loading failed
-            */
-            globalStore.next(this.actions.upsertClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
-          })
-        }))
-      )
-    }
-  }
+  //         }, error => {
+  //           /**
+  //            * Emit the global action that shows some loading error message
+  //            */
+  //           // globalStore.next(this.loadingBarActions.completeLoading());
+  //           /**
+  //           * Emit the local action on loading failed
+  //           */
+  //           globalStore.next(this.actions.upsertClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
+  //         })
+  //       }))
+  //     )
+  //   }
+  // }
 
 
 

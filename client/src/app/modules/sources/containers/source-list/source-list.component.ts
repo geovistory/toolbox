@@ -75,22 +75,19 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
 
   startCreate(classAndTypePk: ClassAndTypePk) {
-    this.p.getClassConfig(classAndTypePk.pkClass)
-      .pipe(first(d => !!d), takeUntil(this.destroy$)).subscribe(classConfig => {
 
-        this.p.setListType('')
+    this.p.setListType('')
 
-        this.p.openModalCreateOrAddEntity({
-          alreadyInProjectBtnText: 'Open',
-          notInProjectClickBehavior: 'addToProject',
-          notInProjectBtnText: 'Add and Open',
-          classAndTypePk,
-          pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
-        }).subscribe(result => {
-          this.p.addSourceTab(result.pkEntity)
-        })
+    this.p.openModalCreateOrAddEntity({
+      alreadyInProjectBtnText: 'Open',
+      notInProjectClickBehavior: 'addToProject',
+      notInProjectBtnText: 'Add and Open',
+      classAndTypePk,
+      pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
+    }).subscribe(result => {
+      this.p.addSourceTab(result.pkEntity)
+    })
 
-      })
 
   }
 

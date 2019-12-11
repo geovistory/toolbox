@@ -5,8 +5,8 @@ import { keys, omit, values } from 'ramda';
 import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
-import { ProAnalysisSlice, ProInfoProjRelSlice, ProPropertyLabelSlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProInfoProjRel, ProPropertyLabel } from '../sdk';
+import { ProAnalysisSlice, ProInfoProjRelSlice, ProPropertyLabelSlice, ProDfhClassProjRelSlice } from '../pro/pro.models';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProInfoProjRel, ProPropertyLabel, ProDfhClassProjRel } from '../sdk';
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
@@ -55,6 +55,16 @@ export class Flattener {
         item = new ProInfoProjRel(item);
       })
     })
+
+  dfh_class_proj_rel = new ModelFlattener<ProDfhClassProjRelSlice, ProDfhClassProjRel>(
+    this.proActions.dfh_class_proj_rel,
+    ProInfoProjRel.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProDfhClassProjRel(item);
+      })
+    })
+
 
   persistent_item = new ModelFlattener<InfPersistentItemSlice, InfPersistentItem>(
     this.infActions.persistent_item,
@@ -206,6 +216,7 @@ export class Flattener {
   ) { }
   getFlattened(): FlattenerInterface {
     return {
+      dfh_class_proj_rel: this.dfh_class_proj_rel,
       info_proj_rel: this.info_proj_rel,
       property_label: this.property_label,
       analysis: this.analysis,

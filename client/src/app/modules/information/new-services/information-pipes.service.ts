@@ -1,25 +1,25 @@
 
-import { NgRedux } from "@angular-redux/store";
-import { Injectable } from "@angular/core";
-import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, SysConfig, TimePrimitive, TimeSpan, U } from "app/core";
-import { Granularity } from "app/core/date-time/date-time-commons";
-import { CalendarType } from "app/core/date-time/time-primitive";
-import { InfSelector } from "app/core/inf/inf.service";
-import { DfhConfig } from "app/modules/information/shared/dfh-config";
-import { cache, spyTag } from "app/shared";
-import { TimePrimitivePipe } from "app/shared/pipes/time-primitive/time-primitive.pipe";
-import { TimeSpanPipe } from "app/shared/pipes/time-span/time-span.pipe";
-import { groupBy, indexBy, omit, pick, values, equals, uniq, flatten } from "ramda";
-import { combineLatest, iif, Observable, of, empty } from "rxjs";
+import { NgRedux } from '@angular-redux/store';
+import { Injectable } from '@angular/core';
+import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, SysConfig, TimePrimitive, TimeSpan, U } from 'app/core';
+import { Granularity } from 'app/core/date-time/date-time-commons';
+import { CalendarType } from 'app/core/date-time/time-primitive';
+import { InfSelector } from 'app/core/inf/inf.service';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { cache, spyTag } from 'app/shared';
+import { TimePrimitivePipe } from 'app/shared/pipes/time-primitive/time-primitive.pipe';
+import { TimeSpanPipe } from 'app/shared/pipes/time-span/time-span.pipe';
+import { groupBy, indexBy, omit, pick, values, equals, uniq, flatten } from 'ramda';
+import { combineLatest, iif, Observable, of, empty } from 'rxjs';
 import { filter, map, startWith, switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
-import { tag } from "../../../../../node_modules/rxjs-spy/operators";
-import { PaginateByParam } from "../../../core/store/actions";
-import { combineLatestOrEmpty } from "../../../core/util/combineLatestOrEmpty";
-import { ClassAndTypeNode } from "../new-components/classes-and-types-select/classes-and-types-select.component";
-import { CtrlTimeSpanDialogResult } from "../new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component";
-import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, ItemType } from "../new-components/properties-tree/properties-tree.models";
-import { ConfigurationPipesService } from "./configuration-pipes.service";
-import { InformationBasicPipesService } from "./information-basic-pipes.service";
+import { tag } from '../../../../../node_modules/rxjs-spy/operators';
+import { PaginateByParam } from '../../../core/store/actions';
+import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
+import { ClassAndTypeNode } from '../new-components/classes-and-types-select/classes-and-types-select.component';
+import { CtrlTimeSpanDialogResult } from '../new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, ItemType } from '../new-components/properties-tree/properties-tree.models';
+import { ConfigurationPipesService } from './configuration-pipes.service';
+import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 // import { TemporalEntityTableRow } from "../new-components/temporal-entity-list/TemporalEntityTable";
@@ -65,7 +65,7 @@ export class InformationPipesService {
       case 'language':
       case 'place':
       case 'temporal-entity':
-        return this.pipeListRoles(l, pkEntity).pipe(map(items => items.length))
+        return this.pipeList(l, pkEntity).pipe(map(items => items.length))
 
       case 'time-span':
         return combineLatest(
@@ -96,17 +96,19 @@ export class InformationPipesService {
     else if (l.listType === 'place') return this.pipeListPlace(l, pkEntity, limit)
     else if (l.listType === 'temporal-entity') return this.pipeListEntityPreview(l, pkEntity, limit)
     else if (l.listType === 'text-property') return this.pipeListTextProperty(l, pkEntity, limit)
-    else if (l.listType === 'time-span') return this.pipeItemTimeSpan(pkEntity).pipe(
-      map((ts) => [ts].filter(i => i.properties.length > 0))
-    )
+    else if (l.listType === 'time-span') {
+      return this.pipeItemTimeSpan(pkEntity).pipe(
+        map((ts) => [ts].filter(i => i.properties.length > 0))
+      )
+    }
   }
 
-  @spyTag pipeListRoles(listDefinition: ListDefinition, pkEntity: number): Observable<InfRole[]> {
-    return (listDefinition.isOutgoing ?
-      this.b.pipeOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity) :
-      this.b.pipeIngoingRolesByProperty(listDefinition.pkProperty, pkEntity)
-    )
-  }
+  // @spyTag pipeListRoles(listDefinition: ListDefinition, pkEntity: number): Observable<InfRole[]> {
+  //   return (listDefinition.isOutgoing ?
+  //     this.b.pipeOutgoingRolesByProperty(listDefinition.pkProperty, pkEntity) :
+  //     this.b.pipeIngoingRolesByProperty(listDefinition.pkProperty, pkEntity)
+  //   )
+  // }
 
   @spyTag pipeListBasicRoleItems(listDefinition: ListDefinition, pkEntity: number, pkProject: number): Observable<BasicRoleItem[]> {
     return (listDefinition.isOutgoing ?
@@ -124,7 +126,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               limitTo(limit),
               startWith([]))
         }))
@@ -144,8 +146,7 @@ export class InformationPipesService {
       switchMap((roles) => {
         return combineLatest(roles.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
           .pipe(
-            map(nodes => nodes
-              .filter(node => !!node)
+            map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)
               .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1),
               limitTo(limit),
             ),
@@ -165,7 +166,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               limitTo(limit),
               startWith([]))
         }))
@@ -182,7 +183,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               limitTo(limit),
               startWith([]))
         }))
@@ -240,17 +241,17 @@ export class InformationPipesService {
     const pageLoader$ = alternative ? this.infRepo.role$.pagination$ : this.p.inf$.role$.pagination$;
 
     // prepare basic role item loader
-    const basicRoleItemLoader = (pkRole, isOutgoing, pkProject) => {
+    const basicRoleItemLoader = (pkRole, isOutgoing, pkProj) => {
       return alternative ?
         this.b.pipeAlternativeBasicRoleItemByPkRole(pkRole, isOutgoing) :
-        this.b.pipeBasicRoleItemByPkRole(pkProject, pkRole, isOutgoing)
+        this.b.pipeBasicRoleItemByPkRole(pkProj, pkRole, isOutgoing)
     }
 
     // prepare TeEnRow loader
-    const rowLoader = (targetEntityPk, fieldDefinitions, propertyItemType, pkProject) => {
+    const rowLoader = (targetEntityPk, fieldDef, propItemType, pkProj) => {
       return alternative ?
-        this.pipeItemTeEnRow(targetEntityPk, fieldDefinitions, propertyItemType, null, true) :
-        this.pipeItemTeEnRow(targetEntityPk, fieldDefinitions, propertyItemType, pkProject, false)
+        this.pipeItemTeEnRow(targetEntityPk, fieldDef, propItemType, null, true) :
+        this.pipeItemTeEnRow(targetEntityPk, fieldDef, propItemType, pkProj, false)
     }
 
     const paginatedRolePks$ = pageLoader$.pipePage(paginateBy, limit, offset)
@@ -272,7 +273,7 @@ export class InformationPipesService {
               const item: TemporalEntityItem = {
                 ...basicRoleItem,
                 row,
-                pkEntity: targetEntityOfRoleItem(basicRoleItem)
+                pkEntity: targetEntityOfRoleItem(basicRoleItem),
               };
               return item
             })
@@ -378,7 +379,8 @@ export class InformationPipesService {
                 itemsCount,
                 label,
                 entityPreview: undefined,
-                pkProperty: undefined
+                pkProperty: undefined,
+                isTimeSpan: true
               }
             }
           })
@@ -398,7 +400,7 @@ export class InformationPipesService {
   @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfRole, pkProject: number, propIsOutgoing: boolean) {
     let $: Observable<RoleItem>;
     const itemType = propertyItemType[(r.fk_property + '_' + propIsOutgoing)];
-    let listType;
+    let listType: ItemType;
     if (!itemType) {
       $ = of({
         projRel: undefined,
@@ -406,10 +408,12 @@ export class InformationPipesService {
         label: 'Error in data',
         role: undefined,
         isOutgoing: undefined,
+        fkClass: undefined,
         error: 'Error in data'
       })
     } else {
-      const { listType, isOutgoing } = itemType;
+      listType = itemType.listType;
+      const isOutgoing = itemType.isOutgoing
       if (listType === 'appellation') $ = this.pipeItemAppellation(r);
       else if (listType === 'entity-preview') $ = this.pipeItemEntityPreview(r, isOutgoing);
       // else if (listType === 'temporal-entity') $ = this.pipeItemEntityPreview(r, isOutgoing);
@@ -457,33 +461,40 @@ export class InformationPipesService {
 
   @spyTag pipeEntityProperties(listDef: ListDefinition, fkEntity: number, limit?: number): Observable<EntityProperties> {
 
-    if (listDef.listType === 'appellation') return this.pipeListAppellation(listDef, fkEntity, limit)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
+    if (listDef.listType === 'appellation') {
+      return this.pipeListAppellation(listDef, fkEntity, limit)
+        .pipe(map((items) => this.getEntityProperties(listDef, items)))
+    }
+    else if (listDef.listType === 'language') {
+      return this.pipeListLanguage(listDef, fkEntity, limit)
+        .pipe(map((items) => this.getEntityProperties(listDef, items)))
+    }
+    else if (listDef.listType === 'place') {
+      return this.pipeListPlace(listDef, fkEntity, limit)
+        .pipe(map((items) => this.getEntityProperties(listDef, items)))
+    }
 
-    else if (listDef.listType === 'language') return this.pipeListLanguage(listDef, fkEntity, limit)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-    else if (listDef.listType === 'place') return this.pipeListPlace(listDef, fkEntity, limit)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-    else if (listDef.listType === 'text-property') return this.pipeListTextProperty(listDef, fkEntity, limit)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-    else if (listDef.listType === 'entity-preview' || listDef.listType === 'temporal-entity') return this.pipeListEntityPreview(listDef, fkEntity, limit)
-      .pipe(map((items) => this.getEntityProperties(listDef, items)))
-
-    else if (listDef.listType === 'time-span') return this.pipeItemTimeSpan(fkEntity)
-      .pipe(map((item) => {
-        const items = item.properties.find(p => p.items.length > 0) ? [{
-          label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item)),
-          properties: [] // TODO check if the properties or the item are really not needed
-        }] : []
-        return {
-          listDefinition: listDef,
-          items
-        }
-      }))
-
+    else if (listDef.listType === 'text-property') {
+      return this.pipeListTextProperty(listDef, fkEntity, limit)
+        .pipe(map((items) => this.getEntityProperties(listDef, items)))
+    }
+    else if (listDef.listType === 'entity-preview' || listDef.listType === 'temporal-entity') {
+      return this.pipeListEntityPreview(listDef, fkEntity, limit)
+        .pipe(map((items) => this.getEntityProperties(listDef, items)))
+    }
+    else if (listDef.listType === 'time-span') {
+      return this.pipeItemTimeSpan(fkEntity)
+        .pipe(map((item) => {
+          const items = item.properties.find(p => p.items.length > 0) ? [{
+            label: this.timeSpanPipe.transform(U.timeSpanItemToTimeSpan(item)),
+            properties: [] // TODO check if the properties or the item are really not needed
+          }] : []
+          return {
+            listDefinition: listDef,
+            items
+          }
+        }))
+    }
     else return of(null)
   }
 
@@ -546,7 +557,8 @@ export class InformationPipesService {
                         ordNum: undefined,
                         projRel,
                         timePrimitive,
-                        label: this.timePrimitivePipe.transform(timePrimitive)
+                        label: this.timePrimitivePipe.transform(timePrimitive),
+                        fkClass: infTimePrimitive.fk_class
                       }
                       return item;
                     }))
@@ -562,7 +574,7 @@ export class InformationPipesService {
                 )
             )).pipe(
               map((properties) => {
-                const props = properties.filter(props => props.items.length > 0);
+                const props = properties.filter(p => p.items.length > 0);
                 const timespanitem: TimeSpanItem = {
                   label: '',
                   properties: props
@@ -586,7 +598,8 @@ export class InformationPipesService {
           ordNum: undefined,
           projRel: undefined,
           role,
-          label: appellation.string
+          label: appellation.string,
+          fkClass: appellation.fk_class
         }
         return node
       }))
@@ -601,7 +614,8 @@ export class InformationPipesService {
           ordNum: undefined,
           projRel: undefined,
           role,
-          label: language.notes
+          label: language.notes,
+          fkClass: language.fk_class
         }
         return node
       }))
@@ -616,7 +630,8 @@ export class InformationPipesService {
           ordNum: undefined,
           projRel: undefined,
           role,
-          label: 'WGS84: ' + place.lat + '°, ' + place.long + '°'
+          label: 'WGS84: ' + place.lat + '°, ' + place.long + '°',
+          fkClass: place.fk_class
         }
         return node
       }))
@@ -634,7 +649,8 @@ export class InformationPipesService {
           projRel: undefined,
           role,
           preview,
-          label: preview.entity_label || ''
+          label: preview.entity_label || '',
+          fkClass: preview.fk_class
         }
         return node
       }))
@@ -661,7 +677,8 @@ export class InformationPipesService {
             projRel: undefined,
             role,
             timePrimitive,
-            label: this.timePrimitivePipe.transform(timePrimitive)
+            label: this.timePrimitivePipe.transform(timePrimitive),
+            fkClass: infTimePrimitive.fk_class
           }
           return node
         }))
@@ -678,7 +695,8 @@ export class InformationPipesService {
             projRel: undefined,
             role,
             timePrimitive,
-            label: this.timePrimitivePipe.transform(timePrimitive)
+            label: this.timePrimitivePipe.transform(timePrimitive),
+            fkClass: infTimePrimitive.fk_class
           }
           return node
         })
@@ -756,7 +774,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
         }))
     }
@@ -772,7 +790,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
         }))
     }
@@ -788,7 +806,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
         }))
     }
@@ -845,7 +863,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
         }))
     }
@@ -861,7 +879,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
         }))
     }
@@ -877,7 +895,7 @@ export class InformationPipesService {
         switchMap((roles) => {
           return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
-              map(nodes => nodes.filter(node => !!node)),
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
         }))
     }
@@ -895,7 +913,7 @@ export class InformationPipesService {
       switchMap((roles) => {
         return combineLatest(roles.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
           .pipe(
-            map(nodes => nodes.filter(node => !!node)
+            map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)
               // .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
             ))
       }),
@@ -934,7 +952,8 @@ export class InformationPipesService {
                             ordNum: undefined,
                             projRel: undefined,
                             timePrimitive,
-                            label: this.timePrimitivePipe.transform(timePrimitive)
+                            label: this.timePrimitivePipe.transform(timePrimitive),
+                            fkClass: infTimePrimitive.fk_class
                           }
                           return item;
                         }))
@@ -1103,7 +1122,7 @@ export class InformationPipesService {
             isOutgoing,
             label,
             pk: field.fk_property,
-            propertyFieldKey: '_' + field.fk_property + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
+            propertyFieldKey: propertyOptionFieldKey(field.fk_property, isOutgoing)
           };
           return o;
         }))));
@@ -1158,3 +1177,8 @@ export class InformationPipesService {
   }
 
 }
+
+export function propertyOptionFieldKey(fkProperty: number, isOutgoing: boolean): string {
+  return '_' + fkProperty + '_' + (isOutgoing ? 'outgoing' : 'ingoing');
+}
+

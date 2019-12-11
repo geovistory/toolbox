@@ -12,6 +12,34 @@
         <strong>
           {{field.label}} {{field?.propertyField?.isIdentityDefining ? '*' : ''}}
         </strong>
+        <span *ngIf="field?.propertyField?.targetClasses; let truncated" class="mat-text-secondary ml-2">
+          <span>
+            [
+            <span *ngFor="let item of field.propertyField.targetClasses | slice:0:3; let i = index">
+              <span *ngIf="i>0">,</span>
+              {{item.label}}
+            </span>
+            <span *ngIf="field.propertyField.targetClasses.length > 3">
+              , + {{field.propertyField.targetClasses.length-3}}
+              <!-- <a class="gv-passive-link" (click)="showAll=true">
+                show all
+              </a> -->
+            </span>
+            ]
+          </span>
+          <!-- <span *ngIf="showAll">
+            [
+            <span *ngFor="let item of field.propertyField.targetClasses; let i = index">
+              <span *ngIf="i>0">/</span>
+              {{item.label}}
+            </span>
+            <a class="gv-passive-link" (click)="showAll=false">
+              hide
+            </a>
+            ]
+          </span> -->
+          <!-- [{{field.propertyField.targetClasses | truncate:25}}] -->
+        </span>
         <!-- <mat-icon color="warn" matTooltip="Label Missing">warning</mat-icon> -->
       </mat-panel-title>
       <!-- <mat-panel-description>

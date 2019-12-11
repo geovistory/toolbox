@@ -212,21 +212,23 @@ export class FormCreateRoleComponent implements OnInit {
   private mergeValue(target: any, source: any, mergeDef: MergeDef) {
     let part = target ? target : mergeDef.targetType === 'array' ? [] : {};
 
-    mergeDef.target.forEach(key => {
-      if (!hasIn(key, part)) {
-        mergeDef.targetType === 'array' ? part[key] = [] : part[key] = {};
-      }
-      part = part[key]
-    });
+    if (mergeDef) {
+      mergeDef.target.forEach(key => {
+        if (!hasIn(key, part)) {
+          mergeDef.targetType === 'array' ? part[key] = [] : part[key] = {};
+        }
+        part = part[key]
+      });
 
-    if (mergeDef.targetType === 'array') {
-      if (mergeDef.sourceType === 'object') part.push(source)
-      else if (mergeDef.sourceType === 'array') {
-        source.forEach(s => part.push(s));
+      if (mergeDef.targetType === 'array') {
+        if (mergeDef.sourceType === 'object') part.push(source)
+        else if (mergeDef.sourceType === 'array') {
+          source.forEach(s => part.push(s));
+        }
       }
-    }
-    else if (mergeDef.targetType === 'object') {
-      Object.assign(part, source)
+      else if (mergeDef.targetType === 'object') {
+        Object.assign(part, source)
+      }
     }
     return target
   }

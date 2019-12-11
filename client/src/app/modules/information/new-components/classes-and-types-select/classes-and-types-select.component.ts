@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { FlatTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '../../../../../../node_modules/@angular/material';
 import { Observable, Subject } from '../../../../../../node_modules/rxjs';
@@ -15,25 +15,6 @@ export interface ClassAndTypeNode {
 }
 
 
-const TREE_DATA: ClassAndTypeNode[] = [
-  {
-    label: 'Fruit',
-    data: {
-      pkClass: 1,
-      pkType: null
-    },
-    children: [
-      {
-        label: 'Apple',
-        data: {
-          pkClass: 1,
-          pkType: null
-        },
-      },
-    ]
-  }
-];
-
 /** Flat node with expandable and level information */
 interface ExampleFlatNode {
   expandable: boolean;
@@ -47,41 +28,39 @@ interface ExampleFlatNode {
   templateUrl: './classes-and-types-select.component.html',
   styleUrls: ['./classes-and-types-select.component.scss']
 })
-export class ClassesAndTypesSelectComponent implements OnInit {
+export class ClassesAndTypesSelectComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   // On user select class or type
   @Input() enabledIn: 'entities' | 'sources';
   @Output() select = new EventEmitter<ClassAndTypePk>();
 
-  private _transformer = (node: ClassAndTypeNode, level: number): ExampleFlatNode => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      label: node.label,
-      data: node.data,
-      level: level,
-    };
-  }
 
   treeControl = new FlatTreeControl<ExampleFlatNode>(
     node => node.level, node => node.expandable);
 
   treeFlattener = new MatTreeFlattener(
-    this._transformer, node => node.level, node => node.expandable, node => node.children);
+    (node: ClassAndTypeNode, level: number): ExampleFlatNode => {
+      return {
+        expandable: !!node.children && node.children.length > 0,
+        label: node.label,
+        data: node.data,
+        level: level,
+      };
+    }, node => node.level, node => node.expandable, node => node.children);
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   data$: Observable<ClassAndTypeNode[]>
 
   constructor(
-    private c: ConfigurationPipesService,
     private i: InformationPipesService,
-    private b: InformationBasicPipesService
-
   ) { }
 
+  // private _transformer =
+
   ngOnInit() {
-    if (!this.enabledIn) throw 'You must provide enabledIn input';
+    if (!this.enabledIn) throw new Error('You must provide enabledIn input');
 
     this.data$ = this.i.pipeClassesAndTypes(this.enabledIn)
 

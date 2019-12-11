@@ -32,7 +32,7 @@ import { SourcesModule } from '../sources';
 import { VisualsModule } from '../visuals/visuals.module';
 import { ProjectsActions } from './api/projects.actions';
 import { SettingsListComponent } from './components/settings-list/settings-list.component';
-import { SideNavComponent } from './components/side-nav/side-nav.component';
+// import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
@@ -40,11 +40,11 @@ import { ProjectDashboardComponent } from './containers/project-dashboard/projec
 import { ProjectEditPanelComponent } from './containers/project-edit-panel/project-edit-panel.component';
 import { ProjectEditComponent, TabBodyComponent, OnActivateTabDirective } from './containers/project-edit/project-edit.component';
 import { ProjectListComponent } from './containers/project-list/project-list.component';
-import { ProjectSettingsCollaboratorsComponent } from './containers/project-settings-collaborators/project-settings-collaborators.component';
+// import { ProjectSettingsCollaboratorsComponent } from './containers/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataAPIActions } from './containers/project-settings-data/api/project-settings-data.actions';
 import { ProjectSettingsDataAPIEpics } from './containers/project-settings-data/api/project-settings-data.epics';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
-import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
+// import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
 import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
@@ -60,6 +60,8 @@ import { AnalysisModule } from '../analysis/analysis.module';
 import { OntomeProfilesListComponent } from './components/ontome-profiles-list/ontome-profiles-list.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon.module';
+import { MatMenuModule, MatTooltipModule } from '@angular/material';
+import { SettingsModule } from '../settings/settings.module';
 
 
 
@@ -90,6 +92,8 @@ import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon
     MatIconModule,
     MatExpansionModule,
     MatDialogModule,
+    MatMenuModule,
+    MatTooltipModule,
     DragDropModule,
     SourcesModule,
     Information2Module,
@@ -106,7 +110,8 @@ import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon
     LanguageSearchTypeaheadModule,
     ClassConfigModule,
     HttpClientModule,
-    AnalysisIconModule
+    AnalysisIconModule,
+    SettingsModule
   ],
   declarations: [
     ProjectCreateComponent,
@@ -114,10 +119,10 @@ import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon
     ProjectEditComponent,
     ProjectEditPanelComponent,
     ProjectListComponent,
-    ProjectSettingsCollaboratorsComponent,
+    // ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
-    ProjectSettingsProfileComponent,
-    SideNavComponent,
+    // ProjectSettingsProfileComponent,
+    // SideNavComponent,
     TypesComponent,
     TypeEditFormComponent,
     TabBodyComponent,

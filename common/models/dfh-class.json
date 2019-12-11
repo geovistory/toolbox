@@ -30,6 +30,9 @@
     },
     "dfh_fk_system_type": {
       "type": "number"
+    },
+    "removed_from_api": {
+      "type": "object"
     }
   },
   "validations": [],
@@ -122,8 +125,7 @@
       "principalId": "system_admin",
       "permission": "ALLOW",
       "property": [
-        "classesOfProfile",
-        "propertiesAndUiElements"
+        "classesOfProfile"
       ]
     }
   ],
@@ -200,49 +202,6 @@
       "description": "Get all classes of persistent items that are selected and, if provided, filtered by the profile of the specified primary-key.",
       "http": {
         "path": "/selected-pe-it-classes-of-profile",
-        "verb": "get"
-      }
-    },
-    "propertiesAndUiElements": {
-      "accepts": [
-        {
-          "arg": "pk_class",
-          "type": "number",
-          "required": true,
-          "description": "Provide the dfh_pk_class to query one specific class",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pk_app_context",
-          "type": "number",
-          "required": true,
-          "description": "Provide the pk_entity of the app_context to query",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pk_project",
-          "type": "number",
-          "required": false,
-          "description": "Provide a pk_project for loading the settings of a project or leaf it blank to query the default settings.",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhClass"
-        ],
-        "root": true
-      },
-      "description": "Get ingoing and outgoing properties and ui elements of class",
-      "http": {
-        "path": "/properties-and-ui-elements",
         "verb": "get"
       }
     }

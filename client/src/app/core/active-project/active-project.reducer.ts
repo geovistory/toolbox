@@ -19,23 +19,24 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
     /************************************************************************************
      * Load project data (metadata, crm)
     ************************************************************************************/
-    case ActiveProjectActions.ACTIVE_PROJECT_UPDATED:
+    case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
       state = {
         ...state,
         ...action.meta.projectPreview
       };
       break;
-    case ActiveProjectActions.PROJECT_LOAD_CRM:
+    case ActiveProjectActions.LOAD_PROJECT_CONFIG:
       state = {
         ...state,
-        initializingProject: true
+        loadingConfigData: true
       }
       break;
-    case ActiveProjectActions.PROJECT_CRM_LOADED:
+    case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
       state = {
         ...state,
-        crm: action.payload.crm,
-        initializingProject: false
+        // crm: action.payload.crm,
+        configDataInitialized: true,
+        loadingConfigData: false
       }
       break;
 
@@ -539,50 +540,50 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
     /********************************************
       * Reducers to handle disabling and enabling a class
       *****************************************************/
-    case ActiveProjectActions.UPSERT_CLASS_PROJ_REL:
-      return {
-        ...state,
-        crm: {
-          ...state.crm,
-          classes: {
-            ...state.crm.classes,
-            [action.meta.dfh_pk_class]: {
-              ...state.crm.classes[action.meta.dfh_pk_class],
-              changingProjRel: true
-            }
-          }
-        }
-      };
-    case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED:
-      return {
-        ...state,
-        crm: {
-          ...state.crm,
-          classes: {
-            ...state.crm.classes,
-            [action.meta.dfh_pk_class]: {
-              ...state.crm.classes[action.meta.dfh_pk_class],
-              projRel: action.meta.projRel,
-              isInProject: action.meta.projRel.enabled_in_entities,
-              changingProjRel: false
-            }
-          }
-        }
-      };
-    case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
-      return {
-        ...state,
-        crm: {
-          ...state.crm,
-          classes: {
-            ...state.crm.classes,
-            [action.meta.dfh_pk_class]: {
-              ...state.crm.classes[action.meta.dfh_pk_class],
-              changingProjRel: false
-            }
-          }
-        }
-      };
+    // case ActiveProjectActions.UPSERT_CLASS_PROJ_REL:
+    //   return {
+    //     ...state,
+    //     crm: {
+    //       ...state.crm,
+    //       classes: {
+    //         ...state.crm.classes,
+    //         [action.meta.dfh_pk_class]: {
+    //           ...state.crm.classes[action.meta.dfh_pk_class],
+    //           changingProjRel: true
+    //         }
+    //       }
+    //     }
+    //   };
+    // case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED:
+    //   return {
+    //     ...state,
+    //     crm: {
+    //       ...state.crm,
+    //       classes: {
+    //         ...state.crm.classes,
+    //         [action.meta.dfh_pk_class]: {
+    //           ...state.crm.classes[action.meta.dfh_pk_class],
+    //           projRel: action.meta.projRel,
+    //           isInProject: action.meta.projRel.enabled_in_entities,
+    //           changingProjRel: false
+    //         }
+    //       }
+    //     }
+    //   };
+    // case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
+    //   return {
+    //     ...state,
+    //     crm: {
+    //       ...state.crm,
+    //       classes: {
+    //         ...state.crm.classes,
+    //         [action.meta.dfh_pk_class]: {
+    //           ...state.crm.classes[action.meta.dfh_pk_class],
+    //           changingProjRel: false
+    //         }
+    //       }
+    //     }
+    //   };
 
 
     /************************************************************************************

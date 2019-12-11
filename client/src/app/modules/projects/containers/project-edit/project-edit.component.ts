@@ -167,7 +167,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     })
 
     this.p.initProject(id);
-    this.p.initProjectCrm(id);
+    this.p.initProjectConfigData(id);
 
     this.allTabs$ = this.p.panels$.pipe(map(panels => {
       let allTabs = []

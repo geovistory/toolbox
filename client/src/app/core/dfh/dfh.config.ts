@@ -23,7 +23,7 @@ export const dfhDefinitions: ReducerConfigCollection = {
     },
     groupBy: [
       {
-        keyInStore: 'by_dfh_pk_class',
+        keyInStore: 'dfh_pk_class',
         groupByFn: (d: DfhClassProfileView): string => d.dfh_fk_class.toString()
       }
     ]

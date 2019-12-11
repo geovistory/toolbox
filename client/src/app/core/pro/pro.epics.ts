@@ -56,7 +56,7 @@ export class ProEpics {
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.info_proj_rel.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
       /**
@@ -67,6 +67,14 @@ export class ProEpics {
        * ProProDfhClassProjRel
        */
       proProDfhClassProjRelEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classProjRelApi.getEnabledByProject(meta.pk), ''),
+      proProDfhClassProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProInfoProjRel>>((meta) => this.classProjRelApi
+        .bulkUpsert(meta.pk, meta.items),
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.dfh_class_proj_rel.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        }
+      ),
       /**
       * ProPropertyLabel
       */
@@ -84,7 +92,7 @@ export class ProEpics {
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.property_label.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
       proPropertyLabelEpicsFactory.createDeleteEpic((meta) => this.propertyLabelApi.bulkDelete(meta.pk, meta.items)),
@@ -105,7 +113,7 @@ export class ProEpics {
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.analysis.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
       proAnalysisEpicsFactory.createDeleteEpic(

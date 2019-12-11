@@ -90,38 +90,6 @@ export class DfhClassApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get ingoing and outgoing properties and ui elements of class
-   *
-   * @param {number} pk_class Provide the dfh_pk_class to query one specific class
-   *
-   * @param {number} pk_app_context Provide the pk_entity of the app_context to query
-   *
-   * @param {number} pk_project Provide a pk_project for loading the settings of a project or leaf it blank to query the default settings.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhClass` object.)
-   * </em>
-   */
-  public propertiesAndUiElements(pk_class: any, pk_app_context: any, pk_project: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhClasses/properties-and-ui-elements";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pk_class !== 'undefined' && pk_class !== null) _urlParams.pk_class = pk_class;
-    if (typeof pk_app_context !== 'undefined' && pk_app_context !== null) _urlParams.pk_app_context = pk_app_context;
-    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>

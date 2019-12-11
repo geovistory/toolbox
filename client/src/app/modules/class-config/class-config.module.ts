@@ -4,8 +4,9 @@ import { MatButtonModule, MatDividerModule, MatExpansionModule, MatFormFieldModu
 import { ClassConfigDialogComponent } from './components/class-config-dialog/class-config-dialog.component';
 import { ClassConfigComponent } from './components/class-config/class-config.component';
 import { PropertyLabelTableComponent } from './components/property-label-table/property-label-table.component';
-import { LanguageSearchTypeaheadModule } from 'app/shared';
+import { LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
 import { ReactiveFormsModule } from '../../../../node_modules/@angular/forms';
+import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 
 @NgModule({
   imports: [
@@ -22,7 +23,9 @@ import { ReactiveFormsModule } from '../../../../node_modules/@angular/forms';
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    LanguageSearchTypeaheadModule
+    LanguageSearchTypeaheadModule,
+    TruncateModule,
+    PassiveLinkModule
   ],
   declarations: [ClassConfigComponent, ClassConfigDialogComponent, PropertyLabelTableComponent],
   entryComponents: [ClassConfigDialogComponent]

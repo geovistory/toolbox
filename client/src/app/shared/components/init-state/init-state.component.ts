@@ -54,7 +54,7 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     if (this.activeProject) {
       this.ngRedux.dispatch({
-        type: ActiveProjectActions.ACTIVE_PROJECT_UPDATED,
+        type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
         payload: this.activeProject
       })
     }
@@ -88,15 +88,15 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
      */
     if (this.projectFromApi) {
       this.p.initProject(this.projectFromApi);
-      this.p.initProjectCrm(this.projectFromApi);
-      const crmLoaded = new Subject<boolean>();
-      this.waitForAll.push(crmLoaded)
+      this.p.initProjectConfigData(this.projectFromApi);
+      const configLoaded = new Subject<boolean>();
+      this.waitForAll.push(configLoaded)
 
       this.ngRedux.select(['activeProject', 'crm', 'classes']).pipe(
         first(c => !!c),
         takeUntil(this.destroy$)
       ).subscribe(ok => {
-        crmLoaded.next(true)
+        configLoaded.next(true)
       })
     }
 

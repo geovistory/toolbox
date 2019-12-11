@@ -33,7 +33,7 @@ export class DfhEpics {
     return combineEpics(
 
       // Class Loaders
-      dfhClassEpicsFactory.createLoadEpic((meta) => this.classApi.classesOfProfile(null), ''),
+      // dfhClassEpicsFactory.createLoadEpic((meta) => this.classApi.classesOfProfile(null), ''),
       dfhClassEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classApi.classesOfProjectProfiles(meta.pk),
         DfhClassActionFactory.CLASSES_OF_PROJECT_PROFILE
       ),

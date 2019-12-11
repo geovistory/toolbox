@@ -52,7 +52,7 @@
         <span class="gv-tile" *ngIf="(showProperties$ | async)">
           <div class="gv-one-liner mx-2 mt-3">
             <h2>
-              <span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async}}</span>
+              <span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async | truncate:120}}</span>
               <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
             </h2>
 

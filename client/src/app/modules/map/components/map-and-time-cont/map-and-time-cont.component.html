@@ -33,7 +33,7 @@
           Value of Place at Date
         </mat-card-subtitle>
         <mat-card-content *ngIf="infoBox?.cursorInfo?.activeLine">
-          {{infoBox?.cursorInfo?.linePoint.y}} <a href class="ml-3 gv-passive-link" matTooltip="Show details"
+          {{infoBox?.cursorInfo?.linePoint?.y || 0}} <a href class="ml-3 gv-passive-link" matTooltip="Show details"
             (click)="onShowPointDetailsClick()"> show
             details </a>
         </mat-card-content>

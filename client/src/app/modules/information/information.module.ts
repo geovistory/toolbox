@@ -204,6 +204,8 @@ import { MatProgressSpinnerModule } from '@angular/material';
 import { TeEntActions } from './containers/te-ent-detail/api/te-ent.actions';
 import { EntityActions } from './containers/pe-it-detail/api/entity.actions';
 import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
+import { PaginationService } from './new-services/pagination.service';
+import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 
 
 @NgModule({
@@ -272,6 +274,7 @@ import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
     EntityPreviewModule,
     AnnotationModule,
     TileHeaderModule,
+    TruncateModule
   ],
   declarations: [
     InformationComponent,
@@ -490,7 +493,8 @@ import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
     InformationPipesService,
     InformationBasicPipesService,
     TimeSpanService,
-    PropertiesTreeService
+    PropertiesTreeService,
+    PaginationService
 
   ],
   exports: [

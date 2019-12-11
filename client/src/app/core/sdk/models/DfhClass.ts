@@ -16,6 +16,7 @@ export interface DfhClassInterface {
   "dfh_identifier_in_namespace"?: string;
   "dfh_standard_label"?: string;
   "dfh_fk_system_type"?: number;
+  "removed_from_api"?: any;
   "pk_entity"?: number;
   "entity_version"?: number;
   ingoing_properties?: DfhProperty[];
@@ -34,6 +35,7 @@ export class DfhClass implements DfhClassInterface {
   "dfh_identifier_in_namespace": string;
   "dfh_standard_label": string;
   "dfh_fk_system_type": number;
+  "removed_from_api": any;
   "pk_entity": number;
   "entity_version": number;
   ingoing_properties?: DfhProperty[];
@@ -93,6 +95,10 @@ export class DfhClass implements DfhClassInterface {
         "dfh_fk_system_type": {
           name: 'dfh_fk_system_type',
           type: 'number'
+        },
+        "removed_from_api": {
+          name: 'removed_from_api',
+          type: 'any'
         },
         "pk_entity": {
           name: 'pk_entity',
