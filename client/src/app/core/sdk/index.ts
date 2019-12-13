@@ -63,6 +63,7 @@ import { ProProjectApi } from './services/custom/ProProject';
 import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel';
 import { ProTextPropertyApi } from './services/custom/ProTextProperty';
 import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
+import { DfhProfileApi } from './services/custom/DfhProfile';
 import { DfhClassApi } from './services/custom/DfhClass';
 import { DfhPropertyApi } from './services/custom/DfhProperty';
 import { DfhPropertyViewApi } from './services/custom/DfhPropertyView';
@@ -76,6 +77,7 @@ import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileV
 import { SysAppContextApi } from './services/custom/SysAppContext';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
+import { ProDfhProfileProjRelApi } from './services/custom/ProDfhProfileProjRel';
 import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
 import { InfRoleApi } from './services/custom/InfRole';
@@ -132,6 +134,7 @@ export class SDKBrowserModule {
         PubAccountProjectRelApi,
         ProTextPropertyApi,
         ProInfoProjRelApi,
+        DfhProfileApi,
         DfhClassApi,
         DfhPropertyApi,
         DfhPropertyViewApi,
@@ -145,6 +148,7 @@ export class SDKBrowserModule {
         SysAppContextApi,
         ProClassFieldConfigApi,
         ProDfhClassProjRelApi,
+        ProDfhProfileProjRelApi,
         InfAppellationApi,
         InfTemporalEntityApi,
         InfRoleApi,

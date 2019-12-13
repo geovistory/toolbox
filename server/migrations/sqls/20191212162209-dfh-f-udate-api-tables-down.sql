@@ -1,0 +1,8 @@
+Drop Function data_for_history.update_api_profiles_table;
+
+Drop Function data_for_history.update_api_classes_profile_table;
+
+Drop Function data_for_history.update_api_properties_profile_table;
+
+Drop Function data_for_history.update_api_tables;
+

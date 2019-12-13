@@ -15,6 +15,7 @@ import { ProProject } from '../../models/ProProject';
 import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { ProTextProperty } from '../../models/ProTextProperty';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
+import { DfhProfile } from '../../models/DfhProfile';
 import { DfhClass } from '../../models/DfhClass';
 import { DfhProperty } from '../../models/DfhProperty';
 import { DfhPropertyView } from '../../models/DfhPropertyView';
@@ -28,6 +29,7 @@ import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
 import { SysAppContext } from '../../models/SysAppContext';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
+import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfRole } from '../../models/InfRole';
@@ -61,6 +63,7 @@ export class SDKModels {
     PubAccountProjectRel: PubAccountProjectRel,
     ProTextProperty: ProTextProperty,
     ProInfoProjRel: ProInfoProjRel,
+    DfhProfile: DfhProfile,
     DfhClass: DfhClass,
     DfhProperty: DfhProperty,
     DfhPropertyView: DfhPropertyView,
@@ -74,6 +77,7 @@ export class SDKModels {
     SysAppContext: SysAppContext,
     ProClassFieldConfig: ProClassFieldConfig,
     ProDfhClassProjRel: ProDfhClassProjRel,
+    ProDfhProfileProjRel: ProDfhProfileProjRel,
     InfAppellation: InfAppellation,
     InfTemporalEntity: InfTemporalEntity,
     InfRole: InfRole,

@@ -119,6 +119,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "DfhProfile": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "DfhClass": {
     "dataSource": "postgres1",
     "public": true
@@ -180,6 +184,10 @@
     "public": true
   },
   "ProDfhClassProjRel": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "ProDfhProfileProjRel": {
     "dataSource": "postgres1",
     "public": true
   },
