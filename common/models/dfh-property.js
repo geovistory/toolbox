@@ -1,110 +1,37 @@
 'use strict';
-
-const Config = require('../config/Config');
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 module.exports = function(DfhProperty) {
-  DfhProperty.propertyByDomainClass = function(dfh_pk_property, cb) {
-    const filter = {
-      /**
-       * Select persistent items by pk_entity
-       */
-      // "where": ["dfh_pk_class", "NOT IN", blackList],
-      // "orderBy": [{
-      //     "pk_entity": "asc"
-      // }],
-      include: {
-        labels: {
-          $relation: {
-            name: 'labels',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-        text_properties: {
-          $relation: {
-            name: 'text_properties',
-            joinType: 'left join',
-          },
-        },
-        domain_class: {
-          $relation: {
-            name: 'domain_class',
-            joinType: 'left join',
-          },
-        },
-        // "range_class": {
-        //     "$relation": {
-        //         "name": "range_class",
-        //         "joinType": "left join"
-        //     }
-        // }
-      },
-    };
+  /**
+   * Query classes
+   *
+   * Of a specific project
+   *
+   */
+  DfhProperty.ofProject = function(pkProject, cb) {
+    const q = new FlatObjectQueryBuilder(DfhProperty.app.models);
 
-    return DfhProperty.findComplex(filter, cb);
-  };
+    const params = [pkProject]; // [4, 5, 8]
 
-  DfhProperty.propertyFieldInfo = function(isOutgoing, cb) {
-    const propertiesSelect = {
-      include: [
-        'dfh_pk_property',
-        'dfh_identifier_in_namespace',
-        'dfh_has_domain',
-        'dfh_has_range',
-        'dfh_fk_property_of_origin',
-        'dfh_domain_instances_min_quantifier',
-        'dfh_domain_instances_max_quantifier',
-        'dfh_range_instances_min_quantifier',
-        'dfh_range_instances_max_quantifier',
-        'identity_defining',
-      ],
-    };
+    const sql = `
+      SELECT
+        ${q.createSelect('t3', 'DfhProperty')}
+      FROM
+        projects.dfh_profile_proj_rel t1,
+        data_for_history.api_property t2,
+        data_for_history.v_property t3
+      WHERE fk_project = $1
+      AND t1.fk_profile = t2.dfh_fk_profile
+      AND t3.pk_property = t2.dfh_pk_property
+      `;
 
-    const labels = {
-      $relation: {
-        name: 'labels',
-        joinType: 'left join',
-        select: { include: ['dfh_label', 'com_fk_system_type'] },
-        where: [
-          'com_fk_system_type',
-          'IN',
-          [
-            Config.PROPERTY_LABEL_SG,
-            Config.PROPERTY_LABEL_PL,
-            Config.PROPERTY_LABEL_INVERSED_SG,
-            Config.PROPERTY_LABEL_INVERSED_PL,
-          ],
-        ],
-      },
-    };
-
-    const class_field_config = {
-      $relation: {
-        name: 'class_field_config',
-        joinType: 'left join',
-        select: false,
-        where: [
-          'property_is_outgoing',
-          '=',
-          JSON.stringify(isOutgoing),
-          // , "AND",
-          // "ord_num", "IS NOT NULL"
-        ],
-      },
-    };
-
-    const filter = {
-      select: propertiesSelect,
-      include: {
-        labels,
-        class_field_config,
-      },
-    };
-
-    return DfhProperty.findComplex(filter, cb);
+    DfhProperty.dataSource.connector.execute(
+      sql,
+      params,
+      (err, resultObjects) => {
+        if (err) return cb(err, resultObjects);
+        cb(false, resultObjects);
+      }
+    );
   };
 };

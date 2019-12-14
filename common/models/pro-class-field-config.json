@@ -61,7 +61,7 @@
       "type": "belongsTo",
       "model": "DfhProperty",
       "foreignKey": "fk_property",
-      "primaryKey": "dfh_pk_property"
+      "primaryKey": "pk_property"
     },
     "class_field": {
       "type": "belongsTo",

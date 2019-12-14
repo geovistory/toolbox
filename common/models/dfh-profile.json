@@ -1,6 +1,6 @@
 {
   "name": "DfhProfile",
-  "base": "DfhEntity",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
@@ -16,28 +16,23 @@
     }
   },
   "properties": {
-    "dfh_pk_profile": {
+    "pk_profile": {
+      "id": true,
       "type": "number"
     },
-    "dfh_profile_label_en": {
-      "type": "string"
-    },
-    "dfh_profile_definition_en": {
-      "type": "sting"
-    },
-    "dfh_owned_by_project": {
+    "owned_by_project": {
       "type": "number"
     },
-    "dfh_project_label_en": {
-      "type": "string"
-    },
-    "dfh_is_ongoing_forced_publication": {
+    "is_ongoing_forced_publication": {
       "type": "boolean"
     },
-    "dfh_date_profile_published": {
+    "date_profile_published": {
       "type": "string"
     },
-    "dfh_date_profile_deprecated": {
+    "date_profile_deprecated": {
+      "type": "string"
+    },
+    "tmsp_last_dfh_update": {
       "type": "string"
     }
   },
@@ -63,11 +58,37 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "updateAndAddToProject"
+        "updateAndAddToProject",
+        "ofProject"
       ]
     }
   ],
   "methods": {
+    "ofProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Project pk",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhProfile"
+        ],
+        "root": true
+      },
+      "description": "Get all profiles that are used by the given project.",
+      "http": {
+        "path": "/of-project",
+        "verb": "get"
+      }
+    },
     "updateFromOntoMe": {
       "accepts": [
         {
@@ -99,7 +120,7 @@
       "description": "Pulls profile data including classes and properties from OntoMe and updates profile data in geovistory.",
       "http": {
         "path": "/update-from-ontome",
-        "verb": "get"
+        "verb": "post"
       }
     },
     "updateAndAddToProject": {
@@ -142,7 +163,7 @@
       "description": "Pulls profile data including classes and properties from OntoMe and adds profile to project.",
       "http": {
         "path": "/update-from-ontome-and-add-to-project",
-        "verb": "get"
+        "verb": "post"
       }
     }
   }

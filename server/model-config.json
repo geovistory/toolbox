@@ -131,15 +131,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "DfhPropertyView": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "DfhLabel": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "DfhTextProperty": {
     "dataSource": "postgres1",
     "public": true
   },
@@ -164,14 +156,6 @@
     "public": true
   },
   "WarEntityPreview": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "DfhClassProfileView": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "DfhPropertyProfileView": {
     "dataSource": "postgres1",
     "public": true
   },

@@ -83,8 +83,7 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "getBasics",
-        "getReferenceModel"
+        "getBasics"
       ]
     }
   ],
@@ -164,31 +163,6 @@
       "http": {
         "path": "/get-basics",
         "verb": "get"
-      }
-    },
-    "getReferenceModel": {
-      "accepts": [
-        {
-          "arg": "pkProject",
-          "type": "number",
-          "required": true,
-          "description": "Pk of project",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "success",
-        "type": [
-          "object"
-        ],
-        "root": true
-      },
-      "description": "Classes and Properties of this Project",
-      "http": {
-        "path": "/get-reference-model",
-        "verb": "post"
       }
     }
   }

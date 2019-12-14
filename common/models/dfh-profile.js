@@ -1,5 +1,5 @@
 'use strict';
-const Promise = require('bluebird');
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 const OntoMe = require('../../dist/server/ontome/ontome').OntoMe;
 
@@ -21,6 +21,43 @@ module.exports = function(DfhProfile) {
       fkProject,
       fkProfile,
       requestedLanguage
+    );
+  };
+
+  /**
+   * Query classes
+   *
+   * Of a specific project
+   *
+   */
+  DfhProfile.ofProject = function(pkProject, cb) {
+    const q = new FlatObjectQueryBuilder(DfhProfile.app.models);
+
+    const params = [pkProject];
+
+    const sql = `
+      SELECT
+        ${q.createSelect('t2', 'DfhProfile')}
+      FROM
+        projects.dfh_profile_proj_rel t1,
+        data_for_history.v_profile t2
+      WHERE t1.fk_project = $1
+      AND t2.pk_profile = t1.fk_profile
+      UNION ALL
+      SELECT
+        ${q.createSelect('t1', 'DfhProfile')}
+      FROM
+        data_for_history.v_profile t1
+      WHERE t1.pk_profile = 5; -- GEOVISTORY BASICS PROFILE
+      `;
+
+    DfhProfile.dataSource.connector.execute(
+      sql,
+      params,
+      (err, resultObjects) => {
+        if (err) return cb(err, resultObjects);
+        cb(false, resultObjects);
+      }
     );
   };
 };

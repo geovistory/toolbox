@@ -1,12 +1,11 @@
 {
   "name": "DfhLabel",
-  "base": "DfhEntity",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "data_for_history",
-      "table": "label"
+      "table": "v_label"
     }
   },
   "mixins": {
@@ -16,57 +15,27 @@
     }
   },
   "properties": {
-    "pk_entity": {
-      "type": "number",
-      "id": true,
-      "generated": true
-    },
-    "dfh_pk_label": {
-      "type": "number",
-      "generated": true
-    },
-    "dfh_label": {
+    "type": {
       "type": "string",
-      "required": true
+      "id": true
     },
-    "dfh_language_iso_code": {
+    "label": {
       "type": "string"
     },
-    "dfh_is_standard_label_for_language": {
-      "type": "boolean"
+    "language": {
+      "type": "string"
     },
-    "dfh_fk_property": {
-      "type": "number"
+    "fk_profile": {
+      "type": "string"
     },
-    "dfh_fk_namespace": {
-      "type": "number"
+    "fk_project": {
+      "type": "string"
     },
-    "dfh_fk_class": {
-      "type": "number"
+    "fk_property": {
+      "type": "string"
     },
-    "dfh_fk_project": {
-      "type": "number"
-    },
-    "dfh_fk_class_type": {
-      "type": "number"
-    },
-    "dfh_fk_property_type": {
-      "type": "number"
-    },
-    "dfh_fk_profile": {
-      "type": "number"
-    },
-    "dfh_creation_time": {
-      "type": "date"
-    },
-    "dfh_modification_time": {
-      "type": "date"
-    },
-    "com_fk_system_type": {
-      "type": "number"
-    },
-    "inf_fk_language": {
-      "type": "number"
+    "fk_class": {
+      "type": "string"
     }
   },
   "validations": [],
@@ -80,36 +49,23 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "findComplex"
-      ]
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "system_admin",
-      "permission": "ALLOW",
-      "property": [
-        "bulkReplaceOrCreate",
-        "bulkDelete",
-        "patchAttributes",
-        "create"
+        "findAllOfProject"
       ]
     }
   ],
   "methods": {
-    "bulkReplaceOrCreate": {
+    "findAllOfProject": {
       "accepts": [
         {
-          "arg": "data",
-          "type": [
-            "DfhLabel"
-          ],
-          "required": true,
-          "description": "Array of DfhLabel",
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Project pk",
           "http": {
-            "source": "body"
+            "source": "query"
           }
         }
       ],
@@ -120,37 +76,10 @@
         ],
         "root": true
       },
-      "description": "Replace or create all items in the array.",
+      "description": "Get all dfh labels needed by the given project.",
       "http": {
-        "path": "/bulk-replace-or-create",
-        "verb": "post"
-      }
-    },
-    "bulkDelete": {
-      "accepts": [
-        {
-          "arg": "data",
-          "type": [
-            "DfhLabel"
-          ],
-          "required": true,
-          "description": "Array of DfhLabel",
-          "http": {
-            "source": "body"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhLabel"
-        ],
-        "root": true
-      },
-      "description": "Delete all items in the array.",
-      "http": {
-        "path": "/bulk-delete",
-        "verb": "post"
+        "path": "/of-project",
+        "verb": "get"
       }
     }
   }

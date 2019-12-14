@@ -1,7 +1,7 @@
 {
   "name": "DfhProperty",
   "plural": "DfhProperties",
-  "base": "DfhEntity",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
@@ -17,86 +17,51 @@
     }
   },
   "properties": {
-    "dfh_pk_property": {
+    "pk_property": {
       "type": "number",
       "id": true,
       "required": true
     },
-    "dfh_identifier_in_namespace": {
-      "type": "string"
+    "is_inherited": {
+      "type": "boolean"
     },
-    "dfh_has_domain": {
+    "has_domain": {
       "type": "number",
       "required": true
     },
-    "dfh_has_range": {
+    "domain_instances_min_quantifier": {
+      "type": "number"
+    },
+    "domain_instances_max_quantifier": {
+      "type": "number"
+    },
+    "has_range": {
       "type": "number",
       "required": true
     },
-    "dfh_creation_time": {
-      "type": "date"
-    },
-    "dfh_modification_time": {
-      "type": "date"
-    },
-    "dfh_standard_label": {
-      "type": "string"
-    },
-    "dfh_fk_property_of_origin": {
+    "range_instances_min_quantifier": {
       "type": "number"
     },
-    "dfh_domain_instances_min_quantifier": {
-      "type": "number"
-    },
-    "dfh_domain_instances_max_quantifier": {
-      "type": "number"
-    },
-    "dfh_range_instances_min_quantifier": {
-      "type": "number"
-    },
-    "dfh_range_instances_max_quantifier": {
+    "range_instances_max_quantifier": {
       "type": "number"
     },
     "identity_defining": {
       "type": "boolean"
+    },
+    "is_has_type_subproperty": {
+      "type": "boolean"
+    },
+    "identifier_in_namespace": {
+      "type": "string"
+    },
+    "profiles": {
+      "type": [
+        "object"
+      ]
     }
   },
   "validations": [],
-  "relations": {
-    "labels": {
-      "type": "hasMany",
-      "model": "DfhLabel",
-      "foreignKey": "dfh_fk_property"
-    },
-    "text_properties": {
-      "type": "hasMany",
-      "model": "DfhTextProperty",
-      "foreignKey": "dfh_fk_property"
-    },
-    "domain_class": {
-      "type": "belongsTo",
-      "model": "DfhClass",
-      "foreignKey": "dfh_has_domain"
-    },
-    "range_class": {
-      "type": "belongsTo",
-      "model": "DfhClass",
-      "foreignKey": "dfh_has_range"
-    },
-    "property_profile_view": {
-      "type": "hasMany",
-      "model": "DfhPropertyProfileView",
-      "foreignKey": "dfh_pk_property",
-      "options": {
-        "nestRemoting": false
-      }
-    },
-    "class_field_config": {
-      "type": "hasMany",
-      "model": "ProClassFieldConfig",
-      "foreignKey": "fk_property"
-    }
-  },
+  "relations": {},
   "acls": [
     {
       "principalType": "ROLE",
@@ -106,30 +71,21 @@
     },
     {
       "principalType": "ROLE",
-      "principalId": "$authenticated",
+      "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "propertyFieldInfo"
-      ]
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "system_admin",
-      "permission": "ALLOW",
-      "property": [
-        "findComplex",
-        "patchAttributes"
+        "ofProject"
       ]
     }
   ],
   "methods": {
-    "propertyByDomainClass": {
+    "ofProject": {
       "accepts": [
         {
-          "arg": "dfh_pk_property",
+          "arg": "pkProject",
           "type": "number",
-          "required": true,
-          "description": "dfh_pk_property",
+          "required": false,
+          "description": "Project pk",
           "http": {
             "source": "query"
           }
@@ -138,38 +94,13 @@
       "returns": {
         "arg": "data",
         "type": [
-          "DfhProperty"
+          "DfhClass"
         ],
         "root": true
       },
-      "description": "Get all properties that are enabled and not removed from project, with labels, text_properties, domain_class, range_class.",
+      "description": "Get all properties that are selected by at least one of the profiles used by the given project.",
       "http": {
-        "path": "/selected-pe-it-classes-of-profile",
-        "verb": "get"
-      }
-    },
-    "propertyFieldInfo": {
-      "accepts": [
-        {
-          "arg": "isOutgoing",
-          "type": "boolean",
-          "required": true,
-          "description": "",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhProperty"
-        ],
-        "root": true
-      },
-      "description": "Get all properties that used as a field by the app, including the labels.",
-      "http": {
-        "path": "/property-field-info",
+        "path": "/of-project",
         "verb": "get"
       }
     }
