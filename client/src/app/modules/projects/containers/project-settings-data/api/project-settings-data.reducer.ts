@@ -1,10 +1,6 @@
-import { DfhClass, DfhClassProfileView, U, ClassConfig } from 'app/core';
-import { ProDfhClassProjRel } from 'app/core/sdk/models/ProDfhClassProjRel';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { clone } from 'ramda';
 import { Action } from 'redux';
 import { ProjectSettingsDataAPIAction, ProjectSettingsDataAPIActions } from './project-settings-data.actions';
-import { EntityType, ProjectSettingsData } from './project-settings-data.models';
+import { ProjectSettingsData } from './project-settings-data.models';
 
 const INITIAL_STATE = new ProjectSettingsData();
 

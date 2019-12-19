@@ -42,7 +42,7 @@ module.exports = function(ProDfhClassProjRel) {
 
     const sql = `INSERT INTO projects.dfh_class_proj_rel (
       fk_project,
-     fk_entity,
+     fk_class,
      enabled_in_entities,
      fk_last_modifier
      )
@@ -51,16 +51,16 @@ module.exports = function(ProDfhClassProjRel) {
       .map(
         item => `(
       ${addParam(pkProject)},
-      ${addParam(item.fk_entity)},
+      ${addParam(item.fk_class)},
       ${addParam(item.enabled_in_entities)},
       ${addParam(userId)}
     )`
       )
       .join(', ')}
-    ON CONFLICT (fk_project, fk_entity)
+    ON CONFLICT (fk_project, fk_class)
     DO UPDATE SET
       fk_project = EXCLUDED.fk_project,
-      fk_entity = EXCLUDED.fk_entity,
+      fk_class = EXCLUDED.fk_class,
       enabled_in_entities = EXCLUDED.enabled_in_entities,
       fk_last_modifier = EXCLUDED.fk_last_modifier
     RETURNING   ${selectCols.join(', ')}

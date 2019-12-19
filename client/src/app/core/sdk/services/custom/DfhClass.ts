@@ -12,9 +12,6 @@ import { map } from 'rxjs/operators';
 import { DfhClass } from '../../models/DfhClass';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { DfhProperty } from '../../models/DfhProperty';
-import { DfhLabel } from '../../models/DfhLabel';
-import { DfhTextProperty } from '../../models/DfhTextProperty';
-import { DfhClassProfileView } from '../../models/DfhClassProfileView';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { SysClassField } from '../../models/SysClassField';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
@@ -51,40 +48,14 @@ export class DfhClassApi extends BaseLoopBackApi {
    * This usually means the response is a `DfhClass` object.)
    * </em>
    */
-  public classesOfProjectProfiles(pkProject: any = {}, customHeaders?: Function): Observable<any> {
+  public ofProject(pkProject: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhClasses/classes-of-project-profiles";
+    "/DfhClasses/of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get all classes that are selected by the profile of the specified primary-key.
-   *
-   * @param {number} dfh_pk_profile Profile id
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhClass` object.)
-   * </em>
-   */
-  public classesOfProfile(dfh_pk_profile: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhClasses/selected-classes-of-profile";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof dfh_pk_profile !== 'undefined' && dfh_pk_profile !== null) _urlParams.dfh_pk_profile = dfh_pk_profile;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

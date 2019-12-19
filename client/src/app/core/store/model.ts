@@ -1,7 +1,7 @@
 import { ProjectDetail } from 'app/core/active-project/active-project.models';
 import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { IAccount } from '../../modules/account/account.model';
-import { Backoffice } from '../../modules/backoffice/backoffice.models';
+// import { Backoffice } from '../../modules/backoffice/backoffice.models';
 import { IProjectList } from '../../modules/projects/projects.model';
 import { ISourceListState } from '../../modules/sources';
 import { Dat } from '../dat/dat.models';
@@ -34,7 +34,7 @@ export interface SchemaObject {
 
 export interface IAppState {
   account?: IAccount,
-  backoffice?: Backoffice,
+  // backoffice?: Backoffice,
   loadingBar?: LoadingBar,
   projects?: IProjectList
   sys?: Sys

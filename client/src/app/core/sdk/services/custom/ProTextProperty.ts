@@ -33,6 +33,96 @@ export class ProTextPropertyApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get the text-properties of the project.
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProTextProperty` object.)
+   * </em>
+   */
+  public ofProject(pkProject: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProTextProperties/of-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Inserts or updates items in the array of ProTextProperty. If pk_entity is given and existing, an update is done, else an insert
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `items` – `{ProTextProperty}` - Array of ProTextPropertys
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProTextProperty` object.)
+   * </em>
+   */
+  public bulkUpsert(pkProject: any, items: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProTextProperties/bulk-upsert";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      items: items
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Dletes items in the array of ProTextProperty. Checks for each item if fk_project matches given pkProject 
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `items` – `{ProTextProperty}` - Array of ProTextPropertys
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProTextProperty` object.)
+   * </em>
+   */
+  public bulkDelete(pkProject: any, items: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProTextProperties/bulk-delete";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      items: items
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `ProTextProperty`.
    */

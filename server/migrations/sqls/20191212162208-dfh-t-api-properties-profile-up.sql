@@ -32,5 +32,5 @@ Select
     commons.init_entity_child_table ('data_for_history.api_property');
 
 Alter Table data_for_history.api_property
-    Add Constraint unique_requested_language_dfh_pk_property_dfh_fk_profile Unique (requested_language, dfh_pk_property, dfh_fk_profile);
+    Add Constraint unique_requested_language_dfh_pk_property_dfh_fk_profile Unique (requested_language, dfh_pk_property, dfh_property_domain, dfh_property_range, dfh_fk_profile);
 

@@ -116,7 +116,7 @@ export class ClassFieldListComponent extends ClassFieldListAPIActions implements
     this.data = this.keys.transform(items).map((item) => {
       return {
         ...item.value,
-        properties: !item.value.class_field_property_rel ? '' : item.value.class_field_property_rel.map((prel) => (prel.property.dfh_identifier_in_namespace)).join(', '),
+        properties: !item.value.class_field_property_rel ? '' : item.value.class_field_property_rel.map((prel) => (prel.property.identifier_in_namespace)).join(', '),
         key: item.key
       }
     })

@@ -11,11 +11,6 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DfhProperty } from '../../models/DfhProperty';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { DfhClass } from '../../models/DfhClass';
-import { DfhLabel } from '../../models/DfhLabel';
-import { DfhTextProperty } from '../../models/DfhTextProperty';
-import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
-import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 
 
 /**
@@ -35,42 +30,9 @@ export class DfhPropertyApi extends BaseLoopBackApi {
   }
 
   /**
-   * Patch attributes for a model instance and persist it into the data source.
+   * Get all properties that are selected by at least one of the profiles used by the given project.
    *
-   * @param {any} id DfhProperty id
-   *
-   * @param {object} data Request data.
-   *
-   *  - `data` – `{object}` - An object of model property name/value pairs
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhProperty` object.)
-   * </em>
-   */
-  public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProperties/:id";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get all properties that used as a field by the app, including the labels.
-   *
-   * @param {boolean} isOutgoing 
+   * @param {number} pkProject Project pk
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -81,49 +43,16 @@ export class DfhPropertyApi extends BaseLoopBackApi {
    * This usually means the response is a `DfhProperty` object.)
    * </em>
    */
-  public propertyFieldInfo(isOutgoing: any, customHeaders?: Function): Observable<any> {
+  public ofProject(pkProject: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProperties/property-field-info";
+    "/DfhProperties/of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof isOutgoing !== 'undefined' && isOutgoing !== null) _urlParams.isOutgoing = isOutgoing;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `DfhProperty` object.)
-   * </em>
-   */
-  public findComplex(filter: LoopBackFilter = {}, customHeaders?: Function): Observable<DfhProperty[]> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProperties/findComplex";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      filter: filter
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<DfhProperty>) =>
-        instances.map((instance: DfhProperty) => new DfhProperty(instance))
-    ));
   }
 
   /**

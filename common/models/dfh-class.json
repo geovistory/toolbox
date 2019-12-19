@@ -25,9 +25,12 @@
     "identifier_in_namespace": {
       "type": "string"
     },
+    "basic_type": {
+      "type": "number"
+    },
     "profiles": {
       "type": [
-        "object"
+        "DfhProfiles"
       ]
     }
   },

@@ -419,15 +419,17 @@ export class ReducerFactory<Payload, Model> {
             }
           }
 
-          // add the itemToSet to all group indexes
+          // add the itemToSet to all group indexes, if not undefined
           const newGroupKey = this.getGroupKeyOfItem(g.groupByFn, itemToSet)
-          state = {
-            ...state,
-            [g.groupByKey]: {
-              ...state[g.groupByKey],
-              [newGroupKey]: {
-                ...(state[g.groupByKey] || {})[newGroupKey],
-                [itemKey]: itemToSet
+          if (newGroupKey !== undefined) {
+            state = {
+              ...state,
+              [g.groupByKey]: {
+                ...state[g.groupByKey],
+                [newGroupKey]: {
+                  ...(state[g.groupByKey] || {})[newGroupKey],
+                  [itemKey]: itemToSet
+                }
               }
             }
           }

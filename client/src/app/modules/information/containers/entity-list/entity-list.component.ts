@@ -71,7 +71,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
 
   startCreate(classAndTypePk: ClassAndTypePk) {
-    this.p.dfh$.class$.by_dfh_pk_class$.key(classAndTypePk.pkClass)
+    this.p.dfh$.class$.by_pk_class$.key(classAndTypePk.pkClass)
       .pipe(first(d => !!d), takeUntil(this.destroy$)).subscribe(klass => {
 
         this.p.setListType('')
@@ -83,7 +83,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
         }).subscribe(result => {
-          if (klass.dfh_fk_system_type === 8) {
+          if (klass.basic_type === 8) {
             this.p.addEntityPeItTab(result.pkEntity)
           } else {
             this.p.addEntityTeEnTab(result.pkEntity)

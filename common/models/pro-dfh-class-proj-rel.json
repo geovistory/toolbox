@@ -21,7 +21,7 @@
       "id": true,
       "generated": true
     },
-    "fk_entity": {
+    "fk_class": {
       "type": "number",
       "required": true
     },

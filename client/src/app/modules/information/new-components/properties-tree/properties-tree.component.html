@@ -1,10 +1,20 @@
-<mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="gv-properties-tree"
+<h3 *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">General Properties</h3>
+<mat-tree [dataSource]="generalDataSource" [treeControl]="generalTreeControl" class="gv-properties-tree"
   *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">
   <mat-nested-tree-node *matTreeNodeDef="let node">
 
-    <gv-field [fieldDefinition]="node" [treeControl]="treeControl" [showOntoInfo$]="showOntoInfo$"
+    <gv-field [fieldDefinition]="node" [treeControl]="generalTreeControl" [showOntoInfo$]="showOntoInfo$"
       [readonly$]="readonly$" [pkEntity]="pkEntity$ | async" [appContext]="appContext"></gv-field>
 
+  </mat-nested-tree-node>
+</mat-tree>
+<h3 class="mt-3" *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">Specific Properties</h3>
+<mat-tree [dataSource]="specificDataSource" [treeControl]="specificTreeControl" class="gv-properties-tree"
+  *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">
+  <mat-nested-tree-node *matTreeNodeDef="let node">
+
+    <gv-field [fieldDefinition]="node" [treeControl]="specificTreeControl" [showOntoInfo$]="showOntoInfo$"
+      [readonly$]="readonly$" [pkEntity]="pkEntity$ | async" [appContext]="appContext"></gv-field>
   </mat-nested-tree-node>
 </mat-tree>
 
@@ -14,6 +24,6 @@
 
 
 <div *ngIf="(t.showCreateRole$ | async)">
-  <gv-form-create-role [listDefinition]="t.showCreateRole$ | async"
-    [pkEntity]="pkEntity$ | async" #c></gv-form-create-role>
+  <gv-form-create-role [listDefinition]="t.showCreateRole$ | async" [pkEntity]="pkEntity$ | async" #c>
+  </gv-form-create-role>
 </div>

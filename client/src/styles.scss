@@ -409,6 +409,9 @@ $gv-color-selected: #00ffff;
 .gv-pointer {
   cursor: pointer;
 }
+.gv-cursor-drag {
+  cursor: move;
+}
 
 .gv-w-max-500 {
   max-width: 500px;
@@ -2288,6 +2291,17 @@ a.mat-menu-item > mat-icon {
     border-bottom-style: solid;
     border-bottom-color: mat-color($foreground, divider);
   }
+
+  .ui-table-dragpoint-bottom {
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    border-bottom-color: $mat-color-primary;
+  }
+  .ui-table-dragpoint-top {
+    border-top-width: 3px;
+    border-top-style: solid;
+    border-top-color: $mat-color-primary;
+  }
 }
 @mixin primeng-table-typography($config) {
   .ui-table {
@@ -2327,3 +2341,29 @@ mat-list-item.p-0 .mat-list-item-content {
 mat-dialog-actions {
   box-sizing: content-box;
 }
+
+/**
+* classes for styling mat-table witout using mat-angular components / directives
+*/
+// .mat-table-plain-html {
+//   display: block;
+
+//   .mat-row,
+//   .mat-header-row {
+//     display: flex;
+//     border-bottom-width: 1px;
+//     border-bottom-style: solid;
+//     align-items: center;
+//     min-height: 48px;
+//     padding: 0 24px;
+//     border-bottom-color: mat-color($foreground, divider);
+//   }
+
+//   .mat-cell,
+//   .mat-header-cell {
+//     text-align: left;
+//     flex: 1;
+//     overflow: hidden;
+//     word-wrap: break-word;
+//   }
+// }

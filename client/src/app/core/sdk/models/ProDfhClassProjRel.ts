@@ -3,14 +3,14 @@
 declare var Object: any;
 export interface ProDfhClassProjRelInterface {
   "pk_entity"?: number;
-  "fk_entity": number;
+  "fk_class": number;
   "fk_project": number;
   "enabled_in_entities"?: boolean;
 }
 
 export class ProDfhClassProjRel implements ProDfhClassProjRelInterface {
   "pk_entity": number;
-  "fk_entity": number;
+  "fk_class": number;
   "fk_project": number;
   "enabled_in_entities": boolean;
   constructor(data?: ProDfhClassProjRelInterface) {
@@ -50,8 +50,8 @@ export class ProDfhClassProjRel implements ProDfhClassProjRelInterface {
           name: 'pk_entity',
           type: 'number'
         },
-        "fk_entity": {
-          name: 'fk_entity',
+        "fk_class": {
+          name: 'fk_class',
           type: 'number'
         },
         "fk_project": {

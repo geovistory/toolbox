@@ -450,12 +450,12 @@ $BODY$;
 
 -- 2 update_api_properties_profile_table
 Create Or Replace Function data_for_history.update_api_properties_profile_table (
-    param_profile_id INT,
-    param_requested_language VARCHAR,
-    param_tmsp_last_dfh_update TIMESTAMP With TIME ZONE,
-    param_properties_profile_data JSON Default '[]' ::JSON
+    param_profile_id integer,
+    param_requested_language character varying,
+    param_tmsp_last_dfh_update timestamp With time zone,
+    param_properties_profile_data json Default '[]' ::json
 )
-    Returns JSON
+    Returns json
     Language 'plpgsql'
     Cost 100 Volatile
     As $BODY$
@@ -468,7 +468,7 @@ Begin
      * create a table with same type as from json
      */
     Drop Table If Exists properties_profile_from_api;
-    Create TEMP Table properties_profile_from_api As
+    Create Table properties_profile_from_api As
     Select
         param_requested_language As requested_language,
         "propertyID" As dfh_pk_property,
@@ -538,6 +538,8 @@ Begin
     With tw1 As (
         Select
             dfh_pk_property,
+            dfh_property_domain,
+            dfh_property_range,
             dfh_fk_profile
         From
             data_for_history.api_property
@@ -546,6 +548,8 @@ Begin
         Except
         Select
             dfh_pk_property,
+            dfh_property_domain,
+            dfh_property_range,
             dfh_fk_profile
         From
             properties_profile_from_api
@@ -562,11 +566,13 @@ tw2 As (
     Where
         t1.dfh_fk_profile = t2.dfh_fk_profile
         And t1.dfh_pk_property = t2.dfh_pk_property
+        And t1.dfh_property_domain = t2.dfh_property_domain
+        And t1.dfh_property_range = t2.dfh_property_range
     Returning
         t1.*
 )
 Select
-    jsonb_agg(jsonb_build_object('dfh_pk_property', dfh_pk_property, 'dfh_fk_profile', dfh_fk_profile, 'requested_language', requested_language, 'removed_from_api', removed_from_api, 'dfh_property_label', dfh_property_label)) Into removed
+    jsonb_agg(jsonb_build_object('dfh_pk_property', dfh_pk_property, 'dfh_property_domain', dfh_property_domain, 'dfh_property_range', dfh_property_range, 'dfh_fk_profile', dfh_fk_profile, 'requested_language', requested_language, 'removed_from_api', removed_from_api, 'dfh_property_label', dfh_property_label)) Into removed
 From
     tw2;
 
@@ -658,11 +664,13 @@ From
         Where
             t1.dfh_fk_profile = t2.dfh_fk_profile
             And t1.dfh_pk_property = t2.dfh_pk_property
+            And t1.dfh_property_domain = t2.dfh_property_domain
+            And t1.dfh_property_range = t2.dfh_property_range
         Returning
             t1.*
 )
     Select
-        jsonb_agg(jsonb_build_object('dfh_pk_property', dfh_pk_property, 'dfh_fk_profile', dfh_fk_profile, 'requested_language', requested_language, 'removed_from_api', removed_from_api, 'dfh_property_label', dfh_property_label)) Into updated
+        jsonb_agg(jsonb_build_object('dfh_pk_property', dfh_pk_property, 'dfh_property_domain', dfh_property_range, 'dfh_property_range', dfh_property_range, 'dfh_fk_profile', dfh_fk_profile, 'requested_language', requested_language, 'removed_from_api', removed_from_api, 'dfh_property_label', dfh_property_label)) Into updated
     From
         tw1;
 
@@ -698,6 +706,8 @@ Insert Into data_for_history.api_property (tmsp_last_dfh_update,
             dfh_profile_label)
     Select Distinct On (t1.requested_language,
         t1.dfh_pk_property,
+        t1.dfh_property_domain,
+        t1.dfh_property_range,
         t1.dfh_fk_profile)
         param_tmsp_last_dfh_update,
         False,
@@ -731,6 +741,8 @@ Insert Into data_for_history.api_property (tmsp_last_dfh_update,
         t1.requested_language = param_requested_language
         And t1.dfh_fk_profile = param_profile_id On Conflict (requested_language,
             dfh_pk_property,
+            dfh_property_domain,
+            dfh_property_range,
             dfh_fk_profile)
         Do
         Update
@@ -744,10 +756,8 @@ Insert Into data_for_history.api_property (tmsp_last_dfh_update,
             dfh_property_scope_note_language = EXCLUDED.dfh_property_scope_note_language,
             dfh_property_scope_note = EXCLUDED.dfh_property_scope_note,
             dfh_is_inherited = EXCLUDED.dfh_is_inherited,
-            dfh_property_domain = EXCLUDED.dfh_property_domain,
             dfh_domain_instances_min_quantifier = EXCLUDED.dfh_domain_instances_min_quantifier,
             dfh_domain_instances_max_quantifier = EXCLUDED.dfh_domain_instances_max_quantifier,
-            dfh_property_range = EXCLUDED.dfh_property_range,
             dfh_range_instances_min_quantifier = EXCLUDED.dfh_range_instances_min_quantifier,
             dfh_range_instances_max_quantifier = EXCLUDED.dfh_range_instances_max_quantifier,
             dfh_identity_defining = EXCLUDED.dfh_identity_defining,
@@ -765,7 +775,7 @@ Insert Into data_for_history.api_property (tmsp_last_dfh_update,
             *
 )
     Select
-        jsonb_agg(jsonb_build_object('dfh_pk_property', dfh_pk_property, 'dfh_fk_profile', dfh_fk_profile, 'requested_language', requested_language, 'removed_from_api', removed_from_api, 'dfh_property_label', dfh_property_label)) Into inserted
+        jsonb_agg(jsonb_build_object('dfh_pk_property', dfh_pk_property, 'dfh_property_domain', dfh_property_range, 'dfh_property_range', dfh_property_range, 'dfh_fk_profile', dfh_fk_profile, 'requested_language', requested_language, 'removed_from_api', removed_from_api, 'dfh_property_label', dfh_property_label)) Into inserted
     From
         tw1;
 

@@ -5,7 +5,7 @@ import { indexBy, mapObjIndexed, omit, values } from 'ramda';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '../../../../../../../node_modules/@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../../node_modules/@angular/material';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../../node_modules/rxjs';
-import { debounceTime, first, mergeMap, takeUntil } from '../../../../../../../node_modules/rxjs/operators';
+import { debounceTime, first, mergeMap, takeUntil, map } from '../../../../../../../node_modules/rxjs/operators';
 import { ConfigurationPipesService } from '../../../new-services/configuration-pipes.service';
 import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
 import { MergeDef } from '../../form-create-role/form-create-role.component';
@@ -177,25 +177,28 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
     // };
 
 
-    const formParts$ = this.c.pipeFieldDefinitions(50, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE).pipe(debounceTime(20), mergeMap(fields => {
-      // empty formGroup
-      Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
-      // map the field to a form part
-      return combineLatest(fields.map((field, i) => {
-        let resultTemplate;
-        let mergeDef: MergeDef;
-        resultTemplate = {}
-        // mergeDef = { target: ['te_roles'],  }
+    const formParts$ = this.c.pipeSpecificFieldDefinitions(50).pipe(
+      debounceTime(20),
+      map(fields => fields.filter(f => f.listType === 'time-primitive')),
+      mergeMap(fields => {
+        // empty formGroup
+        Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
+        // map the field to a form part
+        return combineLatest(fields.map((field, i) => {
+          let resultTemplate;
+          let mergeDef: MergeDef;
+          resultTemplate = {}
+          // mergeDef = { target: ['te_roles'],  }
 
-        return new FormPart(this.formGroup, field.label, field.listDefinitions, {
-          initListDefinition: {
-            listType: 'time-span',
-            ...{} as any
-          },
-          initTimeSpan: this.data.timePrimitives
-        }, resultTemplate, mergeDef, false).this$
+          return new FormPart(this.formGroup, field.label, field.listDefinitions, {
+            initListDefinition: {
+              listType: 'time-span',
+              ...{} as any
+            },
+            initTimeSpan: this.data.timePrimitives
+          }, resultTemplate, mergeDef, false).this$
+        }));
       }));
-    }));
 
     formParts$.pipe(takeUntil(this.destroy$)).subscribe(formParts => {
 

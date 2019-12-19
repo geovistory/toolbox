@@ -1,59 +1,34 @@
 /* tslint:disable */
-import {
-  DfhClass,
-  DfhLabel,
-  DfhTextProperty,
-  DfhPropertyProfileView,
-  ProClassFieldConfig
-} from '../index';
 
 declare var Object: any;
 export interface DfhPropertyInterface {
-  "dfh_pk_property": number;
-  "dfh_identifier_in_namespace"?: string;
-  "dfh_has_domain": number;
-  "dfh_has_range": number;
-  "dfh_creation_time"?: Date;
-  "dfh_modification_time"?: Date;
-  "dfh_standard_label"?: string;
-  "dfh_fk_property_of_origin"?: number;
-  "dfh_domain_instances_min_quantifier"?: number;
-  "dfh_domain_instances_max_quantifier"?: number;
-  "dfh_range_instances_min_quantifier"?: number;
-  "dfh_range_instances_max_quantifier"?: number;
+  "pk_property": number;
+  "is_inherited"?: boolean;
+  "has_domain": number;
+  "domain_instances_min_quantifier"?: number;
+  "domain_instances_max_quantifier"?: number;
+  "has_range": number;
+  "range_instances_min_quantifier"?: number;
+  "range_instances_max_quantifier"?: number;
   "identity_defining"?: boolean;
-  "pk_entity"?: number;
-  "entity_version"?: number;
-  domain_class?: DfhClass;
-  range_class?: DfhClass;
-  labels?: DfhLabel[];
-  text_properties?: DfhTextProperty[];
-  property_profile_view?: DfhPropertyProfileView[];
-  class_field_config?: ProClassFieldConfig[];
+  "is_has_type_subproperty"?: boolean;
+  "identifier_in_namespace"?: string;
+  "profiles"?: Array<any>;
 }
 
 export class DfhProperty implements DfhPropertyInterface {
-  "dfh_pk_property": number;
-  "dfh_identifier_in_namespace": string;
-  "dfh_has_domain": number;
-  "dfh_has_range": number;
-  "dfh_creation_time": Date;
-  "dfh_modification_time": Date;
-  "dfh_standard_label": string;
-  "dfh_fk_property_of_origin": number;
-  "dfh_domain_instances_min_quantifier": number;
-  "dfh_domain_instances_max_quantifier": number;
-  "dfh_range_instances_min_quantifier": number;
-  "dfh_range_instances_max_quantifier": number;
+  "pk_property": number;
+  "is_inherited": boolean;
+  "has_domain": number;
+  "domain_instances_min_quantifier": number;
+  "domain_instances_max_quantifier": number;
+  "has_range": number;
+  "range_instances_min_quantifier": number;
+  "range_instances_max_quantifier": number;
   "identity_defining": boolean;
-  "pk_entity": number;
-  "entity_version": number;
-  domain_class?: DfhClass;
-  range_class?: DfhClass;
-  labels?: DfhLabel[];
-  text_properties?: DfhTextProperty[];
-  property_profile_view?: DfhPropertyProfileView[];
-  class_field_config?: ProClassFieldConfig[];
+  "is_has_type_subproperty": boolean;
+  "identifier_in_namespace": string;
+  "profiles": Array<any>;
   constructor(data?: DfhPropertyInterface) {
     Object.assign(this, data);
   }
@@ -85,118 +60,58 @@ export class DfhProperty implements DfhPropertyInterface {
       name: 'DfhProperty',
       plural: 'DfhProperties',
       path: 'DfhProperties',
-      idName: 'dfh_pk_property',
+      idName: 'pk_property',
       properties: {
-        "dfh_pk_property": {
-          name: 'dfh_pk_property',
+        "pk_property": {
+          name: 'pk_property',
           type: 'number'
         },
-        "dfh_identifier_in_namespace": {
-          name: 'dfh_identifier_in_namespace',
-          type: 'string'
+        "is_inherited": {
+          name: 'is_inherited',
+          type: 'boolean'
         },
-        "dfh_has_domain": {
-          name: 'dfh_has_domain',
+        "has_domain": {
+          name: 'has_domain',
           type: 'number'
         },
-        "dfh_has_range": {
-          name: 'dfh_has_range',
+        "domain_instances_min_quantifier": {
+          name: 'domain_instances_min_quantifier',
           type: 'number'
         },
-        "dfh_creation_time": {
-          name: 'dfh_creation_time',
-          type: 'Date'
-        },
-        "dfh_modification_time": {
-          name: 'dfh_modification_time',
-          type: 'Date'
-        },
-        "dfh_standard_label": {
-          name: 'dfh_standard_label',
-          type: 'string'
-        },
-        "dfh_fk_property_of_origin": {
-          name: 'dfh_fk_property_of_origin',
+        "domain_instances_max_quantifier": {
+          name: 'domain_instances_max_quantifier',
           type: 'number'
         },
-        "dfh_domain_instances_min_quantifier": {
-          name: 'dfh_domain_instances_min_quantifier',
+        "has_range": {
+          name: 'has_range',
           type: 'number'
         },
-        "dfh_domain_instances_max_quantifier": {
-          name: 'dfh_domain_instances_max_quantifier',
+        "range_instances_min_quantifier": {
+          name: 'range_instances_min_quantifier',
           type: 'number'
         },
-        "dfh_range_instances_min_quantifier": {
-          name: 'dfh_range_instances_min_quantifier',
-          type: 'number'
-        },
-        "dfh_range_instances_max_quantifier": {
-          name: 'dfh_range_instances_max_quantifier',
+        "range_instances_max_quantifier": {
+          name: 'range_instances_max_quantifier',
           type: 'number'
         },
         "identity_defining": {
           name: 'identity_defining',
           type: 'boolean'
         },
-        "pk_entity": {
-          name: 'pk_entity',
-          type: 'number'
+        "is_has_type_subproperty": {
+          name: 'is_has_type_subproperty',
+          type: 'boolean'
         },
-        "entity_version": {
-          name: 'entity_version',
-          type: 'number'
+        "identifier_in_namespace": {
+          name: 'identifier_in_namespace',
+          type: 'string'
+        },
+        "profiles": {
+          name: 'profiles',
+          type: 'Array&lt;any&gt;'
         },
       },
       relations: {
-        domain_class: {
-          name: 'domain_class',
-          type: 'DfhClass',
-          model: 'DfhClass',
-          relationType: 'belongsTo',
-                  keyFrom: 'dfh_has_domain',
-          keyTo: 'dfh_pk_class'
-        },
-        range_class: {
-          name: 'range_class',
-          type: 'DfhClass',
-          model: 'DfhClass',
-          relationType: 'belongsTo',
-                  keyFrom: 'dfh_has_range',
-          keyTo: 'dfh_pk_class'
-        },
-        labels: {
-          name: 'labels',
-          type: 'DfhLabel[]',
-          model: 'DfhLabel',
-          relationType: 'hasMany',
-                  keyFrom: 'dfh_pk_property',
-          keyTo: 'dfh_fk_property'
-        },
-        text_properties: {
-          name: 'text_properties',
-          type: 'DfhTextProperty[]',
-          model: 'DfhTextProperty',
-          relationType: 'hasMany',
-                  keyFrom: 'dfh_pk_property',
-          keyTo: 'dfh_fk_property'
-        },
-        property_profile_view: {
-          name: 'property_profile_view',
-          type: 'DfhPropertyProfileView[]',
-          model: 'DfhPropertyProfileView',
-          relationType: 'hasMany',
-                  keyFrom: 'dfh_pk_property',
-          keyTo: 'dfh_pk_property'
-        },
-        class_field_config: {
-          name: 'class_field_config',
-          type: 'ProClassFieldConfig[]',
-          model: 'ProClassFieldConfig',
-          relationType: 'hasMany',
-                  keyFrom: 'dfh_pk_property',
-          keyTo: 'fk_property'
-        },
       }
     }
   }

@@ -34,10 +34,10 @@
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
         <mat-checkbox (click)="$event.stopPropagation()"
           (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
-          [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkEntity]"
+          [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkClass]"
           *ngIf="!element.excluded_from_entities">
         </mat-checkbox>
-        <mat-spinner *ngIf="p.changingClassProjRel[element.pkEntity]" diameter="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="p.changingClassProjRel[element.pkClass]" diameter="20" color="accent"></mat-spinner>
       </td>
     </ng-container>
 
@@ -67,7 +67,7 @@
     <ng-container matColumnDef="label">
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="label"> Class </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-        <strong [innerHtml]="element.label"></strong> {{element.dfh_pk_class}}
+        <strong [innerHtml]="element.label"></strong> {{element.pkClass}}
       </td>
     </ng-container>
 
@@ -84,15 +84,17 @@
     </ng-container>
 
     <!-- Dfh Standard Label Column -->
-    <ng-container matColumnDef="dfh_standard_label">
-      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="dfh_standard_label"> OntoMe Definition
+    <ng-container matColumnDef="identifier_in_namespace">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="identifier_in_namespace"> OntoMe
+        Definition
       </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-        <a [attr.href]="'http://ontologies.dataforhistory.org/class/' + element.dfh_pk_class" target="_blank"
+        <gv-onto-class-info [pkClass]="element.pkClass"></gv-onto-class-info>
+        <!-- <a [attr.href]="'http://ontologies.dataforhistory.org/class/' + element.pkClass" target="_blank"
           (click)="$event.target.stopPropagation()">
-          <span [innerHtml]="element.dfh_standard_label"></span>
+          <span [innerHtml]="element.identifier_in_namespace"></span>
           <mat-icon inline="true">open_in_new</mat-icon>
-        </a>
+        </a> -->
       </td>
     </ng-container>
 

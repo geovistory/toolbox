@@ -32,7 +32,7 @@ export class ActiveProjectEpics {
     private teEnApi: InfTemporalEntityApi,
     private infProjRelApi: ProInfoProjRelApi,
     private chunkApi: DatChunkApi,
-    private uiContextApi: SysAppContextApi,
+    private sysAppCtxApi: SysAppContextApi,
     private projectApi: ProProjectApi,
     private projRelApi: ProDfhClassProjRelApi,
     private comQuery: ProQueryApi,
@@ -124,108 +124,51 @@ export class ActiveProjectEpics {
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
 
+        this.dfh.profile.loadOfProject(action.meta.pk_project);
+        this.dfh.klass.loadOfProject(action.meta.pk_project);
+        this.dfh.property.loadOfProject(action.meta.pk_project);
+        this.dfh.label.loadOfProject(action.meta.pk_project);
+
         this.sys.system_relevant_class.load();
         this.sys.class_has_type_property.load();
         this.sys.analysis_type.load();
+
         this.dat.namespace.load('', action.meta.pk_project);
-        this.dfh.property_view.load()
-        this.dfh.klass.loadClassesOfProjectProfiles(action.meta.pk_project);
-        this.dfh.class_profile_view.load();
-        this.pro.class_field_config.load('', action.meta.pk_project)
-        this.pro.dfh_class_proj_rel.load('', action.meta.pk_project)
-        this.dfh.label.loadLabelesOfClasses(null);
-        this.dfh.label.loadLabelesOfProperties(null);
-        this.pro.property_label.loadDefaultLabels(action.meta.pk_project)
+
+        this.pro.text_property.loadOfProject(action.meta.pk_project)
+        this.pro.dfh_class_proj_rel.load('', action.meta.pk_project);
+        this.pro.class_field_config.loadOfProject(action.meta.pk_project);
+
         this.inf.persistent_item.typesOfProject(action.meta.pk_project)
 
 
         combineLatest(
-          this.projectApi.getReferenceModel(action.meta.pk_project),
-          this.uiContextApi.appContext(null, action.meta.pk_project),
-          this.dfhPropertyApi.propertyFieldInfo(true),
-          this.dfhPropertyApi.propertyFieldInfo(false),
+          this.dfh.profile$.by_pk_profile$.noPause.all$,
+          this.dfh.class$.by_pk_class$.noPause.all$,
+          this.dfh.property$.pk_property__has_domain__has_range$.noPause.all$,
+          this.dfh.label$.by_fks$.noPause.all$,
+
+
+          // this.sysAppCtxApi.appContext(null, action.meta.pk_project),
           this.comClassFieldApi.find(),
+
           this.sysHasTypePropsApi.find(),
           this.sys.system_relevant_class$.by_fk_class$.all$,
           this.sys.class_has_type_property$.slice$,
           this.sys.analysis_type$.slice$,
+
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
+
+
+          this.pro.project.loadBasics(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
           this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,
-          this.dfh.property_view$.by_pk_entity$.noPause.all$,
-          this.dfh.class$.by_dfh_pk_class$.noPause.all$,
-          this.dfh.class_profile_view$.by_pk_entity$.noPause.all$,
+          this.pro.dfh_class_proj_rel$.by_fk_project$.all$
         )
-          .pipe(filter((res) => !res.includes(undefined)))
+          .pipe(filter((res: any[]) => !res.includes(undefined)))
           .subscribe((res) => {
-            // const classes: DfhClass[] = res[0],
-            //   outgoingProperties: DfhProperty[] = res[2],
-            //   ingoingProperties: DfhProperty[] = res[3],
-            //   classFields = res[4] as SysClassField[],
-            //   hasTypeProps: HasTypePropertyReadable[] = res[5],
-            //   systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6],
-            //   classHasTypeProperty: SysClassHasTypePropertySlice = res[7];
-
-
-            // const properties = {
-            //   ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
-            //   ...indexBy((prop) => prop.dfh_pk_property.toString(), outgoingProperties)
-            // }
-
-            // const crm: ProjectCrm = {
-            //   classes: {},
-            //   fieldList: {},
-            //   properties,
-            //   hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps),
-            //   classHasTypeProperty
-            // }
-
-            // const hasTypePropertiesByTypeClass = indexBy((prop) => prop.pk_type_class.toString(), hasTypeProps)
-
-            // classes.forEach((cla: DfhClass) => {
-            //   crm.classes[cla.dfh_pk_class] = {
-            //     ...U.classConfigFromDfhClass(
-            //       cla,
-            //       U.firstItemInIndexedGroup(systemRelevantClasses, cla.dfh_pk_class)
-            //     ),
-            //     subclassOfType: hasTypePropertiesByTypeClass[cla.dfh_pk_class] ? true : false
-            //   }
-            //   // create fieldList
-            //   crm.fieldList = {
-            //     ...indexBy(fieldKey, [
-            //       ...U.infProperties2PropertyFields(false, ingoingProperties),
-            //       ...U.infProperties2PropertyFields(true, outgoingProperties),
-            //       ...U.comClassFields2Fields(classFields)
-            //     ])
-            //   }
-            // })
-
-            // const uiContexts: SysAppContext[] = res[1];
-
-            // uiContexts.forEach(uiCtxt => {
-            //   if (uiCtxt.class_field_config) {
-            //     uiCtxt.class_field_config.forEach(uiConf => {
-
-            //       // add propertyField configs to crm
-            //       if (uiConf.fk_property) {
-            //         // retrieve the classConfig
-            //         const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
-            //         this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-            //       } else if (uiConf.fk_class_field) {
-            //         // add propSet configs to crm
-            //         // retrieve the classConfig
-            //         const cConf = crm.classes[uiConf.fk_class_for_class_field];
-            //         this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-            //       }
-
-            //     })
-            //   }
-            // })
-
-
 
             globalStore.next(this.actions.loadProjectConfigSucceeded());
             globalStore.next(this.loadingBarActions.completeLoading());
-
 
           }, error => {
             // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))

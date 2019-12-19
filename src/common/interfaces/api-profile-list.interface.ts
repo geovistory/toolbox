@@ -29,6 +29,7 @@ export interface ApiProfile {
   isOngoingForcedPublication: boolean,
   dateProfilePublished: string | null,
   dateProfileDeprecated: string | null
+  [key: string]: any
 }
 
 export interface ApiProfileProject {

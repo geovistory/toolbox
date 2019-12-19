@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { BackofficeRoutingModule } from './backoffice-routing.module';
-import { ClassListComponent } from './components/class-list/class-list.component';
-import { ClassComponent } from './components/class/class.component';
+// import { ClassListComponent } from './components/class-list/class-list.component';
+// import { ClassComponent } from './components/class/class.component';
 import { MainComponent } from './components/main/main.component';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { KeysModule } from '../../shared/pipes/keys.module';
-import { ClassAPIEpics } from './components/class/api/class.epics';
-import { ClassAPIActions } from './components/class/api/class.actions';
+// import { ClassAPIEpics } from './components/class/api/class.epics';
+// import { ClassAPIActions } from './components/class/api/class.actions';
 import { DndModule } from 'ng2-dnd';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
@@ -18,18 +18,18 @@ import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace
 import { SystemTypeListAPIActions } from './components/system-type-list/api/system-type-list.actions';
 import { SystemTypeListAPIEpics } from './components/system-type-list/api/system-type-list.epics';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
-import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
-import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
-import { PropertyListComponent } from './components/property-list/property-list.component';
-import { DfhLabelListEditComponent } from './components/dfh-label-list-edit/dfh-label-list-edit.component';
-import { DfhLabelCreateComponent } from './components/dfh-label-create/dfh-label-create.component';
+// import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
+// import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
+// import { PropertyListComponent } from './components/property-list/property-list.component';
+// import { DfhLabelListEditComponent } from './components/dfh-label-list-edit/dfh-label-list-edit.component';
+// import { DfhLabelCreateComponent } from './components/dfh-label-create/dfh-label-create.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
-import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
+// import { UiElementWidgetComponent } from './components/ui-element-widget/ui-element-widget.component';
 import { TableModule } from 'ngx-easy-table';
 import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
-import { ClassFieldListAPIActions } from './components/class-field-list/api/class-field-list.actions';
-import { ClassFieldListAPIEpics } from './components/class-field-list/api/class-field-list.epics';
-import { ClassMainComponent } from './components/class-main/class-main.component';
+// import { ClassFieldListAPIActions } from './components/class-field-list/api/class-field-list.actions';
+// import { ClassFieldListAPIEpics } from './components/class-field-list/api/class-field-list.epics';
+// import { ClassMainComponent } from './components/class-main/class-main.component';
 import { AccountListComponent } from './components/account-list/account-list.component';
 import { AccountListAPIActions } from './components/account-list/api/account-list.actions';
 import { AccountListAPIEpics } from './components/account-list/api/account-list.epics';
@@ -77,16 +77,16 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
     ScrollDispatchModule,
   ],
   providers: [
-    ClassAPIActions,
-    ClassAPIEpics,
+    // ClassAPIActions,
+    // ClassAPIEpics,
     NamespaceListAPIActions,
     NamespaceListAPIEpics,
     SystemTypeListAPIActions,
     SystemTypeListAPIEpics,
-    PropertyListAPIActions,
-    PropertyListAPIEpics,
-    ClassFieldListAPIActions,
-    ClassFieldListAPIEpics,
+    // PropertyListAPIActions,
+    // PropertyListAPIEpics,
+    // ClassFieldListAPIActions,
+    // ClassFieldListAPIEpics,
     AccountListAPIActions,
     AccountListAPIEpics,
     WarehouseAPIEpics,
@@ -96,17 +96,17 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
   ],
   declarations: [
     MainComponent,
-    ClassComponent,
-    PropertyListComponent,
-    ClassListComponent,
+    // ClassComponent,
+    // PropertyListComponent,
+    // ClassListComponent,
     NamespaceListComponent,
     SystemTypeListComponent,
-    DfhLabelListEditComponent,
-    DfhLabelCreateComponent,
+    // DfhLabelListEditComponent,
+    // DfhLabelCreateComponent,
     LandingPageComponent,
-    UiElementWidgetComponent,
+    // UiElementWidgetComponent,
     ClassFieldListComponent,
-    ClassMainComponent,
+    // ClassMainComponent,
     AccountListComponent,
     WarehouseComponent,
     HasTypeComponent

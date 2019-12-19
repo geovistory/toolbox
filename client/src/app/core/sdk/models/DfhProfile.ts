@@ -2,31 +2,21 @@
 
 declare var Object: any;
 export interface DfhProfileInterface {
-  "dfh_pk_profile"?: number;
-  "dfh_profile_label_en"?: string;
-  "dfh_profile_definition_en"?: string;
-  "dfh_owned_by_project"?: number;
-  "dfh_project_label_en"?: string;
-  "dfh_is_ongoing_forced_publication"?: boolean;
-  "dfh_date_profile_published"?: string;
-  "dfh_date_profile_deprecated"?: string;
-  "pk_entity"?: number;
-  "entity_version"?: number;
-  "id"?: number;
+  "pk_profile"?: number;
+  "owned_by_project"?: number;
+  "is_ongoing_forced_publication"?: boolean;
+  "date_profile_published"?: string;
+  "date_profile_deprecated"?: string;
+  "tmsp_last_dfh_update"?: string;
 }
 
 export class DfhProfile implements DfhProfileInterface {
-  "dfh_pk_profile": number;
-  "dfh_profile_label_en": string;
-  "dfh_profile_definition_en": string;
-  "dfh_owned_by_project": number;
-  "dfh_project_label_en": string;
-  "dfh_is_ongoing_forced_publication": boolean;
-  "dfh_date_profile_published": string;
-  "dfh_date_profile_deprecated": string;
-  "pk_entity": number;
-  "entity_version": number;
-  "id": number;
+  "pk_profile": number;
+  "owned_by_project": number;
+  "is_ongoing_forced_publication": boolean;
+  "date_profile_published": string;
+  "date_profile_deprecated": string;
+  "tmsp_last_dfh_update": string;
   constructor(data?: DfhProfileInterface) {
     Object.assign(this, data);
   }
@@ -58,51 +48,31 @@ export class DfhProfile implements DfhProfileInterface {
       name: 'DfhProfile',
       plural: 'DfhProfiles',
       path: 'DfhProfiles',
-      idName: 'id',
+      idName: 'pk_profile',
       properties: {
-        "dfh_pk_profile": {
-          name: 'dfh_pk_profile',
+        "pk_profile": {
+          name: 'pk_profile',
           type: 'number'
         },
-        "dfh_profile_label_en": {
-          name: 'dfh_profile_label_en',
-          type: 'string'
-        },
-        "dfh_profile_definition_en": {
-          name: 'dfh_profile_definition_en',
-          type: 'string'
-        },
-        "dfh_owned_by_project": {
-          name: 'dfh_owned_by_project',
+        "owned_by_project": {
+          name: 'owned_by_project',
           type: 'number'
         },
-        "dfh_project_label_en": {
-          name: 'dfh_project_label_en',
-          type: 'string'
-        },
-        "dfh_is_ongoing_forced_publication": {
-          name: 'dfh_is_ongoing_forced_publication',
+        "is_ongoing_forced_publication": {
+          name: 'is_ongoing_forced_publication',
           type: 'boolean'
         },
-        "dfh_date_profile_published": {
-          name: 'dfh_date_profile_published',
+        "date_profile_published": {
+          name: 'date_profile_published',
           type: 'string'
         },
-        "dfh_date_profile_deprecated": {
-          name: 'dfh_date_profile_deprecated',
+        "date_profile_deprecated": {
+          name: 'date_profile_deprecated',
           type: 'string'
         },
-        "pk_entity": {
-          name: 'pk_entity',
-          type: 'number'
-        },
-        "entity_version": {
-          name: 'entity_version',
-          type: 'number'
-        },
-        "id": {
-          name: 'id',
-          type: 'number'
+        "tmsp_last_dfh_update": {
+          name: 'tmsp_last_dfh_update',
+          type: 'string'
         },
       },
       relations: {

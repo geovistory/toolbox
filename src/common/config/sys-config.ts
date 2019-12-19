@@ -35,6 +35,7 @@ export class SysConfig {
   static readonly PK_CLASS_FIELD_SHORT_TITLE = 217;
   static readonly PK_CLASS_FIELD_EXACT_REFERENCE = 218;
   static readonly PK_CLASS_FIELD_ENTITY_DEFINITION = 219;
+  static readonly PK_CLASS_FIELD_COMMENT = 3364
 
 
   /***********************

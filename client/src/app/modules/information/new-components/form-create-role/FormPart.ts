@@ -63,7 +63,7 @@ export class FormPart {
         else if (thisList.listType === 'text-property') {
           const initTextProperty = this.initVal.initTextProperty
 
-          if (initTextProperty.fkClassField === thisList.fkClassField) {
+          if (initTextProperty && initTextProperty.fkClassField === thisList.fkClassField) {
             // Yes. It is matching a listDefinition, add a form item with initial (language) value
             this.items.push({
               fixed: false,

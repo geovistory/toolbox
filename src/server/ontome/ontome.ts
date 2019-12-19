@@ -15,7 +15,7 @@ export class OntoMe {
 
   _profilesUrl = 'https://ontome.dataforhistory.org/api/profiles.json';
   get profilesUrl(): string {
-    return this._profilesUrl + `?lang=${this.requestedLanguage}&selected-by-project=6`;
+    return this._profilesUrl + `?lang=${this.requestedLanguage}`;
   }
   profilesParsed: any;
   profilesValidated: ApiProfileList | undefined;
@@ -23,14 +23,14 @@ export class OntoMe {
 
   _classesUrl = 'https://ontome.dataforhistory.org/api/classes-profile.json';
   get classesUrl(): string {
-    return this._classesUrl + `?lang=${this.requestedLanguage}&selected-by-project=6`;
+    return this._classesUrl + `?lang=${this.requestedLanguage}&available-in-profile=${this.fkProfile}`;
   }
   classesParsed: any;
   classesValidated: ApiClassProfileList | undefined;
 
   _propertiesUrl = 'https://ontome.dataforhistory.org/api/properties-profile.json';
   get propertiesUrl(): string {
-    return this._propertiesUrl + `?lang=${this.requestedLanguage}&selected-by-project=6`;
+    return this._propertiesUrl + `?lang=${this.requestedLanguage}&available-in-profile=${this.fkProfile}`;
   }
   propertiesParsed: any;
   propertiesValidated: ApiPropertyProfileList | undefined;

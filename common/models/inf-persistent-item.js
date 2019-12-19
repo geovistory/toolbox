@@ -1547,8 +1547,8 @@ module.exports = function(InfPersistentItem) {
       data_for_history.v_property  t2,
       information.persistent_item t3,
       projects.info_proj_rel t4
-      WHERE t1.fk_property = t2.fk_property
-      AND t3.fk_class = t2.dfh_has_range
+      WHERE t1.fk_property = t2.pk_property
+      AND t3.fk_class = t2.has_range
       AND t4.fk_entity = t3.pk_entity
       AND t4.is_in_project = true
       AND t4.fk_project = $1

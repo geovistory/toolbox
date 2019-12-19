@@ -1,126 +1,13 @@
-<h3>{{classLabel$ | async}} <small class="mat-gray">Fields</small></h3>
-
-<p>
-  Entities of the class '{{classLabel$ | async}}' have these fields:
-</p>
-
-
-<mat-accordion displayMode="flat" multi="true">
-  <mat-expansion-panel expanded="false" *ngFor="let field of (fields$ | async ); trackBy:getKey">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <strong>
-          {{field.label}} {{field?.propertyField?.isIdentityDefining ? '*' : ''}}
-        </strong>
-        <span *ngIf="field?.propertyField?.targetClasses; let truncated" class="mat-text-secondary ml-2">
-          <span>
-            [
-            <span *ngFor="let item of field.propertyField.targetClasses | slice:0:3; let i = index">
-              <span *ngIf="i>0">,</span>
-              {{item.label}}
-            </span>
-            <span *ngIf="field.propertyField.targetClasses.length > 3">
-              , + {{field.propertyField.targetClasses.length-3}}
-              <!-- <a class="gv-passive-link" (click)="showAll=true">
-                show all
-              </a> -->
-            </span>
-            ]
-          </span>
-          <!-- <span *ngIf="showAll">
-            [
-            <span *ngFor="let item of field.propertyField.targetClasses; let i = index">
-              <span *ngIf="i>0">/</span>
-              {{item.label}}
-            </span>
-            <a class="gv-passive-link" (click)="showAll=false">
-              hide
-            </a>
-            ]
-          </span> -->
-          <!-- [{{field.propertyField.targetClasses | truncate:25}}] -->
-        </span>
-        <!-- <mat-icon color="warn" matTooltip="Label Missing">warning</mat-icon> -->
-      </mat-panel-title>
-      <!-- <mat-panel-description>
-        <small>Field P8</small>
-      </mat-panel-description> -->
-    </mat-expansion-panel-header>
-
-    <div *ngIf="field.propertyField">
-      <ng-container *ngTemplateOutlet="propertyField; context:{field: field, classLabel$: classLabel$}"></ng-container>
-    </div>
-
-    <div *ngIf="!field.propertyField">
-      <ng-container *ngTemplateOutlet="classField; context:{field: field}"></ng-container>
-    </div>
-
-  </mat-expansion-panel>
-</mat-accordion>
-
-
-<ng-template #propertyField let-field="field" let-classLabel$="classLabel$">
-
-  <p class="mb-3">
-    This field corresponds to the property <a href="{{field.ontoInfoUrl}}" target="_blank"> {{field.ontoInfoLabel}}
-      "{{field.propertyField.dfhStandardLabel}}" </a>.
-  </p>
-  <div class="mat-body-2">
-    Labels
-  </div>
-  <div class="mat-caption mb-1">
-    Define the label of this field:
-  </div>
-  <mat-divider></mat-divider>
-
-  <gv-property-label-table [fkProperty]="field.propertyField.labelTable.fkProperty"
-    [fkDomainClass]="field.propertyField.labelTable.fkDomainClass"
-    [fkRangeClass]="field.propertyField.labelTable.fkRangeClass"></gv-property-label-table>
-
-  <div class="mat-body-2 mt-3">
-    Related Classes
-  </div>
-  <div class="mat-caption mb-1">
-    The field relates entities of the following classes to {{classLabel$ | async}}:
-  </div>
-  <mat-divider></mat-divider>
-
-  <table mat-table [dataSource]="field.propertyField.classTable.rows" class="mat-elevation-z0 w-100">
-
-    <!-- label Column -->
-    <ng-container matColumnDef="label">
-      <th mat-header-cell *matHeaderCellDef> Classes </th>
-      <td mat-cell *matCellDef="let element"> {{element.label}} </td>
-    </ng-container>
-
-    <!-- actions Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>
-        <button mat-icon-button>
-          <mat-icon>add</mat-icon>
-        </button>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button>
-          <mat-icon>delete</mat-icon>
-        </button>
-        <button mat-icon-button>
-          <mat-icon>edit</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="field.propertyField.classTable.displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: field.propertyField.classTable.displayedColumns;"></tr>
-  </table>
-
-</ng-template>
-
-<ng-template #classField let-field="field">
-
-
-
-  <p class="mb-3">
-    This field does not corresponds to a property directly.
-  </p>
-
-</ng-template>
+<mat-tab-group>
+  <mat-tab label="Class Fields">
+    <gv-class-fields class="mt-4 d-block" [fkProject]="fkProject" [fkClass]="fkClass"></gv-class-fields>
+  </mat-tab>
+  <mat-tab label="Class Labels">
+    <gv-labels class="mt-4 d-block" [fkProject]="fkProject" [fkClass]="fkClass"></gv-labels>
+  </mat-tab>
+  <mat-tab label="General Info">
+    <p class="mt-4 d-block">
+      Class on OntoMe: <gv-onto-class-info [pkClass]="fkClass"></gv-onto-class-info>
+    </p>
+  </mat-tab>
+</mat-tab-group>

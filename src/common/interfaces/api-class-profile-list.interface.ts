@@ -29,4 +29,5 @@ export interface ApiClassProfile {
   profileID: number
   profileLabel: string
   profileLabelLanguage: string
+  [key: string]: any
 }

@@ -30,11 +30,9 @@ export class DfhProfileApi extends BaseLoopBackApi {
   }
 
   /**
-   * Pulls profile data including classes and properties from OntoMe and adds profile to project.
+   * Get all profiles that are used by the given project.
    *
-   * @param {number} pkProfile OntoMe profile that should be added
-   *
-   * @param {string} requestedLanguage Language ISO Code for the preferred language of labels and descriptions to be loaded. Default language is 'en'.
+   * @param {number} pkProject Project pk
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -45,10 +43,42 @@ export class DfhProfileApi extends BaseLoopBackApi {
    * This usually means the response is a `DfhProfile` object.)
    * </em>
    */
-  public update(pkProfile: any, requestedLanguage: any = {}, customHeaders?: Function): Observable<any> {
+  public ofProject(pkProject: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProfiles/update";
+    "/DfhProfiles/of-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Pulls profile data including classes and properties from OntoMe and updates profile data in geovistory.
+   *
+   * @param {number} pkProfile OntoMe profile that should be added
+   *
+   * @param {string} requestedLanguage Language ISO Code for the preferred language of labels and descriptions to be loaded. Default language is 'en'.
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhProfile` object.)
+   * </em>
+   */
+  public updateFromOntoMe(pkProfile: any, requestedLanguage: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhProfiles/update-from-ontome";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -67,6 +97,10 @@ export class DfhProfileApi extends BaseLoopBackApi {
    *
    * @param {string} requestedLanguage Language ISO Code for the preferred language of labels and descriptions to be loaded. Default language is 'en'.
    *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -77,9 +111,9 @@ export class DfhProfileApi extends BaseLoopBackApi {
    * </em>
    */
   public updateAndAddToProject(pkProject: any, pkProfile: any, requestedLanguage: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
+    let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/DfhProfiles/update-and-add-to-project";
+    "/DfhProfiles/update-from-ontome-and-add-to-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

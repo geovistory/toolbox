@@ -62,6 +62,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon.module';
 import { MatMenuModule, MatTooltipModule } from '@angular/material';
 import { SettingsModule } from '../settings/settings.module';
+import { OntoInfoModule } from 'app/shared/components/onto-info/onto-info.module';
 
 
 
@@ -111,7 +112,9 @@ import { SettingsModule } from '../settings/settings.module';
     ClassConfigModule,
     HttpClientModule,
     AnalysisIconModule,
-    SettingsModule
+    SettingsModule,
+    OntoInfoModule,
+    ClassConfigModule // TODO: REMOVE
   ],
   declarations: [
     ProjectCreateComponent,

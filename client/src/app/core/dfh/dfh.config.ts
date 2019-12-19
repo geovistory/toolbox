@@ -1,89 +1,69 @@
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
-import { DfhPropertyProfileView, DfhLabel, DfhClassProfileView, DfhPropertyView } from '../sdk';
+import { DfhClass, DfhLabel, DfhProperty, DfhProfile } from '../sdk';
 
 export const dfhRoot = 'dfh';
 
+export const dfhLabelByFksKey = (item: Partial<DfhLabel>) => `${item.type || null}_${item.language || null}_${item.fk_class || null}_${item.fk_profile || null}_${item.fk_property || null}_${item.fk_project || null}`;
+
 export const dfhDefinitions: ReducerConfigCollection = {
+  profile: {
+    indexBy: {
+      keyInStore: 'pk_profile',
+      indexByFn: (item: DfhProfile) => item.pk_profile.toString()
+    }
+  },
   klass: {
     indexBy: {
-      keyInStore: 'dfh_pk_class',
-      indexByFn: (item) => item.dfh_pk_class.toString()
-    },
-    groupBy: [
-      {
-        keyInStore: 'pk_entity',
-        groupByFn: (d: DfhLabel): string => d.pk_entity.toString()
-      },
-    ]
+      keyInStore: 'pk_class',
+      indexByFn: (item: DfhClass) => item.pk_class.toString()
+    }
   },
-  class_profile_view: {
+  property: {
     indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item: DfhClassProfileView) => item.pk_entity.toString()
+      keyInStore: 'pk_property__has_domain__has_range',
+      indexByFn: (item: DfhProperty) => item.pk_property + '_' + item.has_domain + '_' + item.has_range
     },
     groupBy: [
       {
-        keyInStore: 'dfh_pk_class',
-        groupByFn: (d: DfhClassProfileView): string => d.dfh_fk_class.toString()
+        keyInStore: 'pk_property',
+        groupByFn: (d: DfhProperty): string => d.pk_property.toString()
+      },
+      {
+        keyInStore: 'has_domain',
+        groupByFn: (d: DfhProperty): string => d.has_domain.toString()
+      },
+      {
+        keyInStore: 'has_range',
+        groupByFn: (d: DfhProperty): string => d.has_range.toString()
+      },
+      {
+        keyInStore: 'has_domain__fk_property',
+        groupByFn: (d: DfhProperty): string => d.has_domain + '_' + d.pk_property
+      },
+      {
+        keyInStore: 'has_range__fk_property',
+        groupByFn: (d: DfhProperty): string => d.has_range + '_' + d.pk_property
       }
     ]
   },
   label: {
     indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item) => {
-        return item.pk_entity.toString();
-      }
+      keyInStore: 'fks',
+      indexByFn: dfhLabelByFksKey
     },
     groupBy: [
       {
-        keyInStore: 'dfh_fk_class',
-        groupByFn: (d: DfhLabel): string => d.dfh_fk_class.toString()
+        keyInStore: 'fk_class__type',
+        groupByFn: (d: DfhLabel): string => !d.fk_class ? undefined : `${d.fk_class}_${d.type}`
       },
       {
-        keyInStore: 'dfh_fk_property',
-        groupByFn: (d: DfhLabel): string => d.dfh_fk_property.toString()
+        keyInStore: 'fk_property__type',
+        groupByFn: (d: DfhLabel): string => !d.fk_property ? undefined : `${d.fk_property}_${d.type}`
       },
       {
-        keyInStore: 'dfh_fk_property__com_fk_system_type',
-        groupByFn: (d: DfhLabel): string => (!d.dfh_fk_property ? undefined : d.dfh_fk_property + '_' + d.com_fk_system_type)
+        keyInStore: 'fk_profile__type',
+        groupByFn: (d: DfhLabel): string => !d.fk_profile ? undefined : `${d.fk_profile}_${d.type}`
       }
     ]
   },
-  property_profile_view: {
-    indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item: DfhPropertyProfileView) => item.pk_entity.toString()
-    },
-    groupBy: [
-      {
-        keyInStore: 'dfh_pk_profile__fk_property',
-        groupByFn: (d: DfhPropertyProfileView): string => d.dfh_has_domain + '_' + d.fk_property
-      }
-    ]
-  },
-  property_view: {
-    indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item: DfhPropertyView) => item.pk_entity.toString()
-    },
-    groupBy: [
-      {
-        keyInStore: 'fk_property',
-        groupByFn: (d: DfhPropertyView): string => d.fk_property.toString()
-      },
-      {
-        keyInStore: 'dfh_has_domain__fk_property__dfh_has_range',
-        groupByFn: (d: DfhPropertyView): string => d.dfh_has_domain + '_' + d.fk_property + '_' + d.dfh_has_range
-      },
-      {
-        keyInStore: 'dfh_has_domain__fk_property',
-        groupByFn: (d: DfhPropertyView): string => d.dfh_has_domain + '_' + d.fk_property
-      },
-      {
-        keyInStore: 'dfh_has_range__fk_property',
-        groupByFn: (d: DfhPropertyView): string => d.dfh_has_range + '_' + d.fk_property
-      }
-    ]
-  }
 };

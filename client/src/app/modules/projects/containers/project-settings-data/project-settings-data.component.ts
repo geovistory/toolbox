@@ -10,7 +10,7 @@ import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
-import { equals, values } from 'ramda';
+import { equals, values, indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
 import * as Config from '../../../../../../../common/config/Config';
@@ -25,11 +25,10 @@ import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 
 export interface ClassItem {
-  pkEntity: number;
-  dfh_pk_class: number;
+  pkClass: number;
 
   label: string;
-  dfh_standard_label: string;
+  // dfh_standard_label: string;
   scopeNote: string;
   profilePks: number[];
 
@@ -39,7 +38,7 @@ export interface ClassItem {
   subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
 
   subclassOfType?: boolean; // true if subclass of E55 Type
-  dfh_identifier_in_namespace: string;
+  identifier_in_namespace: string;
 
   required_by_sources?: boolean
   required_by_entities?: boolean
@@ -51,6 +50,7 @@ export interface ClassItem {
     fkProfile: number,
     removedFromApi: boolean
   }[]
+
   removedFromAllProfiles: boolean
 
   changingProjRel?: boolean
@@ -180,71 +180,66 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
 
-    this.items$ = this.p.dfh$.class$.by_dfh_pk_class$.all$.pipe(
-      switchMap((byPk) => combineLatestOrEmpty(
-        values(byPk).map(dfhClass => combineLatest(
-          this.c.pipeLabelOfClass(dfhClass.dfh_pk_class),
-          this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_entity$
-            .key(this.p.state.pk_project + '_' + dfhClass.pk_entity),
-          this.p.sys$.class_has_type_property$.by_pk_typed_class$
-            .key(dfhClass.dfh_pk_class),
-          this.p.sys$.system_relevant_class$.by_fk_class$
-            .key(dfhClass.dfh_pk_class),
-          this.p.dfh$.class_profile_view$.by_dfh_pk_class$
-            .key(dfhClass.dfh_pk_class),
-        )
-          .pipe(
-            map(([label, projRel, type, sysClass, profiles]) => {
-              const {
-                pk_entity,
-                dfh_pk_class,
-                dfh_identifier_in_namespace,
-                dfh_standard_label
-              } = dfhClass;
+    this.items$ = this.p.dfh$.class$.by_pk_class$.all$.pipe(
+      switchMap((byPk) => {
+        return combineLatestOrEmpty(
+          values(byPk).map(dfhClass => combineLatest(
+            this.c.pipeClassLabel(dfhClass.pk_class),
+            this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_class$
+              .key(this.p.state.pk_project + '_' + dfhClass.pk_class),
+            this.p.sys$.class_has_type_property$.by_pk_typed_class$
+              .key(dfhClass.pk_class),
+            this.p.sys$.system_relevant_class$.by_fk_class$
+              .key(dfhClass.pk_class),
+            this.p.dfh$.label$.by_fk_profile__type$.all$
+          )
+            .pipe(
+              map(([label, projRel, type, sysClass, profileLabels]) => {
+                const {
+                  pk_class,
+                  identifier_in_namespace
+                } = dfhClass;
 
 
-              const s = values(sysClass);
-              const {
-                excluded_from_entities,
-                required_by_basics,
-                required_by_entities,
-                required_by_sources
-              } = s.length < 1 ? {} as SysSystemRelevantClass : s[0];
+                const s = values(sysClass);
+                const {
+                  excluded_from_entities,
+                  required_by_basics,
+                  required_by_entities,
+                  required_by_sources
+                } = s.length < 1 ? {} as SysSystemRelevantClass : s[0];
 
-              const pr = values(profiles)
+                const item: ClassItem = {
+                  pkClass: pk_class,
+                  identifier_in_namespace,
 
-              const item: ClassItem = {
-                pkEntity: pk_entity,
-                dfh_pk_class,
-                dfh_identifier_in_namespace,
-                dfh_standard_label,
+                  scopeNote: '', // TODO
 
-                scopeNote: '', // TODO
+                  label,
+                  projRel,
 
-                label,
-                projRel,
+                  subclassOfType: !!type,
+                  subclassOf: dfhClass.basic_type === 8 ? 'peIt' : dfhClass.basic_type === 9 ? 'teEnt' : 'other',
 
-                subclassOfType: !!type,
-                subclassOf: dfhClass.dfh_fk_system_type === 8 ? 'peIt' : dfhClass.dfh_fk_system_type === 9 ? 'teEnt' : 'other',
+                  excluded_from_entities,
+                  required_by_basics,
+                  required_by_entities,
+                  required_by_sources,
 
-                excluded_from_entities,
-                required_by_basics,
-                required_by_entities,
-                required_by_sources,
-
-                removedFromAllProfiles: !pr.some(p => p.removed_from_api === false),
-                profiles: pr.map(p => ({
-                  label: p.dfh_profile_label,
-                  removedFromApi: p.removed_from_api,
-                  fkProfile: p.dfh_fk_profile,
-                })),
-                profilePks: pr.map(p => p.dfh_fk_profile)
-              }
-              return item
-            })
+                  removedFromAllProfiles: !dfhClass.profiles.some(p => p.removed_from_api === false),
+                  profiles: dfhClass.profiles.map(p => ({
+                    label: values(profileLabels[p.fk_profile + '_label'])[0].label,
+                    removedFromApi: p.removed_from_api,
+                    fkProfile: p.fk_profile,
+                  })),
+                  profilePks: dfhClass.profiles.map(p => p.fk_profile)
+                }
+                return item
+              })
+            )
           )
         )
-      ))
+      })
     )
 
 
@@ -263,7 +258,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
           'required_by_basics',
           'label',
           'subclassOf',
-          'dfh_standard_label',
+          'identifier_in_namespace',
           'profiles',
           'subclassOfType',
         ];
@@ -274,14 +269,14 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
           'required_by_sources',
           'label',
           'subclassOf',
-          'dfh_standard_label',
+          'identifier_in_namespace',
           'profiles',
           'subclassOfType',
         ];
       }
 
+      this.displayedColumns.push('classConfig')
       if (pkProject === Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
-        this.displayedColumns.push('classConfig')
       }
     })
   }
@@ -342,7 +337,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
             ...i,
             enabled_in_entities: (!i.projRel ? false : i.projRel.enabled_in_entities),
             subclassOf: (i.subclassOf || 'other'),
-            dfh_standard_label: i.dfh_standard_label + ' – ' + i.dfh_identifier_in_namespace
+            // dfh_standard_label: i.dfh_standard_label + ' – ' + i.identifier_in_namespace
           }))
 
           this.filteredItems$.next(
@@ -353,7 +348,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
                 (showBasicClasses || !item.required_by_basics)
                 // filter for search term
                 && (text === '' ||
-                  (item.label + ' ' + item.dfh_standard_label + ' ' + item.scopeNote)
+                  (item.label + ' ' + item.identifier_in_namespace + ' ' + item.scopeNote)
                     .toLowerCase().indexOf(text.toLowerCase()) > -1)
                 // filter for subclassOf
                 && (subclassOf === undefined || item.subclassOf === subclassOf)
@@ -367,7 +362,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
                 .map((item) => ({
                   ...item,
                   label: this.highilghtPipe.transform(item.label, text),
-                  dfh_standard_label: this.highilghtPipe.transform(item.dfh_standard_label, text),
+                  identifier_in_namespace: this.highilghtPipe.transform(item.identifier_in_namespace, text),
+                  // dfh_standard_label: this.highilghtPipe.transform(item.dfh_standard_label, text),
                   scopeNote: this.highilghtPipe.transform(item.scopeNote, text),
                 }))
           )
@@ -422,16 +418,16 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   enableClass(classItem: ClassItem) {
     const projRel = new ProDfhClassProjRel({
       pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
-      fk_entity: classItem.pkEntity,
+      fk_class: classItem.pkClass,
       fk_project: this.p.state.pk_project,
       enabled_in_entities: true
     })
 
-    this.p.changingClassProjRel[classItem.pkEntity] = true;
+    this.p.changingClassProjRel[classItem.pkClass] = true;
 
     this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
       .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-        if (resolved) this.p.changingClassProjRel[classItem.pkEntity] = false;
+        if (resolved) this.p.changingClassProjRel[classItem.pkClass] = false;
       })
     // this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
@@ -442,24 +438,24 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
   disableClass(classItem: ClassItem) {
     const projRel = new ProDfhClassProjRel({
       pk_entity: classItem.projRel.pk_entity,
-      fk_entity: classItem.pkEntity,
+      fk_class: classItem.pkClass,
       fk_project: this.p.state.pk_project,
       enabled_in_entities: false
     })
 
     this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
       .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-        if (resolved) this.p.changingClassProjRel[classItem.pkEntity] = false;
+        if (resolved) this.p.changingClassProjRel[classItem.pkClass] = false;
       })
     // this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
 
 
   openControlledVocab(classItem: ClassItem) {
-    this.p.sys$.class_has_type_property$.by_pk_type_class$.key(classItem.dfh_pk_class)
+    this.p.sys$.class_has_type_property$.by_pk_type_class$.key(classItem.pkClass)
       .pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((hasTypeProperties) => {
 
-        const pkProperty = values(hasTypeProperties).find(p => p.pk_type_class === classItem.dfh_pk_class).dfh_pk_property;
+        const pkProperty = values(hasTypeProperties).find(p => p.pk_type_class === classItem.pkClass).dfh_pk_property;
 
         this.p.addTab({
           active: true,
@@ -476,15 +472,15 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(fkProject => {
       const data: ClassConfigDialogData = {
         fkAppContext: 45,
-        fkClass: classItem.dfh_pk_class,
+        fkClass: classItem.pkClass,
         fkProject
       }
       this.dialog.open(ClassConfigDialogComponent, {
         data,
         height: 'calc(100% - 30px)',
-        width: 'calc(100% - 30px)',
+        width: '850px',
         maxWidth: '100%',
-        maxHeight: '100%'
+        // maxHeight: '100%'
       })
     })
   }

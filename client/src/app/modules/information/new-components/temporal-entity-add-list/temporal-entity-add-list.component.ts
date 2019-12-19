@@ -108,7 +108,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
     })
 
 
-    const columns$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext)
+    const columns$ = this.c.pipeFieldDefinitionsSpecificFirst(this.listDefinition.targetClass)
 
     const alternative = true;
     this.rows$ = combineLatest(pagination$, columns$).pipe(

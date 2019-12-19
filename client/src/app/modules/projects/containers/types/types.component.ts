@@ -112,7 +112,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     )
 
     this.typedClassLabel$ = hasTypeProp$.pipe(
-      switchMap((hasTypeProp) => this.c.pipeLabelOfClass(hasTypeProp.pk_typed_class).pipe(
+      switchMap((hasTypeProp) => this.c.pipeClassLabel(hasTypeProp.pk_typed_class).pipe(
         tap((typedClassLabel) => {
           this.t.setTabTitle(typedClassLabel + ' Types')
         })
@@ -120,7 +120,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     )
 
     this.typeClassLabel$ = hasTypeProp$.pipe(
-      switchMap((hasTypeProp) => this.c.pipeLabelOfClass(hasTypeProp.pk_type_class)),
+      switchMap((hasTypeProp) => this.c.pipeClassLabel(hasTypeProp.pk_type_class)),
     )
 
     this.typePks$ = this.typeClassPk$.pipe(
@@ -129,31 +129,28 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     const appContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
     const appeAndDefFields$ = this.typeClassPk$.pipe(
-      // get editable field configs of this class
-      switchMap(pkClass => this.c.pipeClassFieldConfigs(pkClass, appContext).pipe(
-        // get editable fieldDefinitions
-        switchMap(fields => combineLatest(fields.map(field => this.c.pipeFieldDefinition(field))).pipe(
-          map(fieldDefinitions => {
-            let appeField: FieldDefinition, definitionField: FieldDefinition;
-            fieldDefinitions.forEach(f => {
-              // take only appellation for language, or ...
-              if (f.listDefinitions[0].pkProperty === 1111) {
-                appeField = f;
-              }
-              // ... entit definition
-              else if (f.listDefinitions[0].fkClassField === 219) {
-                definitionField = f;
-              }
-            })
-            return { appeField, definitionField }
+      // get editable fieldDefinitions
+      switchMap((fkClass) => this.c.pipeFieldDefinitions(fkClass).pipe(
+        map(fieldDefinitions => {
+          let appeField: FieldDefinition, definitionField: FieldDefinition;
+          fieldDefinitions.forEach(f => {
+            // take only appellation for language, or ...
+            if (f.listDefinitions[0].pkProperty === 1111) {
+              appeField = f;
+            }
+            // ... entit definition
+            else if (f.listDefinitions[0].fkClassField === 219) {
+              definitionField = f;
+            }
           })
-        ))
+          return { appeField, definitionField }
+        })
       ))
     )
 
     const appeAndLangFields$ = appeAndDefFields$.pipe(
       switchMap(appeAndDefFields =>
-        this.c.pipeFieldDefinitions(appeAndDefFields.appeField.listDefinitions[0].targetClass, appContext).pipe(
+        this.c.pipeFieldDefinitions(appeAndDefFields.appeField.listDefinitions[0].targetClass).pipe(
           map(fieldDefs => fieldDefs.filter(f => f.listType === 'language' || f.listType === 'appellation'))
         )
       )

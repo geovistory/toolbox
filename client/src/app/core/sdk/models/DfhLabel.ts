@@ -2,43 +2,23 @@
 
 declare var Object: any;
 export interface DfhLabelInterface {
-  "pk_entity"?: number;
-  "dfh_pk_label"?: number;
-  "dfh_label": string;
-  "dfh_language_iso_code"?: string;
-  "dfh_is_standard_label_for_language"?: boolean;
-  "dfh_fk_property"?: number;
-  "dfh_fk_namespace"?: number;
-  "dfh_fk_class"?: number;
-  "dfh_fk_project"?: number;
-  "dfh_fk_class_type"?: number;
-  "dfh_fk_property_type"?: number;
-  "dfh_fk_profile"?: number;
-  "dfh_creation_time"?: Date;
-  "dfh_modification_time"?: Date;
-  "com_fk_system_type"?: number;
-  "inf_fk_language"?: number;
-  "entity_version"?: number;
+  "type"?: string;
+  "label"?: string;
+  "language"?: string;
+  "fk_profile"?: number;
+  "fk_project"?: number;
+  "fk_property"?: number;
+  "fk_class"?: number;
 }
 
 export class DfhLabel implements DfhLabelInterface {
-  "pk_entity": number;
-  "dfh_pk_label": number;
-  "dfh_label": string;
-  "dfh_language_iso_code": string;
-  "dfh_is_standard_label_for_language": boolean;
-  "dfh_fk_property": number;
-  "dfh_fk_namespace": number;
-  "dfh_fk_class": number;
-  "dfh_fk_project": number;
-  "dfh_fk_class_type": number;
-  "dfh_fk_property_type": number;
-  "dfh_fk_profile": number;
-  "dfh_creation_time": Date;
-  "dfh_modification_time": Date;
-  "com_fk_system_type": number;
-  "inf_fk_language": number;
-  "entity_version": number;
+  "type": string;
+  "label": string;
+  "language": string;
+  "fk_profile": number;
+  "fk_project": number;
+  "fk_property": number;
+  "fk_class": number;
   constructor(data?: DfhLabelInterface) {
     Object.assign(this, data);
   }
@@ -70,74 +50,34 @@ export class DfhLabel implements DfhLabelInterface {
       name: 'DfhLabel',
       plural: 'DfhLabels',
       path: 'DfhLabels',
-      idName: 'pk_entity',
+      idName: 'type',
       properties: {
-        "pk_entity": {
-          name: 'pk_entity',
-          type: 'number'
-        },
-        "dfh_pk_label": {
-          name: 'dfh_pk_label',
-          type: 'number'
-        },
-        "dfh_label": {
-          name: 'dfh_label',
+        "type": {
+          name: 'type',
           type: 'string'
         },
-        "dfh_language_iso_code": {
-          name: 'dfh_language_iso_code',
+        "label": {
+          name: 'label',
           type: 'string'
         },
-        "dfh_is_standard_label_for_language": {
-          name: 'dfh_is_standard_label_for_language',
-          type: 'boolean'
+        "language": {
+          name: 'language',
+          type: 'string'
         },
-        "dfh_fk_property": {
-          name: 'dfh_fk_property',
+        "fk_profile": {
+          name: 'fk_profile',
           type: 'number'
         },
-        "dfh_fk_namespace": {
-          name: 'dfh_fk_namespace',
+        "fk_project": {
+          name: 'fk_project',
           type: 'number'
         },
-        "dfh_fk_class": {
-          name: 'dfh_fk_class',
+        "fk_property": {
+          name: 'fk_property',
           type: 'number'
         },
-        "dfh_fk_project": {
-          name: 'dfh_fk_project',
-          type: 'number'
-        },
-        "dfh_fk_class_type": {
-          name: 'dfh_fk_class_type',
-          type: 'number'
-        },
-        "dfh_fk_property_type": {
-          name: 'dfh_fk_property_type',
-          type: 'number'
-        },
-        "dfh_fk_profile": {
-          name: 'dfh_fk_profile',
-          type: 'number'
-        },
-        "dfh_creation_time": {
-          name: 'dfh_creation_time',
-          type: 'Date'
-        },
-        "dfh_modification_time": {
-          name: 'dfh_modification_time',
-          type: 'Date'
-        },
-        "com_fk_system_type": {
-          name: 'com_fk_system_type',
-          type: 'number'
-        },
-        "inf_fk_language": {
-          name: 'inf_fk_language',
-          type: 'number'
-        },
-        "entity_version": {
-          name: 'entity_version',
+        "fk_class": {
+          name: 'fk_class',
           type: 'number'
         },
       },

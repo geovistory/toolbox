@@ -122,7 +122,7 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           model: 'DfhProperty',
           relationType: 'belongsTo',
                   keyFrom: 'fk_property',
-          keyTo: 'dfh_pk_property'
+          keyTo: 'pk_property'
         },
         class_field: {
           name: 'class_field',

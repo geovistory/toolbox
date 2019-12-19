@@ -26,16 +26,16 @@
       "type": "string"
     },
     "fk_profile": {
-      "type": "string"
+      "type": "number"
     },
     "fk_project": {
-      "type": "string"
+      "type": "number"
     },
     "fk_property": {
-      "type": "string"
+      "type": "number"
     },
     "fk_class": {
-      "type": "string"
+      "type": "number"
     }
   },
   "validations": [],
@@ -52,12 +52,12 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "findAllOfProject"
+        "ofProject"
       ]
     }
   ],
   "methods": {
-    "findAllOfProject": {
+    "ofProject": {
       "accepts": [
         {
           "arg": "pkProject",

@@ -10,7 +10,7 @@ module.exports = function(DfhLabel) {
   //   const promiseArray = items.map(item => item.destroy());
   //   return Promise.map(promiseArray, promise => promise);
   // };
-  DfhLabel.findAllOfProject = function(pkProject, cb) {
+  DfhLabel.ofProject = function(pkProject, cb) {
     const q = new FlatObjectQueryBuilder(DfhLabel.app.models);
 
     const params = [pkProject];

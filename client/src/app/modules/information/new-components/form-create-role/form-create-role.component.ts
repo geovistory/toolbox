@@ -173,7 +173,7 @@ export class FormCreateRoleComponent implements OnInit {
     };
 
 
-    const formParts$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext).pipe(debounceTime(20), mergeMap(fields => {
+    const formParts$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass).pipe(debounceTime(20), mergeMap(fields => {
       // empty formGroup
       Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
       // map the field to a form part

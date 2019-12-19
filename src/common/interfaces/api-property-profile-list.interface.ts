@@ -36,6 +36,7 @@ export interface ApiPropertyProfile {
   profileID: number,
   profileLabelLanguage: string,
   profileLabel: string
+  [key: string]: any
 }
 
 

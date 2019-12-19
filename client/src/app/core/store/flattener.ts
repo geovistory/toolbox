@@ -5,8 +5,8 @@ import { keys, omit, values } from 'ramda';
 import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
-import { ProAnalysisSlice, ProInfoProjRelSlice, ProPropertyLabelSlice, ProDfhClassProjRelSlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProInfoProjRel, ProPropertyLabel, ProDfhClassProjRel } from '../sdk';
+import { ProAnalysisSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice, ProClassFieldConfigSlice } from '../pro/pro.models';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, ProClassFieldConfig } from '../sdk';
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
@@ -191,15 +191,36 @@ export class Flattener {
       })
     })
 
-  property_label = new ModelFlattener<ProPropertyLabelSlice, ProPropertyLabel>(
-    this.proActions.property_label,
-    ProPropertyLabel.getModelDefinition(),
+  pro_project = new ModelFlattener<ProProjectSlice, ProProject>(
+    this.proActions.project,
+    ProProject.getModelDefinition(),
     (items) => {
       items.forEach(item => {
-        item = new ProPropertyLabel(item);
+        item = new ProProject(item);
+        this.language.flatten([item.default_language])
+      })
+    })
+
+  pro_text_property = new ModelFlattener<ProTextPropertySlice, ProTextProperty>(
+    this.proActions.text_property,
+    ProTextProperty.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProTextProperty(item);
         this.language.flatten([item.language])
       })
     })
+
+
+  pro_class_field_config = new ModelFlattener<ProClassFieldConfigSlice, ProClassFieldConfig>(
+    this.proActions.class_field_config,
+    ProClassFieldConfig.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProClassFieldConfig(item);
+      })
+    })
+
 
   analysis = new ModelFlattener<ProAnalysisSlice, ProAnalysis>(
     this.proActions.analysis,
@@ -216,9 +237,12 @@ export class Flattener {
   ) { }
   getFlattened(): FlattenerInterface {
     return {
+      pro_project: this.pro_project,
+      pro_text_property: this.pro_text_property,
+      pro_class_field_config: this.pro_class_field_config,
+
       dfh_class_proj_rel: this.dfh_class_proj_rel,
       info_proj_rel: this.info_proj_rel,
-      property_label: this.property_label,
       analysis: this.analysis,
 
       persistent_item: this.persistent_item,

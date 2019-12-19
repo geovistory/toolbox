@@ -9,7 +9,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
 import { difference, equals, groupBy, indexBy, path, values, without } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of as observableOf, Subject, timer } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil, tap, switchMap } from 'rxjs/operators';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { environment } from '../../../environments/environment';
 import { DatSelector } from '../dat/dat.service';
@@ -27,6 +27,7 @@ import { SystemSelector } from '../sys/sys.service';
 import { U } from '../util/util';
 import { ActiveProjectActions } from './active-project.action';
 import { ClassConfig, ClassConfigList, EntityVersionsByPk, ListType, Panel, ProjectDetail, PropertyList, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { cache } from 'app/shared';
 
 
 
@@ -142,6 +143,18 @@ export class ActiveProjectService {
         })
     })
 
+  }
+
+  @cache({ refCount: false }) pipeActiveProject(): Observable<ProProject> {
+    return this.pkProject$.pipe(
+      switchMap(pkProject => this.pro$.project$.by_pk_entity$.key(pkProject.toString()))
+    ).pipe(filter(l => !!l))
+  }
+  @cache({ refCount: false }) pipeActiveDefaultLanguage(): Observable<InfLanguage> {
+    return this.pipeActiveProject().pipe(
+      filter(p => !!p),
+      switchMap(project => this.inf$.language$.by_pk_entity$.key(project.fk_language.toString()))
+    ).pipe(filter(l => !!l))
   }
 
 

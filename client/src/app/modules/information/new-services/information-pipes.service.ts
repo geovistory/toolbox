@@ -529,12 +529,10 @@ export class InformationPipesService {
 
     return this.p.pkProject$.pipe(
       switchMap(pkProject => {
-        return this.c.pipeFieldDefinitions(
-          DfhConfig.ClASS_PK_TIME_SPAN,
-          SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE
+        return this.c.pipeSpecificFieldDefinitions(
+          DfhConfig.ClASS_PK_TIME_SPAN
         ).pipe(
           switchMap(fieldDefs => {
-
             return combineLatest(fieldDefs.map(
               fieldDef => this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(fieldDef.pkProperty + '_' + pkEntity)
                 .pipe(
@@ -930,8 +928,7 @@ export class InformationPipesService {
     return this.p.pkProject$.pipe(
       switchMap(pkProject => {
         return this.c.pipeFieldDefinitions(
-          DfhConfig.ClASS_PK_TIME_SPAN,
-          SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE
+          DfhConfig.ClASS_PK_TIME_SPAN
         ).pipe(
           switchMap(fieldDefinitions => {
 
@@ -991,23 +988,23 @@ export class InformationPipesService {
    */
   @spyTag pipeLabelOfEntity(fkEntity: number): Observable<string> {
     return this.b.pipeClassOfEntity(fkEntity).pipe(
-      // get the first class field config
-      switchMap(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE, 1).pipe(
-        // get the definition of the first field
-        switchMap(fields => this.c.pipeFieldDefinition(fields[0]).pipe(
-          // get the first item of that field
-          switchMap(fieldDef => combineLatest(
-            fieldDef.listDefinitions.map(listDef => this.pipeEntityProperties(listDef, fkEntity, 1))
-          ).pipe(
-            map(props => {
-              props = props.filter(prop => prop.items.length > 0)
-              if (props.length && props[0].items.length) {
-                return props[0].items[0].label
-              }
-              return ''
-            })
-          )))
-        ))
+
+      // get the definition of the first field
+      switchMap(fkClass => this.c.pipeFieldDefinitions(fkClass).pipe(
+        // get the first item of that field
+        switchMap(fieldDef => combineLatestOrEmpty(
+          fieldDef && fieldDef.length ?
+            fieldDef[0].listDefinitions.map(listDef => this.pipeEntityProperties(listDef, fkEntity, 1)) :
+            []
+        ).pipe(
+          map(props => {
+            props = props.filter(prop => prop.items.length > 0)
+            if (props.length && props[0].items.length) {
+              return props[0].items[0].label
+            }
+            return ''
+          })
+        )))
       ))
   }
 
@@ -1017,7 +1014,7 @@ export class InformationPipesService {
    */
   @spyTag pipeClassLabelOfEntity(fkEntity: number): Observable<string> {
     return this.b.pipeClassOfEntity(fkEntity).pipe(
-      switchMap(pkClass => this.c.pipeLabelOfClass(pkClass))
+      switchMap(pkClass => this.c.pipeClassLabel(pkClass))
     )
   }
 
@@ -1057,7 +1054,7 @@ export class InformationPipesService {
   @cache({ refCount: false })
   pipeClassAndTypeNodes(typeAndTypedClasses: { typedClass: number; typeClass: number; }[]): Observable<ClassAndTypeNode[]> {
     return combineLatestOrEmpty(
-      typeAndTypedClasses.map(item => this.c.pipeLabelOfClass(item.typedClass).pipe(
+      typeAndTypedClasses.map(item => this.c.pipeClassLabel(item.typedClass).pipe(
         map(label => ({
           label,
           data: { pkClass: item.typedClass, pkType: null }
@@ -1116,7 +1113,7 @@ export class InformationPipesService {
     return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE)
       .pipe(switchMap(classFields => {
         const fields = classFields.filter(f => !!f.fk_property);
-        return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfProperty(field.fk_property, field.fk_domain_class, field.fk_range_class, true).pipe(map(label => {
+        return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfPropertyField(field.fk_property, field.fk_domain_class, field.fk_range_class).pipe(map(label => {
           const isOutgoing = !!field.fk_domain_class;
           const o: PropertyOption = {
             isOutgoing,

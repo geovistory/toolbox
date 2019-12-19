@@ -24,11 +24,12 @@ export interface FieldDefinition {
   ontoInfoLabel: string
   pkProperty: number
   isOutgoing: boolean
+  sourceClass: number
   targetClasses?: number[]
   targetMaxQuantity?: number
   listDefinitions: ListDefinition[]
   isIdentityDefining: boolean
-
+  fieldConfig?: ProClassFieldConfig
 }
 
 export interface ListDefinition {

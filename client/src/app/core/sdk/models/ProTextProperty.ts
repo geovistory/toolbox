@@ -8,14 +8,17 @@ import {
 declare var Object: any;
 export interface ProTextPropertyInterface {
   "string": string;
-  "quill_doc": string;
   "fk_system_type": number;
   "fk_language": number;
+  "fk_project": number;
+  "fk_dfh_class"?: number;
+  "fk_dfh_property"?: number;
+  "fk_dfh_property_domain"?: number;
+  "fk_dfh_property_range"?: number;
   "pk_entity"?: number;
   "entity_version"?: number;
   "tmsp_creation"?: string;
   "tmsp_last_modification"?: string;
-  "fk_entity"?: number;
   project?: ProProject;
   language?: InfLanguage;
   systemType?: SysSystemType;
@@ -23,14 +26,17 @@ export interface ProTextPropertyInterface {
 
 export class ProTextProperty implements ProTextPropertyInterface {
   "string": string;
-  "quill_doc": string;
   "fk_system_type": number;
   "fk_language": number;
+  "fk_project": number;
+  "fk_dfh_class": number;
+  "fk_dfh_property": number;
+  "fk_dfh_property_domain": number;
+  "fk_dfh_property_range": number;
   "pk_entity": number;
   "entity_version": number;
   "tmsp_creation": string;
   "tmsp_last_modification": string;
-  "fk_entity": number;
   project?: ProProject;
   language?: InfLanguage;
   systemType?: SysSystemType;
@@ -71,16 +77,32 @@ export class ProTextProperty implements ProTextPropertyInterface {
           name: 'string',
           type: 'string'
         },
-        "quill_doc": {
-          name: 'quill_doc',
-          type: 'string'
-        },
         "fk_system_type": {
           name: 'fk_system_type',
           type: 'number'
         },
         "fk_language": {
           name: 'fk_language',
+          type: 'number'
+        },
+        "fk_project": {
+          name: 'fk_project',
+          type: 'number'
+        },
+        "fk_dfh_class": {
+          name: 'fk_dfh_class',
+          type: 'number'
+        },
+        "fk_dfh_property": {
+          name: 'fk_dfh_property',
+          type: 'number'
+        },
+        "fk_dfh_property_domain": {
+          name: 'fk_dfh_property_domain',
+          type: 'number'
+        },
+        "fk_dfh_property_range": {
+          name: 'fk_dfh_property_range',
           type: 'number'
         },
         "pk_entity": {
@@ -99,10 +121,6 @@ export class ProTextProperty implements ProTextPropertyInterface {
           name: 'tmsp_last_modification',
           type: 'string'
         },
-        "fk_entity": {
-          name: 'fk_entity',
-          type: 'number'
-        },
       },
       relations: {
         project: {
@@ -110,7 +128,7 @@ export class ProTextProperty implements ProTextPropertyInterface {
           type: 'ProProject',
           model: 'ProProject',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+                  keyFrom: 'fk_project',
           keyTo: 'pk_entity'
         },
         language: {

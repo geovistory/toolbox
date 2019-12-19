@@ -1,41 +1,30 @@
-import { DfhClass, DfhLabel, DfhPropertyProfileView, DfhPropertyView, DfhClassProfileView } from "../sdk";
-import { ByPk } from "app/core/store/model";
+import { ByPk } from 'app/core/store/model';
+import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '../sdk';
+
+export class DfhProfileSlice {
+  by_pk_profile?: DfhProfile;
+}
 
 export class DfhClassSlice {
-  by_dfh_pk_class?: ByPk<DfhClass>;
-  loading?: boolean;
+  by_pk_class?: DfhClass;
+}
+
+export class DfhPropertySlice {
+  by_pk_property?: DfhProperty;
+  by_has_domain__pk_property?: ByPk<DfhProperty>;
+  by_has_range__pk_property?: ByPk<DfhProperty>;
 }
 
 export class DfhLabelSlice {
-  by_dfh_pk_label?: ByPk<DfhLabel>;
-  loading?: boolean;
+  by_pk?: DfhLabel;
+  by_fk_class__type?: ByPk<DfhLabel>;
+  by_fk_property__type?: ByPk<DfhLabel>;
+  by_fk_profile__type?: ByPk<DfhLabel>;
 }
-
-export class DfhPropertyProfileViewSlice {
-  dfh_has_domain__fk_property?: ByPk<DfhPropertyProfileView>;
-  dfh_has_range__fk_property?: ByPk<DfhPropertyProfileView>;
-  loading?: boolean;
-}
-
-export class DfhPropertyViewSlice {
-  dfh_pk_property?: DfhPropertyView;
-  dfh_has_domain__fk_property?: ByPk<DfhPropertyView>;
-  dfh_has_range__fk_property?: ByPk<DfhPropertyView>;
-  loading?: boolean;
-}
-
-export class DfhClassProfileViewSlice {
-  dfh_fk_profile__fk_class?: ByPk<DfhClassProfileView>;
-  loading?: boolean;
-}
-
-
-
-
 
 export interface Dfh {
+  profile?: DfhProfileSlice;
   cla?: DfhClassSlice;
-  property_profile_view?: DfhPropertyProfileViewSlice;
-  property_view?: DfhPropertyViewSlice;
+  property?: DfhPropertySlice;
   label?: DfhLabelSlice;
 }

@@ -21,13 +21,13 @@ class OntoMe {
         };
     }
     get profilesUrl() {
-        return this._profilesUrl + `?lang=${this.requestedLanguage}&selected-by-project=6`;
+        return this._profilesUrl + `?lang=${this.requestedLanguage}`;
     }
     get classesUrl() {
-        return this._classesUrl + `?lang=${this.requestedLanguage}&selected-by-project=6`;
+        return this._classesUrl + `?lang=${this.requestedLanguage}&available-in-profile=${this.fkProfile}`;
     }
     get propertiesUrl() {
-        return this._propertiesUrl + `?lang=${this.requestedLanguage}&selected-by-project=6`;
+        return this._propertiesUrl + `?lang=${this.requestedLanguage}&available-in-profile=${this.fkProfile}`;
     }
     set requestedLanguage(x) {
         this._requestedLanguage = x;

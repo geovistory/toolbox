@@ -1,7 +1,11 @@
+/* eslint-disable camelcase */
 'use strict';
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 module.exports = function(ProClassFieldConfig) {
-  ProClassFieldConfig.byProject = function(pkProject, ctx, cb) {
+  ProClassFieldConfig.ofProject = function(pkProject, ctx, cb) {
+    const q = new FlatObjectQueryBuilder(ProClassFieldConfig.app.models);
+
     const sql = `
     WITH tw1 AS (
       SELECT * FROM
@@ -20,16 +24,7 @@ module.exports = function(ProClassFieldConfig) {
     --    tw1.fk_class_field,
     --    tw1.fk_class_for_class_field
     --   )
-	    tw1.pk_entity,
-      tw1.fk_app_context,
-      tw1.fk_property,
-      fk_domain_class,
-      fk_range_class,
-      tw1.property_is_outgoing,
-      tw1.fk_class_field,
-      tw1.fk_class_for_class_field,
-      tw1.ord_num,
-      tw1.fk_project
+    ${q.createSelect('tw1', 'ProClassFieldConfig')}
       FROM
       tw1
     WHERE
@@ -52,6 +47,36 @@ module.exports = function(ProClassFieldConfig) {
         cb(false, resultObjects);
       }
     );
+  };
+
+  ProClassFieldConfig.bulkDelete = function(pks, ctx, cb) {
+    const promiseArray = pks.map(pk => ProClassFieldConfig.deleteById(pk));
+    return Promise.map(promiseArray, promise => promise);
+  };
+
+  ProClassFieldConfig.bulkUpsert = function(fkProject, items) {
+    return new Promise((resolve, reject) => {
+      const promiseArray = items.map(item => {
+        item.fk_project = fkProject;
+
+        return ProClassFieldConfig.upsert(item);
+      });
+
+      Promise.all(promiseArray)
+        .catch(err => reject(err))
+        .then(res => {
+          if (!res || !res.length) return reject('No item upserted');
+          ProClassFieldConfig.findComplex(
+            {
+              where: ['pk_entity', 'IN', res.map(item => item.pk_entity)],
+            },
+            (err, result) => {
+              if (err) reject(err);
+              else resolve(result);
+            }
+          );
+        });
+    });
   };
 
   ProClassFieldConfig.on('attached', function() {
