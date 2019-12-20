@@ -260,21 +260,14 @@ export class U {
       }
       const fkClassField = comClassfield.pk_entity;
 
-
-      switch (comClassfield.pk_entity) {
-        case SysConfig.PK_CLASS_FIELD_WHEN:
-
-          return new ExistenceTimeDetail({ fkClassField, label })
-
-        case SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION:
-        case SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE:
-        case SysConfig.PK_CLASS_FIELD_SHORT_TITLE:
-
-          return new TextPropertyField({ fkClassField, label })
-
-        default:
-          break;
+      if (comClassfield.pk_entity === SysConfig.PK_CLASS_FIELD_WHEN) {
+        return new ExistenceTimeDetail({ fkClassField, label })
+      } else if (comClassfield.used_table === 'information.text_property') {
+        return new TextPropertyField({ fkClassField, label })
+      } else {
+        return { type: 'unknown' }
       }
+
     });
   }
 
