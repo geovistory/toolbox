@@ -9,7 +9,7 @@ import { NotificationsAPIActions } from '../notifications/components/api/notific
 import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProAnalysis, ProAnalysisApi, ProProject, ProProjectApi } from '../sdk';
 import { LoadActionMeta, ModifyActionMeta, LoadByPkANsVersionActionMeta } from '../store/actions';
 import { StandardEpicsFactory } from '../store/StandardEpicsFactory';
-import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory } from './pro.actions';
+import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkRoleAsFavoriteActionMeta, ProInfoProjRelActionFactory } from './pro.actions';
 import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice } from './pro.models';
 import { SchemaObject } from '../store/model';
 
@@ -77,6 +77,15 @@ export class ProEpics {
        */
       proInfoProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProInfoProjRel>>((meta) => this.infoProjRelApi
         .bulkUpdateEprAttributes(meta.pk, meta.items),
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.info_proj_rel.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        }
+      ),
+      proInfoProjRelEpicsFactory.createLoadEpic<MarkRoleAsFavoriteActionMeta>((meta) => this.infoProjRelApi
+        .markRoleAsFavorite(meta.pk, meta.pkRole, meta.isOutgoing),
+        ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE,
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
           flattener.info_proj_rel.flatten(results);

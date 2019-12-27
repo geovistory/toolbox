@@ -59,7 +59,6 @@ tw2 As (
         tw1 t1
 ),
 -- fields
--- TODO: add fk_project for consideration of project-settings
 /**
  * Start of selecting ordered fields per class and project
  */

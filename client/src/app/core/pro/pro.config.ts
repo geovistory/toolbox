@@ -34,21 +34,21 @@ export const proDefinitions: ReducerConfigCollection = {
         keyInStore: 'fk_project__fk_class',
         groupByFn: proClassFieldConfgByProjectAndClassKey
       },
-      {
-        keyInStore: 'fk_class__fk_app_context',
-        groupByFn: (d: ProClassFieldConfig): string => {
-          const fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field
-          return fk_class + '_' + d.fk_app_context
-        }
-      },
-      {
-        keyInStore: 'fk_property__fk_domain_class__fk_app_context',
-        groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_domain_class + '_' + d.fk_app_context
-      },
-      {
-        keyInStore: 'fk_property__fk_range_class__fk_app_context',
-        groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_range_class + '_' + d.fk_app_context
-      },
+      // {
+      //   keyInStore: 'fk_class__fk_app_context',
+      //   groupByFn: (d: ProClassFieldConfig): string => {
+      //     const fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field
+      //     return fk_class + '_' + d.fk_app_context
+      //   }
+      // },
+      // {
+      //   keyInStore: 'fk_property__fk_domain_class__fk_app_context',
+      //   groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_domain_class + '_' + d.fk_app_context
+      // },
+      // {
+      //   keyInStore: 'fk_property__fk_range_class__fk_app_context',
+      //   groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_range_class + '_' + d.fk_app_context
+      // },
     ]
   },
   dfh_class_proj_rel: {

@@ -1,3 +1,7 @@
+/* eslint-disable quotes */
+/* eslint-disable max-len */
+/* eslint-disable camelcase */
+/* eslint-disable object-curly-spacing */
 'use strict';
 
 var loopback = require('loopback');
@@ -34,50 +38,14 @@ app.start = function() {
     });
     client.connect();
 
-    //     /**********************************************************
-    //     * Setup the queue for warehouse update requests
-    //     **********************************************************/
-    //     const queue = [];
-    //     const queueIndex = {}
-    //     let working = false;
-    //     let skipped = 0;
-    //     let executed = 0;
+    /**********************************************************
+     * Setup the queue for warehouse update requests
+     **********************************************************/
+
     let needs_update_from_queue = true;
-    let needs_update_for_labels = true;
-    let needs_update_for_full_text = true;
+    let needs_update_for_entities = true;
+    let need_to_check_class_labels = true;
     let needs_update_for_statements = true;
-    //     const nextFromQue = () => {
-
-    //       if (!working && queue.length) {
-    //         working = true;
-    //         const fn = queue.pop();
-    //         delete queueIndex[fn]
-    //         client.query('select ' + fn, (err, res) => {
-    //           console.log(`
-    // \u{1b}[32m Warehouse update request  Nr. ${(executed++)} \u{1b}[34m ${new Date().toString()}
-    //     \u{1b}[33m Function call:  \u{1b}[0m ${fn}
-    //     \u{1b}[31m ${err ? err : ''}  \u{1b}[0m
-    //           `)
-    //           working = false
-    //           needs_update_for_labels = true;
-    //           needs_update_for_full_text = true;
-    //           nextFromQue();
-    //         })
-    //       }
-
-    //     }
-
-    //     const enQueue = (fn) => {
-    //       if (!queueIndex[fn]) {
-    //         queue.push(fn);
-    //         queueIndex[fn] = true;
-    //         // console.log('enQueued', fn)
-    //         nextFromQue();
-    //       }
-    //       // else{
-    //       //   console.log('skipped', (skipped ++))
-    //       // }
-    //     }
 
     /**
      * continuously check if there is something in the update queue
@@ -87,28 +55,23 @@ app.start = function() {
       if (!workerWorking) {
         workerWorking = true;
         needs_update_from_queue = false;
-        client.query(
-          'SELECT warehouse.entity_preview_update_queue_worker()',
-          (err, res) => {
-            workerWorking = false;
-            if (err) console.log(err);
-            // console.log(res.rows[0].entity_preview_update_queue_worker )
-            if (
-              res &&
-              res.rows &&
-              res.rows.length &&
-              res.rows[0].entity_preview_update_queue_worker === true
-            ) {
-              needs_update_for_labels = true;
-              updateEntityPreviewLabels();
-              needs_update_for_statements = true;
-              updateStatements();
-              needs_update_for_full_text = true;
-              updateEntityPreviewFullText();
-            }
-            if (needs_update_from_queue) callQueueWorker();
+        client.query('SELECT war.updater()', (err, res) => {
+          workerWorking = false;
+          if (err) console.log(err);
+          // console.log(res.rows[0].entity_preview_update_queue_worker )
+          if (
+            res &&
+            res.rows &&
+            res.rows.length &&
+            res.rows[0].updater === true
+          ) {
+            needs_update_for_entities = true;
+            updateEntityPreviews();
+            needs_update_for_statements = true;
+            updateStatements();
           }
-        );
+          if (needs_update_from_queue) callQueueWorker();
+        });
       }
     };
     callQueueWorker();
@@ -118,91 +81,53 @@ app.start = function() {
 
     // Listen for all pg_notify channel messages
     client.on('notification', function(msg) {
-      let payload = JSON.parse(msg.payload);
-
       // console.log(msg.channel, payload.fn)
 
       switch (msg.channel) {
-        case 'queue_updated':
+        case 'project_updated':
           needs_update_from_queue = true;
           callQueueWorker();
           break;
-        case 'entity_preview_updated':
-          app.models.WarEntityPreview.stream.next(payload);
-          //           console.log(`
-          // Entity Preview updated:
-          //         pk_entity: ${payload.pk_entity}
-          //         fk_project: ${payload.fk_project}
-          //         class_label: ${payload.class_label}
-          //         entity_label: ${payload.entity_label}
-          // `)
+        case 'entity_previews_updated':
+          if (msg.payload) {
+            app.models.WarEntityPreview.stream.next(msg.payload);
+          }
+          break;
+        case 'need_to_check_class_labels':
+          need_to_check_class_labels = true;
+          updateClassLabels();
           break;
         default:
           break;
       }
-      //dbEventEmitter.emit(msg.channel, payload);
+      // dbEventEmitter.emit(msg.channel, payload);
     });
 
     /**********************************************************
-     * Setup the continuous update job for entity_preview cols:
-     *  - fk_class
-     *  - entity_type
-     *  - class_label
-     *  - entity_label
-     *  - time_span
-     *  - fk_entity_label
-     *  - fk_type
-     *  - type_label
+     * Setup the continuous update job for entity_previews
      **********************************************************/
-    let labelsUpdating = false;
-    const updateEntityPreviewLabels = () => {
-      if (!labelsUpdating) {
-        labelsUpdating = true;
-        needs_update_for_labels = false;
-        const sql = `SELECT warehouse.entity_preview__labels__update_all();`;
+    let previewsUpdating = false;
+    const updateEntityPreviews = () => {
+      if (!previewsUpdating) {
+        previewsUpdating = true;
+        needs_update_for_entities = false;
+        const sql = `
+          Select war.enriched_nodes__enrich();
+          Select war.entity_preview__update_all();
+        `;
         client.query(sql, (err, res) => {
-          labelsUpdating = false;
+          previewsUpdating = false;
           if (err) console.log(err);
           else {
             console.log(
-              `\u{1b}[36m Entity Preview labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+              `\u{1b}[36m Entity Previews updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
             );
           }
-          if (needs_update_from_queue) updateEntityPreviewLabels();
+          if (needs_update_from_queue) updateEntityPreviews();
         });
       }
     };
-    updateEntityPreviewLabels();
-
-    /**********************************************************
-     * Setup the continuous update job for entity_preview cols:
-     *  - own_full_text
-     *  - related_full_texts
-     *  - full_text
-     *  - ts_vector
-     **********************************************************/
-    let fullTextUpdating = false;
-    const updateEntityPreviewFullText = () => {
-      if (!fullTextUpdating) {
-        fullTextUpdating = true;
-        needs_update_for_full_text = false;
-        const sql = `SELECT warehouse.entity_preview__full_text__update_all();`;
-        client.query(sql, (err, res) => {
-          fullTextUpdating = false;
-          if (err) console.log(err);
-          else {
-            console.log(
-              `\u{1b}[36m Entity Preview full text updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
-            );
-          }
-          if (needs_update_for_full_text) updateEntityPreviewFullText();
-        });
-        // // delay a little
-        // setTimeout(() => {
-        // }, 2000)
-      }
-    };
-    updateEntityPreviewFullText();
+    updateEntityPreviews();
 
     /**********************************************************
      * Setup the continuous update job for vm_statement
@@ -230,9 +155,33 @@ app.start = function() {
     };
     updateStatements();
 
+    /**********************************************************
+     * Setup the continuous update job for class_labels
+     **********************************************************/
+    let classLabelsUpdating = false;
+    const updateClassLabels = () => {
+      if (!classLabelsUpdating) {
+        classLabelsUpdating = true;
+        need_to_check_class_labels = false;
+        const sql = `SELECT war.entity_preview__update_class_labels();`;
+        client.query(sql, (err, res) => {
+          classLabelsUpdating = false;
+          if (err) console.log(err);
+          else {
+            console.log(
+              `\u{1b}[36m war.entity_preview class_labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+            );
+          }
+          if (need_to_check_class_labels) updateClassLabels();
+        });
+      }
+    };
+    updateClassLabels();
+
     // Designate which channels we are listening on. Add additional channels with multiple lines.
-    client.query('LISTEN queue_updated');
-    client.query('LISTEN entity_preview_updated');
+    client.query('LISTEN project_updated');
+    client.query('LISTEN entity_previews_updated');
+    client.query('LISTEN need_to_check_class_labels');
   });
 
   return server;

@@ -73,6 +73,49 @@ export class ProProjectActionFactory extends StandardActionsFactory<Payload, Pro
   }
 }
 
+export interface MarkRoleAsFavoriteActionMeta {
+  addPending: string,
+  pk: number
+  pkRole: number
+  isOutgoing: boolean
+}
+export class ProInfoProjRelActionFactory extends StandardActionsFactory<Payload, ProInfoProjRel> {
+
+  // Suffixes of load action types
+  static readonly MARK_ROLE_AS_FAVORITE = 'MARK_ROLE_AS_FAVORITE';
+
+  markRoleAsFavorite: (pkProject: number, pkRole: number, isOutgoing: boolean) => ActionResultObservable<ProInfoProjRel>;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): ProInfoProjRelActionFactory {
+    Object.assign(this, this.createCrudActions(proRoot, 'info_proj_rel'))
+
+    this.markRoleAsFavorite = (pkProject: number, pkRole: number, isOutgoing: boolean) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, MarkRoleAsFavoriteActionMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE,
+        meta: {
+          addPending,
+          pk: pkProject,
+          pkRole,
+          isOutgoing
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<ProInfoProjRel>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
+    }
+
+    return this;
+  }
+}
+
+
 export class ProClassFieldConfigActionFactory extends StandardActionsFactory<Payload, ProClassFieldConfig> {
 
   // Suffixes of load action types
@@ -182,7 +225,7 @@ export class ProAnalysisActionFactory extends StandardActionsFactory<ProAnalysis
 @Injectable()
 export class ProActions {
   project = new ProProjectActionFactory(this.ngRedux).createActions()
-  info_proj_rel = new StandardActionsFactory<ProInfoProjRelSlice, ProInfoProjRel>(this.ngRedux).createCrudActions(proRoot, 'info_proj_rel')
+  info_proj_rel = new ProInfoProjRelActionFactory(this.ngRedux).createActions()
   text_property = new ProTextPropertyActionFactory(this.ngRedux).createActions()
   dfh_class_proj_rel = new StandardActionsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>(this.ngRedux).createCrudActions(proRoot, 'dfh_class_proj_rel')
   class_field_config = new ProClassFieldConfigActionFactory(this.ngRedux).createActions()

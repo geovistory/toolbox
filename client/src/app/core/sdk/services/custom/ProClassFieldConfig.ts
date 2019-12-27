@@ -11,7 +11,6 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { SysAppContext } from '../../models/SysAppContext';
 import { DfhProperty } from '../../models/DfhProperty';
 import { SysClassField } from '../../models/SysClassField';
 import { ProProject } from '../../models/ProProject';

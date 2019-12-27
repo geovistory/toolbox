@@ -35,6 +35,8 @@ export interface ClassItem {
 
   projRel?: ProDfhClassProjRel;
 
+  systemRelevantClass: SysSystemRelevantClass,
+
   subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
 
   subclassOfType?: boolean; // true if subclass of E55 Type
@@ -191,7 +193,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
               .key(dfhClass.pk_class),
             this.p.sys$.system_relevant_class$.by_fk_class$
               .key(dfhClass.pk_class),
-            this.p.dfh$.label$.by_fk_profile__type$.all$
+            this.p.dfh$.label$.by_fk_profile__type$.all$,
           )
             .pipe(
               map(([label, projRel, type, sysClass, profileLabels]) => {
@@ -201,13 +203,14 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
                 } = dfhClass;
 
 
-                const s = values(sysClass);
+                const systemRelevantClass = U.firstItemInObject(sysClass);
                 const {
                   excluded_from_entities,
                   required_by_basics,
                   required_by_entities,
                   required_by_sources
-                } = s.length < 1 ? {} as SysSystemRelevantClass : s[0];
+                } = systemRelevantClass || {} as SysSystemRelevantClass;
+
 
                 const item: ClassItem = {
                   pkClass: pk_class,
@@ -217,6 +220,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
                   label,
                   projRel,
+                  systemRelevantClass,
 
                   subclassOfType: !!type,
                   subclassOf: dfhClass.basic_type === 8 ? 'peIt' : dfhClass.basic_type === 9 ? 'teEnt' : 'other',
@@ -228,7 +232,9 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
                   removedFromAllProfiles: !dfhClass.profiles.some(p => p.removed_from_api === false),
                   profiles: dfhClass.profiles.map(p => ({
-                    label: values(profileLabels[p.fk_profile + '_label'])[0].label,
+                    label: !profileLabels ?
+                      '* label missing *' :
+                      (values(profileLabels[p.fk_profile + '_label']) || [{ label: '* label missing *' }])[0].label,
                     removedFromApi: p.removed_from_api,
                     fkProfile: p.fk_profile,
                   })),
@@ -261,6 +267,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
           'identifier_in_namespace',
           'profiles',
           'subclassOfType',
+          'classConfig'
         ];
       }
       else {
@@ -272,11 +279,18 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
           'identifier_in_namespace',
           'profiles',
           'subclassOfType',
+          'classConfig'
         ];
       }
 
-      this.displayedColumns.push('classConfig')
       if (pkProject === Config.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
+        this.displayedColumns = [
+          ...this.displayedColumns,
+          'edit_required_by_basics',
+          'edit_required_by_sources',
+          // 'edit_required_by_entities',
+          'edit_excluded_from_entities',
+        ]
       }
     })
   }
@@ -416,38 +430,30 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
    * Called when user enables class
    */
   enableClass(classItem: ClassItem) {
-    const projRel = new ProDfhClassProjRel({
-      pk_entity: !classItem.projRel ? undefined : classItem.projRel.pk_entity,
-      fk_class: classItem.pkClass,
-      fk_project: this.p.state.pk_project,
-      enabled_in_entities: true
-    })
-
-    this.p.changingClassProjRel[classItem.pkClass] = true;
-
-    this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
-      .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-        if (resolved) this.p.changingClassProjRel[classItem.pkClass] = false;
-      })
-    // this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
+    this.toggleClass(classItem, true)
   }
 
   /**
    * Called when user disables class
    */
   disableClass(classItem: ClassItem) {
+    this.toggleClass(classItem, false)
+  }
+
+  private toggleClass(classItem: ClassItem, enabledInEntities: boolean) {
+    this.p.changingClassProjRel[classItem.pkClass] = true;
+
     const projRel = new ProDfhClassProjRel({
       pk_entity: classItem.projRel.pk_entity,
       fk_class: classItem.pkClass,
       fk_project: this.p.state.pk_project,
-      enabled_in_entities: false
+      enabled_in_entities: enabledInEntities
     })
 
     this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
       .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
         if (resolved) this.p.changingClassProjRel[classItem.pkClass] = false;
       })
-    // this.p.changeClassProjRel(projRel, classItem.dfh_pk_class);
   }
 
 
@@ -483,6 +489,20 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
         // maxHeight: '100%'
       })
     })
+  }
+
+  toggleSystemRelevantClassBool(classItem: ClassItem, col: string) {
+    this.p.changingSystemRelevantClass[classItem.pkClass] = true;
+
+    this.p.sys$.system_relevant_class.upsert([
+      {
+        ...classItem.systemRelevantClass,
+        fk_class: classItem.pkClass,
+        [col]: !classItem.systemRelevantClass ? true : !classItem.systemRelevantClass[col]
+      }
+    ]).resolved$.pipe(takeUntil(this.destroy$)).subscribe((resolved) => {
+      if (resolved) this.p.changingSystemRelevantClass[classItem.pkClass] = false;
+    });
   }
 }
 

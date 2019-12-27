@@ -80,11 +80,53 @@
       "property": [
         "patchOrCreate",
         "updateEprAttributes",
-        "bulkUpdateEprAttributes"
+        "bulkUpdateEprAttributes",
+        "markRoleAsFavorite"
       ]
     }
   ],
   "methods": {
+    "markRoleAsFavorite": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "fk_project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkRole",
+          "type": "number",
+          "required": true,
+          "description": "fk_entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "isOutgoing",
+          "type": "boolean",
+          "required": true,
+          "description": "True, if the role is outgoing, else false",
+          "http": {
+            "source": "body"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "ProInfoProjRel",
+        "root": true
+      },
+      "description": "Marks the role as favorite for the given fk_project.",
+      "http": {
+        "path": "/mark-role-as-favorite",
+        "verb": "put"
+      }
+    },
     "updateEprAttributes": {
       "accepts": [
         {
@@ -146,7 +188,9 @@
         },
         {
           "arg": "items",
-          "type": ["ProInfoProjRel"],
+          "type": [
+            "ProInfoProjRel"
+          ],
           "required": true,
           "description": "Array of ProInfoProjRel (fk_project must be equal to pkProject)",
           "http": {

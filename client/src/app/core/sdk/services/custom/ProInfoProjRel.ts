@@ -59,6 +59,41 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
   }
 
   /**
+   * Marks the role as favorite for the given fk_project.
+   *
+   * @param {number} pkProject fk_project
+   *
+   * @param {number} pkRole fk_entity
+   *
+   * @param {object} data Request data.
+   *
+   *  - `isOutgoing` – `{boolean}` - True, if the role is outgoing, else false
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProInfoProjRel` object.)
+   * </em>
+   */
+  public markRoleAsFavorite(pkProject: any, pkRole: any, isOutgoing: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProInfoProjRels/mark-role-as-favorite";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      isOutgoing: isOutgoing
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkRole !== 'undefined' && pkRole !== null) _urlParams.pkRole = pkRole;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Updates the ProInfoProjRel found by fk_project and fk_entity.
    *
    * @param {number} pkProject fk_project

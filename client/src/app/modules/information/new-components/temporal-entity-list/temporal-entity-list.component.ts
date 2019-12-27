@@ -147,6 +147,12 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     this.p.addEntityTeEnTab(item.pkEntity)
   }
 
+  markAsFavorite(item: TemporalEntityItem) {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.p.pro$.info_proj_rel.markRoleAsFavorite(pkProject, item.role.pk_entity, item.isOutgoing)
+    })
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

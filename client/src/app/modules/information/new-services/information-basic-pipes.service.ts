@@ -129,7 +129,7 @@ export class InformationBasicPipesService {
     return this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity).pipe(
       filter(x => !!x),
       map(projRel => ({
-        projRel, role, label: '', ordNum: projRel.ord_num_of_range, isOutgoing
+        projRel, role, label: '', ordNum: (isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain), isOutgoing
       }))
     );
   }

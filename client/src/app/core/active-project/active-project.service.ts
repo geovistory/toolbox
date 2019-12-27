@@ -63,6 +63,7 @@ export class ActiveProjectService {
 
   // object with pk_entity as key of classes where projRel is changing
   changingClassProjRel: { [key: number]: boolean } = {}
+  changingSystemRelevantClass: { [key: number]: boolean } = {}
 
   inf$: InfSelector;
   dat$: DatSelector;

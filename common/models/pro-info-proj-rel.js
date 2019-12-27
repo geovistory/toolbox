@@ -1,7 +1,54 @@
 'use strict';
 const Promise = require('bluebird');
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 module.exports = function(ProInfoProjRel) {
+  ProInfoProjRel.markRoleAsFavorite = function(
+    pkProject,
+    pkRole,
+    isOutgoing,
+    cb
+  ) {
+    const params = [pkRole, pkProject];
+    const q = new FlatObjectQueryBuilder(ProInfoProjRel.app.models);
+    const sql = `
+      WITH tw1 AS (
+        UPDATE projects.info_proj_rel t1
+        SET ${isOutgoing ? 'ord_num_of_range' : 'ord_num_of_domain'} =
+          CASE t3.pk_entity
+          WHEN $1 THEN 0
+          ELSE null END
+        FROM
+        information.role t2,
+        information.role t3
+        WHERE
+        t2.Pk_entity = $1
+        AND
+        t3.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =
+        t2.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'}
+        AND
+        t3.fk_property = t2.fk_property
+        AND
+        t1.fk_entity = t3.pk_entity
+        AND
+        t1.fk_project = $2
+        AND  ${
+          isOutgoing ? 'ord_num_of_range' : 'ord_num_of_domain'
+        }  IS DISTINCT FROM (CASE t3.pk_entity WHEN $1 THEN 0 ELSE null END)
+        RETURNING t1.*
+      )
+      SELECT
+        ${q.createSelect('tw1', 'ProInfoProjRel')}
+      FROM tw1;
+    `;
+
+    const connector = ProInfoProjRel.dataSource.connector;
+    connector.execute(sql, params, (err, resultObjects) => {
+      if (err) return cb(err, resultObjects);
+      cb(null, resultObjects);
+    });
+  };
+
   /**
    * Updates the epr with provided eprAttributes, where the epr has
    * fk_project = projectId AND

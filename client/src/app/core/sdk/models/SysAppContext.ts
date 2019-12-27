@@ -1,21 +1,16 @@
 /* tslint:disable */
-import {
-  ProClassFieldConfig
-} from '../index';
 
 declare var Object: any;
 export interface SysAppContextInterface {
   "pk_entity"?: number;
   "description"?: string;
   "label"?: string;
-  class_field_config?: ProClassFieldConfig[];
 }
 
 export class SysAppContext implements SysAppContextInterface {
   "pk_entity": number;
   "description": string;
   "label": string;
-  class_field_config?: ProClassFieldConfig[];
   constructor(data?: SysAppContextInterface) {
     Object.assign(this, data);
   }
@@ -63,14 +58,6 @@ export class SysAppContext implements SysAppContextInterface {
         },
       },
       relations: {
-        class_field_config: {
-          name: 'class_field_config',
-          type: 'ProClassFieldConfig[]',
-          model: 'ProClassFieldConfig',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_app_context'
-        },
       }
     }
   }

@@ -15,7 +15,9 @@
           <gv-onto-class-info *ngIf="showOntoInfo$ | async" class="mr-2" [pkClass]="listDefinition.targetClass">
           </gv-onto-class-info>
           <span class="font-xs text-muted" [matTooltip]="'Temporal Entity ' + element.pkEntity">
-            <i class="gv-entity-color fa fa-star-o"></i> {{listDefinition.targetClassLabel}}
+            <i *ngIf="element.ordNum!==0" class="gv-entity-color fa fa-star-o"></i>
+            <i *ngIf="element.ordNum===0" class="gv-entity-color fa fa-star"></i>
+            {{listDefinition.targetClassLabel}}
           </span>
           <span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2"> {{element.pkEntity}}</span>
         </td>
@@ -68,10 +70,14 @@
         <td mat-cell *matCellDef="let element" class="action-cell">
           <mat-menu #teEnMenu="matMenu">
 
-
             <button mat-menu-item (click)="openInNewTab(element)">
               <mat-icon>tab</mat-icon>
               Open {{listDefinition.targetClassLabel}} in new Tab
+            </button>
+
+            <button mat-menu-item (click)="markAsFavorite(element)">
+              <mat-icon>star</mat-icon>
+              Mark As Favorite
             </button>
 
             <button mat-menu-item (click)="remove(element)">

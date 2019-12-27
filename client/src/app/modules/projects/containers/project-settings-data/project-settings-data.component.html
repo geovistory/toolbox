@@ -145,6 +145,71 @@
       </td>
     </ng-container>
 
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_required_by_basics">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_basics"
+        matTooltip="This column is only visible in Default Config Project (375669)"> Required By
+        Basics </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_basics')"
+          [checked]="element.required_by_basics" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_required_by_sources">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
+        mat-sort-header="required_by_sources"
+        matTooltip="This column is only visible in Default Config Project (375669)">
+        Required By
+        Sources </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_sources')"
+          [checked]="element.required_by_sources" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_required_by_entities">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
+        mat-sort-header="required_by_entities"
+        matTooltip="This column is only visible in Default Config Project (375669)">
+        Required By
+        Entities </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_entities')"
+          [checked]="element.required_by_entities" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_excluded_from_entities">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
+        mat-sort-header="excluded_from_entities"
+        matTooltip="This column is only visible in Default Config Project (375669)">
+        Excluded from
+        Entities </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'excluded_from_entities')"
+          [checked]="element.excluded_from_entities" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> Class Fields </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <a class="nav-link" routerLink="/backoffice/classes/{{element.dfh_pk_class}}" routerLinkActive="active">Edit</a>
+      </td>
+    </ng-container>
+
     <!-- Collapse / Expand Column -->
     <!-- <ng-container matColumnDef="expansion">
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> </th>

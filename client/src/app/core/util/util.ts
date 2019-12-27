@@ -73,8 +73,12 @@ export class U {
   }
 
   static firstItemInIndexedGroup<T>(item: ByPk<ByPk<T>>, key: string | number): T {
-    return item[key] && Object.keys(item[key]).length ? U.obj2Arr(item[key])[0] : undefined;
+    return item && item[key] && Object.keys(item[key]).length ? U.obj2Arr(item[key])[0] : undefined;
   }
+  static firstItemInObject<T>(item: ByPk<T>): T {
+    return item && Object.keys(item).length ? U.obj2Arr(item)[0] : undefined;
+  }
+
 
   /**
    *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
