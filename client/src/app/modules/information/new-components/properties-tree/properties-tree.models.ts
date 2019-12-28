@@ -3,8 +3,8 @@ import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalE
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
 
-export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity' | 'persistent-item';
-export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview';
+export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'has-type' | 'temporal-entity' | 'persistent-item';
+export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'has-type';
 
 export type CreateControlType = 'role';
 

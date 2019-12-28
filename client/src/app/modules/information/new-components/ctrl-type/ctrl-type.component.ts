@@ -33,6 +33,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
+  @Input() pkTypeClass: number;
   @Input() pkTypedClass: number;
   @Input() autoopen: boolean;
 
@@ -109,25 +110,25 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   }
 
   ngOnInit() {
+    if (!this.pkTypeClass) throw 'You must provide a this.pkTypeClass';
     if (!this.pkTypedClass) throw 'You must provide a this.pkTypedClass';
 
     this.typeLabel$ = this.value$.pipe(
       switchMap(pkEntity => this.i.pipeLabelOfEntity(pkEntity))
     )
-    this.typeOptions$ = this.c.pipeTypeClassOfTypedClass(this.pkTypedClass).pipe(
-      switchMap(pkTypeClass => this.b.pipePersistentItemPksByClass(pkTypeClass).pipe(
-        switchMapOr([], typePks => combineLatest(
-          typePks.map(pkType => this.i.pipeLabelOfEntity(pkType).pipe(
-            map(label => ({
-              label, data: { pkClass: this.pkTypedClass, pkType }
-            } as ClassAndTypeNode))
-          ))
-        ).pipe(
-          sortAbc(node => node.label),
-        )),
+    this.typeOptions$ = this.b.pipePersistentItemPksByClass(this.pkTypeClass).pipe(
+      switchMapOr([], typePks => combineLatest(
+        typePks.map(pkType => this.i.pipeLabelOfEntity(pkType).pipe(
+          map(label => ({
+            label, data: { pkClass: this.pkTypedClass, pkType }
+          } as ClassAndTypeNode))
+        ))
+      ).pipe(
+        sortAbc(node => node.label),
+        map(options => [{ label: '--- No Type ---', data: { pkType: -1, pkClass: null } }, ...options]),
       )),
-      map(options => [{ label: '--- No Type ---', data: { pkType: -1, pkClass: null } }, ...options])
     )
+
   }
   // TODO: Adapt way of changing the value
   onSelect(e: MatSelectChange) {

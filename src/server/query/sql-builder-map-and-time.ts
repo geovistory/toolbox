@@ -103,9 +103,9 @@ export class SqlBuilderMapAndTime extends SqlBuilder {
             )) geo_positions
           FROM
             tw2 t0,
-            warehouse.vm_statement t1,
+            war.vm_statement t1,
             warehouse.entity_preview t2,
-            warehouse.vm_statement t3,
+            war.vm_statement t3,
             information.v_place t4
           WHERE
             t1.fk_entity = t0.geo_entity_pk

@@ -444,7 +444,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.p.changingClassProjRel[classItem.pkClass] = true;
 
     const projRel = new ProDfhClassProjRel({
-      pk_entity: classItem.projRel.pk_entity,
+      pk_entity: (classItem.projRel || { pk_entity: undefined }).pk_entity,
       fk_class: classItem.pkClass,
       fk_project: this.p.state.pk_project,
       enabled_in_entities: enabledInEntities

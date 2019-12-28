@@ -1,19 +1,16 @@
-<div *ngIf="hasTypeProperty$ | async">
-  <div *ngIf="!editing">
-    <span *ngIf="(pkType$ | async)">Type: {{typeLabel$|async}}</span>
-    <i *ngIf="!(pkType$ | async)">No Type</i>
-    <button *ngIf="!isViewMode" mat-icon-button (click)="editing = true">
-      <mat-icon class="md-18">edit</mat-icon>
-    </button>
-  </div>
-
-  <form [formGroup]="formGroup" class="d-flex align-items-center" *ngIf="editing">
-    <mat-form-field>
-      <gv-ctrl-type class="w-100" [pkTypedClass]="pkTypedClass$ | async" formControlName="typeCtrl"
-        (blur)="editing = false" [autoopen]="true"></gv-ctrl-type>
-    </mat-form-field>
-    <!-- <button mat-flat-button type="button" color="primary" class="btn btn-outline-secondary ml-2" (click)="onSubmit()">Ok</button> -->
-    <!-- <button mat-button type="button" class="btn btn-outline-secondary ml-2" (click)="editing = false">Cancel</button> -->
-  </form>
-
+<div *ngIf="!editing">
+  <span *ngIf="(pkType$ | async)">{{typeLabel$|async}}</span>
+  <i *ngIf="!(pkType$ | async)">No Type</i>
+  <button *ngIf="!isViewMode" mat-icon-button (click)="editing = true">
+    <mat-icon class="md-18">edit</mat-icon>
+  </button>
 </div>
+
+<form [formGroup]="formGroup" class="d-flex align-items-center" *ngIf="editing">
+  <mat-form-field>
+    <gv-ctrl-type class="w-100" [pkTypedClass]="pkTypedClass" [pkTypeClass]="pkTypeClass" formControlName="typeCtrl"
+      (blur)="editing = false" [autoopen]="true"></gv-ctrl-type>
+  </mat-form-field>
+  <!-- <button mat-flat-button type="button" color="primary" class="btn btn-outline-secondary ml-2" (click)="onSubmit()">Ok</button> -->
+  <!-- <button mat-button type="button" class="btn btn-outline-secondary ml-2" (click)="editing = false">Cancel</button> -->
+</form>

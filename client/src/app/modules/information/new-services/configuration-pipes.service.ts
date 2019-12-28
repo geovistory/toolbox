@@ -723,7 +723,6 @@ export class ConfigurationPipesService {
   getClassFieldListDefinition(pkClassField: number): ListDefinition {
     const template = {
       pkProperty: undefined,
-      fkPropertyOfOrigin: undefined,
       sourceClass: undefined,
       targetClass: undefined,
       isOutgoing: undefined,
@@ -791,6 +790,7 @@ export class ConfigurationPipesService {
     return { ...listDef, listDefinitions: [listDef] }
   }
 
+
   @spyTag @cache({ refCount: false }) pipeFieldDefinitions(pkClass: number): Observable<FieldDefinition[]> {
     return combineLatest(
       this.pipeDefaultFieldDefinitions(pkClass),
@@ -813,12 +813,18 @@ export class ConfigurationPipesService {
 
 
   /**
-   * Pipe the fields of given class
+   * Pipe the specific fields of given class
    */
   @spyTag @cache({ refCount: false }) pipeSpecificFieldDefinitions(pkClass: number): Observable<FieldDefinition[]> {
     return combineLatest(
-      this.pipePropertiesOfClassWhereTargetEnabled(pkClass, true),
-      this.pipePropertiesOfClassWhereTargetEnabled(pkClass, false),
+      this.pipePropertiesOfClassWhereTargetEnabled(pkClass, true).pipe(
+        // filter out the 'has type' property, since it is part of the default fields
+        map(outgoing => outgoing.filter(o => !o.is_has_type_subproperty))
+      ),
+      this.pipePropertiesOfClassWhereTargetEnabled(pkClass, false).pipe(
+        // filter out the 'has appellation' property, since it is part of the default fields
+        map(ingoing => ingoing.filter(i => i.pk_property !== DfhConfig.PROPERTY_PK_IS_APPELLATION_OF))
+      ),
       this.pipeClassFieldConfigs(pkClass)
     ).pipe(
       switchMap(([outgoing, ingoing, fieldConfigs]) => {
@@ -844,22 +850,22 @@ export class ConfigurationPipesService {
             // Create field definitions
             const fieldDefs: { [key: string]: FieldDefinition } = {}
             listDefinitions.forEach(listDef => {
-              if (!(listDef.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF && !listDef.isOutgoing)) {
-                const key = listDef.pkProperty + '_' + listDef.isOutgoing;
+              // if (!(listDef.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF && !listDef.isOutgoing)) {
+              const k = listDef.pkProperty + '_' + listDef.isOutgoing;
 
-                if (!fieldDefs[key]) {
-                  fieldDefs[key] = {
-                    ...listDef,
-                    fieldConfig: getFieldConfig(listDef),
-                    listDefinitions: [listDef],
-                    targetClasses: [listDef.targetClass]
-                  }
-                } else {
-                  fieldDefs[key].listDefinitions.push(listDef)
-                  fieldDefs[key].targetClasses.push(listDef.targetClass)
+              if (!fieldDefs[k]) {
+                fieldDefs[k] = {
+                  ...listDef,
+                  fieldConfig: getFieldConfig(listDef),
+                  listDefinitions: [listDef],
+                  targetClasses: [listDef.targetClass]
                 }
-
+              } else {
+                fieldDefs[k].listDefinitions.push(listDef)
+                fieldDefs[k].targetClasses.push(listDef.targetClass)
               }
+
+              // }
 
             })
             // Order the fields according to ord_num (from project's config, kleiolab's config) or put it at end of list.
@@ -904,12 +910,34 @@ export class ConfigurationPipesService {
       map(listDefs => listDefs[0])
     );
 
+    /**
+     * Pipe the generic field has type
+     * with the given class as range
+     */
+    const hasTypeListDef$ = this.p.dfh$.property$.by_has_domain$.key(pkClass).pipe(
+      // check if this class has 'has type' subproperty
+      map(outgoing => {
+        return values(outgoing).filter((prop) => prop.is_has_type_subproperty)
+      }),
+      switchMap(hasTypeProps => combineLatestOrEmpty(hasTypeProps.map(dfhProp => {
+        return this.pipeListDefinitionsOfProperties([dfhProp], true).pipe(
+          filter(listDefs => !!listDefs && !!listDefs[0]),
+          map(listDefs => {
+            const listDef = listDefs[0]
+            listDef.listType = 'has-type';
+            return listDef;
+          })
+        );
+      })))
+    )
     return combineLatest(
       hasAppeListDef$,
+      hasTypeListDef$,
       this.p.dfh$.class$.by_pk_class$.key(pkClass).pipe(filter(c => !!c))
     ).pipe(
-      map(([hasAppeListDef, klass]) => {
+      map(([hasAppeListDef, hasTypeListDefs, klass]) => {
         const fields: FieldDefinition[] = []
+
 
         /*
          * Add 'short title' text-property to
@@ -936,6 +964,17 @@ export class ConfigurationPipesService {
         if (pkClass !== DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE) {
           const appeField: FieldDefinition = { ...hasAppeListDef, listDefinitions: [hasAppeListDef] }
           fields.push(appeField);
+        }
+
+
+        /*
+        * Add 'hasType' fields
+        */
+        if (hasTypeListDefs && hasTypeListDefs.length > 0) {
+          hasTypeListDefs.forEach((hasTypeListDef) => {
+            const typeField: FieldDefinition = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
+            fields.push(typeField);
+          })
         }
 
         /*
@@ -988,88 +1027,6 @@ export class ConfigurationPipesService {
     )
   }
 
-
-  // /**
-  //  * Pipe the specific fields of given class
-  //  */
-  // @spyTag @cache({ refCount: false }) pipeFieldDefinitions(pkClass: number, appContext: number): Observable<FieldDefinition[]> {
-  //   return this.pipeClassFieldConfigs(pkClass, appContext).pipe(
-  //     switchMap(fields => combineLatest(fields.map(field => this.pipeFieldDefinition(field))))
-  //   )
-  // }
-
-  /**
-   * Pipe the field definition with label, links to ontoMe, max quantity etc for given class-field-config
-   */
-  // @spyTag @cache({ refCount: false }) pipeFieldDefinition(field: ProClassFieldConfig): Observable<FieldDefinition> {
-  //   if (field.fk_class_field) {
-  //     const classField = this.getClassFieldListDefinition(field.fk_class_field);
-  //     return of({ ...classField, listDefinitions: [classField], fkPropertyOfOrigin: undefined })
-  //   }
-  //   else {
-
-  //     // return this.pipePropertyOfOriginOrInherited(field.fk_property_of_origin, field.fk_property)
-  //     return this.p.dfh$.property$.pk_property__has_domain__has_range$.key(field.fk_property)
-  //       .pipe(
-  //         map(byPk => values(byPk)),
-  //         filter(ps => !!ps && ps.length > 0),
-  //         map(ps => ps[0]),
-  //         switchMap((p) => {
-  //           const maxQ = field.fk_domain_class ? p.range_instances_max_quantifier : p.domain_instances_max_quantifier;
-  //           const isOutgoing = !!field.fk_domain_class
-  //           return combineLatest(
-  //             this.pipeListDefinitionsOfField(field),
-  //             this.pipeLabelOfPropertyField(
-  //               field.fk_property,
-  //               field.fk_domain_class,
-  //               field.fk_range_class,
-  //             )
-  //           ).pipe(
-  //             filter(([listDefinitions, label]) => (!!listDefinitions && listDefinitions.length > 0)),
-  //             map(([listDefinitions, label]) => {
-  //               const fieldDefinition: FieldDefinition = {
-  //                 listType: listDefinitions[0].listType,
-  //                 isOutgoing,
-  //                 label,
-  //                 listDefinitions,
-  //                 ontoInfoLabel: p.identifier_in_namespace,
-  //                 ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/' + p.pk_property,
-  //                 pkProperty: field.fk_property,
-  //                 targetClasses: listDefinitions.map(l => l.targetClass),
-  //                 targetMaxQuantity: maxQ,
-  //                 isIdentityDefining: listDefinitions.some(l => l.isIdentityDefining)
-  //               }
-  //               return fieldDefinition;
-  //             })
-  //           )
-  //         }
-  //         )
-  //       )
-  //   }
-  // }
-
-  // /**
-  //  * Gets the property of origin, if existing in the data, else take
-  //  * the fkProperty
-  //  *
-  //  * @param fkOropertyOfOrigin: this always references an original property
-  //  * @param fkProperty: this can reference an original or an inherited property
-  //  *
-  //  * TODO this function will become superflous, once identity of properties is changed. This will be enough:
-  //  * - this.p.dfh$.property_view$.by_dfh_pk_property$.key(field.fk_property_of_origin)
-  //  */
-  // @spyTag @cache({ refCount: false }) pipePropertyOfOriginOrInherited(fkOropertyOfOrigin: number, fkProperty: number): Observable<DfhProperty> {
-  //   return this.p.dfh$.property_view$.by_fk_property$.key(fkOropertyOfOrigin)
-  //     .pipe(
-  //       filter(i => !!i),
-  //       map(ps => {
-  //         // if original property exists, return this one
-  //         if (ps[fkOropertyOfOrigin]) return ps[fkOropertyOfOrigin];
-  //         // else return the first
-  //         else return ps[fkProperty]
-  //       })
-  //     )
-  // }
 
   /**
    *

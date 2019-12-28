@@ -1020,6 +1020,7 @@ export class InformationPipesService {
 
   /**
    * Pipes the pk_entity of the type of an entity
+   * TODO: delete when unreferenced
    */
   @spyTag pipeTypeEntityAssociation(pkEntity: number): Observable<InfEntityAssociation> {
     return this.b.pipeClassOfEntity(pkEntity).pipe(
@@ -1031,6 +1032,18 @@ export class InformationPipesService {
           })
         ))
       ))
+    )
+  }
+
+  /**
+   * Pipes the pk_entity of the type of an entity
+   */
+  @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number): Observable<InfRole> {
+    return this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(hasTypeProperty + '_' + pkEntity).pipe(
+      map(items => {
+        if (!items || Object.keys(items).length < 1) return undefined;
+        else return values(items)[0]
+      })
     )
   }
 

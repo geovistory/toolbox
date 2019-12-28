@@ -64,35 +64,36 @@ export class FieldComponent implements OnInit {
       })
     })
 
+    if (this.fieldDefinition.listType !== 'has-type') {
 
-    this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
-      let obs$: Observable<number>;
-      if (l.listType === 'temporal-entity') {
-        obs$ = this.p.inf$.role$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
-      } else {
-        obs$ = this.i.pipeListLength(l, this.pkEntity)
-      }
-      return obs$.pipe(
-        map((itemsCount) => ({ ...l, itemsCount }))
+      this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
+        let obs$: Observable<number>;
+        if (l.listType === 'temporal-entity') {
+          obs$ = this.p.inf$.role$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
+        } else {
+          obs$ = this.i.pipeListLength(l, this.pkEntity)
+        }
+        return obs$.pipe(
+          map((itemsCount) => ({ ...l, itemsCount }))
+        )
+      })).pipe(
+        map(lists => lists.filter((list: ListDefinitionWithItemCount) => list.itemsCount > 0))
       )
-    })).pipe(
-      map(lists => lists.filter((list: ListDefinitionWithItemCount) => list.itemsCount > 0))
-    )
-    this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
+      this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
 
-    this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
+      this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
 
 
-    this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
-      .pipe(map(([n, r]) => {
-        if (r) return false;
+      this.showAddButton$ = combineLatest(this.itemsCount$, this.readonly$)
+        .pipe(map(([n, r]) => {
+          if (r) return false;
 
-        if (this.fieldDefinition.targetMaxQuantity === -1) return true;
-        if (this.fieldDefinition.targetMaxQuantity <= n) return false
-        if (this.fieldDefinition.listType == 'time-span' && 1 <= n) return false
-        return true;
-      }))
-
+          if (this.fieldDefinition.targetMaxQuantity === -1) return true;
+          if (this.fieldDefinition.targetMaxQuantity <= n) return false
+          if (this.fieldDefinition.listType == 'time-span' && 1 <= n) return false
+          return true;
+        }))
+    }
 
   }
 

@@ -951,6 +951,7 @@ class FlatObjectQueryBuilder {
           fk_project
         )}
       ),
+      -- language
       tw4 AS (
         SELECT
           ${this.createSelect('t1', 'InfLanguage')}
@@ -959,6 +960,24 @@ class FlatObjectQueryBuilder {
         CROSS JOIN
           information.v_language t1
         WHERE t1.pk_entity = tw3.fk_language
+      ),
+      -- has type role
+      tw5 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfRole')},
+          ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw1
+        CROSS JOIN
+          information.v_role t1,
+          data_for_history.v_property t2,
+          projects.info_proj_rel t3
+        WHERE t1.fk_temporal_entity = tw1.pk_entity
+        AND t1.fk_property = t2.pk_property
+        AND t2.is_has_type_subproperty = true
+        AND t1.pk_entity = t3.fk_entity
+        AND t3.is_in_project = true
+        AND t3.fk_project = ${this.addParam(fk_project)}
       ),
       ------------------------------------
       --- group parts by model
@@ -974,6 +993,8 @@ class FlatObjectQueryBuilder {
             SELECT proj_rel FROM tw2
             UNION ALL
             SELECT proj_rel FROM tw3
+            UNION ALL
+            SELECT proj_rel FROM tw5
           ) AS t1
         ) as t1
         GROUP BY true
@@ -1021,10 +1042,22 @@ class FlatObjectQueryBuilder {
           ) AS t1
         ) as t1
         GROUP BY true
+      ),
+      role AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfRole')} as objects
+          FROM (
+            SELECT * FROM tw5
+          ) AS t1
+        ) as t1
+        GROUP BY true
       )
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
+          'role', role.json,
           'persistent_item', persistent_item.json,
           'entity_association', entity_association.json,
           'text_property', text_property.json,
@@ -1034,12 +1067,12 @@ class FlatObjectQueryBuilder {
           'info_proj_rel', info_proj_rel.json
         ))
       ) as data
-
       FROM
       persistent_item
       LEFT JOIN entity_association ON true
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
+      LEFT JOIN role ON true
       LEFT JOIN info_proj_rel ON true
     `;
     return { sql, params: this.params };
