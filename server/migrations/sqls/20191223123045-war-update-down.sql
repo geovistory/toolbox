@@ -12,9 +12,9 @@ Create Trigger after_epr_upsert
     Execute Procedure warehouse.after_info_proj_rel_upsert ();
 
 -- 1
--- DROP SCHEMA war
--- 0
+Drop Schema war Cascade;
 
+-- 0
 Create Or Replace View data_for_history.v_property As
 Select
     t1.dfh_pk_property As pk_property,

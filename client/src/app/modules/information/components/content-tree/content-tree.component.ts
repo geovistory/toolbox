@@ -10,6 +10,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 
 /**
  * Food data with nested structure.
@@ -106,7 +107,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private r: RepoService,
     private inf: InfActions,
     private dat: DatSelector,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private i: InformationPipesService
   ) { }
 
   ngOnInit() {
@@ -178,20 +180,27 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * returns an observable string emitting the appellation of an expression portion
    */
   private labelOfExprPortion(pkExpressionPortion: number) {
-    return this.p.inf$.role$.by_fk_property__fk_entity$.key('1327_' + pkExpressionPortion)
-      .pipe(filter(rByPk => !!rByPk && Object.keys(rByPk).length > 0),
-        map(rByPk => values(rByPk)[0]),
-        switchMap(r => this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key('1113_' + r.fk_temporal_entity)),
-        filter(rByPk => !!rByPk && Object.keys(rByPk).length > 0),
-        map(rByPk => values(rByPk)[0]),
-        switchMap(r => this.p.inf$.appellation$.by_pk_entity$.key(r.fk_entity)),
-        filter(a => !!a),
-        map(a => a.string));
+    return this.i.pipeLabelOfEntity(pkExpressionPortion);
   }
 
 
 
   private typeLabelOfExprPortion(pkExpressionPortion: number) {
+
+    const hasTypeRole$ = this.i.pipeTypeOfEntity(
+      pkExpressionPortion,
+      DfhConfig.PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE
+    )
+
+    const pkType$ = hasTypeRole$.pipe(
+      map(e => e ? e.fk_entity : undefined)
+    )
+    const typeLabel$ = pkType$.pipe(
+      switchMap(pkType => this.i.pipeLabelOfEntity(pkType)),
+      startWith('[No Type]')
+    )
+
+    return typeLabel$;
     return this.p.inf$.entity_association$.by_fk_property__fk_info_domain$.key('1320_' + pkExpressionPortion)
       .pipe(filter(rByPk => !!rByPk && Object.keys(rByPk).length > 0),
         map(rByPk => values(rByPk)[0]),
@@ -237,7 +246,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   private observeTypeLabel(ea) {
     if (ea.fk_data_domain) {
-      return new BehaviorSubject('Text (transcription)');
+      return new BehaviorSubject('Text');
     }
     else {
       return this.typeLabelOfExprPortion(ea.fk_info_domain)

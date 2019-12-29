@@ -19,6 +19,8 @@ export class DfhConfig {
    * Dfh Properties
    */
 
+  static PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE = 1320;
+
   // dfh_pk_property used to connect an appellation use with an entity
   static PROPERTY_PK_IS_APPELLATION_OF = 1111;
 

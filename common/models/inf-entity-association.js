@@ -2,312 +2,388 @@
 
 const Promise = require('bluebird');
 const Config = require('../config/Config');
-const _ = require('lodash')
+const _ = require('lodash');
 const helpers = require('../helpers');
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var logSql = require('../../dist/server/utils').logSql;
 
-const toData = (prop) => {
+const toData = prop => {
   return typeof prop === 'function' ? prop() : prop;
-}
+};
 
-const toDataObject = (ea) => ({
+const toDataObject = ea => ({
   fk_property: ea.fk_property,
   fk_info_domain: ea.fk_info_domain,
   fk_info_range: ea.fk_info_range,
   fk_data_domain: ea.fk_data_domain,
   fk_data_range: ea.fk_data_range,
-  entity_version_project_rels: ea.entity_version_project_rels
-})
+  entity_version_project_rels: ea.entity_version_project_rels,
+});
 
-
-module.exports = function (InfEntityAssociation) {
-
-
-  InfEntityAssociation.findOrCreateInfEntityAssociations = function (pk_project, eas, ctx) {
+module.exports = function(InfEntityAssociation) {
+  InfEntityAssociation.findOrCreateInfEntityAssociations = function(
+    pk_project,
+    eas,
+    ctx
+  ) {
     return new Promise((resolve, reject) => {
       // ctx = { ...ctx, req: _.omit(ctx.req, ['body']) }
       const promiseArray = eas.map((ea, i) => {
-
         ctx.req.body = ctx.req.body[i];
 
-        return InfEntityAssociation.findOrCreateInfEntityAssociation(pk_project, ea, ctx)
-      })
-      Promise.map(promiseArray, (promise) => promise)
+        return InfEntityAssociation.findOrCreateInfEntityAssociation(
+          pk_project,
+          ea,
+          ctx
+        );
+      });
+      Promise.map(promiseArray, promise => promise)
         .catch(err => reject(err))
         .then(res => {
-          return resolve(_.flatten(res))
-        })
-    })
+          return resolve(_.flatten(res));
+        });
+    });
   };
 
-  InfEntityAssociation.findOrCreateInfEntityAssociation = function (pk_project, ea, ctx) {
+  InfEntityAssociation.findOrCreateInfEntityAssociation = function(
+    pk_project,
+    ea,
+    ctx
+  ) {
     return new Promise((resolve, reject) => {
+      const dataObject = toDataObject(ea);
 
-      const dataObject = toDataObject(ea)
+      let requestedEa = ctx && ctx.req && ctx.req.body ? ctx.req.body : ea;
 
-      let requestedEa = (ctx && ctx.req && ctx.req.body) ? ctx.req.body : ea;
-
-      const ctxWithoutBody = _.omit(ctx, [ 'req.body']);
-
+      const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
       // if the ea has a persistent item as the domain
-      if (requestedEa.domain_pe_it && Object.keys(requestedEa.domain_pe_it).length > 0) {
-
+      if (
+        requestedEa.domain_pe_it &&
+        Object.keys(requestedEa.domain_pe_it).length > 0
+      ) {
         // prepare parameters
-        const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
+        const InfPersistentItem =
+          InfEntityAssociation.app.models.InfPersistentItem;
 
         // find or create the peIt and the ea pointing to it
-        InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.domain_pe_it, ctxWithoutBody)
-          .then((resultingPeIts) => {
-
+        InfPersistentItem.findOrCreatePeIt(
+          pk_project,
+          requestedEa.domain_pe_it,
+          ctxWithoutBody
+        )
+          .then(resultingPeIts => {
             const resultingPeIt = resultingPeIts[0];
 
             // … prepare the Ea to create
             dataObject.fk_info_domain = resultingPeIt.pk_entity;
 
-            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
-              .then((resultingEas) => {
-
+            InfEntityAssociation._findOrCreateByValue(
+              InfEntityAssociation,
+              pk_project,
+              dataObject,
+              requestedEa,
+              ctxWithoutBody
+            )
+              .then(resultingEas => {
                 let res = resultingEas[0];
                 res.domain_pe_it = helpers.toObject(resultingPeIt);
 
                 resolve([res]);
-
               })
-              .catch(err => reject(err))
-
+              .catch(err => reject(err));
           })
-          .catch(err => reject(err))
-
-
+          .catch(err => reject(err));
       }
 
       // if the ea has a persistent item as the range
-      else if (requestedEa.range_pe_it && Object.keys(requestedEa.range_pe_it).length > 0) {
-
+      else if (
+        requestedEa.range_pe_it &&
+        Object.keys(requestedEa.range_pe_it).length > 0
+      ) {
         // prepare parameters
-        const InfPersistentItem = InfEntityAssociation.app.models.InfPersistentItem;
+        const InfPersistentItem =
+          InfEntityAssociation.app.models.InfPersistentItem;
 
         // find or create the peIt and the ea pointing to it
-        InfPersistentItem.findOrCreatePeIt(pk_project, requestedEa.range_pe_it, ctxWithoutBody)
-          .then((resultingPeIts) => {
-
+        InfPersistentItem.findOrCreatePeIt(
+          pk_project,
+          requestedEa.range_pe_it,
+          ctxWithoutBody
+        )
+          .then(resultingPeIts => {
             const resultingPeIt = resultingPeIts[0];
 
             // … prepare the Ea to create
             dataObject.fk_info_range = resultingPeIt.pk_entity;
 
-            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
-              .then((resultingEas) => {
-
+            InfEntityAssociation._findOrCreateByValue(
+              InfEntityAssociation,
+              pk_project,
+              dataObject,
+              requestedEa,
+              ctxWithoutBody
+            )
+              .then(resultingEas => {
                 let res = resultingEas[0];
                 res.range_pe_it = helpers.toObject(resultingPeIt);
 
                 resolve([res]);
-
               })
-              .catch(err => reject(err))
-
+              .catch(err => reject(err));
           })
-          .catch(err => reject(err))
-
-
+          .catch(err => reject(err));
       }
 
       // if the ea has a chunk as the range
-      else if (requestedEa.range_chunk && Object.keys(requestedEa.range_chunk).length > 0) {
-
+      else if (
+        requestedEa.range_chunk &&
+        Object.keys(requestedEa.range_chunk).length > 0
+      ) {
         // prepare parameters
         const DatChunk = InfEntityAssociation.app.models.DatChunk;
 
         // find or create the peIt and the ea pointing to it
-        DatChunk.findOrCreateChunk(pk_project, requestedEa.range_chunk, ctxWithoutBody)
-          .then((resultingObjects) => {
-
+        DatChunk.findOrCreateChunk(
+          pk_project,
+          requestedEa.range_chunk,
+          ctxWithoutBody
+        )
+          .then(resultingObjects => {
             const resultingObject = resultingObjects[0];
 
             // … prepare the Ea to create
             dataObject.fk_info_range = resultingObject.pk_entity;
 
-            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
-              .then((resultingEas) => {
-
+            InfEntityAssociation._findOrCreateByValue(
+              InfEntityAssociation,
+              pk_project,
+              dataObject,
+              requestedEa,
+              ctxWithoutBody
+            )
+              .then(resultingEas => {
                 let res = resultingEas[0];
                 res.range_chunk = helpers.toObject(resultingObject);
 
                 resolve([res]);
-
               })
-              .catch(err => reject(err))
-
+              .catch(err => reject(err));
           })
-          .catch(err => reject(err))
-
+          .catch(err => reject(err));
       }
 
       // if the ea has a chunk as the domain
-      else if (requestedEa.domain_chunk && Object.keys(requestedEa.domain_chunk).length > 0) {
-
+      else if (
+        requestedEa.domain_chunk &&
+        Object.keys(requestedEa.domain_chunk).length > 0
+      ) {
         // prepare parameters
         const DatChunk = InfEntityAssociation.app.models.DatChunk;
 
         // find or create the chunk and the ea pointing to it
         DatChunk.create(requestedEa.domain_chunk)
-          .then((resultingObject) => {
-
-
+          .then(resultingObject => {
             // … prepare the Ea to create
             dataObject.fk_data_domain = resultingObject.pk_entity;
 
-            InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
-              .then((resultingEas) => {
-
+            InfEntityAssociation._findOrCreateByValue(
+              InfEntityAssociation,
+              pk_project,
+              dataObject,
+              requestedEa,
+              ctxWithoutBody
+            )
+              .then(resultingEas => {
                 let res = resultingEas[0];
                 res.domain_chunk = helpers.toObject(resultingObject);
 
                 resolve([res]);
-
               })
-              .catch(err => reject(err))
-
+              .catch(err => reject(err));
           })
-          .catch(err => reject(err))
-
-      }
-
-
-      else {
-
-        InfEntityAssociation._findOrCreateByValue(InfEntityAssociation, pk_project, dataObject, requestedEa, ctxWithoutBody)
+          .catch(err => reject(err));
+      } else {
+        InfEntityAssociation._findOrCreateByValue(
+          InfEntityAssociation,
+          pk_project,
+          dataObject,
+          requestedEa,
+          ctxWithoutBody
+        )
           .catch(err => {
-            reject(err)
+            reject(err);
           })
           .then(result => {
-            resolve(result)
-          })
-
+            resolve(result);
+          });
       }
-    })
-  }
-
-
+    });
+  };
 
   /**
    * nestedObjectOfProject - get a rich object of the entityAssociation with its
    * domain and range entity
-  *
-  * @param  {number} pkProject primary key of project
-  * @param  {number} pkEntity  pk_entity of the entityAssociation
-  */
-  InfEntityAssociation.nestedObject = function (ofProject, pkProject, pkEntity, pkInfoRange, pkInfoDomain, pkProperty, cb) {
-
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the entityAssociation
+   */
+  InfEntityAssociation.nestedObject = function(
+    ofProject,
+    pkProject,
+    pkEntity,
+    pkInfoRange,
+    pkInfoDomain,
+    pkProperty,
+    cb
+  ) {
     if (!pkEntity && !pkInfoRange && !pkInfoDomain) {
-      return cb('please provide at least a pkEntity, pkInfoRange or pkInfoDomain');
+      return cb(
+        'please provide at least a pkEntity, pkInfoRange or pkInfoDomain'
+      );
     }
 
-    const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
+    const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(
+      ofProject,
+      pkProject
+    );
 
-    const w = { pk_entity: pkEntity, fk_info_range: pkInfoRange, fk_info_domain: pkInfoDomain, fk_property: pkProperty }
+    const w = {
+      pk_entity: pkEntity,
+      fk_info_range: pkInfoRange,
+      fk_info_domain: pkInfoDomain,
+      fk_property: pkProperty,
+    };
     let where = [];
-    Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
-      let part = [key, '=', w[key]];
-      if (index !== 0) part = ['AND', ...part];
-      return part;
-    }).forEach(part => {
-      where = [...where, ...part]
-    });
+    Object.keys(w)
+      .filter(key => !!w[key])
+      .map((key, index, ar) => {
+        let part = [key, '=', w[key]];
+        if (index !== 0) part = ['AND', ...part];
+        return part;
+      })
+      .forEach(part => {
+        where = [...where, ...part];
+      });
 
     const filter = {
-      "where": where,
-      "include": {
-        "entity_version_project_rels": joinThisProject,
-        "range_chunk": {
-          "$relation": {
-            "name": "range_chunk",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+      where: where,
+      include: {
+        entity_version_project_rels: joinThisProject,
+        range_chunk: {
+          $relation: {
+            name: 'range_chunk',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
           },
         },
-        "domain_digital": {
-          "$relation": {
-            "name": "domain_digital",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+        domain_digital: {
+          $relation: {
+            name: 'domain_digital',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
           },
-          "entity_version_project_rels": joinThisProject
+          entity_version_project_rels: joinThisProject,
         },
-        "domain_pe_it": {
-          "$relation": {
-            "name": "domain_pe_it",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+        domain_pe_it: {
+          $relation: {
+            name: 'domain_pe_it',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
           },
-          ...InfEntityAssociation.app.models.InfPersistentItem.getIncludeObject(ofProject, pkProject)
-        }
-      }
-    }
+          ...InfEntityAssociation.app.models.InfPersistentItem.getIncludeObject(
+            ofProject,
+            pkProject
+          ),
+        },
+      },
+    };
 
     return InfEntityAssociation.findComplex(filter, cb);
-  }
-
+  };
 
   /**
-  * Find entityAssociation by one of the params
-  *
-  * @param  {number} pkProject primary key of project
-  * @param  {number} pkEntity  pk_entity of the entityAssociation
-  */
-  InfEntityAssociation.queryByParams = function (ofProject, pkProject, pkEntity, pkInfoRange, pkInfoDomain, pkProperty, cb) {
-
+   * Find entityAssociation by one of the params
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the entityAssociation
+   */
+  InfEntityAssociation.queryByParams = function(
+    ofProject,
+    pkProject,
+    pkEntity,
+    pkInfoRange,
+    pkInfoDomain,
+    pkProperty,
+    cb
+  ) {
     if (!pkEntity && !pkInfoRange && !pkInfoDomain) {
-      return cb('please provide at least a pkEntity, pkInfoRange or pkInfoDomain');
+      return cb(
+        'please provide at least a pkEntity, pkInfoRange or pkInfoDomain'
+      );
     }
 
-
-
-    const w = { pk_entity: pkEntity, fk_info_range: pkInfoRange, fk_info_domain: pkInfoDomain, fk_property: pkProperty }
+    const w = {
+      pk_entity: pkEntity,
+      fk_info_range: pkInfoRange,
+      fk_info_domain: pkInfoDomain,
+      fk_property: pkProperty,
+    };
     let where = [];
-    Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
-      let part = [key, '=', w[key]];
-      if (index !== 0) part = ['AND', ...part];
-      return part;
-    }).forEach(part => {
-      where = [...where, ...part]
-    });
+    Object.keys(w)
+      .filter(key => !!w[key])
+      .map((key, index, ar) => {
+        let part = [key, '=', w[key]];
+        if (index !== 0) part = ['AND', ...part];
+        return part;
+      })
+      .forEach(part => {
+        where = [...where, ...part];
+      });
 
     const filter = {
-      "where": where
-    }
+      where: where,
+    };
 
     if (pkProject) {
-      const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
+      const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(
+        ofProject,
+        pkProject
+      );
       joinThisProject.$relation['select'] = false;
       filter['include'] = {
-        "entity_version_project_rels": joinThisProject
-      }
+        entity_version_project_rels: joinThisProject,
+      };
     }
 
     return InfEntityAssociation.findComplex(filter, cb);
-  }
+  };
 
   /**
-  * Find mentionings of a section (F2 Expression)
-  *
-  * @param  {number} pkProject primary key of project
-  * @param  {number} pkEntity  pk_entity of the entityAssociation
-  */
-  InfEntityAssociation.mentioningsOfSection = function (ofProject, pkProject, pkEntity, cb) {
-
-    const params = [
-      ofProject,
-      pkProject,
-      pkEntity
-    ]
+   * Find mentionings of a section (F2 Expression)
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the entityAssociation
+   */
+  InfEntityAssociation.mentioningsOfSection = function(
+    ofProject,
+    pkProject,
+    pkEntity,
+    cb
+  ) {
+    const params = [ofProject, pkProject, pkEntity];
     const sql_stmt = `
     WITH
     entity_associations_of_project AS (
@@ -373,43 +449,51 @@ module.exports = function (InfEntityAssociation) {
       fk_chunk,
       js_quill_data
 	  FROM mentionings_of_chunks_of_expression;
-  `
-
+  `;
 
     const connector = InfEntityAssociation.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
-
   };
 
-
-
-
   /**
-  * Find mentionings of a project and filter by domain or range of 'geovP2 – is mentioned in'.
-  *
-  * Returns also context information:
-  * - if the range is a F2 Expression (section), the pk_entity of the parent source (F3/F4) is delivered (fk_source_entity)
-  * - if the range is a geovC2 Chunk or geovC3 Spot.
-  *
-  * @param  {number} pkProject primary key of project
-  * @param  {number} pkInfoRange  the source/expression/chunk/spot that mentiones the entity
-  */
-  InfEntityAssociation.mentionings = function (ofProject, pkProject, pkInfoRange, pkInfoDomain, pkSource, pkExpression, pkChunk, cb) {
+   * Find mentionings of a project and filter by domain or range of 'geovP2 – is mentioned in'.
+   *
+   * Returns also context information:
+   * - if the range is a F2 Expression (section), the pk_entity of the parent source (F3/F4) is delivered (fk_source_entity)
+   * - if the range is a geovC2 Chunk or geovC3 Spot.
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkInfoRange  the source/expression/chunk/spot that mentiones the entity
+   */
+  InfEntityAssociation.mentionings = function(
+    ofProject,
+    pkProject,
+    pkInfoRange,
+    pkInfoDomain,
+    pkSource,
+    pkExpression,
+    pkChunk,
+    cb
+  ) {
+    const params = [ofProject, pkProject];
 
-    const params = [
-      ofProject,
-      pkProject
-    ]
-
-    const w = { fk_info_range: pkInfoRange, fk_info_domain: pkInfoDomain, fk_source_entity: pkSource, fk_expression_entity: pkExpression, fk_chunk: pkChunk }
+    const w = {
+      fk_info_range: pkInfoRange,
+      fk_info_domain: pkInfoDomain,
+      fk_source_entity: pkSource,
+      fk_expression_entity: pkExpression,
+      fk_chunk: pkChunk,
+    };
     let where = '';
-    Object.keys(w).filter((key) => (!!w[key])).map((key, index, ar) => {
-      params.push(w[key])
-      if (index === 0) where = 'WHERE ' + key + ' = $' + params.length;
-      else where = where + 'AND ' + key + ' = $' + params.length;
-    })
+    Object.keys(w)
+      .filter(key => !!w[key])
+      .map((key, index, ar) => {
+        params.push(w[key]);
+        if (index === 0) where = 'WHERE ' + key + ' = $' + params.length;
+        else where = where + 'AND ' + key + ' = $' + params.length;
+      });
 
     const sql_stmt = `
     WITH
@@ -481,164 +565,180 @@ module.exports = function (InfEntityAssociation) {
 
       SELECT * FROM joins
       ${where}
-      `
-
+      `;
 
     const connector = InfEntityAssociation.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       cb(err, resultObjects);
     });
-
   };
 
-
-
-
   /**
-  * Get an array of entity associations that build the tree of the content of an F2 Expression.
-  */
-  InfEntityAssociation.contentTree = function (pkProject, pkExpressionEntity, cb) {
+   * Get an array of entity associations that build the tree of the content of an F2 Expression.
+   */
+  InfEntityAssociation.contentTree = function(
+    pkProject,
+    pkExpressionEntity,
+    cb
+  ) {
+    const q = new FlatObjectQueryBuilder(
+      InfEntityAssociation.app.models
+    ).createContentTreeQuery(pkProject, pkExpressionEntity);
+    const params = q.params;
+    const sql_stmt = q.sql;
+    logSql(sql_stmt, params);
+    //     const params = [pkProject, pkExpressionEntity];
+    //   const sql_stmt = `
+    //   WITH RECURSIVE pops (fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, level, pk_entity, path) AS (
+    //       SELECT  fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, 0, pk_entity, ARRAY[pk_entity]
+    //       FROM    war.v_entity_association_per_project_and_repo
+    //       WHERE   fk_info_range = $2
+    //       AND 	  project = $1
+    //       AND		  fk_property IN (1317, 1328, 1329, 1216)
 
-    const params = [
-      pkProject,
-      pkExpressionEntity
-    ]
+    //       UNION ALL
 
-    const sql_stmt = `
-    WITH RECURSIVE pops (fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, level, pk_entity, path) AS (
-        SELECT  fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, 0, pk_entity, ARRAY[pk_entity]
-        FROM    warehouse.v_entity_association_per_project_and_repo
-        WHERE   fk_info_range = $2
-        AND 	  project = $1
-        AND		  fk_property IN (1317, 1328, 1329, 1216)
+    //       SELECT  p.fk_info_domain, p.fk_data_domain, p.fk_property, p.fk_info_range, p.fk_data_range, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
+    //       FROM    war.v_entity_association_per_project_and_repo p
+    //               INNER JOIN pops t0 ON t0.fk_info_domain = p.fk_info_range
+    //               WHERE 	p.project = $1
+    //               AND		p.fk_property IN (1317, 1328, 1329, 1216)
 
-        UNION ALL
+    //   )
 
-        SELECT  p.fk_info_domain, p.fk_data_domain, p.fk_property, p.fk_info_range, p.fk_data_range, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
-        FROM    warehouse.v_entity_association_per_project_and_repo p
-                INNER JOIN pops t0 ON t0.fk_info_domain = p.fk_info_range
-                WHERE 	p.project = $1
-                AND		p.fk_property IN (1317, 1328, 1329, 1216)
-
-    )
-
-    SELECT  pk_entity, fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range
-    FROM    pops
-  `
-
+    //   SELECT  pk_entity, fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range
+    //   FROM    pops
+    // `;
 
     const connector = InfEntityAssociation.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       if (err) cb(err);
-      if (resultObjects.length === 0) {
-        cb(err, resultObjects);
+      else if (resultObjects && resultObjects.length && resultObjects[0].data) {
+        cb(err, resultObjects[0].data);
+      } else {
+        cb(false, {});
       }
-      else {
+      // if (resultObjects.length === 0) {
+      //   cb(err, resultObjects);
+      // } else {
+      //   // Load all the nested objects of the related persistent items (Expression Portions)
+      //   new Promise.all(
+      //     resultObjects.map(ea => {
+      //       return new Promise((resolve, reject) => {
+      //         if (ea.fk_info_domain) {
+      //           // Load the Expression Portion
+      //           InfEntityAssociation.app.models.InfPersistentItem.nestedObjectOfProject(
+      //             pkProject,
+      //             ea.fk_info_domain,
+      //             (err, res) => {
+      //               if (err) reject(err);
+      //               else resolve(res);
+      //             }
+      //           );
+      //         } else if (ea.fk_data_domain) {
+      //           // Load the Digital
+      //           InfEntityAssociation.app.models.DatDigital.findById(
+      //             ea.fk_data_domain,
+      //             (err, res) => {
+      //               if (err) reject(err);
+      //               else resolve([helpers.toObject(res)]);
+      //             }
+      //           );
+      //         } else {
+      //           console.log('er');
+      //         }
+      //       });
+      //     })
+      //   )
+      //     .catch(err => cb(err))
+      //     .then(domain => {
+      //       // map the fetched nested peIts to the entity_associations
+      //       const result = resultObjects.map((ea, i) => {
+      //         const nested =
+      //           domain && domain[i] && domain[i].length
+      //             ? domain[i][0]
+      //             : undefined;
 
-        // Load all the nested objects of the related persistent items (Expression Portions)
-        new Promise.all(
-          resultObjects.map(ea => {
-            return new Promise((resolve, reject) => {
-              if (ea.fk_info_domain) {
-                // Load the Expression Portion
-                InfEntityAssociation.app.models.InfPersistentItem.nestedObjectOfProject(pkProject, ea.fk_info_domain, (err, res) => {
-                  if (err) reject(err);
-                  else resolve(res);
-                })
-              }
-              else if (ea.fk_data_domain) {
-                // Load the Digital
-                InfEntityAssociation.app.models.DatDigital.findById(ea.fk_data_domain, (err, res) => {
-                  if (err) reject(err);
-                  else resolve([helpers.toObject(res)]);
-                })
-              }
-              else {
-                console.log('er')
-              }
-            })
-          })
-        )
-          .catch(err => cb(err))
-          .then(domain => {
-            // map the fetched nested peIts to the entity_associations
-            const result = resultObjects.map((ea, i) => {
+      //         if (!nested) return ea;
 
-              const nested = (domain && domain[i] && domain[i].length) ? domain[i][0] : undefined;
-
-              if (!nested) return ea;
-
-              if (ea.fk_info_domain === nested.pk_entity) {
-                return {
-                  ...ea,
-                  domain_pe_it: nested
-                }
-              } else if (ea.fk_data_domain === nested.pk_entity) {
-                return {
-                  ...ea,
-                  domain_digital: nested
-                }
-              }
-
-            })
-            cb(err, result);
-          })
-
-      }
+      //         if (ea.fk_info_domain === nested.pk_entity) {
+      //           return {
+      //             ...ea,
+      //             domain_pe_it: nested,
+      //           };
+      //         } else if (ea.fk_data_domain === nested.pk_entity) {
+      //           return {
+      //             ...ea,
+      //             domain_digital: nested,
+      //           };
+      //         }
+      //       });
+      //       cb(err, result);
+      //     });
+      // }
     });
-
   };
 
   /**
-  * Get an nested object with everything needed to display the
-  * links made from an entity towards sources and digitals.
-  */
-  InfEntityAssociation.sourcesAndDigitalsOfEntity = function (ofProject, pkProject, pkEntity, cb) {
-
-
-    const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(ofProject, pkProject)
+   * Get an nested object with everything needed to display the
+   * links made from an entity towards sources and digitals.
+   */
+  InfEntityAssociation.sourcesAndDigitalsOfEntity = function(
+    ofProject,
+    pkProject,
+    pkEntity,
+    cb
+  ) {
+    const joinThisProject = InfEntityAssociation.app.models.ProInfoProjRel.getJoinObject(
+      ofProject,
+      pkProject
+    );
 
     const filter = {
-      "where": [
-        'fk_info_range', '=', pkEntity
-      ],
-      "include": {
-        "entity_version_project_rels": joinThisProject,
-        "domain_chunk": {
-          "$relation": {
-            "name": "domain_chunk",
-            "joinType": "left join",
-            "orderBy": [{
-              "pk_entity": "asc"
-            }]
+      where: ['fk_info_range', '=', pkEntity],
+      include: {
+        entity_version_project_rels: joinThisProject,
+        domain_chunk: {
+          $relation: {
+            name: 'domain_chunk',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    return InfEntityAssociation.findComplex(
+      filter,
+      (err, entity_associations) => {
+        if (err) return cb(err);
+
+        const textPks = _.uniq(
+          entity_associations
+            .filter(ea => ea.domain_chunk)
+            .map(ea => ea.domain_chunk.fk_text)
+        );
+
+        if (!textPks.length) return cb(null, entity_associations);
+
+        InfEntityAssociation.app.models.DatDigital.findComplex(
+          {
+            where: ['pk_text', 'IN', textPks],
+          },
+          (err2, digitals) => {
+            if (err2) return cb(err2);
+
+            cb(null, {
+              entity_associations: entity_associations,
+              digitals,
+            });
           }
-        }
+        );
       }
-    }
-
-    return InfEntityAssociation.findComplex(filter, (err, entity_associations) => {
-      if (err) return cb(err);
-
-      const textPks = _.uniq(entity_associations
-        .filter(ea => ea.domain_chunk)
-        .map(ea => ea.domain_chunk.fk_text));
-
-      if (!textPks.length) return cb(null, entity_associations);
-
-      InfEntityAssociation.app.models.DatDigital.findComplex({
-        where: ['pk_text', 'IN', textPks]
-      }, (err2, digitals) => {
-        if (err2) return cb(err2);
-
-        cb(null, {
-          entity_associations: entity_associations,
-          digitals
-        })
-      })
-
-    });
-
-
+    );
   };
-
-}
+};

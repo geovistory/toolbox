@@ -9,7 +9,7 @@ import { Dfh } from '../dfh/dfh.models';
 import { Inf } from '../inf/inf.models';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
 import { Pro } from '../pro/pro.models';
-import { InfAppellation, InfEntityAssociation, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, InfTextProperty, InfLanguage, ProInfoProjRel } from '../sdk';
+import { InfAppellation, InfEntityAssociation, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, InfTextProperty, InfLanguage, ProInfoProjRel, DatDigital } from '../sdk';
 import { Sys } from '../sys/sys.models';
 
 export interface InfObject {
@@ -26,10 +26,13 @@ export interface InfObject {
 export interface ProObject {
   info_proj_rel: ProInfoProjRel[]
 }
-
+export interface DatObject {
+  digital: DatDigital[]
+}
 export interface SchemaObject {
   inf?: InfObject
   pro?: ProObject
+  dat?: DatObject
 }
 
 export interface IAppState {

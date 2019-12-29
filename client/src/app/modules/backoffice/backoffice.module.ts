@@ -34,8 +34,8 @@ import { AccountListComponent } from './components/account-list/account-list.com
 import { AccountListAPIActions } from './components/account-list/api/account-list.actions';
 import { AccountListAPIEpics } from './components/account-list/api/account-list.epics';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
-import { WarehouseAPIEpics } from './components/warehouse/api/warehouse.epics';
-import { WarehouseAPIActions } from './components/warehouse/api/warehouse.actions';
+// import { WarehouseAPIEpics } from './components/warehouse/api/warehouse.epics';
+// import { WarehouseAPIActions } from './components/warehouse/api/warehouse.actions';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -89,8 +89,8 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
     // ClassFieldListAPIEpics,
     AccountListAPIActions,
     AccountListAPIEpics,
-    WarehouseAPIEpics,
-    WarehouseAPIActions,
+    // WarehouseAPIEpics,
+    // WarehouseAPIActions,
     HasTypeAPIEpics,
     HasTypeAPIActions
   ],

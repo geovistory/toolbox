@@ -133,15 +133,24 @@ app.start = function() {
      * Setup the continuous update job for vm_statement
      **********************************************************/
     let statementsUpdating = false;
-    const updateStatements = () => {
+    const updateStatements = (matViewIsEmpty = false) => {
       if (!statementsUpdating) {
         statementsUpdating = true;
         needs_update_for_statements = false;
-        const sql = `REFRESH MATERIALIZED VIEW CONCURRENTLY war.vm_statement;`;
+        // Do refresh the mat view. If the view is empty, concurrently is no option
+        // see: https://www.postgresql.org/docs/9.4/sql-refreshmaterializedview.html
+        const sql = `
+        REFRESH MATERIALIZED VIEW ${matViewIsEmpty ? '' : 'CONCURRENTLY'}
+        war.vm_statement;`;
         client.query(sql, (err, res) => {
           statementsUpdating = false;
-          if (err) console.log(err);
-          else {
+          if (err) {
+            if (err.code == '0A000') {
+              updateStatements(true);
+            } else {
+              console.log(err);
+            }
+          } else {
             console.log(
               `\u{1b}[36m war.vm_statement updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
             );

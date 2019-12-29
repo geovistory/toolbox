@@ -1078,6 +1078,250 @@ class FlatObjectQueryBuilder {
     return { sql, params: this.params };
   }
 
+  /**
+   *
+   * @param {*} fk_project
+   * @param {*} pk_entity primary key of the Expression entity, for which we need the tree.
+   */
+  createContentTreeQuery(fk_project, pk_entity) {
+    const sql = `
+      -- query recusivly all the entity associations we need to create the tree
+      -- tw0 delivers
+      -- - pk_entity: the entity_associations we need
+      -- - fk_info_domain: the persistent_item we need (Expression Portion)
+      -- - fk_data_domain: the data.digital we need
+      WITH RECURSIVE tw0 (fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, level, pk_entity, path) AS (
+          SELECT  fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, 0, pk_entity, ARRAY[pk_entity]
+          FROM    war.v_entity_association_per_project_and_repo
+          WHERE   fk_info_range = ${this.addParam(pk_entity)}
+          AND 	  project = ${this.addParam(fk_project)}
+          AND		  fk_property IN (1317, 1328, 1329, 1216)
+
+          UNION ALL
+
+          SELECT  p.fk_info_domain, p.fk_data_domain, p.fk_property, p.fk_info_range, p.fk_data_range, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
+          FROM    war.v_entity_association_per_project_and_repo p
+                  INNER JOIN tw0 t0 ON t0.fk_info_domain = p.fk_info_range
+                  WHERE 	p.project = ${this.addParam(fk_project)}
+                  AND		p.fk_property IN (1317, 1328, 1329, 1216)
+
+      ),
+      -- persistent_items (Expression Portions)
+      tw1 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfPersistentItem')},
+          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+        FROM
+          information.v_persistent_item t1
+        JOIN tw0 t3
+          ON t1.pk_entity = t3.fk_info_domain
+        CROSS JOIN
+          projects.info_proj_rel t2
+        WHERE t1.pk_entity = t2.fk_entity
+        AND t2.is_in_project = true
+        AND t2.fk_project = ${this.addParam(fk_project)}
+      ),
+      -- entity_associations
+      tw2 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfEntityAssociation')},
+          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw0
+        CROSS JOIN
+          information.v_entity_association t1,
+          projects.info_proj_rel t2
+        WHERE
+        tw0.pk_entity = t1.pk_entity
+        AND t1.pk_entity = t2.fk_entity
+        AND t2.is_in_project = true
+        AND t2.fk_project = ${this.addParam(fk_project)}
+      ),
+      -- text_properties
+      tw3 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfTextProperty')},
+          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw1
+        CROSS JOIN
+          information.v_text_property t1,
+          projects.info_proj_rel t2
+        WHERE t1.fk_concerned_entity = tw1.pk_entity
+        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
+          fk_project
+        )}
+      ),
+      -- language
+      tw4 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfLanguage')}
+        FROM
+          tw3
+        CROSS JOIN
+          information.v_language t1
+        WHERE t1.pk_entity = tw3.fk_language
+      ),
+      -- has type role
+      tw5 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfRole')},
+          ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw1
+        CROSS JOIN
+          information.v_role t1,
+          data_for_history.v_property t2,
+          projects.info_proj_rel t3
+        WHERE t1.fk_temporal_entity = tw1.pk_entity
+        AND t1.fk_property = t2.pk_property
+        AND t2.is_has_type_subproperty = true
+        AND t1.pk_entity = t3.fk_entity
+        AND t3.is_in_project = true
+        AND t3.fk_project = ${this.addParam(fk_project)}
+      ),
+      -- has appellation for language roles
+      tw6 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfRole')},
+          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw1
+        CROSS JOIN
+          information.v_role t1,
+          projects.info_proj_rel t2
+        WHERE t1.fk_entity = tw1.pk_entity
+        AND t1.fk_property = 1111
+        AND t1.pk_entity = t2.fk_entity
+        AND t2.is_in_project = true
+        AND t2.fk_project = ${this.addParam(fk_project)}
+      ),
+      -- digital
+      tw7 AS (
+        SELECT
+          ${this.createSelect('t1', 'DatDigital')}
+        FROM
+          tw0
+        CROSS JOIN
+          data.digital t1
+        WHERE t1.pk_entity = tw0.fk_data_domain
+      ),
+      ------------------------------------
+      --- group parts by model
+      ------------------------------------
+
+      info_proj_rel AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.proj_rel->>'pk_entity') t1.proj_rel as objects
+          FROM (
+            SELECT proj_rel FROM tw1
+            UNION ALL
+            SELECT proj_rel FROM tw2
+            UNION ALL
+            SELECT proj_rel FROM tw3
+            UNION ALL
+            SELECT proj_rel FROM tw5
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
+      persistent_item AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfPersistentItem')} as objects
+          FROM (
+            SELECT * FROM tw1
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
+      entity_association AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfEntityAssociation')} as objects
+          FROM (
+            SELECT * FROM tw2
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
+      text_property AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfTextProperty')} as objects
+          FROM (
+            SELECT * FROM tw3
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
+      language AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfLanguage')} as objects
+          FROM (
+            SELECT * FROM tw4
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
+      role AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfRole')} as objects
+          FROM (
+            SELECT * FROM tw5
+            UNION ALL
+            SELECT * FROM tw6
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
+      digital AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'DatDigital')} as objects
+          FROM (
+            SELECT * FROM tw7
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      )
+      SELECT
+      json_build_object (
+        'inf', json_strip_nulls(json_build_object(
+          'role', role.json,
+          'persistent_item', persistent_item.json,
+          'entity_association', entity_association.json,
+          'text_property', text_property.json,
+          'language', language.json
+        )),
+        'pro', json_strip_nulls(json_build_object(
+          'info_proj_rel', info_proj_rel.json
+        )),
+        'dat', json_strip_nulls(json_build_object(
+          'digital', digital.json
+        ))
+      ) as data
+      FROM
+      entity_association
+      LEFT JOIN persistent_item ON true
+      LEFT JOIN text_property ON true
+      LEFT JOIN language ON true
+      LEFT JOIN role ON true
+      LEFT JOIN digital ON true
+      LEFT JOIN info_proj_rel ON true
+    `;
+    return { sql, params: this.params };
+  }
+
   createPeItGeoQuery(fk_project, pkEntities) {
     const sql = `
     WITH tw1 AS (

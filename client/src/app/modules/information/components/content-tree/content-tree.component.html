@@ -47,8 +47,12 @@
       </div>
 
 
-      <div fxFlex="30" class="gv-ellipsis">
-        {{node.typeLabel}}
+      <div fxFlex="30" class="gv-ellipsis mat-text-secondary">
+        <span *ngIf="node.isDigital">
+          {{node.typeLabel}}
+        </span>
+        <gv-type-item *ngIf="!node.isDigital" [pkEntity]="node.entityAssociation.fk_info_domain" [pkProperty]="1320"
+          [pkTypedClass]="503" [pkTypeClass]="516"></gv-type-item>
       </div>
 
       <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
@@ -85,8 +89,9 @@
         </div>
       </div>
 
-      <div fxFlex="30" class="gv-ellipsis">
-        {{node.typeLabel}}
+      <div fxFlex="30" class="gv-ellipsis  mat-text-secondary">
+        <gv-type-item *ngIf="!node.isDigital" [pkEntity]="node.entityAssociation.fk_info_domain" [pkProperty]="1320"
+          [pkTypedClass]="503" [pkTypeClass]="516"></gv-type-item>
       </div>
 
       <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">

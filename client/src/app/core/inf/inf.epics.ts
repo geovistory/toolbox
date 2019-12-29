@@ -214,9 +214,11 @@ export class InfEpics {
         (meta) => this.eaApi.contentTree(meta.pk, meta.pkExpressionEntity),
         InfEntityAssoctiationActionFactory.CONTENT_TREE,
         (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.entity_association.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          const schemaObject = results as SchemaObject;
+          this.storeSchemaObject(schemaObject, pk)
+          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          // flattener.entity_association.flatten(results);
+          // storeFlattened(flattener.getFlattened(), pk);
         }
       ),
 
@@ -309,6 +311,7 @@ export class InfEpics {
         let actions;
         if (schema === 'inf') actions = this.infActions;
         else if (schema === 'pro') actions = this.proActions;
+        else if (schema === 'dat') actions = this.datActions;
         if (actions) {
           Object.keys(schemas[schema]).forEach(model => {
             actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
