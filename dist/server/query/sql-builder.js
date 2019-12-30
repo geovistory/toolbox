@@ -290,7 +290,7 @@ class SqlBuilder {
                     )`);
         }
         fromsArray.push(`
-                LEFT JOIN warehouse.vm_statement ${thisTableAlias} ON
+                LEFT JOIN war.vm_statement ${thisTableAlias} ON
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
     }

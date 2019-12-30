@@ -2,10 +2,10 @@
 import { filter } from 'rxjs/operators';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, ProInfoProjRel, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, U, ProAnalysis, ProProject } from 'app/core';
+import { IAppState, ProInfoProjRel, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, U, ProAnalysis, ProProject, ProDfhProfileProjRel } from 'app/core';
 import { LoadActionMeta, StandardActionsFactory, ActionResultObservable, SucceedActionMeta, LoadByPkANsVersionActionMeta } from 'app/core/store/actions';
 import { proRoot } from './pro.config';
-import { ProInfoProjRelSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProAnalysisSlice } from './pro.models';
+import { ProInfoProjRelSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProAnalysisSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
 
 type Payload = ProInfoProjRelSlice;
@@ -115,6 +115,75 @@ export class ProInfoProjRelActionFactory extends StandardActionsFactory<Payload,
   }
 }
 
+
+export class ProDfhClassProjRelActionFactory extends StandardActionsFactory<Payload, ProDfhClassProjRel> {
+
+  // Suffixes of load action types
+  static readonly OF_PROJECT = 'OF_PROJECT';
+
+  loadOfProject: (pkProject) => ActionResultObservable<ProDfhClassProjRel>;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): ProDfhClassProjRelActionFactory {
+    Object.assign(this, this.createCrudActions(proRoot, 'dfh_class_proj_rel'))
+
+    this.loadOfProject = (pkProject: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadActionMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProDfhClassProjRelActionFactory.OF_PROJECT,
+        meta: {
+          addPending,
+          pk: pkProject
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<ProDfhClassProjRel>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
+    }
+
+    return this;
+  }
+}
+
+
+export class ProDfhProfileProjRelActionFactory extends StandardActionsFactory<Payload, ProDfhProfileProjRel> {
+
+  // Suffixes of load action types
+  static readonly OF_PROJECT = 'OF_PROJECT';
+
+  loadOfProject: (pkProject) => ActionResultObservable<ProDfhProfileProjRel>;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): ProDfhProfileProjRelActionFactory {
+    Object.assign(this, this.createCrudActions(proRoot, 'dfh_profile_proj_rel'))
+
+    this.loadOfProject = (pkProject: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadActionMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProDfhProfileProjRelActionFactory.OF_PROJECT,
+        meta: {
+          addPending,
+          pk: pkProject
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<ProDfhProfileProjRel>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
+    }
+
+    return this;
+  }
+}
 
 export class ProClassFieldConfigActionFactory extends StandardActionsFactory<Payload, ProClassFieldConfig> {
 
@@ -227,7 +296,8 @@ export class ProActions {
   project = new ProProjectActionFactory(this.ngRedux).createActions()
   info_proj_rel = new ProInfoProjRelActionFactory(this.ngRedux).createActions()
   text_property = new ProTextPropertyActionFactory(this.ngRedux).createActions()
-  dfh_class_proj_rel = new StandardActionsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>(this.ngRedux).createCrudActions(proRoot, 'dfh_class_proj_rel')
+  dfh_class_proj_rel = new ProDfhClassProjRelActionFactory(this.ngRedux).createActions()
+  dfh_profile_proj_rel = new ProDfhProfileProjRelActionFactory(this.ngRedux).createActions()
   class_field_config = new ProClassFieldConfigActionFactory(this.ngRedux).createActions()
   analysis = new ProAnalysisActionFactory(this.ngRedux).createActions()
 

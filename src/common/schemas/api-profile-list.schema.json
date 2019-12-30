@@ -7,6 +7,7 @@
     "ApiProfile": {
       "title": "ApiProfile",
       "type": "object",
+      "additionalProperties": {},
       "properties": {
         "profileID": {
           "type": "number",

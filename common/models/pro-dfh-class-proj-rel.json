@@ -48,13 +48,13 @@
       "permission": "ALLOW",
       "property": [
         "create",
-        "getEnabledByProject",
+        "ofProject",
         "bulkUpsert"
       ]
     }
   ],
   "methods": {
-    "getEnabledByProject": {
+    "ofProject": {
       "accepts": [
         {
           "arg": "pkProject",
@@ -80,9 +80,9 @@
         ],
         "root": true
       },
-      "description": "Find ProDfhClassProjRel of project where enabled_in_entities is true",
+      "description": "Find ProDfhClassProjRel of project",
       "http": {
-        "path": "/get-enabled-by-project",
+        "path": "/of-project",
         "verb": "get"
       }
     },

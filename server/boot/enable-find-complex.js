@@ -11,6 +11,7 @@ var include = [
   'ProQuery',
   'ProAnalysis',
   'ProDfhClassProjRel',
+  'ProDfhProfileProjRel',
   'ProPropertyLabel',
   'DfhClass',
   'DfhLabel',

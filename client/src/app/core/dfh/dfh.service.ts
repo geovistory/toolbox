@@ -44,7 +44,7 @@ class Selector<Slice> {
 }
 // Profile Selectors
 class DfhProfileSelections extends Selector<DfhProfileSlice> {
-  public by_pk_profile$ = this.selector<DfhProfile>('by_by_pk_profile');
+  public by_pk_profile$ = this.selector<DfhProfile>('by_pk_profile');
 }
 
 // Class Selectors

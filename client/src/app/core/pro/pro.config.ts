@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProAnalysis } from "../sdk";
+import { ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, ProAnalysis, ProDfhProfileProjRel } from "../sdk";
 
 export const proRoot = 'pro';
 
@@ -33,22 +33,7 @@ export const proDefinitions: ReducerConfigCollection = {
       {
         keyInStore: 'fk_project__fk_class',
         groupByFn: proClassFieldConfgByProjectAndClassKey
-      },
-      // {
-      //   keyInStore: 'fk_class__fk_app_context',
-      //   groupByFn: (d: ProClassFieldConfig): string => {
-      //     const fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field
-      //     return fk_class + '_' + d.fk_app_context
-      //   }
-      // },
-      // {
-      //   keyInStore: 'fk_property__fk_domain_class__fk_app_context',
-      //   groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_domain_class + '_' + d.fk_app_context
-      // },
-      // {
-      //   keyInStore: 'fk_property__fk_range_class__fk_app_context',
-      //   groupByFn: (d: ProClassFieldConfig): string => d.fk_property + '_' + d.fk_range_class + '_' + d.fk_app_context
-      // },
+      }
     ]
   },
   dfh_class_proj_rel: {
@@ -67,20 +52,28 @@ export const proDefinitions: ReducerConfigCollection = {
       }
     ],
   },
+  dfh_profile_proj_rel: {
+    indexBy: {
+      keyInStore: 'fk_project__fk_profile',
+      indexByFn: (item: ProDfhProfileProjRel) => item.fk_project + '_' + item.fk_profile
+    },
+    groupBy: [
+      {
+        keyInStore: 'fk_project__enabled',
+        groupByFn: (d: ProDfhProfileProjRel): string => d.fk_project + '_' + d.enabled
+      },
+      {
+        keyInStore: 'fk_project',
+        groupByFn: (d: ProDfhProfileProjRel): string => d.fk_project.toString()
+      }
+    ],
+  },
   text_property: {
     indexBy: {
       keyInStore: 'fks',
       indexByFn: textPropertyByFksKey
     },
     groupBy: [
-      // {
-      //   keyInStore: 'fk_project__fk_dfh_class__fk_system_type__fk_language',
-      //   groupByFn: (d: ProTextProperty): string => !d.fk_dfh_class ? undefined : `${d.fk_project}_${d.fk_dfh_class}_${d.fk_system_type}_${d.fk_language}`
-      // },
-      // {
-      //   keyInStore: 'fk_project__fk_dfh_property__fk_dfh_property_domain__fk_system_type__fk_language',
-      //   groupByFn: (d: ProTextProperty): string => !d.fk_dfh_property_domain ? undefined : `${d.fk_project}_${d.fk_dfh_property}_${d.fk_dfh_property_domain}_${d.fk_system_type}_${d.fk_language}`
-      // },
       {
         keyInStore: 'fks_without_lang',
         groupByFn: textPropertyByFksWithoutLang

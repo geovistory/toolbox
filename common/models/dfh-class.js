@@ -24,7 +24,7 @@ module.exports = function(DfhClass) {
         SELECT 5 as fk_profile -- GEOVISTORY BASICS
       )
       SELECT
-      *
+        ${q.createSelect('t3', 'DfhClass')}
       FROM
         tw1 t1,
         data_for_history.api_class t2,

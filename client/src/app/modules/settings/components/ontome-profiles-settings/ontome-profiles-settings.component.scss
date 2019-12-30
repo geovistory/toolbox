@@ -6,12 +6,16 @@ tr.example-detail-row {
   height: 0;
 }
 
-tr.example-element-row:not(.example-expanded-row):hover {
-  background: #777;
+.mat-column-expand {
+  width: 60px;
+  padding-left: 10px !important;
 }
-
-tr.example-element-row:not(.example-expanded-row):active {
-  background: #efefef;
+.mat-column-deactivate,
+.mat-column-update {
+  width: 120px;
+}
+.mat-column-expandedDetail {
+  padding-left: 61px !important;
 }
 
 .example-element-row td {
@@ -23,25 +27,25 @@ tr.example-element-row:not(.example-expanded-row):active {
   display: flex;
 }
 
-.example-element-diagram {
-  min-width: 80px;
-  border: 2px solid black;
-  padding: 8px;
-  font-weight: lighter;
-  margin: 8px 0;
-  height: 104px;
-}
+// .example-element-diagram {
+//   min-width: 80px;
+//   border: 2px solid black;
+//   padding: 8px;
+//   font-weight: lighter;
+//   margin: 8px 0;
+//   height: 104px;
+// }
 
-.example-element-symbol {
-  font-weight: bold;
-  font-size: 40px;
-  line-height: normal;
-}
+// .example-element-symbol {
+//   font-weight: bold;
+//   font-size: 40px;
+//   line-height: normal;
+// }
 
-.example-element-description {
-  padding: 16px;
-}
+// .example-element-description {
+//   padding: 16px;
+// }
 
-.example-element-description-attribution {
-  opacity: 0.5;
-}
+// .example-element-description-attribution {
+//   opacity: 0.5;
+// }

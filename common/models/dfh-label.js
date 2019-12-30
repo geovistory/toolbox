@@ -28,7 +28,7 @@ module.exports = function(DfhLabel) {
       t1.fk_profile
       FROM
       projects.dfh_profile_proj_rel t1
-      WHERE fk_project = 24
+      WHERE fk_project = $1
       UNION
       SELECT 5 -- GEOVISTORY BASIC PROJECT
     ),

@@ -4,7 +4,7 @@ import { ByPk, IAppState } from 'app/core/store/model';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
 import { filter } from '../../../../node_modules/rxjs/operators';
-import { ProInfoProjRel, ProDfhClassProjRel, ProClassFieldConfig, ProTextProperty, ProAnalysis, ProProject } from '../sdk';
+import { ProInfoProjRel, ProDfhClassProjRel, ProClassFieldConfig, ProTextProperty, ProAnalysis, ProProject, ProDfhProfileProjRel } from '../sdk';
 import { ProActions } from './pro.actions';
 import { proDefinitions, proRoot } from './pro.config';
 import { toString } from 'ramda';
@@ -65,6 +65,17 @@ class ProDfhClassProjRelSelector extends Selector {
   ) { super(ngRedux, configs, model) }
 }
 
+class ProDfhProfileProjRelSelector extends Selector {
+  public by_fk_project__enabled$ = this.selector<ByPk<ProDfhProfileProjRel>>('by_fk_project__enabled')
+  public by_fk_project__fk_profile$ = this.selector<ProDfhProfileProjRel>('by_fk_project__fk_profile')
+  public by_fk_project$ = this.selector<ProDfhProfileProjRel>('by_fk_project')
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
+}
 
 class ProClassFieldConfigSelector extends Selector {
   public by_fk_project__fk_class$ = this.selector<ByPk<ProClassFieldConfig>>('by_fk_project__fk_class')
@@ -110,6 +121,7 @@ export class ProSelector extends ProActions {
   project$ = new ProProjectSelector(this.ngRedux, proDefinitions, 'project');
   info_proj_rel$ = new ProInfoProjRelSelector(this.ngRedux, proDefinitions, 'info_proj_rel');
   dfh_class_proj_rel$ = new ProDfhClassProjRelSelector(this.ngRedux, proDefinitions, 'dfh_class_proj_rel');
+  dfh_profile_proj_rel$ = new ProDfhProfileProjRelSelector(this.ngRedux, proDefinitions, 'dfh_profile_proj_rel');
   class_field_config$ = new ProClassFieldConfigSelector(this.ngRedux, proDefinitions, 'class_field_config');
   text_property$ = new ProTextPropertySelector(this.ngRedux, proDefinitions, 'text_property');
   analysis$ = new ProAnalysisSelector(this.ngRedux, proDefinitions, 'analysis');

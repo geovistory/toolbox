@@ -30,6 +30,7 @@ SysConfig.PK_CLASS_FIELD_WHEN = 48;
 SysConfig.PK_CLASS_FIELD_SHORT_TITLE = 217;
 SysConfig.PK_CLASS_FIELD_EXACT_REFERENCE = 218;
 SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION = 219;
+SysConfig.PK_CLASS_FIELD_COMMENT = 3364;
 /***********************
  * System Types
 ************************/

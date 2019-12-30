@@ -30,6 +30,64 @@ export class ProDfhProfileProjRelApi extends BaseLoopBackApi {
   }
 
   /**
+   * Find ProDfhProfileProjRel of project where enabled is true
+   *
+   * @param {number} pkProject Pk of the project
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProDfhProfileProjRel` object.)
+   * </em>
+   */
+  public ofProject(pkProject: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProDfhProfileProjRels/of-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Creates or updates instances of ProDfhProfileProjRel.
+   *
+   * @param {number} pkProject Project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{ProDfhProfileProjRel}` - Array ProDfhProfileProjRel
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProDfhProfileProjRel` object.)
+   * </em>
+   */
+  public bulkUpsert(pkProject: any, data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProDfhProfileProjRels/bulk-upsert";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      data: data
+    };
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `ProDfhProfileProjRel`.
    */

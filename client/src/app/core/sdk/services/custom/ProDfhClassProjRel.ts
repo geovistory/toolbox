@@ -30,7 +30,7 @@ export class ProDfhClassProjRelApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find ProDfhClassProjRel of project where enabled_in_entities is true
+   * Find ProDfhClassProjRel of project
    *
    * @param {number} pkProject Pk of the project
    *
@@ -43,10 +43,10 @@ export class ProDfhClassProjRelApi extends BaseLoopBackApi {
    * This usually means the response is a `ProDfhClassProjRel` object.)
    * </em>
    */
-  public getEnabledByProject(pkProject: any, customHeaders?: Function): Observable<any> {
+  public ofProject(pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProDfhClassProjRels/get-enabled-by-project";
+    "/ProDfhClassProjRels/of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

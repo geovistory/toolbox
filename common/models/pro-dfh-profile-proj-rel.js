@@ -2,10 +2,10 @@
 var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 module.exports = function(ProDfhProfileProjRel) {
-  ProDfhProfileProjRel.getEnabledByProject = function(pkProject, ctx, cb) {
+  ProDfhProfileProjRel.ofProject = function(pkProject, ctx, cb) {
     ProDfhProfileProjRel.findComplex(
       {
-        where: ['fk_project', '=', pkProject, 'AND', 'enabled', '=', 'true'],
+        where: ['fk_project', '=', pkProject],
       },
       cb
     );

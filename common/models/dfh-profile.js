@@ -17,11 +17,42 @@ module.exports = function(DfhProfile) {
     requestedLanguage,
     cb
   ) {
-    return new OntoMe(cb, DfhProfile.dataSource.connector).addToProject(
+    return new OntoMe(cb, DfhProfile.dataSource.connector).addProfileToProject(
       fkProject,
       fkProfile,
       requestedLanguage
     );
+  };
+
+  DfhProfile.deactivateProfileForProject = function(fkProject, fkProfile, cb) {
+    return new OntoMe(
+      cb,
+      DfhProfile.dataSource.connector
+    ).deactivateProfileForProject(fkProject, fkProfile);
+  };
+
+  DfhProfile.getActivationReport = function(
+    geovistoryProjectId,
+    ontomeProfileId,
+    requestedLanguage,
+    cb
+  ) {
+    return new OntoMe(cb, DfhProfile.dataSource.connector).getActivationReport(
+      geovistoryProjectId,
+      ontomeProfileId,
+      requestedLanguage
+    );
+  };
+
+  DfhProfile.getDeactivationReport = function(
+    geovistoryProjectId,
+    ontomeProfileId,
+    cb
+  ) {
+    return new OntoMe(
+      cb,
+      DfhProfile.dataSource.connector
+    ).getDeactivationReport(geovistoryProjectId, ontomeProfileId);
   };
 
   /**

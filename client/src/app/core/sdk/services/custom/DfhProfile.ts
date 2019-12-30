@@ -125,6 +125,108 @@ export class DfhProfileApi extends BaseLoopBackApi {
   }
 
   /**
+   * Creates an activation report for the given OntoMe profile and the given Geovistory project.
+   *
+   * @param {number} pkProject Geovistory project for which the activation report should be created
+   *
+   * @param {number} pkProfile OntoMe profile for which the activation report should be created
+   *
+   * @param {string} requestedLanguage Language ISO Code for the preferred language of labels and descriptions to be loaded. Default language is 'en'.
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhProfile` object.)
+   * </em>
+   */
+  public getActivationReport(pkProject: any, pkProfile: any, requestedLanguage: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhProfiles/get-activation-report";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkProfile !== 'undefined' && pkProfile !== null) _urlParams.pkProfile = pkProfile;
+    if (typeof requestedLanguage !== 'undefined' && requestedLanguage !== null) _urlParams.requestedLanguage = requestedLanguage;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Creates an deactivation report for the given OntoMe profile and the given Geovistory project.
+   *
+   * @param {number} pkProject Geovistory project for which the deactivation report should be created
+   *
+   * @param {number} pkProfile OntoMe profile for which the deactivation report should be created
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhProfile` object.)
+   * </em>
+   */
+  public getDeactivationReport(pkProject: any, pkProfile: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhProfiles/get-deactivation-report";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkProfile !== 'undefined' && pkProfile !== null) _urlParams.pkProfile = pkProfile;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Deavtivates an OntoMe profile for a Geovistory project.
+   *
+   * @param {number} pkProject Geovistory project for which the profile should be deactivated
+   *
+   * @param {number} pkProfile OntoMe profile to deactivate for the given Geovistory project
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `DfhProfile` object.)
+   * </em>
+   */
+  public deactivateProfileForProject(pkProject: any, pkProfile: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/DfhProfiles/deactivate-ontome-profile-for-geovistory-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkProfile !== 'undefined' && pkProfile !== null) _urlParams.pkProfile = pkProfile;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `DfhProfile`.
    */

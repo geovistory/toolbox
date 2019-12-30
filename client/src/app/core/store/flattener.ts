@@ -5,8 +5,8 @@ import { keys, omit, values } from 'ramda';
 import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
-import { ProAnalysisSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice, ProClassFieldConfigSlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, ProClassFieldConfig } from '../sdk';
+import { ProAnalysisSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice, ProClassFieldConfigSlice, ProDfhProfileProjRelSlice } from '../pro/pro.models';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, ProClassFieldConfig, ProDfhProfileProjRel } from '../sdk';
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
@@ -56,12 +56,21 @@ export class Flattener {
       })
     })
 
-  dfh_class_proj_rel = new ModelFlattener<ProDfhClassProjRelSlice, ProDfhClassProjRel>(
+  pro_dfh_class_proj_rel = new ModelFlattener<ProDfhClassProjRelSlice, ProDfhClassProjRel>(
     this.proActions.dfh_class_proj_rel,
-    ProInfoProjRel.getModelDefinition(),
+    ProDfhClassProjRel.getModelDefinition(),
     (items) => {
       items.forEach(item => {
         item = new ProDfhClassProjRel(item);
+      })
+    })
+
+  pro_dfh_profile_proj_rel = new ModelFlattener<ProDfhProfileProjRelSlice, ProDfhProfileProjRel>(
+    this.proActions.dfh_profile_proj_rel,
+    ProDfhProfileProjRel.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProDfhProfileProjRel(item);
       })
     })
 
@@ -240,8 +249,9 @@ export class Flattener {
       pro_project: this.pro_project,
       pro_text_property: this.pro_text_property,
       pro_class_field_config: this.pro_class_field_config,
+      pro_dfh_profile_proj_rel: this.pro_dfh_profile_proj_rel,
+      pro_dfh_class_proj_rel: this.pro_dfh_class_proj_rel,
 
-      dfh_class_proj_rel: this.dfh_class_proj_rel,
       info_proj_rel: this.info_proj_rel,
       analysis: this.analysis,
 

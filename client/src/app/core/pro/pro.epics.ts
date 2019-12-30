@@ -6,11 +6,11 @@ import { proRoot } from 'app/core/pro/pro.config';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
-import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProAnalysis, ProAnalysisApi, ProProject, ProProjectApi } from '../sdk';
+import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProAnalysis, ProAnalysisApi, ProProject, ProProjectApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi } from '../sdk';
 import { LoadActionMeta, ModifyActionMeta, LoadByPkANsVersionActionMeta } from '../store/actions';
 import { StandardEpicsFactory } from '../store/StandardEpicsFactory';
-import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkRoleAsFavoriteActionMeta, ProInfoProjRelActionFactory } from './pro.actions';
-import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice } from './pro.models';
+import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkRoleAsFavoriteActionMeta, ProInfoProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProDfhClassProjRelActionFactory } from './pro.actions';
+import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { SchemaObject } from '../store/model';
 
 
@@ -24,6 +24,7 @@ export class ProEpics {
     public projectApi: ProProjectApi,
     public infoProjRelApi: ProInfoProjRelApi,
     public classProjRelApi: ProDfhClassProjRelApi,
+    public profileProjRelApi: ProDfhProfileProjRelApi,
     public classFieldConfApi: ProClassFieldConfigApi,
     public textPropertyApi: ProTextPropertyApi,
     public analysisApi: ProAnalysisApi,
@@ -36,8 +37,11 @@ export class ProEpics {
     const proInfoProjRelEpicsFactory = new StandardEpicsFactory<ProInfoProjRelSlice, ProInfoProjRel>
       (proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
 
-    const proProDfhClassProjRelEpicsFactory = new StandardEpicsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>
+    const proDfhClassProjRelEpicsFactory = new StandardEpicsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>
       (proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
+
+    const proDfhProfileProjRelEpicsFactory = new StandardEpicsFactory<ProDfhProfileProjRelSlice, ProDfhProfileProjRel>
+      (proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
 
     const proClassFieldConfigEpicsFactory = new StandardEpicsFactory<ProClassFieldConfigSlice, ProClassFieldConfig>
       (proRoot, 'class_field_config', this.proActions.class_field_config, this.notification);
@@ -115,12 +119,40 @@ export class ProEpics {
       /**
        * ProProDfhClassProjRel
        */
-      proProDfhClassProjRelEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classProjRelApi.getEnabledByProject(meta.pk), ''),
-      proProDfhClassProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProInfoProjRel>>((meta) => this.classProjRelApi
+      proDfhClassProjRelEpicsFactory.createLoadEpic<LoadActionMeta>(
+        (meta) => this.classProjRelApi.ofProject(meta.pk),
+        ProDfhClassProjRelActionFactory.OF_PROJECT,
+        (results) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.pro_dfh_class_proj_rel.flatten(results);
+          storeFlattened(flattener.getFlattened());
+        }
+      ),
+      proDfhClassProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProDfhClassProjRel>>((meta) => this.classProjRelApi
         .bulkUpsert(meta.pk, meta.items),
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.dfh_class_proj_rel.flatten(results);
+          flattener.pro_dfh_class_proj_rel.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+        }
+      ),
+      /**
+      * ProDfhProfileProjRel
+      */
+      proDfhProfileProjRelEpicsFactory.createLoadEpic<LoadActionMeta>(
+        (meta) => this.profileProjRelApi.ofProject(meta.pk),
+        ProDfhProfileProjRelActionFactory.OF_PROJECT,
+        (results) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.pro_dfh_profile_proj_rel.flatten(results);
+          storeFlattened(flattener.getFlattened());
+        }
+      ),
+      proDfhProfileProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProDfhProfileProjRel>>((meta) => this.profileProjRelApi
+        .bulkUpsert(meta.pk, meta.items),
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.pro_dfh_profile_proj_rel.flatten(results);
           storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),

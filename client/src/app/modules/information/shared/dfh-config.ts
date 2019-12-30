@@ -120,6 +120,11 @@ export class DfhConfig {
 
 
 
+  /**
+   * Profiles
+   */
+
+  static PK_PROFILE_GEOVISTORY_BASIC = 5;
 
   /**
    * System Types

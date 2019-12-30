@@ -1,5 +1,5 @@
 import { ByPk } from "app/core/store/model";
-import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProAnalysis, ProProject } from "../sdk";
+import { ProInfoProjRel, ProDfhClassProjRel, ProTextProperty, ProAnalysis, ProProject, ProDfhProfileProjRel } from "../sdk";
 
 export interface ProProjectSlice {
   by_pk_entity?: ByPk<ProProject>;
@@ -11,11 +11,15 @@ export interface ProInfoProjRelSlice {
 }
 
 export interface ProDfhClassProjRelSlice {
-  by_fk_project__fk_entity?: ByPk<ProDfhClassProjRel>;
+  by_fk_project__fk_class?: ByPk<ProDfhClassProjRel>;
   by_fk_project__enabled_in_entities?: ByPk<ByPk<ProDfhClassProjRel>>;
   loading?: boolean
 }
-
+export interface ProDfhProfileProjRelSlice {
+  by_fk_project__fk_profile?: ByPk<ProDfhProfileProjRel>;
+  by_fk_project__enabled?: ByPk<ByPk<ProDfhProfileProjRel>>;
+  loading?: boolean
+}
 
 export interface ProClassFieldConfigSlice {
   by_pk_entity?: ByPk<ProInfoProjRel>;

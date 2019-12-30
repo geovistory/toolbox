@@ -1,0 +1,27 @@
+table {
+  width: 100%;
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+.mat-column-expand {
+  width: 60px;
+  padding-left: 10px !important;
+}
+.mat-column-actions {
+  width: 120px;
+}
+.mat-column-expandedDetail {
+  padding-left: 61px !important;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}

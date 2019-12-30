@@ -136,7 +136,7 @@ export class ActiveProjectEpics {
         this.dat.namespace.load('', action.meta.pk_project);
 
         this.pro.text_property.loadOfProject(action.meta.pk_project)
-        this.pro.dfh_class_proj_rel.load('', action.meta.pk_project);
+        this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project);
         this.pro.class_field_config.loadOfProject(action.meta.pk_project);
 
         this.inf.persistent_item.typesOfProject(action.meta.pk_project)
@@ -178,48 +178,6 @@ export class ActiveProjectEpics {
 
     )
   }
-
-  // private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: SysAppContext, uiConf: ProClassFieldConfig) {
-
-  //   if (!cConf || !uiCtxt || !uiConf) return;
-
-  //   // if this class has no ui Context object yet, add empty object
-  //   if (!cConf.uiContexts) cConf.uiContexts = {};
-
-  //   // add the ui-context to the class in ProjectCrm
-  //   cConf.uiContexts[uiCtxt.pk_entity] = {
-  //     ...cConf.uiContexts[uiCtxt.pk_entity],
-  //     label: uiCtxt.label
-  //   }
-
-  //   // ui-context of this class
-  //   const cUiCtxt = cConf.uiContexts[uiCtxt.pk_entity];
-
-  //   // if this ui-context has no uiElements object yet, add empty array
-  //   if (!cUiCtxt.uiElements) cUiCtxt.uiElements = [];
-
-  //   const ordNum = (a: UiElement, b: UiElement) => {
-  //     if (!a || !b) return 0;
-  //     return a.ord_num - b.ord_num
-  //   };
-
-  //   // if this uiConf is enabled (has a ordNum)
-  //   if (uiConf.ord_num !== null) {
-  //     // add the ui-context-config to the uiElements
-  //     cUiCtxt.uiElements.push({
-  //       ord_num: uiConf.ord_num,
-  //       fk_property: uiConf.fk_property,
-  //       property_is_outgoing: uiConf.property_is_outgoing,
-  //       propertyFieldKey: uiConf.fk_property ? propertyFieldKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
-  //       fk_class_field: uiConf.fk_class_field,
-  //       class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
-  //       propSetKey: uiConf.fk_class_field ? ('_field_' + uiConf.fk_class_field) : undefined
-  //     })
-
-  //     // sort the array of uiElements by the ordNum
-  //     cUiCtxt.uiElements = sort(ordNum, cUiCtxt.uiElements)
-  //   }
-  // }
 
   private createLoadTypesEpic(): Epic {
     return (action$, store) => {
