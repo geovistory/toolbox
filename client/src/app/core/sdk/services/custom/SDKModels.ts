@@ -6,8 +6,6 @@ import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
 import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
 import { SysAnalysisType } from '../../models/SysAnalysisType';
 import { ProAnalysis } from '../../models/ProAnalysis';
-import { ProQuery } from '../../models/ProQuery';
-import { ProVisual } from '../../models/ProVisual';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
 import { ProProject } from '../../models/ProProject';
@@ -49,8 +47,6 @@ export class SDKModels {
     SysSystemRelevantClass: SysSystemRelevantClass,
     SysAnalysisType: SysAnalysisType,
     ProAnalysis: ProAnalysis,
-    ProQuery: ProQuery,
-    ProVisual: ProVisual,
     PubAccount: PubAccount,
     Email: Email,
     ProProject: ProProject,

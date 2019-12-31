@@ -38,14 +38,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "ProQuery": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "ProVisual": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "PubAccount": {
     "dataSource": "postgres1",
     "public": true,

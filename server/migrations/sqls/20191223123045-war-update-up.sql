@@ -133,6 +133,7 @@ CREATE TABLE war.enriched_node (
     last_second bigint,
     own_entity_label_field_order integer,
     entity_label text,
+    fk_type integer,
     type_label text,
     full_text text,
     ts_vector tsvector
@@ -1157,6 +1158,7 @@ CREATE FUNCTION war.enriched_nodes__create_all() RETURNS SETOF war.enriched_node
 	t1.last_second,
 	t1.own_entity_label_field_order,
 	t1.own_entity_label AS entity_label,
+  NULL:: integer fk_type,
 	NULL::text type_label,
 	NULL::text full_text,
 	NULL::tsvector ts_vector
@@ -1191,6 +1193,7 @@ CREATE FUNCTION war.enriched_nodes__create_some(param_pk_entities integer[], par
 		t1.last_second,
 		t1.own_entity_label_field_order,
 		t1.own_entity_label AS entity_label,
+    NULL:: integer fk_type,
 		NULL::text type_label,
 		NULL::text full_text,
 		NULL::tsvector ts_vector
@@ -1225,7 +1228,7 @@ $$;
 -- Name: enriched_nodes__enrich_entity_label(); Type: FUNCTION; Schema: war; Owner: -
 --
 
-CREATE FUNCTION war.enriched_nodes__enrich_entity_label() RETURNS void
+CREATE OR REPLACE FUNCTION war.enriched_nodes__enrich_entity_label() RETURNS void
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -1392,7 +1395,7 @@ CREATE FUNCTION war.enriched_nodes__enrich_some(node_ids war.node_id[]) RETURNS 
 	 JOIN LATERAL (
 		 -- join the target enriched_node, in project variant, else in repo variant
 		  SELECT DISTINCT ON (j2.pk_entity)
-		   j2.entity_label--, j2.pk_entity, j2.fk_project
+		   j2.entity_label, j2.pk_entity--, j2.fk_project
 		  FROM 
 			(
 			  SELECT t3.entity_label, t3.pk_entity--, t3.fk_project
@@ -1413,7 +1416,7 @@ CREATE FUNCTION war.enriched_nodes__enrich_some(node_ids war.node_id[]) RETURNS 
 	),
 	-- select type_label
 	tw3 AS (	
-		SELECT t1.pk_entity, t1.fk_project, t3.entity_label type_label
+		SELECT t1.pk_entity, t1.fk_project, t3.entity_label type_label, t3.pk_entity fk_type
 		FROM
 		tw1 t1	  
 		JOIN LATERAL (	
@@ -1428,7 +1431,7 @@ CREATE FUNCTION war.enriched_nodes__enrich_some(node_ids war.node_id[]) RETURNS 
 		JOIN LATERAL (
 		 -- join the target enriched_node, in project variant, else in repo variant
 		  SELECT DISTINCT ON (j2.pk_entity)
-		   j2.entity_label--, j2.pk_entity, j2.fk_project
+		   j2.entity_label, j2.pk_entity --, j2.fk_project
 		  FROM 
 			(
 			  SELECT t3.entity_label, t3.pk_entity--, t3.fk_project
@@ -1476,12 +1479,13 @@ CREATE FUNCTION war.enriched_nodes__enrich_some(node_ids war.node_id[]) RETURNS 
 			, t4.entity_label
 			, t1.own_full_text	
 	),
-	-- left join entity_label, full_text and type_label, where at least one needs update
+	-- left join entity_label, full_text, fk_type and type_label, where at least one needs update
 	tw5 AS (
 		SELECT 
 			t1.pk_entity,
 			t1.fk_project,
 			t1.entity_label old_label, t2.entity_label, 
+			t1.fk_type old_fk_type, t2.fk_type, 
 			t1.type_label old_type_label, t3.type_label,
 			t1.full_text old_full_text, t4.full_text
 		FROM tw1 t1
@@ -1501,6 +1505,8 @@ CREATE FUNCTION war.enriched_nodes__enrich_some(node_ids war.node_id[]) RETURNS 
 			t1.entity_label IS DISTINCT FROM t2.entity_label
 			OR
 			t1.type_label IS DISTINCT FROM t3.type_label
+      OR
+			t1.fk_type IS DISTINCT FROM t3.fk_type
 			OR
 			t1.full_text IS DISTINCT FROM t4.full_text
 		)
@@ -1509,6 +1515,7 @@ CREATE FUNCTION war.enriched_nodes__enrich_some(node_ids war.node_id[]) RETURNS 
 		war.enriched_node t1
 	SET
 		entity_label = t2.entity_label,
+		fk_type = t2.fk_type,
 		type_label = t2.type_label,
 		full_text = t2.full_text,
 		ts_vector = (
@@ -1544,7 +1551,7 @@ BEGIN
   LOOP
       -- fill type label
 	  	WITH tw0 AS (	
-		 SELECT t1.pk_entity, t1.fk_project, t1.type_label, t3.entity_label
+		 SELECT t1.pk_entity, t1.fk_project, t3.entity_label type_label, t3.pk_entity fk_type
 		 FROM
 		  war.enriched_node t1	  
 		 JOIN LATERAL (	
@@ -1559,7 +1566,7 @@ BEGIN
 		 JOIN LATERAL (
 			 -- join the target enriched_node, in project variant, else in repo variant
 			  SELECT DISTINCT ON (j2.pk_entity)
-			   j2.entity_label--, j2.pk_entity, j2.fk_project
+			   j2.entity_label, j2.pk_entity--, j2.fk_project
 			  FROM 
 				(
 				  SELECT t3.entity_label, t3.pk_entity--, t3.fk_project
@@ -1577,19 +1584,24 @@ BEGIN
 				  AND t3.fk_project IS NULL
 				) j2
 		 ) t3 ON 
-		 t1.type_label IS DISTINCT FROM t3.entity_label
+		  (
+        t1.type_label IS DISTINCT FROM t3.entity_label
+        OR
+        t1.fk_type IS DISTINCT FROM t3.pk_entity
+      )
 
 		),
 	  	 tw1 AS (
 			UPDATE
 			  war.enriched_node t1
 			SET
-			  type_label = t2.entity_label
+			  type_label = t2.type_label,
+        fk_type = t2.fk_type
 			FROM
 			 tw0 t2
 			 WHERE t1.pk_entity = t2.pk_entity
 			 AND t1.fk_project IS NOT DISTINCT FROM t2.fk_project
-			 RETURNING t1.*, t2.entity_label
+			 RETURNING t1.*, t2.type_label
 		)
 			SELECT count(*) > 0 into needs_update
 			FROM tw1;
@@ -1635,7 +1647,7 @@ SELECT
   t1.full_text,
   t1.ts_vector,
   t1.type_label,
-  NULL::int, --t1.fk_type,
+  t1.fk_type,
   t1.time_span,
   t1.first_second,
   t1.last_second
@@ -1769,7 +1781,7 @@ BEGIN
 		full_text,
 		ts_vector,
 		type_label,
-		--fk_type,
+		fk_type,
 		time_span,
 		first_second,
 		last_second,
@@ -1788,7 +1800,7 @@ BEGIN
 		full_text,
 		ts_vector,
 		type_label,
-		--fk_type,
+		fk_type,
 		time_span,
 		first_second,
 		last_second,
@@ -1806,7 +1818,7 @@ BEGIN
     full_text = tw1.full_text,
     ts_vector = tw1.ts_vector,
     type_label = tw1.type_label,
-    --fk_type = tw1.fk_type,
+    fk_type = tw1.fk_type,
     time_span = tw1.time_span,
     first_second = tw1.first_second,
     last_second = tw1.last_second
@@ -2840,6 +2852,8 @@ CREATE INDEX enriched_node_entity_type_idx ON war.enriched_node USING btree (ent
 
 CREATE INDEX enriched_node_fk_class_idx ON war.enriched_node USING btree (fk_class);
 
+CREATE INDEX enriched_node_fk_type_idx ON war.enriched_node USING btree (fk_type);
+
 
 --
 -- Name: enriched_node_fk_project_idx; Type: INDEX; Schema: war; Owner: -
@@ -2998,5 +3012,5 @@ Create Trigger after_update_or_insert_of_class_label
     Execute Procedure war.notify__need_to_check_class_labels ();
 
 
--- 3 create warehouse data
-SELECT war.warehouse_update_all();
+-- -- 3 create warehouse data
+-- SELECT war.warehouse_update_all();

@@ -54,8 +54,6 @@ import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypePro
 import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
 import { SysAnalysisTypeApi } from './services/custom/SysAnalysisType';
 import { ProAnalysisApi } from './services/custom/ProAnalysis';
-import { ProQueryApi } from './services/custom/ProQuery';
-import { ProVisualApi } from './services/custom/ProVisual';
 import { PubAccountApi } from './services/custom/PubAccount';
 import { EmailApi } from './services/custom/Email';
 import { ProProjectApi } from './services/custom/ProProject';
@@ -120,8 +118,6 @@ export class SDKBrowserModule {
         SysSystemRelevantClassApi,
         SysAnalysisTypeApi,
         ProAnalysisApi,
-        ProQueryApi,
-        ProVisualApi,
         PubAccountApi,
         EmailApi,
         ProProjectApi,

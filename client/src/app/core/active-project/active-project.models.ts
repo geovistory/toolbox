@@ -1,4 +1,4 @@
-import { DatChunk, DfhProperty, InfLanguage, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProQuery, ProVisual, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
+import { DatChunk, DfhProperty, InfLanguage, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
 import { EntityPreview, EntityPreviewList, FieldList, PeItDetail, PeItDetailList, PropertyFieldList, TeEntDetail } from 'app/core/state/models';
 import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
 // import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
@@ -41,7 +41,7 @@ export interface TypesByPk { [pk_entity: string]: TypePeIt; }
 export interface TypePreview extends EntityPreview { fk_typed_class: number; }
 export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
 export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
-export interface ComQueryByPk { [key: string]: ProQuery }
+// export interface ComQueryByPk { [key: string]: ProQuery }
 
 export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
 
@@ -144,15 +144,15 @@ export interface ProjectDetail extends ProjectPreview {
   // InfPersistentItems with roles by pk_entity
   teEnGraphs?: TeEnList;
 
-  // ComQuery list by pk_entity
-  comQueryVersionsByPk?: EntityVersionsByPk<ProQuery>;
-  comQueryLoading?: boolean;
-  comQueryVersionLoading?: { [key: string]: boolean };
+  // // ComQuery list by pk_entity
+  // comQueryVersionsByPk?: EntityVersionsByPk<ProQuery>;
+  // comQueryLoading?: boolean;
+  // comQueryVersionLoading?: { [key: string]: boolean };
 
-  // ComVisual list by pk_entity
-  comVisualVersionsByPk?: EntityVersionsByPk<ProVisual>;
-  comVisualLoading?: boolean;
-  comVisualVersionLoading?: boolean;
+  // // ComVisual list by pk_entity
+  // comVisualVersionsByPk?: EntityVersionsByPk<ProVisual>;
+  // comVisualLoading?: boolean;
+  // comVisualVersionLoading?: boolean;
 
 
   /******************************************************************

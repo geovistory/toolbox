@@ -1,0 +1,355 @@
+{
+  "name": "ProQuery",
+  "base": "ProEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "projects",
+      "table": "query"
+    }
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string",
+      "required": false
+    },
+    "query": {
+      "type": "object",
+      "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "fk_last_modifier": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "project": {
+      "type": "belongsTo",
+      "model": "ProProject",
+      "foreignKey": "fk_project",
+      "primaryKey": "pk_entity"
+    },
+    "account": {
+      "type": "belongsTo",
+      "model": "PubAccount",
+      "foreignKey": "fk_last_modifier",
+      "primaryKey": "id"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "findPerProject",
+        "findByIdAndProject",
+        "findByIdAndVersionAndProject",
+        "create",
+        "patchAttributes",
+        "deleteById",
+        "run",
+        "runAndExport",
+        "runVersion"        
+      ]
+    }
+  ],
+  "methods": {
+    "run": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "query",
+          "type": "object",
+          "required": true,
+          "description": "query definition object",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Run a query.",
+      "http": {
+        "path": "/run",
+        "verb": "get"
+      }
+    },
+    "runVersion": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the query",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "version",
+          "type": "number",
+          "required": true,
+          "description": "Version of the query",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Run an existing query-version.",
+      "http": {
+        "path": "/run-version",
+        "verb": "get"
+      }
+    },
+    "findPerProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": true,
+          "description": "max. number of records returned",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "offset",
+          "type": "number",
+          "required": true,
+          "description": "offset of the first record returned",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProQuery"
+        ],
+        "root": true
+      },
+      "description": "Find queries of project.",
+      "http": {
+        "path": "/find-per-project",
+        "verb": "get"
+      }
+    },
+    "findByIdAndProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk Entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProQuery"
+        ],
+        "root": true
+      },
+      "description": "Find one query.",
+      "http": {
+        "path": "/find-by-id-and-project",
+        "verb": "get"
+      }
+    },
+    "findByIdAndVersionAndProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk Entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "version",
+          "type": "number",
+          "required": true,
+          "description": "Entity version",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProQuery"
+        ],
+        "root": true
+      },
+      "description": "Find one query by id, version and project.",
+      "http": {
+        "path": "/find-by-id-and-version-and-project",
+        "verb": "get"
+      }
+    },
+    "runAndExport": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "query",
+          "type": "object",
+          "required": true,
+          "description": "query definition object",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "filetype",
+          "type": "string",
+          "required": true,
+          "description": "One of those filetypes: 'json', 'csv', 'xls'",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "string",
+        "root": true
+      },
+      "description": "Run query and export the query in the given filetype format.",
+      "http": {
+        "path": "/run-and-export",
+        "verb": "get"
+      }
+    }
+  }
+}

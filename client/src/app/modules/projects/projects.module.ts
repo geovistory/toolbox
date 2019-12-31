@@ -38,7 +38,6 @@ import { Information2Module } from '../information/information.module';
 import { QueriesModule } from '../queries/queries.module';
 import { SettingsModule } from '../settings/settings.module';
 import { SourcesModule } from '../sources';
-import { VisualsModule } from '../visuals/visuals.module';
 import { ProjectsActions } from './api/projects.actions';
 import { SettingsListComponent } from './components/settings-list/settings-list.component';
 // import { SideNavComponent } from './components/side-nav/side-nav.component';
@@ -98,7 +97,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     SourcesModule,
     Information2Module,
     QueriesModule,
-    VisualsModule,
     AnalysisModule,
     PortalModule,
     DrawerContainerResizeModule,

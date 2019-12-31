@@ -1123,16 +1123,21 @@ export class InformationPipesService {
 
   @cache({ refCount: false })
   pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
-    return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeClassFieldConfigs(pkClass, SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE)
+    return combineLatestOrEmpty(classes.map(pkClass => this.c.pipeFieldDefinitionsSpecificFirst(pkClass)
       .pipe(switchMap(classFields => {
-        const fields = classFields.filter(f => !!f.fk_property);
-        return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfPropertyField(field.fk_property, field.fk_domain_class, field.fk_range_class).pipe(map(label => {
-          const isOutgoing = !!field.fk_domain_class;
+        const fields = classFields.filter(f => !!f.pkProperty);
+
+        return combineLatestOrEmpty(fields.map(field => this.c.pipeLabelOfPropertyField(
+          field.pkProperty,
+          field.isOutgoing ? field.sourceClass : null,
+          field.isOutgoing ? null : field.sourceClass,
+        ).pipe(map(label => {
+          const isOutgoing = field.isOutgoing;
           const o: PropertyOption = {
             isOutgoing,
             label,
-            pk: field.fk_property,
-            propertyFieldKey: propertyOptionFieldKey(field.fk_property, isOutgoing)
+            pk: field.pkProperty,
+            propertyFieldKey: propertyOptionFieldKey(field.pkProperty, isOutgoing)
           };
           return o;
         }))));

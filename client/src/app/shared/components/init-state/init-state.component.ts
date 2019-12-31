@@ -92,7 +92,7 @@ export class InitStateComponent implements OnInit, AfterViewInit, OnDestroy {
       const configLoaded = new Subject<boolean>();
       this.waitForAll.push(configLoaded)
 
-      this.ngRedux.select(['activeProject', 'crm', 'classes']).pipe(
+      this.ngRedux.select(['activeProject', 'configDataInitialized']).pipe(
         first(c => !!c),
         takeUntil(this.destroy$)
       ).subscribe(ok => {

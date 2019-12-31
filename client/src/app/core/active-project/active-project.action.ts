@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProQuery, ProVisual } from '../sdk';
+import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
 import { EntityPreview, HasTypePropertyReadable, PeItDetail } from '../state/models';
-import { ListType, Panel, ProjectCrm, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
+import { ListType, Panel, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
 
-export interface ComQueryV extends ProQuery {
-  versions: number[];
-}
+// export interface ComQueryV extends ProQuery {
+//   versions: number[];
+// }
 
-export interface ComVisualV extends ProVisual {
-  versions: number[];
-}
+// export interface ComVisualV extends ProVisual {
+//   versions: number[];
+// }
 
 interface MetaData {
 
@@ -30,10 +30,10 @@ interface MetaData {
   teEnGraphs?: InfTemporalEntity[]
   peItGraphs?: InfPersistentItem[]
   types?: TypePeIt[]
-  comQueryArray?: ComQueryV[]
-  comQuery?: ProQuery
-  comVisualArray?: ComVisualV[]
-  comVisual?: ProVisual
+  // comQueryArray?: ComQueryV[]
+  // comQuery?: ProQuery
+  // comVisualArray?: ComVisualV[]
+  // comVisual?: ProVisual
 
   // CRM and Config
   projRel?: ProDfhClassProjRel;
@@ -447,143 +447,143 @@ export class ActiveProjectActions {
   }
 
 
-  // Queries
-  static LOAD_QUERIES = 'ActiveProject::LOAD_QUERIES';
-  static LOAD_QUERIES_SUCCEEDED = 'ActiveProject::LOAD_QUERIES_SUCCEEDED';
-  static LOAD_QUERIES_FAILED = 'ActiveProject::LOAD_QUERIES_FAILED';
+  // // Queries
+  // static LOAD_QUERIES = 'ActiveProject::LOAD_QUERIES';
+  // static LOAD_QUERIES_SUCCEEDED = 'ActiveProject::LOAD_QUERIES_SUCCEEDED';
+  // static LOAD_QUERIES_FAILED = 'ActiveProject::LOAD_QUERIES_FAILED';
 
-  loadQueries(pk_project: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_QUERIES,
-      payload: null,
-      meta: {
-        pk_project
-      }
-    }
-  }
+  // loadQueries(pk_project: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_QUERIES,
+  //     payload: null,
+  //     meta: {
+  //       pk_project
+  //     }
+  //   }
+  // }
 
-  loadQueriesSucceeded(comQueryArray: ComQueryV[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_QUERIES_SUCCEEDED,
-      payload: null,
-      meta: {
-        comQueryArray
-      },
-    }
-  }
+  // loadQueriesSucceeded(comQueryArray: ComQueryV[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_QUERIES_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       comQueryArray
+  //     },
+  //   }
+  // }
 
-  loadQueriesFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_QUERIES_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
-
-
-  // Query Version
-  static LOAD_QUERY_VERSION = 'ActiveProject::LOAD_QUERY_VERSION';
-  static LOAD_QUERY_VERSION_SUCCEEDED = 'ActiveProject::LOAD_QUERY_VERSION_SUCCEEDED';
-  static LOAD_QUERY_VERSION_FAILED = 'ActiveProject::LOAD_QUERY_VERSION_FAILED';
-
-  loadQueryVersion(pk_project: number, pk_entity: number, entity_version: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_QUERY_VERSION,
-      payload: null,
-      meta: {
-        pk_project, pk_entity, entity_version
-      }
-    }
-  }
-
-  loadQueryVersionSucceeded(comQuery: ProQuery): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED,
-      payload: null,
-      meta: {
-        comQuery
-      },
-    }
-  }
-
-  loadQueryVersionFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_QUERY_VERSION_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadQueriesFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_QUERIES_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
 
+  // // Query Version
+  // static LOAD_QUERY_VERSION = 'ActiveProject::LOAD_QUERY_VERSION';
+  // static LOAD_QUERY_VERSION_SUCCEEDED = 'ActiveProject::LOAD_QUERY_VERSION_SUCCEEDED';
+  // static LOAD_QUERY_VERSION_FAILED = 'ActiveProject::LOAD_QUERY_VERSION_FAILED';
 
-  // Visuals
-  static LOAD_VISUALS = 'ActiveProject::LOAD_VISUALS';
-  static LOAD_VISUALS_SUCCEEDED = 'ActiveProject::LOAD_VISUALS_SUCCEEDED';
-  static LOAD_VISUALS_FAILED = 'ActiveProject::LOAD_VISUALS_FAILED';
+  // loadQueryVersion(pk_project: number, pk_entity: number, entity_version: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_QUERY_VERSION,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entity, entity_version
+  //     }
+  //   }
+  // }
 
-  loadVisuals(pk_project: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_VISUALS,
-      payload: null,
-      meta: {
-        pk_project
-      }
-    }
-  }
+  // loadQueryVersionSucceeded(comQuery: ProQuery): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       comQuery
+  //     },
+  //   }
+  // }
 
-  loadVisualsSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_VISUALS_SUCCEEDED,
-      payload: null,
-      meta: {
-        comVisualArray
-      },
-    }
-  }
+  // loadQueryVersionFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_QUERY_VERSION_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
-  loadVisualsFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_VISUALS_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
-  // Visual Version
-  static LOAD_VISUAL_VERSION = 'ActiveProject::LOAD_VISUAL_VERSION';
-  static LOAD_VISUAL_VERSION_SUCCEEDED = 'ActiveProject::LOAD_VISUAL_VERSION_SUCCEEDED';
-  static LOAD_VISUAL_VERSION_FAILED = 'ActiveProject::LOAD_VISUAL_VERSION_FAILED';
 
-  loadVisualVersion(pk_project: number, pk_entity: number, entity_version?: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_VISUAL_VERSION,
-      payload: null,
-      meta: {
-        pk_project, pk_entity, entity_version
-      }
-    }
-  }
 
-  loadVisualVersionSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_VISUAL_VERSION_SUCCEEDED,
-      payload: null,
-      meta: {
-        comVisualArray
-      },
-    }
-  }
+  // // Visuals
+  // static LOAD_VISUALS = 'ActiveProject::LOAD_VISUALS';
+  // static LOAD_VISUALS_SUCCEEDED = 'ActiveProject::LOAD_VISUALS_SUCCEEDED';
+  // static LOAD_VISUALS_FAILED = 'ActiveProject::LOAD_VISUALS_FAILED';
 
-  loadVisualVersionFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_VISUAL_VERSION_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadVisuals(pk_project: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_VISUALS,
+  //     payload: null,
+  //     meta: {
+  //       pk_project
+  //     }
+  //   }
+  // }
+
+  // loadVisualsSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_VISUALS_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       comVisualArray
+  //     },
+  //   }
+  // }
+
+  // loadVisualsFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_VISUALS_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
+  // // Visual Version
+  // static LOAD_VISUAL_VERSION = 'ActiveProject::LOAD_VISUAL_VERSION';
+  // static LOAD_VISUAL_VERSION_SUCCEEDED = 'ActiveProject::LOAD_VISUAL_VERSION_SUCCEEDED';
+  // static LOAD_VISUAL_VERSION_FAILED = 'ActiveProject::LOAD_VISUAL_VERSION_FAILED';
+
+  // loadVisualVersion(pk_project: number, pk_entity: number, entity_version?: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_VISUAL_VERSION,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entity, entity_version
+  //     }
+  //   }
+  // }
+
+  // loadVisualVersionSucceeded(comVisualArray: ComVisualV[]): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_VISUAL_VERSION_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       comVisualArray
+  //     },
+  //   }
+  // }
+
+  // loadVisualVersionFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_VISUAL_VERSION_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
 
 

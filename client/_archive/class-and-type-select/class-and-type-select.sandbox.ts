@@ -3,20 +3,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
-import { QueriesModule } from '../../queries.module';
+import { delay, first } from 'rxjs/operators';
 import { ClassAndTypeSelectComponent } from './class-and-type-select.component';
-import { first, delay } from 'rxjs/operators';
 
 // create a BehaviorSubject that emits first null, and after 1 sec [21, 61]
 const pkClasses$ = new BehaviorSubject(null)
 pkClasses$.pipe(first(), delay(1000)).subscribe(() => {
-  pkClasses$.next([21, 61, 523, 442, 68, 363])
+  pkClasses$.next([21, 61, 523, 442, 68, 363, 220])
 })
 
 export default sandboxOf(ClassAndTypeSelectComponent, {
   declareComponent: false,
   imports: [
-    QueriesModule,
     MatFormFieldModule,
     FormsModule,
     InitStateModule

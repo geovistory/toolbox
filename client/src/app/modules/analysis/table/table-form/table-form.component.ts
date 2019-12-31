@@ -14,6 +14,7 @@ import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from '
 import { QueryDefinition, TableInput } from '../../../../../../../src/common/interfaces';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 
 
 export interface TableFormGroupData {
@@ -51,7 +52,8 @@ export class TableFormComponent implements OnInit, OnDestroy, FormFactoryCompone
 
   constructor(
     private ff: FormFactoryService,
-    private t: TableFormService) { }
+    private t: TableFormService,
+    private i: InformationPipesService) { }
 
   ngOnInit() {
 
@@ -78,7 +80,8 @@ export class TableFormComponent implements OnInit, OnDestroy, FormFactoryCompone
     this.formFactory$.pipe(
       switchMap(ff => ff.formGroupFactory.valueChanges$),
       filter((value: TableInput) => (!!value && !!value.queryDefinition && !!value.queryDefinition.filter && !!value.queryDefinition.filter.data && !!value.queryDefinition.filter.data.classes)),
-      map((value: TableInput) => value.queryDefinition.filter.data.classes),
+      map((value: TableInput) => value.queryDefinition.filter.data),
+      switchMap((classesAndTypes: ClassAndTypeSelectModel) => this.i.pipeClassesFromClassesAndTypes(classesAndTypes)),
       distinctUntilChanged<number[]>(equals),
       takeUntil(this.destroy$)
     ).subscribe((v) => {

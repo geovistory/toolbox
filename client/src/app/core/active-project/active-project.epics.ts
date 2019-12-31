@@ -11,11 +11,11 @@ import { DfhSelector } from '../dfh/dfh.service';
 import { InfActions } from '../inf/inf.actions';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
 import { ProSelector } from '../pro/pro.service';
-import { DatChunk, DatChunkApi, DfhPropertyApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProDfhClassProjRelApi, ProInfoProjRelApi, ProProject, ProProjectApi, ProQueryApi, ProVisualApi, SysAppContextApi, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
+import { DatChunk, DatChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProInfoProjRelApi, ProProject, ProProjectApi, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
 import { IAppState } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { U } from '../util/util';
-import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
+import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 
 
 
@@ -32,12 +32,11 @@ export class ActiveProjectEpics {
     private teEnApi: InfTemporalEntityApi,
     private infProjRelApi: ProInfoProjRelApi,
     private chunkApi: DatChunkApi,
-    private sysAppCtxApi: SysAppContextApi,
     private projectApi: ProProjectApi,
-    private projRelApi: ProDfhClassProjRelApi,
-    private comQuery: ProQueryApi,
-    private comVisual: ProVisualApi,
-    private dfhPropertyApi: DfhPropertyApi,
+    // private projRelApi: ProDfhClassProjRelApi,
+    // private comQuery: ProQueryApi,
+    // private comVisual: ProVisualApi,
+    // private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: SysClassFieldApi,
     private sysHasTypePropsApi: SysClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
@@ -56,10 +55,10 @@ export class ActiveProjectEpics {
       this.createLoadPeItGraphEpic(),
       this.createLoadTeEnGraphEpic(),
       this.createLoadTypesEpic(),
-      this.createLoadQueriesEpic(),
-      this.createLoadQueryVersionEpic(),
-      this.createLoadVisualsEpic(),
-      this.createLoadVisualVersionEpic(),
+      // this.createLoadQueriesEpic(),
+      // this.createLoadQueryVersionEpic(),
+      // this.createLoadVisualsEpic(),
+      // this.createLoadVisualVersionEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
@@ -364,210 +363,210 @@ export class ActiveProjectEpics {
     }
   }
 
-  private createLoadQueryVersionEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_QUERY_VERSION),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comQuery.findByIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadQueryVersionEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_QUERY_VERSION),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comQuery.findByIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadQueryVersionSucceeded(data[0]));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadQueryVersionSucceeded(data[0]));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadQueryVersionFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadQueryVersionFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
-  private createLoadQueriesEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_QUERIES),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comQuery.findPerProject(action.meta.pk_project, 10000, 0)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: ComQueryV[]) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadQueriesEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_QUERIES),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comQuery.findPerProject(action.meta.pk_project, 10000, 0)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: ComQueryV[]) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadQueriesSucceeded(data));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadQueriesSucceeded(data));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadQueriesFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadQueriesFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
-  private createLoadVisualsEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_VISUALS),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, null, null)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: ComVisualV[]) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadVisualsEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_VISUALS),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, null, null)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: ComVisualV[]) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadVisualsSucceeded(data));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadVisualsSucceeded(data));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadVisualsFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadVisualsFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
 
-  private createLoadVisualVersionEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_VISUAL_VERSION),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: ComVisualV[]) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadVisualVersionEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_VISUAL_VERSION),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: ComVisualV[]) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadVisualVersionSucceeded(data))
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadVisualVersionSucceeded(data))
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadVisualVersionFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadVisualVersionFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
 
   /**

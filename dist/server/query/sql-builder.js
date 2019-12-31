@@ -35,7 +35,7 @@ class SqlBuilder {
         // root table where
         this.filterWheres.push(this.createEntityWhere(query.filter, rootTableAlias, fkProject));
         // root table from
-        this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`);
+        this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
         this.froms.push(`tw1 ${rootTableAlias}`);
         // create froms and wheres according to filter definition
         const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
@@ -95,7 +95,7 @@ class SqlBuilder {
         // root table where
         this.filterWheres.push(this.createEntityWhere(query.filter, rootTableAlias, fkProject));
         // root table from
-        this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`);
+        this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
         this.froms.push(`tw1 ${rootTableAlias}`);
         // create froms and wheres according to filter definition
         const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
@@ -262,7 +262,7 @@ class SqlBuilder {
     }
     joinEntities(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
         fromsArray.push(`
-                    LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
+                    LEFT JOIN war.entity_preview ${thisTableAlias} ON
                     (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
                     AND
                      ${this.createEntityWhere(node, thisTableAlias, fkProject)}

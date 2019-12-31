@@ -611,63 +611,6 @@ export class ConfigurationPipesService {
       )
   }
 
-
-  // @spyTag @cache({ refCount: false }) pipeListDefinitionsOfField(field: ProClassFieldConfig): Observable<ListDefinition[]> {
-  //   if (field.fk_property) {
-  //     return this.pipePropertiesOfFieldItemWhereTargetEnabled(field).pipe(
-  //       switchMap((ps) => combineLatest(
-  //         ps.map(p => {
-  //           // TODO once pkProperty concept is changed, simplify this.
-
-  //           const o = !!field.fk_domain_class;
-  //           const targetClass = o ? p.has_range : p.has_domain;
-  //           const sourceClass = o ? p.has_domain : p.has_range;
-  //           const targetMaxQuantity = o ?
-  //             p.range_instances_max_quantifier :
-  //             p.domain_instances_max_quantifier;
-
-  //           return combineLatest(
-  //             this.pipeClassLabel(targetClass),
-  //             this.pipeListTypeOfClass(targetClass),
-  //             this.pipeLabelOfPropertyField(
-  //               field.fk_property,
-  //               field.fk_domain_class,
-  //               field.fk_range_class
-  //             )
-  //           ).pipe(
-  //             map(([targetClassLabel, listType, label]) => {
-
-  //               const node: ListDefinition = {
-  //                 listType,
-  //                 targetClass,
-  //                 sourceClass,
-  //                 targetClassLabel,
-  //                 targetMaxQuantity,
-  //                 label,
-  //                 pkProperty: p.pk_property,
-  //                 // fkPropertyOfOrigin: field.fk_property_of_origin,
-  //                 fkClassField: undefined,
-  //                 isOutgoing: o,
-  //                 isIdentityDefining: p.identity_defining,
-  //                 ontoInfoLabel: p.identifier_in_namespace,
-  //                 ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/' + p.pk_property
-  //               }
-  //               return node
-  //             }),
-  //             startWith(undefined)
-  //           )
-  //         })
-
-  //       ).pipe(
-  //         filter(x => !x.includes(undefined)),
-  //         startWith([])
-  //       ))
-  //     )
-  //   } else {
-  //     return of([this.getClassFieldListDefinition(field.fk_class_field)])
-  //   }
-  // }
-
   @cache({ refCount: false }) pipeListDefinitionsOfProperties(properties: DfhProperty[], isOutgoing: boolean): Observable<ListDefinition[]> {
     return combineLatestOrEmpty(
       properties.map(p => {
