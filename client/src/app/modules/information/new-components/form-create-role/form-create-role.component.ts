@@ -173,7 +173,7 @@ export class FormCreateRoleComponent implements OnInit {
     };
 
 
-    const formParts$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext).pipe(debounceTime(20), mergeMap(fields => {
+    const formParts$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass).pipe(debounceTime(20), mergeMap(fields => {
       // empty formGroup
       Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
       // map the field to a form part
@@ -212,21 +212,23 @@ export class FormCreateRoleComponent implements OnInit {
   private mergeValue(target: any, source: any, mergeDef: MergeDef) {
     let part = target ? target : mergeDef.targetType === 'array' ? [] : {};
 
-    mergeDef.target.forEach(key => {
-      if (!hasIn(key, part)) {
-        mergeDef.targetType === 'array' ? part[key] = [] : part[key] = {};
-      }
-      part = part[key]
-    });
+    if (mergeDef) {
+      mergeDef.target.forEach(key => {
+        if (!hasIn(key, part)) {
+          mergeDef.targetType === 'array' ? part[key] = [] : part[key] = {};
+        }
+        part = part[key]
+      });
 
-    if (mergeDef.targetType === 'array') {
-      if (mergeDef.sourceType === 'object') part.push(source)
-      else if (mergeDef.sourceType === 'array') {
-        source.forEach(s => part.push(s));
+      if (mergeDef.targetType === 'array') {
+        if (mergeDef.sourceType === 'object') part.push(source)
+        else if (mergeDef.sourceType === 'array') {
+          source.forEach(s => part.push(s));
+        }
       }
-    }
-    else if (mergeDef.targetType === 'object') {
-      Object.assign(part, source)
+      else if (mergeDef.targetType === 'object') {
+        Object.assign(part, source)
+      }
     }
     return target
   }

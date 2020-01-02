@@ -53,7 +53,7 @@ export class ProjectDashboardComponent implements OnInit, OnDestroy {
     this.showDashboard$ = p.dashboardVisible$;
 
     this.p.initProject(this.id);
-    this.p.initProjectCrm(this.id);
+    this.p.initProjectConfigData(this.id);
 
     this.ngRedux.select<ProjectDetail>('activeProject').pipe(
       takeUntil(this.destroy$)).subscribe(p => this.project = p)

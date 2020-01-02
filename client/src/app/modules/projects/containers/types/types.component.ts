@@ -17,6 +17,7 @@ import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
 import { FieldDefinition, TemporalEntityItem } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
 import { createPaginateBy } from 'app/modules/information/new-components/temporal-entity-list/temporal-entity-list.component';
+import { PaginationService } from 'app/modules/information/new-services/pagination.service';
 
 interface TypeItem {
   pkEntity: number
@@ -80,7 +81,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     public ref: ChangeDetectorRef,
     public c: ConfigurationPipesService,
     public b: InformationBasicPipesService,
-    public i: InformationPipesService
+    public i: InformationPipesService,
+    private pag: PaginationService
   ) {
   }
 
@@ -95,9 +97,14 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
-    const hasTypeProp$ = this.p.sys$.class_has_type_property$.by_dfh_pk_property$.key(this.pkProperty).pipe(
+
+    const hasTypeProp$ = this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
       filter(object => !!object && Object.keys(object).length > 0),
-      map((object) => values(object)[0]),
+      map((object) => values(object).find(prop => prop.pk_property === this.pkProperty)),
+      map((prop) => ({
+        pk_typed_class: prop.has_domain,
+        pk_type_class: prop.has_range,
+      })),
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
@@ -111,49 +118,45 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
-    this.typedClassLabel$ = hasTypeProp$.pipe(
-      switchMap((hasTypeProp) => this.c.pipeLabelOfClass(hasTypeProp.pk_typed_class).pipe(
+    this.typedClassLabel$ = this.typedClassPk$.pipe(
+      switchMap((pk) => this.c.pipeClassLabel(pk).pipe(
         tap((typedClassLabel) => {
           this.t.setTabTitle(typedClassLabel + ' Types')
         })
       )),
     )
 
-    this.typeClassLabel$ = hasTypeProp$.pipe(
-      switchMap((hasTypeProp) => this.c.pipeLabelOfClass(hasTypeProp.pk_type_class)),
+    this.typeClassLabel$ = this.typeClassPk$.pipe(
+      switchMap((pk) => this.c.pipeClassLabel(pk)),
     )
 
     this.typePks$ = this.typeClassPk$.pipe(
       switchMap(typeClassPk => this.b.pipePersistentItemPksByClass(typeClassPk))
     )
-    const appContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
     const appeAndDefFields$ = this.typeClassPk$.pipe(
-      // get editable field configs of this class
-      switchMap(pkClass => this.c.pipeClassFieldConfigs(pkClass, appContext).pipe(
-        // get editable fieldDefinitions
-        switchMap(fields => combineLatest(fields.map(field => this.c.pipeFieldDefinition(field))).pipe(
-          map(fieldDefinitions => {
-            let appeField: FieldDefinition, definitionField: FieldDefinition;
-            fieldDefinitions.forEach(f => {
-              // take only appellation for language, or ...
-              if (f.listDefinitions[0].fkPropertyOfOrigin === 1111) {
-                appeField = f;
-              }
-              // ... entit definition
-              else if (f.listDefinitions[0].fkClassField === 219) {
-                definitionField = f;
-              }
-            })
-            return { appeField, definitionField }
+      // get editable fieldDefinitions
+      switchMap((fkClass) => this.c.pipeFieldDefinitions(fkClass).pipe(
+        map(fieldDefinitions => {
+          let appeField: FieldDefinition, definitionField: FieldDefinition;
+          fieldDefinitions.forEach(f => {
+            // take only appellation for language, or ...
+            if (f.listDefinitions[0].pkProperty === 1111) {
+              appeField = f;
+            }
+            // ... entit definition
+            else if (f.listDefinitions[0].fkClassField === 219) {
+              definitionField = f;
+            }
           })
-        ))
+          return { appeField, definitionField }
+        })
       ))
     )
 
     const appeAndLangFields$ = appeAndDefFields$.pipe(
       switchMap(appeAndDefFields =>
-        this.c.pipeFieldDefinitions(appeAndDefFields.appeField.listDefinitions[0].targetClass, appContext).pipe(
+        this.c.pipeFieldDefinitions(appeAndDefFields.appeField.listDefinitions[0].targetClass).pipe(
           map(fieldDefs => fieldDefs.filter(f => f.listType === 'language' || f.listType === 'appellation'))
         )
       )
@@ -173,25 +176,31 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
 
             if (!itemsCache[pkEntity]) {
               itemsCache[pkEntity] = true;
-              // trigger loading of data, id needed
-              // setTimeout(()=>{
 
-              // },10)
-              console.log('a', JSON.stringify({ paginateBy, limit, offset }))
-              this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset).pipe(
-                filter(loadNeeded => loadNeeded === true),
-                takeUntil(this.destroy$)
-              ).subscribe(() => {
-                console.log('b', JSON.stringify({ paginateBy, limit, offset }))
-                this.inf.temporal_entity.loadPaginatedList(
-                  pkProject,
-                  pkEntity,
-                  l.pkProperty,
-                  l.isOutgoing,
-                  limit,
-                  offset
-                )
-              })
+              this.pag.temporalEntity.addPageLoader(
+                pkProject,
+                appeAndDefFields.appeField.listDefinitions[0],
+                pkEntity,
+                limit,
+                offset,
+                this.destroy$
+              )
+              //  console.log('a', JSON.stringify({ paginateBy, limit, offset }))
+              // this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset).pipe(
+              //   filter(loadNeeded => loadNeeded === true),
+              //   takeUntil(this.destroy$)
+              // ).subscribe(() => {
+              //   console.log('b', JSON.stringify({ paginateBy, limit, offset }))
+              //   this.inf.temporal_entity.loadPaginatedList(
+              //     pkProject,
+              //     pkEntity,
+              //     l.pkProperty,
+              //     l.targetClass,
+              //     l.isOutgoing,
+              //     limit,
+              //     offset
+              //   )
+              // })
             }
             // pipe the properties of the naming
             const namings$: Observable<TemporalEntityItem[]> = this.i.pipeTemporalEntityTableRows(

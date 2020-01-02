@@ -15,7 +15,7 @@ const initVal1: QueryPathSegment[] = [{
 const initVal2: QueryPathSegment[] = [{
   type: 'classes',
   data: {
-    classes: [21]
+    classes: [363]
   }
 }]
 const initVal3: QueryPathSegment[] = [{ type: 'classes', data: { classes: [442], types: [] } }, { data: { ingoingProperties: [], outgoingProperties: [1189] }, type: 'properties' }, { data: { types: [81893], classes: [68] }, type: 'classes' }, { data: { ingoingProperties: [1182], outgoingProperties: [] }, type: 'properties' }, { data: { types: [], classes: [212] }, type: 'classes' }, { data: { ingoingProperties: [], outgoingProperties: [1178] }, type: 'properties' }, { data: { types: [80412], classes: [363] }, type: 'classes' }]
@@ -52,7 +52,7 @@ export default sandboxOf(QueryPathFormComponent, {
   .add('QueryPath Form | Changeable ', {
     context: {
       pkProject: 24,
-      rootClasses$: of([21, 365, 61]),
+      rootClasses$: of([21, 365, 61, 363]),
       initVal1,
       initVal2,
       initVal$: new BehaviorSubject(initVal1)

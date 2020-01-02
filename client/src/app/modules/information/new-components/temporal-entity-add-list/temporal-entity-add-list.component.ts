@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectService, IAppState } from 'app/core';
-import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, of, merge } from 'rxjs';
 import { SelectionModel } from '../../../../../../node_modules/@angular/cdk/collections';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
 import { first, map, switchMap, takeUntil, shareReplay, tap, distinctUntilChanged } from '../../../../../../node_modules/rxjs/operators';
@@ -15,6 +15,7 @@ import { PaginateByParam } from 'app/core/store/actions';
 import { InfSelector } from '../../../../core/inf/inf.service';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { equals } from 'ramda';
+import { PaginationService } from '../../new-services/pagination.service';
 
 @Component({
   selector: 'gv-temporal-entity-add-list',
@@ -56,7 +57,8 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
     public i: InformationPipesService,
     public t: PropertiesTreeService,
     public inf: InfActions,
-    private ngRedux: NgRedux<IAppState>
+    private ngRedux: NgRedux<IAppState>,
+    private paginationService: PaginationService
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
@@ -89,18 +91,24 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
     const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity)
 
+    const nextPage$ = new Subject();
     pagination$.pipe(
-      switchMap(([limit, offset]) => {
-        return infRepo.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset)
-      }, ([limit, offset, pkProject], loadNeeded) => {
-        if (loadNeeded) {
-          this.inf.temporal_entity.loadPaginatedAlternativeList(pkProject, this.pkEntity, this.listDefinition.pkProperty, this.listDefinition.isOutgoing, limit, offset)
-        }
-      }),
+      distinctUntilChanged(equals),
       takeUntil(this.destroy$)
-    ).subscribe()
+    ).subscribe(([limit, offset, pkProject]) => {
+      nextPage$.next()
+      this.paginationService.temporalEntityAlternative.addPageLoader(
+        pkProject,
+        this.listDefinition,
+        this.pkEntity,
+        limit,
+        offset,
+        merge(nextPage$, this.destroy$)
+      )
+    })
 
-    const columns$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext)
+
+    const columns$ = this.c.pipeFieldDefinitionsSpecificFirst(this.listDefinition.targetClass)
 
     const alternative = true;
     this.rows$ = combineLatest(pagination$, columns$).pipe(

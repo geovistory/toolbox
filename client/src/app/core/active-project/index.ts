@@ -1,5 +1,4 @@
 // start:ng42.barrel
-export * from './_mock-data';
 export * from './active-project.action';
 export * from './active-project.epics';
 export * from './active-project.models';

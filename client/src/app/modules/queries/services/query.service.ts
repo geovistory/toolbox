@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, ProjectCrm, PropertyField } from 'app/core';
-import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
+import { ActiveProjectService, ProjectCrm, PropertyField, U } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { uniq } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
@@ -16,15 +15,15 @@ export class QueryService {
   constructor(public p: ActiveProjectService) { }
 
 
-  targetClassesOfPropertyOptions() {
-    return mergeMap((propertyOptions: PropertyOption[]) => this.p.crm$.pipe(
-      filter(crm => !!crm),
-      map((crm) => {
-        if (propertyOptions === null) return null;
-        return uniq((propertyOptions.map(propOption => (crm.fieldList[propOption.propertyFieldKey] as PropertyField).targetClassPk)))
-      })
-    ))
-  }
+  // targetClassesOfPropertyOptions() {
+  //   return mergeMap((propertyOptions: PropertyOption[]) => this.p.crm$.pipe(
+  //     filter(crm => !!crm),
+  //     map((crm) => {
+  //       if (propertyOptions === null) return null;
+  //       return uniq((propertyOptions.map(propOption => (crm.fieldList[propOption.propertyFieldKey] as PropertyField).targetClassPk)))
+  //     })
+  //   ))
+  // }
 
   // propertiesOfClassesAndTypes(level?: number) {
   //   return switchMap((classesAndTypes: ClassAndTypeSelectModel) => combineLatest(this.p.crm$, this.p.typesByPk$).pipe(
@@ -85,13 +84,13 @@ export class QueryService {
   propertyModelToPropertyOptions(model: PropertySelectModel): PropertyOption[] {
     return [
       ...((model || {}).ingoingProperties || []).map((pk) => ({
-        propertyFieldKey: propertyFieldKeyFromParams(pk, false),
+        propertyFieldKey: U.propertyFieldKeyFromParams(pk, false),
         isOutgoing: false,
         label: '',
         pk: pk
       })),
       ...((model || {}).outgoingProperties || []).map((pk) => ({
-        propertyFieldKey: propertyFieldKeyFromParams(pk, true),
+        propertyFieldKey: U.propertyFieldKeyFromParams(pk, true),
         isOutgoing: true,
         label: '',
         pk: pk
@@ -145,85 +144,85 @@ export class QueryService {
    * in the sense of being stored in temporal_entity table. As an effect,
    * E93 Presence is also regarded as temporal, although is no subclass of E2 Temporal Entity
    */
-  pathSegmentIsTemporal$(segment$: Observable<QueryPathSegment>): Observable<boolean> {
+  // pathSegmentIsTemporal$(segment$: Observable<QueryPathSegment>): Observable<boolean> {
 
-    return combineLatest(segment$, this.p.crm$).pipe(
-      filter(([s, crm]) => (!!crm && !!crm.classes)),
-      map(([s, crm]) => this.pathSegmentIsTemporal(s, crm))
-    )
-  }
+  //   return combineLatest(segment$, this.p.crm$).pipe(
+  //     filter(([s, crm]) => (!!crm && !!crm.classes)),
+  //     map(([s, crm]) => this.pathSegmentIsTemporal(s, crm))
+  //   )
+  // }
 
-  pathSegmentIsTemporal(s: QueryPathSegment, crm: ProjectCrm): boolean {
+  // pathSegmentIsTemporal(s: QueryPathSegment, crm: ProjectCrm): boolean {
 
-    if (!s || !s.data) return false;
-    const classes = s.data.classes || [];
+  //   if (!s || !s.data) return false;
+  //   const classes = s.data.classes || [];
 
-    const temporal = classes.filter(pk => (
-      crm.classes[pk] && crm.classes[pk].subclassOf === 'teEnt'
-    ));
+  //   const temporal = classes.filter(pk => (
+  //     crm.classes[pk] && crm.classes[pk].subclassOf === 'teEnt'
+  //   ));
 
-    // if all selected classes are temporal
-    if (temporal.length > 0 && temporal.length === classes.length) {
-      return true
-    }
+  //   // if all selected classes are temporal
+  //   if (temporal.length > 0 && temporal.length === classes.length) {
+  //     return true
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
-
-  /**
-   * Operator function returning true if all defined classes are temporal
-   * in the sense of being stored in temporal_entity table. As an effect,
-   * E93 Presence is also regarded as temporal, although is no subclass of E2 Temporal Entity
-   */
-  classesAreTemporal() {
-
-    return switchMap((classes: number[]) => this.p.crm$.pipe(
-      filter((crm) => (!!crm && !!crm.classes)),
-      map((crm) => {
-
-        if (!classes || !classes.length) return false;
-
-        const temporal = classes.filter(pk => (
-          crm.classes[pk] && crm.classes[pk].subclassOf === 'teEnt'
-        ));
-
-        // if all selected classes are temporal
-        if (temporal.length > 0 && temporal.length === classes.length) {
-          return true
-        }
-
-        return false;
-      })
-    ))
-
-  }
 
   /**
    * Operator function returning true if all defined classes are temporal
    * in the sense of being stored in temporal_entity table. As an effect,
    * E93 Presence is also regarded as temporal, although is no subclass of E2 Temporal Entity
    */
-  classesAreGeo() {
+  // classesAreTemporal() {
 
-    return map((classes: number[]) => {
-      const geo1 = DfhConfig.CLASS_PK_GEOGRAPHICAL_PLACE
-      const geo2 = DfhConfig.CLASS_PK_BUILT_WORK
-      const geoClasses = { [geo1]: geo1, [geo2]: geo2 }
+  //   return switchMap((classes: number[]) => this.p.crm$.pipe(
+  //     filter((crm) => (!!crm && !!crm.classes)),
+  //     map((crm) => {
 
-      if (!classes || !classes.length) return false;
+  //       if (!classes || !classes.length) return false;
 
-      const presences = classes.filter(pk => (!!geoClasses[pk]));
+  //       const temporal = classes.filter(pk => (
+  //         crm.classes[pk] && crm.classes[pk].subclassOf === 'teEnt'
+  //       ));
 
-      // if all selected classes are E93 Presence and no types are selected
-      if (presences.length > 0 && presences.length === classes.length) {
-        return true
-      }
+  //       // if all selected classes are temporal
+  //       if (temporal.length > 0 && temporal.length === classes.length) {
+  //         return true
+  //       }
 
-      return false;
-    })
+  //       return false;
+  //     })
+  //   ))
 
-  }
+  // }
+
+  /**
+   * Operator function returning true if all defined classes are temporal
+   * in the sense of being stored in temporal_entity table. As an effect,
+   * E93 Presence is also regarded as temporal, although is no subclass of E2 Temporal Entity
+   */
+  // classesAreGeo() {
+
+  //   return map((classes: number[]) => {
+  //     const geo1 = DfhConfig.CLASS_PK_GEOGRAPHICAL_PLACE
+  //     const geo2 = DfhConfig.CLASS_PK_BUILT_WORK
+  //     const geoClasses = { [geo1]: geo1, [geo2]: geo2 }
+
+  //     if (!classes || !classes.length) return false;
+
+  //     const presences = classes.filter(pk => (!!geoClasses[pk]));
+
+  //     // if all selected classes are E93 Presence and no types are selected
+  //     if (presences.length > 0 && presences.length === classes.length) {
+  //       return true
+  //     }
+
+  //     return false;
+  //   })
+
+  // }
 
 
 }

@@ -30,40 +30,7 @@ export class ProDfhClassProjRelApi extends BaseLoopBackApi {
   }
 
   /**
-   * Patch attributes for a model instance and persist it into the data source.
-   *
-   * @param {any} id ProDfhClassProjRel id
-   *
-   * @param {object} data Request data.
-   *
-   *  - `data` – `{object}` - An object of model property name/value pairs
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `ProDfhClassProjRel` object.)
-   * </em>
-   */
-  public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PATCH";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProDfhClassProjRels/:id";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Find ProDfhClassProjRel of project where enabled_in_entities is true
+   * Find ProDfhClassProjRel of project
    *
    * @param {number} pkProject Pk of the project
    *
@@ -76,12 +43,44 @@ export class ProDfhClassProjRelApi extends BaseLoopBackApi {
    * This usually means the response is a `ProDfhClassProjRel` object.)
    * </em>
    */
-  public getEnabledByProject(pkProject: any, customHeaders?: Function): Observable<any> {
+  public ofProject(pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProDfhClassProjRels/get-enabled-by-project";
+    "/ProDfhClassProjRels/of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Creates or updates instances of ProDfhClassProjRel.
+   *
+   * @param {number} pkProject Project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `data` – `{ProDfhClassProjRel}` - Array ProDfhClassProjRel
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProDfhClassProjRel` object.)
+   * </em>
+   */
+  public bulkUpsert(pkProject: any, data: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProDfhClassProjRels/bulk-upsert";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      data: data
+    };
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);

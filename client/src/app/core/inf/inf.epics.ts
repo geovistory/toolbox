@@ -112,12 +112,11 @@ export class InfEpics {
        *
        */
       infTemporalEntityEpicsFactory.createLoadEpic<LoadByPkMeta>(
-        (meta) => this.teEnApi.nestedObjectOfProject(meta.pk, meta.pkEntity),
-        InfTemporalEntityActionFactory.NESTED_BY_PK,
+        (meta) => this.teEnApi.ownProperties(meta.pk, meta.pkEntity),
+        InfTemporalEntityActionFactory.OWN_PROPERTIES,
         (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.temporal_entity.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          const schemaObject = results as SchemaObject;
+          this.storeSchemaObject(schemaObject, pk)
         }
       ),
       /**
@@ -128,7 +127,7 @@ export class InfEpics {
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
           const apiCal$ = this.teEnApi.temporalEntityList(
-            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.isOutgoing, meta.limit, meta.offset
+            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
           )
           const pkProject = meta.pk;
           this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
@@ -142,7 +141,7 @@ export class InfEpics {
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
           const apiCal$ = this.teEnApi.alternativeTemporalEntityList(
-            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.isOutgoing, meta.limit, meta.offset
+            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
           )
           const pkProject = null;
           this.handleTemporalEntityListAction(action, infTemporalEntityEpicsFactory, globalActions, apiCal$, pkProject);
@@ -214,9 +213,8 @@ export class InfEpics {
         (meta) => this.eaApi.contentTree(meta.pk, meta.pkExpressionEntity),
         InfEntityAssoctiationActionFactory.CONTENT_TREE,
         (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.entity_association.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          const schemaObject = results as SchemaObject;
+          this.storeSchemaObject(schemaObject, pk)
         }
       ),
 
@@ -280,10 +278,11 @@ export class InfEpics {
    * @param pkProject if null, list is handled as 'repo' list
    */
   private handleTemporalEntityListAction<M>(action, infTemporalEntityEpicsFactory: InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>, globalActions, apiCall$: Observable<any>, pkProject) {
-    const meta = action.meta;
+    const meta: LoadPaginatedTeEnListMeta = action.meta;
     const pendingKey = meta.addPending;
-    let paginateBy: PaginateByParam[] = [
+    const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
+      { fk_target_class: meta.fkTargetClass },
       { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity }
     ];
     // call action to set pagination loading on true
@@ -308,6 +307,7 @@ export class InfEpics {
         let actions;
         if (schema === 'inf') actions = this.infActions;
         else if (schema === 'pro') actions = this.proActions;
+        else if (schema === 'dat') actions = this.datActions;
         if (actions) {
           Object.keys(schemas[schema]).forEach(model => {
             actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);

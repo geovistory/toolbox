@@ -1,17 +1,16 @@
-import { InfEntityAssociation, InfPersistentItem, InfRole } from "app/core";
-import { InfActions } from "app/core/inf/inf.actions";
-import { InfEntityAssociationSlice, InfPersistentItemSlice, InfAppellationSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLanguageSlice } from "app/core/inf/inf.models";
-import { keys, omit, values } from "ramda";
-import { InfAppellation, InfTemporalEntity, DatDigital, DatChunk, InfPlace, InfTextProperty, InfTimePrimitive, ProInfoProjRel, InfLanguage, ProPropertyLabel, ProAnalysis } from "../sdk";
-import { StandardActionsFactory } from "./actions";
-import { DatActions } from "../dat/dat.actions";
-import { DigitalSlice, ChunkSlice } from "../dat/dat.models";
-import { time_primitive } from "../state/services/_mock-data";
-import { ProActions } from "../pro/pro.actions";
-import { Injectable } from "../../../../node_modules/@angular/core";
-import { ProInfoProjRelSlice, ProPropertyLabelSlice, ProAnalysisSlice } from "../pro/pro.models";
+import { InfEntityAssociation, InfPersistentItem, InfRole } from 'app/core';
+import { InfActions } from 'app/core/inf/inf.actions';
+import { InfAppellationSlice, InfEntityAssociationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice } from 'app/core/inf/inf.models';
+import { keys, omit, values } from 'ramda';
+import { DatActions } from '../dat/dat.actions';
+import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
+import { ProActions } from '../pro/pro.actions';
+import { ProAnalysisSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice, ProClassFieldConfigSlice, ProDfhProfileProjRelSlice } from '../pro/pro.models';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, ProClassFieldConfig, ProDfhProfileProjRel } from '../sdk';
+import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
+  items: Model[]
   constructor(
     public actions: StandardActionsFactory<Payload, Model>,
     public modelDefinition: any,
@@ -33,7 +32,6 @@ export class ModelFlattener<Payload, Model> {
     return true;
   }
 
-  items: Model[]
 }
 
 interface FlattenerInterface {
@@ -57,6 +55,25 @@ export class Flattener {
         item = new ProInfoProjRel(item);
       })
     })
+
+  pro_dfh_class_proj_rel = new ModelFlattener<ProDfhClassProjRelSlice, ProDfhClassProjRel>(
+    this.proActions.dfh_class_proj_rel,
+    ProDfhClassProjRel.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProDfhClassProjRel(item);
+      })
+    })
+
+  pro_dfh_profile_proj_rel = new ModelFlattener<ProDfhProfileProjRelSlice, ProDfhProfileProjRel>(
+    this.proActions.dfh_profile_proj_rel,
+    ProDfhProfileProjRel.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProDfhProfileProjRel(item);
+      })
+    })
+
 
   persistent_item = new ModelFlattener<InfPersistentItemSlice, InfPersistentItem>(
     this.infActions.persistent_item,
@@ -183,15 +200,36 @@ export class Flattener {
       })
     })
 
-  property_label = new ModelFlattener<ProPropertyLabelSlice, ProPropertyLabel>(
-    this.proActions.property_label,
-    ProPropertyLabel.getModelDefinition(),
+  pro_project = new ModelFlattener<ProProjectSlice, ProProject>(
+    this.proActions.project,
+    ProProject.getModelDefinition(),
     (items) => {
       items.forEach(item => {
-        item = new ProPropertyLabel(item);
+        item = new ProProject(item);
+        this.language.flatten([item.default_language])
+      })
+    })
+
+  pro_text_property = new ModelFlattener<ProTextPropertySlice, ProTextProperty>(
+    this.proActions.text_property,
+    ProTextProperty.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProTextProperty(item);
         this.language.flatten([item.language])
       })
     })
+
+
+  pro_class_field_config = new ModelFlattener<ProClassFieldConfigSlice, ProClassFieldConfig>(
+    this.proActions.class_field_config,
+    ProClassFieldConfig.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new ProClassFieldConfig(item);
+      })
+    })
+
 
   analysis = new ModelFlattener<ProAnalysisSlice, ProAnalysis>(
     this.proActions.analysis,
@@ -208,8 +246,13 @@ export class Flattener {
   ) { }
   getFlattened(): FlattenerInterface {
     return {
+      pro_project: this.pro_project,
+      pro_text_property: this.pro_text_property,
+      pro_class_field_config: this.pro_class_field_config,
+      pro_dfh_profile_proj_rel: this.pro_dfh_profile_proj_rel,
+      pro_dfh_class_proj_rel: this.pro_dfh_class_proj_rel,
+
       info_proj_rel: this.info_proj_rel,
-      property_label: this.property_label,
       analysis: this.analysis,
 
       persistent_item: this.persistent_item,

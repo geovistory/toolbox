@@ -2,6 +2,7 @@ import { Observable, Subject, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
 export interface ErrorObj {
+  statusCode?: number,
   name: string,
   message?: any
 }

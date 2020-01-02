@@ -19,40 +19,32 @@ export class DfhConfig {
    * Dfh Properties
    */
 
+  static PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE = 1320;
+
   // dfh_pk_property used to connect an appellation use with an entity
-  static PROPERTY_PK_R63_NAMES = 1111;
+  static PROPERTY_PK_IS_APPELLATION_OF = 1111;
 
-  static PROPERTY_PK_PERSON_TO_APPE = 1192;
-  static PROPERTY_PK_GROUP_TO_APPE = 1193;
-  static PROPERTY_PK_GEO_PLACE_TO_APPE = 1194;
-  static PROPERTY_PK_GEO_PLACE_TYPE_TO_APPE = 1200;
-  static PROPERTY_PK_BUILT_WORK_TO_APPE = 1195;
+  // // dfh_pk_property used to connect an appellation use with an appellation
+  // static PROPERTY_PK_R64_USED_NAME = 1113;
 
+  // // dfh_pk_property has section
+  // static PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR = 1016;
 
-  // dfh_pk_property used to connect an appellation use with a language
-  static PROPERTY_PK_R61_USED_LANGUAGE = 1112;
-
-  // dfh_pk_property used to connect an appellation use with an appellation
-  static PROPERTY_PK_R64_USED_NAME = 1113;
-
-  // dfh_pk_property has section
-  static PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR = 1016;
-
-  // dfh_pk_property is section of
-  static PROPERTY_PK_R4_CARRIERS_PROVIDED_BY = 979;
+  // // dfh_pk_property is section of
+  // static PROPERTY_PK_R4_CARRIERS_PROVIDED_BY = 979;
 
   // dfh_pk_property used to connect a a persitent item or temporal entity as domain with source, section or chunk as range
   static PROPERTY_OF_ORIGIN_PK_GEOVP2_MENTIONS = 1218;
   static PROPERTY_OF_ORIGIN_PK_GEOVP11_REFERS_TO = 1334;
 
-  static PROPERTY_PK_IS_REPRODUCTION_OF_SECTION = 1216;
+  // static PROPERTY_PK_IS_REPRODUCTION_OF_SECTION = 1216;
 
-  static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
-  static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
-  static PROPERTY_PK_BEGIN_OF_BEGIN = 152;
-  static PROPERTY_PK_END_OF_END = 153;
-  static PROPERTY_PK_END_OF_BEGIN = 150;
-  static PROPERTY_PK_BEGIN_OF_END = 151;
+  // static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
+  // static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
+  // static PROPERTY_PK_BEGIN_OF_BEGIN = 152;
+  // static PROPERTY_PK_END_OF_END = 153;
+  // static PROPERTY_PK_END_OF_BEGIN = 150;
+  // static PROPERTY_PK_BEGIN_OF_END = 151;
 
 
 
@@ -87,7 +79,7 @@ export class DfhConfig {
    */
 
   // dfh_pk_class of appellation use
-  static CLASS_PK_APPELLATION_USE = 365;
+  static CLASS_PK_APPELLATION_FOR_LANGUAGE = 365;
 
   // dfh_pk_class of appellation
   static CLASS_PK_APPELLATION = 40;
@@ -117,6 +109,7 @@ export class DfhConfig {
   static CLASS_PK_MANIFESTATION_PRODUCT_TYPE = 219;
   static CLASS_PK_MANIFESTATION_SINGLETON = 220;
   static CLASS_PK_ITEM = 221;
+  static CLASS_PK_WEB_REQUEST = 502;
   static CLASS_PK_SPOT = 457;
   static CLASS_PK_CHUNK = 456;
   static CLASS_PK_EXPRESSION_PORTION = 503;
@@ -127,6 +120,11 @@ export class DfhConfig {
 
 
 
+  /**
+   * Profiles
+   */
+
+  static PK_PROFILE_GEOVISTORY_BASIC = 5;
 
   /**
    * System Types

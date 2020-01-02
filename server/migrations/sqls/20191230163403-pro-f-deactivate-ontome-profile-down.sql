@@ -1,0 +1,2 @@
+Drop Function projects.deactivate_ontome_profile_for_geovistory_project;
+

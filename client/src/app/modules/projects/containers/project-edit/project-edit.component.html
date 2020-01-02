@@ -64,8 +64,8 @@
           <i class="fa fa-chevron-left"></i> </button>
         <gv-source-list *ngIf="(p.list$ | async) === 'sources'"></gv-source-list>
         <gv-information *ngIf="(p.list$ | async) === 'entities'"></gv-information>
-        <gv-query-list *ngIf="(p.list$ | async) === 'queries'"></gv-query-list>
-        <gv-visual-list *ngIf="(p.list$ | async) === 'visuals'"></gv-visual-list>
+        <!-- <gv-query-list *ngIf="(p.list$ | async) === 'queries'"></gv-query-list>
+        <gv-visual-list *ngIf="(p.list$ | async) === 'visuals'"></gv-visual-list> -->
         <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'" class="h-100 gv-flex-fh"></gv-analysis-list>
         <div *ngIf="(p.list$ | async) === 'stories'">
           <gv-list-drawer-header>
@@ -81,16 +81,23 @@
       <mat-drawer-content class="d-flex ex-b" cdkDropListGroup>
         <div *ngIf="(p.panels$ | async)?.length === 0"
           class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
-          <div class="display-4 text-gray-400">
+          <div class="mat-display-1 mb-3 text-gray-400">
             Your Project
           </div>
-          <div class="display-1 text-gray-400">
+          <div class="mat-display-3 mb-4 text-gray-400">
             {{(p.activeProject$|async)?.label}}
           </div>
           <div class="text-gray-400 helper-text">
             Find your Entities and Sources to the left.
           </div>
+
         </div>
+
+        <!-- TODO REMOVE -->
+        <!-- <div *ngIf="(p.panels$ | async)?.length === 0">
+          <gv-class-fields [fkProject]="375669" [fkClass]="61"></gv-class-fields>
+
+        </div> -->
 
         <!-- Tab Handles -->
         <as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1"
@@ -159,12 +166,12 @@
             [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
             [onActivateTab]="c"></gv-te-ent-detail>
 
-          <gv-query-detail class="gv-flex-fh" *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity"
+          <!-- <gv-query-detail class="gv-flex-fh" *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
 
           <gv-visual-detail class="gv-flex-fh" *ngIf="tab.component=='visual-detail'" [pkEntity]="tab.data?.pkEntity"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
-          </gv-visual-detail>
+          </gv-visual-detail> -->
 
           <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis-detail'"
             [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
@@ -174,6 +181,10 @@
           <gv-project-settings-data class="gv-tab-content" *ngIf="tab.component=='classes-settings'"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
           </gv-project-settings-data>
+
+          <gv-ontome-profiles-settings class="gv-tab-content" *ngIf="tab.component=='ontome-profiles-settings'"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+          </gv-ontome-profiles-settings>
 
           <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkProperty]="tab.data.pkProperty"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c"></gv-types>

@@ -21,7 +21,8 @@ export class SettingsListComponent implements OnInit {
   categories$: Observable<any>;
 
   constructor(private p: ActiveProjectService) {
-    this.hasTypeProps$ = p.hasTypeProperties$.pipe(map(hasTypeProperties => sortBy(compose(toLower, prop('typed_class_label')))(U.objNr2Arr(hasTypeProperties))))
+    this.hasTypeProps$ = p.sys$.class_has_type_property$.by_pk_entity$.all$
+      .pipe(map(hasTypeProperties => sortBy(compose(toLower, prop('typed_class_label')))(U.objNr2Arr(hasTypeProperties))))
   }
 
   ngOnInit() {
@@ -47,6 +48,10 @@ export class SettingsListComponent implements OnInit {
           {
             title: 'Ontology Settings (advanced)',
             items: [
+              {
+                onClickFnName: 'openOntomeProfileSettings',
+                label: 'OntoMe Profiles'
+              },
               {
                 onClickFnName: 'openClassesSettings',
                 label: 'Classes'
@@ -75,8 +80,17 @@ export class SettingsListComponent implements OnInit {
     )
   }
 
-  onClick(fnName: string, param){
+  onClick(fnName: string, param) {
     this[fnName](param);
+  }
+
+  openOntomeProfileSettings() {
+    this.p.addTab({
+      active: true,
+      component: 'ontome-profiles-settings',
+      icon: 'settings',
+      pathSegment: 'ontomeProfilesSettings'
+    })
   }
 
   openClassesSettings() {

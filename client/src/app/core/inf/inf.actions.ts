@@ -106,6 +106,7 @@ export interface PaginatedTeEnList {
 export interface LoadPaginatedTeEnListMeta extends LoadActionMeta {
   pkSourceEntity: number // Pk of the source entity to which the temporal entities are related.
   pkProperty: number // Pk of the property leading from source entity to the temporal entities.
+  fkTargetClass: number // Pk of class of the temporal entities.
   isOutgoing: boolean // If true, the source entity is domain, else range.
   limit: number // number of returned temporal entities.
   offset: number // offset of the segment of returned temporal entities.
@@ -113,13 +114,13 @@ export interface LoadPaginatedTeEnListMeta extends LoadActionMeta {
 export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, InfTemporalEntity> {
 
   // Suffixes of load action types
-  static readonly NESTED_BY_PK = 'NESTED_BY_PK';
+  static readonly OWN_PROPERTIES = 'OWN_PROPERTIES';
   static readonly PAGINATED_LIST = 'PAGINATED_LIST';
   static readonly PAGINATED_ALTERNATIVE_LIST = 'PAGINATED_ALTERNATIVE_LIST';
 
   loadNestedObject: (pkProject: number, pkEntity: number) => ActionResultObservable<InfTemporalEntity[]>;
-  loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
-  loadPaginatedAlternativeList: (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
+  loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
+  loadPaginatedAlternativeList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
@@ -129,7 +130,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
     this.loadNestedObject = (pkProject: number, pkEntity: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadByPkMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.NESTED_BY_PK,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.OWN_PROPERTIES,
         meta: { addPending, pk: pkProject, pkEntity },
         payload: null,
       };
@@ -142,7 +143,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
     }
 
 
-    this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => {
+    this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadPaginatedTeEnListMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.PAGINATED_LIST,
@@ -150,6 +151,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
           addPending,
           pk: pkProject,
           pkSourceEntity,
+          fkTargetClass,
           pkProperty,
           isOutgoing,
           limit,
@@ -164,7 +166,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
         key: addPending
       };
     }
-    this.loadPaginatedAlternativeList = (pkProject: number, pkSourceEntity: number, pkProperty: number, isOutgoing: boolean, limit: number, offset: number) => {
+    this.loadPaginatedAlternativeList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadPaginatedTeEnListMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST,
@@ -173,6 +175,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
           pk: pkProject,
           pkSourceEntity,
           pkProperty,
+          fkTargetClass,
           isOutgoing,
           limit,
           offset

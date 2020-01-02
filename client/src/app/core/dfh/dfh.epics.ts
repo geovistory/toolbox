@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
+import { StandardEpicsFactory } from 'app/core/store/StandardEpicsFactory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
-import { DfhClass, DfhClassApi, DfhLabelApi, DfhLabel, DfhPropertyProfileView, DfhPropertyProfileViewApi, DfhPropertyView, DfhPropertyViewApi } from '../sdk';
-import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory } from './dfh.actions';
-import { DfhClassSlice, DfhLabelSlice, DfhPropertyProfileViewSlice, DfhPropertyViewSlice } from './dfh.models';
-import { SysConfig } from '../../../../../src/common/config/sys-config';
-import * as Config from '../../../../../common/config/Config';
-import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
+import { DfhClass, DfhClassApi, DfhLabel, DfhLabelApi, DfhProfile, DfhProfileApi, DfhProperty, DfhPropertyApi } from '../sdk';
+import { LoadActionMeta } from '../store/actions';
+import { DfhActions, DfhClassActionFactory, DfhLabelActionFactory, DfhProfileActionFactory, DfhPropertyActionFactory } from './dfh.actions';
+import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from './dfh.models';
 
 
 
@@ -16,56 +14,36 @@ export class DfhEpics {
   constructor(
     private actions: DfhActions,
     private notification: NotificationsAPIActions,
+    private profileApi: DfhProfileApi,
     private classApi: DfhClassApi,
+    private propertyApi: DfhPropertyApi,
     private labelApi: DfhLabelApi,
-    private propProfileApi: DfhPropertyProfileViewApi,
-    private propertyViewApi: DfhPropertyViewApi
   ) { }
 
   public createEpics(): Epic {
+    const dfhProfileEpicsFactory = new StandardEpicsFactory<DfhProfileSlice, DfhProfile>('dfh', 'profile', this.actions.profile, this.notification);
     const dfhClassEpicsFactory = new StandardEpicsFactory<DfhClassSlice, DfhClass>('dfh', 'klass', this.actions.klass, this.notification);
     const dfhLabelEpicsFactory = new StandardEpicsFactory<DfhLabelSlice, DfhLabel>('dfh', 'label', this.actions.label, this.notification);
-    const dfhPropertyViewEpicsFactory = new StandardEpicsFactory<DfhPropertyViewSlice, DfhPropertyView>('dfh', 'property_view', this.actions.property_view, this.notification);
-    const dfhPropertyProfileViewEpicsFactory = new StandardEpicsFactory<DfhPropertyProfileViewSlice, DfhPropertyProfileView>('dfh', 'property_profile_view', this.actions.property_profile_view, this.notification);
+    const dfhPropertyEpicsFactory = new StandardEpicsFactory<DfhPropertySlice, DfhProperty>('dfh', 'property', this.actions.property, this.notification);
 
     return combineEpics(
-
-      // Class Loaders
-      dfhClassEpicsFactory.createLoadEpic((meta) => this.classApi.classesOfProfile(null), ''),
-      dfhClassEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classApi.classesOfProjectProfiles(meta.pk),
-        DfhClassActionFactory.CLASSES_OF_PROJECT_PROFILE
+      // Profile Loaders
+      dfhProfileEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.profileApi.ofProject(meta.pk),
+        DfhProfileActionFactory.OF_PROJECT
       ),
-
+      // Property Loaders
+      dfhPropertyEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.propertyApi.ofProject(meta.pk),
+        DfhPropertyActionFactory.OF_PROJECT
+      ),
+      // Class Loaders
+      dfhClassEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.classApi.ofProject(meta.pk),
+        DfhClassActionFactory.OF_PROJECT
+      ),
       // Label Loaders
-      dfhLabelEpicsFactory.createLoadEpic((meta) => this.labelApi.findComplex({
-        where: ['com_fk_system_type', '=', SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS]
-      }), DfhLabelActionFactory.LABELS_OF_CLASSES),
-
-      // Label Loaders
-      dfhLabelEpicsFactory.createLoadEpic((meta) => this.labelApi.findComplex({
-        where: ['com_fk_system_type', 'IN', [
-          Config.PROPERTY_LABEL_SG,
-          Config.PROPERTY_LABEL_PL,
-          Config.PROPERTY_LABEL_INVERSED_SG,
-          Config.PROPERTY_LABEL_INVERSED_PL
-        ]]
-      }), DfhLabelActionFactory.LABELS_OF_PROPERTIES),
-
-      // Label Upserter
-      dfhLabelEpicsFactory.createUpsertEpic<ModifyActionMeta<DfhLabel>>((meta) => {
-        return this.labelApi.bulkReplaceOrCreate(meta.items)
-      }),
-
-      // Label Deleter
-      dfhLabelEpicsFactory.createDeleteEpic((meta) => {
-        return this.labelApi.bulkDelete(meta.items)
-      }),
-
-      // Load all property profile views
-      dfhPropertyProfileViewEpicsFactory.createLoadEpic(() => this.propProfileApi.find(), '', ),
-
-      // Load Property View
-      dfhPropertyViewEpicsFactory.createLoadEpic(() => this.propertyViewApi.find(), ''))
+      dfhLabelEpicsFactory.createLoadEpic<LoadActionMeta>((meta) => this.labelApi.ofProject(meta.pk),
+        DfhLabelActionFactory.OF_PROJECT
+      )
+    )
 
   }
 

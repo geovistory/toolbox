@@ -1,5 +1,4 @@
-import { ProDfhClassProjRel } from 'app/core/sdk/models/ProDfhClassProjRel';
-import { DfhClassProfileView, ClassConfig } from '../../../../../core';
+import { ClassConfig } from '../../../../../core';
 
 export type EntityType = 'teEnt' | 'peIt' | 'other';
 
@@ -17,13 +16,13 @@ export type EntityType = 'teEnt' | 'peIt' | 'other';
 
 // Class of this slice of store
 export class ProjectSettingsData {
-    items?: ClassConfig[];
-    profiles?: DfhClassProfileView[];
-    tabTitle?: string;
-    loading?: boolean;
-    error?: any;
+  items?: ClassConfig[];
+  // profiles?: DfhClassProfileView[];
+  tabTitle?: string;
+  loading?: boolean;
+  error?: any;
 
-    constructor(data?: ProjectSettingsData) {
-        Object.assign(this, data);
-    }
+  constructor(data?: ProjectSettingsData) {
+    Object.assign(this, data);
+  }
 }

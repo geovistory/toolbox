@@ -491,7 +491,7 @@ export class MapAndTimeContComponent implements OnInit {
       .subscribe((processedData) => {
         const dataLookup = processedData.layers[this.selectedLine$.value.layerIndex]
           .data_lookups[this.selectedLine$.value.lineIndex];
-        const pkEntities = dataLookup[this.infoBox.cursorInfo.linePoint.data_ref]
+        const pkEntities = this.infoBox.cursorInfo.linePoint ? dataLookup[this.infoBox.cursorInfo.linePoint.data_ref] : []
         this.pagEntDialog.open(true, pkEntities, `${pkEntities.length} Entities available at ${this.infoBox.cursorInfo.cursorDateLabel}`)
       })
   }

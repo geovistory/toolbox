@@ -93,7 +93,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           model: 'DfhClass',
           relationType: 'belongsTo',
                   keyFrom: 'fk_class',
-          keyTo: 'dfh_pk_class'
+          keyTo: 'pk_class'
         },
         domain_entity_associations: {
           name: 'domain_entity_associations',

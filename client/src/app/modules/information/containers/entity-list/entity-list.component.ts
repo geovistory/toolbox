@@ -10,6 +10,7 @@ import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
 import { ClassAndTypePk } from '../create-or-add-entity/create-or-add-entity.component';
+import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -41,13 +42,16 @@ export class InformationComponent extends InformationAPIActions implements OnIni
   pkClassesInProject;
   pkUiContextCreate = SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE;
 
+  pkAllowedClasses$ = this.c.pipeClassesEnabledInEntities();
+
   constructor(
     protected rootEpics: RootEpics,
     private epics: InformationAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     public activatedRoute: ActivatedRoute,
     public router: Router,
-    public p: ActiveProjectService
+    public p: ActiveProjectService,
+    public c: ConfigurationPipesService
   ) {
     super()
 
@@ -67,8 +71,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
 
   startCreate(classAndTypePk: ClassAndTypePk) {
-    this.p.getClassConfig(classAndTypePk.pkClass)
-      .pipe(first(d => !!d), takeUntil(this.destroy$)).subscribe(classConfig => {
+    this.p.dfh$.class$.by_pk_class$.key(classAndTypePk.pkClass)
+      .pipe(first(d => !!d), takeUntil(this.destroy$)).subscribe(klass => {
 
         this.p.setListType('')
 
@@ -79,7 +83,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
         }).subscribe(result => {
-          if (classConfig.subclassOf === 'peIt') {
+          if (klass.basic_type === 8 || klass.basic_type === 30) {
             this.p.addEntityPeItTab(result.pkEntity)
           } else {
             this.p.addEntityTeEnTab(result.pkEntity)

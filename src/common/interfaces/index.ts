@@ -1,4 +1,5 @@
 // start:ng42.barrel
+export * from './api-profile-list.interface';
 export * from './czml-types';
 export * from './map-and-time-cont-input.interface';
 export * from './map-and-time-cont-output.interface';

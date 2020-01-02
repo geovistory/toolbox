@@ -203,6 +203,38 @@ export class InfRoleApi extends BaseLoopBackApi {
   }
 
   /**
+   * Remove roles with their associated temporal entity from the project.
+   *
+   * @param {number} pk_project Id of the project
+   *
+   * @param {object} data Request data.
+   *
+   *  - `pk_roles` – `{any}` - Array of primary keys of roles (array of pk_entity).
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfRole` object.)
+   * </em>
+   */
+  public removeFromProjectWithTeEnt(pk_project: any, pk_roles: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfRoles/remove-from-project-with-temporal-entity";
+    let _routeParams: any = {};
+    let _postBody: any = {
+      pk_roles: pk_roles
+    };
+    let _urlParams: any = {};
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Add roles without any related entities to the project.
    *
    * @param {number} pk_project Id of the project

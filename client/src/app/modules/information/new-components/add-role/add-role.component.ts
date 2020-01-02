@@ -10,6 +10,7 @@ import { temporalEntityListDefaultLimit, createPaginateBy } from '../temporal-en
 import { ActionResultObservable } from '../../../../core/store/actions';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { InfSelector } from '../../../../core/inf/inf.service';
+import { PaginationService } from '../../new-services/pagination.service';
 
 @Component({
   selector: 'gv-add-role',
@@ -34,7 +35,7 @@ export class AddRoleComponent implements OnInit, OnDestroy {
     public b: InformationBasicPipesService,
     public p: ActiveProjectService,
     public inf: InfActions,
-    private ngRedux: NgRedux<IAppState>
+    private ngRedux: NgRedux<IAppState>,
   ) {
     this.infRepo = new InfSelector(this.ngRedux, of('repo'))
   }
@@ -73,7 +74,14 @@ export class AddRoleComponent implements OnInit, OnDestroy {
 
   private loadTemporalEntityList(listDefinition, pkProject: number): ActionResultObservable<any> {
     this.alternatives$ = this.infRepo.role$.pagination$.pipeCount(createPaginateBy(listDefinition, this.pkEntity))
-    return this.inf.temporal_entity.loadPaginatedAlternativeList(pkProject, this.pkEntity, listDefinition.pkProperty, listDefinition.isOutgoing, temporalEntityListDefaultLimit, 0);
+    return this.inf.temporal_entity.loadPaginatedAlternativeList(
+      pkProject,
+      this.pkEntity,
+      listDefinition.pkProperty,
+      listDefinition.targetClass,
+      listDefinition.isOutgoing,
+      temporalEntityListDefaultLimit,
+      0);
   }
 
   private loadTextProperties(listDefinition, pkProject: number): ActionResultObservable<any> {

@@ -1,45 +1,45 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { PropertyOption, PropertySelectComponent } from './property-select.component';
+import { propertyOptionFieldKey } from 'app/modules/information/new-services/information-pipes.service';
 
 
 const options$ = new BehaviorSubject(null)
 options$.pipe(first(), delay(3000)).subscribe(() => {
-    options$.next([
-        {
-            label: 'A',
-            isOutgoing: true,
-            pk: 1192,
-            propertyFieldKey: propertyFieldKeyFromParams(1192, true)
-        }
-    ] as PropertyOption[])
+  options$.next([
+    {
+      label: 'A',
+      isOutgoing: true,
+      pk: 7, // took place on or within – P8
+      propertyFieldKey: propertyOptionFieldKey(7, true)
+    }
+  ] as PropertyOption[])
 })
 
 export default sandboxOf(PropertySelectComponent, {
-    imports: [
-        QueriesModule,
-        InitStateModule,
-        MatFormFieldModule,
-        FormsModule
-    ],
-    declareComponent: false
+  imports: [
+    QueriesModule,
+    InitStateModule,
+    MatFormFieldModule,
+    FormsModule
+  ],
+  declareComponent: false
 })
-    .add('Properties Select | Preselected ', {
-        context: {
-            pkProject: 24,
-            sandboxState: {},
-            model: {
-                outgoingProperties: [1192]
-            },
-            options$
-        },
-        template: `
+  .add('Properties Select | Preselected ', {
+    context: {
+      pkProject: 24,
+      sandboxState: {},
+      model: {
+        outgoingProperties: [7]
+      },
+      options$
+    },
+    template: `
         <gv-init-state [projectFromApi]="pkProject" [sandboxState]="sandboxState">
           <div class="d-flex justify-content-center mt-5">
               <div style="width:430px;height:400px" class="d-flex mr-4">
@@ -68,5 +68,5 @@ export default sandboxOf(PropertySelectComponent, {
           </div>
         </gv-init-state>`
 
-    })
+  })
 

@@ -1,7 +1,7 @@
 {
   "name": "DfhClass",
   "plural": "DfhClasses",
-  "base": "DfhEntity",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true,
@@ -17,19 +17,21 @@
     }
   },
   "properties": {
-    "dfh_pk_class": {
+    "pk_class": {
       "type": "number",
       "id": true,
       "generated": true
     },
-    "dfh_identifier_in_namespace": {
+    "identifier_in_namespace": {
       "type": "string"
     },
-    "dfh_standard_label": {
-      "type": "string"
-    },
-    "dfh_fk_system_type": {
+    "basic_type": {
       "type": "number"
+    },
+    "profiles": {
+      "type": [
+        "DfhProfiles"
+      ]
     }
   },
   "validations": [],
@@ -37,41 +39,20 @@
     "proj_rels": {
       "type": "hasMany",
       "model": "ProDfhClassProjRel",
-      "primaryKey": "pk_entity",
-      "foreignKey": "fk_entity"
-    },
-    "class_profile_view": {
-      "type": "hasMany",
-      "model": "DfhClassProfileView",
-      "foreignKey": "dfh_fk_class",
-      "options": {
-        "nestRemoting": false
-      }
-    },
-    "labels": {
-      "type": "hasMany",
-      "model": "DfhLabel",
-      "foreignKey": "dfh_fk_class",
-      "options": {
-        "nestRemoting": false
-      }
-    },
-    "text_properties": {
-      "type": "hasMany",
-      "model": "DfhTextProperty",
-      "foreignKey": "dfh_fk_class"
+      "primaryKey": "pk_class",
+      "foreignKey": "fk_class"
     },
     "ingoing_properties": {
       "type": "hasMany",
       "model": "DfhProperty",
-      "foreignKey": "dfh_has_range",
-      "primaryKey": "dfh_pk_class"
+      "foreignKey": "has_range",
+      "primaryKey": "pk_class"
     },
     "outgoing_properties": {
       "type": "hasMany",
       "model": "DfhProperty",
-      "foreignKey": "dfh_has_domain",
-      "primaryKey": "dfh_pk_class"
+      "foreignKey": "has_domain",
+      "primaryKey": "pk_class"
     },
     "class_field_configs": {
       "type": "hasMany",
@@ -89,7 +70,7 @@
       "type": "hasMany",
       "model": "InfPersistentItem",
       "foreignKey": "fk_class",
-      "primaryKey": "dfh_pk_class"
+      "primaryKey": "pk_class"
     }
   },
   "acls": [
@@ -114,21 +95,12 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "classesOfProjectProfiles"
-      ]
-    },
-    {
-      "principalType": "ROLE",
-      "principalId": "system_admin",
-      "permission": "ALLOW",
-      "property": [
-        "classesOfProfile",
-        "propertiesAndUiElements"
+        "ofProject"
       ]
     }
   ],
   "methods": {
-    "classesOfProjectProfiles": {
+    "ofProject": {
       "accepts": [
         {
           "arg": "pkProject",
@@ -149,100 +121,7 @@
       },
       "description": "Get all classes that are selected by at least one of the profiles used by the given project.",
       "http": {
-        "path": "/classes-of-project-profiles",
-        "verb": "get"
-      }
-    },
-    "classesOfProfile": {
-      "accepts": [
-        {
-          "arg": "dfh_pk_profile",
-          "type": "number",
-          "required": false,
-          "description": "Profile id",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhClass"
-        ],
-        "root": true
-      },
-      "description": "Get all classes that are selected by the profile of the specified primary-key.",
-      "http": {
-        "path": "/selected-classes-of-profile",
-        "verb": "get"
-      }
-    },
-    "selectedPeItClassesOfProfile": {
-      "accepts": [
-        {
-          "arg": "dfh_pk_profile",
-          "type": "number",
-          "required": true,
-          "description": "Profile id",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhClass"
-        ],
-        "root": true
-      },
-      "description": "Get all classes of persistent items that are selected and, if provided, filtered by the profile of the specified primary-key.",
-      "http": {
-        "path": "/selected-pe-it-classes-of-profile",
-        "verb": "get"
-      }
-    },
-    "propertiesAndUiElements": {
-      "accepts": [
-        {
-          "arg": "pk_class",
-          "type": "number",
-          "required": true,
-          "description": "Provide the dfh_pk_class to query one specific class",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pk_app_context",
-          "type": "number",
-          "required": true,
-          "description": "Provide the pk_entity of the app_context to query",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pk_project",
-          "type": "number",
-          "required": false,
-          "description": "Provide a pk_project for loading the settings of a project or leaf it blank to query the default settings.",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "DfhClass"
-        ],
-        "root": true
-      },
-      "description": "Get ingoing and outgoing properties and ui elements of class",
-      "http": {
-        "path": "/properties-and-ui-elements",
+        "path": "/of-project",
         "verb": "get"
       }
     }

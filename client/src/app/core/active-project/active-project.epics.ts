@@ -2,27 +2,20 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DatSelector } from 'app/core/dat/dat.service';
 import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
-import { createPeItDetail, fieldKey, propertyFieldKeyFromParams } from 'app/core/state/services/state-creator';
-// import { PeItService } from 'app/modules/information/shared/pe-it.service';
 import { FluxStandardAction } from 'flux-standard-action';
-import { indexBy, sort } from 'ramda';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, map, mapTo, mergeMap, switchMap } from 'rxjs/operators';
+import { DfhSelector } from '../dfh/dfh.service';
+import { InfActions } from '../inf/inf.actions';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
-import { DatChunk, DatChunkApi, DfhClass, DfhProperty, DfhPropertyApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProClassFieldConfig, ProDfhClassProjRelApi, ProInfoProjRelApi, ProProject, ProProjectApi, ProQueryApi, ProVisualApi, SysAppContext, SysAppContextApi, SysClassField, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
-import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
-import { HasTypePropertyReadable, PeItDetail } from '../state/models';
-import { ByPk, IAppState } from '../store/model';
-import { SysClassHasTypePropertySlice } from '../sys/sys.models';
+import { ProSelector } from '../pro/pro.service';
+import { DatChunk, DatChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProInfoProjRelApi, ProProject, ProProjectApi, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
+import { IAppState } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { U } from '../util/util';
-import { ActiveProjectAction, ActiveProjectActions, ComQueryV, ComVisualV } from './active-project.action';
-import { ClassConfig, ProjectCrm, UiElement } from './active-project.models';
-import { DfhSelector } from '../dfh/dfh.service';
-import { ProSelector } from '../pro/pro.service';
-import { InfActions } from '../inf/inf.actions';
+import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 
 
 
@@ -39,12 +32,11 @@ export class ActiveProjectEpics {
     private teEnApi: InfTemporalEntityApi,
     private infProjRelApi: ProInfoProjRelApi,
     private chunkApi: DatChunkApi,
-    private uiContextApi: SysAppContextApi,
     private projectApi: ProProjectApi,
-    private projRelApi: ProDfhClassProjRelApi,
-    private comQuery: ProQueryApi,
-    private comVisual: ProVisualApi,
-    private dfhPropertyApi: DfhPropertyApi,
+    // private projRelApi: ProDfhClassProjRelApi,
+    // private comQuery: ProQueryApi,
+    // private comVisual: ProVisualApi,
+    // private dfhPropertyApi: DfhPropertyApi,
     private comClassFieldApi: SysClassFieldApi,
     private sysHasTypePropsApi: SysClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
@@ -55,18 +47,18 @@ export class ActiveProjectEpics {
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return combineEpics(
-      this.createLoadProjectEpic(),
-      this.createLoadCrmEpic(),
+      this.createLoadProjectBasicsEpic(),
+      this.createLoadProjectConfigEpic(),
       this.createLoadProjectUpdatedEpic(),
       // this.createLoadEntityDetailForModalEpic(),
       this.createLoadChunkEpic(),
       this.createLoadPeItGraphEpic(),
       this.createLoadTeEnGraphEpic(),
       this.createLoadTypesEpic(),
-      this.createLoadQueriesEpic(),
-      this.createLoadQueryVersionEpic(),
-      this.createLoadVisualsEpic(),
-      this.createLoadVisualVersionEpic(),
+      // this.createLoadQueriesEpic(),
+      // this.createLoadQueryVersionEpic(),
+      // this.createLoadVisualsEpic(),
+      // this.createLoadVisualVersionEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
       this.createMoveTabFocusPanelEpic(),
@@ -75,7 +67,7 @@ export class ActiveProjectEpics {
       // this.createDisableCreatingMentioningEpic(),
       this.createSplitPanelActivateTabEpic(),
       this.createAddTabCloseListEpic(),
-      this.createChangeClassProjRelEpic(),
+      // this.createChangeClassProjRelEpic(),
       this.createUpsertEntityProjRelEpic()
     );
   }
@@ -86,10 +78,10 @@ export class ActiveProjectEpics {
    * - on loaded dispaches an action that reduces the project into the store
    * - on fail dispaches an action that shows an error notification
    */
-  private createLoadProjectEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+  private createLoadProjectBasicsEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
 
-      ofType(ActiveProjectActions.LOAD_PROJECT),
+      ofType(ActiveProjectActions.LOAD_PROJECT_BASICS),
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         /**
        * Emit the global action that activates the loading bar
@@ -99,7 +91,7 @@ export class ActiveProjectEpics {
         this.projectApi.getBasics(action.meta.pk_project)
           .subscribe(
             (data: ProProject[]) => {
-              globalStore.next(this.actions.activeProjectUpdated(U.proProjectToProjectPreview(data[0])))
+              globalStore.next(this.actions.loadProjectBasiscsSucceded(U.proProjectToProjectPreview(data[0])))
             },
             error => {
               globalStore.next(this.notificationActions.addToast({
@@ -119,118 +111,63 @@ export class ActiveProjectEpics {
   */
   private createLoadProjectUpdatedEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
-      ofType(ActiveProjectActions.ACTIVE_PROJECT_UPDATED),
+      ofType(ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED),
       mapTo(this.loadingBarActions.completeLoading())
     )
   }
 
-  private createLoadCrmEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
+  private createLoadProjectConfigEpic(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
     return (action$, store) => action$.pipe(
 
-      ofType(ActiveProjectActions.PROJECT_LOAD_CRM),
+      ofType(ActiveProjectActions.LOAD_PROJECT_CONFIG),
       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
         globalStore.next(this.loadingBarActions.startLoading());
+
+        this.dfh.profile.loadOfProject(action.meta.pk_project);
+        this.dfh.klass.loadOfProject(action.meta.pk_project);
+        this.dfh.property.loadOfProject(action.meta.pk_project);
+        this.dfh.label.loadOfProject(action.meta.pk_project);
 
         this.sys.system_relevant_class.load();
         this.sys.class_has_type_property.load();
         this.sys.analysis_type.load();
+
         this.dat.namespace.load('', action.meta.pk_project);
-        this.dfh.property_view.load()
-        this.dfh.klass.loadClassesOfProjectProfiles(action.meta.pk_project);
-        this.pro.class_field_config.load('', action.meta.pk_project)
-        this.pro.dfh_class_proj_rel.load('', action.meta.pk_project)
-        this.dfh.label.loadLabelesOfClasses(null);
-        this.dfh.label.loadLabelesOfProperties(null);
-        this.pro.property_label.loadDefaultLabels(action.meta.pk_project)
+
+        this.pro.text_property.loadOfProject(action.meta.pk_project)
+        this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project);
+        this.pro.class_field_config.loadOfProject(action.meta.pk_project);
+
         this.inf.persistent_item.typesOfProject(action.meta.pk_project)
 
 
         combineLatest(
-          this.projectApi.getReferenceModel(action.meta.pk_project),
-          this.uiContextApi.appContext(null, action.meta.pk_project),
-          this.dfhPropertyApi.propertyFieldInfo(true),
-          this.dfhPropertyApi.propertyFieldInfo(false),
+          this.dfh.profile$.by_pk_profile$.noPause.all$,
+          this.dfh.class$.by_pk_class$.noPause.all$,
+          this.dfh.property$.pk_property__has_domain__has_range$.noPause.all$,
+          this.dfh.label$.by_fks$.noPause.all$,
+
+
+          // this.sysAppCtxApi.appContext(null, action.meta.pk_project),
           this.comClassFieldApi.find(),
+
           this.sysHasTypePropsApi.find(),
           this.sys.system_relevant_class$.by_fk_class$.all$,
           this.sys.class_has_type_property$.slice$,
           this.sys.analysis_type$.slice$,
+
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
-          this.dfh.property_view$.by_dfh_pk_property$.noPause.all$,
+
+
+          this.pro.project.loadBasics(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
           this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,
-          this.dfh.class$.by_dfh_pk_class$.noPause.all$
+          this.pro.dfh_class_proj_rel$.by_fk_project$.all$
         )
-          .pipe(filter((res) => !res.includes(undefined)))
+          .pipe(filter((res: any[]) => !res.includes(undefined)))
           .subscribe((res) => {
-            const classes: DfhClass[] = res[0],
-              outgoingProperties: DfhProperty[] = res[2],
-              ingoingProperties: DfhProperty[] = res[3],
-              classFields = res[4] as SysClassField[],
-              hasTypeProps: HasTypePropertyReadable[] = res[5],
-              systemRelevantClasses: ByPk<ByPk<SysSystemRelevantClass>> = res[6],
-              classHasTypeProperty: SysClassHasTypePropertySlice = res[7];
 
-
-            const properties = {
-              ...indexBy((prop) => prop.dfh_pk_property.toString(), ingoingProperties),
-              ...indexBy((prop) => prop.dfh_pk_property.toString(), outgoingProperties)
-            }
-
-            const crm: ProjectCrm = {
-              classes: {},
-              fieldList: {},
-              properties,
-              hasTypeProperties: indexBy((prop) => prop.dfh_pk_property.toString(), hasTypeProps),
-              classHasTypeProperty
-            }
-
-            const hasTypePropertiesByTypeClass = indexBy((prop) => prop.pk_type_class.toString(), hasTypeProps)
-
-            classes.forEach((cla: DfhClass) => {
-              crm.classes[cla.dfh_pk_class] = {
-                ...U.classConfigFromDfhClass(
-                  cla,
-                  U.firstItemInIndexedGroup(systemRelevantClasses, cla.dfh_pk_class)
-                ),
-                subclassOfType: hasTypePropertiesByTypeClass[cla.dfh_pk_class] ? true : false
-              }
-              // create fieldList
-              crm.fieldList = {
-                ...indexBy(fieldKey, [
-                  ...U.infProperties2PropertyFields(false, ingoingProperties),
-                  ...U.infProperties2PropertyFields(true, outgoingProperties),
-                  ...U.comClassFields2Fields(classFields)
-                ])
-              }
-            })
-
-            const uiContexts: SysAppContext[] = res[1];
-
-            uiContexts.forEach(uiCtxt => {
-              if (uiCtxt.class_field_config) {
-                uiCtxt.class_field_config.forEach(uiConf => {
-
-                  // add propertyField configs to crm
-                  if (uiConf.fk_property) {
-                    // retrieve the classConfig
-                    const cConf = crm.classes[uiConf.property_is_outgoing ? uiConf.property.dfh_has_domain : uiConf.property.dfh_has_range];
-                    this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                  } else if (uiConf.fk_class_field) {
-                    // add propSet configs to crm
-                    // retrieve the classConfig
-                    const cConf = crm.classes[uiConf.fk_class_for_class_field];
-                    this.addUiConfToClassConfig(cConf, uiCtxt, uiConf);
-                  }
-
-                })
-              }
-            })
-
-
-
-            globalStore.next(this.actions.projectCrmLoaded(crm));
+            globalStore.next(this.actions.loadProjectConfigSucceeded());
             globalStore.next(this.loadingBarActions.completeLoading());
-
 
           }, error => {
             // subStore.dispatch(this.actions.loadFailed({ status: '' + error.status }))
@@ -241,121 +178,6 @@ export class ActiveProjectEpics {
     )
   }
 
-  private addUiConfToClassConfig(cConf: ClassConfig, uiCtxt: SysAppContext, uiConf: ProClassFieldConfig) {
-
-    if (!cConf || !uiCtxt || !uiConf) return;
-
-    // if this class has no ui Context object yet, add empty object
-    if (!cConf.uiContexts) cConf.uiContexts = {};
-
-    // add the ui-context to the class in ProjectCrm
-    cConf.uiContexts[uiCtxt.pk_entity] = {
-      ...cConf.uiContexts[uiCtxt.pk_entity],
-      label: uiCtxt.label
-    }
-
-    // ui-context of this class
-    const cUiCtxt = cConf.uiContexts[uiCtxt.pk_entity];
-
-    // if this ui-context has no uiElements object yet, add empty array
-    if (!cUiCtxt.uiElements) cUiCtxt.uiElements = [];
-
-    const ordNum = (a: UiElement, b: UiElement) => {
-      if (!a || !b) return 0;
-      return a.ord_num - b.ord_num
-    };
-
-    // if this uiConf is enabled (has a ordNum)
-    if (uiConf.ord_num !== null) {
-      // add the ui-context-config to the uiElements
-      cUiCtxt.uiElements.push({
-        ord_num: uiConf.ord_num,
-        fk_property: uiConf.fk_property,
-        property_is_outgoing: uiConf.property_is_outgoing,
-        propertyFieldKey: uiConf.fk_property ? propertyFieldKeyFromParams(uiConf.fk_property, uiConf.property_is_outgoing) : undefined,
-        fk_class_field: uiConf.fk_class_field,
-        class_field: uiConf.fk_class_field ? uiConf.class_field : undefined,
-        propSetKey: uiConf.fk_class_field ? ('_field_' + uiConf.fk_class_field) : undefined
-      })
-
-      // sort the array of uiElements by the ordNum
-      cUiCtxt.uiElements = sort(ordNum, cUiCtxt.uiElements)
-    }
-  }
-
-  // private createLoadEntityDetailForModalEpic(): Epic {
-  //   return (action$, store) => {
-  //     return action$.pipe(
-  //       /**
-  //        * Filter the actions that triggers this epic
-  //        */
-  //       ofType(ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL),
-  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-  //         /**
-  //          * Emit the global action that activates the loading bar
-  //          */
-  //         globalStore.next(this.loadingBarActions.startLoading());
-
-  //         const p = this.ngRedux.getState().activeProject;
-
-  //         /**
-  //          * TODO: change this to something generic for PeIt and TeEn
-  //          */
-  //         this.peItService.getNestedObject(action.meta.pk_entity, action.meta.pk_project)
-  //           /**
-  //          * Subscribe to the api call
-  //          */
-  //           .subscribe((data) => {
-  //             if (data) {
-  //               const peItDetail: PeItDetail = createPeItDetail(
-  //                 {
-  //                   showRightArea: false,
-
-  //                   showProperties: true,
-  //                   showMapToggle: true
-  //                 },
-  //                 data,
-  //                 p.crm,
-  //                 { isViewMode: true, pkUiContext: action.meta.pk_ui_context }
-  //               )
-  //               /**
-  //                * Emit the global action that completes the loading bar
-  //                */
-  //               globalStore.next(this.loadingBarActions.completeLoading());
-  //               /**
-  //                * Emit the local action on loading succeeded
-  //                */
-  //               globalStore.next(this.actions.loadPeItDetailsForModalSucceeded(peItDetail));
-  //             } else {
-  //               globalStore.next(this.loadingBarActions.completeLoading());
-  //               globalStore.next(this.notificationActions.addToast({
-  //                 type: 'error',
-  //                 options: {
-  //                   title: 'Failed loading related item ' + action.meta.pk_entity
-  //                 }
-  //               }));
-  //             }
-
-  //           }, error => {
-  //             /**
-  //             * Emit the global action that shows some loading error message
-  //             */
-  //             globalStore.next(this.loadingBarActions.completeLoading());
-  //             globalStore.next(this.notificationActions.addToast({
-  //               type: 'error',
-  //               options: {
-  //                 title: error.message
-  //               }
-  //             }));
-  //             /**
-  //              * Emit the local action on loading failed
-  //              */
-  //             globalStore.next(this.actions.loaEntitytDetailsForModalFailed({ status: '' + error.status }))
-  //           })
-  //       }))
-  //     )
-  //   }
-  // }
   private createLoadTypesEpic(): Epic {
     return (action$, store) => {
       return action$.pipe(
@@ -541,210 +363,210 @@ export class ActiveProjectEpics {
     }
   }
 
-  private createLoadQueryVersionEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_QUERY_VERSION),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comQuery.findByIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadQueryVersionEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_QUERY_VERSION),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comQuery.findByIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadQueryVersionSucceeded(data[0]));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadQueryVersionSucceeded(data[0]));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadQueryVersionFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadQueryVersionFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
-  private createLoadQueriesEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_QUERIES),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comQuery.findPerProject(action.meta.pk_project, 10000, 0)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: ComQueryV[]) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadQueriesEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_QUERIES),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comQuery.findPerProject(action.meta.pk_project, 10000, 0)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: ComQueryV[]) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadQueriesSucceeded(data));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadQueriesSucceeded(data));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadQueriesFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadQueriesFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
-  private createLoadVisualsEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_VISUALS),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, null, null)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: ComVisualV[]) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadVisualsEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_VISUALS),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, null, null)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: ComVisualV[]) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadVisualsSucceeded(data));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadVisualsSucceeded(data));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadVisualsFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadVisualsFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
 
-  private createLoadVisualVersionEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_VISUAL_VERSION),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: ComVisualV[]) => {
-              /**
-                 * Emit the global action that completes the loading bar
-                 */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadVisualVersionEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_VISUAL_VERSION),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.comVisual.findPerIdAndVersionAndProject(action.meta.pk_project, action.meta.pk_entity, action.meta.entity_version)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: ComVisualV[]) => {
+  //             /**
+  //                * Emit the global action that completes the loading bar
+  //                */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadVisualVersionSucceeded(data))
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadVisualVersionSucceeded(data))
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadVisualVersionFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadVisualVersionFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
 
   /**
@@ -852,59 +674,59 @@ export class ActiveProjectEpics {
    */
 
 
-  /**
-   * Epic to handle enabling and disabling of a class for project
-   * @param c
-   */
-  private createChangeClassProjRelEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.UPSERT_CLASS_PROJ_REL),
-        switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
+  // /**
+  //  * Epic to handle enabling and disabling of a class for project
+  //  * @param c
+  //  */
+  // private createChangeClassProjRelEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.UPSERT_CLASS_PROJ_REL),
+  //       switchMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
 
-          /**
-           * Prepare api call
-           */
-          let apiCall;
-          // update existing projRel
-          if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
-          // create new projRel
-          else apiCall = this.projRelApi.create(action.meta.projRel);
+  //         /**
+  //          * Prepare api call
+  //          */
+  //         let apiCall;
+  //         // update existing projRel
+  //         if (action.meta.projRel.pk_entity) apiCall = this.projRelApi.patchAttributes(action.meta.projRel.pk_entity, action.meta.projRel);
+  //         // create new projRel
+  //         else apiCall = this.projRelApi.create(action.meta.projRel);
 
-          /**
-           * Subscribe to the api call
-           */
-          apiCall.subscribe((data) => {
-            /**
-             * Emit the global action that completes the loading bar
-             */
-            globalStore.next(this.loadingBarActions.completeLoading());
-            /**
-             * Emit the local action on loading succeeded
-             */
-            globalStore.next(this.actions.upsertClassProjRelSucceeded(data, action.meta.dfh_pk_class));
+  //         /**
+  //          * Subscribe to the api call
+  //          */
+  //         apiCall.subscribe((data) => {
+  //           /**
+  //            * Emit the global action that completes the loading bar
+  //            */
+  //           globalStore.next(this.loadingBarActions.completeLoading());
+  //           /**
+  //            * Emit the local action on loading succeeded
+  //            */
+  //           globalStore.next(this.actions.upsertClassProjRelSucceeded(data, action.meta.dfh_pk_class));
 
-          }, error => {
-            /**
-             * Emit the global action that shows some loading error message
-             */
-            // globalStore.next(this.loadingBarActions.completeLoading());
-            /**
-            * Emit the local action on loading failed
-            */
-            globalStore.next(this.actions.upsertClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
-          })
-        }))
-      )
-    }
-  }
+  //         }, error => {
+  //           /**
+  //            * Emit the global action that shows some loading error message
+  //            */
+  //           // globalStore.next(this.loadingBarActions.completeLoading());
+  //           /**
+  //           * Emit the local action on loading failed
+  //           */
+  //           globalStore.next(this.actions.upsertClassProjRelFailed({ status: '' + error.status }, action.meta.dfh_pk_class))
+  //         })
+  //       }))
+  //     )
+  //   }
+  // }
 
 
 

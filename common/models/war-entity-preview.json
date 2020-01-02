@@ -4,7 +4,7 @@
   "options": {
     "validateUpsert": true,
     "postgresql": {
-      "schema": "warehouse",
+      "schema": "war",
       "table": "entity_preview"
     }
   },
@@ -48,6 +48,9 @@
     },
     "last_second": {
       "type": "number"
+    },
+    "tmsp_last_modification": {
+      "type": "text"
     }
   },
   "relations": {

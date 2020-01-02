@@ -6,28 +6,23 @@ import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
 import { SysSystemRelevantClass } from '../../models/SysSystemRelevantClass';
 import { SysAnalysisType } from '../../models/SysAnalysisType';
 import { ProAnalysis } from '../../models/ProAnalysis';
-import { ProQuery } from '../../models/ProQuery';
-import { ProVisual } from '../../models/ProVisual';
-import { ProPropertyLabel } from '../../models/ProPropertyLabel';
 import { PubAccount } from '../../models/PubAccount';
 import { Email } from '../../models/Email';
 import { ProProject } from '../../models/ProProject';
 import { PubAccountProjectRel } from '../../models/PubAccountProjectRel';
 import { ProTextProperty } from '../../models/ProTextProperty';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
+import { DfhProfile } from '../../models/DfhProfile';
 import { DfhClass } from '../../models/DfhClass';
 import { DfhProperty } from '../../models/DfhProperty';
-import { DfhPropertyView } from '../../models/DfhPropertyView';
 import { DfhLabel } from '../../models/DfhLabel';
-import { DfhTextProperty } from '../../models/DfhTextProperty';
 import { DatChunk } from '../../models/DatChunk';
 import { DatDigital } from '../../models/DatDigital';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
-import { DfhClassProfileView } from '../../models/DfhClassProfileView';
-import { DfhPropertyProfileView } from '../../models/DfhPropertyProfileView';
 import { SysAppContext } from '../../models/SysAppContext';
 import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
+import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfRole } from '../../models/InfRole';
@@ -52,28 +47,23 @@ export class SDKModels {
     SysSystemRelevantClass: SysSystemRelevantClass,
     SysAnalysisType: SysAnalysisType,
     ProAnalysis: ProAnalysis,
-    ProQuery: ProQuery,
-    ProVisual: ProVisual,
-    ProPropertyLabel: ProPropertyLabel,
     PubAccount: PubAccount,
     Email: Email,
     ProProject: ProProject,
     PubAccountProjectRel: PubAccountProjectRel,
     ProTextProperty: ProTextProperty,
     ProInfoProjRel: ProInfoProjRel,
+    DfhProfile: DfhProfile,
     DfhClass: DfhClass,
     DfhProperty: DfhProperty,
-    DfhPropertyView: DfhPropertyView,
     DfhLabel: DfhLabel,
-    DfhTextProperty: DfhTextProperty,
     DatChunk: DatChunk,
     DatDigital: DatDigital,
     WarEntityPreview: WarEntityPreview,
-    DfhClassProfileView: DfhClassProfileView,
-    DfhPropertyProfileView: DfhPropertyProfileView,
     SysAppContext: SysAppContext,
     ProClassFieldConfig: ProClassFieldConfig,
     ProDfhClassProjRel: ProDfhClassProjRel,
+    ProDfhProfileProjRel: ProDfhProfileProjRel,
     InfAppellation: InfAppellation,
     InfTemporalEntity: InfTemporalEntity,
     InfRole: InfRole,

@@ -37,6 +37,32 @@ export class ProProjectApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get the projects of account.
+   *
+   * @param {number} accountId Id of the account
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `ProProject` object.)
+   * </em>
+   */
+  public ofAccount(accountId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/ProProjects/of-account";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof accountId !== 'undefined' && accountId !== null) _urlParams.accountId = accountId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Create a new project with a label and a description.
    *
    * @param {number} accountId Id of account to associate the persistent item with.
@@ -93,36 +119,6 @@ export class ProProjectApi extends BaseLoopBackApi {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/ProProjects/get-basics";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Classes and Properties of this Project
-   *
-   * @param {number} pkProject Pk of project
-   *
-   * @param {object} data Request data.
-   *
-   * This method does not accept any data. Supply an empty object.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `ProProject` object.)
-   * </em>
-   */
-  public getReferenceModel(pkProject: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProProjects/get-reference-model";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

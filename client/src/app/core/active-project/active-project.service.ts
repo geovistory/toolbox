@@ -1,34 +1,32 @@
 
-import { of as observableOf, BehaviorSubject, combineLatest, Observable, Subject, timer } from 'rxjs';
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ProSelector } from 'app/core/pro/pro.service';
 import { AddOrCreateEntityModal, AddOrCreateEntityModalData } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
-import { difference, groupBy, indexBy, path, values, without, equals } from 'ramda';
-import { distinctUntilChanged, filter, first, map, mergeMap, tap, switchMap, takeUntil } from 'rxjs/operators';
+import { CreateOrAddEntityEvent } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
+import { cache } from 'app/shared';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
+import { difference, equals, groupBy, indexBy, path, values, without } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, of as observableOf, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { environment } from '../../../environments/environment';
-// import { CreateOrAddEntity } from '../../modules/information/containers/create-or-add-entity/create-or-add-entity.componen';
 import { DatSelector } from '../dat/dat.service';
+import { DfhSelector } from '../dfh/dfh.service';
+import { InfActions } from '../inf/inf.actions';
 import { InfSelector } from '../inf/inf.service';
-import { DatNamespace, DfhProperty, InfPersistentItem, InfRole, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProQuery, ProVisual, InfLanguage, InfPersistentItemApi } from '../sdk';
+import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, ProProject } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
+import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
 import { EntityPreview } from '../state/models';
-import { ActiveProjectActions } from './active-project.action';
-import { ClassConfig, ClassConfigList, EntityVersionsByPk, HasTypePropertyList, ListType, ProjectCrm, Tab, TabData, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, ProjectDetail, Panel, PropertyList } from './active-project.models';
-import { ProSelector } from 'app/core/pro/pro.service';
-import { DfhSelector } from '../dfh/dfh.service';
-import { SystemSelector } from '../sys/sys.service';
-import { IAppState, SchemaObject } from '../store/model';
-import { SysConfig } from '../../../../../src/common/config/sys-config';
-import { U } from '../util/util';
-import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
-import { InfActions } from '../inf/inf.actions';
 import { SucceedActionMeta } from '../store/actions';
-import { ShouldPauseService } from '../services/should-pause.service';
-import { CreateOrAddEntityEvent, ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
-import { ProgressDialogData, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
-import { EntityPreviewsPaginatedDialogData, EntityPreviewsPaginatedDialogComponent } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
+import { IAppState, SchemaObject } from '../store/model';
+import { SystemSelector } from '../sys/sys.service';
+import { ActiveProjectActions } from './active-project.action';
+import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
 
 
 
@@ -43,16 +41,13 @@ export class ActiveProjectService {
   public uiIdSerial$: Observable<number>;
   public panelSerial$: Observable<number>;
   public focusedPanel$: Observable<number>;
-  public crm$: Observable<ProjectCrm>
-  public classes$: Observable<ClassConfigList>
-  public hasTypeProperties$: Observable<HasTypePropertyList>
   public list$: Observable<ListType>; // type of list displayed in left panel
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
-  public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ProQuery>>
-  public comQueryLoading$: Observable<boolean>
-  public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
-  public comVisualLoading$: Observable<boolean>
+  // public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ProQuery>>
+  // public comQueryLoading$: Observable<boolean>
+  // public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
+  // public comVisualLoading$: Observable<boolean>
   public datNamespaces$: Observable<DatNamespace[]>
   public initializingProject$: Observable<boolean>;
 
@@ -63,7 +58,11 @@ export class ActiveProjectService {
     return this.ngRedux.getState().activeProject;
   }
 
-  classPksEnabledInEntities$: Observable<number[]>
+  // classPksEnabledInEntities$: Observable<number[]>
+
+  // object with pk_entity as key of classes where projRel is changing
+  changingClassProjRel: { [key: number]: boolean } = {}
+  changingSystemRelevantClass: { [key: number]: boolean } = {}
 
   inf$: InfSelector;
   dat$: DatSelector;
@@ -78,7 +77,7 @@ export class ActiveProjectService {
     public sys$: SystemSelector,
     public inf: InfActions,
     private peItApi: InfPersistentItemApi,
-    public shouldPause: ShouldPauseService
+    public shouldPause: ShouldPauseService,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -91,15 +90,12 @@ export class ActiveProjectService {
     this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
     this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
     this.focusedPanel$ = ngRedux.select<number>(['activeProject', 'focusedPanel']);
-    this.crm$ = ngRedux.select<ProjectCrm>(['activeProject', 'crm']);
-    this.hasTypeProperties$ = ngRedux.select<HasTypePropertyList>(['activeProject', 'crm', 'hasTypeProperties']);
-    this.classes$ = ngRedux.select<ClassConfigList>(['activeProject', 'crm', 'classes']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
     this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
-    this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProQuery>>(['activeProject', 'comQueryVersionsByPk']);
-    this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
-    this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProVisual>>(['activeProject', 'comVisualVersionsByPk']);
-    this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
+    // this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProQuery>>(['activeProject', 'comQueryVersionsByPk']);
+    // this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
+    // this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProVisual>>(['activeProject', 'comVisualVersionsByPk']);
+    // this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
 
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
@@ -111,19 +107,6 @@ export class ActiveProjectService {
     this.initializingProject$.subscribe(bool => {
       this.shouldPause.shouldPause$.next(bool)
     })
-
-    this.classPksEnabledInEntities$ = this.crm$.pipe(
-      first(d => !!d),
-      map(crm => {
-        const classPksEnabledInEntities: number[] = []
-        for (const key in crm.classes) {
-          if (crm.classes[key] && crm.classes[key].isInProject) {
-            classPksEnabledInEntities.push(crm.classes[key].dfh_pk_class);
-          }
-        }
-        return classPksEnabledInEntities;
-      })
-    )
 
     this.datNamespaces$ = this.pkProject$.pipe(
       mergeMap(pro => this.dat$.namespace$.by_fk_project$.key(pro)),
@@ -162,6 +145,18 @@ export class ActiveProjectService {
 
   }
 
+  @cache({ refCount: false }) pipeActiveProject(): Observable<ProProject> {
+    return this.pkProject$.pipe(
+      switchMap(pkProject => this.pro$.project$.by_pk_entity$.key(pkProject.toString()))
+    ).pipe(filter(l => !!l))
+  }
+  @cache({ refCount: false }) pipeActiveDefaultLanguage(): Observable<InfLanguage> {
+    return this.pipeActiveProject().pipe(
+      filter(p => !!p),
+      switchMap(project => this.inf$.language$.by_pk_entity$.key(project.fk_language.toString()))
+    ).pipe(filter(l => !!l))
+  }
+
 
   /************************************************************************************
   * ActiveProject init and destroy
@@ -177,19 +172,21 @@ export class ActiveProjectService {
   initProject(id) {
     const state = this.ngRedux.getState();
     if (!state.activeProject || state.activeProject.pk_project != id) {
-      this.ngRedux.dispatch(this.actions.loadProject(id))
+      this.ngRedux.dispatch(this.actions.loadProjectBasics(id))
     }
   }
 
   /**
-   * Initialize the project crm
+   * Initialize the project configuration data
+   * this will load all the classes, properties, system configs, etc.
+   * needed to edit a project in the toolbox
    *
    * @param id pk_project
    */
-  initProjectCrm(id) {
+  initProjectConfigData(id) {
     const state = this.ngRedux.getState();
-    if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.crm) {
-      this.ngRedux.dispatch(this.actions.activeProjectLoadCrm(id))
+    if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.configDataInitialized) {
+      this.ngRedux.dispatch(this.actions.loadProjectConfig(id))
     }
   }
 
@@ -396,80 +393,62 @@ export class ActiveProjectService {
     );
   }
 
-  reloadTypesForClassesInProject() {
-    this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
-      .subscribe((classesInProject) => {
-        this.streamTypePreviewsByClass(classesInProject)
-      })
-  }
+  // reloadTypesForClassesInProject() {
+  //   this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
+  //     .subscribe((classesInProject) => {
+  //       this.streamTypePreviewsByClass(classesInProject)
+  //     })
+  // }
 
-  loadQueries() {
-    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-      this.ngRedux.dispatch(this.actions.loadQueries(pk))
-    })
-    return this.comQueryVersionsByPk$;
-  }
+  // loadQueries() {
+  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+  //     this.ngRedux.dispatch(this.actions.loadQueries(pk))
+  //   })
+  //   return this.comQueryVersionsByPk$;
+  // }
 
-  loadQueryVersion(pkEntity: number, entityVersion: number) {
-    const state = this.ngRedux.getState();
+  // loadQueryVersion(pkEntity: number, entityVersion: number) {
+  //   const state = this.ngRedux.getState();
 
-    if (
-      pkEntity && entityVersion &&
-      // if not yet loading
-      (!state.activeProject
-        || !state.activeProject.comQueryVersionLoading
-        || !state.activeProject.comQueryVersionLoading[pkEntity + '_' + entityVersion]
-      )) {
-      this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-        this.ngRedux.dispatch(this.actions.loadQueryVersion(pk, pkEntity, entityVersion))
-      })
-    }
-    return this.comQueryVersionsByPk$;
-  }
+  //   if (
+  //     pkEntity && entityVersion &&
+  //     // if not yet loading
+  //     (!state.activeProject
+  //       || !state.activeProject.comQueryVersionLoading
+  //       || !state.activeProject.comQueryVersionLoading[pkEntity + '_' + entityVersion]
+  //     )) {
+  //     this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+  //       this.ngRedux.dispatch(this.actions.loadQueryVersion(pk, pkEntity, entityVersion))
+  //     })
+  //   }
+  //   return this.comQueryVersionsByPk$;
+  // }
 
-  loadVisuals() {
-    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-      this.ngRedux.dispatch(this.actions.loadVisuals(pk))
-    })
-    return this.comVisualVersionsByPk$;
-  }
+  // loadVisuals() {
+  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+  //     this.ngRedux.dispatch(this.actions.loadVisuals(pk))
+  //   })
+  //   return this.comVisualVersionsByPk$;
+  // }
 
-  /**
-   * Loads one specific visual version
-   * @param pkEntity pk_entity of visual
-   * @param entityVersion if no entity_version provided, returns latest version
-   */
-  loadVisualVersion(pkEntity: number, entityVersion: number = null) {
-    this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-      this.ngRedux.dispatch(this.actions.loadVisualVersion(pk, pkEntity, entityVersion))
-    })
-    return this.comVisualVersionsByPk$;
-  }
-
-  getClassConfig(pkClass): Observable<ClassConfig> {
-    return this.ngRedux.select<ClassConfig>(['activeProject', 'crm', 'classes', pkClass])
-  }
-
-  /**
-   * Filters a given array of InfRoles by a filter function that applies to DfhProperty
-   */
-  filterRolesByPropertyFilter = (roles: InfRole[], propFilterFn: (prop: DfhProperty) => boolean): Observable<InfRole[]> => {
-
-    const pks$ = this.ngRedux.select<PropertyList>(['activeProject', 'crm', 'properties']).pipe(
-      map((propList) => U.obj2Arr(propList)),
-      map(prps => prps.filter(prop => propFilterFn(prop))),
-      map(prps => prps.map(prop => prop.dfh_pk_property))
-    )
-
-    return pks$.pipe(map(pks => roles.filter(role => pks.includes(role.fk_property))))
-  }
+  // /**
+  //  * Loads one specific visual version
+  //  * @param pkEntity pk_entity of visual
+  //  * @param entityVersion if no entity_version provided, returns latest version
+  //  */
+  // loadVisualVersion(pkEntity: number, entityVersion: number = null) {
+  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+  //     this.ngRedux.dispatch(this.actions.loadVisualVersion(pk, pkEntity, entityVersion))
+  //   })
+  //   return this.comVisualVersionsByPk$;
+  // }
 
   /************************************************************************************
   * Change Project Relations
   ************************************************************************************/
-  changeClassProjRel(projRel: ProDfhClassProjRel, dfh_pk_class: number) {
-    this.ngRedux.dispatch(this.actions.upsertClassProjRel(projRel, dfh_pk_class))
-  }
+  // changeClassProjRel(projRel: ProDfhClassProjRel, dfh_pk_class: number) {
+  //   this.ngRedux.dispatch(this.actions.upsertClassProjRel(projRel, dfh_pk_class))
+  // }
 
   removePeIt(pk_entity: number) {
     const s = new Subject<SucceedActionMeta<InfPersistentItem>>();
@@ -751,5 +730,7 @@ export class ActiveProjectService {
 
     return s;
   }
+
+
 
 }

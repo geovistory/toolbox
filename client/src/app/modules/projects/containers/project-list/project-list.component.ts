@@ -8,6 +8,7 @@ import { ProjectsActions } from '../../api/projects.actions';
 import { IProjectList } from '../../projects.model';
 import { Router } from '@angular/router';
 import * as Config from '../../../../../../../common/config/Config';
+import { ProActions } from 'app/core/pro/pro.actions';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class ProjectListComponent implements OnInit {
     private ngRedux: NgRedux<IProjectList>,
     private actions: ProjectsActions,
     private router: Router,
+    private pro: ProActions
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -41,6 +43,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   getProjects() {
+    this.pro.project.loadOfAccount(this.authService.getCurrentUserId());
     this.startLoading();
     this.accountApi.listProjects(this.authService.getCurrentUserId()).subscribe(
       (accounts: Array<PubAccount>) => {
@@ -52,7 +55,7 @@ export class ProjectListComponent implements OnInit {
         this.completeLoading();
       },
       (error) => {
-        if(error.statusCode === 401){
+        if (error.statusCode === 401) {
           this.router.navigate(['login'], {
             queryParams: {
               redirectUrl: 'projects'

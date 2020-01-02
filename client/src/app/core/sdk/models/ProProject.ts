@@ -88,7 +88,7 @@ export class ProProject implements ProProjectInterface {
           model: 'ProTextProperty',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+          keyTo: 'fk_project'
         },
         entity_version_project_rels: {
           name: 'entity_version_project_rels',

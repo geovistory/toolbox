@@ -220,7 +220,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
       pkClasses$ = this.rootClasses$;
     } else {
       // else use the selected classes in this project
-      pkClasses$ = this.c.pipeSelectedClassesInProject().pipe(
+      pkClasses$ = this.c.pipeClassesInEntitiesOrSources().pipe(
         map(x => values(x))
       )
     }

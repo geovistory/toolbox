@@ -54,28 +54,23 @@ import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypePro
 import { SysSystemRelevantClassApi } from './services/custom/SysSystemRelevantClass';
 import { SysAnalysisTypeApi } from './services/custom/SysAnalysisType';
 import { ProAnalysisApi } from './services/custom/ProAnalysis';
-import { ProQueryApi } from './services/custom/ProQuery';
-import { ProVisualApi } from './services/custom/ProVisual';
-import { ProPropertyLabelApi } from './services/custom/ProPropertyLabel';
 import { PubAccountApi } from './services/custom/PubAccount';
 import { EmailApi } from './services/custom/Email';
 import { ProProjectApi } from './services/custom/ProProject';
 import { PubAccountProjectRelApi } from './services/custom/PubAccountProjectRel';
 import { ProTextPropertyApi } from './services/custom/ProTextProperty';
 import { ProInfoProjRelApi } from './services/custom/ProInfoProjRel';
+import { DfhProfileApi } from './services/custom/DfhProfile';
 import { DfhClassApi } from './services/custom/DfhClass';
 import { DfhPropertyApi } from './services/custom/DfhProperty';
-import { DfhPropertyViewApi } from './services/custom/DfhPropertyView';
 import { DfhLabelApi } from './services/custom/DfhLabel';
-import { DfhTextPropertyApi } from './services/custom/DfhTextProperty';
 import { DatChunkApi } from './services/custom/DatChunk';
 import { DatDigitalApi } from './services/custom/DatDigital';
 import { WarEntityPreviewApi } from './services/custom/WarEntityPreview';
-import { DfhClassProfileViewApi } from './services/custom/DfhClassProfileView';
-import { DfhPropertyProfileViewApi } from './services/custom/DfhPropertyProfileView';
 import { SysAppContextApi } from './services/custom/SysAppContext';
 import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
+import { ProDfhProfileProjRelApi } from './services/custom/ProDfhProfileProjRel';
 import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
 import { InfRoleApi } from './services/custom/InfRole';
@@ -123,28 +118,23 @@ export class SDKBrowserModule {
         SysSystemRelevantClassApi,
         SysAnalysisTypeApi,
         ProAnalysisApi,
-        ProQueryApi,
-        ProVisualApi,
-        ProPropertyLabelApi,
         PubAccountApi,
         EmailApi,
         ProProjectApi,
         PubAccountProjectRelApi,
         ProTextPropertyApi,
         ProInfoProjRelApi,
+        DfhProfileApi,
         DfhClassApi,
         DfhPropertyApi,
-        DfhPropertyViewApi,
         DfhLabelApi,
-        DfhTextPropertyApi,
         DatChunkApi,
         DatDigitalApi,
         WarEntityPreviewApi,
-        DfhClassProfileViewApi,
-        DfhPropertyProfileViewApi,
         SysAppContextApi,
         ProClassFieldConfigApi,
         ProDfhClassProjRelApi,
+        ProDfhProfileProjRelApi,
         InfAppellationApi,
         InfTemporalEntityApi,
         InfRoleApi,

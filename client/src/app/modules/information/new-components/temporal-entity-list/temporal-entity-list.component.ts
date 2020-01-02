@@ -1,8 +1,8 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService, InfRoleApi } from 'app/core';
 import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, zip, merge } from 'rxjs';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions, LoadPaginatedTeEnListMeta } from '../../../../core/inf/inf.actions';
@@ -12,6 +12,7 @@ import { InformationPipesService } from '../../new-services/information-pipes.se
 import { FieldDefinition, ListDefinition, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityTableI } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
+import { PaginationService } from '../../new-services/pagination.service';
 
 
 
@@ -56,6 +57,8 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     public t: PropertiesTreeService,
     public i: InformationPipesService,
     public inf: InfActions,
+    public roleApi: InfRoleApi,
+    private paginationService: PaginationService
 
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
@@ -66,7 +69,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   ngOnInit() {
 
     // custom temporal entity table columns
-    let customCols = {
+    const customCols = {
       columnsBefore: ['_classInfo_'],
       columnsAfter: ['_actions_']
     }
@@ -80,18 +83,23 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
     const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity)
 
+    const nextPage$ = new Subject();
     pagination$.pipe(
-      switchMap(([limit, offset]) => {
-        return this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset)
-      }, ([limit, offset, pkProject], loadNeeded) => {
-        if (loadNeeded) {
-          this.inf.temporal_entity.loadPaginatedList(pkProject, this.pkEntity, this.listDefinition.pkProperty, this.listDefinition.isOutgoing, limit, offset)
-        }
-      }),
+      distinctUntilChanged(equals),
       takeUntil(this.destroy$)
-    ).subscribe()
+    ).subscribe(([limit, offset, pkProject]) => {
+      nextPage$.next()
+      this.paginationService.temporalEntity.addPageLoader(
+        pkProject,
+        this.listDefinition,
+        this.pkEntity,
+        limit,
+        offset,
+        merge(nextPage$, this.destroy$)
+      )
+    })
 
-    const columns$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass, this.appContext)
+    const columns$ = this.c.pipeFieldDefinitionsSpecificFirst(this.listDefinition.targetClass)
 
     this.rows$ = combineLatest(pagination$, columns$).pipe(
       distinctUntilChanged(equals),
@@ -140,6 +148,12 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     this.p.addEntityTeEnTab(item.pkEntity)
   }
 
+  markAsFavorite(item: TemporalEntityItem) {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.p.pro$.info_proj_rel.markRoleAsFavorite(pkProject, item.role.pk_entity, item.isOutgoing)
+    })
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
@@ -151,6 +165,7 @@ export function createPaginateBy(listDefinition: ListDefinition, pkEntity: numbe
   if (listDefinition.listType === 'temporal-entity') {
     return [
       { fk_property: listDefinition.pkProperty },
+      { fk_target_class: listDefinition.targetClass },
       { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity }
     ];
   }

@@ -2,7 +2,7 @@ import { indexBy, mapObjIndexed } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { first, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { FieldDefinition, TemporalEntityItem, TemporalEntityTableI } from '../properties-tree/properties-tree.models';
+import { FieldDefinition, TemporalEntityItem, TemporalEntityTableI, ListDefinition } from '../properties-tree/properties-tree.models';
 
 
 
@@ -13,27 +13,31 @@ export class TemporalEntityTable {
   dataColumns$ = new BehaviorSubject<{ name: string, fieldDefinition: FieldDefinition }[]>([]);
   displayedColumns$: Observable<string[]>;
 
-  constructor(public rows$: Observable<TemporalEntityItem[]>, public columDefs$: Observable<FieldDefinition[]>, public destroy$, public listDefinition, customColumns: {
-    columnsBefore: string[];
-    columnsAfter: string[];
-  }) {
+  constructor(
+    public rows$: Observable<TemporalEntityItem[]>,
+    public columDefs$: Observable<FieldDefinition[]>,
+    public destroy$,
+    public listDefinition: ListDefinition,
+    customColumns: {
+      columnsBefore: string[];
+      columnsAfter: string[];
+    }
+  ) {
 
     this.displayedColumns$ = this.dataColumnsMap$.pipe(map((dataColumnsMap) => {
       let checked = [];
       for (const key in dataColumnsMap) {
-        if (dataColumnsMap[key])
-          checked.push(key);
+        if (dataColumnsMap[key]) checked.push(key);
       }
       checked = [...customColumns.columnsBefore, ...checked, ...customColumns.columnsAfter];
-      if (checked.length === 0)
-        checked.push('_empty_');
+      if (checked.length === 0) checked.push('_empty_');
       return checked;
     }));
     this.displayedColumns$.pipe(takeUntil(destroy$)).subscribe()
 
     this.columDefs$.pipe(first(fs => fs.length > 0), takeUntil(destroy$)).subscribe((fieldDefinitions) => {
       const dataColumnsMap = mapObjIndexed((val, key, obj) => true, indexBy((l) => l.label, fieldDefinitions));
-      const circularField = fieldDefinitions.find(f => f.pkProperty === listDefinition.fkPropertyOfOrigin);
+      const circularField = fieldDefinitions.find(f => f.pkProperty === listDefinition.pkProperty);
       if (circularField) {
         // hideCircularField
         const circularCol = circularField.label;

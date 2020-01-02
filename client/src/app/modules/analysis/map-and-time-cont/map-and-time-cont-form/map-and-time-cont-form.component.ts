@@ -9,6 +9,7 @@ import { MapAndTimeContInput } from '../../../../../../../src/common/interfaces'
 import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory
@@ -30,7 +31,8 @@ export class MapAndTimeContFormComponent implements OnInit, OnDestroy, FormFacto
 
   constructor(
     private ff: FormFactoryService,
-    private t: TableFormService) { }
+    private t: TableFormService,
+    private i: InformationPipesService) { }
 
   ngOnInit() {
     this.rootClasses$ = of(DfhConfig.CLASS_PKS_GEO_PE_IT)
@@ -63,7 +65,8 @@ export class MapAndTimeContFormComponent implements OnInit, OnDestroy, FormFacto
     this.formFactory$.pipe(
       switchMap(ff => ff.formGroupFactory.valueChanges$),
       filter((value: MapAndTimeContInput) => (!!value && !!value.queryDefinition && !!value.queryDefinition.filter && !!value.queryDefinition.filter.data && !!value.queryDefinition.filter.data.classes)),
-      map((value: MapAndTimeContInput) => value.queryDefinition.filter.data.classes),
+      map((value: MapAndTimeContInput) => value.queryDefinition.filter.data),
+      switchMap((classesAndTypes: ClassAndTypeSelectModel) => this.i.pipeClassesFromClassesAndTypes(classesAndTypes)),
       distinctUntilChanged<number[]>(equals),
       takeUntil(this.destroy$)
     ).subscribe((v) => {

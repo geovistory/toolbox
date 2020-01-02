@@ -6,13 +6,14 @@
     <ng-container matColumnDef="label">
       <th mat-header-cell *matHeaderCellDef> Label </th>
       <td mat-cell class="mat-editable-cell" *matCellDef="let element">
-        <span *ngIf="!element.editMode">
+        <span *ngIf="!element.editMode" class="mat-body-strong">
           {{element.label}}
         </span>
         <span *ngIf="element.editMode">
           <mat-form-field>
+            <mat-label>Label</mat-label>
             <input matInput placeholder="Label" [formControl]="labelCtrl">
-            <mat-error *ngIf="labelCtrl.invalid">You must enter a value</mat-error>
+            <mat-error *ngIf="labelCtrl.invalid && form.touched">You must enter a value</mat-error>
           </mat-form-field>
         </span>
       </td>
@@ -26,13 +27,18 @@
           {{element.languageLabel}}
         </span>
         <span *ngIf="element.editMode">
-          <gv-language-search-typeahead [formControl]="languageCtrl"></gv-language-search-typeahead>
+          <mat-form-field>
+            <mat-label>Language</mat-label>
+            <gv-ctrl-language [formControl]="languageCtrl"></gv-ctrl-language>
+            <mat-error *ngIf="languageCtrl.invalid && form.touched">Please select a language</mat-error>
+          </mat-form-field>
+          <!-- <gv-language-search-typeahead [formControl]="languageCtrl"></gv-language-search-typeahead> -->
         </span>
       </td>
     </ng-container>
 
     <!-- type Column -->
-    <ng-container matColumnDef="type">
+    <!-- <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef> Type </th>
       <td mat-cell class="mat-editable-cell" *matCellDef="let element">
         <span *ngIf="!element.editMode">
@@ -48,21 +54,24 @@
           </mat-form-field>
         </span>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- actions Column -->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef class="action-col">
-        <button mat-icon-button [disabled]="(saving$ |async) || (editing$ | async)"  matTooltip="Create new Label" (click)="add()">
+        <button mat-icon-button [disabled]="(saving$ |async) || (editing$ | async)" matTooltip="Create new Label"
+          (click)="add()">
           <mat-icon>add</mat-icon>
         </button>
       </th>
       <td mat-cell *matCellDef="let element" class="action-col">
         <span *ngIf="!element.editMode">
-          <button mat-icon-button matTooltip="Delete" [disabled]="(saving$ |async) || (editing$ | async)" (click)="delete(element)">
+          <button mat-icon-button matTooltip="Delete" [disabled]="(saving$ |async) || (editing$ | async)"
+            (click)="delete(element)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-icon-button matTooltip="Edit" [disabled]="(saving$ |async) || (editing$ | async)" (click)="edit(element)">
+          <button mat-icon-button matTooltip="Edit" [disabled]="(saving$ |async) || (editing$ | async)"
+            (click)="edit(element)">
             <mat-icon>edit</mat-icon>
           </button>
         </span>

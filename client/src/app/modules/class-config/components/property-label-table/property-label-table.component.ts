@@ -1,87 +1,110 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '../../../../../../node_modules/@angular/forms';
 import { MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { map, mergeMap, takeUntil, first } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfLanguage, ProPropertyLabel } from '../../../../core';
-import { InformationPipesService } from '../../../information/new-services/information-pipes.service';
+import { first, map, mergeMap, takeUntil, filter } from '../../../../../../node_modules/rxjs/operators';
+import { ActiveProjectService, InfLanguage, ProTextProperty } from '../../../../core';
 import { ProActions } from '../../../../core/pro/pro.actions';
 import { ConfigurationPipesService } from '../../../information/new-services/configuration-pipes.service';
+import { values } from 'd3';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { InfActions } from 'app/core/inf/inf.actions';
 
 interface Row {
 
-  propertyLabel: ProPropertyLabel
+  textProperty: ProTextProperty
   language: InfLanguage
   editMode: boolean;
   saving: boolean
   label: string,
   languageLabel: string
-  type: string
+  // type: string
 }
 @Component({
   selector: 'gv-property-label-table',
   templateUrl: './property-label-table.component.html',
   styleUrls: ['./property-label-table.component.scss']
 })
-export class PropertyLabelTableComponent implements OnInit {
+export class PropertyLabelTableComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
+  @Input() fkProject: number
+  @Input() fkSystemType: number
   @Input() fkProperty: number
-  @Input() fkDomainClass: number
-  @Input() fkRangeClass: number
+  @Input() fkPropertyDomain: number
+  @Input() fkPropertyRange: number
+  @Input() fkClass: number
 
-  editing$ = new BehaviorSubject<ProPropertyLabel>(null) // pk_entity of ProPropertyLabel being edited
+  editing$ = new BehaviorSubject<ProTextProperty>(null) // pk_entity of ProTextProperty being edited
   saving$ = new BehaviorSubject<number>(null)
   rows$: Observable<Row[]>
   creating$ = new BehaviorSubject<boolean>(false)
   dataSource = new MatTableDataSource<Row>()
-  displayedColumns = ['label', 'language', 'type', 'actions'];
+  displayedColumns = ['label', 'language', 'actions'];
 
   labelCtrl = new FormControl('', [Validators.required])
   languageCtrl = new FormControl(null, [Validators.required])
-  typeCtrl = new FormControl('singular', [Validators.required])
+  // typeCtrl = new FormControl('singular', [Validators.required])
   form: FormGroup = this.fb.group({
     labelCtrl: this.labelCtrl,
     langugageCtrl: this.languageCtrl,
-    typeCtrl: this.typeCtrl
+    // typeCtrl: this.typeCtrl
   })
 
   constructor(
     private c: ConfigurationPipesService,
     private p: ActiveProjectService,
     private fb: FormBuilder,
-    private pro: ProActions
+    private pro: ProActions,
+    private inf: InfActions
   ) { }
 
   ngOnInit() {
 
+    if (!this.fkSystemType) throw new Error('you must provide fkSystemType input')
+    if (!this.fkProject) throw new Error('you must provide fkProject input')
+    if (
+      !(
+        (this.fkProperty && this.fkPropertyDomain) ||
+        (this.fkProperty && this.fkPropertyRange) ||
+        (this.fkClass)
+      )
+    ) {
+      throw new Error('you must provide fkProperty with fkPropertyDomain or fkPropertyRange input')
+    }
+
     this.rows$ = combineLatest(
-      this.c.pipeDefaultLabelsOfProperty(this.fkProperty, this.fkDomainClass, this.fkRangeClass),
+      this.p.pro$.text_property$
+        .by_fks_without_lang$
+        .key(`${this.fkProject}_${this.fkSystemType}_${this.fkClass || null}_${this.fkProperty || null}_${this.fkPropertyDomain || null}_${this.fkPropertyRange || null}`)
+        .pipe(map((props) => values(props))),
       this.editing$,
       this.saving$,
       this.creating$
     ).pipe(
-      mergeMap(([labels, editing, saving, creating]) => combineLatest(
-        labels.map(propertyLabel => this.p.inf$.language$.by_pk_entity$.key(propertyLabel.fk_language)
-          .pipe(
-            map(language => {
+      mergeMap(([textProperties, editing, saving, creating]) => combineLatestOrEmpty(
+        textProperties
+          .map(textProp => this.p.inf$.language$.by_pk_entity$.key(textProp.fk_language)
+            .pipe(
+              filter(lang => !!lang),
+              map(language => {
 
-              const row: Row = {
-                editMode: editing && propertyLabel.pk_entity === editing.pk_entity,
-                saving: saving == propertyLabel.pk_entity,
-                propertyLabel,
-                language,
-                label: propertyLabel.label,
-                languageLabel: language.notes,
-                type: propertyLabel.fk_system_type === 180 || propertyLabel.fk_system_type === 182 ? 'singular' : 'plural'
-              }
+                const row: Row = {
+                  editMode: editing && textProp.pk_entity === editing.pk_entity,
+                  saving: saving == textProp.pk_entity,
+                  textProperty: textProp,
+                  language,
+                  label: textProp.string,
+                  languageLabel: language.notes,
+                  // type: textProp.fk_system_type === 180 || textProp.fk_system_type === 182 ? 'singular' : 'plural'
+                }
 
-              return row
+                return row
 
-            })
+              })
+            )
           )
-        )
       ).pipe(
         map(rows => creating ?
           [{
@@ -109,46 +132,52 @@ export class PropertyLabelTableComponent implements OnInit {
   delete(r: Row) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      this.pro.property_label.delete([r.propertyLabel], pkProject)
+      this.pro.text_property.delete([r.textProperty], pkProject)
     })
   }
   edit(r: Row) {
-    this.labelCtrl.setValue(r.propertyLabel.label)
+    this.labelCtrl.setValue(r.textProperty.string)
     this.languageCtrl.setValue(r.language)
-    this.typeCtrl.setValue(r.type)
-    this.editing$.next(r.propertyLabel)
+    // this.typeCtrl.setValue(r.type)
+    this.editing$.next(r.textProperty)
   }
   cancel() {
     this.labelCtrl.setValue(null)
     this.languageCtrl.setValue(null)
-    this.typeCtrl.setValue(null)
+    // this.typeCtrl.setValue(null)
     this.editing$.next(null)
     this.creating$.next(null)
   }
   save() {
     if (this.form.valid) {
       combineLatest(this.p.pkProject$, this.editing$).pipe(first()).subscribe(([pkProject, editing]) => {
-        const propertyLabel = editing || {
-          fk_property: this.fkProperty,
-          fk_domain_class: this.fkDomainClass,
-          fk_range_class: this.fkRangeClass
-        } as ProPropertyLabel;
-
-        const model: ProPropertyLabel = {
-          ...propertyLabel,
-          pk_entity: (pkProject == propertyLabel.fk_project) ? propertyLabel.pk_entity : null,
+        const { fk_project, pk_entity } = editing || {} as any;
+        const language = this.languageCtrl.value as InfLanguage;
+        const model: ProTextProperty = {
+          ...editing,
+          fk_dfh_class: this.fkClass,
+          fk_dfh_property: this.fkProperty,
+          fk_dfh_property_domain: this.fkPropertyDomain,
+          fk_dfh_property_range: this.fkPropertyRange,
+          pk_entity: (pkProject == fk_project) ? pk_entity : null,
           fk_project: pkProject,
-          label: this.labelCtrl.value,
-          fk_language: (this.languageCtrl.value as InfLanguage).pk_entity,
-          fk_system_type: this.fkDomainClass ? (this.typeCtrl.value === 'singular' ? 180 : 181) : (this.typeCtrl.value === 'singular' ? 182 : 183),
+          string: this.labelCtrl.value,
+          fk_language: language.pk_entity,
+          fk_system_type: this.fkSystemType,
         }
-        this.saving$.next(propertyLabel.pk_entity)
-        this.pro.property_label.upsert([model], pkProject).resolved$.pipe(first(x => !!x)).subscribe(res => {
+        this.saving$.next(pk_entity)
+
+        // make sure the language is in store
+        this.inf.language.loadSucceeded([language], null, pkProject)
+
+        this.pro.text_property.upsert([model], pkProject).resolved$.pipe(first(x => !!x)).subscribe(res => {
           this.saving$.next(null)
           this.editing$.next(null)
           this.cancel()
         })
       })
+    } else {
+      this.form.markAllAsTouched()
     }
   }
 }

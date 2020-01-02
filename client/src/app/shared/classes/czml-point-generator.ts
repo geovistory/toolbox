@@ -1,8 +1,9 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
-import { CzmlColor, CzmlDistanceDisplayCondition, CzmlDouble, CzmlDoubleI, CzmlHeightReference, CzmlNearFarScalar, CzmlPoint } from '../../../../../src/common/interfaces/czml-types';
+// import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
+import { CzmlDoubleI, CzmlPoint } from '../../../../../src/common/interfaces/czml-types';
 import { TemporalDistribution } from './statistic-helpers';
+import { QueryPoint } from 'app/modules/information/new-services/map-layer-pipes.service';
 
 // https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet
 

@@ -1,8 +1,10 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatMenuModule, MatTooltipModule } from '@angular/material';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -18,33 +20,38 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
-import { NavbarModule, PassiveLinkModule, ProxyRouteModule, LanguageSearchTypeaheadModule } from 'app/shared';
+import { LanguageSearchTypeaheadModule, NavbarModule, PassiveLinkModule, ProxyRouteModule } from 'app/shared';
 import { DrawerContainerResizeModule } from 'app/shared/components/drawer-container-resize/drawer-container-resize.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
+import { OntoInfoModule } from 'app/shared/components/onto-info/onto-info.module';
 import { ReadMoreModule } from 'app/shared/components/read-more/read-more.module';
+import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon.module';
 import { HighlightModule } from 'app/shared/pipes/highlight/highlight.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
+import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
+import { AnalysisModule } from '../analysis/analysis.module';
+import { ClassConfigModule } from '../class-config/class-config.module';
+import { DataModule } from '../data/data.module';
 import { Information2Module } from '../information/information.module';
 import { QueriesModule } from '../queries/queries.module';
+import { SettingsModule } from '../settings/settings.module';
 import { SourcesModule } from '../sources';
-import { VisualsModule } from '../visuals/visuals.module';
 import { ProjectsActions } from './api/projects.actions';
 import { SettingsListComponent } from './components/settings-list/settings-list.component';
-import { SideNavComponent } from './components/side-nav/side-nav.component';
+// import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
-
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
 import { ProjectDashboardComponent } from './containers/project-dashboard/project-dashboard.component';
 import { ProjectEditPanelComponent } from './containers/project-edit-panel/project-edit-panel.component';
-import { ProjectEditComponent, TabBodyComponent, OnActivateTabDirective } from './containers/project-edit/project-edit.component';
+import { OnActivateTabDirective, ProjectEditComponent, TabBodyComponent } from './containers/project-edit/project-edit.component';
 import { ProjectListComponent } from './containers/project-list/project-list.component';
-import { ProjectSettingsCollaboratorsComponent } from './containers/project-settings-collaborators/project-settings-collaborators.component';
+// import { ProjectSettingsCollaboratorsComponent } from './containers/project-settings-collaborators/project-settings-collaborators.component';
 import { ProjectSettingsDataAPIActions } from './containers/project-settings-data/api/project-settings-data.actions';
 import { ProjectSettingsDataAPIEpics } from './containers/project-settings-data/api/project-settings-data.epics';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
-import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
+// import { ProjectSettingsProfileComponent } from './containers/project-settings-profile/project-settings-profile.component';
 import { TypeEditFormAPIActions } from './containers/type-edit-form/api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './containers/type-edit-form/api/type-edit-form.epics';
 import { TypeEditFormComponent } from './containers/type-edit-form/type-edit-form.component';
@@ -53,13 +60,7 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
-import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
-import { DataModule } from '../data/data.module';
-import { ClassConfigModule } from '../class-config/class-config.module';
-import { AnalysisModule } from '../analysis/analysis.module';
-import { OntomeProfilesListComponent } from './components/ontome-profiles-list/ontome-profiles-list.component';
-import { HttpClientModule } from '@angular/common/http';
-import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon.module';
+
 
 
 
@@ -90,11 +91,12 @@ import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon
     MatIconModule,
     MatExpansionModule,
     MatDialogModule,
+    MatMenuModule,
+    MatTooltipModule,
     DragDropModule,
     SourcesModule,
     Information2Module,
     QueriesModule,
-    VisualsModule,
     AnalysisModule,
     PortalModule,
     DrawerContainerResizeModule,
@@ -106,7 +108,10 @@ import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon
     LanguageSearchTypeaheadModule,
     ClassConfigModule,
     HttpClientModule,
-    AnalysisIconModule
+    AnalysisIconModule,
+    SettingsModule,
+    OntoInfoModule,
+    ClassConfigModule // TODO: REMOVE
   ],
   declarations: [
     ProjectCreateComponent,
@@ -114,10 +119,10 @@ import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon
     ProjectEditComponent,
     ProjectEditPanelComponent,
     ProjectListComponent,
-    ProjectSettingsCollaboratorsComponent,
+    // ProjectSettingsCollaboratorsComponent,
     ProjectSettingsDataComponent,
-    ProjectSettingsProfileComponent,
-    SideNavComponent,
+    // ProjectSettingsProfileComponent,
+    // SideNavComponent,
     TypesComponent,
     TypeEditFormComponent,
     TabBodyComponent,
@@ -125,11 +130,8 @@ import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon
     TabHandleComponent,
     SettingsListComponent,
     OnActivateTabDirective,
-    OntomeProfilesListComponent
   ],
-  exports: [
-    OntomeProfilesListComponent
-  ],
+
   providers: [
     ProjectsActions,
     ProjectSettingsDataAPIEpics,

@@ -18,8 +18,6 @@ export interface InfRoleInterface {
   "is_in_project_count"?: number;
   "is_standard_in_project_count"?: number;
   "community_favorite_calendar"?: string;
-  "range_max_quantifier"?: number;
-  "domain_max_quantifier"?: number;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
   range_temporal_entity?: InfTemporalEntity;
@@ -40,8 +38,6 @@ export class InfRole implements InfRoleInterface {
   "is_in_project_count": number;
   "is_standard_in_project_count": number;
   "community_favorite_calendar": string;
-  "range_max_quantifier": number;
-  "domain_max_quantifier": number;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
   range_temporal_entity?: InfTemporalEntity;
@@ -109,14 +105,6 @@ export class InfRole implements InfRoleInterface {
         "community_favorite_calendar": {
           name: 'community_favorite_calendar',
           type: 'string'
-        },
-        "range_max_quantifier": {
-          name: 'range_max_quantifier',
-          type: 'number'
-        },
-        "domain_max_quantifier": {
-          name: 'domain_max_quantifier',
-          type: 'number'
         },
         "pk_entity": {
           name: 'pk_entity',

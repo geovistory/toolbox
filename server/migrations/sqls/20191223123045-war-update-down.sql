@@ -1,0 +1,46 @@
+-- 3
+Drop Trigger after_api_class_upsert On data_for_history.api_class;
+
+Drop Trigger after_update_or_insert_of_class_label On projects.text_property;
+
+-- 2
+Drop Trigger after_epr_upsert On projects.info_proj_rel;
+
+Create Trigger after_epr_upsert
+    After Insert
+    Or Update On projects.info_proj_rel For Each STATEMENT
+    Execute Procedure warehouse.after_info_proj_rel_upsert ();
+
+-- 1
+Drop Schema war Cascade;
+
+-- 0
+Create Or Replace View data_for_history.v_property As
+Select
+    t1.dfh_pk_property As pk_property,
+    t1.dfh_is_inherited As is_inherited,
+    t1.dfh_property_domain As has_domain,
+    t1.dfh_domain_instances_min_quantifier As domain_instances_min_quantifier,
+    t1.dfh_domain_instances_max_quantifier As domain_instances_max_quantifier,
+    t1.dfh_property_range As has_range,
+    t1.dfh_range_instances_min_quantifier As range_instances_min_quantifier,
+    t1.dfh_range_instances_max_quantifier As range_instances_max_quantifier,
+    t1.dfh_identity_defining As identity_defining,
+    t1.dfh_is_has_type_subproperty As is_has_type_subproperty,
+    t1.dfh_property_identifier_in_namespace As identifier_in_namespace,
+    jsonb_agg(Distinct jsonb_build_object('fk_profile', t1.dfh_fk_profile, 'removed_from_api', t1.removed_from_api)) As profiles
+From
+    data_for_history.api_property t1
+Group By
+    t1.dfh_pk_property,
+    t1.dfh_is_inherited,
+    t1.dfh_property_domain,
+    t1.dfh_domain_instances_min_quantifier,
+    t1.dfh_domain_instances_max_quantifier,
+    t1.dfh_property_range,
+    t1.dfh_range_instances_min_quantifier,
+    t1.dfh_range_instances_max_quantifier,
+    t1.dfh_identity_defining,
+    t1.dfh_is_has_type_subproperty,
+    t1.dfh_property_identifier_in_namespace;
+

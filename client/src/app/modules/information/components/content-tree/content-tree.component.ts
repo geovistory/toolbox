@@ -10,6 +10,7 @@ import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 
 /**
  * Food data with nested structure.
@@ -70,12 +71,44 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   temp$: Observable<any>;
 
+  /****
+ * TREE
+ * inspiration:
+ * https://stackblitz.com/edit/angular-draggable-mat-tree
+ */
+  expandedNodeIds: ByPk<number>;
+  /* Drag and drop */
+  dragNode: ContentTreeNode;
+  dragNodeExpandOverWaitTimeMs = 300;
+  dragNodeExpandOverNode: any;
+  dragNodeExpandOverTime: number;
+  dragNodeExpandOverArea: string;
+  @ViewChild('emptyItem', { static: true }) emptyItem: ElementRef;
+
+
+
+  treeControl = new FlatTreeControl<ContentTreeNode>(
+    node => node.level, node => node.expandable);
+
+  treeFlattener = new MatTreeFlattener(
+    (node: EntityAssociationNode, level: number): ContentTreeNode => {
+      const { children, ...rest } = node;
+      return {
+        ...rest,
+        expandable: !!node.children && node.children.length > 0,
+        level: level,
+      };
+    }, node => node.level, node => node.expandable, node => node.children);
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
   constructor(
     private p: ActiveProjectService,
     private r: RepoService,
     private inf: InfActions,
     private dat: DatSelector,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private i: InformationPipesService
   ) { }
 
   ngOnInit() {
@@ -147,20 +180,27 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * returns an observable string emitting the appellation of an expression portion
    */
   private labelOfExprPortion(pkExpressionPortion: number) {
-    return this.p.inf$.role$.by_fk_property__fk_entity$.key('1327_' + pkExpressionPortion)
-      .pipe(filter(rByPk => !!rByPk && Object.keys(rByPk).length > 0),
-        map(rByPk => values(rByPk)[0]),
-        switchMap(r => this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key('1113_' + r.fk_temporal_entity)),
-        filter(rByPk => !!rByPk && Object.keys(rByPk).length > 0),
-        map(rByPk => values(rByPk)[0]),
-        switchMap(r => this.p.inf$.appellation$.by_pk_entity$.key(r.fk_entity)),
-        filter(a => !!a),
-        map(a => a.string));
+    return this.i.pipeLabelOfEntity(pkExpressionPortion);
   }
 
 
 
   private typeLabelOfExprPortion(pkExpressionPortion: number) {
+
+    const hasTypeRole$ = this.i.pipeTypeOfEntity(
+      pkExpressionPortion,
+      DfhConfig.PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE
+    )
+
+    const pkType$ = hasTypeRole$.pipe(
+      map(e => e ? e.fk_entity : undefined)
+    )
+    const typeLabel$ = pkType$.pipe(
+      switchMap(pkType => this.i.pipeLabelOfEntity(pkType)),
+      startWith('[No Type]')
+    )
+
+    return typeLabel$;
     return this.p.inf$.entity_association$.by_fk_property__fk_info_domain$.key('1320_' + pkExpressionPortion)
       .pipe(filter(rByPk => !!rByPk && Object.keys(rByPk).length > 0),
         map(rByPk => values(rByPk)[0]),
@@ -186,7 +226,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           // Observe the isLeave property of this node
           const isLeaf$ = new BehaviorSubject(ea.fk_data_domain ? true : false)
 
-          let typeLabel$ = this.observeTypeLabel(ea);
+          const typeLabel$ = this.observeTypeLabel(ea);
 
           return combineLatest(cildren$, name$, isLeaf$, typeLabel$)
         })
@@ -206,7 +246,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   private observeTypeLabel(ea) {
     if (ea.fk_data_domain) {
-      return new BehaviorSubject('Text (transcription)');
+      return new BehaviorSubject('Text');
     }
     else {
       return this.typeLabelOfExprPortion(ea.fk_info_domain)
@@ -240,18 +280,16 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   private getExpressionWhereSourceIsRange(pkEntity: number): Observable<number> {
     this.inf.entity_association.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
     return this.r.inf$.entity_association$.by_fk_info_range$.key(pkEntity)
-      .pipe(filter((x) => !!x && !values(x).find(x => !x)), tap((x) => {
-        if (Object.keys(x).length !== 1)
-          console.warn('number of expressions must be one');
+      .pipe(filter((xs) => !!xs && !values(xs).find(x => !x)), tap((x) => {
+        if (Object.keys(x).length !== 1) console.warn('number of expressions must be one');
       }), map((x) => values(x)[0].fk_info_domain));
   }
 
   private getExpressionWhereSourceIsDomain(pkEntity: number): Observable<number> {
     this.inf.entity_association.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
     return this.r.inf$.entity_association$.by_fk_info_domain$.key(pkEntity)
-      .pipe(filter((x) => !!x && !values(x).find(x => !x)), tap((x) => {
-        if (Object.keys(x).length !== 1)
-          console.warn('number of expressions must be one');
+      .pipe(filter((xs) => !!xs && !values(xs).find(x => !x)), tap((x) => {
+        if (Object.keys(x).length !== 1) console.warn('number of expressions must be one');
       }), map((x) => values(x)[0].fk_info_range));
   }
 
@@ -280,37 +318,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  /****
-   * TREE
-   * inspiration:
-   * https://stackblitz.com/edit/angular-draggable-mat-tree
-   */
-  expandedNodeIds: ByPk<number>;
-  /* Drag and drop */
-  dragNode: ContentTreeNode;
-  dragNodeExpandOverWaitTimeMs = 300;
-  dragNodeExpandOverNode: any;
-  dragNodeExpandOverTime: number;
-  dragNodeExpandOverArea: string;
-  @ViewChild('emptyItem', { static: true }) emptyItem: ElementRef;
 
-
-  private transformer = (node: EntityAssociationNode, level: number): ContentTreeNode => {
-    const { children, ...rest } = node;
-    return {
-      ...rest,
-      expandable: !!node.children && node.children.length > 0,
-      level: level,
-    };
-  }
-
-  treeControl = new FlatTreeControl<ContentTreeNode>(
-    node => node.level, node => node.expandable);
-
-  treeFlattener = new MatTreeFlattener(
-    this.transformer, node => node.level, node => node.expandable, node => node.children);
-
-  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
 
   hasChild = (_: number, node: ContentTreeNode) => node.expandable;
@@ -379,7 +387,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
 
         if (dropNode !== this.dragNode) {
-          let newItem: ContentTreeNode;
+          // let newItem: ContentTreeNode;
           // Q: Does the parent of the dragged node change?
           if (this.parentOfDraggedChanged(dropNode, this.dragNode)) {
             // A: Yes. different parent. change the parent (and the order)
@@ -485,7 +493,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
 
           if (resolved) {
-            resolved.items[0].pk_entity
+            // resolved.items[0].pk_entity
 
             this.inf.entity_association.upsert([{
               fk_data_domain: resolved.items[0].pk_entity,
@@ -579,25 +587,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
 
-  tempRemove() {
-    // remove the current entity association from project
-    this.inf.entity_association.remove([{
-      pk_entity: 83119,
-      fk_data_domain: 83118,
-      fk_info_range: 82825,
-      fk_property: 1329
-    } as InfEntityAssociation], 24)
-
-    this.dat.digital$.by_pk_entity$.key(82861).pipe(
-      map(versions => latestVersion(versions))
-    ).subscribe(digital => {
-      this.dat.digital.delete([digital])
-    })
-
-  }
-
-
-
   // store ids of expanded nodes
   storeIdsOfExpandedNodes() {
     this.expandedNodeIds = {}
@@ -611,8 +600,9 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   expandNodesWithStoredId() {
     this.dataSource._flattenedData.pipe(first()).subscribe(nodes => {
       nodes.forEach(node => {
-        if (this.expandedNodeIds[node.entityAssociation.pk_entity])
+        if (this.expandedNodeIds[node.entityAssociation.pk_entity]) {
           this.treeControl.expand(node);
+        }
       })
     })
   }

@@ -1,9 +1,8 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { TeEntDetail, ProjectCrm } from 'app/core';
+import { TeEntDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { StateSettings } from 'app/core/state/services/state-creator';
-import { TeEntActions } from './te-ent.actions'
+import { TeEntActions } from './te-ent.actions';
 
 type Payload = TeEntDetail;
 interface MetaData {
@@ -13,8 +12,8 @@ interface MetaData {
   pkUiContext?: number;
   pkClasses?: number[];
   config?: TeEntDetail
-  settings?: StateSettings,
-  crm?: ProjectCrm,
+  // settings?: StateSettings,
+  // crm?: ProjectCrm,
   keyToToggle?: string;
 };
 export type TeEntDetailAPIAction = FluxStandardAction<Payload, MetaData>;

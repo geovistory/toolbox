@@ -1,6 +1,5 @@
 /* tslint:disable */
 import {
-  SysAppContext,
   DfhProperty,
   SysClassField,
   ProProject
@@ -9,15 +8,13 @@ import {
 declare var Object: any;
 export interface ProClassFieldConfigInterface {
   "pk_entity"?: number;
-  "fk_app_context": number;
   "fk_project"?: number;
-  "fk_class"?: number;
   "fk_property"?: number;
   "fk_class_field"?: number;
-  "property_is_outgoing"?: boolean;
+  "fk_domain_class"?: number;
+  "fk_range_class"?: number;
   "ord_num"?: number;
   "fk_class_for_class_field"?: number;
-  app_context?: SysAppContext;
   property?: DfhProperty;
   class_field?: SysClassField;
   project?: ProProject;
@@ -25,15 +22,13 @@ export interface ProClassFieldConfigInterface {
 
 export class ProClassFieldConfig implements ProClassFieldConfigInterface {
   "pk_entity": number;
-  "fk_app_context": number;
   "fk_project": number;
-  "fk_class": number;
   "fk_property": number;
   "fk_class_field": number;
-  "property_is_outgoing": boolean;
+  "fk_domain_class": number;
+  "fk_range_class": number;
   "ord_num": number;
   "fk_class_for_class_field": number;
-  app_context?: SysAppContext;
   property?: DfhProperty;
   class_field?: SysClassField;
   project?: ProProject;
@@ -74,16 +69,8 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           name: 'pk_entity',
           type: 'number'
         },
-        "fk_app_context": {
-          name: 'fk_app_context',
-          type: 'number'
-        },
         "fk_project": {
           name: 'fk_project',
-          type: 'number'
-        },
-        "fk_class": {
-          name: 'fk_class',
           type: 'number'
         },
         "fk_property": {
@@ -94,9 +81,13 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
           name: 'fk_class_field',
           type: 'number'
         },
-        "property_is_outgoing": {
-          name: 'property_is_outgoing',
-          type: 'boolean'
+        "fk_domain_class": {
+          name: 'fk_domain_class',
+          type: 'number'
+        },
+        "fk_range_class": {
+          name: 'fk_range_class',
+          type: 'number'
         },
         "ord_num": {
           name: 'ord_num',
@@ -108,21 +99,13 @@ export class ProClassFieldConfig implements ProClassFieldConfigInterface {
         },
       },
       relations: {
-        app_context: {
-          name: 'app_context',
-          type: 'SysAppContext',
-          model: 'SysAppContext',
-          relationType: 'belongsTo',
-                  keyFrom: 'fk_app_context',
-          keyTo: 'pk_entity'
-        },
         property: {
           name: 'property',
           type: 'DfhProperty',
           model: 'DfhProperty',
           relationType: 'belongsTo',
                   keyFrom: 'fk_property',
-          keyTo: 'dfh_pk_property'
+          keyTo: 'pk_property'
         },
         class_field: {
           name: 'class_field',

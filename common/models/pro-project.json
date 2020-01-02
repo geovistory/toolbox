@@ -40,7 +40,7 @@
     "text_properties": {
       "type": "hasMany",
       "model": "ProTextProperty",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_project",
       "primaryKey": "pk_entity"
     },
     "persistent_items": {
@@ -75,7 +75,8 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": [
-        "createWithLabelAndDescription"
+        "createWithLabelAndDescription",
+        "ofAccount"
       ]
     },
     {
@@ -83,12 +84,43 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "getBasics",
-        "getReferenceModel"
+        "getBasics"
       ]
     }
   ],
   "methods": {
+    "ofAccount": {
+      "accepts": [
+        {
+          "arg": "accountId",
+          "type": "number",
+          "required": true,
+          "description": "Id of the account",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProTextProperty"
+        ],
+        "root": true
+      },
+      "description": "Get the projects of account.",
+      "http": {
+        "path": "/of-account",
+        "verb": "get"
+      }
+    },
     "createWithLabelAndDescription": {
       "accepts": [
         {
@@ -164,31 +196,6 @@
       "http": {
         "path": "/get-basics",
         "verb": "get"
-      }
-    },
-    "getReferenceModel": {
-      "accepts": [
-        {
-          "arg": "pkProject",
-          "type": "number",
-          "required": true,
-          "description": "Pk of project",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "success",
-        "type": [
-          "object"
-        ],
-        "root": true
-      },
-      "description": "Classes and Properties of this Project",
-      "http": {
-        "path": "/get-reference-model",
-        "verb": "post"
       }
     }
   }

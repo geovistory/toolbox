@@ -36,12 +36,6 @@
     },
     "community_favorite_calendar": {
       "type": "string"
-    },
-    "range_max_quantifier": {
-      "type": "number"
-    },
-    "domain_max_quantifier": {
-      "type": "number"
     }
   },
   "validations": [],
@@ -117,6 +111,7 @@
         "alternativesNotInProjectByTeEntPk",
         "changeRoleProjectRelation",
         "addToProjectWithTeEnt",
+        "removeFromProjectWithTeEnt",
         "addToProject",
         "findOrCreateInfRoles"
       ]
@@ -407,6 +402,45 @@
       "description": "Add roles with their associated temporal entity to the project.",
       "http": {
         "path": "/add-to-project-with-temporal-entity",
+        "verb": "post"
+      }
+    },
+    "removeFromProjectWithTeEnt": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Id of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_roles",
+          "type": "array",
+          "required": true,
+          "description": "Array of primary keys of roles (array of pk_entity).",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfRole",
+        "root": true
+      },
+      "description": "Remove roles with their associated temporal entity from the project.",
+      "http": {
+        "path": "/remove-from-project-with-temporal-entity",
         "verb": "post"
       }
     },

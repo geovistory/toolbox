@@ -21,19 +21,9 @@
       "id": true,
       "generated": true
     },
-    "fk_app_context": {
-      "type": "number",
-      "required": true
-    },
     "fk_project": {
       "type": "number",
       "required": false
-    },
-    "fk_class":{
-      "type": "number",
-      "required": false,
-      "generated": true,
-      "hidden": true
     },
     "fk_property": {
       "type": "number",
@@ -43,8 +33,12 @@
       "type": "number",
       "required": false
     },
-    "property_is_outgoing": {
-      "type": "boolean",
+    "fk_domain_class": {
+      "type": "number",
+      "required": false
+    },
+    "fk_range_class": {
+      "type": "number",
       "required": false
     },
     "ord_num": {
@@ -53,17 +47,11 @@
   },
   "validations": [],
   "relations": {
-    "app_context": {
-      "type": "belongsTo",
-      "model": "SysAppContext",
-      "foreignKey": "fk_app_context",
-      "primaryKey": "pk_entity"
-    },
     "property": {
       "type": "belongsTo",
       "model": "DfhProperty",
       "foreignKey": "fk_property",
-      "primaryKey": "dfh_pk_property"
+      "primaryKey": "pk_property"
     },
     "class_field": {
       "type": "belongsTo",
@@ -98,12 +86,14 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "byProject"
+        "ofProject",
+        "bulkUpsert",
+        "bulkDelete"
       ]
     }
   ],
   "methods": {
-    "byProject": {
+    "ofProject": {
       "accepts": [
         {
           "arg": "pkProject",
@@ -131,8 +121,81 @@
       },
       "description": "Find ProClassFieldConfig of project",
       "http": {
-        "path": "/find-by-project",
+        "path": "/of-project",
         "verb": "get"
+      }
+    },
+    "bulkUpsert": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "ProClassFieldConfig"
+          ],
+          "required": true,
+          "description": "Array ProClassFieldConfig",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "ProClassFieldConfig",
+        "root": true
+      },
+      "description": "Creates or updates instances of ProClassFieldConfig.",
+      "http": {
+        "path": "/bulk-upsert",
+        "verb": "put"
+      }
+    },
+    "bulkDelete": {
+      "accepts": [
+        {
+          "arg": "pks",
+          "type": [
+            "number"
+          ],
+          "required": true,
+          "description": "Array of Primary Key of ProClassFieldConfigs",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "boolean",
+        "root": true
+      },
+      "description": "Deletes instances of ProClassFieldConfig.",
+      "http": {
+        "path": "/bulk-delete",
+        "verb": "put"
       }
     }
   }

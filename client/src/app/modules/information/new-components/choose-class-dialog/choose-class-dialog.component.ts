@@ -24,7 +24,7 @@ export class ChooseClassDialogComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.options$ = combineLatest(this.data.pkClasses.map(pkClass => this.c.pipeLabelOfClass(pkClass).pipe(map((label) => ({
+    this.options$ = combineLatest(this.data.pkClasses.map(pkClass => this.c.pipeClassLabel(pkClass).pipe(map((label) => ({
       pkClass, label
     })))))
   }

@@ -8,7 +8,6 @@ import { sourceListReducer } from 'app/modules/sources/containers/source-list/ap
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { combineReducers } from 'redux';
-import { backofficeReducer } from '../../modules/backoffice/backoffice.reducer';
 import { createProjectsReducer } from '../../modules/projects/api/projects.reducers';
 import { createActiveProjectReducer } from '../active-project/active-project.reducer';
 import { createDatReducer } from '../dat/dat.reducer';
@@ -78,7 +77,6 @@ export const rootReducer = composeReducers(
   defaultFormReducer(),
   combineReducers({
     account: createAccountReducer(),
-    backoffice: backofficeReducer,
     loadingBar: loadingBarReducer,
     activeProject: createActiveProjectReducer(),
     routes: routerReducer,

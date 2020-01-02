@@ -79,8 +79,7 @@
         <mat-panel-description>
           <span class="mat-caption"> {{child.valueChanges$ | async | coltype}}</span>
         </mat-panel-description>
-        <mat-panel-description
-          *ngIf="(child.control.statusChanges | async )=== 'INVALID' && child.control.touched && !panelOpenState">
+        <mat-panel-description *ngIf="(child.control.statusChanges | async )=== 'INVALID' && child.control.touched ">
           <mat-error>
             Invalid, open for details.
           </mat-error>

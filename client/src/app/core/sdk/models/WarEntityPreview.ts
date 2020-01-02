@@ -18,6 +18,7 @@ export interface WarEntityPreviewInterface {
   "time_span"?: any;
   "first_second"?: number;
   "last_second"?: number;
+  "tmsp_last_modification"?: any;
   te_roles?: InfRole[];
   pi_roles?: InfRole[];
   domain_entity_associations?: InfEntityAssociation[];
@@ -37,6 +38,7 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   "time_span": any;
   "first_second": number;
   "last_second": number;
+  "tmsp_last_modification": any;
   te_roles?: InfRole[];
   pi_roles?: InfRole[];
   domain_entity_associations?: InfEntityAssociation[];
@@ -118,6 +120,10 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
         "last_second": {
           name: 'last_second',
           type: 'number'
+        },
+        "tmsp_last_modification": {
+          name: 'tmsp_last_modification',
+          type: 'any'
         },
       },
       relations: {

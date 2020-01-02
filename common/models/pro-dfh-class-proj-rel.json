@@ -21,7 +21,7 @@
       "id": true,
       "generated": true
     },
-    "fk_entity": {
+    "fk_class": {
       "type": "number",
       "required": true
     },
@@ -48,13 +48,13 @@
       "permission": "ALLOW",
       "property": [
         "create",
-        "getEnabledByProject",
-        "patchAttributes"
+        "ofProject",
+        "bulkUpsert"
       ]
     }
   ],
   "methods": {
-    "getEnabledByProject": {
+    "ofProject": {
       "accepts": [
         {
           "arg": "pkProject",
@@ -80,10 +80,51 @@
         ],
         "root": true
       },
-      "description": "Find ProDfhClassProjRel of project where enabled_in_entities is true",
+      "description": "Find ProDfhClassProjRel of project",
       "http": {
-        "path": "/get-enabled-by-project",
+        "path": "/of-project",
         "verb": "get"
+      }
+    },
+    "bulkUpsert": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "ProDfhClassProjRel"
+          ],
+          "required": true,
+          "description": "Array ProDfhClassProjRel",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "ProDfhClassProjRel",
+        "root": true
+      },
+      "description": "Creates or updates instances of ProDfhClassProjRel.",
+      "http": {
+        "path": "/bulk-upsert",
+        "verb": "put"
       }
     }
   }

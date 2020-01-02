@@ -1,10 +1,9 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { TeEntDetail, PeItDetail, ProjectCrm } from 'app/core';
+import { PeItDetail, TeEntDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { StateSettings } from '../../../../../core/state/services/state-creator';
-import { PeItActions } from './pe-it.actions';
 import { ClassAndTypePk } from '../../create-or-add-entity/create-or-add-entity.component';
+import { PeItActions } from './pe-it.actions';
 
 type Payload = PeItDetail;
 interface MetaData {
@@ -16,8 +15,8 @@ interface MetaData {
   pkUiContext?: number;
   pkClasses?: number[];
   config?: PeItDetail
-  settings?: StateSettings,
-  crm?: ProjectCrm
+  // settings?: StateSettings,
+  // crm?: ProjectCrm
 };
 export type PeItDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 

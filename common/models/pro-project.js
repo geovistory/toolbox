@@ -1,40 +1,42 @@
 'use strict';
 
 const Config = require('../config/Config');
-var logSql = require("../../server/scripts/log-deserialized-sql");
+var logSql = require('../../server/scripts/log-deserialized-sql');
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
-module.exports = function (ProProject) {
-
+module.exports = function(ProProject) {
   // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
 
-
   /**
-  * Project.createWithLabelAndDescription -
-  * - Create a new Project
-  * - associate it with an account and
-  * - add a Label and a Text Property
-  * - add clone everything from
-  *
-  * @param  {integer} accountId Id of account to associate project with
-  * @param  {string} fk_language: Id of language used for
-  *                                 default language of the project
-  *                                 language of the label
-  *                                 language of the text property
-  * @param  {string} label: Default name of the Project
-  * @param  {string} text_property: Default description of the Project
-  * @param  {type} cb        callback
-  * @return {void}
-  */
-  ProProject.createWithLabelAndDescription = function (accountId, pkLanguage, label, description, cb) {
-
+   * Project.createWithLabelAndDescription -
+   * - Create a new Project
+   * - associate it with an account and
+   * - add a Label and a Text Property
+   * - add clone everything from
+   *
+   * @param  {integer} accountId Id of account to associate project with
+   * @param  {string} fk_language: Id of language used for
+   *                                 default language of the project
+   *                                 language of the label
+   *                                 language of the text property
+   * @param  {string} label: Default name of the Project
+   * @param  {string} text_property: Default description of the Project
+   * @param  {type} cb        callback
+   * @return {void}
+   */
+  ProProject.createWithLabelAndDescription = function(
+    accountId,
+    pkLanguage,
+    label,
+    description,
+    cb
+  ) {
     var params = [];
 
-    const addParam = (val) => {
+    const addParam = val => {
       params.push(val);
       return '$' + params.length;
-    }
-
-
+    };
 
     let insertTextProperty = '';
     if (description) {
@@ -120,7 +122,6 @@ module.exports = function (ProProject) {
     SELECT pk_entity, ${addParam(accountId)}, 'owner' FROM insert_project
     `;
 
-
     logSql(sql_stmt, params);
 
     const connector = ProProject.dataSource.connector;
@@ -133,182 +134,53 @@ module.exports = function (ProProject) {
     });
   };
 
-
-  ProProject.getBasics = function (pkProject, cb) {
-    ProProject.findComplex({
-      'where': ['pk_entity', '=', pkProject],
-      'include': {
-        'text_properties': {
-          '$relation': {
-            'name': 'text_properties',
-            'joinType': 'inner join',
-            'orderBy': [{ 'pk_entity': 'asc' }],
-            'where': ['fk_system_type', '=', Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL],
-          }
-        },
-        'default_language': {
-          '$relation': {
-            'name': 'default_language',
-            'joinType': 'inner join',
-            'orderBy': [{ 'pk_entity': 'asc' }]
-          }
-        }
-      }
-    }, cb)
-  }
-
-  /**
-   * Gets the reference model of the project:
-   * - DfhClasses available for project, including
-   *    - Ingoing and Outgoing DfhProperties available for project, including
-   *        - Boolean that indicates
-   *
-   */
-  ProProject.getReferenceModel = function (pkProject, cb) {
-
-    // shortcut as long as no epr for classes in use
-    const DfhClass = ProProject.app.models.DfhClass;
-
-    const propertiesSelect = {
-      include: [
-        "dfh_pk_property",
-        "dfh_identifier_in_namespace",
-        "dfh_has_domain",
-        "dfh_has_range",
-        "dfh_fk_property_of_origin",
-        "dfh_domain_instances_min_quantifier",
-        "dfh_domain_instances_max_quantifier",
-        "dfh_range_instances_min_quantifier",
-        "dfh_range_instances_max_quantifier",
-        "identity_defining"
-      ]
-    };
-
-    const property_profile_view = {
-      "$relation": {
-        "name": "property_profile_view",
-        "joinType": "inner join",
-        // "where": [
-        //   "removed_from_api", "=", "false"
-        // ],
-        select: false
-      }
-    };
-
-
-    const labels = {
-      "$relation": {
-        "name": "labels",
-        "joinType": "left join",
-        select: { include: ["dfh_label", "com_fk_system_type"] },
-        "where": [
-          "com_fk_system_type", "IN", [
-            Config.PROPERTY_LABEL_SG,
-            Config.PROPERTY_LABEL_PL,
-            Config.PROPERTY_LABEL_INVERSED_SG,
-            Config.PROPERTY_LABEL_INVERSED_PL
-          ]
-        ]
-      }
-    };
-
-
-
-    const class_field_config = (isOutgoing) => {
-      return {
-        "$relation": {
-          "name": "class_field_config",
-          "joinType": "left join",
-          "where": [
-            "property_is_outgoing", "=", JSON.stringify(isOutgoing)
-          ],
-        }
-      }
-    }
-
-    const filter = {
-      select: {
-        include: ["pk_entity", "dfh_pk_class", "dfh_identifier_in_namespace", "dfh_standard_label"]
-      },
-      "include": {
-        proj_rels: {
-          "$relation": {
-            "name": "proj_rels",
-            "joinType": "left join",
-            // select: { include: ["is_in_project"] },
-            "orderBy": [{ "pk_entity": "asc" }],
-            where: ['fk_project', '=', pkProject]
-          }
-        },
-        labels: {
-          "$relation": {
-            "name": "labels",
-            "joinType": "left join",
-            select: { include: ["dfh_label", "inf_fk_language", "pk_entity", "com_fk_system_type"] },
-            "where": [
-              "com_fk_system_type", "IN", [Config.CLASS_LABEL]
-            ]
-          }
-        },
-        "class_profile_view": {
-          "$relation": {
-            "name": "class_profile_view",
-            "joinType": "inner join",
-            "where": [
-              //              "dfh_profile_association_type", "=", "selected" // TODO: Check if app still works correctly
-              "removed_from_api", "=", "false"
-            ],
-            select: { include: ["dfh_fk_system_type", "dfh_type_label", "dfh_profile_association_type", "dfh_fk_profile", "dfh_profile_label"] }
-          }
-        },
-        "text_properties": {
-          "$relation": {
-            "name": "text_properties",
-            "joinType": "left join",
-            select: { include: ["dfh_text_property", "dfh_language_iso_code"] }
-          }
-        },
-        "ingoing_properties": {
-          "$relation": {
-            "name": "ingoing_properties",
-            "joinType": "left join",
-            select: propertiesSelect,
-          },
-          property_profile_view,
-          class_field_config: class_field_config(false),
-          labels,
-        },
-        "outgoing_properties": {
-          "$relation": {
-            "name": "outgoing_properties",
-            "joinType": "left join",
-            select: propertiesSelect,
-          },
-          property_profile_view,
-          class_field_config: class_field_config(true),
-          labels
-        },
-        "class_field_configs": {
-          "$relation": {
-            "name": "class_field_configs",
-            "joinType": "left join"
-          },
-          class_field: {
+  ProProject.getBasics = function(pkProject, cb) {
+    ProProject.findComplex(
+      {
+        where: ['pk_entity', '=', pkProject],
+        include: {
+          text_properties: {
             $relation: {
-              name: "class_field",
-              joinType: "left join",
-              "orderBy": [{ "pk_entity": "asc" }]
-            }
-          }
-        }
+              name: 'text_properties',
+              joinType: 'inner join',
+              orderBy: [{ pk_entity: 'asc' }],
+              where: [
+                'fk_system_type',
+                '=',
+                Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL,
+              ],
+            },
+          },
+          default_language: {
+            $relation: {
+              name: 'default_language',
+              joinType: 'inner join',
+              orderBy: [{ pk_entity: 'asc' }],
+            },
+          },
+        },
+      },
+      cb
+    );
+  };
+
+  ProProject.ofAccount = function(accountId, ctx, cb) {
+    const q = new FlatObjectQueryBuilder(ProProject.app.models);
+    const params = [accountId];
+    const sql = `
+      SELECT ${q.createSelect('t1', 'ProProject')}
+      FROM projects.project t1,
+      public.account_project_rel t2
+      WHERE t1.pk_entity = t2.fk_project
+      AND t2.account_id = $1
+    `;
+    ProProject.dataSource.connector.execute(
+      sql,
+      params,
+      (err, resultObjects) => {
+        if (err) return cb(err, resultObjects);
+        cb(false, resultObjects);
       }
-    }
-
-    return DfhClass.findComplex(filter, cb);
-
-  }
-
-
-
-
-}
+    );
+  };
+};

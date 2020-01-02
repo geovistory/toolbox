@@ -1,6 +1,22 @@
 <!-- Field Header, in case there are multiple different lists in this field (inherited properties) -->
 
-<div class="mat-tree-node">
+<div *ngIf="fieldDefinition.listType==='has-type'" class="mat-tree-node">
+  <button mat-icon-button disabled></button>
+  <div class="bg-transparent d-flex align-items-center gv-grow-1">
+    <a *ngIf="(showOntoInfo$|async)" class="badge badge-success mr-2" href="{{fieldDefinition.ontoInfoUrl}}"
+      target="_blank">
+      {{fieldDefinition.ontoInfoLabel}}
+    </a>
+    <span class="upper-case gv-field-header-label">
+      {{fieldDefinition.label}}:
+    </span>
+    <gv-type-item class="ml-3 text-muted" [pkEntity]="pkEntity" [pkProperty]="fieldDefinition.pkProperty"
+      [pkTypedClass]="fieldDefinition.sourceClass" [pkTypeClass]="fieldDefinition.listDefinitions[0]?.targetClass">
+    </gv-type-item>
+  </div>
+</div>
+
+<div *ngIf="fieldDefinition.listType!=='has-type'" class="mat-tree-node">
 
   <button mat-icon-button
     (click)="treeControl.isExpanded(fieldDefinition) ? treeControl.collapse(fieldDefinition) : treeControl.expand(fieldDefinition)"
@@ -16,9 +32,10 @@
       target="_blank">
       {{fieldDefinition.ontoInfoLabel}}
     </a>
-    <span class="upper-case gv-field-header-label" >
+    <span class="upper-case gv-field-header-label">
       {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
-      <span matTooltip="Required and not changeable (identity defining)" *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+      <span matTooltip="Required and not changeable (identity defining)"
+        *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
         *
       </span>
     </span>
@@ -26,8 +43,7 @@
       ({{itemsCount$ | async}})
     </span>
   </div>
-  <button mat-button [disabled]="!(showAddButton$ | async)"
-    (click)="addClick()">
+  <button mat-button [disabled]="!(showAddButton$ | async)" (click)="addClick()">
     <mat-icon>add_circle_outline</mat-icon> Add
   </button>
 

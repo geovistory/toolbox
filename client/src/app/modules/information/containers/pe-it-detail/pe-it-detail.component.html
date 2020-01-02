@@ -1,4 +1,4 @@
-<div class="gv-flex-fh">
+<div class="gv-flex-fh mat-typography">
   <as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': !t.showRightArea}" [direction]="'horizontal'"
     gutterSize="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
 
@@ -16,7 +16,7 @@
 
         <span class="text-muted small ml-2">{{classLabel$ | async}}</span>
 
-        <gv-type-item class="ml-3 small text-muted" [pkEntity]="pkEntity$|async"></gv-type-item>
+        <!-- <gv-type-item class="ml-3 small text-muted" [pkEntity]="pkEntity$|async"></gv-type-item> -->
 
         <div fxFlex fxLayout="row" fxLayoutAlign="end center">
           <button mat-icon-button [matMenuTriggerFor]="mainMenu">
@@ -52,16 +52,16 @@
         <span class="gv-tile" *ngIf="(showProperties$ | async)">
           <div class="gv-one-liner mx-2 mt-3">
             <h2>
-              <span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async}}</span>
+              <span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async | truncate:120}}</span>
               <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
             </h2>
-
           </div>
 
-
           <div class="gv-tile-body px-2">
+
             <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$">
             </gv-properties-tree>
+
           </div>
 
         </span>

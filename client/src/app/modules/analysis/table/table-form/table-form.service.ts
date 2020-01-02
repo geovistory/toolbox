@@ -32,7 +32,7 @@ export class TableFormService {
   initPathSegments$: Observable<QueryPathSegment[]>
   constructor(private c: ConfigurationPipesService,
   ) {
-    this.rootClasses$ = this.c.pipeSelectedClassesInProject().pipe(map(x => values(x)))
+    this.rootClasses$ = this.c.pipeClassesInEntitiesOrSources().pipe(map(x => values(x)))
   }
 
 

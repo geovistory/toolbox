@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
@@ -8,7 +8,7 @@ import { FormControlFactory } from 'app/modules/form-factory/core/form-control-f
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { clone, flatten, values } from 'ramda';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { auditTime, first, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { auditTime, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
@@ -324,172 +324,194 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   private getListArrayConfig(arrayConfig: LocalArrayConfig, listType: ListType): Observable<LocalNodeConfig[]> {
-    return this.c.pipeFieldDefinitions(arrayConfig.data.pkClass, this.appContext).pipe(
-      auditTime(100), mergeMap(fieldDefinitions => {
-        return new Observable<LocalNodeConfig[]>(subscriber => {
 
-          const childConfs: LocalNodeConfig[] = []
+    return this.p.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass).pipe(
+      switchMap((dfhClass) => {
 
-          // Add a form array as list
-          fieldDefinitions.forEach((f, index) => {
+        let fields$: Observable<FieldDefinition[]>;
+        // For temporal_entity
+        if (dfhClass.basic_type === 9) {
+          fields$ = this.c.pipeSpecificFieldDefinitions(arrayConfig.data.pkClass).pipe(
+            map(fields => {
+              const when = this.c.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN)
+              return [...fields, when]
+            })
+          )
+        } else {
+          fields$ = this.c.pipeDefaultFieldDefinitions(arrayConfig.data.pkClass)
+        }
 
-            const createArrayConfig = (listDefinition: ListDefinition, customCtrlLabel?: string, customPlaceholder?: string): LocalNodeConfig => {
+        return fields$.pipe(
+          // auditTime(100),
+          mergeMap((fieldDefs) => {
+            return new Observable<LocalNodeConfig[]>(subscriber => {
 
-              const childListType = listDefinition.listType;
-              const stringPartId = this.searchStringPartId++;
-              const mapValue = (x): MapValueItem => {
+              const childConfs: LocalNodeConfig[] = []
 
-                if (listType === 'temporal-entity') {
+              // Add a form array as list
+              // const fieldDefs = [...defaultFieldDefs, ...specificFieldDefs];
+              fieldDefs.forEach((f, index) => {
 
-                  if (childListType === 'language' || childListType === 'place' || childListType === 'entity-preview') {
+                const createArrayConfig = (listDefinition: ListDefinition, customCtrlLabel?: string, customPlaceholder?: string): LocalNodeConfig => {
 
-                    return {
-                      key: getRoleKey(listType, listDefinition),
-                      value: x.filter((i) => !!i)
+                  const childListType = listDefinition.listType;
+                  const stringPartId = this.searchStringPartId++;
+                  const mapValue = (x): MapValueItem => {
+
+                    if (listType === 'temporal-entity') {
+
+                      if (childListType === 'language' || childListType === 'place' || childListType === 'entity-preview') {
+
+                        return {
+                          key: getRoleKey(listType, listDefinition),
+                          value: x.filter((i) => !!i)
+                        }
+
+                      }
+                      else if (childListType === 'appellation') {
+
+                        const roles: InfRole[] = this.appellationsHook(x, stringPartId);
+                        return {
+                          key: getRoleKey(listType, listDefinition),
+                          value: roles
+                        }
+
+                      } else if (childListType === 'temporal-entity') {
+
+                        return {
+                          key: getRoleKey(listType, listDefinition),
+                          value: x.filter(item => !!item).map(item => ({
+                            fk_property: listDefinition.pkProperty,
+                            temporal_entity: item
+                          }))
+                        }
+
+                      } else if (childListType === 'time-span') {
+
+                        return {
+                          key: getRoleKey(listType, listDefinition),
+                          value: flatten(x).filter((i) => !!i)
+                        }
+
+                      } else if (childListType === 'text-property') {
+
+                        const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
+                        return { key: 'text_properties', value: textProps }
+
+                      }
                     }
+                    else if (listType === 'persistent-item') {
 
+                      if (childListType === 'text-property') {
+
+                        const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
+                        return { key: 'text_properties', value: textProps }
+
+                      } else if (childListType === 'temporal-entity') {
+
+                        return {
+                          key: getRoleKey(listType, listDefinition),
+                          value: x.filter(item => !!item).map(item => ({
+                            fk_property: listDefinition.pkProperty,
+                            temporal_entity: item
+                          }))
+                        }
+
+                      }
+                    };
+                    // if not returned earlier, we have an error
+                    throw new Error(`No mapValue defined for ${childListType} as child of ${listType}`)
                   }
-                  else if (childListType === 'appellation') {
 
-                    const roles: InfRole[] = this.appellationsHook(x, stringPartId);
-                    return {
-                      key: getRoleKey(listType, listDefinition),
-                      value: roles
-                    }
 
-                  } else if (childListType === 'temporal-entity') {
-
-                    return {
-                      key: getRoleKey(listType, listDefinition),
-                      value: x.filter(item => !!item).map(item => ({
-                        fk_property: listDefinition.pkProperty,
-                        temporal_entity: item
-                      }))
-                    }
-
-                  } else if (childListType === 'time-span') {
-
-                    return {
-                      key: getRoleKey(listType, listDefinition),
-                      value: flatten(x).filter((i) => !!i)
-                    }
-
-                  } else if (childListType === 'text-property') {
-
-                    const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
-                    return { key: 'text_properties', value: textProps }
-
+                  const removeHook = (data: FormArrayData) => {
+                    const id = data.stringPartId;
+                    if (id && this.searchStringParts[id]) delete this.searchStringParts[id];
+                    this.emitNewSearchString();
                   }
-                }
-                else if (listType === 'persistent-item') {
 
-                  if (childListType === 'text-property') {
+                  const required = listDefinition.isIdentityDefining;
+                  const maxLength = listDefinition.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMaxQuantity;
+                  const addOnInit = maxLength === 1 ? 1 : required ? 1 : 0;
 
-                    const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
-                    return { key: 'text_properties', value: textProps }
-
-                  } else if (childListType === 'temporal-entity') {
-
-                    return {
-                      key: getRoleKey(listType, listDefinition),
-                      value: x.filter(item => !!item).map(item => ({
-                        fk_property: listDefinition.pkProperty,
-                        temporal_entity: item
-                      }))
-                    }
-
-                  }
-                };
-                // if not returned earlier, we have an error
-                throw new Error(`No mapValue defined for ${childListType} as child of ${listType}`)
-              }
-
-
-              const removeHook = (data: FormArrayData) => {
-                const id = data.stringPartId;
-                if (id && this.searchStringParts[id]) delete this.searchStringParts[id];
-                this.emitNewSearchString();
-              }
-
-              const required = listDefinition.isIdentityDefining;
-              const maxLength = listDefinition.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMaxQuantity;
-              const addOnInit = maxLength === 1 ? 1 : required ? 1 : 0;
-
-              return {
-                array: {
-                  isList: true,
-                  addOnInit,
-                  required,
-                  maxLength,
-                  placeholder: customPlaceholder || listDefinition.label,
-                  data: {
-                    pkClass: listDefinition.targetClass,
-                    fieldDefinition: f,
-                    listDefinition,
-                    customCtrlLabel,
-                    stringPartId,
-                    removeHook
-                  },
-                  mapValue,
-                },
-                id: U.uuid()
-              }
-            }
-            // Q: is this field not circular ?
-            const parentPropety = arrayConfig.data.fieldDefinition.pkProperty;
-            if (!parentPropety || parentPropety !== f.pkProperty) {
-              // A: no. Add a a child array config.
-
-              // Q: is there only one list definition?
-              if (f.listDefinitions.length === 1) {
-                // A. yes: add the array list
-                const l = f.listDefinitions[0];
-                const n = createArrayConfig(l);
-                childConfs.push(n);
-
-              } else {
-                // A. no: add a control for selecting the target class
-                const n: LocalNodeConfig = {
-                  control: {
-                    placeholder: f.label,
-                    required: this.ctrlRequired(f),
-                    mapValue: () => { },
-                    data: {
-                      controlType: 'ctrl-target-class',
-                      fieldDefinition: f,
-                      nodeConfigs: f.listDefinitions.map(l => createArrayConfig(l, l.targetClassLabel, l.label + ' ' + l.targetClassLabel))
+                  return {
+                    array: {
+                      isList: true,
+                      addOnInit,
+                      required,
+                      maxLength,
+                      placeholder: customPlaceholder || listDefinition.label,
+                      data: {
+                        pkClass: listDefinition.targetClass,
+                        fieldDefinition: f,
+                        listDefinition,
+                        customCtrlLabel,
+                        stringPartId,
+                        removeHook
+                      },
+                      mapValue,
                     },
-                  },
-                  id: U.uuid()
-                };
-                childConfs.push(n);
-                // -> use the mapValue as a Hook to add a array list after when a class is selected
-                // -> and remove the array list, if the class is deselected
-                n.control.mapValue = (s: ListDefinition) => {
-                  const newChildren = clone(childConfs)
-                  const i = newChildren.findIndex(item => item.id === n.id)
-
-                  // if selected
-                  if (s) {
-                    // insert the array config with the selected list definition
-                    newChildren.splice(i + 1, 0, createArrayConfig(s, 'Select ' + s.targetClassLabel))
-
-                    // disable 'ctrl-target-class'
-
-                    // update the form factory
+                    id: U.uuid()
                   }
-                  subscriber.next(newChildren)
-
-                  return
                 }
-              }
-            }
-          });
+                // Q: is this field not circular ?
+                const parentPropety = arrayConfig.data.fieldDefinition.pkProperty;
+                if (!parentPropety || parentPropety !== f.pkProperty) {
+                  // A: no. Add a a child array config.
 
-          subscriber.next(childConfs)
-        })
+                  // Q: is there only one list definition?
+                  if (f.listDefinitions.length === 1) {
+                    // A. yes: add the array list
+                    const l = f.listDefinitions[0];
+                    const n = createArrayConfig(l);
+                    childConfs.push(n);
 
-      }));
+                  } else {
+                    // A. no: add a control for selecting the target class
+                    const n: LocalNodeConfig = {
+                      control: {
+                        placeholder: f.label,
+                        required: this.ctrlRequired(f),
+                        mapValue: () => { },
+                        data: {
+                          controlType: 'ctrl-target-class',
+                          fieldDefinition: f,
+                          nodeConfigs: f.listDefinitions.map(l => createArrayConfig(l, l.targetClassLabel, l.label + ' ' + l.targetClassLabel))
+                        },
+                      },
+                      id: U.uuid()
+                    };
+                    childConfs.push(n);
+                    // -> use the mapValue as a Hook to add a array list after when a class is selected
+                    // -> and remove the array list, if the class is deselected
+                    n.control.mapValue = (s: ListDefinition) => {
+                      const newChildren = clone(childConfs)
+                      const i = newChildren.findIndex(item => item.id === n.id)
+
+                      // if selected
+                      if (s) {
+                        // insert the array config with the selected list definition
+                        newChildren.splice(i + 1, 0, createArrayConfig(s, 'Select ' + s.targetClassLabel))
+
+                        // disable 'ctrl-target-class'
+
+                        // update the form factory
+                        subscriber.next(newChildren)
+                      }
+
+                      return
+                    }
+                  }
+                }
+              });
+
+              subscriber.next(childConfs)
+            })
+
+          }));
+      })
+    )
+
 
 
   }
@@ -513,7 +535,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private getChildNodesOfGroup(nodeConfig: LocalNodeConfig): Observable<LocalNodeConfig[]> {
     const childConfs: LocalNodeConfig[] = [];
 
-    return combineLatest(this.c.pipeListTypeOfClass(nodeConfig.group.data.pkClass), this.c.pipeLabelOfClass(nodeConfig.group.data.pkClass)).pipe(auditTime(10), map(([listType, label]) => {
+    return combineLatest(
+      this.c.pipeListTypeOfClass(nodeConfig.group.data.pkClass),
+      this.c.pipeClassLabel(nodeConfig.group.data.pkClass)
+    ).pipe(auditTime(10), map(([listType, label]) => {
       const mapFn = createContainerMapValue(nodeConfig.group.data.pkClass)
       const mapValue = (x) => {
         this.emitNewSearchString();

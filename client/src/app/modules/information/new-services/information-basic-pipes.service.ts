@@ -129,7 +129,7 @@ export class InformationBasicPipesService {
     return this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity).pipe(
       filter(x => !!x),
       map(projRel => ({
-        projRel, role, label: '', ordNum: projRel.ord_num_of_range, isOutgoing
+        projRel, role, label: '', ordNum: (isOutgoing ? projRel.ord_num_of_range : projRel.ord_num_of_domain), isOutgoing
       }))
     );
   }
@@ -268,7 +268,8 @@ export class InformationBasicPipesService {
     */
   @spyTag pipeRepoOutgoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
-      this.p.crm$.pipe(filter(x => !!x), map(crm => crm.properties[pkProperty].dfh_range_instances_max_quantifier)),
+      this.p.dfh$.property$.by_pk_property$.key(pkProperty)
+        .pipe(filter(x => !!x && Object.keys(x).length > 0), map(p => values(p)[0].range_instances_max_quantifier)),
       this.infRepo.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
     ).pipe(
       map(([m, inrepo]) => {
@@ -286,7 +287,8 @@ export class InformationBasicPipesService {
   */
   @spyTag pipeRepoIngoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
-      this.p.crm$.pipe(filter(x => !!x), map(crm => crm.properties[pkProperty].dfh_domain_instances_max_quantifier)),
+      this.p.dfh$.property$.by_pk_property$.key(pkProperty)
+        .pipe(filter(x => !!x && Object.keys(x).length > 0), map(p => values(p)[0].domain_instances_max_quantifier)),
       this.infRepo.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
     ).pipe(
       map(([m, inrepo]) => {

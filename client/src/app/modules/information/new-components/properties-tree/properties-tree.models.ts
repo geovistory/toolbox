@@ -1,21 +1,21 @@
-import { NestedTreeControl } from "@angular/cdk/tree";
-import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from "app/core";
-import { Observable } from "rxjs";
-import { PropertiesTreeService } from "./properties-tree.service";
+import { NestedTreeControl } from '@angular/cdk/tree';
+import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { Observable } from 'rxjs';
+import { PropertiesTreeService } from './properties-tree.service';
 
-export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'temporal-entity' | 'persistent-item';
-export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' ;
+export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'has-type' | 'temporal-entity' | 'persistent-item';
+export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'has-type';
 
 export type CreateControlType = 'role';
 
-/**
- * This interface is a intermediate solution, useful as long as
- * the identity of properties is not changed to always using the
- * identifier of the property of origin
- */
-export interface ClassFieldConfig extends ProClassFieldConfig {
-  fk_property_of_origin: number
-}
+// /**
+//  * This interface is a intermediate solution, useful as long as
+//  * the identity of properties is not changed to always using the
+//  * identifier of the property of origin
+//  */
+// export interface ProClassFieldConfig extends ProClassFieldConfig {
+//   fk_property_of_origin: number
+// }
 
 export interface FieldDefinition {
   listType: ListType
@@ -24,11 +24,12 @@ export interface FieldDefinition {
   ontoInfoLabel: string
   pkProperty: number
   isOutgoing: boolean
+  sourceClass: number
   targetClasses?: number[]
   targetMaxQuantity?: number
   listDefinitions: ListDefinition[]
   isIdentityDefining: boolean
-
+  fieldConfig?: ProClassFieldConfig
 }
 
 export interface ListDefinition {
@@ -38,7 +39,7 @@ export interface ListDefinition {
   ontoInfoLabel: string
   fkClassField: number
   pkProperty: number
-  fkPropertyOfOrigin: number // TODO remove after pkProperty Change
+  // fkPropertyOfOrigin: number // TODO remove after pkProperty Change
   isOutgoing: boolean
   isIdentityDefining: boolean
   sourceClass: number
@@ -67,18 +68,22 @@ export interface BasicRoleItem extends ItemBasics {
 }
 
 export interface AppellationItem extends BasicRoleItem {
+  fkClass: number;
   label: string
 }
 
 export interface LanguageItem extends BasicRoleItem {
+  fkClass: number;
   label: string
 }
 
 export interface PlaceItem extends BasicRoleItem {
+  fkClass: number;
   label: string
 }
 
 export interface TimePrimitiveItem extends BasicRoleItem {
+  fkClass: number;
   label: string
   timePrimitive: TimePrimitive;
 }
@@ -88,6 +93,7 @@ export interface TemporalEntityTableI {
   columns$: Observable<FieldDefinition[]>
 }
 export interface TemporalEntityItem extends BasicRoleItem {
+  // fkClass: number; // fk_class of TemporalEntity
   row: TemporalEntityRow
   pkEntity: number; // pk of TemporalEntity
 }
@@ -103,10 +109,12 @@ export interface TemporalEntityCell {
   entityPreview: EntityPreview
   itemsCount: number
   firstItem?: RoleItem
+  isTimeSpan?: boolean;
 }
 
 export interface EntityPreviewItem extends BasicRoleItem {
   preview: EntityPreview
+  fkClass: number
 }
 
 export interface EntityProperties {

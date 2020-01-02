@@ -128,15 +128,70 @@ module.exports = function(WarEntityPreview) {
         }
       });
 
-      const streamSub = WarEntityPreview.stream.subscribe(entityPreview => {
-        // check if the changed entityPreview is in object of streamed pks
-        if (
-          cache.streamedPks[entityPreview.pk_entity] &&
-          entityPreview.fk_project == cache.currentProjectPk
-        ) {
-          emitPreview(entityPreview);
+      const streamSub = WarEntityPreview.stream.subscribe(
+        tsmpLastModification => {
+          if (cache.currentProjectPk) {
+            const entityPks = Object.keys(cache.streamedPks);
+            if (entityPks) {
+              // Query entities modified and needed by current cache.
+              WarEntityPreview.findComplex(
+                {
+                  where: [
+                    'tmsp_last_modification',
+                    '=',
+                    tsmpLastModification,
+                    'AND',
+                    'fk_project',
+                    '=',
+                    cache.currentProjectPk,
+                    'AND',
+                    'pk_entity',
+                    'IN',
+                    entityPks,
+                  ],
+                },
+                (err, projectItems) => {
+                  if (err) return new Error(err);
+
+                  if (projectItems) {
+                    // emit the ones found in Project
+                    projectItems.forEach(item => emitPreview(item));
+
+                    // query repo for the ones not (yet) in project
+                    const notInProject = _.difference(
+                      entityPks,
+                      projectItems.map(item => item.pk_entity.toString())
+                    );
+                    if (notInProject.length) {
+                      WarEntityPreview.findComplex(
+                        {
+                          where: [
+                            'tmsp_last_modification',
+                            '=',
+                            tsmpLastModification,
+                            'AND',
+                            'fk_project',
+                            'IS NULL',
+                            'AND',
+                            'pk_entity',
+                            'IN',
+                            notInProject,
+                          ],
+                        },
+                        (err, repoItems) => {
+                          // emit the ones found in Repo
+                          if (repoItems)
+                            repoItems.forEach(item => emitPreview(item));
+                        }
+                      );
+                    }
+                  }
+                }
+              );
+            }
+          }
         }
-      });
+      );
 
       // As soon as the client closes the project
       socket.on('leaveProjectRoom', () => {
@@ -239,7 +294,7 @@ module.exports = function(WarEntityPreview) {
         ts_headline(entity_label, q) as entity_label_headline,
         ts_headline(type_label, q) as type_label_headline,
         count(pk_entity) OVER() AS total_count
-        from warehouse.entity_preview,
+        from war.entity_preview,
         to_tsquery($1) q
         WHERE 1=1
         ` +
@@ -257,6 +312,8 @@ module.exports = function(WarEntityPreview) {
         LIMIT $2
         OFFSET $3;
         `;
+
+    logSql(sql_stmt, params);
 
     const connector = WarEntityPreview.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
@@ -379,7 +436,7 @@ module.exports = function(WarEntityPreview) {
           t1.time_span,
           t1.full_text,
           t1.ts_vector
-        FROM warehouse.entity_preview t1
+        FROM war.entity_preview t1
         LEFT JOIN projects.info_proj_rel t2 ON t1.pk_entity = t2.fk_entity
           AND t2.fk_project = ${addParam(pkProject)}
           AND t2.is_in_project = true
@@ -609,8 +666,7 @@ module.exports = function(WarEntityPreview) {
 
   WarEntityPreview.createAll = function(cb) {
     const sql_stmt = `
-      SELECT warehouse.entity_preview_non_recursive__refresh();
-      SELECT warehouse.entity_preview__update_all();
+      SELECT war.warehouse_update_all();
     `;
     const connector = WarEntityPreview.dataSource.connector;
 
@@ -647,12 +703,12 @@ module.exports = function(WarEntityPreview) {
     const sql_stmt = `
       WITH tw1 AS (
         SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
-        FROM warehouse.entity_preview
+        FROM war.entity_preview
         WHERE pk_entity IN (${pkEntities.map(pk => addParam(pk)).join(',')})
         AND fk_project = ${addParam(pkProject)}
         UNION
         SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
-        FROM warehouse.entity_preview
+        FROM war.entity_preview
         WHERE pk_entity IN (${pkEntities.map(pk => addParam(pk)).join(',')})
         AND fk_project IS NULL
       ),

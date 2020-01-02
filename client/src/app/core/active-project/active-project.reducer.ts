@@ -1,9 +1,9 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { groupBy, indexBy, omit, zipObj } from 'ramda';
-import { InfPersistentItem, InfTemporalEntity, ProQuery, ProVisual } from '../sdk/models';
+import { InfPersistentItem, InfTemporalEntity } from '../sdk/models';
 import { EntityPreview } from '../state/models';
 import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
-import { ProjectDetail, TypePeIt, VersionEntity } from './active-project.models';
+import { ProjectDetail, TypePeIt } from './active-project.models';
 
 const INITIAL_STATE: ProjectDetail = {
   label: '',
@@ -19,23 +19,24 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
     /************************************************************************************
      * Load project data (metadata, crm)
     ************************************************************************************/
-    case ActiveProjectActions.ACTIVE_PROJECT_UPDATED:
+    case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
       state = {
         ...state,
         ...action.meta.projectPreview
       };
       break;
-    case ActiveProjectActions.PROJECT_LOAD_CRM:
+    case ActiveProjectActions.LOAD_PROJECT_CONFIG:
       state = {
         ...state,
-        initializingProject: true
+        loadingConfigData: true
       }
       break;
-    case ActiveProjectActions.PROJECT_CRM_LOADED:
+    case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
       state = {
         ...state,
-        crm: action.payload.crm,
-        initializingProject: false
+        // crm: action.payload.crm,
+        configDataInitialized: true,
+        loadingConfigData: false
       }
       break;
 
@@ -397,192 +398,192 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
 
 
 
-    /***************************************************
-    * Reducers to load ComQuery List
-    ****************************************************/
-    case ActiveProjectActions.LOAD_QUERIES:
-      state = {
-        ...state,
-        comQueryLoading: true
-      };
-      break;
-    case ActiveProjectActions.LOAD_QUERIES_SUCCEEDED:
-      state = {
-        ...state,
-        comQueryVersionsByPk: {
-          ...indexBy(
-            ((comQuery: VersionEntity<ProQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
-            action.meta.comQueryArray.map(comQ => ({
-              _latestVersion: comQ.entity_version,
-              ...indexBy((n) => n.toString(), (comQ.versions || [])),
-              [comQ.entity_version]: comQ
-            }))
-          )
-        },
-        comQueryLoading: false
-      };
-      break;
+    // /***************************************************
+    // * Reducers to load ComQuery List
+    // ****************************************************/
+    // case ActiveProjectActions.LOAD_QUERIES:
+    //   state = {
+    //     ...state,
+    //     comQueryLoading: true
+    //   };
+    //   break;
+    // case ActiveProjectActions.LOAD_QUERIES_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     comQueryVersionsByPk: {
+    //       ...indexBy(
+    //         ((comQuery: VersionEntity<ProQuery>) => comQuery[comQuery._latestVersion].pk_entity.toString()),
+    //         action.meta.comQueryArray.map(comQ => ({
+    //           _latestVersion: comQ.entity_version,
+    //           ...indexBy((n) => n.toString(), (comQ.versions || [])),
+    //           [comQ.entity_version]: comQ
+    //         }))
+    //       )
+    //     },
+    //     comQueryLoading: false
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_QUERIES_FAILED:
-      state = {
-        ...state,
-        comQueryLoading: false
-      };
-      break;
-
-
-    /***************************************************
-     * Reducers to load one ComQuery Version
-     ****************************************************/
-    case ActiveProjectActions.LOAD_QUERY_VERSION:
-      state = {
-        ...state,
-        comQueryVersionLoading: {
-          ...state.comQueryVersionLoading,
-          [action.meta.pk_entity + '_' + action.meta.entity_version]: true
-        }
-      };
-      break;
-    case ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED:
-      state = {
-        ...state,
-        comQueryVersionsByPk: {
-          ...state.comQueryVersionsByPk,
-          [action.meta.comQuery.pk_entity]: {
-            ...(state.comQueryVersionsByPk || {})[action.meta.comQuery.pk_entity],
-            [action.meta.comQuery.entity_version]: action.meta.comQuery
-          }
-        },
-        comQueryVersionLoading: omit([action.meta.comQuery.pk_entity + '_' + action.meta.comQuery.entity_version], state.comQueryVersionLoading)
-      };
-      break;
-
-    case ActiveProjectActions.LOAD_QUERY_VERSION_FAILED:
-      state = {
-        ...state,
-        comQueryVersionLoading: {}
-      };
-      break;
+    // case ActiveProjectActions.LOAD_QUERIES_FAILED:
+    //   state = {
+    //     ...state,
+    //     comQueryLoading: false
+    //   };
+    //   break;
 
 
-    /***************************************************
-     * Reducers to load ComVisual List
-     ****************************************************/
-    case ActiveProjectActions.LOAD_VISUALS:
-      state = {
-        ...state,
-        comVisualLoading: true
-      };
-      break;
-    case ActiveProjectActions.LOAD_VISUALS_SUCCEEDED:
-      state = {
-        ...state,
-        comVisualVersionsByPk: {
-          ...indexBy(
-            ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
-            action.meta.comVisualArray.map(comQ => ({
-              _latestVersion: comQ.versions[0],
-              ...indexBy((n) => n.toString(), (comQ.versions || [])),
-              [comQ.entity_version]: comQ
-            }))
-          )
-        },
-        comVisualLoading: false
-      };
-      break;
+    // /***************************************************
+    //  * Reducers to load one ComQuery Version
+    //  ****************************************************/
+    // case ActiveProjectActions.LOAD_QUERY_VERSION:
+    //   state = {
+    //     ...state,
+    //     comQueryVersionLoading: {
+    //       ...state.comQueryVersionLoading,
+    //       [action.meta.pk_entity + '_' + action.meta.entity_version]: true
+    //     }
+    //   };
+    //   break;
+    // case ActiveProjectActions.LOAD_QUERY_VERSION_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     comQueryVersionsByPk: {
+    //       ...state.comQueryVersionsByPk,
+    //       [action.meta.comQuery.pk_entity]: {
+    //         ...(state.comQueryVersionsByPk || {})[action.meta.comQuery.pk_entity],
+    //         [action.meta.comQuery.entity_version]: action.meta.comQuery
+    //       }
+    //     },
+    //     comQueryVersionLoading: omit([action.meta.comQuery.pk_entity + '_' + action.meta.comQuery.entity_version], state.comQueryVersionLoading)
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_VISUALS_FAILED:
-      state = {
-        ...state,
-        comVisualLoading: false
-      };
-      break;
+    // case ActiveProjectActions.LOAD_QUERY_VERSION_FAILED:
+    //   state = {
+    //     ...state,
+    //     comQueryVersionLoading: {}
+    //   };
+    //   break;
+
+
+    // /***************************************************
+    //  * Reducers to load ComVisual List
+    //  ****************************************************/
+    // case ActiveProjectActions.LOAD_VISUALS:
+    //   state = {
+    //     ...state,
+    //     comVisualLoading: true
+    //   };
+    //   break;
+    // case ActiveProjectActions.LOAD_VISUALS_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     comVisualVersionsByPk: {
+    //       ...indexBy(
+    //         ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+    //         action.meta.comVisualArray.map(comQ => ({
+    //           _latestVersion: comQ.versions[0],
+    //           ...indexBy((n) => n.toString(), (comQ.versions || [])),
+    //           [comQ.entity_version]: comQ
+    //         }))
+    //       )
+    //     },
+    //     comVisualLoading: false
+    //   };
+    //   break;
+
+    // case ActiveProjectActions.LOAD_VISUALS_FAILED:
+    //   state = {
+    //     ...state,
+    //     comVisualLoading: false
+    //   };
+    //   break;
 
 
 
-    /***************************************************
-     * Reducers to load ComVisual List
-     ****************************************************/
-    case ActiveProjectActions.LOAD_VISUAL_VERSION:
-      state = {
-        ...state,
-        comVisualLoading: true
-      };
-      break;
-    case ActiveProjectActions.LOAD_VISUAL_VERSION_SUCCEEDED:
-      state = {
-        ...state,
-        comVisualVersionsByPk: {
-          ...state.comVisualVersionsByPk,
-          ...indexBy(
-            ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
-            action.meta.comVisualArray.map(comV => ({
-              _latestVersion: comV.versions[0],
-              ...indexBy((n) => n.toString(), (comV.versions || [])),
-              ...(state.comVisualVersionsByPk || {})[comV.pk_entity],
-              [comV.entity_version]: comV
-            }))
-          )
-        },
-        comVisualLoading: false
-      };
-      break;
+    // /***************************************************
+    //  * Reducers to load ComVisual List
+    //  ****************************************************/
+    // case ActiveProjectActions.LOAD_VISUAL_VERSION:
+    //   state = {
+    //     ...state,
+    //     comVisualLoading: true
+    //   };
+    //   break;
+    // case ActiveProjectActions.LOAD_VISUAL_VERSION_SUCCEEDED:
+    //   state = {
+    //     ...state,
+    //     comVisualVersionsByPk: {
+    //       ...state.comVisualVersionsByPk,
+    //       ...indexBy(
+    //         ((comVisual: VersionEntity<ProVisual>) => comVisual[comVisual._latestVersion].pk_entity.toString()),
+    //         action.meta.comVisualArray.map(comV => ({
+    //           _latestVersion: comV.versions[0],
+    //           ...indexBy((n) => n.toString(), (comV.versions || [])),
+    //           ...(state.comVisualVersionsByPk || {})[comV.pk_entity],
+    //           [comV.entity_version]: comV
+    //         }))
+    //       )
+    //     },
+    //     comVisualLoading: false
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_VISUAL_VERSION_FAILED:
-      state = {
-        ...state,
-        comVisualLoading: false
-      };
-      break;
+    // case ActiveProjectActions.LOAD_VISUAL_VERSION_FAILED:
+    //   state = {
+    //     ...state,
+    //     comVisualLoading: false
+    //   };
+    //   break;
 
 
     /********************************************
       * Reducers to handle disabling and enabling a class
       *****************************************************/
-    case ActiveProjectActions.UPSERT_CLASS_PROJ_REL:
-      return {
-        ...state,
-        crm: {
-          ...state.crm,
-          classes: {
-            ...state.crm.classes,
-            [action.meta.dfh_pk_class]: {
-              ...state.crm.classes[action.meta.dfh_pk_class],
-              changingProjRel: true
-            }
-          }
-        }
-      };
-    case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED:
-      return {
-        ...state,
-        crm: {
-          ...state.crm,
-          classes: {
-            ...state.crm.classes,
-            [action.meta.dfh_pk_class]: {
-              ...state.crm.classes[action.meta.dfh_pk_class],
-              projRel: action.meta.projRel,
-              isInProject: action.meta.projRel.enabled_in_entities,
-              changingProjRel: false
-            }
-          }
-        }
-      };
-    case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
-      return {
-        ...state,
-        crm: {
-          ...state.crm,
-          classes: {
-            ...state.crm.classes,
-            [action.meta.dfh_pk_class]: {
-              ...state.crm.classes[action.meta.dfh_pk_class],
-              changingProjRel: false
-            }
-          }
-        }
-      };
+    // case ActiveProjectActions.UPSERT_CLASS_PROJ_REL:
+    //   return {
+    //     ...state,
+    //     crm: {
+    //       ...state.crm,
+    //       classes: {
+    //         ...state.crm.classes,
+    //         [action.meta.dfh_pk_class]: {
+    //           ...state.crm.classes[action.meta.dfh_pk_class],
+    //           changingProjRel: true
+    //         }
+    //       }
+    //     }
+    //   };
+    // case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_SUCCEEDED:
+    //   return {
+    //     ...state,
+    //     crm: {
+    //       ...state.crm,
+    //       classes: {
+    //         ...state.crm.classes,
+    //         [action.meta.dfh_pk_class]: {
+    //           ...state.crm.classes[action.meta.dfh_pk_class],
+    //           projRel: action.meta.projRel,
+    //           isInProject: action.meta.projRel.enabled_in_entities,
+    //           changingProjRel: false
+    //         }
+    //       }
+    //     }
+    //   };
+    // case ActiveProjectActions.UPSERT_CLASS_PROJ_REL_FAILED:
+    //   return {
+    //     ...state,
+    //     crm: {
+    //       ...state.crm,
+    //       classes: {
+    //         ...state.crm.classes,
+    //         [action.meta.dfh_pk_class]: {
+    //           ...state.crm.classes[action.meta.dfh_pk_class],
+    //           changingProjRel: false
+    //         }
+    //       }
+    //     }
+    //   };
 
 
     /************************************************************************************

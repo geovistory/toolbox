@@ -50,7 +50,7 @@
       "type": "belongsTo",
       "model": "DfhClass",
       "foreignKey": "fk_class",
-      "primaryKey": "dfh_pk_class"
+      "primaryKey": "pk_class"
     }
   },
   "acls": [

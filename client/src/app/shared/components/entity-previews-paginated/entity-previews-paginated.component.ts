@@ -36,10 +36,12 @@ export class EntityPreviewsPaginatedComponent implements OnInit {
   }
 
   load() {
-    this.api.paginatedListByPks(this.pkProject, this.pkEntities, this.limit, this.offset)
-      .subscribe(results => {
-        this.items = results;
-      })
+    if (this.pkEntities && this.pkEntities.length) {
+      this.api.paginatedListByPks(this.pkProject, this.pkEntities, this.limit, this.offset)
+        .subscribe(results => {
+          this.items = results;
+        })
+    }
   }
 
   onPageChange(event: PageEvent) {

@@ -95,7 +95,7 @@ export class SqlBuilder {
     );
 
     // root table from
-    this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`);
+    this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
@@ -167,7 +167,7 @@ export class SqlBuilder {
     );
 
     // root table from
-    this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`);
+    this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
@@ -399,7 +399,7 @@ export class SqlBuilder {
 
   joinEntities(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
     fromsArray.push(`
-                    LEFT JOIN warehouse.entity_preview ${thisTableAlias} ON
+                    LEFT JOIN war.entity_preview ${thisTableAlias} ON
                     (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
                     AND
                      ${this.createEntityWhere(node, thisTableAlias, fkProject)}
@@ -434,7 +434,7 @@ export class SqlBuilder {
                     )`);
     }
     fromsArray.push(`
-                LEFT JOIN warehouse.vm_statement ${thisTableAlias} ON
+                LEFT JOIN war.vm_statement ${thisTableAlias} ON
                  ${this.joinWheres(topLevelWheres, 'AND')}
                 `);
   }
@@ -675,7 +675,7 @@ export class SqlBuilder {
   //               (
   //                   SELECT jsonb_agg(${presence})
   //                   -- ROLE P166 HAS PRESENCE
-  //                   FROM warehouse.v_roles_per_project_and_repo ${has_presence}
+  //                   FROM war.v_roles_per_project_and_repo ${has_presence}
   //                   -- E93 PRESENCE
   //                   LEFT JOIN (
   //                       SELECT ${presence}.pk_entity, ${presence}.fk_project, ${presence}.fk_class, ${presence}.time_span,
@@ -701,7 +701,7 @@ export class SqlBuilder {
   //                           ) place
   //                           FROM
   //                           -- ROLE P167 WAS AT
-  //                           warehouse.v_roles_per_project_and_repo ${was_at}
+  //                           war.v_roles_per_project_and_repo ${was_at}
   //                           -- PLACE
   //                           JOIN information.v_place ${place} ON ${was_at}.fk_entity = ${place}.pk_entity
 
@@ -714,7 +714,7 @@ export class SqlBuilder {
   //   )}) -- ROLE P167 WAS AT
   //                           LIMIT 1
   //                       )  AS was_at
-  //                       FROM warehouse.entity_preview ${presence}
+  //                       FROM war.entity_preview ${presence}
   //                       WHERE ${presence}.fk_project = ${this.addParam(
   //     fkProject
   //   )}
@@ -735,7 +735,7 @@ export class SqlBuilder {
   //                   )
   //                   )
   //               ) as presences
-  //               FROM warehouse.entity_preview ${thisTableAlias}
+  //               FROM war.entity_preview ${thisTableAlias}
   //               WHERE ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
   //               AND ${this.createEntityWhere(node, thisTableAlias, fkProject)}
 

@@ -4,7 +4,7 @@ import { CdkPortal } from '@angular/cdk/portal';
 import { AfterViewInit, Component, ContentChild, Directive, HostBinding, Input, OnChanges, OnDestroy, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
-import { ActiveProjectService, ListType, SDKStorage, Tab } from 'app/core';
+import { ActiveProjectService, ListType, SDKStorage, Tab, LoopBackAuth } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { BasicService } from '../../../../core/basic/basic.service';
@@ -139,7 +139,6 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     public p: ActiveProjectService,
     private activatedRoute: ActivatedRoute,
     private sdkStorage: SDKStorage,
-    private inf: InfActions,
     private basic: BasicService // this initiates the question if geolocalization is allowed
   ) {
 
@@ -167,7 +166,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     })
 
     this.p.initProject(id);
-    this.p.initProjectCrm(id);
+    this.p.initProjectConfigData(id);
 
     this.allTabs$ = this.p.panels$.pipe(map(panels => {
       let allTabs = []

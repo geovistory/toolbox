@@ -2,14 +2,15 @@
   <nav id="nav" class="navbar navbar-expand-md navbar-dark bg-dark gv-flex-shrink-0">
     <a class="navbar-brand" routerLink="/backoffice" routerLinkActive="active">Backoffice</a>
     <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse"
-      data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+      aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <a class="nav-link" routerLink="/backoffice/classes" routerLinkActive="active">Classes</a>
-        <a class="nav-link" routerLink="/backoffice/properties" routerLinkActive="active">Properties</a>
+        <!-- <a class="nav-link" routerLink="/backoffice/classes" routerLinkActive="active">Classes</a>
+        <a class="nav-link" routerLink="/backoffice/properties" routerLinkActive="active">Properties</a> -->
         <a class="nav-link" routerLink="/backoffice/class-fields" routerLinkActive="active">Class Fields</a>
         <a class="nav-link" routerLink="/backoffice/namespaces" routerLinkActive="active">Namespaces</a>
         <a class="nav-link" routerLink="/backoffice/system-types" routerLinkActive="active">System Types</a>

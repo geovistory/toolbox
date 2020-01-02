@@ -16,7 +16,7 @@
 
         <span class="text-muted small ml-2">{{classLabel$ | async}}</span>
 
-        <gv-type-item class="ml-3 small text-muted" [pkEntity]="pkEntity$|async"></gv-type-item>
+        <!-- <gv-type-item class="ml-3 small text-muted" [pkEntity]="pkEntity$|async"></gv-type-item> -->
 
 
 
@@ -42,8 +42,9 @@
 
         <div class="gv-tile">
 
-          <div class="gv-one-liner mx-2 mt-3" >
-            <h2>{{classLabel$ | async}} <span [matTooltip]="'Temporal Entity ' + pkEntity">{{title$ | async}}</span></h2>
+          <div class="gv-one-liner mx-2 mt-3">
+            <h2>{{classLabel$ | async}} <span [matTooltip]="'Temporal Entity ' + pkEntity">{{title$ | async}}</span>
+            </h2>
           </div>
 
           <div class="gv-tile-body p-2">

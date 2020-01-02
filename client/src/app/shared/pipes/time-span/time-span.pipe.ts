@@ -34,7 +34,7 @@ export class TimeSpanPipe implements PipeTransform {
 
   getString(t: TimePrimitive): string {
     const s = this.timePrimitivePipe.transform(t);
-    return s ? s : '...';
+    return s ? s : '(?)';
   }
 
 }

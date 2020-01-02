@@ -29,14 +29,7 @@
     }
   },
   "validations": [],
-  "relations": {
-    "class_field_config": {
-      "type": "hasMany",
-      "model": "ProClassFieldConfig",
-      "foreignKey": "fk_app_context",
-      "primaryKey": "pk_entity"
-    }
-  },
+  "relations": {},
   "acls": [
     {
       "principalType": "ROLE",

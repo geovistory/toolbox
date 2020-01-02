@@ -67,8 +67,7 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "graphsOfRepo",
-        "nestedObjectOfRepo"
+        "graphsOfRepo"
       ]
     },
     {
@@ -79,7 +78,7 @@
         "findOrCreateInfTemporalEntity",
         "findOrCreateInfTemporalEntities",
         "changeTeEntProjectRelation",
-        "nestedObjectOfProject",
+        "ownProperties",
         "graphsOfProject",
         "temporalEntityList",
         "alternativeTemporalEntityList"
@@ -160,6 +159,15 @@
           }
         },
         {
+          "arg": "pkTargetClass",
+          "type": "number",
+          "required": true,
+          "description": "Fk class of the target temporal entities.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "isOutgoing",
           "type": "boolean",
           "required": true,
@@ -223,6 +231,15 @@
           "type": "number",
           "required": true,
           "description": "Pk of the property leading from source entity to the temporal entities.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkTargetClass",
+          "type": "number",
+          "required": true,
+          "description": "Fk class of the target temporal entities.",
           "http": {
             "source": "query"
           }
@@ -321,12 +338,12 @@
         "verb": "post"
       }
     },
-    "nestedObjectOfProject": {
+    "ownProperties": {
       "accepts": [
         {
           "arg": "pkProject",
           "type": "number",
-          "required": false,
+          "required": true,
           "description": "Pk project",
           "http": {
             "source": "query"
@@ -347,9 +364,9 @@
         "type": "InfTemporalEntity",
         "root": true
       },
-      "description": "Get e nested object of all information about the temporal entity in project version.",
+      "description": "Get e schema object of own properties of the temporal entity in project version.",
       "http": {
-        "path": "/nested-object-of-project",
+        "path": "/own-properties",
         "verb": "get"
       }
     },

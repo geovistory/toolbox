@@ -1,33 +1,66 @@
 
-import {filter} from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { StandardActionsFactory, ActionResultObservable, SucceedActionMeta, LoadActionMeta } from 'app/core/store/actions';
-import { DfhClass, DfhLabel, DfhPropertyProfileView } from '../sdk';
-import { DfhClassSlice } from './dfh.models';
 import { NgRedux } from '@angular-redux/store';
+import { Injectable } from '@angular/core';
 import { IAppState, U } from 'app/core';
-import { dfhRoot } from './dfh.config';
+import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/store/actions';
+import { filter } from 'rxjs/operators';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
-import { DfhPropertyView } from '../sdk/models/DfhPropertyView';
+import { DfhClass, DfhLabel, DfhProperty, DfhProfile } from '../sdk';
+import { dfhRoot } from './dfh.config';
+import { DfhClassSlice } from './dfh.models';
 
+
+export class DfhProfileActionFactory extends StandardActionsFactory<Payload, DfhProfile> {
+
+  // Suffixes of load action types
+  static readonly OF_PROJECT = 'OF_PROJECT';
+
+  loadOfProject: (pkProject) => ActionResultObservable<DfhProfile>;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): DfhProfileActionFactory {
+    Object.assign(this, this.createCrudActions(dfhRoot, 'profile'))
+
+    this.loadOfProject = (pkProject: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadActionMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + DfhProfileActionFactory.OF_PROJECT,
+        meta: {
+          addPending,
+          pk: pkProject
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<DfhProfile>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
+    }
+
+    return this;
+  }
+}
 
 
 export class DfhClassActionFactory extends StandardActionsFactory<Payload, DfhClass> {
 
   // Suffixes of load action types
-  static readonly CLASSES_OF_PROJECT_PROFILE = 'CLASSES_OF_PROJECT_PROFILE';
+  static readonly OF_PROJECT = 'OF_PROJECT';
 
-  loadClassesOfProjectProfiles: (pkProject) => ActionResultObservable<DfhClass>;
+  loadOfProject: (pkProject) => ActionResultObservable<DfhClass>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
   createActions(): DfhClassActionFactory {
     Object.assign(this, this.createCrudActions(dfhRoot, 'klass'))
 
-    this.loadClassesOfProjectProfiles = (pkProject: number) => {
+    this.loadOfProject = (pkProject: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadActionMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + DfhClassActionFactory.CLASSES_OF_PROJECT_PROFILE,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + DfhClassActionFactory.OF_PROJECT,
         meta: {
           addPending,
           pk: pkProject
@@ -46,24 +79,57 @@ export class DfhClassActionFactory extends StandardActionsFactory<Payload, DfhCl
   }
 }
 
+
+export class DfhPropertyActionFactory extends StandardActionsFactory<Payload, DfhProperty> {
+
+  // Suffixes of load action types
+  static readonly OF_PROJECT = 'OF_PROJECT';
+
+  loadOfProject: (pkProject) => ActionResultObservable<DfhProperty>;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): DfhPropertyActionFactory {
+    Object.assign(this, this.createCrudActions(dfhRoot, 'property'))
+
+    this.loadOfProject = (pkProject: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadActionMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + DfhPropertyActionFactory.OF_PROJECT,
+        meta: {
+          addPending,
+          pk: pkProject
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<DfhProperty>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
+    }
+
+    return this;
+  }
+}
+
 export class DfhLabelActionFactory extends StandardActionsFactory<Payload, DfhLabel> {
 
   // Suffixes of load action types
-  static readonly LABELS_OF_CLASSES = 'LABELS_OF_CLASSES';
-  static readonly LABELS_OF_PROPERTIES = 'LABELS_OF_PROPERTIES';
+  static readonly OF_PROJECT = 'OF_PROJECT';
 
-  loadLabelesOfClasses: (pkProject) => ActionResultObservable<DfhLabel>;
-  loadLabelesOfProperties: (pkProject) => ActionResultObservable<DfhLabel>;
+  loadOfProject: (pkProject) => ActionResultObservable<DfhLabel>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
   createActions(): DfhLabelActionFactory {
     Object.assign(this, this.createCrudActions(dfhRoot, 'label'))
 
-    this.loadLabelesOfClasses = (pkProject: number) => {
+    this.loadOfProject = (pkProject: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadActionMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + DfhLabelActionFactory.LABELS_OF_CLASSES,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + DfhLabelActionFactory.OF_PROJECT,
         meta: {
           addPending,
           pk: pkProject
@@ -77,23 +143,7 @@ export class DfhLabelActionFactory extends StandardActionsFactory<Payload, DfhLa
         key: addPending
       };
     }
-    this.loadLabelesOfProperties = (pkProject: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadActionMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + DfhLabelActionFactory.LABELS_OF_PROPERTIES,
-        meta: {
-          addPending,
-          pk: pkProject
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<DfhLabel>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
+
 
     return this;
   }
@@ -106,10 +156,10 @@ type Payload = DfhClassSlice;
 export class DfhActions {
 
 
-  label = new DfhLabelActionFactory(this.ngRedux).createActions();
+  profile = new DfhProfileActionFactory(this.ngRedux).createActions();
   klass = new DfhClassActionFactory(this.ngRedux).createActions();
-  property_profile_view = new StandardActionsFactory<Payload, DfhPropertyProfileView>(this.ngRedux).createCrudActions(dfhRoot, 'property_profile_view');
-  property_view = new StandardActionsFactory<Payload, DfhPropertyView>(this.ngRedux).createCrudActions(dfhRoot, 'property_view');
+  property = new DfhPropertyActionFactory(this.ngRedux).createActions();
+  label = new DfhLabelActionFactory(this.ngRedux).createActions();
 
   constructor(public ngRedux: NgRedux<IAppState>) { }
 

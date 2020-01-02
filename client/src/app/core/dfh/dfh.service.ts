@@ -1,15 +1,14 @@
-import { select, WithSubStore, NgRedux } from '@angular-redux/store';
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/store/model';
-import { Observable, BehaviorSubject, empty } from 'rxjs';
-import { DfhClass, DfhLabel, DfhPropertyProfileView, DfhPropertyView } from '../sdk';
-import { DfhActions } from './dfh.actions';
-import { dfhRoot, dfhDefinitions } from './dfh.config';
-import { ReducerConfigCollection } from '../store/reducer-factory';
-import { filter, distinctUntilChanged, switchMap } from '../../../../node_modules/rxjs/operators';
-import { DfhClassSlice, DfhPropertyProfileViewSlice, DfhLabelSlice, DfhPropertyViewSlice } from './dfh.models';
-import { equals } from 'ramda';
+import { empty, Observable } from 'rxjs';
+import { switchMap } from '../../../../node_modules/rxjs/operators';
+import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '../sdk';
 import { ShouldPauseService } from '../services/should-pause.service';
+import { ReducerConfigCollection } from '../store/reducer-factory';
+import { DfhActions } from './dfh.actions';
+import { dfhDefinitions, dfhRoot } from './dfh.config';
+import { DfhClassSlice, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice } from './dfh.models';
 class Selector<Slice> {
 
   slice$ = this.ngRedux.select<Slice>([dfhRoot, this.model])
@@ -43,48 +42,42 @@ class Selector<Slice> {
     return { all$, key, noPause: { all$: allNoPause$, key: keyNoPause } }
   }
 }
+// Profile Selectors
+class DfhProfileSelections extends Selector<DfhProfileSlice> {
+  public by_pk_profile$ = this.selector<DfhProfile>('by_pk_profile');
+}
 
 // Class Selectors
 class DfhClassSelections extends Selector<DfhClassSlice> {
-  public by_dfh_pk_class$ = this.selector<DfhClass>('by_dfh_pk_class');
-  public by_pk_entity$ = this.selector<ByPk<DfhClass>>('by_pk_entity');
-  public loading$ = this.selector<boolean>('loading');
+  public by_pk_class$ = this.selector<DfhClass>('by_pk_class');
 }
 
-// PropertyProfileView Selectors
-class DfhPropertyProfileViewSelections extends Selector<DfhPropertyProfileViewSlice> {
-  public by_pk_entity$ = this.selector<DfhPropertyProfileView>('by_pk_entity');
-  public by_dfh_has_domain__fk_property$ = this.selector<ByPk<DfhPropertyProfileView>>('by_dfh_has_domain__fk_property');
-  public by_dfh_has_range__fk_property$ = this.selector<ByPk<DfhPropertyProfileView>>('by_dfh_has_range__fk_property');
-  public loading$ = this.selector<boolean>('loading');
-}
-// PropertyView Selectors
-class DfhPropertyViewSelections extends Selector<DfhPropertyViewSlice> {
-  public by_dfh_pk_property$ = this.selector<DfhPropertyView>('by_dfh_pk_property');
-  public by_dfh_has_domain__fk_property$ = this.selector<ByPk<DfhPropertyView>>('by_dfh_has_domain__fk_property');
-  public by_dfh_has_range__fk_property$ = this.selector<ByPk<DfhPropertyView>>('by_dfh_has_range__fk_property');
-  public fk_property__property_is_outgoing__fk_app_context$ = this.selector<ByPk<DfhPropertyView>>('fk_property__property_is_outgoing__fk_app_context');
-  public by_fk_property$ = this.selector<ByPk<DfhPropertyView>>('by_fk_property');
-  public loading$ = this.selector<boolean>('loading');
+// Property Selectors
+class DfhPropertySelections extends Selector<DfhPropertySlice> {
+  public pk_property__has_domain__has_range$ = this.selector<DfhProperty>('pk_property__has_domain__has_range');
+  public by_pk_property$ = this.selector<ByPk<DfhProperty>>('by_pk_property');
+  public by_has_domain__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_domain__pk_property');
+  public by_has_range__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_range__pk_property');
+  public by_has_domain$ = this.selector<ByPk<DfhProperty>>('by_has_domain');
+  public by_has_range$ = this.selector<ByPk<DfhProperty>>('by_has_range');
+  public by_is_has_type_subproperty$ = this.selector<ByPk<DfhProperty>>('by_is_has_type_subproperty');
 }
 
 // Label Selectors
 class DfhLabelSelections extends Selector<DfhLabelSlice> {
-  public by_pk_entity$ = this.selector<DfhLabel>('by_pk_entity');
-  public by_dfh_fk_class$ = this.selector<ByPk<DfhLabel>>('by_dfh_fk_class');
-  public by_dfh_fk_property$ = this.selector<ByPk<DfhLabel>>('by_dfh_fk_property');
-  public by_dfh_fk_property__com_fk_system_type$ = this.selector<ByPk<DfhLabel>>('by_dfh_fk_property__com_fk_system_type');
-  public loading$ = this.selector<boolean>('loading');
+  public by_fks$ = this.selector<DfhLabel>('by_fks');
+  public by_fk_class__type$ = this.selector<ByPk<DfhLabel>>('by_fk_class__type');
+  public by_fk_property__type$ = this.selector<ByPk<DfhLabel>>('by_fk_property__type');
+  public by_fk_profile__type$ = this.selector<ByPk<DfhLabel>>('by_fk_profile__type');
 }
 
 
 @Injectable()
 export class DfhSelector extends DfhActions {
 
-
+  profile$ = new DfhProfileSelections(this.ngRedux, dfhDefinitions, 'profile', this.pause.shouldPause$)
   class$ = new DfhClassSelections(this.ngRedux, dfhDefinitions, 'klass', this.pause.shouldPause$)
-  property_profile_view$ = new DfhPropertyProfileViewSelections(this.ngRedux, dfhDefinitions, 'property_profile_view', this.pause.shouldPause$)
-  property_view$ = new DfhPropertyViewSelections(this.ngRedux, dfhDefinitions, 'property_view', this.pause.shouldPause$)
+  property$ = new DfhPropertySelections(this.ngRedux, dfhDefinitions, 'property', this.pause.shouldPause$)
   label$ = new DfhLabelSelections(this.ngRedux, dfhDefinitions, 'label', this.pause.shouldPause$)
 
   constructor(

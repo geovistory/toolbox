@@ -14,10 +14,6 @@
       "type": "string",
       "required": true
     },
-    "quill_doc": {
-      "type": "string",
-      "required": true
-    },
     "fk_system_type": {
       "type": "number",
       "required": true
@@ -25,6 +21,26 @@
     "fk_language": {
       "type": "number",
       "required": true
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "fk_dfh_class": {
+      "type": "number",
+      "required": false
+    },
+    "fk_dfh_property": {
+      "type": "number",
+      "required": false
+    },
+    "fk_dfh_property_domain": {
+      "type": "number",
+      "required": false
+    },
+    "fk_dfh_property_range": {
+      "type": "number",
+      "required": false
     }
   },
   "validations": [],
@@ -42,10 +58,146 @@
     "project": {
       "type": "belongsTo",
       "model": "ProProject",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_project",
       "primaryKey": "pk_entity"
     }
   },
-  "acls": [],
-  "methods": {}
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "ofProject",
+        "bulkUpsert",
+        "bulkDelete"
+      ]
+    }
+  ],
+  "methods": {
+    "ofProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProTextProperty"
+        ],
+        "root": true
+      },
+      "description": "Get the text-properties of the project.",
+      "http": {
+        "path": "/of-project",
+        "verb": "get"
+      }
+    },
+    "bulkUpsert": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "items",
+          "type": [
+            "ProTextProperty"
+          ],
+          "required": true,
+          "description": "Array of ProTextPropertys",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProTextProperty"
+        ],
+        "root": true
+      },
+      "description": "Inserts or updates items in the array of ProTextProperty. If pk_entity is given and existing, an update is done, else an insert",
+      "http": {
+        "path": "/bulk-upsert",
+        "verb": "post"
+      }
+    },
+    "bulkDelete": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "items",
+          "type": [
+            "ProTextProperty"
+          ],
+          "required": true,
+          "description": "Array of ProTextPropertys",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "ProTextProperty"
+        ],
+        "root": true
+      },
+      "description": "Dletes items in the array of ProTextProperty. Checks for each item if fk_project matches given pkProject ",
+      "http": {
+        "path": "/bulk-delete",
+        "verb": "put"
+      }
+    }
+  }
 }
