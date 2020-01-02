@@ -67,8 +67,7 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": [
-        "graphsOfRepo",
-        "nestedObjectOfRepo"
+        "graphsOfRepo"
       ]
     },
     {
@@ -79,7 +78,7 @@
         "findOrCreateInfTemporalEntity",
         "findOrCreateInfTemporalEntities",
         "changeTeEntProjectRelation",
-        "nestedObjectOfProject",
+        "ownProperties",
         "graphsOfProject",
         "temporalEntityList",
         "alternativeTemporalEntityList"
@@ -339,12 +338,12 @@
         "verb": "post"
       }
     },
-    "nestedObjectOfProject": {
+    "ownProperties": {
       "accepts": [
         {
           "arg": "pkProject",
           "type": "number",
-          "required": false,
+          "required": true,
           "description": "Pk project",
           "http": {
             "source": "query"
@@ -365,9 +364,9 @@
         "type": "InfTemporalEntity",
         "root": true
       },
-      "description": "Get e nested object of all information about the temporal entity in project version.",
+      "description": "Get e schema object of own properties of the temporal entity in project version.",
       "http": {
-        "path": "/nested-object-of-project",
+        "path": "/own-properties",
         "verb": "get"
       }
     },

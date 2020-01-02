@@ -66,66 +66,6 @@ module.exports = function(InfTemporalEntity) {
     });
   };
 
-  // InfTemporalEntity.changeTeEntProjectRelation = function (pkProject, isInProject, data, ctx) {
-  //   let requestedTeEnt;
-
-  //   if (ctx && ctx.req && ctx.req.body) {
-  //     requestedTeEnt = ctx.req.body;
-  //   } else {
-  //     requestedTeEnt = data;
-  //   }
-
-  //   const ctxWithoutBody = _.omit(ctx, ['req.body']);
-
-  //   return InfTemporalEntity.changeProjectRelation(pkProject, isInProject, requestedTeEnt, ctxWithoutBody)
-  //     .then(resultingEpr => {
-
-  //       // attatch the new epr to the teEnt
-  //       if (requestedTeEnt.entity_version_project_rels && resultingEpr) {
-  //         requestedTeEnt.entity_version_project_rels = [resultingEpr];
-  //       }
-
-  //       if (requestedTeEnt.te_roles) {
-
-  //         // prepare parameters
-  //         const InfRole = InfTemporalEntity.app.models.InfRole;
-
-  //         //… filter roles that are truthy (not null), iterate over them,
-  //         // return the promise that the PeIt will be
-  //         // returned together with all nested items
-  //         return Promise.map(requestedTeEnt.te_roles.filter(role => (role)), (role) => {
-
-  //           // add role to project
-  //           return InfRole.changeRoleProjectRelation(pkProject, isInProject, role, ctxWithoutBody);
-
-  //         })
-  //           .then((roles) => {
-
-  //             requestedTeEnt.te_roles = [];
-  //             for (var i = 0; i < roles.length; i++) {
-  //               const role = roles[i];
-  //               if (role && role[0]) {
-  //                 requestedTeEnt.te_roles.push(role[0]);
-  //               }
-  //             }
-
-  //             return [requestedTeEnt];
-
-  //           })
-  //           .catch((err) => {
-  //             return err;
-  //           })
-
-  //       } else {
-  //         return [requestedTeEnt];
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       return err;
-  //     });
-
-  // }
-
   InfTemporalEntity.findOrCreateInfTemporalEntities = function(
     pk_project,
     items,
@@ -469,6 +409,26 @@ module.exports = function(InfTemporalEntity) {
   };
 
   /**
+   * remote method to get a schema object with the
+   * own properties of the temporal entity of project.
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the teEn
+   */
+  InfTemporalEntity.ownProperties = function(pkProject, pkEntity, cb) {
+    const mainQuery = new FlatObjectQueryBuilder(
+      InfTemporalEntity.app.models
+    ).createTemporalEntityOwnPropertyQuery(pkProject, pkEntity);
+    const connector = InfTemporalEntity.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      const item = result[0];
+      const data = !item ? {} : item.data;
+      return cb(false, data);
+    });
+  };
+
+  /**
    * remote method to get a rich object of project.
    * a rich object of the TeEn with all its roles
    *
@@ -477,18 +437,6 @@ module.exports = function(InfTemporalEntity) {
    */
   InfTemporalEntity.nestedObjectOfProject = function(pkProject, pkEntity, cb) {
     const ofProject = true;
-    return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb);
-  };
-
-  /**
-   * remote method to get a rich object of project.
-   * a rich object of the TeEn with all its roles
-   *
-   * @param  {number} pkEntity  pk_entity of the teEn
-   */
-  InfTemporalEntity.nestedObjectOfRepo = function(pkEntity, cb) {
-    const ofProject = true; // TODO: Check if this should be false
-    const pkProject = undefined;
     return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb);
   };
 

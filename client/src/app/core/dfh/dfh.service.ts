@@ -52,7 +52,7 @@ class DfhClassSelections extends Selector<DfhClassSlice> {
   public by_pk_class$ = this.selector<DfhClass>('by_pk_class');
 }
 
-// PropertyView Selectors
+// Property Selectors
 class DfhPropertySelections extends Selector<DfhPropertySlice> {
   public pk_property__has_domain__has_range$ = this.selector<DfhProperty>('pk_property__has_domain__has_range');
   public by_pk_property$ = this.selector<ByPk<DfhProperty>>('by_pk_property');
@@ -60,6 +60,7 @@ class DfhPropertySelections extends Selector<DfhPropertySlice> {
   public by_has_range__pk_property$ = this.selector<ByPk<DfhProperty>>('by_has_range__pk_property');
   public by_has_domain$ = this.selector<ByPk<DfhProperty>>('by_has_domain');
   public by_has_range$ = this.selector<ByPk<DfhProperty>>('by_has_range');
+  public by_is_has_type_subproperty$ = this.selector<ByPk<DfhProperty>>('by_is_has_type_subproperty');
 }
 
 // Label Selectors

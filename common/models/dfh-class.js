@@ -23,7 +23,7 @@ module.exports = function(DfhClass) {
         UNION
         SELECT 5 as fk_profile -- GEOVISTORY BASICS
       )
-      SELECT
+      SELECT DISTINCT ON (pk_class)
         ${q.createSelect('t3', 'DfhClass')}
       FROM
         tw1 t1,

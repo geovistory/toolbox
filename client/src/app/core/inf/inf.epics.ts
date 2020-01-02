@@ -112,12 +112,11 @@ export class InfEpics {
        *
        */
       infTemporalEntityEpicsFactory.createLoadEpic<LoadByPkMeta>(
-        (meta) => this.teEnApi.nestedObjectOfProject(meta.pk, meta.pkEntity),
-        InfTemporalEntityActionFactory.NESTED_BY_PK,
+        (meta) => this.teEnApi.ownProperties(meta.pk, meta.pkEntity),
+        InfTemporalEntityActionFactory.OWN_PROPERTIES,
         (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.temporal_entity.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          const schemaObject = results as SchemaObject;
+          this.storeSchemaObject(schemaObject, pk)
         }
       ),
       /**
@@ -216,9 +215,6 @@ export class InfEpics {
         (results, pk) => {
           const schemaObject = results as SchemaObject;
           this.storeSchemaObject(schemaObject, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.entity_association.flatten(results);
-          // storeFlattened(flattener.getFlattened(), pk);
         }
       ),
 

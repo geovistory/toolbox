@@ -21,7 +21,7 @@ module.exports = function(DfhProperty) {
         UNION
         SELECT 5 as fk_profile -- GEOVISTORY BASICS
       )
-      SELECT
+      SELECT DISTINCT ON (pk_property,has_domain,has_range)
         ${q.createSelect('t3', 'DfhProperty')}
       FROM
         tw1 t1,

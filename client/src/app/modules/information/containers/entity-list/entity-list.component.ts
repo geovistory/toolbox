@@ -83,7 +83,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
         }).subscribe(result => {
-          if (klass.basic_type === 8) {
+          if (klass.basic_type === 8 || klass.basic_type === 30) {
             this.p.addEntityPeItTab(result.pkEntity)
           } else {
             this.p.addEntityTeEnTab(result.pkEntity)

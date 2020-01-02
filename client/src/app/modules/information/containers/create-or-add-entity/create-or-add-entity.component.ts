@@ -76,7 +76,7 @@ export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
       filter(klass => !!klass),
       map(klass => {
         const systype = klass.basic_type;
-        if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM) return 'peIt';
+        if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || systype === 30) return 'peIt';
         else return 'teEnt';
       })
     )

@@ -112,7 +112,7 @@ app.start = function() {
         previewsUpdating = true;
         needs_update_for_entities = false;
         const sql = `
-          Select war.enriched_nodes__enrich();
+          --Select war.enriched_nodes__enrich();
           Select war.entity_preview__update_all();
         `;
         client.query(sql, (err, res) => {
@@ -191,6 +191,7 @@ app.start = function() {
     client.query('LISTEN project_updated');
     client.query('LISTEN entity_previews_updated');
     client.query('LISTEN need_to_check_class_labels');
+    client.query('LISTEN test');
   });
 
   return server;

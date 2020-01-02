@@ -452,7 +452,7 @@ export class ConfigurationPipesService {
         else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
           return 'time-primitive'
         }
-        else if (klass.basic_type === 8) {
+        else if (klass.basic_type === 8 || klass.basic_type === 30) {
           return 'entity-preview'
         }
         else {

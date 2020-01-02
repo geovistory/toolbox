@@ -114,7 +114,7 @@ export interface LoadPaginatedTeEnListMeta extends LoadActionMeta {
 export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, InfTemporalEntity> {
 
   // Suffixes of load action types
-  static readonly NESTED_BY_PK = 'NESTED_BY_PK';
+  static readonly OWN_PROPERTIES = 'OWN_PROPERTIES';
   static readonly PAGINATED_LIST = 'PAGINATED_LIST';
   static readonly PAGINATED_ALTERNATIVE_LIST = 'PAGINATED_ALTERNATIVE_LIST';
 
@@ -130,7 +130,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
     this.loadNestedObject = (pkProject: number, pkEntity: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadByPkMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.NESTED_BY_PK,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.OWN_PROPERTIES,
         meta: { addPending, pk: pkProject, pkEntity },
         payload: null,
       };

@@ -217,7 +217,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get e nested object of all information about the temporal entity in project version.
+   * Get e schema object of own properties of the temporal entity in project version.
    *
    * @param {number} pkProject Pk project
    *
@@ -232,40 +232,14 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
    * This usually means the response is a `InfTemporalEntity` object.)
    * </em>
    */
-  public nestedObjectOfProject(pkProject: any = {}, pkEntity: any, customHeaders?: Function): Observable<any> {
+  public ownProperties(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/nested-object-of-project";
+    "/InfTemporalEntities/own-properties";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get e nested object of all information about the temporal entity in the repo version.
-   *
-   * @param {number} pkEntity Primary Key of the temporal entity (pk_entity)
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfTemporalEntity` object.)
-   * </em>
-   */
-  public nestedObjectOfRepo(pkEntity: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/nested-object-of-repo";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
     if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;

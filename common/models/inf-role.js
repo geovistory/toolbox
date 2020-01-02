@@ -2,103 +2,9 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const helpers = require('../helpers');
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 module.exports = function(InfRole) {
-  // InfRole.changeRoleProjectRelation = function (pkProject, isInProject, role, ctx) {
-
-  //   let requestedRole;
-
-  //   if (ctx && ctx.req && ctx.req.body) {
-  //     requestedRole = ctx.req.body;
-  //   } else {
-  //     requestedRole = role;
-  //   }
-
-  //   const ctxWithoutBody = _.omit(ctx, ['req.body']);
-
-  //   return InfRole.changeProjectRelation(pkProject, isInProject, requestedRole, ctxWithoutBody)
-  //     .then(resultingEpr => {
-
-  //       // attatch the new epr to the Role
-  //       if (requestedRole.entity_version_project_rels && resultingEpr) {
-  //         requestedRole.entity_version_project_rels = [resultingEpr];
-  //       }
-
-  //       if (requestedRole.temporal_entity) {
-  //         //add the temporal_entity to the project
-  //         const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
-  //         return InfTemporalEntity.changeTeEntProjectRelation(pkProject, isInProject, requestedRole.temporal_entity, ctxWithoutBody)
-  //           .then((results) => {
-  //             requestedRole.temporal_entity = results[0];
-  //             return [requestedRole];
-  //           })
-  //           .catch((err) => {
-  //             console.log(err);
-  //             return err;
-  //           })
-  //       } else if (requestedRole.persistent_item) {
-  //         if (requestedRole.persistent_item.entity_version_project_rels) {
-  //           //add the persistent_item to the project
-  //           const InfPersistentItem = InfRole.app.models.InfPersistentItem;
-  //           return InfPersistentItem.changePeItProjectRelation(pkProject, isInProject, requestedRole.persistent_item, ctxWithoutBody)
-  //             .then((results) => {
-  //               requestedRole.persistent_item = results[0];
-  //               return [requestedRole];
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //               return err;
-  //             })
-  //         } else {
-  //           return [requestedRole];
-  //         }
-  //       }
-
-  //       else if (requestedRole.appellation) {
-  //         if (requestedRole.appellation.entity_version_project_rels) {
-
-  //           //add the appellation to the project
-  //           const InfAppellation = InfRole.app.models.InfAppellation;
-  //           return InfAppellation.changeProjectRelation(pkProject, isInProject, requestedRole.appellation, ctxWithoutBody)
-  //             .then((results) => {
-  //               requestedRole.appellation.entity_version_project_rels = [results];
-  //               return [requestedRole];
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //               return err;
-  //             })
-  //         } else {
-  //           return [requestedRole];
-  //         }
-  //       } else if (requestedRole.language) {
-  //         if (requestedRole.language.entity_version_project_rels) {
-
-  //           //add the language to the project
-  //           const InfLanguage = InfRole.app.models.InfLanguage;
-  //           return InfLanguage.changeProjectRelation(pkProject, isInProject, requestedRole.language, ctxWithoutBody)
-  //             .then((results) => {
-  //               requestedRole.entity_version_project_rels = [results];
-  //               return [requestedRole];
-  //             })
-  //             .catch((err) => {
-  //               console.log(err);
-  //               return err;
-  //             })
-  //         } else {
-  //           return [requestedRole];
-  //         }
-  //       } else {
-  //         return [requestedRole];
-  //       }
-
-  //     })
-  //     .catch((err) => {
-
-  //     });
-
-  // }
-
   InfRole.findOrCreateInfRoles = function(pk_project, roles, ctx) {
     return new Promise((resolve, reject) => {
       const promiseArray = roles.map((role, i) => {
@@ -754,7 +660,7 @@ module.exports = function(InfRole) {
    * Add roles with their associated temporal entity to the project
    *
    * This query will add those things to the project:
-   * - Roles that are enabled for auto-adding (using the admin configuration of that class).
+   * - Roles that are enabled for the project
    *
    * This query will not add
    * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
@@ -774,9 +680,9 @@ module.exports = function(InfRole) {
     const params = [parseInt(pk_project), accountId];
 
     const sql_stmt = `
-      select information.add_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles
+      select information.relate_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles
         .map(r => r * 1)
-        .join(', ')}], $1, $2);
+        .join(', ')}], $1, $2, true);
     `;
 
     const connector = InfRole.dataSource.connector;
@@ -786,6 +692,28 @@ module.exports = function(InfRole) {
       InfRole.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
         cb(err, result);
       });
+    });
+  };
+
+  InfRole.removeFromProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
+    const q = new FlatObjectQueryBuilder(InfRole.app.models);
+
+    if (!ctx.req.accessToken.userId)
+      return Error('AccessToken.userId is missing');
+    const accountId = ctx.req.accessToken.userId;
+    const params = [parseInt(pk_project), accountId];
+
+    const sql_stmt = `
+      select ${q.createSelect('t1', 'ProInfoProjRel')}
+       FROM information.relate_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles
+         .map(r => r * 1)
+         .join(', ')}], $1, $2, false) t1;
+    `;
+
+    const connector = InfRole.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) return cb(err, resultObjects);
+      cb(false, resultObjects);
     });
   };
 

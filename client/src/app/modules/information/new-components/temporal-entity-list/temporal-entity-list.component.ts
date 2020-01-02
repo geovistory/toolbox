@@ -1,6 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService, InfRoleApi } from 'app/core';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, zip, merge } from 'rxjs';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
@@ -57,6 +57,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     public t: PropertiesTreeService,
     public i: InformationPipesService,
     public inf: InfActions,
+    public roleApi: InfRoleApi,
     private paginationService: PaginationService
 
   ) {

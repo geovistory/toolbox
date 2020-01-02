@@ -255,7 +255,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
                       systemRelevantClass,
 
                       subclassOfType: !!type,
-                      subclassOf: dfhClass.basic_type === 8 ? 'peIt' : dfhClass.basic_type === 9 ? 'teEnt' : 'other',
+                      subclassOf: (dfhClass.basic_type === 8 || dfhClass.basic_type === 30) ? 'peIt' : dfhClass.basic_type === 9 ? 'teEnt' : 'other',
 
                       excluded_from_entities,
                       required_by_basics,

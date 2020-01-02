@@ -43,6 +43,10 @@ export const dfhDefinitions: ReducerConfigCollection = {
       {
         keyInStore: 'has_range__fk_property',
         groupByFn: (d: DfhProperty): string => d.has_range + '_' + d.pk_property
+      },
+      {
+        keyInStore: 'is_has_type_subproperty',
+        groupByFn: (d: DfhProperty): string => d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined
       }
     ]
   },
