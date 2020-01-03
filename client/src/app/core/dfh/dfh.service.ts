@@ -50,6 +50,7 @@ class DfhProfileSelections extends Selector<DfhProfileSlice> {
 // Class Selectors
 class DfhClassSelections extends Selector<DfhClassSlice> {
   public by_pk_class$ = this.selector<DfhClass>('by_pk_class');
+  public by_basic_type$ = this.selector<ByPk<DfhClass>>('by_basic_type');
 }
 
 // Property Selectors

@@ -102,6 +102,8 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   t: TabLayout;
   listOf: MentioningListOf;
 
+  isViewMode$ = of(false);
+
   constructor(
     // protected rootEpics: RootEpics,
     // protected epics: PeItDetailAPIEpics,

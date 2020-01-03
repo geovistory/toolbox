@@ -186,7 +186,7 @@
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
           </gv-ontome-profiles-settings>
 
-          <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkProperty]="tab.data.pkProperty"
+          <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkClass]="tab.data.pkClass"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c"></gv-types>
 
         </gv-tab-body>

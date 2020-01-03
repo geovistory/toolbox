@@ -48,13 +48,13 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   @Input() basePath;
 
   // has type property
-  @Input() pkProperty: number;
+  @Input() pkClass: number;
 
   //  type class
-  typeClassPk$: Observable<number>;
-  typedClassPk$: Observable<number>;
+  // typedClassPk$: Observable<number>;
+  // typedClassLabel$: Observable<string>;
+  // typeClassPk$: Observable<number>;
   typeClassLabel$: Observable<string>;
-  typedClassLabel$: Observable<string>;
 
 
   // types
@@ -98,60 +98,57 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
 
-    const hasTypeProp$ = this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
-      filter(object => !!object && Object.keys(object).length > 0),
-      map((object) => values(object).find(prop => prop.pk_property === this.pkProperty)),
-      map((prop) => ({
-        pk_typed_class: prop.has_domain,
-        pk_type_class: prop.has_range,
-      })),
-      shareReplay({ bufferSize: 1, refCount: true })
-    )
+    // const hasTypeProp$ = this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
+    //   filter(object => !!object && Object.keys(object).length > 0),
+    //   map((object) => values(object).find(prop => prop.pk_property === this.pkProperty)),
+    //   map((prop) => ({
+    //     pk_typed_class: prop.has_domain,
+    //     pk_type_class: prop.has_range,
+    //   })),
+    //   shareReplay({ bufferSize: 1, refCount: true })
+    // )
 
-    this.typeClassPk$ = hasTypeProp$.pipe(
-      map(item => item.pk_type_class),
-      shareReplay({ bufferSize: 1, refCount: true })
+    // this.typeClassPk$ = hasTypeProp$.pipe(
+    //   map(item => item.pk_type_class),
+    //   shareReplay({ bufferSize: 1, refCount: true })
 
-    )
-    this.typedClassPk$ = hasTypeProp$.pipe(
-      map(item => item.pk_typed_class),
-      shareReplay({ bufferSize: 1, refCount: true })
-    )
+    // )
+    // this.typedClassPk$ = hasTypeProp$.pipe(
+    //   map(item => item.pk_typed_class),
+    //   shareReplay({ bufferSize: 1, refCount: true })
+    // )
 
-    this.typedClassLabel$ = this.typedClassPk$.pipe(
-      switchMap((pk) => this.c.pipeClassLabel(pk).pipe(
-        tap((typedClassLabel) => {
-          this.t.setTabTitle(typedClassLabel + ' Types')
+    // this.typedClassLabel$ = this.typedClassPk$.pipe(
+    //   switchMap((pk) => this.c.pipeClassLabel(pk).pipe(
+    //     tap((typedClassLabel) => {
+    //       this.t.setTabTitle(typedClassLabel + ' Types')
+    //     })
+    //   )),
+    // )
+
+    this.typeClassLabel$ = this.c.pipeClassLabel(this.pkClass)
+
+    this.typeClassLabel$.pipe(takeUntil(this.destroy$)).subscribe((label) => {
+      this.t.setTabTitle(label + ' – Controlled Vocabulary')
+    })
+
+    this.typePks$ = this.b.pipePersistentItemPksByClass(this.pkClass)
+
+    const appeAndDefFields$ = this.c.pipeFieldDefinitions(this.pkClass).pipe(
+      map(fieldDefinitions => {
+        let appeField: FieldDefinition, definitionField: FieldDefinition;
+        fieldDefinitions.forEach(f => {
+          // take only appellation for language, or ...
+          if (f.listDefinitions[0].pkProperty === 1111) {
+            appeField = f;
+          }
+          // ... entit definition
+          else if (f.listDefinitions[0].fkClassField === 219) {
+            definitionField = f;
+          }
         })
-      )),
-    )
-
-    this.typeClassLabel$ = this.typeClassPk$.pipe(
-      switchMap((pk) => this.c.pipeClassLabel(pk)),
-    )
-
-    this.typePks$ = this.typeClassPk$.pipe(
-      switchMap(typeClassPk => this.b.pipePersistentItemPksByClass(typeClassPk))
-    )
-
-    const appeAndDefFields$ = this.typeClassPk$.pipe(
-      // get editable fieldDefinitions
-      switchMap((fkClass) => this.c.pipeFieldDefinitions(fkClass).pipe(
-        map(fieldDefinitions => {
-          let appeField: FieldDefinition, definitionField: FieldDefinition;
-          fieldDefinitions.forEach(f => {
-            // take only appellation for language, or ...
-            if (f.listDefinitions[0].pkProperty === 1111) {
-              appeField = f;
-            }
-            // ... entit definition
-            else if (f.listDefinitions[0].fkClassField === 219) {
-              definitionField = f;
-            }
-          })
-          return { appeField, definitionField }
-        })
-      ))
+        return { appeField, definitionField }
+      })
     )
 
     const appeAndLangFields$ = appeAndDefFields$.pipe(
@@ -321,23 +318,21 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
    * called when user clicks on add
   */
   onAddOrCreate() {
-    this.typeClassPk$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkClass => {
 
-      this.p.openModalCreateOrAddEntity({
-        alreadyInProjectBtnText: 'Edit',
-        notInProjectClickBehavior: 'addToProject',
-        notInProjectBtnText: 'Add',
-        classAndTypePk: { pkClass, pkType: undefined },
-        pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
-      }).subscribe(result => {
-        if (result.action === 'added' || result.action === 'created') {
-          this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-            this.inf.persistent_item.typeOfProject(pkProject, result.pkEntity)
-          })
-        } else if (result.action === 'alreadyInProjectClicked') {
-          this.edit(result.pkEntity)
-        }
-      })
+    this.p.openModalCreateOrAddEntity({
+      alreadyInProjectBtnText: 'Edit',
+      notInProjectClickBehavior: 'addToProject',
+      notInProjectBtnText: 'Add',
+      classAndTypePk: { pkClass: this.pkClass, pkType: undefined },
+      pkUiContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_CREATE
+    }).subscribe(result => {
+      if (result.action === 'added' || result.action === 'created') {
+        this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+          this.inf.persistent_item.typeOfProject(pkProject, result.pkEntity)
+        })
+      } else if (result.action === 'alreadyInProjectClicked') {
+        this.edit(result.pkEntity)
+      }
     })
   }
 
@@ -350,7 +345,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   edit(pkEntity: number) {
     const data: PropertiesTreeDialogData = {
       appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
-      pkClass$: this.typeClassPk$,
+      pkClass$: of(this.pkClass),
       pkEntity$: of(pkEntity),
       readonly$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),

@@ -43,20 +43,20 @@ class SysSystemRelevantClassSelections extends Selector<SysRelevantClassSlice> {
 }
 
 
-// ClassHasTypeProperty Selectors
-class SysClassHasTypePropertySelections extends Selector<SysClassHasTypePropertySlice> {
-  public by_pk_entity$ = this.selector<SysClassHasTypeProperty>('by_pk_entity');
-  public by_fk_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_fk_class');
-  public by_dfh_pk_property$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_dfh_pk_property');
-  public by_pk_type_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_type_class');
-  public by_pk_typed_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_typed_class');
+// // ClassHasTypeProperty Selectors
+// class SysClassHasTypePropertySelections extends Selector<SysClassHasTypePropertySlice> {
+//   public by_pk_entity$ = this.selector<SysClassHasTypeProperty>('by_pk_entity');
+//   public by_fk_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_fk_class');
+//   public by_dfh_pk_property$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_dfh_pk_property');
+//   public by_pk_type_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_type_class');
+//   public by_pk_typed_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_typed_class');
 
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, configs, model) }
-}
+//   constructor(
+//     public ngRedux: NgRedux<IAppState>,
+//     public configs: ReducerConfigCollection,
+//     public model: string
+//   ) { super(ngRedux, configs, model) }
+// }
 
 // AnalysisType Selectors
 class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
@@ -72,6 +72,6 @@ class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
 
 export class SystemSelector extends SysActions {
   system_relevant_class$ = new SysSystemRelevantClassSelections(this.ngRedux, sysDefinitions, 'system_relevant_class')
-  class_has_type_property$ = new SysClassHasTypePropertySelections(this.ngRedux, sysDefinitions, 'class_has_type_property')
+  // class_has_type_property$ = new SysClassHasTypePropertySelections(this.ngRedux, sysDefinitions, 'class_has_type_property')
   analysis_type$ = new SysAnalysisTypeSelections(this.ngRedux, sysDefinitions, 'analysis_type')
 }

@@ -8,7 +8,7 @@
   -------------------------------------------------------------------->
     <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-      <gv-detail-top-bar [openRightAreaBtn]="false" (openRight)="t.setShowRightArea(true);"
+      <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true);"
         *ngIf="(showHeader$ | async)">
 
         <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
@@ -64,9 +64,16 @@
         'd-none': !t.showRightArea
       }">
       <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
-
+        <mat-tab-group animationDuration="0ms" [selectedIndex]="0">
+          <mat-tab *ngIf="(showSourcesToggle$ | async)" label="Sources"> </mat-tab>
+        </mat-tab-group>
       </gv-detail-top-bar>
       <gv-detail-content>
+
+        <!-- Show Sources (where this TeEn is annotated) -->
+        <gv-mentioning-list *ngIf="(showSources$ | async)" class="gv-tile"
+          [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
+        </gv-mentioning-list>
 
       </gv-detail-content>
     </as-split-area>

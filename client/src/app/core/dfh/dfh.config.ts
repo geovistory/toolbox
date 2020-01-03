@@ -15,8 +15,14 @@ export const dfhDefinitions: ReducerConfigCollection = {
   klass: {
     indexBy: {
       keyInStore: 'pk_class',
-      indexByFn: (item: DfhClass) => item.pk_class.toString()
-    }
+      indexByFn: (item: DfhClass) => item.pk_class.toString(),
+    },
+    groupBy: [
+      {
+        keyInStore: 'basic_type',
+        groupByFn: (d: DfhClass): string => d.basic_type.toString()
+      },
+    ]
   },
   property: {
     indexBy: {

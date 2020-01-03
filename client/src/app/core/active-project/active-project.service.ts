@@ -629,11 +629,11 @@ export class ActiveProjectService {
           peItDetail: {
             showProperties: true,
             showPropertiesToggle: true,
-            showMap: true,
-            showMapToggle: true,
-            showTimeline: true,
-            showTimelineToggle: true,
-            showSources: false,
+            showMap: false,
+            showMapToggle: false,
+            showTimeline: false,
+            showTimelineToggle: false,
+            showSources: true,
             showSourcesToggle: true,
             showRightArea: false
 
@@ -657,7 +657,9 @@ export class ActiveProjectService {
         pkEntity: pkEntity,
         teEntDetailConfig: {
           teEntDetail: {
-            showRightArea: false
+            showRightArea: false,
+            showSources: true,
+            showSourcesToggle: true,
           }
         }
       }

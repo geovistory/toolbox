@@ -108,21 +108,13 @@
         <gv-content-tree *ngIf="(activeTab$ | async) == 'showSectionList'" class="gv-tile gv-flex-fh"
           [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
         </gv-content-tree>
-        <!-- <div class="gv-tile" *ngIf="(activeTab$ | async) == 'showSectionList'">
 
-          <div class="gv-tile-body">
-          </div>
-        </div> -->
 
         <!-- Show Sources (where this PeIt is annotated) -->
         <gv-mentioning-list *ngIf="(showSources$ | async)" class="gv-tile"
           [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
         </gv-mentioning-list>
-        <!-- <div class="gv-tile">
 
-          <div class="gv-tile-body">
-          </div>
-        </div> -->
 
 
 

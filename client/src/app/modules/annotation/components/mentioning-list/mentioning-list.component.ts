@@ -229,17 +229,20 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         const rows$ = this.p.inf$.entity_association$.by_fk_info_range$.key(this.listOf.pkEntity)
           .pipe(
-            mergeMap((eas) => combineLatest(values(eas)
+            mergeMap((eas) => combineLatestOrEmpty(values(eas)
               .map(entityAssociation => this.p.dat$.chunk$.by_pk_entity$.key(entityAssociation.fk_data_domain)
-                .pipe(mergeMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
-                  map(texts => latestVersion(texts)),
-                  map(digital => ({
-                    entityAssociation,
-                    domainChunk,
-                    domainLabel: this.getStringFromChunk(domainChunk),
-                    digital,
-                    digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
-                  } as Row))))
+                .pipe(
+                  filter(item => !!item),
+                  mergeMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+                    filter(item => !!item),
+                    map(texts => latestVersion(texts)),
+                    map(digital => ({
+                      entityAssociation,
+                      domainChunk,
+                      domainLabel: this.getStringFromChunk(domainChunk),
+                      digital,
+                      digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
+                    } as Row))))
                 )
               )))
           )

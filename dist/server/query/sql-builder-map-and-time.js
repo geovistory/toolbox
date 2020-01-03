@@ -14,7 +14,7 @@ class SqlBuilderMapAndTime extends sql_builder_1.SqlBuilder {
         // root table where
         this.filterWheres.push(this.createEntityWhere(query.filter, rootTableAlias, fkProject));
         // root table from
-        this.filterFroms.push(`warehouse.entity_preview ${rootTableAlias}`);
+        this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
         this.froms.push(`tw1 ${rootTableAlias}`);
         // create froms and wheres according to filter definition
         const filterWithAliases = this.createFilterFroms(query.filter, rootTableAlias, rootTableAlias, fkProject);
@@ -94,7 +94,7 @@ class SqlBuilderMapAndTime extends sql_builder_1.SqlBuilder {
           FROM
             tw2 t0,
             war.vm_statement t1,
-            warehouse.entity_preview t2,
+            war.entity_preview t2,
             war.vm_statement t3,
             information.v_place t4
           WHERE
