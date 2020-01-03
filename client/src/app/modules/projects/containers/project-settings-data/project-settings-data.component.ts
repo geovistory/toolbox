@@ -183,93 +183,84 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
 
     this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.p.state.pk_project);
-    this.items$ = combineLatest([
-      this.p.dfh$.class$.by_pk_class$.all$,
-      this.p.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
-        .key(this.p.state.pk_project + '_true').pipe(
-          map(projectProfileRels => values(projectProfileRels)
-            .filter(rel => rel.enabled)
-            .map(rel => rel.fk_profile)
-          ),
-          map(enabled => [...enabled, DfhConfig.PK_PROFILE_GEOVISTORY_BASIC])
-        )])
+
+    const classesEnabledByProfiles$ = this.c.pipeClassesEnabledByProjectProfiles()
+
+    this.items$ = classesEnabledByProfiles$
       .pipe(
-        switchMap(([byPk, enabledProfiles]) => {
+        switchMap((dfhClasses) => {
           return combineLatestOrEmpty(
-            values(byPk)
-              // Filter classes that are in at least one of the enabled profiles
-              .filter(dfhClass => {
-                const profilesOfClass: number[] = dfhClass.profiles.map(p => p.fk_profile);
-                return intersection(profilesOfClass, enabledProfiles).length > 0;
-              })
-              // Pipe all related informations for each class
-              .map(dfhClass => combineLatest(
-                this.c.pipeClassLabel(dfhClass.pk_class),
-                this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_class$
-                  .key(this.p.state.pk_project + '_' + dfhClass.pk_class),
-                this.p.sys$.class_has_type_property$.by_pk_typed_class$
-                  .key(dfhClass.pk_class),
-                this.p.sys$.system_relevant_class$.by_fk_class$
-                  .key(dfhClass.pk_class),
-                this.p.dfh$.label$.by_fk_profile__type$.all$,
-              )
-                .pipe(
-                  map(([label, projRel, type, sysClass, profileLabels]) => {
-                    const {
-                      pk_class,
-                      identifier_in_namespace
-                    } = dfhClass;
+            // Pipe all related informations for each class
+            dfhClasses.map(dfhClass => combineLatest(
+              this.c.pipeClassLabel(dfhClass.pk_class),
+              this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_class$
+                .key(this.p.state.pk_project + '_' + dfhClass.pk_class),
+              this.p.sys$.system_relevant_class$.by_fk_class$
+                .key(dfhClass.pk_class),
+              this.p.dfh$.label$.by_fk_profile__type$.all$,
+              this.c.pipeProfilesEnabledByProject(),
+              this.c.pipeTypeClassesEnabledByProjectProfiles()
+            )
+              .pipe(
+                map(([label, projRel, sysClass, profileLabels, enabledProfiles, typeClasses]) => {
+
+                  const typeClassMap = indexBy((c) => c.pk_class.toString(), typeClasses)
+
+                  const {
+                    pk_class,
+                    identifier_in_namespace
+                  } = dfhClass;
 
 
-                    const systemRelevantClass = U.firstItemInObject(sysClass);
-                    const {
-                      excluded_from_entities,
-                      required_by_basics,
-                      required_by_entities,
-                      required_by_sources
-                    } = systemRelevantClass || {} as SysSystemRelevantClass;
+                  const systemRelevantClass = U.firstItemInObject(sysClass);
+                  const {
+                    excluded_from_entities,
+                    required_by_basics,
+                    required_by_entities,
+                    required_by_sources
+                  } = systemRelevantClass || {} as SysSystemRelevantClass;
 
-                    const profiles: Profile[] = []
+                  const profiles: Profile[] = []
 
-                    dfhClass.profiles.forEach(p => {
-                      if (enabledProfiles.includes(p.fk_profile)) {
-                        const profile: Profile = {
-                          label: !profileLabels ?
-                            '* label missing *' :
-                            (values(profileLabels[p.fk_profile + '_label']) || [{ label: '* label missing *' }])[0].label,
-                          removedFromApi: p.removed_from_api,
-                          fkProfile: p.fk_profile,
-                        }
-                        profiles.push(profile)
+                  dfhClass.profiles.forEach(p => {
+                    if (enabledProfiles.includes(p.fk_profile)) {
+                      const profile: Profile = {
+                        label: !profileLabels ?
+                          '* label missing *' :
+                          (values(profileLabels[p.fk_profile + '_label']) || [{ label: '* label missing *' }])[0].label,
+                        removedFromApi: p.removed_from_api,
+                        fkProfile: p.fk_profile,
                       }
-                    })
-
-                    const item: ClassItem = {
-                      pkClass: pk_class,
-                      identifier_in_namespace,
-
-                      scopeNote: '', // TODO
-
-                      label,
-                      projRel,
-                      systemRelevantClass,
-
-                      subclassOfType: !!type,
-                      subclassOf: (dfhClass.basic_type === 8 || dfhClass.basic_type === 30) ? 'peIt' : dfhClass.basic_type === 9 ? 'teEnt' : 'other',
-
-                      excluded_from_entities,
-                      required_by_basics,
-                      required_by_entities,
-                      required_by_sources,
-
-                      removedFromAllProfiles: !dfhClass.profiles.some(p => p.removed_from_api === false),
-                      profiles,
-                      profilePks: dfhClass.profiles.map(p => p.fk_profile)
+                      profiles.push(profile)
                     }
-                    return item
                   })
-                )
+
+                  const item: ClassItem = {
+                    pkClass: pk_class,
+                    identifier_in_namespace,
+
+                    scopeNote: '', // TODO
+
+                    label,
+                    projRel,
+                    systemRelevantClass,
+
+                    subclassOfType: !!typeClassMap[dfhClass.pk_class],
+                    subclassOf: (dfhClass.basic_type === 8 || dfhClass.basic_type === 30) ? 'peIt' : dfhClass.basic_type === 9 ? 'teEnt' : 'other',
+
+                    excluded_from_entities,
+                    required_by_basics,
+                    required_by_entities,
+                    required_by_sources,
+
+                    removedFromAllProfiles: !dfhClass.profiles.some(p => p.removed_from_api === false),
+                    profiles,
+                    profilePks: dfhClass.profiles.map(p => p.fk_profile)
+                  }
+                  return item
+                })
               )
+            )
           )
         })
       )
@@ -484,20 +475,25 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
 
   openControlledVocab(classItem: ClassItem) {
-    this.p.sys$.class_has_type_property$.by_pk_type_class$.key(classItem.pkClass)
-      .pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((hasTypeProperties) => {
+    this.p.addTab({
+      active: true,
+      component: 'contr-vocab-settings',
+      icon: 'settings',
+      pathSegment: 'contrVocabSettings',
+      data: { pkClass: classItem.pkClass }
+    })
+    // this.c.pipeTypeClassOfTypedClass(classItem.pkClass)
+    //   .pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((pkClass) => {
 
-        const pkProperty = values(hasTypeProperties).find(p => p.pk_type_class === classItem.pkClass).dfh_pk_property;
+    //     this.p.addTab({
+    //       active: true,
+    //       component: 'contr-vocab-settings',
+    //       icon: 'settings',
+    //       pathSegment: 'contrVocabSettings',
+    //       data: { pkClass }
+    //     })
 
-        this.p.addTab({
-          active: true,
-          component: 'contr-vocab-settings',
-          icon: 'settings',
-          pathSegment: 'contrVocabSettings',
-          data: { pkProperty }
-        })
-
-      })
+    //   })
   }
 
   openClassConfig(classItem: ClassItem) {

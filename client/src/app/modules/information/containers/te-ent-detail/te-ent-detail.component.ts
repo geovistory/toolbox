@@ -14,6 +14,7 @@ import { InformationPipesService } from '../../new-services/information-pipes.se
 import { slideInOut } from '../../shared/animations';
 import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
 import { teEntDetailReducer } from './api/te-ent-detail.reducer';
+import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 
 
 @WithSubStore({
@@ -40,8 +41,12 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   @select() showHeader$: Observable<boolean>;
   @select() showRightArea$: Observable<boolean>;
 
+  @select() showSources$: Observable<boolean>;
+  @select() showSourcesToggle$: Observable<boolean>;
+
   @select() toggle$: Observable<boolean>
   @select() showOntoInfo$: Observable<boolean>;
+
 
   title$: Observable<string>;
   classLabel$: Observable<string>;
@@ -49,6 +54,7 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   pkEntity$: Observable<number>
 
   t: TabLayout;
+  listOf: MentioningListOf;
 
   constructor(
     protected rootEpics: RootEpics,
@@ -95,6 +101,9 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         this.t.setTabTitle(classLabel + ' ' + entityLabel)
       })
     this.pkEntity$ = of(this.pkEntity)
+
+    this.listOf = { pkEntity: this.pkEntity, type: 'entity' }
+
   }
 
 

@@ -129,13 +129,13 @@ export class ActiveProjectEpics {
         this.dfh.label.loadOfProject(action.meta.pk_project);
 
         this.sys.system_relevant_class.load();
-        this.sys.class_has_type_property.load();
         this.sys.analysis_type.load();
 
         this.dat.namespace.load('', action.meta.pk_project);
 
         this.pro.text_property.loadOfProject(action.meta.pk_project)
         this.pro.dfh_class_proj_rel.loadOfProject(action.meta.pk_project);
+        this.pro.dfh_profile_proj_rel.loadOfProject(action.meta.pk_project);
         this.pro.class_field_config.loadOfProject(action.meta.pk_project);
 
         this.inf.persistent_item.typesOfProject(action.meta.pk_project)
@@ -148,12 +148,10 @@ export class ActiveProjectEpics {
           this.dfh.label$.by_fks$.noPause.all$,
 
 
-          // this.sysAppCtxApi.appContext(null, action.meta.pk_project),
-          this.comClassFieldApi.find(),
+          // this.comClassFieldApi.find(),
 
-          this.sysHasTypePropsApi.find(),
+          // this.sysHasTypePropsApi.find(),
           this.sys.system_relevant_class$.by_fk_class$.all$,
-          this.sys.class_has_type_property$.slice$,
           this.sys.analysis_type$.slice$,
 
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
@@ -161,7 +159,8 @@ export class ActiveProjectEpics {
 
           this.pro.project.loadBasics(action.meta.pk_project).resolved$.pipe(filter(x => !!x)),
           this.pro.class_field_config$.by_fk_class__fk_app_context$.all$,
-          this.pro.dfh_class_proj_rel$.by_fk_project$.all$
+          this.pro.dfh_class_proj_rel$.by_fk_project$.all$,
+          this.pro.dfh_profile_proj_rel$.by_fk_project$.all$
         )
           .pipe(filter((res: any[]) => !res.includes(undefined)))
           .subscribe((res) => {

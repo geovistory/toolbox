@@ -1,20 +1,20 @@
 <gv-detail-top-bar>
   <div class="ml-2">
-    Controlled Vocabulary for {{(typedClassLabel$ | async)}}
+    Controlled Vocabulary editor
   </div>
 </gv-detail-top-bar>
 <gv-detail-content class="p-3 gv-scroll-y-auto">
 
 
   <div class="mat-h1 d-flex">
-    <span>{{(typedClassLabel$ | async)}} Types</span>
+    <span> Controlled Vocabulary of {{(typeClassLabel$ | async)}} </span>
     <button class="ml-auto" mat-button (click)="onAddOrCreate()">
       <mat-icon aria-label="Edit type">add_circle_outline</mat-icon> Add
     </button>
   </div>
 
   <p class="mat-body" *ngIf="!(typePks$|async) || (typePks$|async)?.length < 1">
-    Create and manage a controlled vocabulary for the class {{(typedClassLabel$ | async)}}.
+    Create and manage a controlled vocabulary of {{(typeClassLabel$ | async)}}.
     <br>
     <br>
     A controlled vocabulary is a set of types. For example:
@@ -35,7 +35,7 @@
 
       <h4 mat-line>
         <i *ngIf="!type.label" class="mat-text-secondary"> Please add a Term </i>
-        {{type.label}} <span  class="ml-2 mat-caption mat-text-secondary"> {{type.labelLanguage}} </span>
+        {{type.label}} <span class="ml-2 mat-caption mat-text-secondary"> {{type.labelLanguage}} </span>
       </h4>
       <p mat-line>
         <span *ngIf="type.definition"> {{type.definition}}</span>

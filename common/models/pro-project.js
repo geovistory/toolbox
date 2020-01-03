@@ -42,8 +42,9 @@ module.exports = function(ProProject) {
     if (description) {
       insertTextProperty = `
       , insert_text_property AS (
-        INSERT INTO projects.text_property (fk_entity, string, fk_system_type, fk_language)
+        INSERT INTO projects.text_property (fk_project, fk_pro_project, string, fk_system_type, fk_language)
         SELECT
+          pk_entity,
           pk_entity,
           ${addParam(description)},
           ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION)},
@@ -61,8 +62,9 @@ module.exports = function(ProProject) {
       RETURNING pk_entity
     ),
     insert_label AS (
-      INSERT INTO projects.text_property (fk_entity, string, fk_system_type, fk_language)
+      INSERT INTO projects.text_property (fk_project, fk_pro_project, string, fk_system_type, fk_language)
       SELECT
+        pk_entity,
         pk_entity,
         ${addParam(label)},
         ${addParam(Config.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL)},
@@ -101,13 +103,23 @@ module.exports = function(ProProject) {
       WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}
       ON CONFLICT DO NOTHING
     ),
-    add_data_for_history_from_template_project AS (
-      INSERT INTO projects.dfh_class_proj_rel (fk_project, fk_entity, enabled_in_entities)
+    add_dfh_classes AS (
+      INSERT INTO projects.dfh_class_proj_rel (fk_project, fk_class, enabled_in_entities)
       SELECT
         (SELECT pk_entity FROM insert_project) as fk_project,
-        fk_entity,
+        fk_class,
         enabled_in_entities
       FROM projects.dfh_class_proj_rel
+      WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}
+      ON CONFLICT DO NOTHING
+    ),
+    add_dfh_profiles AS (
+      INSERT INTO projects.dfh_profile_proj_rel (fk_project, fk_profile, enabled)
+      SELECT
+        (SELECT pk_entity FROM insert_project) as fk_project,
+        fk_profile,
+        enabled
+      FROM projects.dfh_profile_proj_rel
       WHERE fk_project = ${addParam(Config.PK_PROJECT_OF_TEMPLATE_PROJECT)}
       ON CONFLICT DO NOTHING
     ),

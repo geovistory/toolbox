@@ -20,8 +20,8 @@ export class SysActions {
   system_relevant_class = new StandardActionsFactory<Payload, SysSystemRelevantClass>
     (this.ngRedux).createCrudActions(sysRoot, 'system_relevant_class');
 
-  class_has_type_property = new StandardActionsFactory<Payload, SysClassHasTypeProperty>
-    (this.ngRedux).createCrudActions(sysRoot, 'class_has_type_property');
+  // class_has_type_property = new StandardActionsFactory<Payload, SysClassHasTypeProperty>
+  //   (this.ngRedux).createCrudActions(sysRoot, 'class_has_type_property');
 
   analysis_type = new StandardActionsFactory<Payload, SysAnalysisType>
     (this.ngRedux).createCrudActions(sysRoot, 'analysis_type');

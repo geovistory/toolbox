@@ -531,6 +531,69 @@ export class ConfigurationPipesService {
   }
 
   /**
+   * returns observable number[] wher the numbers are the pk_profile
+   * of all profiles that are enabled by the given project
+   */
+  @spyTag @cache({ refCount: false }) pipeProfilesEnabledByProject(): Observable<number[]> {
+    return this.p.pkProject$.pipe(
+      switchMap(pkProject => this.p.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
+        .key(pkProject + '_true').pipe(
+          map(projectProfileRels => values(projectProfileRels)
+            .filter(rel => rel.enabled)
+            .map(rel => rel.fk_profile)
+          ),
+          map(enabled => [...enabled, DfhConfig.PK_PROFILE_GEOVISTORY_BASIC]),
+        ))
+    )
+  }
+
+  /**
+   * returns observable number[] wher the numbers are the pk_class
+   * of all classes that are enabled by at least one of the activated profiles
+   * of thte given project
+   */
+  @spyTag @cache({ refCount: false }) pipeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
+    return this.p.pkProject$.pipe(switchMap(pkProject => combineLatest([
+      this.p.dfh$.class$.by_pk_class$.all$,
+      this.pipeProfilesEnabledByProject()
+    ]).pipe(
+      map(([classesByPk, enabledProfiles]) => {
+        const profilesMap = indexBy((k) => k.toString(), values(enabledProfiles))
+        return values(classesByPk)
+          .filter(klass => klass.profiles.some(profile => profilesMap[profile.fk_profile]))
+      })
+    )
+    ))
+  }
+
+  /**
+ * returns observable number[] wher the numbers are the pk_class
+ * of all type classes that are enabled by at least one of the activated profiles
+ * of thte given project
+ */
+  @spyTag @cache({ refCount: false }) pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
+    return combineLatest([
+      this.p.dfh$.class$.by_basic_type$.key(30),
+      this.pipeProfilesEnabledByProject()
+    ]).pipe(
+      map(([classesByPk, enabledProfiles]) => {
+        const profilesMap = indexBy((k) => k.toString(), values(enabledProfiles))
+        return values(classesByPk)
+          .filter(klass => {
+            return klass.profiles.some(profile => profilesMap[profile.fk_profile]) &&
+              // Exclude Manifestation product type and language
+              ![
+                DfhConfig.CLASS_PK_LANGUAGE,
+                DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE
+              ].includes(klass.pk_class)
+          })
+      })
+    )
+  }
+
+
+
+  /**
    * returns observable number[] wher the numbers are the pk_class
    * of all classes that are enabled by active project (using class_proj_rel)
    */
@@ -538,12 +601,6 @@ export class ConfigurationPipesService {
     return this.p.pkProject$.pipe(switchMap(pkProject => this.p.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
       .pipe(
         map((rels) => values(rels).map(rel => rel.fk_class))
-        // switchMap((cs) => combineLatest(
-        //   values(cs).map(c => this.p.dfh$.class$.by_pk_entity$.key(c.fk_entity).pipe(
-        //     filter(item => !!item),
-        //     map(dfhc => values(dfhc)[0].pk_class)
-        //   ))
-        // ))
       )
     ))
   }
@@ -999,53 +1056,41 @@ export class ConfigurationPipesService {
   }
 
   @spyTag @cache({ refCount: false }) pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<{ typedClass: number, typeClass: number }[]> {
-    return combineLatest(
-      pkTypedClasses.map(pk => this.p.sys$.class_has_type_property$.by_pk_typed_class$.key(pk).pipe(
-        map(x => ({
+
+    return this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
+      map((allHasTypeProps) => {
+        const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
+        return pkTypedClasses.map(pk => ({
           typedClass: pk,
-          typeClass: !x ? undefined : values(x)[0].pk_type_class
+          typeClass: byDomain[pk] ? byDomain[pk].has_range : undefined
         }))
-      ))
-    )
+      }))
   }
 
   @spyTag @cache({ refCount: false }) pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
-    return this.p.sys$.class_has_type_property$.by_pk_typed_class$.key(pkTypedClass).pipe(
-      map(x => {
-        if (!x || Object.keys(x).length < 1) return undefined;
-        else return values(x)[0].pk_type_class
-      })
-    )
+    return this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
+      map((allHasTypeProps) => {
+        const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
+        return byDomain[pkTypedClass] ? byDomain[pkTypedClass].has_range : undefined
+      }))
   }
 
   @spyTag @cache({ refCount: false }) pipeTypedClassesOfTypeClasses(pkTypeClasses: number[]): Observable<number[]> {
-    return this.p.sys$.class_has_type_property$.by_pk_type_class$.all$.pipe(
-      map(x => {
-        if (!pkTypeClasses || pkTypeClasses.length == 0) {
-          return []
-        }
-        const typeClasses = {}
-        const a = []
-        pkTypeClasses.forEach(pkTypeClass => {
-          if (!typeClasses[pkTypeClass] && x && Object.keys(x).length > 0) {
-            typeClasses[pkTypeClass] = true;
-            const typedClass = values(x[pkTypeClass])[0].pk_typed_class
-            a.push(typedClass)
-          }
-        })
-        return a;
-      })
-    )
+
+    return this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
+      map((allHasTypeProps) => {
+        const byDomain = indexBy(k => k.has_range.toString(), values(allHasTypeProps));
+        return pkTypeClasses.map(pk => byDomain[pk] ? byDomain[pk].has_domain : undefined)
+      }))
   }
 
 
   @spyTag @cache({ refCount: false }) pipeTypePropertyOfTypedClass(pkTypedClass): Observable<number> {
-    return this.p.sys$.class_has_type_property$.by_pk_typed_class$.key(pkTypedClass).pipe(
-      map(x => {
-        if (!x || Object.keys(x).length < 1) return undefined;
-        else return values(x)[0].dfh_pk_property
-      })
-    )
+    return this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
+      map((allHasTypeProps) => {
+        const typeProp = values(allHasTypeProps).find(p => p.has_domain === pkTypedClass)
+        return typeProp ? typeProp.pk_property : undefined;
+      }))
   }
 
   @spyTag @cache({ refCount: false }) pipeTargetClassesOfProperties(pkProperties: number[], isOutgoing: boolean): Observable<number[]> {

@@ -103,7 +103,7 @@
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="subclassOfType"> Types
       </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-        <button mat-button color="primary" *ngIf="element.subclassOfType" (click)="openControlledVocab(element)"> Manage
+        <button mat-button color="primary" *ngIf="element.subclassOfType" (click)="openControlledVocab(element)"> Open
           Controlled Vocabulary </button>
       </td>
     </ng-container>
@@ -140,7 +140,7 @@
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
 
         <button mat-button color="primary" *ngIf="!element.excluded_from_entities" (click)="openClassConfig(element)">
-          Configure Screens </button>
+          Configure Class... </button>
 
       </td>
     </ng-container>

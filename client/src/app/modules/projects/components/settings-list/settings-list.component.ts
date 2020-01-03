@@ -1,9 +1,12 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
-import { ActiveProjectService, U } from '../../../../core';
+import { ActiveProjectService, U, DfhClass } from '../../../../core';
 import { Observable } from 'rxjs';
-import { map, takeUntil, delay } from 'rxjs/operators';
+import { map, takeUntil, delay, switchMap } from 'rxjs/operators';
 import { HasTypePropertyReadable } from '../../../../core/state/models';
 import { sortBy, compose, toLower, prop } from 'ramda';
+import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 @Component({
   selector: 'gv-settings-list',
@@ -16,13 +19,25 @@ export class SettingsListComponent implements OnInit {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   // used to creat list of controlled vocabularies
-  hasTypeProps$: Observable<HasTypePropertyReadable[]>
+  typeClasses$: Observable<{ label: string, pkClass: number }[]>
 
   categories$: Observable<any>;
 
-  constructor(private p: ActiveProjectService) {
-    this.hasTypeProps$ = p.sys$.class_has_type_property$.by_pk_entity$.all$
-      .pipe(map(hasTypeProperties => sortBy(compose(toLower, prop('typed_class_label')))(U.objNr2Arr(hasTypeProperties))))
+  constructor(
+    private p: ActiveProjectService,
+    private c: ConfigurationPipesService
+  ) {
+
+    this.typeClasses$ = this.c.pipeTypeClassesEnabledByProjectProfiles().pipe(
+      switchMap(klasses => combineLatestOrEmpty(klasses
+        .map(klass => this.c.pipeClassLabel(klass.pk_class).pipe(
+          map(label => ({
+            label,
+            pkClass: klass.pk_class
+          }))
+        ))))
+    )
+
   }
 
   ngOnInit() {
@@ -32,9 +47,9 @@ export class SettingsListComponent implements OnInit {
 
   ngAfterViewInit() {
 
-    this.categories$ = this.hasTypeProps$.pipe(
+    this.categories$ = this.typeClasses$.pipe(
       delay(0),
-      map(props => {
+      map(typeClass => {
         return [
           {
             title: 'General',
@@ -60,10 +75,10 @@ export class SettingsListComponent implements OnInit {
           },
           {
             title: 'Controlled Vocabularies',
-            items: props.map(prop => ({
+            items: typeClass.map(prop => ({
               onClickFnName: 'openContrVocabSettings',
-              param: prop.dfh_pk_property,
-              label: prop.typed_class_label
+              param: prop.pkClass,
+              label: prop.label
             }))
           },
           {
@@ -102,13 +117,13 @@ export class SettingsListComponent implements OnInit {
     })
   }
 
-  openContrVocabSettings(pkProperty) {
+  openContrVocabSettings(pkClass) {
     this.p.addTab({
       active: true,
       component: 'contr-vocab-settings',
       icon: 'settings',
       pathSegment: 'contrVocabSettings',
-      data: { pkProperty }
+      data: { pkClass }
     })
   }
 
