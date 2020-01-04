@@ -110,7 +110,7 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     return this.p.dfh$.label$.by_fk_profile__type$.key(profileId + '_label').pipe(
       map((labels) => {
         const dfhLabel = values(labels).find(label => label.language === 'en')
-        return dfhLabel ? dfhLabel.label : '[no label]'
+        return dfhLabel ? dfhLabel.label : '[no english label]'
       })
     )
   }
@@ -119,7 +119,7 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     return this.p.dfh$.label$.by_fk_profile__type$.key(profileId + '_definition').pipe(
       map((labels) => {
         const dfhLabel = values(labels).find(label => label.language === 'en')
-        return dfhLabel ? dfhLabel.label : '[no label]'
+        return dfhLabel ? dfhLabel.label : '[no english label]'
       })
     )
   }

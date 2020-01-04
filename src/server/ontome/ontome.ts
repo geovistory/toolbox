@@ -54,7 +54,7 @@ export class OntoMe {
     this._requestedLanguage = x
   }
   get requestedLanguage(): string {
-    return this._requestedLanguage || 'en'
+    return (this._requestedLanguage === '{}' || !this._requestedLanguage) ? 'en' : this._requestedLanguage
   }
 
   private fkProfile: number | undefined;
