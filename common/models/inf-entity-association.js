@@ -395,8 +395,8 @@ module.exports = function(InfEntityAssociation) {
     mentioned_in_associations AS (
       SELECT ea.*
       from entity_associations_of_project as ea
-      INNER JOIN data_for_history.property as p on ea.fk_property = p.dfh_pk_property
-      WHERE p.dfh_fk_property_of_origin = 1218
+      INNER JOIN data_for_history.v_property as p on ea.fk_property = p.pk_property
+      WHERE p.pk_property = 1218
     ),
     mentionings_of_chunks_of_expression AS (
       SELECT
@@ -506,8 +506,8 @@ module.exports = function(InfEntityAssociation) {
     is_mentioned_in_association AS (
       SELECT ea.*
       from entity_associations_of_project as ea
-      INNER JOIN data_for_history.property as p on ea.fk_property = p.dfh_pk_property
-      WHERE p.dfh_fk_property_of_origin = 1218
+      INNER JOIN data_for_history.v_property as p on ea.fk_property = p.pk_property
+      WHERE p.pk_property = 1218
     ),
     source_of_expression AS (
       SELECT
