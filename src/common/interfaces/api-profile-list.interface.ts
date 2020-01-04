@@ -23,8 +23,8 @@ export interface ApiProfile {
   ownedByProjectLabelLanguage: string,
   ownedByProjectLabel: string,
   selectedByProjects: {
-    numberOfProjects: number,
-    projects: ApiProfileProject[]
+    numberOfProjects: number | null,
+    projects: ApiProfileProject[] | null
   },
   isOngoingForcedPublication: boolean,
   dateProfilePublished: string | null,
