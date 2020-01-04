@@ -1404,12 +1404,11 @@ module.exports = function(InfPersistentItem) {
     const sql_stmt = `
       SELECT 1, jsonb_agg(t3.pk_entity) as pk_type_array
       FROM
-      "system".class_has_type_property t1,
-      data_for_history.v_property  t2,
+      data_for_history.v_class  t2,
       information.persistent_item t3,
       projects.info_proj_rel t4
-      WHERE t1.fk_property = t2.pk_property
-      AND t3.fk_class = t2.has_range
+      WHERE t3.fk_class = t2.pk_class
+      AND t2.basic_type = 30
       AND t4.fk_entity = t3.pk_entity
       AND t4.is_in_project = true
       AND t4.fk_project = $1

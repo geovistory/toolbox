@@ -8,7 +8,7 @@ import { FormControlFactory } from 'app/modules/form-factory/core/form-control-f
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { clone, flatten, values } from 'ramda';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { auditTime, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
+import { auditTime, first, map, mergeMap, takeUntil, switchMap, filter } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
@@ -135,6 +135,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       } else if (listType === 'appellation') {
 
         return this.appellationCtrl(arrayConfig)
+
+      } else if (listType === 'has-type') {
+
+        return this.typeCtrl(arrayConfig)
 
       } else if (arrayConfig.isList) {
         // Add a form array as object / container
@@ -323,27 +327,51 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return of([controlConfig]);
   }
 
+  private typeCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    const listDefinition = arrayConfig.data.listDefinition;
+    const controlConfig: LocalNodeConfig = {
+      control: {
+        placeholder: arrayConfig.data.customCtrlLabel ? arrayConfig.data.customCtrlLabel : listDefinition.label,
+        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+        data: {
+          controlType: 'ctrl-type',
+          listDefinition,
+        },
+        mapValue: (val) => {
+          if (!val) return null;
+
+          let value: InfRole = { ...{} as any, fk_property: listDefinition.pkProperty, };
+
+          if (listDefinition.isOutgoing) {
+            value = { ...value, fk_entity: val }
+          } else {
+            value = { ...value, fk_temporal_entity: val }
+          }
+
+          return value;
+        }
+      }
+    };
+    return of([controlConfig]);
+  }
+
   private getListArrayConfig(arrayConfig: LocalArrayConfig, listType: ListType): Observable<LocalNodeConfig[]> {
 
     return this.p.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass).pipe(
+      filter(klass => !!klass),
       switchMap((dfhClass) => {
 
         let fields$: Observable<FieldDefinition[]>;
         // For temporal_entity
         if (dfhClass.basic_type === 9) {
-          fields$ = this.c.pipeSpecificFieldDefinitions(arrayConfig.data.pkClass).pipe(
-            map(fields => {
-              const when = this.c.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN)
-              return [...fields, when]
-            })
-          )
+          fields$ = this.c.pipeFieldDefinitionsForTeEnForm(arrayConfig.data.pkClass)
         } else {
           fields$ = this.c.pipeDefaultFieldDefinitions(arrayConfig.data.pkClass)
         }
 
         return fields$.pipe(
           // auditTime(100),
-          mergeMap((fieldDefs) => {
+          switchMap((fieldDefs) => {
             return new Observable<LocalNodeConfig[]>(subscriber => {
 
               const childConfs: LocalNodeConfig[] = []
@@ -398,6 +426,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                         const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
                         return { key: 'text_properties', value: textProps }
 
+                      } else if (childListType === 'has-type') {
+
+                        return {
+                          key: getRoleKey(listType, listDefinition),
+                          value: x.filter((i) => !!i)
+                        }
                       }
                     }
                     else if (listType === 'persistent-item') {
@@ -416,9 +450,16 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                             temporal_entity: item
                           }))
                         }
+                      } else if (childListType === 'has-type') {
 
+                        return {
+                          key: getRoleKey(listType, listDefinition),
+                          value: x.filter((i) => !!i)
+                        }
                       }
                     };
+
+
                     // if not returned earlier, we have an error
                     throw new Error(`No mapValue defined for ${childListType} as child of ${listType}`)
                   }
@@ -431,8 +472,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   }
 
                   const required = listDefinition.isIdentityDefining;
-                  const maxLength = listDefinition.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMaxQuantity;
-                  const addOnInit = maxLength === 1 ? 1 : required ? 1 : 0;
+                  let maxLength = listDefinition.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMaxQuantity;
+                  let addOnInit = maxLength === 1 ? 1 : required ? 1 : 0;
+
+                  if (childListType === 'has-type') {
+                    maxLength = 1;
+                    addOnInit = 1;
+                  }
 
                   return {
                     array: {

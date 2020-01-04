@@ -811,6 +811,32 @@ export class ConfigurationPipesService {
       )
   }
 
+  /**
+   * Pipes the fields for temporal entity forms
+   * - the specific fields
+   * - the when field
+   * - if available: the type field
+   */
+  @spyTag @cache({ refCount: false }) pipeFieldDefinitionsForTeEnForm(pkClass: number): Observable<FieldDefinition[]> {
+    const hasTypeListDef$ = this.pipeHasTypeListDefinition(pkClass)
+    return combineLatest(
+      this.pipeSpecificFieldDefinitions(pkClass),
+      hasTypeListDef$,
+    ).pipe(
+      map(([fields, hasTypeListDefs]) => {
+        const when = this.getClassFieldDefinition(SysConfig.PK_CLASS_FIELD_WHEN)
+        return [
+          ...fields,
+          when,
+          ...hasTypeListDefs.map((hasTypeListDef) => {
+            const typeField: FieldDefinition = { ...hasTypeListDef, listDefinitions: [hasTypeListDef] }
+            return typeField;
+          })
+        ]
+      })
+    )
+  }
+
 
   /**
    * Pipe the specific fields of given class
@@ -914,22 +940,7 @@ export class ConfigurationPipesService {
      * Pipe the generic field has type
      * with the given class as range
      */
-    const hasTypeListDef$ = this.p.dfh$.property$.by_has_domain$.key(pkClass).pipe(
-      // check if this class has 'has type' subproperty
-      map(outgoing => {
-        return values(outgoing).filter((prop) => prop.is_has_type_subproperty)
-      }),
-      switchMap(hasTypeProps => combineLatestOrEmpty(hasTypeProps.map(dfhProp => {
-        return this.pipeListDefinitionsOfProperties([dfhProp], true).pipe(
-          filter(listDefs => !!listDefs && !!listDefs[0]),
-          map(listDefs => {
-            const listDef = listDefs[0]
-            listDef.listType = 'has-type';
-            return listDef;
-          })
-        );
-      })))
-    )
+    const hasTypeListDef$ = this.pipeHasTypeListDefinition(pkClass)
     return combineLatest(
       hasAppeListDef$,
       hasTypeListDef$,
@@ -1027,6 +1038,20 @@ export class ConfigurationPipesService {
     )
   }
 
+
+  private pipeHasTypeListDefinition(pkClass: number) {
+    return this.p.dfh$.property$.by_has_domain$.key(pkClass).pipe(
+      // check if this class has 'has type' subproperty
+      map(outgoing => {
+        return values(outgoing).filter((prop) => prop.is_has_type_subproperty);
+      }), switchMap(hasTypeProps => combineLatestOrEmpty(hasTypeProps.map(dfhProp => {
+        return this.pipeListDefinitionsOfProperties([dfhProp], true).pipe(filter(listDefs => !!listDefs && !!listDefs[0]), map(listDefs => {
+          const listDef = listDefs[0];
+          listDef.listType = 'has-type';
+          return listDef;
+        }));
+      }))));
+  }
 
   /**
    *

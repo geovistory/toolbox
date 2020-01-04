@@ -1,16 +1,16 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { MatSelectChange, MatSelect } from '@angular/material/select';
-import { Subject, Observable, BehaviorSubject, combineLatest, iif } from 'rxjs';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { switchMap, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { ClassAndTypeNode } from '../classes-and-types-select/classes-and-types-select.component';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { map, switchMap } from '../../../../../../node_modules/rxjs/operators';
+import { sortAbc } from '../../../../core';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
-import { switchMapOr, sortAbc } from '../../../../core';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { ClassAndTypeNode } from '../classes-and-types-select/classes-and-types-select.component';
 
 type CtrlModel = number // pk_entity of type (persistent item)
 
@@ -110,14 +110,14 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   }
 
   ngOnInit() {
-    if (!this.pkTypeClass) throw 'You must provide a this.pkTypeClass';
-    if (!this.pkTypedClass) throw 'You must provide a this.pkTypedClass';
+    if (!this.pkTypeClass) throw new Error('You must provide a this.pkTypeClass');
+    if (!this.pkTypedClass) throw new Error('You must provide a this.pkTypedClass');
 
     this.typeLabel$ = this.value$.pipe(
       switchMap(pkEntity => this.i.pipeLabelOfEntity(pkEntity))
     )
     this.typeOptions$ = this.b.pipePersistentItemPksByClass(this.pkTypeClass).pipe(
-      switchMapOr([], typePks => combineLatest(
+      switchMap(typePks => combineLatestOrEmpty(
         typePks.map(pkType => this.i.pipeLabelOfEntity(pkType).pipe(
           map(label => ({
             label, data: { pkClass: this.pkTypedClass, pkType }

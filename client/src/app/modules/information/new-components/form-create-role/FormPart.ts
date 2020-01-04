@@ -230,7 +230,11 @@ export class FormPart {
       };
       return value;
     }
-    else if (listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'entity-preview') {
+    else if (
+      listDefinition.listType === 'temporal-entity'
+      || listDefinition.listType === 'entity-preview'
+      || listDefinition.listType === 'has-type'
+    ) {
       if (!val) return null;
 
       let value: InfRole = { ...{} as any, fk_property: listDefinition.pkProperty, };

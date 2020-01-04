@@ -62,8 +62,20 @@
 
 <mat-form-field *ngIf="config?.data.controlType === 'ctrl-entity'" class="w-100" appearance="legacy">
   <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-entity [formControl]="formControlFactory.control" [pkClass]="config?.data?.listDefinition.targetClass" [required]="config?.required">
+  <gv-ctrl-entity [formControl]="formControlFactory.control" [pkClass]="config?.data?.listDefinition.targetClass"
+    [required]="config?.required">
   </gv-ctrl-entity>
+  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+    Please select or create an entity
+  </mat-error>
+</mat-form-field>
+
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-type'" class="w-100" appearance="legacy">
+  <mat-label>{{config?.placeholder}}</mat-label>
+  <gv-ctrl-type [formControl]="formControlFactory.control" [autoopen]="false"
+    [pkTypedClass]="config?.data?.listDefinition.sourceClass" [pkTypeClass]="config?.data?.listDefinition.targetClass"
+    [required]="config?.required">
+  </gv-ctrl-type>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please select or create an entity
   </mat-error>
