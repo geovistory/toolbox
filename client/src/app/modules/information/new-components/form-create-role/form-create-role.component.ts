@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { clone, hasIn } from 'ramda';
 import { FormBuilder, FormGroup } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { debounceTime, filter, first, map, mergeMap, startWith, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { debounceTime, filter, first, map, mergeMap, startWith, takeUntil, switchMap } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService, InfTextProperty, SysConfig } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
@@ -173,27 +173,28 @@ export class FormCreateRoleComponent implements OnInit {
     };
 
 
-    const formParts$ = this.c.pipeFieldDefinitions(this.listDefinition.targetClass).pipe(debounceTime(20), mergeMap(fields => {
-      // empty formGroup
-      Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
-      // map the field to a form part
-      return combineLatest(fields.map((field, i) => {
-        let resultTemplate;
-        let mergeDef: MergeDef;
-        if (['appellation', 'place', 'language', 'entity-preview'].includes(field.listType)) {
-          resultTemplate = {}
-          mergeDef = { target: ['te_roles'], targetType: 'array', sourceType: 'object' }
-        }
-        if (['time-span'].includes(field.listType)) {
-          resultTemplate = {}
-          mergeDef = { target: ['te_roles'], targetType: 'array', sourceType: 'array' }
-        }
-        return new FormPart(this.formGroup, field.label, field.listDefinitions, {
-          initListDefinition: this.listDefinition,
-          initRole
-        }, resultTemplate, mergeDef).this$
+    const formParts$ = this.c.pipeFieldDefinitionsForTeEnForm(this.listDefinition.targetClass)
+      .pipe(debounceTime(20), switchMap(fields => {
+        // empty formGroup
+        Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
+        // map the field to a form part
+        return combineLatest(fields.map((field, i) => {
+          let resultTemplate;
+          let mergeDef: MergeDef;
+          if (['appellation', 'place', 'language', 'entity-preview', 'has-type'].includes(field.listType)) {
+            resultTemplate = {}
+            mergeDef = { target: ['te_roles'], targetType: 'array', sourceType: 'object' }
+          }
+          if (['time-span'].includes(field.listType)) {
+            resultTemplate = {}
+            mergeDef = { target: ['te_roles'], targetType: 'array', sourceType: 'array' }
+          }
+          return new FormPart(this.formGroup, field.label, field.listDefinitions, {
+            initListDefinition: this.listDefinition,
+            initRole
+          }, resultTemplate, mergeDef).this$
+        }));
       }));
-    }));
 
     const mergeDef: MergeDef = {
       target: ['temporal_entity'],

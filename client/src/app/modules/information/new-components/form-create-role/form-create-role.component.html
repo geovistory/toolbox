@@ -60,6 +60,18 @@
           </mat-error>
         </mat-form-field>
 
+        <mat-form-field *ngIf="item?.formControlDef?.listDefinition.listType === 'has-type'" class="w-100"
+          appearance="legacy">
+          <mat-label>{{item?.formControlDef?.listDefinition.label}}</mat-label>
+          <gv-ctrl-type [formControlName]="item?.formControlDef?.formControlName" [required]="item.required"
+            [autoopen]="false" [pkTypedClass]="item?.formControlDef?.listDefinition.sourceClass"
+            [pkTypeClass]="item?.formControlDef?.listDefinition.targetClass">
+          </gv-ctrl-type>
+          <mat-error *ngIf="formGroup.get(item?.formControlDef?.formControlName).hasError('required')"> Please select a
+            type
+          </mat-error>
+        </mat-form-field>
+
 
         <mat-form-field *ngIf="item?.formControlDef?.listDefinition.listType === 'text-property'" class="w-100"
           appearance="legacy">
@@ -83,8 +95,9 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field *ngIf="((item?.formControlDef?.listDefinition.listType === 'entity-preview') || (item?.formControlDef?.listDefinition.listType === 'temporal-entity'))" class="w-100"
-          appearance="legacy"
+        <mat-form-field
+          *ngIf="((item?.formControlDef?.listDefinition.listType === 'entity-preview') || (item?.formControlDef?.listDefinition.listType === 'temporal-entity'))"
+          class="w-100" appearance="legacy"
           [ngStyle]="{'margin-top.px': (item.classSelect && formGroup.get(item?.formControlDef?.formControlName).value) ? -40 : 0}">
           <mat-label *ngIf="!item.classSelect"> {{item?.formControlDef?.listDefinition.label}}</mat-label>
 
@@ -108,7 +121,7 @@
 
     </div>
 
-    <button mat-flat-button color="primary" [disabled]="submitted && formGroup.invalid" (click)=submit()>Create
+    <button mat-flat-button color="primary" [disabled]="submitted && formGroup.invalid" (click)=submit()>Ok
     </button>
 
     <button mat-button type="button" class="btn btn-link"

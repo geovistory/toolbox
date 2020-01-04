@@ -156,3 +156,21 @@ export default sandboxOf(FormCreateEntityComponent, {
             </div>
         </div>`
   })
+  .add('FormCreateEntityComponent | Expression Portion', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:350px;height:400px" class="d-flex mr-5">
+                <gv-form-create-entity [pkClass]="503" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
