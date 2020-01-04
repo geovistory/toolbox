@@ -34,7 +34,7 @@ class OntoMe {
         this._requestedLanguage = x;
     }
     get requestedLanguage() {
-        return this._requestedLanguage || 'en';
+        return (this._requestedLanguage === '{}' || !this._requestedLanguage) ? 'en' : this._requestedLanguage;
     }
     /**
      * Pulls data from ontome, updates tables in geovistory
