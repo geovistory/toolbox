@@ -49,6 +49,24 @@ module.exports = function(InfRole) {
       ) {
         //create the temporal_entity first
         const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
+
+        // Create a te en object to test for identity defining roles
+        // const teEnToTest = {
+        //   fk_class: requestedRole.temporal_entity.fk_class,
+        //   te_roles: [...(requestedRole.temporal_entity.te_roles || [])],
+        // };
+        // if (
+        //   !requestedRole.temporal_entity.te_roles.some(r => {
+        //     return (
+        //       r.fk_entity == role.fk_entity && r.fk_property == role.fk_property
+        //     );
+        //   })
+        // ) {
+        //   teEnToTest.te_roles.push({
+        //     fk_entity: role.fk_entity,
+        //     fk_property: role.fk_property,
+        //   });
+        // }
         return InfTemporalEntity.findOrCreateInfTemporalEntity(
           projectId,
           requestedRole.temporal_entity,
