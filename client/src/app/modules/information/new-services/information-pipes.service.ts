@@ -398,11 +398,10 @@ export class InformationPipesService {
   }
 
   @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfRole, pkProject: number, propIsOutgoing: boolean) {
-    let $: Observable<RoleItem>;
     const itemType = propertyItemType[(r.fk_property + '_' + propIsOutgoing)];
     let listType: ItemType;
     if (!itemType) {
-      $ = of({
+      return of({
         projRel: undefined,
         ordNum: undefined,
         label: 'Error in data',
@@ -411,19 +410,30 @@ export class InformationPipesService {
         fkClass: undefined,
         error: 'Error in data'
       })
-    } else {
-      listType = itemType.listType;
-      const isOutgoing = itemType.isOutgoing
-      if (listType === 'appellation') $ = this.pipeItemAppellation(r);
-      else if (listType === 'entity-preview') $ = this.pipeItemEntityPreview(r, isOutgoing);
-      // else if (listType === 'temporal-entity') $ = this.pipeItemEntityPreview(r, isOutgoing);
-      else if (listType === 'language') $ = this.pipeItemLanguage(r);
-      else if (listType === 'place') $ = this.pipeItemPlace(r);
-      else if (listType === 'time-primitive') $ = this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
-      else if (listType === 'time-span') $ = this.pipeItemTimePrimitive(r, pkProject);
     }
+    listType = itemType.listType;
+    const isOutgoing = itemType.isOutgoing
+    if (listType === 'appellation') return this.pipeItemAppellation(r);
+    else if (listType === 'entity-preview') return this.pipeItemEntityPreview(r, isOutgoing);
+    // else if (listType === 'temporal-entity') return this.pipeItemEntityPreview(r, isOutgoing);
+    else if (listType === 'language') return this.pipeItemLanguage(r);
+    else if (listType === 'place') return this.pipeItemPlace(r);
+    else if (listType === 'time-primitive') return this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
+    else if (listType === 'time-span') return this.pipeItemTimePrimitive(r, pkProject);
+    else if (listType === 'has-type') return this.pipeItemEntityPreview(r, isOutgoing);
 
-    return $.pipe(tag(`pipeItemTeEnRow-item-${listType}-${r.fk_entity}`));
+    // Default!!
+
+    return of({
+      projRel: undefined,
+      ordNum: undefined,
+      label: 'Error in data',
+      role: undefined,
+      isOutgoing: undefined,
+      fkClass: undefined,
+      error: 'Error in data'
+    })
+
   }
 
   /**
