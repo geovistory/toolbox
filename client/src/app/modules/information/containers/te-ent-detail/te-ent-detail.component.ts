@@ -2,7 +2,7 @@ import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/s
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActiveProjectService, IAppState, Tab, TeEntTabData } from 'app/core';
-import { TeEntDetail } from 'app/core/state/models';
+import { TeEntDetail, EntityPreview } from 'app/core/state/models';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
@@ -52,6 +52,7 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   classLabel$: Observable<string>;
   fkClass$: Observable<number>;
   pkEntity$: Observable<number>
+  preview$: Observable<EntityPreview>
 
   t: TabLayout;
   listOf: MentioningListOf;
@@ -96,10 +97,13 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.title$ = this.i.pipeLabelOfEntity(this.pkEntity)
     this.fkClass$ = this.b.pipeClassOfEntity(this.pkEntity)
     this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
-    combineLatest(this.classLabel$, this.title$).pipe(takeUntil(this.destroy$))
-      .subscribe(([classLabel, entityLabel]) => {
-        this.t.setTabTitle(classLabel + ' ' + entityLabel)
+    this.preview$ = this.p.streamEntityPreview(this.pkEntity)
+    this.preview$.pipe(takeUntil(this.destroy$))
+      .subscribe((preview) => {
+        this.t.setTabTitle([preview.entity_label, preview.class_label].filter(i => !!i).join(' - '))
       })
+
+
     this.pkEntity$ = of(this.pkEntity)
 
     this.listOf = { pkEntity: this.pkEntity, type: 'entity' }

@@ -221,6 +221,51 @@ export class InformationPipesService {
   }
 
 
+  pipeRoleListPage(
+    paginateBy: PaginateByParam[],
+    limit: number,
+    offset: number,
+    pkProject: number,
+    listDefinition: ListDefinition,
+    alternative = false): Observable<EntityPreviewItem[]> {
+
+    // prepare page loader
+    const pageLoader$ = alternative ? this.infRepo.role$.pagination$ : this.p.inf$.role$.pagination$;
+
+    // prepare basic role item loader
+    const basicRoleItemLoader = (pkRole, isOutgoing, pkProj) => {
+      return alternative ?
+        this.b.pipeAlternativeBasicRoleItemByPkRole(pkRole, isOutgoing) :
+        this.b.pipeBasicRoleItemByPkRole(pkProj, pkRole, isOutgoing)
+    }
+
+    const paginatedRolePks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+
+    return paginatedRolePks$.pipe(
+      switchMap((paginatedRolePks) => combineLatestOrEmpty(
+        paginatedRolePks.map(pkRole => basicRoleItemLoader(pkRole, listDefinition.isOutgoing, pkProject)
+          .pipe(
+            filter(x => !!x),
+            switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.role.fk_entity : x.role.fk_temporal_entity)
+              .pipe(
+                map((preview) => {
+                  const item: EntityPreviewItem = {
+                    ...x,
+                    preview,
+                    fkClass: preview.fk_class
+                  }
+                  return item;
+                })
+              )
+            ))
+
+        )
+      )
+      ))
+
+  }
+
+
   /**
    * Pipe the temporal entities connected to given entity by roles that are in the current project
    */

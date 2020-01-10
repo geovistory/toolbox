@@ -8,33 +8,71 @@
   -------------------------------------------------------------------->
     <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-      <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true);"
+      <gv-detail-top-bar height="82px" [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true);"
         *ngIf="(showHeader$ | async)">
 
-        <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
+        <!-- <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
         </gv-onto-class-info>
 
-        <span class="text-muted small ml-2">{{classLabel$ | async}}</span>
+        <span class="text-muted small ml-2">{{classLabel$ | async}}</span> -->
 
         <!-- <gv-type-item class="ml-3 small text-muted" [pkEntity]="pkEntity$|async"></gv-type-item> -->
 
+        <div class="summary">
+          <div class="summary-icon">
+
+            <span *ngIf="((preview$|async)?.fk_class === 219 || (preview$|async)?.fk_class === 220 )"
+              class="icon gv-icon gv-icon-source gv-source-color align-self-center gv-icon-preview"></span>
+
+            <span
+              *ngIf="!((preview$|async)?.fk_class === 219 || (preview$|async)?.fk_class === 220 ) && (preview$|async)?.entity_type === 'peIt'"
+              class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+
+            <span
+              *ngIf="!((preview$|async)?.fk_class === 219 || (preview$|async)?.fk_class === 220 ) && (preview$|async)?.entity_type === 'teEn'"
+              class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
+
+          </div>
+          <div class="summary-texts">
+            <div class="ellipsis">
+              <h2 class="summary-entity-label ellipsis">
+                <span [matTooltip]="'Persistent Item ' + pkEntity">{{(preview$|async).entity_label}}</span>
+                <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
+              </h2>
+              <div class="summary-entity-label ellipsis">
+
+                <span class="mat-text-secondary">Class:</span>
+                <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
+                </gv-onto-class-info>
+                <span> {{classLabel$ | async}}</span>
+                <span *ngIf="(preview$|async).fk_type" class="mat-text-secondary">, Type: </span>
+                <span *ngIf="(preview$|async).fk_type"> {{(preview$|async).type_label}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="summary-button">
+            <div fxFlex fxLayout="row" fxLayoutAlign="end center">
+              <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #mainMenu="matMenu" xPosition="before">
+
+                <!-- toggle onto info -->
+                <button mat-menu-item (click)="$event.stopPropagation();">
+                  <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggle('showOntoInfo');">
+                    Ontology Info
+                  </mat-slide-toggle>
+                </button>
 
 
-        <div fxFlex fxLayout="row" fxLayoutAlign="end center">
-          <button mat-icon-button [matMenuTriggerFor]="mainMenu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #mainMenu="matMenu" xPosition="before">
 
-            <!-- toggle onto info -->
-            <button mat-menu-item (click)="$event.stopPropagation();">
-              <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggle('showOntoInfo');">
-                Ontology Info
-              </mat-slide-toggle>
-            </button>
+              </mat-menu>
+            </div>
 
-          </mat-menu>
+          </div>
         </div>
+
+
       </gv-detail-top-bar>
 
 
@@ -49,7 +87,7 @@
             </h2>
           </div>
 
-          <div class="gv-tile-body p-2">
+          <div class="gv-tile-body">
             <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$">
             </gv-properties-tree>
           </div>

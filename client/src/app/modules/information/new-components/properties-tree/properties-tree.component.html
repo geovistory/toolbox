@@ -1,4 +1,7 @@
-<h3 *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">General Properties</h3>
+<div *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)" class="mat-list-base subheader">
+  <h3 mat-subheader>General properties</h3>
+</div>
+
 <mat-tree [dataSource]="generalDataSource" [treeControl]="generalTreeControl" class="gv-properties-tree"
   *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">
   <mat-nested-tree-node *matTreeNodeDef="let node">
@@ -8,7 +11,12 @@
 
   </mat-nested-tree-node>
 </mat-tree>
-<h3 class="mt-3" *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">Specific Properties</h3>
+
+
+<div *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)" class="mat-list-base subheader second-subheader">
+  <h3 mat-subheader>Specific properties</h3>
+</div>
+
 <mat-tree [dataSource]="specificDataSource" [treeControl]="specificTreeControl" class="gv-properties-tree"
   *ngIf="!(t.showControl$ | async) && !(t.showCreateRole$ | async)">
   <mat-nested-tree-node *matTreeNodeDef="let node">

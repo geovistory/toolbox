@@ -11,7 +11,7 @@ import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPe
 import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../store/actions';
 import { FlatObject, Stower } from '../store/stower';
 import { InfEpicsFactory } from './inf-epic-factory';
-import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindEAByParams, InfActions, InfEntityAssoctiationActionFactory, InfPersistentItemActionFactory, InfRoleActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadOutgoingAlternativeRoles, LoadPaginatedTeEnListMeta, PaginatedTeEnList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult, LoadTypeOfProjectAction } from './inf.actions';
+import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindEAByParams, InfActions, InfEntityAssoctiationActionFactory, InfPersistentItemActionFactory, InfRoleActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadOutgoingAlternativeRoles, LoadPaginatedRoleListMeta, PaginatedRolesList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult, LoadTypeOfProjectAction } from './inf.actions';
 import { infRoot } from './inf.config';
 import { InfEntityAssociationSlice, InfPersistentItemSlice, InfRoleSlice, InfTemporalEntitySlice, InfTextPropertySlice } from './inf.models';
 import { SchemaObject } from '../store/model';
@@ -122,7 +122,7 @@ export class InfEpics {
       /**
        * Epic to load paginated Temporal Entity List
        */
-      (action$: FluxActionObservable<any, LoadPaginatedTeEnListMeta>, store) => action$.pipe(
+      (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
         ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
@@ -136,7 +136,7 @@ export class InfEpics {
       /**
        * Epic to load paginated Alternative Temporal Entity List
        */
-      (action$: FluxActionObservable<any, LoadPaginatedTeEnListMeta>, store) => action$.pipe(
+      (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
         ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)),
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
@@ -196,6 +196,18 @@ export class InfEpics {
           flattener.role.flatten(results);
           storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
+      ),
+
+      (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
+        ofType(infRoleEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
+        mergeMap(action => new Observable<Action>((globalActions) => {
+          const meta = action.meta;
+          const apiCal$ = this.roleApi.paginatedListTargetingEntityPreviews(
+            meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
+          )
+          const pkProject = meta.pk;
+          this.handleTemporalEntityListAction(action, infRoleEpicsFactory, globalActions, apiCal$, pkProject);
+        }))
       ),
 
       infRoleEpicsFactory.createRemoveEpic(),
@@ -277,8 +289,13 @@ export class InfEpics {
    * handles the update of store for paginated temporal entity lists.
    * @param pkProject if null, list is handled as 'repo' list
    */
-  private handleTemporalEntityListAction<M>(action, infTemporalEntityEpicsFactory: InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>, globalActions, apiCall$: Observable<any>, pkProject) {
-    const meta: LoadPaginatedTeEnListMeta = action.meta;
+  private handleTemporalEntityListAction<M>(
+    action,
+    epicsFactory: InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity> | InfEpicsFactory<InfRoleSlice, InfRole>,
+    globalActions,
+    apiCall$: Observable<any>,
+    pkProject) {
+    const meta: LoadPaginatedRoleListMeta = action.meta;
     const pendingKey = meta.addPending;
     const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
@@ -288,16 +305,16 @@ export class InfEpics {
     // call action to set pagination loading on true
     this.infActions.role.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
     // call api to load data
-    apiCall$.subscribe((data: PaginatedTeEnList) => {
+    apiCall$.subscribe((data: PaginatedRolesList) => {
       // call action to store records
       this.storeSchemaObject(data.schemas, pkProject);
       // call action to store pagination
       this.infActions.role.loadPageSucceeded(data.paginatedRoles, data.count, paginateBy, meta.limit, meta.offset, pkProject);
       // call action to conclude the pending request
-      infTemporalEntityEpicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
+      epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
     }, error => {
       // call action to handle error
-      infTemporalEntityEpicsFactory.onError(globalActions, error, pendingKey, pkProject);
+      epicsFactory.onError(globalActions, error, pendingKey, pkProject);
     });
   }
 

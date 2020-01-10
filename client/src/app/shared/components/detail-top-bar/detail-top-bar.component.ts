@@ -5,10 +5,11 @@ import { Component, OnInit, HostBinding, Input, Output, EventEmitter, OnChanges,
   templateUrl: './detail-top-bar.component.html',
   styleUrls: ['./detail-top-bar.component.scss']
 })
-export class DetailTopBarComponent {
+export class DetailTopBarComponent implements OnInit {
 
   @Input() closeRightAreaBtn: boolean;
   @Input() openRightAreaBtn: boolean;
+  @Input() height: string;
 
   @Output() openRight = new EventEmitter<void>()
   @Output() closeRight = new EventEmitter<void>()
@@ -16,5 +17,7 @@ export class DetailTopBarComponent {
   @HostBinding('class.gv-flex-shrink-0') noshrink = true;
 
   constructor() { }
-
+  ngOnInit() {
+    this.height = this.height ? this.height : '2.5rem';
+  }
 }

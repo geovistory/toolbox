@@ -1,5 +1,5 @@
-<div class="gv-detail-top-bar border-bottom boder-gray-300 bg-white" fxLayout="row"
-  fxLayoutAlign="space-between center">
+<div class="gv-detail-top-bar border-bottom boder-gray-300 bg-white" fxLayout="row" fxLayoutAlign="space-between center"
+  [ngStyle]="{height: height}">
 
   <button fxFlex="24px" mat-stroked-button class="close-right-area-btn mr-3 text-muted" *ngIf="closeRightAreaBtn"
     (click)="closeRight.emit()">

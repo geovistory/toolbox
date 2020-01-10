@@ -10,7 +10,8 @@ import { PaginateByParam } from 'app/core/store/actions';
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'app/core/inf/inf.service';
 
-class PageLoader {
+
+class RolePageLoader {
   private paginationTriggers = new Map<string, Observable<any>>()
   private pageLoaders = new Map<string, {
     refCount: number,
@@ -100,7 +101,6 @@ class PageLoader {
     }
     return this.paginationTriggers.get(triggerKey);
   }
-
 }
 
 
@@ -110,16 +110,21 @@ class PageLoader {
 export class PaginationService {
   private infRepo = new InfSelector(this.ngRedux, of('repo'))
 
-  temporalEntity = new PageLoader(
+  temporalEntity = new RolePageLoader(
     this.p,
     this.p.inf$.role$.pagination$.pipePageLoadNeeded,
     this.p.inf.temporal_entity.loadPaginatedList)
 
-  temporalEntityAlternative = new PageLoader(
+  temporalEntityAlternative = new RolePageLoader(
     this.p,
     this.infRepo.role$.pagination$.pipePageLoadNeeded,
     this.p.inf.temporal_entity.loadPaginatedAlternativeList)
 
+  roles = new RolePageLoader(
+    this.p,
+    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
+    this.p.inf.role.loadPaginatedList
+  )
 
   constructor(
     private p: ActiveProjectService,

@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
 import { ActiveProjectService, IAppState, Tab, U, UiContext, PeItTabData } from 'app/core';
-import { ClassInstanceLabel, PeItDetail, SubstoreComponent } from 'app/core/state/models';
+import { ClassInstanceLabel, PeItDetail, SubstoreComponent, EntityPreview } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
@@ -98,11 +98,14 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   tabTitle$: Observable<string>;
   fkClass$: Observable<number>;
   pkEntity$: Observable<number>
+  preview$: Observable<EntityPreview>
 
   t: TabLayout;
   listOf: MentioningListOf;
 
   isViewMode$ = of(false);
+
+
 
   constructor(
     // protected rootEpics: RootEpics,
@@ -157,12 +160,13 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
     this.title$ = this.i.pipeLabelOfEntity(this.pkEntity)
     this.fkClass$ = this.b.pipeClassOfEntity(this.pkEntity)
     this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
+    this.preview$ = this.p.streamEntityPreview(this.pkEntity)
     this.tabTitle$ = combineLatest(this.classLabel$, this.title$).pipe(
       map(([classLabel, entityLabel]) => classLabel + ' ' + entityLabel)
     )
-    this.tabTitle$.pipe(takeUntil(this.destroy$))
-      .subscribe((tabTitle) => {
-        this.t.setTabTitle(tabTitle)
+    this.preview$.pipe(takeUntil(this.destroy$))
+      .subscribe((preview) => {
+        this.t.setTabTitle([preview.entity_label, preview.class_label].filter(i => !!i).join(' - '))
       })
 
     this.pkEntity$ = of(this.pkEntity)

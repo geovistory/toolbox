@@ -5,7 +5,7 @@ import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, zip, merge } from 'rxjs';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
-import { InfActions, LoadPaginatedTeEnListMeta } from '../../../../core/inf/inf.actions';
+import { InfActions, LoadPaginatedRoleListMeta } from '../../../../core/inf/inf.actions';
 import { PaginateByParam } from '../../../../core/store/actions';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
@@ -162,7 +162,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
 
 export function createPaginateBy(listDefinition: ListDefinition, pkEntity: number): PaginateByParam[] {
-  if (listDefinition.listType === 'temporal-entity') {
+  if (listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'entity-preview') {
     return [
       { fk_property: listDefinition.pkProperty },
       { fk_target_class: listDefinition.targetClass },

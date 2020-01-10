@@ -22,7 +22,7 @@
   <div *ngIf="(loading$ | async )" class="icon">
     <span class="fa fa-pulse fa-spinner text-muted"></span>
   </div>
-  <div class="label">
+  <div class="label" [matTooltip]="title$ | async">
     {{(title$ | async )}}
   </div>
 </div>
