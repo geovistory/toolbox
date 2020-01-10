@@ -838,4 +838,38 @@ module.exports = function(InfRole) {
       InfRole.findComplex(filter, cb);
     });
   };
+
+  /**
+   * load paginated list by roles, that point to an
+   * entity_preview
+   */
+  InfRole.paginatedListTargetingEntityPreviews = function(
+    fkProject,
+    fkSourceEntity,
+    fkProperty,
+    fkTargetClass,
+    isOutgoing,
+    limit,
+    offset,
+    cb
+  ) {
+    const mainQuery = new FlatObjectQueryBuilder(
+      InfRole.app.models
+    ).createEntityPreviewListQuery(
+      fkProject,
+      fkSourceEntity,
+      fkProperty,
+      fkTargetClass,
+      isOutgoing,
+      limit,
+      offset
+    );
+    const connector = InfRole.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      const item = result[0];
+      const data = !item ? {} : item.data;
+      return cb(false, data);
+    });
+  };
 };

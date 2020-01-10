@@ -99,7 +99,8 @@
       "property": [
         "search",
         "searchExisting",
-        "paginatedListByPks"
+        "paginatedListByPks",
+        "paginatedList"
       ]
     },
     {

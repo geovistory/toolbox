@@ -98,18 +98,18 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
 
 }
 export type PaginatedRoles = number[]
-export interface PaginatedTeEnList {
+export interface PaginatedRolesList {
   count: number,
   schemas: SchemaObject,
   paginatedRoles: PaginatedRoles
 }
-export interface LoadPaginatedTeEnListMeta extends LoadActionMeta {
-  pkSourceEntity: number // Pk of the source entity to which the temporal entities are related.
-  pkProperty: number // Pk of the property leading from source entity to the temporal entities.
-  fkTargetClass: number // Pk of class of the temporal entities.
+export interface LoadPaginatedRoleListMeta extends LoadActionMeta {
+  pkSourceEntity: number // Pk of the source entity.
+  pkProperty: number // Pk of the property.
+  fkTargetClass: number // Pk of the target class.
   isOutgoing: boolean // If true, the source entity is domain, else range.
-  limit: number // number of returned temporal entities.
-  offset: number // offset of the segment of returned temporal entities.
+  limit: number // number of items per page.
+  offset: number // offset.
 }
 export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, InfTemporalEntity> {
 
@@ -119,8 +119,8 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
   static readonly PAGINATED_ALTERNATIVE_LIST = 'PAGINATED_ALTERNATIVE_LIST';
 
   loadNestedObject: (pkProject: number, pkEntity: number) => ActionResultObservable<InfTemporalEntity[]>;
-  loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
-  loadPaginatedAlternativeList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedTeEnList>;
+  loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedRolesList>;
+  loadPaginatedAlternativeList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedRolesList>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
@@ -145,7 +145,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
 
     this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
       const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadPaginatedTeEnListMeta> = {
+      const action: FluxStandardAction<Payload, LoadPaginatedRoleListMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.PAGINATED_LIST,
         meta: {
           addPending,
@@ -162,13 +162,13 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedRolesList>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
     this.loadPaginatedAlternativeList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
       const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadPaginatedTeEnListMeta> = {
+      const action: FluxStandardAction<Payload, LoadPaginatedRoleListMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST,
         meta: {
           addPending,
@@ -185,7 +185,7 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedTeEnList>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedRolesList>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
@@ -314,10 +314,12 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
   static readonly ALTERNATIVES_OUTGOING = 'ALTERNATIVES_OUTGOING';
   static readonly ALTERNATIVES_INGOING = 'ALTERNATIVES_INGOING';
   static readonly ADD_TO_PROJECT_WITH_TE_EN = 'ADD_TO_PROJECT_WITH_TE_EN';
+  static readonly PAGINATED_LIST = 'PAGINATED_LIST';
 
   loadOutgoingAlternatives: (pkTemporalEntity, pkProperty, pkProject) => ActionResultObservable<InfRole>;
   loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfRole>;
   addToProjectWithTeEnt: (pkRoles: number[], pkProject: number) => ActionResultObservable<InfRole>;
+  loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedRolesList>;
 
   contentTree: (pkProject: number, pkExpressionEntity: number) => void;
 
@@ -385,6 +387,29 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
       };
     }
 
+    this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
+      const addPending = U.uuid()
+      const action: FluxStandardAction<Payload, LoadPaginatedRoleListMeta> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.PAGINATED_LIST,
+        meta: {
+          addPending,
+          pk: pkProject,
+          pkSourceEntity,
+          fkTargetClass,
+          pkProperty,
+          isOutgoing,
+          limit,
+          offset
+        },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<PaginatedRolesList>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        key: addPending
+      };
+    }
     return this;
   }
 }

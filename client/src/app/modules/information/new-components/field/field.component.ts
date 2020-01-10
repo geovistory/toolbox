@@ -50,16 +50,27 @@ export class FieldComponent implements OnInit {
     private pag: PaginationService
   ) { }
 
+  /**
+   * returns a unique key for each list definition,
+   * used by angular *ngFor directive to track items in DOM
+   */
+  getKey(index, item: ListDefinitionWithItemCount) {
+    return item.listType + item.fkClassField + item.pkProperty + item.sourceClass + item.targetClass
+  }
+
   ngOnInit() {
     const limit = temporalEntityListDefaultLimit
     const offset = temporalEntityListDefaultPageIndex
     /**
-     * Trigger loading of temporal entity lists
+     * Trigger loading of role lists
      */
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.fieldDefinition.listDefinitions.forEach(l => {
         if (l.listType === 'temporal-entity') {
           this.pag.temporalEntity.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
+        }
+        else if (l.listType === 'entity-preview') {
+          this.pag.roles.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
       })
     })

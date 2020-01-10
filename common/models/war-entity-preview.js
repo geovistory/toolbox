@@ -3,6 +3,7 @@
 var app = require('../../server/server');
 var _ = require('lodash');
 var logSql = require('../../server/scripts/log-deserialized-sql');
+var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 
 module.exports = function(WarEntityPreview) {
   app.on('io-ready', io => {

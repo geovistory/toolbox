@@ -38,6 +38,50 @@ export class InfRoleApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get a flat object of entity previews, that are target of a list.
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @param {number} pkSourceEntity Pk of the source entity to which the entity previews, that are target of a list are related.
+   *
+   * @param {number} pkProperty Pk of the property leading from source entity to the entity previews, that are target of a list.
+   *
+   * @param {number} pkTargetClass Fk class of the target entity previews, that are target of a list.
+   *
+   * @param {boolean} isOutgoing If true, the source entity is domain, else range.
+   *
+   * @param {number} limit number of returned entity previews, that are target of a list.
+   *
+   * @param {number} offset offset of the segment of returned entity previews, that are target of a list.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfRole` object.)
+   * </em>
+   */
+  public paginatedListTargetingEntityPreviews(pkProject: any, pkSourceEntity: any, pkProperty: any, pkTargetClass: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfRoles/paginated-list-targeting-entity-previews";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkSourceEntity !== 'undefined' && pkSourceEntity !== null) _urlParams.pkSourceEntity = pkSourceEntity;
+    if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
+    if (typeof pkTargetClass !== 'undefined' && pkTargetClass !== null) _urlParams.pkTargetClass = pkTargetClass;
+    if (typeof isOutgoing !== 'undefined' && isOutgoing !== null) _urlParams.isOutgoing = isOutgoing;
+    if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
+    if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Find or create information role.
    *
    * @param {number} pk_project Id of the project
