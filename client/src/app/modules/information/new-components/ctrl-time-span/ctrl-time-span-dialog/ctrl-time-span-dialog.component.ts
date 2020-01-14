@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ExTimeHelpMode, ExTimeModalMode, SysConfig, ValidationService } from 'app/core';
+import { ExTimeHelpMode, ExTimeModalMode, SysConfig, ValidationService, ActiveProjectService } from 'app/core';
 import { ByPk } from 'app/core/store/model';
 import { indexBy, mapObjIndexed, omit, values } from 'ramda';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '../../../../../../../node_modules/@angular/forms';
@@ -64,7 +64,8 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: CtrlTimeSpanDialogData,
     protected validationService: ValidationService,
     protected fb: FormBuilder,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    private p: ActiveProjectService
   ) {
     this.createFormGroup()
   }
@@ -196,7 +197,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
               ...{} as any
             },
             initTimeSpan: this.data.timePrimitives
-          }, resultTemplate, mergeDef, false).this$
+          }, resultTemplate, mergeDef, false, this.p.state.default_language).this$
         }));
       }));
 

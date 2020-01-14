@@ -2,13 +2,19 @@ mat-tree {
   background: none;
 }
 .subheader {
-  padding: 20px 0 6px 16px;
+  padding: 12px 24px;
+  margin: 0; //24px 0;
+
   &.second-subheader {
-    padding-top: 60px;
+    // margin-top: 60px;
+  }
+  background: #ececec;
+
+  > h3 {
+    margin: 0;
   }
 }
 
 .show-empty-toggle {
-  margin-right: 25px;
   margin-left: auto;
 }
