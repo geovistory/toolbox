@@ -3,12 +3,11 @@ mat-tree {
 }
 .subheader {
   padding: 12px 24px;
-  margin: 0; //24px 0;
-
+  margin-top: 24px;
+  /* background: #ececec; */
   &.second-subheader {
     // margin-top: 60px;
   }
-  background: #ececec;
 
   > h3 {
     margin: 0;
