@@ -1,18 +1,19 @@
 @import '../../../../../styles.scss';
 
-.field-content {
-  margin-left: 40px;
-}
+// .field-content {
+//   margin-left: 40px;
+// }
 
 .field-node {
-  display: block;
+  // display: block;
+  background: white;
 
   .left-col {
-    margin-left: 40px;
+    margin-left: 24px;
   }
 
   .right-col {
-    margin-right: 25px;
+    margin-right: 24px;
   }
 
   &.expanded {
@@ -20,9 +21,9 @@
       color: $primary;
     }
   }
-  mat-divider {
-    margin-top: 3px;
-  }
+  // mat-divider {
+  //   margin-top: 3px;
+  // }
   gv-type-item {
     display: inline-block;
   }
@@ -30,15 +31,22 @@
 
 .child-node {
   display: block;
-  mat-divider {
-    margin-top: 40px;
-    margin-bottom: 2px;
-  }
+  // mat-divider {
+  //   margin-top: 24px;
+  //   margin-bottom: 2px;
+  // }
   .child-content {
-    padding: 0 24px 0 16px;
+    // padding: 0 24px 0 24px;
   }
   .child-no-content {
-    text-align: center;
+    // padding: 0 24px 0 24px;
+    > div {
+      text-align: center;
+      display: block;
+      // background: white;
+      height: 36px;
+      padding-top: 7px;
+    }
   }
 }
 
@@ -65,4 +73,10 @@
   flex: 0 0 64px;
   align-items: center;
   justify-content: center;
+}
+
+gv-leaf-item-list,
+gv-temporal-entity-list,
+gv-time-span-list {
+  // background: white;
 }

@@ -362,11 +362,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       switchMap((dfhClass) => {
 
         let fields$: Observable<FieldDefinition[]>;
-        // For temporal_entity
-        if (dfhClass.basic_type === 9) {
-          fields$ = this.c.pipeFieldDefinitionsForTeEnForm(arrayConfig.data.pkClass)
-        } else {
+
+        if (dfhClass.basic_type === 8 || dfhClass.basic_type === 30) {
           fields$ = this.c.pipeDefaultFieldDefinitions(arrayConfig.data.pkClass)
+        } else {
+          // For temporal_entity
+          fields$ = this.c.pipeFieldDefinitionsForTeEnForm(arrayConfig.data.pkClass)
         }
 
         return fields$.pipe(
@@ -489,7 +490,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                       placeholder: customPlaceholder || listDefinition.label,
                       data: {
                         pkClass: listDefinition.targetClass,
-                        fieldDefinition: f,
+                        fieldDefinition: {
+                          ...f,
+                          ...listDefinition
+                        },
                         listDefinition,
                         customCtrlLabel,
                         stringPartId,
@@ -522,7 +526,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                         data: {
                           controlType: 'ctrl-target-class',
                           fieldDefinition: f,
-                          nodeConfigs: f.listDefinitions.map(l => createArrayConfig(l, l.targetClassLabel, l.label + ' ' + l.targetClassLabel))
+                          nodeConfigs: f.listDefinitions
+                            // filter fields targeting temporal-entity except for appellation for language
+                            .filter(l => l.listType !== 'temporal-entity' || l.targetClass === DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE)
+                            .map(l => createArrayConfig(l, l.targetClassLabel, l.label + ' ' + l.targetClassLabel))
                         },
                       },
                       id: U.uuid()

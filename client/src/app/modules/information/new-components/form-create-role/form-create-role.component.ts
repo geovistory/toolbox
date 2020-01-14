@@ -9,6 +9,7 @@ import { ConfigurationPipesService } from '../../new-services/configuration-pipe
 import { ListDefinition } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { FormItem, FormPart, FormPartInitValueRole, FormPartInitValueTextProperty } from './FormPart';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 
 
 
@@ -126,7 +127,7 @@ export class FormCreateRoleComponent implements OnInit {
       const formPart$ = new FormPart(this.formGroup, this.listDefinition.label, [this.listDefinition], {
         initListDefinition: this.listDefinition,
         initTextProperty
-      }, null, mergeDefa).this$
+      }, null, mergeDefa, true, language).this$
       const resultTemplate = {
         fk_concerned_entity: this.pkEntity,
         fk_class_field: this.listDefinition.fkClassField,
@@ -140,21 +141,25 @@ export class FormCreateRoleComponent implements OnInit {
   }
 
   private createRoleForm() {
-    const mergeDefa: MergeDef = { target: [], targetType: 'object', sourceType: 'object' }
-    const formPart$ = new FormPart(this.formGroup, this.listDefinition.label, [this.listDefinition], null, null, mergeDefa).this$
-    const resultTemplate = this.listDefinition.isOutgoing ?
-      {
-        fk_temporal_entity: this.pkEntity,
-        fk_property: this.listDefinition.pkProperty
-      } : {
-        fk_entity: this.pkEntity,
-        fk_property: this.listDefinition.pkProperty
-      };
-    const mergeDef: MergeDef = { target: [], targetType: 'object', sourceType: 'object' };
-    formPart$.pipe(takeUntil(this.destroy$)).subscribe(formPart => {
-      const f: FormDef = { formParts: [formPart], resultTemplate, mergeDef };
-      this.formDef$.next(f);
-    });
+    this.p.defaultLanguage$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(language => {
+
+      const mergeDefa: MergeDef = { target: [], targetType: 'object', sourceType: 'object' }
+      const formPart$ = new FormPart(this.formGroup, this.listDefinition.label, [this.listDefinition], null, null, mergeDefa, true, language).this$
+      const resultTemplate = this.listDefinition.isOutgoing ?
+        {
+          fk_temporal_entity: this.pkEntity,
+          fk_property: this.listDefinition.pkProperty
+        } : {
+          fk_entity: this.pkEntity,
+          fk_property: this.listDefinition.pkProperty
+        };
+      const mergeDef: MergeDef = { target: [], targetType: 'object', sourceType: 'object' };
+      formPart$.pipe(takeUntil(this.destroy$)).subscribe(formPart => {
+        const f: FormDef = { formParts: [formPart], resultTemplate, mergeDef };
+        this.formDef$.next(f);
+      });
+    })
+
   }
 
 
@@ -173,8 +178,11 @@ export class FormCreateRoleComponent implements OnInit {
     };
 
 
-    const formParts$ = this.c.pipeFieldDefinitionsForTeEnForm(this.listDefinition.targetClass)
-      .pipe(debounceTime(20), switchMap(fields => {
+    const formParts$ = combineLatest(
+      this.c.pipeFieldDefinitionsForTeEnForm(this.listDefinition.targetClass),
+      this.p.defaultLanguage$
+    )
+      .pipe(debounceTime(20), switchMap(([fields, language]) => {
         // empty formGroup
         Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));
         // map the field to a form part
@@ -192,7 +200,7 @@ export class FormCreateRoleComponent implements OnInit {
           return new FormPart(this.formGroup, field.label, field.listDefinitions, {
             initListDefinition: this.listDefinition,
             initRole
-          }, resultTemplate, mergeDef).this$
+          }, resultTemplate, mergeDef, true, language).this$
         }));
       }));
 

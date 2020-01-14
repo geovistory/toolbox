@@ -30,7 +30,7 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   generalTree$: Observable<FieldDefinition[]>
   generalTreeControl = new NestedTreeControl<FieldDefinition>(node => ([]));
   generalDataSource = new MatTreeNestedDataSource<FieldDefinition>();
-  generalShowEmptyFields = true;
+  generalShowEmptyFields = false;
 
   specificTree$: Observable<FieldDefinition[]>
   specificTreeControl = new NestedTreeControl<FieldDefinition>(node => ([]));

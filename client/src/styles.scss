@@ -2129,6 +2129,29 @@ $mat-color-secondary-text: mat-color($foreground, secondary-text);
   stroke: mat-color($foreground, secondary-text);
 }
 
+.mat-border-top {
+  border-top-color: mat-color($foreground, divider);
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+
+.mat-border-bottom {
+  border-bottom-color: mat-color($foreground, divider);
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+.mat-border-left {
+  border-left-color: mat-color($foreground, divider);
+  border-left-width: 1px;
+  border-left-style: solid;
+}
+
+.mat-border-right {
+  border-right-color: mat-color($foreground, divider);
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+
 mat-checkbox {
   label {
     margin-bottom: 0;

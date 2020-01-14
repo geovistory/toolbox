@@ -1,7 +1,7 @@
 import { FormControl, FormGroup, Validators } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, Observable } from '../../../../../../node_modules/rxjs';
 import { map, shareReplay } from '../../../../../../node_modules/rxjs/operators';
-import { InfAppellation, InfLanguage, InfPlace, InfRole, InfTextProperty, U } from '../../../../core';
+import { InfAppellation, InfLanguage, InfPlace, InfRole, InfTextProperty, U, ActiveProjectService } from '../../../../core';
 import { DfhConfig } from '../../shared/dfh-config';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { ListDefinition } from '../properties-tree/properties-tree.models';
@@ -42,6 +42,7 @@ export class FormPart {
     public resultTemplate,
     public mergeDef: MergeDef,
     public required = true,
+    public defaultLanguage: InfLanguage
   ) {
     // Q: is there an initial value
     if (this.initVal && this.initVal.initListDefinition) {
@@ -110,10 +111,11 @@ export class FormPart {
   public addItem() {
 
     if (this.listDefinitions.length === 1) {
+      const initVal = this.listDefinitions[0].listType == 'language' ? this.defaultLanguage : null;
       this.items.push({
         classSelect: false,
         required: this.isRequired(this.listDefinitions[0]),
-        formControlDef: this.addFormControlDef(this.listDefinitions[0], null)
+        formControlDef: this.addFormControlDef(this.listDefinitions[0], initVal)
       });
     }
     else {
