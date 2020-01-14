@@ -16,6 +16,7 @@ export type NotInProjectClickBehavior = 'addToProject' | 'selectOnly';
 export interface CreateOrAddEntityEvent {
   action: CreateOrAddEntityAction,
   pkEntity: number
+  pkClass: number
 }
 
 
@@ -101,14 +102,16 @@ export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
     if (this.notInProjectClickBehavior == 'selectOnly') {
       this.done.emit({
         action: 'notInProjectClicked',
-        pkEntity
+        pkEntity,
+        pkClass: this.classAndTypePk.pkClass
       })
     }
     else if (this.notInProjectClickBehavior == 'addToProject') {
       this.p.addPeItToProject(pkEntity, (schemaObject: SchemaObject) => {
         this.done.emit({
           action: 'added',
-          pkEntity
+          pkEntity,
+          pkClass: this.classAndTypePk.pkClass
         })
       })
     }
@@ -118,7 +121,8 @@ export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
   onAlreadyInProjectClicked(pkEntity: number) {
     this.done.emit({
       action: 'alreadyInProjectClicked',
-      pkEntity
+      pkEntity,
+      pkClass: this.classAndTypePk.pkClass
     })
   }
 
@@ -126,7 +130,8 @@ export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
   onCreated(entity: InfPersistentItem | InfTemporalEntity) {
     this.done.emit({
       action: 'created',
-      pkEntity: entity.pk_entity
+      pkEntity: entity.pk_entity,
+      pkClass: this.classAndTypePk.pkClass
     })
   }
 

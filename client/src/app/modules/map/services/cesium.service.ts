@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseLayerPicker, createOpenStreetMapImageryProvider, NavigationHelpButton, ProviderViewModel, SceneModePicker, WebMercatorProjection, Viewer, SceneMode, UrlTemplateImageryProvider, EntityCollection, DataSource, CustomDataSource, Entity, PointPrimitive, PointGraphics, Color, ScreenSpaceEventType } from 'cesium';
+import { BaseLayerPicker, OpenStreetMapImageryProvider, NavigationHelpButton, ProviderViewModel, SceneModePicker, WebMercatorProjection, Viewer, SceneMode, UrlTemplateImageryProvider, EntityCollection, DataSource, CustomDataSource, Entity, PointPrimitive, PointGraphics, Color, ScreenSpaceEventType } from 'cesium';
 import { clone } from 'ramda';
 
 @Injectable({
@@ -88,7 +88,7 @@ export class CesiumService {
       tooltip: `OpenStreetMap (OSM) is a collaborative project to create a free editable
        map of the world. http://www.openstreetmap.org`,
       creationFunction: function () {
-        return createOpenStreetMapImageryProvider({
+        return new OpenStreetMapImageryProvider({
           url: 'https://a.tile.openstreetmap.org/'
         });
       }

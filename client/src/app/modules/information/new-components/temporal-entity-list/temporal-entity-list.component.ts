@@ -145,7 +145,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   }
 
   openInNewTab(item: TemporalEntityItem) {
-    this.p.addEntityTeEnTab(item.pkEntity)
+    this.p.addEntityTab(item.pkEntity, this.listDefinition.targetClass, 'teEn')
   }
 
   markAsFavorite(item: TemporalEntityItem) {

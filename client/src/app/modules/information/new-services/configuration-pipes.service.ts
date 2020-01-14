@@ -5,7 +5,7 @@ import { ByPk } from 'app/core/store/model';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { flatten, indexBy, keys, uniq, values } from 'ramda';
 import { combineLatest, Observable, of, zip } from 'rxjs';
-import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, mapTo } from 'rxjs/operators';
 import { cache, spyTag } from '../../../shared';
 import { FieldDefinition, ListDefinition, ListType } from '../new-components/properties-tree/properties-tree.models';
 import * as Config from '../../../../../../common/config/Config';

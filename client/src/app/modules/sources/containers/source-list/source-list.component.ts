@@ -70,7 +70,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
 
 
   openEntity(preview: EntityPreview) {
-    this.p.addSourceTab(preview.pk_entity)
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
   }
 
 
@@ -85,7 +85,7 @@ export class SourceListComponent extends SourceListAPIActions implements OnInit,
       classAndTypePk,
       pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_CREATE
     }).subscribe(result => {
-      this.p.addSourceTab(result.pkEntity)
+      this.p.addEntityTab(result.pkEntity, result.pkClass, 'peIt')
     })
 
 

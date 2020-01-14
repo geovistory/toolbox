@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
-import { ActiveProjectService, IAppState, Tab, U, UiContext, PeItTabData } from 'app/core';
+import { ActiveProjectService, IAppState, Tab, U, UiContext, PeItTabData, IconType } from 'app/core';
 import { ClassInstanceLabel, PeItDetail, SubstoreComponent, EntityPreview } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
@@ -15,6 +15,7 @@ import { InformationPipesService } from '../../new-services/information-pipes.se
 import { slideInOut } from '../../shared/animations';
 import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
+import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 
 
 
@@ -96,6 +97,7 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   title$: Observable<string>;
   classLabel$: Observable<string>;
   tabTitle$: Observable<string>;
+  tabTooltip$: Observable<string>;
   fkClass$: Observable<number>;
   pkEntity$: Observable<number>
   preview$: Observable<EntityPreview>
@@ -105,30 +107,26 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
 
   isViewMode$ = of(false);
 
-
+  iconType$: Observable<IconType>;
 
   constructor(
-    // protected rootEpics: RootEpics,
-    // protected epics: PeItDetailAPIEpics,
+
     public ngRedux: NgRedux<IAppState>,
     protected actions: PeItDetailAPIActions,
-    // protected fb: FormBuilder,
-    // protected entityEpics: EntityAPIEpics,
     private matDialog: MatDialog,
     public ref: ChangeDetectorRef,
     private p: ActiveProjectService,
     private i: InformationPipesService,
     private b: InformationBasicPipesService,
-    private inf: InfActions
+    private inf: InfActions,
+    private truncatePipe: TruncatePipe
+
   ) {
-    // super(ngRedux, fb, rootEpics, entityEpics);
-    // console.log('PeItEditableComponent')
+
 
   }
 
-  // initStore(): void {
 
-  // }
 
 
   getBasePath = () => this.basePath;
@@ -161,12 +159,25 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
     this.fkClass$ = this.b.pipeClassOfEntity(this.pkEntity)
     this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
     this.preview$ = this.p.streamEntityPreview(this.pkEntity)
-    this.tabTitle$ = combineLatest(this.classLabel$, this.title$).pipe(
-      map(([classLabel, entityLabel]) => classLabel + ' ' + entityLabel)
+    this.tabTitle$ = combineLatest(this.preview$, this.classLabel$).pipe(
+      map(([preview, classLabel]) => {
+        const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
+        return [trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - ')
+      })
     )
-    this.preview$.pipe(takeUntil(this.destroy$))
-      .subscribe((preview) => {
-        this.t.setTabTitle([preview.entity_label, preview.class_label].filter(i => !!i).join(' - '))
+    this.tabTitle$.pipe(takeUntil(this.destroy$))
+      .subscribe((tabTitle) => {
+        this.t.setTabTitle(tabTitle)
+      })
+
+    this.tabTooltip$ = combineLatest(this.preview$, this.classLabel$).pipe(
+      map(([preview, classLabel]) => {
+        return [classLabel, preview.entity_label].filter(i => !!i).join(' - ')
+      })
+    )
+    this.tabTooltip$.pipe(takeUntil(this.destroy$))
+      .subscribe((tabTooltip) => {
+        this.t.setTabTooltip(tabTooltip)
       })
 
     this.pkEntity$ = of(this.pkEntity)
@@ -190,6 +201,9 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
       .pipe(
         map(([activeTab, tabs]) => tabs.indexOf(activeTab))
       )
+
+    this.iconType$ = this.b.pipeIconType(this.pkEntity, 'peIt')
+
   }
 
   openRemoveDialog() {

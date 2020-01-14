@@ -36,7 +36,8 @@
           <div class="summary-texts">
             <div class="ellipsis">
               <h2 class="summary-entity-label ellipsis">
-                <span [matTooltip]="'Persistent Item ' + pkEntity">{{(preview$|async).entity_label}}</span>
+                <span [matTooltip]="'Persistent Item ' + pkEntity">{{classLabel$ | async}} –
+                  {{(preview$|async).entity_label}}</span>
                 <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
               </h2>
               <div class="summary-entity-label ellipsis">
@@ -80,12 +81,12 @@
 
         <div class="gv-tile">
 
-          <div class="gv-one-liner mx-2 mt-3">
+          <!-- <div class="gv-one-liner mx-2 mt-3">
             <h2>{{classLabel$ | async}}
               <span [matTooltip]="'Temporal Entity ' + pkEntity">{{title$ | async}}</span>
               <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
             </h2>
-          </div>
+          </div> -->
 
           <div class="gv-tile-body">
             <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$">

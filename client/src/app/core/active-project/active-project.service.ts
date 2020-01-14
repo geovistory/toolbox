@@ -21,12 +21,13 @@ import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, Inf
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
-import { EntityPreview } from '../state/models';
+import { EntityPreview, EntityType } from '../state/models';
 import { SucceedActionMeta } from '../store/actions';
 import { IAppState, SchemaObject } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { ActiveProjectActions } from './active-project.action';
 import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 
 
@@ -543,19 +544,29 @@ export class ActiveProjectService {
   getTabTitle(path: string[]): Observable<string> {
     return this.ngRedux.select<string>([...['activeProject', 'tabLayouts', path[2]], 'tabTitle']);
   }
+  getTabTooltip(path: string[]): Observable<string> {
+    return this.ngRedux.select<string>([...['activeProject', 'tabLayouts', path[2]], 'tabTooltip']);
+  }
   getTabLoading(path: string[]): Observable<boolean> {
     return this.ngRedux.select<boolean>([...['activeProject', 'tabLayouts', path[2]], 'loading']);
   }
 
-  addEntityTab(preview: EntityPreview) {
-    if (preview.entity_type === 'peIt') {
-      this.addEntityPeItTab(preview.pk_entity)
-    } else {
-      this.addEntityTeEnTab(preview.pk_entity)
+  addEntityTab(pkEntity: number, pkClass: number, entityType: EntityType) {
+    if (entityType === 'teEn') {
+      this.addEntityTeEnTab(pkEntity)
+    }
+    else if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+      this.addSourceExpressionPortionTab(pkEntity)
+    }
+    else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
+      this.addSourceTab(pkEntity)
+    }
+    else {
+      this.addEntityPeItTab(pkEntity)
     }
   }
 
-  addSourceTab(pkEntity: number) {
+  private addSourceTab(pkEntity: number) {
     this.addTab({
       active: true,
       component: 'pe-it-detail',
@@ -590,7 +601,7 @@ export class ActiveProjectService {
     });
   }
 
-  addSourceExpressionPortionTab(pkEntity: number) {
+  private addSourceExpressionPortionTab(pkEntity: number) {
     this.addTab({
       active: true,
       component: 'pe-it-detail',
@@ -616,7 +627,7 @@ export class ActiveProjectService {
     })
   }
 
-  addEntityPeItTab(pkEntity: number) {
+  private addEntityPeItTab(pkEntity: number) {
 
     this.addTab({
       active: true,
@@ -646,8 +657,7 @@ export class ActiveProjectService {
 
   }
 
-
-  addEntityTeEnTab(pkEntity: number) {
+  private addEntityTeEnTab(pkEntity: number) {
     this.addTab({
       active: true,
       component: 'te-en-detail',

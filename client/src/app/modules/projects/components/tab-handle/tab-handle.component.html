@@ -4,7 +4,6 @@
 
     <mat-icon *ngIf="tab.icon =='expression-portion'" class="gv-source-color" style="font-size: 18px">folder</mat-icon>
 
-
     <i *ngIf="tab.icon =='persistent-entity'" class="gv-icon gv-icon-persistent-entity gv-entity-color"></i>
     <i *ngIf="tab.icon =='temporal-entity'" class="fa fa-star-o  gv-entity-color"></i>
     <i *ngIf="tab.icon =='source'" class="gv-icon gv-icon-source gv-source-color"></i>
@@ -22,7 +21,7 @@
   <div *ngIf="(loading$ | async )" class="icon">
     <span class="fa fa-pulse fa-spinner text-muted"></span>
   </div>
-  <div class="label" [matTooltip]="title$ | async">
+  <div class="label" [matTooltip]="(tooltip$ | async)">
     {{(title$ | async )}}
   </div>
 </div>

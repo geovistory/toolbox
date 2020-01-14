@@ -128,7 +128,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
   }
 
   openInNewTab(item: EntityPreviewItem) {
-    this.p.addEntityTab(item.preview)
+    this.p.addEntityTab(item.preview.pk_entity, item.preview.fk_class, item.preview.entity_type)
   }
 
   onPageChange(e: PageEvent) {

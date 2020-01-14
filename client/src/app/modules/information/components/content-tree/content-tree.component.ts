@@ -583,7 +583,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
   openExpressionPortion(node: ContentTreeNode) {
-    this.p.addSourceExpressionPortionTab(node.entityAssociation.fk_info_domain)
+    this.p.addEntityTab(
+      node.entityAssociation.fk_info_domain,
+      DfhConfig.CLASS_PK_EXPRESSION_PORTION,
+      'peIt'
+    )
   }
 
 
