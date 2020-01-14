@@ -6,6 +6,8 @@ export class TabBase {
 
   tabTitle?: string;
 
+  tabTooltip?: string;
+
   loading?: boolean;
 
   showRightArea?: boolean;

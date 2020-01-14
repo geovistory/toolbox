@@ -45,6 +45,8 @@ export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
 
 export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
 
+export type IconType = 'text' | 'persistent-entity' | 'temporal-entity' | 'source' | 'expression-portion' | 'analysis' | 'query' | 'visual' | 'story' | 'settings';
+
 export interface Panel {
   id: number;
   tabs: Tab<any>[];
@@ -57,7 +59,7 @@ export interface Tab<D> {
   // the root component included in this tab, in dash separate minuscles: PeItDetailComponent -> 'pe-it-detail'
   component: 'text-detail' | 'pe-it-detail' | 'te-en-detail' | 'analysis-detail' | 'query-detail' | 'visual-detail' | 'ontome-profiles-settings' | 'classes-settings' | 'contr-vocab-settings';
   // icon to be displayed in tab, e.g.: gv-icon-source
-  icon: 'text' | 'persistent-entity' | 'temporal-entity' | 'source' | 'expression-portion' | 'analysis' | 'query' | 'visual' | 'story' | 'settings';
+  icon: IconType
   // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
   pathSegment: 'textDetails' | 'peItDetails' | 'teEnDetails' | 'analysisDetails' | 'queryDetails' | 'visualDetails' | 'ontomeProfilesSettings' | 'classesSettings' | 'contrVocabSettings';
   // data to pass to component via input variabales

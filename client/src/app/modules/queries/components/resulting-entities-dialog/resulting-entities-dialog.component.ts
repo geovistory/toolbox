@@ -21,8 +21,8 @@ export class ResultingEntitiesDialogComponent {
     this.dialogRef.close();
   }
 
-  openInTab(entityPreview:EntityPreview){
-    this.p.addEntityTab(entityPreview)
+  openInTab(preview: EntityPreview) {
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
     this.dialogRef.close()
   }
 }

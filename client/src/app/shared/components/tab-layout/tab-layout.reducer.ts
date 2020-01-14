@@ -18,15 +18,25 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
         tabTitle: action.meta.tabTitle
       };
       break;
+
+    /*****************************************************
+    * Set tab tooltip
+    *****************************************************/
+    case TabLayout.SET_TAB_TOOLTIP:
+      state = {
+        ...state,
+        tabTooltip: action.meta.tabTooltip
+      };
+      break;
     /*****************************************************
     * Set tab loading
     *****************************************************/
-   case TabLayout.SET_TAB_LOADING:
-    state = {
-      ...state,
-      loading: action.meta.loading
-    };
-    break;
+    case TabLayout.SET_TAB_LOADING:
+      state = {
+        ...state,
+        loading: action.meta.loading
+      };
+      break;
     /*****************************************************
     * Set show right panel
     *****************************************************/

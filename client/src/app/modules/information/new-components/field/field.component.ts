@@ -38,7 +38,7 @@ export class FieldComponent implements OnInit {
 
   listsWithCounts$: Observable<ListDefinitionWithItemCount[]>
   showAddButton$
-  itemsCount$;
+  itemsCount$: Observable<number>;
 
   constructor(
     public t: PropertiesTreeService,
@@ -104,6 +104,10 @@ export class FieldComponent implements OnInit {
           if (this.fieldDefinition.listType == 'time-span' && 1 <= n) return false
           return true;
         }))
+    } else {
+      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.pkProperty).pipe(
+        map(hasTypeRole => hasTypeRole ? 1 : 0)
+      )
     }
 
   }

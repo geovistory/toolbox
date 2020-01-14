@@ -15,16 +15,14 @@
         <div class="summary">
           <div class="summary-icon">
 
-            <span *ngIf="((preview$|async)?.fk_class === 219 || (preview$|async)?.fk_class === 220 )"
+            <mat-icon *ngIf="(iconType$ | async)==='expression-portion'" class="gv-source-color">folder
+            </mat-icon>
+
+            <span *ngIf="(iconType$ | async)==='source'"
               class="icon gv-icon gv-icon-source gv-source-color align-self-center gv-icon-preview"></span>
 
-            <span
-              *ngIf="!((preview$|async)?.fk_class === 219 || (preview$|async)?.fk_class === 220 ) && (preview$|async)?.entity_type === 'peIt'"
+            <span *ngIf="(iconType$ | async)==='persistent-entity'"
               class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-
-            <span
-              *ngIf="!((preview$|async)?.fk_class === 219 || (preview$|async)?.fk_class === 220 ) && (preview$|async)?.entity_type === 'teEn'"
-              class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
 
           </div>
           <div class="summary-texts">

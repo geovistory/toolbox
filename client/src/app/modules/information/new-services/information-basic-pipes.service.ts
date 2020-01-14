@@ -4,13 +4,14 @@ import { omit, values } from 'ramda';
 import { NgRedux } from '../../../../../node_modules/@angular-redux/store';
 import { combineLatest, merge, Observable, of, pipe } from '../../../../../node_modules/rxjs';
 import { auditTime, filter, map, switchMap } from '../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, IAppState, InfRole, InfTemporalEntity, InfTimePrimitive, TimePrimitive, TimeSpan } from '../../../core';
+import { ActiveProjectService, IAppState, InfRole, InfTemporalEntity, InfTimePrimitive, TimePrimitive, TimeSpan, EntityType, IconType } from '../../../core';
 import { Granularity } from '../../../core/date-time/date-time-commons';
 import { CalendarType } from '../../../core/date-time/time-primitive';
 import { InfSelector } from '../../../core/inf/inf.service';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { switchMapOr } from '../../../core/util/switchMapOr';
 import { BasicRoleItem } from '../new-components/properties-tree/properties-tree.models';
+import { DfhConfig } from '../shared/dfh-config';
 
 
 
@@ -370,6 +371,27 @@ export class InformationBasicPipesService {
       }))
   }
 
+  /**
+   * gets the css classes for that entity
+   * @param pkEntity
+   */
+  pipeIconType(pkEntity: number, entityType: EntityType): Observable<IconType> {
+    if (entityType == 'teEn') {
+      return of('temporal-entity')
+    } else {
+      return this.pipeClassOfEntity(pkEntity).pipe(
+        map(pkClass => {
+          if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+            return 'expression-portion'
+          } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
+            return 'source'
+          }
+          return 'persistent-entity'
+        })
+      )
+    }
+  }
+
 
   /*********************************************************************
    * Helpers
@@ -377,6 +399,7 @@ export class InformationBasicPipesService {
   sortRolesByRepoPopularity(roles: InfRole[]): InfRole[] {
     return roles.sort((a, b) => a.is_in_project_count > b.is_in_project_count ? 1 : -1)
   }
+
 
 
 }

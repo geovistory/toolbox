@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent, SysConfig, InfPersistentItem, InfTemporalEntity } from 'app/core';
+import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent, SysConfig, InfPersistentItem, InfTemporalEntity, EntityType } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -66,7 +66,7 @@ export class InformationComponent extends InformationAPIActions implements OnIni
 
 
   openEntity(preview: EntityPreview) {
-    this.p.addEntityTab(preview)
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
   }
 
 
@@ -83,11 +83,8 @@ export class InformationComponent extends InformationAPIActions implements OnIni
           classAndTypePk,
           pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
         }).subscribe(result => {
-          if (klass.basic_type === 8 || klass.basic_type === 30) {
-            this.p.addEntityPeItTab(result.pkEntity)
-          } else {
-            this.p.addEntityTeEnTab(result.pkEntity)
-          }
+          const entityType: EntityType = [8, 30].includes(klass.basic_type) ? 'peIt' : 'teEn';
+          this.p.addEntityTab(result.pkEntity, result.pkClass, entityType)
         })
 
       })

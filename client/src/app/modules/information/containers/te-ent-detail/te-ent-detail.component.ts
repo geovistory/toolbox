@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActiveProjectService, IAppState, Tab, TeEntTabData } from 'app/core';
+import { ActiveProjectService, IAppState, Tab, TeEntTabData, IconType } from 'app/core';
 import { TeEntDetail, EntityPreview } from 'app/core/state/models';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
@@ -15,6 +15,7 @@ import { slideInOut } from '../../shared/animations';
 import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
 import { teEntDetailReducer } from './api/te-ent-detail.reducer';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
+import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 
 
 @WithSubStore({
@@ -53,6 +54,7 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   fkClass$: Observable<number>;
   pkEntity$: Observable<number>
   preview$: Observable<EntityPreview>
+  iconType$: Observable<IconType>;
 
   t: TabLayout;
   listOf: MentioningListOf;
@@ -67,7 +69,8 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     private p: ActiveProjectService,
     private i: InformationPipesService,
     private b: InformationBasicPipesService,
-    private inf: InfActions
+    private inf: InfActions,
+    private truncatePipe: TruncatePipe
   ) {
 
   }
@@ -98,15 +101,19 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.fkClass$ = this.b.pipeClassOfEntity(this.pkEntity)
     this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
     this.preview$ = this.p.streamEntityPreview(this.pkEntity)
-    this.preview$.pipe(takeUntil(this.destroy$))
-      .subscribe((preview) => {
-        this.t.setTabTitle([preview.entity_label, preview.class_label].filter(i => !!i).join(' - '))
+    combineLatest(this.preview$, this.classLabel$).pipe(takeUntil(this.destroy$))
+      .subscribe(([preview, classLabel]) => {
+        const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
+        this.t.setTabTitle([trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - '))
+        this.t.setTabTooltip([classLabel, preview.entity_label].filter(i => !!i).join(' - '))
       })
 
 
     this.pkEntity$ = of(this.pkEntity)
 
     this.listOf = { pkEntity: this.pkEntity, type: 'entity' }
+
+    this.iconType$ = this.b.pipeIconType(this.pkEntity, 'peIt')
 
   }
 
