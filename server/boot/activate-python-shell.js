@@ -3,10 +3,10 @@
 
 // module.exports = function (app, cb) {
 
-//   // activates the python shell (according to Pipfile) 
+//   // activates the python shell (according to Pipfile)
 //   const pipenv = spawn('pipenv', ['shell'])
 
-//   // Prints some python info to console 
+//   // Prints some python info to console
 //   const pipenvVersion = spawn('python', ['-V'])
 //   pipenvVersion.stdout.on('data', (data) => {
 //     console.log('*********** Python Info **************')
@@ -22,3 +22,5 @@
 //   process.nextTick(cb);
 
 // };
+
+// Testing
