@@ -1,27 +1,27 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, SysConfig, TimePrimitive, TimeSpan, U } from 'app/core';
+import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 import { cache, spyTag } from 'app/shared';
 import { TimePrimitivePipe } from 'app/shared/pipes/time-primitive/time-primitive.pipe';
 import { TimeSpanPipe } from 'app/shared/pipes/time-span/time-span.pipe';
-import { groupBy, indexBy, omit, pick, values, equals, uniq, flatten } from 'ramda';
-import { combineLatest, iif, Observable, of, empty } from 'rxjs';
-import { filter, map, startWith, switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
+import { equals, flatten, groupBy, indexBy, omit, pick, uniq, values } from 'ramda';
+import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { tag } from '../../../../../node_modules/rxjs-spy/operators';
 import { PaginateByParam } from '../../../core/store/actions';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { ClassAndTypeNode } from '../new-components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTimeSpanDialogResult } from '../new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, LanguageItem, ListDefinition, ListType, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, ItemType } from '../new-components/properties-tree/properties-tree.models';
+import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LanguageItem, ListDefinition, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../new-components/properties-tree/properties-tree.models';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
-import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 // import { TemporalEntityTableRow } from "../new-components/temporal-entity-list/TemporalEntityTable";
 
 @Injectable()
@@ -85,7 +85,7 @@ export class InformationPipesService {
         return this.pipeListTextProperty(l, pkEntity).pipe(map(items => items.length))
 
       default:
-        break;
+        return new BehaviorSubject(0);
     }
   }
 
