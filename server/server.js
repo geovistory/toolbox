@@ -38,12 +38,17 @@ app.start = function() {
     });
     client.connect();
 
+    // Connect to Postgres a second time for parrallel sessions
+    const client2 = new Client({
+      connectionString: app.datasources.postgres1.connector.settings.url,
+    });
+    client2.connect();
+
     /**********************************************************
      * Setup the queue for warehouse update requests
      **********************************************************/
 
     let needs_update_from_queue = true;
-    let needs_update_for_entities = true;
     let need_to_check_class_labels = true;
     let needs_update_for_statements = true;
 
@@ -65,8 +70,6 @@ app.start = function() {
             res.rows.length &&
             res.rows[0].updater === true
           ) {
-            needs_update_for_entities = true;
-            updateEntityPreviews();
             needs_update_for_statements = true;
             updateStatements();
           }
@@ -103,31 +106,31 @@ app.start = function() {
       // dbEventEmitter.emit(msg.channel, payload);
     });
 
-    /**********************************************************
-     * Setup the continuous update job for entity_previews
-     **********************************************************/
-    let previewsUpdating = false;
-    const updateEntityPreviews = () => {
-      if (!previewsUpdating) {
-        previewsUpdating = true;
-        needs_update_for_entities = false;
-        const sql = `
-          --Select war.enriched_nodes__enrich();
-          Select war.entity_preview__update_all();
-        `;
-        client.query(sql, (err, res) => {
-          previewsUpdating = false;
-          if (err) console.log(err);
-          else {
-            console.log(
-              `\u{1b}[36m Entity Previews updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
-            );
-          }
-          if (needs_update_from_queue) updateEntityPreviews();
-        });
-      }
-    };
-    updateEntityPreviews();
+    // /**********************************************************
+    //  * Setup the continuous update job for entity_previews
+    //  **********************************************************/
+    // let previewsUpdating = false;
+    // const updateEntityPreviews = () => {
+    //   if (!previewsUpdating) {
+    //     previewsUpdating = true;
+    //     needs_update_for_entities = false;
+    //     const sql = `
+    //       --Select war.enriched_nodes__enrich();
+    //       Select war.entity_preview__update_all();
+    //     `;
+    //     client.query(sql, (err, res) => {
+    //       previewsUpdating = false;
+    //       if (err) console.log(err);
+    //       else {
+    //         console.log(
+    //           `\u{1b}[36m Entity Previews updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+    //         );
+    //       }
+    //       if (needs_update_from_queue) updateEntityPreviews();
+    //     });
+    //   }
+    // };
+    // updateEntityPreviews();
 
     /**********************************************************
      * Setup the continuous update job for vm_statement
@@ -142,7 +145,7 @@ app.start = function() {
         const sql = `
         REFRESH MATERIALIZED VIEW ${matViewIsEmpty ? '' : 'CONCURRENTLY'}
         war.vm_statement;`;
-        client.query(sql, (err, res) => {
+        client2.query(sql, (err, res) => {
           statementsUpdating = false;
           if (err) {
             if (err.code == '0A000') {
@@ -173,7 +176,7 @@ app.start = function() {
         classLabelsUpdating = true;
         need_to_check_class_labels = false;
         const sql = `SELECT war.entity_preview__update_class_labels();`;
-        client.query(sql, (err, res) => {
+        client2.query(sql, (err, res) => {
           classLabelsUpdating = false;
           if (err) console.log(err);
           else {
