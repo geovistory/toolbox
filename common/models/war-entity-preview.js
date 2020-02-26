@@ -417,12 +417,14 @@ module.exports = function(WarEntityPreview) {
       return '$' + params.length;
     };
 
-    var sql_stmt =
-      `
+    var sql_stmt = `
       WITH
       -- filter the repo versions, add the fk_project of given project, if is_in_project
       -- this ensures we allways search in the full repo full-text (finds more)
       -- and it includes the information, whether the entity is in project or not
+      tw0 AS (
+        SELECT  to_tsquery(${addParam(queryString)}) q
+      ),
       tw1 AS (
         SELECT
           COALESCE(t2.fk_project, t1.fk_project) fk_project,
@@ -437,22 +439,21 @@ module.exports = function(WarEntityPreview) {
           t1.time_span,
           t1.full_text,
           t1.ts_vector
-        FROM war.entity_preview t1
+        FROM
+        tw0 t0,
+        war.entity_preview t1
         LEFT JOIN projects.info_proj_rel t2 ON t1.pk_entity = t2.fk_entity
           AND t2.fk_project = ${addParam(pkProject)}
           AND t2.is_in_project = true
         WHERE t1.fk_project IS NULL
-        ` +
-      (queryString === ''
-        ? ''
-        : `AND t1.ts_vector @@ ${addParam(queryString)}::tsquery`) +
-      `
+        ${queryString ? 'AND t1.ts_vector @@ t0.q' : ''}
         ${whereEntityType}
-        ` +
-      (pkClasses && pkClasses.length
-        ? `AND t1.fk_class IN (${pkClassParamNrs})`
-        : '') +
-      `
+        ${
+          pkClasses && pkClasses.length
+            ? `AND t1.fk_class IN (${pkClassParamNrs})`
+            : ''
+        }
+
       ),
       tw2 AS (
         select
@@ -466,27 +467,19 @@ module.exports = function(WarEntityPreview) {
           t1.type_label,
           t1.fk_type,
           t1.time_span,
-          ts_headline(t1.full_text, ${addParam(
-            queryString
-          )}::tsquery) as full_text_headline,
-          ts_headline(t1.class_label, ${addParam(
-            queryString
-          )}::tsquery) as class_label_headline,
-          ts_headline(t1.entity_label, ${addParam(
-            queryString
-          )}::tsquery) as entity_label_headline,
-          ts_headline(t1.type_label, ${addParam(
-            queryString
-          )}::tsquery) as type_label_headline,
+          ts_headline(t1.full_text, t0.q) as full_text_headline,
+          ts_headline(t1.class_label, t0.q) as class_label_headline,
+          ts_headline(t1.entity_label, t0.q) as entity_label_headline,
+          ts_headline(t1.type_label, t0.q) as type_label_headline,
           ROW_NUMBER () OVER (
             PARTITION BY t1.pk_entity
             ORDER BY
               t1.project DESC
           ) as rank
-        from  tw1 t1
-        ORDER BY ts_rank(ts_vector, ${addParam(
-          queryString
-        )}::tsquery) DESC, entity_label asc
+        FROM
+          tw0 t0,
+          tw1 t1
+        ORDER BY ts_rank(ts_vector, t0.q) DESC, entity_label asc
       )
       SELECT
         tw2.fk_project,
@@ -530,11 +523,6 @@ module.exports = function(WarEntityPreview) {
       LIMIT ${addParam(limit)}
       OFFSET ${addParam(offset)};
     `;
-
-    //  sql_stmt = `
-    //   SELECT $$ 'eins):*' & 'zweiss:*' $$::tsquery q;
-    // `
-    // params = []
 
     logSql(sql_stmt, params);
 

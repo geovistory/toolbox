@@ -65,6 +65,7 @@
     "@types/ajv": "^1.0.0",
     "@types/json2csv": "^4.5.0",
     "@types/node": "^12.12.6",
+    "@types/pg": "^7.14.1",
     "@types/ramda": "^0.26.33",
     "@types/sql-formatter": "^2.3.0",
     "eslint": "^3.17.1",
