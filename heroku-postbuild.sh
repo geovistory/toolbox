@@ -10,7 +10,7 @@ if [ $DB_ENV = 'review' ]; then
   # We need to drop schemas before restoring because the review database may be
   # in an earlier state, created by deployment after previeous commit on the
   # same pull request
-  time psql $DATABASE_URL -f dropSchemas.sql
+  time psql $DATABASE_URL -f deployment/drop-schemas.sql
   echo '================= Drop schemas done! ====================================='
   echo
 
