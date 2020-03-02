@@ -34,13 +34,14 @@ filepath=${filepath:-reviewdb.tar}
 echo $filepath
 echo
 
-echo Your command: pg_restore --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --verbose
-
+echo Your command: pg_restore --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --clean --verbose
+echo Attention: this action is irreversible!
+echo
 while true; do
   read -p "Do you want to execute the command [y/n]?" yn
   case $yn in
   [Yy]*)
-    ^pg_restore --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --verbose
+    time pg_restore --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --clean --verbose
     break
     ;;
   [Nn]*) exit ;;
