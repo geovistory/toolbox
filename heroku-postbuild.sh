@@ -6,8 +6,16 @@ echo ''
 
 if [ $DB_ENV = 'review' ]; then
 
+  echo '================= Drop schemas of target DB =============================='
+  # We need to drop schemas before restoring because the review database may be
+  # in an earlier state, created by deployment after previeous commit on the
+  # same pull request
+  time psql $DATABASE_URL -f dropSchemas.sql
+  echo '================= Drop schemas done! ====================================='
+  echo
+
   echo '======== Restore Database (from deployment/reviewdb.tar) ================='
-  time pg_restore --no-owner -d $DATABASE_URL deployment/reviewdb.tar --clean --verbose
+  time pg_restore --no-owner -d $DATABASE_URL deployment/reviewdb.tar --verbose
   echo '======== Database restored  =============================================='
   echo
 
