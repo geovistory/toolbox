@@ -6,9 +6,10 @@ import { combineLatest, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ListDefinition } from '../new-components/properties-tree/properties-tree.models';
 import { createPaginateBy } from '../new-components/temporal-entity-list/temporal-entity-list.component';
-import { PaginateByParam } from 'app/core/store/actions';
+import { PaginateByParam, ActionResultObservable } from 'app/core/store/actions';
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'app/core/inf/inf.service';
+import { PaginatedRolesList } from 'app/core/inf/inf.actions';
 
 
 class RolePageLoader {
@@ -26,7 +27,7 @@ class RolePageLoader {
       targetClass: number,
       isOutgoing: boolean,
       limit: number,
-      offset: number) => void
+      offset: number) => ActionResultObservable<PaginatedRolesList>
   ) { }
 
   public addPageLoader(pkProject: number, l: ListDefinition, pkEntity: number, limit, offset, takeUntil$: Observable<any>) {

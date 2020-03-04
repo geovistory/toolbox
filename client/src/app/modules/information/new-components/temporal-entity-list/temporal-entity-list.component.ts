@@ -39,7 +39,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   @Input() addButtonVisible;
   @Input() toggleButtonVisible;
 
-  @Input() appContext: number;
+  // @Input() appContext: number;
 
   rows$: Observable<TemporalEntityItem[]>
   items$;
