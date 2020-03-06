@@ -586,29 +586,7 @@ module.exports = function(InfEntityAssociation) {
     ).createContentTreeQuery(pkProject, pkExpressionEntity);
     const params = q.params;
     const sql_stmt = q.sql;
-    logSql(sql_stmt, params);
-    //     const params = [pkProject, pkExpressionEntity];
-    //   const sql_stmt = `
-    //   WITH RECURSIVE pops (fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, level, pk_entity, path) AS (
-    //       SELECT  fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, 0, pk_entity, ARRAY[pk_entity]
-    //       FROM    war.v_entity_association_per_project_and_repo
-    //       WHERE   fk_info_range = $2
-    //       AND 	  project = $1
-    //       AND		  fk_property IN (1317, 1328, 1329, 1216)
-
-    //       UNION ALL
-
-    //       SELECT  p.fk_info_domain, p.fk_data_domain, p.fk_property, p.fk_info_range, p.fk_data_range, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
-    //       FROM    war.v_entity_association_per_project_and_repo p
-    //               INNER JOIN pops t0 ON t0.fk_info_domain = p.fk_info_range
-    //               WHERE 	p.project = $1
-    //               AND		p.fk_property IN (1317, 1328, 1329, 1216)
-
-    //   )
-
-    //   SELECT  pk_entity, fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range
-    //   FROM    pops
-    // `;
+    // logSql(sql_stmt, params);
 
     const connector = InfEntityAssociation.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
@@ -618,64 +596,6 @@ module.exports = function(InfEntityAssociation) {
       } else {
         cb(false, {});
       }
-      // if (resultObjects.length === 0) {
-      //   cb(err, resultObjects);
-      // } else {
-      //   // Load all the nested objects of the related persistent items (Expression Portions)
-      //   new Promise.all(
-      //     resultObjects.map(ea => {
-      //       return new Promise((resolve, reject) => {
-      //         if (ea.fk_info_domain) {
-      //           // Load the Expression Portion
-      //           InfEntityAssociation.app.models.InfPersistentItem.nestedObjectOfProject(
-      //             pkProject,
-      //             ea.fk_info_domain,
-      //             (err, res) => {
-      //               if (err) reject(err);
-      //               else resolve(res);
-      //             }
-      //           );
-      //         } else if (ea.fk_data_domain) {
-      //           // Load the Digital
-      //           InfEntityAssociation.app.models.DatDigital.findById(
-      //             ea.fk_data_domain,
-      //             (err, res) => {
-      //               if (err) reject(err);
-      //               else resolve([helpers.toObject(res)]);
-      //             }
-      //           );
-      //         } else {
-      //           console.log('er');
-      //         }
-      //       });
-      //     })
-      //   )
-      //     .catch(err => cb(err))
-      //     .then(domain => {
-      //       // map the fetched nested peIts to the entity_associations
-      //       const result = resultObjects.map((ea, i) => {
-      //         const nested =
-      //           domain && domain[i] && domain[i].length
-      //             ? domain[i][0]
-      //             : undefined;
-
-      //         if (!nested) return ea;
-
-      //         if (ea.fk_info_domain === nested.pk_entity) {
-      //           return {
-      //             ...ea,
-      //             domain_pe_it: nested,
-      //           };
-      //         } else if (ea.fk_data_domain === nested.pk_entity) {
-      //           return {
-      //             ...ea,
-      //             domain_digital: nested,
-      //           };
-      //         }
-      //       });
-      //       cb(err, result);
-      //     });
-      // }
     });
   };
 

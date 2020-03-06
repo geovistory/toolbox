@@ -1131,9 +1131,10 @@ export class InformationPipesService {
           () => !!item.typeClass,
           this.b.pipePersistentItemPksByClass(item.typeClass).pipe(
             switchMap(typePks => combineLatestOrEmpty(
-              typePks.map(pkType => this.pipeLabelOfEntity(pkType).pipe(
-                map(label => ({
-                  label, data: { pkClass: item.typedClass, pkType }
+              typePks.map(pkType => this.p.streamEntityPreview(pkType).pipe(
+                map(preview => ({
+                  label: preview.entity_label,
+                  data: { pkClass: item.typedClass, pkType }
                 } as ClassAndTypeNode))
               ))
             ).pipe(

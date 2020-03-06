@@ -1204,70 +1204,6 @@ module.exports = function(InfPersistentItem) {
   };
 
   /**
-   * Get all types for classes and project
-   *
-   * Where
-   *	- types are in given project
-   *	- types are related to the namespace enabled by given project or the namespace geovistory ongoing
-   *    TODO: There is the need of a namespace_proj_rel table that says: This project has enabled this namespace for this class
-   *	- types are types of the given typed_class (where class is domain of a property where property is inherited from has_type pk=2 and range is class)
-   *
-   * @param pk_project
-   * @param pk_typed_classes
-   */
-  // InfPersistentItem.typesOfClassesAndProject = function(
-  //   pk_project,
-  //   pk_typed_classes,
-  //   cb
-  // ) {
-  //   const params = [pk_project, ...pk_typed_classes];
-  //   const pk_typed_classes_refs = pk_typed_classes
-  //     .map((pk, i) => '$' + (i + 2))
-  //     .join(', ');
-
-  //   const sql_stmt = `
-  //   -- select the types
-  //   SELECT type_entity.*, has_type_prop.fk_class as fk_typed_class
-  //   from information.persistent_item type_entity
-
-  //   -- join the info, of which class these the type_entities are types
-  //   JOIN data_for_history.property has_type ON has_type.dfh_has_range = type_entity.fk_class
-  //   JOIN system.class_has_type_property has_type_prop ON has_type.dfh_pk_property = has_type_prop.fk_property
-
-  //   -- join the project_rel of the type
-  //   JOIN projects.info_proj_rel type_proj_rel ON type_entity.pk_entity = type_proj_rel.fk_entity
-
-  //   -- join the namespace of the type
-  //   -- JOIN information.type_namespace_rel type_nmsp_rel ON type_entity.pk_entity = type_nmsp_rel.fk_persistent_item
-
-  //   -- TODO: join namespace_project_rel in order to see if for that class a custom namespace is activated
-  //   --LEFT JOIN commons.namespace_project_rel nmsp_proj_rel
-  //   --	ON nmsp_proj_rel.fk_namespace = type_nmsp_rel.fk_namespace
-  //   --	AND nmsp_proj_rel.fk_class = type_entity.fk_class
-  //   --	AND nmsp_proj_rel.fk_project = $1
-  //   -- filter for types in the given project
-
-  //   WHERE
-  //   -- where the typed class is in ...
-  //   has_type_prop.fk_class IN (${pk_typed_classes_refs})
-
-  //   -- where they type is in project
-  //   AND type_proj_rel.fk_project = $1
-  //   AND type_proj_rel.is_in_project = true
-
-  //   -- TODO: somehow filter for the namespace activated per project and class
-  //   --AND
-  //   -- where the namespace is activated by the project, else geovistory_ongoing
-  //   --nmsp_proj_rel.fk_namespace IS NULL OR nmsp_proj_rel.fk_namespace = $xy`;
-
-  //   const connector = InfPersistentItem.dataSource.connector;
-  //   connector.execute(sql_stmt, params, (err, resultObjects) => {
-  //     if (err) return cb(err, resultObjects);
-  //     cb(null, resultObjects);
-  //   });
-  // };
-
-  /**
    * Add a persistent item to project
    *
    * This query will add those things to the project:
@@ -1396,44 +1332,21 @@ module.exports = function(InfPersistentItem) {
   };
 
   /**
-   * Get all types of project with all appellations
-   * and all text properties
+   * Get all types of project with
+   * - persistent_item
+   * - info_proj_rel
+   * no other related data is loaded.
    */
   InfPersistentItem.typesOfProject = function(pkProject, cb) {
-    // Get array of all peits that are types and in given project
-    const sql_stmt = `
-      SELECT 1, jsonb_agg(t3.pk_entity) as pk_type_array
-      FROM
-      data_for_history.v_class  t2,
-      information.persistent_item t3,
-      projects.info_proj_rel t4
-      WHERE t3.fk_class = t2.pk_class
-      AND t2.basic_type = 30
-      AND t4.fk_entity = t3.pk_entity
-      AND t4.is_in_project = true
-      AND t4.fk_project = $1
-      GROUP BY 1
-    `;
-
-    const params = [pkProject];
+    const mainQuery = new FlatObjectQueryBuilder(
+      InfPersistentItem.app.models
+    ).createPeItTypeQuery(pkProject);
     const connector = InfPersistentItem.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, result) => {
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);
-
-      if (
-        !result ||
-        !result.length > 0 ||
-        !result[0].pk_type_array ||
-        result[0].pk_type_array.length < 1
-      )
-        return cb(false, []);
-
-      let filter = {
-        where: ['pk_entity', 'IN', result[0].pk_type_array],
-        include: InfPersistentItem.getTypeIncludeObject(pkProject),
-      };
-
-      return InfPersistentItem.findComplex(filter, cb);
+      const item = result[0];
+      const data = !item ? {} : item.data;
+      return cb(false, data);
     });
   };
 

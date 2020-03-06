@@ -50,30 +50,15 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
   // has type property
   @Input() pkClass: number;
 
-  //  type class
-  // typedClassPk$: Observable<number>;
-  // typedClassLabel$: Observable<string>;
-  // typeClassPk$: Observable<number>;
   typeClassLabel$: Observable<string>;
-
 
   // types
   items$: Observable<TypeItem[]>;
   typePks$: Observable<number[]>;
-  // // flag indicatig if add form is visible
-  // @select() add$: Observable<boolean>;
-
-  // // object containing data for edit form. If truthy, edit form is visible.
-  // @select() edit$: Observable<InfPersistentItem>;
-
-  // flag indicatig if loaing info is visible
-  // @select() loading$: Observable<boolean>;
 
   t: TabLayout;
 
   constructor(
-    // protected rootEpics: RootEpics,
-    // private epics: TypesAPIEpics,
     public ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
     public inf: InfActions,
@@ -96,35 +81,6 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
-
-
-    // const hasTypeProp$ = this.p.dfh$.property$.by_is_has_type_subproperty$.key('true').pipe(
-    //   filter(object => !!object && Object.keys(object).length > 0),
-    //   map((object) => values(object).find(prop => prop.pk_property === this.pkProperty)),
-    //   map((prop) => ({
-    //     pk_typed_class: prop.has_domain,
-    //     pk_type_class: prop.has_range,
-    //   })),
-    //   shareReplay({ bufferSize: 1, refCount: true })
-    // )
-
-    // this.typeClassPk$ = hasTypeProp$.pipe(
-    //   map(item => item.pk_type_class),
-    //   shareReplay({ bufferSize: 1, refCount: true })
-
-    // )
-    // this.typedClassPk$ = hasTypeProp$.pipe(
-    //   map(item => item.pk_typed_class),
-    //   shareReplay({ bufferSize: 1, refCount: true })
-    // )
-
-    // this.typedClassLabel$ = this.typedClassPk$.pipe(
-    //   switchMap((pk) => this.c.pipeClassLabel(pk).pipe(
-    //     tap((typedClassLabel) => {
-    //       this.t.setTabTitle(typedClassLabel + ' Types')
-    //     })
-    //   )),
-    // )
 
     this.typeClassLabel$ = this.c.pipeClassLabel(this.pkClass)
 
@@ -182,22 +138,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
                 offset,
                 this.destroy$
               )
-              //  console.log('a', JSON.stringify({ paginateBy, limit, offset }))
-              // this.p.inf$.role$.pagination$.pipePageLoadNeeded(paginateBy, limit, offset).pipe(
-              //   filter(loadNeeded => loadNeeded === true),
-              //   takeUntil(this.destroy$)
-              // ).subscribe(() => {
-              //   console.log('b', JSON.stringify({ paginateBy, limit, offset }))
-              //   this.inf.temporal_entity.loadPaginatedList(
-              //     pkProject,
-              //     pkEntity,
-              //     l.pkProperty,
-              //     l.targetClass,
-              //     l.isOutgoing,
-              //     limit,
-              //     offset
-              //   )
-              // })
+              this.p.inf.persistent_item.loadMinimal(pkProject, pkEntity)
             }
             // pipe the properties of the naming
             const namings$: Observable<TemporalEntityItem[]> = this.i.pipeTemporalEntityTableRows(
@@ -260,45 +201,12 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     )
 
 
-
-    // this.items$ = this.typeClassPk$.pipe(
-    //   switchMap(typeClassPk => this.b.pipePersistentItemPksByClass(typeClassPk).pipe(
-    //     switchMap(typePks => combineLatestOrEmpty(
-    //       typePks.map(pkEntity => this.i.pipeLabelOfEntity(pkEntity).pipe(
-    //         map(label => ({
-    //           pkEntity,
-    //           label
-    //         } as TypeItem))
-    //       ))
-    //     ).pipe(
-    //       sortAbc(n => n.label),
-    //     ))
-    //   ))
-    // )
-    // this.loadTypes();
-
   }
 
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
-  // loadTypes() {
-  //   combineLatest(this.typeClass$, this.p.pkProject$).pipe(
-  //     filter(d => !d.includes(undefined)),
-  //     takeUntil(this.destroy$)
-  //   ).subscribe(([pkTypeClass, pkProject]) => {
-  //     this.load(pkProject, pkTypeClass.dfh_pk_class)
-  //   })
-  // }
-
-  // /**
-  //  * called when user creates a new type
-  //  */
-  // added(type: InfPersistentItem) {
-  //   this.createSucceeded(type);
-  // }
 
   /**
    * called when user clicks on edit

@@ -2,9 +2,11 @@
 
   <gv-list-drawer-header>
     <div title>Your Sources</div>
-    <gv-classes-and-types-select buttons enabledIn="sources" (select)="startCreate($event)"></gv-classes-and-types-select>
+    <gv-classes-and-types-select buttons enabledIn="sources" (select)="startCreate($event)">
+    </gv-classes-and-types-select>
   </gv-list-drawer-header>
 
-  <gv-list class="gv-flex-fh" [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)" [pkAllowedClasses$]="pkClassesOfAddBtn$">    </gv-list>
+  <gv-list class="gv-flex-fh" [basePath]="basePath.concat('list')" (onOpen)="openEntity($event)"
+    [pkAllowedClasses$]="pkClassesOfAddBtn$"> </gv-list>
 
 </div>

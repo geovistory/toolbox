@@ -84,8 +84,6 @@ app.start = function() {
 
     // Listen for all pg_notify channel messages
     client.on('notification', function(msg) {
-      // console.log(msg.channel, payload.fn)
-
       switch (msg.channel) {
         case 'project_updated':
           needs_update_from_queue = true;
@@ -103,34 +101,7 @@ app.start = function() {
         default:
           break;
       }
-      // dbEventEmitter.emit(msg.channel, payload);
     });
-
-    // /**********************************************************
-    //  * Setup the continuous update job for entity_previews
-    //  **********************************************************/
-    // let previewsUpdating = false;
-    // const updateEntityPreviews = () => {
-    //   if (!previewsUpdating) {
-    //     previewsUpdating = true;
-    //     needs_update_for_entities = false;
-    //     const sql = `
-    //       --Select war.enriched_nodes__enrich();
-    //       Select war.entity_preview__update_all();
-    //     `;
-    //     client.query(sql, (err, res) => {
-    //       previewsUpdating = false;
-    //       if (err) console.log(err);
-    //       else {
-    //         console.log(
-    //           `\u{1b}[36m Entity Previews updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
-    //         );
-    //       }
-    //       if (needs_update_from_queue) updateEntityPreviews();
-    //     });
-    //   }
-    // };
-    // updateEntityPreviews();
 
     /**********************************************************
      * Setup the continuous update job for vm_statement
