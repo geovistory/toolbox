@@ -6,7 +6,7 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap } from '../../../../../../node_modules/rxjs/operators';
-import { sortAbc } from '../../../../core';
+import { sortAbc, ActiveProjectService } from '../../../../core';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
@@ -99,7 +99,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     private i: InformationPipesService,
-    private c: ConfigurationPipesService,
+    private p: ActiveProjectService,
     private b: InformationBasicPipesService,
   ) {
     if (this.ngControl != null) {
@@ -114,13 +114,15 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
     if (!this.pkTypedClass) throw new Error('You must provide a this.pkTypedClass');
 
     this.typeLabel$ = this.value$.pipe(
-      switchMap(pkEntity => this.i.pipeLabelOfEntity(pkEntity))
+      switchMap(pkType => this.p.streamEntityPreview(pkType).pipe(
+        map(preview => preview.entity_label)
+      ))
     )
     this.typeOptions$ = this.b.pipePersistentItemPksByClass(this.pkTypeClass).pipe(
       switchMap(typePks => combineLatestOrEmpty(
-        typePks.map(pkType => this.i.pipeLabelOfEntity(pkType).pipe(
-          map(label => ({
-            label, data: { pkClass: this.pkTypedClass, pkType }
+        typePks.map(pkType => this.p.streamEntityPreview(pkType).pipe(
+          map(preview => ({
+            label: preview.entity_label, data: { pkClass: this.pkTypedClass, pkType }
           } as ClassAndTypeNode))
         ))
       ).pipe(

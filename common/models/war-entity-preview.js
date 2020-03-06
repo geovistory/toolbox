@@ -3,12 +3,13 @@
 var app = require('../../server/server');
 var _ = require('lodash');
 var logSql = require('../../server/scripts/log-deserialized-sql');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+
+const log = false;
 
 module.exports = function(WarEntityPreview) {
   app.on('io-ready', io => {
     io.of('/WarEntityPreview').on('connection', socket => {
-      console.log('new connection ' + socket.id);
+      if (log) console.log('new connection ' + socket.id);
 
       // Connection Cache
       const cache = {
@@ -32,11 +33,12 @@ module.exports = function(WarEntityPreview) {
         if (newProjectPk !== cache.currentProjectPk) {
           socket.leave(cache.currentProjectPk);
 
-          console.log(socket.id + ' left project ' + cache.currentProjectPk);
+          if (log)
+            console.log(socket.id + ' left project ' + cache.currentProjectPk);
 
           socket.join(newProjectPk);
 
-          console.log(socket.id + ' joined project ' + newProjectPk);
+          if (log) console.log(socket.id + ' joined project ' + newProjectPk);
 
           resetStreamedPks();
           cache.currentProjectPk = newProjectPk;
@@ -47,6 +49,7 @@ module.exports = function(WarEntityPreview) {
       const emitPreview = entityPreview => {
         socket.emit('entityPreview', entityPreview);
 
+        // if (log)
         console.log(
           socket.id +
             ' emitted entityPreview: ' +
@@ -72,12 +75,13 @@ module.exports = function(WarEntityPreview) {
           pks = pks.map(pk => pk.toString());
           pks.forEach(pk => extendStreamedPks(pk));
 
-          console.log(
-            'request for EntityPreviews ' +
-              JSON.stringify(pks) +
-              ' by project ' +
-              cache.currentProjectPk
-          );
+          if (log)
+            console.log(
+              'request for EntityPreviews ' +
+                JSON.stringify(pks) +
+                ' by project ' +
+                cache.currentProjectPk
+            );
 
           // Query the entityPreview in DB
           WarEntityPreview.findComplex(
@@ -199,7 +203,8 @@ module.exports = function(WarEntityPreview) {
         // leave the room
         socket.leave(cache.currentProjectPk);
 
-        console.log(socket.id + ' left project ' + cache.currentProjectPk);
+        if (log)
+          console.log(socket.id + ' left project ' + cache.currentProjectPk);
 
         // reset cache
         cache.currentProjectPk = undefined;
@@ -207,7 +212,7 @@ module.exports = function(WarEntityPreview) {
 
       // As soon as the connection is closed
       socket.on('disconnect', () => {
-        console.log(socket.id + ' disconnected');
+        if (log) console.log(socket.id + ' disconnected');
 
         // Unsubscribe the db listener
         streamSub.unsubscribe();
@@ -314,7 +319,7 @@ module.exports = function(WarEntityPreview) {
         OFFSET $3;
         `;
 
-    logSql(sql_stmt, params);
+    if (log) logSql(sql_stmt, params);
 
     const connector = WarEntityPreview.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
@@ -524,7 +529,7 @@ module.exports = function(WarEntityPreview) {
       OFFSET ${addParam(offset)};
     `;
 
-    logSql(sql_stmt, params);
+    if (log) logSql(sql_stmt, params);
 
     const connector = WarEntityPreview.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {

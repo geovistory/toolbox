@@ -67,10 +67,10 @@ export class FieldComponent implements OnInit {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.fieldDefinition.listDefinitions.forEach(l => {
         if (l.listType === 'temporal-entity') {
-          // this.pag.temporalEntity.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
+          this.pag.temporalEntity.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
         else if (l.listType === 'entity-preview') {
-          // this.pag.roles.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
+          this.pag.roles.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
       })
     })
