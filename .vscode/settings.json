@@ -13,5 +13,6 @@
   "pgFormatter.functionCase": "lowercase",
   "pgFormatter.keywordCase": "capitalize",
   "pgFormatter.spaces": 4,
-  "pgFormatter.noComment": false
+  "pgFormatter.noComment": false,
+  "git.autofetch": true
 }

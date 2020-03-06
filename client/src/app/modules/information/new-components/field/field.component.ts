@@ -3,8 +3,8 @@ import { InfActions } from 'app/core/inf/inf.actions';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
 import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { sum } from '../../../../../../node_modules/ramda';
-import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { filter, first, map, takeUntil, distinctUntilChanged, tap } from '../../../../../../node_modules/rxjs/operators';
+import { combineLatest, Observable, Subject, of } from '../../../../../../node_modules/rxjs';
+import { filter, first, map, takeUntil, distinctUntilChanged, tap, shareReplay } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService } from '../../../../core';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { TimeSpanService } from '../../new-services/time-span.service';
@@ -31,7 +31,7 @@ export class FieldComponent implements OnInit {
   @Input() pkEntity: number;
 
   @Input() fieldDefinition: FieldDefinition
-  @Input() appContext: number
+  // @Input() appContext: number
   @Input() treeControl: NestedTreeControl<FieldDefinition>;
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
@@ -74,9 +74,16 @@ export class FieldComponent implements OnInit {
         }
       })
     })
+    // DEBUG
+    console.log('field Init ');
 
     if (this.fieldDefinition.listType !== 'has-type') {
+      // DEBUG
+      console.log('field !has-type ');
 
+      // DEBUG
+      let i = 0;
+      let j = 0
       this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
         let obs$: Observable<number>;
         if (l.listType === 'temporal-entity') {
@@ -88,9 +95,19 @@ export class FieldComponent implements OnInit {
           map((itemsCount) => ({ ...l, itemsCount }))
         )
       })).pipe(
-        map(lists => lists.filter((list: ListDefinitionWithItemCount) => list.itemsCount > 0))
+        map(lists => lists.filter((list: ListDefinitionWithItemCount) => list.itemsCount > 0)),
+        // DEBUG
+        tap((x) => {
+          console.log('field listWithCount before share replay ' + i, x);
+          i++;
+        }),
+        shareReplay({ refCount: true, bufferSize: 1 }),
+        tap((x) => {
+          console.log('field listWithCount after ' + j, x);
+          j++;
+        }),
       )
-      this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
+      // this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
 
       this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
 

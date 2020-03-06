@@ -24,7 +24,7 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   @Input() pkEntity$: Observable<number>
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() appContext: number;
+  // @Input() appContext: number;
   @Input() readonly$ = new BehaviorSubject(false);
 
   generalTree$: Observable<FieldDefinition[]>
@@ -44,7 +44,7 @@ export class PropertiesTreeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.appContext = this.appContext || SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+    // this.appContext = this.appContext || SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
     combineLatest(this.pkClass$).pipe(first(x => !x.includes(undefined)), takeUntil(this.destroy$))
       .subscribe(([pkClass]) => {

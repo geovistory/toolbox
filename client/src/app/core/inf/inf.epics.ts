@@ -82,9 +82,8 @@ export class InfEpics {
         (meta) => this.peItApi.typesOfProject(meta.pk),
         InfPersistentItemActionFactory.TYPES_OF_PROJECT,
         (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.persistent_item.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
+          const schemaObject = results as SchemaObject;
+          this.storeSchemaObject(schemaObject, pk)
         }
       ),
       infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
