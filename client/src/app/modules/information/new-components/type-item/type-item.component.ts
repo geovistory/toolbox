@@ -58,7 +58,9 @@ export class TypeItemComponent implements OnInit {
       map(e => e ? e.fk_entity : undefined)
     )
     this.typeLabel$ = this.pkType$.pipe(
-      switchMap(pkType => this.i.pipeLabelOfEntity(pkType))
+      switchMap(pkType => this.p.streamEntityPreview(pkType).pipe(
+        map(preview => preview.entity_label)
+      ))
     )
     this.pkType$.pipe(takeUntil(this.destroy$)).subscribe(pkType => {
       this.assigningValue = true
