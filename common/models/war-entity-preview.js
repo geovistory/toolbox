@@ -70,15 +70,27 @@ module.exports = function(WarEntityPreview) {
         // verify that the socket is in the right room
         safeJoin(pk_project);
 
-        if (pks && pks.length) {
-          // extend the object of streamed pks
-          pks = pks.map(pk => pk.toString());
-          pks.forEach(pk => extendStreamedPks(pk));
+        // sanitize the pks
+        const sanitizedPks = [];
+        for (let i = 0; i < pks.length; i++) {
+          const pk = pks[i];
+          if (typeof pk === 'number') {
+            sanitizedPks.push(pk.toString());
+          } else if (typeof pk === 'string') {
+            sanitizedPks.push(pk);
+          } else {
+            console.warn('Please provide a proper pk_entity');
+          }
+        }
+
+        if (sanitizedPks && sanitizedPks.length) {
+          // extend the object of streamed sanitizedPks
+          sanitizedPks.forEach(pk => extendStreamedPks(pk));
 
           if (log)
             console.log(
               'request for EntityPreviews ' +
-                JSON.stringify(pks) +
+                JSON.stringify(sanitizedPks) +
                 ' by project ' +
                 cache.currentProjectPk
             );
@@ -93,7 +105,7 @@ module.exports = function(WarEntityPreview) {
                 'AND',
                 'pk_entity',
                 'IN',
-                pks,
+                sanitizedPks,
               ],
             },
             (err, projectItems) => {
@@ -105,7 +117,7 @@ module.exports = function(WarEntityPreview) {
 
                 // query repo for the ones not (yet) in project
                 const notInProject = _.difference(
-                  pks,
+                  sanitizedPks,
                   projectItems.map(item => item.pk_entity.toString())
                 );
                 if (notInProject.length) {
