@@ -41,6 +41,10 @@
     "fk_dfh_property_range": {
       "type": "number",
       "required": false
+    },
+    "fk_pro_project": {
+      "type": "number",
+      "required": false
     }
   },
   "validations": [],

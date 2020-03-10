@@ -15,6 +15,7 @@ export interface ProTextPropertyInterface {
   "fk_dfh_property"?: number;
   "fk_dfh_property_domain"?: number;
   "fk_dfh_property_range"?: number;
+  "fk_pro_project"?: number;
   "pk_entity"?: number;
   "entity_version"?: number;
   "tmsp_creation"?: string;
@@ -33,6 +34,7 @@ export class ProTextProperty implements ProTextPropertyInterface {
   "fk_dfh_property": number;
   "fk_dfh_property_domain": number;
   "fk_dfh_property_range": number;
+  "fk_pro_project": number;
   "pk_entity": number;
   "entity_version": number;
   "tmsp_creation": string;
@@ -103,6 +105,10 @@ export class ProTextProperty implements ProTextPropertyInterface {
         },
         "fk_dfh_property_range": {
           name: 'fk_dfh_property_range',
+          type: 'number'
+        },
+        "fk_pro_project": {
+          name: 'fk_pro_project',
           type: 'number'
         },
         "pk_entity": {
