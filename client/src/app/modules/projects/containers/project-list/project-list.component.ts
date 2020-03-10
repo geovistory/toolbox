@@ -12,8 +12,9 @@ import { ProActions } from 'app/core/pro/pro.actions';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { ProSelector } from 'app/core/pro/pro.service';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { takeUntil, map, switchMap, combineLatest } from 'rxjs/operators';
+import { takeUntil, map, switchMap, combineLatest, mergeMap } from 'rxjs/operators';
 import { values } from 'ramda';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 
 
 @Component({
@@ -102,19 +103,23 @@ export class ProjectListComponent implements OnInit {
 
     // TEMP 2020-03-10
     this.tempProjectPreview$ = this.tempProjects$.pipe(
-      switchMap((projects) => combineLatest(
-        projects.map((p) => new BehaviorSubject({ string: 'Foo' } as ProTextProperty) // this.pro$.text_property$.by_fks$.key(p.pk_entity + '_null_null_null_null_null_null')
-          .pipe(
-            map((textProp) => {
-              return {
-                pk_entity: p.pk_entity,
-                fk_language: p.fk_language,
-                label: textProp.string
-              }
-            })
-          )
-        )
-      ))
+      switchMap((projects) => {
+
+        const previews$ = projects.map((p) => {
+          return this.pro$.text_property$.by_fks$.key(p.pk_entity + '_null_null_null_null_null_null')
+            .pipe(
+              map((textProp) => {
+                return {
+                  pk_entity: p.pk_entity,
+                  fk_language: p.fk_language,
+                  label: textProp.string
+                }
+              })
+            )
+        })
+
+        return combineLatestOrEmpty(previews$)
+      })
 
     )
 
