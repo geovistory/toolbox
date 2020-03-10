@@ -8,6 +8,7 @@ import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detai
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { FormsModule } from '@angular/forms';
 import { AnnotationModule } from 'app/modules/annotation/annotation.module';
+import { TableDetailComponent } from './components/table-detail/table-detail.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { AnnotationModule } from 'app/modules/annotation/annotation.module';
     AnnotationModule
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent],
-  exports: [TextDetailComponent, VersionPickerComponent]
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent],
+  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent]
 })
 export class DataModule { }

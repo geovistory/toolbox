@@ -1,5 +1,8 @@
 <div class="left" (mousedown)="activateTab.emit()">
   <div *ngIf="!(loading$ | async )" class="icon">
+    <mat-icon *ngIf="tab.icon =='table'" class="gv-digital-color" style="font-size: 18px" svgIcon="file-table">
+    </mat-icon>
+
     <mat-icon *ngIf="tab.icon =='text'" class="gv-digital-color" style="font-size: 18px">description</mat-icon>
 
     <mat-icon *ngIf="tab.icon =='expression-portion'" class="gv-source-color" style="font-size: 18px">folder</mat-icon>

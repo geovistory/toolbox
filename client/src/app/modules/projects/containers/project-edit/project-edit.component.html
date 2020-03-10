@@ -23,14 +23,8 @@
           <div class="fa-2x gv-icon gv-icon-entity gv-entity-color"></div>
           <div>Entities</div>
         </button>
-        <!-- <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='queries'}" (click)="setList('queries')">
-          <div class="fa-2x gv-icon gv-icon-query gv-query-color"></div> Queries
-        </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='visuals'}" (click)="setList('visuals')">
-          <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Visuals
-        </button> -->
+
+
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='analysis'}" (click)="setList('analysis')">
           <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Analysis
@@ -40,7 +34,14 @@
           [ngClass]="{active:(p.list$ | async)==='stories'}" (click)="setList('stories')">
           <div class="fa-2x gv-icon gv-icon-story gv-story-color"></div> Stories
         </button>
-
+        <!-- TODO remove from here... -->
+        <br>
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          (click)="p.addTableTab(24626627)">
+          <mat-icon svgIcon="file-table" class="gv-digital-color"></mat-icon>
+          <!-- <div class="fa-2x gv-icon gv-icon-visual gv-digital-color"></div> TEMP -->
+        </button>
+        <!-- ...until here -->
       </div>
 
 
@@ -154,6 +155,10 @@
           <gv-text-detail class="gv-flex-fh" *ngIf="tab.component=='text-detail'" [pkEntity]="tab.data.pkEntity"
             [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
           </gv-text-detail>
+
+          <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table-detail'" [pkEntity]="tab.data.pkEntity"
+            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+          </gv-table-detail>
 
 
           <gv-pe-it-detail class="gv-flex-fh" *ngIf="tab.component=='pe-it-detail'" [tab]="tab"
