@@ -18,7 +18,7 @@ export class MapAndTimeContEditComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  @ViewChild('c', { static: false }) formComponent: MapAndTimeContFormComponent
+  @ViewChild('c') formComponent: MapAndTimeContFormComponent
 
   initVal$: Observable<MapAndTimeContInput>
 

@@ -7,6 +7,7 @@ import { ByPk, IAppState } from '../store/model';
 import { SysActions } from './sys.actions';
 import { sysDefinitions, sysRoot } from './sys.config';
 import { SysClassHasTypePropertySlice, SysRelevantClassSlice, SysAnalysisTypeSlice } from './sys.models';
+import { Injectable } from "@angular/core";
 
 class Selector<Slice> {
 
@@ -70,6 +71,7 @@ class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
 
 
 
+@Injectable()
 export class SystemSelector extends SysActions {
   system_relevant_class$ = new SysSystemRelevantClassSelections(this.ngRedux, sysDefinitions, 'system_relevant_class')
   // class_has_type_property$ = new SysClassHasTypePropertySelections(this.ngRedux, sysDefinitions, 'class_has_type_property')

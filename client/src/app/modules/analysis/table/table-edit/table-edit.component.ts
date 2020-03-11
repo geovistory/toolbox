@@ -18,7 +18,7 @@ export class TableEditComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  @ViewChild('c', { static: false }) formComponent: TableFormComponent
+  @ViewChild('c') formComponent: TableFormComponent
 
   initVal$: Observable<QueryDefinition>
 

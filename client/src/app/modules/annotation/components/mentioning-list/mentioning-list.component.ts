@@ -124,7 +124,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   @Output() rowMouseleave = new EventEmitter<Row>();
   @Output() rowClick = new EventEmitter<Row>();
 
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort;
 
   // displayed columns of the table
   displayedColumns: string[] = [

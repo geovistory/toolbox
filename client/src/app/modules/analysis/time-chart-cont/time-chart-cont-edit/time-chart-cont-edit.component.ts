@@ -24,7 +24,7 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
   teEnClasses$ = new BehaviorSubject<number[]>([])
   // initVal$ = new Subject<FilterDefinition>()
   queryFilter = new FormControl()
-  @ViewChild('c', { static: false }) formComponent: TimeChartContFormComponent
+  @ViewChild('c') formComponent: TimeChartContFormComponent
   // filter$ = new BehaviorSubject<FilterDefinition>(null);
 
   visualData$ = new BehaviorSubject<ChartLineData>({
