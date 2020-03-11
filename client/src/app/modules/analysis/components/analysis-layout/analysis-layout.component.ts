@@ -1,12 +1,10 @@
-import { Component, HostBinding, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { ActiveProjectService } from 'app/core';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
-import { AnalysisService } from '../../services/analysis.service';
-import { takeUntil, switchMap, first, tap, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { ActiveProjectService, IAppState } from 'app/core';
-import { MatDialog } from '@angular/material/dialog';
-import { NgRedux } from '@angular-redux/store';
+import { filter, first, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { AnalysisService } from '../../services/analysis.service';
 
 @Component({
   selector: 'gv-analysis-layout',

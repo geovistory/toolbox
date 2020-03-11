@@ -4,6 +4,19 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
 // import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
 // import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
 // import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
@@ -52,19 +65,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 // import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -128,13 +128,11 @@ import { InformationComponent } from './containers/entity-list/entity-list.compo
 import { ListAPIActions } from './containers/list/api/list.actions';
 import { ListAPIEpics } from './containers/list/api/list.epics';
 import { ListComponent } from './containers/list/list.component';
-import { MapComponent } from './containers/map/map.component';
 import { EntityActions } from './containers/pe-it-detail/api/entity.actions';
 import { PeItDetailAPIActions } from './containers/pe-it-detail/api/pe-it-detail.actions';
 import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
 // import { PeItDetailAPIEpics } from './containers/pe-it-detail/api/pe-it-detail.epics';
 import { PeItDetailComponent } from './containers/pe-it-detail/pe-it-detail.component';
-import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
 // import { PeItSearchExistingAPIActions } from './containers/pe-it-search-existing/api/pe-it-search-existing.actions';
 // import { PeItSearchExistingAPIEpics } from './containers/pe-it-search-existing/api/pe-it-search-existing.epics';
 import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
@@ -281,8 +279,6 @@ import { TimeSpanService } from './new-services/time-span.service';
     PeItTimelineComponent,
 
     // PeIt specific user interfaces
-    MapComponent,
-    PeItLayerComponent,
     // ReprosComponent,
 
     // Add Modal
