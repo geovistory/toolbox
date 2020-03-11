@@ -8,7 +8,7 @@ import { TypeEditFormAPIActions } from './api/type-edit-form.actions';
 import { TypeEditFormAPIEpics } from './api/type-edit-form.epics';
 import { TypeEditForm } from './api/type-edit-form.models';
 import { typeEditFormReducer } from './api/type-edit-form.reducer';
-import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../../node_modules/@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface TypeEditFormData {
   basePath: string[];
@@ -27,7 +27,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
 
   @HostBinding('class.h-100') h = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  
+
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 

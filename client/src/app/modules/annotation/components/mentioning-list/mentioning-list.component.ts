@@ -8,12 +8,13 @@ import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-del
 import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
-import { MatSort, MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ByPk } from '../../../../core/store/model';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
 import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 
 
 // this is not for state, only for the table view

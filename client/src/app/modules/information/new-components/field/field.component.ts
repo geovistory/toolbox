@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject, of } from '../../../../../../node_modules/rxjs';
 import { filter, first, map, takeUntil, distinctUntilChanged, tap, shareReplay } from '../../../../../../node_modules/rxjs/operators';
@@ -14,6 +13,7 @@ import { PropertiesTreeService } from '../properties-tree/properties-tree.servic
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
 import { equals, keys } from 'ramda';
 import { PaginationService } from '../../new-services/pagination.service';
+import { MatDialog } from '@angular/material/dialog';
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number

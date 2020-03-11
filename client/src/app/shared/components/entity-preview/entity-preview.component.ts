@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, HostBinding, ViewChild } from '@angular/core';
-import { EntityPreview, ActiveProjectService } from 'app/core';
-import { MatMenuTrigger } from '../../../../../node_modules/@angular/material';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActiveProjectService, EntityPreview } from 'app/core';
 
 @Component({
   selector: 'gv-entity-preview',

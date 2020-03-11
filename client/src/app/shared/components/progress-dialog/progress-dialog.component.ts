@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '../../../../../node_modules/@angular/material';
 import { Observable, BehaviorSubject, Subject } from '../../../../../node_modules/rxjs';
 import { takeUntil, auditTime } from '../../../../../node_modules/rxjs/operators';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export type ProgressMode = 'determinate' | 'indeterminate' | 'buffer' | 'query';
 export interface ProgressDialogData {

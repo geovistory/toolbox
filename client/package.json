@@ -59,7 +59,7 @@
     "ngx-auto-unsubscribe": "^2.4.1",
     "ngx-easy-table": "^12.0.0",
     "ngx-json-viewer": "^2.4.0",
-    "ngx-socket-io": "^2.1.1",
+    "ngx-socket-io": "^3.0.1",
     "ngx-treeview": "^6.0.2",
     "primeng": "^8.1.1",
     "primitive-primitives": "0.0.6",

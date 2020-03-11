@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { environment } from 'environments/environment';
-import { MatDialog } from '../../node_modules/@angular/material';
 import { LoopBackConfig } from './core';
 import { FeedbackDialogComponent } from './modules/user-feedback/components/feedback-dialog/feedback-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'gv-root',

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '../../../../../../node_modules/@angular/forms';
-import { MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { first, map, mergeMap, takeUntil, filter } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService, InfLanguage, ProTextProperty } from '../../../../core';
@@ -9,6 +8,7 @@ import { ConfigurationPipesService } from '../../../information/new-services/con
 import { values } from 'd3';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { InfActions } from 'app/core/inf/inf.actions';
+import { MatTableDataSource } from '@angular/material/table';
 
 interface Row {
 

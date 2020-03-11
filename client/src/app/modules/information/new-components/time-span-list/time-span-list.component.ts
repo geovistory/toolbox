@@ -2,12 +2,10 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActiveProjectService } from 'app/core';
 import { Observable, of, Subject } from 'rxjs';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { InfActions } from '../../../../core/inf/inf.actions';
-import { ListDefinition, TimeSpanItem } from '../properties-tree/properties-tree.models';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { TimeSpanService } from '../../new-services/time-span.service';
+import { ListDefinition, TimeSpanItem } from '../properties-tree/properties-tree.models';
 
 @Component({
   selector: 'gv-time-span-list',

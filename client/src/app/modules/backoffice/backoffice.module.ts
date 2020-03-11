@@ -50,7 +50,7 @@ import { HasTypeComponent } from './components/has-type/has-type.component';
 import { HasTypeAPIActions } from './components/has-type/api/has-type.actions';
 import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';
 import { DfhModule } from 'app/core/dfh/dfh.module';
-import { ScrollDispatchModule } from '@angular/cdk/scrolling';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   imports: [
@@ -74,7 +74,7 @@ import { ScrollDispatchModule } from '@angular/cdk/scrolling';
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatInputModule,
-    ScrollDispatchModule,
+    ScrollingModule,
   ],
   providers: [
     // ClassAPIActions,

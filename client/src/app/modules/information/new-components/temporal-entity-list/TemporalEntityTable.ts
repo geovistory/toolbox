@@ -1,8 +1,8 @@
 import { indexBy, mapObjIndexed } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { first, map, takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { FieldDefinition, TemporalEntityItem, TemporalEntityTableI, ListDefinition } from '../properties-tree/properties-tree.models';
+import { MatTableDataSource } from '@angular/material/table';
 
 
 

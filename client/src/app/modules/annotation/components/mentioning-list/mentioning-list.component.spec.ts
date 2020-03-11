@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MentioningListComponent } from './mentioning-list.component';
+import { MentioningListComponent } from "./MentioningListComponent";
 
 describe('MentioningListComponent', () => {
   let component: MentioningListComponent;
@@ -8,9 +8,9 @@ describe('MentioningListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MentioningListComponent ]
+      declarations: [MentioningListComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

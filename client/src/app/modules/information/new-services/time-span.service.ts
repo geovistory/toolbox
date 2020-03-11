@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { equals } from 'ramda';
-import { MatDialog } from '../../../../../node_modules/@angular/material';
 import { combineLatest, of } from '../../../../../node_modules/rxjs';
 import { mergeMap, map } from '../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService, InfRole } from '../../../core';
@@ -10,6 +9,7 @@ import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialog
 import { TimeSpanItem } from '../new-components/properties-tree/properties-tree.models';
 import { InformationPipesService } from './information-pipes.service';
 import { DfhConfig } from '../shared/dfh-config';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -85,7 +85,7 @@ export class TimeSpanService {
     const role: InfRole = {
       fk_temporal_entity: fkTeEn,
       fk_property: parseInt(key),
-      entity_version_project_rels:[{
+      entity_version_project_rels: [{
         calendar: t.calendar
       }],
       time_primitive: {
@@ -99,7 +99,7 @@ export class TimeSpanService {
 
   createDialogData(item: TimeSpanItem): CtrlTimeSpanDialogResult {
 
-    if(!item) return {};
+    if (!item) return {};
 
     const timePrimitives: CtrlTimeSpanDialogResult = {}
     item.properties.forEach((prop) => {

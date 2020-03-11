@@ -11,13 +11,13 @@ import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
 import { FieldDefinition, TemporalEntityItem } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
 import { createPaginateBy } from 'app/modules/information/new-components/temporal-entity-list/temporal-entity-list.component';
 import { PaginationService } from 'app/modules/information/new-services/pagination.service';
+import { MatDialog } from '@angular/material/dialog';
 
 interface TypeItem {
   pkEntity: number

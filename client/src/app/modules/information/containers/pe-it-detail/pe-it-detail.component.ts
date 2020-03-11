@@ -1,21 +1,19 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
-import { ActiveProjectService, IAppState, Tab, U, UiContext, PeItTabData, IconType } from 'app/core';
-import { ClassInstanceLabel, PeItDetail, SubstoreComponent, EntityPreview } from 'app/core/state/models';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { ActiveProjectService, IAppState, IconType, PeItTabData, Tab, U, UiContext } from 'app/core';
+import { ClassInstanceLabel, EntityPreview, PeItDetail, SubstoreComponent } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
+import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { slideInOut } from '../../shared/animations';
 import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
-import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 
 
 
@@ -113,7 +111,6 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
 
     public ngRedux: NgRedux<IAppState>,
     protected actions: PeItDetailAPIActions,
-    private matDialog: MatDialog,
     public ref: ChangeDetectorRef,
     private p: ActiveProjectService,
     private i: InformationPipesService,

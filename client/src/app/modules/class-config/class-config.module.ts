@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatSelectModule, MatTableModule, MatInputModule, MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, MatTabsModule, MatCheckboxModule } from '../../../../node_modules/@angular/material';
 import { ClassConfigDialogComponent } from './components/class-config-dialog/class-config-dialog.component';
 import { ClassConfigComponent } from './components/class-config/class-config.component';
 import { PropertyLabelTableComponent } from './components/property-label-table/property-label-table.component';
@@ -14,6 +13,19 @@ import { ClassFieldsComponent } from './components/class-fields/class-fields.com
 import { TableModule } from 'primeng/table';
 import { FieldConfigComponent } from './components/field-config/field-config.component';
 import { FieldConfigDialogComponent } from './components/field-config-dialog/field-config-dialog.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   imports: [

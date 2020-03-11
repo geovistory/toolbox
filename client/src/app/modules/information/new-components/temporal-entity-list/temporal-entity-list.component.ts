@@ -3,7 +3,6 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectService, InfRoleApi } from 'app/core';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, zip, merge } from 'rxjs';
-import { PageEvent } from '../../../../../../node_modules/@angular/material';
 import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions, LoadPaginatedRoleListMeta } from '../../../../core/inf/inf.actions';
 import { PaginateByParam } from '../../../../core/store/actions';
@@ -13,6 +12,7 @@ import { FieldDefinition, ListDefinition, PropertyListComponentInterface, Tempor
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
 import { PaginationService } from '../../new-services/pagination.service';
+import { PageEvent } from '@angular/material/paginator';
 
 
 

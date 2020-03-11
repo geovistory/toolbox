@@ -2,20 +2,20 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectService, IAppState } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject, of, merge } from 'rxjs';
 import { SelectionModel } from '../../../../../../node_modules/@angular/cdk/collections';
-import { PageEvent } from '../../../../../../node_modules/@angular/material';
 import { first, map, switchMap, takeUntil, shareReplay, tap, distinctUntilChanged } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { AddListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { TemporalEntityTable } from "../temporal-entity-list/TemporalEntityTable";
 import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
 import { PaginateByParam } from 'app/core/store/actions';
 import { InfSelector } from '../../../../core/inf/inf.service';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { equals } from 'ramda';
 import { PaginationService } from '../../new-services/pagination.service';
+import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'gv-temporal-entity-add-list',
