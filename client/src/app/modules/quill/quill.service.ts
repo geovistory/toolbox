@@ -1,7 +1,7 @@
 /// <reference types="quill" />
 
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import Quill from 'quill';
 import Delta from 'quill/node_modules/quill-delta';

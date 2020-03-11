@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { BrowserModule, DomSanitizer, HAMMER_GESTURE_CONFIG, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -39,6 +39,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
+import { GestureConfig } from "../gesture-config";
 
 // const spy = create()
 // spy.unplug(spy.find(CyclePlugin));
@@ -100,7 +101,8 @@ registerLocaleData(localeDeCh);
     MatButtonModule,
     MatIconModule,
     UserFeedbackModule,
-    HttpClientModule
+    HttpClientModule,
+    HammerModule
   ],
   providers: [
     EntityEditorService,
@@ -111,7 +113,8 @@ registerLocaleData(localeDeCh);
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: appearance
-    }
+    },
+    { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
 
   ],
   entryComponents: [

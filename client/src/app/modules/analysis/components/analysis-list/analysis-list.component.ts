@@ -3,7 +3,8 @@ import { Observable, Subject } from 'rxjs';
 import { ProAnalysis, ActiveProjectService, AnalysisTabData, SysConfig } from 'app/core';
 import { map, first, takeUntil } from 'rxjs/operators';
 import { values } from 'd3';
-import { MatTableDataSource, MatSort } from '@angular/material';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'gv-analysis-list',

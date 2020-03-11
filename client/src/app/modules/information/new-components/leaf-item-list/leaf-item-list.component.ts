@@ -13,7 +13,7 @@ import { PaginationService } from '../../new-services/pagination.service';
 import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
 import { equals } from 'ramda';
 import { PaginateByParam } from 'app/core/store/actions';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'gv-leaf-item-list',

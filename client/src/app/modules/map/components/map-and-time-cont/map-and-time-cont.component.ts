@@ -9,7 +9,7 @@ import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.componen
 import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { ActiveProjectService, EntityPreview } from 'app/core';
 import { EntityPreviewsPaginatedDialogData, EntityPreviewsPaginatedDialogComponent } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 
 export interface MapAndTimeContLayer {

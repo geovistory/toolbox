@@ -3,7 +3,7 @@ import { IndexedCharids } from '../quill-edit/quill-edit.component';
 import { Subject, Observable, BehaviorSubject, timer } from 'rxjs';
 import { QuillService } from '../quill.service';
 import { QuillEditorRegistryService } from './quill-editor-registry.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ProgressDialogData, ProgressDialogComponent, ProgressMode } from 'app/shared/components/progress-dialog/progress-dialog.component';
 import { Ops } from '..';
 import { takeUntil } from 'rxjs/operators';

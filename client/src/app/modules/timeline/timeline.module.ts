@@ -1,7 +1,15 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatIconModule, MatTableModule, MatSliderModule, MatSelectModule, MatFormFieldModule, MatDividerModule, MatMenuModule, MatCardModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CoreTableFilterModule } from 'app/shared/components/core-table/filter/filter.module';
 import { CoreTableMenuModule } from 'app/shared/components/core-table/menu/menu.module';

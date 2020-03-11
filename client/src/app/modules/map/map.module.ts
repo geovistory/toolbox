@@ -4,7 +4,10 @@ import { MapCzmlLayersComponent } from './components/map-czml-layers/map-czml-la
 import { MapAndTimeContComponent } from './components/map-and-time-cont/map-and-time-cont.component';
 import { TimelineModule } from '../timeline/timeline.module';
 import { AngularSplitModule } from 'angular-split';
-import { MatButtonModule, MatTooltipModule, MatCardModule, MatIconModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { EntityPreviewsPaginatedModule } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated.module';
 import { PassiveLinkModule } from 'app/shared';
 import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';

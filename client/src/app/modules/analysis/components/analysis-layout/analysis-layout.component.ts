@@ -5,7 +5,7 @@ import { AnalysisService } from '../../services/analysis.service';
 import { takeUntil, switchMap, first, tap, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActiveProjectService, IAppState } from 'app/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { NgRedux } from '@angular-redux/store';
 
 @Component({

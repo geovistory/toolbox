@@ -11,7 +11,7 @@ import { delay, filter, first, map, takeUntil, switchMap, skipWhile, distinctUnt
 import { MentioningListOf, Row } from '../../../annotation/components/mentioning-list/mentioning-list.component';
 import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
 import { ChunksPks, IndexedCharids, QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ProgressDialogData, ProgressMode, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
 
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService, ProAnalysis, ProAnalysisApi, IAppState, AnalysisTabData } from 'app/core';
 import { ErrorDialogComponent, ErrorDialogData } from 'app/shared/components/error-dialog/error-dialog.component';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectService, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity } from 'app/core';
 import { SchemaObject } from 'app/core/store/model';
 import { Observable, Subject } from 'rxjs';

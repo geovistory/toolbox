@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { WarEntityPreviewApi, WarEntityPreview, EntityPreview } from 'app/core';
-import { PageEvent } from '@angular/material';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'gv-entity-previews-paginated',

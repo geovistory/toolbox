@@ -51,7 +51,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { PlaceViewComponent } from './value/place-view/place-view.component';
 // import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
 // import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { MatProgressSpinnerModule } from '@angular/material';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';

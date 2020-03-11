@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule, MatIconModule, MatTableModule, MatDialogModule, MatProgressSpinnerModule, MatPaginatorModule, MatTooltipModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DetailContentModule } from 'app/shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { OntomeProfilesListComponent } from './components/ontome-profiles-list/ontome-profiles-list.component';

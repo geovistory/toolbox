@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Subject } from 'rxjs';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhProfileApi, ActiveProjectService } from 'app/core';
 import { takeUntil } from 'rxjs/operators';
 export interface OntomeProfileDeactivationReportDialogData {
