@@ -8,9 +8,9 @@ import { AccountListAPIEpics } from './api/account-list.epics';
 import { AccountListAPIActions } from './api/account-list.actions';
 import { accountListReducer } from './api/account-list.reducer';
 import { Config } from 'protractor';
-import { Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { first, takeUntil } from 'rxjs/operators';
+import { Columns } from 'ngx-easy-table';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

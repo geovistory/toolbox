@@ -7,9 +7,9 @@ import { ClassFieldList } from './api/class-field-list.models';
 import { ClassFieldListAPIEpics } from './api/class-field-list.epics';
 import { ClassFieldListAPIActions } from './api/class-field-list.actions';
 import { classFieldListReducer } from './api/class-field-list.reducer';
-import { Config, Columns } from 'ngx-easy-table/src/app/ngx-easy-table';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { first, takeUntil } from 'rxjs/operators';
+import { Config, Columns } from 'ngx-easy-table';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -40,7 +40,6 @@ export class ClassFieldListComponent extends ClassFieldListAPIActions implements
     headerEnabled: true,
     orderEnabled: true,
     orderEventOnly: false,
-    globalSearchEnabled: true,
     paginationEnabled: true,
     exportEnabled: false,
     clickEvent: false,

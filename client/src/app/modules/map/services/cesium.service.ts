@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BaseLayerPicker, OpenStreetMapImageryProvider, NavigationHelpButton, ProviderViewModel, SceneModePicker, WebMercatorProjection, Viewer, SceneMode, UrlTemplateImageryProvider, EntityCollection, DataSource, CustomDataSource, Entity, PointPrimitive, PointGraphics, Color, ScreenSpaceEventType } from 'cesium';
+import { BaseLayerPicker, OpenStreetMapImageryProvider, NavigationHelpButton, ProviderViewModel, SceneModePicker, WebMercatorProjection, Viewer, SceneMode, UrlTemplateImageryProvider, EntityCollection, DataSource, CustomDataSource, Entity, PointPrimitive, PointGraphics, Color, ScreenSpaceEventType, ScreenSpaceEventHandler, buildModuleUrl, Credit, defined } from 'cesium';
 import { clone } from 'ramda';
 
 @Injectable({
@@ -7,23 +7,23 @@ import { clone } from 'ramda';
 })
 export class CesiumService {
   // Widgets
-  viewer: Cesium.Viewer;
-  baseLayerPicker: Cesium.BaseLayerPicker
-  navigationHelpButton: Cesium.NavigationHelpButton;
-  sceneModePicker: Cesium.SceneModePicker;
+  viewer: Viewer;
+  baseLayerPicker: BaseLayerPicker
+  navigationHelpButton: NavigationHelpButton;
+  sceneModePicker: SceneModePicker;
 
   // Base Layers
-  imageryViewModels: Cesium.ProviderViewModel[] = []
+  imageryViewModels: ProviderViewModel[] = []
 
   // Interaction Elements
-  // mouseoverEntities: EntityCollection = new Cesium.EntityCollection();
+  // mouseoverEntities: EntityCollection = new EntityCollection();
 
   constructor() { }
 
 
   createCesiumViewer(container: Element): CesiumService {
 
-    this.viewer = new Cesium.Viewer(container, {
+    this.viewer = new Viewer(container, {
       // disable widgets
       animation: false,
       timeline: false,
@@ -40,7 +40,7 @@ export class CesiumService {
       // other settings
       imageryProvider: false,
       requestRenderMode: true,
-      mapProjection: new Cesium.WebMercatorProjection()
+      mapProjection: new WebMercatorProjection()
     })
     this.viewer.resolutionScale = 2;
     return this
@@ -84,7 +84,7 @@ export class CesiumService {
   addBaseLayerOSM() {
     this.imageryViewModels.push(new ProviderViewModel({
       name: 'Open\u00adStreet\u00adMap',
-      iconUrl: Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/openStreetMap.png'),
+      iconUrl: buildModuleUrl('Widgets/Images/ImageryProviders/openStreetMap.png'),
       tooltip: `OpenStreetMap (OSM) is a collaborative project to create a free editable
        map of the world. http://www.openstreetmap.org`,
       creationFunction: function () {
@@ -103,7 +103,7 @@ export class CesiumService {
       creationFunction: function () {
         return new UrlTemplateImageryProvider({
           subdomains: 'abc',
-          credit: new Cesium.Credit('Background: © <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, © <a href="https://www.carto.com/" target="_blank">Carto</a> '),
+          credit: new Credit('Background: © <a href="https://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, © <a href="https://www.carto.com/" target="_blank">Carto</a> '),
           url: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_nolabels/{z}/{x}/{y}@2x.png'
         })
       }
@@ -113,7 +113,7 @@ export class CesiumService {
   addMouseoverHighlight() {
     this.verifyCesiumViewer()
 
-    // const cache: EntityCollection = new Cesium.EntityCollection()
+    // const cache: EntityCollection = new EntityCollection()
 
     const highlights = new CustomDataSource('highlights')
 
@@ -130,12 +130,12 @@ export class CesiumService {
     this.viewer.dataSources.add(highlights)
 
     // Move the primitive that the mouse is over to the top.
-    const handler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+    const handler = new ScreenSpaceEventHandler(this.viewer.canvas);
     handler.setInputAction((movement) => {
       let renderNeeded = false;
       // get an array of all primitives at the mouse position
       const pickedObjects = this.viewer.scene.drillPick(movement.endPosition);
-      if (Cesium.defined(pickedObjects)) {
+      if (defined(pickedObjects)) {
 
         // console.log('pickedObjects:', pickedObjects.map(x => x.id.id))
         // console.log('highlightedMap:', Array.from(highlightedToHiddenMap.values()).map(x => x.id))
@@ -218,7 +218,7 @@ export class CesiumService {
         this.viewer.scene.requestRender()
       }
 
-    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
+    }, ScreenSpaceEventType.MOUSE_MOVE);
 
   }
 
@@ -226,7 +226,7 @@ export class CesiumService {
     this.verifyCesiumViewer()
 
     // Move the primitive that the mouse is over to the top.
-    const handler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+    const handler = new ScreenSpaceEventHandler(this.viewer.canvas);
     handler.setInputAction((click) => {
       const pickedObject = this.viewer.scene.pick(click.position);
       cb(pickedObject)

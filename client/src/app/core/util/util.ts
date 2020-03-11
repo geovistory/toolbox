@@ -1,19 +1,19 @@
 import { FormArray } from '@angular/forms';
 import { ProjectPreview } from 'app/core/active-project/active-project.models';
-import { ExistenceTimeDetail, FieldLabel, FieldList, PeItDetail, PropertyField, RoleDetail, RoleDetailList, TeEntDetail } from 'app/core/state/models';
 import { ByPk } from 'app/core/store/model';
 import { TimeSpan } from 'app/core/time-span/time-span';
 import { QuillDoc } from 'app/modules/quill';
-import { omit } from 'ramda';
-import * as Config from '../../../../../common/config/Config';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { TimeSpanItem } from '../../modules/information/new-components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
-import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { DfhClass, DfhProperty, InfAppellation, InfPersistentItem, InfRole, InfTemporalEntity, InfTimePrimitive, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, SysClassField } from '../sdk';
-import { Field } from '../state/models/field';
-import { TextPropertyField } from '../state/models/text-property-field';
+import { InfRole, InfTimePrimitive, ProProject, ProTextProperty } from '../sdk';
+import { JulianDate } from 'cesium';
+
+export interface CesiumJulianDate {
+  dayNumber: number;
+  secondsOfDay: number;
+}
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator
@@ -146,7 +146,7 @@ export class U {
     const secondsOfFullDay = 60 * 60 * 24;
     const dayNumber = Math.floor(julianSeconds / secondsOfFullDay);
     const secondsOfDay = julianSeconds % secondsOfFullDay;
-    return new Cesium.JulianDate(dayNumber, secondsOfDay)
+    return new JulianDate(dayNumber, secondsOfDay)
   }
 
   /**

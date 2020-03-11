@@ -2,10 +2,9 @@
 declare var Cesium;
 
 import { Component, ElementRef, Input, OnDestroy, OnInit, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { CzmlDataSource } from 'app/core';
 import { combineLatest, from, Observable, Subject } from 'rxjs';
 import { takeUntil, first, map, tap, mapTo, switchMap } from 'rxjs/operators';
-import { JulianDate, BoundingSphere } from 'cesium';
+import { JulianDate, BoundingSphere, CzmlDataSource } from 'cesium';
 import { CesiumService } from '../../services/cesium.service';
 import { CzmlPacket } from '../../../../../../../src/common/interfaces';
 export interface MapLayers {

@@ -4,6 +4,7 @@
 import { CzmlDoubleI, CzmlPoint } from '../../../../../src/common/interfaces/czml-types';
 import { TemporalDistribution } from './statistic-helpers';
 import { QueryPoint } from 'app/modules/information/new-services/map-layer-pipes.service';
+import { Color, JulianDate } from 'cesium';
 
 // https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet
 
@@ -78,11 +79,11 @@ export class CzmlPointGenerator implements CzmlPointGeneratorSettings {
   private setColor?(p: QueryPoint) {
 
     if (p.color) {
-      const color = Cesium.Color.fromCssColorString(p.color);
+      const color = Color.fromCssColorString(p.color);
       if (color) {
         this.d.color = {
           ...this.d.color,
-          rgba: Cesium.Color.pack(color, []).map(n => n * 255)
+          rgba: Color.pack(color, []).map(n => n * 255)
         }
       }
     }
@@ -91,12 +92,12 @@ export class CzmlPointGenerator implements CzmlPointGeneratorSettings {
   private setOutlineColor?(p: QueryPoint) {
 
     if (p.color) {
-      let color = Cesium.Color.fromCssColorString(p.color, new Cesium.Color());
+      let color = Color.fromCssColorString(p.color);
       if (color) {
-        color = color.darken(0.5, new Cesium.Color());
+        color = color.darken(0.5, new Color());
         this.d.outlineColor = {
           ...this.d.outlineColor,
-          rgba: Cesium.Color.pack(color, []).map(n => n * 255)
+          rgba: Color.pack(color, []).map(n => n * 255)
         }
       }
     }
@@ -142,22 +143,22 @@ export class CzmlPointGenerator implements CzmlPointGeneratorSettings {
       const number = this.getPixelSizeByValue(d.items.length);
       if (number === undefined) throw new Error('Problem getting the pixelSize.');
       if (this.wrapPixelSizeWithZero && i === 0) {
-        const beforStart = new Cesium.JulianDate();
-        Cesium.JulianDate.addSeconds(d.start, -0.1, beforStart)
+        const beforStart = new JulianDate();
+        JulianDate.addSeconds(d.start, -0.1, beforStart)
         arr = [beforStart.toString(), 0]
       }
 
       arr = [...arr, ...[d.start.toString(), number]]
 
       if (d.end) {
-        const endTime = new Cesium.JulianDate();
-        Cesium.JulianDate.addSeconds(d.end, -0.1, endTime)
+        const endTime = new JulianDate();
+        JulianDate.addSeconds(d.end, -0.1, endTime)
         arr = [...arr, ...[endTime.toString(), number]]
       }
 
       if (this.wrapPixelSizeWithZero && temporalDistribution.length === (i + 1)) {
-        const afterEnd = new Cesium.JulianDate();
-        Cesium.JulianDate.addSeconds(Cesium.JulianDate.fromIso8601(arr[arr.length - 2]), 0.1, afterEnd)
+        const afterEnd = new JulianDate();
+        JulianDate.addSeconds(JulianDate.fromIso8601(arr[arr.length - 2]), 0.1, afterEnd)
         arr = [...arr, afterEnd.toString(), 0]
       }
     })

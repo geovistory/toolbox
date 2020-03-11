@@ -40,7 +40,7 @@
     "angular-split": "^3.0.2",
     "angular2-elastic-input": "^1.4.2",
     "bootstrap": "4.3.1",
-    "cesium": "^1.65.0",
+    "cesium": "^1.67.0",
     "color": "^3.1.2",
     "core-js": "^2.6.11",
     "d3": "^5.15.0",
