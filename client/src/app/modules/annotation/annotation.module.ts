@@ -12,7 +12,7 @@ import { DigitalPreviewModule } from '../../shared/components/digital-preview/di
 import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
 import { QuillOpsToStrModule } from '../../shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
-import { MentioningListComponent } from "./components/mentioning-list/MentioningListComponent";
+import { MentioningListComponent } from './components/mentioning-list/mentioning-list.component';
 
 @NgModule({
   imports: [
