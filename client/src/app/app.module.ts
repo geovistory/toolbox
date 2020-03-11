@@ -13,7 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
-import { ElasticInputModule } from 'angular2-elastic-input';
+// import { ElasticInputModule } from 'angular2-elastic-input';
 import { ProModule } from 'app/core/pro/pro.module';
 import { environment } from 'environments/environment';
 import 'hammerjs';
@@ -78,7 +78,7 @@ registerLocaleData(localeDeCh);
     NgReduxModule,
     SDKBrowserModule.forRoot(),
     NgbModule,
-    ElasticInputModule.forRoot(),
+    // ElasticInputModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
     DndModule.forRoot(),
     TreeviewModule.forRoot(),
