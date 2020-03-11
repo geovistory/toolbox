@@ -587,15 +587,6 @@ import { TimeSpanService } from './new-services/time-span.service';
     FormGroupComponent,
     FormArrayComponent,
     FormControlComponent
-  ],
-  entryComponents: [
-    // LeafPeItViewModalComponent,
-    // CreateEntityModalComponent,
-    // ExistenceTimeModalComponent,
-    AddOrCreateEntityModal,
-    ChooseClassDialogComponent,
-    CtrlTimeSpanDialogComponent,
-    PropertiesTreeDialogComponent
   ]
 })
 export class Information2Module { }

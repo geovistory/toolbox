@@ -117,9 +117,6 @@ registerLocaleData(localeDeCh);
     { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
 
   ],
-  entryComponents: [
-    AppComponent
-  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

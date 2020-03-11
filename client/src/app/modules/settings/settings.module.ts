@@ -56,12 +56,6 @@ import { FormsModule } from '@angular/forms';
     MatTooltipModule,
     MatFormFieldModule,
     MatInputModule
-  ],
-  entryComponents: [
-    OntomeProfilesListDialogComponent,
-    OntomeProfileActivationReportDialogComponent,
-    OntomeProfileDeactivationReportDialogComponent,
-    OntomeProfileUpdateDialogComponent
   ]
 })
 export class SettingsModule { }

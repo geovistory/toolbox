@@ -146,12 +146,6 @@ const components = [
     QueryFilterService
   ],
   declarations: components,
-  exports: components,
-  entryComponents: [
-    ResultingEntitiesDialogComponent,
-    QueryFilterComponent,
-    QueryPathFormComponent
-  ]
-
+  exports: components
 })
 export class QueriesModule { }

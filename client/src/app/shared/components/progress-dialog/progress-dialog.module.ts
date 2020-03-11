@@ -11,6 +11,5 @@ import { ProgressDialogComponent } from './progress-dialog.component';
     MatProgressBarModule
   ],
   declarations: [ProgressDialogComponent],
-  entryComponents: [ProgressDialogComponent]
 })
 export class ProgressDialogModule { }

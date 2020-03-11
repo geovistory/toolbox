@@ -141,9 +141,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     TypesAPIEpics,
     TypeEditFormAPIActions,
     TypeEditFormAPIEpics
-  ],
-  entryComponents: [
-    TypeEditFormComponent
   ]
 })
 export class ProjectsModule { }

@@ -52,7 +52,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     TableModule
   ],
   declarations: [ClassConfigComponent, ClassConfigDialogComponent, PropertyLabelTableComponent, LabelsComponent, ClassFieldsComponent, FieldConfigComponent, FieldConfigDialogComponent],
-  exports: [ClassFieldsComponent], // TODO REMOVE
-  entryComponents: [ClassConfigDialogComponent, FieldConfigDialogComponent]
+  exports: [ClassFieldsComponent],
 })
 export class ClassConfigModule { }

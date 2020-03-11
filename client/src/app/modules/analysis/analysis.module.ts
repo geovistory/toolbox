@@ -114,9 +114,6 @@ const components = [
     MapModule,
     AnalysisIconModule
   ],
-  exports: components,
-  entryComponents: [
-    DialogCreateComponent
-  ]
+  exports: components
 })
 export class AnalysisModule { }

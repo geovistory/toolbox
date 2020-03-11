@@ -25,6 +25,5 @@ import { EntityPreviewsPaginatedDialogService } from './service/entity-previews-
     MatDividerModule,
     MatDialogModule
   ],
-  entryComponents: [EntityPreviewsPaginatedDialogComponent]
 })
 export class EntityPreviewsPaginatedModule { }

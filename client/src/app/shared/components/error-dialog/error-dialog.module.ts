@@ -15,6 +15,5 @@ import { MatDividerModule } from '@angular/material/divider';
     MatDividerModule
   ],
   declarations: [ErrorDialogComponent],
-  entryComponents: [ErrorDialogComponent]
 })
 export class ErrorDialogModule { }

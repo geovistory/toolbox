@@ -12,7 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatIconModule
   ],
-  declarations: [FeedbackDialogComponent],
-  entryComponents: [FeedbackDialogComponent]
+  declarations: [FeedbackDialogComponent]
 })
 export class UserFeedbackModule { }
