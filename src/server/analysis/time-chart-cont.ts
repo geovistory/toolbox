@@ -3,7 +3,8 @@ import { first, takeUntil } from 'rxjs/operators';
 import { ChartLine, TimeChartContInput, TimeChartContOutput } from '../../common/interfaces';
 import { isValidTimeChartContInput, isValidTimeChartContOutput, isValidTimeChartContQueryRes } from '../../common/validators';
 import { SqlBuilder } from '../query/sql-builder';
-import { Analysis, HookResult } from './analysis';
+import { Analysis } from './analysis';
+import { HookResult } from '../utils/interfaces';
 
 
 

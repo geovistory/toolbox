@@ -4,8 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql_formatter_1 = __importDefault(require("sql-formatter"));
-class SqlBuilder {
+const sql_builder_base_1 = require("../utils/sql-builder-base");
+class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
     constructor() {
+        super();
         this.PK_HISTC8_GEOGRAPHICAL_PLACE = 363;
         this.PK_HISTC11_BUILT_WORK = 441;
         this.GEO_CLASSES = {
@@ -17,8 +19,6 @@ class SqlBuilder {
         this.P166_INHERITED_PKS = [1184, 1181];
         this.PK_E93_PRESENCE = 84;
         this.PK_P167_WAS_AT = 148;
-        this.params = [];
-        this.sql = '';
         this.tableAliases = [];
         // variables for the query filter part (tw1)
         this.filterWheres = [];
@@ -439,13 +439,6 @@ class SqlBuilder {
         });
     }
     // generic
-    addParam(val) {
-        this.params.push(val);
-        return '$' + this.params.length;
-    }
-    addParams(vals) {
-        return vals.map(val => this.addParam(val)).join(',');
-    }
     joinWheres(wheres, operation) {
         return wheres.join(`
             ${operation}

@@ -10,7 +10,7 @@ import { DeactivationReportItem, ProfileDeactivationReport } from '../../common/
 import { isValidApiClassProfileList } from '../../common/validators/api-class-profile-list.validator';
 import { isValidApiProfileList } from '../../common/validators/api-profile-list.validator';
 import { isValidApiPropertyProfileList } from '../../common/validators/api-property-profile-list.validator';
-import { ErrorObj } from '../analysis/analysis';
+import { ErrorObj } from '../utils/interfaces';
 type Callback = (err: ErrorObj | false, res?: any) => void;
 interface DeactivationReportQueryRow {
   category: 'property' | 'class',

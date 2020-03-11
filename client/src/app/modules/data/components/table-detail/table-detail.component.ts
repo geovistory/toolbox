@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input } from '@angular
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { Subject } from 'rxjs';
+import { DatDigitalApi, ActiveProjectService } from 'app/core';
+import { first, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-table-detail',
@@ -19,13 +21,23 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   t: TabLayout;
 
+  rows$
+
   constructor(
-    public ref: ChangeDetectorRef
+    public ref: ChangeDetectorRef,
+    private digitalApi: DatDigitalApi,
+    private p: ActiveProjectService
   ) { }
 
   ngOnInit() {
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
 
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.rows$ = this.digitalApi.getTablePage(pkProject, this.pkEntity, {
+        columns: [24626664, 24626666]
+      })
+
+    })
   }
 
   ngOnDestroy() {
