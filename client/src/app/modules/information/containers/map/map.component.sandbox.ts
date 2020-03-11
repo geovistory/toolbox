@@ -2,7 +2,6 @@ import { sandboxOf } from 'angular-playground';
 
 import { MapComponent } from './map.component';
 import { Information2Module } from '../../information.module';
-import { ViewerConfiguration } from 'angular-cesium';
 
 
 export default sandboxOf(MapComponent, {
@@ -12,7 +11,6 @@ export default sandboxOf(MapComponent, {
   declarations: [
   ],
   providers: [
-    ViewerConfiguration
   ],
   declareComponent: false
 })

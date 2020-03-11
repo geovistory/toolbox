@@ -91,7 +91,6 @@ import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 import { DndModule } from 'ng2-dnd';
 import { TableModule } from 'ngx-easy-table';
 import { TreeviewModule } from 'ngx-treeview';
-import { AngularCesiumModule } from '../../../../node_modules/angular-cesium';
 import { AngularSplitModule } from '../../../../node_modules/angular-split';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
@@ -214,7 +213,6 @@ import { TimeSpanService } from './new-services/time-span.service';
     FormsModule,
     ReactiveFormsModule,
     FormFactoryModule,
-    AngularCesiumModule,
     AngularSplitModule,
     DetailContentModule,
     DetailTopBarModule,

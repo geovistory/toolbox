@@ -7,7 +7,6 @@ import { QuillDoc } from 'app/modules/quill';
 import { omit } from 'ramda';
 import * as Config from '../../../../../common/config/Config';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
-import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/angular-cesium';
 import { TimeSpanItem } from '../../modules/information/new-components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { Granularity } from '../date-time/date-time-commons';
@@ -135,11 +134,11 @@ export class U {
     else return '';
   }
 
-  static acNotificationFromPacket = (packet, actionType: ActionType): AcNotification => ({
-    id: packet.id,
-    entity: new AcEntity(packet),
-    actionType
-  })
+  // static acNotificationFromPacket = (packet, actionType: ActionType): AcNotification => ({
+  //   id: packet.id,
+  //   entity: new AcEntity(packet),
+  //   actionType
+  // })
 
   static CesiumJulianDateFromJulianSecond = (julianSeconds: number): CesiumJulianDate => {
     if (!julianSeconds) return;

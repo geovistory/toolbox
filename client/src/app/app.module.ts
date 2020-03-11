@@ -1,6 +1,7 @@
 import { NgReduxRouterModule } from '@angular-redux/router';
 import { NgReduxModule } from '@angular-redux/store';
 import { CommonModule, registerLocaleData } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import localeDeCh from '@angular/common/locales/de-CH';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,6 +10,7 @@ import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@ang
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
@@ -17,11 +19,8 @@ import { environment } from 'environments/environment';
 import 'hammerjs';
 import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
-import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
-import { create } from "rxjs-spy";
-import { CyclePlugin } from 'rxjs-spy/plugin';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveAccountService, AuthGuard, EntityEditorService, LoopBackConfig, SDKBrowserModule, ValidationDirectivesModule } from './core';
@@ -40,10 +39,6 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
-import { AngularCesiumModule, ModuleConfiguration } from 'angular-cesium';
-import { HttpClientModule } from '@angular/common/http';
-import { MatSortModule } from '@angular/material';
-import { AnalysisIconModule } from './shared/pipes/analysis-icon/analysis-icon.module';
 
 // const spy = create()
 // spy.unplug(spy.find(CyclePlugin));
@@ -80,10 +75,9 @@ registerLocaleData(localeDeCh);
     NgReduxRouterModule,
     NgReduxModule,
     SDKBrowserModule.forRoot(),
-    NgbModule.forRoot(),
+    NgbModule,
     ElasticInputModule.forRoot(),
     SlimLoadingBarModule.forRoot(),
-    AngularCesiumModule.forRoot(),
     DndModule.forRoot(),
     TreeviewModule.forRoot(),
     SocketIoModule.forRoot(socketConfig),

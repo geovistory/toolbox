@@ -1,10 +1,9 @@
-import { ViewerConfiguration } from 'angular-cesium';
 import { sandboxOf } from 'angular-playground';
 import { clone } from 'ramda';
 import { BehaviorSubject } from 'rxjs';
-import { MapCzmlLayersComponent, MapLayer } from './map-czml-layers.component';
-import { MapModule } from '../../map.module';
 import { CzmlPacket } from '../../../../../../../src/common/interfaces';
+import { MapModule } from '../../map.module';
+import { MapCzmlLayersComponent, MapLayer } from './map-czml-layers.component';
 import { data2 } from './map-czml-layers.mock';
 
 const now = new Date();

@@ -4,7 +4,6 @@ import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AngularCesiumModule } from 'angular-cesium';
 import { PlaygroundModule } from 'angular-playground';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
@@ -59,7 +58,6 @@ PlaygroundModule
       NgbModule.forRoot(),
       ElasticInputModule.forRoot(),
       SlimLoadingBarModule.forRoot(),
-      AngularCesiumModule.forRoot(),
       TreeviewModule.forRoot(),
       DndModule.forRoot(),
       MccColorPickerModule.forRoot({
