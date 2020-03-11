@@ -1,6 +1,6 @@
 
 import { Observable, of, Subject } from 'rxjs';
-import { SqlBuilder } from '../query/sql-builder';
+import { SqlBuilder } from './sql-builder';
 import { Analysis } from './analysis';
 import { TableInput, TableOutput, TableQueryRes, TableExportFileType } from '../../common/interfaces'
 import { isValidTableInput, isValidTableQueryRes, isValidTableOutput } from '../../common/validators'

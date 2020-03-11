@@ -16,36 +16,27 @@
     }
   },
   "properties": {
-    "quill_doc": {
-      "type": "object"
+    "fk_digital": {
+      "type": "number"
     },
-    "string": {
-      "type": "string"
+    "fk_data_type": {
+      "type": "number"
     },
-    "fk_text": {
-      "type": "number",
-      "required": true
+    "fk_column_content_type": {
+      "type": "number"
     },
-    "fk_entity_version": {
-      "type": "number",
-      "required": true
+    "fk_column_relationship_type": {
+      "type": "number"
+    },
+    "fk_original_column": {
+      "type": "number"
+    },
+    "is_imported": {
+      "type": "number"
     }
   },
   "validations": [],
-  "relations": {
-    "data_info_associations": {
-      "type": "hasMany",
-      "model": "InfEntityAssociation",
-      "foreignKey": "fk_data_domain",
-      "primaryKey": "pk_entity"
-    },
-    "digital": {
-      "type": "belongsTo",
-      "model": "DatDigital",
-      "foreignKey": "fk_text",
-      "primaryKey": "pk_text"
-    }
-  },
+  "relations": {},
   "acls": [
     {
       "principalType": "ROLE",
@@ -112,7 +103,7 @@
         ],
         "root": true
       },
-      "description": "Get the chunks related to the digital, with their entity associations.",
+      "description": "Get the columns related to the digital (table).",
       "http": {
         "path": "/of-digital",
         "verb": "get"
