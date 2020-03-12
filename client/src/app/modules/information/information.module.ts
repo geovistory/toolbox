@@ -17,53 +17,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
-// import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
-// import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
-// import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
-// import { ExTimePropertyFieldFormComponent } from './property-field/ex-time/ex-time-property-field-form/ex-time-property-field-form.component';
-// import { PeItPropertyFieldAddCtrlComponent } from './property-field/pe-it/pe-it-property-field-add-ctrl/pe-it-property-field-add-ctrl.component';
-// import { PeItPropertyFieldCreateCtrlComponent } from './property-field/pe-it/pe-it-property-field-create-ctrl/pe-it-property-field-create-ctrl.component';
-// import { PeItPropertyFieldEditableComponent } from './property-field/pe-it/pe-it-property-field-editable/pe-it-property-field-editable.component';
-// import { PeItPropertyFieldFormComponent } from './property-field/pe-it/pe-it-property-field-form/pe-it-property-field-form.component';
-// import { PropertyFieldActions } from './property-field/property-field.actions';
-// import { PropertyFieldApiEpics } from './property-field/property-field.epics';
-// import { TeEntPropertyFieldAddCtrlComponent } from './property-field/te-ent/te-ent-property-field-add-ctrl/te-ent-property-field-add-ctrl.component';
-// import { TeEntPropertyFieldCreateCtrlComponent } from './property-field/te-ent/te-ent-property-field-create-ctrl/te-ent-property-field-create-ctrl.component';
-// import { TeEntPropertyFieldEditableComponent } from './property-field/te-ent/te-ent-property-field-editable/te-ent-property-field-editable.component';
-// import { TeEntPropertyFieldFormComponent } from './property-field/te-ent/te-ent-property-field-form/te-ent-property-field-form.component';
-// import { PeItRoleAddCtrlComponent } from './role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
-// import { PeItRoleCreateCtrlComponent } from './role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
-// import { PeItRoleEditableComponent } from './role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
-// import { RoleActions } from './role/role.actions';
-// import { TeEntRoleAddCtrlComponent } from './role/te-ent/te-ent-role-add-ctrl/te-ent-role-add-ctrl.component';
-// import { TeEntRoleCreateCtrlComponent } from './role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component';
-// import { TeEntRoleEditableComponent } from './role/te-ent/te-ent-role-editable/te-ent-role-editable.component';
-// import { AppellationService } from './shared/appellation.service';
-// import { ClassService } from './shared/class.service';
-// import { EprService } from './shared/epr.service';
-// import { PeItService } from './shared/pe-it.service';
-// import { PropertyFieldService } from './shared/property-field.service';
-// import { PropertyService } from './shared/property.service';
-// import { RoleService } from './shared/role.service';
-// import { TeEntService } from './shared/te-ent.service';
-// import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
-// import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
-// import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
-// import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
-// import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
-// import { TypeEditableComponent } from './type/type-editable/type-editable.component';
-// import { AppellationCtrlComponent } from './value/appellation-ctrl/appellation-ctrl.component';
-// import { AppellationViewComponent } from './value/appellation-view/appellation-view.component';
-// import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
-// import { LanguageViewComponent } from './value/language-view/language-view.component';
-// import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
-// import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
-// import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
-// import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
-// import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
-// import { PlaceViewComponent } from './value/place-view/place-view.component';
-// import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
-// import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
@@ -114,7 +67,6 @@ import { PeItDetailAPIActions } from './containers/pe-it-detail/api/pe-it-detail
 import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
 import { PeItDetailComponent } from './containers/pe-it-detail/pe-it-detail.component';
 import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
-import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
 import { TeEntDetailAPIActions } from './containers/te-ent-detail/api/te-ent-detail.actions';
 import { TeEntActions } from './containers/te-ent-detail/api/te-ent.actions';
 import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.component';
@@ -220,7 +172,6 @@ import { AngularSplitModule } from 'app/core/split/module';
     InformationComponent,
     EntitySearchHitComponent,
     EntityAddExistingHitComponent,
-    PeItTimelineComponent,
     PeItDetailComponent,
     TeEntDetailComponent,
     CreateOrAddEntityComponent,

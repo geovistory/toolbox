@@ -1,105 +1,99 @@
 import { InfPersistentItem } from 'app/core/sdk';
-import { TimeLineSettings } from 'app/modules/timeline/models/timeline';
 import { Entity } from './entity';
-// import { Repros } from 'app/modules/information/containers/repros/api/repros.models';
-import { PeItTimeline } from 'app/modules/information/containers/pe-it-timeline/api/pe-it-timeline.models';
 
 export interface PeItDetailList { [pk_entity: number]: PeItDetail };
 
 export class PeItDetail extends Entity {
 
-    // record
-    peIt?: InfPersistentItem;
+  // record
+  peIt?: InfPersistentItem;
 
-    form?: any;
+  form?: any;
 
-    /**
-     * Display settings with defaults.
-     * To customize the default values, provide the value in the data of the constructor
-     */
-
-
-
-    /** Right Panel Visibility */
-
-    // show the map
-    showMap?= false;
-
-    // show the timeline
-    showTimeline?= false;
-
-    // show the mentioned entities of a source
-    showMentionedEntities?= false;
-
-    // show the assertions using the entity
-    showAssertions?= false;
-
-    // show the sources of a peIt
-    showSources?= false;
-
-    /** Left Panel Visibility */
-
-    // the properties with information about the peIt
-    showProperties?= false;
-
-    // show the sectionList of a source
-    showSectionList?= false;
-
-    // show the reproductions of a section
-    showRepros?= false;
+  /**
+   * Display settings with defaults.
+   * To customize the default values, provide the value in the data of the constructor
+   */
 
 
-    /** Info Visibility */
 
-    showOntoInfo?= false;
+  /** Right Panel Visibility */
 
-    showCommunityStats?= false;
+  // show the map
+  showMap?= false;
 
+  // show the timeline
+  showTimeline?= false;
 
-    /** Toggle Buttons Visibility (left panel) */
+  // show the mentioned entities of a source
+  showMentionedEntities?= false;
 
-    // the button to toggle showProperties
-    showPropertiesToggle?= false;
+  // show the assertions using the entity
+  showAssertions?= false;
 
-    // the button to toggle showSectionList
-    showSectionListToggle?= false;
+  // show the sources of a peIt
+  showSources?= false;
 
-    // the button to toggle showRepros
-    showReprosToggle?= false;
+  /** Left Panel Visibility */
 
+  // the properties with information about the peIt
+  showProperties?= false;
 
-    /** Toggle Buttons Visibility (right panel) */
+  // show the sectionList of a source
+  showSectionList?= false;
 
-    // the button to toggle showMap
-    showMapToggle?= false;
-
-    // the button to toggle showTimeline
-    showTimelineToggle?= false;
-
-    // the button to toggle showMentionedEntities
-    showMentionedEntitiesToggle?= false;
-
-    // the button to toggle showAssertions
-    showAssertionsToggle?= false;
-
-    // the button to toggle showSources
-    showSourcesToggle?= false;
+  // show the reproductions of a section
+  showRepros?= false;
 
 
-    loading?: boolean; // for leaf pe it view
-    leafPeItLoading?: boolean;
-    _leaf_peIt_modal?: PeItDetail; // for leaf pe it view modal
+  /** Info Visibility */
+
+  showOntoInfo?= false;
+
+  showCommunityStats?= false;
 
 
-    // reproductions of a section
-    // repros?: Repros;
+  /** Toggle Buttons Visibility (left panel) */
 
-    /** Timeline */
-    peItTimeLine?: PeItTimeline;
+  // the button to toggle showProperties
+  showPropertiesToggle?= false;
 
-    constructor(data?: PeItDetail) {
-        super();
-        Object.assign(this, data);
-    }
+  // the button to toggle showSectionList
+  showSectionListToggle?= false;
+
+  // the button to toggle showRepros
+  showReprosToggle?= false;
+
+
+  /** Toggle Buttons Visibility (right panel) */
+
+  // the button to toggle showMap
+  showMapToggle?= false;
+
+  // the button to toggle showTimeline
+  showTimelineToggle?= false;
+
+  // the button to toggle showMentionedEntities
+  showMentionedEntitiesToggle?= false;
+
+  // the button to toggle showAssertions
+  showAssertionsToggle?= false;
+
+  // the button to toggle showSources
+  showSourcesToggle?= false;
+
+
+  loading?: boolean; // for leaf pe it view
+  leafPeItLoading?: boolean;
+  _leaf_peIt_modal?: PeItDetail; // for leaf pe it view modal
+
+
+  // reproductions of a section
+  // repros?: Repros;
+
+  constructor(data?: PeItDetail) {
+    super();
+    Object.assign(this, data);
+  }
 
 }
