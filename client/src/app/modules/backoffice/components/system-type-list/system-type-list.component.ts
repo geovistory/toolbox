@@ -2,7 +2,7 @@ import { Component, OnDestroy, Input, OnInit, HostBinding } from '@angular/core'
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState } from 'app/core';
+import { IAppState } from 'app/core/store/model';
 import { RootEpics } from 'app/core/store/epics';
 import { SystemTypeList } from './api/system-type-list.models';
 import { SystemTypeListAPIEpics } from './api/system-type-list.epics';

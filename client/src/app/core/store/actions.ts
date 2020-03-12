@@ -1,10 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, U } from 'app/core';
+import { U } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActionsObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { IAppState } from './model';
 
 export interface LoadActionMeta { addPending: string, pk?: number }
 export interface LoadByPkANsVersionActionMeta { addPending: string, pk?: number, pkEntity: number, version: number }

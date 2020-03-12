@@ -1,20 +1,19 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil, map, switchMap, tap } from 'rxjs/operators';
-import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-settings.component';
-import { ApiProfile } from '../../../../../../../src/common/interfaces';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActiveProjectService } from 'app/core';
-import { runInThisContext } from 'vm';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { values } from 'd3';
 import { indexBy } from 'ramda';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { OntomeProfilesListDialogComponent, OntomeProfilesListDialogData } from '../ontome-profiles-list-dialog/ontome-profiles-list-dialog.component';
-import { OntomeProfileActivationReportDialogData, OntomeProfileActivationReportDialogComponent } from '../ontome-profile-activation-report-dialog/ontome-profile-activation-report-dialog.component';
+import { Observable, Subject } from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { ApiProfile } from '../../../../../../../src/common/interfaces';
+import { OntomeProfileActivationReportDialogComponent, OntomeProfileActivationReportDialogData } from '../ontome-profile-activation-report-dialog/ontome-profile-activation-report-dialog.component';
+import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-settings.component';
+
 
 
 @Component({

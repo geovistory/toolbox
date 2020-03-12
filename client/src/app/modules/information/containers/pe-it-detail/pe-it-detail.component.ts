@@ -1,7 +1,9 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { ActiveProjectService, IAppState, IconType, PeItTabData, Tab, U, UiContext } from 'app/core';
+import { IconType, PeItTabData, Tab, U, UiContext } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { ClassInstanceLabel, EntityPreview, PeItDetail, SubstoreComponent } from 'app/core/state/models';
+import { IAppState } from 'app/core/store/model';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
@@ -14,8 +16,6 @@ import { InformationPipesService } from '../../new-services/information-pipes.se
 import { slideInOut } from '../../shared/animations';
 import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
-
-
 
 @WithSubStore({
   localReducer: peItDetailReducer,

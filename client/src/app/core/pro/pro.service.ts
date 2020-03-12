@@ -2,12 +2,11 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
+import { toString } from 'ramda';
 import { Observable } from 'rxjs';
-import { filter } from '../../../../node_modules/rxjs/operators';
-import { ProInfoProjRel, ProDfhClassProjRel, ProClassFieldConfig, ProTextProperty, ProAnalysis, ProProject, ProDfhProfileProjRel } from '../sdk';
+import { ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '../sdk';
 import { ProActions } from './pro.actions';
 import { proDefinitions, proRoot } from './pro.config';
-import { toString } from 'ramda';
 
 
 class Selector {

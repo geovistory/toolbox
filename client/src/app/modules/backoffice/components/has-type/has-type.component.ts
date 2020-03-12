@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent } from 'app/core';
+import { SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { HasType } from './api/has-type.models';
 import { HasTypePropertyReadable } from "../../../../core/state/models/has-type-property-readable";
@@ -10,7 +10,7 @@ import { HasTypeAPIActions } from './api/has-type.actions';
 import { hasTypeReducer } from './api/has-type.reducer';
 import { MatTableDataSource } from '@angular/material/table';
 import { takeUntil } from 'rxjs/operators';
-
+import { IAppState } from 'app/core/store/model';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

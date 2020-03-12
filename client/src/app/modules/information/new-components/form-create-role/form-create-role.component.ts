@@ -1,15 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { clone, hasIn } from 'ramda';
 import { FormBuilder, FormGroup } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { debounceTime, filter, first, map, mergeMap, startWith, takeUntil, switchMap } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfTextProperty, SysConfig } from '../../../../core';
+import { debounceTime, filter, first, map, mergeMap, startWith, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { InfTextProperty, SysConfig } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { ListDefinition } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { FormItem, FormPart, FormPartInitValueRole, FormPartInitValueTextProperty } from './FormPart';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 
 
 

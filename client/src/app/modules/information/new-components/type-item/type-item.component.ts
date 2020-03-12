@@ -1,12 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
-import { Observable, Subject, combineLatest } from '../../../../../../node_modules/rxjs';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { FormGroup, FormBuilder, FormControl } from '../../../../../../node_modules/@angular/forms';
-import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
-import { switchMap, map, takeUntil, first, filter } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfRole, ProInfoProjRel } from '../../../../core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { FormBuilder, FormControl, FormGroup } from '../../../../../../node_modules/@angular/forms';
+import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
+import { first, map, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { InfRole, ProInfoProjRel } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
 
 @Component({
   selector: 'gv-type-item',

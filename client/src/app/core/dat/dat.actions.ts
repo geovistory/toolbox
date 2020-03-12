@@ -1,12 +1,12 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, DatDigital, U } from 'app/core';
-import { StandardActionsFactory, LoadActionMeta, SucceedActionMeta, ActionResultObservable } from 'app/core/store/actions';
-import { datRoot } from './dat.config';
-import { DigitalSlice, NamespaceSlice, ChunkSlice } from './dat.models';
-import { DatNamespace, DatChunk } from '../sdk';
+import { DatDigital, U } from 'app/core';
+import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/store/actions';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
-import { ActionResolverService } from '../store/action-resolver.service';
+import { DatChunk, DatNamespace } from '../sdk';
+import { IAppState } from 'app/core/store/model';
+import { datRoot } from './dat.config';
+import { ChunkSlice, DigitalSlice, NamespaceSlice } from './dat.models';
 
 export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number };
 

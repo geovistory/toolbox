@@ -4,7 +4,6 @@ import { U } from 'app/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
-import { FormArrayConfig, FormFactory, FormFactoryConfig, FormFactoryService, FormGroupConfig, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { values } from 'd3';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
@@ -12,11 +11,13 @@ import { first, map, takeUntil, filter, switchMap, distinctUntilChanged } from '
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from '../class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
-import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
+import { FormFactoryCompontentInjectData, FormFactoryComponent, FormGroupConfig, FormNodeConfig, FormFactoryConfig } from 'app/modules/form-factory/core/form-factory.models';
 import { ClassFilterCondition, SubgroupOperator, SubGroupType } from '../../../../../../../src/common/interfaces';
 import { QueryFilterService } from './query-filter.service';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
 import { equals } from 'ramda';
+import { FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactory } from "app/modules/form-factory/services/FormFactory";
 
 export interface ArrSubgroupData {
   operator?: SubgroupOperator,

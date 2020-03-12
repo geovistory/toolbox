@@ -1,5 +1,4 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArrayConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { InformationBasicPipesService } from 'app/modules/information/new-services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
@@ -10,6 +9,7 @@ import { ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type
 import { PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 import { QfArraySubgroupInitVal, QfFormArrayData, QfFormArrayFactory, QfFormControlData, QfFormControlFactory, QfFormNodeConfig } from '../query-filter/query-filter.component';
 import { QueryFilterService } from '../query-filter/query-filter.service';
+import { FormArrayConfig } from 'app/modules/form-factory/core/form-factory.models';
 
 
 

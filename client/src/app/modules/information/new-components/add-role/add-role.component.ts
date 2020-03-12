@@ -1,16 +1,18 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, SysConfig, IAppState } from 'app/core';
+import { SysConfig } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { BehaviorSubject, combineLatest, Subject, of, Observable } from 'rxjs';
-import { first, takeUntil, map } from 'rxjs/operators';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
-import { temporalEntityListDefaultLimit, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
-import { ActionResultObservable } from '../../../../core/store/actions';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { InfSelector } from '../../../../core/inf/inf.service';
-import { PaginationService } from '../../new-services/pagination.service';
+import { ActionResultObservable } from '../../../../core/store/actions';
+import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
+import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
+import { temporalEntityListDefaultLimit } from '../temporal-entity-list/temporal-entity-list.component';
+import { createPaginateBy } from "../temporal-entity-list/createPaginateBy";
+import { IAppState } from 'app/core/store/model';
 
 @Component({
   selector: 'gv-add-role',

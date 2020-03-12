@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -16,7 +17,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActiveProjectService, ValidationDirectivesModule } from 'app/core';
+import { MatTreeModule } from '@angular/material/tree';
+import { ValidationDirectivesModule } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { AngularSplitModule } from 'app/core/split/module';
 import { PassiveLinkModule } from 'app/shared';
 import { ChecklistControlModule } from 'app/shared/components/checklist-control/checklist-control.module';
 import { CoreTableFilterModule } from 'app/shared/components/core-table/filter/filter.module';
@@ -25,6 +29,7 @@ import { CoreTableVirtualScrollModule } from 'app/shared/components/core-table/v
 import { DetailContentModule } from 'app/shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
+import { ErrorDialogModule } from 'app/shared/components/error-dialog/error-dialog.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { TableModule } from 'primeng/table';
@@ -33,25 +38,21 @@ import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { ConfigurationPipesService } from '../information/new-services/configuration-pipes.service';
 import { InformationBasicPipesService } from '../information/new-services/information-basic-pipes.service';
 import { InformationPipesService } from '../information/new-services/information-pipes.service';
-import { ClassOrTypeRequiredValidatorDirective, ClassAndTypeSelectComponent } from './components/class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectComponent, ClassOrTypeRequiredValidatorDirective } from './components/class-and-type-select/class-and-type-select.component';
 import { ColDefTitleComponent } from './components/col-def-title/col-def-title.component';
 import { PropertiesRequiredValidatorDirective, PropertySelectComponent } from './components/property-select/property-select.component';
 import { QfFormArrayComponent } from './components/qf-form-array/qf-form-array.component';
 import { QfFormControlComponent } from './components/qf-form-control/qf-form-control.component';
 import { QfFormGroupComponent } from './components/qf-form-group/qf-form-group.component';
 import { QueryFilterComponent } from './components/query-filter/query-filter.component';
+import { QueryFilterService } from './components/query-filter/query-filter.service';
 import { ResultTableComponent } from './components/result-table/result-table.component';
 import { ResultingEntitiesDialogComponent } from './components/resulting-entities-dialog/resulting-entities-dialog.component';
-
 import { QueryPathFormArrayComponent } from './forms/query-path/query-path-form-array/query-path-form-array.component';
 import { QueryPathFormControlComponent } from './forms/query-path/query-path-form-control/query-path-form-control.component';
 import { QueryPathFormGroupComponent } from './forms/query-path/query-path-form-group/query-path-form-group.component';
 import { QueryPathFormComponent } from './forms/query-path/query-path-form/query-path-form.component';
-import { MatTreeModule } from '@angular/material/tree';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { QueryFilterService } from './components/query-filter/query-filter.service';
-import { ErrorDialogModule } from 'app/shared/components/error-dialog/error-dialog.module';
-import { AngularSplitModule } from 'app/core/split/module';
+
 
 const components = [
   PropertySelectComponent,

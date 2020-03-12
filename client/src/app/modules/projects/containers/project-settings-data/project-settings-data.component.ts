@@ -5,14 +5,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActiveProjectService, IAppState, U, SysSystemRelevantClass } from 'app/core';
+import { SysSystemRelevantClass, U } from 'app/core';
+import { IAppState } from 'app/core/store/model';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { ClassConfigDialogComponent, ClassConfigDialogData } from 'app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
+import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
-import { equals, values, indexBy, intersection } from 'ramda';
+import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import * as Config from '../../../../../../../common/config/Config';
 import { ProDfhClassProjRel } from '../../../../core/sdk/models/ProDfhClassProjRel';
 import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
@@ -20,10 +25,7 @@ import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actio
 import { ProjectSettingsDataAPIEpics } from './api/project-settings-data.epics';
 import { EntityType, ProjectSettingsData } from './api/project-settings-data.models';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
-import { ClassConfigDialogData, ClassConfigDialogComponent } from 'app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+
 interface Profile {
   label: string,
   fkProfile: number,

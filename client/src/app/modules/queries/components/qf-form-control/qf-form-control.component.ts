@@ -1,7 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { QfFormControlFactory, QfFormControlData } from '../query-filter/query-filter.component';
-import { FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FormControlConfig } from 'app/modules/form-factory/core/form-factory.models';
+import { QfFormControlData, QfFormControlFactory } from '../query-filter/query-filter.component';
 
 @Component({
   selector: 'gv-qf-form-control',

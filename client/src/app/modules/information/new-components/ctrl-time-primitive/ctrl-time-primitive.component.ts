@@ -6,8 +6,8 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { Subject } from 'rxjs';
 import { GregorianDateTime, InfTimePrimitive, JulianDateTime, ValidationService } from '../../../../core';
-import { CalendarType, TimePrimitive } from '../../../../core/date-time/time-primitive';
-import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
+import { takeUntil } from 'rxjs/operators';
 
 export interface InfTimePrimitiveWithCalendar extends InfTimePrimitive {
   calendar: CalendarType
@@ -210,7 +210,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
         case '1 second': this.setFormValue(dt.year, dt.month, dt.day, dt.hours, dt.minutes, dt.seconds)
           break;
       }
-    } else  {
+    } else {
       this.clearForm()
     }
   }
@@ -268,7 +268,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   ngAfterViewInit() {
     if (this.autofocus) setTimeout(() => { this.trigger.openMenu() })
 
-    this.trigger.onMenuOpen.pipe(takeUntil(this.destroy$)).subscribe(()=>{
+    this.trigger.onMenuOpen.pipe(takeUntil(this.destroy$)).subscribe(() => {
       setTimeout(() => { this.yearInput.nativeElement.focus() })
     })
   }

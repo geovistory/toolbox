@@ -1,8 +1,9 @@
 
 import { takeUntil, map } from 'rxjs/operators';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, Tab } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { Observable, Subject, combineLatest } from 'rxjs';
+import { Tab } from 'app/core/active-project/active-project.models';
 
 @Component({
   selector: 'gv-tab-handle',

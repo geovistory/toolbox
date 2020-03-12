@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { TimePrimitive } from 'app/core/date-time/time-primitive';
+import { IAppState } from 'app/core/store/model';
 import { spyTag } from 'app/shared';
 import { omit, values } from 'ramda';
 import { NgRedux } from '../../../../../node_modules/@angular-redux/store';
 import { combineLatest, merge, Observable, of, pipe } from '../../../../../node_modules/rxjs';
 import { auditTime, filter, map, switchMap } from '../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, IAppState, InfRole, InfTemporalEntity, InfTimePrimitive, TimePrimitive, TimeSpan, EntityType, IconType } from '../../../core';
+import { EntityType, IconType, InfRole, InfTemporalEntity, InfTimePrimitive, TimeSpan } from '../../../core';
 import { Granularity } from '../../../core/date-time/date-time-commons';
 import { CalendarType } from '../../../core/date-time/time-primitive';
 import { InfSelector } from '../../../core/inf/inf.service';
@@ -12,7 +15,6 @@ import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { switchMapOr } from '../../../core/util/switchMapOr';
 import { BasicRoleItem } from '../new-components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../shared/dfh-config';
-
 
 
 

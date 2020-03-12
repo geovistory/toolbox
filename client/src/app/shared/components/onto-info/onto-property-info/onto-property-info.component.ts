@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ActiveProjectService } from '../../../../core';
-import { map, filter } from 'rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { values } from 'ramda';
+import { Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-onto-property-info',

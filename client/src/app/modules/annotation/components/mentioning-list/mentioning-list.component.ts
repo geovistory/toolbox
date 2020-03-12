@@ -3,7 +3,8 @@ import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Outpu
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActiveProjectService, DatChunk, DatDigital, EntityPreview, IAppState, InfEntityAssociation, latestVersion } from 'app/core';
+import { IAppState } from 'app/core/store/model';
+import { DatChunk, DatDigital, EntityPreview, InfEntityAssociation, latestVersion } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -15,6 +16,7 @@ import { ByPk } from '../../../../core/store/model';
 import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 
 // this is not for state, only for the table view

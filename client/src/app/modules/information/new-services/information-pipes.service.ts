@@ -1,10 +1,12 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
+import { InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, TimeSpan, U } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { Granularity } from 'app/core/date-time/date-time-commons';
-import { CalendarType } from 'app/core/date-time/time-primitive';
+import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 import { InfSelector } from 'app/core/inf/inf.service';
+import { IAppState } from 'app/core/store/model';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
@@ -22,7 +24,7 @@ import { CtrlTimeSpanDialogResult } from '../new-components/ctrl-time-span/ctrl-
 import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LanguageItem, ListDefinition, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty } from '../new-components/properties-tree/properties-tree.models';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
-// import { TemporalEntityTableRow } from "../new-components/temporal-entity-list/TemporalEntityTable";
+
 
 @Injectable()
 /**

@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { ProAnalysis, ActiveProjectService, AnalysisTabData, SysConfig } from 'app/core';
+import { ProAnalysis, AnalysisTabData, SysConfig } from 'app/core';
 import { map, first, takeUntil } from 'rxjs/operators';
 import { values } from 'd3';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 @Component({
   selector: 'gv-analysis-list',

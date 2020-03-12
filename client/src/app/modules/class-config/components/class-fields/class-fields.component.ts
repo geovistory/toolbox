@@ -5,8 +5,9 @@ import { mergeMap, tap, takeUntil, first, map } from 'rxjs/operators';
 import { FieldDefinition } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
 import { MatDialog } from '@angular/material/dialog';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
-import { ProClassFieldConfig, ActiveProjectService } from 'app/core';
+import { ProClassFieldConfig } from 'app/core';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 interface FieldConfig extends FieldDefinition {
   propertyField?: {

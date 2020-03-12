@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SysConfig, ActiveProjectService } from 'app/core';
+import { SysConfig } from 'app/core';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { values } from 'ramda';
@@ -11,6 +11,7 @@ import { AnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent } from '../time-chart-cont-form/time-chart-cont-form.component';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 @Component({
   selector: 'gv-time-chart-cont-edit',

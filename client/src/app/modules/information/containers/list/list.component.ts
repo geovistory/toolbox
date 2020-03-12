@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { IAppState, SubstoreComponent } from 'app/core';
+import { SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { ListAPIActions } from './api/list.actions';
 import { ListAPIEpics } from './api/list.epics';
 import { EntitySearchHit, List } from './api/list.models';
 import { listReducer } from './api/list.reducer';
+import { IAppState } from 'app/core/store/model';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -68,7 +69,7 @@ export class ListComponent extends ListAPIActions implements OnInit, OnDestroy, 
     protected rootEpics: RootEpics,
     private epics: ListAPIEpics,
     public ngRedux: NgRedux<IAppState>
-      ) {
+  ) {
     super();
 
     // listen to selecting entities for annotation

@@ -2,11 +2,12 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, U } from 'app/core';
+import { U } from 'app/core';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { QueryFilter } from '../../../../../../../src/common/interfaces';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 
 

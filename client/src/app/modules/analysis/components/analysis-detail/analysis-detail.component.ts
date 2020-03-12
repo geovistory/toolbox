@@ -1,10 +1,11 @@
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, SysAnalysisType, SysConfig } from 'app/core';
+import { SysAnalysisType, SysConfig } from 'app/core';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Observable, Subject } from 'rxjs';
 import { AnalysisService } from '../../services/analysis.service';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 @Component({
   selector: 'gv-analysis-detail',

@@ -1,18 +1,20 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, InfRoleApi } from 'app/core';
+import { PageEvent } from '@angular/material/paginator';
+import { InfRoleApi } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject, zip, merge } from 'rxjs';
-import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
-import { InfActions, LoadPaginatedRoleListMeta } from '../../../../core/inf/inf.actions';
+import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { InfActions } from '../../../../core/inf/inf.actions';
 import { PaginateByParam } from '../../../../core/store/actions';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
-import { FieldDefinition, ListDefinition, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityTableI } from '../properties-tree/properties-tree.models';
+import { PaginationService } from '../../new-services/pagination.service';
+import { ListDefinition, PropertyListComponentInterface, TemporalEntityItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
-import { PaginationService } from '../../new-services/pagination.service';
-import { PageEvent } from '@angular/material/paginator';
+import { createPaginateBy } from './createPaginateBy';
 
 
 
@@ -161,12 +163,4 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 }
 
 
-export function createPaginateBy(listDefinition: ListDefinition, pkEntity: number): PaginateByParam[] {
-  if (listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'entity-preview') {
-    return [
-      { fk_property: listDefinition.pkProperty },
-      { fk_target_class: listDefinition.targetClass },
-      { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity }
-    ];
-  }
-}
+

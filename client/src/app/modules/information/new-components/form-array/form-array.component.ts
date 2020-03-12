@@ -1,8 +1,5 @@
-import { Component, OnInit, Input, HostBinding, OnDestroy } from '@angular/core';
-import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
-import { FormArrayData, LocalNodeConfig, FormControlData, LocalFormArrayFactory, LocalFormControlFactory } from '../form-create-entity/form-create-entity.component';
-import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
-import { FormArrayConfig, FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControlData, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
 
 @Component({
   selector: 'gv-form-array',

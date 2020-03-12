@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, EntityPreview, SysConfig } from 'app/core';
+import { EntityPreview, SysConfig } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, mergeMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { AddOrCreateEntityModal, AddOrCreateEntityModalData } from '../../components/add-or-create-entity-modal/add-or-create-entity-modal.component';

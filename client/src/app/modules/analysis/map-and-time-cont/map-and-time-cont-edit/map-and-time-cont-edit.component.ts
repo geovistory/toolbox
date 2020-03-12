@@ -1,11 +1,12 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MapAndTimeContInput, MapAndTimeContOutput } from '../../../../../../../src/common/interfaces';
 import { AnalysisService } from '../../services/analysis.service';
 import { MapAndTimeContFormComponent } from '../map-and-time-cont-form/map-and-time-cont-form.component';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 
 @Component({

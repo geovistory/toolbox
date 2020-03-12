@@ -1,6 +1,5 @@
-import { TimePrimitive } from 'app/core';
-import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../../modules/information/new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { pick } from 'ramda';
+import { CtrlTimeSpanDialogResult } from '../../modules/information/new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { TimePrimitive } from '../date-time/time-primitive';
 
 export class TimeSpan {
 

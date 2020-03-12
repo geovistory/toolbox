@@ -1,10 +1,10 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Subject } from 'rxjs';
 import { filter, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AnalysisService } from '../../services/analysis.service';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 @Component({
   selector: 'gv-analysis-layout',

@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { map, switchMap } from 'rxjs/operators';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 @Component({
   selector: 'gv-labels',

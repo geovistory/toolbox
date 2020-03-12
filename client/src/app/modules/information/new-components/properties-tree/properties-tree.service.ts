@@ -3,7 +3,8 @@ import { BehaviorSubject, Observable, combineLatest } from '../../../../../../no
 import { ListDefinition, ItemBasics } from './properties-tree.models';
 import { CdkDragDrop, moveItemInArray } from '../../../../../../node_modules/@angular/cdk/drag-drop';
 import { first } from '../../../../../../node_modules/rxjs/operators';
-import { ProInfoProjRel, ActiveProjectService } from '../../../../core';
+import { ProInfoProjRel } from '../../../../core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 @Injectable()
 export class PropertiesTreeService {

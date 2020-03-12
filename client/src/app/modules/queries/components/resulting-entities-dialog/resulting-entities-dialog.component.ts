@@ -1,6 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EntityPreview, ActiveProjectService } from 'app/core';
+import { EntityPreview } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 export interface EntitiesDialogData {
   entityPreviews: EntityPreview[];

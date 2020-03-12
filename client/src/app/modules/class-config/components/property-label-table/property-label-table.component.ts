@@ -1,14 +1,15 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { InfActions } from 'app/core/inf/inf.actions';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { values } from 'd3';
 import { FormBuilder, FormControl, FormGroup, Validators } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
-import { first, map, mergeMap, takeUntil, filter } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfLanguage, ProTextProperty } from '../../../../core';
+import { filter, first, map, mergeMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { InfLanguage, ProTextProperty } from '../../../../core';
 import { ProActions } from '../../../../core/pro/pro.actions';
 import { ConfigurationPipesService } from '../../../information/new-services/configuration-pipes.service';
-import { values } from 'd3';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { InfActions } from 'app/core/inf/inf.actions';
-import { MatTableDataSource } from '@angular/material/table';
 
 interface Row {
 

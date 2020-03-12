@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActiveProjectService, EntityPreview, IAppState, SubstoreComponent, SysConfig, InfPersistentItem, InfTemporalEntity, EntityType } from 'app/core';
+import { EntityPreview, SubstoreComponent, SysConfig, InfPersistentItem, InfTemporalEntity, EntityType } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
@@ -11,6 +11,8 @@ import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
 import { ClassAndTypePk } from '../create-or-add-entity/create-or-add-entity.component';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { IAppState } from 'app/core/store/model';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

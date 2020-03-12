@@ -1,9 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DatChunk, EntityPreview, IAppState, InfEntityAssociation } from 'app/core';
+import { DatChunk, EntityPreview, InfEntityAssociation } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Subject } from 'rxjs';
+import { IAppState } from 'app/core/store/model';
 
 type CtrlModel = InfEntityAssociation;
 
@@ -77,8 +78,8 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
     if (this.domainChunk) this.domainChunkFixed = true;
   }
 
-  ngOnChanges(changes:SimpleChanges){
-    if(changes.domainChunk){
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.domainChunk) {
       this.validateAndEmit()
     }
   }

@@ -1,7 +1,7 @@
 import { FormControl, FormGroup, Validators } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, Observable } from '../../../../../../node_modules/rxjs';
 import { map, shareReplay } from '../../../../../../node_modules/rxjs/operators';
-import { InfAppellation, InfLanguage, InfPlace, InfRole, InfTextProperty, U, ActiveProjectService } from '../../../../core';
+import { InfAppellation, InfLanguage, InfPlace, InfRole, InfTextProperty, U } from '../../../../core';
 import { DfhConfig } from '../../shared/dfh-config';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { ListDefinition } from '../properties-tree/properties-tree.models';

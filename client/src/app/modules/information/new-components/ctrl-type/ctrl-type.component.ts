@@ -3,14 +3,15 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, View
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, switchMap } from '../../../../../../node_modules/rxjs/operators';
-import { sortAbc, ActiveProjectService } from '../../../../core';
-import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { sortAbc } from '../../../../core';
 import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { ClassAndTypeNode } from '../classes-and-types-select/classes-and-types-select.component';
+
 
 type CtrlModel = number // pk_entity of type (persistent item)
 

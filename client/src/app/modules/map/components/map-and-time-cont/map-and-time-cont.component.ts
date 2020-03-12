@@ -1,5 +1,6 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { ActiveProjectService, EntityPreview } from 'app/core';
+import { EntityPreview } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';

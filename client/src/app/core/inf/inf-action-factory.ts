@@ -1,9 +1,10 @@
 import { StandardActionsFactory, ModifyActionMeta, SucceedActionMeta, ActionResultObservable } from "app/core/store/actions";
 import { Observable } from "rxjs";
 import { NgRedux } from "@angular-redux/store";
-import { IAppState, U } from "app/core";
+import { U } from "app/core";
 import { FluxStandardAction } from "flux-standard-action";
 import { Injectable } from "@angular/core";
+import { IAppState } from '../store/model';
 
 @Injectable()
 export class InfActionFactory<Payload, Model> extends StandardActionsFactory<Payload, Model> {

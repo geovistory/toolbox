@@ -1,6 +1,7 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActiveProjectService, DatChunk, DatDigital, getSpecificVersion, IAppState, latestVersion, SubstoreComponent } from 'app/core';
+import { DatChunk, DatDigital, getSpecificVersion, latestVersion, SubstoreComponent } from 'app/core';
+import { IAppState } from 'app/core/store/model';
 import { SucceedActionMeta } from 'app/core/store/actions';
 import { RootEpics } from 'app/core/store/epics';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
@@ -13,6 +14,7 @@ import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
 import { ChunksPks, IndexedCharids, QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ProgressDialogData, ProgressMode, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 
 export interface Version {

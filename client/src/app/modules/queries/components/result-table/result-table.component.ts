@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService, SysConfig } from 'app/core';
+import { SysConfig } from 'app/core';
 import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
 import { Table } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColDef, QueryDefinition, TableInput, TableOutput } from '../../../../../../../src/common/interfaces';
 import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 export interface Example {
   id: number;

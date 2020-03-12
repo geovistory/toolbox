@@ -1,15 +1,16 @@
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IAppState } from 'app/core';
+import { IAppState } from 'app/core/store/model';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { PaginatedRolesList } from 'app/core/inf/inf.actions';
+import { InfSelector } from 'app/core/inf/inf.service';
+import { ActionResultObservable, PaginateByParam } from 'app/core/store/actions';
 import { paginatedBy, paginateKey, paginateName } from 'app/core/store/reducer-factory';
 import { equals, keys } from 'ramda';
-import { combineLatest, Observable, Subject, of } from 'rxjs';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ListDefinition } from '../new-components/properties-tree/properties-tree.models';
-import { createPaginateBy } from '../new-components/temporal-entity-list/temporal-entity-list.component';
-import { PaginateByParam, ActionResultObservable } from 'app/core/store/actions';
-import { NgRedux } from '@angular-redux/store';
-import { InfSelector } from 'app/core/inf/inf.service';
-import { PaginatedRolesList } from 'app/core/inf/inf.actions';
+import { createPaginateBy } from "../new-components/temporal-entity-list/createPaginateBy";
 
 
 class RolePageLoader {

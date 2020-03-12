@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { equals } from 'ramda';
 import { combineLatest, of } from '../../../../../node_modules/rxjs';
-import { mergeMap, map } from '../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfRole } from '../../../core';
+import { map, mergeMap } from '../../../../../node_modules/rxjs/operators';
+import { InfRole } from '../../../core';
 import { InfActions } from '../../../core/inf/inf.actions';
 import { InfTimePrimitiveWithCalendar } from '../new-components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { TimeSpanItem } from '../new-components/properties-tree/properties-tree.models';
-import { InformationPipesService } from './information-pipes.service';
 import { DfhConfig } from '../shared/dfh-config';
-import { MatDialog } from '@angular/material/dialog';
+import { InformationPipesService } from './information-pipes.service';
 
 @Injectable({
   providedIn: 'root'

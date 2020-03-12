@@ -1,8 +1,8 @@
-import { select } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, InfPersistentItem, WarEntityPreviewApi } from 'app/core';
-import { combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
-import { debounceTime, first, takeUntil, map } from 'rxjs/operators';
+import { InfPersistentItem, WarEntityPreviewApi } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
 
 
 @Component({

@@ -1,12 +1,9 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
-import { ActiveProjectService, U, DfhClass } from '../../../../core';
-import { Observable } from 'rxjs';
-import { map, takeUntil, delay, switchMap } from 'rxjs/operators';
-import { HasTypePropertyReadable } from '../../../../core/state/models';
-import { sortBy, compose, toLower, prop } from 'ramda';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { Component, HostBinding, OnInit } from '@angular/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { Observable } from 'rxjs';
+import { delay, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-settings-list',

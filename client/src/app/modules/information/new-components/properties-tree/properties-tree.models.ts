@@ -1,6 +1,8 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { Observable } from 'rxjs';
+import { TimePrimitive } from 'app/core/date-time/time-primitive';
 import { PropertiesTreeService } from './properties-tree.service';
 
 export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'text-property' | 'entity-preview' | 'has-type' | 'temporal-entity' | 'persistent-item';

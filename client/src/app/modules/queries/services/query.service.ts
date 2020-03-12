@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, ProjectCrm, PropertyField, U } from 'app/core';
+import { U } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { uniq } from 'ramda';
-import { combineLatest, Observable } from 'rxjs';
-import { filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { QueryPathSegment } from '../../../../../../src/common/interfaces';
+import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
 
 @Injectable({
   providedIn: 'root'

@@ -9,7 +9,7 @@ import { PaginateByParam } from '../store/actions';
 import { infDefinitions, infRoot } from './inf.config';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
 import { ListDefinition } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
-import { createPaginateBy } from 'app/modules/information/new-components/temporal-entity-list/temporal-entity-list.component';
+import { createPaginateBy } from "app/modules/information/new-components/temporal-entity-list/createPaginateBy";
 import { keys, equals } from 'ramda';
 
 class Selector {

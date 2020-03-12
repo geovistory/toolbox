@@ -1,10 +1,14 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActiveProjectService, IAppState, Tab, TeEntTabData, IconType } from 'app/core';
-import { TeEntDetail, EntityPreview } from 'app/core/state/models';
+import { IconType, Tab, TeEntTabData } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { EntityPreview, TeEntDetail } from 'app/core/state/models';
+import { IAppState } from 'app/core/store/model';
+import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
@@ -14,9 +18,6 @@ import { InformationPipesService } from '../../new-services/information-pipes.se
 import { slideInOut } from '../../shared/animations';
 import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
 import { teEntDetailReducer } from './api/te-ent-detail.reducer';
-import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
-import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
-
 
 @WithSubStore({
   localReducer: teEntDetailReducer,

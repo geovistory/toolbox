@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
-import { FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { FormControlData } from '../form-create-entity/form-create-entity.component';
+import { FormControlConfig } from 'app/modules/form-factory/core/form-factory.models';
 
 @Component({
   selector: 'gv-form-control',

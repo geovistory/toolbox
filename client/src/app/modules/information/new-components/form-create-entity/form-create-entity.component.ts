@@ -1,18 +1,22 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, SysConfig } from 'app/core';
+import { InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
-import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
+import { FormFactory } from "app/modules/form-factory/services/FormFactory";
 import { clone, flatten, values } from 'ramda';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { auditTime, first, map, mergeMap, takeUntil, switchMap, filter } from 'rxjs/operators';
+import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { FormArrayConfig, FormNodeConfig } from 'app/modules/form-factory/core/form-factory.models';
+
 export interface FormArrayData {
   pkClass: number
   fieldDefinition?: FieldDefinition

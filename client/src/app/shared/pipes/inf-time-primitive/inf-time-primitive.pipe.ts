@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimePrimitive, InfRole, U } from 'app/core';
+import { InfRole, U } from 'app/core';
 import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
 
 @Pipe({

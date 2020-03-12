@@ -1,16 +1,17 @@
-import { Component, OnDestroy, Input, OnInit } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent } from 'app/core';
+import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SubstoreComponent } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
-import { AccountList, BoAccount, BoAccounts } from './api/account-list.models';
-import { AccountListAPIEpics } from './api/account-list.epics';
-import { AccountListAPIActions } from './api/account-list.actions';
-import { accountListReducer } from './api/account-list.reducer';
-import { Config } from 'protractor';
+import { IAppState } from 'app/core/store/model';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
-import { first, takeUntil } from 'rxjs/operators';
 import { Columns } from 'ngx-easy-table';
+import { Config } from 'protractor';
+import { Observable, Subject } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+import { AccountListAPIActions } from './api/account-list.actions';
+import { AccountListAPIEpics } from './api/account-list.epics';
+import { AccountList, BoAccounts } from './api/account-list.models';
+import { accountListReducer } from './api/account-list.reducer';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

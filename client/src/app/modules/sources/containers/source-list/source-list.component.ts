@@ -1,17 +1,18 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ActiveProjectService, EntityPreview, IAppState, ProjectCrm, SubstoreComponent, SysConfig, U, InfPersistentItem } from 'app/core';
+import { EntityPreview, ProjectCrm, SubstoreComponent, SysConfig, U } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { RootEpics } from 'app/core/store/epics';
+import { IAppState } from 'app/core/store/model';
 import { SystemSelector } from 'app/core/sys/sys.service';
+import { ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { Information } from 'app/modules/information/containers/entity-list/api/entity-list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, map, tap, takeUntil } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
-import { ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
-
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

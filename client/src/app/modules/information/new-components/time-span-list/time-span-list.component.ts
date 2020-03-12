@@ -1,6 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnInit } from '@angular/core';
-import { ActiveProjectService } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { Observable, of, Subject } from 'rxjs';
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { InformationPipesService } from '../../new-services/information-pipes.service';

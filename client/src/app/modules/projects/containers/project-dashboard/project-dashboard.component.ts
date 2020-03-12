@@ -1,12 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, OnDestroy, OnInit, HostBinding } from '@angular/core';
-import { ActivatedRoute, Router, UrlSegmentGroup, UrlSegment } from '@angular/router';
-import { ActiveProjectService, IAppState, ProjectCrm, ProjectDetail, WarEntityPreviewApi } from 'app/core';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { ProjectCrm, ProjectDetail, WarEntityPreviewApi } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { IAppState } from 'app/core/store/model';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { omit } from 'ramda';
 
 
 @Component({

@@ -2,9 +2,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService, InfRole, InfTextProperty } from '../../../../core';
+import { InfRole, InfTextProperty } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { BasicRoleItem, Item, ItemList, ListDefinition, TextPropertyItem } from '../properties-tree/properties-tree.models';

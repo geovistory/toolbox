@@ -1,4 +1,4 @@
-import { FieldList, InfRole, InfTimePrimitive, SysConfig, UiContext } from 'app/core';
+import { FieldList, InfRole, SysConfig, UiContext } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 
 

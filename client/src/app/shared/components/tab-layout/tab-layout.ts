@@ -1,20 +1,14 @@
-import { dispatch, ObservableStore, select, WithSubStore } from '@angular-redux/store';
+import { dispatch, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef } from '@angular/core';
 import { Tab } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TabBase } from './tab-layout.models';
 import { tabBaseReducer } from './tab-layout.reducer';
+import { TabLayoutActions } from './tab-layout.actions';
+import { TabLayoutAction } from './tab-layout.models';
 
-type Payload = Tab<any>;
-interface MetaData {
-  tabTitle?: string,
-  tabTooltip?: string,
-  loading?: boolean,
-  showRightArea?: boolean
-};
-export type TabBaseAPIAction = FluxStandardAction<Payload, MetaData>;
+
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',
@@ -86,21 +80,12 @@ export class TabLayout {
    * Stuff for handling split area rendering
    */
 
-  static readonly SET_TAB_TITLE = 'TabBase::SET_TAB_TITLE';
-
-  static readonly SET_TAB_TOOLTIP = 'TabBase::SET_TAB_TOOLTIP';
-
-  static readonly SET_TAB_LOADING = 'TabBase::SET_TAB_LOADING';
-
-  static readonly SET_SHOW_RIGHT_AREA = 'TabBase::SET_SHOW_RIGHT_AREA';
-
-  static readonly DESTROY = 'TabBase::DESTROY';
   /*********************************************************************
   *  Set tab title
   *********************************************************************/
   @dispatch()
-  setTabTitle = (tabTitle: string): TabBaseAPIAction => ({
-    type: TabLayout.SET_TAB_TITLE,
+  setTabTitle = (tabTitle: string): TabLayoutAction => ({
+    type: TabLayoutActions.SET_TAB_TITLE,
     meta: { tabTitle },
     payload: null,
   });
@@ -109,8 +94,8 @@ export class TabLayout {
   *  Set tab tooltip
   *********************************************************************/
   @dispatch()
-  setTabTooltip = (tabTooltip: string): TabBaseAPIAction => ({
-    type: TabLayout.SET_TAB_TOOLTIP,
+  setTabTooltip = (tabTooltip: string): TabLayoutAction => ({
+    type: TabLayoutActions.SET_TAB_TOOLTIP,
     meta: { tabTooltip },
     payload: null,
   });
@@ -119,8 +104,8 @@ export class TabLayout {
   *  Set tab loading
   *********************************************************************/
   @dispatch()
-  setTabLoading = (loading: boolean): TabBaseAPIAction => ({
-    type: TabLayout.SET_TAB_LOADING,
+  setTabLoading = (loading: boolean): TabLayoutAction => ({
+    type: TabLayoutActions.SET_TAB_LOADING,
     meta: { loading },
     payload: null,
   });
@@ -129,8 +114,8 @@ export class TabLayout {
   *  Set right panel state
   *********************************************************************/
   @dispatch()
-  setShowRightArea = (showRightArea: boolean): TabBaseAPIAction => ({
-    type: TabLayout.SET_SHOW_RIGHT_AREA,
+  setShowRightArea = (showRightArea: boolean): TabLayoutAction => ({
+    type: TabLayoutActions.SET_SHOW_RIGHT_AREA,
     meta: { showRightArea },
     payload: null,
   });
@@ -140,8 +125,8 @@ export class TabLayout {
   *  Method to distroy the slice of store
   *********************************************************************/
   @dispatch()
-  destroy = (): TabBaseAPIAction => ({
-    type: TabLayout.DESTROY,
+  destroy = (): TabLayoutAction => ({
+    type: TabLayoutActions.DESTROY,
     meta: null,
     payload: null
   })

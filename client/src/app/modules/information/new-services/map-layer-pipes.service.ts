@@ -1,16 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, InfPersistentItem, InfPlace, InfTemporalEntity, TimeSpan, EntityPreview, WarEntityPreview } from 'app/core';
-import { switchMapOr } from 'app/core/util/switchMapOr';
-import { flatten, values } from 'ramda';
-import { combineLatest, Observable, pipe } from '../../../../../node_modules/rxjs';
-import { map, switchMap, tap, filter } from '../../../../../node_modules/rxjs/operators';
-import { DfhConfig } from '../shared/dfh-config';
+import { EntityPreview, TimeSpan, WarEntityPreview } from 'app/core';
+import { TemporalDistribution } from 'app/shared/classes/statistic-helpers';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
-import { getTemporalDistribution, TemporalDistribution } from 'app/shared/classes/statistic-helpers';
-import { CzmlPacketGenerator } from 'app/shared/classes/czml-packet-generator';
 import { InformationPipesService } from './information-pipes.service';
-import { cache, spyTag } from '../../../shared';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 export interface GeoPresence {
   time_span: TimeSpan,

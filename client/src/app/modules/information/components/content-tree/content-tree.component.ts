@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ActiveProjectService, DatDigital, InfEntityAssociation, InfPersistentItem, latestVersion, SysConfig, switchMapOr } from 'app/core';
+import { DatDigital, InfEntityAssociation, InfPersistentItem, latestVersion, SysConfig, switchMapOr } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
@@ -11,6 +11,7 @@ import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUnt
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 /**
  * Food data with nested structure.

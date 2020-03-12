@@ -1,9 +1,9 @@
 import { FormGroup } from '@angular/forms';
 import { Subject, asyncScheduler } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { FormArrayConfig, FormFactory, FormFactoryGlobal, FormGroupConfig } from '../services/form-factory.service';
 import { FormArrayFactory } from './form-array-factory';
-import { AbstractControlFactory, FactoryType } from './form-factory.models';
+import { AbstractControlFactory, FactoryType, FormGroupConfig, FormArrayConfig, FormFactoryGlobal } from './form-factory.models';
+import { FormFactory } from "../services/FormFactory";
 
 
 

@@ -1,8 +1,12 @@
 import { NgRedux } from '@angular-redux/store';
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, IAppState, InfEntityAssociation, latestVersion } from 'app/core';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { DatChunk, EntityPreview, InfEntityAssociation, latestVersion } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { RootEpics } from 'app/core/store/epics';
+import { IAppState } from 'app/core/store/model';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { flatten, indexBy, values } from 'ramda';
@@ -10,12 +14,11 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ByPk } from '../../../../core/store/model';
+import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
-import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
 import { MentioningListOf, Row } from './mentioning-list.component';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+
 @Component({
   selector: 'gv-mentioning-list',
   templateUrl: './mentioning-list.component.html',

@@ -1,16 +1,17 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ExTimeHelpMode, ExTimeModalMode, SysConfig, ValidationService, ActiveProjectService } from 'app/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ExTimeHelpMode, ExTimeModalMode, ValidationService } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { ByPk } from 'app/core/store/model';
 import { indexBy, mapObjIndexed, omit, values } from 'ramda';
 import { AbstractControl, FormBuilder, FormControl, FormGroup } from '../../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../../node_modules/rxjs';
-import { debounceTime, first, mergeMap, takeUntil, map } from '../../../../../../../node_modules/rxjs/operators';
+import { debounceTime, first, map, mergeMap, takeUntil } from '../../../../../../../node_modules/rxjs/operators';
 import { ConfigurationPipesService } from '../../../new-services/configuration-pipes.service';
 import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
 import { MergeDef } from '../../form-create-role/form-create-role.component';
 import { FormPart } from '../../form-create-role/FormPart';
 import { FieldDefinition } from '../../properties-tree/properties-tree.models';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface CtrlTimeSpanDialogResult {
   // key is the dfh_pk_property, expressing what the time primitive means for the time span

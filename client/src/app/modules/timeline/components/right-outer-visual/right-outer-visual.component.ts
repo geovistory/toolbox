@@ -1,9 +1,8 @@
-import { Component, Input, ElementRef, OnInit, DoCheck } from '@angular/core';
-import { TimePrimitive } from 'app/core';
-import { XAxisDefinition } from '../../models/x-axis-definition';
-import { D3Service } from '../../shared/d3.service';
+import { Component, DoCheck, ElementRef, Input, OnInit } from '@angular/core';
+import { TimePrimitive } from 'app/core/date-time/time-primitive';
 import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 import { Timeline } from '../../models/timeline';
+import { D3Service } from '../../shared/d3.service';
 
 @Component({
   selector: '[rightOuterVisual]',
@@ -12,7 +11,7 @@ import { Timeline } from '../../models/timeline';
 })
 export class RightOuterVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 
-  @Input('rightOuterVisual') rightOuterOnXAxis : {timePrimitive:TimePrimitive, timeline:Timeline, color:string};
+  @Input('rightOuterVisual') rightOuterOnXAxis: { timePrimitive: TimePrimitive, timeline: Timeline, color: string };
 
   constructor(d3Service: D3Service, _element: ElementRef) {
     super(d3Service, _element)

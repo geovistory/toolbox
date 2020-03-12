@@ -1,23 +1,26 @@
 import { NgRedux, ObservableStore, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, IAppState, sortAbc, SysConfig } from 'app/core';
+import { MatDialog } from '@angular/material/dialog';
+import { sortAbc, SysConfig } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
+import { IAppState } from 'app/core/store/model';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/information/new-components/properties-tree-dialog/properties-tree-dialog.component';
+import { FieldDefinition, TemporalEntityItem } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
+import { createPaginateBy } from "app/modules/information/new-components/temporal-entity-list/createPaginateBy";
 import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
 import { InformationBasicPipesService } from 'app/modules/information/new-services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { PaginationService } from 'app/modules/information/new-services/pagination.service';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { values } from 'ramda';
-import { BehaviorSubject, Observable, of, Subject, combineLatest } from 'rxjs';
-import { filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
-import { FieldDefinition, TemporalEntityItem } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
-import { createPaginateBy } from 'app/modules/information/new-components/temporal-entity-list/temporal-entity-list.component';
-import { PaginationService } from 'app/modules/information/new-services/pagination.service';
-import { MatDialog } from '@angular/material/dialog';
+
 
 interface TypeItem {
   pkEntity: number

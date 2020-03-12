@@ -1,18 +1,18 @@
 import { Action } from 'redux';
-import { TabBase } from './tab-layout.models';
-import { TabBaseAPIAction, TabLayout } from './tab-layout';
+import { TabBase, TabLayoutAction } from './tab-layout.models';
+import { TabLayoutActions } from './tab-layout.actions';
 
 const INITIAL_STATE = new TabBase();
 
 export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBase {
 
-  const action = a as TabBaseAPIAction;
+  const action = a as TabLayoutAction;
 
   switch (action.type) {
     /*****************************************************
     * Set tab title
     *****************************************************/
-    case TabLayout.SET_TAB_TITLE:
+    case TabLayoutActions.SET_TAB_TITLE:
       state = {
         ...state,
         tabTitle: action.meta.tabTitle
@@ -22,7 +22,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set tab tooltip
     *****************************************************/
-    case TabLayout.SET_TAB_TOOLTIP:
+    case TabLayoutActions.SET_TAB_TOOLTIP:
       state = {
         ...state,
         tabTooltip: action.meta.tabTooltip
@@ -31,7 +31,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set tab loading
     *****************************************************/
-    case TabLayout.SET_TAB_LOADING:
+    case TabLayoutActions.SET_TAB_LOADING:
       state = {
         ...state,
         loading: action.meta.loading
@@ -40,7 +40,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set show right panel
     *****************************************************/
-    case TabLayout.SET_SHOW_RIGHT_AREA:
+    case TabLayoutActions.SET_SHOW_RIGHT_AREA:
       state = {
         ...state,
         showRightArea: action.meta.showRightArea
@@ -51,7 +51,7 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Reducers called on destroy of component
     *****************************************************/
-    case TabLayout.DESTROY:
+    case TabLayoutActions.DESTROY:
       state = undefined;
       break;
 

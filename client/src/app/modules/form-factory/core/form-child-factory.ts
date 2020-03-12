@@ -4,9 +4,8 @@ import { FormGroup, ValidatorFn, Validators, FormControl, AbstractControl } from
 import { QueryFilterComponent } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil, first } from 'rxjs/operators';
-import { FormChildFactoryConfig, FormFactoryGlobal } from '../services/form-factory.service';
 import { FormArrayFactory } from './form-array-factory';
-import { AbstractControlFactory, FactoryType, FormFactoryComponent } from './form-factory.models';
+import { AbstractControlFactory, FactoryType, FormFactoryComponent, FormFactoryGlobal, FormChildFactoryConfig } from './form-factory.models';
 import { FormGroupFactory } from './form-group-factory';
 
 export const CONTAINER_DATA = new InjectionToken<{}>('CONTAINER_DATA');

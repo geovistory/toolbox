@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input, OnInit } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { ObservableStore, WithSubStore, NgRedux, select } from '@angular-redux/store';
-import { IAppState, SubstoreComponent, SysClassField } from 'app/core';
+import { SubstoreComponent, SysClassField } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { ClassFieldList } from './api/class-field-list.models';
 import { ClassFieldListAPIEpics } from './api/class-field-list.epics';
@@ -10,6 +10,7 @@ import { classFieldListReducer } from './api/class-field-list.reducer';
 import { KeysPipe } from 'app/shared/pipes/keys.pipe';
 import { first, takeUntil } from 'rxjs/operators';
 import { Config, Columns } from 'ngx-easy-table';
+import { IAppState } from 'app/core/store/model';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

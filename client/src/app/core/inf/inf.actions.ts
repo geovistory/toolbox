@@ -1,15 +1,16 @@
 
-import { filter } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/store/actions';
-import { InfPersistentItem, InfEntityAssociation, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital } from '../sdk';
 import { NgRedux } from '@angular-redux/store';
-import { IAppState, U } from 'app/core';
-import { InfPersistentItemSlice } from './inf.models';
+import { Injectable } from '@angular/core';
+import { U } from 'app/core';
+import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/store/actions';
+import { IAppState } from 'app/core/store/model';
 import { FluxStandardAction } from 'flux-standard-action';
-import { infRoot } from './inf.config';
-import { InfActionFactory } from './inf-action-factory';
+import { filter } from 'rxjs/operators';
+import { DatDigital, InfAppellation, InfEntityAssociation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '../sdk';
 import { SchemaObject } from '../store/model';
+import { InfActionFactory } from './inf-action-factory';
+import { infRoot } from './inf.config';
+import { InfPersistentItemSlice } from './inf.models';
 
 type Payload = InfPersistentItemSlice;
 

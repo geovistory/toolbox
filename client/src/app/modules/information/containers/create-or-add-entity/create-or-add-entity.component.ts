@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity } from 'app/core';
+import { InfPersistentItem, InfPersistentItemApi, InfTemporalEntity } from 'app/core';
 import { SchemaObject } from 'app/core/store/model';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 
 export interface ClassAndTypePk { pkClass: number, pkType: number };
 

@@ -1,19 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
 import { sum } from '../../../../../../node_modules/ramda';
-import { combineLatest, Observable, Subject, of } from '../../../../../../node_modules/rxjs';
-import { filter, first, map, takeUntil, distinctUntilChanged, tap, shareReplay } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService } from '../../../../core';
+import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
+import { first, map, shareReplay, takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
+import { PaginationService } from '../../new-services/pagination.service';
 import { TimeSpanService } from '../../new-services/time-span.service';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
-import { equals, keys } from 'ramda';
-import { PaginationService } from '../../new-services/pagination.service';
-import { MatDialog } from '@angular/material/dialog';
+import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
+import { createPaginateBy } from "../temporal-entity-list/createPaginateBy";
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number

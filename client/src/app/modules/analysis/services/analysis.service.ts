@@ -1,14 +1,16 @@
+import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService, ProAnalysis, ProAnalysisApi, IAppState, AnalysisTabData } from 'app/core';
+import { AnalysisTabData, ProAnalysis, ProAnalysisApi } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
+import { IAppState } from 'app/core/store/model';
+import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ErrorDialogComponent, ErrorDialogData } from 'app/shared/components/error-dialog/error-dialog.component';
+import { saveAs } from 'file-saver';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { NgRedux } from '@angular-redux/store';
-import { NotificationsAPIActions } from 'app/core/notifications/components/api/notifications.actions';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
-import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
-import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root'

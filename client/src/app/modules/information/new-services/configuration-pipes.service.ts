@@ -1,18 +1,18 @@
 
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig, switchMapOr } from 'app/core';
+import { DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig } from 'app/core';
+import { ActiveProjectService } from 'app/core/active-project/active-project.service';
+import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
+import { proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from 'app/core/pro/pro.config';
 import { ByPk } from 'app/core/store/model';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { flatten, indexBy, keys, uniq, values } from 'ramda';
-import { combineLatest, Observable, of, zip } from 'rxjs';
-import { filter, map, startWith, switchMap, mapTo } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import * as Config from '../../../../../../common/config/Config';
 import { cache, spyTag } from '../../../shared';
 import { FieldDefinition, ListDefinition, ListType } from '../new-components/properties-tree/properties-tree.models';
-import * as Config from '../../../../../../common/config/Config';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { textPropertyByFksKey, proClassFieldConfgByProjectAndClassKey } from 'app/core/pro/pro.config';
-import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
-import { DfhPropertyActionFactory } from 'app/core/dfh/dfh.actions';
 
 type LabelOrigin = 'of project in project lang' | 'of default project in project lang' | 'of default project in english' | 'of ontome in project lang' | 'of ontome in english'
 
