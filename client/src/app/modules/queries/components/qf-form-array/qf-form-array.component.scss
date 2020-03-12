@@ -120,7 +120,7 @@ $top-horizontal-line: 30px;
     .sub-query-item {
       position: relative;
       display: flex;
-      align-items: start;
+      align-items: flex-start;
       .subquery-left {
         position: relative;
         width: 35px;

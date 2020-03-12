@@ -7,8 +7,8 @@
   .summary-icon {
     display: flex;
     flex: 0 0 70px;
-    align-items: start;
-    justify-content: start;
+    align-items: flex-start;
+    justify-content: flex-start;
     font-size: 60px;
     opacity: 0.3;
     mat-icon  {
@@ -18,8 +18,8 @@
   .summary-texts {
     display: flex;
     flex-direction: row;
-    justify-content: start;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: flex-start;
     flex: 1 1 0;
     overflow: hidden;
     .summary-entity-label {
