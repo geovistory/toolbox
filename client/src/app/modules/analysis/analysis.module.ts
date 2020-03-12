@@ -16,7 +16,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AngularSplitModule } from 'angular-split';
 import { PassiveLinkModule } from 'app/shared';
 import { ConfirmDialogModule } from 'app/shared/components/confirm-dialog/confirm-dialog.module';
 import { DetailContentModule } from 'app/shared/components/detail-content/detail-content.module';
@@ -107,7 +106,6 @@ const components = [
     ReactiveFormsModule,
     FormFactoryModule,
     PortalModule,
-    AngularSplitModule,
     DragDropModule,
     PassiveLinkModule,
     TimelineModule,

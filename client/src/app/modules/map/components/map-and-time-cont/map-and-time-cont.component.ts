@@ -1,16 +1,14 @@
-import { Component, Input, OnInit, HostBinding } from '@angular/core';
+import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import { ActiveProjectService, EntityPreview } from 'app/core';
+import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo } from 'app/modules/timeline/components/timeline-chart/timeline-chart.component';
+import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import * as d3 from 'd3';
 import { apply, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject } from 'rxjs';
-import { map, shareReplay, first } from 'rxjs/operators';
-import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlRgbaValue, CzmlSpatialValue, MapAndTimeContOutput, TimeChartContOutput, TimeCzmlValue, CzmlPoint, ChartLinePoint } from '../../../../../../../src/common/interfaces';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
+import { first, map, shareReplay } from 'rxjs/operators';
+import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue, CzmlSpatialValue, MapAndTimeContOutput, TimeChartContOutput, TimeCzmlValue } from '../../../../../../../src/common/interfaces';
 import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
-import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
-import { ActiveProjectService, EntityPreview } from 'app/core';
-import { EntityPreviewsPaginatedDialogData, EntityPreviewsPaginatedDialogComponent } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 
 export interface MapAndTimeContLayer {
   data_lookups: { [key: string]: number[] }[]

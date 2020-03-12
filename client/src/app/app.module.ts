@@ -12,8 +12,6 @@ import { BrowserModule, DomSanitizer, HAMMER_GESTURE_CONFIG, HammerModule } from
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AngularSplitModule } from 'angular-split';
-// import { ElasticInputModule } from 'angular2-elastic-input';
 import { ProModule } from 'app/core/pro/pro.module';
 import { environment } from 'environments/environment';
 import 'hammerjs';
@@ -40,6 +38,7 @@ import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
 import { GestureConfig } from "../gesture-config";
+import { AngularSplitModule } from './core/split/module';
 
 // const spy = create()
 // spy.unplug(spy.find(CyclePlugin));
@@ -83,7 +82,6 @@ registerLocaleData(localeDeCh);
     DndModule.forRoot(),
     TreeviewModule.forRoot(),
     SocketIoModule.forRoot(socketConfig),
-    AngularSplitModule.forRoot(),
     MccColorPickerModule.forRoot({}),
     BrowserModule,
     BrowserAnimationsModule,
