@@ -8,6 +8,8 @@ import { DatActions } from './dat.actions';
 import { datDefinitions, datRoot } from './dat.config';
 import { distinctUntilChanged } from '../../../../node_modules/rxjs/operators';
 import { equals } from 'ramda';
+import { DatColumn } from '../sdk/models/DatColumn';
+import { DatTextProperty } from '../sdk/models/DatTextProperty';
 
 class Selector {
   constructor(
@@ -33,48 +35,67 @@ class Selector {
 }
 
 class DatDigitalSelections extends Selector {
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, configs, model) }
-
   public by_pk_entity__entity_version$ = this.selector<DatDigital>('by_pk_entity__entity_version')
   public by_pk_entity$ = this.selector<ByPk<DatDigital>>('by_pk_entity')
   public by_pk_text$ = this.selector<ByPk<DatDigital>>('by_pk_text')
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
 }
 
 class DatNamespaceSelections extends Selector {
+  public by_pk_entity$ = this.selector<DatNamespace>('by_pk_entity')
+  public by_fk_project$ = this.selector<ByPk<DatNamespace>>('by_fk_project')
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, configs, model) }
-
-  public by_pk_entity$ = this.selector<DatNamespace>('by_pk_entity')
-  public by_fk_project$ = this.selector<ByPk<DatNamespace>>('by_fk_project')
 }
 
 class DatChunkSelections extends Selector {
+  public by_pk_entity$ = this.selector<DatChunk>('by_pk_entity')
+  public by_fk_text$ = this.selector<ByPk<DatChunk>>('by_fk_text')
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, configs, model) }
+}
 
-  public by_pk_entity$ = this.selector<DatChunk>('by_pk_entity')
-  public by_fk_text$ = this.selector<ByPk<DatChunk>>('by_fk_text')
+class DatColumnSelections extends Selector {
+  public by_pk_entity$ = this.selector<DatColumn>('by_pk_entity')
+  public by_fk_digital$ = this.selector<ByPk<DatColumn>>('by_fk_digital')
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
+}
+
+class DatTextPropertySelections extends Selector {
+  public by_pk_entity$ = this.selector<DatTextProperty>('by_pk_entity')
+  public by_fk_entity__fk_system_type$ = this.selector<ByPk<DatTextProperty>>('by_fk_entity__fk_system_type')
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
 }
 
 @Injectable()
 export class DatSelector extends DatActions {
 
-  constructor(public ngRedux: NgRedux<IAppState>) {
-    super(ngRedux)
-  }
-
   digital$ = new DatDigitalSelections(this.ngRedux, datDefinitions, 'digital');
   namespace$ = new DatNamespaceSelections(this.ngRedux, datDefinitions, 'namespace');
   chunk$ = new DatChunkSelections(this.ngRedux, datDefinitions, 'chunk');
+  column$ = new DatColumnSelections(this.ngRedux, datDefinitions, 'column');
+  text_property$ = new DatTextPropertySelections(this.ngRedux, datDefinitions, 'text_property');
+
+  constructor(public ngRedux: NgRedux<IAppState>) {
+    super(ngRedux)
+  }
 
 }

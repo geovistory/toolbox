@@ -38,6 +38,7 @@ SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION = 179;
 SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL = 639;
 SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
 SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
+SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DATA = 3295;
 /***********************
 * Analysis Types
 ************************/

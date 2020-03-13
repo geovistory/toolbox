@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sql_builder_base_1 = require("../utils/sql-builder-base");
 const utils_1 = require("../utils");
-class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
-    constructor() {
-        super(...arguments);
+const sql_builder_lb_models_1 = require("../utils/sql-builder-lb-models");
+class GetTablePageSqlBuilder extends sql_builder_lb_models_1.SqlBuilderLbModels {
+    constructor(models) {
+        super(models);
         this.colAliasMap = new Map();
     }
     buildQuery(fkProject, pkEntity, options) {

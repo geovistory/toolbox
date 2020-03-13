@@ -15,6 +15,7 @@ import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindEAByParams, InfAc
 import { infRoot } from './inf.config';
 import { InfEntityAssociationSlice, InfPersistentItemSlice, InfRoleSlice, InfTemporalEntitySlice, InfTextPropertySlice } from './inf.models';
 import { SchemaObject } from '../store/model';
+import { SchemaObjectService } from '../store/schema-object.service';
 
 
 @Injectable()
@@ -29,7 +30,8 @@ export class InfEpics {
     public infActions: InfActions,
     public proActions: ProActions,
     public datActions: DatActions,
-    public infoProjRelApi: ProInfoProjRelApi
+    public infoProjRelApi: ProInfoProjRelApi,
+    private schemaObjectService: SchemaObjectService
   ) { }
 
   public createEpics(): Epic {
@@ -83,7 +85,7 @@ export class InfEpics {
         InfPersistentItemActionFactory.TYPES_OF_PROJECT,
         (results, pk) => {
           const schemaObject = results as SchemaObject;
-          this.storeSchemaObject(schemaObject, pk)
+          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
         }
       ),
       infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
@@ -115,7 +117,7 @@ export class InfEpics {
         InfTemporalEntityActionFactory.OWN_PROPERTIES,
         (results, pk) => {
           const schemaObject = results as SchemaObject;
-          this.storeSchemaObject(schemaObject, pk)
+          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
         }
       ),
       /**
@@ -225,7 +227,7 @@ export class InfEpics {
         InfEntityAssoctiationActionFactory.CONTENT_TREE,
         (results, pk) => {
           const schemaObject = results as SchemaObject;
-          this.storeSchemaObject(schemaObject, pk)
+          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
         }
       ),
 
@@ -306,7 +308,7 @@ export class InfEpics {
     // call api to load data
     apiCall$.subscribe((data: PaginatedRolesList) => {
       // call action to store records
-      this.storeSchemaObject(data.schemas, pkProject);
+      this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
       // call action to store pagination
       this.infActions.role.loadPageSucceeded(data.paginatedRoles, data.count, paginateBy, meta.limit, meta.offset, pkProject);
       // call action to conclude the pending request
@@ -317,19 +319,19 @@ export class InfEpics {
     });
   }
 
-  private storeSchemaObject(schemas: SchemaObject, pkProject) {
-    if (schemas && Object.keys(schemas).length > 0) {
-      Object.keys(schemas).forEach(schema => {
-        let actions;
-        if (schema === 'inf') actions = this.infActions;
-        else if (schema === 'pro') actions = this.proActions;
-        else if (schema === 'dat') actions = this.datActions;
-        if (actions) {
-          Object.keys(schemas[schema]).forEach(model => {
-            actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
-          });
-        }
-      });
-    }
-  }
+  // private storeSchemaObject(schemas: SchemaObject, pkProject) {
+  //   if (schemas && Object.keys(schemas).length > 0) {
+  //     Object.keys(schemas).forEach(schema => {
+  //       let actions;
+  //       if (schema === 'inf') actions = this.infActions;
+  //       else if (schema === 'pro') actions = this.proActions;
+  //       else if (schema === 'dat') actions = this.datActions;
+  //       if (actions) {
+  //         Object.keys(schemas[schema]).forEach(model => {
+  //           actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 }

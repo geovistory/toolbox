@@ -106,7 +106,7 @@ module.exports = function(DatDigital) {
   };
 
   DatDigital.getTablePage = (pkProject, pkEntity, options) => {
-    return new TableRemotes(DatDigital.dataSource.connector).getPage(
+    return new TableRemotes(DatDigital.app).getPage(
       pkProject,
       pkEntity,
       options

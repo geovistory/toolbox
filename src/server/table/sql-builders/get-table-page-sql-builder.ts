@@ -1,5 +1,6 @@
 import { logSql } from '../../utils';
 import { SqlBuilderBase } from '../../utils/sql-builder-base';
+import { clone } from 'ramda';
 
 export interface GetTableOptions {
   limit: number,
@@ -28,19 +29,24 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
 
   colAliasMap = new Map<number, string>()
 
+  colBatchWiths: { name: string, columns: number[] }[] = [];
+  colBatchWithI = 0;
+
+  columns: number[] = [];
+
   constructor() {
     super()
   }
 
   buildQuery(fkProject: number, pkEntity: number, options: GetTableOptions) {
+    this.columns = clone(options.columns);
 
-    options.columns.forEach((pkCol, i) => {
+    this.columns.forEach((pkCol, i) => {
       this.colAliasMap.set(pkCol, `tr${i}`)
     })
 
     // filter and orderby columns
-    const masterColumns = options.columns.slice(0, 1);
-
+    const masterColumns = this.columns.splice(0, 1);
 
     const sql = `
     -- master columns
@@ -57,13 +63,17 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
       AND
       t3.fk_project = ${this.addParam(fkProject)}
 
-      LIMIT ${this.addParam(options.limit)}
-      OFFSET ${this.addParam(options.offset)}
+      LIMIT ${this.addParam(options.limit || 20)}
+      OFFSET ${this.addParam(options.offset || 0)}
     ),
+
+    -- col withs (baches of 10 columns for performance)
+    ${this.addColBatchWiths(this.columns, pkEntity)},
+
 
     -- rows
     tw2 AS (
-      SELECT json_agg(t1) as rows FROM tw1 T1
+      ${this.joinColBatchWiths()}
     ),
 
     -- length (total count)
@@ -77,14 +87,17 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
         t1.fk_digital = ${this.addParam(pkEntity)}
       AND
         t3.fk_project = ${this.addParam(fkProject)}
+    ),
+    tw4 AS (
+      SELECT json_agg(t1) as rows FROM tw2 t1
     )
 
     SELECT
     json_build_object (
-          'rows', tw2.rows,
+        'rows', tw4.rows,
         'length', tw3.length
     ) as data
-    FROM tw2
+    FROM tw4
     LEFT JOIN tw3 ON true;
     `
     logSql(sql, this.params);
@@ -126,4 +139,57 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
           And  ${tableAlias}.fk_column = ${this.addParam(pkCol)}`
   }
 
+  private addColBatchWiths(columns: number[], pkEntity: number): string {
+    return this.recurseColBatchWiths(columns, pkEntity).join(',\n')
+  }
+
+  private recurseColBatchWiths(columns: number[], pkEntity: number): string[] {
+
+    let sqls: string[] = []
+
+    const colBatch = columns.splice(0, 10);
+
+    if (colBatch.length > 0) {
+      sqls.push(this.addColBatchWith(`col_tw_${this.colBatchWithI}`, colBatch, pkEntity))
+
+      this.colBatchWithI++;
+      sqls = [...sqls, ... this.recurseColBatchWiths(columns, pkEntity) || []]
+    }
+
+    return sqls
+  }
+
+  private addColBatchWith(colBatchWith: string, columns: number[], pkEntity: number): string {
+    this.colBatchWiths.push({ name: colBatchWith, columns })
+    const sql = `
+    ${colBatchWith} As (
+        Select
+           t1.pk_row,
+           ${this.addColumnSelects(columns)}
+        From
+            tw1 t1
+        ${this.addColumnFroms(columns, pkEntity)}
+    )
+    `
+    return sql
+  }
+
+  private joinColBatchWiths() {
+    return `
+        Select
+          tw1.pk_row,
+          ${this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n')).join(',\n')}
+        From
+          ${['tw1', ...this.colBatchWiths.map(w => w.name)].join(',\n')}
+          ${
+      this.colBatchWiths.length < 1 ? '' :
+        `Where
+            ${this.colBatchWiths
+          .map((w) => `tw1.pk_row = ${w.name}.pk_row`)
+          .join(' AND \n')}
+        `
+      }
+
+    `
+  }
 }

@@ -9,6 +9,8 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
 import { FormsModule } from '@angular/forms';
 import { AnnotationModule } from 'app/modules/annotation/annotation.module';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
+import { TableModule } from 'primeng/table';
+import { MatPaginatorModule, MatDividerModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -18,7 +20,10 @@ import { TableDetailComponent } from './components/table-detail/table-detail.com
     AngularSplitModule,
     DetailContentModule,
     DetailTopBarModule,
-    AnnotationModule
+    AnnotationModule,
+    TableModule,
+    MatPaginatorModule,
+    MatDividerModule
   ],
   providers: [],
   declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent],

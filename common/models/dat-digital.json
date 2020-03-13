@@ -16,6 +16,10 @@
     }
   },
   "properties": {
+    "entity_version": {
+      "type": "number",
+      "generated": true
+    },
     "pk_text": {
       "type": "number",
       "generated": true

@@ -5,6 +5,7 @@ import {
 
 declare var Object: any;
 export interface DatDigitalInterface {
+  "entity_version"?: number;
   "pk_text"?: number;
   "notes"?: string;
   "tmsp_creation"?: string;
@@ -13,12 +14,12 @@ export interface DatDigitalInterface {
   "quill_doc"?: any;
   "string"?: string;
   "pk_entity"?: number;
-  "entity_version"?: number;
   "fk_namespace"?: number;
   namespace?: DatNamespace;
 }
 
 export class DatDigital implements DatDigitalInterface {
+  "entity_version": number;
   "pk_text": number;
   "notes": string;
   "tmsp_creation": string;
@@ -27,7 +28,6 @@ export class DatDigital implements DatDigitalInterface {
   "quill_doc": any;
   "string": string;
   "pk_entity": number;
-  "entity_version": number;
   "fk_namespace": number;
   namespace?: DatNamespace;
   constructor(data?: DatDigitalInterface) {
@@ -63,6 +63,10 @@ export class DatDigital implements DatDigitalInterface {
       path: 'DatDigitals',
       idName: 'pk_entity',
       properties: {
+        "entity_version": {
+          name: 'entity_version',
+          type: 'number'
+        },
         "pk_text": {
           name: 'pk_text',
           type: 'number'
@@ -93,10 +97,6 @@ export class DatDigital implements DatDigitalInterface {
         },
         "pk_entity": {
           name: 'pk_entity',
-          type: 'number'
-        },
-        "entity_version": {
-          name: 'entity_version',
           type: 'number'
         },
         "fk_namespace": {

@@ -1,5 +1,5 @@
 import sqlFormatter from 'sql-formatter';
-import { QueryPathSegment, ColDef, QueryDefinition, QueryFilterData } from '../../common/interfaces/query-filter.interface';
+import { ColDef, QueryDefinition, QueryFilterData, QueryPathSegment } from '../../common/interfaces/query-filter.interface';
 import { SqlBuilderBase } from '../utils/sql-builder-base';
 
 interface QueryNode {

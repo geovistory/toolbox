@@ -1,18 +1,27 @@
-<p>table-detail works!</p>
-{{pkEntity}}
-
-{{rows$ |async |json}}
-<table>
-  <thead>
+<mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
+  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onPageChange($event)">
+</mat-paginator>
+<mat-divider></mat-divider>
+<p-table [value]="rows$ | async" [scrollable]="true" [columns]="columns$ | async">
+  <ng-template pTemplate="colgroup" let-columns>
+    <colgroup>
+      <col *ngFor="let col of columns" style="width:250px">
+    </colgroup>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
     <tr>
-      <th>k</th>
-      <th>kjhk</th>
+      <th>ID</th>
+      <th *ngFor="let col of columns">
+        {{col}}
+      </th>
     </tr>
-  </thead>
-  <tbody>
+  </ng-template>
+  <ng-template pTemplate="body" let-row>
     <tr>
-      <td>jlk</td>
-      <td>oiuo</td>
+      <td>{{row.pk_row}}</td>
+      <td *ngFor="let col of (columns$ | async)">
+        {{row[col]?.string_value}}
+      </td>
     </tr>
-  </tbody>
-</table>
+  </ng-template>
+</p-table>
