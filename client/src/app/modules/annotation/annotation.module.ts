@@ -14,6 +14,7 @@ import { QuillOpsToStrModule } from '../../shared/pipes/quill-delta-to-str/quill
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { MentioningListComponent } from './components/mentioning-list/mentioning-list.component';
 import { DigitalPreviewModule } from '../../shared/components/digital-preview/digital-preview.module';
+import { RamListComponent } from './components/ram-list/ram-list.component';
 
 @NgModule({
   imports: [
@@ -32,7 +33,7 @@ import { DigitalPreviewModule } from '../../shared/components/digital-preview/di
     DigitalPreviewModule
   ],
   providers: [],
-  declarations: [MentioningListComponent, MentioningCreateCtrlComponent],
-  exports: [MentioningListComponent, MentioningCreateCtrlComponent]
+  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent],
+  exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent]
 })
 export class AnnotationModule { }

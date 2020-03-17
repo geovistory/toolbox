@@ -1,0 +1,119 @@
+Hello World again
+
+{{items$ | async | json}}
+
+<!-- 
+<mat-tab-group>
+    <mat-tab label="Is mentioned in">
+
+    </mat-tab>
+    <mat-tab label="Is annotated in">
+
+    </mat-tab>
+    <mat-tab label="Is topic of">
+
+    </mat-tab>
+</mat-tab-group>
+<div class="mat-typography" style="height: 400px; ">
+    <p-table #tt [value]="items" [columns]="cols" [scrollable]="true" scrollHeight="100%" [resizableColumns]="true">
+        <ng-template pTemplate="colgroup" let-columns>
+            <colgroup>
+                <col *ngFor="let col of columns" [style.width]="col.width">
+            </colgroup>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+
+            <tr>
+                <th pResizableColumn>Item</th>
+                <th>Reference</th>
+                <th class="col-action">
+                    <button mat-icon-button color=primary (click)="main.open$.next(true); setTargetOfRam(122)">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </th>
+
+            </tr>
+            <tr>
+                <th *ngFor="let col of cols; let i = index" pResizableColumn
+                    [pResizableColumnDisabled]="i == (cols.length - 2)">
+                    <mat-form-field *ngIf="col.hasFilter" class="gv-form-field-slim w-100" appearance="outline">
+                        <input matInput placeholder="Filter"
+                            (input)="tt.filter($event.target.value, col.filterCol, col.filterMatchMode)">
+                    </mat-form-field>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData let-columns="columns">
+            <tr>
+                <td *ngFor="let col of cols; let i = index" [ngClass]="{'col-action' : col.field=='action'}">
+
+
+                    <div *ngIf="col.field == 'path'" class="d-flex align-items-center"
+                        [matTooltip]="rowData.path.tooltip">
+
+                        <app-graph-path [data]="rowData.path.segments" (onClick)="onClickFn($event)" [mode]="viewMode">
+                        </app-graph-path>
+
+                    </div>
+
+                    <div *ngIf="col.field == 'location'" class="d-flex align-items-center"
+                        [ngClass]="{'gv-one-liner gv-fade-out-right': (viewMode != 'full')}"
+                        [matTooltip]="rowData.locationTooltip">
+                        <!-- <mat-icon class="mat-text-secondary mr-2">
+                            {{rowData.location.icon}}
+                        </mat-icon>-->
+<!--{{rowData.location.label}}
+                    </div>
+
+                    <div *ngIf="col.field == 'action'" class="d-flex align-items-center col-action">
+                        <button mat-icon-button [matMenuTriggerFor]="menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button *ngIf="rowData?.actions?.open" mat-menu-item>
+                                <mat-icon>tab</mat-icon>
+                                Open item in new tab
+                            </button>
+                            <button *ngIf="rowData?.actions?.open" mat-menu-item>
+                                <mat-icon>edit</mat-icon>
+                                Edit
+                            </button>
+                            <mat-divider></mat-divider>
+                            <button mat-menu-item>
+                                <mat-icon color="warn">delete</mat-icon>
+                                Remove '{{rowData.property.label}}'
+                            </button>
+                        </mat-menu>
+                    </div>
+                </td>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <tr>
+                <td colspan="4">
+                    <div style="display:flex; padding: 6px;">
+
+                        <label style="margin-left:auto;" class="mr-2 mat-body mat-text-secondary" id="view-mode">Display
+                            mode: </label>
+                        <mat-radio-group aria-labelledby="view-mode" [(ngModel)]="viewMode">
+                            <mat-radio-button value="mini" class="mat-caption">
+                                Mini
+                            </mat-radio-button>
+                            <mat-radio-button value="small" class="mat-caption">
+                                Small
+                            </mat-radio-button>
+                            <mat-radio-button value="full" class="mat-caption">
+                                Full
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+
+                </td>
+
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+</div> -->

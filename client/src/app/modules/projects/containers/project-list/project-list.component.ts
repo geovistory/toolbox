@@ -24,8 +24,8 @@ import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 })
 export class ProjectListComponent implements OnInit {
 
-  // TEMP 2020-03-10
-  destroy$ = new Subject<boolean>();
+  // // TEMP 2020-03-10
+  // destroy$ = new Subject<boolean>();
 
   projects: ProjectPreview[] = [];
   loadingComplete = false;
@@ -34,15 +34,15 @@ export class ProjectListComponent implements OnInit {
   config = Config;
 
   // TEMP 2020-03-10
-  temp;
-  tempProjectLabel;
-  tempProjectLabel$;
-  tempProjects$: Observable<ProProject[]>;
-  tempProjectPreview$: Observable<{
-    pk_entity: number,
-    fk_language: number,
-    label: string
-  }[]>;
+  // temp;
+  // tempProjectLabel;
+  // tempProjectLabel$;
+  // tempProjects$: Observable<ProProject[]>;
+  // tempProjectPreview$: Observable<{
+  //   pk_entity: number,
+  //   fk_language: number,
+  //   label: string
+  // }[]>;
 
   constructor(
     private accountApi: PubAccountApi,
@@ -61,74 +61,74 @@ export class ProjectListComponent implements OnInit {
   ngOnInit() {
 
     // TEMP 2020-03-10
-    this.pro$.project$.by_pk_entity$.all$
-      .subscribe(projects => {
-        this.temp = projects;
-        if (projects) {
-          Object.keys(projects).forEach(key => {
-            const p = projects[key];
-          })
-        }
-      });
+    // this.pro$.project$.by_pk_entity$.all$
+    //   .subscribe(projects => {
+    //     this.temp = projects;
+    //     if (projects) {
+    //       Object.keys(projects).forEach(key => {
+    //         const p = projects[key];
+    //       })
+    //     }
+    //   });
 
+    // // TEMP 2020-03-10
+    // this.ngRedux.select([
+    //   'pro',
+    //   'text_property',
+    //   'by_fks',
+    //   '4343_null_null_null_null_null_null'
+    // ])
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe(textProp => {
+    //     this.tempProjectLabel = textProp;
+    //   })
+
+    // // TEMP 2020-03-10
+    // this.tempProjectLabel$ = this.pro$.text_property$.by_fks$.key('4343_null_null_null_null_null_null')
+
+    // this.tempProjects$ = this.pro$.project$.by_pk_entity$.all$
+    //   .pipe(
+    //     map(projectsByPk => {
+    //       const projects: ProProject[] = [];
+    //       for (const key in projectsByPk) {
+    //         if (projectsByPk.hasOwnProperty(key)) {
+    //           const element = projectsByPk[key];
+    //           projects.push(element)
+    //         }
+    //       }
+    //       return projects;
+    //       //values(projectsByPk)
+    //     })
+    //   );
+
+    // // TEMP 2020-03-10
+    // this.tempProjectPreview$ = this.tempProjects$.pipe(
+    //   switchMap((projects) => {
+
+    //     const previews$ = projects.map((p) => {
+    //       return this.pro$.text_property$.by_fks$.key(p.pk_entity + '_null_null_null_null_null_null')
+    //         .pipe(
+    //           map((textProp) => {
+    //             return {
+    //               pk_entity: p.pk_entity,
+    //               fk_language: p.fk_language,
+    //               label: textProp.string
+    //             }
+    //           })
+    //         )
+    //     })
+
+    //     return combineLatestOrEmpty(previews$)
+    //   })
+
+    // )
+
+
+
+
+    this.getProjects();
     // TEMP 2020-03-10
-    this.ngRedux.select([
-      'pro',
-      'text_property',
-      'by_fks',
-      '4343_null_null_null_null_null_null'
-    ])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(textProp => {
-        this.tempProjectLabel = textProp;
-      })
-
-    // TEMP 2020-03-10
-    this.tempProjectLabel$ = this.pro$.text_property$.by_fks$.key('4343_null_null_null_null_null_null')
-
-    this.tempProjects$ = this.pro$.project$.by_pk_entity$.all$
-      .pipe(
-        map(projectsByPk => {
-          const projects: ProProject[] = [];
-          for (const key in projectsByPk) {
-            if (projectsByPk.hasOwnProperty(key)) {
-              const element = projectsByPk[key];
-              projects.push(element)
-            }
-          }
-          return projects;
-          //values(projectsByPk)
-        })
-      );
-
-    // TEMP 2020-03-10
-    this.tempProjectPreview$ = this.tempProjects$.pipe(
-      switchMap((projects) => {
-
-        const previews$ = projects.map((p) => {
-          return this.pro$.text_property$.by_fks$.key(p.pk_entity + '_null_null_null_null_null_null')
-            .pipe(
-              map((textProp) => {
-                return {
-                  pk_entity: p.pk_entity,
-                  fk_language: p.fk_language,
-                  label: textProp.string
-                }
-              })
-            )
-        })
-
-        return combineLatestOrEmpty(previews$)
-      })
-
-    )
-
-
-
-
-    // TEMP 2020-03-10
-    // this.getProjects();
-    this.getFakeProjects(7);
+    // this.getFakeProjects(7);
   }
 
   /**
@@ -218,9 +218,9 @@ export class ProjectListComponent implements OnInit {
   }
 
   // TEMP 2020-03-10
-  ngOnDestroy() {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.destroy$.next(true);
+  //   this.destroy$.unsubscribe();
+  // }
 
 }

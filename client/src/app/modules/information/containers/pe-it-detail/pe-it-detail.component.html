@@ -121,6 +121,12 @@
           <mat-tab *ngIf="(showSectionListToggle$ | async)" label="Sections & Digital Reproductions"
             (click)="show('showSectionList')"> </mat-tab>
           <mat-tab *ngIf="(showSourcesToggle$ | async)" label="Sources"> </mat-tab>
+
+
+          <mat-tab label="Is Topic Of"> </mat-tab>
+
+
+
         </mat-tab-group>
       </gv-detail-top-bar>
       <gv-detail-content>
@@ -139,10 +145,14 @@
 
 
         <!-- Show Sources (where this PeIt is annotated) -->
-        <gv-mentioning-list *ngIf="(showSources$ | async)" class="gv-tile"
+        <!-- <gv-mentioning-list *ngIf="(showSources$ | async)" class="gv-tile"
           [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
-        </gv-mentioning-list>
+        </gv-mentioning-list> -->
 
+
+        Hello World
+        <gv-ram-list *ngIf="(showSources$ | async)">
+        </gv-ram-list>
 
 
 
