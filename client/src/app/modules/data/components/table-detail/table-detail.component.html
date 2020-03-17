@@ -1,27 +1,88 @@
-<mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
-  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onPageChange($event)">
-</mat-paginator>
+<div class="gv-td-menu-container">
+
+  <div class="gv-td-menu-item gv-td-col-toggler orange">
+    <div class="gv-td-menu-label mat-text-secondary">
+      Columns:
+    </div>
+    <!-- Column Toggler -->
+    <mat-select-autocomplete [placeholder]="'Columns'" [options]="colToggleOptions$ | async" [multiple]='true'
+      [formControl]="colToggleCtrl" ngDefaultControl name="colToggleCtrl">
+    </mat-select-autocomplete>
+
+  </div>
+  <div class="gv-td-menu-item gv-td-col-checkbox orange">
+
+    <!-- Filter Toggler -->
+    <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
+
+    <!-- Metadata Toggler -->
+    <mat-checkbox [(ngModel)]="colMetaDataVisible">Filters</mat-checkbox>
+
+  </div>
+  <div class="gv-td-menu-item gv-td-paginator orange">
+
+    <!-- Paginator -->
+    <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
+      [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onPageChange($event)">
+    </mat-paginator>
+
+  </div>
+</div>
 <mat-divider></mat-divider>
-<p-table [value]="rows$ | async" [scrollable]="true" [columns]="columns$ | async">
-  <ng-template pTemplate="colgroup" let-columns>
-    <colgroup>
-      <col *ngFor="let col of columns" style="width:250px">
-    </colgroup>
-  </ng-template>
-  <ng-template pTemplate="header" let-columns>
-    <tr>
-      <th>ID</th>
-      <th *ngFor="let col of columns">
-        {{col}}
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-row>
-    <tr>
-      <td>{{row.pk_row}}</td>
-      <td *ngFor="let col of (columns$ | async)">
-        {{row[col]?.string_value}}
-      </td>
-    </tr>
-  </ng-template>
-</p-table>
+
+<div [gvCover]=cover [gvCoverVisible]="loading" class="gv-overflow-hidden" style="flex: 1 0 0;">
+  <p-table [value]="(rows$ | async)" [scrollable]="true" [columns]="(columns$ | async)">
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col style="width:250px">
+        <col *ngFor="let col of (columns$ | async)" style="width:250px">
+      </colgroup>
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th class="gv-pointer" (click)="onSortChange('pk_row')"> ID
+          <mat-icon *ngIf="(sortBy$ | async) == 'pk_row'"
+            [svgIcon]="(sortDirection$ | async) === 'ASC' ? 'arrow-up' : 'arrow-down'">
+          </mat-icon>
+        </th>
+
+        <th class="gv-pointer" *ngFor="let col of (columns$ | async)" (click)="onSortChange(col.value)">
+          <div>
+            <div>{{col.display}}</div>
+            <div class="mat-caption" *ngIf="col.datColumn.fk_data_type === 3292">text</div>
+            <div class="mat-caption" *ngIf="col.datColumn.fk_data_type === 3293">number</div>
+          </div>
+          <mat-icon *ngIf="(sortBy$ | async) == col.value"
+            [svgIcon]="(sortDirection$ | async) === 'ASC' ? 'arrow-up' : 'arrow-down'">
+          </mat-icon>
+        </th>
+
+      </tr>
+      <tr class="table-row-filter" *ngIf="colFiltersEnabled">
+        <th>
+          <input class="mat-elevation-z3" matInput placeholder="Filter..." type="text" name="filter"
+            (keyup)="onFilterChange('pk_row', $event.target.value)" autocomplete="off" />
+        </th>
+        <th *ngFor="let col of (columns$ | async)">
+          <gv-col-filter></gv-col-filter>
+
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row let-columns>
+      <tr>
+        <td>{{row.pk_row}}</td>
+        <td *ngFor="let col of (columns$ | async)">
+          <div class="gv-white-space-nowrap gv-fade-out-right ">
+            {{row[col.value]?.string_value}}
+            {{row[col.value]?.numeric_value}}
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<ng-template #cover>
+  <mat-spinner [diameter]="30"></mat-spinner>
+</ng-template>

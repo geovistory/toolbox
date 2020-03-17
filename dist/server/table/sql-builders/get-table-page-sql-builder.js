@@ -1,31 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const ramda_1 = require("ramda");
 const utils_1 = require("../../utils");
 const sql_builder_base_1 = require("../../utils/sql-builder-base");
-const ramda_1 = require("ramda");
 /**
  * Class to create select queries on data tables
  */
 class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
     constructor() {
         super();
-        this.colAliasMap = new Map();
+        // key is the column name / pkColumn, value is the alias of the table
+        this.colTableAliasMap = new Map();
         this.colBatchWiths = [];
         this.colBatchWithI = 0;
-        this.columns = [];
     }
-    buildQuery(fkProject, pkEntity, options) {
-        this.columns = ramda_1.clone(options.columns);
-        this.columns.forEach((pkCol, i) => {
-            this.colAliasMap.set(pkCol, `tr${i}`);
+    buildQuery(fkProject, pkEntity, options, masterColumns, colMeta) {
+        options.columns.forEach((pkCol, i) => {
+            this.colTableAliasMap.set(pkCol, `tr${i}`);
         });
-        // filter and orderby columns
-        const masterColumns = this.columns.splice(0, 1);
+        const colsForBatches = ramda_1.without(masterColumns, options.columns);
         const sql = `
     -- master columns
     WITH tw1 AS (
       Select
-      t1.pk_row,
+      t1.pk_row${masterColumns.length ? ',' : ''}
       ${this.addColumnSelects(masterColumns)}
       From  tables.row t1
       JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
@@ -36,17 +34,21 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
       AND
       t3.fk_project = ${this.addParam(fkProject)}
 
+      ${this.addFilters(options.filters, colMeta)}
+
+      ${this.addOrderBy(options, colMeta)}
+
       LIMIT ${this.addParam(options.limit || 20)}
       OFFSET ${this.addParam(options.offset || 0)}
-    ),
+    )
 
     -- col withs (baches of 10 columns for performance)
-    ${this.addColBatchWiths(this.columns, pkEntity)},
-
+    ${colsForBatches.length ? ',' : ''}
+    ${this.addColBatchWiths(colsForBatches, pkEntity)},
 
     -- rows
     tw2 AS (
-      ${this.joinColBatchWiths()}
+      ${this.joinColBatchWiths(masterColumns)}
     ),
 
     -- length (total count)
@@ -56,10 +58,12 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
       From  tables.row t1
         JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
         JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
+        ${this.addColumnFroms(masterColumns, pkEntity)}
       Where
         t1.fk_digital = ${this.addParam(pkEntity)}
       AND
         t3.fk_project = ${this.addParam(fkProject)}
+        ${this.addFilters(options.filters, colMeta)}
     ),
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
@@ -76,25 +80,27 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         utils_1.logSql(sql, this.params);
         return { sql, params: this.params };
     }
-    addColumnSelects(pks) {
-        return pks.map(pk => {
-            const tableAlias = this.colAliasMap.get(pk);
+    addColumnSelects(columns) {
+        return columns.map(pk => {
+            const tableAlias = this.colTableAliasMap.get(pk);
             if (tableAlias)
                 return this.addColumnSelect(pk, tableAlias);
-            else
+            else {
+                console.error('col table alias not found:', pk);
                 return '';
+            }
         }).join(',\n');
     }
-    addColumnSelect(pkCol, tableAlias) {
+    addColumnSelect(colName, tableAlias) {
         return `json_build_object(
               'string_value', ${tableAlias}.string_value,
               'numeric_value', ${tableAlias}.numeric_value,
               'pk_cell', ${tableAlias}.pk_cell
-            ) As "${pkCol}"`;
+            ) As "${colName}"`;
     }
-    addColumnFroms(pks, pkEntity) {
-        return pks.map(pk => {
-            const tableAlias = this.colAliasMap.get(pk);
+    addColumnFroms(columns, pkEntity) {
+        return columns.map(pk => {
+            const tableAlias = this.colTableAliasMap.get(pk);
             if (tableAlias)
                 return this.addColumnFrom(pk, tableAlias, pkEntity);
             else
@@ -105,7 +111,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         return `
           Left Join tables.cell_${pkEntity}  ${tableAlias}
           On t1.pk_row =  ${tableAlias}.fk_row
-          And  ${tableAlias}.fk_column = ${this.addParam(pkCol)}`;
+          And  ${tableAlias}.fk_column = ${this.addParam(parseInt(pkCol, 10))}`;
     }
     addColBatchWiths(columns, pkEntity) {
         return this.recurseColBatchWiths(columns, pkEntity).join(',\n');
@@ -125,7 +131,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         const sql = `
     ${colBatchWith} As (
         Select
-           t1.pk_row,
+           t1.pk_row ${columns.length ? ',' : ''}
            ${this.addColumnSelects(columns)}
         From
             tw1 t1
@@ -134,11 +140,13 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
     `;
         return sql;
     }
-    joinColBatchWiths() {
+    joinColBatchWiths(masterColumns) {
         return `
         Select
-          tw1.pk_row,
-          ${this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n')).join(',\n')}
+      ${[
+            ...['pk_row', ...masterColumns].map(colName => `tw1."${colName}"`),
+            ...this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n'))
+        ].join(',\n')}
         From
           ${['tw1', ...this.colBatchWiths.map(w => w.name)].join(',\n')}
           ${this.colBatchWiths.length < 1 ? '' :
@@ -149,6 +157,46 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         `}
 
     `;
+    }
+    addFilters(filters, colMeta) {
+        var _a;
+        let sql = '';
+        for (const key in filters) {
+            if (filters.hasOwnProperty(key)) {
+                const filter = filters[key];
+                if (key == 'pk_row') {
+                    sql = `
+          ${sql}
+          AND t1.pk_row::text iLIKE '%${filter}%'
+          `;
+                }
+                else {
+                    const pkCol = key;
+                    const datCol = colMeta.find((col) => col.pk_entity == parseInt(pkCol, 10));
+                    const cellCol = ((_a = datCol) === null || _a === void 0 ? void 0 : _a.fk_data_type) == 3292 ? 'string_value' : 'numeric_value';
+                    sql = `
+          ${sql}
+          AND ${this.colTableAliasMap.get(pkCol)}.${cellCol}::text iLIKE '%${filter}%'
+          `;
+                }
+            }
+        }
+        return sql;
+    }
+    addOrderBy(options, colMeta) {
+        var _a;
+        if (options.sortBy) {
+            if (options.sortBy == 'pk_row') {
+                return `ORDER BY t1.pk_row ${options.sortDirection}`;
+            }
+            else {
+                const pkCol = options.sortBy;
+                const datCol = colMeta.find((col) => col.pk_entity == parseInt(pkCol, 10));
+                const cellCol = ((_a = datCol) === null || _a === void 0 ? void 0 : _a.fk_data_type) == 3292 ? 'string_value' : 'numeric_value';
+                return `ORDER BY ${this.colTableAliasMap.get(pkCol)}.${cellCol} ${options.sortDirection}`;
+            }
+        }
+        return '';
     }
 }
 exports.GetTablePageSqlBuilder = GetTablePageSqlBuilder;

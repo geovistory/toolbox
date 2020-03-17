@@ -1,21 +1,25 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TextDetailComponent } from './components/text-detail/text-detail.component';
-import { QuillModule } from '../quill';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule, MatDividerModule, MatIconModule, MatInputModule, MatPaginatorModule, MatProgressSpinnerModule, MatFormFieldModule } from '@angular/material';
 import { AngularSplitModule } from 'angular-split';
+import { AnnotationModule } from 'app/modules/annotation/annotation.module';
+import { CoverModule } from 'app/shared/directives/cover/cover.module';
+import { SelectAutocompleteModule } from 'mat-select-autocomplete';
+import { TableModule } from 'primeng/table';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
-import { VersionPickerComponent } from './components/version-picker/version-picker.component';
-import { FormsModule } from '@angular/forms';
-import { AnnotationModule } from 'app/modules/annotation/annotation.module';
+import { QuillModule } from '../quill';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
-import { TableModule } from 'primeng/table';
-import { MatPaginatorModule, MatDividerModule } from '@angular/material';
+import { TextDetailComponent } from './components/text-detail/text-detail.component';
+import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { ColFilterComponent } from './components/col-filter/col-filter.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     QuillModule,
     AngularSplitModule,
     DetailContentModule,
@@ -23,10 +27,17 @@ import { MatPaginatorModule, MatDividerModule } from '@angular/material';
     AnnotationModule,
     TableModule,
     MatPaginatorModule,
-    MatDividerModule
+    MatDividerModule,
+    SelectAutocompleteModule,
+    CoverModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatFormFieldModule
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent],
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ColFilterComponent],
   exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent]
 })
 export class DataModule { }

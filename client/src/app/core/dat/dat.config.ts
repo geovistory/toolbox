@@ -63,7 +63,7 @@ export const datDefinitions: ReducerConfigCollection = {
     },
     groupBy: [
       {
-        keyInStore: 'by_fk_entity__fk_system_type',
+        keyInStore: 'fk_entity__fk_system_type',
         groupByFn: (item: DatTextProperty): string => item.fk_entity + '_' + item.fk_system_type
       }
     ]

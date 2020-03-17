@@ -1,12 +1,18 @@
+import { without } from 'ramda';
 import { logSql } from '../../utils';
 import { SqlBuilderBase } from '../../utils/sql-builder-base';
-import { clone } from 'ramda';
 
-export interface GetTableOptions {
+interface Filters {
+  [colName: string]: string
+}
+export interface GetTablePageOptions {
   limit: number,
   offset: number,
-  columns: number[],
-  orderBy: any
+  columns: string[],
+  orderBy: any,
+  sortBy: string,
+  sortDirection: 'ASC' | 'DESC',
+  filters: Filters
 }
 export interface TabCell {
   pk_cell: number;
@@ -20,6 +26,7 @@ export interface TabRow {
 export interface DatColumn {
   pk_entity: number;
   fk_content_type?: number;
+  fk_data_type?: number;
 }
 
 /**
@@ -27,32 +34,28 @@ export interface DatColumn {
  */
 export class GetTablePageSqlBuilder extends SqlBuilderBase {
 
-  colAliasMap = new Map<number, string>()
+  // key is the column name / pkColumn, value is the alias of the table
+  colTableAliasMap = new Map<string, string>()
 
-  colBatchWiths: { name: string, columns: number[] }[] = [];
+  colBatchWiths: { name: string, columns: string[] }[] = [];
   colBatchWithI = 0;
-
-  columns: number[] = [];
 
   constructor() {
     super()
   }
 
-  buildQuery(fkProject: number, pkEntity: number, options: GetTableOptions) {
-    this.columns = clone(options.columns);
-
-    this.columns.forEach((pkCol, i) => {
-      this.colAliasMap.set(pkCol, `tr${i}`)
+  buildQuery(fkProject: number, pkEntity: number, options: GetTablePageOptions, masterColumns: string[], colMeta: DatColumn[]) {
+    options.columns.forEach((pkCol, i) => {
+      this.colTableAliasMap.set(pkCol, `tr${i}`)
     })
 
-    // filter and orderby columns
-    const masterColumns = this.columns.splice(0, 1);
+    const colsForBatches = without(masterColumns, options.columns);
 
     const sql = `
     -- master columns
     WITH tw1 AS (
       Select
-      t1.pk_row,
+      t1.pk_row${masterColumns.length ? ',' : ''}
       ${this.addColumnSelects(masterColumns)}
       From  tables.row t1
       JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
@@ -63,17 +66,21 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
       AND
       t3.fk_project = ${this.addParam(fkProject)}
 
+      ${this.addFilters(options.filters, colMeta)}
+
+      ${this.addOrderBy(options, colMeta)}
+
       LIMIT ${this.addParam(options.limit || 20)}
       OFFSET ${this.addParam(options.offset || 0)}
-    ),
+    )
 
     -- col withs (baches of 10 columns for performance)
-    ${this.addColBatchWiths(this.columns, pkEntity)},
-
+    ${colsForBatches.length ? ',' : ''}
+    ${this.addColBatchWiths(colsForBatches, pkEntity)},
 
     -- rows
     tw2 AS (
-      ${this.joinColBatchWiths()}
+      ${this.joinColBatchWiths(masterColumns)}
     ),
 
     -- length (total count)
@@ -83,10 +90,12 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
       From  tables.row t1
         JOIN data.digital t2 ON t1.fk_digital = t2.pk_entity
         JOIN data.namespace t3 ON t2.fk_namespace = t3.pk_entity
+        ${this.addColumnFroms(masterColumns, pkEntity)}
       Where
         t1.fk_digital = ${this.addParam(pkEntity)}
       AND
         t3.fk_project = ${this.addParam(fkProject)}
+        ${this.addFilters(options.filters, colMeta)}
     ),
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
@@ -105,45 +114,51 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
 
   }
 
-  private addColumnSelects(pks: number[]) {
-    return pks.map(pk => {
-      const tableAlias = this.colAliasMap.get(pk);
+
+
+  private addColumnSelects(columns: string[]) {
+    return columns.map(pk => {
+      const tableAlias = this.colTableAliasMap.get(pk);
       if (tableAlias) return this.addColumnSelect(pk, tableAlias)
-      else return ''
+
+      else {
+        console.error('col table alias not found:', pk)
+        return ''
+      }
     }).join(',\n')
   }
 
 
-  private addColumnSelect(pkCol: number, tableAlias: string) {
+  private addColumnSelect(colName: string, tableAlias: string) {
     return `json_build_object(
               'string_value', ${tableAlias}.string_value,
               'numeric_value', ${tableAlias}.numeric_value,
               'pk_cell', ${tableAlias}.pk_cell
-            ) As "${pkCol}"`
+            ) As "${colName}"`
   }
 
 
-  private addColumnFroms(pks: number[], pkEntity: number) {
-    return pks.map(pk => {
-      const tableAlias = this.colAliasMap.get(pk);
+  private addColumnFroms(columns: string[], pkEntity: number) {
+    return columns.map(pk => {
+      const tableAlias = this.colTableAliasMap.get(pk);
       if (tableAlias) return this.addColumnFrom(pk, tableAlias, pkEntity)
       else return ''
     }).join('\n')
   }
 
 
-  private addColumnFrom(pkCol: number, tableAlias: string, pkEntity: number) {
+  private addColumnFrom(pkCol: string, tableAlias: string, pkEntity: number) {
     return `
           Left Join tables.cell_${pkEntity}  ${tableAlias}
           On t1.pk_row =  ${tableAlias}.fk_row
-          And  ${tableAlias}.fk_column = ${this.addParam(pkCol)}`
+          And  ${tableAlias}.fk_column = ${this.addParam(parseInt(pkCol, 10))}`
   }
 
-  private addColBatchWiths(columns: number[], pkEntity: number): string {
+  private addColBatchWiths(columns: string[], pkEntity: number): string {
     return this.recurseColBatchWiths(columns, pkEntity).join(',\n')
   }
 
-  private recurseColBatchWiths(columns: number[], pkEntity: number): string[] {
+  private recurseColBatchWiths(columns: string[], pkEntity: number): string[] {
 
     let sqls: string[] = []
 
@@ -159,12 +174,12 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
     return sqls
   }
 
-  private addColBatchWith(colBatchWith: string, columns: number[], pkEntity: number): string {
+  private addColBatchWith(colBatchWith: string, columns: string[], pkEntity: number): string {
     this.colBatchWiths.push({ name: colBatchWith, columns })
     const sql = `
     ${colBatchWith} As (
         Select
-           t1.pk_row,
+           t1.pk_row ${columns.length ? ',' : ''}
            ${this.addColumnSelects(columns)}
         From
             tw1 t1
@@ -174,11 +189,15 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
     return sql
   }
 
-  private joinColBatchWiths() {
+  private joinColBatchWiths(masterColumns: string[]) {
     return `
         Select
-          tw1.pk_row,
-          ${this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n')).join(',\n')}
+      ${
+      [
+        ...['pk_row', ...masterColumns].map(colName => `tw1."${colName}"`),
+        ...this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n'))
+      ].join(',\n')
+      }
         From
           ${['tw1', ...this.colBatchWiths.map(w => w.name)].join(',\n')}
           ${
@@ -191,5 +210,46 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
       }
 
     `
+  }
+
+  addFilters(filters: Filters, colMeta: DatColumn[]) {
+    let sql = ''
+    for (const key in filters) {
+      if (filters.hasOwnProperty(key)) {
+        const filter = filters[key];
+        if (key == 'pk_row') {
+          sql = `
+          ${sql}
+          AND t1.pk_row::text iLIKE '%${filter}%'
+          `
+        }
+        else {
+          const pkCol = key
+          const datCol = colMeta.find((col) => col.pk_entity == parseInt(pkCol, 10))
+          const cellCol = datCol ?.fk_data_type == 3292 ? 'string_value' : 'numeric_value';
+          sql = `
+          ${sql}
+          AND ${this.colTableAliasMap.get(pkCol)}.${cellCol}::text iLIKE '%${filter}%'
+          `
+        }
+      }
+    }
+
+    return sql
+  }
+
+  private addOrderBy(options: GetTablePageOptions, colMeta: DatColumn[]): string {
+    if (options.sortBy) {
+      if (options.sortBy == 'pk_row') {
+        return `ORDER BY t1.pk_row ${options.sortDirection}`
+      }
+      else {
+        const pkCol = options.sortBy
+        const datCol = colMeta.find((col) => col.pk_entity == parseInt(pkCol, 10))
+        const cellCol = datCol ?.fk_data_type == 3292 ? 'string_value' : 'numeric_value';
+        return `ORDER BY ${this.colTableAliasMap.get(pkCol)}.${cellCol} ${options.sortDirection}`
+      }
+    }
+    return ''
   }
 }
