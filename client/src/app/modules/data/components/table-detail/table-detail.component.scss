@@ -7,6 +7,11 @@ tr.table-row-filter {
     padding-bottom: 0.5rem;
   }
 }
+.gv-td-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 .gv-td-menu-container {
   display: flex;
@@ -53,4 +58,7 @@ tr.table-row-filter {
     flex: 1 1 auto;
     justify-content: flex-end;
   }
+}
+.gv-td-filter-box {
+  padding: 0 0.5rem;
 }

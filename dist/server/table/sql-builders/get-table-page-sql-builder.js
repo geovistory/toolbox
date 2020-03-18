@@ -34,7 +34,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
       AND
       t3.fk_project = ${this.addParam(fkProject)}
 
-      ${this.addFilters(options.filters, colMeta)}
+      ${this.addFilters(options.filters)}
 
       ${this.addOrderBy(options, colMeta)}
 
@@ -63,7 +63,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         t1.fk_digital = ${this.addParam(pkEntity)}
       AND
         t3.fk_project = ${this.addParam(fkProject)}
-        ${this.addFilters(options.filters, colMeta)}
+        ${this.addFilters(options.filters)}
     ),
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
@@ -158,26 +158,25 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
 
     `;
     }
-    addFilters(filters, colMeta) {
-        var _a;
+    addFilters(filters) {
         let sql = '';
         for (const key in filters) {
             if (filters.hasOwnProperty(key)) {
                 const filter = filters[key];
-                if (key == 'pk_row') {
-                    sql = `
-          ${sql}
-          AND t1.pk_row::text iLIKE '%${filter}%'
-          `;
+                const tableAlias = key == 'pk_row' ? 't1' : this.colTableAliasMap.get(key);
+                if (filter.numeric) {
+                    const column = key == 'pk_row' ? 'pk_row' : 'numeric_value';
+                    sql = `${sql} AND ${tableAlias}."${column}" ${filter.numeric.operator} ${filter.numeric.value}`;
+                }
+                else if (filter.text) {
+                    const o = filter.text.operator;
+                    sql = `${sql} AND ${tableAlias}.string_value::text ${o == '%iLike%' ?
+                        `iLike '%${filter.text.value}%'` :
+                        `iLike '%${filter.text.value}%'` // Default
+                    }`;
                 }
                 else {
-                    const pkCol = key;
-                    const datCol = colMeta.find((col) => col.pk_entity == parseInt(pkCol, 10));
-                    const cellCol = ((_a = datCol) === null || _a === void 0 ? void 0 : _a.fk_data_type) == 3292 ? 'string_value' : 'numeric_value';
-                    sql = `
-          ${sql}
-          AND ${this.colTableAliasMap.get(pkCol)}.${cellCol}::text iLIKE '%${filter}%'
-          `;
+                    console.error('filter data type is not clear');
                 }
             }
         }

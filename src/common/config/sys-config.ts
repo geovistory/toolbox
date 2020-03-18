@@ -49,6 +49,10 @@ export class SysConfig {
 
   static readonly PK_SYSTEM_TYPE__LABEL_FOR_DATA = 3295;
 
+  static readonly PK_SYSTEM_TYPE__DATA_TYPE_TEXT = 3292;
+  static readonly PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC = 3293;
+
+
 
   /***********************
   * Analysis Types

@@ -1,13 +1,14 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, DatDigitalApi, DatColumn } from 'app/core';
+import { ActiveProjectService, DatDigitalApi, DatColumn, SysConfig } from 'app/core';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { first, map, takeUntil, shareReplay, distinctUntilChanged, switchMap, tap, filter, debounceTime } from 'rxjs/operators';
+import { first, map, takeUntil, shareReplay, distinctUntilChanged, switchMap, tap, filter, debounceTime, auditTime } from 'rxjs/operators';
 import { PageEvent } from '@angular/material/paginator';
 import { equals, values, without, indexBy, pick, keys, omit } from 'ramda';
 import { FormControl } from '@angular/forms';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { TColFilters, TColFilter } from '../../../../../../../src/server/table/interfaces'
 
 // TODO import this interface from backend
 interface TabCell {
@@ -20,6 +21,8 @@ interface TabRow {
   pk_row: number,
   [key: number]: TabCell
 }
+
+
 
 @Component({
   selector: 'gv-table-detail',
@@ -36,6 +39,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   @Input() pkEntity: number;
 
   t: TabLayout;
+
+  readonly dtText = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT;
+  readonly dtNumeric = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
+
 
   rows$: Observable<TabRow[]>
 
@@ -68,10 +75,12 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   sortBy$ = new BehaviorSubject<string | number>('pk_row')
   sortDirection$ = new BehaviorSubject<'ASC' | 'DESC'>('ASC');
 
-  filters$ = new BehaviorSubject<{ [pkCol: string]: string }>({});
+  filters$ = new BehaviorSubject<TColFilters>({});
+
 
   colFiltersEnabled = false;
   colMetaDataVisible = false;
+  height = 300;
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -95,7 +104,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       this.sortBy$,
       this.sortDirection$,
       this.filters$.pipe(
-        debounceTime(600)
+        auditTime(10)
       ),
       this.columnsLoadTrigger$(),
     ).pipe(shareReplay({ refCount: true, bufferSize: 1 }))
@@ -205,9 +214,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           // Blocks the stream, if current has no additional column compared to this.queriedCols
           // (prevents from loading just less than before)
           passes = false;
-
-          // cleanup on filters when colum is hidden
-          this.filters$.next(this.cleanupFilters(this.filters$.value))
         }
 
         return passes;
@@ -228,8 +234,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     }
   }
 
-  onFilterChange(colName: string, filter) {
-    let filters;
+  onFilterChange(colName: string, filter: TColFilter | null) {
+    let filters: TColFilters;
     if (filter) {
       filters = {
         ...this.filters$.value,
@@ -241,17 +247,17 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.filters$.next(filters)
   }
 
-  cleanupFilters(filters) {
-    const f = {};
-    [... this.colToggleCtrl.value, 'pk_row']
-      .forEach(col => {
-        if (filters[col]) {
-          f[col] = filters[col];
-        }
-      });
-    filters = f;
-    return filters
-  }
+  // cleanupFilters(filters) {
+  //   const f = {};
+  //   [... this.colToggleCtrl.value, 'pk_row']
+  //     .forEach(col => {
+  //       if (filters[col]) {
+  //         f[col] = filters[col];
+  //       }
+  //     });
+  //   filters = f;
+  //   return filters
+  // }
 
   ngOnDestroy() {
     this.destroy$.next(true);

@@ -2348,6 +2348,17 @@ a.mat-menu-item > mat-icon {
     border-top-style: solid;
     border-top-color: $mat-color-primary;
   }
+
+  .ui-column-resizer-helper {
+    background-color: $mat-color-primary;
+  }
+
+  .ui-column-resizer-helper {
+    width: 1px;
+    position: absolute;
+    z-index: 10;
+    display: none;
+  }
 }
 @mixin primeng-table-typography($config) {
   .ui-table {
@@ -2413,3 +2424,44 @@ mat-dialog-actions {
 //     word-wrap: break-word;
 //   }
 // }
+
+.gv-ui-table-border-cells {
+  .ui-table {
+    .ui-table-thead > tr > th,
+    .ui-table-tbody > tr > td,
+    .ui-table-tfoot > tr > td {
+      border: 1px solid rgb(229, 233, 240);
+    }
+  }
+}
+
+.gv-ui-table-full-height {
+  .ui-table {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > * {
+      flex: 0 0 auto;
+    }
+
+    > .ui-table-scrollable-wrapper {
+      flex: 1 1 auto;
+      overflow: hidden;
+
+      > .ui-table-scrollable-view {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        > .ui-table-scrollable-header {
+          flex: 0 0 auto;
+        }
+
+        > .ui-table-scrollable-body {
+          flex: 1 1 auto;
+        }
+      }
+    }
+  }
+}

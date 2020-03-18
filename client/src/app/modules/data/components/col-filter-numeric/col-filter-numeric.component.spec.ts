@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ColFilterComponent } from './col-filter.component';
+import { ColFilterNumericComponent } from './col-filter-numeric.component';
 
-describe('ColFilterComponent', () => {
-  let component: ColFilterComponent;
-  let fixture: ComponentFixture<ColFilterComponent>;
+describe('ColFilterNumericComponent', () => {
+  let component: ColFilterNumericComponent;
+  let fixture: ComponentFixture<ColFilterNumericComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ColFilterComponent ]
+      declarations: [ ColFilterNumericComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ColFilterComponent);
+    fixture = TestBed.createComponent(ColFilterNumericComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

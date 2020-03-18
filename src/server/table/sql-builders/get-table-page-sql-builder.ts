@@ -1,33 +1,9 @@
 import { without } from 'ramda';
 import { logSql } from '../../utils';
 import { SqlBuilderBase } from '../../utils/sql-builder-base';
+import { GetTablePageOptions, DatColumn, TColFilters } from '../interfaces';
 
-interface Filters {
-  [colName: string]: string
-}
-export interface GetTablePageOptions {
-  limit: number,
-  offset: number,
-  columns: string[],
-  orderBy: any,
-  sortBy: string,
-  sortDirection: 'ASC' | 'DESC',
-  filters: Filters
-}
-export interface TabCell {
-  pk_cell: number;
-  string_value?: string;
-  numeric_value?: number;
-}
-export interface TabRow {
-  pk_row: number,
-  [key: number]: TabCell
-}
-export interface DatColumn {
-  pk_entity: number;
-  fk_content_type?: number;
-  fk_data_type?: number;
-}
+
 
 /**
  * Class to create select queries on data tables
@@ -66,7 +42,7 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
       AND
       t3.fk_project = ${this.addParam(fkProject)}
 
-      ${this.addFilters(options.filters, colMeta)}
+      ${this.addFilters(options.filters)}
 
       ${this.addOrderBy(options, colMeta)}
 
@@ -95,7 +71,7 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
         t1.fk_digital = ${this.addParam(pkEntity)}
       AND
         t3.fk_project = ${this.addParam(fkProject)}
-        ${this.addFilters(options.filters, colMeta)}
+        ${this.addFilters(options.filters)}
     ),
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
@@ -212,25 +188,30 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
     `
   }
 
-  addFilters(filters: Filters, colMeta: DatColumn[]) {
+  addFilters(filters: TColFilters) {
     let sql = ''
     for (const key in filters) {
       if (filters.hasOwnProperty(key)) {
         const filter = filters[key];
-        if (key == 'pk_row') {
-          sql = `
-          ${sql}
-          AND t1.pk_row::text iLIKE '%${filter}%'
-          `
+        const tableAlias = key == 'pk_row' ? 't1' : this.colTableAliasMap.get(key);
+
+        if (filter.numeric) {
+          const column = key == 'pk_row' ? 'pk_row' : 'numeric_value';
+
+          sql = `${sql} AND ${tableAlias}."${column}" ${filter.numeric.operator} ${filter.numeric.value}`
+
+        }
+        else if (filter.text) {
+          const o = filter.text.operator
+          sql = `${sql} AND ${tableAlias}.string_value::text ${
+            o == '%iLike%' ?
+              `iLike '%${filter.text.value}%'` :
+              `iLike '%${filter.text.value}%'` // Default
+            }`
+
         }
         else {
-          const pkCol = key
-          const datCol = colMeta.find((col) => col.pk_entity == parseInt(pkCol, 10))
-          const cellCol = datCol ?.fk_data_type == 3292 ? 'string_value' : 'numeric_value';
-          sql = `
-          ${sql}
-          AND ${this.colTableAliasMap.get(pkCol)}.${cellCol}::text iLIKE '%${filter}%'
-          `
+          console.error('filter data type is not clear')
         }
       }
     }

@@ -1,8 +1,9 @@
 import { ErrorObj, Lb3App, Lb3Connector, SchemaQueryRes } from '../utils/interfaces';
 import { GetColumnsSqlBuilder } from './sql-builders/get-columns-sql-builder';
-import { GetTablePageOptions, GetTablePageSqlBuilder, DatColumn } from './sql-builders/get-table-page-sql-builder';
+import { GetTablePageSqlBuilder } from './sql-builders/get-table-page-sql-builder';
 import { GetDatColumnsArray } from './sql-builders/get-dat-columns-array';
 import { keys, uniq } from 'ramda';
+import { GetTablePageOptions, DatColumn } from './interfaces';
 
 
 /**

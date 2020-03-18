@@ -17,13 +17,13 @@
 
     <!-- Metadata Toggler -->
     <mat-checkbox [(ngModel)]="colMetaDataVisible">Filters</mat-checkbox>
-
+    <button (click)="height = 200">height</button>
   </div>
   <div class="gv-td-menu-item gv-td-paginator orange">
 
     <!-- Paginator -->
     <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
-      [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons (page)="onPageChange($event)">
+      [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons (page)="onPageChange($event)">
     </mat-paginator>
 
   </div>
@@ -31,41 +31,56 @@
 <mat-divider></mat-divider>
 
 <div [gvCover]=cover [gvCoverVisible]="loading" class="gv-overflow-hidden" style="flex: 1 0 0;">
-  <p-table [value]="(rows$ | async)" [scrollable]="true" [columns]="(columns$ | async)">
+  <p-table [value]="(rows$ | async)" [scrollable]="true" [columns]="(columns$ | async)" [resizableColumns]="true"
+    columnResizeMode="expand" class="gv-ui-table-full-height gv-ui-table-border-cells">
     <ng-template pTemplate="colgroup" let-columns>
       <colgroup>
-        <col style="width:250px">
+        <col style="width:130px">
         <col *ngFor="let col of (columns$ | async)" style="width:250px">
       </colgroup>
     </ng-template>
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th class="gv-pointer" (click)="onSortChange('pk_row')"> ID
-          <mat-icon *ngIf="(sortBy$ | async) == 'pk_row'"
-            [svgIcon]="(sortDirection$ | async) === 'ASC' ? 'arrow-up' : 'arrow-down'">
-          </mat-icon>
+        <th class="gv-pointer" (click)="onSortChange('pk_row')" pResizableColumn>
+          <div class="gv-td-col-header">
+            <div>
+              <div>Row ID</div>
+              <div class="mat-caption">number</div>
+            </div>
+            <mat-icon *ngIf="(sortBy$ | async) == 'pk_row'"
+              [svgIcon]="(sortDirection$ | async) === 'ASC' ? 'arrow-up' : 'arrow-down'">
+            </mat-icon>
+          </div>
         </th>
 
-        <th class="gv-pointer" *ngFor="let col of (columns$ | async)" (click)="onSortChange(col.value)">
-          <div>
-            <div>{{col.display}}</div>
-            <div class="mat-caption" *ngIf="col.datColumn.fk_data_type === 3292">text</div>
-            <div class="mat-caption" *ngIf="col.datColumn.fk_data_type === 3293">number</div>
+        <th class="gv-pointer " *ngFor="let col of (columns$ | async)" (click)="onSortChange(col.value)"
+          pResizableColumn>
+          <div class="gv-td-col-header">
+            <div>
+              <div>{{col.display}}</div>
+              <div class="mat-caption" *ngIf="col.datColumn.fk_data_type === 3292">text</div>
+              <div class="mat-caption" *ngIf="col.datColumn.fk_data_type === 3293">number</div>
+            </div>
+            <mat-icon *ngIf="(sortBy$ | async) == col.value"
+              [svgIcon]="(sortDirection$ | async) === 'ASC' ? 'arrow-up' : 'arrow-down'">
+            </mat-icon>
           </div>
-          <mat-icon *ngIf="(sortBy$ | async) == col.value"
-            [svgIcon]="(sortDirection$ | async) === 'ASC' ? 'arrow-up' : 'arrow-down'">
-          </mat-icon>
         </th>
 
       </tr>
       <tr class="table-row-filter" *ngIf="colFiltersEnabled">
         <th>
-          <input class="mat-elevation-z3" matInput placeholder="Filter..." type="text" name="filter"
-            (keyup)="onFilterChange('pk_row', $event.target.value)" autocomplete="off" />
+          <div class="mat-elevation-z3 gv-td-filter-box">
+            <gv-col-filter-numeric (filterChange)="onFilterChange('pk_row', $event)"></gv-col-filter-numeric>
+          </div>
         </th>
         <th *ngFor="let col of (columns$ | async)">
-          <gv-col-filter></gv-col-filter>
-
+          <div class="mat-elevation-z3 gv-td-filter-box">
+            <gv-col-filter-numeric *ngIf="col.datColumn.fk_data_type === dtNumeric"
+              (filterChange)="onFilterChange(col.value, $event)"></gv-col-filter-numeric>
+            <gv-col-filter-text *ngIf="col.datColumn.fk_data_type === dtText"
+              (filterChange)="onFilterChange(col.value, $event)"></gv-col-filter-text>
+          </div>
         </th>
       </tr>
     </ng-template>
