@@ -29,7 +29,6 @@ import { InfRole } from '../../models/InfRole';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
-import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfPlace } from '../../models/InfPlace';
 import { DatNamespace } from '../../models/DatNamespace';
 import { InfTextProperty } from '../../models/InfTextProperty';
@@ -70,7 +69,6 @@ export class SDKModels {
     InfLanguage: InfLanguage,
     InfPersistentItem: InfPersistentItem,
     InfTimePrimitive: InfTimePrimitive,
-    InfEntityAssociation: InfEntityAssociation,
     InfPlace: InfPlace,
     DatNamespace: DatNamespace,
     InfTextProperty: InfTextProperty,

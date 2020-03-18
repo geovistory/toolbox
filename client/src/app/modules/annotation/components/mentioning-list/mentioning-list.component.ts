@@ -1,13 +1,13 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, IAppState, InfEntityAssociation, SubstoreComponent, DatDigital, latestVersion } from 'app/core';
+import { ActiveProjectService, DatChunk, EntityPreview, IAppState, SubstoreComponent, DatDigital, latestVersion, InfRole } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
 import { MatSort, MatTableDataSource } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ByPk } from '../../../../core/store/model';
@@ -19,7 +19,7 @@ import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty
 // this is not for state, only for the table view
 export interface Row {
   // data for actions
-  entityAssociation: InfEntityAssociation;
+  role: InfRole;
   domainInfoEntity: EntityPreview;
   domainChunk: DatChunk;
   digital: DatDigital; // the digital
@@ -85,7 +85,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   /**
    * FOR LOADING the list items:
    *
-   * The list consists of entity associations of those properties
+   * The list consists of roles of those properties
    * - refers To
    * - mentions
    * and previews / labels of the associated domain and range
@@ -94,16 +94,16 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
    * type
    * - 'digital-text'
    *   Loads all chunks associated with the digital (with the given pkEntity).
-   *   The chunks are the domain of the entity associations of the list.
+   *   The chunks are the domain of the roles of the list.
    * - 'f2-expression'
    *   The persitent item with the given pkEntity is the domain
-   *   of the entity associations of the list.
+   *   of the roles of the list.
    * - 'geovC5-expression-portion'
    *   The persitent item with the given pkEntity is the domain
-   *   of the entity associations of the list.
+   *   of the roles of the list.
    * - 'entity'
    *   The persitent item or temporal entity with the given pkEntity is the range
-   *   of the entity associations of the list.
+   *   of the roles of the list.
    */
   @Input() listOf: MentioningListOf;
 
@@ -169,15 +169,15 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         const addDomain$ = chunks$.pipe(
           mergeMap(chunks => combineLatest(
-            this.p.inf$.entity_association$.by_fk_data_domain$.all$,
+            this.p.inf$.role$.by_fk_data_subject$.all$,
             this.chunksToHighligt$
           )
             .pipe(
               map(([easByDataDomain, chunksToHi]) => chunks
                 .map(chunk => {
                   const easOfChunk = values(easByDataDomain[chunk.pk_entity]);
-                  const partialRows = easOfChunk.map(ea => ({
-                    entityAssociation: ea,
+                  const partialRows = easOfChunk.map(role => ({
+                    role: role,
                     domainChunk: chunk,
                     highlight: !chunksToHi ? false : chunksToHi.includes(chunk.pk_entity)
                   } as Row))
@@ -187,14 +187,14 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
               ),
               map(rowsNested => (
                 flatten(rowsNested) as any as Row[])
-                .filter(row => row.entityAssociation)
+                .filter(row => row.role)
               )
             )
           ))
 
         const addRange$ = addDomain$.pipe(
           mergeMap((rows) => {
-            const ranges = rows.map(row => row.entityAssociation.fk_info_range)
+            const ranges = rows.map(row => row.role.fk_entity)
             const pks = flatten(ranges) as any as number[]; // https://github.com/types/npm-ramda/issues/356
             return combineLatestOrEmpty(pks.map(pk => this.p.streamEntityPreview(pk)))
               .pipe(
@@ -203,7 +203,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
                   const prevs = indexBy((i) => i.pk_entity.toString(), previews)
                   rows = rows.map(row => ({
                     ...row,
-                    rangeInfoEntity: prevs[row.entityAssociation.fk_info_range],
+                    rangeInfoEntity: prevs[row.role.fk_entity],
                     domainLabel: this.getDomainLabel(row),
                     rangeLabel: this.getRangeLabel(prevs, row),
                     propertyLabel: this.getPropertyLabel(row)
@@ -225,19 +225,20 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.displayedColumns = ['digital', 'domainLabel', 'actions'];
 
-        this.inf.entity_association.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
+        this.inf.role.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
 
-        const rows$ = this.p.inf$.entity_association$.by_fk_info_range$.key(this.listOf.pkEntity)
+        const rows$ = this.p.inf$.role$.by_fk_entity$.key(this.listOf.pkEntity)
           .pipe(
-            mergeMap((eas) => combineLatestOrEmpty(values(eas)
-              .map(entityAssociation => this.p.dat$.chunk$.by_pk_entity$.key(entityAssociation.fk_data_domain)
+            switchMap((roles) => combineLatestOrEmpty(values(roles)
+              .filter(role => role.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
+              .map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_data_subject)
                 .pipe(
                   filter(item => !!item),
-                  mergeMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+                  switchMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
                     filter(item => !!item),
                     map(texts => latestVersion(texts)),
                     map(digital => ({
-                      entityAssociation,
+                      role: role,
                       domainChunk,
                       domainLabel: this.getStringFromChunk(domainChunk),
                       digital,
@@ -261,7 +262,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private getPropertyLabel(row: Row): string {
-    return row.entityAssociation.fk_property === DfhConfig.PROPERTY_OF_ORIGIN_PK_GEOVP11_REFERS_TO ? 'Refers To' : '';
+    return row.role.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO ? 'Refers To' : '';
   }
 
   ngAfterViewInit() {
@@ -269,9 +270,9 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private getRangeLabel(prevs: ByPk<EntityPreview>, row: Row): string {
-    if (row.entityAssociation && row.entityAssociation.fk_info_range) {
-      const e = prevs[row.entityAssociation.fk_info_range];
-      return [e.entity_label, e.class_label, e.type_label,].join(' ');
+    if (row.role && row.role.fk_entity) {
+      const e = prevs[row.role.fk_entity];
+      return [e.entity_label, e.class_label, e.type_label].join(' ');
     }
   }
 
@@ -290,8 +291,8 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   submit() {
     if (this.formGroup.valid) {
       this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-        const ea: InfEntityAssociation = this.mentioningCreateCtrl.value;
-        this.inf.entity_association.upsert([ea], pkProject).resolved$
+        const role: InfRole = this.mentioningCreateCtrl.value;
+        this.inf.role.upsert([role], pkProject).resolved$
           .pipe(first(r => !!r), takeUntil(this.destroy$)).subscribe(resolved => {
             this.create$.next(false)
           })
@@ -301,7 +302,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
   remove(row: Row) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.inf.entity_association.remove([row.entityAssociation], pkProject)
+      this.inf.role.remove([row.role], pkProject)
     })
   }
 

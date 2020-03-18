@@ -131,10 +131,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "InfEntityAssociation": {
-    "dataSource": "postgres1",
-    "public": true
-  },
   "DatDigital": {
     "dataSource": "postgres1",
     "public": true

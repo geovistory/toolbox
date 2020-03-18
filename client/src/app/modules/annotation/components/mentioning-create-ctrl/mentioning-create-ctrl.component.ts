@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DatChunk, EntityPreview, IAppState, InfEntityAssociation } from 'app/core';
+import { DatChunk, EntityPreview, IAppState, InfRole } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Subject } from 'rxjs';
 
-type CtrlModel = InfEntityAssociation;
+type CtrlModel = InfRole;
 
 @Component({
   selector: 'gv-mentioning-create-ctrl',
@@ -53,13 +53,13 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
     if (this.domainChunk) {
       return {
         label: 'Refers to',
-        pk_property: DfhConfig.PROPERTY_OF_ORIGIN_PK_GEOVP11_REFERS_TO
+        pk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO
       }
     }
     else if (this.domainInfoEntity) {
       return {
         label: 'Mentions',
-        pk_property: DfhConfig.PROPERTY_OF_ORIGIN_PK_GEOVP2_MENTIONS
+        pk_property: DfhConfig.PROPERTY_PK_GEOVP2_MENTIONS
       }
     } else {
       return null
@@ -77,8 +77,8 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
     if (this.domainChunk) this.domainChunkFixed = true;
   }
 
-  ngOnChanges(changes:SimpleChanges){
-    if(changes.domainChunk){
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.domainChunk) {
       this.validateAndEmit()
     }
   }
@@ -99,16 +99,16 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
         this.domainChunk
       )
     ) {
-      const domain = this.domainChunk || this.domainInfoEntity;
-      const ea = new InfEntityAssociation({
-        fk_info_domain: domain.pk_entity,
-        fk_info_range: this.rangeInfoEntity.pk_entity,
+      const role = new InfRole({
+        fk_entity: this.rangeInfoEntity.pk_entity,
         fk_property: this.property.pk_property
       })
-      if (this.domainChunk) {
-        ea.domain_chunk = this.domainChunk;
+      if (this.domainInfoEntity) {
+        role.fk_temporal_entity = this.domainInfoEntity.pk_entity;
+      } else if (this.domainChunk) {
+        role.domain_chunk = this.domainChunk;
       }
-      this.onChange(ea)
+      this.onChange(role)
     } else {
       this.onChange(null)
     }

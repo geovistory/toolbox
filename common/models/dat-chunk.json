@@ -33,10 +33,10 @@
   },
   "validations": [],
   "relations": {
-    "data_info_associations": {
+    "subject_of_roles": {
       "type": "hasMany",
-      "model": "InfEntityAssociation",
-      "foreignKey": "fk_data_domain",
+      "model": "InfRole",
+      "foreignKey": "fk_data_subject",
       "primaryKey": "pk_entity"
     },
     "digital": {
@@ -112,7 +112,7 @@
         ],
         "root": true
       },
-      "description": "Get the chunks related to the digital, with their entity associations.",
+      "description": "Get the chunks related to the digital, with their roles.",
       "http": {
         "path": "/of-digital",
         "verb": "get"

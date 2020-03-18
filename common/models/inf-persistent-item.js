@@ -52,29 +52,29 @@ module.exports = function(InfPersistentItem) {
 
       // Add F2 Expression, if this is a F4 Manifestation Singleton
       if (requestedPeIt.fk_class == 220) {
-        requestedPeIt.domain_entity_associations = [
-          ...(requestedPeIt.domain_entity_associations || []),
+        requestedPeIt.te_roles = [
+          ...(requestedPeIt.te_roles || []),
           { fk_property: 1016, range_pe_it: { fk_class: 218 } },
         ];
       }
       // Add F2 Expression, if this is a F3 Manifestation Product Type
       else if (requestedPeIt.fk_class == 219) {
-        requestedPeIt.range_entity_associations = [
-          ...(requestedPeIt.range_entity_associations || []),
+        requestedPeIt.pi_roles = [
+          ...(requestedPeIt.pi_roles || []),
           { fk_property: 979, domain_pe_it: { fk_class: 218 } },
         ];
       }
       // Add F2 Expression, if this is a F5 Item
       else if (requestedPeIt.fk_class == 221) {
-        requestedPeIt.range_entity_associations = [
-          ...(requestedPeIt.range_entity_associations || []),
+        requestedPeIt.pi_roles = [
+          ...(requestedPeIt.pi_roles || []),
           { fk_property: 1316, domain_pe_it: { fk_class: 218 } },
         ];
       }
       // Add F2 Expression, if this is a geovC4 Web Request
       else if (requestedPeIt.fk_class == 502) {
-        requestedPeIt.range_entity_associations = [
-          ...(requestedPeIt.range_entity_associations || []),
+        requestedPeIt.pi_roles = [
+          ...(requestedPeIt.pi_roles || []),
           { fk_property: 1305, domain_pe_it: { fk_class: 218 } },
         ];
       }
@@ -168,92 +168,6 @@ module.exports = function(InfPersistentItem) {
                   const item = items[i];
                   if (item && item[0]) {
                     res.text_properties.push(item[0]);
-                  }
-                }
-                return true;
-              })
-              .catch(err => {
-                reject(err);
-              });
-
-            // add promise for text properties
-            promiseArray.push(promise);
-          }
-
-          /******************************************
-           * domain_entity_associations
-           ******************************************/
-          if (requestedPeIt.domain_entity_associations) {
-            // prepare parameters
-            const InfEntityAssociation =
-              InfPersistentItem.app.models.InfEntityAssociation;
-
-            //… filter items that are truthy (not null), iterate over them,
-            // return the promise that the PeIt will be
-            // returned together with all nested items
-            const promise = Promise.map(
-              requestedPeIt.domain_entity_associations.filter(item => item),
-              item => {
-                // use the pk_entity from the created peIt to set the fk_info_domain of the item
-                item.fk_info_domain = resultingEntity.pk_entity;
-                // find or create the item
-                return InfEntityAssociation.findOrCreateInfEntityAssociation(
-                  pkProject,
-                  item,
-                  ctxWithoutBody
-                );
-              }
-            )
-              .then(items => {
-                //attach the items to peit.domain_entity_associations
-                res.domain_entity_associations = [];
-                for (var i = 0; i < items.length; i++) {
-                  const item = items[i];
-                  if (item && item[0]) {
-                    res.domain_entity_associations.push(item[0]);
-                  }
-                }
-                return true;
-              })
-              .catch(err => {
-                reject(err);
-              });
-
-            // add promise for text properties
-            promiseArray.push(promise);
-          }
-
-          /******************************************
-           * range_entity_associations
-           ******************************************/
-          if (requestedPeIt.range_entity_associations) {
-            // prepare parameters
-            const InfEntityAssociation =
-              InfPersistentItem.app.models.InfEntityAssociation;
-
-            //… filter items that are truthy (not null), iterate over them,
-            // return the promise that the PeIt will be
-            // returned together with all nested items
-            const promise = Promise.map(
-              requestedPeIt.range_entity_associations.filter(item => item),
-              item => {
-                // use the pk_entity from the created peIt to set the fk_info_range of the item
-                item.fk_info_range = resultingEntity.pk_entity;
-                // find or create the item
-                return InfEntityAssociation.findOrCreateInfEntityAssociation(
-                  pkProject,
-                  item,
-                  ctxWithoutBody
-                );
-              }
-            )
-              .then(items => {
-                //attach the items to peit.range_entity_associations
-                res.range_entity_associations = [];
-                for (var i = 0; i < items.length; i++) {
-                  const item = items[i];
-                  if (item && item[0]) {
-                    res.range_entity_associations.push(item[0]);
                   }
                 }
                 return true;
@@ -393,118 +307,118 @@ module.exports = function(InfPersistentItem) {
     return InfPersistentItem.findComplex(filter, cb);
   };
 
-  /**
-   * Internal function to get graphs of project or repo version
-   * graphs - get a PeIt with all its roles
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the persistent item
-   */
-  InfPersistentItem.graphs = function(ofProject, projectId, pkEntities, cb) {
-    const filter = {
-      where: ['pk_entity', 'IN', pkEntities],
-      include: InfPersistentItem.getGraphIncludeObject(ofProject, projectId),
-    };
+  // /**
+  //  * Internal function to get graphs of project or repo version
+  //  * graphs - get a PeIt with all its roles
+  //  *
+  //  * @param  {number} pkProject primary key of project
+  //  * @param  {number} pkEntity  pk_entity of the persistent item
+  //  */
+  // InfPersistentItem.graphs = function(ofProject, projectId, pkEntities, cb) {
+  //   const filter = {
+  //     where: ['pk_entity', 'IN', pkEntities],
+  //     include: InfPersistentItem.getGraphIncludeObject(ofProject, projectId),
+  //   };
 
-    return InfPersistentItem.findComplex(filter, cb);
-  };
+  //   return InfPersistentItem.findComplex(filter, cb);
+  // };
 
-  /**
-   * Remote method to get graphs of project version
-   * graphs - get a PeIt with all its roles
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the persistent item
-   */
-  InfPersistentItem.graphsOfProject = function(pkProject, pkEntities, cb) {
-    const ofProject = true;
-    return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb);
-  };
+  // /**
+  //  * Remote method to get graphs of project version
+  //  * graphs - get a PeIt with all its roles
+  //  *
+  //  * @param  {number} pkProject primary key of project
+  //  * @param  {number} pkEntity  pk_entity of the persistent item
+  //  */
+  // InfPersistentItem.graphsOfProject = function(pkProject, pkEntities, cb) {
+  //   const ofProject = true;
+  //   return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb);
+  // };
 
-  /**
-   * Remote method to get graphs of repo version
-   * graphs - get a PeIt with all its roles
-   *
-   * @param  {number} pkEntity  pk_entity of the persistent item
-   */
-  InfPersistentItem.graphsOfRepo = function(pkEntities, cb) {
-    const ofProject = false;
-    const pkProject = undefined;
-    return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb);
-  };
+  // /**
+  //  * Remote method to get graphs of repo version
+  //  * graphs - get a PeIt with all its roles
+  //  *
+  //  * @param  {number} pkEntity  pk_entity of the persistent item
+  //  */
+  // InfPersistentItem.graphsOfRepo = function(pkEntities, cb) {
+  //   const ofProject = false;
+  //   const pkProject = undefined;
+  //   return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb);
+  // };
 
-  /**
-   * Internal function to create a include object of
-   * a filter object for findComplex()
-   *
-   * It includes everything, that is not better requested by itself.
-   *
-   * It includes relations from the persistent items
-   * - roles
-  //  * - domain_entity_associations
-  //  * - range_entity_associations
-   *
-   * It includes associated values
-   * - text properties
-   *
-   * It does not include related
-   * - persistent items
-   * - temporal entities
-   * - classes
-   * ...since those can be requested and cached alone
-   *
-   * Usage: add the returned object to the include property of a persistent item relation
-   * of findComplex() filter, e.g.:
-   * {
-   *    ...
-   *    include: InfPersistentItem.getIncludeObject(true, 123)
-   * }
-   *
-   * @param ofProject {boolean}
-   * @param project {number}
-   * @returns include object of findComplex filter
-   */
-  InfPersistentItem.getGraphIncludeObject = function(ofProject, pkProject) {
-    let projectJoin = {};
+  // /**
+  //  * Internal function to create a include object of
+  //  * a filter object for findComplex()
+  //  *
+  //  * It includes everything, that is not better requested by itself.
+  //  *
+  //  * It includes relations from the persistent items
+  //  * - roles
+  // //  * - domain_entity_associations
+  // //  * - range_entity_associations
+  //  *
+  //  * It includes associated values
+  //  * - text properties
+  //  *
+  //  * It does not include related
+  //  * - persistent items
+  //  * - temporal entities
+  //  * - classes
+  //  * ...since those can be requested and cached alone
+  //  *
+  //  * Usage: add the returned object to the include property of a persistent item relation
+  //  * of findComplex() filter, e.g.:
+  //  * {
+  //  *    ...
+  //  *    include: InfPersistentItem.getIncludeObject(true, 123)
+  //  * }
+  //  *
+  //  * @param ofProject {boolean}
+  //  * @param project {number}
+  //  * @returns include object of findComplex filter
+  //  */
+  // InfPersistentItem.getGraphIncludeObject = function(ofProject, pkProject) {
+  //   let projectJoin = {};
 
-    // if a pkProject is provided, create the relation
-    if (pkProject) {
-      // get the join object. If ofProject is false, the join will be a left join.
-      projectJoin = {
-        entity_version_project_rels: InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(
-          ofProject,
-          pkProject
-        ),
-      };
-    }
+  //   // if a pkProject is provided, create the relation
+  //   if (pkProject) {
+  //     // get the join object. If ofProject is false, the join will be a left join.
+  //     projectJoin = {
+  //       entity_version_project_rels: InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(
+  //         ofProject,
+  //         pkProject
+  //       ),
+  //     };
+  //   }
 
-    return {
-      ...projectJoin,
-      // domain_entity_associations: {
-      //   $relation: {
-      //     name: "domain_entity_associations",
-      //     joinType: "left join",
-      //     "orderBy": [{ "pk_entity": "asc" }]
-      //   },
-      //   ...projectJoin,
-      // },
-      // range_entity_associations: {
-      //   $relation: {
-      //     name: "range_entity_associations",
-      //     joinType: "left join",
-      //     "orderBy": [{ "pk_entity": "asc" }]
-      //   },
-      //   ...projectJoin,
-      // },
-      pi_roles: {
-        $relation: {
-          name: 'pi_roles',
-          joinType: 'left join',
-        },
-        ...projectJoin,
-      },
-    };
-  };
+  //   return {
+  //     ...projectJoin,
+  //     // domain_entity_associations: {
+  //     //   $relation: {
+  //     //     name: "domain_entity_associations",
+  //     //     joinType: "left join",
+  //     //     "orderBy": [{ "pk_entity": "asc" }]
+  //     //   },
+  //     //   ...projectJoin,
+  //     // },
+  //     // range_entity_associations: {
+  //     //   $relation: {
+  //     //     name: "range_entity_associations",
+  //     //     joinType: "left join",
+  //     //     "orderBy": [{ "pk_entity": "asc" }]
+  //     //   },
+  //     //   ...projectJoin,
+  //     // },
+  //     pi_roles: {
+  //       $relation: {
+  //         name: 'pi_roles',
+  //         joinType: 'left join',
+  //       },
+  //       ...projectJoin,
+  //     },
+  //   };
+  // };
 
   /**
    * Internal function to create the include property of
@@ -686,74 +600,6 @@ module.exports = function(InfPersistentItem) {
           },
         },
       },
-      domain_entity_associations: {
-        $relation: {
-          name: 'domain_entity_associations',
-          joinType: 'left join',
-          orderBy: [{ pk_entity: 'asc' }],
-        },
-        ...projectJoin,
-        range_pe_it: {
-          $relation: {
-            name: 'range_pe_it',
-            joinType: 'inner join',
-            orderBy: [{ pk_entity: 'asc' }],
-          },
-          pi_roles: {
-            $relation: {
-              name: 'pi_roles',
-              joinType: 'left join',
-            },
-            ...projectJoin,
-            temporal_entity: {
-              $relation: {
-                name: 'temporal_entity',
-                joinType: 'inner join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-              ...projectJoin,
-              te_roles: {
-                $relation: {
-                  name: 'te_roles',
-                  joinType: 'inner join',
-                  orderBy: [
-                    {
-                      pk_entity: 'asc',
-                    },
-                  ],
-                },
-                ...projectJoin,
-                appellation: {
-                  $relation: {
-                    name: 'appellation',
-                    joinType: 'left join',
-                    orderBy: [
-                      {
-                        pk_entity: 'asc',
-                      },
-                    ],
-                  },
-                },
-                language: {
-                  $relation: {
-                    name: 'language',
-                    joinType: 'left join',
-                    orderBy: [
-                      {
-                        pk_entity: 'asc',
-                      },
-                    ],
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
       text_properties: {
         $relation: {
           name: 'text_properties',
@@ -785,7 +631,6 @@ module.exports = function(InfPersistentItem) {
    *
    * Eager loading
    *  - The appellations of given language
-   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
    *
    * @param pk_namespace
    * @param pk_project
@@ -897,7 +742,6 @@ module.exports = function(InfPersistentItem) {
    *
    * Eager loading
    *  - The appellations of given language
-   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
    *
    * @param pk_namespace
    * @param pk_project
@@ -1038,7 +882,6 @@ module.exports = function(InfPersistentItem) {
    *
    * Eager loading
    *  - The appellations of given language
-   *  - TODO: The entity_associations of property "has broader term" used for hierarchy
    *
    * @param pk_project
    * @param pk_entity
@@ -1376,55 +1219,55 @@ module.exports = function(InfPersistentItem) {
     });
   };
 
-  InfPersistentItem.flatObjectOfProject = function(pkProject, pkEntity, cb) {
-    const mainQuery = new FlatObjectQueryBuilder(
-      InfPersistentItem.app.models
-    ).createPeItMainQuery(pkProject, pkEntity);
-    const connector = InfPersistentItem.dataSource.connector;
-    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
-      if (err) return cb(err);
-      if (result.length === 0) return cb(false, result);
+  // InfPersistentItem.flatObjectOfProject = function(pkProject, pkEntity, cb) {
+  //   const mainQuery = new FlatObjectQueryBuilder(
+  //     InfPersistentItem.app.models
+  //   ).createPeItMainQuery(pkProject, pkEntity);
+  //   const connector = InfPersistentItem.dataSource.connector;
+  //   connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+  //     if (err) return cb(err);
+  //     if (result.length === 0) return cb(false, result);
 
-      const geoPks = result.find(row => row.model === 'geos').json_agg;
+  //     const geoPks = result.find(row => row.model === 'geos').json_agg;
 
-      if (!geoPks || geoPks.length === 0) return cb(false, result);
+  //     if (!geoPks || geoPks.length === 0) return cb(false, result);
 
-      const geoQuery = new FlatObjectQueryBuilder(
-        InfPersistentItem.app.models
-      ).createPeItGeoQuery(
-        pkProject,
-        geoPks.map(pk => parseInt(pk))
-      );
-      connector.execute(geoQuery.sql, geoQuery.params, (err, geoResult) => {
-        if (err) return cb(err);
-        const final = {};
-        const models = [
-          'persistent_item',
-          'role',
-          'entity_association',
-          'temporal_entity',
-          'appellation',
-          'language',
-          'time_primitive',
-          'place',
-          'text_property',
-          'info_proj_rel',
-        ];
+  //     const geoQuery = new FlatObjectQueryBuilder(
+  //       InfPersistentItem.app.models
+  //     ).createPeItGeoQuery(
+  //       pkProject,
+  //       geoPks.map(pk => parseInt(pk))
+  //     );
+  //     connector.execute(geoQuery.sql, geoQuery.params, (err, geoResult) => {
+  //       if (err) return cb(err);
+  //       const final = {};
+  //       const models = [
+  //         'persistent_item',
+  //         'role',
+  //         'entity_association',
+  //         'temporal_entity',
+  //         'appellation',
+  //         'language',
+  //         'time_primitive',
+  //         'place',
+  //         'text_property',
+  //         'info_proj_rel',
+  //       ];
 
-        result.forEach(row => {
-          if (models.indexOf(row.model) > -1) {
-            final[row.model] = row.json_agg;
-          }
-        });
+  //       result.forEach(row => {
+  //         if (models.indexOf(row.model) > -1) {
+  //           final[row.model] = row.json_agg;
+  //         }
+  //       });
 
-        geoResult.forEach(row => {
-          if (models.indexOf(row.model) > -1) {
-            final[row.model] = [...(final[row.model] || []), ...row.json_agg];
-          }
-        });
+  //       geoResult.forEach(row => {
+  //         if (models.indexOf(row.model) > -1) {
+  //           final[row.model] = [...(final[row.model] || []), ...row.json_agg];
+  //         }
+  //       });
 
-        return cb(null, final);
-      });
-    });
-  };
+  //       return cb(null, final);
+  //     });
+  //   });
+  // };
 };

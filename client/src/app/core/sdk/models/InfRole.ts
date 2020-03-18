@@ -4,6 +4,8 @@ import {
   InfTemporalEntity,
   InfAppellation,
   WarEntityPreview,
+  DatChunk,
+  DatDigital,
   InfLanguage,
   InfPersistentItem,
   InfTimePrimitive,
@@ -13,8 +15,12 @@ import {
 declare var Object: any;
 export interface InfRoleInterface {
   "fk_property": number;
-  "fk_entity": number;
-  "fk_temporal_entity": number;
+  "fk_entity"?: number;
+  "fk_temporal_entity"?: number;
+  "fk_data_subject"?: number;
+  "fk_data_object"?: number;
+  "fk_tables_subject"?: number;
+  "fk_tables_object"?: number;
   "is_in_project_count"?: number;
   "is_standard_in_project_count"?: number;
   "community_favorite_calendar"?: string;
@@ -25,6 +31,9 @@ export interface InfRoleInterface {
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   time_primitive?: InfTimePrimitive;
@@ -35,6 +44,10 @@ export class InfRole implements InfRoleInterface {
   "fk_property": number;
   "fk_entity": number;
   "fk_temporal_entity": number;
+  "fk_data_subject": number;
+  "fk_data_object": number;
+  "fk_tables_subject": number;
+  "fk_tables_object": number;
   "is_in_project_count": number;
   "is_standard_in_project_count": number;
   "community_favorite_calendar": string;
@@ -45,6 +58,9 @@ export class InfRole implements InfRoleInterface {
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   time_primitive?: InfTimePrimitive;
@@ -92,6 +108,22 @@ export class InfRole implements InfRoleInterface {
         },
         "fk_temporal_entity": {
           name: 'fk_temporal_entity',
+          type: 'number'
+        },
+        "fk_data_subject": {
+          name: 'fk_data_subject',
+          type: 'number'
+        },
+        "fk_data_object": {
+          name: 'fk_data_object',
+          type: 'number'
+        },
+        "fk_tables_subject": {
+          name: 'fk_tables_subject',
+          type: 'number'
+        },
+        "fk_tables_object": {
+          name: 'fk_tables_object',
           type: 'number'
         },
         "is_in_project_count": {
@@ -158,6 +190,30 @@ export class InfRole implements InfRoleInterface {
           model: 'WarEntityPreview',
           relationType: 'belongsTo',
                   keyFrom: 'fk_temporal_entity',
+          keyTo: 'pk_entity'
+        },
+        domain_chunk: {
+          name: 'domain_chunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_data_subject',
+          keyTo: 'pk_entity'
+        },
+        range_chunk: {
+          name: 'range_chunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_data_object',
+          keyTo: 'pk_entity'
+        },
+        domain_digital: {
+          name: 'domain_digital',
+          type: 'DatDigital',
+          model: 'DatDigital',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_data_object',
           keyTo: 'pk_entity'
         },
         language: {

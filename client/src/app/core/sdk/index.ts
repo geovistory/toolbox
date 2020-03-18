@@ -77,7 +77,6 @@ import { InfRoleApi } from './services/custom/InfRole';
 import { InfLanguageApi } from './services/custom/InfLanguage';
 import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
 import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
-import { InfEntityAssociationApi } from './services/custom/InfEntityAssociation';
 import { InfPlaceApi } from './services/custom/InfPlace';
 import { DatNamespaceApi } from './services/custom/DatNamespace';
 import { InfTextPropertyApi } from './services/custom/InfTextProperty';
@@ -141,7 +140,6 @@ export class SDKBrowserModule {
         InfLanguageApi,
         InfPersistentItemApi,
         InfTimePrimitiveApi,
-        InfEntityAssociationApi,
         InfPlaceApi,
         DatNamespaceApi,
         InfTextPropertyApi,

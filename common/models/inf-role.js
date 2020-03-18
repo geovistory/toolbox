@@ -35,6 +35,10 @@ module.exports = function(InfRole) {
         fk_entity: role.fk_entity,
         fk_temporal_entity: role.fk_temporal_entity,
         fk_property: role.fk_property,
+        fk_data_object: role.fk_data_object,
+        fk_data_subject: role.fk_data_subject,
+        fk_tables_object: role.fk_tables_object,
+        fk_tables_subject: role.fk_tables_subject,
         // notes: role.notes,
       };
 
@@ -50,23 +54,6 @@ module.exports = function(InfRole) {
         //create the temporal_entity first
         const InfTemporalEntity = InfRole.app.models.InfTemporalEntity;
 
-        // Create a te en object to test for identity defining roles
-        // const teEnToTest = {
-        //   fk_class: requestedRole.temporal_entity.fk_class,
-        //   te_roles: [...(requestedRole.temporal_entity.te_roles || [])],
-        // };
-        // if (
-        //   !requestedRole.temporal_entity.te_roles.some(r => {
-        //     return (
-        //       r.fk_entity == role.fk_entity && r.fk_property == role.fk_property
-        //     );
-        //   })
-        // ) {
-        //   teEnToTest.te_roles.push({
-        //     fk_entity: role.fk_entity,
-        //     fk_property: role.fk_property,
-        //   });
-        // }
         return InfTemporalEntity.findOrCreateInfTemporalEntity(
           projectId,
           requestedRole.temporal_entity,
@@ -270,6 +257,76 @@ module.exports = function(InfRole) {
               .then(resultingRoles => {
                 let res = resultingRoles[0];
                 res.time_primitive = helpers.toObject(resultingEntity);
+
+                resolve([res]);
+              })
+              .catch(err => reject(err));
+          })
+          .catch(err => reject(err));
+      }
+
+      // if the role has a chunk as the range
+      else if (
+        requestedRole.range_chunk &&
+        Object.keys(requestedRole.range_chunk).length > 0
+      ) {
+        // prepare parameters
+        const DatChunk = InfRole.app.models.DatChunk;
+
+        // find or create the peIt and the role pointing to it
+        DatChunk.findOrCreateChunk(
+          projectId,
+          requestedRole.range_chunk,
+          ctxWithoutBody
+        )
+          .then(resultingObjects => {
+            const resultingObject = resultingObjects[0];
+
+            // … prepare the role to create
+            dataObject.fk_data_object = resultingObject.pk_entity;
+
+            InfRole._findOrCreateByValue(
+              InfRole,
+              projectId,
+              dataObject,
+              requestedRole,
+              ctxWithoutBody
+            )
+              .then(resultingRoles => {
+                let res = resultingRoles[0];
+                res.range_chunk = helpers.toObject(resultingObject);
+
+                resolve([res]);
+              })
+              .catch(err => reject(err));
+          })
+          .catch(err => reject(err));
+      }
+
+      // if the role has a chunk as the domain
+      else if (
+        requestedRole.domain_chunk &&
+        Object.keys(requestedRole.domain_chunk).length > 0
+      ) {
+        // prepare parameters
+        const DatChunk = InfRole.app.models.DatChunk;
+
+        // find or create the chunk and the role pointing to it
+        DatChunk.create(requestedRole.domain_chunk)
+          .then(resultingObject => {
+            // … prepare the role to create
+            dataObject.fk_data_subject = resultingObject.pk_entity;
+
+            InfRole._findOrCreateByValue(
+              InfRole,
+              projectId,
+              dataObject,
+              requestedRole,
+              ctxWithoutBody
+            )
+              .then(resultingRoles => {
+                let res = resultingRoles[0];
+                res.domain_chunk = helpers.toObject(resultingObject);
 
                 resolve([res]);
               })
@@ -870,6 +927,144 @@ module.exports = function(InfRole) {
       const item = result[0];
       const data = !item ? {} : item.data;
       return cb(false, data);
+    });
+  };
+
+  /**
+   * Find role by one of the params
+   *
+   * @param  {number} pkProject primary key of project
+   * @param  {number} pkEntity  pk_entity of the role
+   */
+  InfRole.queryByParams = function(
+    ofProject,
+    pkProject,
+    pkEntity,
+    fkEntity,
+    fkTemporalEntity,
+    pkProperty,
+    cb
+  ) {
+    if (!pkEntity && !fkEntity && !fkTemporalEntity) {
+      return cb(
+        'please provide at least a pkEntity, fkEntity or fkTemporalEntity'
+      );
+    }
+
+    const w = {
+      pk_entity: pkEntity,
+      fk_entity: fkEntity,
+      fk_temporal_entity: fkTemporalEntity,
+      fk_property: pkProperty,
+    };
+    let where = [];
+    Object.keys(w)
+      .filter(key => !!w[key])
+      .map((key, index, ar) => {
+        let part = [key, '=', w[key]];
+        if (index !== 0) part = ['AND', ...part];
+        return part;
+      })
+      .forEach(part => {
+        where = [...where, ...part];
+      });
+
+    const filter = {
+      where: where,
+    };
+
+    if (pkProject) {
+      const joinThisProject = InfRole.app.models.ProInfoProjRel.getJoinObject(
+        ofProject,
+        pkProject
+      );
+      joinThisProject.$relation['select'] = false;
+      filter['include'] = {
+        entity_version_project_rels: joinThisProject,
+      };
+    }
+
+    return InfRole.findComplex(filter, cb);
+  };
+
+  /**
+   * Get an array of roles that build the tree of the content of an F2 Expression.
+   */
+  InfRole.contentTree = function(pkProject, pkExpressionEntity, cb) {
+    const q = new FlatObjectQueryBuilder(
+      InfRole.app.models
+    ).createContentTreeQuery(pkProject, pkExpressionEntity);
+    const params = q.params;
+    const sql_stmt = q.sql;
+
+    const connector = InfRole.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) cb(err);
+      else if (resultObjects && resultObjects.length && resultObjects[0].data) {
+        cb(err, resultObjects[0].data);
+      } else {
+        cb(false, {});
+      }
+    });
+  };
+
+  /**
+   * Get an nested object with everything needed to display the
+   * links made from an entity towards sources and digitals.
+   */
+  InfRole.sourcesAndDigitalsOfEntity = function(
+    ofProject,
+    pkProject,
+    pkEntity,
+    cb
+  ) {
+    const joinThisProject = InfRole.app.models.ProInfoProjRel.getJoinObject(
+      ofProject,
+      pkProject
+    );
+
+    const filter = {
+      where: ['fk_entity', '=', pkEntity],
+      include: {
+        entity_version_project_rels: joinThisProject,
+        domain_chunk: {
+          $relation: {
+            name: 'domain_chunk',
+            joinType: 'left join',
+            orderBy: [
+              {
+                pk_entity: 'asc',
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    return InfRole.findComplex(filter, (err, roles) => {
+      if (err) return cb(err);
+
+      const textPks = _.uniq(
+        roles
+          .filter(role => role.domain_chunk)
+          .map(role => role.domain_chunk.fk_text)
+      );
+
+      if (!textPks.length) return cb(null, roles);
+
+      InfRole.app.models.DatDigital.findComplex(
+        {
+          where: ['pk_text', 'IN', textPks],
+        },
+        (err2, digitals) => {
+          if (err2) return cb(err2);
+
+          cb(null, {
+            roles,
+            digitals,
+          });
+        }
+      );
     });
   };
 };

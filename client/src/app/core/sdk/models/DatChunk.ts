@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   DatDigital,
-  InfEntityAssociation,
+  InfRole,
   DatNamespace
 } from '../index';
 
@@ -19,7 +19,7 @@ export interface DatChunkInterface {
   "sys_period"?: string;
   "fk_namespace"?: number;
   digital?: DatDigital;
-  data_info_associations?: InfEntityAssociation[];
+  subject_of_roles?: InfRole[];
   namespace?: DatNamespace;
 }
 
@@ -36,7 +36,7 @@ export class DatChunk implements DatChunkInterface {
   "sys_period": string;
   "fk_namespace": number;
   digital?: DatDigital;
-  data_info_associations?: InfEntityAssociation[];
+  subject_of_roles?: InfRole[];
   namespace?: DatNamespace;
   constructor(data?: DatChunkInterface) {
     Object.assign(this, data);
@@ -125,13 +125,13 @@ export class DatChunk implements DatChunkInterface {
                   keyFrom: 'fk_text',
           keyTo: 'pk_text'
         },
-        data_info_associations: {
-          name: 'data_info_associations',
-          type: 'InfEntityAssociation[]',
-          model: 'InfEntityAssociation',
+        subject_of_roles: {
+          name: 'subject_of_roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_data_domain'
+          keyTo: 'fk_data_subject'
         },
         namespace: {
           name: 'namespace',

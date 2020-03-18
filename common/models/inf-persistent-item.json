@@ -28,16 +28,10 @@
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
-    "domain_entity_associations": {
+    "te_roles": {
       "type": "hasMany",
-      "model": "InfEntityAssociation",
-      "foreignKey": "fk_info_domain",
-      "primaryKey": "pk_entity"
-    },
-    "range_entity_associations": {
-      "type": "hasMany",
-      "model": "InfEntityAssociation",
-      "foreignKey": "fk_info_domain",
+      "model": "InfRole",
+      "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
     },
     "text_properties": {
@@ -84,8 +78,6 @@
         "nestedObjectOfProject",
         "typeNested",
         "addToProject",
-        "graphsOfProject",
-        "flatObjectOfProject",
         "ownProperties",
         "findOrCreatePeIt",
         "findOrCreateInfPersistentItems"
