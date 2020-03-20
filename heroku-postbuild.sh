@@ -14,8 +14,8 @@ if [ $DB_ENV = 'review' ]; then
   echo '================= Drop schemas done! ====================================='
   echo
 
-  echo '======== Restore Database (from deployment/reviewdb.tar) ================='
-  time pg_restore --no-owner -d $DATABASE_URL deployment/reviewdb.backup --verbose
+  echo '======== Restore Database (from deployment/reviewdb.backup) ================='
+  time pg_restore -j 6 --no-owner -d $DATABASE_URL deployment/reviewdb.backup --verbose
   echo '======== Database restored  =============================================='
   echo
 
