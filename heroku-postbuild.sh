@@ -15,7 +15,7 @@ if [ $DB_ENV = 'review' ]; then
   echo
 
   echo '======== Restore Database (from deployment/reviewdb.tar) ================='
-  time pg_restore --no-owner -d $DATABASE_URL deployment/reviewdb.tar --verbose
+  time pg_restore --no-owner -d $DATABASE_URL deployment/reviewdb.backup --verbose
   echo '======== Database restored  =============================================='
   echo
 
