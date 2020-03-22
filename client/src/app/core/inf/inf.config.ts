@@ -1,5 +1,6 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { InfTextProperty } from "../sdk";
+import { InfTextProperty, InfRole } from "../sdk";
+import { U } from '../util/util';
 
 export const infRoot = 'inf';
 export const facetteByPk = 'by_project';
@@ -46,61 +47,35 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: [
       {
         keyInStore: 'fk_entity',
-        groupByFn: (d): string => d.fk_entity.toString()
+        groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_entity)
       },
       {
         keyInStore: 'fk_temporal_entity',
-        groupByFn: (d): string => d.fk_temporal_entity.toString()
+        groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_temporal_entity)
       },
       {
         keyInStore: 'fk_property',
-        groupByFn: (d): string => d.fk_property.toString()
+        groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_property)
       },
       {
         keyInStore: 'fk_property__fk_temporal_entity',
-        groupByFn: (d): string => d.fk_property.toString() + '_' + d.fk_temporal_entity.toString()
+        groupByFn: (d: InfRole): string => U.toStrContains0undef([d.fk_property, d.fk_temporal_entity])
       },
       {
         keyInStore: 'fk_property__fk_entity',
-        groupByFn: (d): string => d.fk_property.toString() + '_' + d.fk_entity.toString()
+        groupByFn: (d: InfRole): string => U.toStrContains0undef([d.fk_property, d.fk_entity])
+      },
+      {
+        keyInStore: 'fk_subject_data',
+        groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_subject_data)
+      },
+      {
+        keyInStore: 'fk_object_data',
+        groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_object_data)
       }
     ]
   },
-  entity_association: {
-    facetteByPk,
-    indexBy: {
-      keyInStore: 'pk_entity',
-      indexByFn: (item) => {
-        return item.pk_entity.toString()
-      }
-    },
-    groupBy: [
-      {
-        keyInStore: 'fk_property',
-        groupByFn: (d): string => d.fk_property.toString()
-      },
-      {
-        keyInStore: 'fk_info_domain',
-        groupByFn: (d): string => d.fk_info_domain.toString()
-      },
-      {
-        keyInStore: 'fk_info_range',
-        groupByFn: (d): string => d.fk_info_range.toString()
-      },
-      {
-        keyInStore: 'fk_data_domain',
-        groupByFn: (d): string => d.fk_data_domain.toString()
-      },
-      {
-        keyInStore: 'fk_data_range',
-        groupByFn: (d): string => d.fk_data_range.toString()
-      },
-      {
-        keyInStore: 'fk_property__fk_info_domain',
-        groupByFn: (d): string => d.fk_property.toString() + '_' + d.fk_info_domain.toString()
-      },
-    ]
-  },
+
   text_property: {
     facetteByPk,
     indexBy: {

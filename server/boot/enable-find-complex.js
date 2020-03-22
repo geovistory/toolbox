@@ -20,7 +20,6 @@ var include = [
   'InfAppellation',
   'InfTemporalEntity',
   'InfLanguage',
-  'InfEntityAssociation',
   'InfTextProperty',
   'DatChunk',
   'DatDigital',

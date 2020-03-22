@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IAppState, InfEntityAssociation, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
+import { ActiveProjectService, IAppState, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 import { InfSelector } from 'app/core/inf/inf.service';
@@ -1070,23 +1070,6 @@ export class InformationPipesService {
   @spyTag pipeClassLabelOfEntity(fkEntity: number): Observable<string> {
     return this.b.pipeClassOfEntity(fkEntity).pipe(
       switchMap(pkClass => this.c.pipeClassLabel(pkClass))
-    )
-  }
-
-  /**
-   * Pipes the pk_entity of the type of an entity
-   * TODO: delete when unreferenced
-   */
-  @spyTag pipeTypeEntityAssociation(pkEntity: number): Observable<InfEntityAssociation> {
-    return this.b.pipeClassOfEntity(pkEntity).pipe(
-      switchMap(pkTypedClass => this.c.pipeTypePropertyOfTypedClass(pkTypedClass).pipe(
-        switchMap(pkProperty => this.p.inf$.entity_association$.by_fk_property__fk_info_domain$.key(pkProperty + '_' + pkEntity).pipe(
-          map(items => {
-            if (!items || Object.keys(items).length < 1) return undefined;
-            else return values(items)[0]
-          })
-        ))
-      ))
     )
   }
 

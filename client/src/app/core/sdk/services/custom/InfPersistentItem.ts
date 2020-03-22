@@ -14,7 +14,6 @@ import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfRole } from '../../models/InfRole';
 import { DfhClass } from '../../models/DfhClass';
-import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
 
@@ -98,35 +97,6 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get a flat object of entity.
-   *
-   * @param {number} pkProject Pk of the project.
-   *
-   * @param {number} pkEntity Pk of the entity.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public flatObjectOfProject(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/flat-object";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * Get a minimal nested object of all types in the project.
    *
    * @param {number} pkProject Pk of the project.
@@ -177,38 +147,6 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     if (typeof pkType !== 'undefined' && pkType !== null) _urlParams.pkType = pkType;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get e nested object of all information about the persistent in the project version.
-   *
-   * @param {number} pkProject Pk of the project.
-   *
-   * @param {object} data Request data.
-   *
-   *  - `pkEntities` – `{any}` - Primary Keys of the persistent items (array of pk_entity)
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public graphsOfProject(pkProject: any, pkEntities: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/graphs-of-project";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      pkEntities: pkEntities
-    };
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

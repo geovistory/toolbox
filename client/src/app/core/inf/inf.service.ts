@@ -1,16 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollection } from 'app/core/store/reducer-factory';
-import { combineLatest, iif, Observable, of } from 'rxjs';
-import { filter, first, map, switchMap, mapTo, distinctUntilChanged } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { filter, first, map, switchMap } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
-import { InfAppellation, InfEntityAssociation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '../sdk';
+import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '../sdk';
 import { PaginateByParam } from '../store/actions';
-import { infDefinitions, infRoot } from './inf.config';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
-import { ListDefinition } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
-import { createPaginateBy } from 'app/modules/information/new-components/temporal-entity-list/temporal-entity-list.component';
-import { keys, equals } from 'ramda';
+import { infDefinitions, infRoot } from './inf.config';
 
 class Selector {
   constructor(
@@ -183,33 +180,22 @@ class Selector {
 }
 
 class InfPersistentItemSelections extends Selector {
+  public by_pk_entity$ = this.selector<InfPersistentItem>('by_pk_entity')
+  public by_fk_class$ = this.selector<ByPk<InfPersistentItem>>('by_fk_class')
+
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public pkProject$: Observable<number | string>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
-
-  public by_pk_entity$ = this.selector<InfPersistentItem>('by_pk_entity')
-  public by_fk_class$ = this.selector<ByPk<InfPersistentItem>>('by_fk_class')
 
 }
 
 class InfTemporalEntitySelections extends Selector {
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public pkProject$: Observable<number | string>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, pkProject$, configs, model) }
-
   public by_pk_entity$ = this.selector<InfTemporalEntity>('by_pk_entity')
   public by_fk_class$ = this.selector<ByPk<InfTemporalEntity>>('by_fk_class')
 
-}
-
-
-class InfEntityAssociationSelections extends Selector {
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public pkProject$: Observable<number | string>,
@@ -217,15 +203,8 @@ class InfEntityAssociationSelections extends Selector {
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
 
-  public by_pk_entity$ = this.selector<InfEntityAssociation>('by_pk_entity')
-  public by_fk_property$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_property')
-  public by_fk_info_domain$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_info_domain')
-  public by_fk_info_range$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_info_range')
-  public by_fk_data_domain$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_data_domain')
-  public by_fk_data_range$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_data_range')
-  public by_fk_property__fk_info_domain$ = this.selector<ByPk<InfEntityAssociation>>('by_fk_property__fk_info_domain')
-
 }
+
 
 class InfRoleSelections extends Selector {
 
@@ -235,6 +214,8 @@ class InfRoleSelections extends Selector {
   public by_fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_temporal_entity')
   public by_fk_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_temporal_entity')
   public by_fk_property__fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_entity')
+  public by_fk_subject_data$ = this.selector<ByPk<InfRole>>('by_fk_subject_data')
+  public by_fk_object_data$ = this.selector<ByPk<InfRole>>('by_fk_object_data')
 
   public pagination$ = this.paginationSelector<number>()
 
@@ -249,69 +230,66 @@ class InfRoleSelections extends Selector {
 }
 
 class InfAppellationSelections extends Selector {
+  public by_pk_entity$ = this.selector<InfAppellation>('by_pk_entity')
+
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public pkProject$: Observable<number | string>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
-
-  public by_pk_entity$ = this.selector<InfAppellation>('by_pk_entity')
 }
 
 class InfPlaceSelections extends Selector {
+  public by_pk_entity$ = this.selector<InfPlace>('by_pk_entity')
+
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public pkProject$: Observable<number | string>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
-
-  public by_pk_entity$ = this.selector<InfPlace>('by_pk_entity')
 }
 
 class InfTimePrimitiveSelections extends Selector {
+  public by_pk_entity$ = this.selector<InfTimePrimitive>('by_pk_entity')
+
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public pkProject$: Observable<number | string>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
-
-  public by_pk_entity$ = this.selector<InfTimePrimitive>('by_pk_entity')
 }
 
 class InfTextPropertySelections extends Selector {
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public pkProject$: Observable<number | string>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, pkProject$, configs, model) }
-
   public by_pk_entity$ = this.selector<InfTextProperty>('by_pk_entity')
   public by_fk_concerned_entity__fk_class_field$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity__fk_class_field')
   public by_fk_concerned_entity$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity')
-}
 
-class InfLanguageSelections extends Selector {
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public pkProject$: Observable<number | string>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
+}
 
+class InfLanguageSelections extends Selector {
   public by_pk_entity$ = this.selector<InfLanguage>('by_pk_entity')
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
 }
 
 
 export class InfSelector {
 
-  constructor(public ngRedux: NgRedux<IAppState>, public pkProject$: Observable<number | string>) { }
-
   persistent_item$ = new InfPersistentItemSelections(this.ngRedux, this.pkProject$, infDefinitions, 'persistent_item');
-  entity_association$ = new InfEntityAssociationSelections(this.ngRedux, this.pkProject$, infDefinitions, 'entity_association');
   temporal_entity$ = new InfTemporalEntitySelections(this.ngRedux, this.pkProject$, infDefinitions, 'temporal_entity');
   role$ = new InfRoleSelections(this.ngRedux, this.pkProject$, infDefinitions, 'role');
   appellation$ = new InfAppellationSelections(this.ngRedux, this.pkProject$, infDefinitions, 'appellation');
@@ -319,4 +297,6 @@ export class InfSelector {
   text_property$ = new InfTextPropertySelections(this.ngRedux, this.pkProject$, infDefinitions, 'text_property');
   time_primitive$ = new InfTimePrimitiveSelections(this.ngRedux, this.pkProject$, infDefinitions, 'time_primitive');
   language$ = new InfLanguageSelections(this.ngRedux, this.pkProject$, infDefinitions, 'language');
+
+  constructor(public ngRedux: NgRedux<IAppState>, public pkProject$: Observable<number | string>) { }
 }

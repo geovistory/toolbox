@@ -16,17 +16,45 @@
     }
   },
   "properties": {
+    "fk_temporal_entity": {
+      "type": "number",
+      "default": 0
+    },
+    "fk_subject_data": {
+      "type": "number",
+      "default": 0
+    },
+    "fk_subject_tables_cell": {
+      "type": "number",
+      "default": 0
+    },
+    "fk_subject_tables_row": {
+      "type": "number",
+      "default": 0
+    },
     "fk_property": {
       "type": "number",
-      "required": true
+      "default": 0
+    },
+    "fk_property_of_property": {
+      "type": "number",
+      "default": 0
     },
     "fk_entity": {
       "type": "number",
-      "required": true
+      "default": 0
     },
-    "fk_temporal_entity": {
+    "fk_object_data": {
       "type": "number",
-      "required": true
+      "default": 0
+    },
+    "fk_object_tables_cell": {
+      "type": "number",
+      "default": 0
+    },
+    "fk_object_tables_row": {
+      "type": "number",
+      "default": 0
     },
     "is_in_project_count": {
       "type": "number"
@@ -93,6 +121,36 @@
       "model": "WarEntityPreview",
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
+    },
+    "domain_pe_it": {
+      "type": "belongsTo",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_entity"
+    },
+    "range_pe_it": {
+      "type": "belongsTo",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "domain_chunk": {
+      "type": "belongsTo",
+      "model": "DatChunk",
+      "foreignKey": "fk_subject_data",
+      "primaryKey": "pk_entity"
+    },
+    "range_chunk": {
+      "type": "belongsTo",
+      "model": "DatChunk",
+      "foreignKey": "fk_object_data",
+      "primaryKey": "pk_entity"
+    },
+    "domain_digital": {
+      "type": "belongsTo",
+      "model": "DatDigital",
+      "foreignKey": "fk_object_data",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -101,6 +159,14 @@
       "principalId": "$everyone",
       "permission": "DENY",
       "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "queryByParams"
+      ]
     },
     {
       "principalType": "ROLE",
@@ -114,7 +180,10 @@
         "removeFromProjectWithTeEnt",
         "addToProject",
         "findOrCreateInfRoles",
-        "paginatedListTargetingEntityPreviews"
+        "paginatedListTargetingEntityPreviews",
+        "contentTree",
+        "sourcesAndDigitalsOfEntity",
+        "queryByParams"
       ]
     }
   ],
@@ -559,6 +628,151 @@
       "http": {
         "path": "/add-to-project",
         "verb": "post"
+      }
+    },
+    "contentTree": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkExpressionEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the F2 Expression entity for which the content tree is needed.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfRole"
+        ],
+        "root": true
+      },
+      "description": "Get an array of role that build the tree of the content of an F2 Expression.",
+      "http": {
+        "path": "/content-tree",
+        "verb": "get"
+      }
+    },
+    "sourcesAndDigitalsOfEntity": {
+      "accepts": [
+        {
+          "arg": "ofProject",
+          "type": "boolean",
+          "required": true,
+          "description": "if true, finds project version. if false, finds repo version.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the entity for which the sources links are needed.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Get an nested object of role with everything needed to display the links made from an entity towards sources and digitals.",
+      "http": {
+        "path": "/sources-and-digitals-of-entity",
+        "verb": "get"
+      }
+    },
+    "queryByParams": {
+      "accepts": [
+        {
+          "arg": "ofProject",
+          "type": "boolean",
+          "required": true,
+          "description": "if true, finds project version. if false, finds repo version.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project. If provided and ofProject=false, makes a left join with project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the role (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkInfoRange",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the role pointing to the range entity (fk_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkInfoDomain",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the role pointing to the domain entity (fk_temporal_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProperty",
+          "type": "number",
+          "required": false,
+          "description": "Foreign Key of the role pointing to the property (fk_property)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "InfRole",
+        "type": "array",
+        "root": true
+      },
+      "description": "Find roles by params.",
+      "http": {
+        "path": "/find-by-params",
+        "verb": "get"
       }
     }
   }
