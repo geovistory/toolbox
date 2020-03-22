@@ -119,6 +119,9 @@ button:focus {
   -webkit-mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
   mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
 }
+.gv-word-wrap-break-word {
+  word-wrap: break-word;
+}
 
 // https://stackblitz.com/edit/typescript-zozfey
 .gv-full-with {

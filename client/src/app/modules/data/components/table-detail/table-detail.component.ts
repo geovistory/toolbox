@@ -79,8 +79,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
 
   colFiltersEnabled = false;
-  colMetaDataVisible = false;
-  height = 300;
+  lineBrakeInCells = false;
 
   constructor(
     public ref: ChangeDetectorRef,

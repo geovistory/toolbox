@@ -16,8 +16,7 @@
     <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
 
     <!-- Metadata Toggler -->
-    <mat-checkbox [(ngModel)]="colMetaDataVisible">Filters</mat-checkbox>
-    <button (click)="height = 200">height</button>
+    <mat-checkbox [(ngModel)]="lineBrakeInCells">Text break</mat-checkbox>
   </div>
   <div class="gv-td-menu-item gv-td-paginator orange">
 
@@ -88,7 +87,10 @@
       <tr>
         <td>{{row.pk_row}}</td>
         <td *ngFor="let col of (columns$ | async)">
-          <div class="gv-white-space-nowrap gv-fade-out-right ">
+          <div [ngClass]="{
+            'gv-white-space-nowrap gv-fade-out-right': !lineBrakeInCells,
+            'gv-word-wrap-break-word': lineBrakeInCells
+            }">
             {{row[col.value]?.string_value}}
             {{row[col.value]?.numeric_value}}
           </div>
