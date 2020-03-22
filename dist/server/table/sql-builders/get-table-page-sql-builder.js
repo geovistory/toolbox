@@ -23,6 +23,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
     -- master columns
     WITH tw1 AS (
       Select
+      ROW_NUMBER() OVER (),
       t1.pk_row${masterColumns.length ? ',' : ''}
       ${this.addColumnSelects(masterColumns)}
       From  tables.row t1
@@ -49,6 +50,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
     -- rows
     tw2 AS (
       ${this.joinColBatchWiths(masterColumns)}
+
     ),
 
     -- length (total count)
@@ -155,7 +157,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
                 .map((w) => `tw1.pk_row = ${w.name}.pk_row`)
                 .join(' AND \n')}
         `}
-
+      order by tw1.row_number
     `;
     }
     addFilters(filters) {
