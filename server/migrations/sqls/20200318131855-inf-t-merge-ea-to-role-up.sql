@@ -1,27 +1,64 @@
 -- 1 alter table inf.role add the columns for data schema and tables schema
 Alter Table information.role
-    Add Column fk_data_subject int;
+    Add Column fk_property_of_property int Not Null Default 0;
 
 Alter Table information.role
-    Add Column fk_data_object int;
+    Add Column fk_subject_data int Not Null Default 0;
 
 Alter Table information.role
-    Add Column fk_tables_subject bigint;
+    Add Column fk_subject_tables_row bigint Not Null Default 0;
 
 Alter Table information.role
-    Add Column fk_tables_object bigint;
+    Add Column fk_subject_tables_cell bigint Not Null Default 0;
+
+Alter Table information.role
+    Add Column fk_object_data int Not Null Default 0;
+
+Alter Table information.role
+    Add Column fk_object_tables_row bigint Not Null Default 0;
+
+Alter Table information.role
+    Add Column fk_object_tables_cell bigint Not Null Default 0;
 
 Alter Table information.role_vt
-    Add Column fk_data_subject int;
+    Add Column fk_property_of_property int Not Null Default 0;
 
 Alter Table information.role_vt
-    Add Column fk_data_object int;
+    Add Column fk_subject_data int Not Null Default 0;
 
 Alter Table information.role_vt
-    Add Column fk_tables_subject bigint;
+    Add Column fk_subject_tables_row bigint Not Null Default 0;
 
 Alter Table information.role_vt
-    Add Column fk_tables_object bigint;
+    Add Column fk_subject_tables_cell bigint Not Null Default 0;
+
+Alter Table information.role_vt
+    Add Column fk_object_data int Not Null Default 0;
+
+Alter Table information.role_vt
+    Add Column fk_object_tables_row bigint Not Null Default 0;
+
+Alter Table information.role_vt
+    Add Column fk_object_tables_cell bigint Not Null Default 0;
+
+-- 1.1
+Alter Table information.role
+    Alter Column fk_property Set Not Null;
+
+Alter Table information.role
+    Alter Column fk_temporal_entity Set Not Null;
+
+Alter Table information.role
+    Alter Column fk_entity Set Not Null;
+
+Alter Table information.role
+    Alter Column fk_property Set Default 0;
+
+Alter Table information.role
+    Alter Column fk_temporal_entity Set Default 0;
+
+Alter Table information.role
+    Alter Column fk_entity Set Default 0;
 
 -- 2 alter inf.v_role
 Drop View information.v_role;
@@ -30,12 +67,15 @@ Create View information.v_role As
 Select
     t1.pk_entity,
     t1.fk_property,
+    t1.fk_property_of_property,
     t1.fk_entity,
     t1.fk_temporal_entity,
-    t1.fk_data_subject,
-    t1.fk_data_object,
-    t1.fk_tables_subject,
-    t1.fk_tables_object,
+    t1.fk_subject_data,
+    t1.fk_subject_tables_row,
+    t1.fk_subject_tables_cell,
+    t1.fk_object_data,
+    t1.fk_object_tables_row,
+    t1.fk_object_tables_cell,
     t2.is_in_project_count,
     t2.is_standard_in_project_count,
     t2.community_favorite_calendar,
@@ -79,19 +119,22 @@ Begin
         Into resulting_pk information.role
     Where
         fk_property = NEW.fk_property
-        And fk_entity Is Not Distinct From NEW.fk_entity
-        And fk_temporal_entity Is Not Distinct From NEW.fk_temporal_entity
-        And fk_data_subject Is Not Distinct From NEW.fk_data_subject
-        And fk_data_object Is Not Distinct From NEW.fk_data_object
-        And fk_tables_subject Is Not Distinct From NEW.fk_tables_subject
-        And fk_tables_object Is Not Distinct From NEW.fk_tables_object;
+        And fk_property_of_property = NEW.fk_property_of_property
+        And fk_temporal_entity = NEW.fk_temporal_entity
+        And fk_subject_data = NEW.fk_subject_data
+        And fk_subject_tables_row = NEW.fk_subject_tables_row
+        And fk_subject_tables_cell = NEW.fk_subject_tables_cell
+        And fk_entity = NEW.fk_entity
+        And fk_object_data = NEW.fk_object_data
+        And fk_object_tables_row = NEW.fk_object_tables_row
+        And fk_object_tables_cell = NEW.fk_object_tables_cell;
     -- RAISE INFO 'result of select: %', resulting_row;
     ------- if not existing, insert and store in result -----
     If Not FOUND Then
         -- RAISE INFO 'Not found, creating new...';
         With _insert As (
-Insert Into information.role (fk_entity, fk_temporal_entity, fk_property, fk_data_subject, fk_data_object, fk_tables_subject, fk_tables_object)
-                Values (NEW.fk_entity, NEW.fk_temporal_entity, NEW.fk_property, NEW.fk_data_subject, NEW.fk_data_object, NEW.fk_tables_subject, NEW.fk_tables_object)
+Insert Into information.role (fk_property, fk_property_of_property, fk_temporal_entity, fk_subject_data, fk_subject_tables_row, fk_subject_tables_cell, fk_entity, fk_object_data, fk_object_tables_row, fk_object_tables_cell)
+                Values (NEW.fk_property, NEW.fk_property_of_property, NEW.fk_temporal_entity, NEW.fk_subject_data, NEW.fk_subject_tables_row, NEW.fk_subject_tables_cell, NEW.fk_entity, NEW.fk_object_data, NEW.fk_object_tables_row, NEW.fk_object_tables_cell)
                 -- return all fields of the new row
             Returning
                 *)

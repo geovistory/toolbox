@@ -75,9 +75,27 @@ From
                 info_proj_rel.fk_entity) t2 On True;
 
 Create Trigger on_insert
-    Instead Of INSERT On information.v_role
-    For Each Row
+    Instead Of INSERT On information.v_role For Each Row
     Execute Procedure information.v_role_find_or_create ();
+
+-- 1.1
+Alter Table information.role
+    Alter Column fk_property Drop Not Null;
+
+Alter Table information.role
+    Alter Column fk_temporal_entity Drop Not Null;
+
+Alter Table information.role
+    Alter Column fk_entity Drop Not Null;
+
+Alter Table information.role
+    Alter Column fk_property Drop Default;
+
+Alter Table information.role
+    Alter Column fk_temporal_entity Drop Default;
+
+Alter Table information.role
+    Alter Column fk_entity Drop Default;
 
 -- 1
 Alter Table information.role

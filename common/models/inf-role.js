@@ -32,13 +32,16 @@ module.exports = function(InfRole) {
     return new Promise((resolve, reject) => {
       const dataObject = {
         // pk_entity: role.pk_entity,
-        fk_entity: role.fk_entity,
         fk_temporal_entity: role.fk_temporal_entity,
+        fk_subject_data: role.fk_subject_data,
+        fk_subject_tables_cell: role.fk_subject_tables_cell,
+        fk_subject_tables_row: role.fk_subject_tables_row,
         fk_property: role.fk_property,
-        fk_data_object: role.fk_data_object,
-        fk_data_subject: role.fk_data_subject,
-        fk_tables_object: role.fk_tables_object,
-        fk_tables_subject: role.fk_tables_subject,
+        fk_property_of_property: role.fk_property_of_property,
+        fk_entity: role.fk_entity,
+        fk_object_data: role.fk_object_data,
+        fk_object_tables_cell: role.fk_object_tables_cell,
+        fk_object_tables_row: role.fk_object_tables_row,
         // notes: role.notes,
       };
 
@@ -265,25 +268,25 @@ module.exports = function(InfRole) {
           .catch(err => reject(err));
       }
 
-      // if the role has a chunk as the range
-      else if (
-        requestedRole.range_chunk &&
-        Object.keys(requestedRole.range_chunk).length > 0
+      // if the role has a persistent item as the domain
+      if (
+        requestedRole.domain_pe_it &&
+        Object.keys(requestedRole.domain_pe_it).length > 0
       ) {
         // prepare parameters
-        const DatChunk = InfRole.app.models.DatChunk;
+        const InfPersistentItem = InfRole.app.models.InfPersistentItem;
 
         // find or create the peIt and the role pointing to it
-        DatChunk.findOrCreateChunk(
+        InfPersistentItem.findOrCreatePeIt(
           projectId,
-          requestedRole.range_chunk,
+          requestedRole.domain_pe_it,
           ctxWithoutBody
         )
-          .then(resultingObjects => {
-            const resultingObject = resultingObjects[0];
+          .then(resultingPeIts => {
+            const resultingPeIt = resultingPeIts[0];
 
             // … prepare the role to create
-            dataObject.fk_data_object = resultingObject.pk_entity;
+            dataObject.fk_temporal_entity = resultingPeIt.pk_entity;
 
             InfRole._findOrCreateByValue(
               InfRole,
@@ -294,7 +297,45 @@ module.exports = function(InfRole) {
             )
               .then(resultingRoles => {
                 let res = resultingRoles[0];
-                res.range_chunk = helpers.toObject(resultingObject);
+                res.domain_pe_it = helpers.toObject(resultingPeIt);
+
+                resolve([res]);
+              })
+              .catch(err => reject(err));
+          })
+          .catch(err => reject(err));
+      }
+
+      // if the role has a persistent item as the range
+      else if (
+        requestedRole.range_pe_it &&
+        Object.keys(requestedRole.range_pe_it).length > 0
+      ) {
+        // prepare parameters
+        const InfPersistentItem = InfRole.app.models.InfPersistentItem;
+
+        // find or create the peIt and the role pointing to it
+        InfPersistentItem.findOrCreatePeIt(
+          projectId,
+          requestedRole.range_pe_it,
+          ctxWithoutBody
+        )
+          .then(resultingPeIts => {
+            const resultingPeIt = resultingPeIts[0];
+
+            // … prepare the role to create
+            dataObject.fk_entity = resultingPeIt.pk_entity;
+
+            InfRole._findOrCreateByValue(
+              InfRole,
+              projectId,
+              dataObject,
+              requestedRole,
+              ctxWithoutBody
+            )
+              .then(resultingRoles => {
+                let res = resultingRoles[0];
+                res.range_pe_it = helpers.toObject(resultingPeIt);
 
                 resolve([res]);
               })
@@ -315,7 +356,7 @@ module.exports = function(InfRole) {
         DatChunk.create(requestedRole.domain_chunk)
           .then(resultingObject => {
             // … prepare the role to create
-            dataObject.fk_data_subject = resultingObject.pk_entity;
+            dataObject.fk_subject_data = resultingObject.pk_entity;
 
             InfRole._findOrCreateByValue(
               InfRole,
@@ -327,6 +368,44 @@ module.exports = function(InfRole) {
               .then(resultingRoles => {
                 let res = resultingRoles[0];
                 res.domain_chunk = helpers.toObject(resultingObject);
+
+                resolve([res]);
+              })
+              .catch(err => reject(err));
+          })
+          .catch(err => reject(err));
+      }
+
+      // if the role has a chunk as the range
+      else if (
+        requestedRole.range_chunk &&
+        Object.keys(requestedRole.range_chunk).length > 0
+      ) {
+        // prepare parameters
+        const DatChunk = InfRole.app.models.DatChunk;
+
+        // find or create the peIt and the role pointing to it
+        DatChunk.findOrCreateChunk(
+          projectId,
+          requestedRole.range_chunk,
+          ctxWithoutBody
+        )
+          .then(resultingObjects => {
+            const resultingObject = resultingObjects[0];
+
+            // … prepare the role to create
+            dataObject.fk_object_data = resultingObject.pk_entity;
+
+            InfRole._findOrCreateByValue(
+              InfRole,
+              projectId,
+              dataObject,
+              requestedRole,
+              ctxWithoutBody
+            )
+              .then(resultingRoles => {
+                let res = resultingRoles[0];
+                res.range_chunk = helpers.toObject(resultingObject);
 
                 resolve([res]);
               })

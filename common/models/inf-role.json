@@ -16,27 +16,45 @@
     }
   },
   "properties": {
+    "fk_temporal_entity": {
+      "type": "number",
+      "default": 0
+    },
+    "fk_subject_data": {
+      "type": "number",
+      "default": 0
+    },
+    "fk_subject_tables_cell": {
+      "type": "number",
+      "default": 0
+    },
+    "fk_subject_tables_row": {
+      "type": "number",
+      "default": 0
+    },
     "fk_property": {
       "type": "number",
-      "required": true
+      "default": 0
+    },
+    "fk_property_of_property": {
+      "type": "number",
+      "default": 0
     },
     "fk_entity": {
-      "type": "number"
+      "type": "number",
+      "default": 0
     },
-    "fk_temporal_entity": {
-      "type": "number"
+    "fk_object_data": {
+      "type": "number",
+      "default": 0
     },
-    "fk_data_subject": {
-      "type": "number"
+    "fk_object_tables_cell": {
+      "type": "number",
+      "default": 0
     },
-    "fk_data_object": {
-      "type": "number"
-    },
-    "fk_tables_subject": {
-      "type": "number"
-    },
-    "fk_tables_object": {
-      "type": "number"
+    "fk_object_tables_row": {
+      "type": "number",
+      "default": 0
     },
     "is_in_project_count": {
       "type": "number"
@@ -104,22 +122,34 @@
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
     },
+    "domain_pe_it": {
+      "type": "belongsTo",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_entity"
+    },
+    "range_pe_it": {
+      "type": "belongsTo",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
     "domain_chunk": {
       "type": "belongsTo",
       "model": "DatChunk",
-      "foreignKey": "fk_data_subject",
+      "foreignKey": "fk_subject_data",
       "primaryKey": "pk_entity"
     },
     "range_chunk": {
       "type": "belongsTo",
       "model": "DatChunk",
-      "foreignKey": "fk_data_object",
+      "foreignKey": "fk_object_data",
       "primaryKey": "pk_entity"
     },
     "domain_digital": {
       "type": "belongsTo",
       "model": "DatDigital",
-      "foreignKey": "fk_data_object",
+      "foreignKey": "fk_object_data",
       "primaryKey": "pk_entity"
     }
   },

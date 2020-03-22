@@ -169,7 +169,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         const addDomain$ = chunks$.pipe(
           mergeMap(chunks => combineLatest(
-            this.p.inf$.role$.by_fk_data_subject$.all$,
+            this.p.inf$.role$.by_fk_subject_data$.all$,
             this.chunksToHighligt$
           )
             .pipe(
@@ -231,7 +231,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
           .pipe(
             switchMap((roles) => combineLatestOrEmpty(values(roles)
               .filter(role => role.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
-              .map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_data_subject)
+              .map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_subject_data)
                 .pipe(
                   filter(item => !!item),
                   switchMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(

@@ -1453,9 +1453,9 @@ class FlatObjectQueryBuilder {
       -- tw0 delivers
       -- - pk_entity: the roles we need
       -- - fk_temporal_entity: the persistent_item we need (Expression Portion)
-      -- - fk_data_subject: the data.digital we need
-      WITH RECURSIVE tw0 (fk_temporal_entity, fk_data_subject, fk_property, fk_entity, fk_data_object, level, pk_entity, path) AS (
-          SELECT  t1.fk_temporal_entity, t1.fk_data_subject, t1.fk_property, t1.fk_entity, t1.fk_data_object, 0, t1.pk_entity, ARRAY[t1.pk_entity]
+      -- - fk_subject_data: the data.digital we need
+      WITH RECURSIVE tw0 (fk_temporal_entity, fk_subject_data, fk_property, fk_entity, fk_object_data, level, pk_entity, path) AS (
+          SELECT  t1.fk_temporal_entity, t1.fk_subject_data, t1.fk_property, t1.fk_entity, t1.fk_object_data, 0, t1.pk_entity, ARRAY[t1.pk_entity]
           FROM    information.role t1,
                   projects.info_proj_rel t2
           WHERE   t1.fk_entity = ${this.addParam(pk_entity)}
@@ -1466,7 +1466,7 @@ class FlatObjectQueryBuilder {
 
           UNION ALL
 
-          SELECT  p.fk_temporal_entity, p.fk_data_subject, p.fk_property, p.fk_entity, p.fk_data_object, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
+          SELECT  p.fk_temporal_entity, p.fk_subject_data, p.fk_property, p.fk_entity, p.fk_object_data, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
           FROM    information.role p,
                   tw0 t0,
                   projects.info_proj_rel t2
@@ -1575,7 +1575,7 @@ class FlatObjectQueryBuilder {
           tw0
         CROSS JOIN
           data.digital t1
-        WHERE t1.pk_entity = tw0.fk_data_subject
+        WHERE t1.pk_entity = tw0.fk_subject_data
       ),
       ------------------------------------
       --- group parts by model

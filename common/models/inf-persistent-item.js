@@ -138,6 +138,48 @@ module.exports = function(InfPersistentItem) {
           }
 
           /******************************************
+           * te-roles (roles, where pe_it is domain / subject)
+           ******************************************/
+          if (requestedPeIt.te_roles) {
+            // prepare parameters
+            const InfRole = InfPersistentItem.app.models.InfRole;
+
+            //… filter roles that are truthy (not null), iterate over them,
+            // return the promise that the PeIt will be
+            // returned together with all nested items
+            const promise = Promise.map(
+              requestedPeIt.te_roles.filter(role => role),
+              role => {
+                // use the pk_entity from the created peIt to set the fk_temporal_entity of the role
+                role.fk_temporal_entity = resultingEntity.pk_entity;
+                // find or create the teEnt and the role pointing to the teEnt
+                return InfRole.findOrCreateInfRole(
+                  pkProject,
+                  role,
+                  ctxWithoutBody
+                );
+              }
+            )
+              .then(roles => {
+                //attach the roles to peit.te_roles
+                res.te_roles = [];
+                for (var i = 0; i < roles.length; i++) {
+                  const role = roles[i];
+                  if (role && role[0]) {
+                    res.te_roles.push(role[0]);
+                  }
+                }
+                return true;
+              })
+              .catch(err => {
+                reject(err);
+              });
+
+            // add promise for te_roles
+            promiseArray.push(promise);
+          }
+
+          /******************************************
            * text_properties
            ******************************************/
           if (requestedPeIt.text_properties) {

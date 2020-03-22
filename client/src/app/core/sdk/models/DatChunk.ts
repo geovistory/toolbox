@@ -131,7 +131,7 @@ export class DatChunk implements DatChunkInterface {
           model: 'InfRole',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_data_subject'
+          keyTo: 'fk_subject_data'
         },
         namespace: {
           name: 'namespace',

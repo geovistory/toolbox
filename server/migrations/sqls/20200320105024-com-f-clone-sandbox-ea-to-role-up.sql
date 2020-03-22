@@ -113,10 +113,12 @@ Begin
         Where
             fk_project = pk_sandbox_project
             And t1.fk_entity = t2.pk_entity
-            And (t2.fk_tables_subject Is Not Null
-                Or t2.fk_tables_object Is Not Null
-                Or t2.fk_data_subject Is Not Null
-                Or t2.fk_data_object Is Not Null))
+            And (t2.fk_subject_tables_cell != 0
+                Or t2.fk_object_tables_cell != 0
+                Or t2.fk_subject_tables_row != 0
+                Or t2.fk_object_tables_row != 0
+                Or t2.fk_subject_data != 0
+                Or t2.fk_object_data != 0))
     Insert Into projects.info_proj_rel (fk_project, fk_entity, fk_entity_version, fk_entity_version_concat, is_in_project, is_standard_in_project, calendar, ord_num_of_domain, ord_num_of_range, ord_num_of_text_property, entity_version)
     Select
         pk_new_project As fk_project,
@@ -157,16 +159,19 @@ Begin
      * copy roles pointing to digitals, using the pk_entity of the above created, where fk_cloned_from
      * and add them to the project
      */
-    Insert Into information.role (fk_data_subject, fk_data_object, fk_temporal_entity, fk_entity, fk_property, fk_tables_subject, fk_tables_object, metadata)
+    Insert Into information.role (fk_temporal_entity, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_entity, fk_object_data, fk_object_tables_cell, fk_object_tables_row, metadata)
     -- select roles pointing to the new digital's fk_cloned_from
     Select
-        t3.pk_entity As fk_data_subject, -- pk of new digital
-        t2.fk_data_object,
-        t2.fk_temporal_entity,
-        t2.fk_entity,
-        t2.fk_property,
-        t2.fk_tables_subject,
-        t2.fk_tables_object,
+        coalesce(t2.fk_temporal_entity, 0),
+        t3.pk_entity As fk_subject_data, -- pk of new digital
+        coalesce(t2.fk_subject_tables_cell, 0),
+        coalesce(t2.fk_subject_tables_row, 0),
+        coalesce(t2.fk_property, 0),
+        coalesce(t2.fk_property_of_property, 0),
+        coalesce(t2.fk_entity, 0),
+        coalesce(t2.fk_object_data, 0),
+        coalesce(t2.fk_object_tables_cell, 0),
+        coalesce(t2.fk_object_tables_row, 0),
         jsonb_build_object('fk_cloned_from', t2.pk_entity) -- keep track of original entity_asssociacion
     From
         projects.info_proj_rel t1,
@@ -176,7 +181,7 @@ Begin
         fk_project = pk_sandbox_project
         And t1.is_in_project = True
         And t1.fk_entity = t2.pk_entity
-        And t2.fk_data_subject = (t3.metadata ->> 'fk_cloned_from')::int
+        And t2.fk_subject_data = (t3.metadata ->> 'fk_cloned_from')::int
         And t3.fk_namespace = pk_new_default_namespace;
 
     /*
@@ -188,7 +193,7 @@ Begin
         pk_new_default_namespace As fk_namespace,
         t2.quill_doc,
         t4.pk_text,
-        t4.entity_version,
+        1 As fk_entity_version,
         jsonb_build_object('fk_cloned_from', t2.pk_entity)
     From
         data.namespace t1,
@@ -199,23 +204,25 @@ Begin
         t1.fk_project = pk_sandbox_project
         And t1.pk_entity = t2.fk_namespace
         And t3.pk_text = t2.fk_text
-        And t3.entity_version = t2.fk_entity_version
         And (t4.metadata ->> 'fk_cloned_from')::int = t3.pk_entity;
 
     /*
      * copy roles pointing to chunks, using the pk_entity of the above created, where fk_cloned_from
      * and add them to the project
      */
-    Insert Into information.role (fk_data_subject, fk_data_object, fk_temporal_entity, fk_entity, fk_property, fk_tables_subject, fk_tables_object, metadata)
+    Insert Into information.role (fk_temporal_entity, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_entity, fk_object_data, fk_object_tables_cell, fk_object_tables_row, metadata)
     -- select roles pointing to the new chunk's fk_cloned_from
     Select
-        t3.pk_entity As fk_data_subject, -- pk of new digital
-        t2.fk_data_object,
-        t2.fk_temporal_entity,
-        t2.fk_entity,
-        t2.fk_property,
-        t2.fk_tables_subject,
-        t2.fk_tables_object,
+        coalesce(t2.fk_temporal_entity, 0),
+        t3.pk_entity As fk_subject_data, -- pk of new chunk
+        coalesce(t2.fk_subject_tables_cell, 0),
+        coalesce(t2.fk_subject_tables_row, 0),
+        coalesce(t2.fk_property, 0),
+        coalesce(t2.fk_property_of_property, 0),
+        coalesce(t2.fk_entity, 0),
+        coalesce(t2.fk_object_data, 0),
+        coalesce(t2.fk_object_tables_cell, 0),
+        coalesce(t2.fk_object_tables_row, 0),
         jsonb_build_object('fk_cloned_from', t2.pk_entity) -- keep track of original entity_asssociacion
     From
         projects.info_proj_rel t1,
@@ -225,7 +232,7 @@ Begin
         t1.fk_project = pk_sandbox_project
         And t1.is_in_project = True
         And t1.fk_entity = t2.pk_entity
-        And t2.fk_data_subject = (t3.metadata ->> 'fk_cloned_from')::int
+        And t2.fk_subject_data = (t3.metadata ->> 'fk_cloned_from')::int
         And t3.fk_namespace = pk_new_default_namespace;
     -- make sure this is a chunk of this new project's namespace
     /*
@@ -240,7 +247,7 @@ Begin
         information.role t1,
         data.entity t2
     Where
-        t1.fk_data_subject = t2.pk_entity
+        t1.fk_subject_data = t2.pk_entity
         And t2.fk_namespace = pk_new_default_namespace;
 
     /*

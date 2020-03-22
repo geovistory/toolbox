@@ -14,13 +14,16 @@ import {
 
 declare var Object: any;
 export interface InfRoleInterface {
-  "fk_property": number;
-  "fk_entity"?: number;
   "fk_temporal_entity"?: number;
-  "fk_data_subject"?: number;
-  "fk_data_object"?: number;
-  "fk_tables_subject"?: number;
-  "fk_tables_object"?: number;
+  "fk_subject_data"?: number;
+  "fk_subject_tables_cell"?: number;
+  "fk_subject_tables_row"?: number;
+  "fk_property"?: number;
+  "fk_property_of_property"?: number;
+  "fk_entity"?: number;
+  "fk_object_data"?: number;
+  "fk_object_tables_cell"?: number;
+  "fk_object_tables_row"?: number;
   "is_in_project_count"?: number;
   "is_standard_in_project_count"?: number;
   "community_favorite_calendar"?: string;
@@ -41,13 +44,16 @@ export interface InfRoleInterface {
 }
 
 export class InfRole implements InfRoleInterface {
-  "fk_property": number;
-  "fk_entity": number;
   "fk_temporal_entity": number;
-  "fk_data_subject": number;
-  "fk_data_object": number;
-  "fk_tables_subject": number;
-  "fk_tables_object": number;
+  "fk_subject_data": number;
+  "fk_subject_tables_cell": number;
+  "fk_subject_tables_row": number;
+  "fk_property": number;
+  "fk_property_of_property": number;
+  "fk_entity": number;
+  "fk_object_data": number;
+  "fk_object_tables_cell": number;
+  "fk_object_tables_row": number;
   "is_in_project_count": number;
   "is_standard_in_project_count": number;
   "community_favorite_calendar": string;
@@ -98,32 +104,44 @@ export class InfRole implements InfRoleInterface {
       path: 'InfRoles',
       idName: 'pk_entity',
       properties: {
+        "fk_temporal_entity": {
+          name: 'fk_temporal_entity',
+          type: 'number'
+        },
+        "fk_subject_data": {
+          name: 'fk_subject_data',
+          type: 'number'
+        },
+        "fk_subject_tables_cell": {
+          name: 'fk_subject_tables_cell',
+          type: 'number'
+        },
+        "fk_subject_tables_row": {
+          name: 'fk_subject_tables_row',
+          type: 'number'
+        },
         "fk_property": {
           name: 'fk_property',
+          type: 'number'
+        },
+        "fk_property_of_property": {
+          name: 'fk_property_of_property',
           type: 'number'
         },
         "fk_entity": {
           name: 'fk_entity',
           type: 'number'
         },
-        "fk_temporal_entity": {
-          name: 'fk_temporal_entity',
+        "fk_object_data": {
+          name: 'fk_object_data',
           type: 'number'
         },
-        "fk_data_subject": {
-          name: 'fk_data_subject',
+        "fk_object_tables_cell": {
+          name: 'fk_object_tables_cell',
           type: 'number'
         },
-        "fk_data_object": {
-          name: 'fk_data_object',
-          type: 'number'
-        },
-        "fk_tables_subject": {
-          name: 'fk_tables_subject',
-          type: 'number'
-        },
-        "fk_tables_object": {
-          name: 'fk_tables_object',
+        "fk_object_tables_row": {
+          name: 'fk_object_tables_row',
           type: 'number'
         },
         "is_in_project_count": {
@@ -197,7 +215,7 @@ export class InfRole implements InfRoleInterface {
           type: 'DatChunk',
           model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_data_subject',
+                  keyFrom: 'fk_subject_data',
           keyTo: 'pk_entity'
         },
         range_chunk: {
@@ -205,7 +223,7 @@ export class InfRole implements InfRoleInterface {
           type: 'DatChunk',
           model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_data_object',
+                  keyFrom: 'fk_object_data',
           keyTo: 'pk_entity'
         },
         domain_digital: {
@@ -213,7 +231,7 @@ export class InfRole implements InfRoleInterface {
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_data_object',
+                  keyFrom: 'fk_object_data',
           keyTo: 'pk_entity'
         },
         language: {

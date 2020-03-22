@@ -36,7 +36,7 @@
     "subject_of_roles": {
       "type": "hasMany",
       "model": "InfRole",
-      "foreignKey": "fk_data_subject",
+      "foreignKey": "fk_subject_data",
       "primaryKey": "pk_entity"
     },
     "digital": {

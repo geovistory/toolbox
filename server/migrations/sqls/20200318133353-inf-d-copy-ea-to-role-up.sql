@@ -4,13 +4,13 @@ Drop Trigger creation_tmsp On information.role;
 Drop Trigger last_modification_tmsp On information.role;
 
 -- 2 insert the data
-Insert Into information.role (fk_property, fk_temporal_entity, fk_entity, fk_data_subject, fk_data_object, tmsp_creation, tmsp_last_modification, sys_period, metadata)
+Insert Into information.role (fk_property, fk_temporal_entity, fk_entity, fk_subject_data, fk_object_data, tmsp_creation, tmsp_last_modification, sys_period, metadata)
 Select
     fk_property,
-    fk_info_domain,
-    fk_info_range,
-    fk_data_domain,
-    fk_data_range,
+    coalesce(fk_info_domain, 0),
+    coalesce(fk_info_range, 0),
+    coalesce(fk_data_domain, 0),
+    coalesce(fk_data_range, 0),
     tmsp_creation,
     tmsp_last_modification,
     sys_period,

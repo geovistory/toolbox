@@ -221,7 +221,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           const name$ = this.observeName(role);
 
           // Observe the isLeave property of this node
-          const isLeaf$ = new BehaviorSubject(role.fk_data_subject ? true : false)
+          const isLeaf$ = new BehaviorSubject(role.fk_subject_data ? true : false)
 
           const typeLabel$ = this.observeTypeLabel(role);
 
@@ -242,7 +242,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
 
   private observeTypeLabel(role) {
-    if (role.fk_data_subject) {
+    if (role.fk_subject_data) {
       return new BehaviorSubject('Text');
     }
     else {
@@ -262,7 +262,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     }
     else {
       // A: No it is a digital, lets take the first chars of the text
-      return this.p.dat$.digital$.by_pk_entity$.key(role.fk_data_subject)
+      return this.p.dat$.digital$.by_pk_entity$.key(role.fk_subject_data)
         .pipe(
           filter(x => !!x),
           map(versions => latestVersion(versions)),
@@ -440,7 +440,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     return {
       fk_entity,
       fk_temporal_entity: draggedNode.role.fk_temporal_entity,
-      fk_data_subject: draggedNode.role.fk_data_subject,
+      fk_subject_data: draggedNode.role.fk_subject_data,
       fk_property
     } as InfRole;
   }
@@ -493,7 +493,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
             // resolved.items[0].pk_entity
 
             this.inf.role.upsert([{
-              fk_data_subject: resolved.items[0].pk_entity,
+              fk_subject_data: resolved.items[0].pk_entity,
               fk_entity: pkParent,
               fk_property: this.isReproProp(parentIsF2Expression)
             } as InfRole], pkProject)
@@ -546,7 +546,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       this.inf.role.remove([role], pkProject)
 
       // get the digital
-      this.dat.digital$.by_pk_entity$.key(role.fk_data_subject).pipe(
+      this.dat.digital$.by_pk_entity$.key(role.fk_subject_data).pipe(
         map(versions => latestVersion(versions))
       ).subscribe(digital => {
         // remove the digital
@@ -576,7 +576,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
   openText(node: ContentTreeNode) {
-    this.p.addTextTab(node.role.fk_data_subject)
+    this.p.addTextTab(node.role.fk_subject_data)
   }
 
   openExpressionPortion(node: ContentTreeNode) {
