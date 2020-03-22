@@ -7,15 +7,14 @@ import { mergeMap } from '../../../../node_modules/rxjs/operators';
 import { DatActions } from '../dat/dat.actions';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { ProActions } from '../pro/pro.actions';
-import { InfEntityAssociation, InfEntityAssociationApi, InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '../sdk';
+import { InfPersistentItem, InfPersistentItemApi, InfRole, InfRoleApi, InfTemporalEntity, InfTemporalEntityApi, InfTextProperty, InfTextPropertyApi, ProInfoProjRelApi } from '../sdk';
 import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../store/actions';
-import { FlatObject, Stower } from '../store/stower';
-import { InfEpicsFactory } from './inf-epic-factory';
-import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindEAByParams, InfActions, InfEntityAssoctiationActionFactory, InfPersistentItemActionFactory, InfRoleActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadOutgoingAlternativeRoles, LoadPaginatedRoleListMeta, PaginatedRolesList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult, LoadTypeOfProjectAction } from './inf.actions';
-import { infRoot } from './inf.config';
-import { InfEntityAssociationSlice, InfPersistentItemSlice, InfRoleSlice, InfTemporalEntitySlice, InfTextPropertySlice } from './inf.models';
 import { SchemaObject } from '../store/model';
 import { SchemaObjectService } from '../store/schema-object.service';
+import { InfEpicsFactory } from './inf-epic-factory';
+import { AddToProjectWithTeEntActionMeta, ContentTreeMeta, FindRoleByParams, InfActions, InfPersistentItemActionFactory, InfRoleActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadOutgoingAlternativeRoles, LoadPaginatedRoleListMeta, LoadTypeOfProjectAction, PaginatedRolesList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from './inf.actions';
+import { infRoot } from './inf.config';
+import { InfPersistentItemSlice, InfRoleSlice, InfTemporalEntitySlice, InfTextPropertySlice } from './inf.models';
 
 
 @Injectable()
@@ -24,7 +23,6 @@ export class InfEpics {
     public notification: NotificationsAPIActions,
     public peItApi: InfPersistentItemApi,
     public teEnApi: InfTemporalEntityApi,
-    public eaApi: InfEntityAssociationApi,
     public roleApi: InfRoleApi,
     public textPropertyApi: InfTextPropertyApi,
     public infActions: InfActions,
@@ -41,9 +39,6 @@ export class InfEpics {
     const infTemporalEntityEpicsFactory = new InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>
       (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi);
 
-    const infEntityAssociationEpicsFactory = new InfEpicsFactory<InfEntityAssociationSlice, InfEntityAssociation>
-      (infRoot, 'entity_association', this.infActions.entity_association, this.notification, this.infoProjRelApi);
-
     const infRoleEpicsFactory = new InfEpicsFactory<InfRoleSlice, InfRole>
       (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi);
 
@@ -55,13 +50,13 @@ export class InfEpics {
        * Perstistent Item
        *
        */
-      infPersistentItemEpicsFactory.createLoadEpic<LoadByPkMeta>(
-        (meta) => this.peItApi.flatObjectOfProject(meta.pk, meta.pkEntity),
-        InfPersistentItemActionFactory.NESTED_BY_PK,
-        (results, pk) => {
-          new Stower(this.infActions, this.datActions, this.proActions).stow(results as FlatObject, pk);
-        }
-      ),
+      // infPersistentItemEpicsFactory.createLoadEpic<LoadByPkMeta>(
+      //   (meta) => this.peItApi.flatObjectOfProject(meta.pk, meta.pkEntity),
+      //   InfPersistentItemActionFactory.NESTED_BY_PK,
+      //   (results, pk) => {
+      //     new Stower(this.infActions, this.datActions, this.proActions).stow(results as FlatObject, pk);
+      //   }
+      // ),
       infPersistentItemEpicsFactory.createLoadEpic<LoadByPkMeta>(
         (meta) => this.peItApi.ownProperties(meta.pk, meta.pkEntity),
         InfPersistentItemActionFactory.MINIMAL_BY_PK,
@@ -213,31 +208,28 @@ export class InfEpics {
 
       infRoleEpicsFactory.createRemoveEpic(),
 
-      /**
-       * Entity Association
-       *
-       */
-      infEntityAssociationEpicsFactory.createLoadEpic<FindEAByParams>(
-        (meta) => this.eaApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
-        InfEntityAssoctiationActionFactory.BY_PARAMS
+
+      infRoleEpicsFactory.createLoadEpic<FindRoleByParams>(
+        (meta) => this.roleApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
+        InfRoleActionFactory.BY_PARAMS
       ),
 
-      infEntityAssociationEpicsFactory.createLoadEpic<ContentTreeMeta>(
-        (meta) => this.eaApi.contentTree(meta.pk, meta.pkExpressionEntity),
-        InfEntityAssoctiationActionFactory.CONTENT_TREE,
+      infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
+        (meta) => this.roleApi.contentTree(meta.pk, meta.pkExpressionEntity),
+        InfRoleActionFactory.CONTENT_TREE,
         (results, pk) => {
           const schemaObject = results as SchemaObject;
           this.schemaObjectService.storeSchemaObject(schemaObject, pk)
         }
       ),
 
-      infEntityAssociationEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
-        (meta) => this.eaApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),
-        InfEntityAssoctiationActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
+      infRoleEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
+        (meta) => this.roleApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),
+        InfRoleActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
         (results, pk) => {
           const res = results as any as SourcesAndDigitalsOfEntityResult;
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.entity_association.flatten(res.entity_associations);
+          flattener.role.flatten(res.roles);
           storeFlattened(flattener.getFlattened(), pk);
 
           const flattener2 = new Flattener(this.infActions, this.datActions, this.proActions);
@@ -247,16 +239,7 @@ export class InfEpics {
         }
       ),
 
-      infEntityAssociationEpicsFactory.createRemoveEpic(),
 
-      infEntityAssociationEpicsFactory.createUpsertEpic<ModifyActionMeta<InfEntityAssociation>>((meta) => this.eaApi
-        .findOrCreateInfEntityAssociations(meta.pk, meta.items),
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.entity_association.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
-        }
-      ),
 
       /**
        * Text Property

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Helper script for developers:
-# Restore reviewdb.tar on a local database
+# Restore reviewdb.backup on a local database
 #
 
 read -p 'Username [postgres]: ' user
@@ -29,8 +29,8 @@ database=${database:-dev1}
 echo $database
 echo
 
-read -p 'File [reviewdb.tar]: ' filepath
-filepath=${filepath:-reviewdb.tar}
+read -p 'File [reviewdb.backup]: ' filepath
+filepath=${filepath:-reviewdb.backup}
 echo $filepath
 echo
 
@@ -39,7 +39,7 @@ jobs=${jobs:-none}
 echo $jobs
 echo
 
-echo Your command: pg_restore -j 6 --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --format=t --verbose
+echo Your command: pg_restore -j 6 --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --verbose
 echo Attention: this action is irreversible! Schemas are dropped first
 echo
 while true; do
@@ -54,12 +54,12 @@ while true; do
     time psql $DATABASE_URL -f dropSchemas.sql
     echo '================= Drop schemas done! ====================================='
     echo
-    echo '======== Restore Database (from deployment/reviewdb.tar) ================='
+    echo '======== Restore Database (from deployment/reviewdb.backup) ================='
 
     if [ $jobs = 'none' ]; then
-      time pg_restore --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --format=t --verbose
+      time pg_restore --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --verbose
     else
-      time pg_restore -j $jobs --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --format=t --verbose
+      time pg_restore -j $jobs --no-owner -d postgres://$user:$password@$host:$port/$database $filepath --verbose
     fi
     echo '======== Database restored  =============================================='
     echo 'Consider to migrate up and to recreate warehouse'

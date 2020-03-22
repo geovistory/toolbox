@@ -849,7 +849,10 @@ export class ConfigurationPipesService {
       ),
       this.pipePropertiesOfClassWhereTargetEnabled(pkClass, false).pipe(
         // filter out the 'has appellation' property, since it is part of the default fields
-        map(ingoing => ingoing.filter(i => i.pk_property !== DfhConfig.PROPERTY_PK_IS_APPELLATION_OF))
+        map(ingoing => ingoing.filter(i =>
+          i.pk_property !== DfhConfig.PROPERTY_PK_IS_APPELLATION_OF
+          && i.pk_property !== DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF
+        ))
       ),
       this.pipeClassFieldConfigs(pkClass)
     ).pipe(

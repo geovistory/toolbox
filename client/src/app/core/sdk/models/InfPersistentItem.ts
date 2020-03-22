@@ -3,7 +3,6 @@ import {
   ProInfoProjRel,
   InfRole,
   DfhClass,
-  InfEntityAssociation,
   InfTextProperty
 } from '../index';
 
@@ -13,9 +12,8 @@ export interface InfPersistentItemInterface {
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
   pi_roles?: InfRole[];
+  te_roles?: InfRole[];
   dfh_class?: DfhClass;
-  domain_entity_associations?: InfEntityAssociation[];
-  range_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
 }
 
@@ -24,9 +22,8 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
   pi_roles?: InfRole[];
+  te_roles?: InfRole[];
   dfh_class?: DfhClass;
-  domain_entity_associations?: InfEntityAssociation[];
-  range_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfPersistentItemInterface) {
     Object.assign(this, data);
@@ -87,6 +84,14 @@ export class InfPersistentItem implements InfPersistentItemInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
+        te_roles: {
+          name: 'te_roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
+          relationType: 'hasMany',
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_temporal_entity'
+        },
         dfh_class: {
           name: 'dfh_class',
           type: 'DfhClass',
@@ -94,22 +99,6 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           relationType: 'belongsTo',
                   keyFrom: 'fk_class',
           keyTo: 'pk_class'
-        },
-        domain_entity_associations: {
-          name: 'domain_entity_associations',
-          type: 'InfEntityAssociation[]',
-          model: 'InfEntityAssociation',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_info_domain'
-        },
-        range_entity_associations: {
-          name: 'range_entity_associations',
-          type: 'InfEntityAssociation[]',
-          model: 'InfEntityAssociation',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_info_domain'
         },
         text_properties: {
           name: 'text_properties',

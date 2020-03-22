@@ -2,7 +2,6 @@
 import {
   ProInfoProjRel,
   InfRole,
-  InfEntityAssociation,
   InfTextProperty
 } from '../index';
 
@@ -14,7 +13,6 @@ export interface InfTemporalEntityInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
   ingoing_roles?: InfRole[];
-  domain_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
 }
 
@@ -25,7 +23,6 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
   ingoing_roles?: InfRole[];
-  domain_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfTemporalEntityInterface) {
     Object.assign(this, data);
@@ -97,14 +94,6 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
-        },
-        domain_entity_associations: {
-          name: 'domain_entity_associations',
-          type: 'InfEntityAssociation[]',
-          model: 'InfEntityAssociation',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_info_domain'
         },
         text_properties: {
           name: 'text_properties',

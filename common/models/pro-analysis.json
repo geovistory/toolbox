@@ -216,7 +216,7 @@
       "returns": {
         "arg": "data",
         "type": [
-          "ProVisual"
+          "ProAnalysis"
         ],
         "root": true
       },

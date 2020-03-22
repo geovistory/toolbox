@@ -13,7 +13,6 @@ import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfRole } from '../../models/InfRole';
-import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
 

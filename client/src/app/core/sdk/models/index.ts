@@ -30,7 +30,6 @@ export * from './InfRole';
 export * from './InfLanguage';
 export * from './InfPersistentItem';
 export * from './InfTimePrimitive';
-export * from './InfEntityAssociation';
 export * from './InfPlace';
 export * from './DatNamespace';
 export * from './InfTextProperty';

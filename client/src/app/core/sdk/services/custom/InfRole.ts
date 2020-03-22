@@ -15,6 +15,8 @@ import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfAppellation } from '../../models/InfAppellation';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
+import { DatChunk } from '../../models/DatChunk';
+import { DatDigital } from '../../models/DatDigital';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
@@ -306,6 +308,108 @@ export class InfRoleApi extends BaseLoopBackApi {
     };
     let _urlParams: any = {};
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get an array of role that build the tree of the content of an F2 Expression.
+   *
+   * @param {number} pkProject Primary Key of the Project.
+   *
+   * @param {number} pkExpressionEntity Primary Key of the F2 Expression entity for which the content tree is needed.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfRole` object.)
+   * </em>
+   */
+  public contentTree(pkProject: any = {}, pkExpressionEntity: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfRoles/content-tree";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkExpressionEntity !== 'undefined' && pkExpressionEntity !== null) _urlParams.pkExpressionEntity = pkExpressionEntity;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Get an nested object of role with everything needed to display the links made from an entity towards sources and digitals.
+   *
+   * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
+   *
+   * @param {number} pkProject Primary Key of the Project.
+   *
+   * @param {number} pkEntity Primary Key of the entity for which the sources links are needed.
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfRole` object.)
+   * </em>
+   */
+  public sourcesAndDigitalsOfEntity(ofProject: any, pkProject: any = {}, pkEntity: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfRoles/sources-and-digitals-of-entity";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Find roles by params.
+   *
+   * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
+   *
+   * @param {number} pkProject Primary Key of the Project. If provided and ofProject=false, makes a left join with project
+   *
+   * @param {number} pkEntity Primary Key of the role (pk_entity)
+   *
+   * @param {number} pkInfoRange Foreign Key of the role pointing to the range entity (fk_entity)
+   *
+   * @param {number} pkInfoDomain Foreign Key of the role pointing to the domain entity (fk_temporal_entity)
+   *
+   * @param {number} pkProperty Foreign Key of the role pointing to the property (fk_property)
+   *
+   * @returns {object[]} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfRole` object.)
+   * </em>
+   */
+  public queryByParams(ofProject: any, pkProject: any = {}, pkEntity: any = {}, pkInfoRange: any = {}, pkInfoDomain: any = {}, pkProperty: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfRoles/find-by-params";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof ofProject !== 'undefined' && ofProject !== null) _urlParams.ofProject = ofProject;
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkEntity !== 'undefined' && pkEntity !== null) _urlParams.pkEntity = pkEntity;
+    if (typeof pkInfoRange !== 'undefined' && pkInfoRange !== null) _urlParams.pkInfoRange = pkInfoRange;
+    if (typeof pkInfoDomain !== 'undefined' && pkInfoDomain !== null) _urlParams.pkInfoDomain = pkInfoDomain;
+    if (typeof pkProperty !== 'undefined' && pkProperty !== null) _urlParams.pkProperty = pkProperty;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

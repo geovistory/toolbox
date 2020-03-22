@@ -4,6 +4,8 @@ import {
   InfTemporalEntity,
   InfAppellation,
   WarEntityPreview,
+  DatChunk,
+  DatDigital,
   InfLanguage,
   InfPersistentItem,
   InfTimePrimitive,
@@ -12,9 +14,16 @@ import {
 
 declare var Object: any;
 export interface InfRoleInterface {
-  "fk_property": number;
-  "fk_entity": number;
-  "fk_temporal_entity": number;
+  "fk_temporal_entity"?: number;
+  "fk_subject_data"?: number;
+  "fk_subject_tables_cell"?: number;
+  "fk_subject_tables_row"?: number;
+  "fk_property"?: number;
+  "fk_property_of_property"?: number;
+  "fk_entity"?: number;
+  "fk_object_data"?: number;
+  "fk_object_tables_cell"?: number;
+  "fk_object_tables_row"?: number;
   "is_in_project_count"?: number;
   "is_standard_in_project_count"?: number;
   "community_favorite_calendar"?: string;
@@ -25,6 +34,9 @@ export interface InfRoleInterface {
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   time_primitive?: InfTimePrimitive;
@@ -32,9 +44,16 @@ export interface InfRoleInterface {
 }
 
 export class InfRole implements InfRoleInterface {
-  "fk_property": number;
-  "fk_entity": number;
   "fk_temporal_entity": number;
+  "fk_subject_data": number;
+  "fk_subject_tables_cell": number;
+  "fk_subject_tables_row": number;
+  "fk_property": number;
+  "fk_property_of_property": number;
+  "fk_entity": number;
+  "fk_object_data": number;
+  "fk_object_tables_cell": number;
+  "fk_object_tables_row": number;
   "is_in_project_count": number;
   "is_standard_in_project_count": number;
   "community_favorite_calendar": string;
@@ -45,6 +64,9 @@ export class InfRole implements InfRoleInterface {
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
+  domain_chunk?: DatChunk;
+  range_chunk?: DatChunk;
+  domain_digital?: DatDigital;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   time_primitive?: InfTimePrimitive;
@@ -82,16 +104,44 @@ export class InfRole implements InfRoleInterface {
       path: 'InfRoles',
       idName: 'pk_entity',
       properties: {
+        "fk_temporal_entity": {
+          name: 'fk_temporal_entity',
+          type: 'number'
+        },
+        "fk_subject_data": {
+          name: 'fk_subject_data',
+          type: 'number'
+        },
+        "fk_subject_tables_cell": {
+          name: 'fk_subject_tables_cell',
+          type: 'number'
+        },
+        "fk_subject_tables_row": {
+          name: 'fk_subject_tables_row',
+          type: 'number'
+        },
         "fk_property": {
           name: 'fk_property',
+          type: 'number'
+        },
+        "fk_property_of_property": {
+          name: 'fk_property_of_property',
           type: 'number'
         },
         "fk_entity": {
           name: 'fk_entity',
           type: 'number'
         },
-        "fk_temporal_entity": {
-          name: 'fk_temporal_entity',
+        "fk_object_data": {
+          name: 'fk_object_data',
+          type: 'number'
+        },
+        "fk_object_tables_cell": {
+          name: 'fk_object_tables_cell',
+          type: 'number'
+        },
+        "fk_object_tables_row": {
+          name: 'fk_object_tables_row',
           type: 'number'
         },
         "is_in_project_count": {
@@ -158,6 +208,30 @@ export class InfRole implements InfRoleInterface {
           model: 'WarEntityPreview',
           relationType: 'belongsTo',
                   keyFrom: 'fk_temporal_entity',
+          keyTo: 'pk_entity'
+        },
+        domain_chunk: {
+          name: 'domain_chunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_subject_data',
+          keyTo: 'pk_entity'
+        },
+        range_chunk: {
+          name: 'range_chunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_object_data',
+          keyTo: 'pk_entity'
+        },
+        domain_digital: {
+          name: 'domain_digital',
+          type: 'DatDigital',
+          model: 'DatDigital',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_object_data',
           keyTo: 'pk_entity'
         },
         language: {

@@ -12,7 +12,6 @@ import { map } from 'rxjs/operators';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { InfRole } from '../../models/InfRole';
-import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
 

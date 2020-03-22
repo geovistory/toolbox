@@ -223,11 +223,11 @@ export interface ProjectDetail extends ProjectPreview {
   // TODO: check, if needed
   creatingMentioning?: boolean;
 
-  // Array of pk_entities of mentionings (a.k.a. entity_associations of property "is mentioned in")
+  // Array of pk_entities of mentionings (a.k.a. roles of property "is mentioned in")
   // that are focused by a click on a chunk (in text editor)
   mentioningsFocusedInText?: number[]
 
-  // Array of pk_entities of mentionings (a.k.a. entity_associations of property "is mentioned in")
+  // Array of pk_entities of mentionings (a.k.a. roles of property "is mentioned in")
   // that are focused by click on mentioning in a list/table view
   mentioningsFocusedInTable?: number[]
 
