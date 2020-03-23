@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const validators_1 = require("../../common/validators");
-const sql_builder_1 = require("../query/sql-builder");
+const sql_builder_1 = require("./sql-builder");
 const analysis_1 = require("./analysis");
 class AnalysisTimeChartCont extends analysis_1.Analysis {
     constructor(connector, pkProject, analysisDef) {

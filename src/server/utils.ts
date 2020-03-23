@@ -15,3 +15,4 @@ export const logSql = (sql: string, params: any[]) => {
       `)
   }
 }
+

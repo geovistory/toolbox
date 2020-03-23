@@ -39,6 +39,8 @@ export interface InfRoleInterface {
   domain_digital?: DatDigital;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
+  domain_pe_it?: InfPersistentItem;
+  range_pe_it?: InfPersistentItem;
   time_primitive?: InfTimePrimitive;
   place?: InfPlace;
 }
@@ -69,6 +71,8 @@ export class InfRole implements InfRoleInterface {
   domain_digital?: DatDigital;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
+  domain_pe_it?: InfPersistentItem;
+  range_pe_it?: InfPersistentItem;
   time_primitive?: InfTimePrimitive;
   place?: InfPlace;
   constructor(data?: InfRoleInterface) {
@@ -106,43 +110,53 @@ export class InfRole implements InfRoleInterface {
       properties: {
         "fk_temporal_entity": {
           name: 'fk_temporal_entity',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_subject_data": {
           name: 'fk_subject_data',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_subject_tables_cell": {
           name: 'fk_subject_tables_cell',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_subject_tables_row": {
           name: 'fk_subject_tables_row',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_property": {
           name: 'fk_property',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_property_of_property": {
           name: 'fk_property_of_property',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_entity": {
           name: 'fk_entity',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_object_data": {
           name: 'fk_object_data',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_object_tables_cell": {
           name: 'fk_object_tables_cell',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "fk_object_tables_row": {
           name: 'fk_object_tables_row',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "is_in_project_count": {
           name: 'is_in_project_count',
@@ -244,6 +258,22 @@ export class InfRole implements InfRoleInterface {
         },
         persistent_item: {
           name: 'persistent_item',
+          type: 'InfPersistentItem',
+          model: 'InfPersistentItem',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
+        },
+        domain_pe_it: {
+          name: 'domain_pe_it',
+          type: 'InfPersistentItem',
+          model: 'InfPersistentItem',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_temporal_entity',
+          keyTo: 'pk_entity'
+        },
+        range_pe_it: {
+          name: 'range_pe_it',
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',

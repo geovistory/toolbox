@@ -12,11 +12,6 @@ export interface DatChunkInterface {
   "fk_text": number;
   "fk_entity_version": number;
   "pk_entity"?: number;
-  "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   "fk_namespace"?: number;
   digital?: DatDigital;
   subject_of_roles?: InfRole[];
@@ -29,11 +24,6 @@ export class DatChunk implements DatChunkInterface {
   "fk_text": number;
   "fk_entity_version": number;
   "pk_entity": number;
-  "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   "fk_namespace": number;
   digital?: DatDigital;
   subject_of_roles?: InfRole[];
@@ -90,26 +80,6 @@ export class DatChunk implements DatChunkInterface {
         "pk_entity": {
           name: 'pk_entity',
           type: 'number'
-        },
-        "entity_version": {
-          name: 'entity_version',
-          type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
         "fk_namespace": {
           name: 'fk_namespace',

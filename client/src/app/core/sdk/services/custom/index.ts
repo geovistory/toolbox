@@ -16,6 +16,8 @@ export * from './DfhClass';
 export * from './DfhProperty';
 export * from './DfhLabel';
 export * from './DatChunk';
+export * from './DatColumn';
+export * from './DatTextProperty';
 export * from './DatDigital';
 export * from './WarEntityPreview';
 export * from './SysAppContext';

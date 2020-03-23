@@ -1,11 +1,11 @@
 import { isValidTableInput, SysConfig, TableExportFileType } from '../../common';
 import { isValidTimeChartContInput } from '../../common/validators/time-chart-cont-input.validator';
-import { ErrorObj } from './analysis';
 import { AnalysisTable } from './table';
 import { AnalysisTimeChartCont } from './time-chart-cont';
 import Ajv = require('ajv');
 import { AnalysisMapAndTimeCont } from './map-and-time-cont';
 import { isValidMapAndTimeContInput } from '../../common/validators/map-and-time-cont-input.validator';
+import { ErrorObj } from '../utils/interfaces';
 
 /**
  * This class handles remote methods for loopback.

@@ -5,29 +5,23 @@ import {
 
 declare var Object: any;
 export interface DatDigitalInterface {
+  "entity_version"?: number;
   "pk_text"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   "quill_doc"?: any;
   "string"?: string;
+  "fk_system_type"?: number;
   "pk_entity"?: number;
-  "entity_version"?: number;
   "fk_namespace"?: number;
   namespace?: DatNamespace;
 }
 
 export class DatDigital implements DatDigitalInterface {
+  "entity_version": number;
   "pk_text": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   "quill_doc": any;
   "string": string;
+  "fk_system_type": number;
   "pk_entity": number;
-  "entity_version": number;
   "fk_namespace": number;
   namespace?: DatNamespace;
   constructor(data?: DatDigitalInterface) {
@@ -63,25 +57,13 @@ export class DatDigital implements DatDigitalInterface {
       path: 'DatDigitals',
       idName: 'pk_entity',
       properties: {
+        "entity_version": {
+          name: 'entity_version',
+          type: 'number'
+        },
         "pk_text": {
           name: 'pk_text',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
         },
         "quill_doc": {
           name: 'quill_doc',
@@ -91,12 +73,12 @@ export class DatDigital implements DatDigitalInterface {
           name: 'string',
           type: 'string'
         },
-        "pk_entity": {
-          name: 'pk_entity',
+        "fk_system_type": {
+          name: 'fk_system_type',
           type: 'number'
         },
-        "entity_version": {
-          name: 'entity_version',
+        "pk_entity": {
+          name: 'pk_entity',
           type: 'number'
         },
         "fk_namespace": {

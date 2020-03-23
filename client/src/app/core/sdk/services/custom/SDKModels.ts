@@ -17,6 +17,8 @@ import { DfhClass } from '../../models/DfhClass';
 import { DfhProperty } from '../../models/DfhProperty';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DatChunk } from '../../models/DatChunk';
+import { DatColumn } from '../../models/DatColumn';
+import { DatTextProperty } from '../../models/DatTextProperty';
 import { DatDigital } from '../../models/DatDigital';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { SysAppContext } from '../../models/SysAppContext';
@@ -57,6 +59,8 @@ export class SDKModels {
     DfhProperty: DfhProperty,
     DfhLabel: DfhLabel,
     DatChunk: DatChunk,
+    DatColumn: DatColumn,
+    DatTextProperty: DatTextProperty,
     DatDigital: DatDigital,
     WarEntityPreview: WarEntityPreview,
     SysAppContext: SysAppContext,

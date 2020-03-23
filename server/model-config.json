@@ -131,6 +131,14 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "DatColumn": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DatTextProperty": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "DatDigital": {
     "dataSource": "postgres1",
     "public": true

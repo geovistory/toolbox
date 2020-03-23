@@ -1,7 +1,8 @@
 'use strict';
 const Promise = require('bluebird');
 var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
-
+const TableRemotes = require('../../dist/server/table/table-remotes')
+  .TableRemotes;
 module.exports = function(DatDigital) {
   DatDigital.bulkDelete = function(pks, ctx, cb) {
     const promiseArray = pks.map(pk => DatDigital.deleteById(pk));
@@ -102,5 +103,13 @@ module.exports = function(DatDigital) {
     };
 
     return DatDigital.findComplex(filter, cb);
+  };
+
+  DatDigital.getTablePage = (pkProject, pkEntity, options) => {
+    return new TableRemotes(DatDigital.app).getPage(
+      pkProject,
+      pkEntity,
+      options
+    );
   };
 };

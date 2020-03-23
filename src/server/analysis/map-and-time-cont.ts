@@ -3,9 +3,10 @@ import { MapAndTimeContInput, MapAndTimeContOutput, MapAndTimeContQueryRes } fro
 import { isValidMapAndTimeContInput } from '../../common/validators/map-and-time-cont-input.validator';
 import { isValidMapAndTimeContOutput } from '../../common/validators/map-and-time-cont-output.validator';
 import { isValidMapAndTimeContQueryRes } from '../../common/validators/map-and-time-cont-query-res.validator';
-import { SqlBuilder } from '../query/sql-builder';
-import { Analysis, HookResult } from './analysis';
-import { SqlBuilderMapAndTime } from '../query/sql-builder-map-and-time';
+import { SqlBuilder } from './sql-builder';
+import { Analysis } from './analysis';
+import { SqlBuilderMapAndTime } from './sql-builder-map-and-time';
+import { HookResult } from '../utils/interfaces';
 
 type Result = MapAndTimeContOutput;
 
