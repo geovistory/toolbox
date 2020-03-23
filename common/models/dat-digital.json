@@ -24,30 +24,14 @@
       "type": "number",
       "generated": true
     },
-    "notes": {
-      "type": "string",
-      "required": false
-    },
-    "tmsp_creation": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
-    },
-    "tmsp_last_modification": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
-    },
-    "sys_period": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
-    },
     "quill_doc": {
       "type": "object"
     },
     "string": {
       "type": "string"
+    },
+    "fk_system_type": {
+      "type": "number"
     }
   },
   "validations": [],

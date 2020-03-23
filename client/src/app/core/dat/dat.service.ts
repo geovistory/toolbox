@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
+import { map } from '../../../../node_modules/rxjs/operators';
 import { DatChunk, DatDigital, DatNamespace } from '../sdk';
-import { DatActions } from './dat.actions';
-import { datDefinitions, datRoot } from './dat.config';
-import { distinctUntilChanged } from '../../../../node_modules/rxjs/operators';
-import { equals } from 'ramda';
 import { DatColumn } from '../sdk/models/DatColumn';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';
+import { latestVersion } from '../util/custom-rxjs-operators';
+import { DatActions } from './dat.actions';
+import { datDefinitions, datRoot } from './dat.config';
 
 class Selector {
   constructor(
@@ -38,11 +38,20 @@ class DatDigitalSelections extends Selector {
   public by_pk_entity__entity_version$ = this.selector<DatDigital>('by_pk_entity__entity_version')
   public by_pk_entity$ = this.selector<ByPk<DatDigital>>('by_pk_entity')
   public by_pk_text$ = this.selector<ByPk<DatDigital>>('by_pk_text')
+
+
+
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public configs: ReducerConfigCollection,
     public model: string
   ) { super(ngRedux, configs, model) }
+
+  latestVersion(pkDigital: number): Observable<DatDigital> {
+    return this.by_pk_entity$.key(pkDigital).pipe(
+      map(versions => latestVersion(versions)),
+    )
+  }
 }
 
 class DatNamespaceSelections extends Selector {

@@ -7,12 +7,9 @@ declare var Object: any;
 export interface DatDigitalInterface {
   "entity_version"?: number;
   "pk_text"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   "quill_doc"?: any;
   "string"?: string;
+  "fk_system_type"?: number;
   "pk_entity"?: number;
   "fk_namespace"?: number;
   namespace?: DatNamespace;
@@ -21,12 +18,9 @@ export interface DatDigitalInterface {
 export class DatDigital implements DatDigitalInterface {
   "entity_version": number;
   "pk_text": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   "quill_doc": any;
   "string": string;
+  "fk_system_type": number;
   "pk_entity": number;
   "fk_namespace": number;
   namespace?: DatNamespace;
@@ -71,22 +65,6 @@ export class DatDigital implements DatDigitalInterface {
           name: 'pk_text',
           type: 'number'
         },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
-        },
         "quill_doc": {
           name: 'quill_doc',
           type: 'any'
@@ -94,6 +72,10 @@ export class DatDigital implements DatDigitalInterface {
         "string": {
           name: 'string',
           type: 'string'
+        },
+        "fk_system_type": {
+          name: 'fk_system_type',
+          type: 'number'
         },
         "pk_entity": {
           name: 'pk_entity',
