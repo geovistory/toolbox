@@ -91,6 +91,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   ngOnInit() {
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
+    this.t.setTabTitle('Table ' + this.pkEntity)
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.p.dat$.column.loadColumnsOfTable(this.pkEntity, pkProject);
