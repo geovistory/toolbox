@@ -1672,7 +1672,8 @@ class FlatObjectQueryBuilder {
         ))
       ) as data
       FROM
-      persistent_item
+      (select 0 ) as one_row
+      LEFT JOIN persistent_item ON true
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
       LEFT JOIN role ON true
