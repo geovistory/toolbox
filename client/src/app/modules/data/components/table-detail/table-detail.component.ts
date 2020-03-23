@@ -244,6 +244,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     } else {
       filters = omit([colName], this.filters$.value)
     }
+
+    this.pageIndex$.next(0)
     this.filters$.next(filters)
   }
 
