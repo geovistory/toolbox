@@ -41,6 +41,8 @@ SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
 SysConfig.PK_SYSTEM_TYPE__LABEL_FOR_DATA = 3295;
 SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT = 3292;
 SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC = 3293;
+SysConfig.PK_SYSTEM_TYPE__DIGITAL_TEXT = 3286;
+SysConfig.PK_SYSTEM_TYPE__DIGITAL_TABLE = 3287;
 /***********************
 * Analysis Types
 ************************/
