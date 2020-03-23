@@ -103,6 +103,7 @@ class TableRemotes {
             const q = new get_columns_sql_builder_1.GetColumnsSqlBuilder(this.lb3App.models).buildQuery(fkProject, pkEntity);
             return new Promise((res, rej) => {
                 this.connector.execute(q.sql, q.params, (err, resultObjects) => {
+                    var _a;
                     if (err) {
                         rej({
                             name: `Error when querying columns`,
@@ -110,7 +111,7 @@ class TableRemotes {
                         });
                     }
                     else {
-                        res(resultObjects[0].data);
+                        res((_a = resultObjects[0]) === null || _a === void 0 ? void 0 : _a.data);
                     }
                 });
             });

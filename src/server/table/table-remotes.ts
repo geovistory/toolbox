@@ -119,7 +119,7 @@ export class TableRemotes {
           })
         }
         else {
-          res(resultObjects[0].data)
+          res(resultObjects[0] ?.data)
         }
       });
     })
