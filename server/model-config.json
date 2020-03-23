@@ -131,7 +131,11 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "InfEntityAssociation": {
+  "DatColumn": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "DatTextProperty": {
     "dataSource": "postgres1",
     "public": true
   },

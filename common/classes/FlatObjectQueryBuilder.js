@@ -753,21 +753,6 @@ class FlatObjectQueryBuilder {
         fk_project
       )}
     ),
-    -- domain_entity_associations
-    tw11 AS (
-      SELECT
-        ${this.createSelect('t1', 'InfEntityAssociation')},
-        ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
-      FROM
-        tw1
-      CROSS JOIN
-        information.v_entity_association t1,
-        projects.info_proj_rel t2
-      WHERE t1.fk_info_domain = tw1.pk_entity
-      AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
-        fk_project
-      )}
-    ),
     -- text_properties
     tw12 AS (
       SELECT
@@ -831,13 +816,7 @@ class FlatObjectQueryBuilder {
         SELECT * FROM tw10
       ) AS t1
     ),
-    entity_associations AS (
-      select distinct on (t1.pk_entity)
-      ${this.createBuildObject('t1', 'InfEntityAssociation')} as json
-      FROM (
-        SELECT * FROM tw11
-      ) AS t1
-    ),
+
     temporal_entities AS (
       select distinct on (t1.pk_entity)
       ${this.createBuildObject('t1', 'InfTemporalEntity')} as json
@@ -884,8 +863,6 @@ class FlatObjectQueryBuilder {
     UNION ALL
     SELECT 'role' as model, json_agg(json), count(*) from roles GROUP BY true
     UNION ALL
-    SELECT 'entity_association' as model, json_agg(json), count(*) from entity_associations GROUP BY true
-    UNION ALL
     SELECT 'temporal_entity' as model, json_agg(json), count(*) from temporal_entities GROUP BY true
     UNION ALL
     SELECT 'appellation' as model, json_agg(json), count(*) from appellations GROUP BY true
@@ -920,21 +897,6 @@ class FlatObjectQueryBuilder {
           fk_project
         )}
         AND t1.pk_entity = ${this.addParam(pk_entity)}
-      ),
-      -- domain_entity_associations
-      tw2 AS (
-        SELECT
-          ${this.createSelect('t1', 'InfEntityAssociation')},
-          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
-        FROM
-          tw1
-        CROSS JOIN
-          information.v_entity_association t1,
-          projects.info_proj_rel t2
-        WHERE t1.fk_info_domain = tw1.pk_entity
-        AND t1.pk_entity = t2.fk_entity AND t2.is_in_project = true AND t2.fk_project = ${this.addParam(
-          fk_project
-        )}
       ),
       -- text_properties
       tw3 AS (
@@ -990,8 +952,6 @@ class FlatObjectQueryBuilder {
           FROM (
             SELECT proj_rel FROM tw1
             UNION ALL
-            SELECT proj_rel FROM tw2
-            UNION ALL
             SELECT proj_rel FROM tw3
             UNION ALL
             SELECT proj_rel FROM tw5
@@ -1006,17 +966,6 @@ class FlatObjectQueryBuilder {
           ${this.createBuildObject('t1', 'InfPersistentItem')} as objects
           FROM (
             SELECT * FROM tw1
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      entity_association AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfEntityAssociation')} as objects
-          FROM (
-            SELECT * FROM tw2
           ) AS t1
         ) as t1
         GROUP BY true
@@ -1059,7 +1008,6 @@ class FlatObjectQueryBuilder {
         'inf', json_strip_nulls(json_build_object(
           'role', role.json,
           'persistent_item', persistent_item.json,
-          'entity_association', entity_association.json,
           'text_property', text_property.json,
           'language', language.json
         )),
@@ -1069,7 +1017,6 @@ class FlatObjectQueryBuilder {
       ) as data
       FROM
       persistent_item
-      LEFT JOIN entity_association ON true
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
       LEFT JOIN role ON true
@@ -1502,25 +1449,32 @@ class FlatObjectQueryBuilder {
    */
   createContentTreeQuery(fk_project, pk_entity) {
     const sql = `
-      -- query recusivly all the entity associations we need to create the tree
+      -- query recusivly all the roles we need to create the tree
       -- tw0 delivers
-      -- - pk_entity: the entity_associations we need
-      -- - fk_info_domain: the persistent_item we need (Expression Portion)
-      -- - fk_data_domain: the data.digital we need
-      WITH RECURSIVE tw0 (fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, level, pk_entity, path) AS (
-          SELECT  fk_info_domain, fk_data_domain, fk_property, fk_info_range, fk_data_range, 0, pk_entity, ARRAY[pk_entity]
-          FROM    war.v_entity_association_per_project_and_repo
-          WHERE   fk_info_range = ${this.addParam(pk_entity)}
-          AND 	  project = ${this.addParam(fk_project)}
-          AND		  fk_property IN (1317, 1328, 1329, 1216)
+      -- - pk_entity: the roles we need
+      -- - fk_temporal_entity: the persistent_item we need (Expression Portion)
+      -- - fk_subject_data: the data.digital we need
+      WITH RECURSIVE tw0 (fk_temporal_entity, fk_subject_data, fk_property, fk_entity, fk_object_data, level, pk_entity, path) AS (
+          SELECT  t1.fk_temporal_entity, t1.fk_subject_data, t1.fk_property, t1.fk_entity, t1.fk_object_data, 0, t1.pk_entity, ARRAY[t1.pk_entity]
+          FROM    information.role t1,
+                  projects.info_proj_rel t2
+          WHERE   t1.fk_entity = ${this.addParam(pk_entity)}
+          AND     t1.pk_entity = t2.fk_entity
+          AND 	  t2.fk_project = ${this.addParam(fk_project)}
+          AND     t2.is_in_project = true
+          AND		  t1.fk_property IN (1317, 1328, 1329, 1216)
 
           UNION ALL
 
-          SELECT  p.fk_info_domain, p.fk_data_domain, p.fk_property, p.fk_info_range, p.fk_data_range, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
-          FROM    war.v_entity_association_per_project_and_repo p
-                  INNER JOIN tw0 t0 ON t0.fk_info_domain = p.fk_info_range
-                  WHERE 	p.project = ${this.addParam(fk_project)}
-                  AND		p.fk_property IN (1317, 1328, 1329, 1216)
+          SELECT  p.fk_temporal_entity, p.fk_subject_data, p.fk_property, p.fk_entity, p.fk_object_data, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
+          FROM    information.role p,
+                  tw0 t0,
+                  projects.info_proj_rel t2
+          WHERE 	t0.fk_temporal_entity = p.fk_entity
+          AND     p.pk_entity = t2.fk_entity
+          AND     t2.fk_project = ${this.addParam(fk_project)}
+          AND     t2.is_in_project = true
+          AND		  p.fk_property IN (1317, 1328, 1329, 1216)
 
       ),
       -- persistent_items (Expression Portions)
@@ -1531,22 +1485,22 @@ class FlatObjectQueryBuilder {
         FROM
           information.v_persistent_item t1
         JOIN tw0 t3
-          ON t1.pk_entity = t3.fk_info_domain
+          ON t1.pk_entity = t3.fk_temporal_entity
         CROSS JOIN
           projects.info_proj_rel t2
         WHERE t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fk_project)}
       ),
-      -- entity_associations
+      -- roles
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfEntityAssociation')},
+          ${this.createSelect('t1', 'InfRole')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw0
         CROSS JOIN
-          information.v_entity_association t1,
+          information.v_role t1,
           projects.info_proj_rel t2
         WHERE
         tw0.pk_entity = t1.pk_entity
@@ -1621,7 +1575,7 @@ class FlatObjectQueryBuilder {
           tw0
         CROSS JOIN
           data.digital t1
-        WHERE t1.pk_entity = tw0.fk_data_domain
+        WHERE t1.pk_entity = tw0.fk_subject_data
       ),
       ------------------------------------
       --- group parts by model
@@ -1654,17 +1608,6 @@ class FlatObjectQueryBuilder {
         ) as t1
         GROUP BY true
       ),
-      entity_association AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfEntityAssociation')} as objects
-          FROM (
-            SELECT * FROM tw2
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
       text_property AS (
         SELECT json_agg(t1.objects) as json
         FROM (
@@ -1693,6 +1636,8 @@ class FlatObjectQueryBuilder {
           select distinct on (t1.pk_entity)
           ${this.createBuildObject('t1', 'InfRole')} as objects
           FROM (
+            SELECT * FROM tw2
+            UNION ALL
             SELECT * FROM tw5
             UNION ALL
             SELECT * FROM tw6
@@ -1716,7 +1661,6 @@ class FlatObjectQueryBuilder {
         'inf', json_strip_nulls(json_build_object(
           'role', role.json,
           'persistent_item', persistent_item.json,
-          'entity_association', entity_association.json,
           'text_property', text_property.json,
           'language', language.json
         )),
@@ -1728,7 +1672,7 @@ class FlatObjectQueryBuilder {
         ))
       ) as data
       FROM
-      entity_association
+      (select 0 ) as one_row
       LEFT JOIN persistent_item ON true
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
@@ -1736,6 +1680,7 @@ class FlatObjectQueryBuilder {
       LEFT JOIN digital ON true
       LEFT JOIN info_proj_rel ON true
     `;
+    logFn(sql, this.params);
     return { sql, params: this.params };
   }
 

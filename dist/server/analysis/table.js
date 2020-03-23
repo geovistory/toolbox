@@ -8,7 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
-const sql_builder_1 = require("../query/sql-builder");
+const sql_builder_1 = require("./sql-builder");
 const analysis_1 = require("./analysis");
 const validators_1 = require("../../common/validators");
 const operators_1 = require("rxjs/operators");

@@ -1,12 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState, DatDigital, U } from 'app/core';
-import { StandardActionsFactory, LoadActionMeta, SucceedActionMeta, ActionResultObservable } from 'app/core/store/actions';
-import { datRoot } from './dat.config';
-import { DigitalSlice, NamespaceSlice, ChunkSlice } from './dat.models';
-import { DatNamespace, DatChunk } from '../sdk';
+import { DatDigital, IAppState, U } from 'app/core';
+import { ActionResultObservable, LoadActionMeta, StandardActionsFactory, SucceedActionMeta } from 'app/core/store/actions';
 import { FluxStandardAction } from '../../../../node_modules/flux-standard-action';
-import { ActionResolverService } from '../store/action-resolver.service';
+import { DatChunk, DatNamespace } from '../sdk';
+import { DatColumn } from '../sdk/models/DatColumn';
+import { datRoot } from './dat.config';
+import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from './dat.models';
+import { DatTextProperty } from '../sdk/models/DatTextProperty';
 
 export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number };
 
@@ -80,6 +81,42 @@ export class ChunkActionsFactory extends StandardActionsFactory<ChunkSlice, DatC
   }
 }
 
+export interface LoadColumnsOfTableAction extends LoadActionMeta { pkDigital: number };
+
+export class ColumnActionsFactory extends StandardActionsFactory<ColumnSlice, DatColumn> {
+
+  // Suffixes of load action types
+  static readonly COLUMNS_OF_TABLE = 'COLUMNS_OF_TABLE';
+
+  /**
+   * Load a version. if entityVersion omitted, latest version is returned.
+   */
+  loadColumnsOfTable: (pkDigital: number, pk: number) => ActionResultObservable<DatColumn>;
+
+  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
+
+  createActions(): ColumnActionsFactory {
+    Object.assign(this, this.createCrudActions(datRoot, 'column'))
+
+    this.loadColumnsOfTable = (pkDigital: number, pk: number) => {
+      const addPending = U.uuid()
+
+      const action: FluxStandardAction<ColumnSlice, LoadColumnsOfTableAction> = {
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ColumnActionsFactory.COLUMNS_OF_TABLE,
+        meta: { addPending, pkDigital, pk },
+        payload: null,
+      };
+      this.ngRedux.dispatch(action)
+      return {
+        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+        resolved$: this.ngRedux.select<SucceedActionMeta<DatColumn>>(['resolved', addPending]),
+        key: addPending
+      };
+    }
+    return this;
+  }
+}
+
 @Injectable()
 export class DatActions {
 
@@ -87,7 +124,11 @@ export class DatActions {
 
   chunk = new ChunkActionsFactory(this.ngRedux).createActions()
 
+  column = new ColumnActionsFactory(this.ngRedux).createActions()
+
   namespace = new StandardActionsFactory<NamespaceSlice, DatNamespace>(this.ngRedux).createCrudActions(datRoot, 'namespace')
+
+  text_property = new StandardActionsFactory<TextPropertySlice, DatTextProperty>(this.ngRedux).createCrudActions(datRoot, 'text_property')
 
   constructor(public ngRedux: NgRedux<IAppState>) { }
 

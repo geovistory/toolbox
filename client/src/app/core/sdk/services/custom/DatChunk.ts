@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 import { DatChunk } from '../../models/DatChunk';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { DatDigital } from '../../models/DatDigital';
-import { InfEntityAssociation } from '../../models/InfEntityAssociation';
+import { InfRole } from '../../models/InfRole';
 import { DatNamespace } from '../../models/DatNamespace';
 
 
@@ -33,7 +33,7 @@ export class DatChunkApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get the chunks related to the digital, with their entity associations.
+   * Get the chunks related to the digital, with their roles.
    *
    * @param {number} pkProject Primary key of the project
    *

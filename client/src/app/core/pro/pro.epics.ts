@@ -12,6 +12,7 @@ import { StandardEpicsFactory } from '../store/StandardEpicsFactory';
 import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkRoleAsFavoriteActionMeta, ProInfoProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProDfhClassProjRelActionFactory } from './pro.actions';
 import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { SchemaObject } from '../store/model';
+import { SchemaObjectService } from '../store/schema-object.service';
 
 
 @Injectable()
@@ -28,6 +29,7 @@ export class ProEpics {
     public classFieldConfApi: ProClassFieldConfigApi,
     public textPropertyApi: ProTextPropertyApi,
     public analysisApi: ProAnalysisApi,
+    private schemaObjectService: SchemaObjectService
   ) { }
 
   public createEpics(): Epic {
@@ -164,14 +166,14 @@ export class ProEpics {
         ProTextPropertyActionFactory.OF_PROJECT,
         (results, pk) => {
           const schemas = results as any as SchemaObject;
-          this.storeSchemaObject(schemas, pk)
+          this.schemaObjectService.storeSchemaObject(schemas, pk)
         }
       ),
       proTextPropertyEpicsFactory.createUpsertEpic<ModifyActionMeta<ProTextProperty>>((meta) => this.textPropertyApi
         .bulkUpsert(meta.pk, meta.items),
         (results, pk) => {
           const schemas = results as any as SchemaObject;
-          this.storeSchemaObject(schemas, pk)
+          this.schemaObjectService.storeSchemaObject(schemas, pk)
         }
       ),
       proTextPropertyEpicsFactory.createDeleteEpic((meta) => this.textPropertyApi.bulkDelete(meta.pk, meta.items)),
@@ -200,19 +202,19 @@ export class ProEpics {
       ),
     )
   }
-  private storeSchemaObject(schemas: SchemaObject, pkProject) {
-    if (schemas && Object.keys(schemas).length > 0) {
-      Object.keys(schemas).forEach(schema => {
-        let actions;
-        if (schema === 'inf') actions = this.infActions;
-        else if (schema === 'pro') actions = this.proActions;
-        if (actions) {
-          Object.keys(schemas[schema]).forEach(model => {
-            actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
-          });
-        }
-      });
-    }
-  }
+  // private storeSchemaObject(schemas: SchemaObject, pkProject) {
+  //   if (schemas && Object.keys(schemas).length > 0) {
+  //     Object.keys(schemas).forEach(schema => {
+  //       let actions;
+  //       if (schema === 'inf') actions = this.infActions;
+  //       else if (schema === 'pro') actions = this.proActions;
+  //       if (actions) {
+  //         Object.keys(schemas[schema]).forEach(model => {
+  //           actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
 }

@@ -3,13 +3,18 @@ import { StandardEpicsFactory } from "app/core/store/StandardEpicsFactory";
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { DatDigital, DatDigitalApi, DatNamespace, DatNamespaceApi, DatChunk, DatChunkApi } from '../sdk';
-import { DatActions, DigitalActionsFactory, LoadVersionAction, ChunkActionsFactory, LoadChunksOfDigitalAction } from './dat.actions';
+import { DatActions, DigitalActionsFactory, LoadVersionAction, ChunkActionsFactory, LoadChunksOfDigitalAction, LoadColumnsOfTableAction, ColumnActionsFactory } from './dat.actions';
 import { datRoot } from './dat.config';
-import { DigitalSlice, NamespaceSlice, ChunkSlice } from './dat.models';
+import { DigitalSlice, NamespaceSlice, ChunkSlice, TextPropertySlice, ColumnSlice } from './dat.models';
 import { ModifyActionMeta, LoadActionMeta } from '../store/actions';
 import { LoadByPkMeta, InfActions } from '../inf/inf.actions';
 import { Flattener, storeFlattened } from 'app/core/store/flattener';
 import { ProActions } from '../pro/pro.actions';
+import { DatTextProperty } from '../sdk/models/DatTextProperty';
+import { DatColumn } from '../sdk/models/DatColumn';
+import { SchemaObjectService } from '../store/schema-object.service';
+import { SchemaObject } from '../store/model';
+import { DatColumnApi } from '../sdk/services/custom/DatColumn';
 
 
 @Injectable()
@@ -21,7 +26,9 @@ export class DatEpics {
     public proActions: ProActions,
     public digitalApi: DatDigitalApi,
     public chunkApi: DatChunkApi,
+    public columnApi: DatColumnApi,
     public namespaceApi: DatNamespaceApi,
+    private schemaObjectService: SchemaObjectService
   ) { }
 
   public createEpics(): Epic {
@@ -33,6 +40,9 @@ export class DatEpics {
 
     const namespaceEpicsFactory = new StandardEpicsFactory<NamespaceSlice, DatNamespace>
       (datRoot, 'namespace', this.datActions.namespace, this.notification);
+
+    const columnEpicsFactory = new StandardEpicsFactory<ColumnSlice, DatColumn>
+      (datRoot, 'column', this.datActions.column, this.notification);
 
     return combineEpics(
 
@@ -62,7 +72,18 @@ export class DatEpics {
       // Namespace
       namespaceEpicsFactory.createLoadEpic<LoadActionMeta>(
         (meta) => this.namespaceApi.byProject(meta.pk), ''
-      )
+      ),
+
+      columnEpicsFactory.createLoadEpic<LoadColumnsOfTableAction>(
+        (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital),
+        ColumnActionsFactory.COLUMNS_OF_TABLE,
+        (results, pk) => {
+          const schemaObject = results as SchemaObject;
+
+          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
+        }
+      ),
+
     )
   }
 

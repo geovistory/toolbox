@@ -16,34 +16,22 @@
     }
   },
   "properties": {
-    "pk_text": {
+    "entity_version": {
       "type": "number",
       "generated": true
     },
-    "notes": {
-      "type": "string",
-      "required": false
-    },
-    "tmsp_creation": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
-    },
-    "tmsp_last_modification": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
-    },
-    "sys_period": {
-      "type": "string",
-      "generated": true,
-      "hidden": true
+    "pk_text": {
+      "type": "number",
+      "generated": true
     },
     "quill_doc": {
       "type": "object"
     },
     "string": {
       "type": "string"
+    },
+    "fk_system_type": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -70,7 +58,8 @@
       "property": [
         "findById",
         "bulkUpsert",
-        "bulkDelete"
+        "bulkDelete",
+        "getTablePage"
       ]
     }
   ],
@@ -212,6 +201,56 @@
       "http": {
         "path": "/get-versions",
         "verb": "get"
+      }
+    },
+    "getTablePage": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the table digital.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "options",
+          "type": "object",
+          "required": false,
+          "description": "options",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Get page of table",
+      "http": {
+        "path": "/getTablePage",
+        "verb": "post"
       }
     }
   }

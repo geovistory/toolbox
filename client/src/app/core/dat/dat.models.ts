@@ -1,5 +1,7 @@
 import { ByPk } from "app/core/store/model";
 import { DatDigital, DatNamespace } from "../sdk";
+import { DatColumn } from '../sdk/models/DatColumn';
+import { DatTextProperty } from '../sdk/models/DatTextProperty';
 
 export class DigitalSlice {
   pk_entity__entity_version?: ByPk<DatDigital>;
@@ -12,6 +14,16 @@ export class ChunkSlice {
   loading?: boolean
 }
 
+export class ColumnSlice {
+  by_pk_entity?: ByPk<DatColumn>;
+  by_fk_digital?: ByPk<ByPk<DatColumn>>;
+}
+
+export class TextPropertySlice {
+  by_pk_entity?: ByPk<DatTextProperty>;
+  by_fk_digital?: ByPk<ByPk<DatTextProperty>>;
+}
+
 export class NamespaceSlice {
   by_pk_entity?: ByPk<DatNamespace>;
   by_fk_project?: ByPk<ByPk<DatNamespace>>;
@@ -21,6 +33,8 @@ export class NamespaceSlice {
 export interface Dat {
   digital?: DigitalSlice;
   chunk?: ChunkSlice;
+  column?: ColumnSlice;
+  text_property?: TextPropertySlice;
 }
 
 

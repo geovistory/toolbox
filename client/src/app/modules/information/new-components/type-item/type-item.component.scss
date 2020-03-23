@@ -1,3 +1,8 @@
-.gv-ctrl-type{
+.gv-ctrl-type {
   min-width: 200px;
+}
+.gv-ti-container {
+  display: flex;
+  align-items: baseline;
+  flex-direction: row;
 }

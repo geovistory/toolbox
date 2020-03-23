@@ -16,6 +16,7 @@ import { INITIAL_STATE } from './initial-state';
 // The top-level reducers and epics that make up our app's logic.
 import { IAppState } from './model';
 import { rootReducer } from './reducers';
+import { SchemaObjectService } from './schema-object.service';
 
 /**
  * Function to use in combination with rxjs/operator .filter()
@@ -30,69 +31,70 @@ import { rootReducer } from './reducers';
  * @param path
  */
 export const ofSubstore = (path: string[]) => (action): boolean => {
-    if (!('@angular-redux::fractalkey' in action)) return false;
+  if (!('@angular-redux::fractalkey' in action)) return false;
 
-    const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
-    const bool = equals(actionPath, path);
-    return bool;
+  const actionPath = JSON.parse(action['@angular-redux::fractalkey']);
+  const bool = equals(actionPath, path);
+  return bool;
 }
 
 
 
 @NgModule({
-    imports: [
-        NgReduxModule,
-        // NgReduxRouterModule.forRoot(),
-        ActiveProjectModule
-    ],
-    providers: [
-        // NgReduxRouter,
-        RootEpics,
-        AccountEpics,
-        AccountActions,
-        StandardActionsFactory
-    ]
+  imports: [
+    NgReduxModule,
+    // NgReduxRouterModule.forRoot(),
+    ActiveProjectModule
+  ],
+  providers: [
+    // NgReduxRouter,
+    RootEpics,
+    AccountEpics,
+    AccountActions,
+    StandardActionsFactory,
+    SchemaObjectService
+  ]
 })
 export class StoreModule {
-    constructor(
-        public ngRedux: NgRedux<IAppState>,
-        devTools: DevToolsExtension,
-        // ngReduxRouter: NgReduxRouter,
-        rootEpics: RootEpics
-    ) {
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    devTools: DevToolsExtension,
+    // ngReduxRouter: NgReduxRouter,
+    rootEpics: RootEpics
+  ) {
 
-        const epicMiddleware = createEpicMiddleware();
+    const epicMiddleware = createEpicMiddleware();
 
-        // Tell Redux about our reducers and epics. If the Redux DevTools
-        // chrome extension is available in the browser, tell Redux about
-        // it too.
-        ngRedux.configureStore(
-            // RootReducer
-            rootReducer,
+    // Tell Redux about our reducers and epics. If the Redux DevTools
+    // chrome extension is available in the browser, tell Redux about
+    // it too.
+    ngRedux.configureStore(
+      // RootReducer
+      rootReducer,
 
-            // Initial state
-            INITIAL_STATE,
+      // Initial state
+      INITIAL_STATE,
 
-            // Middleware
-            [
-                // createLogger(),
-                epicMiddleware,
-                dynamicMiddlewares,
-            ],
-            // Enhancers
-            devTools.isEnabled() ? [devTools.enhancer()] : []
-        );
+      // Middleware
+      [
+        // createLogger(),
+        epicMiddleware,
+        dynamicMiddlewares,
+      ],
+      // Enhancers
+      devTools.isEnabled() ? [devTools.enhancer()] : []
+    );
 
-        // Apply rootEpic
-        epicMiddleware.run(rootEpics.getRootEpic());
+    // Apply rootEpic
+    epicMiddleware.run(rootEpics.getRootEpic());
 
 
-        // // Enable syncing of Angular router state with our Redux store.
-        // if (ngReduxRouter) {
-        //     ngReduxRouter.initialize();
-        // }
+    // // Enable syncing of Angular router state with our Redux store.
+    // if (ngReduxRouter) {
+    //     ngReduxRouter.initialize();
+    // }
 
-        // Enable syncing of Angular form state with our Redux store.
-        // provideReduxForms(ngRedux);
-    }
+    // Enable syncing of Angular form state with our Redux store.
+    // provideReduxForms(ngRedux);
+  }
 }

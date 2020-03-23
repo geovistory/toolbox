@@ -1,4 +1,4 @@
-<div *ngIf="!editing">
+<div class="gv-ti-container" *ngIf="!editing">
   <span *ngIf="(pkType$ | async)">{{typeLabel$|async}}</span>
   <i *ngIf="!(pkType$ | async)">No Type</i>
   <button *ngIf="!isViewMode" mat-icon-button (click)="editing = true">

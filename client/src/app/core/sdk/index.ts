@@ -65,6 +65,8 @@ import { DfhClassApi } from './services/custom/DfhClass';
 import { DfhPropertyApi } from './services/custom/DfhProperty';
 import { DfhLabelApi } from './services/custom/DfhLabel';
 import { DatChunkApi } from './services/custom/DatChunk';
+import { DatColumnApi } from './services/custom/DatColumn';
+import { DatTextPropertyApi } from './services/custom/DatTextProperty';
 import { DatDigitalApi } from './services/custom/DatDigital';
 import { WarEntityPreviewApi } from './services/custom/WarEntityPreview';
 import { SysAppContextApi } from './services/custom/SysAppContext';
@@ -77,7 +79,6 @@ import { InfRoleApi } from './services/custom/InfRole';
 import { InfLanguageApi } from './services/custom/InfLanguage';
 import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
 import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
-import { InfEntityAssociationApi } from './services/custom/InfEntityAssociation';
 import { InfPlaceApi } from './services/custom/InfPlace';
 import { DatNamespaceApi } from './services/custom/DatNamespace';
 import { InfTextPropertyApi } from './services/custom/InfTextProperty';
@@ -129,6 +130,8 @@ export class SDKBrowserModule {
         DfhPropertyApi,
         DfhLabelApi,
         DatChunkApi,
+        DatColumnApi,
+        DatTextPropertyApi,
         DatDigitalApi,
         WarEntityPreviewApi,
         SysAppContextApi,
@@ -141,7 +144,6 @@ export class SDKBrowserModule {
         InfLanguageApi,
         InfPersistentItemApi,
         InfTimePrimitiveApi,
-        InfEntityAssociationApi,
         InfPlaceApi,
         DatNamespaceApi,
         InfTextPropertyApi,
