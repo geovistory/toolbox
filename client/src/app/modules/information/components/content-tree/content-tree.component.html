@@ -1,13 +1,13 @@
 <table class="mat-table w-100" *ngIf="pkRoot">
   <thead>
-    <tr class="mat-header-row" fxLayout="row">
-      <th class="mat-header-cell pl-5" fxFlex="60" fxLayout="row" fxLayoutAlign="start center">
+    <tr class="gv-ct-node-col">
+      <th class="mat-header-cell pl-5 gv-ct-node-col gv-ct-label">
         Name
       </th>
-      <th class="mat-header-cell" fxFlex="30" fxLayout="row" fxLayoutAlign="start center">
+      <th class="mat-header-cell gv-ct-node-col gv-ct-type ">
         Type
       </th>
-      <th class="mat-header-cell pr-0" fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
+      <th class="mat-header-cell pr-0 gv-ct-node-col gv-ct-button ">
         <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: false,
           pkParent: pkRoot,
@@ -19,7 +19,7 @@
 </table>
 <mat-divider></mat-divider>
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="gv-scroll-y-auto">
-  <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle [ngClass]="{
+  <mat-tree-node *matTreeNodeDef="let node" [ngClass]="{
     'drop-above': dragNodeExpandOverArea === 'above' && dragNodeExpandOverNode === node && !node.isDigital,
     'drop-center': dragNodeExpandOverArea === 'center' && dragNodeExpandOverNode === node && !node.isDigital}"
     draggable="true" (dragstart)="handleDragStart($event, node);" (dragover)="handleDragOver($event, node);"
@@ -27,74 +27,26 @@
 
 
     <!-- if expression portion -> edge of tree -->
-    <div fxLayout="row">
+    <div class="gv-ct-node">
 
-      <div fxFlex="60" fxLayout="row" fxLayoutAlign="start center" [ngStyle]="{'padding-left.px': 40 * node.level}">
-
-        <button mat-icon-button disabled> </button>
-
-        <button *ngIf="!node.isDigital" mat-icon-button disabled>
-          <mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
-        </button>
-        <button *ngIf="node.isDigital" mat-icon-button disabled>
-          <mat-icon class="mat-icon-rtl-mirror">description</mat-icon>
-        </button>
-
-        <div class="gv-ellipsis">
-          {{node.name}}
-          <i *ngIf="!node.name" class="text-muted"> Empty </i>
-        </div>
-      </div>
-
-
-      <div fxFlex="30" class="gv-ellipsis mat-text-secondary">
-        <span *ngIf="node.isDigital">
-          {{node.typeLabel}}
-        </span>
-        <gv-type-item *ngIf="!node.isDigital" [pkEntity]="node.role.fk_temporal_entity" [pkProperty]="1320"
-          [pkTypedClass]="503" [pkTypeClass]="516"></gv-type-item>
-      </div>
-
-      <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
-        <ng-container *ngTemplateOutlet="menuBtn; context:{
-          isDigital: node.isDigital,
-          pkParent: node.role.fk_temporal_entity,
-          node: node
-        }"></ng-container>
-      </div>
-    </div>
-  </mat-tree-node>
-
-  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" [ngClass]="{
-    'drop-above': dragNodeExpandOverArea === 'above' && dragNodeExpandOverNode === node,
-    'drop-center': dragNodeExpandOverArea === 'center' && dragNodeExpandOverNode === node}" draggable="true"
-    (dragstart)="handleDragStart($event, node);" (dragover)="handleDragOver($event, node);"
-    (drop)="handleDrop($event, node);" (dragend)="handleDragEnd($event);">
-
-    <div fxLayout="row">
-
-      <div fxFlex="60" fxLayout="row" fxLayoutAlign="start center" [ngStyle]="{'padding-left.px': 40 * node.level}">
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+      <div class="gv-ct-node-col gv-ct-label gv-fade-out-right">
+        <button *ngIf="node.expandable" mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
           <mat-icon class="mat-icon-rtl-mirror">
             {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
           </mat-icon>
         </button>
+        <button *ngIf="!node.expandable" mat-icon-button disabled> </button>
 
-        <button mat-icon-button disabled>
-          <mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
-        </button>
 
-        <div class="gv-ellipsis">
-          {{node.name}}
-        </div>
+        <gv-content-tree-node-label [node]="node" [ngStyle]="{'padding-left.px': 40 * node.level}">
+        </gv-content-tree-node-label>
       </div>
 
-      <div fxFlex="30" class="gv-ellipsis  mat-text-secondary">
-        <gv-type-item *ngIf="!node.isDigital" [pkEntity]="node.role.fk_temporal_entity" [pkProperty]="1320"
-          [pkTypedClass]="503" [pkTypeClass]="516"></gv-type-item>
-      </div>
 
-      <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
+      <gv-content-tree-node-type [node]="node" class="gv-ct-node-col gv-ct-type mat-text-secondary">
+      </gv-content-tree-node-type>
+
+      <div class="gv-ct-node-col gv-ct-button">
         <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: node.isDigital,
           pkParent: node.role.fk_temporal_entity,
@@ -103,6 +55,7 @@
       </div>
     </div>
   </mat-tree-node>
+
 </mat-tree>
 
 <div #emptyItem>

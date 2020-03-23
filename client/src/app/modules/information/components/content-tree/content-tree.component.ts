@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ActiveProjectService, DatDigital, InfRole, latestVersion, switchMapOr, SysConfig } from 'app/core';
+import { ActiveProjectService, DatDigital, InfRole, latestVersion, switchMapOr, SysConfig, EntityPreview } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
@@ -11,6 +11,7 @@ import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUnt
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 
 /**
  * Food data with nested structure.
@@ -22,24 +23,31 @@ interface RoleNode {
   role: InfRole;
 
   // the name of the node, being tha favorite appellation of Expression Portion or some symbol for Digitals
-  name: string;
+  // name: string;
 
   // Wheter or not this node is a Digital and thus a leaf or a Expression Portion and thus not a leaf
   isDigital: boolean;
 
+  pkEntity: number;
+
+  digitalType?: number;
+
+  datDigital?: DatDigital;
   // The label of the type, being the Expression Portion Type or the Digital Type (text, table, image)
-  typeLabel: string;
+  // typeLabel: string;
 
   // children of the node
   children?: RoleNode[];
 }
 
-interface ContentTreeNode {
+export interface ContentTreeNode {
   role: InfRole;
   expandable: boolean;
-  name: string;
+  // name: string;
   isDigital: boolean;
-  typeLabel: string;
+  pkEntity: number;
+  datDigital?: DatDigital
+  // typeLabel: string;
   level: number;
 }
 
@@ -103,7 +111,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   constructor(
-    private p: ActiveProjectService,
+    public p: ActiveProjectService,
     private r: RepoService,
     private inf: InfActions,
     private dat: DatSelector,
@@ -208,68 +216,85 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   observeChildren(pkRange): Observable<RoleNode[]> {
     if (!pkRange) return new BehaviorSubject([])
-    return this.p.inf$.role$.by_fk_entity$.key(pkRange).pipe(
-      map(roles => values(roles).filter(role => [1317, 1328, 1329, 1216].includes(role.fk_property))),
-      // filter(x => x.length > 0),
-      switchMapOr([], (roles) => {
-
-        const obs = roles.map(role => {
-          // Observe the children of this node
-          const cildren$ = this.observeChildren(role.fk_temporal_entity);
-
-          // Observe the name of this node
-          const name$ = this.observeName(role);
-
-          // Observe the isLeave property of this node
-          const isLeaf$ = new BehaviorSubject(role.fk_subject_data ? true : false)
-
-          const typeLabel$ = this.observeTypeLabel(role);
-
-          return combineLatest(cildren$, name$, isLeaf$, typeLabel$)
-        })
-
-        return combineLatest(obs).pipe(
-          map((enrichedEas) => roles.map((role, i): RoleNode => {
-            // create the node by merging the props observed above
-            const [children, name, isDigital, typeLabel] = enrichedEas[i];
-            return { role, isDigital, name, children, typeLabel }
-          }))
-        )
-      }),
-      // startWith([])
+    return combineLatest(
+      this.p.inf$.role$.by_fk_property__fk_entity$.key('1317_' + pkRange), // is part of
+      this.p.inf$.role$.by_fk_property__fk_entity$.key('1216_' + pkRange), // is reproduction of
     )
+      .pipe(
+        switchMap(([isPartOfRoles, isReproOfRoles]) => {
+
+          // Observe the children of this node
+          const sections$ = combineLatestOrEmpty(values(isPartOfRoles).map(role => {
+            const node$: Observable<RoleNode> = combineLatest(
+              this.observeChildren(role.fk_temporal_entity)
+            ).pipe(
+              map(([children]) => ({
+                role,
+                isDigital: false,
+                pkEntity: role.fk_temporal_entity,
+                pkDigital: undefined,
+                children
+              }))
+            );
+
+            return node$
+          }))
+
+          // Observe the leafs of this node
+          const digitals$ = combineLatestOrEmpty(values(isReproOfRoles).map(role => {
+            const node$: Observable<RoleNode> = this.p.dat$.digital$.latestVersion(role.fk_subject_data).pipe(
+              filter(x => !!x),
+              map(datDigital => ({
+                role,
+                isDigital: true,
+                pkEntity: undefined,
+                pkDigital: role.fk_subject_data,
+                datDigital,
+                children: []
+              }))
+            );
+
+            return node$
+          }))
+
+          return combineLatest([sections$, digitals$]).pipe(
+            map(([sections, digitals]) => [...sections, ...digitals])
+          )
+        }),
+      )
   }
 
 
-  private observeTypeLabel(role) {
-    if (role.fk_subject_data) {
-      return new BehaviorSubject('Text');
-    }
-    else {
-      return this.typeLabelOfExprPortion(role.fk_temporal_entity)
-    }
-  }
+  // private observeTypeLabel(role) {
+  //   if (role.fk_subject_data) {
+  //     return new BehaviorSubject('Text');
+  //   }
+  //   else {
+  //     return this.typeLabelOfExprPortion(role.fk_temporal_entity)
+  //   }
+  // }
 
-  /**
-   * Observe the name of the node
-   */
-  private observeName(role) {
-    // Q: is the node a information and thus an expression portion?
-    if (role.fk_temporal_entity) {
-      // A: Yes it is an expression portion, lets find the favorit appellaiton
-      return this.labelOfEntity(role.fk_temporal_entity)
-        .pipe(startWith('No Name'));
-    }
-    else {
-      // A: No it is a digital, lets take the first chars of the text
-      return this.p.dat$.digital$.by_pk_entity$.key(role.fk_subject_data)
-        .pipe(
-          filter(x => !!x),
-          map(versions => latestVersion(versions)),
-          map(x => x.string.substring(0, 20) + (x.string.length > 20 ? '…' : '')),
-          startWith(''));
-    }
-  }
+  // /**
+  //  * Observe the name of the node
+  //  */
+  // private observeName(role) {
+  //   // Q: is the node a information and thus an expression portion?
+  //   if (role.fk_temporal_entity) {
+  //     // A: Yes it is an expression portion, lets find the favorit appellaiton
+  //     return this.labelOfEntity(role.fk_temporal_entity)
+  //       .pipe(startWith('No Name'));
+  //   }
+  //   else {
+  //     // A: No it is a digital, lets take the first chars of the text
+  //     return this.p.dat$.digital$.by_pk_entity$.key(role.fk_subject_data)
+  //       .pipe(
+  //         filter(x => !!x),
+  //         map(versions => latestVersion(versions)),
+  //         map(x => x.string.substring(0, 20) + (x.string.length > 20 ? '…' : '')),
+  //         startWith(''));
+  //   }
+  // }
+
 
   /**
    * Returns an observable number with the
@@ -382,7 +407,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
         event.preventDefault();
 
-
         if (dropNode !== this.dragNode) {
           // let newItem: ContentTreeNode;
           // Q: Does the parent of the dragged node change?
@@ -450,14 +474,16 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * wheter the range is an F2 Expression or geovC5 Expression Portion
    */
   private isPartOfProp(parentIsF2Expression: boolean) {
-    if (parentIsF2Expression) {
-      // geovC5 Expression portion -->geovP6 is part of -->	F2 Expression
-      return 1317;
-    }
-    else {
-      // geovC5 Expression portion -->geovP6 is part of --> geovC5 Expression portion
-      return 1328;
-    }
+    return 1317;
+
+    // if (parentIsF2Expression) {
+    //   // geovC5 Expression portion -->geovP6 is part of -->	F2 Expression
+    //   return 1317;
+    // }
+    // else {
+    //   // geovC5 Expression portion -->geovP6 is part of --> geovC5 Expression portion
+    //   return 1328;
+    // }
   }
 
   /**
@@ -465,14 +491,15 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * whether the range is an F2 Expression or geovC5 Expression Portion
    */
   private isReproProp(parentIsF2Expression: boolean) {
-    if (parentIsF2Expression) {
-      // geovC1 Digital	-->	geovP1 is reproduction of -->	F2 Expression
-      return 1216;
-    }
-    else {
-      // geovC1 Digital	-->	geovP1 is reproduction of --> geovC5 Expression portion
-      return 1329;
-    }
+    return 1216;
+    // if (parentIsF2Expression) {
+    //   // geovC1 Digital	-->	geovP1 is reproduction of -->	F2 Expression
+    // return 1216;
+    // }
+    // else {
+    //   // geovC1 Digital	-->	geovP1 is reproduction of --> geovC5 Expression portion
+    //   return 1329;
+    // }
   }
 
   /**
@@ -486,7 +513,16 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
       const pkNamespace = namespaces.find(n => n.fk_root_namespace == null).pk_entity;
 
-      this.dat.digital.upsert([{ string: '' } as DatDigital], pkNamespace)
+      const datDigital: DatDigital = {
+        string: '',
+        fk_system_type: SysConfig.PK_SYSTEM_TYPE__DIGITAL_TEXT,
+        entity_version: undefined,
+        fk_namespace: undefined,
+        pk_entity: undefined,
+        pk_text: undefined,
+        quill_doc: undefined
+      }
+      this.dat.digital.upsert([datDigital], pkNamespace)
         .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
 
           if (resolved) {
@@ -571,12 +607,21 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
 
   open(node: ContentTreeNode) {
-    if (node.isDigital) this.openText(node);
+    if (node.datDigital && node.datDigital.fk_system_type == SysConfig.PK_SYSTEM_TYPE__DIGITAL_TEXT) {
+      this.openText(node);
+    }
+    else if (node.datDigital && node.datDigital.fk_system_type == SysConfig.PK_SYSTEM_TYPE__DIGITAL_TABLE) {
+      this.openTable(node);
+    }
     else this.openExpressionPortion(node);
   }
 
   openText(node: ContentTreeNode) {
     this.p.addTextTab(node.role.fk_subject_data)
+  }
+
+  openTable(node: ContentTreeNode) {
+    this.p.addTableTab(node.role.fk_subject_data)
   }
 
   openExpressionPortion(node: ContentTreeNode) {
