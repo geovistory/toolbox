@@ -1,0 +1,12 @@
+<button mat-icon-button disabled>
+  <mat-icon class="mat-icon-rtl-mirror" [svgIcon]="icon"></mat-icon>
+</button>
+
+<div *ngIf="!node.isDigital" class="gv-ellipsis" [matTooltip]="label$|async">
+  {{label$|async}}
+</div>
+
+<div *ngIf="node.isDigital" class="gv-ellipsis" [matTooltip]="digitalLabel">
+  {{digitalLabel}}
+  <i *ngIf="!digitalLabel" class="text-muted"> Empty </i>
+</div>

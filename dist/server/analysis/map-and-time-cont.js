@@ -4,9 +4,9 @@ const rxjs_1 = require("rxjs");
 const map_and_time_cont_input_validator_1 = require("../../common/validators/map-and-time-cont-input.validator");
 const map_and_time_cont_output_validator_1 = require("../../common/validators/map-and-time-cont-output.validator");
 const map_and_time_cont_query_res_validator_1 = require("../../common/validators/map-and-time-cont-query-res.validator");
-const sql_builder_1 = require("../query/sql-builder");
+const sql_builder_1 = require("./sql-builder");
 const analysis_1 = require("./analysis");
-const sql_builder_map_and_time_1 = require("../query/sql-builder-map-and-time");
+const sql_builder_map_and_time_1 = require("./sql-builder-map-and-time");
 class AnalysisMapAndTimeCont extends analysis_1.Analysis {
     constructor(connector, pkProject, analysisDef) {
         super();

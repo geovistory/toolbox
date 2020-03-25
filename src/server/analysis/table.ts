@@ -1,11 +1,12 @@
 
 import { Observable, of, Subject } from 'rxjs';
-import { SqlBuilder } from '../query/sql-builder';
-import { Analysis, HookResult } from './analysis';
+import { SqlBuilder } from './sql-builder';
+import { Analysis } from './analysis';
 import { TableInput, TableOutput, TableQueryRes, TableExportFileType } from '../../common/interfaces'
 import { isValidTableInput, isValidTableQueryRes, isValidTableOutput } from '../../common/validators'
 import { takeUntil } from 'rxjs/operators';
 import * as json2csv from 'json2csv';
+import { HookResult } from '../utils/interfaces';
 
 type Result = TableOutput;
 

@@ -1,0 +1,64 @@
+{
+  "name": "DatTextProperty",
+  "base": "DatEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data",
+      "table": "text_property"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "string": {
+      "type": "string"
+    },
+    "quill_doc": {
+      "type": "object"
+    },
+    "fk_system_type": {
+      "type": "number"
+    },
+    "fk_language": {
+      "type": "number"
+    },
+    "fk_entity": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": []
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": []
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": []
+    }
+  ],
+  "methods": {}
+}

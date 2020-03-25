@@ -9,14 +9,13 @@ import { Dfh } from '../dfh/dfh.models';
 import { Inf } from '../inf/inf.models';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
 import { Pro } from '../pro/pro.models';
-import { InfAppellation, InfEntityAssociation, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTimePrimitive, InfTextProperty, InfLanguage, ProInfoProjRel, DatDigital } from '../sdk';
+import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '../sdk';
 import { Sys } from '../sys/sys.models';
 
 export interface InfObject {
   persistent_item: InfPersistentItem[]
   temporal_entity: InfTemporalEntity[]
   role: InfRole[]
-  entity_association: InfEntityAssociation[]
   place: InfPlace[]
   language: InfLanguage[]
   appellation: InfAppellation[]

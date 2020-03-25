@@ -1,12 +1,12 @@
-import { InfEntityAssociation, InfPersistentItem, InfRole } from 'app/core';
+import { InfPersistentItem, InfRole } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { InfAppellationSlice, InfEntityAssociationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice } from 'app/core/inf/inf.models';
+import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice } from 'app/core/inf/inf.models';
 import { keys, omit, values } from 'ramda';
 import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
-import { ProAnalysisSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice, ProClassFieldConfigSlice, ProDfhProfileProjRelSlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProDfhClassProjRel, ProInfoProjRel, ProProject, ProTextProperty, ProClassFieldConfig, ProDfhProfileProjRel } from '../sdk';
+import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../pro/pro.models';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '../sdk';
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
@@ -81,8 +81,8 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfPersistentItem(item);
-        this.entity_association.flatten(item.domain_entity_associations);
         this.role.flatten(item.pi_roles)
+        this.role.flatten(item.te_roles)
         this.text_property.flatten(item.text_properties)
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
@@ -114,21 +114,7 @@ export class Flattener {
         this.place.flatten([item.place])
         this.time_primitive.flatten([item.time_primitive])
         this.language.flatten([item.language])
-        this.info_proj_rel.flatten(item.entity_version_project_rels)
-      })
-    })
-
-  entity_association = new ModelFlattener<InfEntityAssociationSlice, InfEntityAssociation>(
-    this.infActions.entity_association,
-    InfEntityAssociation.getModelDefinition(),
-    (items) => {
-      items.forEach(item => {
-        item = new InfEntityAssociation(item);
-        this.persistent_item.flatten([item.domain_pe_it])
-        this.persistent_item.flatten([item.range_pe_it])
-        this.digital.flatten([item.domain_digital])
         this.chunk.flatten([item.domain_chunk])
-        this.chunk.flatten([item.range_chunk])
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
@@ -196,7 +182,7 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new DatChunk(item);
-        this.entity_association.flatten(item.data_info_associations)
+        this.role.flatten(item.subject_of_roles)
       })
     })
 
@@ -257,7 +243,6 @@ export class Flattener {
 
       persistent_item: this.persistent_item,
       temporal_entity: this.temporal_entity,
-      entity_association: this.entity_association,
       role: this.role,
       appellation: this.appellation,
       place: this.place,

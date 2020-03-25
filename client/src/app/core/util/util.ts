@@ -197,4 +197,38 @@ export class U {
   static propertyFieldKeyFromParams(fkProp: number, isOutgoing: boolean) {
     return '_' + fkProp + '_' + (isOutgoing ? 'outgoing' : 'ingoing')
   }
+
+
+  /**
+   * Helper function that converts given number to string
+   * but zero (=0) values return undefined.
+   */
+  static toStr0undef(val: number): string | undefined {
+    if (val === 0) return undefined
+    else if (val === undefined) return undefined
+    else if (val === null) return undefined
+    else return val.toString();
+  }
+  /**
+   * Helper function that converts given array to string
+   *
+   * If array contains 0, null or undefined, return underfined
+   */
+  static toStrContains0undef(vals: (number | boolean | string | object)[]): string | undefined {
+    let string = '';
+    for (let i = 0; i < vals.length; i++) {
+      const val = vals[i];
+
+      if (val === 0) return undefined;
+      else if (val === undefined) return undefined;
+      else if (val === null) return undefined
+      else if (i === 0) {
+        string = val.toString()
+      } else {
+        string = `${string}_${val.toString()}`
+      }
+    }
+
+    return string;
+  }
 }

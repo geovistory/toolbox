@@ -47,6 +47,15 @@ export class SysConfig {
   static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
   static readonly PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
 
+  static readonly PK_SYSTEM_TYPE__LABEL_FOR_DATA = 3295;
+
+  static readonly PK_SYSTEM_TYPE__DATA_TYPE_TEXT = 3292;
+  static readonly PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC = 3293;
+
+  static readonly PK_SYSTEM_TYPE__DIGITAL_TEXT = 3286;
+  static readonly PK_SYSTEM_TYPE__DIGITAL_TABLE = 3287;
+
+
   /***********************
   * Analysis Types
   ************************/

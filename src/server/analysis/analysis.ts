@@ -1,11 +1,6 @@
 import { Observable, Subject, of } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
-
-export interface ErrorObj {
-  statusCode?: number,
-  name: string,
-  message?: any
-}
+import { HookResult, ErrorObj } from '../utils/interfaces'
 
 /**
  * abstract class as base for different analysis types
@@ -107,9 +102,3 @@ export abstract class Analysis<R> {
 
 }
 
-export interface HookResult<R> {
-  error?: ErrorObj,
-  res?: R
-}
-
-export type HookFn<R> = () => Observable<HookResult<R>>

@@ -47,8 +47,8 @@ export class ActiveProjectEpics {
       this.createLoadProjectConfigEpic(),
       this.createLoadProjectUpdatedEpic(),
       this.createLoadChunkEpic(),
-      this.createLoadPeItGraphEpic(),
-      this.createLoadTeEnGraphEpic(),
+      // this.createLoadPeItGraphEpic(),
+      // this.createLoadTeEnGraphEpic(),
       this.createLoadTypesEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
@@ -244,107 +244,107 @@ export class ActiveProjectEpics {
     }
   }
 
-  private createLoadPeItGraphEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_PEIT_GRAPHS),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.peItApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: InfPersistentItem[]) => {
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadPeItGraphEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_PEIT_GRAPHS),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.peItApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: InfPersistentItem[]) => {
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadPeItGraphsSucceeded(data));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadPeItGraphsSucceeded(data));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
-  private createLoadTeEnGraphEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        /**
-         * Filter the actions that triggers this epic
-         */
-        ofType(ActiveProjectActions.LOAD_TEEN_GRAPHS),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          /**
-           * Emit the global action that activates the loading bar
-           */
-          globalStore.next(this.loadingBarActions.startLoading());
-          /**
-           * Do some api call
-           */
-          this.teEnApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
-            /**
-           * Subscribe to the api call
-           */
-            .subscribe((data: InfTemporalEntity[]) => {
-              /**
-               * Emit the global action that completes the loading bar
-               */
-              globalStore.next(this.loadingBarActions.completeLoading());
+  // private createLoadTeEnGraphEpic(): Epic {
+  //   return (action$, store) => {
+  //     return action$.pipe(
+  //       /**
+  //        * Filter the actions that triggers this epic
+  //        */
+  //       ofType(ActiveProjectActions.LOAD_TEEN_GRAPHS),
+  //       mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
+  //         /**
+  //          * Emit the global action that activates the loading bar
+  //          */
+  //         globalStore.next(this.loadingBarActions.startLoading());
+  //         /**
+  //          * Do some api call
+  //          */
+  //         this.teEnApi.graphsOfProject(action.meta.pk_project, action.meta.pk_entities)
+  //           /**
+  //          * Subscribe to the api call
+  //          */
+  //           .subscribe((data: InfTemporalEntity[]) => {
+  //             /**
+  //              * Emit the global action that completes the loading bar
+  //              */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
 
-              /**
-               * Emit the local action on loading succeeded
-               */
-              globalStore.next(this.actions.loadTeEnGraphsSucceeded(data));
+  //             /**
+  //              * Emit the local action on loading succeeded
+  //              */
+  //             globalStore.next(this.actions.loadTeEnGraphsSucceeded(data));
 
-            }, error => {
-              /**
-              * Emit the global action that shows some loading error message
-              */
-              globalStore.next(this.loadingBarActions.completeLoading());
-              globalStore.next(this.notificationActions.addToast({
-                type: 'error',
-                options: {
-                  title: error.message
-                }
-              }));
-              /**
-               * Emit the local action on loading failed
-               */
-              globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
-            })
-        }))
-      )
-    }
-  }
+  //           }, error => {
+  //             /**
+  //             * Emit the global action that shows some loading error message
+  //             */
+  //             globalStore.next(this.loadingBarActions.completeLoading());
+  //             globalStore.next(this.notificationActions.addToast({
+  //               type: 'error',
+  //               options: {
+  //                 title: error.message
+  //               }
+  //             }));
+  //             /**
+  //              * Emit the local action on loading failed
+  //              */
+  //             globalStore.next(this.actions.loadEntityPreviewFailed({ status: '' + error.status }))
+  //           })
+  //       }))
+  //     )
+  //   }
+  // }
 
 
   /**

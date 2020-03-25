@@ -1,7 +1,6 @@
 /* tslint:disable */
 import {
   InfRole,
-  InfEntityAssociation,
   InfTextProperty
 } from '../index';
 
@@ -21,8 +20,6 @@ export interface WarEntityPreviewInterface {
   "tmsp_last_modification"?: any;
   te_roles?: InfRole[];
   pi_roles?: InfRole[];
-  domain_entity_associations?: InfEntityAssociation[];
-  range_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
 }
 
@@ -41,8 +38,6 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   "tmsp_last_modification": any;
   te_roles?: InfRole[];
   pi_roles?: InfRole[];
-  domain_entity_associations?: InfEntityAssociation[];
-  range_entity_associations?: InfEntityAssociation[];
   text_properties?: InfTextProperty[];
   constructor(data?: WarEntityPreviewInterface) {
     Object.assign(this, data);
@@ -142,22 +137,6 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
-        },
-        domain_entity_associations: {
-          name: 'domain_entity_associations',
-          type: 'InfEntityAssociation[]',
-          model: 'InfEntityAssociation',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_info_domain'
-        },
-        range_entity_associations: {
-          name: 'range_entity_associations',
-          type: 'InfEntityAssociation[]',
-          model: 'InfEntityAssociation',
-          relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
-          keyTo: 'fk_info_domain'
         },
         text_properties: {
           name: 'text_properties',

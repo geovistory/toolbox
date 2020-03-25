@@ -17,6 +17,8 @@ import { DfhClass } from '../../models/DfhClass';
 import { DfhProperty } from '../../models/DfhProperty';
 import { DfhLabel } from '../../models/DfhLabel';
 import { DatChunk } from '../../models/DatChunk';
+import { DatColumn } from '../../models/DatColumn';
+import { DatTextProperty } from '../../models/DatTextProperty';
 import { DatDigital } from '../../models/DatDigital';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { SysAppContext } from '../../models/SysAppContext';
@@ -29,7 +31,6 @@ import { InfRole } from '../../models/InfRole';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
-import { InfEntityAssociation } from '../../models/InfEntityAssociation';
 import { InfPlace } from '../../models/InfPlace';
 import { DatNamespace } from '../../models/DatNamespace';
 import { InfTextProperty } from '../../models/InfTextProperty';
@@ -58,6 +59,8 @@ export class SDKModels {
     DfhProperty: DfhProperty,
     DfhLabel: DfhLabel,
     DatChunk: DatChunk,
+    DatColumn: DatColumn,
+    DatTextProperty: DatTextProperty,
     DatDigital: DatDigital,
     WarEntityPreview: WarEntityPreview,
     SysAppContext: SysAppContext,
@@ -70,7 +73,6 @@ export class SDKModels {
     InfLanguage: InfLanguage,
     InfPersistentItem: InfPersistentItem,
     InfTimePrimitive: InfTimePrimitive,
-    InfEntityAssociation: InfEntityAssociation,
     InfPlace: InfPlace,
     DatNamespace: DatNamespace,
     InfTextProperty: InfTextProperty,

@@ -205,6 +205,8 @@ import { InformationBasicPipesService } from './new-services/information-basic-p
 import { InformationPipesService } from './new-services/information-pipes.service';
 import { PaginationService } from './new-services/pagination.service';
 import { TimeSpanService } from './new-services/time-span.service';
+import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
+import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 
 
 @NgModule({
@@ -411,6 +413,8 @@ import { TimeSpanService } from './new-services/time-span.service';
     FormArrayComponent,
     FormControlComponent,
     PropertiesTreeDialogComponent,
+    ContentTreeNodeLabelComponent,
+    ContentTreeNodeTypeComponent,
   ],
   providers: [
 

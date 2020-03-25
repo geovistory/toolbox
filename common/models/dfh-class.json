@@ -30,7 +30,7 @@
     },
     "profiles": {
       "type": [
-        "DfhProfiles"
+        "object"
       ]
     }
   },

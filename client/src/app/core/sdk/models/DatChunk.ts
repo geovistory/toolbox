@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   DatDigital,
-  InfEntityAssociation,
+  InfRole,
   DatNamespace
 } from '../index';
 
@@ -12,14 +12,9 @@ export interface DatChunkInterface {
   "fk_text": number;
   "fk_entity_version": number;
   "pk_entity"?: number;
-  "entity_version"?: number;
-  "notes"?: string;
-  "tmsp_creation"?: string;
-  "tmsp_last_modification"?: string;
-  "sys_period"?: string;
   "fk_namespace"?: number;
   digital?: DatDigital;
-  data_info_associations?: InfEntityAssociation[];
+  subject_of_roles?: InfRole[];
   namespace?: DatNamespace;
 }
 
@@ -29,14 +24,9 @@ export class DatChunk implements DatChunkInterface {
   "fk_text": number;
   "fk_entity_version": number;
   "pk_entity": number;
-  "entity_version": number;
-  "notes": string;
-  "tmsp_creation": string;
-  "tmsp_last_modification": string;
-  "sys_period": string;
   "fk_namespace": number;
   digital?: DatDigital;
-  data_info_associations?: InfEntityAssociation[];
+  subject_of_roles?: InfRole[];
   namespace?: DatNamespace;
   constructor(data?: DatChunkInterface) {
     Object.assign(this, data);
@@ -91,26 +81,6 @@ export class DatChunk implements DatChunkInterface {
           name: 'pk_entity',
           type: 'number'
         },
-        "entity_version": {
-          name: 'entity_version',
-          type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
-        },
-        "tmsp_creation": {
-          name: 'tmsp_creation',
-          type: 'string'
-        },
-        "tmsp_last_modification": {
-          name: 'tmsp_last_modification',
-          type: 'string'
-        },
-        "sys_period": {
-          name: 'sys_period',
-          type: 'string'
-        },
         "fk_namespace": {
           name: 'fk_namespace',
           type: 'number'
@@ -125,13 +95,13 @@ export class DatChunk implements DatChunkInterface {
                   keyFrom: 'fk_text',
           keyTo: 'pk_text'
         },
-        data_info_associations: {
-          name: 'data_info_associations',
-          type: 'InfEntityAssociation[]',
-          model: 'InfEntityAssociation',
+        subject_of_roles: {
+          name: 'subject_of_roles',
+          type: 'InfRole[]',
+          model: 'InfRole',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_data_domain'
+          keyTo: 'fk_subject_data'
         },
         namespace: {
           name: 'namespace',

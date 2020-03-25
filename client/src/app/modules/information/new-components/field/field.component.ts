@@ -74,16 +74,10 @@ export class FieldComponent implements OnInit {
         }
       })
     })
-    // DEBUG
-    console.log('field Init ');
+
 
     if (this.fieldDefinition.listType !== 'has-type') {
-      // DEBUG
-      console.log('field !has-type ');
 
-      // DEBUG
-      let i = 0;
-      let j = 0
       this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
         let obs$: Observable<number>;
         if (l.listType === 'temporal-entity') {
@@ -96,18 +90,8 @@ export class FieldComponent implements OnInit {
         )
       })).pipe(
         map(lists => lists.filter((list: ListDefinitionWithItemCount) => list.itemsCount > 0)),
-        // DEBUG
-        tap((x) => {
-          console.log('field listWithCount before share replay ' + i, x);
-          i++;
-        }),
         shareReplay({ refCount: true, bufferSize: 1 }),
-        tap((x) => {
-          console.log('field listWithCount after ' + j, x);
-          j++;
-        }),
       )
-      // this.listsWithCounts$.pipe(takeUntil(this.destroy$)).subscribe()
 
       this.itemsCount$ = this.listsWithCounts$.pipe(map((ls) => sum(ls.map((l) => l.itemsCount))))
 

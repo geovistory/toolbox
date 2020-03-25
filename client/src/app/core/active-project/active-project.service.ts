@@ -688,6 +688,19 @@ export class ActiveProjectService {
     })
   }
 
+
+  addTableTab(pkEntity: number) {
+    this.addTab({
+      active: true,
+      component: 'table-detail',
+      icon: 'table',
+      data: {
+        pkEntity: pkEntity
+      },
+      pathSegment: 'tableDetails'
+    })
+  }
+
   /************************************************************************************
   * Layout -- Modals
   ************************************************************************************/
