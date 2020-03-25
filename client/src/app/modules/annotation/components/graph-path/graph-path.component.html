@@ -1,0 +1,40 @@
+<span class="wrapper mat-caption">
+  <ng-container *ngIf="mode =='mini'">
+    <span *ngIf="data.length > 1" class="property mat-caption">
+
+      <span class="property-label mat-caption ">...</span>
+    </span>
+
+    <ng-container>
+      <mat-icon class="entity-icon mat-text-secondary" [matTooltip]="data[data.length-1].entity.tooltip">
+        {{data[data.length-1].entity.icon}}</mat-icon>
+      <ng-container class="entity-label mat-caption">{{data[data.length-1].entity.label}}
+      </ng-container>
+    </ng-container>
+
+
+  </ng-container>
+
+  <ng-container *ngIf="mode !=='mini'">
+    <ng-container *ngFor="let item of data; let i = index">
+      <ng-container *ngIf="item.entity">
+        <ng-container
+          *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (mode =='full' || i == data.length-1)}">
+        </ng-container>
+
+      </ng-container>
+
+      <span class="property mat-caption" *ngIf="item.property">
+
+        <span *ngIf="mode =='full'" class="property-label mat-caption ">{{item.property.label}}</span>
+
+      </span>
+    </ng-container>
+  </ng-container>
+</span>
+
+<ng-template #entitySegment let-entity="entity" let-showLabel="showLabel">
+  <mat-icon class="entity-icon mat-text-secondary" [matTooltip]="entity.tooltip">{{entity.icon}}
+  </mat-icon>
+  <ng-container *ngIf="showLabel" class="entity-label mat-caption">{{entity.label}}</ng-container>
+</ng-template>

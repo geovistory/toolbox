@@ -8,13 +8,15 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { TileHeaderModule } from 'app/shared/components/tile-header/tile-header.module';
 import { DndModule } from 'ng2-dnd';
-import { TableModule } from 'ngx-easy-table';
 import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
 import { QuillOpsToStrModule } from '../../shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { MentioningListComponent } from './components/mentioning-list/mentioning-list.component';
 import { DigitalPreviewModule } from '../../shared/components/digital-preview/digital-preview.module';
 import { RamListComponent } from './components/ram-list/ram-list.component';
+import { GraphPathComponent } from './components/graph-path/graph-path.component';
+import { TableModule } from 'primeng/table';
+import { MatDividerModule, MatRadioModule, MatFormFieldModule, MatTooltipModule, MatInputModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -29,11 +31,16 @@ import { RamListComponent } from './components/ram-list/ram-list.component';
     MatIconModule,
     MatButtonModule,
     EntityPreviewModule,
-    // TableModule, // TODO replace this with Mat Table
-    DigitalPreviewModule
+    TableModule,
+    DigitalPreviewModule,
+    MatDividerModule,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatTooltipModule,
+    MatInputModule
   ],
   providers: [],
-  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent],
+  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent],
   exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent]
 })
 export class AnnotationModule { }
