@@ -1,20 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { InfRole, ActiveProjectService } from 'app/core';
+import { ActiveProjectService, InfRole } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { map, switchMap } from 'rxjs/operators';
 import { values } from 'ramda';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-
-
+import { combineLatest, Observable, of, BehaviorSubject } from 'rxjs';
+import { map, switchMap, filter } from 'rxjs/operators';
+import { GraphPathSegment } from '../graph-path/graph-path.component';
 
 export interface Mentioning {
-  property: {
-    label: string;
-    tooltip: string;
-  };
   path: {
-    segments: any[];//GraphPathSegment[];
+    segments: GraphPathSegment[];
     text?: string;
   };
   location?: {
@@ -44,39 +38,84 @@ export class RamListComponent implements OnInit {
 
   ngOnInit() {
     this.cols = this.setCols();
+    const parentEntity$ = this.p.streamEntityPreview(this.pkEntity);
 
-    const isMentionedInRoles$ = this.p.inf$.role$.by_fk_property__fk_entity$.key('1218_' + this.pkEntity)
+    const isMentionedInRoles$ = this.p.inf$.role$.by_fk_property__fk_entity$.key('1218_' + this.pkEntity);
 
 
-    const carrierProvidedByRoles$ = isMentionedInRoles$.pipe(
+    // An Obsevable of number array where the numbers are the pk_entity of the last item in the path
+    const pkReferencedEntities$: Observable<number[]> = isMentionedInRoles$.pipe(
       map(isMentionedInRoles => values(isMentionedInRoles)),
       switchMap((isMentionedInRoles) => {
         // I map the input value to a Observable and switchMap will subscribe to the new one
+        const arrayOfObs$: Observable<number>[] = isMentionedInRoles.map(role => {
+          return this.p.streamEntityPreview(role.fk_temporal_entity)
+            .pipe(
+              filter((ep) => !ep.loading),
+              switchMap((ep) => {
+                // Q: What is subject of is mentioned in role?
+                if (ep.fk_class == 218) {
+                  // return new BehaviorSubject<number>(44);
+                  // A: F2 Expression! 
+                  // ... so we need to find the source: F5 Item, F3 Manifestation Singleton, F4 Manifestation Product Type or geovC4 Web Request
+                  // because this will give us the entity preview for the entity to display in the path
 
-        const arrayOfObs$ = isMentionedInRoles.map(role => {
-          return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
-            .key(1316 + '_' + role.fk_temporal_entity)
-            .pipe(map((indexedRoles) => values(indexedRoles)[0]))
+                  return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
+                    .key(1316 + '_' + role.fk_temporal_entity)
+                    .pipe(map((indexedRoles) => {
+                      return values(indexedRoles)[0].fk_entity
+                    }))
+
+                } else if (ep.fk_class == 503) {
+                  // A: geovC5 Expression Portion
+                  return new BehaviorSubject(role.fk_temporal_entity);
+                } else {
+                  console.warn('unexpected subject class of "mentions" or "is about". Found <' + ep.fk_class + '> for <' + role.pk_entity + '>, should <218 || 503>');
+                  return new BehaviorSubject<number>(undefined);
+                }
+
+
+
+              }))
+        })
+        combineLatest(arrayOfObs$).subscribe(x => {
+          const y = x
         })
 
         return combineLatest(arrayOfObs$)
-
       })
-      // ,
-
     )
 
-    const parentEntity$ = this.p.streamEntityPreview(this.pkEntity);
 
-    this.items$ = combineLatest(parentEntity$, carrierProvidedByRoles$).pipe(
-      switchMap(([parentEntity, carrierProvidedByRoles]) => {
-        const arrayOfObs$ = carrierProvidedByRoles.map(role => this.p.streamEntityPreview(role.fk_entity).pipe(
+
+
+    // const carrierProvidedByRoles$ = isMentionedInRoles$.pipe(
+    //   map(isMentionedInRoles => values(isMentionedInRoles)),
+    //   switchMap((isMentionedInRoles) => {
+    //     // I map the input value to a Observable and switchMap will subscribe to the new one
+    //     const arrayOfObs$ = isMentionedInRoles.map(role => {
+    //       return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
+    //         .key(1316 + '_' + role.fk_temporal_entity)
+    //         .pipe(map((indexedRoles) => values(indexedRoles)))
+    //     })
+    //     return combineLatest(arrayOfObs$)
+    //   })
+    // )
+
+
+    parentEntity$.subscribe(x => {
+      const y = x
+    })
+    pkReferencedEntities$.subscribe(x => {
+      const y = x
+    })
+
+    this.items$ = combineLatest(parentEntity$, pkReferencedEntities$).pipe(
+      switchMap(([parentEntity, pkReferencedEntities]) => {
+        const arrayOfObs$ = pkReferencedEntities.map(pkEntity => this.p.streamEntityPreview(pkEntity).pipe(
+          filter((ep) => !ep.loading),
           map(ep => {
             return {
-              property: {
-                label: 'is mentioned in',
-                tooltip: `${parentEntity.entity_label} is mentioned somewhere in...`
-              },
               path: {
                 segments: [
                   {
@@ -191,27 +230,21 @@ export class RamListComponent implements OnInit {
     const fakeStatements: InfRole[] = [
       {
         pk_entity: 789,
-        fk_temporal_entity: 987, // subject (F2 Expression) !!
+        fk_temporal_entity: 737367, // subject (F2 Expression) !!
         fk_property: 1218, // predicate (geovP2 mentions)
         fk_entity: pkEntity, // object (E1 CRM Entity / e.g. a Person)
       } as InfRole,
       {
         pk_entity: 790,
-        fk_temporal_entity: 987, // subject (F2 Expression) !!
+        fk_temporal_entity: 737367, // subject (F2 Expression) !!
         fk_property: 1316, // predicate (geovP5 carrier provided by)
         fk_entity: 737365, // object (F5 Item / e.g. Copy of a book)
       } as InfRole,
       {
         pk_entity: 791,
-        fk_temporal_entity: 698, // subject (F2 Expression) !!
+        fk_temporal_entity: 747097, // subject (geovC5 Expression Portion) !!
         fk_property: 1218, // predicate (geovP2 mentions)
         fk_entity: pkEntity, // object (E1 CRM Entity / e.g. a Person)
-      } as InfRole,
-      {
-        pk_entity: 792,
-        fk_temporal_entity: 698, // subject (F2 Expression) !!
-        fk_property: 1316, // predicate (geovP5 carrier provided by)
-        fk_entity: 743371, // object (F5 Item / e.g. Copy of a book)
       } as InfRole
     ];
     this.inf.role.loadSucceeded(fakeStatements, '', 591);
