@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCheckboxModule, MatDividerModule, MatFormFieldModule, MatIconModule, MatInputModule, MatPaginatorModule, MatProgressSpinnerModule } from '@angular/material';
-import { MatSelectModule } from '@angular/material/select';
 import { AngularSplitModule } from 'angular-split';
 import { AnnotationModule } from 'app/modules/annotation/annotation.module';
 import { CoverModule } from 'app/shared/directives/cover/cover.module';
@@ -16,6 +14,7 @@ import { ColFilterTextComponent } from './components/col-filter-text/col-filter-
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
 import { TextDetailComponent } from './components/text-detail/text-detail.component';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { MaterialModule } from 'app/core/material/material.module';
 
 @NgModule({
   imports: [
@@ -28,16 +27,9 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     DetailTopBarModule,
     AnnotationModule,
     TableModule,
-    MatPaginatorModule,
-    MatDividerModule,
     SelectAutocompleteModule,
     CoverModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatInputModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatSelectModule
+    MaterialModule
   ],
   providers: [],
   declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ColFilterNumericComponent, ColFilterTextComponent],

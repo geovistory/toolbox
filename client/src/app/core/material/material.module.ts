@@ -1,0 +1,68 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatPaginatorModule, MatProgressBarModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSidenavModule, MatSliderModule, MatSlideToggleModule, MatSortModule, MatStepperModule, MatTableModule, MatTabsModule, MatTooltipModule, MatTreeModule } from '@angular/material';
+
+
+@NgModule({
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatSortModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatTooltipModule,
+        MatInputModule,
+        MatListModule,
+        MatCardModule,
+        MatExpansionModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatProgressBarModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatTabsModule,
+        MatPaginatorModule,
+        MatAutocompleteModule,
+        MatSlideToggleModule,
+        MatTreeModule,
+        MatSidenavModule,
+        MatOptionModule,
+        MatStepperModule,
+        MatSliderModule
+    ],
+    providers: [],
+    declarations: [],
+    exports: [
+        MatTableModule,
+        MatSortModule,
+        MatMenuModule,
+        MatIconModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatTooltipModule,
+        MatInputModule,
+        MatListModule,
+        MatCardModule,
+        MatExpansionModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatProgressBarModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatTabsModule,
+        MatPaginatorModule,
+        MatAutocompleteModule,
+        MatSlideToggleModule,
+        MatTreeModule,
+        MatSidenavModule,
+        MatOptionModule,
+        MatStepperModule,
+        MatSliderModule]
+})
+export class MaterialModule { }

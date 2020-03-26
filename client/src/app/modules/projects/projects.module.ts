@@ -4,22 +4,9 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatMenuModule, MatTooltipModule } from '@angular/material';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
+import { MaterialModule } from 'app/core/material/material.module';
 import { LanguageSearchTypeaheadModule, NavbarModule, PassiveLinkModule, ProxyRouteModule } from 'app/shared';
 import { DrawerContainerResizeModule } from 'app/shared/components/drawer-container-resize/drawer-container-resize.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
@@ -78,21 +65,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ReadMoreModule,
     HighlightModule,
     PassiveLinkModule,
-    MatSidenavModule,
-    MatListModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatTableModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSortModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatExpansionModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatTooltipModule,
     DragDropModule,
     SourcesModule,
     Information2Module,
@@ -111,7 +83,8 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     AnalysisIconModule,
     SettingsModule,
     OntoInfoModule,
-    ClassConfigModule // TODO: REMOVE
+    ClassConfigModule, // TODO: REMOVE
+    MaterialModule
   ],
   declarations: [
     ProjectCreateComponent,

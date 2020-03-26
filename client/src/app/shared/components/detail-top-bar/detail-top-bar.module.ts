@@ -1,16 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DetailTopBarComponent } from './detail-top-bar.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MaterialModule } from 'app/core/material/material.module';
+import { DetailTopBarComponent } from './detail-top-bar.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MaterialModule
   ],
   declarations: [DetailTopBarComponent],
   exports: [DetailTopBarComponent]

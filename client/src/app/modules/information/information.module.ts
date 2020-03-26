@@ -4,77 +4,10 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { ExTimePropertyFieldAddCtrlComponent } from './property-field/ex-time/ex-time-property-field-add-ctrl/ex-time-property-field-add-ctrl.component';
-// import { ExTimePropertyFieldCreateCtrlComponent } from './property-field/ex-time/ex-time-property-field-create-ctrl/ex-time-property-field-create-ctrl.component';
-// import { ExTimePropertyFieldEditableComponent } from './property-field/ex-time/ex-time-property-field-editable/ex-time-property-field-editable.component';
-// import { ExTimePropertyFieldFormComponent } from './property-field/ex-time/ex-time-property-field-form/ex-time-property-field-form.component';
-// import { PeItPropertyFieldAddCtrlComponent } from './property-field/pe-it/pe-it-property-field-add-ctrl/pe-it-property-field-add-ctrl.component';
-// import { PeItPropertyFieldCreateCtrlComponent } from './property-field/pe-it/pe-it-property-field-create-ctrl/pe-it-property-field-create-ctrl.component';
-// import { PeItPropertyFieldEditableComponent } from './property-field/pe-it/pe-it-property-field-editable/pe-it-property-field-editable.component';
-// import { PeItPropertyFieldFormComponent } from './property-field/pe-it/pe-it-property-field-form/pe-it-property-field-form.component';
-// import { PropertyFieldActions } from './property-field/property-field.actions';
-// import { PropertyFieldApiEpics } from './property-field/property-field.epics';
-// import { TeEntPropertyFieldAddCtrlComponent } from './property-field/te-ent/te-ent-property-field-add-ctrl/te-ent-property-field-add-ctrl.component';
-// import { TeEntPropertyFieldCreateCtrlComponent } from './property-field/te-ent/te-ent-property-field-create-ctrl/te-ent-property-field-create-ctrl.component';
-// import { TeEntPropertyFieldEditableComponent } from './property-field/te-ent/te-ent-property-field-editable/te-ent-property-field-editable.component';
-// import { TeEntPropertyFieldFormComponent } from './property-field/te-ent/te-ent-property-field-form/te-ent-property-field-form.component';
-// import { PeItRoleAddCtrlComponent } from './role/pe-it/pe-it-role-add-ctrl/pe-it-role-add-ctrl.component';
-// import { PeItRoleCreateCtrlComponent } from './role/pe-it/pe-it-role-create-ctrl/pe-it-role-create-ctrl.component';
-// import { PeItRoleEditableComponent } from './role/pe-it/pe-it-role-editable/pe-it-role-editable.component';
-// import { RoleActions } from './role/role.actions';
-// import { TeEntRoleAddCtrlComponent } from './role/te-ent/te-ent-role-add-ctrl/te-ent-role-add-ctrl.component';
-// import { TeEntRoleCreateCtrlComponent } from './role/te-ent/te-ent-role-create-ctrl/te-ent-role-create-ctrl.component';
-// import { TeEntRoleEditableComponent } from './role/te-ent/te-ent-role-editable/te-ent-role-editable.component';
-// import { AppellationService } from './shared/appellation.service';
-// import { ClassService } from './shared/class.service';
-// import { EprService } from './shared/epr.service';
-// import { PeItService } from './shared/pe-it.service';
-// import { PropertyFieldService } from './shared/property-field.service';
-// import { PropertyService } from './shared/property.service';
-// import { RoleService } from './shared/role.service';
-// import { TeEntService } from './shared/te-ent.service';
-// import { TypeCtrlAPIActions } from './type/type-ctrl/api/type-ctrl.actions';
-// import { TypeCtrlAPIEpics } from './type/type-ctrl/api/type-ctrl.epics';
-// import { TypeCtrlComponent } from './type/type-ctrl/type-ctrl.component';
-// import { TypeEditableAPIActions } from './type/type-editable/api/type-editable.actions';
-// import { TypeEditableAPIEpics } from './type/type-editable/api/type-editable.epics';
-// import { TypeEditableComponent } from './type/type-editable/type-editable.component';
-// import { AppellationCtrlComponent } from './value/appellation-ctrl/appellation-ctrl.component';
-// import { AppellationViewComponent } from './value/appellation-view/appellation-view.component';
-// import { LanguageCtrlComponent } from './value/language-ctrl/language-ctrl.component';
-// import { LanguageViewComponent } from './value/language-view/language-view.component';
-// import { LeafPeItCtrlComponent } from './value/leaf-pe-it-ctrl/leaf-pe-it-ctrl.component';
-// import { LeafPeItViewAPIActions } from './value/leaf-pe-it-view/api/leaf-pe-it-view.actions';
-// import { LeafPeItViewModalComponent } from './value/leaf-pe-it-view/leaf-pe-it-view-modal/leaf-pe-it-view-modal.component';
-// import { LeafPeItViewComponent } from './value/leaf-pe-it-view/leaf-pe-it-view.component';
-// import { PlaceCtrlComponent } from './value/place-ctrl/place-ctrl.component';
-// import { PlaceViewComponent } from './value/place-view/place-view.component';
-// import { TimePrimitiveCtrlComponent } from './value/time-primitive-ctrl/time-primitive-ctrl.component';
-// import { TimePrimitiveViewComponent } from './value/time-primitive-view/time-primitive-view.component';
-import { MatProgressSpinnerModule } from '@angular/material';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatTreeModule } from '@angular/material/tree';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ValidationService } from 'app/core';
+import { MaterialModule } from 'app/core/material/material.module';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
 import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
@@ -106,6 +39,8 @@ import { QuillModule } from '../quill';
 // import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
 // import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
 import { AddOrCreateEntityModal } from './components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
+import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 // import { ClassInfoComponent } from './components/class-info/class-info.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
 // import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
@@ -205,8 +140,6 @@ import { InformationBasicPipesService } from './new-services/information-basic-p
 import { InformationPipesService } from './new-services/information-pipes.service';
 import { PaginationService } from './new-services/pagination.service';
 import { TimeSpanService } from './new-services/time-span.service';
-import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
-import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 
 
 @NgModule({
@@ -247,36 +180,15 @@ import { ContentTreeNodeTypeComponent } from './components/content-tree-node-typ
     InfTimePrimitivePipeModule,
     TimeSpanPipeModule,
     DragDropModule,
-    MatTooltipModule,
-    MatTabsModule,
-    MatTreeModule,
     CdkTreeModule, // Check if still used
-    MatIconModule,
-    MatDividerModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatSlideToggleModule,
-    MatExpansionModule,
-    MatTableModule,
-    MatCheckboxModule,
-    MatRadioModule,
-    MatPaginatorModule,
-    MatListModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCardModule,
-    MatAutocompleteModule,
-    MatProgressSpinnerModule,
     ListDrawerHeaderModule,
     DetailTopBarModule,
     EntityPreviewModule,
     AnnotationModule,
     TileHeaderModule,
     TruncateModule,
-    OntoInfoModule
+    OntoInfoModule,
+    MaterialModule
   ],
   declarations: [
     InformationComponent,
