@@ -2,7 +2,7 @@
 import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/store/actions';
-import { InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital } from '../sdk';
+import { InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString } from '../sdk';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState, U } from 'app/core';
 import { InfPersistentItemSlice } from './inf.models';
@@ -452,6 +452,7 @@ export class InfActions {
   // TODO: pimp those up to real Inf Actions!
   language = new StandardActionsFactory<Payload, InfLanguage>(this.ngRedux).createCrudActions(infRoot, 'language')
   appellation = new StandardActionsFactory<Payload, InfAppellation>(this.ngRedux).createCrudActions(infRoot, 'appellation')
+  lang_string = new StandardActionsFactory<Payload, InfLangString>(this.ngRedux).createCrudActions(infRoot, 'lang_string')
   place = new StandardActionsFactory<Payload, InfPlace>(this.ngRedux).createCrudActions(infRoot, 'place')
   time_primitive = new StandardActionsFactory<Payload, InfTimePrimitive>(this.ngRedux).createCrudActions(infRoot, 'time_primitive')
   text_property = new InfTextPropertyActionFactory(this.ngRedux).createActions()

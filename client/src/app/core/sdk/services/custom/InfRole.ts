@@ -14,6 +14,7 @@ import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfAppellation } from '../../models/InfAppellation';
+import { InfLangString } from '../../models/InfLangString';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { DatChunk } from '../../models/DatChunk';
 import { DatDigital } from '../../models/DatDigital';

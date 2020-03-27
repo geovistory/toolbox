@@ -87,6 +87,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "InfLangString": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "InfTemporalEntity": {
     "dataSource": "postgres1",
     "public": true

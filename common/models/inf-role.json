@@ -98,6 +98,12 @@
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
+    "lang_string": {
+      "type": "belongsTo",
+      "model": "InfLangString",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
     "temporal_entity": {
       "type": "belongsTo",
       "model": "InfTemporalEntity",

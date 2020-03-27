@@ -199,6 +199,42 @@ module.exports = function(InfRole) {
           .catch(err => reject(err));
       }
 
+      // if the role points to a lang_string
+      else if (
+        requestedRole.lang_string &&
+        Object.keys(requestedRole.lang_string).length > 0
+      ) {
+        // prepare parameters
+        const InfLangString = InfRole.app.models.InfLangString;
+
+        // find or create the lang_string and the role pointing to it
+        return InfLangString.create(requestedRole.lang_string)
+          .then(res => {
+            InfLangString.findById(res.pk_entity)
+              .then(resultingEntity => {
+                // … prepare the Role to create
+                dataObject.fk_entity = resultingEntity.pk_entity;
+
+                return InfRole._findOrCreateByValue(
+                  InfRole,
+                  projectId,
+                  dataObject,
+                  requestedRole,
+                  ctxWithoutBody
+                )
+                  .then(resultingRoles => {
+                    let res = resultingRoles[0];
+                    res.lang_string = helpers.toObject(resultingEntity);
+
+                    resolve([res]);
+                  })
+                  .catch(err => reject(err));
+              })
+              .catch(err => reject(err));
+          })
+          .catch(err => reject(err));
+      }
+
       // if the role points to a language
       else if (
         requestedRole.language &&

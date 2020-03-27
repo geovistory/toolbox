@@ -74,6 +74,7 @@ import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
 import { ProDfhProfileProjRelApi } from './services/custom/ProDfhProfileProjRel';
 import { InfAppellationApi } from './services/custom/InfAppellation';
+import { InfLangStringApi } from './services/custom/InfLangString';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
 import { InfRoleApi } from './services/custom/InfRole';
 import { InfLanguageApi } from './services/custom/InfLanguage';
@@ -139,6 +140,7 @@ export class SDKBrowserModule {
         ProDfhClassProjRelApi,
         ProDfhProfileProjRelApi,
         InfAppellationApi,
+        InfLangStringApi,
         InfTemporalEntityApi,
         InfRoleApi,
         InfLanguageApi,

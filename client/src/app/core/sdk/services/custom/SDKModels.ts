@@ -26,6 +26,7 @@ import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
 import { InfAppellation } from '../../models/InfAppellation';
+import { InfLangString } from '../../models/InfLangString';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfRole } from '../../models/InfRole';
 import { InfLanguage } from '../../models/InfLanguage';
@@ -68,6 +69,7 @@ export class SDKModels {
     ProDfhClassProjRel: ProDfhClassProjRel,
     ProDfhProfileProjRel: ProDfhProfileProjRel,
     InfAppellation: InfAppellation,
+    InfLangString: InfLangString,
     InfTemporalEntity: InfTemporalEntity,
     InfRole: InfRole,
     InfLanguage: InfLanguage,

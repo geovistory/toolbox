@@ -1,12 +1,12 @@
 import { InfPersistentItem, InfRole } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice } from 'app/core/inf/inf.models';
+import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLangStringSlice } from 'app/core/inf/inf.models';
 import { keys, omit, values } from 'ramda';
 import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
 import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '../sdk';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty, InfLangString } from '../sdk';
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
@@ -156,6 +156,17 @@ export class Flattener {
       })
     })
 
+  lang_string = new ModelFlattener<InfLangStringSlice, InfLangString>(
+    this.infActions.lang_string,
+    InfLangString.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new InfLangString(item);
+        this.language.flatten([item.language])
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
+      })
+    })
+
   text_property = new ModelFlattener<InfTextPropertySlice, InfTextProperty>(
     this.infActions.text_property,
     InfTextProperty.getModelDefinition(),
@@ -249,6 +260,7 @@ export class Flattener {
       time_primitive: this.time_primitive,
       language: this.language,
       text_property: this.text_property,
+      lang_string: this.lang_string,
 
       digital: this.digital,
       chunk: this.chunk,

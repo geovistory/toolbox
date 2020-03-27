@@ -301,20 +301,4 @@ export class InfEpics {
       epicsFactory.onError(globalActions, error, pendingKey, pkProject);
     });
   }
-
-  // private storeSchemaObject(schemas: SchemaObject, pkProject) {
-  //   if (schemas && Object.keys(schemas).length > 0) {
-  //     Object.keys(schemas).forEach(schema => {
-  //       let actions;
-  //       if (schema === 'inf') actions = this.infActions;
-  //       else if (schema === 'pro') actions = this.proActions;
-  //       else if (schema === 'dat') actions = this.datActions;
-  //       if (actions) {
-  //         Object.keys(schemas[schema]).forEach(model => {
-  //           actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
 }

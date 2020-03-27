@@ -3,6 +3,7 @@ import {
   ProInfoProjRel,
   InfTemporalEntity,
   InfAppellation,
+  InfLangString,
   WarEntityPreview,
   DatChunk,
   DatDigital,
@@ -31,6 +32,7 @@ export interface InfRoleInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   range_temporal_entity?: InfTemporalEntity;
   appellation?: InfAppellation;
+  lang_string?: InfLangString;
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
@@ -63,6 +65,7 @@ export class InfRole implements InfRoleInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   range_temporal_entity?: InfTemporalEntity;
   appellation?: InfAppellation;
+  lang_string?: InfLangString;
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
@@ -196,6 +199,14 @@ export class InfRole implements InfRoleInterface {
           name: 'appellation',
           type: 'InfAppellation',
           model: 'InfAppellation',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
+        },
+        lang_string: {
+          name: 'lang_string',
+          type: 'InfLangString',
+          model: 'InfLangString',
           relationType: 'belongsTo',
                   keyFrom: 'fk_entity',
           keyTo: 'pk_entity'

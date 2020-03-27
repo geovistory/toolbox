@@ -4,7 +4,7 @@ import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollect
 import { Observable } from 'rxjs';
 import { filter, first, map, switchMap } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
-import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from '../sdk';
+import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString } from '../sdk';
 import { PaginateByParam } from '../store/actions';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
 import { infDefinitions, infRoot } from './inf.config';
@@ -56,23 +56,6 @@ class Selector {
   }
 
   paginationSelector<M>() {
-    // const key = (by: PaginateByParam[]): Observable<M> => this.pkProject$.pipe(
-    //   switchMap(pk => {
-    //     let path: any[];
-    //     const pagBy = paginatedBy(paginateName(by))
-    //     const key = paginateKey(by)
-    //     if (this.configs[this.model].facetteByPk) {
-    //       path = [infRoot, this.model, this.configs[this.model].facetteByPk, pk, pagBy, key];
-    //     } else {
-    //       path = [infRoot, this.model, pagBy, key];
-    //     }
-    //     return this.ngRedux.select<M>(path)
-    //       .pipe(
-    //         // distinctUntilChanged<M>(equals),
-    //         tag(`InfSelector::key::${path}`)
-    //       )
-    //   })
-    // )
 
     const pipePage = (by: PaginateByParam[], limit: number, offset: number): Observable<M[]> => this.pkProject$.pipe(
       switchMap(pk => {
@@ -121,40 +104,6 @@ class Selector {
             )
           ))
 
-
-        // return this.ngRedux.select<boolean>([...path, 'loading', getFromTo(limit, offset)]).pipe(
-        //   switchMap(loading => iif(
-        //     // Q: is it already loading?
-        //     () => loading == true,
-        //     // A: yes. so no loading needed
-        //     of(false),
-        //     // Q: What's the length of the list?
-        //     trigger$.pipe(map(() => true))
-        //     // this.ngRedux.select<number>([...path, 'count']).pipe(
-        //     //   switchMap(count => {
-        //     //     // A: there is no information about the length, loading needed
-        //     //     if (count === undefined) return of(true);
-        //     //     // A: Length is 0, no loading needed
-        //     //     if (count === 0) return of(false);
-
-        //     //     // A: there is information about the length, so select all items in the requested segement
-        //     //     const start = offset;
-        //     //     const end = count <= (start + limit) ? count : (start + limit);
-        //     //     const obs$: Observable<M>[] = [];
-        //     //     for (let i = start; i < end; i++) {
-        //     //       obs$.push(
-        //     //         this.ngRedux.select<M>([...path, 'rows', i])
-        //     //       )
-        //     //     }
-        //     //     // Emit true if at least one of the requested items is still undefined
-        //     //     return combineLatest(obs$).pipe(first(), map(pks => pks.includes(undefined)))
-        //     //   })
-        //     // )
-        //   ))
-        // )
-
-
-
       })
     )
 
@@ -175,7 +124,6 @@ class Selector {
     return { pipePage, pipePageLoadNeeded, pipeCount }
 
   }
-
 
 }
 
@@ -240,6 +188,17 @@ class InfAppellationSelections extends Selector {
   ) { super(ngRedux, pkProject$, configs, model) }
 }
 
+class InfLangStringSelections extends Selector {
+  public by_pk_entity$ = this.selector<InfLangString>('by_pk_entity')
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
+}
+
 class InfPlaceSelections extends Selector {
   public by_pk_entity$ = this.selector<InfPlace>('by_pk_entity')
 
@@ -295,6 +254,7 @@ export class InfSelector {
   appellation$ = new InfAppellationSelections(this.ngRedux, this.pkProject$, infDefinitions, 'appellation');
   place$ = new InfPlaceSelections(this.ngRedux, this.pkProject$, infDefinitions, 'place');
   text_property$ = new InfTextPropertySelections(this.ngRedux, this.pkProject$, infDefinitions, 'text_property');
+  lang_string$ = new InfLangStringSelections(this.ngRedux, this.pkProject$, infDefinitions, 'lang_string');
   time_primitive$ = new InfTimePrimitiveSelections(this.ngRedux, this.pkProject$, infDefinitions, 'time_primitive');
   language$ = new InfLanguageSelections(this.ngRedux, this.pkProject$, infDefinitions, 'language');
 

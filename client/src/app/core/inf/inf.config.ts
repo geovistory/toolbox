@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { InfTextProperty, InfRole } from "../sdk";
+import { InfTextProperty, InfRole, InfLangString } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
@@ -94,6 +94,16 @@ export const infDefinitions: ReducerConfigCollection = {
         groupByFn: (d: InfTextProperty): string => d.fk_concerned_entity.toString()
       },
     ]
+  },
+  lang_string: {
+    facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => {
+        return item.pk_entity.toString()
+      }
+    },
+    groupBy: []
   },
   appellation: {
     // facetteByPk,
