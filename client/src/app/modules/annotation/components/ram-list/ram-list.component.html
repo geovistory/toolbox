@@ -52,7 +52,7 @@ Hello World again
 
           <div *ngIf="col.field == 'path'" class="d-flex align-items-center" [matTooltip]="rowData.path.tooltip">
 
-            <gv-graph-path [data]="rowData.path.segments" (onClick)="onClickFn($event)" [mode]="viewMode">
+            <gv-graph-path [data]="rowData.path.segments" [mode]="viewMode">
             </gv-graph-path>
 
           </div>
@@ -81,7 +81,7 @@ Hello World again
               <mat-divider></mat-divider>
               <button mat-menu-item>
                 <mat-icon color="warn">delete</mat-icon>
-                Remove '{{rowData.property.label}}'
+                Remove
               </button>
             </mat-menu>
           </div>
