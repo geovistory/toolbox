@@ -3,6 +3,10 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const helpers = require('../helpers');
 var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlContentTree = require('../../dist/server/sql-builders/sql-content-tree')
+  .SqlContentTree;
+var SqlEntityPreviewList = require('../../dist/server/sql-builders/sql-entity-preview-list')
+  .SqlEntityPreviewList;
 
 module.exports = function(InfRole) {
   InfRole.findOrCreateInfRoles = function(pk_project, roles, ctx) {
@@ -1025,9 +1029,7 @@ module.exports = function(InfRole) {
     offset,
     cb
   ) {
-    const mainQuery = new FlatObjectQueryBuilder(
-      InfRole.app.models
-    ).createEntityPreviewListQuery(
+    const mainQuery = new SqlEntityPreviewList(InfRole.app.models).create(
       fkProject,
       fkSourceEntity,
       fkProperty,
@@ -1106,9 +1108,10 @@ module.exports = function(InfRole) {
    * Get an array of roles that build the tree of the content of an F2 Expression.
    */
   InfRole.contentTree = function(pkProject, pkExpressionEntity, cb) {
-    const q = new FlatObjectQueryBuilder(
-      InfRole.app.models
-    ).createContentTreeQuery(pkProject, pkExpressionEntity);
+    const q = new SqlContentTree(InfRole.app.models).create(
+      pkProject,
+      pkExpressionEntity
+    );
     const params = q.params;
     const sql_stmt = q.sql;
 
