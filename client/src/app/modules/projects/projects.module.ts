@@ -3,7 +3,7 @@ import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { MaterialModule } from 'app/core/material/material.module';
@@ -47,6 +47,9 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
+import { RamFormComponent } from './components/ram-form/ram-form.component';
+import { DndModule } from 'ng2-dnd';
+import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 
 
 
@@ -57,6 +60,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     NavbarModule,
     ProjectsRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     NgbModule,
     ProxyRouteModule,
     Information2Module,
@@ -84,7 +88,9 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     SettingsModule,
     OntoInfoModule,
     ClassConfigModule, // TODO: REMOVE
-    MaterialModule
+    MaterialModule,
+    DndModule,
+    QuillOpsToStrModule,
   ],
   declarations: [
     ProjectCreateComponent,
@@ -92,10 +98,8 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ProjectEditComponent,
     ProjectEditPanelComponent,
     ProjectListComponent,
-    // ProjectSettingsCollaboratorsComponent,
+    RamFormComponent,
     ProjectSettingsDataComponent,
-    // ProjectSettingsProfileComponent,
-    // SideNavComponent,
     TypesComponent,
     TypeEditFormComponent,
     TabBodyComponent,

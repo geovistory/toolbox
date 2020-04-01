@@ -1,40 +1,67 @@
-<span class="wrapper mat-caption">
-  <ng-container *ngIf="mode =='mini'">
-    <span *ngIf="data.length > 1" class="property mat-caption">
+<div class="wrapper-block gv-fade-out-right gv-white-space-nowrap" *ngIf="mode =='mini'">
+  <span *ngIf="data.length > 1">
+    ...
+    <span class="slash-forward mat-text-secondary">/</span>
+  </span>
 
-      <span class="property-label mat-caption ">...</span>
-    </span>
-
-    <ng-container>
-      <mat-icon class="entity-icon mat-text-secondary" [matTooltip]="data[data.length-1].entity.tooltip">
-        {{data[data.length-1].entity.icon}}</mat-icon>
-      <ng-container class="entity-label mat-caption">{{data[data.length-1].entity.label}}
-      </ng-container>
-    </ng-container>
-
-
+  <ng-container *ngTemplateOutlet="entitySegment;context:{entity:data[data.length-1].entity, showLabel: true}">
   </ng-container>
 
-  <ng-container *ngIf="mode !=='mini'">
-    <ng-container *ngFor="let item of data; let i = index">
-      <ng-container *ngIf="item.entity">
-        <ng-container
-          *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (mode =='full' || i == data.length-1)}">
-        </ng-container>
+</div>
 
+<span class="wrapper-block gv-fade-out-right gv-white-space-nowrap" *ngIf="mode =='small'">
+  <ng-container *ngFor="let item of data; let i = index">
+    <ng-container *ngIf="item.entity">
+      <ng-container
+        *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (mode =='full' || i == data.length-1)}">
       </ng-container>
 
-      <span class="property mat-caption" *ngIf="item.property">
+    </ng-container>
 
-        <span *ngIf="mode =='full'" class="property-label mat-caption ">{{item.property.label}}</span>
+    <ng-container *ngIf="item.property">
+      <span class="slash-forward mat-text-secondary">/</span>
+    </ng-container>
+  </ng-container>
+</span>
 
+
+<span class="wrapper-inline" *ngIf="mode =='full'">
+  <ng-container *ngFor="let item of data; let i = index">
+    <ng-container *ngIf="item.entity">
+      <ng-container
+        *ngTemplateOutlet="entitySegment;context:{entity:item.entity, showLabel: (mode =='full' || i == data.length-1)}">
+      </ng-container>
+
+    </ng-container>
+
+    <ng-container *ngIf="item.property">
+      <span class="prop-label mat-caption">
+        {{item.property.label}} :
       </span>
     </ng-container>
   </ng-container>
 </span>
 
 <ng-template #entitySegment let-entity="entity" let-showLabel="showLabel">
-  <mat-icon class="entity-icon mat-text-secondary" [matTooltip]="entity.tooltip">{{entity.icon}}
+
+  <mat-icon *ngIf="entity.icon =='table'" class="entity-icon gv-digital-color" style="font-size: 18px"
+    svgIcon="file-table" [matTooltip]="entity.tooltip">
   </mat-icon>
-  <ng-container *ngIf="showLabel" class="entity-label mat-caption">{{entity.label}}</ng-container>
+  <mat-icon *ngIf="entity.icon =='text'" class="entity-icon gv-digital-color" style="font-size: 18px"
+    svgIcon="file-document" [matTooltip]="entity.tooltip">
+  </mat-icon>
+  <mat-icon *ngIf="entity.icon =='expression-portion'" class="entity-icon gv-source-color" style="font-size: 18px"
+    svgIcon="folder" [matTooltip]="entity.tooltip">
+  </mat-icon>
+  <i *ngIf="entity.icon =='persistent-entity'" class="entity-icon gv-icon gv-icon-persistent-entity gv-entity-color"
+    [matTooltip]="entity.tooltip"></i>
+  <i *ngIf="entity.icon =='temporal-entity'" class="entity-icon fa fa-star-o  gv-entity-color"
+    [matTooltip]="entity.tooltip"></i>
+  <!-- <mat-icon *ngIf="entity.icon =='source'" class="entity-icon gv-source-color" style="font-size: 18px"
+    svgIcon="book-open-variant" [matTooltip]="entity.tooltip">
+  </mat-icon> -->
+  <i *ngIf="entity.icon =='source'" class="entity-icon gv-icon gv-icon-source gv-source-color"
+    [matTooltip]="entity.tooltip"></i>
+
+  <ng-container *ngIf="showLabel" class="entity-icon entity-label">{{entity.label}}</ng-container>
 </ng-template>

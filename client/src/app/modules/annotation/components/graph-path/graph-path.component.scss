@@ -1,5 +1,20 @@
 $caret-color: #aaa9a9;
-
+:host {
+  overflow: hidden;
+}
+.slash-forward {
+  font-size: 22px;
+  margin: 0 4px;
+  color: #bbb;
+}
+.prop-label {
+  margin: 0 4px;
+  padding: 0 2px;
+  display: inline-block;
+  border: 2px solid #eee;
+  background-color: #eee;
+  border-radius: 2px;
+}
 .property {
   vertical-align: middle;
 
@@ -48,7 +63,12 @@ $caret-color: #aaa9a9;
   margin: 0px 4px 0 0px;
 }
 
-.wrapper {
+.wrapper-block {
+  display: block;
+  vertical-align: baseline;
+}
+
+.wrapper-inline {
   display: inline;
   vertical-align: baseline;
 }

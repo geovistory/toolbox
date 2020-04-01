@@ -2,7 +2,8 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const helpers = require('../helpers');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 var SqlContentTree = require('../../dist/server/sql-builders/sql-content-tree')
   .SqlContentTree;
 var SqlEntityPreviewList = require('../../dist/server/sql-builders/sql-entity-preview-list')
@@ -890,7 +891,7 @@ module.exports = function(InfRole) {
   };
 
   InfRole.removeFromProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
-    const q = new FlatObjectQueryBuilder(InfRole.app.models);
+    const q = new SqlBuilderLbModels(InfRole.app.models);
 
     if (!ctx.req.accessToken.userId)
       return Error('AccessToken.userId is missing');

@@ -68,8 +68,6 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   selectedDelta$ = new BehaviorSubject<DeltaI>(null);
   // if the annotate button is shown
   showAnnotateBtn$: Observable<boolean>;
-  createAnnotation$ = new BehaviorSubject<boolean>(false);
-  chunk$ = new BehaviorSubject<DatChunk>(null);
 
   annotatedNodes$ = new BehaviorSubject<IndexedCharids<number[]>>({})
   annotationsVisible$ = new BehaviorSubject<boolean>(false);
@@ -186,9 +184,9 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
       this.ref.detectChanges()
     })
     // TODO find out why this is needed
-    this.chunk$.pipe(delay(0), takeUntil(this.destroy$)).subscribe(() => {
-      this.ref.detectChanges()
-    })
+    // this.chunk$.pipe(delay(0), takeUntil(this.destroy$)).subscribe(() => {
+    //   this.ref.detectChanges()
+    // })
   }
 
   mentioningListChange(rows: Row[]) {
@@ -299,10 +297,10 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
    * When user changes text selection
    */
   selectedDeltaChange(d: DeltaI) {
-    this.selectedDelta$.next(d)
-    if (this.createAnnotation$.value && !!d && !!d.ops && d.ops.length) {
-      this.setChunk();
+    if (this.p.ramOpen$.value && !!d && !!d.ops && d.ops.length) {
+      this.setChunk(d);
     }
+    this.selectedDelta$.next(d)
   }
 
   private latestIdReducer(a: Op, b: Op): Op {
@@ -314,26 +312,28 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
 
   annotate() {
     this.t.setShowRightArea(true)
-    this.setChunk();
+    this.setChunk(this.selectedDelta$.value);
+    this.p.ramOpen$.next(true);
   }
 
-  private setChunk() {
-    this.digital$.pipe(first()).subscribe(digital => {
-      this.chunk$.next({
-        fk_text: digital.pk_text,
-        fk_entity_version: digital.entity_version,
-        fk_namespace: digital.fk_namespace,
-        quill_doc: this.quillDocForChunk()
-      } as DatChunk);
-      this.createAnnotation$.next(true);
+  private setChunk(selectedDelta: DeltaI) {
+    this.digital$.pipe(delay(0), first()).subscribe(digital => {
+      this.p.ramSource$.next({
+        chunk: {
+          fk_text: digital.pk_text,
+          fk_entity_version: digital.entity_version,
+          fk_namespace: digital.fk_namespace,
+          quill_doc: this.quillDocForChunk(selectedDelta)
+        } as DatChunk
+      });
     });
   }
 
 
-  private quillDocForChunk(): QuillDoc {
-    const latestOp: Op = this.selectedDelta$.value.ops.reduce(this.latestIdReducer);
+  private quillDocForChunk(selectedDelta: DeltaI): QuillDoc {
+    const latestOp: Op = selectedDelta.ops.reduce(this.latestIdReducer);
     const latestId: number = parseInt(latestOp.attributes.charid || latestOp.attributes.blockid, 10);
-    const ops: Ops = this.selectedDelta$.value.ops;
+    const ops: Ops = selectedDelta.ops;
     const quill_doc: QuillDoc = { ops, latestId };
     return quill_doc;
   }

@@ -1,4 +1,5 @@
 /* tslint:disable */
+export * from './SchemaObject';
 export * from './SysClassFieldPropertyRel';
 export * from './SysClassField';
 export * from './SysClassHasTypeProperty';

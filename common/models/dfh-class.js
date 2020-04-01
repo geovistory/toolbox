@@ -1,5 +1,6 @@
 'use strict';
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 const Config = require('../config/Config');
 
@@ -11,7 +12,7 @@ module.exports = function(DfhClass) {
    *
    */
   DfhClass.ofProject = function(pkProject, cb) {
-    const q = new FlatObjectQueryBuilder(DfhClass.app.models);
+    const q = new SqlBuilderLbModels(DfhClass.app.models);
 
     const params = [pkProject]; // [4, 5, 8]
 

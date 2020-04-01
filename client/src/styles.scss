@@ -9,6 +9,13 @@
 
 @import 'src/assets/scss/bootstrap';
 $font-size-xs: 0.68rem;
+label {
+  margin-bottom: 0;
+}
+.form-group label {
+  margin-bottom: $label-margin-bottom;
+}
+
 /**
 * Ngx easy table
 * Docs: https://ngx-easy-table.eu/#/styles
@@ -616,30 +623,6 @@ gv-property {
 .gv-shadow-outer-1 {
   box-shadow: 0 0 0 1px rgba(89, 105, 129, 0.1),
     0 1px 3px 0 rgba(89, 105, 129, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-// Navbar (main)
-#nav {
-  .breadcrumb {
-    padding: 0.25rem 0.75rem;
-    margin-bottom: 0;
-  }
-
-  #userDropdown {
-    i {
-      font-size: 1.3rem;
-    }
-  }
-
-  #userDropdown::after {
-    display: none;
-  }
-
-  #userIconBig {
-    font-size: 3rem;
-    color: $gray-300;
-    margin-top: 1rem;
-  }
 }
 
 // Loading Bar
@@ -2123,6 +2106,11 @@ $mat-color-secondary-text: mat-color($foreground, secondary-text);
   background-color: $mat-color-warn;
 }
 
+.mat-bg-accent-A700 {
+  background-color: map-get($app-accent, A700);
+  color: $dark-primary-text;
+}
+
 /*
 * theme colors for svg strokes
 */
@@ -2458,5 +2446,12 @@ mat-dialog-actions {
         }
       }
     }
+  }
+}
+
+.gv-form-field-slim .mat-form-field-wrapper {
+  padding-bottom: 0;
+  .mat-form-field-infix {
+    padding: 0.2em 0 0.7em 0;
   }
 }

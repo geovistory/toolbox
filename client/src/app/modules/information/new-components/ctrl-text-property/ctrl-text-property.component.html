@@ -7,7 +7,8 @@
     <div class="lang-helper-text" *ngIf="!fkLanguage && !c.focused">
       Select a language
     </div>
-    <gv-ctrl-language [formControl]="langCtrl" #c (blur)="focused$.next(false)" (focus)="focused$.next(true)">
+    <gv-ctrl-language [formControl]="langCtrl" #c (blur)="focused$.next(false)" (focus)="focused$.next(true)"
+      class="mat-text-secondary">
     </gv-ctrl-language>
   </div>
 

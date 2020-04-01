@@ -60,14 +60,13 @@
     <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
       Annotations
       <span class="ml-auto">
-        <button class="btn btn-link btn-sm ml-2" (click)="createAnnotation$.next(true)">
+        <button class="btn btn-link btn-sm ml-2" (click)="p.ramOpen$.next(true)">
           <i class="fa fa-plus" aria-hidden="true"></i> Add
         </button>
       </span>
     </gv-detail-top-bar>
     <gv-detail-content>
-      <gv-mentioning-list class="gv-tile" [create$]="createAnnotation$" [chunk$]="chunk$"
-        [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
+      <gv-mentioning-list class="gv-tile" [chunksToHighligt$]="chunksToHighlightInList$" [listOf]="listOf"
         (rowMouseenter)="mentioningRowMousenter($event)" (rowMouseleave)="mentioningRowMouseleave($event)"
         (dataChange)="mentioningListChange($event)">
       </gv-mentioning-list>

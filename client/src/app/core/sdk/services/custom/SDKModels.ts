@@ -1,5 +1,6 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
+import { SchemaObject } from '../../models/SchemaObject';
 import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
 import { SysClassField } from '../../models/SysClassField';
 import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
@@ -43,6 +44,7 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
+    SchemaObject: SchemaObject,
     SysClassFieldPropertyRel: SysClassFieldPropertyRel,
     SysClassField: SysClassField,
     SysClassHasTypeProperty: SysClassHasTypeProperty,

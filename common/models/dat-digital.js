@@ -1,6 +1,7 @@
 'use strict';
 const Promise = require('bluebird');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 const TableRemotes = require('../../dist/server/table/table-remotes')
   .TableRemotes;
 module.exports = function(DatDigital) {
@@ -41,7 +42,7 @@ module.exports = function(DatDigital) {
 
     const params = [pkEntity, accountId];
     if (entityVersion) params.push(entityVersion);
-    const q = new FlatObjectQueryBuilder(DatDigital.app.models);
+    const q = new SqlBuilderLbModels(DatDigital.app.models);
     const sql = `
     WITH namespaces AS (
       SELECT pk_entity pk_namespace

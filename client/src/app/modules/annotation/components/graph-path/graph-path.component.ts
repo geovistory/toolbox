@@ -4,6 +4,8 @@ export interface GraphPathSegment {
     label: string;
     icon: string;
     tooltip: string;
+    fkClass?: number
+    pkEntity?: number
   };
   property?: {
     label: string;
@@ -28,10 +30,6 @@ export class GraphPathComponent implements OnInit {
 
   ngOnInit() {
     this.mode = this.mode ? this.mode : 'mini';
-
-    setTimeout(() => {
-      this.onClick.emit({ hello: 'hello' })
-    }, 3000)
   }
 
 

@@ -13,7 +13,7 @@
 
 
         <div class="summary">
-          <div class="summary-icon">
+          <div class="summary-icon" dnd-draggable [dragData]="preview$ | async">
 
             <mat-icon *ngIf="(iconType$ | async)==='expression-portion'" class="gv-source-color">folder
             </mat-icon>
@@ -120,12 +120,8 @@
           <mat-tab *ngIf="(showMapToggle$ | async)" label="Map and Timeline"> </mat-tab>
           <mat-tab *ngIf="(showSectionListToggle$ | async)" label="Sections & Digital Reproductions"
             (click)="show('showSectionList')"> </mat-tab>
-          <mat-tab *ngIf="(showSourcesToggle$ | async)" label="Sources"> </mat-tab>
-
-
-          <mat-tab label="Is Topic Of"> </mat-tab>
-
-
+          <mat-tab *ngIf="(showSourcesToggle$ | async)" label="Linked Sources"> </mat-tab>
+          <mat-tab *ngIf="(showSourcesToggle$ | async)" label="Linked Digitals"> </mat-tab>
 
         </mat-tab-group>
       </gv-detail-top-bar>
@@ -149,9 +145,18 @@
           [basePath]="basePath.concat('mentionedEntities')" [listOf]="listOf">
         </gv-mentioning-list> -->
 
+        <mat-tab-group *ngIf="(showSources$ | async)">
+          <mat-tab label="Is mentioned in">
+            <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1218"></gv-ram-list>
+          </mat-tab>
 
-        <gv-ram-list *ngIf="(showSources$ | async)">
-        </gv-ram-list>
+          <mat-tab label="Is annotated in">
+            <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1218"></gv-ram-list>
+          </mat-tab>
+          <mat-tab label="Is topic of">
+            <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="117"></gv-ram-list>
+          </mat-tab>
+        </mat-tab-group>
 
 
 

@@ -3,7 +3,8 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
 const helpers = require('../helpers');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 var SqlTemporalEntityList = require('../../dist/server/sql-builders/sql-temporal-entity-list')
   .SqlTemporalEntityList;
 var SqlTemporalEntityListAlternatives = require('../../dist/server/sql-builders/sql-temporal-entity-list-alternatives')

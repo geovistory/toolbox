@@ -48,6 +48,7 @@ import { SocketBrowser } from './sockets/socket.browser';
 import { SocketDriver } from './sockets/socket.driver';
 import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
+import { SchemaObjectApi } from './services/custom/SchemaObject';
 import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldPropertyRel';
 import { SysClassFieldApi } from './services/custom/SysClassField';
 import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
@@ -114,6 +115,7 @@ export class SDKBrowserModule {
         LoggerService,
         SDKModels,
         RealTime,
+        SchemaObjectApi,
         SysClassFieldPropertyRelApi,
         SysClassFieldApi,
         SysClassHasTypePropertyApi,

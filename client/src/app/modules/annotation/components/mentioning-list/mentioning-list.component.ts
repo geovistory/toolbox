@@ -76,10 +76,10 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
    */
   @Input() expressionPk$: Observable<number>;
   @Input() expressionPortionPk$: Observable<number>;
-  @Input() chunk$ = new BehaviorSubject<DatChunk>(null);
+  // @Input() chunk$ = new BehaviorSubject<DatChunk>(null);
 
   // If true, the list is hidden and the create form is shown
-  @Input() create$ = new BehaviorSubject<boolean>(false);
+  // @Input() create$ = new BehaviorSubject<boolean>(false);
 
 
   /**
@@ -294,7 +294,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
         const role: InfRole = this.mentioningCreateCtrl.value;
         this.inf.role.upsert([role], pkProject).resolved$
           .pipe(first(r => !!r), takeUntil(this.destroy$)).subscribe(resolved => {
-            this.create$.next(false)
+            // this.create$.next(false)
           })
       })
     }

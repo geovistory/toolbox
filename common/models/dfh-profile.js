@@ -1,5 +1,6 @@
 'use strict';
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 const OntoMe = require('../../dist/server/ontome/ontome').OntoMe;
 
@@ -62,7 +63,7 @@ module.exports = function(DfhProfile) {
    *
    */
   DfhProfile.ofProject = function(pkProject, cb) {
-    const q = new FlatObjectQueryBuilder(DfhProfile.app.models);
+    const q = new SqlBuilderLbModels(DfhProfile.app.models);
 
     const params = [pkProject];
 

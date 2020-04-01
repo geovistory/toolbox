@@ -1,0 +1,92 @@
+{
+  "name": "SchemaObject",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "inf": {
+      "id": true,
+      "type": "object"
+    },
+    "pro": {
+      "type": "object"
+    },
+    "dat": {
+      "type": "object"
+    },
+    "sys": {
+      "type": "object"
+    },
+    "dfh": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "getRamList"
+      ]
+    }
+  ],
+  "methods": {
+    "getRamList": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Get the schema object for the ram list.",
+      "http": {
+        "path": "/ram-list",
+        "verb": "get"
+      }
+    }
+  }
+}

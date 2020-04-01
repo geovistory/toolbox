@@ -48,11 +48,10 @@
 
   </mat-drawer>
   <mat-drawer-content style="display:flex; flex-direction:column">
-    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;"
-      [hasBackdrop]="false //!(p.creatingMentioning$ | async)">
+    <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="false">
 
       <!-- List of Sources, Entities … -->
-      <mat-drawer class="gv-drawer-list" #list mode="over" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
+      <mat-drawer class="gv-drawer-list" #list mode="side" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
         <button class="btn btn-link-gray position-absolute" style="right: 0; top: 50%; z-index: 2000"
           (click)="list.close()" (positionChanged)="setList('')">
           <i class="fa fa-chevron-left"></i> </button>
@@ -72,122 +71,114 @@
       </mat-drawer>
 
       <!-- Container for Tabs … -->
-      <mat-drawer-content class="d-flex ex-b" cdkDropListGroup>
-        <div *ngIf="(p.panels$ | async)?.length === 0"
-          class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
-          <div class="mat-display-1 mb-3 text-gray-400">
-            Your Project
-          </div>
-          <div class="mat-display-3 mb-4 text-gray-400">
-            {{(p.activeProject$|async)?.label}}
-          </div>
-          <div class="text-gray-400 helper-text">
-            Find your Entities and Sources to the left.
+      <mat-drawer-content class="gv-pe-tab-container d-flex" cdkDropListGroup>
+        <div class="gv-pe-upper">
+
+          <div *ngIf="(p.panels$ | async)?.length === 0"
+            class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
+            <div class="mat-display-1 mb-3 text-gray-400">
+              Your Project
+            </div>
+            <div class="mat-display-3 mb-4 text-gray-400">
+              {{(p.activeProject$|async)?.label}}
+            </div>
+            <div class="text-gray-400 helper-text">
+              Find your Entities and Sources to the left.
+            </div>
+
           </div>
 
+          <!-- Tab Handles -->
+          <as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1"
+            *ngIf="(p.panels$ | async)?.length > 0">
+            <as-split-area size="(100 / (p.panels$ | async)?.length )"
+              *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn"
+              class="gv-panel-for-tabs gv-grow-1 gv-flex-fh" style="overflow: hidden;" (mousedown)="p.focusPanel(i)"
+              [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
+
+              <div>
+                <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal"
+                  (cdkDropListDropped)="dropTab($event)" class="tab-list">
+
+                  <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box"
+                    [cdkDragData]="{'panelIndex': i, 'tabIndex': j}" [ngClass]="{'active': tab.active }"
+                    (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()" [tab]="tab"
+                    (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
+
+                </div>
+                <!-- <button (click)="p.addTab()">Split</button> -->
+              </div>
+
+              <div class="panel-body gv-flex-fh position-relative bg-gray-100">
+                <div gvPanelBody [gvPanelId]="panel.id">
+                  <!-- Tab body will be placed dynamically via Cdk Portal -->
+                </div>
+
+                <div class="split-panel-drop-zone"
+                  [ngClass]="{'active': highlightPanel[i] === 'full', 'enabled': tabDragging}">
+
+                  <div class="highlight left" [ngClass]="{'active': highlightPanel[i] === 'left'}"></div>
+                  <div class="highlight right" [ngClass]="{'active': highlightPanel[i] === 'right'}"></div>
+
+                  <div class="split left" [ngClass]="{'enabled': tabDragging}" cdkDropList
+                    (cdkDropListEntered)="setHighlightPanel(i, 'left')"
+                    (cdkDropListExited)="unsetHighlightPanel(i, 'left')" (cdkDropListDropped)="splitPanel(i, $event)">
+                  </div>
+                  <div class="split center" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'full')"
+                    (cdkDropListExited)="unsetHighlightPanel(i, 'full')"> </div>
+                  <div class="split right" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'right')"
+                    (cdkDropListExited)="unsetHighlightPanel(i, 'right')"
+                    (cdkDropListDropped)="splitPanel(i+1, $event)">
+                  </div>
+
+                </div>
+              </div>
+
+            </as-split-area>
+          </as-split>
+
+          <!-- Tab Bodies. The body is placed to gvPanelBody via Cdk Portal -->
+          <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
+            *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
+
+            <gv-text-detail class="gv-flex-fh" *ngIf="tab.component=='text-detail'" [pkEntity]="tab.data.pkEntity"
+              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+            </gv-text-detail>
+
+            <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table-detail'" [pkEntity]="tab.data.pkEntity"
+              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+            </gv-table-detail>
+
+
+            <gv-pe-it-detail class="gv-flex-fh" *ngIf="tab.component=='pe-it-detail'" [tab]="tab"
+              [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
+              [onActivateTab]="c">
+            </gv-pe-it-detail>
+
+
+            <gv-te-ent-detail class="gv-flex-fh" *ngIf="tab.component=='te-en-detail'" [tab]="tab"
+              [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
+              [onActivateTab]="c"></gv-te-ent-detail>
+
+            <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis-detail'"
+              [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
+              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+            </gv-analysis-detail>
+
+            <gv-project-settings-data class="gv-tab-content" *ngIf="tab.component=='classes-settings'"
+              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+            </gv-project-settings-data>
+
+            <gv-ontome-profiles-settings class="gv-tab-content" *ngIf="tab.component=='ontome-profiles-settings'"
+              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+            </gv-ontome-profiles-settings>
+
+            <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkClass]="tab.data.pkClass"
+              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c"></gv-types>
+
+          </gv-tab-body>
         </div>
-
-        <!-- TODO REMOVE -->
-        <!-- <div *ngIf="(p.panels$ | async)?.length === 0">
-          <gv-class-fields [fkProject]="375669" [fkClass]="61"></gv-class-fields>
-
-        </div> -->
-
-        <!-- Tab Handles -->
-        <as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1"
-          *ngIf="(p.panels$ | async)?.length > 0">
-          <as-split-area size="(100 / (p.panels$ | async)?.length )"
-            *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn"
-            class="gv-panel-for-tabs gv-grow-1 gv-flex-fh" style="overflow: hidden;" (mousedown)="p.focusPanel(i)"
-            [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
-
-            <div>
-              <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal"
-                (cdkDropListDropped)="dropTab($event)" class="tab-list">
-
-                <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box"
-                  [cdkDragData]="{'panelIndex': i, 'tabIndex': j}" [ngClass]="{'active': tab.active }"
-                  (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()" [tab]="tab"
-                  (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
-
-              </div>
-              <!-- <button (click)="p.addTab()">Split</button> -->
-            </div>
-
-            <div class="panel-body gv-flex-fh position-relative bg-gray-100">
-              <div gvPanelBody [gvPanelId]="panel.id">
-                <!-- Tab body will be placed dynamically via Cdk Portal -->
-              </div>
-
-              <div class="split-panel-drop-zone"
-                [ngClass]="{'active': highlightPanel[i] === 'full', 'enabled': tabDragging}">
-
-                <div class="highlight left" [ngClass]="{'active': highlightPanel[i] === 'left'}"></div>
-                <div class="highlight right" [ngClass]="{'active': highlightPanel[i] === 'right'}"></div>
-
-                <div class="split left" [ngClass]="{'enabled': tabDragging}" cdkDropList
-                  (cdkDropListEntered)="setHighlightPanel(i, 'left')"
-                  (cdkDropListExited)="unsetHighlightPanel(i, 'left')" (cdkDropListDropped)="splitPanel(i, $event)">
-                </div>
-                <div class="split center" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'full')"
-                  (cdkDropListExited)="unsetHighlightPanel(i, 'full')"> </div>
-                <div class="split right" cdkDropList (cdkDropListEntered)="setHighlightPanel(i, 'right')"
-                  (cdkDropListExited)="unsetHighlightPanel(i, 'right')" (cdkDropListDropped)="splitPanel(i+1, $event)">
-                </div>
-
-              </div>
-            </div>
-
-          </as-split-area>
-        </as-split>
-
-        <!-- Tab Bodies. The body is placed to gvPanelBody via Cdk Portal -->
-        <gv-tab-body [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
-          *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
-
-          <gv-text-detail class="gv-flex-fh" *ngIf="tab.component=='text-detail'" [pkEntity]="tab.data.pkEntity"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
-          </gv-text-detail>
-
-          <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table-detail'" [pkEntity]="tab.data.pkEntity"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
-          </gv-table-detail>
-
-
-          <gv-pe-it-detail class="gv-flex-fh" *ngIf="tab.component=='pe-it-detail'" [tab]="tab"
-            [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
-            [onActivateTab]="c">
-          </gv-pe-it-detail>
-
-
-          <gv-te-ent-detail class="gv-flex-fh" *ngIf="tab.component=='te-en-detail'" [tab]="tab"
-            [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
-            [onActivateTab]="c"></gv-te-ent-detail>
-
-          <!-- <gv-query-detail class="gv-flex-fh" *ngIf="tab.component=='query-detail'" [pkEntity]="tab.data?.pkEntity"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)"></gv-query-detail>
-
-          <gv-visual-detail class="gv-flex-fh" *ngIf="tab.component=='visual-detail'" [pkEntity]="tab.data?.pkEntity"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
-          </gv-visual-detail> -->
-
-          <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis-detail'"
-            [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
-            (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
-          </gv-analysis-detail>
-
-          <gv-project-settings-data class="gv-tab-content" *ngIf="tab.component=='classes-settings'"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
-          </gv-project-settings-data>
-
-          <gv-ontome-profiles-settings class="gv-tab-content" *ngIf="tab.component=='ontome-profiles-settings'"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
-          </gv-ontome-profiles-settings>
-
-          <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkClass]="tab.data.pkClass"
-            [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c"></gv-types>
-
-        </gv-tab-body>
+        <gv-ram-form class="gv-pe-lower mat-border-top" *ngIf="p.ramOpen$|async"></gv-ram-form>
 
       </mat-drawer-content>
     </mat-drawer-container>

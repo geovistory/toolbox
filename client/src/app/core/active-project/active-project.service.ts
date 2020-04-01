@@ -9,7 +9,7 @@ import { cache } from 'app/shared';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
 import { difference, equals, groupBy, indexBy, path, values, without } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of as observableOf, Subject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of as observableOf, Subject, timer, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { environment } from '../../../environments/environment';
@@ -26,7 +26,7 @@ import { SucceedActionMeta } from '../store/actions';
 import { IAppState, SchemaObject } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { ActiveProjectActions } from './active-project.action';
-import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, RamSource } from './active-project.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 
@@ -68,6 +68,14 @@ export class ActiveProjectService {
   inf$: InfSelector;
   dat$: DatSelector;
   pro$: ProSelector;
+
+  /***************************************************************
+   * Ram (Refers to, Annotated in, Mentioned in)
+   ***************************************************************/
+  ramOpen$ = new BehaviorSubject(false);
+  ramSource$ = new ReplaySubject<RamSource>();
+  ramProperty$ = new ReplaySubject<number>()
+  ramTarget$ = new ReplaySubject<number>();
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
@@ -509,6 +517,14 @@ export class ActiveProjectService {
   mentioningsFocusedInTable(pks: number[]) {
     this.ngRedux.dispatch(this.actions.setMentioningsFocusedInTable(pks))
   }
+
+  ramReset() {
+    this.ramOpen$.next(false);
+    this.ramSource$.next(undefined);
+    this.ramTarget$.next(undefined);
+  }
+
+
 
   /************************************************************************************
   * Layout -- Tabs
