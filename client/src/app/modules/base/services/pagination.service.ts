@@ -91,12 +91,16 @@ class RolePageLoader {
   private getTrigger(triggerKey: string, l: ListDefinition, pkEntity: number) {
     if (!this.paginationTriggers.has(triggerKey)) {
       const t = combineLatest([
-        this.p.inf$.role$.by_fk_property__fk_entity$
-          .key(l.pkProperty + '_' + pkEntity)
+        this.p.inf$.role$
+          .by_object_and_property_indexed$({
+            fk_property: l.pkProperty,
+            fk_entity: pkEntity
+          })
           .pipe(map(x => keys(x)), distinctUntilChanged(equals)),
-        this.p.inf$.role$.by_fk_property__fk_temporal_entity$
-          .key(l.pkProperty + '_' + pkEntity)
-          .pipe(map(x => keys(x)), distinctUntilChanged(equals)),
+        this.p.inf$.role$.by_subject_and_property_indexed$({
+          fk_property: l.pkProperty,
+          fk_temporal_entity: pkEntity
+        }).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
       ]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
       this.paginationTriggers.set(triggerKey, t);
     }

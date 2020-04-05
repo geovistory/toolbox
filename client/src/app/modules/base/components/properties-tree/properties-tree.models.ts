@@ -81,6 +81,12 @@ export interface PlaceItem extends BasicRoleItem {
   label: string
 }
 
+export interface LangStringItem extends BasicRoleItem {
+  fkClass: number;
+  label: string
+  language: InfLanguage
+}
+
 export interface TimePrimitiveItem extends BasicRoleItem {
   fkClass: number;
   label: string

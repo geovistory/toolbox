@@ -7,7 +7,8 @@ import { tag } from '../../../../node_modules/rxjs-spy/operators';
 import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString } from '../sdk';
 import { PaginateByParam } from '../store/actions';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
-import { infDefinitions, infRoot } from './inf.config';
+import { infDefinitions, infRoot, IndexRoleBySubjectProperty, indexRoleBySubjectProperty, IndexRoleByObjectProperty, indexRoleByObjectProperty, IndexRoleBySubject, indexRoleBySubject, IndexRoleByObject, indexRoleByObject } from './inf.config';
+import { values } from 'd3';
 
 class Selector {
   constructor(
@@ -28,7 +29,6 @@ class Selector {
           path = [infRoot, this.model, indexKey];
         }
         return this.ngRedux.select<ByPk<M>>(path)
-        // .pipe(auditTime(1))
       })
     )
 
@@ -43,10 +43,6 @@ class Selector {
             path = [infRoot, this.model, indexKey, x];
           }
           return this.ngRedux.select<M>(path)
-            .pipe(
-              // distinctUntilChanged<M>(equals),
-              tag(`InfSelector::key::${path}`)
-            )
         })
       )
 
@@ -157,14 +153,15 @@ class InfTemporalEntitySelections extends Selector {
 class InfRoleSelections extends Selector {
 
   public by_pk_entity$ = this.selector<InfRole>('by_pk_entity')
-  public by_fk_property$ = this.selector<ByPk<InfRole>>('by_fk_property')
-  public by_fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_entity')
-  public by_fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_temporal_entity')
-  public by_fk_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_temporal_entity')
-  public by_fk_property__fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_entity')
-  public by_fk_property_of_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property_of_property__fk_temporal_entity')
+  // public by_fk_property$ = this.selector<ByPk<InfRole>>('by_fk_property')
+  // public by_fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_entity')
+  // public by_fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_temporal_entity')
+  // public by_fk_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_temporal_entity')
+  // public by_fk_property__fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_entity')
+  // public by_fk_property_of_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property_of_property__fk_temporal_entity')
   public by_fk_subject_data$ = this.selector<ByPk<InfRole>>('by_fk_subject_data')
-  public by_fk_object_data$ = this.selector<ByPk<InfRole>>('by_fk_object_data')
+  // public by_fk_object_data$ = this.selector<ByPk<InfRole>>('by_fk_object_data')
+
 
   public pagination$ = this.paginationSelector<number>()
 
@@ -175,6 +172,42 @@ class InfRoleSelections extends Selector {
     public model: string
   ) { super(ngRedux, pkProject$, configs, model) }
 
+  by_subject$(foreignKeys: IndexRoleBySubject): Observable<InfRole[]> {
+    const key = indexRoleBySubject(foreignKeys);
+    return this.selector<ByPk<InfRole>>('by_subject').key(key).pipe(
+      map(roleIdx => values(roleIdx))
+    )
+  }
+
+  by_subject_and_property$(foreignKeys: IndexRoleBySubjectProperty): Observable<InfRole[]> {
+    const key = indexRoleBySubjectProperty(foreignKeys);
+    return this.selector<ByPk<InfRole>>('by_subject+property').key(key).pipe(
+      map(roleIdx => values(roleIdx))
+    )
+  }
+  by_subject_and_property_indexed$(foreignKeys: IndexRoleBySubjectProperty): Observable<ByPk<InfRole>> {
+    const key = indexRoleBySubjectProperty(foreignKeys);
+    return this.selector<ByPk<InfRole>>('by_subject+property').key(key)
+
+  }
+
+  by_object$(foreignKeys: IndexRoleByObject): Observable<InfRole[]> {
+    const key = indexRoleByObject(foreignKeys);
+    return this.selector<ByPk<InfRole>>('by_object').key(key).pipe(
+      map(roleIdx => values(roleIdx))
+    )
+  }
+
+  by_object_and_property$(foreignKeys: IndexRoleByObjectProperty): Observable<InfRole[]> {
+    const key = indexRoleByObjectProperty(foreignKeys);
+    return this.selector<ByPk<InfRole>>('by_object+property').key(key).pipe(
+      map(roleIdx => values(roleIdx))
+    )
+  }
+  by_object_and_property_indexed$(foreignKeys: IndexRoleByObjectProperty): Observable<ByPk<InfRole>> {
+    const key = indexRoleByObjectProperty(foreignKeys);
+    return this.selector<ByPk<InfRole>>('by_object+property').key(key)
+  }
 
 }
 

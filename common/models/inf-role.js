@@ -723,7 +723,16 @@ module.exports = function(InfRole) {
       };
     }
 
-    return InfRole.findComplex(filter, cb);
+    return InfRole.findComplex(filter, (err, res) => {
+      if (err) cb(err);
+      res.forEach(role => {
+        role.fk_subject_tables_row = parseInt(role.fk_subject_tables_row, 10);
+        role.fk_subject_tables_cell = parseInt(role.fk_subject_tables_cell, 10);
+        role.fk_object_tables_row = parseInt(role.fk_object_tables_row, 10);
+        role.fk_object_tables_cell = parseInt(role.fk_object_tables_cell, 10);
+      });
+      cb(false, res);
+    });
   };
 
   /**

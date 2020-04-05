@@ -87,41 +87,45 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   private pipeItems(): Observable<Mentioning[]> {
 
-    return combineLatest(this.rootEntity$, this.p.inf$.role$.by_fk_property__fk_entity$.key(this.fkProperty + '_' + this.pkEntity))
-      .pipe(
-        switchMap(([rootEntity, linkedRoles]) => {
-          const isMentionedInRoles = values(linkedRoles)
-          const prefix = `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
+    return combineLatest(
+      this.rootEntity$,
+      this.p.inf$.role$.by_object_and_property$({
+        fk_property: this.fkProperty,
+        fk_entity: this.pkEntity
+      })
+    ).pipe(
+      switchMap(([rootEntity, isMentionedInRoles]) => {
+        const prefix = `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
 
-          // I map the input value to a Observable and switchMap will subscribe to the new one
-          const arrayOfObs$: Observable<Mentioning>[] = isMentionedInRoles.map(role => {
-            return combineLatest(
-              this.pipePathRecursivly(role.fk_temporal_entity, prefix),
-              this.getReference(role.pk_entity)
-            ).pipe(
-              map(([path, location]) => {
-                return {
-                  path,
-                  location,
-                  statement: role,
-                  actions: {
-                    open: true
-                  }
-                };
-              })
-            )
-          });
-          return combineLatest(arrayOfObs$);
-        }));
+        // I map the input value to a Observable and switchMap will subscribe to the new one
+        const arrayOfObs$: Observable<Mentioning>[] = isMentionedInRoles.map(role => {
+          return combineLatest(
+            this.pipePathRecursivly(role.fk_temporal_entity, prefix),
+            this.getReference(role.pk_entity)
+          ).pipe(
+            map(([path, location]) => {
+              return {
+                path,
+                location,
+                statement: role,
+                actions: {
+                  open: true
+                }
+              };
+            })
+          )
+        });
+        return combineLatest(arrayOfObs$);
+      }));
   }
 
   getReference(pkSubjectRole: number): Observable<Reference> {
-    return this.p.inf$.role$.by_fk_property_of_property__fk_temporal_entity$.key(
-      DfhConfig.P_O_P_GEOV_HAS_REFERENCE + '_' + pkSubjectRole
-    )
+    return this.p.inf$.role$.by_subject_and_property$({
+      fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
+      fk_temporal_entity: pkSubjectRole
+    })
       .pipe(
-        switchMap((idxRoles) => {
-          const roles = values(idxRoles || {})
+        switchMap((roles) => {
           if (roles.length < 1) return new BehaviorSubject(undefined);
           return combineLatest(roles.map(r => {
             return this.p.inf$.lang_string$.by_pk_entity$.key(r.fk_entity)
@@ -163,17 +167,29 @@ export class RamListComponent implements OnInit, OnDestroy {
             // because this will give us the entity preview for the entity to display in the path
             return combineLatest(
               // 1316 -- geovP5 – carrier provided by
-              this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(1316 + '_' + pkEntity)
-                .pipe(this.getFirstRole(), map((r) => r ? r.fk_entity : undefined)),
+              this.p.inf$.role$.by_subject_and_property$({
+                fk_property: 1316,
+                fk_temporal_entity: pkEntity
+              })
+                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
               // 979 -- R4 – carriers provided by
-              this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(979 + '_' + pkEntity)
-                .pipe(this.getFirstRole(), map((r) => r ? r.fk_entity : undefined)),
+              this.p.inf$.role$.by_subject_and_property$({
+                fk_property: 979,
+                fk_temporal_entity: pkEntity
+              })
+                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
               // 1305 -- geovP4 – is server response to request
-              this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(1305 + '_' + pkEntity)
-                .pipe(this.getFirstRole(), map((r) => r ? r.fk_entity : undefined)),
+              this.p.inf$.role$.by_subject_and_property$({
+                fk_property: 1305,
+                fk_temporal_entity: pkEntity
+              })
+                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
               // 1016 -- R42 – is representative manifestation singleton for
-              this.p.inf$.role$.by_fk_property__fk_entity$.key(1016 + '_' + pkEntity)
-                .pipe(this.getFirstRole(), map((r) => r ? r.fk_temporal_entity : undefined))
+              this.p.inf$.role$.by_object_and_property$({
+                fk_property: 1016,
+                fk_entity: pkEntity
+              })
+                .pipe(map((r) => r.length ? r[0].fk_temporal_entity : undefined)),
             )
               .pipe(
                 map((pks) => pks.find(pk => !!pk)),
@@ -239,27 +255,31 @@ export class RamListComponent implements OnInit, OnDestroy {
         if (segE.entity.fkClass == 503) {
 
           // get 'is part of' role
-          return this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(1317 + '_' + pkEntity).pipe(
-            map(idxR => values(idxR)),
-            switchMap((rs) => {
-
-              if (rs.length > 0) {
-                const label = 'has part';
-                // add segments to path
-                const segP: GraphPathSegment = {
-                  property: { label, tooltip: 'has part' }
-                }
-                const path = {
-                  text: `${segP.property.label} ${segE.entity.label} ${graphPath.text}`,
-                  segments: [segP, segE, ...graphPath.segments]
-                };
-
-                return this.pipePathRecursivly(rs[0].fk_entity, undefined, path)
-              }
-
-              return finish(segE, graphPath);
+          return this.p.inf$.role$
+            .by_subject_and_property$({
+              fk_property: 1317,
+              fk_temporal_entity: pkEntity
             })
-          )
+            .pipe(
+              switchMap((rs) => {
+
+                if (rs.length > 0) {
+                  const label = 'has part';
+                  // add segments to path
+                  const segP: GraphPathSegment = {
+                    property: { label, tooltip: 'has part' }
+                  }
+                  const path = {
+                    text: `${segP.property.label} ${segE.entity.label} ${graphPath.text}`,
+                    segments: [segP, segE, ...graphPath.segments]
+                  };
+
+                  return this.pipePathRecursivly(rs[0].fk_entity, undefined, path)
+                }
+
+                return finish(segE, graphPath);
+              })
+            )
         }
 
 

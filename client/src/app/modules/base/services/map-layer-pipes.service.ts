@@ -234,10 +234,9 @@ export class MapLayerPipesService {
 
 
   @spyTag @cache() pipeRelatedGeoEntity(pkEntity: number): Observable<InfPersistentItem[]> {
-    return this.p.inf$.role$.by_fk_temporal_entity$.key(pkEntity).pipe(
+    return this.p.inf$.role$.by_subject$({ fk_temporal_entity: pkEntity }).pipe(
       switchMapOr([], (roles) => combineLatest(
-        values(roles).map(role => this.p.inf$.persistent_item$.by_pk_entity$.key(role.fk_entity).pipe(
-        ))
+        roles.map(role => this.p.inf$.persistent_item$.by_pk_entity$.key(role.fk_entity))
       ).pipe(
         map(x => x.filter(i => !!i)),
       ))

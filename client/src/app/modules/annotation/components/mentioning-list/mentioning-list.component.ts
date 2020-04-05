@@ -227,25 +227,25 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.inf.role.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
 
-        const rows$ = this.p.inf$.role$.by_fk_entity$.key(this.listOf.pkEntity)
+        const rows$ = this.p.inf$.role$.by_object$({ fk_entity: this.listOf.pkEntity })
           .pipe(
-            switchMap((roles) => combineLatestOrEmpty(values(roles)
-              .filter(role => role.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
-              .map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_subject_data)
-                .pipe(
-                  filter(item => !!item),
-                  switchMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+            switchMap((roles) => combineLatestOrEmpty(
+              roles.filter(role => role.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
+                .map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_subject_data)
+                  .pipe(
                     filter(item => !!item),
-                    map(texts => latestVersion(texts)),
-                    map(digital => ({
-                      role: role,
-                      domainChunk,
-                      domainLabel: this.getStringFromChunk(domainChunk),
-                      digital,
-                      digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
-                    } as Row))))
-                )
-              )))
+                    switchMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+                      filter(item => !!item),
+                      map(texts => latestVersion(texts)),
+                      map(digital => ({
+                        role: role,
+                        domainChunk,
+                        domainLabel: this.getStringFromChunk(domainChunk),
+                        digital,
+                        digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
+                      } as Row))))
+                  )
+                )))
           )
 
         this.data$ = rows$;

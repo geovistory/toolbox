@@ -39,16 +39,18 @@ export class InformationBasicPipesService {
   *********************************************************************/
 
   @spyTag pipeRelatedTemporalEntities(pkEntity: number): Observable<InfTemporalEntity[]> {
-    return this.p.inf$.role$.by_fk_entity$.key(pkEntity).pipe(
-      auditTime(1),
-      switchMapOr([], (roles) => combineLatest(
-        values(roles).map(role => this.p.inf$.temporal_entity$.by_pk_entity$
-          .key(role.fk_temporal_entity).pipe(
-          ))
-      ).pipe(
-        map(x => x.filter((y) => !!y)),
-      )),
-    )
+    return this.p.inf$.role$
+      .by_object$({ fk_entity: pkEntity })
+      .pipe(
+        auditTime(1),
+        switchMapOr([], (roles) => combineLatest(
+          roles.map(role => this.p.inf$.temporal_entity$.by_pk_entity$
+            .key(role.fk_temporal_entity).pipe(
+            ))
+        ).pipe(
+          map(x => x.filter((y) => !!y)),
+        )),
+      )
   }
 
 
@@ -66,8 +68,7 @@ export class InformationBasicPipesService {
   * Pipe outgoing roles of an entity
   */
   @spyTag pipeOutgoingRoles(pkEntity): Observable<InfRole[]> {
-    return this.p.inf$.role$.by_fk_temporal_entity$
-      .key(pkEntity).pipe(map(roles => values(roles)))
+    return this.p.inf$.role$.by_subject$({ fk_temporal_entity: pkEntity })
   }
 
 
@@ -75,18 +76,18 @@ export class InformationBasicPipesService {
    * Pipe ingoing roles of an entity
    */
   @spyTag pipeIngoingRoles(pkEntity): Observable<InfRole[]> {
-    return this.p.inf$.role$.by_fk_entity$
-      .key(pkEntity).pipe(map(roles => values(roles)))
+    return this.p.inf$.role$.by_object$({ fk_entity: pkEntity })
   }
 
   /**
    * Pipe outgoing roles of temporal entity
    */
   @spyTag pipeOutgoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
-    return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
-      .key(pkProperty + '_' + pkEntity).pipe(
-        map(roles => values(roles))
-      )
+    return this.p.inf$.role$.by_subject_and_property$({
+      fk_property: pkProperty,
+      fk_temporal_entity: pkEntity
+    })
+
   }
 
 
@@ -94,22 +95,24 @@ export class InformationBasicPipesService {
    * Pipe ingoing roles of an entity
    */
   @spyTag pipeIngoingRolesByProperty(pkProperty, pkEntity): Observable<InfRole[]> {
-    return this.p.inf$.role$.by_fk_property__fk_entity$
-      .key(pkProperty + '_' + pkEntity).pipe(
-        map(roles => values(roles))
-      )
+    return this.p.inf$.role$.by_object_and_property$({
+      fk_property: pkProperty,
+      fk_entity: pkEntity
+    })
   }
 
   /**
  * Pipe outgoing roles of temporal entity
  */
   @spyTag pipeOutgoingBasicRoleItemsByProperty(pkProperty, pkEntity, pkProject: number): Observable<BasicRoleItem[]> {
-    return this.p.inf$.role$.by_fk_property__fk_temporal_entity$
-      .key(pkProperty + '_' + pkEntity).pipe(
-        switchMap(roles => combineLatestOrEmpty(
-          values(roles).map(role => this.pipeBasicRoleItem(pkProject, role, true))
-        ))
-      )
+    return this.p.inf$.role$.by_subject_and_property$({
+      fk_property: pkProperty,
+      fk_temporal_entity: pkEntity
+    }).pipe(
+      switchMap(roles => combineLatestOrEmpty(
+        roles.map(role => this.pipeBasicRoleItem(pkProject, role, true))
+      ))
+    )
   }
 
 
@@ -118,12 +121,14 @@ export class InformationBasicPipesService {
    * Pipe ingoing roles of an entity
    */
   @spyTag pipeIngoingBasicRoleItemsByProperty(pkProperty, pkEntity, pkProject: number): Observable<BasicRoleItem[]> {
-    return this.p.inf$.role$.by_fk_property__fk_entity$
-      .key(pkProperty + '_' + pkEntity).pipe(
-        switchMap(roles => combineLatestOrEmpty(
-          values(roles).map(role => this.pipeBasicRoleItem(pkProject, role, false))
-        ))
-      )
+    return this.p.inf$.role$.by_object_and_property$({
+      fk_property: pkProperty,
+      fk_entity: pkEntity
+    }).pipe(
+      switchMap(roles => combineLatestOrEmpty(
+        roles.map(role => this.pipeBasicRoleItem(pkProject, role, false))
+      ))
+    )
   }
 
   @spyTag private pipeBasicRoleItem(pkProject: number, role: InfRole, isOutgoing: boolean): Observable<BasicRoleItem> {
@@ -251,16 +256,14 @@ export class InformationBasicPipesService {
     * Pipe repo outgoing roles.
     */
   @spyTag pipeRepoOutgoingRoles(pkEntity): Observable<InfRole[]> {
-    return this.infRepo.role$.by_fk_temporal_entity$.key(pkEntity)
-      .pipe(map((inrepo) => values(inrepo)))
+    return this.infRepo.role$.by_subject$({ fk_temporal_entity: pkEntity })
   }
 
   /**
   * Pipe repo ingoing roles.
   */
   @spyTag pipeRepoIngoingRoles(pkEntity): Observable<InfRole[]> {
-    return this.infRepo.role$.by_fk_entity$.key(pkEntity)
-      .pipe(map((inrepo) => values(inrepo)))
+    return this.infRepo.role$.by_object$({ fk_entity: pkEntity })
   }
 
   /**
@@ -271,10 +274,14 @@ export class InformationBasicPipesService {
     return combineLatest(
       this.p.dfh$.property$.by_pk_property$.key(pkProperty)
         .pipe(filter(x => !!x && Object.keys(x).length > 0), map(p => values(p)[0].range_instances_max_quantifier)),
-      this.infRepo.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
+      this.infRepo.role$
+        .by_subject_and_property$({
+          fk_property: pkProperty,
+          fk_temporal_entity: pkEntity
+        })
+      // .pipe(filter(x => !!x))
     ).pipe(
-      map(([m, inrepo]) => {
-        const rs = values(inrepo);
+      map(([m, rs]) => {
         if (rs.length === 0) return rs;
         const r = this.sortRolesByRepoPopularity(rs);
         return (m === -1 || m === null) ? r : r.slice(0, m);
@@ -290,10 +297,14 @@ export class InformationBasicPipesService {
     return combineLatest(
       this.p.dfh$.property$.by_pk_property$.key(pkProperty)
         .pipe(filter(x => !!x && Object.keys(x).length > 0), map(p => values(p)[0].domain_instances_max_quantifier)),
-      this.infRepo.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity).pipe(filter(x => !!x))
+      this.infRepo.role$
+        .by_object_and_property$({
+          fk_property: pkProperty,
+          fk_entity: pkEntity
+        })
+      // .pipe(filter(x => !!x))
     ).pipe(
-      map(([m, inrepo]) => {
-        const rs = values(inrepo);
+      map(([m, rs]) => {
         if (rs.length === 0) return rs;
         const r = this.sortRolesByRepoPopularity(rs);
         return (m === -1 || m === null) ? r : r.slice(0, m);
@@ -335,8 +346,14 @@ export class InformationBasicPipesService {
      */
   @spyTag pipeAlternativeIngoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
-      this.infRepo.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity),
-      this.p.inf$.role$.by_fk_property__fk_entity$.key(pkProperty + '_' + pkEntity).pipe(
+      this.infRepo.role$.by_object_and_property_indexed$({
+        fk_property: pkProperty,
+        fk_entity: pkEntity
+      }),
+      this.p.inf$.role$.by_object_and_property_indexed$({
+        fk_property: pkProperty,
+        fk_entity: pkEntity
+      }).pipe(
         map(inproject => inproject ? Object.keys(inproject) : [])
       )
     ).pipe(
@@ -351,8 +368,14 @@ export class InformationBasicPipesService {
    */
   @spyTag pipeAlternativeOutgoingRoles(pkProperty, pkEntity): Observable<InfRole[]> {
     return combineLatest(
-      this.infRepo.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity),
-      this.p.inf$.role$.by_fk_property__fk_temporal_entity$.key(pkProperty + '_' + pkEntity).pipe(
+      this.infRepo.role$.by_subject_and_property_indexed$({
+        fk_property: pkProperty,
+        fk_temporal_entity: pkEntity
+      }),
+      this.p.inf$.role$.by_subject_and_property_indexed$({
+        fk_property: pkProperty,
+        fk_temporal_entity: pkEntity
+      }).pipe(
         map(inproject => inproject ? Object.keys(inproject) : [])
       ),
     ).pipe(
@@ -366,7 +389,7 @@ export class InformationBasicPipesService {
   @spyTag pipePersistentItemPksByClass(pkClass): Observable<number[]> {
     return this.p.inf$.persistent_item$.by_fk_class$.key(pkClass).pipe(
       map(ob => {
-        if (ob) return Object.keys(ob).map(k => parseInt(k));
+        if (ob) return Object.keys(ob).map(k => parseInt(k, 10));
         return []
       }))
   }
