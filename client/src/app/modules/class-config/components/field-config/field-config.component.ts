@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
 
 @Component({
   selector: 'gv-field-config',

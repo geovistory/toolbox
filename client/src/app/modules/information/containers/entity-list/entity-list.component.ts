@@ -10,7 +10,7 @@ import { InformationAPIEpics } from './api/entity-list.epics';
 import { Information } from './api/entity-list.models';
 import { informationReducer } from './api/entity-list.reducer';
 import { ClassAndTypePk } from '../create-or-add-entity/create-or-add-entity.component';
-import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
 
 @WithSubStore({
   basePathMethodName: 'getBasePath',

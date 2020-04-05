@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SysConfig, ActiveProjectService } from 'app/core';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Subject, of, Observable } from 'rxjs';
 import { AnalysisService } from '../../services/analysis.service';

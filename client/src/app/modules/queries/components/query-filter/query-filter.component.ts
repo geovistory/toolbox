@@ -5,7 +5,7 @@ import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-facto
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormArrayConfig, FormFactory, FormFactoryConfig, FormFactoryService, FormGroupConfig, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
 import { values } from 'd3';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil, filter, switchMap, distinctUntilChanged } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory
 import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { ClassFilterCondition, SubgroupOperator, SubGroupType } from '../../../../../../../src/common/interfaces';
 import { QueryFilterService } from './query-filter.service';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
 import { equals } from 'ramda';
 
 export interface ArrSubgroupData {

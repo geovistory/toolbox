@@ -1,13 +1,13 @@
 import { sandboxOf } from 'angular-playground';
 
 import { MapComponent } from './map.component';
-import { Information2Module } from '../../information.module';
+import { InformationModule } from '../../information.module';
 import { ViewerConfiguration } from 'angular-cesium';
 
 
 export default sandboxOf(MapComponent, {
   imports: [
-    Information2Module
+    InformationModule
   ],
   declarations: [
   ],

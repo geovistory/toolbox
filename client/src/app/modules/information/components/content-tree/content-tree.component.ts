@@ -9,10 +9,10 @@ import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
 
 /**
  * Food data with nested structure.

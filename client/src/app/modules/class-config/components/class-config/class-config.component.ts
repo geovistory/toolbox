@@ -2,8 +2,8 @@ import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { ActiveProjectService } from 'app/core';
 import { combineLatest, Observable, of } from '../../../../../../node_modules/rxjs';
 import { mergeMap } from '../../../../../../node_modules/rxjs/operators';
-import { FieldDefinition } from '../../../information/new-components/properties-tree/properties-tree.models';
-import { ConfigurationPipesService } from '../../../information/new-services/configuration-pipes.service';
+import { FieldDefinition } from '../../../base/new-components/properties-tree/properties-tree.models';
+import { ConfigurationPipesService } from '../../../base/new-services/configuration-pipes.service';
 
 
 @Component({

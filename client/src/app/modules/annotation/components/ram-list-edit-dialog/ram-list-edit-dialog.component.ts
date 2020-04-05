@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { InfRole, EntityPreview } from 'app/core';
-import { FieldDefinition, ListDefinition } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
+import { FieldDefinition, ListDefinition } from 'app/modules/base/new-components/properties-tree/properties-tree.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 export interface RamListEditDialogData {
 

@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
 import { EntityPreview, IAppState } from 'app/core';
-import { EntitySearchHit } from '../../containers/list/api/list.models';
 
 @Component({
   selector: 'gv-entity-search-hit',

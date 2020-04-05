@@ -21,7 +21,7 @@ import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detai
 import { AnalysisModule } from '../analysis/analysis.module';
 import { ClassConfigModule } from '../class-config/class-config.module';
 import { DataModule } from '../data/data.module';
-import { Information2Module } from '../information/information.module';
+import { InformationModule } from '../information/information.module';
 import { QueriesModule } from '../queries/queries.module';
 import { SettingsModule } from '../settings/settings.module';
 import { SourcesModule } from '../sources';
@@ -51,6 +51,7 @@ import { RamFormComponent } from './components/ram-form/ram-form.component';
 import { DndModule } from 'ng2-dnd';
 import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
+import { BaseModule } from '../base/base.module';
 
 
 
@@ -58,21 +59,21 @@ import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 @NgModule({
   imports: [
     CommonModule,
+    BaseModule,
+    SourcesModule,
+    QueriesModule,
+    DataModule,
+    InformationModule,
     NavbarModule,
     ProjectsRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
+    // ReactiveFormsModule,
     NgbModule,
     ProxyRouteModule,
-    Information2Module,
-    DataModule,
     KeysModule,
     ReadMoreModule,
     HighlightModule,
-    PassiveLinkModule,
     DragDropModule,
-    SourcesModule,
-    QueriesModule,
     AnalysisModule,
     PortalModule,
     DrawerContainerResizeModule,
@@ -86,12 +87,12 @@ import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
     HttpClientModule,
     AnalysisIconModule,
     SettingsModule,
-    OntoInfoModule,
+    // OntoInfoModule,
     ClassConfigModule, // TODO: REMOVE
-    MaterialModule,
+    // MaterialModule,
     DndModule,
     QuillOpsToStrModule,
-    TruncateModule
+    // TruncateModule
   ],
   declarations: [
     ProjectCreateComponent,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ValidationService } from 'app/core/validation/validation.service';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { FilterDefinition, QueryFilterComponent } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathFormComponent } from 'app/modules/queries/forms/query-path/query-path-form/query-path-form.component';

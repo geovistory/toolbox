@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArrayConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
-import { InformationBasicPipesService } from 'app/modules/information/new-services/information-basic-pipes.service';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/base/new-services/information-basic-pipes.service';
+import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
 import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';

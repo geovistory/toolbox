@@ -14,7 +14,7 @@ import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from '
 import { QueryDefinition, TableInput } from '../../../../../../../src/common/interfaces';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
 
 
 export interface TableFormGroupData {

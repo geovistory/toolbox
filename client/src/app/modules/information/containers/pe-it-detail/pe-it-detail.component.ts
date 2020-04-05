@@ -10,13 +10,14 @@ import { MatDialog, MatTabGroup } from '../../../../../../node_modules/@angular/
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
+
 import { slideInOut } from '../../shared/animations';
 import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
 import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 import { FormControl } from '@angular/forms';
+import { InformationBasicPipesService } from 'app/modules/base/new-services/information-basic-pipes.service';
+import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
 
 
 

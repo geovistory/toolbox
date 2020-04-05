@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, combineLatest, of, pipe, Subject } from 'rxjs';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
 import { mergeMap, tap, takeUntil, first, map } from 'rxjs/operators';
-import { FieldDefinition } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
+import { FieldDefinition } from 'app/modules/base/new-components/properties-tree/properties-tree.models';
 import { MatDialog } from '@angular/material';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
 import { ProClassFieldConfig, ActiveProjectService } from 'app/core';

@@ -2,7 +2,7 @@
 
 // import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
 import { CzmlLabel } from '../../../../../src/common/interfaces/czml-types';
-import { QueryPoint } from 'app/modules/information/new-services/map-layer-pipes.service';
+import { QueryPoint } from 'app/modules/base/new-services/map-layer-pipes.service';
 
 export interface CzmlLabelGeneratorSettings {
 

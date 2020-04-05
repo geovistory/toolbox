@@ -1,14 +1,14 @@
-import { List } from '../../list/api/list.models';
+import { List } from 'app/shared/components/list/api/list.models';
 
 
 export class Information {
 
-    // search results
-    items?: List;
+  // search results
+  items?: List;
 
-    loading?: boolean;
+  loading?: boolean;
 
-    constructor(data?: Information) {
-        Object.assign(this, data);
-    }
+  constructor(data?: Information) {
+    Object.assign(this, data);
+  }
 }

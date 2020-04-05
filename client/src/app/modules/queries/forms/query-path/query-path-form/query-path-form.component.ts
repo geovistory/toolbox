@@ -6,7 +6,7 @@ import { FormControlFactory } from 'app/modules/form-factory/core/form-control-f
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
