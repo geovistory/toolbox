@@ -6,6 +6,7 @@ import { SchemaObject } from './model';
 import { SchemaObjectApi } from '../sdk';
 import { Observable } from 'rxjs';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
+import { WarActions } from '../war/war.actions';
 
 
 @Injectable()
@@ -19,6 +20,7 @@ export class SchemaObjectService {
     public infActions: InfActions,
     public proActions: ProActions,
     public datActions: DatActions,
+    public warActions: WarActions,
     public notifications: NotificationsAPIActions
   ) { }
 
@@ -29,17 +31,21 @@ export class SchemaObjectService {
    * on error emits error message
    */
   store(apiCall$: Observable<SchemaObject>, pkProject) {
-    apiCall$.subscribe(
-      result => {
-        this.storeSchemaObject(result, pkProject)
-      },
-      error => {
-        this.notifications.addToast({
-          type: 'error',
-          options: { title: error.message }
-        })
-      }
-    )
+    return new Observable((resolver) => {
+      apiCall$.subscribe(
+        result => {
+          this.storeSchemaObject(result, pkProject)
+          resolver.next()
+        },
+        error => {
+          this.notifications.addToast({
+            type: 'error',
+            options: { title: error.message }
+          })
+          resolver.error()
+        }
+      )
+    })
   }
 
 
@@ -50,6 +56,7 @@ export class SchemaObjectService {
         if (schema === 'inf') actions = this.infActions;
         else if (schema === 'pro') actions = this.proActions;
         else if (schema === 'dat') actions = this.datActions;
+        else if (schema === 'war') actions = this.warActions;
         if (actions) {
           Object.keys(schemas[schema]).forEach(model => {
             actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);

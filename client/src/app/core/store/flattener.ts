@@ -18,7 +18,7 @@ export class ModelFlattener<Payload, Model> {
   ) { }
 
   flatten(items: Model[]) {
-    if (items) {
+    if (items && items.length > 0) {
 
       this.flattenCb(items);
       // todo remove properties of those objects, using getModelDefinition()
@@ -108,14 +108,20 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfRole(item);
-        this.temporal_entity.flatten([item.temporal_entity])
-        this.persistent_item.flatten([item.persistent_item])
-        this.appellation.flatten([item.appellation])
-        this.place.flatten([item.place])
-        this.time_primitive.flatten([item.time_primitive])
-        this.language.flatten([item.language])
-        this.chunk.flatten([item.domain_chunk])
         this.info_proj_rel.flatten(item.entity_version_project_rels)
+
+        // Subject
+        if (item.temporal_entity) this.temporal_entity.flatten([item.temporal_entity])
+        else if (item.subject_inf_role) this.role.flatten([item.subject_inf_role])
+
+        // Object
+        if (item.persistent_item) this.persistent_item.flatten([item.persistent_item])
+        else if (item.appellation) this.appellation.flatten([item.appellation])
+        else if (item.place) this.place.flatten([item.place])
+        else if (item.time_primitive) this.time_primitive.flatten([item.time_primitive])
+        else if (item.language) this.language.flatten([item.language])
+        else if (item.domain_chunk) this.chunk.flatten([item.domain_chunk])
+        else if (item.lang_string) this.lang_string.flatten([item.lang_string])
       })
     })
 

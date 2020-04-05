@@ -9,6 +9,7 @@ import { EntityActions } from './entity.actions';
 type Payload = PeItDetail;
 interface MetaData {
   keyToToggle?: string;
+  tabIndex?: number;
   pkEntity?: number;
   pkProject?: number;
 };
@@ -17,31 +18,31 @@ export type PeItAction = FluxStandardAction<Payload, MetaData>;
 @Injectable()
 export class PeItActions extends EntityActions {
 
-  static readonly PE_IT_STATE_UPDATED = 'PeItActions::PE_IT_STATE_UPDATED';
+  // static readonly PE_IT_STATE_UPDATED = 'PeItActions::PE_IT_STATE_UPDATED';
 
-  static readonly PE_IT_LABEL_UPDATED = 'PeItActions::PE_IT_LABEL_UPDATED';
+  // static readonly PE_IT_LABEL_UPDATED = 'PeItActions::PE_IT_LABEL_UPDATED';
 
   static readonly TOGGLE_BOOLEAN = 'PeItActions::TOGGLE_BOOLEAN';
 
-  static readonly SET_LEAF_PE_IT_LOADING = 'PeItActions::SET_LEAF_PE_IT_LOADING';
+  // static readonly SET_LEAF_PE_IT_LOADING = 'PeItActions::SET_LEAF_PE_IT_LOADING';
 
-  static readonly START_CREATE_MENTIONING = 'PeItActions::START_CREATE_MENTIONING';
+  // static readonly START_CREATE_MENTIONING = 'PeItActions::START_CREATE_MENTIONING';
 
-  @dispatch()
+  // @dispatch()
 
-  stateUpdated = (payload: PeItDetail): PeItAction => ({
-    type: PeItActions.PE_IT_STATE_UPDATED,
-    meta: null,
-    payload
-  })
+  // stateUpdated = (payload: PeItDetail): PeItAction => ({
+  //   type: PeItActions.PE_IT_STATE_UPDATED,
+  //   meta: null,
+  //   payload
+  // })
 
-  peItLabelUpdated = (label: ClassInstanceLabel): PeItAction => ({
-    type: PeItActions.PE_IT_LABEL_UPDATED,
-    meta: null,
-    payload: {
-      label
-    }
-  })
+  // peItLabelUpdated = (label: ClassInstanceLabel): PeItAction => ({
+  //   type: PeItActions.PE_IT_LABEL_UPDATED,
+  //   meta: null,
+  //   payload: {
+  //     label
+  //   }
+  // })
 
   // setLeafPeItLoading = (leafPeItLoading: boolean): PeItAction => ({
   //   type: PeItActions.SET_LEAF_PE_IT_LOADING,
@@ -66,14 +67,14 @@ export class PeItActions extends EntityActions {
   })
 
 
-  /**********************************************
-   * Method to start create a new mentioning
-   **********************************************/
-  startCreateMentioning = (): PeItAction => ({
-    type: PeItActions.START_CREATE_MENTIONING,
-    meta: null,
-    payload: null
-  })
+  // /**********************************************
+  //  * Method to start create a new mentioning
+  //  **********************************************/
+  // startCreateMentioning = (): PeItAction => ({
+  //   type: PeItActions.START_CREATE_MENTIONING,
+  //   meta: null,
+  //   payload: null
+  // })
 
 
 

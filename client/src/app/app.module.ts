@@ -40,6 +40,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
+import { WarModule } from './core/war/war.module';
 
 // const spy = create()
 // spy.unplug(spy.find(CyclePlugin));
@@ -72,6 +73,7 @@ registerLocaleData(localeDeCh);
     InfModule,
     DatModule,
     ProModule,
+    WarModule,
     RepoModule,
     NgReduxRouterModule,
     NgReduxModule,

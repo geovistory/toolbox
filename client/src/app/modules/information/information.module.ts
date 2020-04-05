@@ -414,7 +414,7 @@ import { TimeSpanService } from './new-services/time-span.service';
   exports: [
     // Put all components here, that are used by another module, or in a sandbox
     InformationComponent,
-
+    FieldComponent,
     // Add Modal
     // EntityAddModalComponent,
 

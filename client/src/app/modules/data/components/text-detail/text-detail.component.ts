@@ -13,6 +13,7 @@ import { DeltaI, Op, Ops, QuillDoc } from '../../../quill';
 import { ChunksPks, IndexedCharids, QuillEditComponent } from '../../../quill/quill-edit/quill-edit.component';
 import { MatDialog } from '@angular/material';
 import { ProgressDialogData, ProgressMode, ProgressDialogComponent } from 'app/shared/components/progress-dialog/progress-dialog.component';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 
 export interface Version {
@@ -326,6 +327,13 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
           quill_doc: this.quillDocForChunk(selectedDelta)
         } as DatChunk
       });
+      this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
+      this.p.ramTarget$.next();
+      this.p.ramTitle$.next(`Create an annotation`);
+      this.p.ramTitlePart2$.next();
+      this.p.ramBoxLeft$.next('select-text');
+      this.p.ramBoxCenter$.next(true);
+      this.p.ramBoxRight$.next(true);
     });
   }
 

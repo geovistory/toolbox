@@ -2136,26 +2136,26 @@ $mat-color-secondary-text: mat-color($foreground, secondary-text);
 $mat-color-divider: mat-color($foreground, divider);
 
 .mat-border-top {
-  border-top-color: $mat-color-divider;
-  border-top-width: 1px;
-  border-top-style: solid;
+  border-top-color: $mat-color-divider !important;
+  border-top-width: 1px !important;
+  border-top-style: solid !important;
 }
 
 .mat-border-bottom {
-  border-bottom-color: $mat-color-divider;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
+  border-bottom-color: $mat-color-divider !important;
+  border-bottom-width: 1px !important;
+  border-bottom-style: solid !important;
 }
 .mat-border-left {
-  border-left-color: $mat-color-divider;
-  border-left-width: 1px;
-  border-left-style: solid;
+  border-left-color: $mat-color-divider !important;
+  border-left-width: 1px !important;
+  border-left-style: solid !important;
 }
 
 .mat-border-right {
-  border-right-color: $mat-color-divider;
-  border-right-width: 1px;
-  border-right-style: solid;
+  border-right-color: $mat-color-divider !important;
+  border-right-width: 1px !important;
+  border-right-style: solid !important;
 }
 
 mat-checkbox {
@@ -2419,6 +2419,10 @@ mat-dialog-actions {
 }
 
 .gv-ui-table-full-height {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
   .ui-table {
     height: 100%;
     display: flex;
@@ -2453,5 +2457,82 @@ mat-dialog-actions {
   padding-bottom: 0;
   .mat-form-field-infix {
     padding: 0.2em 0 0.7em 0;
+  }
+}
+
+.gv-split-area {
+  position: relative;
+}
+.gv-split-area-toggle-button {
+  cursor: pointer;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
+
+  display: flex;
+  position: absolute;
+  height: 2.5rem;
+  background: none;
+  background-color: $white;
+  width: 24px;
+  padding: 0;
+
+  border-radius: 0;
+  border: none;
+
+  &.align-left {
+    left: 0;
+  }
+  &.align-right {
+    right: 0;
+  }
+
+  &:hover {
+    .gv-focus-overlay {
+      background-color: black;
+      opacity: 0.04;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+}
+
+.gv-panel-top-bar-tabs {
+  > .mat-tab-header {
+    background-color: $white;
+    height: 2.5rem;
+    margin-left: 24px;
+    .mat-tab-label {
+      height: 2.5rem;
+    }
+  }
+}
+
+.gv-slim-tabs {
+  > .mat-tab-header {
+    height: 2.5rem;
+    .mat-tab-label {
+      height: 2.5rem;
+    }
+  }
+}
+
+.gv-mat-tabs-shrink {
+  .mat-tab-label {
+    min-width: unset;
+  }
+}
+
+.mat-tab-group.gv-flex-fh {
+  > .mat-tab-body-wrapper {
+    @extend .gv-flex-fh;
   }
 }

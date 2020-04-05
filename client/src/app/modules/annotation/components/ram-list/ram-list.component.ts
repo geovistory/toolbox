@@ -1,25 +1,34 @@
 import { Component, OnDestroy, OnInit, Input } from '@angular/core';
-import { ActiveProjectService, InfRole, switchMapOr } from 'app/core';
+import { ActiveProjectService, InfRole, switchMapOr, EntityPreview } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { GraphPathSegment } from '../graph-path/graph-path.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { ByPk } from 'app/core/store/model';
+import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { MatDialog } from '@angular/material/dialog';
+import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 
 interface GraphPath {
   segments: GraphPathSegment[];
   text?: string;
 }
+interface Reference {
+  label: string;
+  tooltip?: string;
+  icon?: string;
+}
 export interface Mentioning {
+  // the statement (role) connecting source and target
+  statement: InfRole
+  // the path of the source (is part of, etc)
   path: GraphPath;
-  location?: {
-    label: string;
-    tooltip?: string;
-    icon?: string;
-  };
+  // the exact reference
+  location?: Reference;
+  // configuration for the action menu
   actions: any;
 }
 
@@ -27,7 +36,10 @@ export interface Mentioning {
 @Component({
   selector: 'gv-ram-list',
   templateUrl: './ram-list.component.html',
-  styleUrls: ['./ram-list.component.scss']
+  styleUrls: ['./ram-list.component.scss'],
+  providers: [
+    QuillOpsToStrPipe
+  ]
 })
 export class RamListComponent implements OnInit, OnDestroy {
 
@@ -43,68 +55,93 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   filtersVisible = false;
 
+  // the entity giving the context for the ram list
+  rootEntity$: Observable<EntityPreview>
+
+  loading = true;
+
   constructor(
     private s: SchemaObjectService,
     private inf: InfActions,
     public p: ActiveProjectService,
+    private quillPipe: QuillOpsToStrPipe,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
     this.cols = this.setCols();
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.s.store(this.s.api.getRamList(pkProject, this.pkEntity), pkProject)
+      this.s.store(this.s.api.getRamList(pkProject, this.pkEntity, this.fkProperty), pkProject)
+        .pipe(first(), takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.loading = false;
+        })
     })
 
+    this.rootEntity$ = this.p.streamEntityPreview(this.pkEntity);
 
-    // An Obsevable of number array where the numbers are the pk_entity of the last item in the path
-    const es$ = this.getLinkedEntities();
+    this.items$ = this.pipeItems();
 
-
-    this.items$ = es$.pipe(
-      map((likedEntities) => {
-        return likedEntities.map(path => {
-          return {
-            path,
-            location: {
-              label: 'folio 42r.',
-              tooltip: 'Reference',
-              icon: ''
-            },
-            actions: {
-              open: true
-            }
-          };
-        })
-      }),
-
-    )
-
-    // this.getMentions(779360);
   }
 
-  private getLinkedEntities(): Observable<GraphPath[]> {
-    const rootEntity$ = this.p.streamEntityPreview(this.pkEntity);
+  private pipeItems(): Observable<Mentioning[]> {
 
-    return combineLatest(rootEntity$, this.p.inf$.role$.by_fk_property__fk_entity$.key(this.fkProperty + '_' + this.pkEntity))
+    return combineLatest(this.rootEntity$, this.p.inf$.role$.by_fk_property__fk_entity$.key(this.fkProperty + '_' + this.pkEntity))
       .pipe(
         switchMap(([rootEntity, linkedRoles]) => {
           const isMentionedInRoles = values(linkedRoles)
+          const prefix = `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
+
           // I map the input value to a Observable and switchMap will subscribe to the new one
-          const arrayOfObs$: Observable<GraphPath>[] = isMentionedInRoles.map(role => {
-            return this.p.inf$.persistent_item$.by_pk_entity$.key(role.fk_temporal_entity)
-              .pipe(
-                filter((ep) => !!ep),
-                switchMap((ep) => this.getPathRecursivly(
-                  role.fk_temporal_entity,
-                  `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`
-                ))
-              );
+          const arrayOfObs$: Observable<Mentioning>[] = isMentionedInRoles.map(role => {
+            return combineLatest(
+              this.pipePathRecursivly(role.fk_temporal_entity, prefix),
+              this.getReference(role.pk_entity)
+            ).pipe(
+              map(([path, location]) => {
+                return {
+                  path,
+                  location,
+                  statement: role,
+                  actions: {
+                    open: true
+                  }
+                };
+              })
+            )
           });
           return combineLatest(arrayOfObs$);
         }));
   }
 
+  getReference(pkSubjectRole: number): Observable<Reference> {
+    return this.p.inf$.role$.by_fk_property_of_property__fk_temporal_entity$.key(
+      DfhConfig.P_O_P_GEOV_HAS_REFERENCE + '_' + pkSubjectRole
+    )
+      .pipe(
+        switchMap((idxRoles) => {
+          const roles = values(idxRoles || {})
+          if (roles.length < 1) return new BehaviorSubject(undefined);
+          return combineLatest(roles.map(r => {
+            return this.p.inf$.lang_string$.by_pk_entity$.key(r.fk_entity)
+              .pipe(
+                map(langStr => !langStr ? null :
+                  !langStr.quill_doc ? null :
+                    langStr.quill_doc.ops),
+                map(ops => !ops ? null : this.quillPipe.transform(ops)))
+          }))
+            .pipe(map(langStrArr => {
+              return {
+                label: langStrArr.filter(s => !!s).join(', '),
+                tooltip: 'Reference to place in item',
+                icon: ''
+              }
+            }))
+        })
+      )
+
+  }
 
   private getFirstRole() {
     return map((idxRoles: ByPk<InfRole>) => {
@@ -115,7 +152,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   }
 
   private getEntityPathSegment(pkEntity: number, rootEntityLabel?: string): Observable<GraphPathSegment> {
-    return this.p.inf$.persistent_item$.by_pk_entity$.key(pkEntity)
+    return this.p.streamEntityPreview(pkEntity)
       .pipe(
         filter((ep) => !!ep),
         switchMap((ep) => {
@@ -181,7 +218,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   }
 
 
-  private getPathRecursivly(
+  private pipePathRecursivly(
     pkEntity: number,
     entitySegmentTooltipPrefix?: string,
     graphPath: GraphPath = { segments: [], text: '' }
@@ -217,7 +254,7 @@ export class RamListComponent implements OnInit, OnDestroy {
                   segments: [segP, segE, ...graphPath.segments]
                 };
 
-                return this.getPathRecursivly(rs[0].fk_entity, undefined, path)
+                return this.pipePathRecursivly(rs[0].fk_entity, undefined, path)
               }
 
               return finish(segE, graphPath);
@@ -301,6 +338,48 @@ export class RamListComponent implements OnInit, OnDestroy {
     this.p.ramTarget$.next(this.pkEntity);
     this.p.ramProperty$.next(this.fkProperty);
     this.p.ramOpen$.next(true);
+
+    if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP2_MENTIONS) {
+      this.rootEntity$.pipe(first(), takeUntil(this.destroy$)).subscribe(rootEntity => {
+        this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
+        this.p.ramTitlePart2$.next(`is mentioned in:`);
+        this.p.ramBoxLeft$.next('drag-source-or-section');
+        this.p.ramBoxCenter$.next(false);
+        this.p.ramBoxRight$.next(false);
+      })
+    } else if (this.fkProperty === DfhConfig.PROPERTY_PK_P129_IS_ABOUT) {
+      this.rootEntity$.pipe(first(), takeUntil(this.destroy$)).subscribe(rootEntity => {
+        this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
+        this.p.ramTitlePart2$.next(`is topic of:`);
+        this.p.ramBoxLeft$.next('drag-source-or-section');
+        this.p.ramBoxCenter$.next(false);
+        this.p.ramBoxRight$.next(false);
+      })
+    } else if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
+      this.rootEntity$.pipe(first(), takeUntil(this.destroy$)).subscribe(rootEntity => {
+        this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
+        this.p.ramTitlePart2$.next(`is referred to by:`);
+        this.p.ramBoxLeft$.next('select-text');
+        this.p.ramBoxCenter$.next(false);
+        this.p.ramBoxRight$.next(false);
+      })
+    } else {
+      this.p.ramTitle$.next(`Create:`);
+      this.p.ramTitlePart2$.next(``);
+      console.warn('fkProperty not found.')
+    }
+  }
+
+  onEdit(statement: InfRole) {
+    const data: RamListEditDialogData = {
+      statement
+    }
+    this.dialog.open(RamListEditDialogComponent, {
+      data,
+      height: 'calc(100% - 30px)',
+      width: '690px',
+      maxHeight: '100%'
+    })
   }
 
   ngOnDestroy() {

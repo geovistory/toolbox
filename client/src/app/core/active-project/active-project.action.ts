@@ -238,39 +238,39 @@ export class ActiveProjectActions {
   ************************************************************************************/
 
   // EntityPreviews
-  static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
-  static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
-  static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
+  // static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
+  // static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
+  // static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
 
 
-  loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_PREVIEW,
-      payload: null,
-      meta: {
-        pk_project, pk_entity, pk_ui_context
-      }
-    }
-  }
+  // loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entity, pk_ui_context
+  //     }
+  //   }
+  // }
 
-  loadEntityPreviewSucceeded(entityPreview: EntityPreview): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED,
-      payload: null,
-      meta: {
-        entityPreview
-      },
-    }
-  }
+  // loadEntityPreviewSucceeded(entityPreview: EntityPreview): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       entityPreview
+  //     },
+  //   }
+  // }
 
-  loadEntityPreviewFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadEntityPreviewFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
   // EntityPreviews
   static LOAD_TYPES = 'ActiveProject::LOAD_TYPES';

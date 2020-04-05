@@ -39,6 +39,7 @@ export interface InfRoleInterface {
   domain_chunk?: DatChunk;
   range_chunk?: DatChunk;
   domain_digital?: DatDigital;
+  subject_inf_role?: InfRole;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   domain_pe_it?: InfPersistentItem;
@@ -72,6 +73,7 @@ export class InfRole implements InfRoleInterface {
   domain_chunk?: DatChunk;
   range_chunk?: DatChunk;
   domain_digital?: DatDigital;
+  subject_inf_role?: InfRole;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   domain_pe_it?: InfPersistentItem;
@@ -257,6 +259,14 @@ export class InfRole implements InfRoleInterface {
           model: 'DatDigital',
           relationType: 'belongsTo',
                   keyFrom: 'fk_object_data',
+          keyTo: 'pk_entity'
+        },
+        subject_inf_role: {
+          name: 'subject_inf_role',
+          type: 'InfRole',
+          model: 'InfRole',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
         language: {

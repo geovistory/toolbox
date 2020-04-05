@@ -214,14 +214,14 @@ export class InfEpics {
         InfRoleActionFactory.BY_PARAMS
       ),
 
-      infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
-        (meta) => this.roleApi.contentTree(meta.pk, meta.pkExpressionEntity),
-        InfRoleActionFactory.CONTENT_TREE,
-        (results, pk) => {
-          const schemaObject = results as SchemaObject;
-          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
-        }
-      ),
+      // infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
+      //   (meta) => this.roleApi.contentTree(meta.pk, meta.pkExpressionEntity),
+      //   InfRoleActionFactory.CONTENT_TREE,
+      //   (results, pk) => {
+      //     const schemaObject = results as SchemaObject;
+      //     this.schemaObjectService.storeSchemaObject(schemaObject, pk)
+      //   }
+      // ),
 
       infRoleEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
         (meta) => this.roleApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),

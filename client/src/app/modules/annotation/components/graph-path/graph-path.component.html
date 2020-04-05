@@ -44,23 +44,23 @@
 
 <ng-template #entitySegment let-entity="entity" let-showLabel="showLabel">
 
-  <mat-icon *ngIf="entity.icon =='table'" class="entity-icon gv-digital-color" style="font-size: 18px"
+  <mat-icon *ngIf="entity.icon =='table'" class="entity-icon gv-digital-color" 
     svgIcon="file-table" [matTooltip]="entity.tooltip">
   </mat-icon>
-  <mat-icon *ngIf="entity.icon =='text'" class="entity-icon gv-digital-color" style="font-size: 18px"
+  <mat-icon *ngIf="entity.icon =='text'" class="entity-icon gv-digital-color" 
     svgIcon="file-document" [matTooltip]="entity.tooltip">
   </mat-icon>
-  <mat-icon *ngIf="entity.icon =='expression-portion'" class="entity-icon gv-source-color" style="font-size: 18px"
+  <mat-icon *ngIf="entity.icon =='expression-portion'" class="entity-icon gv-source-color" 
     svgIcon="folder" [matTooltip]="entity.tooltip">
   </mat-icon>
-  <i *ngIf="entity.icon =='persistent-entity'" class="entity-icon gv-icon gv-icon-persistent-entity gv-entity-color"
+  <i *ngIf="entity.icon =='persistent-entity'" style="font-size: 22px" class="entity-icon gv-icon gv-icon-persistent-entity gv-entity-color"
     [matTooltip]="entity.tooltip"></i>
-  <i *ngIf="entity.icon =='temporal-entity'" class="entity-icon fa fa-star-o  gv-entity-color"
+  <i *ngIf="entity.icon =='temporal-entity'" style="font-size: 22px" class="entity-icon fa fa-star-o  gv-entity-color"
     [matTooltip]="entity.tooltip"></i>
-  <!-- <mat-icon *ngIf="entity.icon =='source'" class="entity-icon gv-source-color" style="font-size: 18px"
+  <!-- <mat-icon *ngIf="entity.icon =='source'" style="font-size: 22px" class="entity-icon gv-source-color" 
     svgIcon="book-open-variant" [matTooltip]="entity.tooltip">
   </mat-icon> -->
-  <i *ngIf="entity.icon =='source'" class="entity-icon gv-icon gv-icon-source gv-source-color"
+  <i *ngIf="entity.icon =='source'" style="font-size: 22px" class="entity-icon gv-icon gv-icon-source gv-source-color"
     [matTooltip]="entity.tooltip"></i>
 
   <ng-container *ngIf="showLabel" class="entity-icon entity-label">{{entity.label}}</ng-container>

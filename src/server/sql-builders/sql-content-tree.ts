@@ -18,7 +18,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- query recusivly all the roles we need to create the tree
       -- tw0 delivers
       -- - pk_entity: the roles we need
-      -- - fk_temporal_entity: the persistent_item we need (Expression Portion)
+      -- - fk_temporal_entity: the entity_preview we need (Expression Portion)
       -- - fk_subject_data: the data.digital we need
       WITH RECURSIVE tw0 (fk_temporal_entity, fk_subject_data, fk_property, fk_entity, fk_object_data, level, pk_entity, path) AS (
           SELECT  t1.fk_temporal_entity, t1.fk_subject_data, t1.fk_property, t1.fk_entity, t1.fk_object_data, 0, t1.pk_entity, ARRAY[t1.pk_entity]
@@ -43,13 +43,13 @@ export class SqlContentTree extends SqlBuilderLbModels {
           AND		  p.fk_property IN (1317, 1328, 1329, 1216)
 
       ),
-      -- persistent_items (Expression Portions)
+      -- entity_previews (Expression Portions)
       tw1 AS (
         SELECT
-          ${this.createSelect('t1', 'InfPersistentItem')},
+          ${this.createSelect('t1', 'WarEntityPreview')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
-          information.v_persistent_item t1
+          war.entity_preview t1
         JOIN tw0 t3
           ON t1.pk_entity = t3.fk_temporal_entity
         CROSS JOIN
@@ -163,11 +163,11 @@ export class SqlContentTree extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      persistent_item AS (
+      entity_preview AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfPersistentItem')} as objects
+          ${this.createBuildObject('t1', 'WarEntityPreview')} as objects
           FROM (
             SELECT * FROM tw1
           ) AS t1
@@ -226,7 +226,6 @@ export class SqlContentTree extends SqlBuilderLbModels {
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
           'role', role.json,
-          'persistent_item', persistent_item.json,
           'text_property', text_property.json,
           'language', language.json
         )),
@@ -235,11 +234,14 @@ export class SqlContentTree extends SqlBuilderLbModels {
         )),
         'dat', json_strip_nulls(json_build_object(
           'digital', digital.json
+        )),
+        'war', json_strip_nulls(json_build_object(
+          'entity_preview', entity_preview.json
         ))
       ) as data
       FROM
       (select 0 ) as one_row
-      LEFT JOIN persistent_item ON true
+      LEFT JOIN entity_preview ON true
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
       LEFT JOIN role ON true

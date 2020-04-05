@@ -12,6 +12,7 @@ import { DatSelector } from '../../../../core/dat/dat.service';
 import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 
 /**
  * Food data with nested structure.
@@ -110,8 +111,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+  loading = false;
+
   constructor(
     public p: ActiveProjectService,
+    private s: SchemaObjectService,
     private r: RepoService,
     private inf: InfActions,
     private dat: DatSelector,
@@ -120,6 +124,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.loading = true;
+
     // wait for pkEntity and fkClass of the source
     combineLatest(this.pkEntity$, this.fkClass$, this.p.pkProject$).pipe(
       first(d => !d.includes(undefined)),
@@ -160,21 +166,25 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.pkRoot$.pipe(first()).subscribe(pkRoot => {
 
       this.pkRoot = pkRoot;
-      // load ea recursive is part of / is reproduction of
-      this.inf.role.contentTree(pkProject, pkRoot)
-      this.contentTree$ = this.observeChildren(pkRoot)
+      // load data recursive is part of / is reproduction of
+      this.s.store(this.s.api.contentTree(pkProject, pkRoot), pkProject)
+        .pipe(first(), takeUntil(this.destroy$)).subscribe(() => {
+          this.contentTree$ = this.observeChildren(pkRoot)
 
-      this.contentTree$.pipe(distinctUntilChanged<RoleNode[]>(equals), takeUntil(this.destroy$))
-        .subscribe((x) => {
-          // store ids of expanded nodes
-          this.storeIdsOfExpandedNodes()
-          // update data source
-          this.dataSource.data = x;
-          // expand nodes with stored ids
-          this.expandNodesWithStoredId()
+          this.contentTree$.pipe(distinctUntilChanged<RoleNode[]>(equals), takeUntil(this.destroy$))
+            .subscribe((x) => {
+              this.loading = false
+              // store ids of expanded nodes
+              this.storeIdsOfExpandedNodes()
+              // update data source
+              this.dataSource.data = x;
+              // expand nodes with stored ids
+              this.expandNodesWithStoredId()
 
-          this.ref.detectChanges()
+              this.ref.detectChanges()
+            })
         })
+
 
     })
   }

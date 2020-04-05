@@ -10,8 +10,10 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
      *
      * @param {*} fkProject
      * @param {*} pkEntity primary key of the Expression entity, for which we need the tree.
+     * @param {*} fkProperty key of the property connecting the entity with Expression / Expr. Portion / Chunk:
+     *                       1218 = mentions, 1334 = is about, 117 = refers to
      */
-    create(fkProject, pkEntity) {
+    create(fkProject, pkEntity, fkProperty) {
         const sql = `
     WITH RECURSIVE tw0 (fk_temporal_entity, fk_subject_data, fk_property, fk_entity, fk_object_data, level, pk_entity, path) AS (
         -- is mentioned in
@@ -23,7 +25,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         AND 	  t2.fk_project = ${this.addParam(fkProject)}
         AND     t2.is_in_project = true
         AND		  t1.fk_property IN (
-          1218 -- mentions
+          ${this.addParam(fkProperty)}
         )
 
         UNION ALL
@@ -58,13 +60,13 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
 
 
         ),
-      -- persistent_items (Expression Portions or Expressions)
+      -- entity_previews (Expression Portions or Expressions)
       tw1 AS (
         SELECT
-          ${this.createSelect('t1', 'InfPersistentItem')},
+          ${this.createSelect('t1', 'WarEntityPreview')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
-          information.v_persistent_item t1
+          war.entity_preview t1
         JOIN tw0 t3
           ON t1.pk_entity = t3.fk_temporal_entity
         CROSS JOIN
@@ -74,13 +76,13 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         AND t2.fk_project = ${this.addParam(fkProject)}
       ),
 
-      -- persistent_items (Expression Portions or Expressions)
+      -- entity_previews (Expression Portions or Expressions)
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfPersistentItem')},
+          ${this.createSelect('t1', 'WarEntityPreview')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
-          information.v_persistent_item t1
+          war.entity_preview t1
         JOIN tw0 t3
           ON t1.pk_entity = t3.fk_entity
         CROSS JOIN
@@ -89,6 +91,9 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
       ),
+      -- statements
+      -- 1218 = mentions, 1334 = is about, 117 = refers to
+      -- 1317 = is part of, 1316 = carrier provided by, 979 = carriers provided by, 1305 = is server res. to req., 1016 = is rep. manif. sing. for
       tw3 AS (
         SELECT
           ${this.createSelect('t1', 'InfRole')},
@@ -102,6 +107,33 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         AND t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
+      ),
+      -- statements of statements
+      -- 1 = has reference
+      tw4 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfRole')},
+          ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw0
+        CROSS JOIN
+          information.v_role t1,
+          projects.info_proj_rel t2
+        WHERE t1.fk_temporal_entity = tw0.pk_entity
+        AND t1.fk_property_of_property = 1
+        AND t1.pk_entity = t2.fk_entity
+        AND t2.is_in_project = true
+        AND t2.fk_project = ${this.addParam(fkProject)}
+      ),
+      -- lang_string (Reference)
+      tw5 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfLangString')}
+        FROM
+          tw4
+        CROSS JOIN
+          information.v_lang_string t1
+        WHERE t1.pk_entity = tw4.fk_entity
       ),
       ------------------------------------
       --- group parts by model
@@ -121,11 +153,11 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      persistent_item AS (
+      entity_preview AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfPersistentItem')} as objects
+          ${this.createBuildObject('t1', 'WarEntityPreview')} as objects
           FROM (
             SELECT * FROM tw1
             UNION ALL
@@ -141,6 +173,19 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfRole')} as objects
           FROM (
             SELECT * FROM tw3
+            UNION ALL
+            SELECT * FROM tw4
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
+      lang_string AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfLangString')} as objects
+          FROM (
+            SELECT * FROM tw5
           ) AS t1
         ) as t1
         GROUP BY true
@@ -149,16 +194,20 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
           'role', role.json,
-          'persistent_item', persistent_item.json
+          'lang_string', lang_string.json
         )),
         'pro', json_strip_nulls(json_build_object(
           'info_proj_rel', info_proj_rel.json
+        )),
+        'war', json_strip_nulls(json_build_object(
+          'entity_preview', entity_preview.json
         ))
       ) as data
       FROM
       (select 0 ) as one_row
-      LEFT JOIN persistent_item ON true
+      LEFT JOIN entity_preview ON true
       LEFT JOIN role ON true
+      LEFT JOIN lang_string ON true
       LEFT JOIN info_proj_rel ON true
     `;
         utils_1.logSql(sql, this.params);

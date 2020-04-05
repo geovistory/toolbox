@@ -21,7 +21,7 @@
   align-items: baseline;
 }
 .mentioning-form-buttons > h3 {
-  color: white;
+  display: flex;
   flex: 1 1 auto;
   margin: 0;
 }
@@ -38,10 +38,11 @@
 .center {
   padding-right: 5px;
   padding-left: 5px;
-  flex: 0 0 280px;
-  > .gv-ram-box {
-    padding-top: 4px;
-  }
+  flex: 0 0 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
 }
 .right {
   padding-left: 5px;
@@ -89,8 +90,14 @@
   text-align: center;
   color: white;
 }
-.gv-drop-zone .gv-ram-box-text {
-  // height: 90px;
+.gv-select-text {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  color: white;
 }
 
 .gv-drop-zone-filled {

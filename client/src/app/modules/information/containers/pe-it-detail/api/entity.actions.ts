@@ -35,111 +35,33 @@ export class EntityActions {
 
   // static readonly ENTITY_INIT = 'Entity::ENTITY_INIT';
 
-  static readonly TOGGLE_REMOVE_VERIFICATION = 'Entity::TOGGLE_REMOVE_VERIFICATION';
+  // static readonly TOGGLE_REMOVE_VERIFICATION = 'Entity::TOGGLE_REMOVE_VERIFICATION';
 
   static readonly SET_SHOW_RIGHT_AREA = 'Entity::SET_SHOW_RIGHT_AREA';
 
+  static readonly SET_RIGHT_PANEL_ACTIVE_TAB = 'Entity::SET_RIGHT_PANEL_ACTIVE_TAB';
 
-  @dispatch()
+  /**
+   * Set index of the active tab in the right panel
+   * @param tabIndex index of the active tab in the right panel
+   */
+  setRightPanelActiveTab = (rightPanelActiveTab: number): EntityAction => ({
+    type: EntityActions.SET_RIGHT_PANEL_ACTIVE_TAB,
+    meta: null,
+    payload: {
+      rightPanelActiveTab
+    }
+  })
 
-
-  //   propertyFieldsListDisplayLabelUpdated = (label: ClassInstanceLabel): EntityAction => ({
-  //     type: EntityActions.ROLE_SET_LIST_DISPLAY_LABEL_UPDATED,
-  //     meta: null,
-  //     payload: {
-  //       label
-  //     }
-  //   })
-
-  //   /**
-  //   * startSelectProperty - called, when user clicks on add a property
-  //   */
-  //   startSelectProperty = (): EntityAction => ({
-  //     type: EntityActions.START_SELECT_PROPERTY,
-  //     meta: null,
-  //     payload: {
-  //       selectPropState: 'selectProp'
-  //     }
-  //   })
-
-
-  //   /**
-  //   * stopSelectProperty - called, when user clicks on close button of property
-  //   * selector
-  //   */
-  //   stopSelectProperty = (): EntityAction => ({
-  //     type: EntityActions.STOP_SELECT_PROPERTY,
-  //     meta: null,
-  //     payload: {
-  //       selectPropState: 'init'
-  //     }
-  //   })
-
-  //   /**
-  //   * called, when user selected a the kind of property to add
-  //   *
-  //   * @param: propertyField to add
-  //   * @param: uiContext of the class, used sort the _fields
-  //   */
-  //   addPropertyField = (propertyField: PropertyField, uiContext: UiContext): EntityAction => ({
-  //     type: EntityActions.ROLE_SET_ADDED,
-  //     meta: {
-  //       uiContext
-  //     },
-  //     payload: {
-  //       _fields: indexBy(propertyFieldKey, [propertyField]),
-  //       selectPropState: 'init'
-  //     }
-  //   })
-
-  //   /**
-  // * called, when user selected a the kind of property to remove
-  // */
-  //   removePropertyField = (key: string): EntityAction => ({
-  //     type: EntityActions.ROLE_SET_REMOVED,
-  //     meta: { key },
-  //     payload: null
-  //   })
-
-
-  //   /**
-  //  * called, when user selected a the kind of propSet to add
-  //  */
-  //   addPropSet = (key: string, val: any, uiContext: UiContext): EntityAction => ({
-  //     type: EntityActions.PROP_SET_ADDED,
-  //     meta: { key, val, uiContext },
-  //     payload: {
-  //       selectPropState: 'init'
-  //     }
-  //   })
-
-  //   /**
-  //   * called, when user selected a the kind of propSet to add
-  //   */
-  //   removePropSet = (stateKey: string): EntityAction => ({
-  //     type: EntityActions.PROP_SET_REMOVED,
-  //     meta: { stateKey },
-  //     payload: null
-  //   })
-
-
-  //   /**
-  //   * called, OnInit of a data unit component
-  //   */
-  //   entityInit = (): EntityAction => ({
-  //     type: EntityActions.ENTITY_INIT,
-  //     meta: null,
-  //     payload: null
-  //   })
 
   /**
   * called on click on remove a data unit and on click on cancel removing a data unit
   */
-  toggleRemoveVerification = (): EntityAction => ({
-    type: EntityActions.TOGGLE_REMOVE_VERIFICATION,
-    meta: null,
-    payload: null
-  })
+  // toggleRemoveVerification = (): EntityAction => ({
+  //   type: EntityActions.TOGGLE_REMOVE_VERIFICATION,
+  //   meta: null,
+  //   payload: null
+  // })
 
   setShowRightArea = (showRightArea: boolean): EntityAction => ({
     type: EntityActions.SET_SHOW_RIGHT_AREA,

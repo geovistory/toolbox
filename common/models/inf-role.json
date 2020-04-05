@@ -57,13 +57,16 @@
       "default": 0
     },
     "is_in_project_count": {
-      "type": "number"
+      "type": "number",
+      "required": false
     },
     "is_standard_in_project_count": {
-      "type": "number"
+      "type": "number",
+      "required": false
     },
     "community_favorite_calendar": {
-      "type": "string"
+      "type": "string",
+      "required": false
     }
   },
   "validations": [],
@@ -157,6 +160,12 @@
       "model": "DatDigital",
       "foreignKey": "fk_object_data",
       "primaryKey": "pk_entity"
+    },
+    "subject_inf_role": {
+      "type": "belongsTo",
+      "model": "InfRole",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -187,7 +196,6 @@
         "addToProject",
         "findOrCreateInfRoles",
         "paginatedListTargetingEntityPreviews",
-        "contentTree",
         "sourcesAndDigitalsOfEntity",
         "queryByParams"
       ]
@@ -634,40 +642,6 @@
       "http": {
         "path": "/add-to-project",
         "verb": "post"
-      }
-    },
-    "contentTree": {
-      "accepts": [
-        {
-          "arg": "pkProject",
-          "type": "number",
-          "required": false,
-          "description": "Primary Key of the Project.",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pkExpressionEntity",
-          "type": "number",
-          "required": false,
-          "description": "Primary Key of the F2 Expression entity for which the content tree is needed.",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "InfRole"
-        ],
-        "root": true
-      },
-      "description": "Get an array of role that build the tree of the content of an F2 Expression.",
-      "http": {
-        "path": "/content-tree",
-        "verb": "get"
       }
     },
     "sourcesAndDigitalsOfEntity": {

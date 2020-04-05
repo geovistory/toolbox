@@ -42,7 +42,8 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "getRamList"
+        "getRamList",
+        "contentTree"
       ]
     }
   ],
@@ -68,6 +69,15 @@
           }
         },
         {
+          "arg": "pkProperty",
+          "type": "number",
+          "required": true,
+          "description": "Key of the property (1218, 1334, 117)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
           "arg": "ctx",
           "type": "object",
           "http": {
@@ -85,6 +95,40 @@
       "description": "Get the schema object for the ram list.",
       "http": {
         "path": "/ram-list",
+        "verb": "get"
+      }
+    },
+    "contentTree": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkExpressionEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the F2 Expression entity for which the content tree is needed.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfRole"
+        ],
+        "root": true
+      },
+      "description": "Get an array of role that build the tree of the content of an F2 Expression.",
+      "http": {
+        "path": "/content-tree",
         "verb": "get"
       }
     }

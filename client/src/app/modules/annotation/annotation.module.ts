@@ -12,6 +12,7 @@ import { GraphPathComponent } from './components/graph-path/graph-path.component
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { MentioningListComponent } from './components/mentioning-list/mentioning-list.component';
 import { RamListComponent } from './components/ram-list/ram-list.component';
+import { RamListEditDialogComponent } from './components/ram-list-edit-dialog/ram-list-edit-dialog.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { RamListComponent } from './components/ram-list/ram-list.component';
     MaterialModule
   ],
   providers: [],
-  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent],
-  exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent]
+  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent, RamListEditDialogComponent],
+  exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent],
+  entryComponents: [RamListEditDialogComponent]
 })
 export class AnnotationModule { }

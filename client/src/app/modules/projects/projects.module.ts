@@ -50,6 +50,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
 import { RamFormComponent } from './components/ram-form/ram-form.component';
 import { DndModule } from 'ng2-dnd';
 import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 
 
 
@@ -71,7 +72,6 @@ import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-d
     PassiveLinkModule,
     DragDropModule,
     SourcesModule,
-    Information2Module,
     QueriesModule,
     AnalysisModule,
     PortalModule,
@@ -91,6 +91,7 @@ import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-d
     MaterialModule,
     DndModule,
     QuillOpsToStrModule,
+    TruncateModule
   ],
   declarations: [
     ProjectCreateComponent,

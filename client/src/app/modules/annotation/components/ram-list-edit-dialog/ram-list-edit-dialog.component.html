@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>Edit [title]</h1>
+<div mat-dialog-content>
+  <mat-divider></mat-divider>
+  <div style="display: flex; flex-wrap:wrap; padding: 1rem;">
+    <div style="flex: 0 1 auto; overflow:auto">
+      <gv-entity-preview [pkEntity]="data.statement.fk_temporal_entity"></gv-entity-preview>
+    </div>
+    <div style="flex: 1 1 auto"></div>
+    <div style="flex: 1 1 auto;overflow:auto;display: flex;align-items: center;justify-content: space-around;">
+      <mat-icon class="mat-text-secondary">arrow_right_alt</mat-icon>
+      <div>
+        mentions
+      </div>
+      <mat-icon class="mat-text-secondary">arrow_right_alt</mat-icon>
+    </div>
+    <div style=" flex: 1 1 auto"></div>
+    <div style="flex: 0 1 auto; overflow:auto">
+      <gv-entity-preview [pkEntity]="data.statement.fk_entity"></gv-entity-preview>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  [Field]
+  <!-- <gv-field [pkEntity]="data.statement.pk_entity" [fieldDefinition]="fieldDefinition"></gv-field> -->
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close] cdkFocusInitial>Ok</button>
+</div>

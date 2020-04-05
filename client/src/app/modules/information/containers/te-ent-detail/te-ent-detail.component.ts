@@ -43,7 +43,10 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   @select() showRightArea$: Observable<boolean>;
 
   @select() showSources$: Observable<boolean>;
+  @select() showDigitals$: Observable<boolean>;
+
   @select() showSourcesToggle$: Observable<boolean>;
+  @select() showDigitalsToggle$: Observable<boolean>;
 
   @select() toggle$: Observable<boolean>
   @select() showOntoInfo$: Observable<boolean>;

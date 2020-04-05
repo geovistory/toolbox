@@ -1,12 +1,12 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy, ViewChild } from '@angular/core';
 import { ActiveProjectService, IAppState, Tab, U, UiContext, PeItTabData, IconType } from 'app/core';
 import { ClassInstanceLabel, PeItDetail, SubstoreComponent, EntityPreview } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { MatDialog, MatTabGroup } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
@@ -16,6 +16,7 @@ import { slideInOut } from '../../shared/animations';
 import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
 import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
+import { FormControl } from '@angular/forms';
 
 
 
@@ -50,48 +51,50 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   @Input() pkEntity: number;
   @Input() tab: Tab<PeItTabData>;
 
-  // Visibility of header in left area
+  // // Visibility of header in left area
   @select() showHeader$: Observable<boolean>;
 
   // Visibility of right area
   @select() showRightArea$: Observable<boolean>;
 
-  // Visibility of generic elements
+  // // Visibility of generic elements
   @select() showOntoInfo$: Observable<boolean>
-  @select() showCommunityStats$: Observable<boolean>
+  // @select() showCommunityStats$: Observable<boolean>
 
   // Left Panel Sections
   @select() showProperties$: Observable<boolean>;
-  @select() showSectionList$: Observable<boolean>;
-  @select() showRepros$: Observable<boolean>;
+  // @select() showSectionList$: Observable<boolean>;
+  // @select() showRepros$: Observable<boolean>;
 
-  // Right Panel Sections
-  @select() showMap$: Observable<boolean>;
-  @select() showTimeline$: Observable<boolean>;
-  @select() showAssertions$: Observable<boolean>;
-  @select() showMentionedEntities$: Observable<boolean>;
-  @select() showSources$: Observable<boolean>;
+  // // Right Panel Sections
+  // @select() showMap$: Observable<boolean>;
+  // @select() showTimeline$: Observable<boolean>;
+  // @select() showAssertions$: Observable<boolean>;
+  // @select() showMentionedEntities$: Observable<boolean>;
+  // @select() showSources$: Observable<boolean>;
+  // @select() showDigitals$: Observable<boolean>;
 
-  // Toggle Buttons (left panel)
-  @select() showPropertiesToggle$: Observable<boolean>;
-  @select() showSectionListToggle$: Observable<boolean>;
-  @select() showReprosToggle$: Observable<boolean>;
+  // // Toggle Buttons (left panel)
+  // @select() showPropertiesToggle$: Observable<boolean>;
+  // @select() showSectionListToggle$: Observable<boolean>;
+  // @select() showReprosToggle$: Observable<boolean>;
 
-  // Toggle Buttons (right panel)
-  @select() showMapToggle$: Observable<boolean>;
-  @select() showTimelineToggle$: Observable<boolean>;
-  @select() showMentionedEntitiesToggle$: Observable<boolean>;
-  @select() showAssertionsToggle$: Observable<boolean>;
-  @select() showSourcesToggle$: Observable<boolean>;
+  // // Toggle Buttons (right panel)
+  // @select() showMapToggle$: Observable<boolean>;
+  // @select() showTimelineToggle$: Observable<boolean>;
+  // @select() showMentionedEntitiesToggle$: Observable<boolean>;
+  // @select() showAssertionsToggle$: Observable<boolean>;
+  // @select() showSourcesToggle$: Observable<boolean>;
+  // @select() showDigitalsToggle$: Observable<boolean>;
 
   // tabs on the right panel
-  activeTab$: Observable<string>;
-  activeTabIndex$: Observable<number>;
-  tabs$: Observable<string[]>;
+  @select() rightPanelActiveTab$: Observable<number>;
+  @select() rightPanelTabs$: Observable<string[]>;
 
 
 
-  uiContext: UiContext;
+
+  // uiContext: UiContext;
 
   // sourcePeIt$: Observable<InfPersistentItem>
   title$: Observable<string>;
@@ -108,6 +111,7 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   isViewMode$ = of(false);
 
   iconType$: Observable<IconType>;
+
 
   constructor(
 
@@ -182,29 +186,17 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
 
     this.pkEntity$ = of(this.pkEntity)
 
-    this.activeTab$ = combineLatest(this.showMap$, this.showSectionList$, this.showMentionedEntities$, this.showSources$)
-      .pipe(
-        map(([showMap, showSectionList, showMentionedEntities, showSources]) => {
-          return showMap ? 'showMap' : showSectionList ? 'showSectionList' : showMentionedEntities ? 'showMentionedEntities' : showSources ? 'showSources' : null
-        })
-      )
-
-    this.tabs$ = combineLatest(this.showMapToggle$, this.showSectionListToggle$, this.showMentionedEntitiesToggle$, this.showSourcesToggle$)
-      .pipe(
-        map(([showMap, showSectionList, showMentionedEntities, showSources]) => {
-          const x = { showMap, showSectionList, showMentionedEntities, showSources };
-          return U.obj2KeyValueArr(x).filter(v => v.value).map(v => v.key);
-        })
-      )
-
-    this.activeTabIndex$ = combineLatest(this.activeTab$, this.tabs$)
-      .pipe(
-        map(([activeTab, tabs]) => tabs.indexOf(activeTab))
-      )
-
     this.iconType$ = this.b.pipeIconType(this.pkEntity, 'peIt')
 
   }
+
+  // ngAfterViewInit() {
+  //   this.ref.detectChanges();
+  //   setTimeout(() => {
+
+  //     this.rightPanelTabs.selectedIndex = 0
+  //   }, 5000)
+  // }
 
   openRemoveDialog() {
     this.tabTitle$
@@ -218,15 +210,16 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   }
 
   rightTabIndexChange(i: number) {
-    this.tabs$.pipe(first()).subscribe(tabs => {
-      this.show(tabs[i]);
-    })
+    this.localStore.dispatch(this.actions.setRightPanelActiveTab(i))
+    // this.rightPanelTabs$.pipe(first()).subscribe(tabs => {
+    //   this.show(tabs[i]);
+    // })
   }
   show(keyToShow) {
-    this.activeTab$.pipe(first()).subscribe(showRight => {
-      this.toggle(showRight)
-      this.toggle(keyToShow)
-    })
+    // this.rightPanelTabs$.pipe(first()).subscribe(showRight => {
+    //   this.toggle(showRight)
+    //   this.toggle(keyToShow)
+    // })
   }
 
   /**

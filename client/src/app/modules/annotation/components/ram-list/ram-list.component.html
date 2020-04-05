@@ -1,6 +1,9 @@
-<div class="mat-typography" style="height: 400px; ">
-  <p-table #tt [value]="items$ | async" [columns]="cols" [scrollable]="true" scrollHeight="100%"
-    [resizableColumns]="true" class="gv-ui-table-border-cells">
+<div *ngIf="loading" class="gv-flex-fh justify-content-center align-items-center">
+  <mat-spinner diameter="20"></mat-spinner>
+</div>
+<div *ngIf="!loading" class="gv-ram-list mat-typography gv-flex-fh">
+  <p-table #tt [value]="items$ | async" [columns]="cols" [scrollable]="true" [resizableColumns]="true"
+    class="gv-ui-table-border-cells gv-ui-table-full-height ">
     <ng-template pTemplate="colgroup" let-columns>
       <colgroup>
         <col *ngFor="let col of columns" [style.width]="col.width">
@@ -12,7 +15,7 @@
         <th *ngFor="let col of cols; let i = index" pResizableColumn [pResizableColumnDisabled]="i == (cols.length - 2)"
           [ngClass]="{'col-action':col.field =='action'}">
           <ng-container *ngIf="col.field == 'path'">Item</ng-container>
-          <ng-container *ngIf="col.field == 'location'">Reference</ng-container>
+          <ng-container *ngIf="col.field == 'location'">References</ng-container>
           <ng-container *ngIf="col.field == 'action'">
             <button mat-icon-button color=primary (click)="onAdd()">
               <mat-icon>add</mat-icon>
@@ -55,7 +58,7 @@
             <!-- <mat-icon class="mat-text-secondary mr-2">
                             {{rowData.location.icon}}
                         </mat-icon>-->
-            {{rowData.location.label}}
+            {{rowData?.location?.label}}
           </div>
 
           <div *ngIf="col.field == 'action'" class="d-flex align-items-center col-action">
@@ -67,7 +70,7 @@
                 <mat-icon>tab</mat-icon>
                 Open item in new tab
               </button>
-              <button *ngIf="rowData?.actions?.open" mat-menu-item>
+              <button *ngIf="rowData?.actions?.open" mat-menu-item (click)="onEdit(rowData.statement)">
                 <mat-icon>edit</mat-icon>
                 Edit
               </button>
@@ -87,17 +90,16 @@
         <td colspan="4">
           <div class="gv-rl-footer-bar">
 
-            <button mat-button *ngIf="!filtersVisible" class="gv-cursor-pointer mat-caption"
+            <button mat-button *ngIf="!filtersVisible" class="gv-cursor-pointer gv-rl-footer-bar-filter-btn"
               (click)="filtersVisible=true">
               Show filters
             </button>
-            <button mat-button *ngIf="filtersVisible" class="gv-cursor-pointer mat-caption"
+            <button mat-button *ngIf="filtersVisible" class="gv-cursor-pointer gv-rl-footer-bar-filter-btn"
               (click)="filtersVisible=false">
               Hide filters
             </button>
             <div class="gv-rl-footer-bar-spacer"></div>
-            <div class="mat-body mat-text-secondary">Display
-              mode: </div>
+            <div class="mat-body mat-text-secondary mr-2">Display:</div>
             <mat-radio-group aria-labelledby="view-mode" [(ngModel)]="viewMode">
               <mat-radio-button value="mini" class="mat-caption">
                 Mini

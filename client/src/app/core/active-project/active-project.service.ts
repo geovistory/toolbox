@@ -17,17 +17,18 @@ import { DatSelector } from '../dat/dat.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { InfActions } from '../inf/inf.actions';
 import { InfSelector } from '../inf/inf.service';
-import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, ProProject } from '../sdk';
+import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, ProProject, WarEntityPreview } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
-import { EntityPreview, EntityType } from '../state/models';
+import { EntityPreview, EntityType, PeItDetail } from '../state/models';
 import { SucceedActionMeta } from '../store/actions';
 import { IAppState, SchemaObject } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { ActiveProjectActions } from './active-project.action';
 import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, RamSource } from './active-project.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { WarActions } from '../war/war.actions';
 
 
 
@@ -76,10 +77,19 @@ export class ActiveProjectService {
   ramSource$ = new ReplaySubject<RamSource>();
   ramProperty$ = new ReplaySubject<number>()
   ramTarget$ = new ReplaySubject<number>();
+  ramTitle$ = new ReplaySubject<string>();
+  ramTitlePart2$ = new ReplaySubject<string>();
+  ramBoxLeft$ = new ReplaySubject<'select-text' | 'drag-source-or-section'>();
+  ramBoxCenter$ = new ReplaySubject<boolean>();
+  ramBoxRight$ = new ReplaySubject<boolean>();
+
+
+  requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
+    private warActions: WarActions,
     private entityPreviewSocket: EntityPreviewSocket,
     public dialog: MatDialog,
     public dfh$: DfhSelector,
@@ -132,21 +142,25 @@ export class ActiveProjectService {
     )
 
 
-    this.entityPreviewSocket.fromEvent<EntityPreview>('entityPreview').subscribe(data => {
+    this.entityPreviewSocket.fromEvent<WarEntityPreview>('entityPreview').subscribe(data => {
       // dispatch a method to put the EntityPreview to the store
-      this.ngRedux.dispatch(this.actions.loadEntityPreviewSucceeded(data))
+      this.warActions.entity_preview.loadSucceeded([data], '')
     })
 
     this.entityPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
       // get all EntityPreview keys from state and send them to the
       // server so that they will be streamed. This is important for
       // when connection was lost.
-      combineLatest(this.pkProject$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
-        .subscribe(([pkProject, activeProject]) => {
-          if (activeProject.entityPreviews) {
-            this.entityPreviewSocket.emit('addToStrem', {
+      this.pkProject$.pipe(first())
+        .subscribe((pkProject) => {
+          const pks = Object.keys({
+            ...this.ngRedux.getState().war.entity_preview,
+            ...this.requestedEntityPreviews
+          });
+          if (pks.length) {
+            this.entityPreviewSocket.emit('addToStream', {
               pk_project: pkProject,
-              pks: Object.keys(activeProject.entityPreviews)
+              pks
             })
           }
         })
@@ -219,20 +233,25 @@ export class ActiveProjectService {
   streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<EntityPreview> {
     const state = this.ngRedux.getState();
 
-    if (!(((state || {}).activeProject || {}).entityPreviews || {})[pkEntity] || forceReload) {
+    if (
+      (
+        !(((state.war || {}).entity_preview || {}).by_pk_entity || {})[pkEntity] &&
+        !this.requestedEntityPreviews[pkEntity]
+      ) || forceReload) {
       this.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProject => {
 
-        this.entityPreviewSocket.emit('addToStrem', {
+        this.entityPreviewSocket.emit('addToStream', {
           pk_project: pkProject,
           pks: [pkEntity]
         })
-        const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+        // const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
-        this.ngRedux.dispatch(this.actions.loadEntityPreview(pkProject, pkEntity, pkUiContext))
+        // this.ngRedux.dispatch(this.actions.loadEntityPreview(pkProject, pkEntity, pkUiContext))
+        this.requestedEntityPreviews[pkEntity] = true;
       })
     }
 
-    return this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pkEntity])
+    return this.ngRedux.select<EntityPreview>(['war', 'entity_preview', 'by_pk_entity', pkEntity])
       .pipe(
         distinctUntilChanged<EntityPreview>(equals),
         filter(prev => (!!prev))
@@ -402,56 +421,6 @@ export class ActiveProjectService {
     );
   }
 
-  // reloadTypesForClassesInProject() {
-  //   this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
-  //     .subscribe((classesInProject) => {
-  //       this.streamTypePreviewsByClass(classesInProject)
-  //     })
-  // }
-
-  // loadQueries() {
-  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //     this.ngRedux.dispatch(this.actions.loadQueries(pk))
-  //   })
-  //   return this.comQueryVersionsByPk$;
-  // }
-
-  // loadQueryVersion(pkEntity: number, entityVersion: number) {
-  //   const state = this.ngRedux.getState();
-
-  //   if (
-  //     pkEntity && entityVersion &&
-  //     // if not yet loading
-  //     (!state.activeProject
-  //       || !state.activeProject.comQueryVersionLoading
-  //       || !state.activeProject.comQueryVersionLoading[pkEntity + '_' + entityVersion]
-  //     )) {
-  //     this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //       this.ngRedux.dispatch(this.actions.loadQueryVersion(pk, pkEntity, entityVersion))
-  //     })
-  //   }
-  //   return this.comQueryVersionsByPk$;
-  // }
-
-  // loadVisuals() {
-  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //     this.ngRedux.dispatch(this.actions.loadVisuals(pk))
-  //   })
-  //   return this.comVisualVersionsByPk$;
-  // }
-
-  // /**
-  //  * Loads one specific visual version
-  //  * @param pkEntity pk_entity of visual
-  //  * @param entityVersion if no entity_version provided, returns latest version
-  //  */
-  // loadVisualVersion(pkEntity: number, entityVersion: number = null) {
-  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //     this.ngRedux.dispatch(this.actions.loadVisualVersion(pk, pkEntity, entityVersion))
-  //   })
-  //   return this.comVisualVersionsByPk$;
-  // }
-
   /************************************************************************************
   * Change Project Relations
   ************************************************************************************/
@@ -583,6 +552,17 @@ export class ActiveProjectService {
   }
 
   private addSourceTab(pkEntity: number) {
+
+    const peItDetail = new PeItDetail({
+      showHeader: true,
+      showProperties: true,
+      showRightArea: false,
+      rightPanelTabs: [
+        'content-tree'
+      ],
+      rightPanelActiveTab: 0
+    })
+
     this.addTab({
       active: true,
       component: 'pe-it-detail',
@@ -591,33 +571,23 @@ export class ActiveProjectService {
       data: {
         pkEntity: pkEntity,
         peItDetailConfig: {
-          peItDetail: {
-
-            showMentionedEntities: true,
-            showMentionedEntitiesToggle: true,
-
-            showAssertions: false,
-            showAssertionsToggle: false,
-
-            showSectionList: true,
-            showSectionListToggle: true,
-
-            showProperties: true,
-            showPropertiesToggle: true,
-
-            showPropertiesHeader: true,
-            // showAddAPropertyButton: false,
-
-          },
-          stateSettings: {
-            pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE
-          }
+          peItDetail
         }
       }
     });
   }
 
   private addSourceExpressionPortionTab(pkEntity: number) {
+    const peItDetail = new PeItDetail({
+      showHeader: true,
+      showProperties: true,
+      showRightArea: false,
+      rightPanelTabs: [
+        'content-tree'
+      ],
+      rightPanelActiveTab: 0
+    })
+
     this.addTab({
       active: true,
       component: 'pe-it-detail',
@@ -625,18 +595,7 @@ export class ActiveProjectService {
       data: {
         pkEntity: pkEntity,
         peItDetailConfig: {
-          peItDetail: {
-            showSectionList: true,
-            showSectionListToggle: true,
-            showProperties: true,
-            showPropertiesToggle: true,
-            showMap: false,
-            showMapToggle: false,
-            showTimeline: false,
-            showTimelineToggle: false,
-            showSources: false,
-            showSourcesToggle: false
-          }
+          peItDetail
         }
       },
       pathSegment: 'peItDetails'
@@ -644,6 +603,16 @@ export class ActiveProjectService {
   }
 
   private addEntityPeItTab(pkEntity: number) {
+    const peItDetail = new PeItDetail({
+      showHeader: true,
+      showProperties: true,
+      showRightArea: false,
+      rightPanelTabs: [
+        'linked-sources',
+        'linked-digitals'
+      ],
+      rightPanelActiveTab: 0
+    })
 
     this.addTab({
       active: true,
@@ -653,20 +622,8 @@ export class ActiveProjectService {
       data: {
         pkEntity: pkEntity,
         peItDetailConfig: {
-          peItDetail: {
-            showProperties: true,
-            showPropertiesToggle: true,
-            showMap: false,
-            showMapToggle: false,
-            showTimeline: false,
-            showTimelineToggle: false,
-            showSources: true,
-            showSourcesToggle: true,
-            showRightArea: false
-
-          }
+          peItDetail
         }
-
       }
     })
 
@@ -686,6 +643,8 @@ export class ActiveProjectService {
             showRightArea: false,
             showSources: true,
             showSourcesToggle: true,
+            showDigitals: false,
+            showDigitalsToggle: true,
           }
         }
       }

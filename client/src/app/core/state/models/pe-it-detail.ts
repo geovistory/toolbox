@@ -6,100 +6,79 @@ import { PeItTimeline } from 'app/modules/information/containers/pe-it-timeline/
 
 export interface PeItDetailList { [pk_entity: number]: PeItDetail };
 
+
 export class PeItDetail extends Entity {
 
-    // record
-    peIt?: InfPersistentItem;
-
-    form?: any;
-
-    /**
-     * Display settings with defaults.
-     * To customize the default values, provide the value in the data of the constructor
-     */
 
 
 
-    /** Right Panel Visibility */
+  // // record
+  // peIt?: InfPersistentItem;
 
-    // show the map
-    showMap?= false;
+  // form?: any;
 
-    // show the timeline
-    showTimeline?= false;
-
-    // show the mentioned entities of a source
-    showMentionedEntities?= false;
-
-    // show the assertions using the entity
-    showAssertions?= false;
-
-    // show the sources of a peIt
-    showSources?= false;
-
-    /** Left Panel Visibility */
-
-    // the properties with information about the peIt
-    showProperties?= false;
-
-    // show the sectionList of a source
-    showSectionList?= false;
-
-    // show the reproductions of a section
-    showRepros?= false;
+  // /**
+  //  * Display settings with defaults.
+  //  * To customize the default values, provide the value in the data of the constructor
+  //  */
 
 
-    /** Info Visibility */
 
-    showOntoInfo?= false;
+  // /** Right Panel Visibility */
 
-    showCommunityStats?= false;
+  // // show the map
+  // showMap?= false;
 
+  // // show the timeline
+  // showTimeline?= false;
 
-    /** Toggle Buttons Visibility (left panel) */
+  // // show the mentioned entities of a source
+  // showMentionedEntities?= false;
 
-    // the button to toggle showProperties
-    showPropertiesToggle?= false;
+  // // show the assertions using the entity
+  // showAssertions?= false;
 
-    // the button to toggle showSectionList
-    showSectionListToggle?= false;
+  // // show the linked sources of a peIt
+  // showSources?= false;
 
-    // the button to toggle showRepros
-    showReprosToggle?= false;
-
-
-    /** Toggle Buttons Visibility (right panel) */
-
-    // the button to toggle showMap
-    showMapToggle?= false;
-
-    // the button to toggle showTimeline
-    showTimelineToggle?= false;
-
-    // the button to toggle showMentionedEntities
-    showMentionedEntitiesToggle?= false;
-
-    // the button to toggle showAssertions
-    showAssertionsToggle?= false;
-
-    // the button to toggle showSources
-    showSourcesToggle?= false;
+  // // show the digitals of a peIt
+  // showDigitals?= false;
 
 
-    loading?: boolean; // for leaf pe it view
-    leafPeItLoading?: boolean;
-    _leaf_peIt_modal?: PeItDetail; // for leaf pe it view modal
+
+  // // show the sectionList of a source
+  // showSectionList?= false;
+
+  // // show the reproductions of a section
+  // showRepros?= false;
 
 
-    // reproductions of a section
-    // repros?: Repros;
+  // /** Info Visibility */
 
-    /** Timeline */
-    peItTimeLine?: PeItTimeline;
+  // showOntoInfo?= false;
 
-    constructor(data?: PeItDetail) {
-        super();
-        Object.assign(this, data);
-    }
+  // showCommunityStats?= false;
+
+
+  // /** Toggle Buttons Visibility (left panel) */
+
+  // // the button to toggle showProperties
+  // showPropertiesToggle?= false;
+
+  // // the button to toggle showSectionList
+  // showSectionListToggle?= false;
+
+  // // the button to toggle showRepros
+  // showReprosToggle?= false;
+
+
+
+  // loading?: boolean; // for leaf pe it view
+
+
+  constructor(data?: PeItDetail) {
+    super();
+    Object.assign(this, data);
+  }
 
 }

@@ -11,6 +11,7 @@ import { LoadingBar } from '../loading-bar/loading-bar.models';
 import { Pro } from '../pro/pro.models';
 import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '../sdk';
 import { Sys } from '../sys/sys.models';
+import { War } from '../war/war.models';
 
 export interface InfObject {
   persistent_item: InfPersistentItem[]
@@ -44,6 +45,7 @@ export interface IAppState {
   inf?: Inf
   dat?: Dat
   pro?: Pro
+  war?: War
   activeProject?: ProjectDetail
   routes?: any,
   information?: Information,

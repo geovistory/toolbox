@@ -20,7 +20,7 @@ export function peItDetailReducer(state: PeItDetail = INITIAL_STATE, a: Action):
       state = {
         ...state,
         ...action.meta.config,
-        loading: false,
+        // loading: false,
       };
       break;
 

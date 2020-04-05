@@ -232,7 +232,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
   addToProjectWithTeEnt: (pkRoles: number[], pkProject: number) => ActionResultObservable<InfRole>;
   loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedRolesList>;
 
-  contentTree: (pkProject: number, pkExpressionEntity: number) => void;
+  // contentTree: (pkProject: number, pkExpressionEntity: number) => void;
   sourcesAndDigitalsOfEntity: (ofProject: boolean, pkProject: number, pkEntity: number) => ActionResultObservable<SourcesAndDigitalsOfEntityResult>;
   findByParams: (
     ofProject: boolean,
@@ -358,21 +358,21 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
 
 
 
-    /**
-     * Loads the hierarchy of an F2 Expression's content
-     */
-    this.contentTree = (pkProject, pkExpressionEntity) => {
-      const action: FluxStandardAction<Payload, ContentTreeMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.CONTENT_TREE,
-        meta: {
-          addPending: U.uuid(),
-          pk: pkProject,
-          pkExpressionEntity
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-    }
+    // /**
+    //  * Loads the hierarchy of an F2 Expression's content
+    //  */
+    // this.contentTree = (pkProject, pkExpressionEntity) => {
+    //   const action: FluxStandardAction<Payload, ContentTreeMeta> = {
+    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.CONTENT_TREE,
+    //     meta: {
+    //       addPending: U.uuid(),
+    //       pk: pkProject,
+    //       pkExpressionEntity
+    //     },
+    //     payload: null,
+    //   };
+    //   this.ngRedux.dispatch(action)
+    // }
 
     /**
     * Get an nested object with everything needed to display the

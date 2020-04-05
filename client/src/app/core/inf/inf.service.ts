@@ -162,6 +162,7 @@ class InfRoleSelections extends Selector {
   public by_fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_temporal_entity')
   public by_fk_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_temporal_entity')
   public by_fk_property__fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_entity')
+  public by_fk_property_of_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property_of_property__fk_temporal_entity')
   public by_fk_subject_data$ = this.selector<ByPk<InfRole>>('by_fk_subject_data')
   public by_fk_object_data$ = this.selector<ByPk<InfRole>>('by_fk_object_data')
 

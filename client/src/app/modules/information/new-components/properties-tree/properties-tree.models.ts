@@ -39,7 +39,6 @@ export interface ListDefinition {
   ontoInfoLabel: string
   fkClassField: number
   pkProperty: number
-  // fkPropertyOfOrigin: number // TODO remove after pkProperty Change
   isOutgoing: boolean
   isIdentityDefining: boolean
   sourceClass: number

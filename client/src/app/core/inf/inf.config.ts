@@ -66,6 +66,10 @@ export const infDefinitions: ReducerConfigCollection = {
         groupByFn: (d: InfRole): string => U.toStrContains0undef([d.fk_property, d.fk_entity])
       },
       {
+        keyInStore: 'fk_property_of_property__fk_temporal_entity',
+        groupByFn: (d: InfRole): string => U.toStrContains0undef([d.fk_property_of_property, d.fk_temporal_entity])
+      },
+      {
         keyInStore: 'fk_subject_data',
         groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_subject_data)
       },
