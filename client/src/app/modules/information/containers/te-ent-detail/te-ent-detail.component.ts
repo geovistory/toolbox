@@ -14,8 +14,8 @@ import { RootEpics } from '../../../../core/store/epics';
 import { slideInOut } from '../../shared/animations';
 import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
 import { teEntDetailReducer } from './api/te-ent-detail.reducer';
-import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
-import { InformationBasicPipesService } from 'app/modules/base/new-services/information-basic-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 
 
 

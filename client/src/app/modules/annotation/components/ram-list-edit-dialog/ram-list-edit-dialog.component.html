@@ -20,7 +20,22 @@
   </div>
   <mat-divider></mat-divider>
   [Field]
-  <!-- <gv-field [pkEntity]="data.statement.pk_entity" [fieldDefinition]="fieldDefinition"></gv-field> -->
+
+  <gv-field [pkEntity]="data.statement.pk_entity" [fieldDefinition]="fieldDefinition" [readonly$]="readonly$">
+  </gv-field>
+
+  {{t.showControl$|async}}
+
+  <div *ngIf="(t.showControl$ | async)">
+    <gv-add-role [pkEntity]="data.statement.pk_entity" [showOntoInfo$]="showOntoInfo$"></gv-add-role>
+  </div>
+
+  <div *ngIf="(t.showCreateRole$ | async)">
+    <gv-form-create-role [listDefinition]="t.showCreateRole$ | async" [pkEntity]="data.statement.pk_entity" #c>
+    </gv-form-create-role>
+  </div>
+
+
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close] cdkFocusInitial>Ok</button>

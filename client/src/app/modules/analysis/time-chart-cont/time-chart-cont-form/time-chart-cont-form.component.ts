@@ -5,7 +5,7 @@ import { FormControlFactory } from 'app/modules/form-factory/core/form-control-f
 import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { values } from 'ramda';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';

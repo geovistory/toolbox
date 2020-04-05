@@ -1,36 +1,36 @@
-import { AddRoleComponent } from './new-components/add-role/add-role.component';
-import { ChooseClassDialogComponent } from './new-components/choose-class-dialog/choose-class-dialog.component';
-import { ClassesAndTypesSelectComponent } from './new-components/classes-and-types-select/classes-and-types-select.component';
-import { CtrlAppellationComponent } from './new-components/ctrl-appellation/ctrl-appellation.component';
-import { CtrlEntityComponent } from './new-components/ctrl-entity/ctrl-entity.component';
-import { CtrlLanguageComponent } from './new-components/ctrl-language/ctrl-language.component';
-import { CtrlPlaceComponent } from './new-components/ctrl-place/ctrl-place.component';
-import { CtrlTextPropertyComponent } from './new-components/ctrl-text-property/ctrl-text-property.component';
-import { CtrlTimePrimitiveComponent } from './new-components/ctrl-time-primitive/ctrl-time-primitive.component';
-import { CtrlTimeSpanDialogComponent } from './new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { CtrlTimeSpanComponent } from './new-components/ctrl-time-span/ctrl-time-span.component';
-import { ExistenceTimeHelpComponent } from './new-components/ctrl-time-span/existence-time-help/existence-time-help.component';
-import { CtrlTypeComponent } from './new-components/ctrl-type/ctrl-type.component';
-import { FieldComponent } from './new-components/field/field.component';
-import { FormArrayComponent } from './new-components/form-array/form-array.component';
-import { FormControlComponent } from './new-components/form-control/form-control.component';
-import { FormCreateEntityComponent } from './new-components/form-create-entity/form-create-entity.component';
-import { FormCreateRoleComponent } from './new-components/form-create-role/form-create-role.component';
-import { FormGroupComponent } from './new-components/form-group/form-group.component';
-import { LeafItemAddListComponent } from './new-components/leaf-item-add-list/leaf-item-add-list.component';
-import { LeafItemListComponent } from './new-components/leaf-item-list/leaf-item-list.component';
-import { ListHeaderComponent } from './new-components/list-header/list-header.component';
-import { PropertiesTreeDialogComponent } from './new-components/properties-tree-dialog/properties-tree-dialog.component';
-import { PropertiesTreeComponent } from './new-components/properties-tree/properties-tree.component';
-import { PropertiesTreeService } from './new-components/properties-tree/properties-tree.service';
-import { TemporalEntityAddListComponent } from './new-components/temporal-entity-add-list/temporal-entity-add-list.component';
-import { TemporalEntityListComponent } from './new-components/temporal-entity-list/temporal-entity-list.component';
-import { TimeSpanListComponent } from './new-components/time-span-list/time-span-list.component';
-import { TypeItemComponent } from './new-components/type-item/type-item.component';
-import { InformationBasicPipesService } from './new-services/information-basic-pipes.service';
-import { InformationPipesService } from './new-services/information-pipes.service';
-import { PaginationService } from './new-services/pagination.service';
-import { TimeSpanService } from './new-services/time-span.service';
+import { AddRoleComponent } from './components/add-role/add-role.component';
+import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
+import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
+import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
+import { CtrlEntityComponent } from './components/ctrl-entity/ctrl-entity.component';
+import { CtrlLanguageComponent } from './components/ctrl-language/ctrl-language.component';
+import { CtrlPlaceComponent } from './components/ctrl-place/ctrl-place.component';
+import { CtrlTextPropertyComponent } from './components/ctrl-text-property/ctrl-text-property.component';
+import { CtrlTimePrimitiveComponent } from './components/ctrl-time-primitive/ctrl-time-primitive.component';
+import { CtrlTimeSpanDialogComponent } from './components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { CtrlTimeSpanComponent } from './components/ctrl-time-span/ctrl-time-span.component';
+import { ExistenceTimeHelpComponent } from './components/ctrl-time-span/existence-time-help/existence-time-help.component';
+import { CtrlTypeComponent } from './components/ctrl-type/ctrl-type.component';
+import { FieldComponent } from './components/field/field.component';
+import { FormArrayComponent } from './components/form-array/form-array.component';
+import { FormControlComponent } from './components/form-control/form-control.component';
+import { FormCreateEntityComponent } from './components/form-create-entity/form-create-entity.component';
+import { FormCreateRoleComponent } from './components/form-create-role/form-create-role.component';
+import { FormGroupComponent } from './components/form-group/form-group.component';
+import { LeafItemAddListComponent } from './components/leaf-item-add-list/leaf-item-add-list.component';
+import { LeafItemListComponent } from './components/leaf-item-list/leaf-item-list.component';
+import { ListHeaderComponent } from './components/list-header/list-header.component';
+import { PropertiesTreeDialogComponent } from './components/properties-tree-dialog/properties-tree-dialog.component';
+import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
+import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
+import { TemporalEntityAddListComponent } from './components/temporal-entity-add-list/temporal-entity-add-list.component';
+import { TemporalEntityListComponent } from './components/temporal-entity-list/temporal-entity-list.component';
+import { TimeSpanListComponent } from './components/time-span-list/time-span-list.component';
+import { TypeItemComponent } from './components/type-item/type-item.component';
+import { InformationBasicPipesService } from './services/information-basic-pipes.service';
+import { InformationPipesService } from './services/information-pipes.service';
+import { PaginationService } from './services/pagination.service';
+import { TimeSpanService } from './services/time-span.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'app/core/material/material.module';
@@ -43,6 +43,7 @@ import { ControlMessagesModule, PassiveLinkModule } from 'app/shared';
 import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
 import { KeysModule } from 'app/shared/pipes/keys.module';
 import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
+import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 
 const components = [
   PropertiesTreeComponent,
@@ -88,6 +89,7 @@ const baseModules = [
   TimeSpanPipeModule,
   KeysModule,
   TruncateModule,
+  QuillOpsToStrModule
 ]
 
 @NgModule({

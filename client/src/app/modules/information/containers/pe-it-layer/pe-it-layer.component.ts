@@ -5,8 +5,8 @@ import { U } from 'app/core';
 import { from as observableFrom, Observable, Subject } from 'rxjs';
 import { filter, map, merge, takeUntil } from 'rxjs/operators';
 import { tag } from '../../../../../../node_modules/rxjs-spy/operators';
-import { MapLayerPipesService } from 'app/modules/base/new-services/map-layer-pipes.service';
-import { InformationBasicPipesService } from 'app/modules/base/new-services/information-basic-pipes.service';
+import { MapLayerPipesService } from 'app/modules/base/services/map-layer-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 
 
 

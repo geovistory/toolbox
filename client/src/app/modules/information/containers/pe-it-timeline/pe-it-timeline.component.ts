@@ -7,8 +7,8 @@ import { Observable, Subject } from 'rxjs';
 
 import { PeItTimelineAPIActions } from './api/pe-it-timeline.actions';
 import { PeItTimeline } from './api/pe-it-timeline.models';
-import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
-import { InformationBasicPipesService } from 'app/modules/base/new-services/information-basic-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 
 // @WithSubStore({
 //   basePathMethodName: 'getBasePath',

@@ -6,7 +6,7 @@ import { SchemaObject } from 'app/core/store/model';
 import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { DfhConfig } from '../../shared/dfh-config';
-import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 
 export interface ClassAndTypePk { pkClass: number, pkType: number };
 

@@ -1,5 +1,5 @@
 import { TimePrimitive } from 'app/core';
-import { CtrlTimeSpanDialogResult } from 'app/modules/base/new-components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { CtrlTimeSpanDialogResult } from 'app/modules/base/components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 
 export class TimeSpan {
 

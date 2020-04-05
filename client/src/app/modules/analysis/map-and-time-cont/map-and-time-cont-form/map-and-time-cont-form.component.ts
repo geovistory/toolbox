@@ -9,7 +9,7 @@ import { MapAndTimeContInput } from '../../../../../../../src/common/interfaces'
 import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory

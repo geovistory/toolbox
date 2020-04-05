@@ -12,7 +12,7 @@ import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
-import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 
 /**
  * Food data with nested structure.

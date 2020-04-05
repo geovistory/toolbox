@@ -1,7 +1,7 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
 import { CzmlPosition } from '../../../../../src/common/interfaces/czml-types';
-import { QueryPoint } from 'app/modules/base/new-services/map-layer-pipes.service';
+import { QueryPoint } from 'app/modules/base/services/map-layer-pipes.service';
 
 export interface CzmlPositionGeneratorSettings {
 

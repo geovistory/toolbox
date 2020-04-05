@@ -8,7 +8,7 @@ import { omit } from 'ramda';
 import * as Config from '../../../../../common/config/Config';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/angular-cesium';
-import { TimeSpanItem } from '../../modules/base/new-components/properties-tree/properties-tree.models';
+import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';

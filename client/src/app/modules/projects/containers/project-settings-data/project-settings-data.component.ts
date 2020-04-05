@@ -22,7 +22,7 @@ import { EntityType, ProjectSettingsData } from './api/project-settings-data.mod
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 import { ClassConfigDialogData, ClassConfigDialogComponent } from 'app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 interface Profile {
   label: string,

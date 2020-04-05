@@ -4,7 +4,7 @@ import { CzmlLabelGenerator } from './czml-label-generator';
 import { CzmlPointGenerator } from './czml-point-generator';
 import { CzmlPositionGenerator } from './czml-position-generator';
 import { CzmlPacket } from '../../../../../src/common/interfaces/czml-types';
-import { QueryPoint } from 'app/modules/base/new-services/map-layer-pipes.service';
+import { QueryPoint } from 'app/modules/base/services/map-layer-pipes.service';
 
 // https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet
 

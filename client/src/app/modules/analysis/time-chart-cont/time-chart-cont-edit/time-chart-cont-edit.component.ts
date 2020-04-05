@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { SysConfig, ActiveProjectService } from 'app/core';
-import { ConfigurationPipesService } from 'app/modules/base/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { values } from 'ramda';
 import { BehaviorSubject, Subject, of, Observable } from 'rxjs';

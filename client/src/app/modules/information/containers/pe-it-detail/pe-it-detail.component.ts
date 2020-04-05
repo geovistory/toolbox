@@ -16,8 +16,8 @@ import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
 import { peItDetailReducer } from './api/pe-it-detail.reducer';
 import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 import { FormControl } from '@angular/forms';
-import { InformationBasicPipesService } from 'app/modules/base/new-services/information-basic-pipes.service';
-import { InformationPipesService } from 'app/modules/base/new-services/information-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 
 
 
