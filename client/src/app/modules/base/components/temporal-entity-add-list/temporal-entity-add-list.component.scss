@@ -5,7 +5,7 @@
 table {
   width: 100%;
   background: none;
-  tr.mat-header-row{
+  tr.mat-header-row {
     height: 40px;
   }
 }
@@ -20,17 +20,9 @@ th.action-cell.mat-header-cell:last-of-type {
   padding-right: 3px;
   width: 40px;
 }
-.table-container {
-  min-width: 240px;
-  width: 100%;
-  overflow: auto;
-}
-.table-and-paginator-container {
-  min-width: 320px;
-}
 
 .class-info-col,
 .select-col {
-    width: 0.1%;
-    white-space: nowrap;
+  width: 0.1%;
+  white-space: nowrap;
 }

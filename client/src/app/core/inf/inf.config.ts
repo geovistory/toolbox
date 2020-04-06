@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { InfTextProperty, InfRole, InfLangString } from "../sdk";
+import { InfRole, InfTextProperty } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
@@ -107,7 +107,7 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: [
       {
         keyInStore: 'fk_concerned_entity__fk_class_field',
-        groupByFn: (d: InfTextProperty): string => d.fk_concerned_entity + '_' + d.fk_class_field
+        groupByFn: (d: InfTextProperty): string => d.fk_concerned_entity + '0' + d.fk_class_field
       },
       {
         keyInStore: 'fk_concerned_entity',
@@ -116,7 +116,7 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   lang_string: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -176,13 +176,13 @@ export const infDefinitions: ReducerConfigCollection = {
  * - subject (all subject foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '_', undefined keys are replaced by a underscore '_'
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
  * Use this function to index groups of roles with the same subject
  * or to retrieve roles from such a group index
  */
 export function indexRoleBySubject(fks: IndexRoleBySubject = {}): string {
-  return `${fks.fk_temporal_entity || '_'}-${fks.fk_subject_data || '_'}-${(fks.fk_subject_tables_row) || '_'}-${(fks.fk_subject_tables_cell) || '_'}`
+  return `${fks.fk_temporal_entity || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`
 }
 export interface IndexRoleBySubject {
   fk_temporal_entity?: number;
@@ -197,13 +197,13 @@ export interface IndexRoleBySubject {
  * - object (all object foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '_', undefined keys are replaced by a underscore '_'
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
  * Use this function to index groups of roles with the same object
  * or to retrieve roles from such a group index
  */
 export function indexRoleByObject(fks: IndexRoleByObject = {}): string {
-  return `${fks.fk_entity || '_'}-${fks.fk_object_data || '_'}-${fks.fk_object_tables_row || '_'}-${fks.fk_object_tables_cell || '_'}`
+  return `${fks.fk_entity || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`
 }
 export interface IndexRoleByObject {
   fk_entity?: number;
@@ -219,13 +219,13 @@ export interface IndexRoleByObject {
  * - property (all property foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '_', undefined keys are replaced by a underscore '_'
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
  * Use this function to index groups of roles with the same subject + property
  * or to retrieve roles from such a group index
  */
 export function indexRoleBySubjectProperty(fks: IndexRoleBySubjectProperty = {}): string {
-  return `${fks.fk_temporal_entity || '_'}-${fks.fk_subject_data || '_'}-${(fks.fk_subject_tables_row) || '_'}-${(fks.fk_subject_tables_cell) || '_'}-${fks.fk_property || '_'}-${fks.fk_property_of_property || '_'}`
+  return `${fks.fk_temporal_entity || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
 export interface IndexRoleBySubjectProperty {
   fk_temporal_entity?: number;
@@ -243,13 +243,13 @@ export interface IndexRoleBySubjectProperty {
  * - property (all property foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
- * Keys are separated by dash '_', undefined keys are replaced by a underscore '_'
+ * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
  * Use this function to index groups of roles with the same object + property
  * or to retrieve roles from such a group index
  */
 export function indexRoleByObjectProperty(fks: IndexRoleByObjectProperty = {}): string {
-  return `${fks.fk_entity || '_'}-${fks.fk_object_data || '_'}-${fks.fk_object_tables_row || '_'}-${fks.fk_object_tables_cell || '_'}-${fks.fk_property || '_'}-${fks.fk_property_of_property || '_'}`
+  return `${fks.fk_entity || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
 export interface IndexRoleByObjectProperty {
   fk_entity?: number;
@@ -259,3 +259,4 @@ export interface IndexRoleByObjectProperty {
   fk_property?: number;
   fk_property_of_property?: number;
 }
+

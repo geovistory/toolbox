@@ -1,6 +1,7 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
 import { SchemaObject } from '../../models/SchemaObject';
+import { PaginationObject } from '../../models/PaginationObject';
 import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
 import { SysClassField } from '../../models/SysClassField';
 import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
@@ -45,6 +46,7 @@ export class SDKModels {
 
   private models: Models = {
     SchemaObject: SchemaObject,
+    PaginationObject: PaginationObject,
     SysClassFieldPropertyRel: SysClassFieldPropertyRel,
     SysClassField: SysClassField,
     SysClassHasTypeProperty: SysClassHasTypeProperty,

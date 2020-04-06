@@ -1,3 +1,16 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from 'app/core/material/material.module';
+import { ControlMessagesModule, PassiveLinkModule } from 'app/shared';
+import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
+import { OntoInfoModule } from 'app/shared/components/onto-info/onto-info.module';
+import { KeysModule } from 'app/shared/pipes/keys.module';
+import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
+import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
+import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
+import { QuillModule } from '../quill';
 import { AddRoleComponent } from './components/add-role/add-role.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
@@ -31,20 +44,6 @@ import { InformationBasicPipesService } from './services/information-basic-pipes
 import { InformationPipesService } from './services/information-pipes.service';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MaterialModule } from 'app/core/material/material.module';
-import { EntityPreviewModule } from 'app/shared/components/entity-preview/entity-preview.module';
-import { OntoInfoModule } from 'app/shared/components/onto-info/onto-info.module';
-import { ReactiveFormsModule } from '@angular/forms';
-import { QuillModule } from '../quill';
-import { TimeSpanPipeModule } from 'app/shared/pipes/time-span/time-span.module';
-import { ControlMessagesModule, PassiveLinkModule } from 'app/shared';
-import { TimePrimitivePipeModule } from 'app/shared/pipes/time-primitive/time-primitive.module';
-import { KeysModule } from 'app/shared/pipes/keys.module';
-import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
-import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
-
 const components = [
   PropertiesTreeComponent,
   PropertiesTreeDialogComponent,
@@ -96,11 +95,11 @@ const baseModules = [
   imports: baseModules,
   declarations: components,
   providers: [
+    PaginationService,
     InformationPipesService,
     InformationBasicPipesService,
     TimeSpanService,
     PropertiesTreeService,
-    PaginationService
   ],
   exports: [
     ...components,

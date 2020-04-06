@@ -95,7 +95,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
         let appeField: FieldDefinition, definitionField: FieldDefinition;
         fieldDefinitions.forEach(f => {
           // take only appellation for language, or ...
-          if (f.listDefinitions[0].pkProperty === 1111) {
+          if (f.listDefinitions[0].property.pkProperty === 1111) {
             appeField = f;
           }
           // ... entit definition

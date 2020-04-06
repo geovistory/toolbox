@@ -4,7 +4,7 @@ import { InfActions } from '../inf/inf.actions';
 import { ProActions } from '../pro/pro.actions';
 import { SchemaObject } from './model';
 import { SchemaObjectApi } from '../sdk';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { WarActions } from '../war/war.actions';
 
@@ -29,37 +29,46 @@ export class SchemaObjectService {
    * watches an Observable<SchemaObject>
    * on success stores the parts of the object at right place of store
    * on error emits error message
+   *
+   * @param apiCall$
+   * @param pkProject primary key of project or 'ofRepo', if repo versions
    */
-  store(apiCall$: Observable<SchemaObject>, pkProject) {
-    return new Observable((resolver) => {
-      apiCall$.subscribe(
-        result => {
-          this.storeSchemaObject(result, pkProject)
-          resolver.next()
-        },
-        error => {
-          this.notifications.addToast({
-            type: 'error',
-            options: { title: error.message }
-          })
-          resolver.error()
-        }
-      )
-    })
+  store(apiCall$: Observable<SchemaObject>, pkProject: number | 'ofRepo'): Observable<SchemaObject> {
+
+
+    const s$ = new Subject<SchemaObject>()
+    apiCall$.subscribe(
+      result => {
+        this.storeSchemaObject(result, pkProject === 'ofRepo' ? null : pkProject)
+        s$.next(result)
+      },
+      error => {
+        this.notifications.addToast({
+          type: 'error',
+          options: { title: error.message }
+        })
+        s$.error(error)
+      }
+    )
+    return s$
   }
 
-
-  storeSchemaObject(schemas: SchemaObject, pkProject) {
-    if (schemas && Object.keys(schemas).length > 0) {
-      Object.keys(schemas).forEach(schema => {
+  /**
+   *
+   * @param object
+   * @param pkProject primary key of project or null, if repo versions
+   */
+  storeSchemaObject(object: SchemaObject, pkProject: number | null) {
+    if (object && Object.keys(object).length > 0) {
+      Object.keys(object).forEach(schema => {
         let actions;
         if (schema === 'inf') actions = this.infActions;
         else if (schema === 'pro') actions = this.proActions;
         else if (schema === 'dat') actions = this.datActions;
         else if (schema === 'war') actions = this.warActions;
         if (actions) {
-          Object.keys(schemas[schema]).forEach(model => {
-            actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
+          Object.keys(object[schema]).forEach(model => {
+            actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
           });
         }
       });

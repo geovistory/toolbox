@@ -10,7 +10,7 @@ import { CalendarType } from '../../../core/date-time/time-primitive';
 import { InfSelector } from '../../../core/inf/inf.service';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { switchMapOr } from '../../../core/util/switchMapOr';
-import { BasicRoleItem } from '../components/properties-tree/properties-tree.models';
+import { BasicRoleItem, ListDefinition } from '../components/properties-tree/properties-tree.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
 
@@ -77,6 +77,23 @@ export class InformationBasicPipesService {
    */
   @spyTag pipeIngoingRoles(pkEntity): Observable<InfRole[]> {
     return this.p.inf$.role$.by_object$({ fk_entity: pkEntity })
+  }
+
+
+  pipeRolesOfList(listDefinition: ListDefinition, pkEntity): Observable<InfRole[]> {
+    if (listDefinition.isOutgoing) {
+      return this.p.inf$.role$.by_subject_and_property$({
+        fk_property: listDefinition.property.pkProperty,
+        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+        fk_temporal_entity: pkEntity
+      })
+    } else {
+      return this.p.inf$.role$.by_object_and_property$({
+        fk_property: listDefinition.property.pkProperty,
+        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+        fk_entity: pkEntity
+      })
+    }
   }
 
   /**

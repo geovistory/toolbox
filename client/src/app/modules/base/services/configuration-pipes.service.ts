@@ -648,7 +648,7 @@ export class ConfigurationPipesService {
               targetClassLabel,
               targetMaxQuantity,
               label,
-              pkProperty: p.pk_property,
+              property: { pkProperty: p.pk_property },
               fkClassField: undefined,
               isOutgoing: o,
               isIdentityDefining: p.identity_defining,
@@ -673,7 +673,7 @@ export class ConfigurationPipesService {
 
   getClassFieldListDefinition(pkClassField: number): ListDefinition {
     const template = {
-      pkProperty: undefined,
+      property: {},
       sourceClass: undefined,
       targetClass: undefined,
       isOutgoing: undefined,
@@ -813,7 +813,7 @@ export class ConfigurationPipesService {
         const indexed = indexBy((fc) => `${fc.fk_property}_${fc.fk_domain_class}_${fc.fk_range_class}`, fieldConfigs)
         const getFieldConfig = (listDef: ListDefinition): ProClassFieldConfig => {
           return indexed[key({
-            fk_property: listDef.pkProperty,
+            fk_property: listDef.property.pkProperty,
             fk_domain_class: listDef.isOutgoing ? listDef.sourceClass : null,
             fk_range_class: listDef.isOutgoing ? null : listDef.sourceClass,
           })]
@@ -831,7 +831,7 @@ export class ConfigurationPipesService {
             const fieldDefs: { [key: string]: FieldDefinition } = {}
             listDefinitions.forEach(listDef => {
               // if (!(listDef.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF && !listDef.isOutgoing)) {
-              const k = listDef.pkProperty + '_' + listDef.isOutgoing;
+              const k = listDef.property.pkProperty + '_' + listDef.isOutgoing;
 
               if (!fieldDefs[k]) {
                 fieldDefs[k] = {

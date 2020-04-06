@@ -50,13 +50,13 @@ export class FormPart {
 
       this.listDefinitions.forEach(thisList => {
         if (initVal.initListDefinition.listType === 'time-span') {
-          if (initVal.initTimeSpan && initVal.initTimeSpan[thisList.pkProperty]) {
+          if (initVal.initTimeSpan && initVal.initTimeSpan[thisList.property.pkProperty]) {
             // Yes. It is matching a listDefinition, add a form item with initial (language) value
             this.items.push({
               fixed: false,
               required: this.isRequired(thisList),
               classSelect: false,
-              formControlDef: this.addFormControlDef(thisList, initVal.initTimeSpan[thisList.pkProperty])
+              formControlDef: this.addFormControlDef(thisList, initVal.initTimeSpan[thisList.property.pkProperty])
             })
           }
 
@@ -78,14 +78,14 @@ export class FormPart {
         else {
           // Q: This is a list that connects one role per item
           const initList = this.initVal.initListDefinition
-          const initProperty = initList.pkProperty;
+          const initProperty = initList.property.pkProperty;
 
           // we neet to flip source and target, when the list type is a temporal entity
           const initTarget = initList.listType === 'temporal-entity' ? initList.sourceClass : initList.targetClass;
           const initSource = initList.listType === 'temporal-entity' ? initList.targetClass : initList.sourceClass;
 
           if (
-            thisList.pkProperty === initProperty
+            thisList.property.pkProperty === initProperty
             && thisList.sourceClass === initSource
             && thisList.targetClass === initTarget
           ) {
@@ -196,7 +196,7 @@ export class FormPart {
       const value: InfRole = {
         ...{} as any,
         fk_entity: undefined,
-        fk_property: listDefinition.pkProperty,
+        fk_property: listDefinition.property.pkProperty,
         appellation: {
           ...val,
           fk_class: listDefinition.targetClass,
@@ -210,7 +210,7 @@ export class FormPart {
       const value: InfRole = {
         ...{} as any,
         fk_entity: undefined,
-        fk_property: listDefinition.pkProperty,
+        fk_property: listDefinition.property.pkProperty,
         language: {
           ...val,
           fk_class: listDefinition.targetClass,
@@ -224,7 +224,7 @@ export class FormPart {
       const value: InfRole = {
         ...{} as any,
         fk_entity: undefined,
-        fk_property: listDefinition.pkProperty,
+        fk_property: listDefinition.property.pkProperty,
         place: {
           ...val,
           fk_class: listDefinition.targetClass,
@@ -239,7 +239,7 @@ export class FormPart {
     ) {
       if (!val) return null;
 
-      let value: InfRole = { ...{} as any, fk_property: listDefinition.pkProperty, };
+      let value: InfRole = { ...{} as any, fk_property: listDefinition.property.pkProperty, };
 
       if (listDefinition.isOutgoing) {
         value = { ...value, fk_entity: val }

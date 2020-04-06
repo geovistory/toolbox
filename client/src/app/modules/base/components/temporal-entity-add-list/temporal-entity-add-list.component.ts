@@ -39,7 +39,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
   rows$: Observable<TemporalEntityItem[]>
   items$;
   itemsCount$: Observable<number>
-
+  itemsCount: number
 
 
   table: TemporalEntityTable;
@@ -66,6 +66,10 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
   }
 
   ngOnInit() {
+
+    // stop initialization if this is not a temporal entity list
+    if (this.listDefinition.listType !== 'temporal-entity') return;
+
     const infRepo = new InfSelector(this.ngRedux, of('repo'))
 
     // selection stuff
@@ -128,6 +132,14 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
     this.table = new TemporalEntityTable(this.rows$, columns$, this.destroy$, this.listDefinition, customCols);
 
     this.itemsCount$ = infRepo.role$.pagination$.pipeCount(paginateBy)
+
+    this.itemsCount$.pipe(takeUntil(this.destroy$)).subscribe(c => {
+      this.itemsCount = c;
+      if (c === 0) {
+        this.t.showCreateRole$.next(this.t.showControl$.value);
+        this.t.showControl$.next(null);
+      }
+    })
   }
 
   onPageChange(e: PageEvent) {

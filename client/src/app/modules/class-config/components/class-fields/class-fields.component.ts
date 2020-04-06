@@ -73,7 +73,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
     .map(field => {
 
       // If this field is a class Field
-      if (!field.pkProperty) {
+      if (!field.property) {
         return {
           ...field
         }
@@ -103,7 +103,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
     const o = l.isOutgoing;
     const data: FieldConfigDialogData = {
       fkProject: this.fkProject,
-      fkProperty: row.pkProperty,
+      fkProperty: row.property.pkProperty,
       fkPropertyDomain: o ? l.sourceClass : null,
       fkPropertyRange: o ? null : l.sourceClass
     }
@@ -123,7 +123,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
       //
       const items = specificFields.map(field => {
         const item: Partial<ProClassFieldConfig> = {
-          fk_property: field.pkProperty,
+          fk_property: field.property.pkProperty,
           fk_domain_class: field.isOutgoing ? field.sourceClass : undefined,
           fk_range_class: field.isOutgoing ? undefined : field.sourceClass,
           fk_project: this.fkProject,

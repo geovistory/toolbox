@@ -167,15 +167,15 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), null);
         }
       ),
-      infRoleEpicsFactory.createLoadEpic<LoadOutgoingAlternativeRoles>(
-        (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkTemporalEntity, meta.pkProperty, meta.pk),
-        InfRoleActionFactory.ALTERNATIVES_OUTGOING,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), null);
-        }
-      ),
+      // infRoleEpicsFactory.createLoadEpic<LoadOutgoingAlternativeRoles>(
+      //   (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkTemporalEntity, meta.pkProperty, meta.pk),
+      //   InfRoleActionFactory.ALTERNATIVES_OUTGOING,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.role.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), null);
+      //   }
+      // ),
       infRoleEpicsFactory.createUpsertEpic<ModifyActionMeta<InfRole>>((meta) => this.roleApi
         .findOrCreateInfRoles(meta.pk, meta.items),
         (results, pk) => {

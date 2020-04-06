@@ -1,6 +1,22 @@
-<div class="table-and-paginator-container" *ngIf="((table.dataColumns$ | async).length > 0)">
-  <div class="table-container">
+<div class="p-2" [hidden]="!itemsCount">
+  <h4 class="mb-3">
+    We found {{itemsCount}} other {{(t.showControl$ | async)?.targetClassLabel}}s in the repository of Geovistory
+  </h4>
+  <div class="mb-3">
+    Select and add {{(t.showControl$ | async)?.targetClassLabel}}s from the list below, <br>
+    or create a new one.
+  </div>
+</div>
+<div *ngIf="loading && !itemsCount" class="d-flex justify-content-center align-items-center p-5">
+  <mat-spinner diameter=20></mat-spinner>
+</div>
+
+<div class="gv-add-list-table-and-paginator-container" *ngIf="((table.dataColumns$ | async).length > 0)">
+  <div class="gv-add-list-table-container">
     <mat-divider></mat-divider>
+    <div *ngIf="loading" class="gv-table-spinner">
+      <mat-spinner diameter=20></mat-spinner>
+    </div>
     <table mat-table [dataSource]="table.dataSource">
       <!-- Empty Column -->
       <ng-container matColumnDef="_empty_">

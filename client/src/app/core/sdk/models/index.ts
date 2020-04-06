@@ -1,5 +1,6 @@
 /* tslint:disable */
 export * from './SchemaObject';
+export * from './PaginationObject';
 export * from './SysClassFieldPropertyRel';
 export * from './SysClassField';
 export * from './SysClassHasTypeProperty';

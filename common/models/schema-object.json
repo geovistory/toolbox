@@ -122,11 +122,11 @@
       "returns": {
         "arg": "data",
         "type": [
-          "InfRole"
+          "SchemaObject"
         ],
         "root": true
       },
-      "description": "Get an array of role that build the tree of the content of an F2 Expression.",
+      "description": "Get SchemaObject with everything needed to build the tree of the content of an F2 Expression.",
       "http": {
         "path": "/content-tree",
         "verb": "get"

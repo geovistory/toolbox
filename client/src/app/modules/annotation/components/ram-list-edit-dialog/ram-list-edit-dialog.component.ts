@@ -30,11 +30,13 @@ export class RamListEditDialogComponent implements OnInit {
   ) {
 
     const listDef: ListDefinition = {
-      listType: 'text-property',
-      label: '[Label]',
+      listType: 'lang-string',
+      label: 'at reference',
       ontoInfoUrl: '[ontoInfoUrl]',
       ontoInfoLabel: '[ontoInfoLabel]',
-      pkProperty: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
+      property: {
+        pkPropertyOfProperty: DfhConfig.P_O_P_GEOV_HAS_REFERENCE
+      },
       isOutgoing: true,
       isIdentityDefining: false,
       sourceClass: undefined,

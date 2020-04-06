@@ -54,7 +54,7 @@ export class FieldComponent implements OnInit {
    * used by angular *ngFor directive to track items in DOM
    */
   getKey(index, item: ListDefinitionWithItemCount) {
-    return item.listType + item.fkClassField + item.pkProperty + item.sourceClass + item.targetClass
+    return item.listType + item.fkClassField + item.property.pkProperty + item.sourceClass + item.targetClass
   }
 
   ngOnInit() {
@@ -79,7 +79,7 @@ export class FieldComponent implements OnInit {
 
       this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
         let obs$: Observable<number>;
-        if (l.listType === 'temporal-entity') {
+        if (l.listType === 'temporal-entity' || l.listType === 'entity-preview') {
           obs$ = this.p.inf$.role$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
         } else {
           obs$ = this.i.pipeListLength(l, this.pkEntity)
@@ -105,7 +105,7 @@ export class FieldComponent implements OnInit {
           return true;
         }))
     } else {
-      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.pkProperty).pipe(
+      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.property.pkProperty).pipe(
         map(hasTypeRole => hasTypeRole ? 1 : 0)
       )
     }

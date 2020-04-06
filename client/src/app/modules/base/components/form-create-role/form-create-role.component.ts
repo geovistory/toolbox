@@ -148,10 +148,10 @@ export class FormCreateRoleComponent implements OnInit {
       const resultTemplate = this.listDefinition.isOutgoing ?
         {
           fk_temporal_entity: this.pkEntity,
-          fk_property: this.listDefinition.pkProperty
+          fk_property: this.listDefinition.property.pkProperty
         } : {
           fk_entity: this.pkEntity,
-          fk_property: this.listDefinition.pkProperty
+          fk_property: this.listDefinition.property.pkProperty
         };
       const mergeDef: MergeDef = { target: [], targetType: 'object', sourceType: 'object' };
       formPart$.pipe(takeUntil(this.destroy$)).subscribe(formPart => {
@@ -167,11 +167,11 @@ export class FormCreateRoleComponent implements OnInit {
     const initRole: FormPartInitValueRole = {
       targetClass: this.listDefinition.targetClass,
       value: this.pkEntity,
-      fkProperty: this.listDefinition.pkProperty,
+      fkProperty: this.listDefinition.property.pkProperty,
     };
     const resultTemplate = {
       fk_entity: this.pkEntity,
-      fk_property: this.listDefinition.pkProperty,
+      fk_property: this.listDefinition.property.pkProperty,
       temporal_entity: {
         fk_class: this.listDefinition.targetClass,
       }

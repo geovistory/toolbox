@@ -103,7 +103,7 @@ export class TimeSpanService {
 
     const timePrimitives: CtrlTimeSpanDialogResult = {}
     item.properties.forEach((prop) => {
-      const p = prop.listDefinition.pkProperty
+      const p = prop.listDefinition.property.pkProperty
       if (prop.items.length > 0) {
         const i = prop.items[0].timePrimitive;
         timePrimitives[p] = {
@@ -123,7 +123,7 @@ export class TimeSpanService {
       }
     } = {}
     item.properties.forEach((prop) => {
-      const p = prop.listDefinition.pkProperty
+      const p = prop.listDefinition.property.pkProperty
       if (prop.items.length > 0) {
         const i = prop.items[0].timePrimitive;
         old[p] = {

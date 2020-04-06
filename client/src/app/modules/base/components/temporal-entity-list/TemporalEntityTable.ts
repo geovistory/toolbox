@@ -37,7 +37,7 @@ export class TemporalEntityTable {
 
     this.columDefs$.pipe(first(fs => fs.length > 0), takeUntil(destroy$)).subscribe((fieldDefinitions) => {
       const dataColumnsMap = mapObjIndexed((val, key, obj) => true, indexBy((l) => l.label, fieldDefinitions));
-      const circularField = fieldDefinitions.find(f => f.pkProperty === listDefinition.pkProperty);
+      const circularField = fieldDefinitions.find(f => f.property.pkProperty === listDefinition.property.pkProperty);
       if (circularField) {
         // hideCircularField
         const circularCol = circularField.label;

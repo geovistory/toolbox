@@ -103,7 +103,7 @@ class Selector {
       })
     )
 
-    const pipeCount = (by: PaginateByParam[]): Observable<number> => this.pkProject$.pipe(
+    const pipeCount = (by: PaginateByParam[]): Observable<number | undefined> => this.pkProject$.pipe(
       switchMap(pk => {
         let path: any[];
         const pagBy = paginatedBy(paginateName(by))
@@ -113,7 +113,7 @@ class Selector {
         } else {
           path = [infRoot, this.model, pagBy, key];
         }
-        return this.ngRedux.select<number>([...path, 'count']).pipe(map(c => c ? c : 0))
+        return this.ngRedux.select<number>([...path, 'count']) // .pipe(map(c => c ? c : 0))
       })
     )
 

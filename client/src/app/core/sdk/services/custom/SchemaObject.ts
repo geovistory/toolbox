@@ -62,7 +62,7 @@ export class SchemaObjectApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get an array of role that build the tree of the content of an F2 Expression.
+   * Get SchemaObject with everything needed to build the tree of the content of an F2 Expression.
    *
    * @param {number} pkProject Primary Key of the Project.
    *

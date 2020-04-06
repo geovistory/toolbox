@@ -18,6 +18,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "PaginationObject": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "SysClassFieldPropertyRel": {
     "dataSource": "postgres1",
     "public": true

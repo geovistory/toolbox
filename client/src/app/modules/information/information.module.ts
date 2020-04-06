@@ -44,12 +44,12 @@ import { InformationAPIActions } from './containers/entity-list/api/entity-list.
 import { InformationAPIEpics } from './containers/entity-list/api/entity-list.epics';
 import { InformationComponent } from './containers/entity-list/entity-list.component';
 
-import { MapComponent } from './containers/map/map.component';
+// import { MapComponent } from './containers/map/map.component';
 import { EntityActions } from './containers/pe-it-detail/api/entity.actions';
 import { PeItDetailAPIActions } from './containers/pe-it-detail/api/pe-it-detail.actions';
 import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
 import { PeItDetailComponent } from './containers/pe-it-detail/pe-it-detail.component';
-import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
+// import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
 import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
 import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
 import { TeEntDetailAPIActions } from './containers/te-ent-detail/api/te-ent-detail.actions';
@@ -97,8 +97,8 @@ import { ListModule } from 'app/shared/components/list/list.module';
     InformationComponent,
     EntityAddExistingHitComponent,
     PeItTimelineComponent,
-    MapComponent,
-    PeItLayerComponent,
+    // MapComponent,
+    // PeItLayerComponent,
     PeItDetailComponent,
     TeEntDetailComponent,
     CreateOrAddEntityComponent,

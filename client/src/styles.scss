@@ -2536,3 +2536,27 @@ mat-dialog-actions {
     @extend .gv-flex-fh;
   }
 }
+
+.gv-add-list-table-and-paginator-container {
+  min-width: 320px;
+}
+.gv-add-list-table-container {
+  position: relative;
+  min-width: 240px;
+  width: 100%;
+  overflow: auto;
+}
+
+.gv-table-spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+}

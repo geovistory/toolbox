@@ -202,7 +202,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           const value: InfRole = {
             ...{} as any,
             fk_entity: undefined,
-            fk_property: listDefinition.pkProperty,
+            fk_property: listDefinition.property.pkProperty,
             place: {
               ...val,
               fk_class: listDefinition.targetClass,
@@ -231,7 +231,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             const value: InfRole = {
               ...{} as any,
               fk_entity: undefined,
-              fk_property: listDefinition.pkProperty,
+              fk_property: listDefinition.property.pkProperty,
               language: {
                 ...val,
                 fk_class: listDefinition.targetClass,
@@ -259,7 +259,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           const value: InfRole = {
             ...{} as any,
             fk_entity: undefined,
-            fk_property: listDefinition.pkProperty,
+            fk_property: listDefinition.property.pkProperty,
             appellation: {
               ...val,
               fk_class: listDefinition.targetClass,
@@ -312,7 +312,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         mapValue: (val) => {
           if (!val) return null;
 
-          let value: InfRole = { ...{} as any, fk_property: listDefinition.pkProperty, };
+          let value: InfRole = {
+            ...{} as any,
+            fk_property: listDefinition.property.pkProperty,
+          };
 
           if (listDefinition.isOutgoing) {
             value = { ...value, fk_entity: val }
@@ -340,7 +343,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         mapValue: (val) => {
           if (!val) return null;
 
-          let value: InfRole = { ...{} as any, fk_property: listDefinition.pkProperty, };
+          let value: InfRole = {
+            ...{} as any,
+            fk_property: listDefinition.property.pkProperty,
+          };
 
           if (listDefinition.isOutgoing) {
             value = { ...value, fk_entity: val }
@@ -410,7 +416,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                         return {
                           key: getRoleKey(listType, listDefinition),
                           value: x.filter(item => !!item).map(item => ({
-                            fk_property: listDefinition.pkProperty,
+                            fk_property: listDefinition.property.pkProperty,
                             temporal_entity: item
                           }))
                         }
@@ -447,7 +453,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                         return {
                           key: getRoleKey(listType, listDefinition),
                           value: x.filter(item => !!item).map(item => ({
-                            fk_property: listDefinition.pkProperty,
+                            fk_property: listDefinition.property.pkProperty,
                             temporal_entity: item
                           }))
                         }
@@ -505,8 +511,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   }
                 }
                 // Q: is this field not circular ?
-                const parentPropety = arrayConfig.data.fieldDefinition.pkProperty;
-                if (!parentPropety || parentPropety !== f.pkProperty) {
+                const prop = arrayConfig.data.fieldDefinition.property;
+                const parentPropety = prop ? prop.pkProperty : undefined;
+                if (!parentPropety || parentPropety !== f.property.pkProperty) {
                   // A: no. Add a a child array config.
 
                   // Q: is there only one list definition?
