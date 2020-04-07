@@ -1,7 +1,7 @@
 import { FormControl, FormGroup, Validators } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, Observable } from '../../../../../../node_modules/rxjs';
 import { map, shareReplay } from '../../../../../../node_modules/rxjs/operators';
-import { InfAppellation, InfLanguage, InfPlace, InfRole, InfTextProperty, U, ActiveProjectService } from '../../../../core';
+import { InfAppellation, InfLanguage, InfPlace, InfRole, InfTextProperty, U, ActiveProjectService, InfLangString } from '../../../../core';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { ListDefinition } from '../properties-tree/properties-tree.models';
 import { MergeDef } from './form-create-role.component';
@@ -197,6 +197,7 @@ export class FormPart {
         ...{} as any,
         fk_entity: undefined,
         fk_property: listDefinition.property.pkProperty,
+        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
         appellation: {
           ...val,
           fk_class: listDefinition.targetClass,
@@ -211,7 +212,23 @@ export class FormPart {
         ...{} as any,
         fk_entity: undefined,
         fk_property: listDefinition.property.pkProperty,
+        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
         language: {
+          ...val,
+          fk_class: listDefinition.targetClass,
+        },
+      };
+      return value;
+    }
+    else if (listDefinition.listType === 'lang-string') {
+      if (!val) return null;
+
+      const value: InfRole = {
+        ...{} as any,
+        fk_entity: undefined,
+        fk_property: listDefinition.property.pkProperty,
+        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+        lang_string: {
           ...val,
           fk_class: listDefinition.targetClass,
         },
@@ -225,6 +242,7 @@ export class FormPart {
         ...{} as any,
         fk_entity: undefined,
         fk_property: listDefinition.property.pkProperty,
+        fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
         place: {
           ...val,
           fk_class: listDefinition.targetClass,
@@ -239,7 +257,11 @@ export class FormPart {
     ) {
       if (!val) return null;
 
-      let value: InfRole = { ...{} as any, fk_property: listDefinition.property.pkProperty, };
+      let value: InfRole = {
+        ...{} as any,
+        fk_property: listDefinition.property.pkProperty,
+        fk_property_of_property: listDefinition.property.pkPropertyOfProperty
+      };
 
       if (listDefinition.isOutgoing) {
         value = { ...value, fk_entity: val }
@@ -258,6 +280,7 @@ export class FormPart {
       };
       return value;
     }
+
     else if (listDefinition.listType === 'time-span') {
       if (!val) return null;
 

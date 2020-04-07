@@ -39,6 +39,15 @@
   </mat-error>
 </mat-form-field>
 
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-lang-string'" class="w-100" appearance="legacy">
+  <mat-label>{{config?.placeholder}}</mat-label>
+  <gv-ctrl-lang-string [formControl]="formControlFactory.control" [required]="config?.required">
+  </gv-ctrl-lang-string>
+  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+    Please enter text and select a language
+  </mat-error>
+</mat-form-field>
+
 <mat-form-field *ngIf="config?.data.controlType === 'ctrl-time-span'" class="w-100" appearance="legacy">
   <mat-label>{{config?.placeholder}}</mat-label>
   <gv-ctrl-time-span [formControl]="formControlFactory.control" [required]="config?.required">

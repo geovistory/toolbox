@@ -355,6 +355,7 @@ export class RamListComponent implements OnInit, OnDestroy {
    * When user clicks add
    */
   onAdd() {
+    this.p.ramReset()
     this.p.ramTarget$.next(this.pkEntity);
     this.p.ramProperty$.next(this.fkProperty);
     this.p.ramOpen$.next(true);
@@ -364,28 +365,24 @@ export class RamListComponent implements OnInit, OnDestroy {
         this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
         this.p.ramTitlePart2$.next(`is mentioned in:`);
         this.p.ramBoxLeft$.next('drag-source-or-section');
-        this.p.ramBoxCenter$.next(false);
-        this.p.ramBoxRight$.next(false);
+
       })
     } else if (this.fkProperty === DfhConfig.PROPERTY_PK_P129_IS_ABOUT) {
       this.rootEntity$.pipe(first(), takeUntil(this.destroy$)).subscribe(rootEntity => {
         this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
         this.p.ramTitlePart2$.next(`is topic of:`);
         this.p.ramBoxLeft$.next('drag-source-or-section');
-        this.p.ramBoxCenter$.next(false);
-        this.p.ramBoxRight$.next(false);
+
       })
     } else if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
       this.rootEntity$.pipe(first(), takeUntil(this.destroy$)).subscribe(rootEntity => {
         this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
         this.p.ramTitlePart2$.next(`is referred to by:`);
         this.p.ramBoxLeft$.next('select-text');
-        this.p.ramBoxCenter$.next(false);
-        this.p.ramBoxRight$.next(false);
+
       })
     } else {
       this.p.ramTitle$.next(`Create:`);
-      this.p.ramTitlePart2$.next(``);
       console.warn('fkProperty not found.')
     }
   }

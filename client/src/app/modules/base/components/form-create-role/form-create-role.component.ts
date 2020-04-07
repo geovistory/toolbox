@@ -111,7 +111,7 @@ export class FormCreateRoleComponent implements OnInit {
 
     if (this.listDefinition.listType === 'text-property') this.createTextPropertyForm();
 
-    if (['appellation', 'place', 'language', 'entity-preview'].includes(this.listDefinition.listType)) this.createRoleForm();
+    if (['appellation', 'place', 'language', 'entity-preview', 'lang-string'].includes(this.listDefinition.listType)) this.createRoleForm();
   }
 
 
@@ -189,7 +189,7 @@ export class FormCreateRoleComponent implements OnInit {
         return combineLatest(fields.map((field, i) => {
           let resultTemplate;
           let mergeDef: MergeDef;
-          if (['appellation', 'place', 'language', 'entity-preview', 'has-type'].includes(field.listType)) {
+          if (['appellation', 'place', 'language', 'lang-string', 'entity-preview', 'has-type'].includes(field.listType)) {
             resultTemplate = {}
             mergeDef = { target: ['te_roles'], targetType: 'array', sourceType: 'object' }
           }

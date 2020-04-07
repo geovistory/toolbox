@@ -317,6 +317,10 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
     this.p.ramOpen$.next(true);
   }
 
+  onAdd() {
+
+  }
+
   private setChunk(selectedDelta: DeltaI) {
     this.digital$.pipe(delay(0), first()).subscribe(digital => {
       this.p.ramSource$.next({
@@ -336,6 +340,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
       this.p.ramBoxRight$.next(true);
     });
   }
+
 
 
   private quillDocForChunk(selectedDelta: DeltaI): QuillDoc {

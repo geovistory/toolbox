@@ -22,6 +22,7 @@ import { CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time
 import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LanguageItem, ListDefinition, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, LangStringItem } from '../components/properties-tree/properties-tree.models';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
+import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 // import { TemporalEntityTableRow } from "../components/temporal-entity-list/TemporalEntityTable";
 
 @Injectable()
@@ -709,26 +710,30 @@ export class InformationPipesService {
 
   @spyTag pipeItemLangString(role: InfRole): Observable<LangStringItem> {
     return this.p.inf$.lang_string$.by_pk_entity$.key(role.fk_entity).pipe(
-      switchMapOr(
-        null,
+      switchMap(
         (langString) => {
+          if (!langString) return new BehaviorSubject(null)
           return this.p.inf$.language$.by_pk_entity$.key(langString.fk_language)
             .pipe(
               map(language => {
                 if (!language) return null;
+                let label = '';
+                if (langString.string) label = langString.string
+                else if (langString.quill_doc && langString.quill_doc.ops && langString.quill_doc.ops.length) {
+                  label = langString.quill_doc.ops.map(op => op.insert).join('');
+                }
                 const node: LangStringItem = {
                   ordNum: undefined,
                   projRel: undefined,
                   role,
-                  label: langString.string, // TODO: use quillDoc
+                  label,
                   fkClass: langString.fk_class,
                   language
                 }
                 return node
               })
             )
-        },
-        (langString) => !langString)
+        })
     )
   }
 

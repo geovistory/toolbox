@@ -489,8 +489,14 @@ export class ActiveProjectService {
 
   ramReset() {
     this.ramOpen$.next(false);
-    this.ramSource$.next(undefined);
-    this.ramTarget$.next(undefined);
+    this.ramSource$.next();
+    this.ramTarget$.next();
+    this.ramProperty$.next()
+    this.ramTitle$.next()
+    this.ramTitlePart2$.next()
+    this.ramBoxLeft$.next()
+    this.ramBoxCenter$.next(false)
+    this.ramBoxRight$.next(false)
   }
 
 

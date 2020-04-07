@@ -85,6 +85,19 @@
           </mat-error>
         </mat-form-field>
 
+
+        <mat-form-field *ngIf="item?.formControlDef?.listDefinition.listType === 'lang-string'" class="w-100"
+          appearance="legacy">
+          <mat-label>{{item?.formControlDef?.listDefinition.label}}</mat-label>
+          <gv-ctrl-lang-string [formControlName]="item?.formControlDef?.formControlName" [required]="item.required">
+          </gv-ctrl-lang-string>
+          <mat-error *ngIf="formGroup.get(item?.formControlDef?.formControlName).hasError('required')"> Please enter
+            text
+            and select a
+            language
+          </mat-error>
+        </mat-form-field>
+
         <mat-form-field *ngIf="item?.formControlDef?.listDefinition.listType === 'time-span'" class="w-100"
           appearance="legacy">
           <mat-label>{{item?.formControlDef?.listDefinition.label}}</mat-label>
@@ -111,8 +124,6 @@
           <mat-error *ngIf="formGroup.get(item?.formControlDef?.formControlName).hasError('required')">
             Please select or create an entity
           </mat-error>
-
-
         </mat-form-field>
 
       </div>

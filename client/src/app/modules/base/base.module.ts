@@ -44,6 +44,8 @@ import { InformationBasicPipesService } from './services/information-basic-pipes
 import { InformationPipesService } from './services/information-pipes.service';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
+import { CtrlLangStringComponent } from './components/ctrl-lang-string/ctrl-lang-string.component';
+
 const components = [
   PropertiesTreeComponent,
   PropertiesTreeDialogComponent,
@@ -61,6 +63,7 @@ const components = [
   CtrlPlaceComponent,
   CtrlEntityComponent,
   CtrlTextPropertyComponent,
+  CtrlLangStringComponent,
   CtrlTimeSpanComponent,
   CtrlTimeSpanDialogComponent,
   CtrlTimePrimitiveComponent,
