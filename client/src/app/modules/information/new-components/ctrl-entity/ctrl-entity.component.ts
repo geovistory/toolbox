@@ -1,29 +1,101 @@
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, EntityPreview, SysConfig } from 'app/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, mergeMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { AddOrCreateEntityModal, AddOrCreateEntityModalData } from '../../components/add-or-create-entity-modal/add-or-create-entity-modal.component';
-import { CreateOrAddEntityEvent } from '../../containers/create-or-add-entity/create-or-add-entity.component';
+import {
+  coerceBooleanProperty
+}
+
+  from '@angular/cdk/coercion';
+
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Optional,
+  Output,
+  Self
+}
+
+  from '@angular/core';
+
+import {
+  ControlValueAccessor,
+  NgControl
+}
+
+  from '@angular/forms';
+
+import {
+  MatDialog
+}
+
+  from '@angular/material/dialog';
+
+import {
+  MatFormFieldControl
+}
+
+  from '@angular/material/form-field';
+
+import {
+  ActiveProjectService,
+  EntityPreview,
+  SysConfig
+}
+
+  from 'app/core';
+
+import {
+  BehaviorSubject,
+  Observable,
+  Subject
+}
+
+  from 'rxjs';
+
+import {
+  distinctUntilChanged,
+  filter,
+  mergeMap,
+  takeUntil
+}
+
+  from '../../../../../../node_modules/rxjs/operators';
+
+import {
+  AddOrCreateEntityModalComponent,
+  AddOrCreateEntityModalData
+}
+
+  from '../../components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+
+import {
+  CreateOrAddEntityEvent
+}
+
+  from '../../containers/create-or-add-entity/create-or-add-entity.component';
 
 type CtrlModel = number // pkEntity
 
 
 @Component({
+
   selector: 'gv-ctrl-entity',
   templateUrl: './ctrl-entity.component.html',
   styleUrls: ['./ctrl-entity.component.css'],
-  providers: [{ provide: MatFormFieldControl, useExisting: CtrlEntityComponent }],
+  providers: [{
+    provide: MatFormFieldControl, useExisting: CtrlEntityComponent
+  }
+
+  ],
   host: {
     '[class.example-floating]': 'shouldLabelFloat',
     '[id]': 'id',
     '[attr.aria-describedby]': 'describedBy',
   }
-})
-export class CtrlEntityComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+}
+
+) export class CtrlEntityComponent implements OnDestroy,
+  ControlValueAccessor,
+  MatFormFieldControl<CtrlModel> {
   static nextId = 0;
 
   model: CtrlModel;
@@ -40,35 +112,56 @@ export class CtrlEntityComponent implements OnDestroy, ControlValueAccessor, Mat
   focused = false;
   errorState = false;
   controlType = 'ctrl-entity';
-  id = `ctrl-entity-${CtrlEntityComponent.nextId++}`;
+
+  id = `ctrl-entity-$ {
+    CtrlEntityComponent.nextId++
+  }
+
+  `;
   describedBy = '';
-  onChange = (_: any) => { };
-  onTouched = () => { };
+
+  onChange = (_: any) => { }
+
+    ;
+
+  onTouched = () => { }
+
+    ;
 
   get empty() {
     return this.model ? false : true;
   }
 
-  get shouldLabelFloat() { return this.focused || !this.empty; }
+  get shouldLabelFloat() {
+    return this.focused || !this.empty;
+  }
 
-  @Input()
-  get placeholder(): string { return this._placeholder; }
+  @Input() get placeholder(): string {
+    return this._placeholder;
+  }
+
   set placeholder(value: string) {
     this._placeholder = value;
     this.stateChanges.next();
   }
+
   private _placeholder: string;
 
-  @Input()
-  get required(): boolean { return this._required; }
+  @Input() get required(): boolean {
+    return this._required;
+  }
+
   set required(value: boolean) {
     this._required = coerceBooleanProperty(value);
     this.stateChanges.next();
   }
+
   private _required = false;
 
-  @Input()
-  get disabled(): boolean { return this._disabled; }
+  @Input() get disabled(): boolean {
+    return this._disabled;
+  }
+
   set disabled(value: boolean) {
     this._disabled = coerceBooleanProperty(value);
 
@@ -76,35 +169,32 @@ export class CtrlEntityComponent implements OnDestroy, ControlValueAccessor, Mat
     // this._disabled ? this.parts.disable() : this.parts.enable();
     this.stateChanges.next();
   }
+
   private _disabled = false;
 
-  @Input()
-  get value(): CtrlModel | null {
+  @Input() get value(): CtrlModel | null {
     return this.model;
   }
+
   set value(value: CtrlModel | null) {
     this.model = value;
-    this.onChange(this.model)
-    this.pkEntity$.next(value)
+    this.onChange(this.model);
+    this.pkEntity$.next(value);
   }
 
-  pkEntity$ = new BehaviorSubject<number>(null)
+  pkEntity$ = new BehaviorSubject<number>(null);
   entityPreview$: Observable<EntityPreview>;
 
-  constructor(
-    @Optional() @Self() public ngControl: NgControl,
+  constructor(@Optional() @Self() public ngControl: NgControl,
     private dialog: MatDialog,
-    private p: ActiveProjectService
-  ) {
+    private p: ActiveProjectService) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
 
-    this.entityPreview$ = this.pkEntity$.pipe(
-      filter(pk => !!pk),
+    this.entityPreview$ = this.pkEntity$.pipe(filter(pk => ! !pk),
       distinctUntilChanged(),
-      mergeMap(pk => this.p.streamEntityPreview(pk))
-    )
+      mergeMap(pk => this.p.streamEntityPreview(pk)))
   }
 
   ngOnInit() {
@@ -113,22 +203,35 @@ export class CtrlEntityComponent implements OnDestroy, ControlValueAccessor, Mat
 
   openModal() {
     if (!this.disabled) {
-      this.dialog.open<AddOrCreateEntityModal, AddOrCreateEntityModalData, CreateOrAddEntityEvent>(AddOrCreateEntityModal, {
-        minWidth: '800px',
-        data: {
-          alreadyInProjectBtnText: 'Select',
-          notInProjectClickBehavior: 'selectOnly',
-          notInProjectBtnText: 'Select',
-          classAndTypePk: {
-            pkClass: this.pkClass,
-            pkType: undefined
-          },
-          pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+
+      this.dialog.open<AddOrCreateEntityModalComponent,
+        AddOrCreateEntityModalData,
+        CreateOrAddEntityEvent>(AddOrCreateEntityModalComponent, {
+
+          // minWidth: '800px',
+          height: 'calc(100% - 30px)',
+          width: '980px',
+          maxWidth: '100%',
+          data: {
+
+            alreadyInProjectBtnText: 'Select',
+            notInProjectClickBehavior: 'selectOnly',
+            notInProjectBtnText: 'Select',
+            classAndTypePk: {
+              pkClass: this.pkClass,
+              pkType: undefined
+            }
+
+            ,
+            pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
+          }
         }
-      }).afterClosed()
-        .pipe(takeUntil(this.destroy$)).subscribe(result => {
+
+        ).afterClosed().pipe(takeUntil(this.destroy$)).subscribe(result => {
           if (result && result.pkEntity) this.value = result.pkEntity
-        });
+        }
+
+        );
     }
   }
 
@@ -174,12 +277,12 @@ export class CtrlEntityComponent implements OnDestroy, ControlValueAccessor, Mat
 
   onBlur() {
     this.onTouched();
-    this.blur.emit()
+    this.blur.emit();
     this.focused = false;
   }
 
   onFocus() {
-    this.focus.emit()
+    this.focus.emit();
     this.focused = true;
   }
 

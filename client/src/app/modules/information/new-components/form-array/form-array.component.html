@@ -50,9 +50,9 @@
 
 
 
-  <span class="w-100 my-2" *ngIf="wrapInCard(child); else noWrap">
+  <span class="w-100 m-2" *ngIf="wrapInCard(child); else noWrap">
 
-    <mat-card class="w-100">
+    <mat-card class="w-100 mat-elevation-z5">
       <!-- <div class="mat-body">{{child.placeholder}}</div> -->
       <mat-card-content class="gv-full-with">
         <gv-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child" class="left-col"></gv-form-array>
@@ -89,7 +89,8 @@
         </span>
       </div>
       <div class="right-col">
-        <button mat-button [matMenuTriggerFor]="beforeMenu" [disabled]="ctrlTargetClassIsDisabled(child.config.data?.nodeConfigs)">
+        <button mat-button [matMenuTriggerFor]="beforeMenu"
+          [disabled]="ctrlTargetClassIsDisabled(child.config.data?.nodeConfigs)">
           <mat-icon>arrow_drop_down_circle</mat-icon> Select
         </button>
         <mat-menu #beforeMenu="matMenu" xPosition="before">

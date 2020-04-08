@@ -3,7 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProSelector } from 'app/core/pro/pro.service';
-import { AddOrCreateEntityModal, AddOrCreateEntityModalData } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { AddOrCreateEntityModalComponent, AddOrCreateEntityModalData } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { CreateOrAddEntityEvent } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { cache } from 'app/shared';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -713,11 +713,14 @@ export class ActiveProjectService {
 
     // this.ngRedux.dispatch(this.actions.openAddForm(config));
 
-    this.dialog.open<AddOrCreateEntityModal, AddOrCreateEntityModalData, CreateOrAddEntityEvent>(
-      AddOrCreateEntityModal,
+    this.dialog.open<AddOrCreateEntityModalComponent, AddOrCreateEntityModalData, CreateOrAddEntityEvent>(
+      AddOrCreateEntityModalComponent,
       {
-        height: '90%',
-        width: '90%',
+        // height: '90%',
+        // width: '90%',
+        height: 'calc(100% - 30px)',
+        width: '980px',
+        maxWidth: '100%',
         data: config
       })
       .afterClosed().pipe(first()).subscribe(result => {

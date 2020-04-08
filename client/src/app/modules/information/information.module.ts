@@ -105,7 +105,7 @@ import { QuillModule } from '../quill';
 // import { AppeLangCreateCtrlComponent } from './appe-lang/appe-lang-create-ctrl/appe-lang-create-ctrl.component';
 // import { AddInfoPeItComponent } from './components/add-info-pe-it/add-info-pe-it.component';
 // import { AddInfoTeEntComponent } from './components/add-info-te-ent/add-info-te-ent.component';
-import { AddOrCreateEntityModal } from './components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { AddOrCreateEntityModalComponent } from './components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 // import { ClassInfoComponent } from './components/class-info/class-info.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
 // import { EditorHeaderComponent } from './components/editor-header/editor-header.component';
@@ -383,7 +383,7 @@ import { ContentTreeNodeTypeComponent } from './components/content-tree-node-typ
     // EntityAssociationCreateOrAddComponent,
     // EntityAssociationExistingListComponent,
     ContentTreeComponent,
-    AddOrCreateEntityModal,
+    AddOrCreateEntityModalComponent,
     PropertiesTreeComponent,
     ListHeaderComponent,
     TemporalEntityListComponent,
@@ -598,7 +598,7 @@ import { ContentTreeNodeTypeComponent } from './components/content-tree-node-typ
     // LeafPeItViewModalComponent,
     // CreateEntityModalComponent,
     // ExistenceTimeModalComponent,
-    AddOrCreateEntityModal,
+    AddOrCreateEntityModalComponent,
     ChooseClassDialogComponent,
     CtrlTimeSpanDialogComponent,
     PropertiesTreeDialogComponent
