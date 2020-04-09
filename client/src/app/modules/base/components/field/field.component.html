@@ -16,14 +16,15 @@
             *
           </span>
         </span>
-        <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity" [pkProperty]="fieldDefinition.pkProperty"
-          [pkTypedClass]="fieldDefinition.sourceClass" [pkTypeClass]="fieldDefinition.listDefinitions[0]?.targetClass">
+        <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity"
+          [pkProperty]="fieldDefinition.property.pkProperty" [pkTypedClass]="fieldDefinition.sourceClass"
+          [pkTypeClass]="fieldDefinition.listDefinitions[0]?.targetClass">
         </gv-type-item>
       </div>
     </div>
 
     <div class="right-col">
-      <button mat-icon-button [disabled]="!(showAddButton$ | async)" (click)="addClick()">
+      <button mat-icon-button *ngIf="!(readonly$|async)" [disabled]="!(showAddButton$ | async)" (click)="addClick()">
         <mat-icon>add</mat-icon>
       </button>
 
@@ -63,7 +64,7 @@
     </div>
 
     <div class="right-col">
-      <button mat-icon-button [disabled]="!(showAddButton$ | async)" (click)="addClick()">
+      <button *ngIf="!(readonly$|async)" mat-icon-button [disabled]="!(showAddButton$ | async)" (click)="addClick()">
         <mat-icon>add</mat-icon>
       </button>
 

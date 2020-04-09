@@ -3,12 +3,12 @@ import { clone, hasIn } from 'ramda';
 import { FormBuilder, FormGroup } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { debounceTime, filter, first, map, mergeMap, startWith, takeUntil, switchMap } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfTextProperty, SysConfig } from '../../../../core';
+import { ActiveProjectService, InfTextProperty, SysConfig, InfLangString } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { ListDefinition } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { FormItem, FormPart, FormPartInitValueRole, FormPartInitValueTextProperty } from './FormPart';
+import { FormItem, FormPart, FormPartInitValueRole, FormPartInitValueTextProperty, FormPartInitValue } from './FormPart';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 
 
@@ -144,7 +144,32 @@ export class FormCreateRoleComponent implements OnInit {
     this.p.defaultLanguage$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(language => {
 
       const mergeDefa: MergeDef = { target: [], targetType: 'object', sourceType: 'object' }
-      const formPart$ = new FormPart(this.formGroup, this.listDefinition.label, [this.listDefinition], null, null, mergeDefa, true, language).this$
+      let initVal: FormPartInitValue = null;
+
+      if (this.listDefinition.listType === 'lang-string') {
+        initVal = {
+          initListDefinition: this.listDefinition,
+          initRole: {
+            targetClass: undefined,
+            fkProperty: undefined,
+            value: {
+              language,
+              fk_language: language.pk_entity
+            } as InfLangString
+          }
+        }
+      }
+
+      const formPart$ = new FormPart(
+        this.formGroup,
+        this.listDefinition.label,
+        [this.listDefinition],
+        initVal,
+        null,
+        mergeDefa,
+        true,
+        language
+      ).this$
       const resultTemplate = this.listDefinition.isOutgoing ?
         {
           fk_temporal_entity: this.pkEntity,

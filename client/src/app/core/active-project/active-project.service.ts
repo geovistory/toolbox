@@ -82,6 +82,7 @@ export class ActiveProjectService {
   ramBoxLeft$ = new ReplaySubject<'select-text' | 'drag-source-or-section'>();
   ramBoxCenter$ = new ReplaySubject<boolean>();
   ramBoxRight$ = new ReplaySubject<boolean>();
+  ramTargetIsFix$ = new BehaviorSubject<boolean>(false);
 
 
   requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
@@ -497,6 +498,7 @@ export class ActiveProjectService {
     this.ramBoxLeft$.next()
     this.ramBoxCenter$.next(false)
     this.ramBoxRight$.next(false)
+    this.ramTargetIsFix$.next(false)
   }
 
 

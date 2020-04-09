@@ -10,6 +10,8 @@ export interface RamListEditDialogData {
   // the root statement of the dialog
   statement: InfRole;
 
+  propertyLabel: string
+
 }
 @Component({
   selector: 'gv-ram-list-edit-dialog',
@@ -23,6 +25,7 @@ export class RamListEditDialogComponent implements OnInit {
 
   fieldDefinition: FieldDefinition;
   readonly$ = new BehaviorSubject(false);
+  showOntoInfo$ = new BehaviorSubject(false)
   constructor(
     public t: PropertiesTreeService,
     public dialogRef: MatDialogRef<RamListEditDialogComponent>,

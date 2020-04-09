@@ -1,7 +1,7 @@
 <div FxFlex *ngIf="(itemsCount$ | async) && listDefinition.listType !== 'entity-preview'">
   <!-- <ul cdkDropList class="drop-list" (cdkDropListDropped)="t.updateOrder($event, items$)"> -->
   <div *ngFor="let item of (items$ | async); let i = index;" class="literal-item">
-    <div class="full-width">
+    <div class="full-width ">
       <span class="left-col ellipsis">
         <gv-onto-class-info class="mr-2" [pkClass]="listDefinition.targetClass" *ngIf="showOntoInfo$ | async">
         </gv-onto-class-info>
@@ -29,7 +29,7 @@
           </button>
         </mat-menu>
 
-        <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+        <button *ngIf="!(readonly$|async)" mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
           <mat-icon>more_vert</mat-icon>
         </button>
       </span>
@@ -63,7 +63,7 @@
           </button>
         </mat-menu>
 
-        <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+        <button *ngIf="!(readonly$|async)" mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
           <mat-icon>more_vert</mat-icon>
         </button>
       </td>

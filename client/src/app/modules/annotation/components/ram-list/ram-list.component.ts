@@ -11,6 +11,8 @@ import { ByPk } from 'app/core/store/model';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
+import { RamListRemoveDialogData, RamListRemoveDialogComponent } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 
 interface GraphPath {
   segments: GraphPathSegment[];
@@ -21,13 +23,19 @@ interface Reference {
   tooltip?: string;
   icon?: string;
 }
-export interface Mentioning {
+interface AnnotatedText {
+  label: string;
+  tooltip?: string;
+}
+export interface RamListItem {
   // the statement (role) connecting source and target
   statement: InfRole
   // the path of the source (is part of, etc)
   path: GraphPath;
   // the exact reference
   location?: Reference;
+  // the exact reference
+  annotatedText?: AnnotatedText;
   // configuration for the action menu
   actions: any;
 }
@@ -48,7 +56,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   @Input() pkEntity: number;
   @Input() fkProperty: number;
 
-  items$: Observable<Mentioning[]>;
+  items$: Observable<RamListItem[]>;
   cols: any[];
 
   viewMode = 'small';
@@ -85,38 +93,122 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   }
 
-  private pipeItems(): Observable<Mentioning[]> {
+  private pipeItems(): Observable<RamListItem[]> {
 
-    return combineLatest(
-      this.rootEntity$,
-      this.p.inf$.role$.by_object_and_property$({
-        fk_property: this.fkProperty,
-        fk_entity: this.pkEntity
-      })
-    ).pipe(
-      switchMap(([rootEntity, isMentionedInRoles]) => {
-        const prefix = `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
+    // the roles associating the root entity with the next items
+    const basicRoles$: Observable<InfRole[]> = this.p.inf$.role$.by_object_and_property$({
+      fk_property: this.fkProperty,
+      fk_entity: this.pkEntity
+    })
 
-        // I map the input value to a Observable and switchMap will subscribe to the new one
-        const arrayOfObs$: Observable<Mentioning>[] = isMentionedInRoles.map(role => {
-          return combineLatest(
-            this.pipePathRecursivly(role.fk_temporal_entity, prefix),
-            this.getReference(role.pk_entity)
-          ).pipe(
-            map(([path, location]) => {
-              return {
-                path,
-                location,
-                statement: role,
-                actions: {
-                  open: true
-                }
-              };
-            })
+
+    // if property is 'refers to' we need to get the chunk and the digital
+    if (this.fkProperty == DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
+      return basicRoles$.pipe(
+        switchMap(roles => {
+          return combineLatestOrEmpty(
+            roles.map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_subject_data)
+              .pipe(
+                switchMap(chunk => {
+                  const item: RamListItem = {
+                    path: {
+                      segments: []
+                    },
+                    location: undefined,
+                    statement: role,
+                    actions: {
+                      edit: this.propertyHasReference()
+                    }
+                  };
+
+                  if (!chunk) return new BehaviorSubject(item);
+
+                  return this.p.dat$.digital$.by_pk_text$.key(chunk.fk_text).pipe(
+                    map(digitalIdx => values(digitalIdx)),
+                    switchMap(digitals => {
+                      if (digitals.length < 1) return new BehaviorSubject(item);
+                      const digital = digitals[0];
+                      return this.p.inf$.role$.by_subject_and_property$({
+                        fk_subject_data: digital.pk_entity,
+                        fk_property: DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF,
+                      }).pipe(
+                        switchMap(rolesToExpression => {
+
+                          if (rolesToExpression.length < 1) return new BehaviorSubject(item)
+
+                          return this.pipePathRecursivly(rolesToExpression[0].fk_entity, '').pipe(
+                            map((path) => {
+                              const annotatedText: AnnotatedText = {
+                                label: this.quillPipe.transform(chunk.quill_doc.ops)
+                              }
+                              path.segments = [
+                                ...path.segments,
+                                {
+                                  property: {
+                                    label: 'is reproduced by',
+                                    tooltip: 'is reproduced by'
+                                  }
+                                },
+                                {
+                                  entity: {
+                                    icon: 'text',
+                                    label: 'Text ' + digital.pk_entity,
+                                    tooltip: 'Text ' + digital.pk_entity,
+                                    pkEntity: digital.pk_entity,
+                                    isDigitalText: true
+                                  }
+                                }
+                              ]
+                              return { ...item, path, annotatedText };
+                            })
+                          )
+
+                        })
+                      )
+
+                    })
+                  )
+                })
+              )
+            )
           )
-        });
-        return combineLatest(arrayOfObs$);
-      }));
+        })
+      )
+
+    }
+    // if poperty is 'mentions' or 'is topic of' we need to get the path directly
+    else if (
+      this.fkProperty == DfhConfig.PROPERTY_PK_GEOVP2_MENTIONS ||
+      this.fkProperty == DfhConfig.PROPERTY_PK_P129_IS_ABOUT
+    ) {
+      return combineLatest(
+        this.rootEntity$,
+        basicRoles$
+      ).pipe(
+        switchMap(([rootEntity, basicRoles]) => {
+          const prefix = ''; // `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
+
+          // I map the input value to a Observable and switchMap will subscribe to the new one
+          const rowsArray$: Observable<RamListItem>[] = basicRoles.map(role => {
+            return combineLatest(
+              this.pipePathRecursivly(role.fk_temporal_entity, prefix),
+              this.getReference(role.pk_entity)
+            ).pipe(
+              map(([path, location]) => {
+                return {
+                  path,
+                  location,
+                  statement: role,
+                  actions: {
+                    edit: this.propertyHasReference()
+                  }
+                };
+              })
+            )
+          });
+          return combineLatestOrEmpty(rowsArray$);
+        }));
+    }
   }
 
   getReference(pkSubjectRole: number): Observable<Reference> {
@@ -144,16 +236,8 @@ export class RamListComponent implements OnInit, OnDestroy {
             }))
         })
       )
-
   }
 
-  private getFirstRole() {
-    return map((idxRoles: ByPk<InfRole>) => {
-      const rs = values(idxRoles);
-      if (rs.length > 0) return rs[0];
-      return undefined;
-    });
-  }
 
   private getEntityPathSegment(pkEntity: number, rootEntityLabel?: string): Observable<GraphPathSegment> {
     return this.p.streamEntityPreview(pkEntity)
@@ -220,6 +304,7 @@ export class RamListComponent implements OnInit, OnDestroy {
 
               return {
                 entity: {
+                  preview: ep,
                   fkClass: ep.fk_class,
                   pkEntity: ep.pk_entity,
                   label: ep.entity_label,
@@ -310,16 +395,32 @@ export class RamListComponent implements OnInit, OnDestroy {
       filterCol: 'location.label',
       width: '25%'
     };
+    const annotatedTextCol = {
+      field: 'annotatedText',
+      header: 'Annotated Text',
+      tooltip: 'Piece of text annotated in a larger text.',
+      hasFilter: true,
+      filterMatchMode: 'contains',
+      filterCol: 'annotatedText.label',
+      width: '40%'
+    };
     const actionsCol = {
       field: 'action',
       header: 'Action',
       hasFilter: false,
       width: '40px'
     };
+    // mentions
+    if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP2_MENTIONS) return [pathCol, referenceCol, actionsCol]
 
-    if (this.fkProperty === 1218) return [pathCol, referenceCol, actionsCol]
-    else if (this.fkProperty === 117) return [pathCol, actionsCol]
-    else if (this.fkProperty === 1334) return [pathCol, actionsCol]
+    // is about
+    else if (this.fkProperty === DfhConfig.PROPERTY_PK_P129_IS_ABOUT) return [pathCol, actionsCol]
+
+    // refers to
+    else if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
+      pathCol.width = '40%'
+      return [pathCol, annotatedTextCol, actionsCol]
+    }
 
     return [pathCol, actionsCol]
   }
@@ -379,7 +480,7 @@ export class RamListComponent implements OnInit, OnDestroy {
         this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
         this.p.ramTitlePart2$.next(`is referred to by:`);
         this.p.ramBoxLeft$.next('select-text');
-
+        this.p.ramTargetIsFix$.next(true)
       })
     } else {
       this.p.ramTitle$.next(`Create:`);
@@ -389,7 +490,8 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   onEdit(statement: InfRole) {
     const data: RamListEditDialogData = {
-      statement
+      statement,
+      propertyLabel: this.getPropertyLabel()
     }
     this.dialog.open(RamListEditDialogComponent, {
       data,
@@ -399,6 +501,36 @@ export class RamListComponent implements OnInit, OnDestroy {
     })
   }
 
+  onRemove(statement: InfRole) {
+    const propertyHasReferences = this.propertyHasReference()
+    const data: RamListRemoveDialogData = {
+      statement,
+      propertyLabel: this.getPropertyLabel(),
+      propertyHasReferences
+    }
+    this.dialog.open(RamListRemoveDialogComponent, {
+      data,
+      height: propertyHasReferences ? 'calc(100% - 30px)' : undefined,
+      width: '690px',
+      maxHeight: '100%'
+    })
+  }
+
+  getPropertyLabel(): string {
+    if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP2_MENTIONS) {
+      return 'mentions'
+    }
+    else if (this.fkProperty === DfhConfig.PROPERTY_PK_P129_IS_ABOUT) {
+      return 'is about'
+    }
+    else if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
+      return 'refers to'
+    }
+  }
+
+  propertyHasReference() {
+    return this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP2_MENTIONS
+  }
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

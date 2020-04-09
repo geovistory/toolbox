@@ -318,27 +318,39 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   }
 
   onAdd() {
-
+    this.p.ramOpen$.next(true);
+    this.p.ramBoxLeft$.next('select-text');
+    this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
+    this.p.ramTarget$.next();
+    this.p.ramTitle$.next(`Create an annotation`);
+    this.p.ramTitlePart2$.next();
+    this.p.ramBoxCenter$.next(true);
+    this.p.ramBoxRight$.next(true);
   }
 
   private setChunk(selectedDelta: DeltaI) {
-    this.digital$.pipe(delay(0), first()).subscribe(digital => {
-      this.p.ramSource$.next({
-        chunk: {
-          fk_text: digital.pk_text,
-          fk_entity_version: digital.entity_version,
-          fk_namespace: digital.fk_namespace,
-          quill_doc: this.quillDocForChunk(selectedDelta)
-        } as DatChunk
+    combineLatest(this.p.ramTargetIsFix$, this.digital$)
+      .pipe(delay(0), first())
+      .subscribe(([targetIsFix, digital]) => {
+        this.p.ramSource$.next({
+          chunk: {
+            fk_text: digital.pk_text,
+            fk_entity_version: digital.entity_version,
+            fk_namespace: digital.fk_namespace,
+            quill_doc: this.quillDocForChunk(selectedDelta)
+          } as DatChunk
+        });
+
+        this.p.ramBoxLeft$.next('select-text');
+        this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
+        if (!targetIsFix) {
+          this.p.ramTarget$.next();
+          this.p.ramTitle$.next(`Create an annotation`);
+          this.p.ramTitlePart2$.next();
+          this.p.ramBoxCenter$.next(true);
+          this.p.ramBoxRight$.next(true);
+        }
       });
-      this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
-      this.p.ramTarget$.next();
-      this.p.ramTitle$.next(`Create an annotation`);
-      this.p.ramTitlePart2$.next();
-      this.p.ramBoxLeft$.next('select-text');
-      this.p.ramBoxCenter$.next(true);
-      this.p.ramBoxRight$.next(true);
-    });
   }
 
 

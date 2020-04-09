@@ -62,7 +62,7 @@ registerLocaleData(localeDeCh);
 // Own imports
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BasicModule,

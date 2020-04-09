@@ -902,7 +902,7 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_temporal_entity: relatedModel.pk_entity },
+            fk: { fk_subject_data: relatedModel.pk_entity },
             relatedModel: { domain_chunk: relatedModel },
           });
         })

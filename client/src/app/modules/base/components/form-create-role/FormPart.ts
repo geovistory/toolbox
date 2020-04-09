@@ -314,12 +314,12 @@ export interface FormPartInitValue {
   initTimeSpan?: CtrlTimeSpanDialogResult
 }
 /**
- * A FormPartInitValueRole contains the values passt to a Form Part Val
+ * A FormPartInitValueRole contains the values pass to a Form Part Val
  */
 export interface FormPartInitValueRole {
   targetClass: number
   fkProperty: number
-  value: number | InfAppellation | InfPlace | InfLanguage
+  value: number | InfAppellation | InfPlace | InfLanguage | InfLangString
 }
 
 export interface FormPartInitValueTextProperty {

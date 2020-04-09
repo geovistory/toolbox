@@ -179,7 +179,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
               .pipe(first(res => !!res), takeUntil(this.destroy$)).subscribe(
                 success => {
                   this.saving = false;
-                  this.p.ramOpen$.next(false)
+                  this.p.ramReset()
                 }
               );
           }

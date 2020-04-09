@@ -14,8 +14,9 @@
       <tr>
         <th *ngFor="let col of cols; let i = index" pResizableColumn [pResizableColumnDisabled]="i == (cols.length - 2)"
           [ngClass]="{'col-action':col.field =='action'}">
-          <ng-container *ngIf="col.field == 'path'">Item</ng-container>
+          <ng-container *ngIf="col.field == 'path'">Path</ng-container>
           <ng-container *ngIf="col.field == 'location'">References</ng-container>
+          <ng-container *ngIf="col.field == 'annotatedText'">Annotated Text</ng-container>
           <ng-container *ngIf="col.field == 'action'">
             <button mat-icon-button color=primary (click)="onAdd()">
               <mat-icon>add</mat-icon>
@@ -54,11 +55,18 @@
           </div>
 
           <div *ngIf="col.field == 'location'" class="d-flex align-items-center"
-            [ngClass]="{'gv-one-liner gv-fade-out-right': (viewMode != 'full')}" [matTooltip]="rowData.locationTooltip">
+            [ngClass]="{'gv-one-liner gv-fade-out-right': (viewMode != 'full')}"
+            [matTooltip]="rowData?.location?.label">
             <!-- <mat-icon class="mat-text-secondary mr-2">
                             {{rowData.location.icon}}
                         </mat-icon>-->
             {{rowData?.location?.label}}
+          </div>
+
+          <div *ngIf="col.field == 'annotatedText'" class="d-flex align-items-center"
+            [ngClass]="{'gv-one-liner gv-fade-out-right': (viewMode != 'full')}"
+            [matTooltip]="rowData?.annotatedText?.label">
+            {{rowData?.annotatedText?.label}}
           </div>
 
           <div *ngIf="col.field == 'action'" class="d-flex align-items-center col-action">
@@ -70,12 +78,13 @@
                 <mat-icon>tab</mat-icon>
                 Open item in new tab
               </button>
-              <button *ngIf="rowData?.actions?.open" mat-menu-item (click)="onEdit(rowData.statement)">
+              <button *ngIf="rowData?.actions?.edit" mat-menu-item (click)="onEdit(rowData.statement)">
                 <mat-icon>edit</mat-icon>
                 Edit
               </button>
               <mat-divider></mat-divider>
-              <button mat-menu-item>
+              <div class="dropdown-header">Danger Zone</div>
+              <button mat-menu-item (click)="onRemove(rowData.statement)">
                 <mat-icon color="warn">delete</mat-icon>
                 Remove
               </button>
@@ -115,6 +124,50 @@
 
         </td>
 
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length">
+          <p class="my-2"> No records found</p>
+          <div *ngIf="fkProperty == 117" class="pt-1 mat-caption">
+            <mat-divider class="pb-3"></mat-divider>
+            <p>
+              Records in this list are sources (e.g book, manuscript) or sections (e.g chapter of a book)
+              that are about the '{{(this.rootEntity$ | async).class_label}} – {{(this.rootEntity$ |
+                async).entity_label | truncate:[30]}}'.
+
+            </p>
+            <p>
+              In other words '{{(this.rootEntity$ | async).class_label}} – {{(this.rootEntity$ |
+              async).entity_label | truncate:[30]}}' is the topic of the records in this list.
+            </p>
+            <p>
+              In this sense this list is different from 'Is mentioned in'.
+            </p>
+          </div>
+          <div *ngIf="fkProperty == 1218" class="pt-1 mat-caption">
+            <mat-divider class="pb-3"></mat-divider>
+            <p>
+              Records in this list are sources (e.g books, manuscripts) or sections (e.g pages of books)
+              that mention '{{(this.rootEntity$ | async).class_label}} – {{(this.rootEntity$ |
+                async).entity_label | truncate:[30]}}' somewhere in the text.
+
+            </p>
+            <p>
+              In other words '{{(this.rootEntity$ | async).class_label}} – {{(this.rootEntity$ |
+              async).entity_label | truncate:[30]}}' is mentioned somwhere by the text of the records in this list.
+            </p>
+            <p>
+              For each item in the list you can optionally add exact references to the place
+              in the text (e.g. 'page 8' or 'chapter 4') that mentions '{{(this.rootEntity$ | async).class_label}} – {{(this.rootEntity$ |
+                async).entity_label | truncate:[30]}}'.
+            </p>
+            <p>
+              In this sense this list is different from 'Is topic of'.
+            </p>
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>

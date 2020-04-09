@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ActiveProjectService, EntityPreview } from 'app/core';
 export interface GraphPathSegment {
   entity?: {
     label: string;
@@ -6,6 +7,8 @@ export interface GraphPathSegment {
     tooltip: string;
     fkClass?: number
     pkEntity?: number
+    preview?: EntityPreview
+    isDigitalText?: boolean
   };
   property?: {
     label: string;
@@ -26,13 +29,19 @@ export class GraphPathComponent implements OnInit {
   @Input() mode: GraphPathMode;
   @Output() onClick = new EventEmitter();
 
-  constructor() { }
+  constructor(private p: ActiveProjectService) { }
 
   ngOnInit() {
     this.mode = this.mode ? this.mode : 'mini';
   }
 
+  openEntityInNewTab(preview: EntityPreview) {
+    this.p.addEntityTab(preview.pk_entity, preview.fk_class, preview.entity_type)
+  }
 
+  openTextInNewTab(pkEntity: number) {
+    this.p.addTextTab(pkEntity)
+  }
 
 }
 

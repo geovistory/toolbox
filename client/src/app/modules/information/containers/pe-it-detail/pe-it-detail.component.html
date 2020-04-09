@@ -130,6 +130,8 @@
           </mat-tab>
           <mat-tab *ngIf="tab == 'linked-sources'">
             <ng-template mat-tab-label>
+              <i style="font-size: 22px; margin-right: 6px;"
+                class="entity-icon gv-icon gv-icon-source gv-source-color"></i>
               Linked Sources
             </ng-template>
 
@@ -146,6 +148,7 @@
           </mat-tab>
           <mat-tab *ngIf="tab == 'linked-digitals'">
             <ng-template mat-tab-label>
+              <mat-icon svgIcon="file" class="gv-digital-color"></mat-icon>
               Annotated Digitals
             </ng-template>
             <mat-tab-group class="gv-slim-tabs gv-mat-tabs-shrink gv-flex-fh">

@@ -50,6 +50,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
   selectedCount$: Observable<number>
   selection: SelectionModel<number>;
 
+  loading;
 
   constructor(
     public p: ActiveProjectService,

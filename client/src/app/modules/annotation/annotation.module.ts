@@ -10,6 +10,7 @@ import { MentioningCreateCtrlComponent } from './components/mentioning-create-ct
 import { MentioningListComponent } from './components/mentioning-list/mentioning-list.component';
 import { RamListEditDialogComponent } from './components/ram-list-edit-dialog/ram-list-edit-dialog.component';
 import { RamListComponent } from './components/ram-list/ram-list.component';
+import { RamListRemoveDialogComponent } from './components/ram-list-remove-dialog/ram-list-remove-dialog.component';
 
 @NgModule({
   imports: [
@@ -21,8 +22,8 @@ import { RamListComponent } from './components/ram-list/ram-list.component';
     DigitalPreviewModule,
   ],
   providers: [],
-  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent, RamListEditDialogComponent],
+  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent, RamListEditDialogComponent, RamListRemoveDialogComponent],
   exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent],
-  entryComponents: [RamListEditDialogComponent]
+  entryComponents: [RamListEditDialogComponent, RamListRemoveDialogComponent]
 })
 export class AnnotationModule { }
