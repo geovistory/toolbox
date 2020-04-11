@@ -1,6 +1,6 @@
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 import { ClassesAndTypesSelectComponent } from './classes-and-types-select.component';
 
 
@@ -9,7 +9,7 @@ import { ClassesAndTypesSelectComponent } from './classes-and-types-select.compo
 export default sandboxOf(ClassesAndTypesSelectComponent, {
   declareComponent: false,
   imports: [
-    InformationModule,
+    BaseModule,
     InitStateModule,
   ]
 })

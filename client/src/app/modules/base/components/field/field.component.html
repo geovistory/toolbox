@@ -3,27 +3,25 @@
 <div *ngIf="fieldDefinition.listType==='has-type'" class="mat-tree-node field-node mat-border-bottom">
   <div class="full-width">
 
-    <div class="left-col">
-      <div class="ellipsis">
-        <a *ngIf="(showOntoInfo$|async)" class="badge badge-success mr-2" href="{{fieldDefinition.ontoInfoUrl}}"
-          target="_blank">
-          {{fieldDefinition.ontoInfoLabel}}
-        </a>
-        <span class="mat-body-strong" [ngClass]="{'mat-text-secondary': !(typeItem.hasTypeRole$ |async)}">
-          {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
-          <span matTooltip="Required and not changeable (identity defining)"
-            *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
-            *
-          </span>
+    <div class="left-col field-margin-left">
+      <a *ngIf="(showOntoInfo$|async)" class="badge badge-success mr-2" href="{{fieldDefinition.ontoInfoUrl}}"
+        target="_blank">
+        {{fieldDefinition.ontoInfoLabel}}
+      </a>
+      <span class="mat-body-strong" [ngClass]="{'mat-text-secondary': !(typeItem.hasTypeRole$ |async)}">
+        {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
+        <span matTooltip="Required and not changeable (identity defining)"
+          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+          *
         </span>
-        <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity"
-          [pkProperty]="fieldDefinition.property.pkProperty" [pkTypedClass]="fieldDefinition.sourceClass"
-          [pkTypeClass]="fieldDefinition.listDefinitions[0]?.targetClass">
-        </gv-type-item>
-      </div>
+      </span>
+      <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity"
+        [pkProperty]="fieldDefinition.property.pkProperty" [pkTypedClass]="fieldDefinition.sourceClass"
+        [pkTypeClass]="fieldDefinition.listDefinitions[0]?.targetClass">
+      </gv-type-item>
     </div>
 
-    <div class="right-col">
+    <div class="right-col field-margin-right">
       <button mat-icon-button *ngIf="!(readonly$|async)" [disabled]="!(showAddButton$ | async)" (click)="addClick()">
         <mat-icon>add</mat-icon>
       </button>
@@ -45,25 +43,24 @@
 
   <div class="full-width">
 
-    <div class="left-col gv-pointer" (click)="toggle()">
-      <div class="ellipsis">
-        <a *ngIf="(showOntoInfo$|async)" class="badge badge-success mr-2" href="{{fieldDefinition.ontoInfoUrl}}"
-          target="_blank">
-          {{fieldDefinition.ontoInfoLabel}}
-        </a>
-        <span class="mat-body-strong" [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
-          {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
-          <span matTooltip="Required and not changeable (identity defining)"
-            *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
-            *
-          </span>
+    <div class="left-col field-margin-left gv-pointer full-width" (click)="toggle()">
+      <a *ngIf="(showOntoInfo$|async)" class="field-onto-info badge badge-success mr-2"
+        href="{{fieldDefinition.ontoInfoUrl}}" target="_blank">
+        {{fieldDefinition.ontoInfoLabel}}
+      </a>
+      <span class="mat-body-strong field-label"
+        [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
+        {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
+        <span matTooltip="Required and not changeable (identity defining)"
+          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+          *
         </span>
-        <span class="mat-body" [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
-          ({{itemsCount$ | async}}) </span>
-      </div>
+      </span>
+      <span class="mat-body right-col" [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
+        &nbsp;({{itemsCount$ | async}}) </span>
     </div>
 
-    <div class="right-col">
+    <div class="right-col field-margin-right">
       <button *ngIf="!(readonly$|async)" mat-icon-button [disabled]="!(showAddButton$ | async)" (click)="addClick()">
         <mat-icon>add</mat-icon>
       </button>

@@ -103,7 +103,12 @@ export class ActiveProjectService {
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
-    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(filter(p => p !== undefined));
+    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(
+      filter(p => p !== undefined),
+      distinctUntilChanged((x, y) => {
+        return x === y
+      })
+    );
     this.initializingProject$ = ngRedux.select<boolean>(['activeProject', 'initializingProject']);
     this.defaultLanguage$ = ngRedux.select<InfLanguage>(['activeProject', 'default_language']);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);

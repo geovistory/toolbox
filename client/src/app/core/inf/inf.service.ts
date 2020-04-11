@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import { filter, first, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
 import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString } from '../sdk';
 import { PaginateByParam } from '../store/actions';

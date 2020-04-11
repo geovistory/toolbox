@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 import { CtrlAppellationComponent } from './ctrl-appellation.component';
 
 
@@ -10,7 +10,7 @@ import { CtrlAppellationComponent } from './ctrl-appellation.component';
 export default sandboxOf(CtrlAppellationComponent, {
   declareComponent: false,
   imports: [
-    InformationModule,
+    BaseModule,
     MatFormFieldModule,
     FormsModule
   ]

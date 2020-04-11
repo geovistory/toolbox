@@ -1,6 +1,6 @@
 import { sandboxOf } from 'angular-playground';
 
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 import { FormCreateRoleComponent } from './form-create-role.component';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { ListDefinition } from '../properties-tree/properties-tree.models';
@@ -165,7 +165,7 @@ export default sandboxOf(FormCreateRoleComponent, {
   declareComponent: false,
   imports: [
     InitStateModule,
-    InformationModule
+    BaseModule
   ]
 })
   .add('Form Create Role | Spelling ', {

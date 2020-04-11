@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 import { CtrlEntityComponent } from './ctrl-entity.component';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 
@@ -9,20 +9,20 @@ import { InitStateModule } from '../../../../shared/components/init-state/init-s
 
 
 export default sandboxOf(CtrlEntityComponent, {
-    declareComponent: false,
-    imports: [
-        InformationModule,
-        InitStateModule,
-        MatFormFieldModule,
-        FormsModule
-    ]
+  declareComponent: false,
+  imports: [
+    BaseModule,
+    InitStateModule,
+    MatFormFieldModule,
+    FormsModule
+  ]
 })
-    .add('CtrlEntity | New ', {
-        context: {
-            model: undefined,
-            parentPath: ''
-        },
-        template: `
+  .add('CtrlEntity | New ', {
+    context: {
+      model: undefined,
+      parentPath: ''
+    },
+    template: `
         <gv-init-state [projectFromApi]="24" ></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -50,13 +50,13 @@ export default sandboxOf(CtrlEntityComponent, {
 
             </div>
         </div>`
-    })
-    .add('CtrlEntity | Existing ', {
-        context: {
-            model: 26172,
-            parentPath: ''
-        },
-        template: `
+  })
+  .add('CtrlEntity | Existing ', {
+    context: {
+      model: 26172,
+      parentPath: ''
+    },
+    template: `
         <gv-init-state [projectFromApi]="24" ></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
@@ -84,4 +84,4 @@ export default sandboxOf(CtrlEntityComponent, {
 
             </div>
         </div>`
-    })
+  })

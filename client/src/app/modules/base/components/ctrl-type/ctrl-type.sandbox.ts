@@ -2,7 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { CtrlTypeComponent } from './ctrl-type.component';
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 
 
@@ -11,7 +11,7 @@ import { InitStateModule } from '../../../../shared/components/init-state/init-s
 export default sandboxOf(CtrlTypeComponent, {
   declareComponent: false,
   imports: [
-    InformationModule,
+    BaseModule,
     MatFormFieldModule,
     FormsModule,
     InitStateModule

@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 import { RamListRemoveDialogData, RamListRemoveDialogComponent } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 
 interface GraphPath {
   segments: GraphPathSegment[];
@@ -46,7 +47,8 @@ export interface RamListItem {
   templateUrl: './ram-list.component.html',
   styleUrls: ['./ram-list.component.scss'],
   providers: [
-    QuillOpsToStrPipe
+    QuillOpsToStrPipe,
+    TruncatePipe
   ]
 })
 export class RamListComponent implements OnInit, OnDestroy {
@@ -73,6 +75,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     private inf: InfActions,
     public p: ActiveProjectService,
     private quillPipe: QuillOpsToStrPipe,
+    private truncatePipe: TruncatePipe,
     private dialog: MatDialog
   ) { }
 
@@ -477,8 +480,8 @@ export class RamListComponent implements OnInit, OnDestroy {
       })
     } else if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
       this.rootEntity$.pipe(first(), takeUntil(this.destroy$)).subscribe(rootEntity => {
-        this.p.ramTitle$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
-        this.p.ramTitlePart2$.next(`is referred to by:`);
+        this.p.ramTitle$.next(`Annotate ${rootEntity.class_label} – ${rootEntity.entity_label}`);
+        // this.p.ramTitlePart2$.next(`${rootEntity.class_label} – ${rootEntity.entity_label}`);
         this.p.ramBoxLeft$.next('select-text');
         this.p.ramTargetIsFix$.next(true)
       })

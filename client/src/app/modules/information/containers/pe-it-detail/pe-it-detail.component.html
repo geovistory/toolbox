@@ -119,8 +119,7 @@
         <div class="gv-focus-overlay"></div>
       </button>
 
-      <mat-tab-group *ngIf="t.showRightArea" #rightPanelTabs class="gv-panel-top-bar-tabs gv-flex-fh"
-        [selectedIndex]="rightPanelActiveTab$|async">
+      <mat-tab-group class="gv-panel-top-bar-tabs gv-flex-fh" [selectedIndex]="rightPanelActiveTab$|async">
         <ng-container *ngFor="let tab of rightPanelTabs$|async">
           <mat-tab *ngIf="tab == 'content-tree'" label="Sections & Digital Reproductions">
             <ng-template matTabContent>

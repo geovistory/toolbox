@@ -1,21 +1,22 @@
 import { FormsModule } from '@angular/forms';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 import { FormCreateEntityComponent } from './form-create-entity.component';
 
+const pkProject = 591;
 export default sandboxOf(FormCreateEntityComponent, {
-    declareComponent: false,
-    imports: [
-        InformationModule,
-        FormsModule,
-        InitStateModule
-    ]
+  declareComponent: false,
+  imports: [
+    BaseModule,
+    FormsModule,
+    InitStateModule
+  ]
 })
-    .add('FormCreateEntityComponent | New Georeference', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  .add('FormCreateEntityComponent | New Georeference', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="84" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -29,11 +30,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | New Appe use', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | New Appe use', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="365" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -47,11 +48,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | New Birth', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | New Birth', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="61" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -65,11 +66,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | New Ship Voyage', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | New Ship Voyage', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="523" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -83,11 +84,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | New Person (Context:Entities)', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | New Person (Context:Entities)', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="21" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -101,11 +102,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | New Person (Context:Sources)', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | New Person (Context:Sources)', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="21" [appContext]="211" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -119,11 +120,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | New Geographical Place', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | New Geographical Place', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="363" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -137,11 +138,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | New Manifestation Singleton', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | New Manifestation Singleton', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="220" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -155,11 +156,11 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
-    .add('FormCreateEntityComponent | Expression Portion', {
-        context: {},
-        template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+  })
+  .add('FormCreateEntityComponent | Expression Portion', {
+    context: {},
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
             <div style="width:350px;height:400px" class="d-flex mr-5">
                 <gv-form-create-entity [pkClass]="503" [appContext]="46" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
@@ -173,4 +174,4 @@ export default sandboxOf(FormCreateEntityComponent, {
                 <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
             </div>
         </div>`
-    })
+  })

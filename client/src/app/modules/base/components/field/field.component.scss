@@ -8,14 +8,6 @@
   // display: block;
   background: white;
 
-  .left-col {
-    margin-left: 24px;
-  }
-
-  .right-col {
-    margin-right: 24px;
-  }
-
   &.expanded {
     .left-col {
       color: $primary;
@@ -27,6 +19,13 @@
   gv-type-item {
     display: inline-block;
   }
+}
+
+.field-margin-left {
+  margin-left: 24px;
+}
+.field-margin-right {
+  margin-right: 24px;
 }
 
 .child-node {
@@ -52,27 +51,39 @@
 
 .full-width {
   display: flex;
+  flex-direction: row;
   width: 100%;
 }
 
 .left-col {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   display: flex;
   justify-content: start;
   align-items: center;
-  flex: 1 1 0;
-  overflow: hidden;
-}
-.ellipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .right-col {
+  flex: 0 0 auto;
   display: flex;
-  flex: 0 0 64px;
   align-items: center;
   justify-content: center;
+}
+
+.field-onto-info {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.field-label {
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  justify-content: start;
+  white-space: nowrap;
 }
 
 gv-leaf-item-list,

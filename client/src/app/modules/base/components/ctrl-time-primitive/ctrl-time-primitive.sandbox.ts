@@ -2,7 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { CtrlTimePrimitiveComponent, InfTimePrimitiveWithCalendar } from './ctrl-time-primitive.component';
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 
 
 
@@ -10,7 +10,7 @@ import { InformationModule } from '../../information.module';
 export default sandboxOf(CtrlTimePrimitiveComponent, {
   declareComponent: false,
   imports: [
-    InformationModule,
+    BaseModule,
     MatFormFieldModule,
     FormsModule
   ]

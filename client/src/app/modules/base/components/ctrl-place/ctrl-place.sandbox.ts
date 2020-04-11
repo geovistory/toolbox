@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { InformationModule } from '../../information.module';
+import { BaseModule } from '../../base.module';
 import { CtrlPlaceComponent } from './ctrl-place.component';
 
 
@@ -10,7 +10,7 @@ import { CtrlPlaceComponent } from './ctrl-place.component';
 export default sandboxOf(CtrlPlaceComponent, {
   declareComponent: false,
   imports: [
-    InformationModule,
+    BaseModule,
     MatFormFieldModule,
     FormsModule
   ]
