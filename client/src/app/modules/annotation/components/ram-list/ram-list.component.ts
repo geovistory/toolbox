@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActiveProjectService, InfRole, switchMapOr, EntityPreview } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
-import { values } from 'ramda';
+import { values, equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
-import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, switchMap, takeUntil, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators';
 import { GraphPathSegment } from '../graph-path/graph-path.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { ByPk } from 'app/core/store/model';
@@ -46,9 +46,9 @@ export interface RamListItem {
   selector: 'gv-ram-list',
   templateUrl: './ram-list.component.html',
   styleUrls: ['./ram-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    QuillOpsToStrPipe,
-    TruncatePipe
+    QuillOpsToStrPipe
   ]
 })
 export class RamListComponent implements OnInit, OnDestroy {
@@ -68,16 +68,32 @@ export class RamListComponent implements OnInit, OnDestroy {
   // the entity giving the context for the ram list
   rootEntity$: Observable<EntityPreview>
 
-  loading = true;
+  loading$ = new BehaviorSubject(true);
 
   constructor(
     private s: SchemaObjectService,
     private inf: InfActions,
     public p: ActiveProjectService,
     private quillPipe: QuillOpsToStrPipe,
-    private truncatePipe: TruncatePipe,
-    private dialog: MatDialog
-  ) { }
+    private dialog: MatDialog,
+    public ref: ChangeDetectorRef
+  ) {
+    // To improve performance, we want to check and update the list less often than the changes actually occur.
+    // To do that, we detach the component's change detector and perform an explicit local check on upadte of ...
+    // https://angular.io/api/core/ChangeDetectorRef#detach
+    // ref.detach();
+    // setInterval(() => {
+    //   this.ref.detectChanges();
+    // }, 5000);
+
+
+  }
+
+  rowTrackByFn(_, i: RamListItem) {
+    console.log('trackby' + i.statement.fk_property, _)
+    return _;//i.statement.pk_entity
+
+  }
 
   ngOnInit() {
     this.cols = this.setCols();
@@ -86,13 +102,21 @@ export class RamListComponent implements OnInit, OnDestroy {
       this.s.store(this.s.api.getRamList(pkProject, this.pkEntity, this.fkProperty), pkProject)
         .pipe(first(), takeUntil(this.destroy$))
         .subscribe(() => {
-          this.loading = false;
+          this.loading$.next(false);
         })
     })
 
-    this.rootEntity$ = this.p.streamEntityPreview(this.pkEntity);
+    this.rootEntity$ = this.p.streamEntityPreview(this.pkEntity).pipe(
+      shareReplay({ refCount: true, bufferSize: 1 })
+    );
 
     this.items$ = this.pipeItems();
+
+    this.items$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe((items) => {
+      const y = items;
+    })
 
   }
 
@@ -102,7 +126,17 @@ export class RamListComponent implements OnInit, OnDestroy {
     const basicRoles$: Observable<InfRole[]> = this.p.inf$.role$.by_object_and_property$({
       fk_property: this.fkProperty,
       fk_entity: this.pkEntity
-    })
+    }).pipe(
+
+      // TODO find out why this is triggered on wrong moments
+      tap((s) => {
+
+      }),
+      distinctUntilChanged<InfRole[]>(equals),
+      tap((s) => {
+
+      }),
+    )
 
 
     // if property is 'refers to' we need to get the chunk and the digital

@@ -107,7 +107,7 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: [
       {
         keyInStore: 'fk_concerned_entity__fk_class_field',
-        groupByFn: (d: InfTextProperty): string => d.fk_concerned_entity + '0' + d.fk_class_field
+        groupByFn: (d: InfTextProperty): string => d.fk_concerned_entity + '_' + d.fk_class_field
       },
       {
         keyInStore: 'fk_concerned_entity',
