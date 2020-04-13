@@ -3,7 +3,14 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
 const helpers = require('../helpers');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
+var SqlTemporalEntityList = require('../../dist/server/sql-builders/sql-temporal-entity-list')
+  .SqlTemporalEntityList;
+var SqlTemporalEntityListAlternatives = require('../../dist/server/sql-builders/sql-temporal-entity-list-alternatives')
+  .SqlTemporalEntityListAlternatives;
+var SqlTemporalEntityOwnProperties = require('../../dist/server/sql-builders/sql-te-en-own-properties')
+  .SqlTemporalEntityOwnProperties;
 
 module.exports = function(InfTemporalEntity) {
   InfTemporalEntity.temporalEntityList = function(
@@ -16,9 +23,9 @@ module.exports = function(InfTemporalEntity) {
     offset,
     cb
   ) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlTemporalEntityList(
       InfTemporalEntity.app.models
-    ).createTemporalEntityListQuery(
+    ).create(
       fkProject,
       fkSourceEntity,
       fkProperty,
@@ -46,9 +53,9 @@ module.exports = function(InfTemporalEntity) {
     offset,
     cb
   ) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlTemporalEntityListAlternatives(
       InfTemporalEntity.app.models
-    ).createAlternativeTemporalEntityListQuery(
+    ).create(
       fkProject,
       fkSourceEntity,
       fkProperty,
@@ -416,9 +423,9 @@ module.exports = function(InfTemporalEntity) {
    * @param  {number} pkEntity  pk_entity of the teEn
    */
   InfTemporalEntity.ownProperties = function(pkProject, pkEntity, cb) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlTemporalEntityOwnProperties(
       InfTemporalEntity.app.models
-    ).createTemporalEntityOwnPropertyQuery(pkProject, pkEntity);
+    ).create(pkProject, pkEntity);
     const connector = InfTemporalEntity.dataSource.connector;
     connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);

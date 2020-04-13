@@ -1,38 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
 import { TileHeaderModule } from 'app/shared/components/tile-header/tile-header.module';
 import { DndModule } from 'ng2-dnd';
-import { TableModule } from 'ngx-easy-table';
-import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
-import { QuillOpsToStrModule } from '../../shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { TableModule } from 'primeng/table';
+import { DigitalPreviewModule } from '../../shared/components/digital-preview/digital-preview.module';
+import { BaseModule } from '../base/base.module';
+import { GraphPathComponent } from './components/graph-path/graph-path.component';
 import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { MentioningListComponent } from './components/mentioning-list/mentioning-list.component';
-import { DigitalPreviewModule } from '../../shared/components/digital-preview/digital-preview.module';
+import { RamListEditDialogComponent } from './components/ram-list-edit-dialog/ram-list-edit-dialog.component';
+import { RamListComponent } from './components/ram-list/ram-list.component';
+import { RamListRemoveDialogComponent } from './components/ram-list-remove-dialog/ram-list-remove-dialog.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    BaseModule,
     TileHeaderModule,
     DndModule,
-    QuillOpsToStrModule,
-    MatTableModule,
-    MatSortModule,
-    MatMenuModule,
-    MatIconModule,
-    MatButtonModule,
-    EntityPreviewModule,
-    // TableModule, // TODO replace this with Mat Table
-    DigitalPreviewModule
+    TableModule,
+    DigitalPreviewModule,
   ],
   providers: [],
-  declarations: [MentioningListComponent, MentioningCreateCtrlComponent],
-  exports: [MentioningListComponent, MentioningCreateCtrlComponent]
+  declarations: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent, RamListEditDialogComponent, RamListRemoveDialogComponent],
+  exports: [MentioningListComponent, MentioningCreateCtrlComponent, RamListComponent],
+  entryComponents: [RamListEditDialogComponent, RamListRemoveDialogComponent]
 })
 export class AnnotationModule { }

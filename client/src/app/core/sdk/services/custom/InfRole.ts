@@ -14,6 +14,7 @@ import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfAppellation } from '../../models/InfAppellation';
+import { InfLangString } from '../../models/InfLangString';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { DatChunk } from '../../models/DatChunk';
 import { DatDigital } from '../../models/DatDigital';
@@ -308,35 +309,6 @@ export class InfRoleApi extends BaseLoopBackApi {
     };
     let _urlParams: any = {};
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get an array of role that build the tree of the content of an F2 Expression.
-   *
-   * @param {number} pkProject Primary Key of the Project.
-   *
-   * @param {number} pkExpressionEntity Primary Key of the F2 Expression entity for which the content tree is needed.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfRole` object.)
-   * </em>
-   */
-  public contentTree(pkProject: any = {}, pkExpressionEntity: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfRoles/content-tree";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkExpressionEntity !== 'undefined' && pkExpressionEntity !== null) _urlParams.pkExpressionEntity = pkExpressionEntity;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

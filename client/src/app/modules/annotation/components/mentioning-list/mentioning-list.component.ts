@@ -76,10 +76,10 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
    */
   @Input() expressionPk$: Observable<number>;
   @Input() expressionPortionPk$: Observable<number>;
-  @Input() chunk$ = new BehaviorSubject<DatChunk>(null);
+  // @Input() chunk$ = new BehaviorSubject<DatChunk>(null);
 
   // If true, the list is hidden and the create form is shown
-  @Input() create$ = new BehaviorSubject<boolean>(false);
+  // @Input() create$ = new BehaviorSubject<boolean>(false);
 
 
   /**
@@ -227,25 +227,25 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.inf.role.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
 
-        const rows$ = this.p.inf$.role$.by_fk_entity$.key(this.listOf.pkEntity)
+        const rows$ = this.p.inf$.role$.by_object$({ fk_entity: this.listOf.pkEntity })
           .pipe(
-            switchMap((roles) => combineLatestOrEmpty(values(roles)
-              .filter(role => role.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
-              .map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_subject_data)
-                .pipe(
-                  filter(item => !!item),
-                  switchMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+            switchMap((roles) => combineLatestOrEmpty(
+              roles.filter(role => role.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)
+                .map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_subject_data)
+                  .pipe(
                     filter(item => !!item),
-                    map(texts => latestVersion(texts)),
-                    map(digital => ({
-                      role: role,
-                      domainChunk,
-                      domainLabel: this.getStringFromChunk(domainChunk),
-                      digital,
-                      digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
-                    } as Row))))
-                )
-              )))
+                    switchMap(domainChunk => this.p.dat$.digital$.by_pk_text$.key(domainChunk.fk_text).pipe(
+                      filter(item => !!item),
+                      map(texts => latestVersion(texts)),
+                      map(digital => ({
+                        role: role,
+                        domainChunk,
+                        domainLabel: this.getStringFromChunk(domainChunk),
+                        digital,
+                        digitalLabel: digital.string.substr(0, 20) + (digital.string.length > 20 ? '...' : '')
+                      } as Row))))
+                  )
+                )))
           )
 
         this.data$ = rows$;
@@ -294,7 +294,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
         const role: InfRole = this.mentioningCreateCtrl.value;
         this.inf.role.upsert([role], pkProject).resolved$
           .pipe(first(r => !!r), takeUntil(this.destroy$)).subscribe(resolved => {
-            this.create$.next(false)
+            // this.create$.next(false)
           })
       })
     }

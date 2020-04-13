@@ -4,13 +4,17 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarComponent } from './navbar.component';
 import { RouterModule } from '@angular/router';
 import { AccountActions } from '../../../modules/account/api/account.actions';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material';
+import { MaterialModule } from 'app/core/material/material.module';
 
 
 @NgModule({
   imports: [
     RouterModule,
     NgbModule,
-    CommonModule
+    CommonModule,
+    MaterialModule
   ],
   declarations: [
     NavbarComponent

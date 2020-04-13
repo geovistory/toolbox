@@ -3,8 +3,11 @@
 const Promise = require('bluebird');
 const Config = require('../config/Config');
 const _ = require('lodash');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
 const helpers = require('../helpers');
+var SqlPeItOwnProperties = require('../../dist/server/sql-builders/sql-pe-it-own-properties')
+  .SqlPeItOwnProperties;
+var SqlTypesOfProject = require('../../dist/server/sql-builders/sql-types-of-project')
+  .SqlTypesOfProject;
 
 module.exports = function(InfPersistentItem) {
   InfPersistentItem.findOrCreateInfPersistentItems = function(
@@ -348,120 +351,6 @@ module.exports = function(InfPersistentItem) {
 
     return InfPersistentItem.findComplex(filter, cb);
   };
-
-  // /**
-  //  * Internal function to get graphs of project or repo version
-  //  * graphs - get a PeIt with all its roles
-  //  *
-  //  * @param  {number} pkProject primary key of project
-  //  * @param  {number} pkEntity  pk_entity of the persistent item
-  //  */
-  // InfPersistentItem.graphs = function(ofProject, projectId, pkEntities, cb) {
-  //   const filter = {
-  //     where: ['pk_entity', 'IN', pkEntities],
-  //     include: InfPersistentItem.getGraphIncludeObject(ofProject, projectId),
-  //   };
-
-  //   return InfPersistentItem.findComplex(filter, cb);
-  // };
-
-  // /**
-  //  * Remote method to get graphs of project version
-  //  * graphs - get a PeIt with all its roles
-  //  *
-  //  * @param  {number} pkProject primary key of project
-  //  * @param  {number} pkEntity  pk_entity of the persistent item
-  //  */
-  // InfPersistentItem.graphsOfProject = function(pkProject, pkEntities, cb) {
-  //   const ofProject = true;
-  //   return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb);
-  // };
-
-  // /**
-  //  * Remote method to get graphs of repo version
-  //  * graphs - get a PeIt with all its roles
-  //  *
-  //  * @param  {number} pkEntity  pk_entity of the persistent item
-  //  */
-  // InfPersistentItem.graphsOfRepo = function(pkEntities, cb) {
-  //   const ofProject = false;
-  //   const pkProject = undefined;
-  //   return InfPersistentItem.graphs(ofProject, pkProject, pkEntities, cb);
-  // };
-
-  // /**
-  //  * Internal function to create a include object of
-  //  * a filter object for findComplex()
-  //  *
-  //  * It includes everything, that is not better requested by itself.
-  //  *
-  //  * It includes relations from the persistent items
-  //  * - roles
-  // //  * - domain_entity_associations
-  // //  * - range_entity_associations
-  //  *
-  //  * It includes associated values
-  //  * - text properties
-  //  *
-  //  * It does not include related
-  //  * - persistent items
-  //  * - temporal entities
-  //  * - classes
-  //  * ...since those can be requested and cached alone
-  //  *
-  //  * Usage: add the returned object to the include property of a persistent item relation
-  //  * of findComplex() filter, e.g.:
-  //  * {
-  //  *    ...
-  //  *    include: InfPersistentItem.getIncludeObject(true, 123)
-  //  * }
-  //  *
-  //  * @param ofProject {boolean}
-  //  * @param project {number}
-  //  * @returns include object of findComplex filter
-  //  */
-  // InfPersistentItem.getGraphIncludeObject = function(ofProject, pkProject) {
-  //   let projectJoin = {};
-
-  //   // if a pkProject is provided, create the relation
-  //   if (pkProject) {
-  //     // get the join object. If ofProject is false, the join will be a left join.
-  //     projectJoin = {
-  //       entity_version_project_rels: InfPersistentItem.app.models.ProInfoProjRel.getJoinObject(
-  //         ofProject,
-  //         pkProject
-  //       ),
-  //     };
-  //   }
-
-  //   return {
-  //     ...projectJoin,
-  //     // domain_entity_associations: {
-  //     //   $relation: {
-  //     //     name: "domain_entity_associations",
-  //     //     joinType: "left join",
-  //     //     "orderBy": [{ "pk_entity": "asc" }]
-  //     //   },
-  //     //   ...projectJoin,
-  //     // },
-  //     // range_entity_associations: {
-  //     //   $relation: {
-  //     //     name: "range_entity_associations",
-  //     //     joinType: "left join",
-  //     //     "orderBy": [{ "pk_entity": "asc" }]
-  //     //   },
-  //     //   ...projectJoin,
-  //     // },
-  //     pi_roles: {
-  //       $relation: {
-  //         name: 'pi_roles',
-  //         joinType: 'left join',
-  //       },
-  //       ...projectJoin,
-  //     },
-  //   };
-  // };
-
   /**
    * Internal function to create the include property of
    * a filter object for findComplex()
@@ -1223,9 +1112,9 @@ module.exports = function(InfPersistentItem) {
    * no other related data is loaded.
    */
   InfPersistentItem.typesOfProject = function(pkProject, cb) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlTypesOfProject(
       InfPersistentItem.app.models
-    ).createPeItTypeQuery(pkProject);
+    ).create(pkProject);
     const connector = InfPersistentItem.dataSource.connector;
     connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);
@@ -1249,9 +1138,9 @@ module.exports = function(InfPersistentItem) {
   };
 
   InfPersistentItem.ownProperties = function(pkProject, pkEntity, cb) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlPeItOwnProperties(
       InfPersistentItem.app.models
-    ).createPeItOwnPropertiesQuery(pkProject, pkEntity);
+    ).create(pkProject, pkEntity);
     const connector = InfPersistentItem.dataSource.connector;
     connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);
@@ -1260,56 +1149,4 @@ module.exports = function(InfPersistentItem) {
       return cb(false, data);
     });
   };
-
-  // InfPersistentItem.flatObjectOfProject = function(pkProject, pkEntity, cb) {
-  //   const mainQuery = new FlatObjectQueryBuilder(
-  //     InfPersistentItem.app.models
-  //   ).createPeItMainQuery(pkProject, pkEntity);
-  //   const connector = InfPersistentItem.dataSource.connector;
-  //   connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
-  //     if (err) return cb(err);
-  //     if (result.length === 0) return cb(false, result);
-
-  //     const geoPks = result.find(row => row.model === 'geos').json_agg;
-
-  //     if (!geoPks || geoPks.length === 0) return cb(false, result);
-
-  //     const geoQuery = new FlatObjectQueryBuilder(
-  //       InfPersistentItem.app.models
-  //     ).createPeItGeoQuery(
-  //       pkProject,
-  //       geoPks.map(pk => parseInt(pk))
-  //     );
-  //     connector.execute(geoQuery.sql, geoQuery.params, (err, geoResult) => {
-  //       if (err) return cb(err);
-  //       const final = {};
-  //       const models = [
-  //         'persistent_item',
-  //         'role',
-  //         'entity_association',
-  //         'temporal_entity',
-  //         'appellation',
-  //         'language',
-  //         'time_primitive',
-  //         'place',
-  //         'text_property',
-  //         'info_proj_rel',
-  //       ];
-
-  //       result.forEach(row => {
-  //         if (models.indexOf(row.model) > -1) {
-  //           final[row.model] = row.json_agg;
-  //         }
-  //       });
-
-  //       geoResult.forEach(row => {
-  //         if (models.indexOf(row.model) > -1) {
-  //           final[row.model] = [...(final[row.model] || []), ...row.json_agg];
-  //         }
-  //       });
-
-  //       return cb(null, final);
-  //     });
-  //   });
-  // };
 };

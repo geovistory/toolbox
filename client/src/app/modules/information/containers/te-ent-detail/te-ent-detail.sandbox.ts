@@ -3,7 +3,7 @@ import { DfhClass, DfhProperty, InfRole } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { RoleDetail, PropertyField, ExistenceTimeDetail } from 'app/core/state/models';
-import { Information2Module } from '../../information.module';
+import { InformationModule } from '../../information.module';
 import { TeEntDetailComponent } from './te-ent-detail.component';
 import { DfhConfig } from '../../shared/dfh-config';
 
@@ -12,7 +12,7 @@ import { DfhConfig } from '../../shared/dfh-config';
 export default sandboxOf(TeEntDetailComponent, {
     imports: [
         InitStateModule,
-        Information2Module
+        InformationModule
     ],
     declareComponent: false
 })

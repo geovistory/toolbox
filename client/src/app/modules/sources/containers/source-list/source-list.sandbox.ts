@@ -68,58 +68,60 @@ export default sandboxOf(SourceListComponent, {
     </div>
    `
   })
-  .add('Source-List | Edit Source', {
-    context: {
-      path: '',
-      initState: {
-        // should not be visible
-        list: {
-          '_source_1': {
-            id: 1,
-            version: 1,
-            label: 'Acta Muriensis'
-          }
-        },
-        edit: {
-          view: {
-            quill_doc: textBüchel,
-            notes: 'Emmanuel Büchel'
-          } as DatDigital
-        }
-      } as ISourceListState
-    },
-    template: `
-    <div class="container-fluid d-flex flex-column" style="height:600px">
-      <gv-source-list [path]="path" [initState]="initState" class="gv-grow-1 d-flex flex-column"></gv-source-list>
-    </div>
-   `
-  })
-  .add('Source-List | Edit Source see Annotations', {
-    context: {
-      path: '',
-      initState: {
-        // should not be visible
-        list: {
-          '_source_1': {
-            id: 1,
-            version: 1,
-            label: 'Acta Muriensis'
-          }
-        },
-        edit: {
-          view: {
-            quill_doc: textBüchel,
-            notes: 'Emmanuel Büchel'
-          } as DatDigital,
-        }
-      } as ISourceListState
-    },
-    template: `
-    <div class="container-fluid d-flex flex-column" style="height:600px">
-      <gv-source-list [path]="path" [initState]="initState" class="gv-grow-1 d-flex flex-column"></gv-source-list>
-    </div>
-   `
-  })
+  // .add('Source-List | Edit Source', {
+  //   context: {
+  //     path: '',
+  //     initState: {
+  //       // should not be visible
+  //       list: {
+  //         '_source_1': {
+  //           id: 1,
+  //           version: 1,
+  //           label: 'Acta Muriensis'
+  //         }
+  //       },
+  //       edit: {
+  //         view: {
+  //           quill_doc: textBüchel,
+  //           notes: 'Emmanuel Büchel',
+
+
+  //         } as DatDigital
+  //       }
+  //     } as ISourceListState
+  //   },
+  //   template: `
+  //   <div class="container-fluid d-flex flex-column" style="height:600px">
+  //     <gv-source-list [path]="path" [initState]="initState" class="gv-grow-1 d-flex flex-column"></gv-source-list>
+  //   </div>
+  //  `
+  // })
+  // .add('Source-List | Edit Source see Annotations', {
+  //   context: {
+  //     path: '',
+  //     initState: {
+  //       // should not be visible
+  //       list: {
+  //         '_source_1': {
+  //           id: 1,
+  //           version: 1,
+  //           label: 'Acta Muriensis'
+  //         }
+  //       },
+  //       edit: {
+  //         view: {
+  //           quill_doc: textBüchel,
+  //           notes: 'Emmanuel Büchel'
+  //         } as DatDigital,
+  //       }
+  //     } as ISourceListState
+  //   },
+  //   template: `
+  //   <div class="container-fluid d-flex flex-column" style="height:600px">
+  //     <gv-source-list [path]="path" [initState]="initState" class="gv-grow-1 d-flex flex-column"></gv-source-list>
+  //   </div>
+  //  `
+  // })
   .add('Source-List | Remove Source', {
     context: {
       path: '',

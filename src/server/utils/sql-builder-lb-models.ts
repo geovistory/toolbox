@@ -5,7 +5,7 @@ import { SqlBuilderBase } from './sql-builder-base';
  * Abstract Class providing basic logic for building SQL
  * with select statements according to looback model definitions
  */
-export abstract class SqlBuilderLbModels extends SqlBuilderBase {
+export class SqlBuilderLbModels extends SqlBuilderBase {
 
   /**
    * @param lb3models The loopback 3 models object providing info about columns to select per model

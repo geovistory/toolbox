@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntityPreview } from 'app/core';
-import { EntitySearchHit } from '../../containers/list/api/list.models';
+import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
 
 @Component({
   selector: 'gv-entity-add-existing-hit',
@@ -37,7 +37,7 @@ export class EntityAddExistingHitComponent implements OnInit {
 
 
 
-  constructor(  ) { }
+  constructor() { }
 
   ngOnInit() {
     if (!this.alreadyInProjectBtnText) throw Error('please provide a alreadyInProjectBtnText')

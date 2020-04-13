@@ -52,15 +52,7 @@ export class ReducerFactory<Payload, Model> {
     const actionPrefix = this.actionPrefix;
     const reducer = (state = {}, action: FluxStandardAction<Payload, Meta<Model>>) => {
 
-
-      const facette = (action, state, cb: (innerState) => any) => {
-        let outerState;
-        ({ outerState, state } = this.deFacette(modelName, config, action, outerState, state));
-
-        const innerState = cb(state)
-
-        return this.enFacette(modelName, config, action, innerState, outerState);
-      }
+      const facette = this.facette(modelName, config)
 
       if (action.type === actionPrefix + '.' + modelName + '::LOAD') {
 
@@ -239,11 +231,25 @@ export class ReducerFactory<Payload, Model> {
 
 
 
+  private facette(modelName: any, config: ReducerConfig) {
+    return (action, state, cb: (innerState) => any) => {
+      let outerState;
+      ({ outerState, state } = this.deFacette(modelName, config, action, outerState, state));
+      const innerState = cb(state);
+      return this.enFacette(modelName, config, action, innerState, outerState);
+    };
+  }
+
   private deFacette(modelName: string, config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; pk?: number; }>, outerState: any, state: {}) {
     if (this.isFacetteByPk(config, action)) {
-      outerState = clone(state);
+      // outerState = clone(state);
       const pk = action.meta.pk || 'repo'
-      state = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
+      // state = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
+      const innerState = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
+      return {
+        outerState: state,
+        state: innerState
+      }
     }
     return { outerState, state };
   }

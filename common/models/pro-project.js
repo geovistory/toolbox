@@ -2,7 +2,8 @@
 
 const Config = require('../config/Config');
 var logSql = require('../../server/scripts/log-deserialized-sql');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(ProProject) {
   // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
@@ -177,7 +178,7 @@ module.exports = function(ProProject) {
   };
 
   ProProject.ofAccount = function(accountId, ctx, cb) {
-    const q = new FlatObjectQueryBuilder(ProProject.app.models);
+    const q = new SqlBuilderLbModels(ProProject.app.models);
     const params = [accountId];
     const sql = `
       SELECT ${q.createSelect('t1', 'ProProject')}

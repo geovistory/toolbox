@@ -2,13 +2,13 @@ import { sandboxOf } from 'angular-playground';
 import { ProProject } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
-import { Information2Module } from '../../information.module';
+import { InformationModule } from '../../information.module';
 import { PeItDetailComponent } from './pe-it-detail.component';
 
 export default sandboxOf(PeItDetailComponent, {
   imports: [
     InitStateModule,
-    Information2Module
+    InformationModule
   ],
   declareComponent: false
 })

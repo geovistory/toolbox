@@ -1,6 +1,6 @@
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
-import { Information2Module } from '../../information.module';
+import { InformationModule } from '../../information.module';
 import { CreateOrAddEntityComponent } from './create-or-add-entity.component';
 import { SysConfig } from 'app/core';
 
@@ -9,7 +9,7 @@ import { SysConfig } from 'app/core';
 export default sandboxOf(CreateOrAddEntityComponent, {
     declareComponent: false,
     imports: [
-        Information2Module,
+        InformationModule,
         InitStateModule
     ]
 })

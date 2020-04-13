@@ -1,5 +1,5 @@
-import { ByPk } from "app/core/store/model";
-import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive } from "../sdk";
+import { ByPk } from 'app/core/store/model';
+import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString } from '../sdk';
 
 export class InfPersistentItemSlice {
   by_pk_entity?: ByPk<InfPersistentItem>;
@@ -33,6 +33,12 @@ export class InfLanguageSlice {
 
 export class InfAppellationSlice {
   by_pk_entity?: ByPk<InfAppellation>;
+  loading?: boolean
+}
+
+
+export class InfLangStringSlice {
+  by_pk_entity?: ByPk<InfLangString>;
   loading?: boolean
 }
 

@@ -31,6 +31,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ChecklistControlModule } from 'app/shared/components/checklist-control/checklist-control.module';
 import { buildModuleUrl } from 'cesium';
+import { WarModule } from 'app/core/war/war.module';
+import { FormFactoryModule } from 'app/modules/form-factory/form-factory.module';
 
 
 @NgModule()
@@ -52,6 +54,8 @@ PlaygroundModule
       DatModule,
       DfhModule,
       ProModule,
+      WarModule,
+      FormFactoryModule,
       MatDialogModule,
       MatSliderModule, // needed because of https://github.com/angular/components/issues/4278
       NotificationsModule,

@@ -7,6 +7,9 @@ var logSql = require('../../server/scripts/log-deserialized-sql');
 const log = false;
 
 module.exports = function(WarEntityPreview) {
+  // the caches by project
+  WarEntityPreview.cachesByProject = {};
+
   app.on('io-ready', io => {
     io.of('/WarEntityPreview').on('connection', socket => {
       if (log) console.log('new connection ' + socket.id);
@@ -42,6 +45,9 @@ module.exports = function(WarEntityPreview) {
 
           resetStreamedPks();
           cache.currentProjectPk = newProjectPk;
+
+          // make this cache available on app scope
+          WarEntityPreview.cachesByProject[newProjectPk] = cache;
         }
       };
 
@@ -62,7 +68,7 @@ module.exports = function(WarEntityPreview) {
       };
 
       // Get a entityPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks
-      socket.on('addToStrem', data => {
+      socket.on('addToStream', data => {
         let { pk_project, pks } = data;
 
         if (!pk_project) return console.warn('Please provide a pk_project');

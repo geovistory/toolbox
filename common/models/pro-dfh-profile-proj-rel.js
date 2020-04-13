@@ -1,5 +1,6 @@
 'use strict';
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(ProDfhProfileProjRel) {
   ProDfhProfileProjRel.ofProject = function(pkProject, ctx, cb) {
@@ -22,7 +23,7 @@ module.exports = function(ProDfhProfileProjRel) {
       params.push(val);
       return '$' + params.length;
     }
-    const selectCols = new FlatObjectQueryBuilder(
+    const selectCols = new SqlBuilderLbModels(
       ProDfhProfileProjRel.app.models
     ).getColumns('ProDfhProfileProjRel');
 

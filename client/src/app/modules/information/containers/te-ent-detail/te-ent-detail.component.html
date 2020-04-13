@@ -46,8 +46,8 @@
                 <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
                 </gv-onto-class-info>
                 <span> {{classLabel$ | async}}</span>
-                <span *ngIf="(preview$|async).fk_type" class="mat-text-secondary">, Type: </span>
-                <span *ngIf="(preview$|async).fk_type"> {{(preview$|async).type_label}} </span>
+                <span *ngIf="(preview$|async)?.fk_type" class="mat-text-secondary">, Type: </span>
+                <span *ngIf="(preview$|async)?.fk_type"> {{(preview$|async).type_label}} </span>
               </div>
             </div>
           </div>

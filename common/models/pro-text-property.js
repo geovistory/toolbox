@@ -1,6 +1,7 @@
 'use strict';
 const Config = require('../../common/config/Config');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(ProTextProperty) {
   /**
@@ -12,7 +13,7 @@ module.exports = function(ProTextProperty) {
    * (e.g. only the labels of properties and classes of the ontome profiles activated by the project)
    */
   ProTextProperty.ofProject = function(fkProject, ctx, cb) {
-    const q = new FlatObjectQueryBuilder(ProTextProperty.app.models);
+    const q = new SqlBuilderLbModels(ProTextProperty.app.models);
     const params = [fkProject];
     const sql = `
       WITH tw1 AS (
@@ -91,7 +92,7 @@ module.exports = function(ProTextProperty) {
       Promise.all(promises)
         .catch(err => reject(err))
         .then(res => {
-          const q = new FlatObjectQueryBuilder(ProTextProperty.app.models);
+          const q = new SqlBuilderLbModels(ProTextProperty.app.models);
 
           const sql = `
             WITH tw1 AS (

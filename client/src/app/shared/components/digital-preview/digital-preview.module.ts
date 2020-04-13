@@ -1,14 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MaterialModule } from 'app/core/material/material.module';
 import { DigitalPreviewComponent } from './digital-preview.component';
 
 @NgModule({
   imports: [
     CommonModule,
-    MatButtonModule,
-    MatIconModule
+    MaterialModule
   ],
   declarations: [DigitalPreviewComponent],
   exports: [DigitalPreviewComponent]

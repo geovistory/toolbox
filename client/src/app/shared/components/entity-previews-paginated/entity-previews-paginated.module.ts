@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatPaginatorModule, MatListModule, MatDividerModule, MatDialogModule, MatButtonModule } from '@angular/material';
-import { EntityPreviewsPaginatedComponent } from './entity-previews-paginated.component';
+import { MaterialModule } from 'app/core/material/material.module';
 import { EntityPreviewModule } from '../entity-preview/entity-preview.module';
 import { EntityPreviewsPaginatedDialogComponent } from './entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
+import { EntityPreviewsPaginatedComponent } from './entity-previews-paginated.component';
 import { EntityPreviewsPaginatedDialogService } from './service/entity-previews-paginated-dialog.service';
 
 
@@ -14,12 +14,8 @@ import { EntityPreviewsPaginatedDialogService } from './service/entity-previews-
   exports: [EntityPreviewsPaginatedComponent, EntityPreviewsPaginatedDialogComponent],
   imports: [
     CommonModule,
-    MatButtonModule,
-    MatPaginatorModule,
-    MatListModule,
     EntityPreviewModule,
-    MatDividerModule,
-    MatDialogModule
+    MaterialModule
   ],
   entryComponents: [EntityPreviewsPaginatedDialogComponent]
 })

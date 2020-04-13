@@ -1,21 +1,22 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { ActiveProjectService, IAppState, Tab, TeEntTabData, IconType } from 'app/core';
-import { TeEntDetail, EntityPreview } from 'app/core/state/models';
+import { ActiveProjectService, IAppState, IconType, Tab, TeEntTabData } from 'app/core';
+import { EntityPreview, TeEntDetail } from 'app/core/state/models';
+import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
 import { combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { RootEpics } from '../../../../core/store/epics';
-import { InformationBasicPipesService } from '../../new-services/information-basic-pipes.service';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { slideInOut } from '../../shared/animations';
 import { TeEntDetailAPIActions } from './api/te-ent-detail.actions';
 import { teEntDetailReducer } from './api/te-ent-detail.reducer';
-import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
-import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
+
 
 
 @WithSubStore({
@@ -43,7 +44,10 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   @select() showRightArea$: Observable<boolean>;
 
   @select() showSources$: Observable<boolean>;
+  @select() showDigitals$: Observable<boolean>;
+
   @select() showSourcesToggle$: Observable<boolean>;
+  @select() showDigitalsToggle$: Observable<boolean>;
 
   @select() toggle$: Observable<boolean>
   @select() showOntoInfo$: Observable<boolean>;
