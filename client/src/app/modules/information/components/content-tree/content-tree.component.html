@@ -18,6 +18,9 @@
   </thead>
 </table>
 <mat-divider></mat-divider>
+<div *ngIf="loading" class="gv-flex-fh align-items-center justify-content-center">
+  <mat-spinner diameter="20"></mat-spinner>
+</div>
 <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="gv-scroll-y-auto">
   <mat-tree-node *matTreeNodeDef="let node" [ngClass]="{
     'drop-above': dragNodeExpandOverArea === 'above' && dragNodeExpandOverNode === node && !node.isDigital,

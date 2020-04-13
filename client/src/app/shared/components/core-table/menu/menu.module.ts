@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MaterialModule } from 'app/core/material/material.module';
 import { CoreTableMenuComponent } from './menu.component';
 
 const components = [CoreTableMenuComponent];
@@ -9,6 +7,6 @@ const components = [CoreTableMenuComponent];
 @NgModule({
   declarations: components,
   exports: components,
-  imports: [MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [MaterialModule],
 })
-export class CoreTableMenuModule {}
+export class CoreTableMenuModule { }

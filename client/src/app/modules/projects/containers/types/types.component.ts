@@ -3,10 +3,10 @@ import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } f
 import { ActiveProjectService, IAppState, sortAbc, SysConfig } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/information/new-components/properties-tree-dialog/properties-tree-dialog.component';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
-import { InformationBasicPipesService } from 'app/modules/information/new-services/information-basic-pipes.service';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { PropertiesTreeDialogComponent, PropertiesTreeDialogData } from 'app/modules/base/components/properties-tree-dialog/properties-tree-dialog.component';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject, combineLatest } from 'rxjs';
@@ -15,9 +15,9 @@ import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { Types } from './api/types.models';
 import { typesReducer } from './api/types.reducer';
-import { FieldDefinition, TemporalEntityItem } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
-import { createPaginateBy } from 'app/modules/information/new-components/temporal-entity-list/temporal-entity-list.component';
-import { PaginationService } from 'app/modules/information/new-services/pagination.service';
+import { FieldDefinition, TemporalEntityItem } from 'app/modules/base/components/properties-tree/properties-tree.models';
+import { createPaginateBy } from 'app/modules/base/components/temporal-entity-list/temporal-entity-list.component';
+import { PaginationService } from 'app/modules/base/services/pagination.service';
 
 interface TypeItem {
   pkEntity: number
@@ -95,7 +95,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
         let appeField: FieldDefinition, definitionField: FieldDefinition;
         fieldDefinitions.forEach(f => {
           // take only appellation for language, or ...
-          if (f.listDefinitions[0].pkProperty === 1111) {
+          if (f.listDefinitions[0].property.pkProperty === 1111) {
             appeField = f;
           }
           // ... entit definition

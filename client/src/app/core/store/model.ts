@@ -9,8 +9,9 @@ import { Dfh } from '../dfh/dfh.models';
 import { Inf } from '../inf/inf.models';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
 import { Pro } from '../pro/pro.models';
-import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel } from '../sdk';
+import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreview, InfLangString } from '../sdk';
 import { Sys } from '../sys/sys.models';
+import { War } from '../war/war.models';
 
 export interface InfObject {
   persistent_item: InfPersistentItem[]
@@ -21,6 +22,7 @@ export interface InfObject {
   appellation: InfAppellation[]
   time_primitive: InfTimePrimitive[]
   text_property: InfTextProperty[]
+  lang_string: InfLangString[]
 }
 export interface ProObject {
   info_proj_rel: ProInfoProjRel[]
@@ -28,10 +30,22 @@ export interface ProObject {
 export interface DatObject {
   digital: DatDigital[]
 }
+
+export interface WarObject {
+  entity_preview: WarEntityPreview[]
+}
+
 export interface SchemaObject {
   inf?: InfObject
   pro?: ProObject
   dat?: DatObject
+  war?: WarObject
+}
+
+export interface PaginationObject {
+  count: number
+  schemas: SchemaObject
+  roles: number[]
 }
 
 export interface IAppState {
@@ -44,6 +58,7 @@ export interface IAppState {
   inf?: Inf
   dat?: Dat
   pro?: Pro
+  war?: War
   activeProject?: ProjectDetail
   routes?: any,
   information?: Information,

@@ -2,7 +2,7 @@
 import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/store/actions';
-import { InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital } from '../sdk';
+import { InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString } from '../sdk';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState, U } from 'app/core';
 import { InfPersistentItemSlice } from './inf.models';
@@ -219,7 +219,7 @@ export interface AddToProjectWithTeEntActionMeta { pkRoles: number[], pk: number
 export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
 
   // Suffixes of load action types
-  static readonly ALTERNATIVES_OUTGOING = 'ALTERNATIVES_OUTGOING';
+  // static readonly ALTERNATIVES_OUTGOING = 'ALTERNATIVES_OUTGOING';
   static readonly ALTERNATIVES_INGOING = 'ALTERNATIVES_INGOING';
   static readonly ADD_TO_PROJECT_WITH_TE_EN = 'ADD_TO_PROJECT_WITH_TE_EN';
   static readonly PAGINATED_LIST = 'PAGINATED_LIST';
@@ -227,12 +227,12 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
   static readonly SOURCES_AND_DIGITALS_OF_ENTITY = 'SOURCES_AND_DIGITALS_OF_ENTITY';
   static readonly BY_PARAMS = 'BY_PARAMS';
 
-  loadOutgoingAlternatives: (pkTemporalEntity, pkProperty, pkProject) => ActionResultObservable<InfRole>;
+  // loadOutgoingAlternatives: (pkTemporalEntity, pkProperty, pkProject) => ActionResultObservable<InfRole>;
   loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfRole>;
   addToProjectWithTeEnt: (pkRoles: number[], pkProject: number) => ActionResultObservable<InfRole>;
   loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedRolesList>;
 
-  contentTree: (pkProject: number, pkExpressionEntity: number) => void;
+  // contentTree: (pkProject: number, pkExpressionEntity: number) => void;
   sourcesAndDigitalsOfEntity: (ofProject: boolean, pkProject: number, pkEntity: number) => ActionResultObservable<SourcesAndDigitalsOfEntityResult>;
   findByParams: (
     ofProject: boolean,
@@ -273,25 +273,25 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
     }
 
 
-    this.loadOutgoingAlternatives = (pkTemporalEntity: number, pkProperty: number, pkProject: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, LoadOutgoingAlternativeRoles> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.ALTERNATIVES_OUTGOING,
-        meta: {
-          addPending,
-          pk: pkProject,
-          pkTemporalEntity,
-          pkProperty,
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
+    // this.loadOutgoingAlternatives = (pkTemporalEntity: number, pkProperty: number, pkProject: number) => {
+    //   const addPending = U.uuid()
+    //   const action: FluxStandardAction<Payload, LoadOutgoingAlternativeRoles> = {
+    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.ALTERNATIVES_OUTGOING,
+    //     meta: {
+    //       addPending,
+    //       pk: pkProject,
+    //       pkTemporalEntity,
+    //       pkProperty,
+    //     },
+    //     payload: null,
+    //   };
+    //   this.ngRedux.dispatch(action)
+    //   return {
+    //     pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+    //     resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
+    //     key: addPending
+    //   };
+    // }
 
     this.loadIngoingAlternatives = (pkEntity: number, pkProperty: number, pkProject: number) => {
       const addPending = U.uuid()
@@ -358,21 +358,21 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
 
 
 
-    /**
-     * Loads the hierarchy of an F2 Expression's content
-     */
-    this.contentTree = (pkProject, pkExpressionEntity) => {
-      const action: FluxStandardAction<Payload, ContentTreeMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.CONTENT_TREE,
-        meta: {
-          addPending: U.uuid(),
-          pk: pkProject,
-          pkExpressionEntity
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-    }
+    // /**
+    //  * Loads the hierarchy of an F2 Expression's content
+    //  */
+    // this.contentTree = (pkProject, pkExpressionEntity) => {
+    //   const action: FluxStandardAction<Payload, ContentTreeMeta> = {
+    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.CONTENT_TREE,
+    //     meta: {
+    //       addPending: U.uuid(),
+    //       pk: pkProject,
+    //       pkExpressionEntity
+    //     },
+    //     payload: null,
+    //   };
+    //   this.ngRedux.dispatch(action)
+    // }
 
     /**
     * Get an nested object with everything needed to display the
@@ -452,6 +452,7 @@ export class InfActions {
   // TODO: pimp those up to real Inf Actions!
   language = new StandardActionsFactory<Payload, InfLanguage>(this.ngRedux).createCrudActions(infRoot, 'language')
   appellation = new StandardActionsFactory<Payload, InfAppellation>(this.ngRedux).createCrudActions(infRoot, 'appellation')
+  lang_string = new StandardActionsFactory<Payload, InfLangString>(this.ngRedux).createCrudActions(infRoot, 'lang_string')
   place = new StandardActionsFactory<Payload, InfPlace>(this.ngRedux).createCrudActions(infRoot, 'place')
   time_primitive = new StandardActionsFactory<Payload, InfTimePrimitive>(this.ngRedux).createCrudActions(infRoot, 'time_primitive')
   text_property = new InfTextPropertyActionFactory(this.ngRedux).createActions()

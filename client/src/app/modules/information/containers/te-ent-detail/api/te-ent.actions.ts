@@ -20,58 +20,58 @@ export type TeEntAction = FluxStandardAction<Payload, MetaData>;
 export class TeEntActions extends EntityActions {
 
 
-  static readonly SET_TOGGLE = 'SET_TOGGLE';
+  // static readonly SET_TOGGLE = 'SET_TOGGLE';
 
-  static readonly TOGGLE = 'TOGGLE';
+  // static readonly TOGGLE = 'TOGGLE';
 
-  static readonly TE_ENT_SET_ACCENTUATION = 'TE_ENT_SET_ACCENTUATION';
+  // static readonly TE_ENT_SET_ACCENTUATION = 'TE_ENT_SET_ACCENTUATION';
 
-  static readonly TE_ENT_SET_TIMESPAN_ACTIVATED = 'TE_ENT_SET_TIMESPAN_ACTIVATED';
+  // static readonly TE_ENT_SET_TIMESPAN_ACTIVATED = 'TE_ENT_SET_TIMESPAN_ACTIVATED';
 
-  static readonly START_EDITING = 'TeEntActions::START_EDITING';
-  static readonly STOP_EDITING = 'TeEntActions::STOP_EDITING';
+  // static readonly START_EDITING = 'TeEntActions::START_EDITING';
+  // static readonly STOP_EDITING = 'TeEntActions::STOP_EDITING';
 
 
-  @dispatch() setToggle = (toggle: CollapsedExpanded): TeEntAction => ({
-    type: TeEntActions.SET_TOGGLE,
-    meta: null,
-    payload: {
-      toggle
-    }
-  })
+  // @dispatch() setToggle = (toggle: CollapsedExpanded): TeEntAction => ({
+  //   type: TeEntActions.SET_TOGGLE,
+  //   meta: null,
+  //   payload: {
+  //     toggle
+  //   }
+  // })
 
-  @dispatch() toggle = (): TeEntAction => ({
-    type: TeEntActions.TOGGLE,
-    meta: null,
-    payload: null
-  })
+  // @dispatch() toggle = (): TeEntAction => ({
+  //   type: TeEntActions.TOGGLE,
+  //   meta: null,
+  //   payload: null
+  // })
 
-  @dispatch() setAccentuation = (accentuation: TeEntAccentuation): TeEntAction => ({
-    type: TeEntActions.TE_ENT_SET_ACCENTUATION,
-    meta: {
-      accentuation
-    },
-    payload: null
-  })
+  // @dispatch() setAccentuation = (accentuation: TeEntAccentuation): TeEntAction => ({
+  //   type: TeEntActions.TE_ENT_SET_ACCENTUATION,
+  //   meta: {
+  //     accentuation
+  //   },
+  //   payload: null
+  // })
 
-  @dispatch() setTimespanActivated = (timespanActivated): TeEntAction => ({
-    type: TeEntActions.TE_ENT_SET_TIMESPAN_ACTIVATED,
-    meta: {
-      timespanActivated
-    },
-    payload: null
-  })
+  // @dispatch() setTimespanActivated = (timespanActivated): TeEntAction => ({
+  //   type: TeEntActions.TE_ENT_SET_TIMESPAN_ACTIVATED,
+  //   meta: {
+  //     timespanActivated
+  //   },
+  //   payload: null
+  // })
 
-  @dispatch() startEditing = (): TeEntAction => ({
-    type: TeEntActions.START_EDITING,
-    meta: null,
-    payload: null
-  })
+  // @dispatch() startEditing = (): TeEntAction => ({
+  //   type: TeEntActions.START_EDITING,
+  //   meta: null,
+  //   payload: null
+  // })
 
-  @dispatch() stopEditing = (): TeEntAction => ({
-    type: TeEntActions.STOP_EDITING,
-    meta: null,
-    payload: null
-  })
+  // @dispatch() stopEditing = (): TeEntAction => ({
+  //   type: TeEntActions.STOP_EDITING,
+  //   meta: null,
+  //   payload: null
+  // })
 
 }

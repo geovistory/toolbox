@@ -1,14 +1,14 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MaterialModule } from 'app/core/material/material.module';
 import { DrawerContainerResizeComponent } from './drawer-container-resize.component';
-import { MatSliderModule } from '@angular/material/slider';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [
     CommonModule,
-    MatSliderModule,
-    DragDropModule
+    DragDropModule,
+    MaterialModule
   ],
   providers: [
 

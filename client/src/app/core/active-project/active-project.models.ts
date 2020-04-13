@@ -107,6 +107,10 @@ export interface TabData {
   }
 }
 
+export interface RamSource {
+  pkEntity?: number,
+  chunk?: DatChunk;
+}
 
 export interface ProjectDetail extends ProjectPreview {
 
@@ -212,6 +216,7 @@ export interface ProjectDetail extends ProjectPreview {
   /******************************************************************
    * Things for Mentionings / Annotations
    */
+
 
   // // the chunk that is used to create mentionings
   // selectedChunk?: DatChunk;

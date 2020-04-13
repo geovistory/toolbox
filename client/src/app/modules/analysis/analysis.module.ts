@@ -3,14 +3,15 @@ import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatCardModule, MatDialogModule, MatDividerModule, MatExpansionModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule, MatSortModule, MatTableModule, MatTooltipModule } from '@angular/material';
 import { AngularSplitModule } from 'angular-split';
+import { MaterialModule } from 'app/core/material/material.module';
 import { PassiveLinkModule } from 'app/shared';
 import { ConfirmDialogModule } from 'app/shared/components/confirm-dialog/confirm-dialog.module';
 import { DetailContentModule } from 'app/shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
 import { ErrorDialogModule } from 'app/shared/components/error-dialog/error-dialog.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
+import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { MapModule } from '../map/map.module';
 import { QueriesModule } from '../queries/queries.module';
@@ -36,7 +37,6 @@ import { TimeChartContFormArrayComponent } from './time-chart-cont/time-chart-co
 import { TimeChartContFormControlComponent } from './time-chart-cont/time-chart-cont-form-control/time-chart-cont-form-control.component';
 import { TimeChartContFormGroupComponent } from './time-chart-cont/time-chart-cont-form-group/time-chart-cont-form-group.component';
 import { TimeChartContFormComponent } from './time-chart-cont/time-chart-cont-form/time-chart-cont-form.component';
-import { AnalysisIconModule } from 'app/shared/pipes/analysis-icon/analysis-icon.module';
 
 
 const components = [
@@ -76,19 +76,6 @@ const components = [
     ListDrawerHeaderModule,
     DetailTopBarModule,
     DetailContentModule,
-    MatTooltipModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatListModule,
-    MatDividerModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatExpansionModule,
-    MatDialogModule,
-    MatTableModule,
-    MatSortModule,
     ErrorDialogModule,
     ConfirmDialogModule,
     QueriesModule,
@@ -100,7 +87,8 @@ const components = [
     PassiveLinkModule,
     TimelineModule,
     MapModule,
-    AnalysisIconModule
+    AnalysisIconModule,
+    MaterialModule
   ],
   exports: components,
   entryComponents: [

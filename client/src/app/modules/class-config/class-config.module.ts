@@ -9,34 +9,23 @@ import { ReactiveFormsModule } from '../../../../node_modules/@angular/forms';
 import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 import { OntoInfoModule } from 'app/shared/components/onto-info/onto-info.module';
 import { LabelsComponent } from './components/labels/labels.component';
-import { Information2Module } from '../information/information.module';
+import { InformationModule } from '../information/information.module';
 import { ClassFieldsComponent } from './components/class-fields/class-fields.component';
 import { TableModule } from 'primeng/table';
 import { FieldConfigComponent } from './components/field-config/field-config.component';
 import { FieldConfigDialogComponent } from './components/field-config-dialog/field-config-dialog.component';
+import { BaseModule } from '../base/base.module';
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatIconModule,
-    MatTableModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatTooltipModule,
-    MatTabsModule,
-    MatProgressSpinnerModule,
-    MatDialogModule,
-    MatCheckboxModule,
+    BaseModule,
     LanguageSearchTypeaheadModule,
     TruncateModule,
     PassiveLinkModule,
     OntoInfoModule,
-    Information2Module,
+    InformationModule,
     TableModule
   ],
   declarations: [ClassConfigComponent, ClassConfigDialogComponent, PropertyLabelTableComponent, LabelsComponent, ClassFieldsComponent, FieldConfigComponent, FieldConfigDialogComponent],

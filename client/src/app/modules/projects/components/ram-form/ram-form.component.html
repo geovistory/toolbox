@@ -1,0 +1,107 @@
+<div class="mentioning-form-buttons mat-bg-accent-A700">
+  <h3 class="gv-white-space-nowrap gv-fade-out-right">
+    {{p.ramTitle$|async|truncate:[40]}}
+    <ng-container *ngIf="p.ramTitlePart2$|async">
+      <mat-icon class="mat-text-secondary mx-2">arrow_right_alt</mat-icon>
+      {{p.ramTitlePart2$|async}}
+    </ng-container>
+  </h3>
+  <button *ngIf="!saving" mat-flat-button color=primary [disabled]="!(ramFormValue$|async)"
+    (click)="onSave()">Create</button>
+  <button *ngIf="saving" mat-flat-button color="primary">
+    <div style="margin: 6px;">
+      <mat-spinner diameter="20"></mat-spinner>
+    </div>
+  </button>
+
+
+  <button mat-button (click)="p.ramReset()">Cancel</button>
+</div>
+
+<div class="mentioning-form mat-bg-accent-A700">
+  <div class="box left" *ngIf="p.ramBoxLeft$|async">
+    <div class="gv-ram-box gv-drop-zone"
+      *ngIf="!(p.ramSource$ | async) && (p.ramBoxLeft$|async)=='drag-source-or-section'" dnd-droppable
+      (onDropSuccess)="onDropSource($event.dragData)" [allowDrop]="verifyIsSourceOrSection()">
+      <div class="gv-ram-box-text gv-fade-out-bottom">
+        <p>Drag Source or Section here</p>
+      </div>
+    </div>
+    <div class="gv-ram-box gv-select-text" *ngIf="!(p.ramSource$ | async) && (p.ramBoxLeft$|async)=='select-text'">
+      <div class="gv-ram-box-text gv-fade-out-bottom">
+        <p>Select a Text</p>
+      </div>
+    </div>
+    <div [hidden]="!(p.ramSource$ | async)" class="gv-ram-box gv-drop-zone-filled">
+      <div class="gv-ram-box-text gv-fade-out-bottom" [hidden]="!(p.ramSource$ | async)?.pkEntity">
+        <p class="mat-caption mat-text-secondary">{{(source$|async)?.ep?.class_label}}</p>
+        <p>{{(source$|async)?.ep?.entity_label}}</p>
+      </div>
+      <div class="gv-ram-box-text gv-fade-out-bottom" [hidden]="!(p.ramSource$ | async)?.chunk">
+        <p class="mat-caption mat-text-secondary">Selected text:</p>
+        <p>"{{(source$|async)?.chunk?.quill_doc?.ops | quillOpsToStr }}"</p>
+      </div>
+      <button mat-button class="reset-btn" (click)="p.ramSource$.next(undefined)">
+        <mat-icon>undo</mat-icon>
+        Reset
+      </button>
+    </div>
+  </div>
+  <div class="box center mat-h2" *ngIf="p.ramBoxCenter$|async">
+    Refers to:
+    <!-- <div class="gv-ram-box  gv-ram-property" [ngClass]="{'gv-ram-box-success':(p.ramSource$ | async)}">
+      <mat-form-field class="w-100" *ngIf="(p.ramSource$ | async)?.pkEntity">
+        <mat-label>Property</mat-label>
+        <mat-select placeholder="Property" value="a">
+          <mat-option value="a">Mentions</mat-option>
+          <mat-option value="b">Is about</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="w-100" *ngIf="(p.ramSource$ | async)?.chunk">
+        <mat-label>Property</mat-label>
+        <mat-select placeholder="Property" value="c">
+          <mat-option value="c">Refers to</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+
+    </div> -->
+    <!-- <p class="mat-h4 mat-text-secondary" style="display:flex; justify-content:space-between">
+      <span class="gv-one-liner gv-fade-out-right" style="flex:1 0 0">Property</span>
+      <mat-icon>arrow_right_alt</mat-icon>
+    </p> -->
+  </div>
+  <div class="box right" *ngIf="p.ramBoxRight$|async">
+    <div class="gv-ram-box gv-drop-zone" *ngIf="!(p.ramTarget$ | async)" dnd-droppable
+      (onDropSuccess)="onDropTarget($event.dragData)" [allowDrop]="verifyIsEntity()">
+      <p>Drag an entity here</p>
+    </div>
+    <div [hidden]="!(p.ramTarget$ | async)" class="gv-ram-box gv-drop-zone-filled">
+      <div class="gv-ram-box-text gv-fade-out-bottom">
+
+        <p class="mat-caption mat-text-secondary">{{(targetEntityPreview$ | async)?.class_label}}:</p>
+        <p>{{(targetEntityPreview$ | async)?.entity_label}}</p>
+      </div>
+
+      <button mat-button class="reset-btn" (click)="p.ramTarget$.next(undefined)">
+        <mat-icon>undo</mat-icon>
+        Reset
+      </button>
+    </div>
+    <!-- <p class="mat-h4 mat-text-secondary" style="display:flex;">
+      <span class="gv-one-liner gv-fade-out-right" style="flex:1 0 0">Entity</span>
+    </p> -->
+
+  </div>
+  <div class="box reference" [hidden]="!(showExactReference$ | async)">
+    <div class="gv-ram-box gv-ram-box-success">
+      <mat-form-field class="w-100">
+        <mat-label>At this exact reference (optional)</mat-label>
+        <gv-ctrl-text-property [formControl]="referenceCtrl">
+        </gv-ctrl-text-property>
+        <mat-hint>Examples: "p. 8", "Chapter 12", "3rd paragraph", "Left margin" ...</mat-hint>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

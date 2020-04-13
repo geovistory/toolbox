@@ -1,6 +1,7 @@
 'use strict';
 // const Promise = require('bluebird');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(ProDfhClassProjRel) {
   ProDfhClassProjRel.ofProject = function(pkProject, ctx, cb) {
@@ -28,7 +29,7 @@ module.exports = function(ProDfhClassProjRel) {
       params.push(val);
       return '$' + params.length;
     }
-    const selectCols = new FlatObjectQueryBuilder(
+    const selectCols = new SqlBuilderLbModels(
       ProDfhClassProjRel.app.models
     ).getColumns('ProDfhClassProjRel');
 

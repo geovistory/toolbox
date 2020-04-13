@@ -1,46 +1,44 @@
-import { DfhClass, InfPersistentItem } from 'app/core/sdk';
-import { ClassInstanceLabel } from './class-instance-label';
-import { FieldList } from './field-list';
-import { PropertyField } from './property-field';
-import { CollapsedExpanded, SelectPropStateType } from './types';
+
+export type RightPanelTab = 'linked-sources' | 'linked-digitals' | 'content-tree';
 
 export class Entity {
 
-  _fields?: FieldList;
+  // _fields?: FieldList;
 
   pkEntity?: number;
-  fkClass?: number;
-  dfhClass?: DfhClass;
 
-  parentPeIt?: InfPersistentItem;
+  /** Left Panel Visibility */
 
-  /** gui */
-
-  /** Visibility */
+  // the properties with information about the peIt
+  showProperties?= false;
 
   // the right area
   showRightArea?= true;
 
+  /** Right panel */
+  rightPanelTabs?: RightPanelTab[] = []
+  rightPanelActiveTab?= 0; // index of the active tab
+
   // the bar to above the properties
-  showPropertiesHeader?= true;
+  // showPropertiesHeader?= true;
 
   // the header with name of peIt
   showHeader?= true;
 
   // the button to add a new property
-  showAddAPropertyButton?= true;
+  // showAddAPropertyButton?= true;
 
-  pkUiContext?: number;
-  isViewMode?= false;
+  // pkUiContext?: number;
+  // isViewMode?= false;
 
-  label?: ClassInstanceLabel;
-  toggle?= 'collapsed' as CollapsedExpanded;
-  ingoingPropertyFields?: PropertyField[];
-  outgoingPropertyFields?: PropertyField[];
-  selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
-  propertyToAdd?: PropertyField; // role set that is currently chosen in order to add a role of this kind
+  // label?: ClassInstanceLabel;
+  // toggle?= 'collapsed' as CollapsedExpanded;
+  // ingoingPropertyFields?: PropertyField[];
+  // outgoingPropertyFields?: PropertyField[];
+  // selectPropState?: SelectPropStateType; // state of child components for adding or creating properties
+  // propertyToAdd?: PropertyField; // role set that is currently chosen in order to add a role of this kind
 
-  showRemoveVerification?: boolean;
+  // showRemoveVerification?: boolean;
 
   constructor(data?: Entity) {
     Object.assign(this, data);

@@ -4,7 +4,8 @@ const Promise = require('bluebird');
 const AnalysisRemotes = require('../../dist/server/analysis/analysis-remotes')
   .AnalysisRemotes;
 
-const FlatObjectQ = require('../../common/classes/FlatObjectQueryBuilder');
+const SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(ProAnalysis) {
   /**
@@ -116,7 +117,7 @@ module.exports = function(ProAnalysis) {
       return '$' + params.length;
     };
 
-    const columns = new FlatObjectQ(ProAnalysis.app.models).getColumns(
+    const columns = new SqlBuilderLbModels(ProAnalysis.app.models).getColumns(
       'ProAnalysis'
     );
 

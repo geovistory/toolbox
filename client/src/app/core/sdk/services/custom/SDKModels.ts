@@ -1,5 +1,7 @@
 /* tslint:disable */
 import { Injectable } from '@angular/core';
+import { SchemaObject } from '../../models/SchemaObject';
+import { PaginationObject } from '../../models/PaginationObject';
 import { SysClassFieldPropertyRel } from '../../models/SysClassFieldPropertyRel';
 import { SysClassField } from '../../models/SysClassField';
 import { SysClassHasTypeProperty } from '../../models/SysClassHasTypeProperty';
@@ -26,6 +28,7 @@ import { ProClassFieldConfig } from '../../models/ProClassFieldConfig';
 import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
 import { InfAppellation } from '../../models/InfAppellation';
+import { InfLangString } from '../../models/InfLangString';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfRole } from '../../models/InfRole';
 import { InfLanguage } from '../../models/InfLanguage';
@@ -42,6 +45,8 @@ export interface Models { [name: string]: any }
 export class SDKModels {
 
   private models: Models = {
+    SchemaObject: SchemaObject,
+    PaginationObject: PaginationObject,
     SysClassFieldPropertyRel: SysClassFieldPropertyRel,
     SysClassField: SysClassField,
     SysClassHasTypeProperty: SysClassHasTypeProperty,
@@ -68,6 +73,7 @@ export class SDKModels {
     ProDfhClassProjRel: ProDfhClassProjRel,
     ProDfhProfileProjRel: ProDfhProfileProjRel,
     InfAppellation: InfAppellation,
+    InfLangString: InfLangString,
     InfTemporalEntity: InfTemporalEntity,
     InfRole: InfRole,
     InfLanguage: InfLanguage,

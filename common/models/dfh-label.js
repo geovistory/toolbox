@@ -1,5 +1,6 @@
 'use strict';
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(DfhLabel) {
   // DfhLabel.bulkReplaceOrCreate = function(items) {
@@ -11,7 +12,7 @@ module.exports = function(DfhLabel) {
   //   return Promise.map(promiseArray, promise => promise);
   // };
   DfhLabel.ofProject = function(pkProject, cb) {
-    const q = new FlatObjectQueryBuilder(DfhLabel.app.models);
+    const q = new SqlBuilderLbModels(DfhLabel.app.models);
 
     const params = [pkProject];
 

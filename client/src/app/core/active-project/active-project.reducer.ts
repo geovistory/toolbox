@@ -261,33 +261,33 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
     /***************************************************
     * Reducers to load EntityPreview
     ****************************************************/
-    case ActiveProjectActions.LOAD_ENTITY_PREVIEW:
-      state = {
-        ...state,
-        entityPreviews: {
-          ...(state || {}).entityPreviews,
-          [action.meta.pk_entity]: { loading: true } as EntityPreview
-        }
-      };
-      break;
+    // case ActiveProjectActions.LOAD_ENTITY_PREVIEW:
+    //   state = {
+    //     ...state,
+    //     entityPreviews: {
+    //       ...(state || {}).entityPreviews,
+    //       [action.meta.pk_entity]: { loading: true } as EntityPreview
+    //     }
+    //   };
+    //   break;
 
-    case ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED:
-      if (action.meta.entityPreview && action.meta.entityPreview.pk_entity) {
-        state = {
-          ...state,
-          entityPreviews: {
-            ...state.entityPreviews,
-            [action.meta.entityPreview.pk_entity]: action.meta.entityPreview
-          }
-        };
-      }
-      break;
+    // case ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED:
+    //   if (action.meta.entityPreview && action.meta.entityPreview.pk_entity) {
+    //     state = {
+    //       ...state,
+    //       entityPreviews: {
+    //         ...state.entityPreviews,
+    //         [action.meta.entityPreview.pk_entity]: action.meta.entityPreview
+    //       }
+    //     };
+    //   }
+    //   break;
 
-    case ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED:
-      state = {
-        ...state,
-      };
-      break;
+    // case ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED:
+    //   state = {
+    //     ...state,
+    //   };
+    //   break;
 
     /***************************************************
     * Reducers to load Types
@@ -311,17 +311,17 @@ const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: Acti
     * Load a Entity Details for display in Modals
     *****************************************************/
 
-    case ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL:
-      state = {
-        ...state,
-        peItModals: {
-          ...state.peItModals,
-          [action.meta.pk_entity]: {
-            loading: true
-          }
-        }
-      };
-      break;
+    // case ActiveProjectActions.LOAD_ENTITY_DETAIL_FOR_MODAL:
+    //   state = {
+    //     ...state,
+    //     peItModals: {
+    //       ...state.peItModals,
+    //       [action.meta.pk_entity]: {
+    //         loading: true
+    //       }
+    //     }
+    //   };
+    //   break;
 
     case ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED:
       state = {

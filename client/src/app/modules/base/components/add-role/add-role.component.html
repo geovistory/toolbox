@@ -1,0 +1,11 @@
+<div class="px-2">
+  <gv-temporal-entity-add-list #te *ngIf="(t.showControl$ | async).listType == 'temporal-entity'" fxLayout="column"
+    fxLayoutAlign="space-between stretch" [listDefinition]="t.showControl$ | async" [showOntoInfo$]="showOntoInfo$"
+    [readonly$]="readonly$" [pkEntity]="pkEntity" [appContext]="appContext">
+  </gv-temporal-entity-add-list>
+
+  <gv-leaf-item-add-list #le *ngIf="isLeafItemList$|async" fxLayout="column" fxLayoutAlign="space-between stretch"
+    [listDefinition]="t.showControl$ | async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
+    [pkEntity]="pkEntity">
+  </gv-leaf-item-add-list>
+</div>

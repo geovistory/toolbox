@@ -8,7 +8,7 @@ import { omit } from 'ramda';
 import * as Config from '../../../../../common/config/Config';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/angular-cesium';
-import { TimeSpanItem } from '../../modules/information/new-components/properties-tree/properties-tree.models';
+import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { Granularity } from '../date-time/date-time-commons';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
@@ -181,7 +181,7 @@ export class U {
     const t = new TimeSpan();
 
     timeSpanItem.properties.forEach(p => {
-      const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.pkProperty]
+      const key = DfhConfig.PROPERTY_PK_TO_EXISTENCE_TIME_KEY[p.listDefinition.property.pkProperty]
       if (p.items && p.items.length) t[key] = p.items[0].timePrimitive
     })
     return t;

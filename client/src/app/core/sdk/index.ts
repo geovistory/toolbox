@@ -48,6 +48,8 @@ import { SocketBrowser } from './sockets/socket.browser';
 import { SocketDriver } from './sockets/socket.driver';
 import { SocketConnection } from './sockets/socket.connections';
 import { RealTime } from './services/core/real.time';
+import { SchemaObjectApi } from './services/custom/SchemaObject';
+import { PaginationObjectApi } from './services/custom/PaginationObject';
 import { SysClassFieldPropertyRelApi } from './services/custom/SysClassFieldPropertyRel';
 import { SysClassFieldApi } from './services/custom/SysClassField';
 import { SysClassHasTypePropertyApi } from './services/custom/SysClassHasTypeProperty';
@@ -74,6 +76,7 @@ import { ProClassFieldConfigApi } from './services/custom/ProClassFieldConfig';
 import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
 import { ProDfhProfileProjRelApi } from './services/custom/ProDfhProfileProjRel';
 import { InfAppellationApi } from './services/custom/InfAppellation';
+import { InfLangStringApi } from './services/custom/InfLangString';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
 import { InfRoleApi } from './services/custom/InfRole';
 import { InfLanguageApi } from './services/custom/InfLanguage';
@@ -113,6 +116,8 @@ export class SDKBrowserModule {
         LoggerService,
         SDKModels,
         RealTime,
+        SchemaObjectApi,
+        PaginationObjectApi,
         SysClassFieldPropertyRelApi,
         SysClassFieldApi,
         SysClassHasTypePropertyApi,
@@ -139,6 +144,7 @@ export class SDKBrowserModule {
         ProDfhClassProjRelApi,
         ProDfhProfileProjRelApi,
         InfAppellationApi,
+        InfLangStringApi,
         InfTemporalEntityApi,
         InfRoleApi,
         InfLanguageApi,

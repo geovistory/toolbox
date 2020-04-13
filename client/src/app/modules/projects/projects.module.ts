@@ -3,23 +3,10 @@ import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatMenuModule, MatTooltipModule } from '@angular/material';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
+import { MaterialModule } from 'app/core/material/material.module';
 import { LanguageSearchTypeaheadModule, NavbarModule, PassiveLinkModule, ProxyRouteModule } from 'app/shared';
 import { DrawerContainerResizeModule } from 'app/shared/components/drawer-container-resize/drawer-container-resize.module';
 import { ListDrawerHeaderModule } from 'app/shared/components/list-drawer-header/list-drawer-header.module';
@@ -34,7 +21,7 @@ import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detai
 import { AnalysisModule } from '../analysis/analysis.module';
 import { ClassConfigModule } from '../class-config/class-config.module';
 import { DataModule } from '../data/data.module';
-import { Information2Module } from '../information/information.module';
+import { InformationModule } from '../information/information.module';
 import { QueriesModule } from '../queries/queries.module';
 import { SettingsModule } from '../settings/settings.module';
 import { SourcesModule } from '../sources';
@@ -60,6 +47,11 @@ import { TypesAPIEpics } from './containers/types/api/types.epics';
 import { TypesComponent } from './containers/types/types.component';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
+import { RamFormComponent } from './components/ram-form/ram-form.component';
+import { DndModule } from 'ng2-dnd';
+import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
+import { BaseModule } from '../base/base.module';
 
 
 
@@ -67,36 +59,21 @@ import { ProjectsRoutingModule } from './projects-routing.module';
 @NgModule({
   imports: [
     CommonModule,
+    BaseModule,
+    SourcesModule,
+    QueriesModule,
+    DataModule,
+    InformationModule,
     NavbarModule,
     ProjectsRoutingModule,
     FormsModule,
+    // ReactiveFormsModule,
     NgbModule,
     ProxyRouteModule,
-    Information2Module,
-    DataModule,
     KeysModule,
     ReadMoreModule,
     HighlightModule,
-    PassiveLinkModule,
-    MatSidenavModule,
-    MatListModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatTableModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSortModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatExpansionModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatTooltipModule,
     DragDropModule,
-    SourcesModule,
-    Information2Module,
-    QueriesModule,
     AnalysisModule,
     PortalModule,
     DrawerContainerResizeModule,
@@ -110,8 +87,12 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     HttpClientModule,
     AnalysisIconModule,
     SettingsModule,
-    OntoInfoModule,
-    ClassConfigModule // TODO: REMOVE
+    // OntoInfoModule,
+    ClassConfigModule, // TODO: REMOVE
+    // MaterialModule,
+    DndModule,
+    QuillOpsToStrModule,
+    // TruncateModule
   ],
   declarations: [
     ProjectCreateComponent,
@@ -119,10 +100,8 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ProjectEditComponent,
     ProjectEditPanelComponent,
     ProjectListComponent,
-    // ProjectSettingsCollaboratorsComponent,
+    RamFormComponent,
     ProjectSettingsDataComponent,
-    // ProjectSettingsProfileComponent,
-    // SideNavComponent,
     TypesComponent,
     TypeEditFormComponent,
     TabBodyComponent,

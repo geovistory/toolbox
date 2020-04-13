@@ -167,15 +167,15 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), null);
         }
       ),
-      infRoleEpicsFactory.createLoadEpic<LoadOutgoingAlternativeRoles>(
-        (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkTemporalEntity, meta.pkProperty, meta.pk),
-        InfRoleActionFactory.ALTERNATIVES_OUTGOING,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), null);
-        }
-      ),
+      // infRoleEpicsFactory.createLoadEpic<LoadOutgoingAlternativeRoles>(
+      //   (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkTemporalEntity, meta.pkProperty, meta.pk),
+      //   InfRoleActionFactory.ALTERNATIVES_OUTGOING,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.role.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), null);
+      //   }
+      // ),
       infRoleEpicsFactory.createUpsertEpic<ModifyActionMeta<InfRole>>((meta) => this.roleApi
         .findOrCreateInfRoles(meta.pk, meta.items),
         (results, pk) => {
@@ -214,14 +214,14 @@ export class InfEpics {
         InfRoleActionFactory.BY_PARAMS
       ),
 
-      infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
-        (meta) => this.roleApi.contentTree(meta.pk, meta.pkExpressionEntity),
-        InfRoleActionFactory.CONTENT_TREE,
-        (results, pk) => {
-          const schemaObject = results as SchemaObject;
-          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
-        }
-      ),
+      // infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
+      //   (meta) => this.roleApi.contentTree(meta.pk, meta.pkExpressionEntity),
+      //   InfRoleActionFactory.CONTENT_TREE,
+      //   (results, pk) => {
+      //     const schemaObject = results as SchemaObject;
+      //     this.schemaObjectService.storeSchemaObject(schemaObject, pk)
+      //   }
+      // ),
 
       infRoleEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
         (meta) => this.roleApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),
@@ -301,20 +301,4 @@ export class InfEpics {
       epicsFactory.onError(globalActions, error, pendingKey, pkProject);
     });
   }
-
-  // private storeSchemaObject(schemas: SchemaObject, pkProject) {
-  //   if (schemas && Object.keys(schemas).length > 0) {
-  //     Object.keys(schemas).forEach(schema => {
-  //       let actions;
-  //       if (schema === 'inf') actions = this.infActions;
-  //       else if (schema === 'pro') actions = this.proActions;
-  //       else if (schema === 'dat') actions = this.datActions;
-  //       if (actions) {
-  //         Object.keys(schemas[schema]).forEach(model => {
-  //           actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
 }

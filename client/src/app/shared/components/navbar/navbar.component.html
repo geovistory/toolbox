@@ -1,9 +1,7 @@
-<nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- <nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light">
 
   <a href="#" class="gv-logo gv-icon gv-icon-geovistory-logo text-primary"></a>
-  <!-- <a class="navbar-brand" href="#">
-    Geovistory Toolbox
-  </a> -->
+
   <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed" data-toggle="collapse"
     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
     aria-label="Toggle navigation">
@@ -35,17 +33,55 @@
               <h6 class="dropdown-header">{{account.email}}</h6>
             </a>
 
-            <!-- <div class="dropdown-divider"></div>
-            <a class="dropdown-item" routerLink="/account">
-              <i class="fa fa-sliders" aria-hidden="true"></i> Personal Settings
-            </a> -->
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item" (click)="logout()">
-              <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
-            </button>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
+
+<div class="dropdown-divider"></div>
+<button class="dropdown-item" (click)="logout()">
+  <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+</button>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</nav> -->
+<mat-toolbar class="mat-typography">
+  <mat-toolbar-row class="bg-gray-200">
+    <div class="gv-nv-logo">
+      <a href="#" class="gv-logo gv-icon gv-icon-geovistory-logo text-primary"></a>
+    </div>
+    <div class="mat-body">
+      <ng-content></ng-content>
+    </div>
+    <span class="gv-nv-spacer"></span>
+
+    <button class="gv-nv-item gv-nv-feedback-btn" mat-flat-button color="accent"
+      (click)="openFeedbackDialog()">feedback</button>
+
+    <div *ngIf="!account" class="gv-nv-item">
+      <button mat-button routerLink="/login" [color]="router.isActive('/login') ? 'primary': null">Login</button>
+    </div>
+    <div *ngIf="!account" class="gv-nv-item">
+      <button mat-button routerLink="/registration"
+        [color]="router.isActive('/registration') ? 'primary': null">Register</button>
+    </div>
+    <div *ngIf="account" class="gv-nv-item">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon svgIcon="account-circle" color="primary"></mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <a class="gv-nv-dropdown-item">
+          <i id="userIconBig" class="fa fa-user-circle text-gray-300" aria-hidden="true"></i>
+          <div>{{account.username}}</div>
+          <h6 class="dropdown-header">{{account.email}}</h6>
+        </a>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+        </button>
+      </mat-menu>
+    </div>
+
+  </mat-toolbar-row>
+
+</mat-toolbar>
+<mat-divider></mat-divider>
