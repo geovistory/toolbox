@@ -15,11 +15,6 @@ type CtrlModel = CtrlTimeSpanDialogResult
   templateUrl: './ctrl-time-span.component.html',
   styleUrls: ['./ctrl-time-span.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimeSpanComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
 export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;

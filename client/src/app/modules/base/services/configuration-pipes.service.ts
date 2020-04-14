@@ -651,7 +651,8 @@ export class ConfigurationPipesService {
               property: { pkProperty: p.pk_property },
               fkClassField: undefined,
               isOutgoing: o,
-              isIdentityDefining: p.identity_defining,
+              identityDefiningForSource: o ? p.identity_defining : false, // replace false with p.identity_defining_for_range when available
+              identityDefiningForTarget: o ? false : p.identity_defining, // replace false with p.identity_defining_for_range when available
               ontoInfoLabel: p.identifier_in_namespace,
               ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/' + p.pk_property
             }
@@ -677,7 +678,8 @@ export class ConfigurationPipesService {
       sourceClass: undefined,
       targetClass: undefined,
       isOutgoing: undefined,
-      isIdentityDefining: undefined,
+      identityDefiningForSource: undefined,
+      identityDefiningForTarget: undefined,
     }
     switch (pkClassField) {
       case SysConfig.PK_CLASS_FIELD_WHEN:

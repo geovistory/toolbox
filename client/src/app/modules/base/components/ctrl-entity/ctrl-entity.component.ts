@@ -4,7 +4,7 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectService, EntityPreview, SysConfig } from 'app/core';
-import { AddOrCreateEntityModalComponent, AddOrCreateEntityModalData } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { AddOrCreateEntityModalComponent, AddOrCreateEntityModalData } from 'app/modules/base/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { CreateOrAddEntityEvent } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, mergeMap, takeUntil } from 'rxjs/operators';
@@ -22,11 +22,7 @@ type CtrlModel = number // pkEntity
   }
 
   ],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
+
 }
 
 ) export class CtrlEntityComponent implements OnDestroy,

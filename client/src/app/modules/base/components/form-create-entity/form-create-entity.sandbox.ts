@@ -14,7 +14,7 @@ export default sandboxOf(FormCreateEntityComponent, {
   ]
 })
   .add('FormCreateEntityComponent | New Georeference', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -32,7 +32,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | New Appe use', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -50,7 +50,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | New Birth', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -68,7 +68,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | New Ship Voyage', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -86,7 +86,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | New Person (Context:Entities)', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -104,7 +104,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | New Person (Context:Sources)', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -122,7 +122,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | New Geographical Place', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -140,7 +140,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | New Manifestation Singleton', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">
@@ -158,7 +158,7 @@ export default sandboxOf(FormCreateEntityComponent, {
         </div>`
   })
   .add('FormCreateEntityComponent | Expression Portion', {
-    context: {},
+    context: { pkProject },
     template: `
         <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
         <div class="d-flex justify-content-center mt-5">

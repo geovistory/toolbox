@@ -13,11 +13,6 @@ type CtrlModel = InfLanguage;
   templateUrl: './ctrl-language.component.html',
   styleUrls: ['./ctrl-language.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlLanguageComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
 export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;
@@ -106,7 +101,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
       this.value = value;
     })
 
-   this.options$ = this.searchTerm$.pipe(
+    this.options$ = this.searchTerm$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       tap(() => this.searching = true),
@@ -171,7 +166,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
     this.onTouched();
     this.blur.emit()
     this.focused = false;
-    if(this.empty) this.formControl.setValue(undefined)
+    if (this.empty) this.formControl.setValue(undefined)
   }
 
   onFocus() {

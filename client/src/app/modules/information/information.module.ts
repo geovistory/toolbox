@@ -6,7 +6,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ValidationService } from 'app/core';
 import { TimelineModule } from 'app/modules/timeline/timeline.module';
 import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'app/shared';
 import { DetailTopBarModule } from 'app/shared/components/detail-top-bar/detail-top-bar.module';
@@ -26,27 +25,22 @@ import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.mod
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { AnnotationModule } from '../annotation/annotation.module';
 import { BaseModule } from '../base/base.module';
-import { FormFactoryModule } from '../form-factory/form-factory.module';
+import { AddOrCreateEntityModalComponent } from '../base/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
 import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
-import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { CreateOrAddEntityComponent } from './containers/create-or-add-entity/create-or-add-entity.component';
 import { InformationAPIActions } from './containers/entity-list/api/entity-list.actions';
 import { InformationAPIEpics } from './containers/entity-list/api/entity-list.epics';
 import { InformationComponent } from './containers/entity-list/entity-list.component';
-// import { MapComponent } from './containers/map/map.component';
 import { EntityActions } from './containers/pe-it-detail/api/entity.actions';
 import { PeItDetailAPIActions } from './containers/pe-it-detail/api/pe-it-detail.actions';
 import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
 import { PeItDetailComponent } from './containers/pe-it-detail/pe-it-detail.component';
-// import { PeItLayerComponent } from './containers/pe-it-layer/pe-it-layer.component';
-import { PeItSearchExistingComponent } from './containers/pe-it-search-existing/pe-it-search-existing.component';
 import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
 import { TeEntDetailAPIActions } from './containers/te-ent-detail/api/te-ent-detail.actions';
 import { TeEntActions } from './containers/te-ent-detail/api/te-ent.actions';
 import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.component';
-import { AddOrCreateEntityModalComponent } from './components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 
 
 @NgModule({
@@ -56,7 +50,6 @@ import { AddOrCreateEntityModalComponent } from './components/add-or-create-enti
     ListModule,
     FlexLayoutModule,
     FormsModule,
-    FormFactoryModule,
     AngularCesiumModule,
     AngularSplitModule,
     DetailContentModule,
@@ -85,13 +78,11 @@ import { AddOrCreateEntityModalComponent } from './components/add-or-create-enti
   ],
   declarations: [
     InformationComponent,
-    EntityAddExistingHitComponent,
     PeItTimelineComponent,
 
     PeItDetailComponent,
     TeEntDetailComponent,
     CreateOrAddEntityComponent,
-    PeItSearchExistingComponent,
     ContentTreeComponent,
     AddOrCreateEntityModalComponent,
     ContentTreeNodeLabelComponent,
@@ -105,17 +96,15 @@ import { AddOrCreateEntityModalComponent } from './components/add-or-create-enti
     PeItDetailAPIActions,
     TeEntDetailAPIActions,
     TeEntActions,
-    ValidationService,
   ],
   exports: [
     InformationComponent,
     PeItDetailComponent,
     TeEntDetailComponent,
     CreateOrAddEntityComponent,
-    PeItSearchExistingComponent,
   ],
   entryComponents: [
-    AddOrCreateEntityModalComponent,
+
   ]
 })
 export class InformationModule { }

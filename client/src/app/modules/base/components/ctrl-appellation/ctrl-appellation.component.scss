@@ -1,0 +1,19 @@
+.gv-ctrl-container {
+  ::ng-deep gv-quill-edit {
+    background-color: red;
+    .ql-container.ql-snow {
+      font-size: 14px;
+      > .ql-editor {
+        height: unset;
+        margin: -2px 0;
+      }
+    }
+  }
+  > .gv-mat-input-placeholder {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+}

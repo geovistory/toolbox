@@ -39,6 +39,4 @@ export class PropertiesTreeService {
     })
   }
 
-
-
 }

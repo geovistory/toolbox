@@ -8,7 +8,8 @@ import { ListDefinition } from '../properties-tree/properties-tree.models';
 // ROLES LEADING TO VALUES
 const listDefSpelling: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: true,
   label: "Spelling",
   listType: "appellation",
@@ -23,7 +24,8 @@ const listDefSpelling: ListDefinition = {
 
 const listDefLanguage: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: true,
   label: "Used in Language",
   listType: "language",
@@ -38,7 +40,8 @@ const listDefLanguage: ListDefinition = {
 
 const listDefPlace: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: true,
   label: "Was present at",
   listType: "place",
@@ -53,7 +56,8 @@ const listDefPlace: ListDefinition = {
 
 const listDefTextProperty: ListDefinition = {
   fkClassField: 123,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: true,
   label: "Exact Reference",
   listType: "text-property",
@@ -68,7 +72,8 @@ const listDefTextProperty: ListDefinition = {
 
 const listDefHadParticipants: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: false,
+  identityDefiningForSource: false,
+  identityDefiningForTarget: false,
   isOutgoing: false,
   label: "had participants",
   listType: "entity-preview",
@@ -82,7 +87,8 @@ const listDefHadParticipants: ListDefinition = {
 }
 const listDefDeparturePlace: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: false,
+  identityDefiningForSource: false,
+  identityDefiningForTarget: false,
   isOutgoing: true,
   label: "has departure place",
   listType: "entity-preview",
@@ -101,7 +107,8 @@ const listDefDeparturePlace: ListDefinition = {
 /// ROLES LEADING TO TE ENs
 const listDefAppellationUse: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: false,
   label: "Bibliographic References",
   listType: "temporal-entity",
@@ -116,7 +123,8 @@ const listDefAppellationUse: ListDefinition = {
 
 const listDefAppellationUseOfTeEn: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: false,
   label: "Has appellation",
   listType: "temporal-entity",
@@ -133,7 +141,8 @@ const listDefAppellationUseOfTeEn: ListDefinition = {
 
 const listDefBirth: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: false,
   label: "Has Birth",
   listType: "temporal-entity",
@@ -147,7 +156,8 @@ const listDefBirth: ListDefinition = {
 };
 const listDefPresence: ListDefinition = {
   fkClassField: undefined,
-  isIdentityDefining: true,
+  identityDefiningForSource: true,
+  identityDefiningForTarget: false,
   isOutgoing: false,
   label: "Was present at",
   listType: "temporal-entity",

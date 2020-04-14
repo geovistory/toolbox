@@ -1,8 +1,9 @@
-<div>
-  <!-- TODO: Adapt how the value is displayed, changed and when onTouched is called -->
-  <!-- <input type="text" [value]="model?.foo" (input)="newFoo($event.target.value)" (blur)="onBlur()" (focus)="onFocus()"> -->
+<div class="gv-ctrl-container">
 
-  <gv-quill-edit [quillDoc]="quillDoc" [matInputLike]="true" (quillDocChange)="valueChange($event)" (blur)="onBlur()"
-    (focus)="onFocus()"></gv-quill-edit>
+  <gv-quill-edit [hidden]="!shouldLabelFloat" #quillEdit class="gv-mat-control" [quillDoc]="quillDoc"
+    [matInputLike]="true" (quillDocChange)="valueChange($event)" (blur)="onBlur()"
+    (click)="onFocus(); $event.stopPropagation()" [maxLength]="250"></gv-quill-edit>
+
+  <span class="gv-mat-text-input-placeholder" *ngIf="!shouldLabelFloat">{{placeholder}}</span>
 
 </div>

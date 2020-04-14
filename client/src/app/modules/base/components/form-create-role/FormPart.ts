@@ -179,7 +179,7 @@ export class FormPart {
   private isRequired(listDefinition: ListDefinition): boolean {
 
     if (this.initVal && this.initVal.initListDefinition && ['temporal-entity', 'time-span'].includes(this.initVal.initListDefinition.listType)) {
-      return listDefinition.isIdentityDefining ? true : false;
+      return listDefinition.identityDefiningForSource ? true : false;
     }
     else {
       return true;

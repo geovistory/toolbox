@@ -10,7 +10,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 interface FieldConfig extends FieldDefinition {
   propertyField?: {
-    isIdentityDefining: boolean,
+    identityDefiningForSource: boolean,
     // labelTable: {
     //   fkProperty: number,
     //   fkDomainClass: number,
@@ -82,7 +82,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
       const f: FieldConfig = {
         ...field,
         propertyField: {
-          isIdentityDefining: field.listDefinitions[0].isIdentityDefining,
+          identityDefiningForSource: field.listDefinitions[0].identityDefiningForSource,
           targetClasses: field.listDefinitions.map(ld => ({
             pkClass: ld.targetClass,
             label: ld.targetClassLabel

@@ -14,11 +14,6 @@ type CtrlModel = InfTextProperty
   templateUrl: './ctrl-text-property.component.html',
   styleUrls: ['./ctrl-text-property.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlTextPropertyComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
 export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;
@@ -127,7 +122,7 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
       else if (focused === false) this.onBlur()
     })
     this.shouldLabelFloat$ = combineLatest(this.focused$, this.value$).pipe(
-      map(([focused, value]) => (!!focused || (value && (value.fk_language || this.isValidQuillDoc(value.quill_doc)) )) ? true : false),
+      map(([focused, value]) => (!!focused || (value && (value.fk_language || this.isValidQuillDoc(value.quill_doc)))) ? true : false),
       tap(x => { this.shouldLabelFloat = x })
     )
     this.shouldLabelFloat$.pipe(takeUntil(this.destroy$)).subscribe()

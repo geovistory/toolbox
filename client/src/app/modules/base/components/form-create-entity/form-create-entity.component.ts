@@ -157,7 +157,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private ctrlRequired(fieldDefinition: FieldDefinition): boolean {
     return (
       fieldDefinition.isOutgoing &&
-      fieldDefinition.isIdentityDefining
+      fieldDefinition.identityDefiningForSource
     )
   }
 
@@ -478,7 +478,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                     this.emitNewSearchString();
                   }
 
-                  const required = listDefinition.isIdentityDefining;
+                  const required = listDefinition.identityDefiningForSource;
                   let maxLength = listDefinition.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMaxQuantity;
                   let addOnInit = maxLength === 1 ? 1 : required ? 1 : 0;
 

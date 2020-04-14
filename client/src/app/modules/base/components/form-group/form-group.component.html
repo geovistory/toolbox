@@ -1,10 +1,11 @@
 <!-- Array as intermediate node of nested form-->
 
-<h3 *ngIf="!formGroupFactory.globalConfig.hideTitle">
+<h2 class="mat-h2" *ngIf="!formGroupFactory.globalConfig.hideTitle">
   Create {{formGroupFactory?.childConfig.placeholder}}
-</h3>
+</h2>
 
-<div *ngIf="formGroupFactory.child.factoryType === 'array'" [formGroup]="formGroupFactory.control">
+<div class="mat-typography" *ngIf="formGroupFactory.child.factoryType === 'array'"
+  [formGroup]="formGroupFactory.control">
   <div formArrayName="childControl">
     <gv-form-array [formArrayFactory]="formGroupFactory.child"></gv-form-array>
   </div>

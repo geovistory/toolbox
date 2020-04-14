@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { clone, hasIn } from 'ramda';
 import { FormBuilder, FormGroup } from '../../../../../../node_modules/@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
@@ -42,6 +42,7 @@ export class FormCreateRoleComponent implements OnInit {
   @Input() listDefinition: ListDefinition;
   @Input() pkEntity: number;
 
+  @Output() close = new EventEmitter()
 
   appContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
@@ -66,7 +67,6 @@ export class FormCreateRoleComponent implements OnInit {
 
 
   constructor(
-    public t: PropertiesTreeService,
     public p: ActiveProjectService,
     public c: ConfigurationPipesService,
     public inf: InfActions,
@@ -284,7 +284,7 @@ export class FormCreateRoleComponent implements OnInit {
 
           api.upsert([val], pkProject).resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
             if (resolved) {
-              this.t.showCreateRole$.next(null)
+              this.close.next()
             }
           })
         })

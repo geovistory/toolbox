@@ -4,17 +4,17 @@
   height: 100%;
 }
 
-::ng-deep .mat-dialog-title {
+.mat-dialog-content {
+  max-height: unset !important;
+  flex: 1 0 0;
+}
+
+.gv-aoc-container.mat-dialog-title {
   margin: 0;
   > .gv-aoc-left,
   > .gv-aoc-right {
     margin-bottom: 20px;
   }
-}
-
-.mat-dialog-content {
-  max-height: unset !important;
-  flex: 1 0 0;
 }
 
 .gv-aoc-container {

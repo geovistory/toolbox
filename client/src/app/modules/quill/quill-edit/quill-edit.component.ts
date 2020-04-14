@@ -677,6 +677,19 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     this.showTokenIds = !this.showTokenIds;
   }
 
+  /**
+   * sets the focus on the editor and puts the cursor to the end of the document
+   */
+  focusOnEnd() {
+    const length = this.quillEditor.getLength();
+    if (length > 1) {
+      this.quillEditor.setSelection(length, 0, 'user')
+    } else {
+      setTimeout(() => {
+        this.quillEditor.focus()
+      })
+    }
+  }
 
 
   ngOnDestroy() {

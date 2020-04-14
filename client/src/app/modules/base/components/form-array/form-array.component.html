@@ -1,35 +1,9 @@
-<!-- <div class="mat-caption text-muted">level {{formArrayFactory.level}} {{formArrayFactory.factoryType}}
-  {{formArrayFactory?.config.placeholder}}
-  isList {{formArrayFactory?.config.isList}}
-  listType
-  {{ formArrayFactory?.config?.data.fieldDefinition.listType}}
-
-  <span *ngIf="formArrayFactory?.config.required">*</span>
-
-  <span>
-    {{ formArrayFactory?.children.length}}/ {{formArrayFactory?.config.maxLength | json}}
-  </span>
-
-</div> -->
-<!-- <div class="gv-full-with" *ngIf="showTitle">
-  <div class="left-col">
-    <div class="gv-ellipsis mat-h4 m-0 mat-text-secondary">
-      {{formArrayFactory?.config.placeholder}}
-    </div>
-  </div>
-  <div class="right-col" *ngIf="showAddBtn">
-    <button mat-icon-button (click)="add()">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-</div> -->
-
 <div class="gv-full-with" *ngIf="showTitle">
   <div class="left-col">
-    <span class="gv-ellipsis upper-case gv-field-header-label">
+    <span class="mat-h3">
       {{formArrayFactory?.config.placeholder}}
       <!-- <span matTooltip="Required" *ngIf="??"> * </span> -->
-      <span class="ml-1 mat-caption text-muted">
+      <span class="ml-1 mat-caption mat-text-secondary">
         ({{formArrayFactory?.children.length}})
       </span>
     </span>
@@ -44,27 +18,18 @@
 
 
 <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with">
-  <!-- [ngStyle]="{'padding-left.px': paddingLeft }"> -->
-
-  <!-- <mat-divider *ngIf="i > 0"></mat-divider> -->
-
-
 
   <span class="w-100 m-2" *ngIf="wrapInCard(child); else noWrap">
 
     <mat-card class="w-100 mat-elevation-z5">
-      <!-- <div class="mat-body">{{child.placeholder}}</div> -->
       <mat-card-content class="gv-full-with">
         <gv-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child" class="left-col"></gv-form-array>
         <gv-form-control *ngIf="isFormControl(child)" [formControlFactory]="child" class="left-col">
         </gv-form-control>
-        <!-- <button mat-button class="ml-auto" *ngIf="showRemoveBtn" (click)="remove(i)">
-          <mat-icon>remove_circle_outline</mat-icon> Remove
-        </button> -->
+
       </mat-card-content>
       <mat-card-actions class="d-flex">
         <button mat-button class="ml-auto" *ngIf="showRemoveBtn" (click)="remove(i)">
-          <!-- <mat-icon>remove_circle_outline</mat-icon> -->
           Remove
         </button>
       </mat-card-actions>
@@ -82,10 +47,6 @@
       <div class="left-col">
         <span class="gv-ellipsis upper-case gv-field-header-label">
           {{child?.config.placeholder}}
-          <!-- <span matTooltip="Required" *ngIf="??"> * </span> -->
-          <!-- <span class="ml-1 mat-caption text-muted">
-            ({{formArrayFactory?.children.length}})
-          </span> -->
         </span>
       </div>
       <div class="right-col">

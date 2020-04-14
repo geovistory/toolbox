@@ -89,9 +89,10 @@
 
 
 <div class="my-3">
-  <button [disabled]="(selectedCount$ | async) < 1" type="submit" class="btn btn-primary mr-2" (click)="add()">Add
+  <button [disabled]="(selectedCount$ | async) < 1" type="submit" mat-flat-button color="primary" class="mr-2"
+    (click)="add()">Add
     selected</button>
-  <button type="submit" class="btn btn-primary mr-2"
+  <button type="submit" mat-flat-button color="primary" class="mr-2"
     (click)="t.showControl$.next(null); t.showCreateRole$.next(listDefinition)">Create new</button>
-  <button type="button" class="btn btn-link" (click)="t.showControl$.next(null)">Cancel</button>
+  <button type="button" mat-button (click)="t.showControl$.next(null)">Cancel</button>
 </div>

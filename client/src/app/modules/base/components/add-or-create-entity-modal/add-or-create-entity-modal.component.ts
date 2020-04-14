@@ -1,13 +1,13 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit, Input, ViewChild } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CreateOrAddEntityEvent, ClassAndTypePk, NotInProjectClickBehavior } from '../../containers/create-or-add-entity/create-or-add-entity.component';
+import { CreateOrAddEntityEvent, ClassAndTypePk, NotInProjectClickBehavior } from '../../../information/containers/create-or-add-entity/create-or-add-entity.component';
 import { NgForm } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
-import { DfhConfig } from '../../shared/dfh-config';
+import { DfhConfig } from '../../../information/shared/dfh-config';
 import { SchemaObject } from 'app/core/store/model';
 import { InfPersistentItem, InfTemporalEntity, ActiveProjectService } from 'app/core';
-import { ConfigurationPipesService } from '../../new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 
 
 export interface AddOrCreateEntityModalData {

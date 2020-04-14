@@ -3,10 +3,10 @@ import { ActiveProjectService, IAppState } from 'app/core';
 import { paginatedBy, paginateKey, paginateName } from 'app/core/store/reducer-factory';
 import { equals, keys } from 'ramda';
 import { combineLatest, Observable, Subject, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, takeUntil, first } from 'rxjs/operators';
 import { ListDefinition } from '../components/properties-tree/properties-tree.models';
 import { createPaginateBy } from '../components/temporal-entity-list/temporal-entity-list.component';
-import { PaginateByParam, ActionResultObservable } from 'app/core/store/actions';
+import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'app/core/store/actions';
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { PaginatedRolesList } from 'app/core/inf/inf.actions';
@@ -16,7 +16,8 @@ class RolePageLoader {
   private paginationTriggers = new Map<string, Observable<any>>()
   private pageLoaders = new Map<string, {
     refCount: number,
-    until$: Subject<any>
+    until$: Subject<any>,
+    loadEvent$: Subject<any>
   }>()
   constructor(
     private p: ActiveProjectService,
@@ -41,10 +42,15 @@ class RolePageLoader {
 
     if (!this.pageLoaders.has(loaderKey)) {
 
+      // emits when load function has been called
+      const loadEvent$ = new Subject<SucceedActionMeta<PaginatedRolesList>>()
+
       const until$ = new Subject<void>()
+
       this.pageLoaders.set(loaderKey, {
         refCount: 1,
-        until$
+        until$,
+        loadEvent$
       })
 
 
@@ -58,13 +64,16 @@ class RolePageLoader {
           l.targetClass,
           l.isOutgoing,
           limit,
-          offset)
+          offset).resolved$.pipe(first(res => !!res)).subscribe((res) => {
+            loadEvent$.next(res)
+          })
       })
 
     } else {
       const loader = this.pageLoaders.get(loaderKey)
       this.pageLoaders.set(loaderKey, {
         until$: loader.until$,
+        loadEvent$: loader.loadEvent$,
         refCount: loader.refCount + 1
       })
     }
@@ -73,10 +82,12 @@ class RolePageLoader {
       const loader = this.pageLoaders.get(loaderKey)
       if (loader.refCount === 1) {
         loader.until$.next();
+
         this.pageLoaders.delete(loaderKey)
       } else {
         this.pageLoaders.set(loaderKey, {
           until$: loader.until$,
+          loadEvent$: loader.loadEvent$,
           refCount: loader.refCount - 1
         })
       }
@@ -84,7 +95,7 @@ class RolePageLoader {
     })
 
 
-
+    return this.pageLoaders.get(loaderKey)
 
   }
 

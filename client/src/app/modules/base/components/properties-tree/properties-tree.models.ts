@@ -32,7 +32,7 @@ export interface FieldDefinition {
   targetClasses?: number[]
   targetMaxQuantity?: number
   listDefinitions: ListDefinition[]
-  isIdentityDefining: boolean
+  identityDefiningForSource: boolean
   fieldConfig?: ProClassFieldConfig
 }
 
@@ -48,7 +48,11 @@ export interface ListDefinition {
   }
   // pkProperty: number
   isOutgoing: boolean
-  isIdentityDefining: boolean
+
+  identityDefiningForSource: boolean
+
+  identityDefiningForTarget: boolean
+
   sourceClass: number
 
   targetClass: number
@@ -179,7 +183,7 @@ export interface AddListComponentInterface {
 
   items$: Observable<ItemList>
   p: ActiveProjectService,
-  t: PropertiesTreeService
+  // t: PropertiesTreeService
 
 }
 

@@ -43,7 +43,8 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
         pkPropertyOfProperty: DfhConfig.P_O_P_GEOV_HAS_REFERENCE
       },
       isOutgoing: true,
-      isIdentityDefining: false,
+      identityDefiningForSource: false,
+      identityDefiningForTarget: false,
       sourceClass: undefined,
       targetMaxQuantity: -1,
       targetClass: 657,

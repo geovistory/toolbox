@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService, IAppState } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject, of, merge } from 'rxjs';
 import { SelectionModel } from '../../../../../../node_modules/@angular/cdk/collections';
@@ -34,7 +34,8 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
   @Input() addButtonVisible;
   @Input() toggleButtonVisible;
 
-  @Input() appContext: number
+  @Output() close = new EventEmitter()
+  @Output() next = new EventEmitter()
 
   rows$: Observable<TemporalEntityItem[]>
   items$;
@@ -52,11 +53,13 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   loading;
 
+  targetIsUnique: boolean;
+
   constructor(
     public p: ActiveProjectService,
     public c: ConfigurationPipesService,
     public i: InformationPipesService,
-    public t: PropertiesTreeService,
+    // public t: PropertiesTreeService,
     public inf: InfActions,
     private ngRedux: NgRedux<IAppState>,
     private paginationService: PaginationService
@@ -70,6 +73,8 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
     // stop initialization if this is not a temporal entity list
     if (this.listDefinition.listType !== 'temporal-entity') return;
+
+    this.targetIsUnique = this.listDefinition.identityDefiningForTarget && this.listDefinition.targetMaxQuantity == 1;
 
     const infRepo = new InfSelector(this.ngRedux, of('repo'))
 
@@ -96,6 +101,8 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
     const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity)
 
+    this.itemsCount$ = infRepo.role$.pagination$.pipeCount(paginateBy)
+
     const nextPage$ = new Subject();
     pagination$.pipe(
       distinctUntilChanged(equals),
@@ -109,13 +116,21 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
         limit,
         offset,
         merge(nextPage$, this.destroy$)
-      )
+      ).loadEvent$.pipe(first()).subscribe(() => {
+        this.itemsCount$.pipe(takeUntil(this.destroy$)).subscribe(c => {
+          this.itemsCount = c;
+          if (c === 0) {
+            this.next.emit()
+          }
+        })
+      })
     })
 
 
     const columns$ = this.c.pipeFieldDefinitionsSpecificFirst(this.listDefinition.targetClass)
 
     const alternative = true;
+
     this.rows$ = combineLatest(pagination$, columns$).pipe(
       distinctUntilChanged(equals),
       switchMap(([[limit, offset, pkProject], columns]) => this.i.pipeTemporalEntityTableRows(
@@ -128,19 +143,15 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
         alternative
       )),
       shareReplay({ refCount: true, bufferSize: 1 }),
+      tap((rows) => {
+        if (!allowMultiSelect && rows.length === 1) {
+          this.selection.select(rows[0].role.pk_entity)
+        }
+      })
     )
 
     this.table = new TemporalEntityTable(this.rows$, columns$, this.destroy$, this.listDefinition, customCols);
 
-    this.itemsCount$ = infRepo.role$.pagination$.pipeCount(paginateBy)
-
-    this.itemsCount$.pipe(takeUntil(this.destroy$)).subscribe(c => {
-      this.itemsCount = c;
-      if (c === 0) {
-        this.t.showCreateRole$.next(this.t.showControl$.value);
-        this.t.showControl$.next(null);
-      }
-    })
   }
 
   onPageChange(e: PageEvent) {
@@ -159,7 +170,8 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
     const pkRoles: number[] = this.selection.selected;
     this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.role.addToProjectWithTeEnt(pkRoles, pkProject)
       .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-        this.t.showControl$.next(null)
+        // this.t.showControl$.next(null)
+        this.close.emit()
       })
     )
 

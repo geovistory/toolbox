@@ -67,7 +67,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get showTitle() {
-    return this.itemNumberFlexible || this.isTemporalEntityList
+    return this.formArrayFactory.config.isList; // this.itemNumberFlexible || this.isTemporalEntityList
   }
 
   get isTemporalEntityList() {

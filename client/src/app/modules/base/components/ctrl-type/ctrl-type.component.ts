@@ -19,11 +19,6 @@ type CtrlModel = number // pk_entity of type (persistent item)
   templateUrl: './ctrl-type.component.html',
   styleUrls: ['./ctrl-type.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlTypeComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
 export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;

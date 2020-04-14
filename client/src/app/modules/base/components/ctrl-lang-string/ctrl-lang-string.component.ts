@@ -14,11 +14,6 @@ type CtrlModel = InfLangString
   templateUrl: './ctrl-lang-string.component.html',
   styleUrls: ['./ctrl-lang-string.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlLangStringComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
 export class CtrlLangStringComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;

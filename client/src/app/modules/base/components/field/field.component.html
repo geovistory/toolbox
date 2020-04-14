@@ -11,7 +11,7 @@
       <span class="mat-body-strong" [ngClass]="{'mat-text-secondary': !(typeItem.hasTypeRole$ |async)}">
         {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
         <span matTooltip="Required and not changeable (identity defining)"
-          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
           *
         </span>
       </span>
@@ -52,7 +52,7 @@
         [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
         {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
         <span matTooltip="Required and not changeable (identity defining)"
-          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
           *
         </span>
       </span>
