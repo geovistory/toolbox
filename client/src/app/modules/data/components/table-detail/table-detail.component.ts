@@ -40,8 +40,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   t: TabLayout;
 
-  readonly dtText = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT;
-  readonly dtNumeric = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
 
 
   rows$: Observable<TabRow[]>
@@ -234,15 +232,15 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     }
   }
 
-  onFilterChange(colName: string, filter: TColFilter | null) {
+  onFilterChange(value: { colName: string, filter: TColFilter | null }) {
     let filters: TColFilters;
     if (filter) {
       filters = {
         ...this.filters$.value,
-        [colName]: filter
+        [value.colName]: value.filter
       }
     } else {
-      filters = omit([colName], this.filters$.value)
+      filters = omit([value.colName], this.filters$.value)
     }
 
     this.pageIndex$.next(0)

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
-import { DatColumn, TColFilterOpNumeric, TColFilter, TColFilters } from '../../../../../../../src/server/table/interfaces';
+import { DatColumn, TColFilterOpNumeric, TColFilter, TColFilters } from '../../../../../../../../../src/server/table/interfaces';
 import { MatSelectChange } from '@angular/material/select';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { filter, debounceTime, takeUntil } from 'rxjs/operators';
