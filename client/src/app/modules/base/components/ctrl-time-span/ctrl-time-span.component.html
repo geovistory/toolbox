@@ -1,13 +1,11 @@
-<div *ngIf="!shouldLabelFloat" class="click-container" (click)="openModal()">
-
-</div>
-<div class="d-flex cursor-text" *ngIf="shouldLabelFloat" (click)="openModal()">
-  <div class="d-flex align-items-center">
+<div class="d-flex cursor-text" (click)="openModal()">
+  <span *ngIf="!shouldLabelFloat" class="gv-mat-text-input-placeholder">{{placeholder}}</span>
+  <div *ngIf="shouldLabelFloat" class="d-flex align-items-center">
     {{timeSpan | timeSpan}}
   </div>
-  <div class="ml-auto">
+  <!-- <div class="ml-auto">
     <button mat-icon-button>
       <mat-icon>edit</mat-icon>
     </button>
-  </div>
+  </div> -->
 </div>

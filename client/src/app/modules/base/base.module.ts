@@ -52,6 +52,8 @@ import { InformationBasicPipesService } from './services/information-basic-pipes
 import { InformationPipesService } from './services/information-pipes.service';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
+import { FgPlaceComponent } from './components/fg-place/fg-place.component';
+import { FgTextPropertyComponent } from './components/fg-text-property/fg-text-property.component';
 
 const components = [
   PropertiesTreeComponent,
@@ -85,7 +87,9 @@ const components = [
   AddDialogComponent,
   AddOrCreateEntityModalComponent,
   PeItSearchExistingComponent,
-  EntityAddExistingHitComponent
+  EntityAddExistingHitComponent,
+  FgPlaceComponent,
+  FgTextPropertyComponent
 ]
 
 const baseModules = [
@@ -128,6 +132,7 @@ const baseModules = [
     PropertiesTreeDialogComponent,
     AddDialogComponent,
     AddOrCreateEntityModalComponent,
+    FgPlaceComponent
   ]
 })
 export class BaseModule { }

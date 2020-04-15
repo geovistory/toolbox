@@ -24,7 +24,7 @@ export class QueryPathFormArrayComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.formArrayFactory.children)
+    // console.log(this.formArrayFactory.children)
   }
 
   /**

@@ -13,6 +13,7 @@ import { ConfigurationPipesService } from '../../services/configuration-pipes.se
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 export interface FormArrayData {
   pkClass: number
   fieldDefinition?: FieldDefinition
@@ -32,10 +33,15 @@ export interface FormControlData {
   listDefinition?: ListDefinition
   nodeConfigs?: LocalNodeConfig[]
 }
+
+export interface FormChildData {
+  place?: FgPlaceInjectData
+}
+
 export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
 
 export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
-export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, any>;
+export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, FormChildData>;
 export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayData>
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
 
@@ -191,12 +197,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private placeCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const listDefinition = arrayConfig.data.listDefinition;
     const controlConfig: LocalNodeConfig = {
-      control: {
-        placeholder: listDefinition.label,
-        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
-        data: {
-          controlType: 'ctrl-place'
+      childFactory: {
+        component: FgPlaceComponent,
+        getInjectData: (d) => {
+          return d
         },
+        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+        data: {},
         mapValue: (val) => {
           if (!val) return null;
           const value: InfRole = {
@@ -213,6 +220,31 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       }
     };
     return of([controlConfig]);
+
+
+    // const controlConfig: LocalNodeConfig = {
+    //   control: {
+    //     placeholder: listDefinition.label,
+    //     required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+    //     data: {
+    //       controlType: 'ctrl-place'
+    //     },
+    //     mapValue: (val) => {
+    //       if (!val) return null;
+    //       const value: InfRole = {
+    //         ...{} as any,
+    //         fk_entity: undefined,
+    //         fk_property: listDefinition.property.pkProperty,
+    //         place: {
+    //           ...val,
+    //           fk_class: listDefinition.targetClass,
+    //         },
+    //       };
+    //       return value;
+    //     }
+    //   }
+    // };
+    // return of([controlConfig]);
   }
 
 

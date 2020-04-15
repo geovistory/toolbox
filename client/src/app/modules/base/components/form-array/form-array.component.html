@@ -41,7 +41,8 @@
     <gv-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child" class="left-col"></gv-form-array>
     <gv-form-control *ngIf="isFormControl(child)" [formControlFactory]="child" class="left-col">
     </gv-form-control>
-
+    <ng-template *ngIf="child.factoryType ==='childFactory'" [cdkPortalOutlet]="child.portal" #outlet
+      (attached)="child.attached($event, outlet)"></ng-template>
 
     <div *ngIf="isCtrlTargetClass(child)" class="gv-full-with w-100 mb-3">
       <div class="left-col">

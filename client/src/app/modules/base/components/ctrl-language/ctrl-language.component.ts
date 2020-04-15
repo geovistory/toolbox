@@ -1,10 +1,11 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ViewChild, ElementRef } from '@angular/core';
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, BehaviorSubject, of, Observable } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap, catchError } from '../../../../../../node_modules/rxjs/operators';
 import { InfLanguage, InfLanguageApi } from '../../../../core';
+import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 
 type CtrlModel = InfLanguage;
 
@@ -18,6 +19,8 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   static nextId = 0;
 
   model: CtrlModel;
+  @ViewChild(MatInput, { static: false }) matInput: MatInput;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) matAutocompleteTrigger: MatAutocompleteTrigger;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
@@ -144,6 +147,13 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
 
   onContainerClick(event: MouseEvent) {
     // TODO: implement this
+    this.matInput.focus()
+    setTimeout(() => {
+      this.matAutocompleteTrigger.openPanel()
+    })
+    // this.onFocus()
+    // this.searchTerm$.next('')
+
   }
 
   writeValue(value: CtrlModel | null): void {

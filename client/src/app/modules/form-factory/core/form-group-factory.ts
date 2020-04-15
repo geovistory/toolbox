@@ -14,7 +14,7 @@ import { AbstractControlFactory, FactoryType } from './form-factory.models';
 export class FormGroupFactory extends AbstractControlFactory {
   factoryType: FactoryType = 'group';
   control: FormGroup
-  child?: AbstractControlFactory;
+  child?: FormArrayFactory<any, any>;
 
   config: FormGroupConfig<any>
   childConfig: FormArrayConfig<any>

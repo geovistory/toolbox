@@ -144,8 +144,8 @@ export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, M
 
 
   onContainerClick(event: MouseEvent) {
-    // TODO: implement this
-
+    this.openModal()
+    this.onFocus()
   }
 
   writeValue(value: CtrlModel | null): void {

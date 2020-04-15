@@ -19,29 +19,41 @@ export default sandboxOf(FormControlComponent, {
     <div class="mat-typography" style="display: flex; flex-direction: row; justify-content: center;">
         <div style="margin: 5rem; width: 300px;">
             <h2>Geovistory Controls fill</h2>
+
+            <p>Ctrl-Appelation</p>
             <mat-form-field class="w-100" appearance="fill">
             <!-- <mat-label>{{Placeholder}}</mat-label> -->
             <gv-ctrl-appellation placeholder="Placeholder" [required]="true">
             </gv-ctrl-appellation>
            </mat-form-field>
 
+            <p>Ctrl-Place</p>
             <mat-form-field class="w-100" appearance="fill">
             <!-- <mat-label>{{Placeholder}}</mat-label> -->
             <gv-ctrl-place placeholder="Placeholder" [required]="true">
             </gv-ctrl-place>
            </mat-form-field>
 
+           <p>Fg-Place</p>
+           <gv-fg-place appearance="fill"></gv-fg-place>
+
+           <p>Ctrl-Language</p>
             <mat-form-field class="w-100" appearance="fill">
             <!-- <mat-label>{{Placeholder}}</mat-label> -->
             <gv-ctrl-language placeholder="Placeholder" [required]="true">
             </gv-ctrl-language>
+            <mat-icon matSuffix>calendar</mat-icon>
            </mat-form-field>
 
+           <p>Ctrl-Text-Property</p>
             <mat-form-field class="w-100" appearance="fill">
             <!-- <mat-label>{{Placeholder}}</mat-label> -->
             <gv-ctrl-text-property placeholder="Placeholder" [required]="true">
             </gv-ctrl-text-property>
            </mat-form-field>
+
+           <p>Fg-Text-Property</p>
+           <gv-fg-text-property appearance="fill"></gv-fg-text-property>
 
             <mat-form-field class="w-100" appearance="fill">
             <!-- <mat-label>{{Placeholder}}</mat-label> -->
@@ -53,6 +65,7 @@ export default sandboxOf(FormControlComponent, {
             <!-- <mat-label>{{Placeholder}}</mat-label> -->
             <gv-ctrl-time-span placeholder="Placeholder" [required]="true">
             </gv-ctrl-time-span>
+            <mat-icon matSuffix svgIcon="calendar"></mat-icon>
            </mat-form-field>
 
             <mat-form-field class="w-100" appearance="fill">
@@ -94,6 +107,8 @@ export default sandboxOf(FormControlComponent, {
         </div>
         <div style="margin: 5rem; width: 300px;">
             <h2>Geovistory Controls outline</h2>
+
+
             <mat-form-field class="w-100" appearance="outline">
             <!-- <mat-label>{{Placeholder}}</mat-label> -->
             <gv-ctrl-appellation placeholder="Placeholder" [required]="true">
