@@ -1,11 +1,8 @@
-import { Component, OnInit, Input, HostBinding, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
-import { FormArrayData, LocalNodeConfig, FormControlData, LocalFormArrayFactory, LocalFormControlFactory, FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
-import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
-import { FormArrayConfig, FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { CdkCell } from '@angular/cdk/table';
-import { ListDefinition, FieldDefinition } from '../properties-tree/properties-tree.models';
 import { equals } from 'ramda';
+import { FormArrayData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
+import { FieldDefinition, ListDefinition } from '../properties-tree/properties-tree.models';
 
 @Component({
   selector: 'gv-form-array',

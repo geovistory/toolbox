@@ -39,14 +39,15 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
     this.control = this.globalConfig.fb.array([], validators)
 
     const childNodes$ = this.globalConfig.getChildNodeConfigs({ array: this.config })
-    const defaultChildConfig$ = this.globalConfig.getChildNodeConfigs({
+    const defaultChildConfigs$ = this.globalConfig.getChildNodeConfigs({
       array: {
         ...this.config,
         initValue: undefined
       }
-    }).pipe(
-      map(cs => cs[0])
-    )
+    })
+    if (!defaultChildConfigs$) console.error('no defaultChildConfigs$ created for ', this.config)
+    const defaultChildConfig$ = defaultChildConfigs$.pipe(map(cs => cs[0]))
+
     if (!childNodes$) console.error('no childNodes$ created for ', this.config)
     /**
      * First

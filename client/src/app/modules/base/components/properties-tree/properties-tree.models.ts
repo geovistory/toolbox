@@ -27,7 +27,11 @@ export interface FieldDefinition {
   label: string;
   ontoInfoUrl: string
   ontoInfoLabel: string
+
+  fkClassField: number
+
   property: FieldProperty
+
   // pkProperty: number
   isOutgoing: boolean
   sourceClass: number
@@ -43,8 +47,11 @@ export interface ListDefinition {
   label: string;
   ontoInfoUrl: string
   ontoInfoLabel: string
+
   fkClassField: number
+
   property: FieldProperty
+
   // pkProperty: number
   isOutgoing: boolean
 

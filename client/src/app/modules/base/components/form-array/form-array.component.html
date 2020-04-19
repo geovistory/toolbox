@@ -1,15 +1,24 @@
-<ng-container *ngIf="showTitle">
+<ng-container *ngIf="formArrayFactory.config.data.arrayContains =='lists'">
   <div class="gv-full-with">
     <ng-container *ngTemplateOutlet="title; context:{
       'placeholder':formArrayFactory?.config.placeholder,
       'count': formArrayFactory?.children.length,
       'required': formArrayFactory.config.required
       }"></ng-container>
-    <div class="right-col" *ngIf="showAddBtn">
+    <!-- <div class="right-col" *ngIf="showAddBtn">
       <button mat-icon-button (click)="add()">
         <mat-icon>add</mat-icon>
       </button>
-    </div>
+    </div> -->
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col">
+      <mat-icon>add</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item *ngFor="let lDef of formArrayFactory?.config?.data?.fieldDefinition?.listDefinitions"
+        (click)="addItemInChildListDef(formArrayFactory?.config?.data?.fieldDefinition, lDef)">
+        {{lDef.targetClassLabel}}
+      </button>
+    </mat-menu>
   </div>
 </ng-container>
 
@@ -36,7 +45,7 @@
 
 
   <ng-template #noWrap>
-    <div style="flex: 1 0 100%;" *ngIf="isCtrlTargetClass(child)">
+    <!-- <div style="flex: 1 0 100%;" *ngIf="isCtrlTargetClass(child)">
       <div class="gv-full-with">
         <ng-container *ngTemplateOutlet="title; context:{
         'placeholder':child?.config.placeholder,
@@ -45,18 +54,10 @@
         'required': child.config.required
       }"></ng-container>
 
-        <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col">
-          <mat-icon>add</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item *ngFor="let lDef of child?.config?.data?.fieldDefinition?.listDefinitions"
-            (click)="addItemInChildListDef(child?.config?.data?.fieldDefinition, lDef,i)">
-            {{lDef.targetClassLabel}}
-          </button>
-        </mat-menu>
+
       </div>
     </div>
-
+ -->
 
 
 
