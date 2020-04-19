@@ -1,4 +1,4 @@
-import { FormArray } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { clone } from 'ramda';
 import { BehaviorSubject, Observable, merge, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil, startWith } from 'rxjs/operators';
@@ -39,21 +39,40 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
     this.control = this.globalConfig.fb.array([], validators)
 
     const childNodes$ = this.globalConfig.getChildNodeConfigs({ array: this.config })
+    const defaultChildConfig$ = this.globalConfig.getChildNodeConfigs({
+      array: {
+        ...this.config,
+        initValue: undefined
+      }
+    }).pipe(
+      map(cs => cs[0])
+    )
+    if (!childNodes$) console.error('no childNodes$ created for ', this.config)
     /**
      * First
      */
     let count = 0;
-    childNodes$.pipe(takeUntil(this.globalConfig.destroy$))
-      .subscribe(childConfigs => {
+    combineLatest(childNodes$, defaultChildConfig$).pipe(takeUntil(this.globalConfig.destroy$))
+      .subscribe(([childConfigs, defaultChildConfig]) => {
         if (count === 0) {
           let $;
           // If this is a list it contains an array of children of the same configuration
           if (this.config.isList) {
-            this.defaultChildConfig = childConfigs[0];
+            this.defaultChildConfig = defaultChildConfig;
 
-            // Here do not need to add a child on init. This may depend on the case.
-            for (let i = 0; i < (this.config.addOnInit || 0); i++) {
-              this.add(i, this.defaultChildConfig)
+            // if there is an array of initial values, add a child for each
+            if (this.config.initValue && this.config.initValue.length > 0) {
+              for (let i = 0; i < (this.config.initValue.length); i++) {
+                this.add(i, childConfigs[i])
+              }
+            }
+            // if there should be empty children (without initial value), add them here
+            else if (this.config.addOnInit) {
+
+              // Add n empty children (n = addOnInit);
+              for (let i = 0; i < (this.config.addOnInit || 0); i++) {
+                this.add(i, this.defaultChildConfig)
+              }
             }
 
             $ = this.childFactoryValues$.pipe(
@@ -149,7 +168,7 @@ export class FormArrayFactory<C, A> extends AbstractControlFactory {
       const childF = f as FormChildFactory<C>;
       const count = 0;
       childF.control$.pipe(takeUntil(this.globalConfig.destroy$))
-        .subscribe(c => {
+        .subscribe((c: FormGroup) => {
           count === 0 ?
             this.control.insert(i, c) :
             this.control.setControl(i, c)

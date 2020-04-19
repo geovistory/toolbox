@@ -17,15 +17,17 @@ export type CreateControlType = 'role';
 //   fk_property_of_origin: number
 // }
 
+export interface FieldProperty {
+  pkProperty?: number;
+  pkPropertyOfProperty?: number;
+}
+
 export interface FieldDefinition {
   listType: ListType
   label: string;
   ontoInfoUrl: string
   ontoInfoLabel: string
-  property: {
-    pkProperty?: number;
-    pkPropertyOfProperty?: number;
-  }
+  property: FieldProperty
   // pkProperty: number
   isOutgoing: boolean
   sourceClass: number
@@ -42,10 +44,7 @@ export interface ListDefinition {
   ontoInfoUrl: string
   ontoInfoLabel: string
   fkClassField: number
-  property: {
-    pkProperty?: number;
-    pkPropertyOfProperty?: number;
-  }
+  property: FieldProperty
   // pkProperty: number
   isOutgoing: boolean
 

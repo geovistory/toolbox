@@ -35,6 +35,24 @@ export class ValidationService {
   }
 
 
+  /**
+   * Validates the qullDoc to have at least one character
+   */
+  static emptyQuillDocValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+      if (
+        !value || !value.quill_doc || !value.quill_doc.ops || value.quill_doc.ops.length < 1
+        || (value.quill_doc.ops.length === 1 && value.quill_doc.ops[0].insert === '\n')
+      ) {
+        return { 'emptyQuillDoc': { value: control.value } }
+      }
+      return null
+
+    };
+  }
+
+
   static hexColorValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       return /^#[0-9A-F]{6}$/i.test(control.value)

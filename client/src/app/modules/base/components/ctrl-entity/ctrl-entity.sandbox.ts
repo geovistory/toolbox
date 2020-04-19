@@ -23,14 +23,15 @@ export default sandboxOf(CtrlEntityComponent, {
       parentPath: ''
     },
     template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+        <gv-init-state [projectFromApi]="591" ></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
-                    <mat-form-field class="w-100">
-                        <gv-ctrl-entity [pkClass]="21" placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-entity>
+                    <mat-form-field class="w-100" appearance="fill">
+                        <gv-ctrl-entity [pkClass]="21" placeholder="Add a Person..." name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-entity>
                         <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
+                        <mat-icon matSuffix svgIcon="pencil"></mat-icon>
                     </mat-form-field>
                 </form>
             </div>
@@ -57,7 +58,7 @@ export default sandboxOf(CtrlEntityComponent, {
       parentPath: ''
     },
     template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+        <gv-init-state [projectFromApi]="591" ></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">

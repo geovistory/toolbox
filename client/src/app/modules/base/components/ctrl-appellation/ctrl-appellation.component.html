@@ -4,6 +4,6 @@
     [matInputLike]="true" (quillDocChange)="valueChange($event)" (blur)="onBlur()"
     (click)="onFocus(); $event.stopPropagation()" [maxLength]="250"></gv-quill-edit>
 
-  <span class="gv-mat-text-input-placeholder" *ngIf="!shouldLabelFloat">{{placeholder}}</span>
-
+  <input type="text" matInput placeholder="{{placeholder}}" disabled *ngIf="!shouldLabelFloat"
+    (click)="onContainerClick()">
 </div>

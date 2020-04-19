@@ -7,7 +7,7 @@ import { InfAppellation } from '../../../../core';
 import { QuillDoc } from 'app/modules/quill';
 import { QuillEditComponent } from 'app/modules/quill/quill-edit/quill-edit.component';
 
-type CtrlModel = InfAppellation;
+export type CtrlAppellationModel = InfAppellation;
 
 @Component({
   selector: 'gv-ctrl-appellation',
@@ -16,10 +16,10 @@ type CtrlModel = InfAppellation;
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlAppellationComponent }],
 
 })
-export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlAppellationModel> {
   static nextId = 0;
 
-  model: CtrlModel;
+  model: CtrlAppellationModel;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
@@ -70,10 +70,10 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   private _disabled = false;
 
   @Input()
-  get value(): CtrlModel | null {
+  get value(): CtrlAppellationModel | null {
     return this.model;
   }
-  set value(value: CtrlModel | null) {
+  set value(value: CtrlAppellationModel | null) {
 
 
     if (
@@ -141,7 +141,7 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
     this.quillEditComponent.focusOnEnd()
   }
 
-  writeValue(value: CtrlModel | null): void {
+  writeValue(value: CtrlAppellationModel | null): void {
     this.value = value;
     if (value && value.quill_doc) this.quillDoc = value.quill_doc
     if (value && value.fk_class) this.fkClass = value.fk_class
@@ -163,8 +163,6 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
     this.focused = false;
     this.onTouched();
     this.blur.emit()
-    this.ref.detectChanges()
-
   }
 
   onFocus() {

@@ -1,4 +1,4 @@
-import { FormArray } from '@angular/forms';
+import { FormArray, FormGroup, AbstractControl } from '@angular/forms';
 import { ProjectPreview } from 'app/core/active-project/active-project.models';
 import { ExistenceTimeDetail, FieldLabel, FieldList, PeItDetail, PropertyField, RoleDetail, RoleDetailList, TeEntDetail } from 'app/core/state/models';
 import { ByPk } from 'app/core/store/model';
@@ -187,11 +187,26 @@ export class U {
     return t;
   }
 
-  static recursiveMarkAsTouched = (f: FormArray) => {
-    f.controls.forEach((c: FormArray) => {
-      c.markAsTouched()
-      if (c.controls) U.recursiveMarkAsTouched(c)
-    })
+  static recursiveMarkAsTouched = (f: FormArray | FormGroup) => {
+
+    if (f.controls) {
+      if (Array.isArray(f.controls)) {
+        // in this case it is a formArray
+        f.controls.forEach((c: FormArray) => {
+          c.markAsTouched()
+          if (c.controls) U.recursiveMarkAsTouched(c)
+        })
+      }
+      else {
+        // in this case it is a formGroup
+        if (f.controls['childControl']) {
+          const c = f.controls['childControl'] as FormArray;
+          c.markAsTouched()
+          if (c.controls) U.recursiveMarkAsTouched(c)
+
+        }
+      }
+    }
   }
 
   static propertyFieldKeyFromParams(fkProp: number, isOutgoing: boolean) {

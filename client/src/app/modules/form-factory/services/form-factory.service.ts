@@ -28,6 +28,9 @@ export interface FormArrayConfig<A> {
   maxLength?: number;
   validators?: ValidatorFn[]
 
+  initValue?: any[] // initial value of the array
+
+
   // If this is a list, the number defines how many children are added on init
   addOnInit?: number;
 
@@ -41,6 +44,7 @@ export interface FormControlConfig<M> {
   required: boolean;
   disabled$?: BehaviorSubject<boolean>;
   validators?: ValidatorFn[]
+
   initValue? // initial value of the control
 
   mapValue: (d) => any

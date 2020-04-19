@@ -25,7 +25,6 @@ import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.mod
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { AnnotationModule } from '../annotation/annotation.module';
 import { BaseModule } from '../base/base.module';
-import { AddOrCreateEntityModalComponent } from '../base/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
 import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
 import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
@@ -84,7 +83,6 @@ import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.c
     TeEntDetailComponent,
     CreateOrAddEntityComponent,
     ContentTreeComponent,
-    AddOrCreateEntityModalComponent,
     ContentTreeNodeLabelComponent,
     ContentTreeNodeTypeComponent,
   ],

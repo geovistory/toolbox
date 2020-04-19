@@ -1,22 +1,22 @@
 <h1 mat-dialog-title class="gv-aoc-container">
   <div class="gv-aoc-left">
-    Create a new {{classLabel$|async}}
+    Define a new {{classLabel$|async}}
   </div>
   <div class="gv-aoc-center">
     or
   </div>
   <div class="gv-aoc-right">
-    Find an existing {{classLabel$|async}}
+    Choose an existing {{classLabel$|async}}
   </div>
 </h1>
 <div mat-dialog-content class="gv-aoc-container">
   <div class="gv-aoc-left gv-flex-fh">
     <mat-divider></mat-divider>
     <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2 pr-5" [pkClass]="classAndTypePk.pkClass"
-      [appContext]="pkUiContext" hideTitle="true" hideButtons="true" (cancel)="closeAddForm()"
-      (saved)="onCreated($event)" (searchString)="searchStringChange($event)" #f>
+      [hiddenProperty]="data.hiddenProperty" [appContext]="pkUiContext" hideTitle="true" hideButtons="true"
+      [initVal$]="initVal$" (searchString)="searchStringChange($event)" #f>
     </gv-form-create-entity>
-    <mat-divider></mat-divider>
+    <!-- <mat-divider></mat-divider> -->
   </div>
   <div class="gv-aoc-center">
     <mat-divider [vertical]="true"></mat-divider>
@@ -40,14 +40,14 @@
   <div class="gv-aoc-left">
 
     <button mat-flat-button color="primary"
-      [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="f?.submit()">
-      <span *ngIf="!f?.saving">Create</span>
+      [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="onFormOk()">
+      <span *ngIf="!f?.saving">OK</span>
       <div *ngIf="f?.saving" style="margin: 6px;">
         <mat-spinner diameter="20"></mat-spinner>
       </div>
     </button>
 
-    <button mat-button type="button" class="ml-2" (click)="f?.cancel.emit()">Cancel</button>
+    <button mat-button type="button" class="ml-2" (click)="closeAddForm()">Cancel</button>
   </div>
   <div class="gv-aoc-center">
 

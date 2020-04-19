@@ -1,0 +1,17 @@
+:host {
+  padding: 0.7rem;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+.form-title {
+  flex: 0 0 auto;
+}
+
+form {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+.form-buttons {
+  flex: 0 0 auto;
+}

@@ -3,36 +3,39 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, EntityPreview, SysConfig } from 'app/core';
-import { AddOrCreateEntityModalComponent, AddOrCreateEntityModalData } from 'app/modules/base/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { ActiveProjectService, EntityPreview, SysConfig, InfPersistentItem, InfTemporalEntity } from 'app/core';
 import { CreateOrAddEntityEvent } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, mergeMap, takeUntil } from 'rxjs/operators';
+import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
+import { FieldProperty } from '../properties-tree/properties-tree.models';
 
-type CtrlModel = number // pkEntity
-
+export interface CtrlEntityModel {
+  pkEntity?: number,
+  persistentItem?: InfPersistentItem,
+  temporalEntity?: InfTemporalEntity
+}
 
 @Component({
-
   selector: 'gv-ctrl-entity',
   templateUrl: './ctrl-entity.component.html',
   styleUrls: ['./ctrl-entity.component.css'],
   providers: [{
     provide: MatFormFieldControl, useExisting: CtrlEntityComponent
-  }
-
-  ],
-
-}
-
-) export class CtrlEntityComponent implements OnDestroy,
+  }],
+})
+export class CtrlEntityComponent implements OnDestroy,
   ControlValueAccessor,
-  MatFormFieldControl<CtrlModel> {
+  MatFormFieldControl<CtrlEntityModel> {
   static nextId = 0;
 
-  model: CtrlModel;
+  model: CtrlEntityModel;
 
   @Input() pkClass: number;
+
+  // needed for creating the form, in order to exclude the circular field
+  @Input() property: FieldProperty;
+
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
@@ -104,18 +107,17 @@ type CtrlModel = number // pkEntity
 
   private _disabled = false;
 
-  @Input() get value(): CtrlModel | null {
+  @Input() get value(): CtrlEntityModel | null {
     return this.model;
   }
 
-  set value(value: CtrlModel | null) {
+  set value(value: CtrlEntityModel | null) {
     this.model = value;
     this.onChange(this.model);
-    this.pkEntity$.next(value);
+    this.value$.next(value);
   }
 
-  pkEntity$ = new BehaviorSubject<number>(null);
-  entityPreview$: Observable<EntityPreview>;
+  value$ = new BehaviorSubject<CtrlEntityModel>(null);
 
   constructor(@Optional() @Self() public ngControl: NgControl,
     private dialog: MatDialog,
@@ -124,9 +126,6 @@ type CtrlModel = number // pkEntity
       this.ngControl.valueAccessor = this;
     }
 
-    this.entityPreview$ = this.pkEntity$.pipe(filter(pk => ! !pk),
-      distinctUntilChanged(),
-      mergeMap(pk => this.p.streamEntityPreview(pk)))
   }
 
   ngOnInit() {
@@ -136,16 +135,17 @@ type CtrlModel = number // pkEntity
   openModal() {
     if (!this.disabled) {
 
-      this.dialog.open<AddOrCreateEntityModalComponent,
-        AddOrCreateEntityModalData,
-        CreateOrAddEntityEvent>(AddOrCreateEntityModalComponent, {
+      this.dialog.open<CtrlEntityDialogComponent,
+        CtrlEntityDialogData,
+        CtrlEntityModel>(CtrlEntityDialogComponent, {
 
           // minWidth: '800px',
           height: 'calc(100% - 30px)',
           width: '980px',
           maxWidth: '100%',
           data: {
-
+            initVal$: this.value$,
+            hiddenProperty: this.property,
             alreadyInProjectBtnText: 'Select',
             notInProjectClickBehavior: 'selectOnly',
             notInProjectBtnText: 'Select',
@@ -159,8 +159,9 @@ type CtrlModel = number // pkEntity
           }
         }
 
-        ).afterClosed().pipe(takeUntil(this.destroy$)).subscribe(result => {
-          if (result && result.pkEntity) this.value = result.pkEntity
+        ).afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
+          if (!!result) this.value = result
+          this.onBlur()
         }
 
         );
@@ -187,11 +188,11 @@ type CtrlModel = number // pkEntity
 
 
   onContainerClick(event: MouseEvent) {
-    // TODO: implement this
-
+    this.openModal()
+    this.onFocus()
   }
 
-  writeValue(value: CtrlModel | null): void {
+  writeValue(value: CtrlEntityModel | null): void {
     this.value = value;
   }
 

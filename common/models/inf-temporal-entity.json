@@ -23,9 +23,6 @@
     "fk_class": {
       "type": "number",
       "required": true
-    },
-    "notes": {
-      "type": "string"
     }
   },
   "validations": [],

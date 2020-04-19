@@ -8,7 +8,7 @@ import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialog
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { TimeSpan } from 'app/core';
 
-type CtrlModel = CtrlTimeSpanDialogResult
+export type CtrlTimeSpanModel = CtrlTimeSpanDialogResult
 
 @Component({
   selector: 'gv-ctrl-time-span',
@@ -16,10 +16,10 @@ type CtrlModel = CtrlTimeSpanDialogResult
   styleUrls: ['./ctrl-time-span.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimeSpanComponent }],
 })
-export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlTimeSpanModel> {
   static nextId = 0;
 
-  model: CtrlModel;
+  model: CtrlTimeSpanModel;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
@@ -70,10 +70,10 @@ export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, M
   private _disabled = false;
 
   @Input()
-  get value(): CtrlModel | null {
+  get value(): CtrlTimeSpanModel | null {
     return this.model;
   }
-  set value(value: CtrlModel | null) {
+  set value(value: CtrlTimeSpanModel | null) {
     if (
       !value || (!value[72] && !value[152] && !value[153] && !value[71] && !value[150] && !value[151])
     ) {
@@ -148,7 +148,7 @@ export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, M
     this.onFocus()
   }
 
-  writeValue(value: CtrlModel | null): void {
+  writeValue(value: CtrlTimeSpanModel | null): void {
     this.value = value;
   }
 

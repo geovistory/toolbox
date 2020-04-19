@@ -7,7 +7,7 @@ import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap, catchErr
 import { InfLanguage, InfLanguageApi } from '../../../../core';
 import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 
-type CtrlModel = InfLanguage;
+export type CtrlLanguageModel = InfLanguage;
 
 @Component({
   selector: 'gv-ctrl-language',
@@ -15,10 +15,10 @@ type CtrlModel = InfLanguage;
   styleUrls: ['./ctrl-language.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlLanguageComponent }],
 })
-export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlLanguageModel> {
   static nextId = 0;
 
-  model: CtrlModel;
+  model: CtrlLanguageModel;
   @ViewChild(MatInput, { static: false }) matInput: MatInput;
   @ViewChild(MatAutocompleteTrigger, { static: false }) matAutocompleteTrigger: MatAutocompleteTrigger;
 
@@ -71,10 +71,10 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   private _disabled = false;
 
   @Input()
-  get value(): CtrlModel | null {
+  get value(): CtrlLanguageModel | null {
     return this.model;
   }
-  set value(value: CtrlModel | null) {
+  set value(value: CtrlLanguageModel | null) {
     if (!value || !value.pk_entity) {
       this.model = undefined
     } else {
@@ -156,7 +156,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
 
   }
 
-  writeValue(value: CtrlModel | null): void {
+  writeValue(value: CtrlLanguageModel | null): void {
     this.formControl.setValue(value);
   }
 

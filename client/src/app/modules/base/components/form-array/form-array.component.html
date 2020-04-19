@@ -1,76 +1,91 @@
-<div class="gv-full-with" *ngIf="showTitle">
-  <div class="left-col">
-    <span class="mat-h3">
-      {{formArrayFactory?.config.placeholder}}
-      <!-- <span matTooltip="Required" *ngIf="??"> * </span> -->
-      <span class="ml-1 mat-caption mat-text-secondary">
-        ({{formArrayFactory?.children.length}})
+<ng-container *ngIf="showTitle">
+  <div class="gv-full-with">
+    <ng-container *ngTemplateOutlet="title; context:{
+      'placeholder':formArrayFactory?.config.placeholder,
+      'count': formArrayFactory?.children.length,
+      'required': formArrayFactory.config.required
+      }"></ng-container>
+    <div class="right-col" *ngIf="showAddBtn">
+      <button mat-icon-button (click)="add()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-container>
+
+
+
+<div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with " [ngClass]="{
+    'is-list-item':formArrayFactory.config.isList,
+    'is-list': child?.config.isList,
+    'hide-field-title': child.config.data.hideFieldTitle,
+    'is-ctrl-target-class': isCtrlTargetClass(child)
+}">
+
+
+
+  <mat-card class="left-col mat-elevation-z5" *ngIf="wrapInCard(child); else noWrap">
+    <mat-card-content class="gv-full-with">
+      <span class="card–class-info mat-caption mat-text-secondary">
+        <i class="gv-entity-color fa fa-star-o"></i>
+        {{child.config.data.listDefinition.targetClassLabel}}
       </span>
-    </span>
-  </div>
-  <div class="right-col" *ngIf="showAddBtn">
-    <button mat-button (click)="add()">
-      <mat-icon>add_circle_outline</mat-icon> Add
-    </button>
-  </div>
-</div>
+      <ng-container *ngTemplateOutlet="noWrap"></ng-container>
+    </mat-card-content>
+  </mat-card>
 
-
-
-<div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with">
-
-  <span class="w-100 m-2" *ngIf="wrapInCard(child); else noWrap">
-
-    <mat-card class="w-100 mat-elevation-z5">
-      <mat-card-content class="gv-full-with">
-        <gv-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child" class="left-col"></gv-form-array>
-        <gv-form-control *ngIf="isFormControl(child)" [formControlFactory]="child" class="left-col">
-        </gv-form-control>
-
-      </mat-card-content>
-      <mat-card-actions class="d-flex">
-        <button mat-button class="ml-auto" *ngIf="showRemoveBtn" (click)="remove(i)">
-          Remove
-        </button>
-      </mat-card-actions>
-    </mat-card>
-
-  </span>
 
   <ng-template #noWrap>
-    <gv-form-array *ngIf="isFormArray(child)" [formArrayFactory]="child" class="left-col"></gv-form-array>
-    <gv-form-control *ngIf="isFormControl(child)" [formControlFactory]="child" class="left-col">
-    </gv-form-control>
-    <ng-template *ngIf="child.factoryType ==='childFactory'" [cdkPortalOutlet]="child.portal" #outlet
-      (attached)="child.attached($event, outlet)"></ng-template>
+    <div style="flex: 1 0 100%;" *ngIf="isCtrlTargetClass(child)">
+      <div class="gv-full-with">
+        <ng-container *ngTemplateOutlet="title; context:{
+        'placeholder':child?.config.placeholder,
+        'count': child?.children?.length || 0,
+        'showAddBtn': showAddBtn,
+        'required': child.config.required
+      }"></ng-container>
 
-    <div *ngIf="isCtrlTargetClass(child)" class="gv-full-with w-100 mb-3">
-      <div class="left-col">
-        <span class="gv-ellipsis upper-case gv-field-header-label">
-          {{child?.config.placeholder}}
-        </span>
-      </div>
-      <div class="right-col">
-        <button mat-button [matMenuTriggerFor]="beforeMenu"
-          [disabled]="ctrlTargetClassIsDisabled(child.config.data?.nodeConfigs)">
-          <mat-icon>arrow_drop_down_circle</mat-icon> Select
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col">
+          <mat-icon>add</mat-icon>
         </button>
-        <mat-menu #beforeMenu="matMenu" xPosition="before">
-          <button *ngFor="let nodeConfig of child.config.data?.nodeConfigs; let j = index;" mat-menu-item
-            (click)="addSpecific(i, child.config.data, j)" [disabled]="nodeConfig.disabled">
-            {{nodeConfig?.array.data.customCtrlLabel}}
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item *ngFor="let lDef of child?.config?.data?.fieldDefinition?.listDefinitions"
+            (click)="addItemInChildListDef(child?.config?.data?.fieldDefinition, lDef,i)">
+            {{lDef.targetClassLabel}}
           </button>
         </mat-menu>
       </div>
     </div>
 
 
-    <button mat-button class="right-col" *ngIf="showRemoveBtn" (click)="remove(i)">
-      <mat-icon>remove</mat-icon>
-    </button>
+
+
+    <gv-form-array class="left-col" *ngIf="isFormArray(child)" [formArrayFactory]="child">
+    </gv-form-array>
+    <gv-form-control class="left-col" *ngIf="isFormControl(child)" [formControlFactory]="child">
+    </gv-form-control>
+    <div class="left-col" *ngIf="child.factoryType ==='childFactory'">
+      <ng-template [cdkPortalOutlet]="child.portal" #outlet (attached)="child.attached($event, outlet)"></ng-template>
+    </div>
+
   </ng-template>
 
-
+  <div class="right-col" *ngIf="showRemoveBtn">
+    <button mat-icon-button (click)="remove(i)">
+      <mat-icon>remove</mat-icon>
+    </button>
+  </div>
 </div>
 
-<div *ngIf="showTitle" class="mb-3"></div>
+
+<ng-template #title let-placeholder="placeholder" let-count="count" let-required="required">
+  <div class="left-col">
+    <span class="mat-h3 mb-0">
+      {{placeholder}}
+      <span matTooltip="Required" *ngIf="required"> * </span>
+      <span class="ml-1 mat-caption mat-text-secondary">
+        ({{count}})
+      </span>
+    </span>
+  </div>
+</ng-template>

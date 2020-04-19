@@ -54,6 +54,8 @@ import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
 import { FgPlaceComponent } from './components/fg-place/fg-place.component';
 import { FgTextPropertyComponent } from './components/fg-text-property/fg-text-property.component';
+import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
+import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 
 const components = [
   PropertiesTreeComponent,
@@ -70,6 +72,7 @@ const components = [
   CtrlLanguageComponent,
   CtrlPlaceComponent,
   CtrlEntityComponent,
+  CtrlEntityDialogComponent,
   CtrlTextPropertyComponent,
   CtrlLangStringComponent,
   CtrlTimeSpanComponent,
@@ -89,7 +92,8 @@ const components = [
   PeItSearchExistingComponent,
   EntityAddExistingHitComponent,
   FgPlaceComponent,
-  FgTextPropertyComponent
+  FgTextPropertyComponent,
+  FgLangStringComponent
 ]
 
 const baseModules = [
@@ -129,10 +133,13 @@ const baseModules = [
   entryComponents: [
     ChooseClassDialogComponent,
     CtrlTimeSpanDialogComponent,
+    CtrlEntityDialogComponent,
     PropertiesTreeDialogComponent,
     AddDialogComponent,
     AddOrCreateEntityModalComponent,
-    FgPlaceComponent
+    FgPlaceComponent,
+    FgTextPropertyComponent,
+    FgLangStringComponent
   ]
 })
 export class BaseModule { }

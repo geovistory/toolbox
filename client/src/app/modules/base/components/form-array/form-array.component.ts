@@ -1,13 +1,16 @@
 import { Component, OnInit, Input, HostBinding, OnDestroy } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
-import { FormArrayData, LocalNodeConfig, FormControlData, LocalFormArrayFactory, LocalFormControlFactory } from '../form-create-entity/form-create-entity.component';
+import { FormArrayData, LocalNodeConfig, FormControlData, LocalFormArrayFactory, LocalFormControlFactory, FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormArrayConfig, FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { CdkCell } from '@angular/cdk/table';
+import { ListDefinition, FieldDefinition } from '../properties-tree/properties-tree.models';
+import { equals } from 'ramda';
 
 @Component({
   selector: 'gv-form-array',
   templateUrl: './form-array.component.html',
-  styleUrls: ['./form-array.component.css']
+  styleUrls: ['./form-array.component.scss']
 })
 export class FormArrayComponent implements OnInit, OnDestroy {
 
@@ -31,22 +34,29 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
   isFormControl(child: LocalFormArrayFactory | LocalFormControlFactory) {
     if (child.factoryType === 'control') {
+      return true
       const c = child as LocalFormControlFactory
       if (c.config.data.controlType !== 'ctrl-target-class') {
+      }
+    }
+    return false
+  }
+
+  isCtrlTargetClass(formArrayFactory: LocalFormArrayFactory | LocalFormControlFactory) {
+    if (formArrayFactory.factoryType === 'control') {
+      const c = formArrayFactory as LocalFormControlFactory
+      if (c.config.data.controlType === 'ctrl-target-class') {
         return true
       }
     }
     return false
   }
 
-  isCtrlTargetClass(child: LocalFormArrayFactory | LocalFormControlFactory) {
-    if (child.factoryType === 'control') {
-      const c = child as LocalFormControlFactory
-      if (c.config.data.controlType === 'ctrl-target-class') {
-        return true
-      }
-    }
-    return false
+  isField() {
+    return this.formArrayFactory.config.data.fieldDefinition &&
+      !this.formArrayFactory.config.data.listDefinition &&
+      this.formArrayFactory.config.data.fieldDefinition.targetClasses &&
+      this.formArrayFactory.config.data.fieldDefinition.targetClasses.length > 0
   }
 
 
@@ -67,7 +77,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get showTitle() {
-    return this.formArrayFactory.config.isList; // this.itemNumberFlexible || this.isTemporalEntityList
+    return this.formArrayFactory.config.isList && !this.formArrayFactory.config.data.hideFieldTitle;
   }
 
   get isTemporalEntityList() {
@@ -90,7 +100,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     return !configs.some(c => !c.disabled)
   }
 
-  constructor() { }
+  constructor(private formCreateEntity: FormCreateEntityComponent) { }
 
   ngOnInit() {
   }
@@ -123,6 +133,20 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     // disable the selected config
     config.disabled = true;
 
+  }
+  addItemInChildListDef(fDef: FieldDefinition, lDef: ListDefinition, i: number) {
+    const childList = this.formArrayFactory.children.find(c => equals(c.config.data.listDefinition, lDef));
+    if (childList && childList.factoryType == 'array') {
+      const list = childList as FormArrayFactory<FormControlData, FormArrayData>;
+      list.onAdd()
+    }
+    else {
+      const config = this.formCreateEntity.getListNode('temporal-entity', fDef, lDef, false, undefined)
+      const index = i + 1
+      this.formArrayFactory.add(index, config)
+      const list = this.formArrayFactory.children[index] as FormArrayFactory<FormControlData, FormArrayData>;
+      list.onAdd()
+    }
   }
 
   ngOnDestroy() {

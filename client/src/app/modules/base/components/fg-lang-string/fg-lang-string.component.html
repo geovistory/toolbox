@@ -1,7 +1,7 @@
 <form *ngIf="formFactory?.formGroup" [formGroup]="formFactory.formGroup">
   <div *ngIf="formFactory.formGroupFactory.child.factoryType === 'array'"
     [formGroup]="formFactory.formGroupFactory.control">
-    <div formArrayName="childControl" class="gv-fg-text-property-container">
+    <div formArrayName="childControl" class="gv-fg-lang-string-container">
       <ng-container *ngFor=" let child of formFactory.formGroupFactory.child.children">
 
         <mat-form-field class="ctrl-text" *ngIf="child.config.data.type=== 'text' " [appearance]="appearance">
@@ -12,9 +12,6 @@
 
           <mat-error *ngIf="child.control.hasError('required')">
             Required
-          </mat-error>
-          <mat-error *ngIf="child.control.hasError('emptyQuillDoc')">
-            Can't be empty
           </mat-error>
         </mat-form-field>
 
