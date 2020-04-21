@@ -136,7 +136,7 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   }
 
 
-  onContainerClick(event: MouseEvent) {
+  onContainerClick() {
     this.onFocus()
     this.quillEditComponent.focusOnEnd()
   }

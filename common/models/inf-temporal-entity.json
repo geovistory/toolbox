@@ -72,7 +72,8 @@
         "ownProperties",
         "graphsOfProject",
         "temporalEntityList",
-        "alternativeTemporalEntityList"
+        "alternativeTemporalEntityList",
+        "addToProject"
       ]
     }
   ],
@@ -468,6 +469,45 @@
       "description": "Relate a nested object of a InfTemporalEntity to the project.",
       "http": {
         "path": "/change-project-relation",
+        "verb": "post"
+      }
+    },
+    "addToProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the temporal entity to add.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "SchemaObject",
+        "root": true
+      },
+      "description": "Add a temporal entity with its outgoing roles to a project.",
+      "http": {
+        "path": "/add-to-project",
         "verb": "post"
       }
     }

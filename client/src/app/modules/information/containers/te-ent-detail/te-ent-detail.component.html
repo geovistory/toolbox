@@ -36,8 +36,8 @@
           <div class="summary-texts">
             <div class="ellipsis">
               <h2 class="summary-entity-label ellipsis">
-                <span [matTooltip]="'Persistent Item ' + pkEntity">{{classLabel$ | async}} –
-                  {{(preview$|async).entity_label}}</span>
+                <span [matTooltip]="'Entity ' + pkEntity">{{classLabel$ | async}} –
+                  {{(preview$|async)?.entity_label}}</span>
                 <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
               </h2>
               <div class="summary-entity-label ellipsis">
@@ -47,7 +47,7 @@
                 </gv-onto-class-info>
                 <span> {{classLabel$ | async}}</span>
                 <span *ngIf="(preview$|async)?.fk_type" class="mat-text-secondary">, Type: </span>
-                <span *ngIf="(preview$|async)?.fk_type"> {{(preview$|async).type_label}} </span>
+                <span *ngIf="(preview$|async)?.fk_type"> {{(preview$|async)?.type_label}} </span>
               </div>
             </div>
           </div>

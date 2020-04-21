@@ -109,7 +109,7 @@ export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, M
       this.onFocus()
 
       const ref = this.dialog.open(CtrlTimeSpanDialogComponent, {
-        width: '500px',
+        width: '600px',
         data
       });
 
@@ -143,7 +143,7 @@ export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, M
   }
 
 
-  onContainerClick(event: MouseEvent) {
+  onContainerClick() {
     this.openModal()
     this.onFocus()
   }

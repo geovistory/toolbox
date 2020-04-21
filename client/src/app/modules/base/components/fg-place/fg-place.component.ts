@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Optional, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Optional, Inject, OnDestroy, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
 import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
 import { QueryPathSegment } from '../../../../../../../src/common/interfaces';
@@ -7,7 +7,7 @@ import { InfPlace } from 'app/core';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
 import { first, takeUntil, map } from 'rxjs/operators';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { MatFormFieldAppearance } from '@angular/material';
+import { MatFormFieldAppearance, MatInput } from '@angular/material';
 
 type FgPlaceNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgPlaceInjectData extends FormFactoryCompontentInjectData<Observable<InfPlace>> {
@@ -18,13 +18,16 @@ export interface FgPlaceInjectData extends FormFactoryCompontentInjectData<Obser
   templateUrl: './fg-place.component.html',
   styleUrls: ['./fg-place.component.scss']
 })
-export class FgPlaceComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class FgPlaceComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
 
   @Input() initVal$: Observable<InfPlace>
   @Input() appearance: MatFormFieldAppearance
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
+
+  @ViewChildren(MatInput) matInputs: QueryList<MatInput>
 
 
   constructor(
@@ -81,7 +84,7 @@ export class FgPlaceComponent implements OnInit, OnDestroy, FormFactoryComponent
               mapValue: (x: number[]) => {
                 const place: InfPlace = {
                   pk_entity: undefined,
-                  fk_class: initVal.fk_class,
+                  fk_class: initVal ? initVal.fk_class : null,
                   lat: x[0],
                   long: x[1]
                 }
@@ -97,7 +100,7 @@ export class FgPlaceComponent implements OnInit, OnDestroy, FormFactoryComponent
         map(initVal => {
           const latCtrl: FgPlaceNodeConfig = {
             control: {
-              initValue: initVal.lat,
+              initValue: initVal ? initVal.lat : null,
               required: true,
               data: {},
               mapValue: x => x,
@@ -106,7 +109,7 @@ export class FgPlaceComponent implements OnInit, OnDestroy, FormFactoryComponent
           }
           const longCtrl: FgPlaceNodeConfig = {
             control: {
-              initValue: initVal.long,
+              initValue: initVal ? initVal.long : null,
               required: true,
               data: {},
               mapValue: x => x,
@@ -119,6 +122,27 @@ export class FgPlaceComponent implements OnInit, OnDestroy, FormFactoryComponent
         })
       )
     }
+  }
+  focusOnCtrlLat() {
+    if (this.matInputs.length > 0) {
+      this.matInputs.first.focus()
+    }
+    this.matInputs.changes.pipe(first((x: QueryList<MatInput>) => x.length > 0)).subscribe((items) => {
+      items.first.focus()
+    })
+  }
+  focusOnCtrlLong() {
+    if (this.matInputs.length > 1) {
+      this.matInputs.last.focus()
+    }
+    this.matInputs.changes.pipe(first((x: QueryList<MatInput>) => x.length > 1)).subscribe((items) => {
+      items.last.focus()
+    })
+  }
+
+
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
   }
 
   ngOnDestroy() {

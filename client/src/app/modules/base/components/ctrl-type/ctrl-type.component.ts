@@ -152,7 +152,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   }
 
 
-  onContainerClick(event: MouseEvent) {
+  onContainerClick() {
     this.matSelect.open()
   }
 

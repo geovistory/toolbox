@@ -44,7 +44,7 @@ export interface TccFormChildData {
 
 export type TccFormNodeConfig = FormNodeConfig<TccFormGroupData, TccFormArrayData, TccFormControlData, TccFormChildData>;
 export type TccFormGroupFactory = FormGroupFactory;
-export type TccFormArrayFactory = FormArrayFactory<TccFormControlData, TccFormArrayData>;
+export type TccFormArrayFactory = FormArrayFactory<TccFormControlData, TccFormArrayData, TccFormChildData>;
 export type TccFormControlFactory = FormControlFactory<TccFormControlData>;
 export type TccFormChildFactory = FormChildFactory<TccFormChildData>;
 

@@ -1,32 +1,49 @@
-<ng-container *ngIf="formArrayFactory.config.data.arrayContains =='lists'">
+<ng-container *ngIf="formArrayFactory.config.data.lists">
   <div class="gv-full-with">
-    <ng-container *ngTemplateOutlet="title; context:{
-      'placeholder':formArrayFactory?.config.placeholder,
-      'count': formArrayFactory?.children.length,
-      'required': formArrayFactory.config.required
-      }"></ng-container>
-    <!-- <div class="right-col" *ngIf="showAddBtn">
-      <button mat-icon-button (click)="add()">
-        <mat-icon>add</mat-icon>
-      </button>
-    </div> -->
-    <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col">
+    <div class="left-col">
+      <span class="mat-h3 mb-0">
+        {{formArrayFactory?.config.placeholder}}
+        <span matTooltip="Required" *ngIf="formArrayFactory.config.required"> * </span>
+        <span class="ml-1 mat-caption mat-text-secondary">
+          ({{length}})
+        </span>
+
+        <span class="ml-1 mat-caption mat-text-warn"
+          *ngIf="formArrayFactory.control.touched && formArrayFactory.control.hasError('maxLength')">
+          Max. {{formArrayFactory.control.getError('maxLength').maxLength}} item(s) allowed
+        </span>
+        <span class="ml-1 mat-caption mat-text-warn"
+          *ngIf="formArrayFactory.control.touched && formArrayFactory.control.hasError('minLength')">
+          At least {{formArrayFactory.control.getError('minLength').minLength}} item(s) required
+        </span>
+      </span>
+    </div>
+
+    <button class="right-col" mat-icon-button (click)="add()"
+      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.listDefinitions.length===1"
+      [disabled]="length>=maxLength">
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="right-col"
+      *ngIf="formArrayFactory.config.data.lists.fieldDefinition?.listDefinitions.length>1">
       <mat-icon>add</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item *ngFor="let lDef of formArrayFactory?.config?.data?.fieldDefinition?.listDefinitions"
-        (click)="addItemInChildListDef(formArrayFactory?.config?.data?.fieldDefinition, lDef)">
+      <button mat-menu-item *ngFor="let lDef of formArrayFactory.config.data.lists.fieldDefinition?.listDefinitions"
+        (click)="addItemInChildListDef(lDef)">
         {{lDef.targetClassLabel}}
       </button>
     </mat-menu>
   </div>
+
 </ng-container>
 
 
-
+<!-- {{minLength}}/{{maxLength}} -->
 <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with " [ngClass]="{
     'is-list-item':formArrayFactory.config.isList,
-    'is-list': child?.config.isList,
+    'is-field': child?.config?.data.lists,
     'hide-field-title': child.config.data.hideFieldTitle,
     'is-ctrl-target-class': isCtrlTargetClass(child)
 }">
@@ -37,7 +54,7 @@
     <mat-card-content class="gv-full-with">
       <span class="card–class-info mat-caption mat-text-secondary">
         <i class="gv-entity-color fa fa-star-o"></i>
-        {{child.config.data.listDefinition.targetClassLabel}}
+        <!-- {{child.config.data.listDefinition.targetClassLabel}} -->
       </span>
       <ng-container *ngTemplateOutlet="noWrap"></ng-container>
     </mat-card-content>
@@ -71,22 +88,11 @@
 
   </ng-template>
 
-  <div class="right-col" *ngIf="showRemoveBtn">
+  <div class="right-col rmv-btn" *ngIf="showRemoveBtn(child)">
     <button mat-icon-button (click)="remove(i)">
       <mat-icon>remove</mat-icon>
     </button>
+    <!-- {{parentLength}} of {{parentMinLength}}/{{parentMaxLength}} -->
+
   </div>
 </div>
-
-
-<ng-template #title let-placeholder="placeholder" let-count="count" let-required="required">
-  <div class="left-col">
-    <span class="mat-h3 mb-0">
-      {{placeholder}}
-      <span matTooltip="Required" *ngIf="required"> * </span>
-      <span class="ml-1 mat-caption mat-text-secondary">
-        ({{count}})
-      </span>
-    </span>
-  </div>
-</ng-template>

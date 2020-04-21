@@ -4,7 +4,8 @@
     <div formArrayName="childControl" class="gv-fg-text-property-container">
       <ng-container *ngFor=" let child of formFactory.formGroupFactory.child.children">
 
-        <mat-form-field class="ctrl-text" *ngIf="child.config.data.type=== 'text' " [appearance]="appearance">
+        <mat-form-field class="ctrl-text" *ngIf="child.config.data.type=== 'text' " [appearance]="appearance"
+          cdkFocusInitial>
           <mat-label>{{child.config.placeholder}}</mat-label>
 
           <gv-ctrl-appellation placeholder="Placeholder" [formControl]="child.control">

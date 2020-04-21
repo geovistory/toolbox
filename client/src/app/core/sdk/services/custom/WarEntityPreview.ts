@@ -114,6 +114,50 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
   }
 
   /**
+   * Find entity previews with left joined statement.
+   *
+   * @param {number} pkProject pkProject
+   *
+   * @param {string} searchString Search String
+   *
+   * @param {any} pkClasses Classes for which the search will be performed.
+   *
+   * @param {string} entityType Type of Entity: 'teEn' or 'peIt'.
+   *
+   * @param {number} limit Max. number of results per page [default=10; max=200]
+   *
+   * @param {number} page Page of pagination
+   *
+   * @param {object} relatedStatement Definition about how to join related statements
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `WarEntityPreview` object.)
+   * </em>
+   */
+  public searchExistingWithRelatedStatement(pkProject: any, searchString: any = {}, pkClasses: any = {}, entityType: any = {}, limit: any = {}, page: any, relatedStatement: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/WarEntityPreviews/search-existing-with-related-statement";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof searchString !== 'undefined' && searchString !== null) _urlParams.searchString = searchString;
+    if (typeof pkClasses !== 'undefined' && pkClasses !== null) _urlParams.pkClasses = pkClasses;
+    if (typeof entityType !== 'undefined' && entityType !== null) _urlParams.entityType = entityType;
+    if (typeof limit !== 'undefined' && limit !== null) _urlParams.limit = limit;
+    if (typeof page !== 'undefined' && page !== null) _urlParams.page = page;
+    if (typeof relatedStatement !== 'undefined' && relatedStatement !== null) _urlParams.relatedStatement = relatedStatement;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Recreate all entity previews. This may be useful after deployment on a fresh db.
    *
    * @returns {object} An empty reference that will be

@@ -24,6 +24,9 @@ export default sandboxOf(FgPlaceComponent, {
           <gv-fg-place #c [appearance]="'fill'"></gv-fg-place>
       </div>
       <div>
+          <button (click)="c.focusOnCtrlLat()" >focus on lat</button>
+          <button (click)="c.focusOnCtrlLong()" >focus on long</button>
+
           <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
           <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
           <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>

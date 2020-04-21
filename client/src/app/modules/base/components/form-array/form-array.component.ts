@@ -1,8 +1,16 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
-import { equals } from 'ramda';
-import { FormArrayData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig } from '../form-create-entity/form-create-entity.component';
+import { equals, sum } from 'ramda';
+import { FormArrayData, FormControlData, FormCreateEntityComponent, LocalFormArrayFactory, LocalFormControlFactory, LocalNodeConfig, LocalFormChildFactory, FormChildData } from '../form-create-entity/form-create-entity.component';
 import { FieldDefinition, ListDefinition } from '../properties-tree/properties-tree.models';
+import { ListType } from 'app/core';
+import { FormArray } from '@angular/forms';
+import { first } from 'rxjs/operators';
+import { CtrlEntityComponent } from '../ctrl-entity/ctrl-entity.component';
+import { ChildComponents } from '../form-control/form-control.component';
+import { FgTextPropertyComponent } from '../fg-text-property/fg-text-property.component';
+import { FgPlaceComponent } from '../fg-place/fg-place.component';
+import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 
 @Component({
   selector: 'gv-form-array',
@@ -15,14 +23,15 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
 
   wrapInCard(child: LocalFormArrayFactory | LocalFormControlFactory) {
-    if (child.factoryType !== 'array') return false
-    else {
-      const c = child as LocalFormArrayFactory
-      return (
-        c.config.data.fieldDefinition.listType === 'temporal-entity' &&
-        c.config.isList === false
-      )
-    }
+    return false;
+    // if (child.factoryType !== 'array') return false
+    // else {
+    //   const c = child as LocalFormArrayFactory
+    //   return (
+    //     c.config.data.fieldDefinition.listType === 'temporal-entity' &&
+    //     c.config.isList === false
+    //   )
+    // }
   }
 
   isFormArray(child: LocalFormArrayFactory | LocalFormControlFactory) {
@@ -49,12 +58,6 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     return false
   }
 
-  isField() {
-    return this.formArrayFactory.config.data.fieldDefinition &&
-      !this.formArrayFactory.config.data.listDefinition &&
-      this.formArrayFactory.config.data.fieldDefinition.targetClasses &&
-      this.formArrayFactory.config.data.fieldDefinition.targetClasses.length > 0
-  }
 
 
   get showAddBtn() {
@@ -65,8 +68,19 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     )
   }
 
-  get showRemoveBtn() {
-    return (this.itemNumberFlexible || this.isTemporalEntityList)
+  get parentListDefsLength() {
+    return this.formArrayFactory.parent.config.data &&
+      this.formArrayFactory.parent.config.data.lists &&
+      this.formArrayFactory.parent.config.data.lists.fieldDefinition.listDefinitions.length
+  }
+
+  showRemoveBtn(child: LocalFormControlFactory | LocalFormChildFactory) {
+    return this.parentListDefsLength > 1 ||
+      (
+        (child.factoryType === 'control' || child.factoryType == 'childFactory')
+        && this.parentLength > this.parentMinLength
+        && !((child.config.data as FormControlData).controlType && (child.config.data as FormControlData).controlType == 'ctrl-time-span')
+      )
   }
 
   get paddingLeft() {
@@ -78,14 +92,50 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get isTemporalEntityList() {
-    return (this.formArrayFactory.config.isList &&
-      this.formArrayFactory.config.data.fieldDefinition.listType === 'temporal-entity')
+    return (this.formArrayFactory.config.data.lists &&
+      this.formArrayFactory.config.data.lists.fieldDefinition.listType === 'temporal-entity')
   }
 
   get itemNumberFlexible() {
     return (this.formArrayFactory.config.isList &&
       this.formArrayFactory.config.maxLength !== 1 &&
       this.formArrayFactory.config.maxLength !== undefined)
+  }
+
+  get maxLength() {
+    if (this.formArrayFactory.config.data.lists) {
+      return this.formArrayFactory.config.data.lists.maxLength;
+    }
+  }
+
+  get minLength() {
+    if (this.formArrayFactory.config.data.lists) {
+      return this.formArrayFactory.config.data.lists.minLength;
+    }
+  }
+
+  get length() {
+    return sum(this.formArrayFactory.control.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
+  }
+
+  get parentMaxLength() {
+    if (this.formArrayFactory.parent.config.data.lists) {
+      return this.formArrayFactory.parent.config.data.lists.maxLength;
+    }
+  }
+
+  get parentMinLength() {
+    if (this.formArrayFactory.parent.config.data.lists) {
+      return this.formArrayFactory.parent.config.data.lists.minLength;
+    }
+  }
+
+  get parentLength() {
+    const formArray = this.formArrayFactory.parent.control as FormArray;
+    if (formArray.controls && formArray.controls.length > 0) {
+      return sum(formArray.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
+    }
+    return 0;
   }
 
   get titleLevel(): number {
@@ -97,13 +147,15 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     return !configs.some(c => !c.disabled)
   }
 
-  constructor(private formCreateEntity: FormCreateEntityComponent) { }
+  constructor(
+    private formCreateEntity: FormCreateEntityComponent,
+  ) { }
 
   ngOnInit() {
   }
 
   add() {
-    this.formArrayFactory.onAdd()
+    this.addItemInChildListDef(this.formArrayFactory.config.data.lists.fieldDefinition.listDefinitions[0])
   }
   remove(i) {
     this.formArrayFactory.remove(i)
@@ -131,19 +183,59 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     config.disabled = true;
 
   }
-  addItemInChildListDef(fDef: FieldDefinition, lDef: ListDefinition, i: number) {
-    const childList = this.formArrayFactory.children.find(c => equals(c.config.data.listDefinition, lDef));
-    if (childList && childList.factoryType == 'array') {
-      const list = childList as FormArrayFactory<FormControlData, FormArrayData>;
-      list.onAdd()
+  addItemInChildListDef(lDef: ListDefinition) {
+    // try to find the existing child FormArray containing the controls
+    let childList = this.formArrayFactory.children.find(c => {
+      if (c.factoryType == 'array') {
+        const d = c.config.data as FormArrayData;
+        return equals(d.controls.listDefinition, lDef)
+      }
+      return false
+    }) as FormArrayFactory<FormControlData, FormArrayData, FormChildData>;
+
+    // if not available, add a child FormArray containing the controls
+    if (!childList) {
+      const config = this.formCreateEntity.getListNode(lDef, false, undefined)
+      config.array.addOnInit = 0;
+      childList = this.formArrayFactory.prepend(config) as FormArrayFactory<FormControlData, FormArrayData, FormChildData>;
     }
-    else {
-      const config = this.formCreateEntity.getListNode('temporal-entity', fDef, lDef, false, undefined)
-      const index = i + 1
-      this.formArrayFactory.add(index, config)
-      const list = this.formArrayFactory.children[index] as FormArrayFactory<FormControlData, FormArrayData>;
-      list.onAdd()
+    const childFactory = childList.prependDefault() as LocalFormControlFactory | LocalFormChildFactory;
+
+    // Do some actions after the control is added
+    if (childFactory.factoryType == 'control') {
+
+      // Wait for the controls to be initialized by angular and emitted by childFactory
+      (childFactory as LocalFormControlFactory).childComponent$
+        .pipe(first())
+        .subscribe((childComponents: ChildComponents) => {
+          // if child is gv-ctrl-entity
+          if (childComponents.ctrlEntity) {
+            childComponents.ctrlEntity.onContainerClick();
+          }
+          // if child is gv-ctrl-entity
+          else if (childComponents.ctrlType) {
+            childComponents.ctrlType.onContainerClick();
+          }
+          else if (childComponents.ctrlTimeSpan) {
+            childComponents.ctrlTimeSpan.onContainerClick();
+          }
+
+        })
     }
+    else if (childFactory.factoryType === 'childFactory') {
+      (childFactory as LocalFormChildFactory).childComponent$
+        .pipe(first())
+        .subscribe((childComponent) => {
+          if (childComponent.FgTextPropertyComponent) {
+            (childComponent.FgTextPropertyComponent as FgTextPropertyComponent).focusOnCtrlText()
+          } else if (childComponent.FgPlaceComponent) {
+            (childComponent.FgPlaceComponent as FgPlaceComponent).focusOnCtrlLat()
+          } else if (childComponent.FgLangStringComponent) {
+            (childComponent.FgLangStringComponent as FgLangStringComponent).focusOnCtrlText()
+          }
+        })
+    }
+
   }
 
   ngOnDestroy() {

@@ -37,6 +37,7 @@ export interface FieldDefinition {
   sourceClass: number
   targetClasses?: number[]
   targetMaxQuantity?: number
+  targetMinQuantity?: number
   listDefinitions: ListDefinition[]
   identityDefiningForSource: boolean
   fieldConfig?: ProClassFieldConfig
@@ -60,10 +61,14 @@ export interface ListDefinition {
   identityDefiningForTarget: boolean
 
   sourceClass: number
+  sourceClassLabel: string
 
   targetClass: number
   targetClassLabel?: string
-  targetMaxQuantity?: number
+  targetMaxQuantity: number
+  targetMinQuantity: number
+  sourceMaxQuantity: number
+  sourceMinQuantity: number
 }
 
 export interface PropertyItemTypeMap {

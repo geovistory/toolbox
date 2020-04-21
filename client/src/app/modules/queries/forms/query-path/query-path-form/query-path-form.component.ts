@@ -34,7 +34,7 @@ export interface QueryPathFormChildData {
 
 export type QueryPathFormNodeConfig = FormNodeConfig<QueryPathFormGroupData, QueryPathFormArrayData, QueryPathFormControlData, QueryPathFormChildData>;
 export type QueryPathFormGroupFactory = FormGroupFactory;
-export type QueryPathFormArrayFactory = FormArrayFactory<QueryPathFormControlData, QueryPathFormArrayData>;
+export type QueryPathFormArrayFactory = FormArrayFactory<QueryPathFormControlData, QueryPathFormArrayData, QueryPathFormChildData>;
 export type QueryPathFormControlFactory = FormControlFactory<QueryPathFormControlData>;
 export type QueryPathFormChildFactory = FormChildFactory<QueryPathFormChildData>;
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormArray } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U } from 'app/core';
+import { FormArray, AbstractControl } from '@angular/forms';
+import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
@@ -8,7 +8,7 @@ import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-facto
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { equals, flatten, indexBy, values, groupBy } from 'ramda';
+import { equals, flatten, indexBy, values, groupBy, sum } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
@@ -18,25 +18,39 @@ import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextPropertyComponent, FgTextPropertyInjectData } from '../fg-text-property/fg-text-property.component';
 import { FieldDefinition, FieldProperty, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
+import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
+import { MatFormFieldAppearance } from '@angular/material';
+import { Appearance } from 'cesium';
+type ParentModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
   pkClass: number
-  fieldDefinition?: FieldDefinition
-  listDefinition?: ListDefinition
+  // fieldDefinition?: FieldDefinition
+  // listDefinition?: ListDefinition
   customCtrlLabel?: string
   stringPartId?: number
   hideFieldTitle: boolean;
-  parentListType?: ListType;
 
-  fields: {
-    fieldDefinition: FieldDefinition
+  fields?: {
+    parentModel: ParentModel;
+    parentProperty: FieldProperty
   }
 
-  lists: {
+  lists?: {
+    parentModel?: ParentModel;
     fieldDefinition: FieldDefinition
+    minLength: number
+    maxLength: number
   }
 
-  controls: {
+  controls?: {
+    listDefinition: ListDefinition
+  }
+
+  /**
+   * if the entry point is a statement
+   */
+  addStatement?: {
     listDefinition: ListDefinition
   }
 
@@ -45,14 +59,15 @@ export interface FormArrayData {
   removeHook?: (x: FormArrayData) => any
 }
 interface FormGroupData {
-  pkClass: number
-  fieldDefinition?: FieldDefinition
+  pkClass?: number
+  listDefinition?: ListDefinition
 }
 export interface FormControlData {
   controlType: ControlType
-  fieldDefinition?: FieldDefinition
+  // fieldDefinition?: FieldDefinition
   listDefinition?: ListDefinition
   nodeConfigs?: LocalNodeConfig[]
+  appearance: MatFormFieldAppearance
 }
 
 export interface FormChildData {
@@ -64,9 +79,9 @@ export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entit
 
 export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
 export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, FormChildData>;
-export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayData>
+export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayData, FormChildData>
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
-
+export type LocalFormChildFactory = FormChildFactory<FormChildData>
 @Component({
   selector: 'gv-form-create-entity',
   templateUrl: './form-create-entity.component.html',
@@ -76,7 +91,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   @Input() pkClass: number
-  @Input() appContext: number;
+
+  @Input() pkSourceEntity: number;
+  @Input() listDefinition: ListDefinition;
 
   @Input() hideButtons: boolean;
   @Input() hideTitle: boolean;
@@ -87,7 +104,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   @Output() cancel = new EventEmitter<void>()
   @Output() searchString = new EventEmitter<string>()
-  @Output() saved = new EventEmitter<InfPersistentItem | InfTemporalEntity>()
+  @Output() saved = new EventEmitter<InfPersistentItem | InfTemporalEntity | InfRole | InfTextProperty>()
+
+  appearance: MatFormFieldAppearance = 'outline';
 
   destroy$ = new Subject<boolean>();
   formFactory$: Observable<FormFactory>;
@@ -104,15 +123,14 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if (!this.pkClass) throw new Error('You must provide a pkClass as @Input() on FormCreateEntityComponent');
-    if (!this.appContext) throw new Error('You must provide a appContext as @Input() on FormCreateEntityComponent');
+    if (!this.pkClass && !this.listDefinition) throw new Error('You must provide a pkClass or a listDefinition as @Input() on FormCreateEntityComponent');
 
     if (!this.initVal$) this.initVal$ = new BehaviorSubject(undefined)
 
     this.formFactory$ = this.formFactoryService.create<FormGroupData, FormArrayData, FormControlData, any>({
       hideTitle: this.hideTitle,
       rootFormGroup$: of({
-        data: { pkClass: this.pkClass, }
+        data: { pkClass: this.pkClass, listDefinition: this.listDefinition }
       }),
       getChildNodeConfigs: this.getChildNodeConfigs
     }, this.destroy$)
@@ -136,59 +154,128 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
     if (nodeConfig.group) {
 
-      return this.getChildNodesOfGroup(nodeConfig)
+      return this.getChildNodesOfGroup(nodeConfig.group.data)
 
     }
     else if (nodeConfig.array) {
 
       const arrayConfig = nodeConfig.array
 
-      if (nodeConfig.array.data.arrayContains == 'fields') {
+      if (nodeConfig.array.data.fields) {
 
-        return this.getFieldNodes(arrayConfig, arrayConfig.data.fieldDefinition.listType)
-
-      }
-      else if (nodeConfig.array.data.arrayContains == 'lists') {
-
-        return this.getListNodes(arrayConfig, arrayConfig.data.fieldDefinition.listType)
+        return this.getFieldNodes(arrayConfig, arrayConfig.data.fields.parentModel)
 
       }
-      else if (nodeConfig.array.data.arrayContains == 'controls') {
+      else if (nodeConfig.array.data.lists) {
 
-        return this.getControlNodes(arrayConfig, arrayConfig.data.listDefinition.listType)
+        return this.getListNodes(arrayConfig, arrayConfig.data.lists.fieldDefinition.listType)
 
+      }
+      else if (nodeConfig.array.data.controls) {
+
+        return this.getControlNodes(arrayConfig, arrayConfig.data.controls.listDefinition.listType)
+
+      }
+      else if (nodeConfig.array.data.addStatement) {
+        const x = nodeConfig.array.data.addStatement
+        return this.getChildNodesOfClassAndListDef(x.listDefinition.targetClass, x.listDefinition);
       }
     }
 
     console.error('no child node created for this nodeConfig:', nodeConfig)
   }
 
+
   /**
    * returns true if control is required
    * TODO!
    */
-  private ctrlRequired(fieldDefinition: FieldDefinition): boolean {
+  private ctrlRequired(lDef: ListDefinition | FieldDefinition): boolean {
     return (
-      fieldDefinition &&
-      fieldDefinition.isOutgoing &&
-      fieldDefinition.identityDefiningForSource
+      lDef &&
+      lDef.isOutgoing &&
+      lDef.identityDefiningForSource
     )
   }
 
-  private getChildNodesOfGroup(nodeConfig: LocalNodeConfig): Observable<LocalNodeConfig[]> {
-    const childConfs: LocalNodeConfig[] = [];
+  private getChildNodesOfGroup(data: FormGroupData): Observable<LocalNodeConfig[]> {
 
-    return combineLatest(
-      this.c.pipeListTypeOfClass(nodeConfig.group.data.pkClass),
-      this.c.pipeClassLabel(nodeConfig.group.data.pkClass)
-    ).pipe(auditTime(10), map(([listType, label]) => {
-      const mapFn = createContainerMapValue(nodeConfig.group.data.pkClass)
-      const mapValue = (x) => {
-        this.emitNewSearchString();
-        return mapFn(x)
+    if (data.pkClass) {
+
+      return this.getChildNodesOfClassAndListDef(data.pkClass)
+    }
+    else if (data.listDefinition) {
+      this.hiddenProperty = data.listDefinition.property;
+      const n: LocalNodeConfig = {
+        array: {
+          placeholder: data.listDefinition.targetClassLabel,
+          data: {
+            addStatement: {
+              listDefinition: data.listDefinition
+            },
+            hideFieldTitle: false,
+            pkClass: null
+          },
+          mapValue: (items) => {
+            const item = items[0]
+            if (data.listDefinition.listType == 'text-property') {
+              const text_property: Partial<InfTextProperty> = {
+                ...item,
+                fk_concerned_entity: this.pkSourceEntity,
+              };
+              return { text_property }
+            } else {
+              return {
+                statement: {
+                  [data.listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: this.pkSourceEntity,
+                  fk_property: data.listDefinition.property.pkProperty,
+                  fk_property_of_property: data.listDefinition.property.pkPropertyOfProperty,
+                  ...item
+                }
+              }
+            }
+          }
+        },
       }
-      if (listType === 'entity-preview') listType = 'persistent-item';
-      if (listType === 'temporal-entity' || listType === 'persistent-item') {
+      return of([n])
+    };
+  }
+
+
+  private getChildNodesOfClassAndListDef(pkTargetClass: number, listDef?: ListDefinition): Observable<LocalNodeConfig[]> {
+
+    if (listDef && listDef.listType == 'text-property') {
+      const c = this.getListNode(listDef, false, null);
+      c.array.addOnInit = 1;
+      c.array.mapValue = (items => items[0])
+      return of([c]);
+    }
+    return combineLatest(
+      this.c.pipeModelOfClass(pkTargetClass),
+      this.c.pipeClassLabel(pkTargetClass)
+    ).pipe(auditTime(10), map(([parentModel, label]) => {
+      const mapValue = (items) => {
+        this.emitNewSearchString();
+
+        const result = {} as InfTemporalEntity | InfPersistentItem;
+        items.forEach(item => {
+          for (const key in item) {
+            if (item.hasOwnProperty(key) && item[key].length > 0) {
+              result[key] = [...(result[key] || []), ...item[key]];
+            }
+          }
+        })
+        if (Object.keys(result).length) {
+          result.fk_class = pkTargetClass
+          return {
+            [parentModel]: result
+          }
+        }
+        else {
+          return null
+        }
+      }
+      if (parentModel === 'temporal_entity' || parentModel === 'persistent_item') {
         const n: LocalNodeConfig = {
           array: {
             isList: false,
@@ -196,28 +283,34 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             maxLength: 1,
             placeholder: label,
             data: {
-              arrayContains: 'fields',
-              pkClass: nodeConfig.group.data.pkClass,
-              fieldDefinition: {
-                listType,
-                ...{} as any
+              ...{} as any,
+              fields: {
+                parentModel
               },
+              pkClass: pkTargetClass,
               hideFieldTitle: false
             },
             mapValue
-          },
-        };
-        childConfs.push(n);
+          }
+        }
+        return [n];
       }
-      return childConfs;
+      else {
+        const c = this.getListNode(listDef, false, null);
+        c.array.addOnInit = 1;
+        c.array.mapValue = (items => items[0])
+        return [c];
+      }
     }));
+
   }
+
 
   /**
    * This Funciton returns an observable array of form array
    * each of these form arrays contain lists, or if needed, a target class selector
    */
-  private getFieldNodes(arrayConfig: LocalArrayConfig, parentListType: ListType): Observable<LocalNodeConfig[]> {
+  private getFieldNodes(arrayConfig: LocalArrayConfig, parentModel: ParentModel): Observable<LocalNodeConfig[]> {
 
     return combineLatest(
       this.p.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass),
@@ -243,7 +336,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           return fields$.pipe(
             map((fieldDefs) => fieldDefs.filter(fDef => {
               // Q: is this field not circular or hidden?
-              const prop = arrayConfig.data.fieldDefinition.property;
+              const prop = arrayConfig.data.fields.parentProperty;
               const parentPropety = prop ? prop.pkProperty : undefined;
               if (
                 (!parentPropety || parentPropety !== fDef.property.pkProperty) &&
@@ -255,17 +348,52 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             })
             ),
             switchMap((fieldDefs) => {
+
+
               return combineLatestOrEmpty(fieldDefs.map(fDef => {
+
+                // make one definition required for each persistent item
+                if (parentModel === 'persistent_item' && fDef.fkClassField === SysConfig.PK_CLASS_FIELD_ENTITY_DEFINITION) {
+                  fDef.targetMinQuantity = 1;
+                  fDef.identityDefiningForSource = true;
+                }
+
+                const maxLength = fDef.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : fDef.targetMaxQuantity;
+                const minLength = fDef.identityDefiningForSource ? fDef.targetMinQuantity : 0;
+
                 const n: LocalNodeConfig = {
                   array: {
                     initValue: this.getInitValueForFieldNode(fDef, { initTeEn, initPeIt }),
                     placeholder: fDef.label,
                     required: this.ctrlRequired(fDef),
-                    mapValue: (x) => x,
+                    validators: [
+                      (control: FormArray): { [key: string]: any } | null => {
+                        const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
+                        return length >= minLength
+                          ? null : { 'minLength': { value: control.value, minLength } }
+                      },
+                      (control: FormArray): { [key: string]: any } | null => {
+                        const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
+                        return length <= maxLength
+                          ? null : { 'maxLength': { value: control.value, maxLength } }
+                      }
+                    ],
+                    mapValue: (x) => {
+                      const items = flatten(x) // Flattens the values of the lists of this field
+                      if (fDef.listType == 'text-property') {
+                        return { text_properties: items }
+                      } else {
+                        const key = getRoleKey(parentModel, fDef.isOutgoing)
+                        return { [key]: items }
+                      }
+                    },
                     data: {
-                      parentListType,
-                      arrayContains: 'lists',
-                      fieldDefinition: fDef,
+                      lists: {
+                        minLength,
+                        maxLength,
+                        parentModel,
+                        fieldDefinition: fDef,
+                      },
                       hideFieldTitle: false,
                       pkClass: undefined,
                     },
@@ -273,77 +401,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   id: U.uuid()
                 };
                 return of(n)
-                // Q: is there only one list definition?
-                // if (fDef.listDefinitions.length === 1) {
-                //   // A. yes: add the array list
-                //   const lDef = fDef.listDefinitions[0];
-                //   const initValListNode = this.getInitValueForListNode(lDef, { initTeEn, initPeIt })
-                //   const n = this.getListNode(parentListType, fDef, lDef, false, initValListNode);
-                //   childConfs.push(n);
-
-                // } else {
-                // A. no: add a control for selecting the target class
-
-                // TODO INIT
-                // const n: LocalNodeConfig = {
-                //   control: {
-                //     // initValue: this.getInitValueForTargetClassCtrl(fDef, { initTeEn, initPeIt }),
-                //     placeholder: fDef.label,
-                //     required: this.ctrlRequired(fDef),
-                //     mapValue: () => { },
-                //     data: {
-                //       controlType: 'ctrl-target-class',
-                //       fieldDefinition: fDef,
-                //       nodeConfigs: fDef.listDefinitions
-                //         // filter fields targeting temporal-entity except for appellation for language
-                //         .filter(l => l.listType !== 'temporal-entity' || l.targetClass === DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE)
-                //         .map(lDef => this.getListNode(
-                //           parentListType,
-                //           fDef,
-                //           lDef,
-                //           false,
-                //           this.getInitValueForListNode(lDef, { initTeEn, initPeIt }),
-                //           lDef.targetClassLabel,
-                //           lDef.label + ' ' + lDef.targetClassLabel
-                //         ))
-                //     },
-                //   },
-                //   id: U.uuid()
-                // };
-
-                // -> use the mapValue as a Hook to add a array list after when a class is selected
-                // -> and remove the array list, if the class is deselected
-                // n.control.mapValue = (lDef: ListDefinition) => {
-                //   const newChildren = clone(childConfs)
-                //   const i = newChildren.findIndex(item => item.id === n.id)
-
-                //   // if selected
-                //   if (lDef) {
-                //     // insert the array config with the selected list definition
-                //     const newChildConfig = this.getListNode(
-                //       parentListType,
-                //       fDef,
-                //       lDef,
-                //       true,
-                //       this.getInitValueForListNode(lDef, { initTeEn, initPeIt }),
-                //       'Select ' + lDef.targetClassLabel
-                //     );
-
-                //     newChildConfig.array.addOnInit = 1;
-                //     newChildren.splice(i + 1, 0, newChildConfig)
-
-                //     // disable 'ctrl-target-class'
-
-                //     // update the form factory
-                //     subscriber.next(newChildren)
-                //   }
-
-                //   return
-                // }
-                // }
-                // }))
-
-
               })
 
               )
@@ -358,20 +415,20 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const initialValue = arrayConfig.initValue || [];
     const textProps: InfTextProperty[] = initialValue.filter((v) => !!v.fk_class_field)
     const statements: InfRole[] = initialValue.filter((v) => !v.fk_class_field)
-    const listDefIdx = indexBy((lDef) => (lDef.targetClass || 0).toString(), arrayConfig.data.fieldDefinition.listDefinitions)
-    const isOutgoing = arrayConfig.data.fieldDefinition.isOutgoing
+    const listDefinitions = arrayConfig.data.lists.fieldDefinition.listDefinitions;
+    const parentModel = arrayConfig.data.lists.parentModel;
+    const listDefIdx = indexBy((lDef) => (lDef.targetClass || 0).toString(), listDefinitions)
+    const isOutgoing = arrayConfig.data.lists.fieldDefinition.isOutgoing
     if (listType == 'text-property') {
       return of([this.getListNode(
-        arrayConfig.data.parentListType,
-        arrayConfig.data.fieldDefinition.listDefinitions[0],
+        listDefinitions[0],
         false,
         textProps
       )])
     }
     else if (listType == 'time-span') {
       return of([this.getListNode(
-        arrayConfig.data.parentListType,
-        arrayConfig.data.fieldDefinition.listDefinitions[0],
+        listDefinitions[0],
         false,
         statements
       )])
@@ -380,7 +437,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     // get the target class for each initial statement
     const o$ = statements.map((s) => {
       // -> for each initVal
-      const relObj = s.appellation || s.language || s.place || s.lang_string;
+      const relObj = s.appellation || s.language || s.place || s.lang_string || s.temporal_entity || s.persistent_item;
       if (relObj) {
         // --> if statement.appellation, .place, .lang_string, .time_primitive, .language
         return of({ fk_class: relObj.fk_class, statement: s })
@@ -394,12 +451,17 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     // add a list, where initial statements are available
     const listNodes$ = combineLatestOrEmpty(o$).pipe(
       map((items) => {
-        const byClass = groupBy((i) => i.fk_class.toString(), items)
+
+        if (items.length == 0 && arrayConfig.data.lists.maxLength > 0 && listDefinitions.length == 1) {
+          return [this.getListNode(listDefinitions[0], false, null)]
+        }
+
         const listDefs: LocalNodeConfig[] = []
+        const byClass = groupBy((i) => i.fk_class.toString(), items)
         for (const pkClass in byClass) {
           if (byClass.hasOwnProperty(pkClass)) {
             const initStatements = byClass[pkClass].map(e => e.statement);
-            listDefs.push(this.getListNode(arrayConfig.data.parentListType, listDefIdx[pkClass], false, initStatements))
+            listDefs.push(this.getListNode(listDefIdx[pkClass], false, initStatements))
           }
         }
         return listDefs;
@@ -501,17 +563,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   /**
    * This function returns a form array containing controls
    * It defines how to map the values of the controls to an array of statements
-   *
-   * @param parentListType
-   * @param fieldDefinition
-   * @param listDefinition
-   * @param hideFieldTitle
-   * @param customCtrlLabel
-   * @param customPlaceholder
    */
   getListNode(
-    parentListType: string,
-    // fieldDefinition: FieldDefinition,
     listDefinition: ListDefinition,
     hideFieldTitle: boolean,
     initValue: any,
@@ -521,73 +574,6 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
     let childListType = listDefinition.listType;
     const stringPartId = this.searchStringPartId++;
-
-    const mapValue = (x): MapValueItem => {
-      if (parentListType === 'temporal-entity') {
-        if (childListType === 'language' || childListType === 'place' || childListType === 'entity-preview') {
-          return {
-            key: getRoleKey(parentListType, listDefinition),
-            value: x.filter((i) => !!i)
-          };
-        }
-        else if (childListType === 'appellation') {
-          const roles: InfRole[] = this.appellationsHook(x, stringPartId);
-          return {
-            key: getRoleKey(parentListType, listDefinition),
-            value: roles
-          };
-        }
-        else if (childListType === 'temporal-entity') {
-          return {
-            key: getRoleKey(parentListType, listDefinition),
-            value: x.filter(item => !!item).map(item => ({
-              fk_property: listDefinition.property.pkProperty,
-              temporal_entity: item
-            }))
-          };
-        }
-        else if (childListType === 'time-span') {
-          return {
-            key: getRoleKey(parentListType, listDefinition),
-            value: flatten(x).filter((i) => !!i)
-          };
-        }
-        else if (childListType === 'text-property') {
-          const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
-          return { key: 'text_properties', value: textProps };
-        }
-        else if (childListType === 'has-type') {
-          return {
-            key: getRoleKey(parentListType, listDefinition),
-            value: x.filter((i) => !!i)
-          };
-        }
-      }
-      else if (parentListType === 'persistent-item') {
-        if (childListType === 'text-property') {
-          const textProps: InfTextProperty[] = this.textPropHook(x, stringPartId);
-          return { key: 'text_properties', value: textProps };
-        }
-        else if (childListType === 'temporal-entity') {
-          return {
-            key: getRoleKey(parentListType, listDefinition),
-            value: x.filter(item => !!item)
-            // .map(item => ({
-            //   fk_property: listDefinition.property.pkProperty,
-            //   temporal_entity: item
-            // }))
-          };
-        }
-        else if (childListType === 'has-type') {
-          return {
-            key: getRoleKey(parentListType, listDefinition),
-            value: x.filter((i) => !!i)
-          };
-        }
-      };
-      // if not returned earlier, we have an error
-      throw new Error(`No mapValue defined for ${childListType} as child of ${parentListType}`);
-    };
 
     const removeHook = (data: FormArrayData) => {
       const id = data.stringPartId;
@@ -599,7 +585,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
     const required = listDefinition.identityDefiningForSource;
     let maxLength = listDefinition.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMaxQuantity;
-    let addOnInit = maxLength === 1 ? 1 : required ? 1 : 0;
+    const minLength = listDefinition.targetMinQuantity === -1 ? Number.POSITIVE_INFINITY : listDefinition.targetMinQuantity;
+    let addOnInit = required ? minLength : 0;
+
     if (childListType === 'has-type') {
       maxLength = 1;
       addOnInit = 1;
@@ -607,6 +595,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     if (childListType === 'temporal-entity' && !listDefinition.identityDefiningForTarget) {
       childListType = 'entity-preview';
     }
+
+
+
     return {
       array: {
         isList: true,
@@ -616,23 +607,19 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         placeholder: customPlaceholder || listDefinition.label,
         initValue,
         data: {
-          arrayContains: 'controls',
-          pkClass: listDefinition.targetClass,
-          // fieldDefinition: {
-          //   ...fieldDefinition,
-          //   ...listDefinition,
-          //   listType: childListType
-          // },
-          listDefinition: {
-            ...listDefinition,
-            listType: childListType
+          controls: {
+            listDefinition: {
+              ...listDefinition,
+              listType: childListType
+            },
           },
+          pkClass: listDefinition.targetClass,
           customCtrlLabel,
           stringPartId,
           removeHook,
           hideFieldTitle
         },
-        mapValue,
+        mapValue: x => x.filter(item => !!item),
       },
       id: U.uuid()
     };
@@ -721,21 +708,27 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   save(cb: (actionResult: ActionResultObservable<any>) => void) {
-    const formGroupFactory = this.formFactory.formGroupFactory;
+    // const formGroupFactory = this.formFactory.formGroupFactory;
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const rootFormArray = this.formFactory.formGroupFactory.child as LocalFormArrayFactory;
-      const rootListType = rootFormArray.config.data.fieldDefinition.listType;
+      // const rootFormArray = this.formFactory.formGroupFactory.child as LocalFormArrayFactory;
+      // const rootListType = rootFormArray.config.data.fields.parentFieldDefinition.listType;
+      const value = this.formFactory.formGroupFactory.valueChanges$.value
+
       let apiCall;
-      if (rootListType === 'persistent-item') {
-        const value: InfPersistentItem = formGroupFactory.valueChanges$.value
-        apiCall = this.inf.persistent_item.upsert([value], pkProject)
+      if (value.persistent_item) {
+        apiCall = this.inf.persistent_item.upsert([value.persistent_item], pkProject)
       }
-      else if (rootListType === 'temporal-entity') {
-        const value: InfTemporalEntity = formGroupFactory.valueChanges$.value
-        apiCall = this.inf.temporal_entity.upsert([value], pkProject)
+      else if (value.temporal_entity) {
+        apiCall = this.inf.temporal_entity.upsert([value.temporal_entity], pkProject)
+      }
+      else if (value.statement) {
+        apiCall = this.inf.role.upsert([value.statement], pkProject)
+      }
+      else if (value.text_property) {
+        apiCall = this.inf.text_property.upsert([value.text_property], pkProject)
       }
       else {
-        throw new Error(`Submitting ${rootListType} is not implemented`);
+        throw new Error(`Submitting ${value} is not implemented`);
       }
       cb(apiCall)
     })
@@ -756,9 +749,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const controlConfig: LocalNodeConfig = {
       control: {
         initValue,
-        placeholder: arrayConfig.data.listDefinition.label,
-        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
-        data: { controlType: 'ctrl-time-span' },
+        placeholder: arrayConfig.data.controls.listDefinition.label,
+        required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
+        data: {
+          appearance: this.appearance,
+          controlType: 'ctrl-time-span'
+        },
         mapValue: (val) => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
@@ -784,14 +780,17 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   private languageCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     return this.p.defaultLanguage$.pipe(map(defaultLanguage => {
 
-      const listDefinition = arrayConfig.data.listDefinition;
+      const listDefinition = arrayConfig.data.controls.listDefinition;
       // with [{}] we make sure at least one item is added
       const initItems = arrayConfig.initValue || [{}];
       const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => ({
         control: {
           placeholder: listDefinition.label,
-          required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
-          data: { controlType: 'ctrl-language' },
+          required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
+          data: {
+            appearance: this.appearance,
+            controlType: 'ctrl-language'
+          },
           initValue: initVal.language || defaultLanguage,
           mapValue: (val) => {
             if (!val) return null;
@@ -814,7 +813,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   private typeCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.listDefinition;
+    const listDefinition = arrayConfig.data.controls.listDefinition;
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
     const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => {
@@ -825,8 +824,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         control: {
           initValue,
           placeholder: arrayConfig.data.customCtrlLabel ? arrayConfig.data.customCtrlLabel : listDefinition.label,
-          required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+          required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
           data: {
+            appearance: this.appearance,
             controlType: 'ctrl-type',
             listDefinition,
           },
@@ -854,15 +854,18 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private appellationCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.listDefinition;
+    const listDefinition = arrayConfig.data.controls.listDefinition;
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
     const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => ({
       control: {
         initValue: initVal.appellation,
         placeholder: listDefinition.label,
-        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
-        data: { controlType: 'ctrl-appellation' },
+        required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
+        data: {
+          appearance: this.appearance,
+          controlType: 'ctrl-appellation'
+        },
         mapValue: (val) => {
           if (!val) return null;
           const value: InfRole = {
@@ -884,7 +887,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private placeCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.listDefinition;
+    const listDefinition = arrayConfig.data.controls.listDefinition;
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
     const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => ({
@@ -893,10 +896,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         getInjectData: (d) => {
           return d.place
         },
-        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+        required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
         data: {
           place: {
-            appearance: 'fill',
+            appearance: this.appearance,
             initVal$: of(initVal.place)
           }
         },
@@ -921,7 +924,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   private textPropertyCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.listDefinition;
+    const listDefinition = arrayConfig.data.controls.listDefinition;
 
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
@@ -931,10 +934,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         getInjectData: (d) => {
           return d.textProperty
         },
-        required: this.ctrlRequired(arrayConfig.data.fieldDefinition),
+        required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
         data: {
           textProperty: {
-            appearance: 'fill',
+            appearance: this.appearance,
             initVal$: of(textProperty)
           }
         },
@@ -950,83 +953,70 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     }));
     return of(controlConfigs);
 
-    // return this.p.defaultLanguage$.pipe(
-    //   filter(l => !!l),
-    //   map(defaultLanguage => {
-
-    //   }))
-
   }
 
   // TODO INIT
   private entityCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const listDefinition = arrayConfig.data.listDefinition;
-    const controlConfig: LocalNodeConfig = {
-      control: {
-        placeholder: arrayConfig.data.customCtrlLabel ? arrayConfig.data.customCtrlLabel : listDefinition.label,
-        required: true,
-        data: {
-          controlType: 'ctrl-entity',
-          listDefinition,
-        },
-        mapValue: (val: CtrlEntityModel) => {
-          if (!val) return null;
+    const listDefinition = arrayConfig.data.controls.listDefinition;
+    const initItems = arrayConfig.initValue || [{}];
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => {
+      let initValue: CtrlEntityModel = {}
+      if (initVal.temporal_entity) initValue.temporalEntity = initVal.temporal_entity;
+      if (initVal.persistent_item) initValue.temporalEntity = initVal.persistent_item;
+      if (listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity) {
+        initValue.pkEntity = listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity;
+      }
 
-          let value: InfRole = {
-            ...{} as any,
-            fk_property: listDefinition.property.pkProperty,
-          };
-          if (val.pkEntity) {
+      initValue = (!initValue.pkEntity && !initValue.temporalEntity && !initValue.persistentItem) ? null : initValue;
 
-            if (listDefinition.isOutgoing) {
-              value = { ...value, fk_entity: val.pkEntity }
-            } else {
-              value = { ...value, fk_temporal_entity: val.pkEntity }
+      return {
+        control: {
+          initValue,
+          placeholder: arrayConfig.data.customCtrlLabel ? arrayConfig.data.customCtrlLabel : listDefinition.label,
+          required: true,
+          data: {
+            appearance: this.appearance,
+            controlType: 'ctrl-entity',
+            listDefinition,
+          },
+          mapValue: (val: CtrlEntityModel) => {
+            if (!val || (!val.pkEntity && !val.temporalEntity && !val.persistentItem)) return null;
+
+            let value: InfRole = {
+              ...{} as any,
+              fk_property: listDefinition.property.pkProperty,
+            };
+            if (val.pkEntity) {
+
+              if (listDefinition.isOutgoing) {
+                value = { ...value, fk_entity: val.pkEntity }
+              } else {
+                value = { ...value, fk_temporal_entity: val.pkEntity }
+              }
+            } else if (val.temporalEntity) {
+              value = { ...value, temporal_entity: val.temporalEntity }
+            } else if (val.persistentItem) {
+              value = { ...value, persistent_item: val.persistentItem }
             }
-          } else if (val.temporalEntity) {
-            value = { ...value, temporal_entity: val.temporalEntity }
-          } else if (val.persistentItem) {
-            value = { ...value, persistent_item: val.persistentItem }
-          }
 
-          return value;
+            return value;
+          }
         }
       }
-    };
-    return of([controlConfig]);
+    });
+    return of(controlConfigs);
   }
 
 
 }
 
-function getRoleKey(listType: ListType, listDefinition: ListDefinition) {
-  if (listType === 'temporal-entity') {
-    return listDefinition.isOutgoing ? 'te_roles' : 'ingoing_roles';
+function getRoleKey(m: ParentModel, isOutgoing: boolean) {
+  if (m === 'temporal_entity') {
+    return isOutgoing ? 'te_roles' : 'ingoing_roles';
   }
-  else if (listType === 'persistent-item') {
-    return listDefinition.isOutgoing ? 'outgoing_roles' : 'pi_roles';
+  else if (m === 'persistent_item') {
+    return isOutgoing ? 'outgoing_roles' : 'pi_roles';
   }
 }
 
-function getContainerArrayConfig(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-  const mapValue = createContainerMapValue(arrayConfig.data.pkClass);
-  return of([{ array: { ...arrayConfig, isList: false, mapValue } }]);
-}
-export interface MapValueItem { key: string, value: any }
-function createContainerMapValue(pkClass: number) {
-  return function mapContainerValue(items: MapValueItem[]) {
-    const result = {} as InfTemporalEntity | InfPersistentItem;
-    items.forEach(item => {
-      if (item && item.value && item.value.length) {
-        result[item.key] = [...result[item.key] || [], ...item.value]
-      }
-    })
-    if (Object.keys(result).length) {
-      result.fk_class = pkClass
-      return result
-    }
-    else {
-      return null
-    }
-  }
-}
+// export interface MapValueItem { key: string, value: any }

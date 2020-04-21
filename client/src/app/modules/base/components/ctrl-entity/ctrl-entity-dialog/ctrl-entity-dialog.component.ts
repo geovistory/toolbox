@@ -1,15 +1,16 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgForm, FormArray } from '@angular/forms';
+import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, U } from 'app/core';
 import { SchemaObject } from 'app/core/store/model';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, first } from 'rxjs/operators';
+import { filter, first, map } from 'rxjs/operators';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
-import { CtrlEntityModel } from '../ctrl-entity.component';
+import { DisableIfHasStatement } from '../../pe-it-search-existing/pe-it-search-existing.component';
 import { FieldProperty } from '../../properties-tree/properties-tree.models';
+import { CtrlEntityModel } from '../ctrl-entity.component';
 
 
 export interface CtrlEntityDialogData {
@@ -20,6 +21,8 @@ export interface CtrlEntityDialogData {
   notInProjectClickBehavior: NotInProjectClickBehavior
   hiddenProperty: FieldProperty
   initVal$: Observable<CtrlEntityModel>
+  showAddList: boolean
+  disableIfHasStatement: DisableIfHasStatement
 }
 
 export interface ClassAndTypePk { pkClass: number, pkType: number };

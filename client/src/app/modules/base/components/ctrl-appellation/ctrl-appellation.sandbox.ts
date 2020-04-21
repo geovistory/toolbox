@@ -25,13 +25,14 @@ export default sandboxOf(CtrlAppellationComponent, {
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100" appearance="legacy">
-                        <gv-ctrl-appellation placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-appellation>
+                        <gv-ctrl-appellation #ctrl placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-appellation>
                         <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
                         <mat-hint>Hint</mat-hint>
                     </mat-form-field>
                 </form>
             </div>
             <div>
+                <button (click)="ctrl.onContainerClick()" >set focus</button>
                 <p>Form.valid: {{f.valid | json}}</p>
 
                 <p>Form.touched: {{f.touched | json}}</p>

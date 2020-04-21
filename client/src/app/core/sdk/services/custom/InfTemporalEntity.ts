@@ -314,6 +314,39 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   }
 
   /**
+   * Add a temporal entity with its outgoing roles to a project.
+   *
+   * @param {number} pk_project Primary Key of Project
+   *
+   * @param {number} pk_entity Primary Key of the temporal entity to add.
+   *
+   * @param {object} data Request data.
+   *
+   * This method does not accept any data. Supply an empty object.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `InfTemporalEntity` object.)
+   * </em>
+   */
+  public addToProject(pk_project: any, pk_entity: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/InfTemporalEntities/add-to-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
+    if (typeof pk_entity !== 'undefined' && pk_entity !== null) _urlParams.pk_entity = pk_entity;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `InfTemporalEntity`.
    */

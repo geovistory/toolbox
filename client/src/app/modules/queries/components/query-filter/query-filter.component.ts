@@ -131,7 +131,7 @@ export interface QfFormControlData {
 export type QfFormGroupConfig = FormGroupConfig<QfFormGroupData>
 export type QfFormNodeConfig = FormNodeConfig<QfFormGroupData, QfFormArrayData, QfFormControlData, null>;
 export type QfFormGroupFactory = FormGroupFactory;
-export type QfFormArrayFactory = FormArrayFactory<QfFormControlData, QfFormArrayData>;
+export type QfFormArrayFactory = FormArrayFactory<QfFormControlData, QfFormArrayData, any>;
 export type QfFormControlFactory = FormControlFactory<QfFormControlData>;
 
 export interface QueryFilterInjectData {

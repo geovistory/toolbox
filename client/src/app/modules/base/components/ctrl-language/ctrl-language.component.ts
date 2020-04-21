@@ -145,7 +145,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   }
 
 
-  onContainerClick(event: MouseEvent) {
+  onContainerClick() {
     // TODO: implement this
     this.matInput.focus()
     setTimeout(() => {

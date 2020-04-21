@@ -1,11 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
-import { U } from 'app/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FormGroupFactory } from '../core/form-group-factory';
-import { FormArrayFactory } from '../core/form-array-factory';
-import { FormControlFactory } from '../core/form-control-factory';
-import { FormChildFactory } from '../core/form-child-factory';
 
 export class FormFactory {
   constructor(

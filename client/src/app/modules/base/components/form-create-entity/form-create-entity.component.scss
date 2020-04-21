@@ -1,5 +1,5 @@
 :host {
-  padding: 0.7rem;
+  // padding: 0.7rem;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -11,6 +11,7 @@
 form {
   flex: 1 1 auto;
   overflow-y: auto;
+  padding-right: 1rem;
 }
 .form-buttons {
   flex: 0 0 auto;

@@ -58,7 +58,7 @@
     <!-- At some time within -->
     <div *ngIf="(mode$ | async) !== 'begin-end'">
 
-      <mat-form-field appearance="fill" class="w-100" *ngIf="cName?._72_outgoing">
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._72_outgoing">
         <mat-label>{{f?._72_outgoing?.title}}</mat-label>
         <gv-ctrl-time-primitive [formControlName]="cName?._72_outgoing" (focus)="activate('_72_outgoing')">
         </gv-ctrl-time-primitive>
@@ -75,7 +75,7 @@
     <!-- Begin of Begin -->
     <div class="pl-4 mt-3" *ngIf="(mode$ | async) === 'advanced'">
 
-      <mat-form-field appearance="fill" class="w-100" *ngIf="cName?._152_outgoing">
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._152_outgoing">
         <mat-label>{{f?._152_outgoing?.title}}</mat-label>
         <gv-ctrl-time-primitive [formControlName]="cName?._152_outgoing" (focus)="activate('_152_outgoing')">
         </gv-ctrl-time-primitive>
@@ -89,7 +89,7 @@
     <!-- End of End -->
     <div class="pl-4 mt-3" *ngIf="(mode$ | async) === 'advanced'">
 
-      <mat-form-field appearance="fill" class="w-100" *ngIf="cName?._153_outgoing">
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._153_outgoing">
         <mat-label>{{f?._153_outgoing?.title}}</mat-label>
         <gv-ctrl-time-primitive [formControlName]="cName?._153_outgoing" (focus)="activate('_153_outgoing')">
         </gv-ctrl-time-primitive>
@@ -102,7 +102,7 @@
     <!-- Ongoing throughout -->
     <div class="mt-5" *ngIf="(mode$ | async) === 'advanced'">
 
-      <mat-form-field appearance="fill" class="w-100" *ngIf="cName?._71_outgoing">
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._71_outgoing">
         <mat-label>{{f?._71_outgoing?.title}}</mat-label>
         <gv-ctrl-time-primitive [formControlName]="cName?._71_outgoing" (focus)="activate('_71_outgoing')">
         </gv-ctrl-time-primitive>
@@ -116,7 +116,7 @@
     <!-- End of begin -->
     <div class="pl-4 mt-3" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <mat-form-field appearance="fill" class="w-100" *ngIf="cName?._150_outgoing">
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._150_outgoing">
         <mat-label>{{f?._150_outgoing?.title}}</mat-label>
         <gv-ctrl-time-primitive [formControlName]="cName?._150_outgoing" (focus)="activate('_150_outgoing')">
         </gv-ctrl-time-primitive>
@@ -129,7 +129,7 @@
     <!-- Begin of end -->
     <div class="pl-4 mt-3" *ngIf="(mode$ | async) !== 'one-date'">
 
-      <mat-form-field appearance="fill" class="w-100" *ngIf="cName?._151_outgoing">
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._151_outgoing">
         <mat-label>{{f?._151_outgoing?.title}}</mat-label>
         <gv-ctrl-time-primitive [formControlName]="cName?._151_outgoing" (focus)="activate('_151_outgoing')">
         </gv-ctrl-time-primitive>

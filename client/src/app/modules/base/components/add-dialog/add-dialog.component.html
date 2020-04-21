@@ -14,9 +14,25 @@
     <span class="mat-text-secondary">{{data.listDefinition.targetClassLabel}}</span>
   </div>
   <mat-divider class="w-100"></mat-divider>
+
+  <div *ngIf="(activeElement$ | async) === 'create-or-add'" class="gv-aoc-container mt-2">
+    <div class="gv-aoc-left">
+      Define a new {{data.listDefinition.targetClassLabel}}
+    </div>
+    <div class="gv-aoc-center">
+      or
+    </div>
+    <div class="gv-aoc-right">
+      Choose an existing {{data.listDefinition.targetClassLabel}}
+    </div>
+  </div>
+
 </h1>
-<div mat-dialog-content class="mat-typography">
-  <ng-container *ngIf="(activeElement$ | async) === 'add-list'">
+<div mat-dialog-content class="mat-typography gv-flex-fh">
+  <div *ngIf="loading$|async" class="gv-table-spinner">
+    <mat-spinner diameter=20></mat-spinner>
+  </div>
+  <ng-container *ngIf="(activeElement$ | async) === 'add-existing-statements'">
     <gv-temporal-entity-add-list *ngIf="data.listDefinition.listType == 'temporal-entity'"
       [listDefinition]="data.listDefinition" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
       [pkEntity]="data.pkEntity" (close)="onClose()" (next)="onNext()" class="gv-flex-fh">
@@ -30,12 +46,39 @@
 
 
   <ng-container *ngIf="(activeElement$ | async) === 'create-form'">
-    <gv-form-create-role [listDefinition]="data.listDefinition" [pkEntity]="data.pkEntity" (close)="onClose()">
-    </gv-form-create-role>
+    <gv-form-create-entity [listDefinition]="data.listDefinition" [pkSourceEntity]="data.pkEntity" (cancel)="onClose()"
+      (saved)="onClose()">
+    </gv-form-create-entity>
+  </ng-container>
+
+
+  <ng-container *ngIf="(activeElement$ | async) === 'create-or-add'">
+
+    <div class="gv-aoc-container">
+      <div class="gv-aoc-left gv-flex-fh">
+        <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [listDefinition]="data.listDefinition"
+          [pkSourceEntity]="data.pkEntity" (cancel)="onClose()" (saved)="onClose()"
+          (searchString)="searchStringChange($event)" [hideTitle]="true">
+        </gv-form-create-entity>
+      </div>
+      <div class="gv-aoc-center">
+        <mat-divider [vertical]="true"></mat-divider>
+      </div>
+      <div class="gv-aoc-right gv-flex-fh">
+        <mat-form-field appearance="outline">
+          <mat-label>Search</mat-label>
+          <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
+            (keyup)="searchStringChange($event.target.value)">
+        </mat-form-field>
+        <gv-pe-it-search-existing class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
+          [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
+          [disableIfHasStatement]="data.disableIfHasStatement" (onAddExisting)="onSelected($event, false)"
+          (onOpenExisting)="onSelected($event, true)">
+        </gv-pe-it-search-existing>
+      </div>
+
+    </div>
+
   </ng-container>
 
 </div>
-<!-- <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">No Thanks</button>
-  <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
-</div> -->

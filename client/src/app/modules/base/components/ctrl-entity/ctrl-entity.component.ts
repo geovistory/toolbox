@@ -3,12 +3,13 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectService, EntityPreview, SysConfig, InfPersistentItem, InfTemporalEntity } from 'app/core';
-import { CreateOrAddEntityEvent } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, mergeMap, takeUntil } from 'rxjs/operators';
-import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
+import { ActiveProjectService, EntityPreview, InfPersistentItem, InfTemporalEntity, SysConfig } from 'app/core';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { DisableIfHasStatement } from '../pe-it-search-existing/pe-it-search-existing.component';
 import { FieldProperty } from '../properties-tree/properties-tree.models';
+import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
 
 export interface CtrlEntityModel {
   pkEntity?: number,
@@ -35,6 +36,10 @@ export class CtrlEntityComponent implements OnDestroy,
 
   // needed for creating the form, in order to exclude the circular field
   @Input() property: FieldProperty;
+  @Input() disableExistingWithStatement: DisableIfHasStatement;
+
+  @Input() showAddList: boolean;
+
 
 
   @Output() blur = new EventEmitter<void>();
@@ -112,16 +117,25 @@ export class CtrlEntityComponent implements OnDestroy,
   }
 
   set value(value: CtrlEntityModel | null) {
-    this.model = value;
+
+    if (!value || (!value.pkEntity && !value.temporalEntity && !value.persistentItem)) {
+      this.model = undefined
+    } else {
+      this.model = value;
+    }
+
     this.onChange(this.model);
     this.value$.next(value);
   }
 
   value$ = new BehaviorSubject<CtrlEntityModel>(null);
 
+  entityPreview$: Observable<EntityPreview>;
+
   constructor(@Optional() @Self() public ngControl: NgControl,
     private dialog: MatDialog,
-    private p: ActiveProjectService) {
+    private p: ActiveProjectService,
+    private c: ConfigurationPipesService) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -130,6 +144,40 @@ export class CtrlEntityComponent implements OnDestroy,
 
   ngOnInit() {
     if (!this.pkClass) throw "pkClass is required";
+
+    this.c.pipeClassLabel(this.pkClass)
+
+    this.entityPreview$ = this.value$.pipe(switchMap(val => {
+
+      if (val && val.pkEntity) return this.p.streamEntityPreview(val.pkEntity)
+      else if (val && (val.persistentItem || val.temporalEntity)) {
+        return combineLatest(
+          this.p.dfh$.class$.by_pk_class$.key(this.pkClass),
+          this.c.pipeClassLabel(this.pkClass)
+        ).pipe(
+          map(([klass, label]) => {
+            let type;
+            if (klass.basic_type === 8 || klass.basic_type === 30) {
+              type = 'peIt'
+            }
+            else {
+              type = 'teEn'
+            }
+            const e: EntityPreview = {
+              entity_label: 'New item (click for details)',
+              class_label: label,
+              entity_type: type,
+              pk_entity: undefined,
+              fk_project: undefined
+            }
+            return e
+          })
+        )
+      }
+
+      return of(null);
+    }))
+
   }
 
   openModal() {
@@ -141,14 +189,16 @@ export class CtrlEntityComponent implements OnDestroy,
 
           // minWidth: '800px',
           height: 'calc(100% - 30px)',
-          width: '980px',
+          width: this.showAddList ? '980px' : '500px',
           maxWidth: '100%',
           data: {
             initVal$: this.value$,
+            showAddList: this.showAddList,
             hiddenProperty: this.property,
             alreadyInProjectBtnText: 'Select',
             notInProjectClickBehavior: 'selectOnly',
             notInProjectBtnText: 'Select',
+            disableIfHasStatement: this.disableExistingWithStatement,
             classAndTypePk: {
               pkClass: this.pkClass,
               pkType: undefined
@@ -187,7 +237,7 @@ export class CtrlEntityComponent implements OnDestroy,
   }
 
 
-  onContainerClick(event: MouseEvent) {
+  onContainerClick() {
     this.openModal()
     this.onFocus()
   }

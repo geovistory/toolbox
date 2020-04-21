@@ -1,6 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntityPreview } from 'app/core';
+import { EntityPreview, InfRole } from 'app/core';
 import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
+
+export interface HitPreview extends EntitySearchHit {
+  btnDisabled?: boolean
+  btnTooltip?: string
+}
+
 
 @Component({
   selector: 'gv-entity-add-existing-hit',
@@ -9,11 +15,13 @@ import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
 })
 export class EntityAddExistingHitComponent implements OnInit {
 
-  @Input() hit: EntitySearchHit;
+  @Input() hit: HitPreview;
 
 
   @Input() alreadyInProjectBtnText: string;
   @Input() notInProjectBtnText: string;
+
+
 
   /**
   * flag to indicate if this search hit is in the context of a project-wide

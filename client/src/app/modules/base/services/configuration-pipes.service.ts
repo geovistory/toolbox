@@ -411,7 +411,34 @@ export class ConfigurationPipesService {
         }
       })
     )
+  }
 
+
+  @spyTag @cache({ refCount: false }) pipeModelOfClass(targetClassPk: number): Observable<'appellation' | 'language' | 'place' | 'time_primitive' | 'persistent_item' | 'temporal_entity'> {
+    return this.p.dfh$.class$.by_pk_class$.key(targetClassPk).pipe(
+      filter(i => !!i),
+      map(klass => {
+
+        if (targetClassPk == DfhConfig.CLASS_PK_APPELLATION) {
+          return 'appellation'
+        }
+        else if (targetClassPk == DfhConfig.CLASS_PK_LANGUAGE) {
+          return 'language'
+        }
+        else if (targetClassPk == DfhConfig.CLASS_PK_PLACE) {
+          return 'place'
+        }
+        else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
+          return 'time_primitive'
+        }
+        else if (klass.basic_type === 8 || klass.basic_type === 30) {
+          return 'persistent_item'
+        }
+        else {
+          return 'temporal_entity'
+        }
+      })
+    )
   }
   /**
    * returns an object where the keys are the pks of the Classes
@@ -630,7 +657,20 @@ export class ConfigurationPipesService {
           p.range_instances_max_quantifier :
           p.domain_instances_max_quantifier;
 
+        const sourceMaxQuantity = o ?
+          p.domain_instances_max_quantifier :
+          p.range_instances_max_quantifier;
+
+        const targetMinQuantity = o ?
+          p.range_instances_min_quantifier :
+          p.domain_instances_min_quantifier;
+
+        const sourceMinQuantity = o ?
+          p.domain_instances_min_quantifier :
+          p.range_instances_min_quantifier;
+
         return combineLatest(
+          this.pipeClassLabel(sourceClass),
           this.pipeClassLabel(targetClass),
           this.pipeListTypeOfClass(targetClass),
           this.pipeLabelOfPropertyField(
@@ -639,13 +679,17 @@ export class ConfigurationPipesService {
             isOutgoing ? null : p.has_range,
           )
         ).pipe(
-          map(([targetClassLabel, listType, label]) => {
+          map(([sourceClassLabel, targetClassLabel, listType, label]) => {
 
             const node: ListDefinition = {
               listType,
-              targetClass,
               sourceClass,
+              sourceClassLabel,
+              sourceMaxQuantity,
+              sourceMinQuantity,
+              targetClass,
               targetClassLabel,
+              targetMinQuantity,
               targetMaxQuantity,
               label,
               property: { pkProperty: p.pk_property },
@@ -676,10 +720,15 @@ export class ConfigurationPipesService {
     const template = {
       property: {},
       sourceClass: undefined,
+      sourceClassLabel: undefined,
       targetClass: undefined,
       isOutgoing: undefined,
       identityDefiningForSource: undefined,
       identityDefiningForTarget: undefined,
+      targetMaxQuantity: undefined,
+      targetMinQuantity: undefined,
+      sourceMaxQuantity: undefined,
+      sourceMinQuantity: undefined,
     }
     switch (pkClassField) {
       case SysConfig.PK_CLASS_FIELD_WHEN:

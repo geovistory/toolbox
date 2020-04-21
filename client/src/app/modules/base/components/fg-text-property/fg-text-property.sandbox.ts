@@ -29,6 +29,9 @@ export default sandboxOf(FgTextPropertyComponent, {
           <gv-fg-text-property #c [appearance]="'fill'"></gv-fg-text-property>
       </div>
       <div>
+          <button (click)="c.focusOnCtrlText()" >focus on text</button>
+          <button (click)="c.focusOnCtrlLanguage()" >focus on lang</button>
+
           <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
           <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
           <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>

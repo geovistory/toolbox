@@ -9,9 +9,8 @@
       <!-- Left -->
       <div fxFlex="50" fxLayout="column" class="gv-overflow-hidden">
         <div class="gv-scroll-y-auto p-1">
-          <gv-form-create-entity class="w-100" [pkClass]="classAndTypePk.pkClass" [appContext]="pkUiContext"
-            hideTitle="true" hideButtons="true" (cancel)="cancel.emit()" (saved)="onCreated($event)"
-            (searchString)="searchStringChange($event)" #f>
+          <gv-form-create-entity class="w-100" [pkClass]="classAndTypePk.pkClass" hideTitle="true" hideButtons="true"
+            (cancel)="cancel.emit()" (saved)="onCreated($event)" (searchString)="searchStringChange($event)" #f>
           </gv-form-create-entity>
         </div>
       </div>

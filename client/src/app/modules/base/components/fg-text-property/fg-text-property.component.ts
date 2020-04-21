@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material';
 import { ActiveProjectService, InfLanguage, InfTextProperty, ValidationService } from 'app/core';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
@@ -7,8 +7,8 @@ import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } fr
 import { QuillDoc } from 'app/modules/quill';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
-import { CtrlLanguageModel } from '../ctrl-language/ctrl-language.component';
+import { CtrlAppellationModel, CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
+import { CtrlLanguageModel, CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 
 type FgTextPropertyNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgTextPropertyInjectData extends FormFactoryCompontentInjectData<Observable<InfTextProperty>> {
@@ -19,14 +19,17 @@ export interface FgTextPropertyInjectData extends FormFactoryCompontentInjectDat
   templateUrl: './fg-text-property.component.html',
   styleUrls: ['./fg-text-property.component.scss']
 })
-export class FgTextPropertyComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class FgTextPropertyComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
 
   @Input() initVal$: Observable<InfTextProperty>
   @Input() appearance: MatFormFieldAppearance
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
 
+  @ViewChildren(CtrlAppellationComponent) ctrlAppellation: QueryList<CtrlAppellationComponent>
+  @ViewChildren(CtrlLanguageComponent) ctrlLanguage: QueryList<CtrlLanguageComponent>
 
   constructor(
     private p: ActiveProjectService,
@@ -172,8 +175,30 @@ export class FgTextPropertyComponent implements OnInit, OnDestroy, FormFactoryCo
     }
   }
 
+  focusOnCtrlText() {
+    if (this.ctrlAppellation.length > 0) {
+      this.ctrlAppellation.first.onContainerClick()
+    }
+    this.ctrlAppellation.changes.pipe(first((x: QueryList<CtrlAppellationComponent>) => x.length > 0)).subscribe((items) => {
+      items.first.onContainerClick()
+    })
+  }
+  focusOnCtrlLanguage() {
+    if (this.ctrlLanguage.length > 0) {
+      this.ctrlLanguage.first.onContainerClick()
+    }
+    this.ctrlLanguage.changes.pipe(first((x: QueryList<CtrlLanguageComponent>) => x.length > 0)).subscribe((items) => {
+      items.first.onContainerClick()
+    })
+  }
+
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
+
 }

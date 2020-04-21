@@ -5,62 +5,65 @@ import { FormCreateRoleComponent } from './form-create-role.component';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { ListDefinition } from '../properties-tree/properties-tree.models';
 
-// ROLES LEADING TO VALUES
-const listDefSpelling: ListDefinition = {
+const template = {
   fkClassField: undefined,
   identityDefiningForSource: true,
   identityDefiningForTarget: false,
+  targetMinQuantity: undefined,
+  sourceMinQuantity: undefined,
+  sourceMaxQuantity: undefined,
+  sourceClassLabel: undefined
+}
+// ROLES LEADING TO VALUES
+const listDefSpelling: ListDefinition = {
+  ...template,
   isOutgoing: true,
-  label: "Spelling",
-  listType: "appellation",
-  ontoInfoLabel: "histP11",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/1113",
+  label: 'Spelling',
+  listType: 'appellation',
+  ontoInfoLabel: 'histP11',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1113',
   property: { pkProperty: 1113 },
   targetClass: 40,
   sourceClass: 365,
-  targetClassLabel: "Appellation",
+  targetClassLabel: 'Appellation',
   targetMaxQuantity: 1,
+
 }
 
 const listDefLanguage: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: true,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: true,
-  label: "Used in Language",
-  listType: "language",
-  ontoInfoLabel: "histP10",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/1112",
+  label: 'Used in Language',
+  listType: 'language',
+  ontoInfoLabel: 'histP10',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1112',
   property: { pkProperty: 1112 },
   targetClass: 54,
   sourceClass: 365,
-  targetClassLabel: "Language",
+  targetClassLabel: 'Language',
   targetMaxQuantity: 1,
 }
 
 const listDefPlace: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: true,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: true,
-  label: "Was present at",
-  listType: "place",
-  ontoInfoLabel: "P167",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/148",
+  label: 'Was present at',
+  listType: 'place',
+  ontoInfoLabel: 'P167',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/148',
   property: { pkProperty: 148 },
   targetClass: 51,
   sourceClass: 84,
-  targetClassLabel: "Place",
+  targetClassLabel: 'Place',
   targetMaxQuantity: 1,
 }
 
 const listDefTextProperty: ListDefinition = {
+  ...template,
   fkClassField: 123,
-  identityDefiningForSource: true,
-  identityDefiningForTarget: false,
   isOutgoing: true,
-  label: "Exact Reference",
-  listType: "text-property",
+  label: 'Exact Reference',
+  listType: 'text-property',
   ontoInfoLabel: undefined,
   ontoInfoUrl: undefined,
   property: { pkProperty: undefined },
@@ -71,33 +74,29 @@ const listDefTextProperty: ListDefinition = {
 }
 
 const listDefHadParticipants: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: false,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: false,
-  label: "had participants",
-  listType: "entity-preview",
-  ontoInfoLabel: "P12",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/1359",
+  label: 'had participants',
+  listType: 'entity-preview',
+  ontoInfoLabel: 'P12',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1359',
   property: { pkProperty: 1359 },
   sourceClass: 523,
   targetClass: 21,
-  targetClassLabel: "Person",
+  targetClassLabel: 'Person',
   targetMaxQuantity: -1
 }
 const listDefDeparturePlace: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: false,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: true,
-  label: "has departure place",
-  listType: "entity-preview",
-  ontoInfoLabel: "P1",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/1335",
+  label: 'has departure place',
+  listType: 'entity-preview',
+  ontoInfoLabel: 'P1',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1335',
   property: { pkProperty: 1335 },
   sourceClass: 523,
   targetClass: 363,
-  targetClassLabel: "Geographical Place",
+  targetClassLabel: 'Geographical Place',
   targetMaxQuantity: 1,
 }
 
@@ -106,67 +105,59 @@ const listDefDeparturePlace: ListDefinition = {
 
 /// ROLES LEADING TO TE ENs
 const listDefAppellationUse: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: true,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: false,
-  label: "Bibliographic References",
-  listType: "temporal-entity",
-  ontoInfoLabel: "histP9",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/1202",
+  label: 'Bibliographic References',
+  listType: 'temporal-entity',
+  ontoInfoLabel: 'histP9',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1202',
   property: { pkProperty: 1202 },
   sourceClass: 219,
   targetClass: 365,
-  targetClassLabel: "Naming",
+  targetClassLabel: 'Naming',
   targetMaxQuantity: -1,
 };
 
 const listDefAppellationUseOfTeEn: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: true,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: false,
-  label: "Has appellation",
-  listType: "temporal-entity",
-  ontoInfoLabel: "histP9",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/1111",
+  label: 'Has appellation',
+  listType: 'temporal-entity',
+  ontoInfoLabel: 'histP9',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1111',
   property: { pkProperty: 1111 },
   sourceClass: 523,
   targetClass: 365,
-  targetClassLabel: "Naming",
+  targetClassLabel: 'Naming',
   targetMaxQuantity: -1,
 };
 
 
 
 const listDefBirth: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: true,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: false,
-  label: "Has Birth",
-  listType: "temporal-entity",
-  ontoInfoLabel: "E67",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/86",
+  label: 'Has Birth',
+  listType: 'temporal-entity',
+  ontoInfoLabel: 'E67',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/86',
   property: { pkProperty: 86 },
   targetClass: 61,
   sourceClass: 21,
-  targetClassLabel: "Birth",
+  targetClassLabel: 'Birth',
   targetMaxQuantity: -1,
 };
 const listDefPresence: ListDefinition = {
-  fkClassField: undefined,
-  identityDefiningForSource: true,
-  identityDefiningForTarget: false,
+  ...template,
   isOutgoing: false,
-  label: "Was present at",
-  listType: "temporal-entity",
-  ontoInfoLabel: "E93",
-  ontoInfoUrl: "http://ontologies.dataforhistory.org/property/1181",
+  label: 'Was present at',
+  listType: 'temporal-entity',
+  ontoInfoLabel: 'E93',
+  ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1181',
   property: { pkProperty: 1181 },
   sourceClass: 363,
   targetClass: 84,
-  targetClassLabel: "Presence",
+  targetClassLabel: 'Presence',
   targetMaxQuantity: -1,
 };
 

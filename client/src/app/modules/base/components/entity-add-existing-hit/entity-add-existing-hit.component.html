@@ -21,11 +21,11 @@
         </i>
       </div>
     </div>
-    <div>
-      <button type="button" name="button" (click)="open()" mat-flat-button color="primary"
-        *ngIf="isInProject">{{alreadyInProjectBtnText}}</button>
-      <button type="button" name="button" (click)="add()" mat-flat-button color="primary"
-        *ngIf="!isInProject">{{notInProjectBtnText}}</button>
+    <div [matTooltip]="hit.btnTooltip">
+      <button type="button" name="button" (click)="open()" mat-flat-button color="primary" [disabled]="hit.btnDisabled"
+        [matTooltip]="hit.btnTooltip" *ngIf="isInProject">{{alreadyInProjectBtnText}}</button>
+      <button type="button" name="button" (click)="add()" mat-flat-button color="primary" [disabled]="hit.btnDisabled"
+        [matTooltip]="hit.btnTooltip" *ngIf="!isInProject">{{notInProjectBtnText}}</button>
     </div>
   </div>
 </div>

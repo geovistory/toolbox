@@ -12,6 +12,9 @@ var SqlTemporalEntityListAlternatives = require('../../dist/server/sql-builders/
 var SqlTemporalEntityOwnProperties = require('../../dist/server/sql-builders/sql-te-en-own-properties')
   .SqlTemporalEntityOwnProperties;
 
+var SqlTeEnAddToProject = require('../../dist/server/sql-builders/sql-te-en-add-to-project')
+  .SqlTeEnAddToProject;
+
 module.exports = function(InfTemporalEntity) {
   InfTemporalEntity.temporalEntityList = function(
     fkProject,
@@ -357,6 +360,25 @@ module.exports = function(InfTemporalEntity) {
     });
   };
 
+  InfTemporalEntity.addToProject = function(pk_project, pk_entity, ctx, cb) {
+    if (!ctx.req.accessToken.userId)
+      return Error('AccessToken.userId is missing');
+    const accountId = ctx.req.accessToken.userId;
+
+    const params = [pk_entity, pk_project, accountId];
+
+    const sql_stmt = `SELECT information.add_pe_it_to_project($1, $2, $3)`;
+
+    const connector = InfTemporalEntity.dataSource.connector;
+    connector.execute(sql_stmt, params, (err, resultObjects) => {
+      if (err) return cb(err, resultObjects);
+
+      InfTemporalEntity.ownProperties(pk_project, pk_entity, (err, result) => {
+        cb(err, result);
+      });
+    });
+  };
+
   /**
    * internal function to get a rich object of project or repo.
    * a rich object of the TeEn with all its roles
@@ -644,5 +666,27 @@ module.exports = function(InfTemporalEntity) {
         },
       },
     };
+  };
+
+  /**
+   * Adds temporal entity, its outgoing roles to add
+   * and the text properties to the project
+   */
+  InfTemporalEntity.addToProject = function(pk_project, pk_entity, ctx, cb) {
+    if (!ctx.req.accessToken.userId)
+      return Error('AccessToken.userId is missing');
+    const accountId = ctx.req.accessToken.userId;
+
+    const mainQuery = new SqlTeEnAddToProject(
+      InfTemporalEntity.app.models
+    ).create(pk_project, pk_entity, accountId);
+
+    const connector = InfTemporalEntity.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      InfTemporalEntity.ownProperties(pk_project, pk_entity, (err, result) => {
+        cb(err, result);
+      });
+    });
   };
 };

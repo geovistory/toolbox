@@ -46,9 +46,13 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
       identityDefiningForSource: false,
       identityDefiningForTarget: false,
       sourceClass: undefined,
-      targetMaxQuantity: -1,
+      sourceClassLabel: undefined,
+      sourceMinQuantity: undefined,
+      sourceMaxQuantity: undefined,
       targetClass: 657,
       targetClassLabel: 'Reference',
+      targetMinQuantity: undefined,
+      targetMaxQuantity: -1,
       fkClassField: undefined
     }
     this.fieldDefinition = {

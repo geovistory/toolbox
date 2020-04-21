@@ -33,7 +33,7 @@ export interface TableFormChildData {
 
 export type TableFormNodeConfig = FormNodeConfig<TableFormGroupData, TableFormArrayData, TableFormControlData, TableFormChildData>;
 export type TableFormGroupFactory = FormGroupFactory;
-export type TableFormArrayFactory = FormArrayFactory<TableFormControlData, TableFormArrayData>;
+export type TableFormArrayFactory = FormArrayFactory<TableFormControlData, TableFormArrayData, TableFormChildData>;
 export type TableFormControlFactory = FormControlFactory<TableFormControlData>;
 export type TableFormChildFactory = FormChildFactory<TableFormChildData>;
 

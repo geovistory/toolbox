@@ -28,7 +28,7 @@
           <div class="summary-texts">
             <div class="ellipsis">
               <h2 class="summary-entity-label ellipsis">
-                <span [matTooltip]="'Persistent Item ' + pkEntity">{{(preview$|async)?.entity_label}}</span>
+                <span [matTooltip]="'Entity ' + pkEntity">{{(preview$|async)?.entity_label}}</span>
                 <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
               </h2>
               <div class="summary-entity-label ellipsis">

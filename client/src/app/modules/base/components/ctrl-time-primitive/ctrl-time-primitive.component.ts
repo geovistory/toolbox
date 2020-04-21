@@ -170,9 +170,9 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   }
 
 
-  onContainerClick(event: MouseEvent) {
-    // TODO: implement this
-
+  onContainerClick() {
+    this.openMenu()
+    this.onFocus()
   }
 
   writeValue(value: CtrlModel | null): void {

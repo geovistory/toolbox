@@ -44,7 +44,11 @@ export class RamListEditDialogComponent implements OnInit {
       identityDefiningForSource: false,
       identityDefiningForTarget: false,
       sourceClass: undefined,
+      sourceClassLabel: undefined,
       targetMaxQuantity: -1,
+      targetMinQuantity: undefined,
+      sourceMaxQuantity: undefined,
+      sourceMinQuantity: undefined,
       targetClass: 657,
       targetClassLabel: 'Reference',
       fkClassField: undefined

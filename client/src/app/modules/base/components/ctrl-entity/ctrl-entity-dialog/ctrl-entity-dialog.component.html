@@ -2,27 +2,24 @@
   <div class="gv-aoc-left">
     Define a new {{classLabel$|async}}
   </div>
-  <div class="gv-aoc-center">
+  <div class="gv-aoc-center" *ngIf="data.showAddList">
     or
   </div>
-  <div class="gv-aoc-right">
+  <div class="gv-aoc-right" *ngIf="data.showAddList">
     Choose an existing {{classLabel$|async}}
   </div>
 </h1>
 <div mat-dialog-content class="gv-aoc-container">
   <div class="gv-aoc-left gv-flex-fh">
-    <mat-divider></mat-divider>
-    <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2 pr-5" [pkClass]="classAndTypePk.pkClass"
-      [hiddenProperty]="data.hiddenProperty" [appContext]="pkUiContext" hideTitle="true" hideButtons="true"
-      [initVal$]="initVal$" (searchString)="searchStringChange($event)" #f>
+    <gv-form-create-entity class="gv-flex-fh gv-aoc-scroll my-2" [pkClass]="classAndTypePk.pkClass"
+      [hiddenProperty]="data.hiddenProperty" hideTitle="true" hideButtons="true" [initVal$]="initVal$"
+      (searchString)="searchStringChange($event)" #f>
     </gv-form-create-entity>
-    <!-- <mat-divider></mat-divider> -->
   </div>
-  <div class="gv-aoc-center">
+  <div class="gv-aoc-center" *ngIf="data.showAddList">
     <mat-divider [vertical]="true"></mat-divider>
   </div>
-  <div class="gv-aoc-right gv-flex-fh">
-    <!-- <mat-divider></mat-divider> -->
+  <div class="gv-aoc-right gv-flex-fh" *ngIf="data.showAddList">
     <mat-form-field appearance="outline" style="margin-top: -4px;">
       <mat-label>Search</mat-label>
       <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
@@ -30,9 +27,9 @@
     </mat-form-field>
     <gv-pe-it-search-existing class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
       [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
-      (onAddExisting)="onNotInProjectClicked($event)" (onOpenExisting)="onAlreadyInProjectClicked($event)">
+      [disableIfHasStatement]="data.disableIfHasStatement" (onAddExisting)="onNotInProjectClicked($event)"
+      (onOpenExisting)="onAlreadyInProjectClicked($event)">
     </gv-pe-it-search-existing>
-    <mat-divider></mat-divider>
   </div>
 
 </div>
@@ -49,10 +46,10 @@
 
     <button mat-button type="button" class="ml-2" (click)="closeAddForm()">Cancel</button>
   </div>
-  <div class="gv-aoc-center">
+  <div class="gv-aoc-center" *ngIf="data.showAddList">
 
   </div>
-  <div class="gv-aoc-right">
+  <div class="gv-aoc-right" *ngIf="data.showAddList">
 
   </div>
 </div>

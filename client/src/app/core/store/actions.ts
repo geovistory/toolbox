@@ -42,7 +42,7 @@ export class StandardActionsFactory<Payload, Model> {
   /**
    * @param pk is used for facetting
    */
-  upsert: (items: Model[], pk?: number) => ActionResultObservable<Model>;
+  upsert: (items: Partial<Model>[], pk?: number) => ActionResultObservable<Model>;
 
   /**
    * @param pk is used for facetting
