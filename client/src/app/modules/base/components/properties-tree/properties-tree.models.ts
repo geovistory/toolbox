@@ -41,6 +41,7 @@ export interface FieldDefinition {
   listDefinitions: ListDefinition[]
   identityDefiningForSource: boolean
   fieldConfig?: ProClassFieldConfig
+  removedFromAllProfiles: boolean
 }
 
 export interface ListDefinition {
@@ -69,6 +70,8 @@ export interface ListDefinition {
   targetMinQuantity: number
   sourceMaxQuantity: number
   sourceMinQuantity: number
+
+  removedFromAllProfiles: boolean
 }
 
 export interface PropertyItemTypeMap {

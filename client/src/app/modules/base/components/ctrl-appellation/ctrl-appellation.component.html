@@ -7,3 +7,5 @@
   <input type="text" matInput placeholder="{{placeholder}}" disabled *ngIf="!shouldLabelFloat"
     (click)="onContainerClick()">
 </div>
+
+<input style="display: none;" (focus)="onContainerClick()">

@@ -161,28 +161,28 @@ export class FormArrayComponent implements OnInit, OnDestroy {
     this.formArrayFactory.remove(i)
   }
 
-  addSpecific(i, d: FormControlData, j) {
+  // addSpecific(i, d: FormControlData, j) {
 
-    const configs = d.nodeConfigs
-    const config = configs[j];
+  //   const configs = d.nodeConfigs
+  //   const config = configs[j];
 
-    if (d.fieldDefinition.targetMaxQuantity === 1) {
-      const disabledConfig = configs.find(c => c.disabled === true)
-      if (disabledConfig) {
-        // remove the previously selected child
-        this.formArrayFactory.remove(i + 1)
-        // enable the previously disabled config in options menu
-        disabledConfig.disabled = false;
-      }
-    }
+  //   if (d.fieldDefinition.targetMaxQuantity === 1) {
+  //     const disabledConfig = configs.find(c => c.disabled === true)
+  //     if (disabledConfig) {
+  //       // remove the previously selected child
+  //       this.formArrayFactory.remove(i + 1)
+  //       // enable the previously disabled config in options menu
+  //       disabledConfig.disabled = false;
+  //     }
+  //   }
 
-    // add the selected child
-    this.formArrayFactory.add(i + 1, config)
+  //   // add the selected child
+  //   this.formArrayFactory.add(i + 1, config)
 
-    // disable the selected config
-    config.disabled = true;
+  //   // disable the selected config
+  //   config.disabled = true;
 
-  }
+  // }
   addItemInChildListDef(lDef: ListDefinition) {
     // try to find the existing child FormArray containing the controls
     let childList = this.formArrayFactory.children.find(c => {

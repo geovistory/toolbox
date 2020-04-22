@@ -7,7 +7,7 @@ import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } fr
 import { QuillDoc } from 'app/modules/quill';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
+import { CtrlAppellationComponent, CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 
 type FgLangStringNodeConfig = FormNodeConfig<any, any, any, any>
@@ -138,7 +138,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
               data: {
                 type: 'text'
               },
-              mapValue: x => x,
+              mapValue: (x: CtrlAppellationModel) => (x ? x.quill_doc : undefined),
               placeholder: 'Text'
             }
           }

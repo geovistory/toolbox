@@ -8,8 +8,8 @@ import { ProInfoProjRel, ActiveProjectService } from '../../../../core';
 @Injectable()
 export class PropertiesTreeService {
 
-  showControl$ = new BehaviorSubject<ListDefinition>(null)
-  showCreateRole$ = new BehaviorSubject<ListDefinition>(null)
+  // showControl$ = new BehaviorSubject<ListDefinition>(null)
+  // showCreateRole$ = new BehaviorSubject<ListDefinition>(null)
 
   constructor(
     private p: ActiveProjectService

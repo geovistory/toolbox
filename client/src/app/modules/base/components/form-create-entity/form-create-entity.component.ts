@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, AbstractControl } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig, InfLangString, InfTemporalEntityApi } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
@@ -8,10 +8,10 @@ import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-facto
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { equals, flatten, indexBy, values, groupBy, sum } from 'ramda';
+import { equals, flatten, indexBy, values, groupBy, sum, uniq } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { ConfigurationPipesService, BasicModel } from '../../services/configuration-pipes.service';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
@@ -21,7 +21,8 @@ import { FieldDefinition, FieldProperty, ListDefinition, ListType } from '../pro
 import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { MatFormFieldAppearance } from '@angular/material';
 import { Appearance } from 'cesium';
-type ParentModel = 'persistent_item' | 'temporal_entity'
+import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
+type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
   pkClass: number
@@ -32,12 +33,12 @@ export interface FormArrayData {
   hideFieldTitle: boolean;
 
   fields?: {
-    parentModel: ParentModel;
+    parentModel: EntityModel;
     parentProperty: FieldProperty
   }
 
   lists?: {
-    parentModel?: ParentModel;
+    parentModel?: EntityModel;
     fieldDefinition: FieldDefinition
     minLength: number
     maxLength: number
@@ -64,15 +65,18 @@ interface FormGroupData {
 }
 export interface FormControlData {
   controlType: ControlType
-  // fieldDefinition?: FieldDefinition
   listDefinition?: ListDefinition
   nodeConfigs?: LocalNodeConfig[]
   appearance: MatFormFieldAppearance
+  ctrlEntity?: {
+    model: BasicModel
+  }
 }
 
 export interface FormChildData {
   place?: FgPlaceInjectData
   textProperty?: FgTextPropertyInjectData
+  langString?: FgLangStringInjectData
 }
 
 export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
@@ -115,11 +119,14 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   saving = false;
   searchStringPartId = 0;
   searchStringParts: { [key: number]: string } = {}
+
+  temporalEntitiesToAdd: InfTemporalEntity[] = []
   constructor(
     private formFactoryService: FormFactoryService,
     private c: ConfigurationPipesService,
     private inf: InfActions,
-    private p: ActiveProjectService
+    private p: ActiveProjectService,
+    public teEnApi: InfTemporalEntityApi
   ) { }
 
   ngOnInit() {
@@ -265,15 +272,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             }
           }
         })
-        if (Object.keys(result).length) {
-          result.fk_class = pkTargetClass
-          return {
-            [parentModel]: result
-          }
+        result.fk_class = pkTargetClass
+        return {
+          [parentModel]: result
         }
-        else {
-          return null
-        }
+
       }
       if (parentModel === 'temporal_entity' || parentModel === 'persistent_item') {
         const n: LocalNodeConfig = {
@@ -310,7 +313,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    * This Funciton returns an observable array of form array
    * each of these form arrays contain lists, or if needed, a target class selector
    */
-  private getFieldNodes(arrayConfig: LocalArrayConfig, parentModel: ParentModel): Observable<LocalNodeConfig[]> {
+  private getFieldNodes(arrayConfig: LocalArrayConfig, parentModel: EntityModel): Observable<LocalNodeConfig[]> {
 
     return combineLatest(
       this.p.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass),
@@ -652,6 +655,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
       return this.appellationCtrl(arrayConfig)
 
+    }
+    else if (listType === 'lang-string') {
+
+      return this.langStringCtrl(arrayConfig)
+
     } else if (listType === 'has-type') {
 
       return this.typeCtrl(arrayConfig)
@@ -689,17 +697,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     this.submitted = true
     if (this.formFactory.formGroup.valid) {
       this.saving = true;
-      this.save((apiCall: ActionResultObservable<any>) => {
-        apiCall.resolved$.pipe(takeUntil(this.destroy$)).subscribe((res) => {
-          if (res) {
-            if (!res.items || !res.items.length) {
-              throw new Error('bad result')
-            }
-            this.saved.emit(res.items[0])
-            this.saving = false;
-          }
-        })
-      })
+      this.save()
 
     } else {
       const f = this.formFactory.formGroup.controls.childControl as FormArray;
@@ -707,30 +705,40 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     }
   }
 
-  save(cb: (actionResult: ActionResultObservable<any>) => void) {
-    // const formGroupFactory = this.formFactory.formGroupFactory;
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      // const rootFormArray = this.formFactory.formGroupFactory.child as LocalFormArrayFactory;
-      // const rootListType = rootFormArray.config.data.fields.parentFieldDefinition.listType;
-      const value = this.formFactory.formGroupFactory.valueChanges$.value
+  save() {
 
-      let apiCall;
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      const value = this.formFactory.formGroupFactory.valueChanges$.value
+      const obs$ = []
       if (value.persistent_item) {
-        apiCall = this.inf.persistent_item.upsert([value.persistent_item], pkProject)
+        obs$.push(this.inf.persistent_item.upsert([value.persistent_item], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else if (value.temporal_entity) {
-        apiCall = this.inf.temporal_entity.upsert([value.temporal_entity], pkProject)
+        obs$.push(this.inf.temporal_entity.upsert([value.temporal_entity], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else if (value.statement) {
-        apiCall = this.inf.role.upsert([value.statement], pkProject)
+        obs$.push(this.inf.role.upsert([value.statement], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else if (value.text_property) {
-        apiCall = this.inf.text_property.upsert([value.text_property], pkProject)
+        obs$.push(this.inf.text_property.upsert([value.text_property], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else {
         throw new Error(`Submitting ${value} is not implemented`);
       }
-      cb(apiCall)
+
+      uniq(this.temporalEntitiesToAdd).forEach(pkEntity => {
+        obs$.push(this.teEnApi.addToProject(pkProject, pkEntity))
+      })
+
+      combineLatest(obs$).pipe(takeUntil(this.destroy$)).subscribe(([res]: [any]) => {
+        if (res) {
+          if (!res.items || !res.items.length) {
+            throw new Error('bad result')
+          }
+          this.saved.emit(res.items[0])
+          this.saving = false;
+        }
+      })
     })
   }
 
@@ -955,62 +963,108 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   }
 
-  // TODO INIT
+  private langStringCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    const listDefinition = arrayConfig.data.controls.listDefinition;
+
+    // with [{}] we make sure at least one item is added
+    const initItems = arrayConfig.initValue || [{}];
+    const controlConfigs: LocalNodeConfig[] = initItems.map((langString: InfLangString) => ({
+      childFactory: {
+        component: FgLangStringComponent,
+        getInjectData: (d) => {
+          return d.langString
+        },
+        required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
+        data: {
+          langString: {
+            appearance: this.appearance,
+            initVal$: of(langString)
+          }
+        },
+        mapValue: (val: InfLangString) => {
+          const value: InfRole = {
+            ...{} as any,
+            fk_entity: undefined,
+            fk_property: listDefinition.property.pkProperty,
+            fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+            lang_string: {
+              ...val,
+              fk_class: listDefinition.targetClass,
+            },
+          };
+          return value;
+        }
+      }
+    }));
+    return of(controlConfigs);
+
+  }
+
+
   private entityCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const listDefinition = arrayConfig.data.controls.listDefinition;
     const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => {
-      let initValue: CtrlEntityModel = {}
-      if (initVal.temporal_entity) initValue.temporalEntity = initVal.temporal_entity;
-      if (initVal.persistent_item) initValue.temporalEntity = initVal.persistent_item;
-      if (listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity) {
-        initValue.pkEntity = listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity;
-      }
+    return this.c.pipeModelOfClass(listDefinition.targetClass).pipe(
+      map(basicModel => {
 
-      initValue = (!initValue.pkEntity && !initValue.temporalEntity && !initValue.persistentItem) ? null : initValue;
-
-      return {
-        control: {
-          initValue,
-          placeholder: arrayConfig.data.customCtrlLabel ? arrayConfig.data.customCtrlLabel : listDefinition.label,
-          required: true,
-          data: {
-            appearance: this.appearance,
-            controlType: 'ctrl-entity',
-            listDefinition,
-          },
-          mapValue: (val: CtrlEntityModel) => {
-            if (!val || (!val.pkEntity && !val.temporalEntity && !val.persistentItem)) return null;
-
-            let value: InfRole = {
-              ...{} as any,
-              fk_property: listDefinition.property.pkProperty,
-            };
-            if (val.pkEntity) {
-
-              if (listDefinition.isOutgoing) {
-                value = { ...value, fk_entity: val.pkEntity }
-              } else {
-                value = { ...value, fk_temporal_entity: val.pkEntity }
-              }
-            } else if (val.temporalEntity) {
-              value = { ...value, temporal_entity: val.temporalEntity }
-            } else if (val.persistentItem) {
-              value = { ...value, persistent_item: val.persistentItem }
-            }
-
-            return value;
+        const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => {
+          let initValue: CtrlEntityModel = {}
+          if (initVal.temporal_entity) initValue.temporalEntity = initVal.temporal_entity;
+          if (initVal.persistent_item) initValue.temporalEntity = initVal.persistent_item;
+          if (listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity) {
+            initValue.pkEntity = listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity;
           }
-        }
-      }
-    });
-    return of(controlConfigs);
+
+          initValue = (!initValue.pkEntity && !initValue.temporalEntity && !initValue.persistentItem) ? null : initValue;
+
+          const c: LocalNodeConfig = {
+            control: {
+              initValue,
+              placeholder: arrayConfig.data.customCtrlLabel ? arrayConfig.data.customCtrlLabel : listDefinition.label,
+              required: true,
+              data: {
+                appearance: this.appearance,
+                controlType: 'ctrl-entity',
+                listDefinition,
+                ctrlEntity: {
+                  model: basicModel
+                }
+              },
+              mapValue: (val: CtrlEntityModel) => {
+                if (!val || (!val.pkEntity && !val.temporalEntity && !val.persistentItem)) return null;
+
+                let value: InfRole = {
+                  ...{} as any,
+                  fk_property: listDefinition.property.pkProperty,
+                };
+                if (val.pkEntity) {
+
+                  if (listDefinition.isOutgoing) {
+                    value = { ...value, fk_entity: val.pkEntity }
+                  } else {
+                    value = { ...value, fk_temporal_entity: val.pkEntity }
+                  }
+                } else if (val.temporalEntity) {
+                  value = { ...value, temporal_entity: val.temporalEntity }
+                } else if (val.persistentItem) {
+                  value = { ...value, persistent_item: val.persistentItem }
+                }
+
+                return value;
+              }
+            }
+          }
+          return c
+        });
+        return controlConfigs;
+      })
+    )
   }
 
 
 }
 
-function getRoleKey(m: ParentModel, isOutgoing: boolean) {
+function getRoleKey(m: EntityModel, isOutgoing: boolean) {
   if (m === 'temporal_entity') {
     return isOutgoing ? 'te_roles' : 'ingoing_roles';
   }

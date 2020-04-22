@@ -53,7 +53,8 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
       targetClassLabel: 'Reference',
       targetMinQuantity: undefined,
       targetMaxQuantity: -1,
-      fkClassField: undefined
+      fkClassField: undefined,
+      removedFromAllProfiles: false
     }
     this.fieldDefinition = {
       ...listDef,

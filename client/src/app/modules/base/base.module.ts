@@ -16,7 +16,6 @@ import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
 import { AddDialogComponent } from './components/add-dialog/add-dialog.component';
 import { AddOrCreateEntityModalComponent } from './components/add-or-create-entity-modal/add-or-create-entity-modal.component';
-import { AddRoleComponent } from './components/add-role/add-role.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
@@ -60,7 +59,6 @@ import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-
 const components = [
   PropertiesTreeComponent,
   PropertiesTreeDialogComponent,
-  AddRoleComponent,
   FieldComponent,
   TemporalEntityListComponent,
   TemporalEntityAddListComponent,

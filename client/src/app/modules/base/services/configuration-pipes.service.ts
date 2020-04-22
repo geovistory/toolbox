@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig, switchMapOr } from 'app/core';
+import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig, switchMapOr, InfPersistentItem } from 'app/core';
 import { ByPk } from 'app/core/store/model';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { flatten, indexBy, keys, uniq, values } from 'ramda';
@@ -13,6 +13,14 @@ import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { textPropertyByFksKey, proClassFieldConfgByProjectAndClassKey } from 'app/core/pro/pro.config';
 import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
 import { DfhPropertyActionFactory } from 'app/core/dfh/dfh.actions';
+
+export type BasicModel = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'persistent_item' | 'temporal_entity'
+
+interface DfhPropertyStatus extends DfhProperty {
+
+  // true, if removed from all profiles of the current project
+  removedFromAllProfiles: boolean
+}
 
 type LabelOrigin = 'of project in project lang' | 'of default project in project lang' | 'of default project in english' | 'of ontome in project lang' | 'of ontome in english'
 
@@ -119,9 +127,9 @@ export class ConfigurationPipesService {
   }
 
   /**
-   * Pipes all the properties of a class, where the target class is enabled
+   * Pipes all the enabled properties of a class, where the target class is enabled
    */
-  @spyTag @cache({ refCount: false }) pipePropertiesOfClassWhereTargetEnabled(pkClass: number, isOutgoing: boolean): Observable<DfhProperty[]> {
+  @spyTag @cache({ refCount: false }) pipePropertiesOfClassWhereTargetEnabled(pkClass: number, isOutgoing: boolean): Observable<DfhPropertyStatus[]> {
 
 
     let $: Observable<ByPk<DfhProperty>>
@@ -131,23 +139,70 @@ export class ConfigurationPipesService {
     else {
       $ = this.p.dfh$.property$.by_has_range$.key(pkClass)
     }
-    const allowedClasses$ = this.pipeClassesAvailableInCache()
 
-    // It may make sense to add a second parameter 'appContext' to this function
-    // and restrict the number of propertyFields by restricting
-    // allowed target classes only to enabled in entity or required classes:
-    //    const allowedClasses$ = this.pipeClassesInEntitesOrRequired()
-    // ... for create screens.
+    // filter properties that are in at least one profile enabled by project
+    const profiles$ = this.p.pkProject$.pipe(
+      switchMap(pkProject => {
+        return this.p.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
+          .key(pkProject + '_true')
+          .pipe(
+            map(rels => values(rels)),
+            map(rels => [
+              ...rels.map(rel => rel.fk_profile),
+              DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
+            ])
+          )
+      })
+    )
+
+
+
+    const allowedClasses$ = this.pipeClassesAvailableInCache()
 
     // Filter out only the properties for which target class is allowed
     // remark: may be depending on appContext in future
-    return combineLatest($, allowedClasses$).pipe(
-      map(([props, allowedClasses]) => values(props).filter(prop => {
-        return isOutgoing ?
-          !!allowedClasses[prop.has_range] :
-          !!allowedClasses[prop.has_domain];
-      })),
-    )
+    return combineLatest($, allowedClasses$, profiles$)
+      .pipe(
+        map(([props, allowedClasses, profiles]) => {
+          const p: DfhPropertyStatus[] = []
+
+          values(props).forEach(prop => {
+            const targetClassIsEnabled = isOutgoing ?
+              !!allowedClasses[prop.has_range] :
+              !!allowedClasses[prop.has_domain];
+
+            if (!targetClassIsEnabled) return false;
+
+            const propProfileRel: {
+              fk_profile: number,
+              removed_from_api: boolean
+            }[] = prop.profiles
+
+            let enabledInAProfile = false;
+
+            let removedFromAllProfiles = true;
+
+            propProfileRel.forEach(item => {
+              if (profiles.includes(item.fk_profile)) {
+                enabledInAProfile = true;
+                if (item.removed_from_api === false) {
+                  removedFromAllProfiles = false
+                }
+              }
+            })
+
+            if (enabledInAProfile) {
+              p.push({
+                ...prop,
+                removedFromAllProfiles
+              })
+            }
+          })
+
+          return p
+        })
+      )
+
   }
 
   /**
@@ -403,7 +458,10 @@ export class ConfigurationPipesService {
         else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
           return 'time-primitive'
         }
-        else if (klass.basic_type === 8 || klass.basic_type === 30) {
+        else if (klass.basic_type === 30) {
+          return 'has-type'
+        }
+        else if (klass.basic_type === 8) {
           return 'entity-preview'
         }
         else {
@@ -414,7 +472,7 @@ export class ConfigurationPipesService {
   }
 
 
-  @spyTag @cache({ refCount: false }) pipeModelOfClass(targetClassPk: number): Observable<'appellation' | 'language' | 'place' | 'time_primitive' | 'persistent_item' | 'temporal_entity'> {
+  @spyTag @cache({ refCount: false }) pipeModelOfClass(targetClassPk: number): Observable<BasicModel> {
     return this.p.dfh$.class$.by_pk_class$.key(targetClassPk).pipe(
       filter(i => !!i),
       map(klass => {
@@ -430,6 +488,9 @@ export class ConfigurationPipesService {
         }
         else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
           return 'time_primitive'
+        }
+        else if (targetClassPk == DfhConfig.CLASS_PK_REFERENCE) {
+          return 'lang_string'
         }
         else if (klass.basic_type === 8 || klass.basic_type === 30) {
           return 'persistent_item'
@@ -646,7 +707,7 @@ export class ConfigurationPipesService {
       )
   }
 
-  @cache({ refCount: false }) pipeListDefinitionsOfProperties(properties: DfhProperty[], isOutgoing: boolean): Observable<ListDefinition[]> {
+  @cache({ refCount: false }) pipeListDefinitionsOfProperties(properties: DfhPropertyStatus[], isOutgoing: boolean): Observable<ListDefinition[]> {
     return combineLatestOrEmpty(
       properties.map(p => {
 
@@ -698,7 +759,8 @@ export class ConfigurationPipesService {
               identityDefiningForSource: o ? p.identity_defining : false, // replace false with p.identity_defining_for_range when available
               identityDefiningForTarget: o ? false : p.identity_defining, // replace false with p.identity_defining_for_range when available
               ontoInfoLabel: p.identifier_in_namespace,
-              ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/' + p.pk_property
+              ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/' + p.pk_property,
+              removedFromAllProfiles: p.removedFromAllProfiles
             }
             return node
           }),
@@ -729,6 +791,7 @@ export class ConfigurationPipesService {
       targetMinQuantity: undefined,
       sourceMaxQuantity: undefined,
       sourceMinQuantity: undefined,
+      removedFromAllProfiles: false
     }
     switch (pkClassField) {
       case SysConfig.PK_CLASS_FIELD_WHEN:
@@ -881,7 +944,7 @@ export class ConfigurationPipesService {
             // Create field definitions
             const fieldDefs: { [key: string]: FieldDefinition } = {}
             listDefinitions.forEach(listDef => {
-              // if (!(listDef.pkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF && !listDef.isOutgoing)) {
+
               const k = listDef.property.pkProperty + '_' + listDef.isOutgoing;
 
               if (!fieldDefs[k]) {
@@ -922,7 +985,7 @@ export class ConfigurationPipesService {
      * Pipe the generic field has appellation
      * with the given class as range
      */
-    const hasAppeProp: DfhProperty = {
+    const hasAppeProp: DfhPropertyStatus = {
       has_domain: DfhConfig.CLASS_PK_APPELLATION_FOR_LANGUAGE,
       pk_property: DfhConfig.PROPERTY_PK_IS_APPELLATION_OF,
       has_range: pkClass,
@@ -934,6 +997,7 @@ export class ConfigurationPipesService {
       identity_defining: true,
       is_inherited: true,
       is_has_type_subproperty: false,
+      removedFromAllProfiles: false,
       profiles: []
     }
     const hasAppeListDef$ = this.pipeListDefinitionsOfProperties([hasAppeProp], false).pipe(
@@ -1045,10 +1109,10 @@ export class ConfigurationPipesService {
 
 
   private pipeHasTypeListDefinition(pkClass: number) {
-    return this.p.dfh$.property$.by_has_domain$.key(pkClass).pipe(
+    return this.pipePropertiesOfClassWhereTargetEnabled(pkClass, true).pipe(
       // check if this class has 'has type' subproperty
       map(outgoing => {
-        return values(outgoing).filter((prop) => prop.is_has_type_subproperty);
+        return outgoing.filter((prop) => prop.is_has_type_subproperty);
       }), switchMap(hasTypeProps => combineLatestOrEmpty(hasTypeProps.map(dfhProp => {
         return this.pipeListDefinitionsOfProperties([dfhProp], true).pipe(filter(listDefs => !!listDefs && !!listDefs[0]), map(listDefs => {
           const listDef = listDefs[0];

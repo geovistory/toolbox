@@ -51,7 +51,8 @@ export class RamListEditDialogComponent implements OnInit {
       sourceMinQuantity: undefined,
       targetClass: 657,
       targetClassLabel: 'Reference',
-      fkClassField: undefined
+      fkClassField: undefined,
+      removedFromAllProfiles: false
     }
     this.fieldDefinition = {
       ...listDef,

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { MatDialog, MatDialogConfig } from '../../../../../../node_modules/@angular/material';
 import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { first, map, shareReplay, takeUntil } from '../../../../../../node_modules/rxjs/operators';
@@ -155,16 +155,21 @@ export class FieldComponent implements OnInit {
   }
 
   private openAddDialog(listDef: ListDefinition) {
+    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
+      .includes(listDef.listType);
+    const showAddList = (!isValueLike && !listDef.identityDefiningForTarget)
     const data: AddDialogData = {
       listDefinition: listDef,
       pkEntity: this.pkEntity
     };
-    this.dialog.open(AddDialogComponent, {
-      height: 'calc(100% - 30px)',
-      width: '980px',
+    const config: MatDialogConfig = {
+      height: isValueLike ? '50%' : '100%',
+      width: showAddList ? '980px' : '500px',
       maxWidth: '100%',
       data,
-    });
+    }
+    // if (!isValueLike) config.height = 'calc(100% - 30px)'
+    this.dialog.open(AddDialogComponent, config);
   }
 
 

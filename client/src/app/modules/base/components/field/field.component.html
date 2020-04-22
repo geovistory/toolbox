@@ -55,6 +55,9 @@
           *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
           *
         </span>
+        <mat-icon *ngIf="fieldDefinition.removedFromAllProfiles" svgIcon="alert" color="warn"
+          matTooltip="This property of this field has been removed from all your OntoMe profiles. Try to not use it anymore.">
+        </mat-icon>
       </span>
       <span class="mat-body right-col" [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
         &nbsp;({{itemsCount$ | async}}) </span>

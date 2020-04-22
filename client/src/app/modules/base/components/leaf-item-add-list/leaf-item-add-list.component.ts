@@ -1,6 +1,6 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { first, map, takeUntil, shareReplay, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
@@ -31,6 +31,9 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
   @Input() showOntoInfo$;
   @Input() addButtonVisible;
   @Input() toggleButtonVisible;
+
+  @Output() close = new EventEmitter()
+  @Output() next = new EventEmitter()
 
   itemsCount: number;
 
@@ -95,8 +98,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       takeUntil(this.destroy$)
     ).subscribe((res: PaginationObject) => {
       if (res.count === 0) {
-        this.t.showCreateRole$.next(this.t.showControl$.value);
-        this.t.showControl$.next(null);
+        this.next.emit()
       } else {
         this.itemsCount = res.count;
         this.dataSource.data = this.getItems(res);
@@ -208,7 +210,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       const txtP: InfTextProperty[] = this.selection.selected.map(option => (option as TextPropertyItem).textProperty);
       this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.text_property.upsert(txtP, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-          this.t.showControl$.next(null)
+          this.close.emit()
         })
       )
     }
@@ -216,7 +218,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       const roles: InfRole[] = this.selection.selected.map(option => (option as BasicRoleItem).role);
       this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.role.upsert(roles, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-          this.t.showControl$.next(null)
+          this.close.emit()
         })
       )
     }

@@ -64,8 +64,10 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close()
   }
   onNext() {
+    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
+      .includes(this.data.listDefinition.listType)
 
-    if (this.data.listDefinition.identityDefiningForTarget) {
+    if (isValueLike || this.data.listDefinition.identityDefiningForTarget) {
       this.activeElement$.next('create-form')
     }
     else {
