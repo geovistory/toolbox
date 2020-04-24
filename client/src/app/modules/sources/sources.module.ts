@@ -7,7 +7,6 @@ import { BaseModule } from '../base/base.module';
 import { SourceListAPIActions } from './containers/source-list/api/source-list.actions';
 import { SourceListAPIEpics } from './containers/source-list/api/source-list.epics';
 import { SourceListComponent } from './containers/source-list/source-list.component';
-import { SourcesRoutingModule } from './sources-routing.module';
 import { ListModule } from 'app/shared/components/list/list.module';
 
 
@@ -15,7 +14,6 @@ import { ListModule } from 'app/shared/components/list/list.module';
   imports: [
     BaseModule,
     ListModule,
-    SourcesRoutingModule,
     KeysModule,
     ListDrawerHeaderModule,
     PassiveLinkModule,

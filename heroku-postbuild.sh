@@ -4,7 +4,7 @@ echo '================ Start of heroku-postbuild.sh ============================
 echo 'Current environment: DB_ENV="'$DB_ENV'"'
 echo ''
 
-if [ $DB_ENV = 'review' ]; then
+if [ $DB_ENV = 'review' && $RESTORE_DB = 'ON']; then
 
   echo '================= Drop schemas of target DB =============================='
   # We need to drop schemas before restoring because the review database may be
