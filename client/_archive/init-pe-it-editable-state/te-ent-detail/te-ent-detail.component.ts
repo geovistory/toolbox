@@ -117,7 +117,7 @@ export class TeEntDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
     this.listOf = { pkEntity: this.pkEntity, type: 'entity' }
 
-    this.iconType$ = this.b.pipeIconType(this.pkEntity, 'peIt')
+    this.iconType$ = this.b.pipeIconType(this.pkEntity)
 
   }
 

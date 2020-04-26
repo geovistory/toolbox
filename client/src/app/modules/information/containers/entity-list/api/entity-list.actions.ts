@@ -1,16 +1,15 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { PeItDetail, TeEntDetail } from 'app/core';
+import { PeItDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Information } from './entity-list.models';
 import { ClassAndTypePk } from '../../create-or-add-entity/create-or-add-entity.component';
+import { Information } from './entity-list.models';
 
 type Payload = Information;
 interface MetaData {
   pkProject?: number,
   pkEntity?: number,
   peItDetail?: PeItDetail,
-  teEntDetail?: TeEntDetail;
   classAndTypePk?: ClassAndTypePk;
   pkUiContext?: number;
   pkClasses?: number[]

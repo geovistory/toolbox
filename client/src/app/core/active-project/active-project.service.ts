@@ -550,10 +550,11 @@ export class ActiveProjectService {
   }
 
   addEntityTab(pkEntity: number, pkClass: number, entityType: EntityType) {
-    if (entityType === 'teEn') {
-      this.addEntityTeEnTab(pkEntity)
-    }
-    else if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+    // if (entityType === 'teEn') {
+    //   this.addEntityTeEnTab(pkEntity)
+    // }
+    // else
+    if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
       this.addSourceExpressionPortionTab(pkEntity)
     }
     else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
@@ -578,7 +579,7 @@ export class ActiveProjectService {
 
     this.addTab({
       active: true,
-      component: 'pe-it-detail',
+      component: 'entity-detail',
       icon: 'source',
       pathSegment: 'peItDetails',
       data: {
@@ -603,7 +604,7 @@ export class ActiveProjectService {
 
     this.addTab({
       active: true,
-      component: 'pe-it-detail',
+      component: 'entity-detail',
       icon: 'expression-portion',
       data: {
         pkEntity: pkEntity,
@@ -629,7 +630,7 @@ export class ActiveProjectService {
 
     this.addTab({
       active: true,
-      component: 'pe-it-detail',
+      component: 'entity-detail',
       icon: 'persistent-entity',
       pathSegment: 'peItDetails',
       data: {
@@ -643,26 +644,26 @@ export class ActiveProjectService {
 
   }
 
-  private addEntityTeEnTab(pkEntity: number) {
-    this.addTab({
-      active: true,
-      component: 'te-en-detail',
-      icon: 'temporal-entity',
-      pathSegment: 'teEnDetails',
-      data: {
-        pkEntity: pkEntity,
-        teEntDetailConfig: {
-          teEntDetail: {
-            showRightArea: false,
-            showSources: true,
-            showSourcesToggle: true,
-            showDigitals: false,
-            showDigitalsToggle: true,
-          }
-        }
-      }
-    })
-  }
+  // private addEntityTeEnTab(pkEntity: number) {
+  //   this.addTab({
+  //     active: true,
+  //     component: 'te-en-detail',
+  //     icon: 'temporal-entity',
+  //     pathSegment: 'teEnDetails',
+  //     data: {
+  //       pkEntity: pkEntity,
+  //       teEntDetailConfig: {
+  //         teEntDetail: {
+  //           showRightArea: false,
+  //           showSources: true,
+  //           showSourcesToggle: true,
+  //           showDigitals: false,
+  //           showDigitalsToggle: true,
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 
   addTextTab(pkEntity: number) {
     this.addTab({
@@ -720,8 +721,8 @@ export class ActiveProjectService {
   }
   /**
    * Opens dialog to get confirmation before removing
-   * peIt from project. If user confirms, the dialog
-   * removes peIt and closes
+   * entity from project. If user confirms, the dialog
+   * removes entity and closes
    */
   openRemovePeItDialog(entityLabel: string, pkEntity: number) {
     const s = new Subject<void>();

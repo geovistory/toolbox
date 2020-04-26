@@ -32,14 +32,11 @@ import { CreateOrAddEntityComponent } from './containers/create-or-add-entity/cr
 import { InformationAPIActions } from './containers/entity-list/api/entity-list.actions';
 import { InformationAPIEpics } from './containers/entity-list/api/entity-list.epics';
 import { InformationComponent } from './containers/entity-list/entity-list.component';
-import { EntityActions } from './containers/pe-it-detail/api/entity.actions';
-import { PeItDetailAPIActions } from './containers/pe-it-detail/api/pe-it-detail.actions';
-import { PeItActions } from './containers/pe-it-detail/api/pe-it.actions';
-import { PeItDetailComponent } from './containers/pe-it-detail/pe-it-detail.component';
+import { EntityActions } from './containers/entity-detail/api/entity.actions';
+import { PeItDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
+import { PeItActions } from './containers/entity-detail/api/pe-it.actions';
+import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
-import { TeEntDetailAPIActions } from './containers/te-ent-detail/api/te-ent-detail.actions';
-import { TeEntActions } from './containers/te-ent-detail/api/te-ent.actions';
-import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.component';
 
 
 @NgModule({
@@ -78,9 +75,7 @@ import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.c
   declarations: [
     InformationComponent,
     PeItTimelineComponent,
-
-    PeItDetailComponent,
-    TeEntDetailComponent,
+    EntityDetailComponent,
     CreateOrAddEntityComponent,
     ContentTreeComponent,
     ContentTreeNodeLabelComponent,
@@ -92,13 +87,10 @@ import { TeEntDetailComponent } from './containers/te-ent-detail/te-ent-detail.c
     EntityActions,
     PeItActions,
     PeItDetailAPIActions,
-    TeEntDetailAPIActions,
-    TeEntActions,
   ],
   exports: [
     InformationComponent,
-    PeItDetailComponent,
-    TeEntDetailComponent,
+    EntityDetailComponent,
     CreateOrAddEntityComponent,
   ],
   entryComponents: [

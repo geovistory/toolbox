@@ -150,15 +150,10 @@
             </gv-table-detail>
 
 
-            <gv-pe-it-detail class="gv-flex-fh" *ngIf="tab.component=='pe-it-detail'" [tab]="tab"
+            <gv-entity-detail class="gv-flex-fh" *ngIf="tab.component=='entity-detail'" [tab]="tab"
               [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
               [onActivateTab]="c">
-            </gv-pe-it-detail>
-
-
-            <gv-te-ent-detail class="gv-flex-fh" *ngIf="tab.component=='te-en-detail'" [tab]="tab"
-              [pkEntity]="tab.data.pkEntity" [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c
-              [onActivateTab]="c"></gv-te-ent-detail>
+            </gv-entity-detail>
 
             <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis-detail'"
               [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"

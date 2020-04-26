@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
-import { EntityPreview, HasTypePropertyReadable, PeItDetail } from '../state/models';
+import { EntityPreview, PeItDetail } from '../state/models';
 import { ListType, Panel, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
 
 // export interface ComQueryV extends ProQuery {
@@ -38,7 +38,7 @@ interface MetaData {
   // CRM and Config
   projRel?: ProDfhClassProjRel;
   dfh_pk_class?: number;
-  hasTypeProperties?: HasTypePropertyReadable[]
+  // hasTypeProperties?: HasTypePropertyReadable[]
 
   // Information
   infProjRel?: ProInfoProjRel;

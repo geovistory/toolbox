@@ -1,23 +1,21 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, Output, OnDestroy, ViewChild } from '@angular/core';
-import { ActiveProjectService, IAppState, Tab, U, UiContext, PeItTabData, IconType } from 'app/core';
-import { ClassInstanceLabel, PeItDetail, SubstoreComponent, EntityPreview } from 'app/core/state/models';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { ActiveProjectService, IAppState, IconType, PeItTabData, Tab } from 'app/core';
+import { EntityPreview, PeItDetail, SubstoreComponent } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
-import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
-import { MatDialog, MatTabGroup } from '../../../../../../node_modules/@angular/material';
-import { InfActions } from '../../../../core/inf/inf.actions';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-
-import { slideInOut } from '../../shared/animations';
-import { PeItDetailAPIActions } from './api/pe-it-detail.actions';
-import { peItDetailReducer } from './api/pe-it-detail.reducer';
-import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
-import { FormControl } from '@angular/forms';
 import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
+import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { InfActions } from '../../../../core/inf/inf.actions';
+import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
+import { slideInOut } from '../../shared/animations';
+import { PeItDetailAPIActions } from './api/entity-detail.actions';
+import { peItDetailReducer } from './api/entity-detail.reducer';
+
 
 
 
@@ -26,19 +24,18 @@ import { InformationPipesService } from 'app/modules/base/services/information-p
   basePathMethodName: 'getBasePath'
 })
 @Component({
-  selector: 'gv-pe-it-detail',
-  templateUrl: './pe-it-detail.component.html',
-  styleUrls: ['./pe-it-detail.component.scss'],
+  selector: 'gv-entity-detail',
+  templateUrl: './entity-detail.component.html',
+  styleUrls: ['./entity-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponentInterface, OnDestroy {
+export class EntityDetailComponent implements SubstoreComponent, TabLayoutComponentInterface, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() basePath: string[];
 
   @Output() remove = new EventEmitter<number>();
-  @Output() onLabelChange = new EventEmitter<ClassInstanceLabel>();
   @Output() close = new EventEmitter<void>();
 
   // afterViewInit = false;
@@ -64,38 +61,9 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
 
   // Left Panel Sections
   @select() showProperties$: Observable<boolean>;
-  // @select() showSectionList$: Observable<boolean>;
-  // @select() showRepros$: Observable<boolean>;
 
-  // // Right Panel Sections
-  // @select() showMap$: Observable<boolean>;
-  // @select() showTimeline$: Observable<boolean>;
-  // @select() showAssertions$: Observable<boolean>;
-  // @select() showMentionedEntities$: Observable<boolean>;
-  // @select() showSources$: Observable<boolean>;
-  // @select() showDigitals$: Observable<boolean>;
-
-  // // Toggle Buttons (left panel)
-  // @select() showPropertiesToggle$: Observable<boolean>;
-  // @select() showSectionListToggle$: Observable<boolean>;
-  // @select() showReprosToggle$: Observable<boolean>;
-
-  // // Toggle Buttons (right panel)
-  // @select() showMapToggle$: Observable<boolean>;
-  // @select() showTimelineToggle$: Observable<boolean>;
-  // @select() showMentionedEntitiesToggle$: Observable<boolean>;
-  // @select() showAssertionsToggle$: Observable<boolean>;
-  // @select() showSourcesToggle$: Observable<boolean>;
-  // @select() showDigitalsToggle$: Observable<boolean>;
-
-  // tabs on the right panel
   @select() rightPanelActiveTab$: Observable<number>;
   @select() rightPanelTabs$: Observable<string[]>;
-
-
-
-
-  // uiContext: UiContext;
 
   // sourcePeIt$: Observable<InfPersistentItem>
   title$: Observable<string>;
@@ -132,8 +100,6 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
   }
 
 
-
-
   getBasePath = () => this.basePath;
 
 
@@ -144,11 +110,18 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
     this.t.setTabLoading(true)
 
+    this.preview$ = this.p.streamEntityPreview(this.pkEntity)
+
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$
-        .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
-          this.t.setTabLoading(false)
-        })
+
+      // TODO merge persistent_item and temporal_entity tables
+      combineLatest(
+        this.inf.persistent_item.loadMinimal(pkProject, this.pkEntity).resolved$,
+        this.inf.temporal_entity.loadNestedObject(pkProject, this.pkEntity).resolved$
+      ).pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
+        this.t.setTabLoading(false)
+      })
+
     })
 
     this.showRightArea$.pipe(first(b => b !== undefined), takeUntil(this.destroy$)).subscribe((b) => {
@@ -163,7 +136,6 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
     this.title$ = this.i.pipeLabelOfEntity(this.pkEntity)
     this.fkClass$ = this.b.pipeClassOfEntity(this.pkEntity)
     this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
-    this.preview$ = this.p.streamEntityPreview(this.pkEntity)
     this.tabTitle$ = combineLatest(this.preview$, this.classLabel$).pipe(
       map(([preview, classLabel]) => {
         const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
@@ -187,17 +159,10 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
 
     this.pkEntity$ = of(this.pkEntity)
 
-    this.iconType$ = this.b.pipeIconType(this.pkEntity, 'peIt')
+    this.iconType$ = this.b.pipeIconType(this.pkEntity)
 
   }
 
-  // ngAfterViewInit() {
-  //   this.ref.detectChanges();
-  //   setTimeout(() => {
-
-  //     this.rightPanelTabs.selectedIndex = 0
-  //   }, 5000)
-  // }
 
   openRemoveDialog() {
     this.tabTitle$
@@ -212,9 +177,6 @@ export class PeItDetailComponent implements SubstoreComponent, TabLayoutComponen
 
   rightTabIndexChange(i: number) {
     this.localStore.dispatch(this.actions.setRightPanelActiveTab(i))
-    // this.rightPanelTabs$.pipe(first()).subscribe(tabs => {
-    //   this.show(tabs[i]);
-    // })
   }
   show(keyToShow) {
     // this.rightPanelTabs$.pipe(first()).subscribe(showRight => {

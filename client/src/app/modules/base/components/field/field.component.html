@@ -14,6 +14,10 @@
           *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
           *
         </span>
+        <span [matTooltip]="'Defines identity of target'"
+          *ngIf="fieldDefinition.listDefinitions[0].identityDefiningForTarget">
+          !
+        </span>
       </span>
       <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity"
         [pkProperty]="fieldDefinition.property.pkProperty" [pkTypedClass]="fieldDefinition.sourceClass"

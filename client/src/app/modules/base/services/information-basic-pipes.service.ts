@@ -415,21 +415,22 @@ export class InformationBasicPipesService {
    * gets the css classes for that entity
    * @param pkEntity
    */
-  pipeIconType(pkEntity: number, entityType: EntityType): Observable<IconType> {
-    if (entityType == 'teEn') {
-      return of('temporal-entity')
-    } else {
-      return this.pipeClassOfEntity(pkEntity).pipe(
-        map(pkClass => {
-          if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
-            return 'expression-portion'
-          } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
-            return 'source'
-          }
-          return 'persistent-entity'
-        })
-      )
-    }
+  pipeIconType(pkEntity: number): Observable<IconType> {
+
+    return this.p.streamEntityPreview(pkEntity).pipe(
+      map(preview => {
+        if (preview.entity_type == 'teEn') {
+          return 'temporal-entity'
+        }
+        if (preview.fk_class === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+          return 'expression-portion'
+        } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(preview.fk_class)) {
+          return 'source'
+        }
+        return 'persistent-entity'
+      })
+    )
+
   }
 
 

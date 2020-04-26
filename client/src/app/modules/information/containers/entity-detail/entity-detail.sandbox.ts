@@ -3,9 +3,9 @@ import { ProProject } from 'app/core';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 
 import { InformationModule } from '../../information.module';
-import { PeItDetailComponent } from './pe-it-detail.component';
+import { EntityDetailComponent } from './entity-detail.component';
 
-export default sandboxOf(PeItDetailComponent, {
+export default sandboxOf(EntityDetailComponent, {
   imports: [
     InitStateModule,
     InformationModule
@@ -33,7 +33,7 @@ export default sandboxOf(PeItDetailComponent, {
 
         <gv-init-state [initState]="state"></gv-init-state>
 
-        <gv-pe-it-detail class="gv-grow-1" [basePath]="basePath"></gv-pe-it-detail>
+        <gv-entity-detail class="gv-grow-1" [basePath]="basePath"></gv-entity-detail>
 
       </div>
     </div>

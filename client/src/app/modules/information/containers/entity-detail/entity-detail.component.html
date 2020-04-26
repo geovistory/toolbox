@@ -24,11 +24,17 @@
             <span *ngIf="(iconType$ | async)==='persistent-entity'"
               class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
 
+            <span *ngIf="(iconType$ | async)==='temporal-entity'"
+              class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
+
           </div>
           <div class="summary-texts">
             <div class="ellipsis">
               <h2 class="summary-entity-label ellipsis">
-                <span [matTooltip]="'Entity ' + pkEntity">{{(preview$|async)?.entity_label}}</span>
+                <span [matTooltip]="'Entity ' + pkEntity">
+                  <ng-container *ngIf="(preview$|async)?.entity_type == 'teEn'">{{classLabel$ | async}} –</ng-container>
+                  {{(preview$|async)?.entity_label}}
+                </span>
                 <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
               </h2>
               <div class="summary-entity-label ellipsis">
