@@ -1,10 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { ByPk, IAppState } from 'app/core/store/model';
 import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollection } from 'app/core/store/reducer-factory';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, pipe } from 'rxjs';
 import { filter, first, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
-import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString } from '../sdk';
+import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel } from '../sdk';
 import { PaginateByParam } from '../store/actions';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
 import { infDefinitions, infRoot, IndexRoleBySubjectProperty, indexRoleBySubjectProperty, IndexRoleByObjectProperty, indexRoleByObjectProperty, IndexRoleBySubject, indexRoleBySubject, IndexRoleByObject, indexRoleByObject } from './inf.config';
@@ -113,7 +113,7 @@ class Selector {
         } else {
           path = [infRoot, this.model, pagBy, key];
         }
-        return this.ngRedux.select<number>([...path, 'count']) // .pipe(map(c => c ? c : 0))
+        return this.ngRedux.select<number>([...path, 'count'])
       })
     )
 
@@ -121,6 +121,40 @@ class Selector {
 
   }
 
+
+  pipeItemsInProject<M>(pkProject$: Observable<number | string>, getFkEntity: (item: M) => number) {
+    return pipe(
+      switchMap((items: ByPk<M>) => {
+        return pkProject$.pipe(
+          switchMap(pkProject => {
+            const proRelsAndKey$: Observable<{ key: string, rel: ProInfoProjRel }>[] = [];
+            for (const k in items) {
+              if (items.hasOwnProperty(k)) {
+                const item = items[k];
+                proRelsAndKey$.push(
+                  this.ngRedux.select<ProInfoProjRel>(['pro', 'info_proj_rel', 'by_fk_project__fk_entity', pkProject + '_' + getFkEntity(item)])
+                    .pipe(map(rel => ({ key: k, rel })))
+                )
+              }
+            }
+            return combineLatestOrEmpty(proRelsAndKey$).pipe(
+              map(proRels => {
+                const itemsInProject: ByPk<M> = {};
+                for (let i = 0; i < proRels.length; i++) {
+                  const proRel = proRels[i];
+                  if (proRel.rel && proRel.rel.is_in_project) {
+                    itemsInProject[proRel.key] = items[proRel.key]
+                  }
+                }
+                return itemsInProject;
+              })
+            )
+          })
+        )
+
+      })
+    )
+  }
 }
 
 class InfPersistentItemSelections extends Selector {
@@ -153,15 +187,7 @@ class InfTemporalEntitySelections extends Selector {
 class InfRoleSelections extends Selector {
 
   public by_pk_entity$ = this.selector<InfRole>('by_pk_entity')
-  // public by_fk_property$ = this.selector<ByPk<InfRole>>('by_fk_property')
-  // public by_fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_entity')
-  // public by_fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_temporal_entity')
-  // public by_fk_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_temporal_entity')
-  // public by_fk_property__fk_entity$ = this.selector<ByPk<InfRole>>('by_fk_property__fk_entity')
-  // public by_fk_property_of_property__fk_temporal_entity$ = this.selector<ByPk<InfRole>>('by_fk_property_of_property__fk_temporal_entity')
   public by_fk_subject_data$ = this.selector<ByPk<InfRole>>('by_fk_subject_data')
-  // public by_fk_object_data$ = this.selector<ByPk<InfRole>>('by_fk_object_data')
-
 
   public pagination$ = this.paginationSelector<number>()
 
@@ -174,42 +200,68 @@ class InfRoleSelections extends Selector {
 
   by_subject$(foreignKeys: IndexRoleBySubject): Observable<InfRole[]> {
     const key = indexRoleBySubject(foreignKeys);
-    return this.selector<ByPk<InfRole>>('by_subject').key(key).pipe(
+    return this.selector<ByPk<InfRole>>('by_subject').key(key)
+      .pipe(
+        this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
+        map(items => values(items))
+      )
+  }
+
+  by_subject_and_property$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<InfRole[]> {
+    return this.by_subject_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(roleIdx => values(roleIdx))
     )
   }
-
-  by_subject_and_property$(foreignKeys: IndexRoleBySubjectProperty): Observable<InfRole[]> {
+  by_subject_and_property_indexed$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<ByPk<InfRole>> {
     const key = indexRoleBySubjectProperty(foreignKeys);
-    return this.selector<ByPk<InfRole>>('by_subject+property').key(key).pipe(
-      map(roleIdx => values(roleIdx))
-    )
-  }
-  by_subject_and_property_indexed$(foreignKeys: IndexRoleBySubjectProperty): Observable<ByPk<InfRole>> {
-    const key = indexRoleBySubjectProperty(foreignKeys);
-    return this.selector<ByPk<InfRole>>('by_subject+property').key(key)
-
+    const selection$ = this.selector<ByPk<InfRole>>('by_subject+property').key(key)
+    if (ofProject) {
+      return selection$.pipe(this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity))
+    }
+    return selection$
   }
 
   by_object$(foreignKeys: IndexRoleByObject): Observable<InfRole[]> {
     const key = indexRoleByObject(foreignKeys);
     return this.selector<ByPk<InfRole>>('by_object').key(key).pipe(
+      this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
       map(roleIdx => values(roleIdx))
     )
   }
 
-  by_object_and_property$(foreignKeys: IndexRoleByObjectProperty): Observable<InfRole[]> {
-    const key = indexRoleByObjectProperty(foreignKeys);
-    return this.selector<ByPk<InfRole>>('by_object+property').key(key).pipe(
+  by_object_and_property$(foreignKeys: IndexRoleByObjectProperty, ofProject = true): Observable<InfRole[]> {
+    return this.by_object_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(roleIdx => values(roleIdx))
     )
   }
-  by_object_and_property_indexed$(foreignKeys: IndexRoleByObjectProperty): Observable<ByPk<InfRole>> {
+
+  by_object_and_property_indexed$(foreignKeys: IndexRoleByObjectProperty, ofProject = true): Observable<ByPk<InfRole>> {
     const key = indexRoleByObjectProperty(foreignKeys);
-    return this.selector<ByPk<InfRole>>('by_object+property').key(key)
+    const selection$ = this.selector<ByPk<InfRole>>('by_object+property').key(key)
+    if (ofProject) {
+      selection$.pipe(
+        this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
+      )
+    }
+    return selection$
   }
 
 }
+
+
+class InfTextPropertySelections extends Selector {
+  public by_pk_entity$ = this.selector<InfTextProperty>('by_pk_entity')
+  public by_fk_concerned_entity__fk_class_field$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity__fk_class_field')
+  public by_fk_concerned_entity$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity')
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
+}
+
 
 class InfAppellationSelections extends Selector {
   public by_pk_entity$ = this.selector<InfAppellation>('by_pk_entity')
@@ -246,19 +298,6 @@ class InfPlaceSelections extends Selector {
 
 class InfTimePrimitiveSelections extends Selector {
   public by_pk_entity$ = this.selector<InfTimePrimitive>('by_pk_entity')
-
-  constructor(
-    public ngRedux: NgRedux<IAppState>,
-    public pkProject$: Observable<number | string>,
-    public configs: ReducerConfigCollection,
-    public model: string
-  ) { super(ngRedux, pkProject$, configs, model) }
-}
-
-class InfTextPropertySelections extends Selector {
-  public by_pk_entity$ = this.selector<InfTextProperty>('by_pk_entity')
-  public by_fk_concerned_entity__fk_class_field$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity__fk_class_field')
-  public by_fk_concerned_entity$ = this.selector<ByPk<InfTextProperty>>('by_fk_concerned_entity')
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

@@ -155,6 +155,8 @@ class SqlContentTree extends sql_builder_lb_models_1.SqlBuilderLbModels {
             SELECT proj_rel FROM tw3
             UNION ALL
             SELECT proj_rel FROM tw5
+            UNION ALL
+            SELECT proj_rel FROM tw6
           ) AS t1
         ) as t1
         GROUP BY true

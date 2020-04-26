@@ -219,7 +219,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
    * called when user clicks on remove
    */
   onRemove(type: TypeItem) {
-    this.p.openRemovePeItDialog(type.label, type.pkEntity)
+    this.p.openRemoveEntityDialog(type.label, type.pkEntity)
   }
 
   /**

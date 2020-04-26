@@ -724,7 +724,7 @@ export class ActiveProjectService {
    * entity from project. If user confirms, the dialog
    * removes entity and closes
    */
-  openRemovePeItDialog(entityLabel: string, pkEntity: number) {
+  openRemoveEntityDialog(entityLabel: string, pkEntity: number) {
     const s = new Subject<void>();
 
     const data: ConfirmDialogData = {

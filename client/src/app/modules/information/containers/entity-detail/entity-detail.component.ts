@@ -168,7 +168,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
     this.tabTitle$
       .pipe(first(), takeUntil(this.destroy$))
       .subscribe(tabTitle => {
-        this.p.openRemovePeItDialog(tabTitle, this.pkEntity)
+        this.p.openRemoveEntityDialog(tabTitle, this.pkEntity)
           .pipe(takeUntil(this.destroy$)).subscribe(() => {
             this.close.emit()
           })

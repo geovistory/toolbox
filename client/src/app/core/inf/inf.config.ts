@@ -37,7 +37,7 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   role: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {

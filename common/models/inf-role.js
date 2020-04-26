@@ -717,7 +717,7 @@ module.exports = function(InfRole) {
         ofProject,
         pkProject
       );
-      joinThisProject.$relation['select'] = false;
+      // joinThisProject.$relation['select'] = false;
       filter['include'] = {
         entity_version_project_rels: joinThisProject,
       };

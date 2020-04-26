@@ -318,10 +318,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   private getExpressionWhereSourceIsRange(pkEntity: number): Observable<number> {
     this.inf.role.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
     return this.r.inf$.role$
-      .by_object_and_property$({
-        fk_entity: pkEntity,
-        fk_property: this.fkPropertyFromSource
-      })
+      .by_object_and_property$(
+        {
+          fk_entity: pkEntity,
+          fk_property: this.fkPropertyFromSource
+        },
+        false
+      )
       .pipe(
         tap((xs) => {
           if (xs.length !== 1) console.warn('number of expressions must be one');
@@ -334,10 +337,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   private getExpressionWhereSourceIsDomain(pkEntity: number): Observable<number> {
     this.inf.role.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
     return this.r.inf$.role$
-      .by_subject_and_property$({
-        fk_temporal_entity: pkEntity,
-        fk_property: this.fkPropertyFromSource
-      })
+      .by_subject_and_property$(
+        {
+          fk_temporal_entity: pkEntity,
+          fk_property: this.fkPropertyFromSource
+        },
+        false
+      )
       .pipe(
         tap((xs) => {
           // if (xs.length !== 1) console.warn('number of expressions must be one');

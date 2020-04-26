@@ -167,15 +167,6 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), null);
         }
       ),
-      // infRoleEpicsFactory.createLoadEpic<LoadOutgoingAlternativeRoles>(
-      //   (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkTemporalEntity, meta.pkProperty, meta.pk),
-      //   InfRoleActionFactory.ALTERNATIVES_OUTGOING,
-      //   (results, pk) => {
-      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-      //     flattener.role.flatten(results);
-      //     storeFlattened(flattener.getFlattened(), null);
-      //   }
-      // ),
       infRoleEpicsFactory.createUpsertEpic<ModifyActionMeta<InfRole>>((meta) => this.roleApi
         .findOrCreateInfRoles(meta.pk, meta.items),
         (results, pk) => {
@@ -211,7 +202,12 @@ export class InfEpics {
 
       infRoleEpicsFactory.createLoadEpic<FindRoleByParams>(
         (meta) => this.roleApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
-        InfRoleActionFactory.BY_PARAMS
+        InfRoleActionFactory.BY_PARAMS,
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.role.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'LOAD');
+        }
       ),
 
       // infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
