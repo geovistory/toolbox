@@ -1,18 +1,18 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { PeItDetail } from 'app/core';
+import { EntityDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ClassAndTypePk } from '../../create-or-add-entity/create-or-add-entity.component';
 import { Information } from './entity-list.models';
+import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 type Payload = Information;
 interface MetaData {
-  pkProject?: number,
-  pkEntity?: number,
-  peItDetail?: PeItDetail,
-  classAndTypePk?: ClassAndTypePk;
-  pkUiContext?: number;
-  pkClasses?: number[]
+  // pkProject?: number,
+  // pkEntity?: number,
+  // peItDetail?: PeItDetail,
+  // classAndTypePk?: ClassAndTypePk;
+  // pkUiContext?: number;
+  // pkClasses?: number[]
 };
 export type InformationAPIAction = FluxStandardAction<Payload, MetaData>;
 

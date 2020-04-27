@@ -3,8 +3,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProSelector } from 'app/core/pro/pro.service';
-import { AddOrCreateEntityModalComponent, AddOrCreateEntityModalData } from 'app/modules/base/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
-import { CreateOrAddEntityEvent } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
+import { AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { cache } from 'app/shared';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
@@ -21,7 +20,7 @@ import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, Inf
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
-import { EntityPreview, EntityType, PeItDetail } from '../state/models';
+import { EntityPreview, EntityType, EntityDetail } from '../state/models';
 import { SucceedActionMeta } from '../store/actions';
 import { IAppState, SchemaObject } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
@@ -47,10 +46,6 @@ export class ActiveProjectService {
   public list$: Observable<ListType>; // type of list displayed in left panel
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
-  // public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ProQuery>>
-  // public comQueryLoading$: Observable<boolean>
-  // public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
-  // public comVisualLoading$: Observable<boolean>
   public datNamespaces$: Observable<DatNamespace[]>
   public initializingProject$: Observable<boolean>;
 
@@ -97,7 +92,6 @@ export class ActiveProjectService {
     public dfh$: DfhSelector,
     public sys$: SystemSelector,
     public inf: InfActions,
-    private peItApi: InfPersistentItemApi,
     public shouldPause: ShouldPauseService,
     private s: SchemaObjectService,
   ) {
@@ -119,11 +113,6 @@ export class ActiveProjectService {
     this.focusedPanel$ = ngRedux.select<number>(['activeProject', 'focusedPanel']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
     this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
-    // this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProQuery>>(['activeProject', 'comQueryVersionsByPk']);
-    // this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
-    // this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProVisual>>(['activeProject', 'comVisualVersionsByPk']);
-    // this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
-
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
 
@@ -393,9 +382,6 @@ export class ActiveProjectService {
         const ts: TypePeIt[] = [];
         (typess || []).forEach(types => (types || []).forEach(type => ts.push(type)))
         return ts;
-      }),
-      tap(test => {
-        test;
       })
     );
     const previews$: Observable<EntityPreview[]> = types$.pipe(
@@ -405,10 +391,7 @@ export class ActiveProjectService {
           combineLatest(types.map(type => this.streamEntityPreview(type.pk_entity))) :
           new BehaviorSubject<EntityPreview[]>([])
       }),
-      filter(pre => !pre.find(p => !(p.pk_entity))),
-      tap(test => {
-        test;
-      })
+      filter(pre => !pre.find(p => !(p.pk_entity)))
     )
 
 
@@ -432,34 +415,36 @@ export class ActiveProjectService {
   /************************************************************************************
   * Change Project Relations
   ************************************************************************************/
-  // changeClassProjRel(projRel: ProDfhClassProjRel, dfh_pk_class: number) {
-  //   this.ngRedux.dispatch(this.actions.upsertClassProjRel(projRel, dfh_pk_class))
-  // }
 
-  removePeIt(pk_entity: number) {
-    const s = new Subject<SucceedActionMeta<InfPersistentItem>>();
-    combineLatest(
-      this.inf$.persistent_item$.by_pk_entity_key$(pk_entity).pipe(filter(x => !!x)),
-      this.pkProject$,
-    )
-      .pipe(first())
-      .subscribe(([persistentItem, pkProject]) => {
-        this.inf.persistent_item.remove([persistentItem], pkProject)
-          .resolved$
-          .pipe()
-          .subscribe(res => s.next(res))
-      })
-    return s;
-  }
-
-  addPeItToProject(pkEntity: number, cb: (schemaObject: SchemaObject) => any) {
+  removeEntityFromProject(pkEntity: number, cb?: (schemaObject: SchemaObject) => any) {
     this.pkProject$.pipe(first()).subscribe(pkProject => {
       const timer$ = timer(200)
-      const call$ = this.peItApi.addToProject(pkProject, pkEntity)
+      const call$ = this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
       let dialogRef;
       timer$.pipe(takeUntil(call$)).subscribe(() => {
         const data: ProgressDialogData = {
+          title: 'Removing entity from your project',
+          hideValue: true, mode$: new BehaviorSubject('indeterminate'), value$: new BehaviorSubject(0)
+        }
+        dialogRef = this.dialog.open(ProgressDialogComponent, { data, disableClose: true })
+      })
+      call$.subscribe(
+        (schemaObject: SchemaObject) => {
+          if (cb) cb(schemaObject)
+          if (dialogRef) dialogRef.close()
+        }
+      )
+    })
+  }
 
+  addEntityToProject(pkEntity: number, cb?: (schemaObject: SchemaObject) => any): Observable<SchemaObject> {
+    const s$ = new Subject<SchemaObject>()
+    this.pkProject$.pipe(first()).subscribe(pkProject => {
+      const timer$ = timer(200)
+      const call$ = this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+      let dialogRef;
+      timer$.pipe(takeUntil(call$)).subscribe(() => {
+        const data: ProgressDialogData = {
           title: 'Adding entity to your project',
           hideValue: true, mode$: new BehaviorSubject('indeterminate'), value$: new BehaviorSubject(0)
         }
@@ -467,11 +452,13 @@ export class ActiveProjectService {
       })
       call$.subscribe(
         (schemaObject: SchemaObject) => {
-          cb(schemaObject)
+          s$.next(schemaObject)
+          if (cb) cb(schemaObject)
           if (dialogRef) dialogRef.close()
         }
       )
     })
+    return s$;
   }
 
 
@@ -569,7 +556,7 @@ export class ActiveProjectService {
 
   private addSourceTab(pkEntity: number) {
 
-    const peItDetail = new PeItDetail({
+    const peItDetail = new EntityDetail({
       showHeader: true,
       showProperties: true,
       showRightArea: false,
@@ -594,7 +581,7 @@ export class ActiveProjectService {
   }
 
   private addSourceExpressionPortionTab(pkEntity: number) {
-    const peItDetail = new PeItDetail({
+    const peItDetail = new EntityDetail({
       showHeader: true,
       showProperties: true,
       showRightArea: false,
@@ -619,7 +606,7 @@ export class ActiveProjectService {
   }
 
   private addEntityPeItTab(pkEntity: number) {
-    const peItDetail = new PeItDetail({
+    const peItDetail = new EntityDetail({
       showHeader: true,
       showProperties: true,
       showRightArea: false,
@@ -699,13 +686,13 @@ export class ActiveProjectService {
   /**
    * Returns an observable that emits the added entity
    */
-  openModalCreateOrAddEntity(config: AddOrCreateEntityModalData) {
+  openModalCreateOrAddEntity(config: AddOrCreateEntityDialogData) {
     const observable = new Subject<CreateOrAddEntityEvent>();
 
     // this.ngRedux.dispatch(this.actions.openAddForm(config));
 
-    this.dialog.open<AddOrCreateEntityModalComponent, AddOrCreateEntityModalData, CreateOrAddEntityEvent>(
-      AddOrCreateEntityModalComponent,
+    this.dialog.open<AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent>(
+      AddOrCreateEntityDialogComponent,
       {
         // height: '90%',
         // width: '90%',

@@ -15,7 +15,7 @@ import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
 import { AddDialogComponent } from './components/add-dialog/add-dialog.component';
-import { AddOrCreateEntityModalComponent } from './components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { AddOrCreateEntityDialogComponent } from './components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
 import { ClassesAndTypesSelectComponent } from './components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
@@ -37,7 +37,7 @@ import { FormCreateEntityComponent } from './components/form-create-entity/form-
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { LeafItemAddListComponent } from './components/leaf-item-add-list/leaf-item-add-list.component';
 import { LeafItemListComponent } from './components/leaf-item-list/leaf-item-list.component';
-import { PeItSearchExistingComponent } from './components/pe-it-search-existing/pe-it-search-existing.component';
+import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
 import { PropertiesTreeDialogComponent } from './components/properties-tree-dialog/properties-tree-dialog.component';
 import { PropertiesTreeComponent } from './components/properties-tree/properties-tree.component';
 import { PropertiesTreeService } from './components/properties-tree/properties-tree.service';
@@ -84,8 +84,8 @@ const components = [
   ChooseClassDialogComponent,
   ExistenceTimeHelpComponent,
   AddDialogComponent,
-  AddOrCreateEntityModalComponent,
-  PeItSearchExistingComponent,
+  AddOrCreateEntityDialogComponent,
+  SearchExistingEntityComponent,
   EntityAddExistingHitComponent,
   FgPlaceComponent,
   FgTextPropertyComponent,
@@ -132,7 +132,7 @@ const baseModules = [
     CtrlEntityDialogComponent,
     PropertiesTreeDialogComponent,
     AddDialogComponent,
-    AddOrCreateEntityModalComponent,
+    AddOrCreateEntityDialogComponent,
     FgPlaceComponent,
     FgTextPropertyComponent,
     FgLangStringComponent

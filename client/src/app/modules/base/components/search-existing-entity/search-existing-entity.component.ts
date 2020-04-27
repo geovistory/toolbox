@@ -14,17 +14,17 @@ export interface DisableIfHasStatement {
 }
 
 @Component({
-  selector: 'gv-pe-it-search-existing',
-  templateUrl: './pe-it-search-existing.component.html',
-  styleUrls: ['./pe-it-search-existing.component.css']
+  selector: 'gv-search-existing-entity',
+  templateUrl: './search-existing-entity.component.html',
+  styleUrls: ['./search-existing-entity.component.css']
 })
-export class PeItSearchExistingComponent implements OnInit, OnDestroy {
+export class SearchExistingEntityComponent implements OnInit, OnDestroy {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
   // // local store of this component
-  // localStore: ObservableStore<PeItSearchExisting>;
+  // localStore: ObservableStore<SearchExistingEntity>;
 
   // path to the substore
   // @Input() basePath: string[];
@@ -63,7 +63,7 @@ export class PeItSearchExistingComponent implements OnInit, OnDestroy {
 
   constructor(
     // protected rootEpics: RootEpics,
-    // private epics: PeItSearchExistingAPIEpics,
+    // private epics: SearchExistingEntityAPIEpics,
     // public ngRedux: NgRedux<IAppState>,
     private entityPreviewApi: WarEntityPreviewApi,
     private p: ActiveProjectService

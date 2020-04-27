@@ -36,7 +36,7 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
 
       UNION ALL
       -- the outgoing statements
-      SELECT t1.pk_entity, t1.fk_entity
+      SELECT t1.pk_entity, null::int
       FROM information.v_role t1,
         projects.info_proj_rel t2
       WHERE t1.fk_temporal_entity = ${this.addParam(pkEntity)}
@@ -87,7 +87,7 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
         UNION ALL
 
         -- the outgoing statements (not in already selected statements)
-        SELECT t1.pk_entity, t1.fk_entity
+        SELECT t1.pk_entity, null::int
         FROM information.v_role t1, tw,
           projects.info_proj_rel t2
         WHERE tw.pk_related = t1.fk_temporal_entity

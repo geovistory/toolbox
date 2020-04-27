@@ -1,12 +1,11 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { SysConfig, ActiveProjectService, InfRole, InfTemporalEntityApi } from 'app/core';
-import { AddOrCreateEntityModalComponent, AddOrCreateEntityModalData } from 'app/modules/base/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
-import { CreateOrAddEntityEvent, ClassAndTypePk, NotInProjectClickBehavior } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
-import { BehaviorSubject, Subject, combineLatest, Observable } from 'rxjs';
-import { ListDefinition } from '../properties-tree/properties-tree.models';
+import { ActiveProjectService, InfRole, InfTemporalEntityApi } from 'app/core';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
+import { ListDefinition } from '../properties-tree/properties-tree.models';
+import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
@@ -107,7 +106,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
 
         if (!isInProject && model == 'temporal_entity') {
           // crate api call for adding teEnToProject
-          const apiCall = this.teEnApi.addToProject(pkProject, pkEntity)
+          const apiCall = this.p.addEntityToProject(pkEntity)
           obs$.push(apiCall)
         }
 

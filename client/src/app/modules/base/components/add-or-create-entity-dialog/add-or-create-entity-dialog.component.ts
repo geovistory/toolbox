@@ -1,7 +1,6 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit, Input, ViewChild } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CreateOrAddEntityEvent, ClassAndTypePk, NotInProjectClickBehavior } from '../../../information/containers/create-or-add-entity/create-or-add-entity.component';
 import { NgForm } from '@angular/forms';
 import { filter, map } from 'rxjs/operators';
 import { DfhConfig } from '../../../information/shared/dfh-config';
@@ -10,7 +9,7 @@ import { InfPersistentItem, InfTemporalEntity, ActiveProjectService } from 'app/
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 
 
-export interface AddOrCreateEntityModalData {
+export interface AddOrCreateEntityDialogData {
   classAndTypePk: ClassAndTypePk;
   pkUiContext: number;
   alreadyInProjectBtnText: string
@@ -32,11 +31,11 @@ export interface CreateOrAddEntityEvent {
 
 
 @Component({
-  selector: 'gv-add-or-create-entity-modal',
-  templateUrl: './add-or-create-entity-modal.component.html',
-  styleUrls: ['./add-or-create-entity-modal.component.scss']
+  selector: 'gv-add-or-create-entity-dialog',
+  templateUrl: './add-or-create-entity-dialog.component.html',
+  styleUrls: ['./add-or-create-entity-dialog.component.scss']
 })
-export class AddOrCreateEntityModalComponent implements OnDestroy, OnInit {
+export class AddOrCreateEntityDialogComponent implements OnDestroy, OnInit {
 
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
@@ -64,8 +63,8 @@ export class AddOrCreateEntityModalComponent implements OnDestroy, OnInit {
   constructor(
     private p: ActiveProjectService,
     private c: ConfigurationPipesService,
-    public dialogRef: MatDialogRef<AddOrCreateEntityModalComponent, CreateOrAddEntityEvent>,
-    @Inject(MAT_DIALOG_DATA) public data: AddOrCreateEntityModalData
+    public dialogRef: MatDialogRef<AddOrCreateEntityDialogComponent, CreateOrAddEntityEvent>,
+    @Inject(MAT_DIALOG_DATA) public data: AddOrCreateEntityDialogData
   ) {
     this.classAndTypePk = data.classAndTypePk
     this.pkUiContext = data.pkUiContext
@@ -115,7 +114,7 @@ export class AddOrCreateEntityModalComponent implements OnDestroy, OnInit {
       })
     }
     else if (this.notInProjectClickBehavior == 'addToProject') {
-      this.p.addPeItToProject(pkEntity, (schemaObject: SchemaObject) => {
+      this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
         this.onCreateOrAdd({
           action: 'added',
           pkEntity,

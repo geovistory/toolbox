@@ -1,21 +1,22 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
-import { ActiveProjectService, IAppState } from 'app/core';
-import { BehaviorSubject, combineLatest, Observable, Subject, of, merge } from 'rxjs';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActiveProjectService, IAppState, InfRole, ProInfoProjRel } from 'app/core';
+import { PaginateByParam } from 'app/core/store/actions';
+import { equals } from 'ramda';
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
+import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
 import { SelectionModel } from '../../../../../../node_modules/@angular/cdk/collections';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
-import { first, map, switchMap, takeUntil, shareReplay, tap, distinctUntilChanged } from '../../../../../../node_modules/rxjs/operators';
+import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { InfSelector } from '../../../../core/inf/inf.service';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { AddListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
-import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { TemporalEntityTable } from "../temporal-entity-list/TemporalEntityTable";
-import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
-import { PaginateByParam } from 'app/core/store/actions';
-import { InfSelector } from '../../../../core/inf/inf.service';
-import { NgRedux } from '../../../../../../node_modules/@angular-redux/store';
-import { equals } from 'ramda';
 import { PaginationService } from '../../services/pagination.service';
+import { AddListComponentInterface, ListDefinition, TemporalEntityItem } from '../properties-tree/properties-tree.models';
+import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
+import { TemporalEntityTable } from '../temporal-entity-list/TemporalEntityTable';
+import { ByPk } from 'app/core/store/model';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 
 @Component({
   selector: 'gv-temporal-entity-add-list',
@@ -55,11 +56,13 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   targetIsUnique: boolean;
 
+  rolesByPk: ByPk<InfRole> = {}
+
   constructor(
     public p: ActiveProjectService,
     public c: ConfigurationPipesService,
     public i: InformationPipesService,
-    // public t: PropertiesTreeService,
+    private s: SchemaObjectService,
     public inf: InfActions,
     private ngRedux: NgRedux<IAppState>,
     private paginationService: PaginationService
@@ -117,7 +120,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
         offset,
         merge(nextPage$, this.destroy$),
         true
-      ).loadEvent$.pipe(first()).subscribe(() => {
+      ).loadEvent$.pipe(first()).subscribe((res) => {
         this.itemsCount$.pipe(takeUntil(this.destroy$)).subscribe(c => {
           this.itemsCount = c;
           if (c === 0) {
@@ -148,6 +151,9 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
         if (!allowMultiSelect && rows.length === 1) {
           this.selection.select(rows[0].role.pk_entity)
         }
+        rows.forEach(row => {
+          this.rolesByPk[row.role.pk_entity] = row.role;
+        })
       })
     )
 
@@ -166,15 +172,52 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
   }
 
 
+  /**
+   * makes separate api calls to add items to project:
+   * - one for all selected statements
+   * - one per related temporal entity
+   */
   add() {
 
-    const pkRoles: number[] = this.selection.selected;
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.role.addToProjectWithTeEnt(pkRoles, pkProject)
-      .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      // the selected pks
+      const pkRoles: number[] = this.selection.selected;
+
+      // array of entity project rels
+      const projRels: Partial<ProInfoProjRel>[] = []
+
+      // array of observables
+      const obs$: Observable<any>[] = [];
+
+      pkRoles.forEach(pk => {
+        // pepare entity project rel
+        const proRel: Partial<ProInfoProjRel> = {
+          fk_project: pkProject,
+          fk_entity: pk,
+          is_in_project: true
+        }
+        // add entity project rel to array
+        projRels.push(proRel)
+
+        // prepare api call to add related temporal entity
+        const r = this.rolesByPk[pk]
+        const entityToAdd = this.listDefinition.isOutgoing ? r.fk_entity : r.fk_temporal_entity;
+
+        // add api call to array
+        obs$.push(this.s.store(this.s.api.addEntityToProject(pkProject, entityToAdd), pkProject))
+      })
+
+      // add a bulk upsert api call for array of entity project rels
+      const bulkUpsert = this.p.pro$.info_proj_rel.upsert(projRels, pkProject).resolved$.pipe(first(res => !!res))
+      obs$.push(bulkUpsert)
+
+      combineLatest(obs$).pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
         // this.t.showControl$.next(null)
         this.close.emit()
       })
-    )
+
+
+    })
 
   }
 

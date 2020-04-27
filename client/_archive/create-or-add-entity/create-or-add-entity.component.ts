@@ -107,7 +107,7 @@ export class CreateOrAddEntityComponent implements OnInit, OnDestroy {
       })
     }
     else if (this.notInProjectClickBehavior == 'addToProject') {
-      this.p.addPeItToProject(pkEntity, (schemaObject: SchemaObject) => {
+      this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
         this.done.emit({
           action: 'added',
           pkEntity,

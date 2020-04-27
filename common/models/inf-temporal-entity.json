@@ -57,23 +57,17 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": [
-        "graphsOfRepo"
-      ]
+      "property": []
     },
     {
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "findOrCreateInfTemporalEntity",
         "findOrCreateInfTemporalEntities",
-        "changeTeEntProjectRelation",
         "ownProperties",
-        "graphsOfProject",
         "temporalEntityList",
-        "alternativeTemporalEntityList",
-        "addToProject"
+        "alternativeTemporalEntityList"
       ]
     }
   ],

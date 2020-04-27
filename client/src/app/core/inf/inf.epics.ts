@@ -175,15 +175,15 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
-      infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
-        .addToProjectWithTeEnt(meta.pk, meta.pkRoles),
-        InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        }
-      ),
+      // infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
+      //   .addToProjectWithTeEnt(meta.pk, meta.pkRoles),
+      //   InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.role.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+      //   }
+      // ),
 
       (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
         ofType(infRoleEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),

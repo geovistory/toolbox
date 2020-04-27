@@ -25,11 +25,11 @@
       <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
         (keyup)="searchStringChange($event.target.value)">
     </mat-form-field>
-    <gv-pe-it-search-existing class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
+    <gv-search-existing-entity class="gv-flex-fh gv-aoc-scroll" [alreadyInProjectBtnText]="alreadyInProjectBtnText"
       [pkClass]="classAndTypePk.pkClass" [notInProjectBtnText]="notInProjectBtnText" [searchString$]="searchString$"
       [disableIfHasStatement]="data.disableIfHasStatement" (onAddExisting)="onNotInProjectClicked($event)"
       (onOpenExisting)="onAlreadyInProjectClicked($event)">
-    </gv-pe-it-search-existing>
+    </gv-search-existing-entity>
   </div>
 
 </div>

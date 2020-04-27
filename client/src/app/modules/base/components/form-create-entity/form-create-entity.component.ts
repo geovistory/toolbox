@@ -22,6 +22,7 @@ import { FormChildFactory } from 'app/modules/form-factory/core/form-child-facto
 import { MatFormFieldAppearance } from '@angular/material';
 import { Appearance } from 'cesium';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
@@ -126,7 +127,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     private c: ConfigurationPipesService,
     private inf: InfActions,
     private p: ActiveProjectService,
-    public teEnApi: InfTemporalEntityApi
+    public s: SchemaObjectService
   ) { }
 
   ngOnInit() {
@@ -735,7 +736,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       }
 
       uniq(this.temporalEntitiesToAdd).forEach(pkEntity => {
-        obs$.push(this.teEnApi.addToProject(pkProject, pkEntity))
+        obs$.push(this.s.api.addEntityToProject(pkProject, pkEntity))
       })
 
       combineLatest(obs$).pipe(takeUntil(this.destroy$)).subscribe(([res]: [any]) => {

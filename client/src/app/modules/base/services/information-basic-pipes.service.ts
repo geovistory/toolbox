@@ -338,6 +338,7 @@ export class InformationBasicPipesService {
       this.p.inf$.role$.by_pk_entity_key$(pkRole),
     )
       .pipe(
+        filter(([inrepo]) => !!inrepo),
         map(([inrepo, inproject]) => {
           if (inproject) {
             return undefined

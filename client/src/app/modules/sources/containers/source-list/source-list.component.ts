@@ -10,7 +10,7 @@ import { first, map, tap, takeUntil } from 'rxjs/operators';
 import { SourceListAPIActions } from './api/source-list.actions';
 import { SourceListAPIEpics } from './api/source-list.epics';
 import { sourceListReducer } from './api/source-list.reducer';
-import { ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
+import { ClassAndTypePk } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 
 @WithSubStore({

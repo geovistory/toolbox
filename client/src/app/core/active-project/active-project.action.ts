@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
-import { EntityPreview, PeItDetail } from '../state/models';
+import { EntityPreview, EntityDetail } from '../state/models';
 import { ListType, Panel, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
 
 // export interface ComQueryV extends ProQuery {
@@ -25,7 +25,7 @@ interface MetaData {
 
   // return vals for Data Cache
   entityPreview?: EntityPreview;
-  peItDetail?: PeItDetail;
+  peItDetail?: EntityDetail;
   chunk?: DatChunk
   teEnGraphs?: InfTemporalEntity[]
   peItGraphs?: InfPersistentItem[]
@@ -323,7 +323,7 @@ export class ActiveProjectActions {
     }
   }
 
-  loadPeItDetailsForModalSucceeded(peItDetail: PeItDetail): ActiveProjectAction {
+  loadPeItDetailsForModalSucceeded(peItDetail: EntityDetail): ActiveProjectAction {
     return {
       type: ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED,
       payload: null,

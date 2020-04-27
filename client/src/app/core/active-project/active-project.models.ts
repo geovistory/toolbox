@@ -1,5 +1,5 @@
 import { DatChunk, DfhProperty, InfLanguage, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
-import { EntityPreview, EntityPreviewList, PeItDetail, PeItDetailList, } from 'app/core/state/models';
+import { EntityPreview, EntityPreviewList, EntityDetail, PeItDetailList, } from 'app/core/state/models';
 import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
 // import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
@@ -72,7 +72,7 @@ export interface Tab<D> {
 export interface PeItTabData {
   // Used by peIt detail state creato
   peItDetailConfig?: {
-    peItDetail?: PeItDetail
+    peItDetail?: EntityDetail
     // stateSettings?: StateSettings
   }
 }
@@ -95,7 +95,7 @@ export interface TabData {
 
   // Used by peIt detail state creato
   peItDetailConfig?: {
-    peItDetail?: PeItDetail
+    peItDetail?: EntityDetail
     // stateSettings?: StateSettings
   }
 
@@ -182,7 +182,7 @@ export interface ProjectDetail extends ProjectPreview {
   textDetails?: { [uiId: string]: TabBase }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  peItDetails?: { [uiId: string]: PeItDetail }
+  peItDetails?: { [uiId: string]: EntityDetail }
 
   // // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   // teEnDetails?: { [uiId: string]: TeEntDetail }

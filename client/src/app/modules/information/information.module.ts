@@ -28,13 +28,10 @@ import { BaseModule } from '../base/base.module';
 import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
 import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
-import { CreateOrAddEntityComponent } from './containers/create-or-add-entity/create-or-add-entity.component';
 import { InformationAPIActions } from './containers/entity-list/api/entity-list.actions';
 import { InformationAPIEpics } from './containers/entity-list/api/entity-list.epics';
 import { InformationComponent } from './containers/entity-list/entity-list.component';
-import { EntityActions } from './containers/entity-detail/api/entity.actions';
-import { PeItDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
-import { PeItActions } from './containers/entity-detail/api/pe-it.actions';
+import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
 
@@ -76,7 +73,6 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     InformationComponent,
     PeItTimelineComponent,
     EntityDetailComponent,
-    CreateOrAddEntityComponent,
     ContentTreeComponent,
     ContentTreeNodeLabelComponent,
     ContentTreeNodeTypeComponent,
@@ -84,14 +80,11 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
   providers: [
     InformationAPIActions,
     InformationAPIEpics,
-    EntityActions,
-    PeItActions,
-    PeItDetailAPIActions,
+    EntityDetailAPIActions,
   ],
   exports: [
     InformationComponent,
     EntityDetailComponent,
-    CreateOrAddEntityComponent,
   ],
   entryComponents: [
 

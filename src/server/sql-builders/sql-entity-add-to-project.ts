@@ -36,7 +36,7 @@ export class SqlEntityAddToProject extends SqlBuilderLbModels {
 
       UNION ALL
       -- the outgoing statements
-      SELECT t1.pk_entity, t1.fk_entity, t1.calendar
+      SELECT t1.pk_entity, null::int, t1.calendar
       FROM information.get_outgoing_roles_to_add(${this.addParam(pkEntity)},  ${this.addParam(fkProject)}) t1
 
       UNION ALL
@@ -75,7 +75,7 @@ export class SqlEntityAddToProject extends SqlBuilderLbModels {
         UNION ALL
 
         -- the outgoing statements (not in already selected statements)
-        SELECT t1.pk_entity, t1.fk_entity, t1.calendar
+        SELECT t1.pk_entity, null::int, t1.calendar
         FROM tw
         CROSS JOIN LATERAL
           (

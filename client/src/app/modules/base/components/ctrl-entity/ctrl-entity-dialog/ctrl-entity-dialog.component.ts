@@ -8,7 +8,7 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Observable, Subject } from 'rxjs';
 import { filter, first, map } from 'rxjs/operators';
 import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
-import { DisableIfHasStatement } from '../../pe-it-search-existing/pe-it-search-existing.component';
+import { DisableIfHasStatement } from '../../search-existing-entity/search-existing-entity.component';
 import { FieldProperty } from '../../properties-tree/properties-tree.models';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
@@ -126,7 +126,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
       })
     }
     else if (this.notInProjectClickBehavior == 'addToProject') {
-      this.p.addPeItToProject(pkEntity, (schemaObject: SchemaObject) => {
+      this.p.addEntityToProject(pkEntity, (schemaObject: SchemaObject) => {
         this.onCreateOrAdd({
           action: 'added',
           pkEntity,

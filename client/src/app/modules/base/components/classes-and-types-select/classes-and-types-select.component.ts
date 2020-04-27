@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ClassAndTypePk } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { FlatTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '../../../../../../node_modules/@angular/material';
 import { Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { InformationPipesService } from '../../services/information-pipes.service';
+import { ClassAndTypePk } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 
 export interface ClassAndTypeNode {

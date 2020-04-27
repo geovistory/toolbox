@@ -1,88 +1,70 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { PeItDetail } from 'app/core';
+import { EntityDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ClassAndTypePk } from '../../create-or-add-entity/create-or-add-entity.component';
-import { PeItActions } from './pe-it.actions';
 
-type Payload = PeItDetail;
+type Payload = EntityDetail;
 interface MetaData {
-  pkProject?: number,
-  pkEntity?: number,
-  peItDetail?: PeItDetail,
-  classAndTypePk?: ClassAndTypePk;
-  pkUiContext?: number;
-  pkClasses?: number[];
-  config?: PeItDetail
-  // settings?: StateSettings,
-  // crm?: ProjectCrm
+  keyToToggle?: string;
+
+  config?: EntityDetail
+
 };
-export type PeItDetailAPIAction = FluxStandardAction<Payload, MetaData>;
+export type EntityDetailAPIAction = FluxStandardAction<Payload, MetaData>;
 
 @Injectable()
-export class PeItDetailAPIActions extends PeItActions {
+export class EntityDetailAPIActions {
 
   static readonly INIT = 'PeItDetail::INIT';
 
-  static readonly REMOVE_PE_IT = 'PeItDetail::REMOVE_PE_IT';
-  static readonly REMOVE_PE_IT_SUCCEEDED = 'PeItDetail::REMOVE_PE_IT_SUCCEEDED';
-  static readonly REMOVE_PE_IT_FAILED = 'PeItDetail::REMOVE_PE_IT_FAILED';
 
   static readonly DESTROY = 'PeItDetail::DESTROY';
 
+  static readonly TOGGLE_BOOLEAN = 'PeItActions::TOGGLE_BOOLEAN';
 
-  /*********************************************************************
-  *  Actions to manage entity editor
-  *********************************************************************/
+  static readonly SET_SHOW_RIGHT_AREA = 'Entity::SET_SHOW_RIGHT_AREA';
 
-  @dispatch() init = (config: PeItDetail): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.INIT,
+  static readonly SET_RIGHT_PANEL_ACTIVE_TAB = 'Entity::SET_RIGHT_PANEL_ACTIVE_TAB';
+
+  /**
+   * Set index of the active tab in the right panel
+   * @param tabIndex index of the active tab in the right panel
+   */
+  setRightPanelActiveTab = (rightPanelActiveTab: number): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.SET_RIGHT_PANEL_ACTIVE_TAB,
+    meta: null,
+    payload: {
+      rightPanelActiveTab
+    }
+  })
+
+
+  setShowRightArea = (showRightArea: boolean): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.SET_SHOW_RIGHT_AREA,
+    meta: null,
+    payload: {
+      showRightArea
+    }
+  })
+
+  /**
+   * Toggle booleans
+   * @param keyToToggle key of the property to toggle. E.g. 'showRightPanel' or 'showProperties'
+   */
+  toggleBoolean = (keyToToggle: string): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.TOGGLE_BOOLEAN,
+    meta: { keyToToggle },
+    payload: null
+  })
+
+  @dispatch() init = (config: EntityDetail): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.INIT,
     meta: { config },
     payload: null,
   });
 
-  // loadSucceeded = (peItDetail: PeItDetail): PeItDetailAPIAction => ({
-  //   type: PeItDetailAPIActions.LOAD_SUCCEEDED,
-  //   meta: { peItDetail },
-  //   payload: null
-  // })
-
-  // loadFailed = (error): PeItDetailAPIAction => ({
-  //   type: PeItDetailAPIActions.LOAD_FAILED,
-  //   meta: null,
-  //   payload: null,
-  //   error,
-  // })
-
-
-  /**********************************************
- * Method remove PeIt from Project
- **********************************************/
-
-  @dispatch() removePeIt = (pkEntity: number, pkProject: number): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.REMOVE_PE_IT,
-    meta: { pkEntity, pkProject },
-    payload: null
-  })
-
-  removePeItSucceded = (): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.REMOVE_PE_IT_SUCCEEDED,
-    meta: null,
-    payload: null
-  })
-
-  removePeItFailed = (error): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.REMOVE_PE_IT_FAILED,
-    meta: null,
-    payload: null,
-    error
-  })
-
-  /*********************************************************************
-  *  Method to distroy the slice of store
-  *********************************************************************/
-  @dispatch() destroy = (): PeItDetailAPIAction => ({
-    type: PeItDetailAPIActions.DESTROY,
+  @dispatch() destroy = (): EntityDetailAPIAction => ({
+    type: EntityDetailAPIActions.DESTROY,
     meta: null,
     payload: null
   })

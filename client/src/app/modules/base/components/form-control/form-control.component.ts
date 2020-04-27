@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormControlConfig } from 'app/modules/form-factory/services/form-factory.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { CtrlEntityComponent, CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
+import { CtrlTimeSpanComponent } from '../ctrl-time-span/ctrl-time-span.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
 import { FormControlData, FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
-import { CtrlTimeSpanComponent } from '../ctrl-time-span/ctrl-time-span.component';
-import { SearchExistingRelatedStatement, DisableIfHasStatement } from '../pe-it-search-existing/pe-it-search-existing.component';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 
 export interface ChildComponents {
   ctrlEntity: CtrlEntityComponent,
@@ -76,7 +76,7 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private configureEntityCtrl() {
     const lDef = this.config.data.listDefinition;
-    if (lDef && lDef.identityDefiningForSource && lDef.sourceMaxQuantity !== Number.POSITIVE_INFINITY) {
+    if (lDef && lDef.identityDefiningForSource && lDef.sourceMaxQuantity !== -1) {
       this.entityCtrlDisableStatement = {
         sourceClassLabel: lDef.sourceClassLabel,
         propertyLabel: lDef.label,

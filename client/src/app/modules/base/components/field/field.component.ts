@@ -14,7 +14,7 @@ import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/pr
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
 import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
-import { AddOrCreateEntityModalData, AddOrCreateEntityModalComponent, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
+import { AddOrCreateEntityDialogData, AddOrCreateEntityDialogComponent, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number

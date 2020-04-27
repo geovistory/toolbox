@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { ActiveProjectService, IAppState, IconType, PeItTabData, Tab } from 'app/core';
-import { EntityPreview, PeItDetail, SubstoreComponent } from 'app/core/state/models';
+import { EntityPreview, EntityDetail, SubstoreComponent } from 'app/core/state/models';
 import { MentioningListOf } from 'app/modules/annotation/components/mentioning-list/mentioning-list.component';
 import { InformationBasicPipesService } from 'app/modules/base/services/information-basic-pipes.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
@@ -13,14 +13,14 @@ import { MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { slideInOut } from '../../shared/animations';
-import { PeItDetailAPIActions } from './api/entity-detail.actions';
-import { peItDetailReducer } from './api/entity-detail.reducer';
+import { EntityDetailAPIActions } from './api/entity-detail.actions';
+import { entityDetailReducer } from './api/entity-detail.reducer';
 
 
 
 
 @WithSubStore({
-  localReducer: peItDetailReducer,
+  localReducer: entityDetailReducer,
   basePathMethodName: 'getBasePath'
 })
 @Component({
@@ -40,7 +40,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
   // afterViewInit = false;
 
-  localStore: ObservableStore<PeItDetail>;
+  localStore: ObservableStore<EntityDetail>;
 
   /**
    * Local Store Observables
@@ -85,7 +85,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   constructor(
 
     public ngRedux: NgRedux<IAppState>,
-    protected actions: PeItDetailAPIActions,
+    protected actions: EntityDetailAPIActions,
     private matDialog: MatDialog,
     public ref: ChangeDetectorRef,
     private p: ActiveProjectService,
@@ -105,7 +105,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
   ngOnInit() {
     this.basePath = this.getBasePath();
-    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), peItDetailReducer);
+    this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), entityDetailReducer);
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
     this.t.setTabLoading(true)
