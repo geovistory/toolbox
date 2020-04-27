@@ -5,6 +5,8 @@ var SqlContentTree = require('../../dist/server/sql-builders/sql-content-tree')
   .SqlContentTree;
 var SqlEntityRemoveFromProject = require('../../dist/server/sql-builders/sql-entity-remove-from-project')
   .SqlEntityRemoveFromProject;
+var SqlEntityAddToProject = require('../../dist/server/sql-builders/sql-entity-add-to-project')
+  .SqlEntityAddToProject;
 
 var _ = require('lodash');
 
@@ -30,7 +32,8 @@ module.exports = function(SchemaObject) {
   };
 
   /**
-   * Remove entity, outgoing statements and text properties from project
+   * Remove entity, outgoing statements, text properties
+   * and namings from project
    */
   SchemaObject.removeEntityFromProject = function(
     pkProject,
@@ -44,6 +47,24 @@ module.exports = function(SchemaObject) {
     const accountId = ctx.req.accessToken.userId;
 
     const q = new SqlEntityRemoveFromProject(SchemaObject.app.models).create(
+      pkProject,
+      pkEntity,
+      accountId
+    );
+    SchemaObject.query(pkProject, q, cb);
+  };
+
+  /**
+   * Add entity, outgoing statements, text properties
+   * and namings to project
+   */
+  SchemaObject.addEntityToProject = function(pkProject, pkEntity, ctx, cb) {
+    if (!ctx.req.accessToken.userId)
+      return reject(Error('AccessToken missing'));
+
+    const accountId = ctx.req.accessToken.userId;
+
+    const q = new SqlEntityAddToProject(SchemaObject.app.models).create(
       pkProject,
       pkEntity,
       accountId

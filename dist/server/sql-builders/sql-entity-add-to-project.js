@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sql_builder_lb_models_1 = require("../utils/sql-builder-lb-models");
 const utils_1 = require("../utils");
-class SqlEntityRemoveFromProject extends sql_builder_lb_models_1.SqlBuilderLbModels {
+class SqlEntityAddToProject extends sql_builder_lb_models_1.SqlBuilderLbModels {
     constructor(lb3models) {
         super(lb3models);
     }
     /**
-     * Removes an entity (persitent or temporal) from the project.
-     * It sets info_proj_rel.is_in_project to false for the following records
+     * Adds an entity (persitent or temporal) to the project.
+     * It inserts or updates the info_proj_rel.is_in_project for the following records
      * - The entity itself
      * - The outgoing statements
      * - The text properties (TODO remove, once text properties are replaced by lang_string )
@@ -20,42 +20,30 @@ class SqlEntityRemoveFromProject extends sql_builder_lb_models_1.SqlBuilderLbMod
      */
     create(fkProject, pkEntity, accountId) {
         const sql = `
-    -- select items to remove from project
-    WITH RECURSIVE tw1 (pk, pk_related) AS (
+    -- select items to add to project
+    WITH RECURSIVE tw1 (pk, pk_related, calendar) AS (
 
       -- the entity itself
-      SELECT ${this.addParam(pkEntity)}, null::int
+      SELECT ${this.addParam(pkEntity)}, null::int, null::calendar_type
 
       UNION ALL
       -- the outgoing statements
-      SELECT t1.pk_entity, t1.fk_entity
-      FROM information.v_role t1,
-        projects.info_proj_rel t2
-      WHERE t1.fk_temporal_entity = ${this.addParam(pkEntity)}
-      AND t1.pk_entity = t2.fk_entity
-      AND t2.fk_project = ${this.addParam(fkProject)}
-      AND t2.is_in_project = true
+      SELECT t1.pk_entity, t1.fk_entity, t1.calendar
+      FROM information.get_outgoing_roles_to_add(${this.addParam(pkEntity)},  ${this.addParam(fkProject)}) t1
 
       UNION ALL
       -- the ingoing statements of property 'has appellation'
-      SELECT t1.pk_entity, t1.fk_temporal_entity
-      FROM information."role" t1,
-        projects.info_proj_rel t2
+      SELECT t1.pk_entity, t1.fk_temporal_entity, null::calendar_type
+      FROM information.v_role t1
       WHERE t1.fk_entity = ${this.addParam(pkEntity)}
       AND t1.fk_property = 1111
-      AND t1.pk_entity = t2.fk_entity
-      AND t2.fk_project = ${this.addParam(fkProject)}
-      AND t2.is_in_project = true
+      AND t1.is_in_project_count > 0
 
       UNION ALL
       -- the text properties
-      SELECT t1.pk_entity, null::int
-      FROM information.text_property t1,
-        projects.info_proj_rel t2
-      WHERE t1.fk_concerned_entity = ${this.addParam(pkEntity)}
-      AND t1.pk_entity = t2.fk_entity
-      AND t2.fk_project = ${this.addParam(fkProject)}
-      AND t2.is_in_project = true
+      SELECT t2.pk_entity, null::int, null::calendar_type
+      FROM information.text_property t2
+      WHERE t2.fk_concerned_entity = ${this.addParam(pkEntity)}
 
       UNION ALL
       SELECT * FROM (
@@ -73,61 +61,51 @@ class SqlEntityRemoveFromProject extends sql_builder_lb_models_1.SqlBuilderLbMod
         )
 
         -- the entity itself
-        SELECT pk_related, null::int
+        SELECT pk_related, null::int, null::calendar_type
         FROM tw
 
         UNION ALL
 
         -- the outgoing statements (not in already selected statements)
-        SELECT t1.pk_entity, t1.fk_entity
-        FROM information.v_role t1, tw,
-          projects.info_proj_rel t2
-        WHERE tw.pk_related = t1.fk_temporal_entity
-        AND t1.pk_entity NOT IN (tw.pk)
-        AND t1.pk_entity = t2.fk_entity
-        AND t2.fk_project = ${this.addParam(fkProject)}
-        AND t2.is_in_project = true
+        SELECT t1.pk_entity, t1.fk_entity, t1.calendar
+        FROM tw
+        CROSS JOIN LATERAL
+          (
+            SELECT *
+            FROM information.get_outgoing_roles_to_add(tw.pk_related,  ${this.addParam(fkProject)})
+          ) t1
+        WHERE t1.pk_entity NOT IN (tw.pk)
 
         UNION ALL
 
         -- the ingoing statements of property 'has appellation'
-        SELECT t1.pk_entity, t1.fk_temporal_entity
-        FROM information."role" t1,	tw,
-          projects.info_proj_rel t2
+        SELECT t1.pk_entity, t1.fk_temporal_entity, null::calendar_type
+        FROM information.v_role t1,	tw
         WHERE tw.pk_related = t1.fk_entity
         AND t1.fk_property = 1111
-        AND t1.pk_entity = t2.fk_entity
-        AND t2.fk_project = ${this.addParam(fkProject)}
-        AND t2.is_in_project = true
+        AND t1.is_in_project_count > 0
 
         UNION ALL
 
         -- the text properties
-        SELECT t1.pk_entity, null::int
-        FROM information.text_property t1, tw,
-          projects.info_proj_rel t2
-        WHERE tw.pk_related = t1.fk_concerned_entity
-        AND t1.pk_entity = t2.fk_entity
-        AND t2.fk_project = ${this.addParam(fkProject)}
-        AND t2.is_in_project = true
-
-
+        SELECT t2.pk_entity, null::int, null::calendar_type
+        FROM information.text_property t2, tw
+        WHERE tw.pk_related = t2.fk_concerned_entity
       )t
 
     ),
-    -- update the info_proj_rels
+    -- insert the info_proj_rels
     tw2 AS (
 
-        UPDATE projects.info_proj_rel t1
-        SET is_in_project = false,
-        fk_last_modifier = ${this.addParam(accountId)}
-        WHERE t1.fk_entity IN (
-          SELECT pk
-          FROM tw1
-        )
-        AND t1.fk_project = ${this.addParam(fkProject)}
-        AND is_in_project = true
-        RETURNING t1.*
+        INSERT INTO projects.v_info_proj_rel (fk_last_modifier, fk_entity, fk_project, calendar, is_in_project)
+        SELECT
+          ${this.addParam(accountId)},
+          pk,
+          ${this.addParam(fkProject)},
+          calendar,
+          true
+        FROM tw1
+        RETURNING *
       ),
       ------------------------------------
       --- group parts by model
@@ -158,5 +136,5 @@ class SqlEntityRemoveFromProject extends sql_builder_lb_models_1.SqlBuilderLbMod
         return { sql, params: this.params };
     }
 }
-exports.SqlEntityRemoveFromProject = SqlEntityRemoveFromProject;
-//# sourceMappingURL=sql-entity-remove-from-project.js.map
+exports.SqlEntityAddToProject = SqlEntityAddToProject;
+//# sourceMappingURL=sql-entity-add-to-project.js.map

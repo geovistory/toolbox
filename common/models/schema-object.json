@@ -44,7 +44,8 @@
       "property": [
         "getRamList",
         "contentTree",
-        "removeEntityFromProject"
+        "removeEntityFromProject",
+        "addEntityToProject"
       ]
     }
   ],
@@ -168,9 +169,50 @@
         ],
         "root": true
       },
-      "description": "Get the schema object for the ram list.",
+      "description": "Remove entity with outgoing statements and namings from project.",
       "http": {
         "path": "/remove-entity-from-project",
+        "verb": "get"
+      }
+    },
+    "addEntityToProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Add entity with outgoing statements and namings to project.",
+      "http": {
+        "path": "/add-entity-to-project",
         "verb": "get"
       }
     }
