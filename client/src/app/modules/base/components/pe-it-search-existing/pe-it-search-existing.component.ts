@@ -1,22 +1,16 @@
-import { select } from '@angular-redux/store';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, InfPersistentItem, WarEntityPreviewApi } from 'app/core';
-import { combineLatest, Observable, Subject, BehaviorSubject } from 'rxjs';
-import { debounceTime, first, takeUntil, map } from 'rxjs/operators';
+import { ActiveProjectService, WarEntityPreviewApi } from 'app/core';
 import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
+import { SearchExistingRelatedStatement } from '../../../../../../../dist/server/sql-builders/sql-war-search-existing';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
-export interface SearchExistingRelatedStatement {
-  relateBy: 'fk_entity' | 'fk_temporal_entity',
-  filter: {
-    key: 'fk_property' | 'fk_property_of_property',
-    value: number
-  }
-}
 export interface DisableIfHasStatement {
   sourceClassLabel: string
   propertyLabel: string
   relatedStatement: SearchExistingRelatedStatement
+  maxQuantity: number
 }
 
 @Component({
@@ -135,11 +129,17 @@ export class PeItSearchExistingComponent implements OnInit, OnDestroy {
       this.entityPreviewApi.searchExistingWithRelatedStatement(this.pkProject, this.searchString, [this.pkClass], null, this.limit, this.page, this.disableIfHasStatement.relatedStatement)
         .subscribe((result) => {
           const res: EntitySearchHit[] = result.data;
-          const hits: HitPreview[] = res.map(r => ({
-            ...r,
-            btnDisabled: (this.disableIfHasStatement && r.related_statements.length > 0),
-            btnTooltip: `This ${r.class_label} can't be selected because it is already related to a ${this.disableIfHasStatement.sourceClassLabel} via '${this.disableIfHasStatement.propertyLabel}'.`
-          }))
+
+          const hits: HitPreview[] = res.map(r => {
+            const btnDisabled = (this.disableIfHasStatement && r.related_statements.length >= this.disableIfHasStatement.maxQuantity);
+            return {
+              ...r,
+              btnDisabled,
+              btnTooltip: btnDisabled ?
+                `This ${r.class_label} can't be selected because it is already related to ${r.related_statements.length} ${this.disableIfHasStatement.sourceClassLabel} via '${this.disableIfHasStatement.propertyLabel}'.`
+                : ''
+            }
+          })
           this.persistentItems$.next(hits)
           this.collectionSize$.next(result.totalCount)
         }, error => {
