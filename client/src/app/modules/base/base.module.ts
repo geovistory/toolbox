@@ -54,6 +54,7 @@ import { FgPlaceComponent } from './components/fg-place/fg-place.component';
 import { FgTextPropertyComponent } from './components/fg-text-property/fg-text-property.component';
 import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
 import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
+import { EntityPreviewsPaginatedModule } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated.module';
 
 const components = [
   PropertiesTreeComponent,
@@ -107,7 +108,8 @@ const baseModules = [
   KeysModule,
   TruncateModule,
   QuillOpsToStrModule,
-  FormFactoryModule
+  FormFactoryModule,
+  EntityPreviewsPaginatedModule
 ]
 
 @NgModule({

@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
@@ -44,8 +44,9 @@ export type TableFormChildFactory = FormChildFactory<TableFormChildData>;
   styleUrls: ['./table-form.component.scss'],
   providers: [TableFormService]
 })
-export class TableFormComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class TableFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
   @Input() initVal$: Observable<QueryDefinition>;
@@ -145,6 +146,10 @@ export class TableFormComponent implements OnInit, OnDestroy, FormFactoryCompone
     } else {
       console.error(`No children found for:`, n)
     }
+  }
+
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
   }
 
   ngOnDestroy() {

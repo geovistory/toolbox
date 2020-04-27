@@ -10,9 +10,10 @@ import { PaginateByParam } from '../../../../core/store/actions';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
-import { ListDefinition, PropertyListComponentInterface, TemporalEntityItem } from '../properties-tree/properties-tree.models';
+import { ListDefinition, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityCell } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
+import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 
 
 
@@ -58,8 +59,8 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     public i: InformationPipesService,
     public inf: InfActions,
     public roleApi: InfRoleApi,
-    private paginationService: PaginationService
-
+    private paginationService: PaginationService,
+    private listDialog: EntityPreviewsPaginatedDialogService
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
@@ -148,8 +149,19 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
   }
 
+  openList(cell: TemporalEntityCell) {
+    const pkEntities = cell.items.map(i => cell.isOutgoing ? i.role.fk_entity : i.role.fk_temporal_entity)
+    this.listDialog.open(true, pkEntities, 'Items')
+  }
+
   openInNewTab(item: TemporalEntityItem) {
     this.p.addEntityTab(item.pkEntity, this.listDefinition.targetClass, 'teEn')
+  }
+
+  addAndOpenInNewTab(item: TemporalEntityItem) {
+    this.p.addEntityToProject(item.pkEntity, () => {
+      this.openInNewTab(item)
+    })
   }
 
   markAsFavorite(item: TemporalEntityItem) {

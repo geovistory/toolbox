@@ -103,11 +103,19 @@ module.exports = function(ProInfoProjRel) {
               .catch(err => reject(err))
               .then(res => resolve(res));
           } else {
-            const error = new Error(
-              'No ProInfoProjRel found for given project and entity'
-            );
-            error.status = 404;
-            reject(error);
+            const n = new ProInfoProjRel({
+              ...eprAttributes,
+              fk_entity: pkEntity,
+              fk_project: pkProject,
+            });
+            n.save()
+              .catch(err => reject(err))
+              .then(res => resolve(res));
+            // const error = new Error(
+            //   'No ProInfoProjRel found for given project and entity'
+            // );
+            // error.status = 404;
+            // reject(error);
           }
         });
     });

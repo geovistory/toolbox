@@ -43,5 +43,5 @@ export interface FormFactoryComponent {
   initVal$?: Observable<any>
   formFactory$: Observable<FormFactory>;
   formFactory: FormFactory;
-  afterViewInit$?: BehaviorSubject<boolean>
+  afterViewInit$: BehaviorSubject<boolean>
 }

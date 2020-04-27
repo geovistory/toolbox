@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit } from '@angular/core';
 import { U } from 'app/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { CONTAINER_DATA, FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
@@ -137,8 +137,9 @@ export interface QueryPathInjectData {
   templateUrl: './query-path-form.component.html',
   styleUrls: ['./query-path-form.component.scss']
 })
-export class QueryPathFormComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class QueryPathFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
   @Input() rootClasses$: Observable<number[]>
@@ -221,6 +222,9 @@ export class QueryPathFormComponent implements OnInit, OnDestroy, FormFactoryCom
     } else {
       console.error(`No children found for:`, n)
     }
+  }
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
   }
 
   ngOnDestroy() {

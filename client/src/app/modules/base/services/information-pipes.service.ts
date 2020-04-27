@@ -321,25 +321,33 @@ export class InformationPipesService {
         paginatedRolePks.map(pkRole => basicRoleItemLoader(pkRole, listDefinition.isOutgoing, pkProject)
           .pipe(filter(x => !!x))
         )
-      ).pipe(
-        switchMap((teEnRoles) => combineLatestOrEmpty(
-          teEnRoles.map((basicRoleItem) => rowLoader(
-            targetEntityOfRoleItem(basicRoleItem),
-            fieldDefinitions,
-            propertyItemType,
-            pkProject
-          ).pipe(
-            map(row => {
-              const item: TemporalEntityItem = {
-                ...basicRoleItem,
-                row,
-                pkEntity: targetEntityOfRoleItem(basicRoleItem),
-              };
-              return item
+      )
+        .pipe(
+          switchMap((teEnRoles) => combineLatestOrEmpty(
+            teEnRoles.map((basicRoleItem) => {
+              const pkTeEn = targetEntityOfRoleItem(basicRoleItem);
+              return combineLatest(
+                rowLoader(
+                  pkTeEn,
+                  fieldDefinitions,
+                  propertyItemType,
+                  pkProject
+                ),
+                this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
+              ).pipe(
+                map(([row, teEnProjRel]) => {
+                  const item: TemporalEntityItem = {
+                    ...basicRoleItem,
+                    row,
+                    pkEntity: pkTeEn,
+                    teEnProjRel
+                  };
+                  return item
+                })
+              )
             })
-          ))
+          )),
         )),
-      )),
 
     )
     return rows$
@@ -401,11 +409,13 @@ export class InformationPipesService {
                   const items = sortItems(d.groupedOut[listDefinition.property.pkProperty])
                   const firstItem = items[0];
                   cell = {
+                    isOutgoing: listDefinition.isOutgoing,
                     itemsCount: items.length,
                     entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
                     label: firstItem.label,
                     pkProperty: listDefinition.property.pkProperty,
-                    firstItem
+                    firstItem,
+                    items
                   }
                 }
               } else {
@@ -413,11 +423,13 @@ export class InformationPipesService {
                   const items = sortItems(d.groupedIn[listDefinition.property.pkProperty])
                   const firstItem = items[0];
                   cell = {
+                    isOutgoing: listDefinition.isOutgoing,
                     itemsCount: items.length,
                     entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
                     label: firstItem.label,
                     pkProperty: listDefinition.property.pkProperty,
-                    firstItem
+                    firstItem,
+                    items
                   }
                 }
               }
@@ -436,6 +448,7 @@ export class InformationPipesService {
                 label = this.timeSpanPipe.transform(timeSpan);
               }
               cell = {
+                isOutgoing: listDefinition.isOutgoing,
                 itemsCount,
                 label,
                 entityPreview: undefined,

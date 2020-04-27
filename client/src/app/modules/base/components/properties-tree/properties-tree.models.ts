@@ -127,6 +127,7 @@ export interface TemporalEntityItem extends BasicRoleItem {
   // fkClass: number; // fk_class of TemporalEntity
   row: TemporalEntityRow
   pkEntity: number; // pk of TemporalEntity
+  teEnProjRel: ProInfoProjRel
 }
 // export interface TemporalEntityCellDefinition {
 //   fieldDefinition: FieldDefinition,
@@ -136,10 +137,12 @@ export interface TemporalEntityItem extends BasicRoleItem {
 export interface TemporalEntityRow { [key: string]: TemporalEntityCell }
 export interface TemporalEntityCell {
   pkProperty: number
+  isOutgoing: boolean
   label: string
   entityPreview: EntityPreview
-  itemsCount: number
+  items?: RoleItem[]
   firstItem?: RoleItem
+  itemsCount: number
   isTimeSpan?: boolean;
 }
 

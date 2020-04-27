@@ -149,7 +149,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
       shareReplay({ refCount: true, bufferSize: 1 }),
       tap((rows) => {
         if (!allowMultiSelect && rows.length === 1) {
-          this.selection.select(rows[0].role.pk_entity)
+          setTimeout(() => this.selection.select(rows[0].role.pk_entity))
         }
         rows.forEach(row => {
           this.rolesByPk[row.role.pk_entity] = row.role;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, AfterViewInit } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
@@ -139,8 +139,9 @@ export const lineControlConfigs = (initVal: LineControlInitVal): TccFormNodeConf
   templateUrl: './time-chart-cont-form.component.html',
   styleUrls: ['./time-chart-cont-form.component.scss']
 })
-export class TimeChartContFormComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class TimeChartContFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
   rootClasses$: Observable<number[]>
@@ -205,7 +206,9 @@ export class TimeChartContFormComponent implements OnInit, OnDestroy, FormFactor
       console.error(`No children found for:`, n)
     }
   }
-
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
+  }
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

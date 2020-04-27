@@ -40,7 +40,7 @@
 
     <gv-leaf-item-add-list *ngIf="isLeafItemList" xLayout="column" fxLayoutAlign="space-between stretch"
       [listDefinition]="data.listDefinition" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$"
-      [pkEntity]="data.pkEntity" (next)="onNext()">
+      [pkEntity]="data.pkEntity" (close)="onClose()" (next)="onNext()">
     </gv-leaf-item-add-list>
   </ng-container>
 

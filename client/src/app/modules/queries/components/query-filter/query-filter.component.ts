@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional, AfterViewInit } from '@angular/core';
 import { FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor, Validators } from '@angular/forms';
 import { U } from 'app/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
@@ -154,9 +154,11 @@ export interface QueryFilterInjectData {
     }
   ]
 })
-export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAccessor, FormFactoryComponent {
+export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor, FormFactoryComponent {
 
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
+
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory
 
@@ -407,4 +409,9 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
   setDisabledState?(isDisabled: boolean): void {
     throw new Error('Method not implemented.');
   }
+
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
+  }
+
 }

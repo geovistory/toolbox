@@ -885,7 +885,11 @@ export class ConfigurationPipesService {
   @spyTag @cache({ refCount: false }) pipeFieldDefinitionsForTeEnForm(pkClass: number): Observable<FieldDefinition[]> {
     const hasTypeListDef$ = this.pipeHasTypeListDefinition(pkClass)
     return combineLatest(
-      this.pipeSpecificFieldDefinitions(pkClass),
+      this.pipeSpecificFieldDefinitions(pkClass)
+        .pipe(
+          map(fields => fields.filter(f => f.removedFromAllProfiles == false))
+        )
+      ,
       hasTypeListDef$,
     ).pipe(
       map(([fields, hasTypeListDefs]) => {
