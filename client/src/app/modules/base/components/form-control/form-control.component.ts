@@ -76,10 +76,11 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private configureEntityCtrl() {
     const lDef = this.config.data.listDefinition;
-    if (lDef && lDef.identityDefiningForSource && lDef.sourceMaxQuantity === 1) {
+    if (lDef && lDef.identityDefiningForSource && lDef.sourceMaxQuantity !== Number.POSITIVE_INFINITY) {
       this.entityCtrlDisableStatement = {
         sourceClassLabel: lDef.sourceClassLabel,
         propertyLabel: lDef.label,
+        maxQuantity: lDef.sourceMaxQuantity,
         relatedStatement: {
           filter: {
             key: this.getKeyOfRelatedStatement(),

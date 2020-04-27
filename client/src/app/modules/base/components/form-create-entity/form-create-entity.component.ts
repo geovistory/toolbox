@@ -261,7 +261,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       this.c.pipeModelOfClass(pkTargetClass),
       this.c.pipeClassLabel(pkTargetClass)
     ).pipe(auditTime(10), map(([parentModel, label]) => {
-      const mapValue = (items) => {
+      const mapValue = (items): CtrlEntityModel => {
         this.emitNewSearchString();
 
         const result = {} as InfTemporalEntity | InfPersistentItem;
@@ -273,8 +273,16 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           }
         })
         result.fk_class = pkTargetClass
-        return {
-          [parentModel]: result
+        if (parentModel == 'persistent_item') {
+          return {
+            persistent_item: result
+          }
+        } else if (parentModel == 'temporal_entity') {
+          return {
+            temporal_entity: result
+          }
+        } else {
+          console.error('this parent model is unsupported:', parentModel)
         }
 
       }
@@ -1009,13 +1017,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
         const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => {
           let initValue: CtrlEntityModel = {}
-          if (initVal.temporal_entity) initValue.temporalEntity = initVal.temporal_entity;
-          if (initVal.persistent_item) initValue.temporalEntity = initVal.persistent_item;
+          if (initVal.temporal_entity) initValue.temporal_entity = initVal.temporal_entity;
+          if (initVal.persistent_item) initValue.temporal_entity = initVal.persistent_item;
           if (listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity) {
             initValue.pkEntity = listDefinition.isOutgoing ? initVal.fk_entity : initVal.fk_temporal_entity;
           }
 
-          initValue = (!initValue.pkEntity && !initValue.temporalEntity && !initValue.persistentItem) ? null : initValue;
+          initValue = (!initValue.pkEntity && !initValue.temporal_entity && !initValue.persistent_item) ? null : initValue;
 
           const c: LocalNodeConfig = {
             control: {
@@ -1031,7 +1039,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 }
               },
               mapValue: (val: CtrlEntityModel) => {
-                if (!val || (!val.pkEntity && !val.temporalEntity && !val.persistentItem)) return null;
+                if (!val || (!val.pkEntity && !val.temporal_entity && !val.persistent_item)) return null;
 
                 let value: InfRole = {
                   ...{} as any,
@@ -1044,10 +1052,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   } else {
                     value = { ...value, fk_temporal_entity: val.pkEntity }
                   }
-                } else if (val.temporalEntity) {
-                  value = { ...value, temporal_entity: val.temporalEntity }
-                } else if (val.persistentItem) {
-                  value = { ...value, persistent_item: val.persistentItem }
+                } else if (val.temporal_entity) {
+                  value = { ...value, temporal_entity: val.temporal_entity }
+                } else if (val.persistent_item) {
+                  value = { ...value, persistent_item: val.persistent_item }
                 }
 
                 return value;

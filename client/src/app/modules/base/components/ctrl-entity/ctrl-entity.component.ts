@@ -13,8 +13,8 @@ import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-d
 
 export interface CtrlEntityModel {
   pkEntity?: number,
-  persistentItem?: InfPersistentItem,
-  temporalEntity?: InfTemporalEntity
+  persistent_item?: InfPersistentItem,
+  temporal_entity?: InfTemporalEntity
 }
 
 @Component({
@@ -118,7 +118,7 @@ export class CtrlEntityComponent implements OnDestroy,
 
   set value(value: CtrlEntityModel | null) {
 
-    if (!value || (!value.pkEntity && !value.temporalEntity && !value.persistentItem)) {
+    if (!value || (!value.pkEntity && !value.temporal_entity && !value.persistent_item)) {
       this.model = undefined
     } else {
       this.model = value;
@@ -150,7 +150,7 @@ export class CtrlEntityComponent implements OnDestroy,
     this.entityPreview$ = this.value$.pipe(switchMap(val => {
 
       if (val && val.pkEntity) return this.p.streamEntityPreview(val.pkEntity)
-      else if (val && (val.persistentItem || val.temporalEntity)) {
+      else if (val && (val.persistent_item || val.temporal_entity)) {
         return combineLatest(
           this.p.dfh$.class$.by_pk_class$.key(this.pkClass),
           this.c.pipeClassLabel(this.pkClass)

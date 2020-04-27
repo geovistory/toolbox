@@ -82,7 +82,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.notInProjectBtnText = data.notInProjectBtnText
     this.notInProjectClickBehavior = data.notInProjectClickBehavior
 
-    this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.temporalEntity || v.persistentItem : null))
+    this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.temporal_entity || v.persistent_item : null))
   }
 
 
@@ -171,18 +171,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
       this.p.dfh$.class$.by_pk_class$.key(this.classAndTypePk.pkClass).pipe(
         first(i => !!i)
       ).subscribe((klass) => {
-        let model: CtrlEntityModel
-        const value = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
-        if (klass.basic_type == 30 || klass.basic_type == 8) {
-          model = {
-            persistentItem: value
-          }
-        } else {
-          model = {
-            temporalEntity: value
-          }
-        }
-        this.dialogRef.close(model)
+        const value: CtrlEntityModel = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
+        this.dialogRef.close(value)
       })
     } else {
       const f = this.createEntity.formFactory.formGroup.controls.childControl as FormArray;
