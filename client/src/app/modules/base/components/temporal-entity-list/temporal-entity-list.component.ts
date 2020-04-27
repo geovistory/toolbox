@@ -161,12 +161,13 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 }
 
 
-export function createPaginateBy(listDefinition: ListDefinition, pkEntity: number): PaginateByParam[] {
+export function createPaginateBy(listDefinition: ListDefinition, pkEntity: number, alternatives = false): PaginateByParam[] {
   if (listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'entity-preview') {
     return [
       { fk_property: listDefinition.property.pkProperty },
       { fk_target_class: listDefinition.targetClass },
-      { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity }
-    ];
+      { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity },
+      { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
+    ]
   }
 }

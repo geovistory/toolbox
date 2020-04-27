@@ -178,12 +178,6 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
   rightTabIndexChange(i: number) {
     this.localStore.dispatch(this.actions.setRightPanelActiveTab(i))
   }
-  show(keyToShow) {
-    // this.rightPanelTabs$.pipe(first()).subscribe(showRight => {
-    //   this.toggle(showRight)
-    //   this.toggle(keyToShow)
-    // })
-  }
 
   /**
   * Method to toggle booleans of state.

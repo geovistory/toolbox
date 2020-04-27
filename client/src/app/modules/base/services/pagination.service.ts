@@ -21,7 +21,7 @@ class RolePageLoader {
   }>()
   constructor(
     private p: ActiveProjectService,
-    private loadNeededFn: (by: PaginateByParam[], limit: number, offset: number, trigger$?: Observable<any>) => Observable<boolean>,
+    private loadNeededFn: (by: PaginateByParam[], limit: number, offset: number, trigger$: Observable<any>) => Observable<boolean>,
     private loadFn: (pkProject: number,
       pkEntity: number,
       pkProperty: number,
@@ -31,12 +31,12 @@ class RolePageLoader {
       offset: number) => ActionResultObservable<PaginatedRolesList>
   ) { }
 
-  public addPageLoader(pkProject: number, l: ListDefinition, pkEntity: number, limit, offset, takeUntil$: Observable<any>) {
+  public addPageLoader(pkProject: number, l: ListDefinition, pkEntity: number, limit, offset, takeUntil$: Observable<any>, alternatives = false) {
 
-    const paginateBy = createPaginateBy(l, pkEntity);
+    const paginateBy = createPaginateBy(l, pkEntity, alternatives);
     const triggerKey = paginatedBy(paginateName(paginateBy)) + '_' + paginateKey(paginateBy);
 
-    const trigger$ = this.getTrigger(triggerKey, l, pkEntity);
+    const trigger$ = this.getTrigger(triggerKey, l, pkEntity, alternatives);
 
     const loaderKey = triggerKey + '_' + limit + '_' + offset;
 
@@ -99,17 +99,18 @@ class RolePageLoader {
 
   }
 
-  private getTrigger(triggerKey: string, l: ListDefinition, pkEntity: number) {
+  private getTrigger(triggerKey: string, l: ListDefinition, pkEntity: number, alternatives: boolean) {
     if (!this.paginationTriggers.has(triggerKey)) {
+      const ofProject = !alternatives;
       const t = combineLatest([
         this.p.inf$.role$.by_object_and_property_indexed$({
           fk_property: l.property.pkProperty,
           fk_entity: pkEntity
-        }).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
+        }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
         this.p.inf$.role$.by_subject_and_property_indexed$({
           fk_property: l.property.pkProperty,
           fk_temporal_entity: pkEntity
-        }).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
+        }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
       ]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
       this.paginationTriggers.set(triggerKey, t);
     }
@@ -131,7 +132,7 @@ export class PaginationService {
 
   temporalEntityAlternative = new RolePageLoader(
     this.p,
-    this.infRepo.role$.pagination$.pipePageLoadNeeded,
+    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
     this.p.inf.temporal_entity.loadPaginatedAlternativeList)
 
   roles = new RolePageLoader(

@@ -13,7 +13,7 @@ export interface ModifyActionMeta<Model> { items: Model[], addPending: string, p
 export interface SucceedActionMeta<Model> { items: Model[], removePending: string, pk?: number }
 export interface FailActionMeta { removePending: string, pk?: number }
 
-export interface PaginateByParam { [key: string]: number }
+export interface PaginateByParam { [key: string]: number | boolean }
 export interface LoadPageMeta { paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number }
 export interface LoadPageSucceededMeta { pks: number[], count: number, paginateBy: PaginateByParam[], limit: number, offset: number, pk?: number }
 

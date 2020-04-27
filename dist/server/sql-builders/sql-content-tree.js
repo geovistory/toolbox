@@ -43,7 +43,7 @@ class SqlContentTree extends sql_builder_lb_models_1.SqlBuilderLbModels {
       ),
       -- entity_previews (Expression Portions)
       tw1 AS (
-        SELECT
+        SELECT DISTINCT ON (t1.pk_entity)
           ${this.createSelect('t1', 'WarEntityPreview')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
@@ -55,6 +55,11 @@ class SqlContentTree extends sql_builder_lb_models_1.SqlBuilderLbModels {
         WHERE t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
+        ORDER BY
+          t1.pk_entity,
+          CASE WHEN(t1.fk_project = ${this.addParam(fkProject)}) THEN 0
+          ELSE 1
+          END
       ),
       -- roles
       tw2 AS (

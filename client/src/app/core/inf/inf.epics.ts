@@ -34,16 +34,16 @@ export class InfEpics {
 
   public createEpics(): Epic {
     const infPersistentItemEpicsFactory = new InfEpicsFactory<InfPersistentItemSlice, InfPersistentItem>
-      (infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi);
+      (infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
 
     const infTemporalEntityEpicsFactory = new InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>
-      (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi);
+      (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
 
     const infRoleEpicsFactory = new InfEpicsFactory<InfRoleSlice, InfRole>
-      (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi);
+      (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi, this.proActions);
 
     const infTextPropertyEpicsFactory = new InfEpicsFactory<InfTextPropertySlice, InfTextProperty>
-      (infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi);
+      (infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
 
     return combineEpics(
       /**
@@ -280,7 +280,8 @@ export class InfEpics {
     const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
       { fk_target_class: meta.fkTargetClass },
-      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity }
+      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity },
+      { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
     ];
     // call action to set pagination loading on true
     this.infActions.role.loadPage(paginateBy, meta.limit, meta.offset, pkProject);

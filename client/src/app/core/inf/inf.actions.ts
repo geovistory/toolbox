@@ -110,6 +110,7 @@ export interface LoadPaginatedRoleListMeta extends LoadActionMeta {
   isOutgoing: boolean // If true, the source entity is domain, else range.
   limit: number // number of items per page.
   offset: number // offset.
+  alternatives: boolean
 }
 export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, InfTemporalEntity> {
 
@@ -155,7 +156,8 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
           pkProperty,
           isOutgoing,
           limit,
-          offset
+          offset,
+          alternatives: false
         },
         payload: null,
       };
@@ -178,7 +180,8 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
           fkTargetClass,
           isOutgoing,
           limit,
-          offset
+          offset,
+          alternatives: true
         },
         payload: null,
       };
@@ -344,7 +347,8 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
           pkProperty,
           isOutgoing,
           limit,
-          offset
+          offset,
+          alternatives: false
         },
         payload: null,
       };

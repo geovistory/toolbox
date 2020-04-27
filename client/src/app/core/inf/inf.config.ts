@@ -3,11 +3,11 @@ import { InfRole, InfTextProperty } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
-export const facetteByPk = 'by_project';
+// export const facetteByPk = 'by_project';
 
 export const infDefinitions: ReducerConfigCollection = {
   persistent_item: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -22,7 +22,7 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   temporal_entity: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -70,7 +70,7 @@ export const infDefinitions: ReducerConfigCollection = {
   },
 
   text_property: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {

@@ -34,7 +34,6 @@ import { FieldComponent } from './components/field/field.component';
 import { FormArrayComponent } from './components/form-array/form-array.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
 import { FormCreateEntityComponent } from './components/form-create-entity/form-create-entity.component';
-import { FormCreateRoleComponent } from './components/form-create-role/form-create-role.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { LeafItemAddListComponent } from './components/leaf-item-add-list/leaf-item-add-list.component';
 import { LeafItemListComponent } from './components/leaf-item-list/leaf-item-list.component';
@@ -77,7 +76,6 @@ const components = [
   CtrlTimeSpanDialogComponent,
   CtrlTimePrimitiveComponent,
   CtrlTypeComponent,
-  FormCreateRoleComponent,
   FormCreateEntityComponent,
   FormGroupComponent,
   FormArrayComponent,

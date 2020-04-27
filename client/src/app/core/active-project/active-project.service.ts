@@ -29,6 +29,7 @@ import { ActiveProjectActions } from './active-project.action';
 import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, RamSource } from './active-project.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { WarActions } from '../war/war.actions';
+import { SchemaObjectService } from '../store/schema-object.service';
 
 
 
@@ -98,6 +99,7 @@ export class ActiveProjectService {
     public inf: InfActions,
     private peItApi: InfPersistentItemApi,
     public shouldPause: ShouldPauseService,
+    private s: SchemaObjectService,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -437,7 +439,7 @@ export class ActiveProjectService {
   removePeIt(pk_entity: number) {
     const s = new Subject<SucceedActionMeta<InfPersistentItem>>();
     combineLatest(
-      this.inf$.persistent_item$.by_pk_entity$.key(pk_entity).pipe(filter(x => !!x)),
+      this.inf$.persistent_item$.by_pk_entity_key$(pk_entity).pipe(filter(x => !!x)),
       this.pkProject$,
     )
       .pipe(first())
@@ -735,14 +737,17 @@ export class ActiveProjectService {
       paragraphs: ['Are you sure?'],
 
     }
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
-    dialog.afterClosed().pipe(first()).subscribe(confirmed => {
-      if (confirmed) {
-        this.removePeIt(pkEntity).pipe(first(success => !!success)).subscribe(() => {
-          // removed
-          s.next()
-        })
-      }
+    this.pkProject$.pipe(first()).subscribe(pkProject => {
+      const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+
+      dialog.afterClosed().pipe(first()).subscribe(confirmed => {
+        if (confirmed) {
+          this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
+            .pipe(first(success => !!success)).subscribe(() => {
+              s.next()
+            })
+        }
+      })
     })
 
     return s;

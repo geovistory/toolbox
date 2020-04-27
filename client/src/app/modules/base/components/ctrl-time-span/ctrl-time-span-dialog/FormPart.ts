@@ -1,12 +1,22 @@
-import { FormControl, FormGroup, Validators } from '../../../../../../node_modules/@angular/forms';
-import { BehaviorSubject, Observable } from '../../../../../../node_modules/rxjs';
-import { map, shareReplay } from '../../../../../../node_modules/rxjs/operators';
-import { InfAppellation, InfLanguage, InfPlace, InfRole, InfTextProperty, U, ActiveProjectService, InfLangString } from '../../../../core';
-import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { ListDefinition } from '../properties-tree/properties-tree.models';
-import { MergeDef } from './form-create-role.component';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { ListDefinition } from '../../properties-tree/properties-tree.models';
+import { InfLanguage, U, InfRole, InfTextProperty, InfAppellation, InfPlace, InfLangString } from 'app/core';
+import { shareReplay, map } from 'rxjs/operators';
+import { CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog.component';
+
+export interface MergeDef {
+  // path of the property in the parent, where the child needs to be appended
+  target: string[]
+
+  // type of the target item
+  targetType: 'object' | 'array'
+
+  // type of the source item
+  sourceType: 'object' | 'array'
+}
 /**
  * Factory for a part of the form that can contain multiple FormItems
  */

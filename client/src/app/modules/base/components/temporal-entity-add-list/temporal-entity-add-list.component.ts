@@ -99,7 +99,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
       this.p.pkProject$
     ).pipe(shareReplay({ refCount: true, bufferSize: 1 }))
 
-    const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity)
+    const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity, true)
 
     this.itemsCount$ = infRepo.role$.pagination$.pipeCount(paginateBy)
 
@@ -115,7 +115,8 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
         this.pkEntity,
         limit,
         offset,
-        merge(nextPage$, this.destroy$)
+        merge(nextPage$, this.destroy$),
+        true
       ).loadEvent$.pipe(first()).subscribe(() => {
         this.itemsCount$.pipe(takeUntil(this.destroy$)).subscribe(c => {
           this.itemsCount = c;
