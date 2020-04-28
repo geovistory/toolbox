@@ -106,6 +106,8 @@ export class AddDialogComponent implements OnInit, OnDestroy {
 
         if (!isInProject && model == 'temporal_entity') {
           // crate api call for adding teEnToProject
+
+
           const apiCall = this.p.addEntityToProject(pkEntity)
           obs$.push(apiCall)
         }

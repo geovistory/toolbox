@@ -35,7 +35,7 @@
                   <ng-container *ngIf="(preview$|async)?.entity_type == 'teEn'">{{classLabel$ | async}} –</ng-container>
                   {{(preview$|async)?.entity_label}}
                 </span>
-                <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
+                <span class="ml-1 mat-caption mat-text-secondary">ID: {{pkEntity}}</span>
               </h2>
               <div class="summary-entity-label ellipsis">
 

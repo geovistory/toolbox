@@ -19,6 +19,9 @@
 
       {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
       <span *ngIf="preview?.time_span">&nbsp;•&nbsp;{{preview?.time_span | timeSpan}}</span>
+
+      <span *ngIf="showId">&nbsp;•&nbsp; ID: {{preview?.pk_entity}}</span>
+
     </div>
   </div>
 
@@ -46,6 +49,9 @@
 
       {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
       <span *ngIf="preview?.time_span">&nbsp;•&nbsp;{{preview?.time_span | timeSpan}}</span>
+
+      <span *ngIf="showId">&nbsp;•&nbsp; ID: {{preview?.pk_entity}}</span>
+
     </div>
   </div>
 

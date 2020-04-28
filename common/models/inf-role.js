@@ -858,8 +858,23 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if object is a temporal_entity
-    // TODO, if needed!
-
+    else if (hasRelatedModel(requestedRole.range_temporal_entity)) {
+      //create the object first
+      return models.InfTemporalEntity.findOrCreateInfTemporalEntity(
+        pkProject,
+        requestedRole.range_temporal_entity,
+        ctxWithoutBody
+      )
+        .then(resArray => {
+          const relatedModel = helpers.toObject(resArray[0]);
+          // return the foreign key and the related model
+          resolve({
+            fk: { fk_entity: relatedModel.pk_entity },
+            relatedModel: { range_temporal_entity: relatedModel },
+          });
+        })
+        .catch(err => reject(err));
+    }
     // if object is an inf persistent_item
     else if (hasRelatedModel(requestedRole.persistent_item)) {
       //create the object first

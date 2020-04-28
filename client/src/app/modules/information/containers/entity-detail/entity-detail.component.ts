@@ -110,7 +110,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
     this.t.setTabLoading(true)
 
-    this.preview$ = this.p.streamEntityPreview(this.pkEntity)
+    this.preview$ = this.p.streamEntityPreview(this.pkEntity, true)
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 

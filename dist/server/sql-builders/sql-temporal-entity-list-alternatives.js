@@ -29,12 +29,11 @@ class SqlTemporalEntityListAlternatives extends sql_builder_lb_models_1.SqlBuild
         information.temporal_entity t2
         WHERE
         -- if isOutgoing join with fk_temporal_entity , else fk_entity
-        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =
-        ${this.addParam(fkSourceEntity)}
+        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =  ${this.addParam(fkSourceEntity)}
         --  add the pk_entity of the 'source' entity here
         AND t1.fk_property = ${this.addParam(fkProperty)} -- add the pk_property
         -- ensure the target entity is a temporal entity
-        AND t1.fk_temporal_entity = t2.pk_entity
+        AND t1.${isOutgoing ? 'fk_entity' : 'fk_temporal_entity'}  = t2.pk_entity
         -- ensure the target temporal entity has right class
         AND t2.fk_class = ${this.addParam(fkTargetClass)}
         -- ensure the role is in at least one project
@@ -46,16 +45,15 @@ class SqlTemporalEntityListAlternatives extends sql_builder_lb_models_1.SqlBuild
         projects.info_proj_rel t2,
         information.temporal_entity t3
         WHERE
-        --if isOutgoing join with fk_temporal_entity , else fk_entity
-        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =
-        ${this.addParam(fkSourceEntity)}
+        -- if isOutgoing join with fk_temporal_entity , else fk_entity
+        t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} = ${this.addParam(fkSourceEntity)}
         --  add the pk_entity of the 'source' entity here
         AND t1.fk_property = ${this.addParam(fkProperty)}
          -- add the pk_property
         AND t2.fk_project = ${this.addParam(fkProject)}
         -- add the pk_project here
         -- ensure the target entity is a temporal entity
-        AND t1.fk_temporal_entity = t3.pk_entity
+        AND t1.${isOutgoing ? 'fk_entity' : 'fk_temporal_entity'}  = t3.pk_entity
         -- ensure the target temporal entity has right class
         AND t3.fk_class = ${this.addParam(fkTargetClass)}
         AND t1.pk_entity = t2.fk_entity
@@ -74,15 +72,6 @@ class SqlTemporalEntityListAlternatives extends sql_builder_lb_models_1.SqlBuild
       tw2 AS (
         SELECT
           ${this.createSelect('t1', 'InfRole')}
-          --t1.fk_property,
-          --t1.fk_entity,
-          --t1.fk_temporal_entity,
-          --t1.is_in_project_count,
-          --t1.is_standard_in_project_count,
-          --t1.community_favorite_calendar,
-          --t1.range_max_quantifier,
-          --t1.domain_max_quantifier,
-          --t1.pk_entity
         FROM
           tw0 t1
         LIMIT ${this.addParam(limit)} -- add limit
@@ -99,7 +88,7 @@ class SqlTemporalEntityListAlternatives extends sql_builder_lb_models_1.SqlBuild
           CROSS JOIN information.v_temporal_entity t1
         WHERE
           -- if isOutgoing join with fk_entity, else fk_temporal_entity
-          tw2.fk_temporal_entity = t1.pk_entity
+          tw2.${isOutgoing ? 'fk_entity' : 'fk_temporal_entity'} = t1.pk_entity
       ),
       -- outgoing_roles of temporal_entity
       tw4 AS (
