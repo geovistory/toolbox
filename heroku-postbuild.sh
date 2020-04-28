@@ -14,7 +14,7 @@ if [ $DB_ENV = 'review' ] && [ $RESTORE_DB = 'ON' ]; then
   echo '================= Drop schemas done! ====================================='
   echo
 
-  echo '======== Restore Database (from deployment/reviewdb.backup) ================='
+  echo '======== Restore Database (from deployment/reviewdb.backup) =============='
   echo 'using this command:'
   echo 'time pg_restore -j 6 --no-owner -d $DATABASE_URL deployment/reviewdb.backup --verbose'
   echo
