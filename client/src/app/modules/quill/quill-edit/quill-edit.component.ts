@@ -208,6 +208,10 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
       }
     });
+
+    this.quillEditor.root.addEventListener('blur', () => {
+      this.blur.emit()
+    });
   }
 
   private getChunkOfSelectedRange(range: any) {

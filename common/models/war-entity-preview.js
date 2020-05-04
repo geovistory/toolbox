@@ -275,35 +275,43 @@ module.exports = function(WarEntityPreview) {
       var queryString = '';
     }
 
-    var params = [queryString, limit, offset];
+    var params = [];
 
-    // project filter
-    let whereProject;
-    if (projectId) {
-      params.push(projectId);
-      whereProject = 'AND fk_project = $' + params.length;
-    } else {
-      whereProject = 'AND fk_project IS NULL';
-    }
+    const addParam = val => {
+      params.push(val);
+      return '$' + params.length;
+    };
+
+    const addParams = vals => {
+      return vals.map(val => addParam(val)).join(',');
+    };
+
+    // // project filter
+    // let whereProject;
+    // if (projectId) {
+    //   params.push(projectId);
+    //   whereProject = 'AND fk_project = $' + params.length;
+    // } else {
+    //   whereProject = 'AND fk_project IS NULL';
+    // }
 
     // data unit type filter
-    let whereEntityType = '';
-    if (entityType) {
-      params.push(entityType);
-      whereEntityType = 'AND entity_type = $' + params.length;
-    }
+    // let whereEntityType = '';
+    // if (entityType) {
+    //   params.push(entityType);
+    //   whereEntityType = 'AND entity_type = $' + params.length;
+    // }
 
-    // class filter
-    let pkClassParamNrs;
-    if (pkClasses && pkClasses.length) {
-      pkClassParamNrs = pkClasses
-        .map((c, i) => '$' + (i + params.length + 1))
-        .join(', ');
-      params = [...params, ...pkClasses];
-    }
+    // // class filter
+    // let pkClassParamNrs;
+    // if (pkClasses && pkClasses.length) {
+    //   pkClassParamNrs = pkClasses
+    //     .map((c, i) => '$' + (i + params.length + 1))
+    //     .join(', ');
+    //   params = [...params, ...pkClasses];
+    // }
 
-    var sql_stmt =
-      `
+    var sql_stmt = `
         select
         fk_project,
         pk_entity,
@@ -320,22 +328,29 @@ module.exports = function(WarEntityPreview) {
         ts_headline(type_label, q) as type_label_headline,
         count(pk_entity) OVER() AS total_count
         from war.entity_preview,
-        to_tsquery($1) q
+        to_tsquery(${addParam(queryString)}) q
         WHERE 1=1
-        ` +
-      (queryString === '' ? '' : 'AND ts_vector @@ q') +
-      `
-        ${whereProject}
-        ${whereEntityType}
-        ` +
-      (pkClasses && pkClasses.length
-        ? `AND fk_class IN (${pkClassParamNrs})`
-        : '') +
-      `
-
+        ${
+          queryString
+            ? `AND (ts_vector @@ q OR pk_entity::text = ${addParam(
+                searchString
+              )})`
+            : ''
+        }
+        ${
+          projectId
+            ? `AND fk_project = ${addParam(projectId)}`
+            : `AND fk_project IS NULL`
+        }
+        ${!!entityType ? `AND entity_type = ${addParam(entityType)}` : ''}
+        ${
+          pkClasses && pkClasses.length
+            ? `AND fk_class IN (${addParams(pkClasses)})`
+            : ''
+        }
         ORDER BY ts_rank(ts_vector, q) DESC, entity_label asc
-        LIMIT $2
-        OFFSET $3;
+        LIMIT ${addParam(limit)}
+        OFFSET ${addParam(offset)};
         `;
 
     if (log) logSql(sql_stmt, params);

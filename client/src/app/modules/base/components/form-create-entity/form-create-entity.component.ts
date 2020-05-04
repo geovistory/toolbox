@@ -224,7 +224,19 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             hideFieldTitle: false,
             pkClass: null
           },
-          mapValue: (items: CtrlEntityModel[] | InfTextProperty[]): { statement?: Partial<InfRole>, text_property?: Partial<InfTextProperty> } => {
+          mapValue: (items: CtrlEntityModel[] | InfTextProperty[] | InfRole[]): { statement?: Partial<InfRole>, text_property?: Partial<InfTextProperty> } => {
+
+            const isInfRole = (obj: any): obj is InfRole => {
+              return !!obj && (
+                !!obj.lang_string ||
+                !!obj.place ||
+                !!obj.language ||
+                !!obj.appellation ||
+                !!obj.time_primitive
+              )
+            }
+
+
             const item = items[0]
             if (data.listDefinition.listType == 'text-property') {
               const text_property: Partial<InfTextProperty> = {
@@ -238,18 +250,26 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 fk_property_of_property: data.listDefinition.property.pkPropertyOfProperty,
               }
 
+
               if (data.listDefinition.isOutgoing) {
                 // assign subject
                 statement.fk_temporal_entity = this.pkSourceEntity;
 
                 // assign object
-                if (item.persistent_item) statement.persistent_item = item.persistent_item
-                else if (item.temporal_entity) statement.range_temporal_entity = item.temporal_entity
+                if (item && item.persistent_item) statement.persistent_item = item.persistent_item
+                else if (item && item.temporal_entity) statement.range_temporal_entity = item.temporal_entity
+                else if (isInfRole(item)) {
+                  statement.lang_string = item.lang_string;
+                  statement.place = item.place;
+                  statement.appellation = item.appellation;
+                  statement.language = item.language;
+                  statement.time_primitive = item.time_primitive;
+                }
 
               } else {
                 // assign subject
-                if (item.persistent_item) statement.domain_pe_it = item.persistent_item
-                else if (item.temporal_entity) statement.temporal_entity = item.temporal_entity
+                if (item && item.persistent_item) statement.domain_pe_it = item.persistent_item
+                else if (item && item.temporal_entity) statement.temporal_entity = item.temporal_entity
 
                 // assign object
                 statement.fk_entity = this.pkSourceEntity;

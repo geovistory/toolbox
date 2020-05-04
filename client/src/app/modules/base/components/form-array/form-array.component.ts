@@ -40,12 +40,9 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
   isFormControl(child: LocalFormArrayFactory | LocalFormControlFactory) {
     if (child.factoryType === 'control') {
-      return true
-      const c = child as LocalFormControlFactory
-      if (c.config.data.controlType !== 'ctrl-target-class') {
-      }
+      return true;
     }
-    return false
+    return false;
   }
 
   isCtrlTargetClass(formArrayFactory: LocalFormArrayFactory | LocalFormControlFactory) {
