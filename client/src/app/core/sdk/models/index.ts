@@ -1,4 +1,6 @@
 /* tslint:disable */
+export * from './SchemaObject';
+export * from './PaginationObject';
 export * from './SysClassFieldPropertyRel';
 export * from './SysClassField';
 export * from './SysClassHasTypeProperty';
@@ -25,6 +27,7 @@ export * from './ProClassFieldConfig';
 export * from './ProDfhClassProjRel';
 export * from './ProDfhProfileProjRel';
 export * from './InfAppellation';
+export * from './InfLangString';
 export * from './InfTemporalEntity';
 export * from './InfRole';
 export * from './InfLanguage';

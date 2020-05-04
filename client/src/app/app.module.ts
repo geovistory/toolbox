@@ -1,15 +1,17 @@
 import { NgReduxRouterModule } from '@angular-redux/router';
 import { NgReduxModule } from '@angular-redux/store';
 import { CommonModule, registerLocaleData } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import localeDeCh from '@angular/common/locales/de-CH';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatIconRegistry } from '@angular/material/icon';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
 import { ProModule } from 'app/core/pro/pro.module';
@@ -17,11 +19,8 @@ import { environment } from 'environments/environment';
 import 'hammerjs';
 import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
-import { SlimLoadingBarModule } from '@cime/ngx-slim-loading-bar';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { TreeviewModule } from 'ngx-treeview';
-import { create } from "rxjs-spy";
-import { CyclePlugin } from 'rxjs-spy/plugin';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ActiveAccountService, AuthGuard, EntityEditorService, LoopBackConfig, SDKBrowserModule, ValidationDirectivesModule } from './core';
@@ -30,6 +29,7 @@ import { BasicModule } from './core/basic/basic.module';
 import { DatModule } from './core/dat/dat.module';
 import { InfModule } from './core/inf/inf.module';
 import { LoadingBarModule } from './core/loading-bar/loading-bar.module';
+import { MaterialModule } from './core/material/material.module';
 import { NotificationsModule } from './core/notifications/notifications.module';
 import { RepoModule } from './core/repo/repo.module';
 import { StoreModule } from './core/store/module';
@@ -40,10 +40,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
-import { AngularCesiumModule, ModuleConfiguration } from 'angular-cesium';
-import { HttpClientModule } from '@angular/common/http';
-import { MatSortModule } from '@angular/material';
-import { AnalysisIconModule } from './shared/pipes/analysis-icon/analysis-icon.module';
+import { WarModule } from './core/war/war.module';
 
 // const spy = create()
 // spy.unplug(spy.find(CyclePlugin));
@@ -65,7 +62,7 @@ registerLocaleData(localeDeCh);
 // Own imports
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BasicModule,
@@ -76,6 +73,7 @@ registerLocaleData(localeDeCh);
     InfModule,
     DatModule,
     ProModule,
+    WarModule,
     RepoModule,
     NgReduxRouterModule,
     NgReduxModule,
@@ -103,10 +101,9 @@ registerLocaleData(localeDeCh);
     KeysModule,
     AccountModule,
     ValidationDirectivesModule,
-    MatButtonModule,
-    MatIconModule,
     UserFeedbackModule,
-    HttpClientModule
+    HttpClientModule,
+    MaterialModule
   ],
   providers: [
     EntityEditorService,

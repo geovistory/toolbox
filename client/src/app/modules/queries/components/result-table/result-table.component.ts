@@ -6,7 +6,7 @@ import { Table } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColDef, QueryDefinition, TableInput, TableOutput } from '../../../../../../../src/common/interfaces';
-import { ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
+import { ResultingEntitiesDialogComponent, EntitiesDialogData } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 
 export interface Example {
   id: number;
@@ -144,9 +144,10 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   openDialog(entityPreviews): void {
+    const data: EntitiesDialogData = { entityPreviews }
     const dialogRef = this.dialog.open(ResultingEntitiesDialogComponent, {
       width: '390px',
-      data: { entityPreviews }
+      data
     });
 
     dialogRef.afterClosed().subscribe(result => {

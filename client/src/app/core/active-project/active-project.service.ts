@@ -3,13 +3,12 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProSelector } from 'app/core/pro/pro.service';
-import { AddOrCreateEntityModal, AddOrCreateEntityModalData } from 'app/modules/information/components/add-or-create-entity-modal/add-or-create-entity-modal.component';
-import { CreateOrAddEntityEvent } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
+import { AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 import { cache } from 'app/shared';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
 import { difference, equals, groupBy, indexBy, path, values, without } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of as observableOf, Subject, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of as observableOf, Subject, timer, ReplaySubject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SysConfig } from '../../../../../src/common/config/sys-config';
 import { environment } from '../../../environments/environment';
@@ -17,17 +16,19 @@ import { DatSelector } from '../dat/dat.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { InfActions } from '../inf/inf.actions';
 import { InfSelector } from '../inf/inf.service';
-import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, ProProject } from '../sdk';
+import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, ProProject, WarEntityPreview } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
-import { EntityPreview, EntityType } from '../state/models';
+import { EntityPreview, EntityType, EntityDetail } from '../state/models';
 import { SucceedActionMeta } from '../store/actions';
 import { IAppState, SchemaObject } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { ActiveProjectActions } from './active-project.action';
-import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, RamSource } from './active-project.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { WarActions } from '../war/war.actions';
+import { SchemaObjectService } from '../store/schema-object.service';
 
 
 
@@ -45,10 +46,6 @@ export class ActiveProjectService {
   public list$: Observable<ListType>; // type of list displayed in left panel
   public creatingMentioning$: Observable<boolean>;
   public typesByPk$: Observable<TypesByPk>
-  // public comQueryVersionsByPk$: Observable<EntityVersionsByPk<ProQuery>>
-  // public comQueryLoading$: Observable<boolean>
-  // public comVisualVersionsByPk$: Observable<EntityVersionsByPk<ProVisual>>
-  // public comVisualLoading$: Observable<boolean>
   public datNamespaces$: Observable<DatNamespace[]>
   public initializingProject$: Observable<boolean>;
 
@@ -69,22 +66,45 @@ export class ActiveProjectService {
   dat$: DatSelector;
   pro$: ProSelector;
 
+  /***************************************************************
+   * Ram (Refers to, Annotated in, Mentioned in)
+   ***************************************************************/
+  ramOpen$ = new BehaviorSubject(false);
+  ramSource$ = new ReplaySubject<RamSource>();
+  ramProperty$ = new ReplaySubject<number>()
+  ramTarget$ = new ReplaySubject<number>();
+  ramTitle$ = new ReplaySubject<string>();
+  ramTitlePart2$ = new ReplaySubject<string>();
+  ramBoxLeft$ = new ReplaySubject<'select-text' | 'drag-source-or-section'>();
+  ramBoxCenter$ = new ReplaySubject<boolean>();
+  ramBoxRight$ = new ReplaySubject<boolean>();
+  ramTargetIsFix$ = new BehaviorSubject<boolean>(false);
+
+
+  requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
+
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
+    private warActions: WarActions,
     private entityPreviewSocket: EntityPreviewSocket,
     public dialog: MatDialog,
     public dfh$: DfhSelector,
     public sys$: SystemSelector,
     public inf: InfActions,
-    private peItApi: InfPersistentItemApi,
     public shouldPause: ShouldPauseService,
+    private s: SchemaObjectService,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
-    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(filter(p => p !== undefined));
+    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(
+      filter(p => p !== undefined),
+      distinctUntilChanged((x, y) => {
+        return x === y
+      })
+    );
     this.initializingProject$ = ngRedux.select<boolean>(['activeProject', 'initializingProject']);
     this.defaultLanguage$ = ngRedux.select<InfLanguage>(['activeProject', 'default_language']);
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
@@ -93,11 +113,6 @@ export class ActiveProjectService {
     this.focusedPanel$ = ngRedux.select<number>(['activeProject', 'focusedPanel']);
     this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
     this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
-    // this.comQueryVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProQuery>>(['activeProject', 'comQueryVersionsByPk']);
-    // this.comQueryLoading$ = ngRedux.select<boolean>(['activeProject', 'comQueryLoading']);
-    // this.comVisualVersionsByPk$ = ngRedux.select<EntityVersionsByPk<ProVisual>>(['activeProject', 'comVisualVersionsByPk']);
-    // this.comVisualLoading$ = ngRedux.select<boolean>(['activeProject', 'comVisualLoading']);
-
     this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
 
 
@@ -124,21 +139,25 @@ export class ActiveProjectService {
     )
 
 
-    this.entityPreviewSocket.fromEvent<EntityPreview>('entityPreview').subscribe(data => {
+    this.entityPreviewSocket.fromEvent<WarEntityPreview>('entityPreview').subscribe(data => {
       // dispatch a method to put the EntityPreview to the store
-      this.ngRedux.dispatch(this.actions.loadEntityPreviewSucceeded(data))
+      this.warActions.entity_preview.loadSucceeded([data], '')
     })
 
     this.entityPreviewSocket.fromEvent('reconnect').subscribe(disconnect => {
       // get all EntityPreview keys from state and send them to the
       // server so that they will be streamed. This is important for
       // when connection was lost.
-      combineLatest(this.pkProject$, this.activeProject$).pipe(first(items => items.filter(item => !item).length === 0))
-        .subscribe(([pkProject, activeProject]) => {
-          if (activeProject.entityPreviews) {
-            this.entityPreviewSocket.emit('addToStrem', {
+      this.pkProject$.pipe(first())
+        .subscribe((pkProject) => {
+          const pks = Object.keys({
+            ...this.ngRedux.getState().war.entity_preview,
+            ...this.requestedEntityPreviews
+          });
+          if (pks.length) {
+            this.entityPreviewSocket.emit('addToStream', {
               pk_project: pkProject,
-              pks: Object.keys(activeProject.entityPreviews)
+              pks
             })
           }
         })
@@ -211,20 +230,25 @@ export class ActiveProjectService {
   streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<EntityPreview> {
     const state = this.ngRedux.getState();
 
-    if (!(((state || {}).activeProject || {}).entityPreviews || {})[pkEntity] || forceReload) {
+    if (
+      (
+        !(((state.war || {}).entity_preview || {}).by_pk_entity || {})[pkEntity] &&
+        !this.requestedEntityPreviews[pkEntity]
+      ) || forceReload) {
       this.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProject => {
 
-        this.entityPreviewSocket.emit('addToStrem', {
+        this.entityPreviewSocket.emit('addToStream', {
           pk_project: pkProject,
           pks: [pkEntity]
         })
-        const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
+        // const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
 
-        this.ngRedux.dispatch(this.actions.loadEntityPreview(pkProject, pkEntity, pkUiContext))
+        // this.ngRedux.dispatch(this.actions.loadEntityPreview(pkProject, pkEntity, pkUiContext))
+        this.requestedEntityPreviews[pkEntity] = true;
       })
     }
 
-    return this.ngRedux.select<EntityPreview>(['activeProject', 'entityPreviews', pkEntity])
+    return this.ngRedux.select<EntityPreview>(['war', 'entity_preview', 'by_pk_entity', pkEntity])
       .pipe(
         distinctUntilChanged<EntityPreview>(equals),
         filter(prev => (!!prev))
@@ -358,9 +382,6 @@ export class ActiveProjectService {
         const ts: TypePeIt[] = [];
         (typess || []).forEach(types => (types || []).forEach(type => ts.push(type)))
         return ts;
-      }),
-      tap(test => {
-        test;
       })
     );
     const previews$: Observable<EntityPreview[]> = types$.pipe(
@@ -370,10 +391,7 @@ export class ActiveProjectService {
           combineLatest(types.map(type => this.streamEntityPreview(type.pk_entity))) :
           new BehaviorSubject<EntityPreview[]>([])
       }),
-      filter(pre => !pre.find(p => !(p.pk_entity))),
-      tap(test => {
-        test;
-      })
+      filter(pre => !pre.find(p => !(p.pk_entity)))
     )
 
 
@@ -394,87 +412,39 @@ export class ActiveProjectService {
     );
   }
 
-  // reloadTypesForClassesInProject() {
-  //   this.classPksEnabledInEntities$.pipe(first(([classes]) => !!classes))
-  //     .subscribe((classesInProject) => {
-  //       this.streamTypePreviewsByClass(classesInProject)
-  //     })
-  // }
-
-  // loadQueries() {
-  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //     this.ngRedux.dispatch(this.actions.loadQueries(pk))
-  //   })
-  //   return this.comQueryVersionsByPk$;
-  // }
-
-  // loadQueryVersion(pkEntity: number, entityVersion: number) {
-  //   const state = this.ngRedux.getState();
-
-  //   if (
-  //     pkEntity && entityVersion &&
-  //     // if not yet loading
-  //     (!state.activeProject
-  //       || !state.activeProject.comQueryVersionLoading
-  //       || !state.activeProject.comQueryVersionLoading[pkEntity + '_' + entityVersion]
-  //     )) {
-  //     this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //       this.ngRedux.dispatch(this.actions.loadQueryVersion(pk, pkEntity, entityVersion))
-  //     })
-  //   }
-  //   return this.comQueryVersionsByPk$;
-  // }
-
-  // loadVisuals() {
-  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //     this.ngRedux.dispatch(this.actions.loadVisuals(pk))
-  //   })
-  //   return this.comVisualVersionsByPk$;
-  // }
-
-  // /**
-  //  * Loads one specific visual version
-  //  * @param pkEntity pk_entity of visual
-  //  * @param entityVersion if no entity_version provided, returns latest version
-  //  */
-  // loadVisualVersion(pkEntity: number, entityVersion: number = null) {
-  //   this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-  //     this.ngRedux.dispatch(this.actions.loadVisualVersion(pk, pkEntity, entityVersion))
-  //   })
-  //   return this.comVisualVersionsByPk$;
-  // }
-
   /************************************************************************************
   * Change Project Relations
   ************************************************************************************/
-  // changeClassProjRel(projRel: ProDfhClassProjRel, dfh_pk_class: number) {
-  //   this.ngRedux.dispatch(this.actions.upsertClassProjRel(projRel, dfh_pk_class))
-  // }
 
-  removePeIt(pk_entity: number) {
-    const s = new Subject<SucceedActionMeta<InfPersistentItem>>();
-    combineLatest(
-      this.inf$.persistent_item$.by_pk_entity$.key(pk_entity).pipe(filter(x => !!x)),
-      this.pkProject$,
-    )
-      .pipe(first())
-      .subscribe(([persistentItem, pkProject]) => {
-        this.inf.persistent_item.remove([persistentItem], pkProject)
-          .resolved$
-          .pipe()
-          .subscribe(res => s.next(res))
-      })
-    return s;
-  }
-
-  addPeItToProject(pkEntity: number, cb: (schemaObject: SchemaObject) => any) {
+  removeEntityFromProject(pkEntity: number, cb?: (schemaObject: SchemaObject) => any) {
     this.pkProject$.pipe(first()).subscribe(pkProject => {
       const timer$ = timer(200)
-      const call$ = this.peItApi.addToProject(pkProject, pkEntity)
+      const call$ = this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
       let dialogRef;
       timer$.pipe(takeUntil(call$)).subscribe(() => {
         const data: ProgressDialogData = {
+          title: 'Removing entity from your project',
+          hideValue: true, mode$: new BehaviorSubject('indeterminate'), value$: new BehaviorSubject(0)
+        }
+        dialogRef = this.dialog.open(ProgressDialogComponent, { data, disableClose: true })
+      })
+      call$.subscribe(
+        (schemaObject: SchemaObject) => {
+          if (cb) cb(schemaObject)
+          if (dialogRef) dialogRef.close()
+        }
+      )
+    })
+  }
 
+  addEntityToProject(pkEntity: number, cb?: (schemaObject: SchemaObject) => any): Observable<SchemaObject> {
+    const s$ = new Subject<SchemaObject>()
+    this.pkProject$.pipe(first()).subscribe(pkProject => {
+      const timer$ = timer(200)
+      const call$ = this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+      let dialogRef;
+      timer$.pipe(takeUntil(call$)).subscribe(() => {
+        const data: ProgressDialogData = {
           title: 'Adding entity to your project',
           hideValue: true, mode$: new BehaviorSubject('indeterminate'), value$: new BehaviorSubject(0)
         }
@@ -482,11 +452,13 @@ export class ActiveProjectService {
       })
       call$.subscribe(
         (schemaObject: SchemaObject) => {
-          cb(schemaObject)
+          s$.next(schemaObject)
+          if (cb) cb(schemaObject)
           if (dialogRef) dialogRef.close()
         }
       )
     })
+    return s$;
   }
 
 
@@ -509,6 +481,21 @@ export class ActiveProjectService {
   mentioningsFocusedInTable(pks: number[]) {
     this.ngRedux.dispatch(this.actions.setMentioningsFocusedInTable(pks))
   }
+
+  ramReset() {
+    this.ramOpen$.next(false);
+    this.ramSource$.next();
+    this.ramTarget$.next();
+    this.ramProperty$.next()
+    this.ramTitle$.next()
+    this.ramTitlePart2$.next()
+    this.ramBoxLeft$.next()
+    this.ramBoxCenter$.next(false)
+    this.ramBoxRight$.next(false)
+    this.ramTargetIsFix$.next(false)
+  }
+
+
 
   /************************************************************************************
   * Layout -- Tabs
@@ -552,10 +539,11 @@ export class ActiveProjectService {
   }
 
   addEntityTab(pkEntity: number, pkClass: number, entityType: EntityType) {
-    if (entityType === 'teEn') {
-      this.addEntityTeEnTab(pkEntity)
-    }
-    else if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+    // if (entityType === 'teEn') {
+    //   this.addEntityTeEnTab(pkEntity)
+    // }
+    // else
+    if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
       this.addSourceExpressionPortionTab(pkEntity)
     }
     else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
@@ -567,60 +555,50 @@ export class ActiveProjectService {
   }
 
   private addSourceTab(pkEntity: number) {
+
+    const peItDetail = new EntityDetail({
+      showHeader: true,
+      showProperties: true,
+      showRightArea: false,
+      rightPanelTabs: [
+        'content-tree'
+      ],
+      rightPanelActiveTab: 0
+    })
+
     this.addTab({
       active: true,
-      component: 'pe-it-detail',
+      component: 'entity-detail',
       icon: 'source',
       pathSegment: 'peItDetails',
       data: {
         pkEntity: pkEntity,
         peItDetailConfig: {
-          peItDetail: {
-
-            showMentionedEntities: true,
-            showMentionedEntitiesToggle: true,
-
-            showAssertions: false,
-            showAssertionsToggle: false,
-
-            showSectionList: true,
-            showSectionListToggle: true,
-
-            showProperties: true,
-            showPropertiesToggle: true,
-
-            showPropertiesHeader: true,
-            // showAddAPropertyButton: false,
-
-          },
-          stateSettings: {
-            pkUiContext: SysConfig.PK_UI_CONTEXT_SOURCES_EDITABLE
-          }
+          peItDetail
         }
       }
     });
   }
 
   private addSourceExpressionPortionTab(pkEntity: number) {
+    const peItDetail = new EntityDetail({
+      showHeader: true,
+      showProperties: true,
+      showRightArea: false,
+      rightPanelTabs: [
+        'content-tree'
+      ],
+      rightPanelActiveTab: 0
+    })
+
     this.addTab({
       active: true,
-      component: 'pe-it-detail',
+      component: 'entity-detail',
       icon: 'expression-portion',
       data: {
         pkEntity: pkEntity,
         peItDetailConfig: {
-          peItDetail: {
-            showSectionList: true,
-            showSectionListToggle: true,
-            showProperties: true,
-            showPropertiesToggle: true,
-            showMap: false,
-            showMapToggle: false,
-            showTimeline: false,
-            showTimelineToggle: false,
-            showSources: false,
-            showSourcesToggle: false
-          }
+          peItDetail
         }
       },
       pathSegment: 'peItDetails'
@@ -628,53 +606,53 @@ export class ActiveProjectService {
   }
 
   private addEntityPeItTab(pkEntity: number) {
+    const peItDetail = new EntityDetail({
+      showHeader: true,
+      showProperties: true,
+      showRightArea: false,
+      rightPanelTabs: [
+        'linked-sources',
+        'linked-digitals'
+      ],
+      rightPanelActiveTab: 0
+    })
 
     this.addTab({
       active: true,
-      component: 'pe-it-detail',
+      component: 'entity-detail',
       icon: 'persistent-entity',
       pathSegment: 'peItDetails',
       data: {
         pkEntity: pkEntity,
         peItDetailConfig: {
-          peItDetail: {
-            showProperties: true,
-            showPropertiesToggle: true,
-            showMap: false,
-            showMapToggle: false,
-            showTimeline: false,
-            showTimelineToggle: false,
-            showSources: true,
-            showSourcesToggle: true,
-            showRightArea: false
-
-          }
+          peItDetail
         }
-
       }
     })
 
 
   }
 
-  private addEntityTeEnTab(pkEntity: number) {
-    this.addTab({
-      active: true,
-      component: 'te-en-detail',
-      icon: 'temporal-entity',
-      pathSegment: 'teEnDetails',
-      data: {
-        pkEntity: pkEntity,
-        teEntDetailConfig: {
-          teEntDetail: {
-            showRightArea: false,
-            showSources: true,
-            showSourcesToggle: true,
-          }
-        }
-      }
-    })
-  }
+  // private addEntityTeEnTab(pkEntity: number) {
+  //   this.addTab({
+  //     active: true,
+  //     component: 'te-en-detail',
+  //     icon: 'temporal-entity',
+  //     pathSegment: 'teEnDetails',
+  //     data: {
+  //       pkEntity: pkEntity,
+  //       teEntDetailConfig: {
+  //         teEntDetail: {
+  //           showRightArea: false,
+  //           showSources: true,
+  //           showSourcesToggle: true,
+  //           showDigitals: false,
+  //           showDigitalsToggle: true,
+  //         }
+  //       }
+  //     }
+  //   })
+  // }
 
   addTextTab(pkEntity: number) {
     this.addTab({
@@ -708,16 +686,19 @@ export class ActiveProjectService {
   /**
    * Returns an observable that emits the added entity
    */
-  openModalCreateOrAddEntity(config: AddOrCreateEntityModalData) {
+  openModalCreateOrAddEntity(config: AddOrCreateEntityDialogData) {
     const observable = new Subject<CreateOrAddEntityEvent>();
 
     // this.ngRedux.dispatch(this.actions.openAddForm(config));
 
-    this.dialog.open<AddOrCreateEntityModal, AddOrCreateEntityModalData, CreateOrAddEntityEvent>(
-      AddOrCreateEntityModal,
+    this.dialog.open<AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent>(
+      AddOrCreateEntityDialogComponent,
       {
-        height: '90%',
-        width: '90%',
+        // height: '90%',
+        // width: '90%',
+        height: 'calc(100% - 30px)',
+        width: '980px',
+        maxWidth: '100%',
         data: config
       })
       .afterClosed().pipe(first()).subscribe(result => {
@@ -729,10 +710,10 @@ export class ActiveProjectService {
   }
   /**
    * Opens dialog to get confirmation before removing
-   * peIt from project. If user confirms, the dialog
-   * removes peIt and closes
+   * entity from project. If user confirms, the dialog
+   * removes entity and closes
    */
-  openRemovePeItDialog(entityLabel: string, pkEntity: number) {
+  openRemoveEntityDialog(entityLabel: string, pkEntity: number) {
     const s = new Subject<void>();
 
     const data: ConfirmDialogData = {
@@ -743,14 +724,17 @@ export class ActiveProjectService {
       paragraphs: ['Are you sure?'],
 
     }
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
-    dialog.afterClosed().pipe(first()).subscribe(confirmed => {
-      if (confirmed) {
-        this.removePeIt(pkEntity).pipe(first(success => !!success)).subscribe(() => {
-          // removed
-          s.next()
-        })
-      }
+    this.pkProject$.pipe(first()).subscribe(pkProject => {
+      const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+
+      dialog.afterClosed().pipe(first()).subscribe(confirmed => {
+        if (confirmed) {
+          this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
+            .pipe(first(success => !!success)).subscribe(() => {
+              s.next()
+            })
+        }
+      })
     })
 
     return s;

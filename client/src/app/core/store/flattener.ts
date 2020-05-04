@@ -1,12 +1,12 @@
 import { InfPersistentItem, InfRole } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice } from 'app/core/inf/inf.models';
+import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLangStringSlice } from 'app/core/inf/inf.models';
 import { keys, omit, values } from 'ramda';
 import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
 import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '../sdk';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty, InfLangString } from '../sdk';
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
@@ -18,7 +18,7 @@ export class ModelFlattener<Payload, Model> {
   ) { }
 
   flatten(items: Model[]) {
-    if (items) {
+    if (items && items.length > 0) {
 
       this.flattenCb(items);
       // todo remove properties of those objects, using getModelDefinition()
@@ -108,14 +108,20 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfRole(item);
-        this.temporal_entity.flatten([item.temporal_entity])
-        this.persistent_item.flatten([item.persistent_item])
-        this.appellation.flatten([item.appellation])
-        this.place.flatten([item.place])
-        this.time_primitive.flatten([item.time_primitive])
-        this.language.flatten([item.language])
-        this.chunk.flatten([item.domain_chunk])
         this.info_proj_rel.flatten(item.entity_version_project_rels)
+
+        // Subject
+        if (item.temporal_entity) this.temporal_entity.flatten([item.temporal_entity])
+        else if (item.subject_inf_role) this.role.flatten([item.subject_inf_role])
+
+        // Object
+        if (item.persistent_item) this.persistent_item.flatten([item.persistent_item])
+        else if (item.appellation) this.appellation.flatten([item.appellation])
+        else if (item.place) this.place.flatten([item.place])
+        else if (item.time_primitive) this.time_primitive.flatten([item.time_primitive])
+        else if (item.language) this.language.flatten([item.language])
+        else if (item.domain_chunk) this.chunk.flatten([item.domain_chunk])
+        else if (item.lang_string) this.lang_string.flatten([item.lang_string])
       })
     })
 
@@ -153,6 +159,17 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfLanguage(item);
+      })
+    })
+
+  lang_string = new ModelFlattener<InfLangStringSlice, InfLangString>(
+    this.infActions.lang_string,
+    InfLangString.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new InfLangString(item);
+        this.language.flatten([item.language])
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
@@ -249,6 +266,7 @@ export class Flattener {
       time_primitive: this.time_primitive,
       language: this.language,
       text_property: this.text_property,
+      lang_string: this.lang_string,
 
       digital: this.digital,
       chunk: this.chunk,

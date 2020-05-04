@@ -35,6 +35,7 @@ export class DfhConfig {
 
   // dfh_pk_property used to connect a a persitent item or temporal entity as domain with source, section or chunk as range
   static PROPERTY_PK_GEOVP2_MENTIONS = 1218;
+  static PROPERTY_PK_P129_IS_ABOUT = 117;
   static PROPERTY_PK_GEOVP11_REFERS_TO = 1334;
 
   static PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF = 1216;
@@ -45,8 +46,6 @@ export class DfhConfig {
   // static PROPERTY_PK_END_OF_END = 153;
   // static PROPERTY_PK_END_OF_BEGIN = 150;
   // static PROPERTY_PK_BEGIN_OF_END = 151;
-
-
 
   /**
   * Dfh Properties leading to a TimePrimitiveClasses
@@ -90,14 +89,17 @@ export class DfhConfig {
   // dfh_pk_class of time primitive
   static CLASS_PK_TIME_PRIMITIVE = 335;
 
+  // dfh_pk_class of time span
   static ClASS_PK_TIME_SPAN = 50;
 
   // dfh_pk_class of place (not geographical place!)
   static CLASS_PK_PLACE = 51;
 
+  // dfh_pk_class of Reference – geovC13
+  static CLASS_PK_REFERENCE = 657;
+
   // dfh_pk_class of geographical place (not place!)
   static CLASS_PK_GEOGRAPHICAL_PLACE = 363;
-
 
   // dfh_pk_class of built work
   static CLASS_PK_BUILT_WORK = 441;
@@ -118,6 +120,11 @@ export class DfhConfig {
   static CLASS_PKS_SOURCE_PE_IT = [219, 220, 221, 502];
   static CLASS_PKS_GEO_PE_IT = [363, 441];
 
+
+  /**
+   * Property of property
+   */
+  static P_O_P_GEOV_HAS_REFERENCE = 1;
 
 
   /**

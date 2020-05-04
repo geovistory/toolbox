@@ -14,6 +14,14 @@
       "../node_modules/loopback-setup-remote-methods-mixin"
     ]
   },
+  "SchemaObject": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "PaginationObject": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "SysClassFieldPropertyRel": {
     "dataSource": "postgres1",
     "public": true
@@ -84,6 +92,10 @@
     "public": true
   },
   "InfAppellation": {
+    "dataSource": "postgres1",
+    "public": true
+  },
+  "InfLangString": {
     "dataSource": "postgres1",
     "public": true
   },

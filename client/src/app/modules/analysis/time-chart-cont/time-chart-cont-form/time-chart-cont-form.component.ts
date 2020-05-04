@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input, AfterViewInit } from '@angular/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { values } from 'ramda';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
@@ -44,7 +44,7 @@ export interface TccFormChildData {
 
 export type TccFormNodeConfig = FormNodeConfig<TccFormGroupData, TccFormArrayData, TccFormControlData, TccFormChildData>;
 export type TccFormGroupFactory = FormGroupFactory;
-export type TccFormArrayFactory = FormArrayFactory<TccFormControlData, TccFormArrayData>;
+export type TccFormArrayFactory = FormArrayFactory<TccFormControlData, TccFormArrayData, TccFormChildData>;
 export type TccFormControlFactory = FormControlFactory<TccFormControlData>;
 export type TccFormChildFactory = FormChildFactory<TccFormChildData>;
 
@@ -139,8 +139,9 @@ export const lineControlConfigs = (initVal: LineControlInitVal): TccFormNodeConf
   templateUrl: './time-chart-cont-form.component.html',
   styleUrls: ['./time-chart-cont-form.component.scss']
 })
-export class TimeChartContFormComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class TimeChartContFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
   rootClasses$: Observable<number[]>
@@ -205,7 +206,9 @@ export class TimeChartContFormComponent implements OnInit, OnDestroy, FormFactor
       console.error(`No children found for:`, n)
     }
   }
-
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
+  }
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

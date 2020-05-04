@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { DatChunk, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, ProInfoProjRel } from '../sdk';
-import { EntityPreview, HasTypePropertyReadable, PeItDetail } from '../state/models';
+import { EntityPreview, EntityDetail } from '../state/models';
 import { ListType, Panel, ProjectDetail, ProjectPreview, Tab, TypePeIt } from './active-project.models';
 
 // export interface ComQueryV extends ProQuery {
@@ -25,7 +25,7 @@ interface MetaData {
 
   // return vals for Data Cache
   entityPreview?: EntityPreview;
-  peItDetail?: PeItDetail;
+  peItDetail?: EntityDetail;
   chunk?: DatChunk
   teEnGraphs?: InfTemporalEntity[]
   peItGraphs?: InfPersistentItem[]
@@ -38,7 +38,7 @@ interface MetaData {
   // CRM and Config
   projRel?: ProDfhClassProjRel;
   dfh_pk_class?: number;
-  hasTypeProperties?: HasTypePropertyReadable[]
+  // hasTypeProperties?: HasTypePropertyReadable[]
 
   // Information
   infProjRel?: ProInfoProjRel;
@@ -238,39 +238,39 @@ export class ActiveProjectActions {
   ************************************************************************************/
 
   // EntityPreviews
-  static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
-  static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
-  static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
+  // static LOAD_ENTITY_PREVIEW = 'ActiveProject::LOAD_ENTITY_PREVIEW';
+  // static LOAD_ENTITY_PREVIEW_SUCCEEDED = 'ActiveProject::LOAD_ENTITY_PREVIEW_SUCCEEDED';
+  // static LOAD_ENTITY_PREVIEW_FAILED = 'ActiveProject::LOAD_ENTITY_PREVIEW_FAILED';
 
 
-  loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_PREVIEW,
-      payload: null,
-      meta: {
-        pk_project, pk_entity, pk_ui_context
-      }
-    }
-  }
+  // loadEntityPreview(pk_project: number, pk_entity: number, pk_ui_context: number): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW,
+  //     payload: null,
+  //     meta: {
+  //       pk_project, pk_entity, pk_ui_context
+  //     }
+  //   }
+  // }
 
-  loadEntityPreviewSucceeded(entityPreview: EntityPreview): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED,
-      payload: null,
-      meta: {
-        entityPreview
-      },
-    }
-  }
+  // loadEntityPreviewSucceeded(entityPreview: EntityPreview): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_SUCCEEDED,
+  //     payload: null,
+  //     meta: {
+  //       entityPreview
+  //     },
+  //   }
+  // }
 
-  loadEntityPreviewFailed(error): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED,
-      payload: null,
-      meta: null,
-      error
-    }
-  }
+  // loadEntityPreviewFailed(error): ActiveProjectAction {
+  //   return {
+  //     type: ActiveProjectActions.LOAD_ENTITY_PREVIEW_FAILED,
+  //     payload: null,
+  //     meta: null,
+  //     error
+  //   }
+  // }
 
   // EntityPreviews
   static LOAD_TYPES = 'ActiveProject::LOAD_TYPES';
@@ -323,7 +323,7 @@ export class ActiveProjectActions {
     }
   }
 
-  loadPeItDetailsForModalSucceeded(peItDetail: PeItDetail): ActiveProjectAction {
+  loadPeItDetailsForModalSucceeded(peItDetail: EntityDetail): ActiveProjectAction {
     return {
       type: ActiveProjectActions.LOAD_PE_IT_DETAIL_FOR_MODAL_SUCCEEDED,
       payload: null,

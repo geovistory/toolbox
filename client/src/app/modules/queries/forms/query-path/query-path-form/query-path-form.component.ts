@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit, Optional, AfterViewInit } from '@angular/core';
 import { U } from 'app/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { CONTAINER_DATA, FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
@@ -6,7 +6,7 @@ import { FormControlFactory } from 'app/modules/form-factory/core/form-control-f
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from 'app/modules/queries/components/property-select/property-select.component';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
@@ -34,7 +34,7 @@ export interface QueryPathFormChildData {
 
 export type QueryPathFormNodeConfig = FormNodeConfig<QueryPathFormGroupData, QueryPathFormArrayData, QueryPathFormControlData, QueryPathFormChildData>;
 export type QueryPathFormGroupFactory = FormGroupFactory;
-export type QueryPathFormArrayFactory = FormArrayFactory<QueryPathFormControlData, QueryPathFormArrayData>;
+export type QueryPathFormArrayFactory = FormArrayFactory<QueryPathFormControlData, QueryPathFormArrayData, QueryPathFormChildData>;
 export type QueryPathFormControlFactory = FormControlFactory<QueryPathFormControlData>;
 export type QueryPathFormChildFactory = FormChildFactory<QueryPathFormChildData>;
 
@@ -137,8 +137,9 @@ export interface QueryPathInjectData {
   templateUrl: './query-path-form.component.html',
   styleUrls: ['./query-path-form.component.scss']
 })
-export class QueryPathFormComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class QueryPathFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
   @Input() rootClasses$: Observable<number[]>
@@ -221,6 +222,9 @@ export class QueryPathFormComponent implements OnInit, OnDestroy, FormFactoryCom
     } else {
       console.error(`No children found for:`, n)
     }
+  }
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
   }
 
   ngOnDestroy() {

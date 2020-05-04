@@ -1,11 +1,11 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit, Inject, Optional, AfterViewInit } from '@angular/core';
 import { FormArray, NG_VALUE_ACCESSOR, ControlValueAccessor, Validators } from '@angular/forms';
 import { U } from 'app/core';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormGroupFactory } from 'app/modules/form-factory/core/form-group-factory';
 import { FormArrayConfig, FormFactory, FormFactoryConfig, FormFactoryService, FormGroupConfig, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { values } from 'd3';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil, filter, switchMap, distinctUntilChanged } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory
 import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { ClassFilterCondition, SubgroupOperator, SubGroupType } from '../../../../../../../src/common/interfaces';
 import { QueryFilterService } from './query-filter.service';
-import { InformationPipesService } from 'app/modules/information/new-services/information-pipes.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { equals } from 'ramda';
 
 export interface ArrSubgroupData {
@@ -131,7 +131,7 @@ export interface QfFormControlData {
 export type QfFormGroupConfig = FormGroupConfig<QfFormGroupData>
 export type QfFormNodeConfig = FormNodeConfig<QfFormGroupData, QfFormArrayData, QfFormControlData, null>;
 export type QfFormGroupFactory = FormGroupFactory;
-export type QfFormArrayFactory = FormArrayFactory<QfFormControlData, QfFormArrayData>;
+export type QfFormArrayFactory = FormArrayFactory<QfFormControlData, QfFormArrayData, any>;
 export type QfFormControlFactory = FormControlFactory<QfFormControlData>;
 
 export interface QueryFilterInjectData {
@@ -154,9 +154,11 @@ export interface QueryFilterInjectData {
     }
   ]
 })
-export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAccessor, FormFactoryComponent {
+export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor, FormFactoryComponent {
 
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
+
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory
 
@@ -407,4 +409,9 @@ export class QueryFilterComponent implements OnInit, OnDestroy, ControlValueAcce
   setDisabledState?(isDisabled: boolean): void {
     throw new Error('Method not implemented.');
   }
+
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
+  }
+
 }

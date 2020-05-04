@@ -3,7 +3,16 @@
 const Promise = require('bluebird');
 const _ = require('lodash');
 const helpers = require('../helpers');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+
+var SqlTemporalEntityList = require('../../dist/server/sql-builders/sql-temporal-entity-list')
+  .SqlTemporalEntityList;
+var SqlTemporalEntityListAlternatives = require('../../dist/server/sql-builders/sql-temporal-entity-list-alternatives')
+  .SqlTemporalEntityListAlternatives;
+var SqlTemporalEntityOwnProperties = require('../../dist/server/sql-builders/sql-te-en-own-properties')
+  .SqlTemporalEntityOwnProperties;
+
+var SqlTeEnAddToProject = require('../../dist/server/sql-builders/sql-te-en-add-to-project')
+  .SqlTeEnAddToProject;
 
 module.exports = function(InfTemporalEntity) {
   InfTemporalEntity.temporalEntityList = function(
@@ -16,9 +25,9 @@ module.exports = function(InfTemporalEntity) {
     offset,
     cb
   ) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlTemporalEntityList(
       InfTemporalEntity.app.models
-    ).createTemporalEntityListQuery(
+    ).create(
       fkProject,
       fkSourceEntity,
       fkProperty,
@@ -46,9 +55,9 @@ module.exports = function(InfTemporalEntity) {
     offset,
     cb
   ) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlTemporalEntityListAlternatives(
       InfTemporalEntity.app.models
-    ).createAlternativeTemporalEntityListQuery(
+    ).create(
       fkProject,
       fkSourceEntity,
       fkProperty,
@@ -350,63 +359,63 @@ module.exports = function(InfTemporalEntity) {
     });
   };
 
-  /**
-   * internal function to get a rich object of project or repo.
-   * a rich object of the TeEn with all its roles
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the teEn
-   */
-  InfTemporalEntity.nestedObject = function(
-    ofProject,
-    pkProject,
-    pkEntity,
-    cb
-  ) {
-    const filter = {
-      where: ['pk_entity', '=', pkEntity],
-      include: InfTemporalEntity.getIncludeObject(ofProject, pkProject),
-    };
+  // /**
+  //  * internal function to get a rich object of project or repo.
+  //  * a rich object of the TeEn with all its roles
+  //  *
+  //  * @param  {number} pkProject primary key of project
+  //  * @param  {number} pkEntity  pk_entity of the teEn
+  //  */
+  // InfTemporalEntity.nestedObject = function(
+  //   ofProject,
+  //   pkProject,
+  //   pkEntity,
+  //   cb
+  // ) {
+  //   const filter = {
+  //     where: ['pk_entity', '=', pkEntity],
+  //     include: InfTemporalEntity.getIncludeObject(ofProject, pkProject),
+  //   };
 
-    return InfTemporalEntity.findComplex(filter, cb);
-    // return InfTemporalEntity.findComplex(filter, (err, res) => {
-    //   if (err) return cb(err)
+  //   return InfTemporalEntity.findComplex(filter, cb);
+  //   // return InfTemporalEntity.findComplex(filter, (err, res) => {
+  //   //   if (err) return cb(err)
 
-    //   const promises = []
-    //   res.forEach(teEn => {
-    //     teEn.te_roles.forEach((role, ri) => {
+  //   //   const promises = []
+  //   //   res.forEach(teEn => {
+  //   //     teEn.te_roles.forEach((role, ri) => {
 
-    //       if (
-    //         Object.keys(role.range_temporal_entity).length > 0
-    //         // &&
-    //         // role.range_temporal_entity.pk_entity !== teEn.pk_entity
-    //       ) {
-    //         const promise = new Promise((resolve, reject) => {
+  //   //       if (
+  //   //         Object.keys(role.range_temporal_entity).length > 0
+  //   //         // &&
+  //   //         // role.range_temporal_entity.pk_entity !== teEn.pk_entity
+  //   //       ) {
+  //   //         const promise = new Promise((resolve, reject) => {
 
-    //           const filter = {
-    //             "where": ["pk_entity", "=", role.range_temporal_entity.pk_entity],
-    //             "include": InfTemporalEntity.getIncludeObject(ofProject, pkProject)
-    //           }
+  //   //           const filter = {
+  //   //             "where": ["pk_entity", "=", role.range_temporal_entity.pk_entity],
+  //   //             "include": InfTemporalEntity.getIncludeObject(ofProject, pkProject)
+  //   //           }
 
-    //           InfTemporalEntity.findComplex(filter, (err, res) => {
-    //             if (err) return cb(err);
-    //             role.range_temporal_entity = res[0]
+  //   //           InfTemporalEntity.findComplex(filter, (err, res) => {
+  //   //             if (err) return cb(err);
+  //   //             role.range_temporal_entity = res[0]
 
-    //           })
+  //   //           })
 
-    //         })
-    //         promises.push(promise);
-    //       }
-    //     })
-    //   })
+  //   //         })
+  //   //         promises.push(promise);
+  //   //       }
+  //   //     })
+  //   //   })
 
-    //   Promise.all(promises)
-    //     .then(() => {
-    //       cb(false, res)
-    //     })
-    //     .catch(err => cb(err))
-    // });
-  };
+  //   //   Promise.all(promises)
+  //   //     .then(() => {
+  //   //       cb(false, res)
+  //   //     })
+  //   //     .catch(err => cb(err))
+  //   // });
+  // };
 
   /**
    * remote method to get a schema object with the
@@ -416,9 +425,9 @@ module.exports = function(InfTemporalEntity) {
    * @param  {number} pkEntity  pk_entity of the teEn
    */
   InfTemporalEntity.ownProperties = function(pkProject, pkEntity, cb) {
-    const mainQuery = new FlatObjectQueryBuilder(
+    const mainQuery = new SqlTemporalEntityOwnProperties(
       InfTemporalEntity.app.models
-    ).createTemporalEntityOwnPropertyQuery(pkProject, pkEntity);
+    ).create(pkProject, pkEntity);
     const connector = InfTemporalEntity.dataSource.connector;
     connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);
@@ -428,214 +437,196 @@ module.exports = function(InfTemporalEntity) {
     });
   };
 
-  /**
-   * remote method to get a rich object of project.
-   * a rich object of the TeEn with all its roles
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the teEn
-   */
-  InfTemporalEntity.nestedObjectOfProject = function(pkProject, pkEntity, cb) {
-    const ofProject = true;
-    return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb);
-  };
+  // /**
+  //  * remote method to get a rich object of project.
+  //  * a rich object of the TeEn with all its roles
+  //  *
+  //  * @param  {number} pkProject primary key of project
+  //  * @param  {number} pkEntity  pk_entity of the teEn
+  //  */
+  // InfTemporalEntity.nestedObjectOfProject = function(pkProject, pkEntity, cb) {
+  //   const ofProject = true;
+  //   return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb);
+  // };
+
+  // /**
+  //  * Internal function to create the include property of
+  //  * a filter object for findComplex()
+  //  *
+  //  * Usage: add the returned object to the include property of a persistent item relation
+  //  * of findComplex() filter, e.g.:
+  //  * {
+  //  *    ...
+  //  *    include: InfPersistentItem.getIncludeObject(true, 123)
+  //  * }
+  //  *
+  //  * @param ofProject {boolean}
+  //  * @param project {number}
+  //  * @returns include object of findComplex filter
+  //  */
+  // InfTemporalEntity.getIncludeObject = function(ofProject, pkProject) {
+  //   let projectJoin = {};
+
+  //   // if a pkProject is provided, create the relation
+  //   if (pkProject) {
+  //     // get the join object. If ofProject is false, the join will be a left join.
+  //     projectJoin = {
+  //       entity_version_project_rels: InfTemporalEntity.app.models.ProInfoProjRel.getJoinObject(
+  //         ofProject,
+  //         pkProject
+  //       ),
+  //     };
+  //   }
+
+  //   return {
+  //     ...projectJoin,
+  //     te_roles: {
+  //       $relation: {
+  //         name: 'te_roles',
+  //         joinType: 'inner join',
+  //         orderBy: [
+  //           {
+  //             pk_entity: 'asc',
+  //           },
+  //         ],
+  //       },
+  //       ...projectJoin,
+  //       appellation: {
+  //         $relation: {
+  //           name: 'appellation',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       language: {
+  //         $relation: {
+  //           name: 'language',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       time_primitive: {
+  //         $relation: {
+  //           name: 'time_primitive',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       place: {
+  //         $relation: {
+  //           name: 'place',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     },
+  //     ingoing_roles: {
+  //       $relation: {
+  //         name: 'ingoing_roles',
+  //         joinType: 'left join',
+  //       },
+  //       ...projectJoin,
+  //       temporal_entity: {
+  //         $relation: {
+  //           name: 'temporal_entity',
+  //           joinType: 'left join',
+  //         },
+  //         te_roles: {
+  //           $relation: {
+  //             name: 'te_roles',
+  //             joinType: 'inner join',
+  //             orderBy: [
+  //               {
+  //                 pk_entity: 'asc',
+  //               },
+  //             ],
+  //           },
+  //           ...projectJoin,
+  //           appellation: {
+  //             $relation: {
+  //               name: 'appellation',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //           language: {
+  //             $relation: {
+  //               name: 'language',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //           time_primitive: {
+  //             $relation: {
+  //               name: 'time_primitive',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //           place: {
+  //             $relation: {
+  //               name: 'place',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   };
+  // };
 
   /**
-   * Internal function to get graphs of project or repo.
-   * a rich object of the TeEn with all its roles
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the teEn
+   * Adds temporal entity, its outgoing roles to add
+   * and the text properties to the project
    */
-  InfTemporalEntity.graphs = function(ofProject, pkProject, pkEntities, cb) {
-    const filter = {
-      where: ['pk_entity', 'IN', pkEntities],
-      include: InfTemporalEntity.getIncludeObject(ofProject, pkProject),
-    };
+  // InfTemporalEntity.addToProject = function(pk_project, pk_entity, ctx, cb) {
+  //   if (!ctx.req.accessToken.userId)
+  //     return Error('AccessToken.userId is missing');
+  //   const accountId = ctx.req.accessToken.userId;
 
-    return InfTemporalEntity.findComplex(filter, cb);
-  };
+  //   const mainQuery = new SqlTeEnAddToProject(
+  //     InfTemporalEntity.app.models
+  //   ).create(pk_project, pk_entity, accountId);
 
-  /**
-   * Remote method to get graphs of project.
-   * a rich object of the TeEn with all its roles
-   *
-   * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the teEn
-   */
-  InfTemporalEntity.graphsOfProject = function(pkProject, pkEntities, cb) {
-    const ofProject = true;
-    return InfTemporalEntity.graphs(ofProject, pkProject, pkEntities, cb);
-  };
-
-  /**
-   * Remote method to get graphs of repo.
-   * a rich object of the TeEn with all its roles
-   *
-   * @param  {number} pkEntity  pk_entity of the teEn
-   */
-  InfTemporalEntity.graphsOfRepo = function(pkEntities, cb) {
-    const ofProject = false;
-    const pkProject = undefined;
-    return InfTemporalEntity.graphs(ofProject, pkProject, pkEntities, cb);
-  };
-
-  /**
-   * Internal function to create the include property of
-   * a filter object for findComplex()
-   *
-   * Usage: add the returned object to the include property of a persistent item relation
-   * of findComplex() filter, e.g.:
-   * {
-   *    ...
-   *    include: InfPersistentItem.getIncludeObject(true, 123)
-   * }
-   *
-   * @param ofProject {boolean}
-   * @param project {number}
-   * @returns include object of findComplex filter
-   */
-  InfTemporalEntity.getIncludeObject = function(ofProject, pkProject) {
-    let projectJoin = {};
-
-    // if a pkProject is provided, create the relation
-    if (pkProject) {
-      // get the join object. If ofProject is false, the join will be a left join.
-      projectJoin = {
-        entity_version_project_rels: InfTemporalEntity.app.models.ProInfoProjRel.getJoinObject(
-          ofProject,
-          pkProject
-        ),
-      };
-    }
-
-    return {
-      ...projectJoin,
-      te_roles: {
-        $relation: {
-          name: 'te_roles',
-          joinType: 'inner join',
-          orderBy: [
-            {
-              pk_entity: 'asc',
-            },
-          ],
-        },
-        ...projectJoin,
-        appellation: {
-          $relation: {
-            name: 'appellation',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-        language: {
-          $relation: {
-            name: 'language',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-        time_primitive: {
-          $relation: {
-            name: 'time_primitive',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-        place: {
-          $relation: {
-            name: 'place',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-      },
-      ingoing_roles: {
-        $relation: {
-          name: 'ingoing_roles',
-          joinType: 'left join',
-        },
-        ...projectJoin,
-        temporal_entity: {
-          $relation: {
-            name: 'temporal_entity',
-            joinType: 'left join',
-          },
-          te_roles: {
-            $relation: {
-              name: 'te_roles',
-              joinType: 'inner join',
-              orderBy: [
-                {
-                  pk_entity: 'asc',
-                },
-              ],
-            },
-            ...projectJoin,
-            appellation: {
-              $relation: {
-                name: 'appellation',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-            language: {
-              $relation: {
-                name: 'language',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-            time_primitive: {
-              $relation: {
-                name: 'time_primitive',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-            place: {
-              $relation: {
-                name: 'place',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    };
-  };
+  //   const connector = InfTemporalEntity.dataSource.connector;
+  //   connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+  //     if (err) return cb(err);
+  //     InfTemporalEntity.ownProperties(pk_project, pk_entity, (err, result) => {
+  //       cb(err, result);
+  //     });
+  //   });
+  // };
 };

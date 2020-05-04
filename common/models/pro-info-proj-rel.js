@@ -1,6 +1,7 @@
 'use strict';
 const Promise = require('bluebird');
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(ProInfoProjRel) {
   ProInfoProjRel.markRoleAsFavorite = function(
@@ -10,7 +11,7 @@ module.exports = function(ProInfoProjRel) {
     cb
   ) {
     const params = [pkRole, pkProject];
-    const q = new FlatObjectQueryBuilder(ProInfoProjRel.app.models);
+    const q = new SqlBuilderLbModels(ProInfoProjRel.app.models);
     const sql = `
       WITH tw1 AS (
         UPDATE projects.info_proj_rel t1
@@ -102,11 +103,19 @@ module.exports = function(ProInfoProjRel) {
               .catch(err => reject(err))
               .then(res => resolve(res));
           } else {
-            const error = new Error(
-              'No ProInfoProjRel found for given project and entity'
-            );
-            error.status = 404;
-            reject(error);
+            const n = new ProInfoProjRel({
+              ...eprAttributes,
+              fk_entity: pkEntity,
+              fk_project: pkProject,
+            });
+            n.save()
+              .catch(err => reject(err))
+              .then(res => resolve(res));
+            // const error = new Error(
+            //   'No ProInfoProjRel found for given project and entity'
+            // );
+            // error.status = 404;
+            // reject(error);
           }
         });
     });

@@ -1,17 +1,17 @@
-import { List } from 'app/modules/information/containers/list/api/list.models';
+import { List } from 'app/shared/components/list/api/list.models';
 
 // Class of this slice of store
 export class SourceList implements SourceList {
 
-    // the list of sources (search result)
-    list?: List;
+  // the list of sources (search result)
+  list?: List;
 
-    // // class and type selector
-    // classAndTypeSelector?: ClassAndTypeSelector;
+  // // class and type selector
+  // classAndTypeSelector?: ClassAndTypeSelector;
 
-    loading?: boolean;
+  loading?: boolean;
 
-    constructor(data?: SourceList) {
-        Object.assign(this, data);
-    }
+  constructor(data?: SourceList) {
+    Object.assign(this, data);
+  }
 }

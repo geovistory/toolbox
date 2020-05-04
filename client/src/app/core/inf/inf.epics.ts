@@ -34,16 +34,16 @@ export class InfEpics {
 
   public createEpics(): Epic {
     const infPersistentItemEpicsFactory = new InfEpicsFactory<InfPersistentItemSlice, InfPersistentItem>
-      (infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi);
+      (infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
 
     const infTemporalEntityEpicsFactory = new InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>
-      (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi);
+      (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
 
     const infRoleEpicsFactory = new InfEpicsFactory<InfRoleSlice, InfRole>
-      (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi);
+      (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi, this.proActions);
 
     const infTextPropertyEpicsFactory = new InfEpicsFactory<InfTextPropertySlice, InfTextProperty>
-      (infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi);
+      (infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
 
     return combineEpics(
       /**
@@ -167,15 +167,6 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), null);
         }
       ),
-      infRoleEpicsFactory.createLoadEpic<LoadOutgoingAlternativeRoles>(
-        (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkTemporalEntity, meta.pkProperty, meta.pk),
-        InfRoleActionFactory.ALTERNATIVES_OUTGOING,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), null);
-        }
-      ),
       infRoleEpicsFactory.createUpsertEpic<ModifyActionMeta<InfRole>>((meta) => this.roleApi
         .findOrCreateInfRoles(meta.pk, meta.items),
         (results, pk) => {
@@ -184,15 +175,15 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
-      infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
-        .addToProjectWithTeEnt(meta.pk, meta.pkRoles),
-        InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        }
-      ),
+      // infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
+      //   .addToProjectWithTeEnt(meta.pk, meta.pkRoles),
+      //   InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.role.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+      //   }
+      // ),
 
       (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
         ofType(infRoleEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
@@ -211,17 +202,22 @@ export class InfEpics {
 
       infRoleEpicsFactory.createLoadEpic<FindRoleByParams>(
         (meta) => this.roleApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
-        InfRoleActionFactory.BY_PARAMS
-      ),
-
-      infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
-        (meta) => this.roleApi.contentTree(meta.pk, meta.pkExpressionEntity),
-        InfRoleActionFactory.CONTENT_TREE,
+        InfRoleActionFactory.BY_PARAMS,
         (results, pk) => {
-          const schemaObject = results as SchemaObject;
-          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.role.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'LOAD');
         }
       ),
+
+      // infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
+      //   (meta) => this.roleApi.contentTree(meta.pk, meta.pkExpressionEntity),
+      //   InfRoleActionFactory.CONTENT_TREE,
+      //   (results, pk) => {
+      //     const schemaObject = results as SchemaObject;
+      //     this.schemaObjectService.storeSchemaObject(schemaObject, pk)
+      //   }
+      // ),
 
       infRoleEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
         (meta) => this.roleApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),
@@ -284,7 +280,8 @@ export class InfEpics {
     const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
       { fk_target_class: meta.fkTargetClass },
-      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity }
+      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity },
+      { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
     ];
     // call action to set pagination loading on true
     this.infActions.role.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
@@ -301,20 +298,4 @@ export class InfEpics {
       epicsFactory.onError(globalActions, error, pendingKey, pkProject);
     });
   }
-
-  // private storeSchemaObject(schemas: SchemaObject, pkProject) {
-  //   if (schemas && Object.keys(schemas).length > 0) {
-  //     Object.keys(schemas).forEach(schema => {
-  //       let actions;
-  //       if (schema === 'inf') actions = this.infActions;
-  //       else if (schema === 'pro') actions = this.proActions;
-  //       else if (schema === 'dat') actions = this.datActions;
-  //       if (actions) {
-  //         Object.keys(schemas[schema]).forEach(model => {
-  //           actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
 }

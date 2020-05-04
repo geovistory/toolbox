@@ -1,0 +1,183 @@
+<div class="gv-flex-fh mat-typography">
+  <as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': !t.showRightArea}" [direction]="'horizontal'"
+    gutterSize="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
+
+    <!-------------------------------------------------------------------
+       Left area
+    -------------------------------------------------------------------->
+    <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
+
+      <gv-detail-top-bar height="5rem" [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true);"
+        *ngIf="(showHeader$ | async)">
+
+
+
+        <div class="summary">
+          <div class="summary-icon" dnd-draggable [dragData]="preview$ | async">
+
+            <mat-icon *ngIf="(iconType$ | async)==='expression-portion'" class="gv-source-color">folder
+            </mat-icon>
+
+            <span *ngIf="(iconType$ | async)==='source'"
+              class="icon gv-icon gv-icon-source gv-source-color align-self-center gv-icon-preview"></span>
+
+            <span *ngIf="(iconType$ | async)==='persistent-entity'"
+              class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+
+            <span *ngIf="(iconType$ | async)==='temporal-entity'"
+              class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
+
+          </div>
+          <div class="summary-texts">
+            <div class="ellipsis">
+              <h2 class="summary-entity-label ellipsis">
+                <span [matTooltip]="'Entity ' + pkEntity">
+                  <ng-container *ngIf="(preview$|async)?.entity_type == 'teEn'">{{classLabel$ | async}} –</ng-container>
+                  {{(preview$|async)?.entity_label}}
+                </span>
+                <span class="ml-1 mat-caption mat-text-secondary">ID: {{pkEntity}}</span>
+              </h2>
+              <div class="summary-entity-label ellipsis">
+
+                <span class="mat-text-secondary">Class:</span>
+                <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
+                </gv-onto-class-info>
+                <span> {{classLabel$ | async}}</span>
+                <span *ngIf="(preview$|async)?.fk_type" class="mat-text-secondary">, Type: </span>
+                <span *ngIf="(preview$|async)?.fk_type"> {{(preview$|async)?.type_label}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="summary-button">
+            <div fxFlex fxLayout="row" fxLayoutAlign="end center">
+              <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #mainMenu="matMenu" xPosition="before">
+
+                <!-- toggle onto info -->
+                <button mat-menu-item (click)="$event.stopPropagation();">
+                  <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggle('showOntoInfo');">
+                    Ontology Info
+                  </mat-slide-toggle>
+                </button>
+
+
+                <!-- remove -->
+                <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
+                <div class="dropdown-header" *ngIf="!(isViewMode$ | async)">Danger Zone</div>
+                <button mat-menu-item (click)="openRemoveDialog();" *ngIf="!(isViewMode$ | async)">
+                  <mat-icon color="warn">delete</mat-icon>
+                  <span>Remove</span>
+                </button>
+
+              </mat-menu>
+            </div>
+
+          </div>
+        </div>
+
+
+      </gv-detail-top-bar>
+      <gv-detail-content>
+
+
+
+        <span class="gv-tile" *ngIf="(showProperties$ | async)">
+          <!-- <div class="gv-one-liner mx-2 mt-3">
+            <h2>
+              <span [matTooltip]="'Persistent Item ' + pkEntity">{{title$ | async | truncate:240}}</span>
+              <span class="ml-1 mat-caption" *ngIf="showOntoInfo$|async">{{pkEntity}}</span>
+            </h2>
+          </div> -->
+
+          <div class="gv-tile-body">
+
+            <gv-properties-tree [pkEntity$]="pkEntity$" [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$">
+            </gv-properties-tree>
+
+          </div>
+
+        </span>
+
+
+
+
+        <!-- Repros. Reproductions of a section -->
+        <!-- <gv-repros class="gv-flex-fh" class="gv-tile" *ngIf="(showRepros$ | async) && !isolatedChild"
+          [basePath]="basePath.concat('repros')" (annotate)="onAnnotate()" (close)="toggle('showRepros')">
+        </gv-repros> -->
+
+
+      </gv-detail-content>
+    </as-split-area>
+
+    <!-------------------------------------------------------------------
+      Right area
+    -------------------------------------------------------------------->
+    <as-split-area [size]="t.splitSizeRight" class="gv-split-area" [ngClass]="{
+        'd-flex flex-column': t.showRightArea,
+        'd-none': !t.showRightArea
+      }">
+      <button matRipple class="gv-split-area-toggle-button align-left mat-border-right mat-border-bottom"
+        (click)="t.setShowRightArea(false)">
+        <mat-icon aria-label="Close right area">chevron_right</mat-icon>
+        <div class="gv-focus-overlay"></div>
+      </button>
+
+      <mat-tab-group class="gv-panel-top-bar-tabs gv-flex-fh" [selectedIndex]="rightPanelActiveTab$|async">
+        <ng-container *ngFor="let tab of rightPanelTabs$|async">
+          <mat-tab *ngIf="tab == 'content-tree'" label="Sections & Digital Reproductions">
+            <ng-template matTabContent>
+              <gv-content-tree class="gv-tile gv-flex-fh" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
+              </gv-content-tree>
+            </ng-template>
+          </mat-tab>
+          <mat-tab *ngIf="tab == 'linked-sources'">
+            <ng-template mat-tab-label>
+              <i style="font-size: 22px; margin-right: 6px;"
+                class="entity-icon gv-icon gv-icon-source gv-source-color"></i>
+              Linked Sources
+            </ng-template>
+
+            <mat-tab-group class="gv-slim-tabs gv-flex-fh">
+              <mat-tab label="Is mentioned in">
+                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1218"></gv-ram-list>
+              </mat-tab>
+
+              <mat-tab label="Is topic of">
+                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="117"></gv-ram-list>
+              </mat-tab>
+            </mat-tab-group>
+
+          </mat-tab>
+          <mat-tab *ngIf="tab == 'linked-digitals'">
+            <ng-template mat-tab-label>
+              <mat-icon svgIcon="file" class="gv-digital-color"></mat-icon>
+              Annotated Digitals
+            </ng-template>
+            <mat-tab-group class="gv-slim-tabs gv-mat-tabs-shrink gv-flex-fh">
+              <mat-tab label="Texts">
+                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1334"></gv-ram-list>
+              </mat-tab>
+              <mat-tab label="Tables">
+                <p class="p-3">
+                  Coming soon...
+                </p>
+              </mat-tab>
+              <mat-tab label="Images">
+                <p class="p-3">
+                  Coming soon...
+                </p>
+              </mat-tab>
+            </mat-tab-group>
+
+          </mat-tab>
+        </ng-container>
+
+      </mat-tab-group>
+
+
+    </as-split-area>
+  </as-split>
+</div>

@@ -1,0 +1,154 @@
+<div *ngIf="!shouldLabelFloat" class="click-container" (click)="openMenu()"></div>
+
+<div class="gv-cursor-text" [hidden]="!shouldLabelFloat" [ngClass]="{'d-flex': shouldLabelFloat}">
+  <div class="d-flex align-items-center" *ngIf="value?.julian_day && value?.duration && value?.calendar"
+    (click)="openMenu()">
+    {{{julianDay:value.julian_day, duration:value.duration, calendar:value.calendar} | timePrimitive}}</div>
+
+  <div class="ml-auto">
+    <button mat-icon-button (click)="clearForm(); $event.stopPropagation()">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-icon-button [matMenuTriggerFor]="menu" (menuOpened)="onFocus()" (menuClosed)="onBlur()">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-menu #menu="matMenu" xPosition="before">
+  <form [formGroup]="form" (click)="$event.stopPropagation()" class="m-3">
+    <div class="form-row">
+      <div class="form-group"
+        [ngClass]="{'col-sm-12': (!monthVisible && !dayVisible), 'col-sm-6': (monthVisible && !dayVisible), 'col-sm-4': (monthVisible && dayVisible)}">
+        <label class="font-sm text-muted">Year*</label>
+        <input type="number" class="form-control" formControlName="year" placeholder="Year" autofocus #yearInput />
+        <gv-control-messages [control]="form?.controls.year"></gv-control-messages>
+      </div>
+      <div class="form-group" *ngIf="monthVisible" [ngClass]="{'col-sm-6': (!dayVisible), 'col-sm-4': (dayVisible)}">
+        <label class="font-sm text-muted">Month</label>
+        <!-- <input type="number" class="form-control" formControlName="month" placeholder="Month"/> -->
+        <select class="form-control" class="custom-select" formControlName="month">
+          <option [ngValue]="null" selected></option>
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        <gv-control-messages [control]="form?.controls.month"></gv-control-messages>
+      </div>
+      <div class="form-group col-sm-4" *ngIf="dayVisible">
+        <label class="font-sm text-muted">Day</label>
+        <input type="number" class="form-control" formControlName="day" placeholder="Day" />
+        <gv-control-messages [control]="form?.controls.day"></gv-control-messages>
+      </div>
+    </div>
+
+    <!-- <div class="form-row" *ngIf="addTimeBtnVisible">
+        <div class="form-group col-sm-4">
+        <button type="button" class="btn btn-link" (click)="showTimeInputs()" >
+        <i class="fa fa-clock-o"></i>  Set time
+        </button>
+        </div>
+        </div> -->
+
+    <div class="form-row" [hidden]="!timeInputsVisible">
+
+      <div class="form-group col-sm-4" *ngIf="hoursVisible">
+        <label class="font-sm text-muted">Hours</label>
+        <div class="input-group">
+
+          <input type="number" class="form-control" formControlName="hours" placeholder="0-23" />
+          <div class="input-group-append" *ngIf="removeTimeBtnVisible">
+            <button class="btn btn-outline-secondary" (click)="hideTimeInputs()">
+              <i class="fa fa-close"></i>
+            </button>
+          </div>
+        </div>
+        <gv-control-messages [control]="form?.controls.hours"></gv-control-messages>
+      </div>
+
+      <div class="form-group col-sm-4" *ngIf="minutesVisible">
+        <label class="font-sm text-muted">Minutes</label>
+        <input type="number" class="form-control" formControlName="minutes" placeholder="0-59" />
+        <gv-control-messages [control]="form?.controls.minutes"></gv-control-messages>
+      </div>
+
+      <div class="form-group col-sm-4" *ngIf="secondsVisible">
+        <label class="font-sm text-muted">Seconds</label>
+        <input type="number" class="form-control" formControlName="seconds" placeholder="0-59" />
+        <gv-control-messages [control]="form?.controls.seconds"></gv-control-messages>
+      </div>
+
+    </div>
+    <div class="form-row">
+      <div class="form-group col-sm-12">
+        <label class="sr-only">Calendar</label>
+
+        <span *ngIf="!editingCalendar">
+          <i class="font-sm"
+            [ngClass]="{'text-muted' : form?.controls.calendar.pristine}">{{calendar === 'gregorian'?'Gregorian':'Julian'}}
+            calendar</i>
+          <a *ngIf="editCalBtnVisible" href="" class="gv-passive-link ml-1" (click)="editingCalendar = true">edit</a>
+        </span>
+        <!-- <span *ngIf="!editingCalendar && addTimeBtnVisible">
+                <a href="" class="gv-passive-link  pull-right mr-3" (click)="showTimeInputs()">
+                  <i class="fa fa-clock-o"></i> Time</a>
+              </span> -->
+
+
+        <div class="input-group" *ngIf="editingCalendar">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-calendar"></i>&nbsp;Calendar
+            </span>
+          </div>
+          <select class="form-control" class="custom-select" formControlName="calendar"
+            (change)="editingCalendar=false">
+            <option value="gregorian">Gregorian</option>
+            <option value="julian">Julian</option>
+          </select>
+        </div>
+        <gv-control-messages [control]="form?.controls.calendar"></gv-control-messages>
+      </div>
+    </div>
+
+
+    <!-- <div class="form-row mt-3">
+          <div class="col text-muted">
+          <button type="button" class="btn btn-link" (click)="showInfo()" *ngIf="form?.status == 'VALID' && !infoVisible">
+          Show info
+        </button>
+        <button type="button" class="btn btn-link" (click)="hideInfo()" *ngIf="form?.status == 'VALID' && infoVisible">
+        hide info
+        </button>
+        <div class="card" *ngIf="form?.status == 'VALID' && infoVisible">
+        <div class="card-body">
+        Your input corresponds to
+        </div>
+        <div class="card-body font-sm" *ngIf="this.info.gregStartDate">
+        <div>{{this.info.gregStartDate | date:'MMM d, y GG, HH:mm:ss' }} – {{this.info.gregEndDate | date:'MMM d, y GG, HH:mm:ss' }} </div>
+        <div class="text-muted">in the Gregorian Calendar</div>
+        </div>
+        <div class="card-body font-sm">
+        <div>{{this.info.julStartDate | date:'MMM d, y GG, HH:mm:ss' }} – {{this.info.julEndDate | date:'MMM d, y GG, HH:mm:ss' }}</div>
+        <div class="text-muted">in the Julian Calendar</div>
+        </div>
+        <div class="card-body font-sm">
+        <div><span class="text-muted">and a duration of </span> {{info.duration}}.</div>
+        </div>
+        </div>
+        </div>
+        </div> -->
+
+    <!-- <button mat-flat-button class="mr-2" (click)="closeMenu()">Confirm</button> -->
+    <!-- <button mat-flat-button (click)="clearForm()">Clear</button> -->
+  </form>
+</mat-menu>

@@ -9,9 +9,10 @@ import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
-import { InformationPipesService } from '../../new-services/information-pipes.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 
 /**
  * Food data with nested structure.
@@ -110,8 +111,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+  loading = false;
+
   constructor(
     public p: ActiveProjectService,
+    private s: SchemaObjectService,
     private r: RepoService,
     private inf: InfActions,
     private dat: DatSelector,
@@ -120,6 +124,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.loading = true;
+
     // wait for pkEntity and fkClass of the source
     combineLatest(this.pkEntity$, this.fkClass$, this.p.pkProject$).pipe(
       first(d => !d.includes(undefined)),
@@ -160,21 +166,25 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.pkRoot$.pipe(first()).subscribe(pkRoot => {
 
       this.pkRoot = pkRoot;
-      // load ea recursive is part of / is reproduction of
-      this.inf.role.contentTree(pkProject, pkRoot)
-      this.contentTree$ = this.observeChildren(pkRoot)
+      // load data recursive is part of / is reproduction of
+      this.s.store(this.s.api.contentTree(pkProject, pkRoot), pkProject)
+        .pipe(first(), takeUntil(this.destroy$)).subscribe(() => {
+          this.contentTree$ = this.observeChildren(pkRoot)
 
-      this.contentTree$.pipe(distinctUntilChanged<RoleNode[]>(equals), takeUntil(this.destroy$))
-        .subscribe((x) => {
-          // store ids of expanded nodes
-          this.storeIdsOfExpandedNodes()
-          // update data source
-          this.dataSource.data = x;
-          // expand nodes with stored ids
-          this.expandNodesWithStoredId()
+          this.contentTree$.pipe(distinctUntilChanged<RoleNode[]>(equals), takeUntil(this.destroy$))
+            .subscribe((x) => {
+              this.loading = false
+              // store ids of expanded nodes
+              this.storeIdsOfExpandedNodes()
+              // update data source
+              this.dataSource.data = x;
+              // expand nodes with stored ids
+              this.expandNodesWithStoredId()
 
-          this.ref.detectChanges()
+              this.ref.detectChanges()
+            })
         })
+
 
     })
   }
@@ -217,14 +227,20 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   observeChildren(pkRange): Observable<RoleNode[]> {
     if (!pkRange) return new BehaviorSubject([])
     return combineLatest(
-      this.p.inf$.role$.by_fk_property__fk_entity$.key('1317_' + pkRange), // is part of
-      this.p.inf$.role$.by_fk_property__fk_entity$.key('1216_' + pkRange), // is reproduction of
+      this.p.inf$.role$.by_object_and_property$({
+        fk_property: 1317,  // is part of
+        fk_entity: pkRange
+      }),
+      this.p.inf$.role$.by_object_and_property$({
+        fk_property: 1216,  // is reproduction of
+        fk_entity: pkRange
+      })
     )
       .pipe(
         switchMap(([isPartOfRoles, isReproOfRoles]) => {
 
           // Observe the children of this node
-          const sections$ = combineLatestOrEmpty(values(isPartOfRoles).map(role => {
+          const sections$ = combineLatestOrEmpty(isPartOfRoles.map(role => {
             const node$: Observable<RoleNode> = combineLatest(
               this.observeChildren(role.fk_temporal_entity)
             ).pipe(
@@ -241,7 +257,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           }))
 
           // Observe the leafs of this node
-          const digitals$ = combineLatestOrEmpty(values(isReproOfRoles).map(role => {
+          const digitals$ = combineLatestOrEmpty(isReproOfRoles.map(role => {
             const node$: Observable<RoleNode> = this.p.dat$.digital$.latestVersion(role.fk_subject_data).pipe(
               filter(x => !!x),
               map(datDigital => ({
@@ -301,18 +317,40 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    */
   private getExpressionWhereSourceIsRange(pkEntity: number): Observable<number> {
     this.inf.role.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
-    return this.r.inf$.role$.by_fk_entity$.key(pkEntity)
-      .pipe(filter((xs) => !!xs && !values(xs).find(x => !x)), tap((x) => {
-        if (Object.keys(x).length !== 1) console.warn('number of expressions must be one');
-      }), map((x) => values(x)[0].fk_temporal_entity));
+    return this.r.inf$.role$
+      .by_object_and_property$(
+        {
+          fk_entity: pkEntity,
+          fk_property: this.fkPropertyFromSource
+        },
+        false
+      )
+      .pipe(
+        tap((xs) => {
+          if (xs.length !== 1) console.warn('number of expressions must be one');
+        }),
+        filter((xs) => xs.length > 0),
+        map((x) => x[0].fk_temporal_entity)
+      );
   }
 
   private getExpressionWhereSourceIsDomain(pkEntity: number): Observable<number> {
     this.inf.role.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
-    return this.r.inf$.role$.by_fk_temporal_entity$.key(pkEntity)
-      .pipe(filter((xs) => !!xs && !values(xs).find(x => !x)), tap((x) => {
-        if (Object.keys(x).length !== 1) console.warn('number of expressions must be one');
-      }), map((x) => values(x)[0].fk_entity));
+    return this.r.inf$.role$
+      .by_subject_and_property$(
+        {
+          fk_temporal_entity: pkEntity,
+          fk_property: this.fkPropertyFromSource
+        },
+        false
+      )
+      .pipe(
+        tap((xs) => {
+          // if (xs.length !== 1) console.warn('number of expressions must be one');
+        }),
+        filter((xs) => xs.length > 0),
+        map((x) => x[0].fk_entity)
+      );
   }
 
   private getFkPropertyFromSource(fkClass: number) {

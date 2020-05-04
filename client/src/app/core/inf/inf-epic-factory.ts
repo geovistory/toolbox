@@ -4,11 +4,12 @@ import { ofType } from 'redux-observable-es6-compat';
 import { Observable } from "rxjs";
 import { mergeMap } from "rxjs/operators";
 import { NotificationsAPIActions } from "../notifications/components/api/notifications.actions";
-import { ProInfoProjRelApi } from "../sdk";
+import { ProInfoProjRelApi, ProInfoProjRel } from "../sdk";
 import { ModifyActionMeta } from "../store/actions";
 import { StandardEpicsFactory } from "../store/StandardEpicsFactory";
 import { InfActionFactory } from "./inf-action-factory";
 import { pathOr } from "ramda";
+import { ProActions } from '../pro/pro.actions';
 
 export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payload, Model> {
   constructor(
@@ -16,7 +17,8 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
     public modelName: string,
     public actions: InfActionFactory<Payload, Model>,
     public notifications: NotificationsAPIActions,
-    public infoProjRelApi: ProInfoProjRelApi
+    public infoProjRelApi: ProInfoProjRelApi,
+    public proActions: ProActions
   ) {
     super(actionPrefix, modelName, actions, notifications)
   }
@@ -38,7 +40,7 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
 
           meta.items = meta.items.map(i => ({
             ...i, entity_version_project_rels: [{
-              ...pathOr({},['entity_version_project_rels', 0], i),
+              ...pathOr({}, ['entity_version_project_rels', 0], i),
               is_in_project: true,
             }]
           }))
@@ -81,7 +83,10 @@ export class InfEpicsFactory<Payload, Model> extends StandardEpicsFactory<Payloa
               is_in_project: false
             }))
           )
-            .subscribe(() => {
+            .subscribe((infoProjRels: ProInfoProjRel[]) => {
+              if (infoProjRels.length) {
+                this.proActions.info_proj_rel.upsertSucceeded(infoProjRels, undefined, action.meta.pk)
+              }
               this.actions.removeSucceeded(action.meta.items, pendingKey, action.meta.pk)
             }, error => {
               globalActions.next(this.notifications.addToast({

@@ -7,6 +7,8 @@ import { AccountActions } from 'app/modules/account/api/account.actions';
 import { environment } from 'environments/environment';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material';
+import { FeedbackDialogComponent } from 'app/modules/user-feedback/components/feedback-dialog/feedback-dialog.component';
 
 
 @AutoUnsubscribe()
@@ -25,13 +27,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private activeAccountService: ActiveAccountService,
     private authService: LoopBackAuth,
-    private router: Router,
+    public router: Router,
     private accountApi: PubAccountApi,
     private actions: AccountActions,
-    private ngRedux: NgRedux<IAccount>
+    private ngRedux: NgRedux<IAccount>,
+    public dialog: MatDialog
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
+
   }
 
   ngOnInit() {
@@ -63,4 +67,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
         }
       );
   }
+
+  openFeedbackDialog(): void {
+    const dialogRef = this.dialog.open(FeedbackDialogComponent, {
+      width: '470px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
 }

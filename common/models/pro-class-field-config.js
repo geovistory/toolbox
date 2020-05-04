@@ -1,10 +1,11 @@
 /* eslint-disable camelcase */
 'use strict';
-var FlatObjectQueryBuilder = require('../classes/FlatObjectQueryBuilder');
+var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+  .SqlBuilderLbModels;
 
 module.exports = function(ProClassFieldConfig) {
   ProClassFieldConfig.ofProject = function(pkProject, ctx, cb) {
-    const q = new FlatObjectQueryBuilder(ProClassFieldConfig.app.models);
+    const q = new SqlBuilderLbModels(ProClassFieldConfig.app.models);
 
     const sql = `
     WITH tw1 AS (

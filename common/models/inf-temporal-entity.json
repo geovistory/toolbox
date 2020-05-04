@@ -23,9 +23,6 @@
     "fk_class": {
       "type": "number",
       "required": true
-    },
-    "notes": {
-      "type": "string"
     }
   },
   "validations": [],
@@ -60,20 +57,15 @@
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": [
-        "graphsOfRepo"
-      ]
+      "property": []
     },
     {
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "findOrCreateInfTemporalEntity",
         "findOrCreateInfTemporalEntities",
-        "changeTeEntProjectRelation",
         "ownProperties",
-        "graphsOfProject",
         "temporalEntityList",
         "alternativeTemporalEntityList"
       ]
@@ -471,6 +463,45 @@
       "description": "Relate a nested object of a InfTemporalEntity to the project.",
       "http": {
         "path": "/change-project-relation",
+        "verb": "post"
+      }
+    },
+    "addToProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the temporal entity to add.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "SchemaObject",
+        "root": true
+      },
+      "description": "Add a temporal entity with its outgoing roles to a project.",
+      "http": {
+        "path": "/add-to-project",
         "verb": "post"
       }
     }

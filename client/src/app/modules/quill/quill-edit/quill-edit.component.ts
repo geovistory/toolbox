@@ -1,15 +1,14 @@
 
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostBinding, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import Delta from 'quill/node_modules/quill-delta';
 import { clone, sum } from 'ramda';
-import { combineLatest, merge, Observable, of, Subject, Subscription, timer, BehaviorSubject } from 'rxjs';
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
 import { QuillNodeHandler } from '../quill-node-handler';
-import { DeltaI, Ops, QuillDoc } from '../quill.models';
-import { QuillEditorService } from '../services/quill-editor.service';
+import { DeltaI, Ops, QuillDoc, Op } from '../quill.models';
 import { createEnterHandle } from '../quill.service';
+import { QuillEditorService } from '../services/quill-editor.service';
 
 // the array of numbers are the pk_entities of the chunks
 export interface IndexedCharids<M> { [charid: number]: M }
@@ -206,6 +205,12 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
         // console.log('Cursor not in the editor');
         this.selectedDeltaChange.emit(null);
 
+      }
+    });
+
+    this.quillEditor.root.addEventListener('blur', (event) => {
+      if (event.relatedTarget !== this.quillEditor.clipboard.container) {
+        this.blur.emit()
       }
     });
   }
@@ -491,15 +496,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
 
   initClipboard() {
-    // this.quillEditor.clipboard.addMatcher(Node.TEXT_NODE, (node, delta) => {
-    // const d = new Delta();
-
-
-
-    //   return d
-    // });
-
-    this.quillEditor.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta: Delta): Delta => {
+    const indexify: any = (node, delta: Delta): Delta => {
       const d = new Delta();
       if (delta.ops.length > 0) {
         for (let index = 0; index < delta.ops.length; index++) {
@@ -509,96 +506,120 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
               const char = op.insert.charAt(i);
               if (char !== '\n') {
                 d.insert(char, { ...op.attributes, charid: ++this.quillEditorService.latestId });
-              } else {
+              }
+              else {
                 if (this.matInputLike || this.inputLike) {
                   d.insert(' ', { ...op.attributes, charid: ++this.quillEditorService.latestId });
-                } else {
-                  d.insert(char, { ...op.attributes, blockid: ++this.quillEditorService.latestId })
+                }
+                else {
+                  d.insert(char, { ...op.attributes, blockid: ++this.quillEditorService.latestId });
                 }
               }
             }
-          } else {
-            d.ops.push(op)
+          }
+          else {
+            d.ops.push(op);
           }
         }
       }
       return d;
-    });
+    };
+
+    this.quillEditor.clipboard.addMatcher(Node.TEXT_NODE, indexify);
+
+    this.quillEditor.clipboard.addMatcher(Node.ELEMENT_NODE, indexify);
   }
 
 
   contentChanged(delta, oldDelta, source) {
+    const ops: Ops = delta.ops;
 
     let updateComponent = true;
 
     if (
-      delta.ops &&
-      delta.ops.length < 5 // exclude large deltas from copy & paste
+      ops &&
+      ops.length < 7 // exclude large deltas from copy & paste
     ) {
-      const inserts = delta.ops.filter(op => !!op.insert);
-      if (inserts.length === 1 && inserts[0].insert) {
-        const insertOp = inserts[0];
 
+      const d = new Delta();
 
-        // is this a new character ?
-        if (insertOp.insert !== '\n' &&
-          (!insertOp.attributes || !insertOp.attributes.charid
-            || insertOp.attributes.charid < this.quillEditorService.latestId
-          )
-        ) {
-          // Add charid if needed
-          updateComponent = false
-          const retainOp = delta.ops.find(op => !!op.retain);
-          const retain = retainOp ? retainOp.retain : 0;
-          this.quillEditor.formatText((retain), 1, { charid: ++this.quillEditorService.latestId }, 'api')
+      let cleanupNeeded = false;
+      ops.forEach(op => {
+        if (this.addRetainDelta(d, op)) {
+          cleanupNeeded = true;
         }
-        // is this a new line break ?
-        else if (insertOp.insert === '\n' &&
-          (!insertOp.attributes || !insertOp.attributes.blockid
-            || insertOp.attributes.blockid <= this.quillEditorService.latestId
-          )
-        ) {
-          // Add blockid if needed
-          updateComponent = false
-          const retain = sum(delta.ops.map(op => op.retain || 0));
-          let index, blockid;
+      })
 
-          if (
-            this.quillEditorService.quillEditor.getLength() > 1
-          ) {
-            index = retain + 1;
-          } else {
-            index = retain;
-          }
-          // exceptional case that the retain is bigger because of line formatting of block
-          // TODO: find a way this works also, if ops[retain - 1] is a character,
-          if (this.quillEditor.editor.delta.ops[retain - 1] &&
-            this.quillEditor.editor.delta.ops[retain - 1].attributes &&
-            insertOp.attributes &&
-            insertOp.attributes.blockid &&
-            this.quillEditor.editor.delta.ops[retain - 1].attributes.blockid === insertOp.attributes.blockid
-          ) {
-            index = retain;
-          }
+      if (cleanupNeeded) {
+        // set to false, because next line will cause a new contentChanged-cycle
+        updateComponent = false;
 
-          if (this.quillEditorService.quillEditor.getLength() > 1) {
-            blockid = ++this.quillEditorService.latestId;
-          } else {
-            blockid = this.quillEditorService.latestId;
-          }
-          this.quillEditor.formatText((index), 1, { blockid }, 'api')
-        }
+        // perform cleanup
+        this.quillEditor.updateContents(d, 'api');
       }
+
     }
 
+    // Restrict to max length
     const length = this.quillEditor.editor.delta.ops.length - 1;
     if (length > this.maxLength) {
       this.quillEditor.history.undo()
     }
 
-    if (updateComponent && !this.quillEditorService.batchInsertingContent) this.updateComponent()
+    if (updateComponent && !this.quillEditorService.batchInsertingContent) {
+      this.updateComponent()
+    }
 
   };
+
+  /**
+   * returns true, if something meaningful is added to delta
+   */
+  private addRetainDelta(d: Delta, op: Op) {
+
+    if (op.insert) {
+      // is this a new character with invalid charid ?
+      if (op.insert !== '\n' &&
+        (
+          !op.attributes || !op.attributes.charid || op.attributes.charid < this.quillEditorService.latestId
+        )
+      ) {
+        d.retain(1, { charid: ++this.quillEditorService.latestId })
+        return true;
+      }
+      // is this a new line break with invalid blockid ?
+      else if (op.insert === '\n' &&
+        (
+          !op.attributes || !op.attributes.blockid || op.attributes.blockid <= this.quillEditorService.latestId
+        )
+      ) {
+
+        d.retain(1, { blockid: ++this.quillEditorService.latestId }, 'api')
+      }
+    }
+    // if retain deletes charid
+    else if (op.retain) {
+      // is this a invalid retain operation, erasing charid(s) ?
+      if (
+        (op.attributes && op.attributes.charid === null)
+        ||
+        (op.retain > 1 && op.attributes && op.attributes.hasOwnProperty('charid'))
+      ) {
+        for (let i = 0; i < op.retain; i++) {
+          // add a retain with valid charid for each character of of the retain operation
+          d.retain(1, { charid: ++this.quillEditorService.latestId });
+        }
+        return true;
+      }
+      // add retain to the delta in order to respect unmodified characters
+      else {
+        d.retain(op.retain)
+      }
+    }
+
+
+  }
+
 
 
   /**
@@ -677,6 +698,20 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     this.showTokenIds = !this.showTokenIds;
   }
 
+  /**
+   * sets the focus on the editor and puts the cursor to the end of the document
+   */
+  focusOnEnd() {
+    const length = this.quillEditor.getLength();
+    if (length > 1) {
+      this.quillEditor.setSelection(length, 0, 'user')
+    } else {
+      setTimeout(() => {
+        this.quillEditor.focus()
+        this.quillEditor.setSelection(0, 0, 'user')
+      })
+    }
+  }
 
 
   ngOnDestroy() {

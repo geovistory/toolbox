@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, combineLatest, of, pipe, Subject } from 'rxjs';
-import { ConfigurationPipesService } from 'app/modules/information/new-services/configuration-pipes.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { mergeMap, tap, takeUntil, first, map } from 'rxjs/operators';
-import { FieldDefinition } from 'app/modules/information/new-components/properties-tree/properties-tree.models';
+import { FieldDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { MatDialog } from '@angular/material';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
 import { ProClassFieldConfig, ActiveProjectService } from 'app/core';
@@ -10,7 +10,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 interface FieldConfig extends FieldDefinition {
   propertyField?: {
-    isIdentityDefining: boolean,
+    identityDefiningForSource: boolean,
     // labelTable: {
     //   fkProperty: number,
     //   fkDomainClass: number,
@@ -73,7 +73,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
     .map(field => {
 
       // If this field is a class Field
-      if (!field.pkProperty) {
+      if (!field.property) {
         return {
           ...field
         }
@@ -82,7 +82,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
       const f: FieldConfig = {
         ...field,
         propertyField: {
-          isIdentityDefining: field.listDefinitions[0].isIdentityDefining,
+          identityDefiningForSource: field.listDefinitions[0].identityDefiningForSource,
           targetClasses: field.listDefinitions.map(ld => ({
             pkClass: ld.targetClass,
             label: ld.targetClassLabel
@@ -103,7 +103,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
     const o = l.isOutgoing;
     const data: FieldConfigDialogData = {
       fkProject: this.fkProject,
-      fkProperty: row.pkProperty,
+      fkProperty: row.property.pkProperty,
       fkPropertyDomain: o ? l.sourceClass : null,
       fkPropertyRange: o ? null : l.sourceClass
     }
@@ -123,7 +123,7 @@ export class ClassFieldsComponent implements OnInit, OnDestroy {
       //
       const items = specificFields.map(field => {
         const item: Partial<ProClassFieldConfig> = {
-          fk_property: field.pkProperty,
+          fk_property: field.property.pkProperty,
           fk_domain_class: field.isOutgoing ? field.sourceClass : undefined,
           fk_range_class: field.isOutgoing ? undefined : field.sourceClass,
           fk_project: this.fkProject,

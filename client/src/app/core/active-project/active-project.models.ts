@@ -1,5 +1,5 @@
 import { DatChunk, DfhProperty, InfLanguage, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
-import { EntityPreview, EntityPreviewList, FieldList, PeItDetail, PeItDetailList, PropertyFieldList, TeEntDetail } from 'app/core/state/models';
+import { EntityPreview, EntityPreviewList, EntityDetail, PeItDetailList, } from 'app/core/state/models';
 import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
 // import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 import { Types } from '../../modules/projects/containers/types/api/types.models';
 import { TabBase } from '../../shared/components/tab-layout/tab-layout.models';
 import { Inf } from '../inf/inf.models';
-import { HasTypePropertyReadable } from '../state/models';
 
 export interface ProjectPreview {
   label?: string,
@@ -43,7 +42,7 @@ export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
 export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
 // export interface ComQueryByPk { [key: string]: ProQuery }
 
-export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
+// export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
 
 export type IconType = 'text' | 'table' | 'persistent-entity' | 'temporal-entity' | 'source' | 'expression-portion' | 'analysis' | 'query' | 'visual' | 'story' | 'settings';
 
@@ -56,8 +55,8 @@ export type ListType = '' | 'entities' | 'sources' | 'analysis' | 'queries' | 'v
 export interface Tab<D> {
   // wheter tab is active or not
   active: boolean;
-  // the root component included in this tab, in dash separate minuscles: PeItDetailComponent -> 'pe-it-detail'
-  component: 'text-detail' | 'table-detail' | 'pe-it-detail' | 'te-en-detail' | 'analysis-detail' | 'query-detail' | 'visual-detail' | 'ontome-profiles-settings' | 'classes-settings' | 'contr-vocab-settings';
+  // the root component included in this tab, in dash separate minuscles: PeItDetailComponent -> 'entity-detail'
+  component: 'text-detail' | 'table-detail' | 'entity-detail' | 'te-en-detail' | 'analysis-detail' | 'query-detail' | 'visual-detail' | 'ontome-profiles-settings' | 'classes-settings' | 'contr-vocab-settings';
   // icon to be displayed in tab, e.g.: gv-icon-source
   icon: IconType
   // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
@@ -73,17 +72,17 @@ export interface Tab<D> {
 export interface PeItTabData {
   // Used by peIt detail state creato
   peItDetailConfig?: {
-    peItDetail?: PeItDetail
+    peItDetail?: EntityDetail
     // stateSettings?: StateSettings
   }
 }
-export interface TeEntTabData {
-  // Used by teEnt detail state creato
-  teEntDetailConfig?: {
-    teEntDetail?: TeEntDetail
-    // stateSettings?: StateSettings
-  }
-}
+// export interface TeEntTabData {
+//   // Used by teEnt detail state creato
+//   teEntDetailConfig?: {
+//     teEntDetail?: TeEntDetail
+//     // stateSettings?: StateSettings
+//   }
+// }
 export interface AnalysisTabData {
   pkEntity?: number;
   fkAnalysisType?: number;
@@ -96,17 +95,21 @@ export interface TabData {
 
   // Used by peIt detail state creato
   peItDetailConfig?: {
-    peItDetail?: PeItDetail
+    peItDetail?: EntityDetail
     // stateSettings?: StateSettings
   }
 
-  // Used by teEnt detail state creato
-  teEntDetailConfig?: {
-    teEntDetail?: TeEntDetail
-    // stateSettings?: StateSettingsÚ
-  }
+  // // Used by teEnt detail state creato
+  // teEntDetailConfig?: {
+  //   teEntDetail?: TeEntDetail
+  //   // stateSettings?: StateSettingsÚ
+  // }
 }
 
+export interface RamSource {
+  pkEntity?: number,
+  chunk?: DatChunk;
+}
 
 export interface ProjectDetail extends ProjectPreview {
 
@@ -179,10 +182,10 @@ export interface ProjectDetail extends ProjectPreview {
   textDetails?: { [uiId: string]: TabBase }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  peItDetails?: { [uiId: string]: PeItDetail }
+  peItDetails?: { [uiId: string]: EntityDetail }
 
-  // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  teEnDetails?: { [uiId: string]: TeEntDetail }
+  // // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
+  // teEnDetails?: { [uiId: string]: TeEntDetail }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   analysisDetails?: { [uiId: string]: any }
@@ -213,6 +216,7 @@ export interface ProjectDetail extends ProjectPreview {
    * Things for Mentionings / Annotations
    */
 
+
   // // the chunk that is used to create mentionings
   // selectedChunk?: DatChunk;
 
@@ -236,8 +240,8 @@ export interface ProjectDetail extends ProjectPreview {
 export interface ProjectCrm {
   classes?: ClassConfigList;
   properties?: PropertyList
-  fieldList?: FieldList;
-  hasTypeProperties?: HasTypePropertyList;
+  // fieldList?: FieldList;
+  // hasTypeProperties?: HasTypePropertyList;
   classHasTypeProperty?: SysClassHasTypePropertySlice
 }
 
@@ -265,7 +269,7 @@ export interface ClassConfig {
 
   dfh_identifier_in_namespace: string;
 
-  propertyFields?: PropertyFieldList;
+  // propertyFields?: PropertyFieldList;
   uiContexts?: {
     [pk: number]: UiContext
   }

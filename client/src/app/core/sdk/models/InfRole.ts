@@ -3,6 +3,7 @@ import {
   ProInfoProjRel,
   InfTemporalEntity,
   InfAppellation,
+  InfLangString,
   WarEntityPreview,
   DatChunk,
   DatDigital,
@@ -31,12 +32,14 @@ export interface InfRoleInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   range_temporal_entity?: InfTemporalEntity;
   appellation?: InfAppellation;
+  lang_string?: InfLangString;
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
   domain_chunk?: DatChunk;
   range_chunk?: DatChunk;
   domain_digital?: DatDigital;
+  subject_inf_role?: InfRole;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   domain_pe_it?: InfPersistentItem;
@@ -63,12 +66,14 @@ export class InfRole implements InfRoleInterface {
   entity_version_project_rels?: ProInfoProjRel[];
   range_temporal_entity?: InfTemporalEntity;
   appellation?: InfAppellation;
+  lang_string?: InfLangString;
   temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
   domain_chunk?: DatChunk;
   range_chunk?: DatChunk;
   domain_digital?: DatDigital;
+  subject_inf_role?: InfRole;
   language?: InfLanguage;
   persistent_item?: InfPersistentItem;
   domain_pe_it?: InfPersistentItem;
@@ -200,6 +205,14 @@ export class InfRole implements InfRoleInterface {
                   keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
+        lang_string: {
+          name: 'lang_string',
+          type: 'InfLangString',
+          model: 'InfLangString',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_entity',
+          keyTo: 'pk_entity'
+        },
         temporal_entity: {
           name: 'temporal_entity',
           type: 'InfTemporalEntity',
@@ -246,6 +259,14 @@ export class InfRole implements InfRoleInterface {
           model: 'DatDigital',
           relationType: 'belongsTo',
                   keyFrom: 'fk_object_data',
+          keyTo: 'pk_entity'
+        },
+        subject_inf_role: {
+          name: 'subject_inf_role',
+          type: 'InfRole',
+          model: 'InfRole',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
         language: {

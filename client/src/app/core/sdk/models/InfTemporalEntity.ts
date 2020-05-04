@@ -8,7 +8,6 @@ import {
 declare var Object: any;
 export interface InfTemporalEntityInterface {
   "fk_class": number;
-  "notes"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
@@ -18,7 +17,6 @@ export interface InfTemporalEntityInterface {
 
 export class InfTemporalEntity implements InfTemporalEntityInterface {
   "fk_class": number;
-  "notes": string;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
   te_roles?: InfRole[];
@@ -60,10 +58,6 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
         "fk_class": {
           name: 'fk_class',
           type: 'number'
-        },
-        "notes": {
-          name: 'notes',
-          type: 'string'
         },
         "pk_entity": {
           name: 'pk_entity',

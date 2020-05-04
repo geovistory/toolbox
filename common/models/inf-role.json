@@ -57,13 +57,16 @@
       "default": 0
     },
     "is_in_project_count": {
-      "type": "number"
+      "type": "number",
+      "required": false
     },
     "is_standard_in_project_count": {
-      "type": "number"
+      "type": "number",
+      "required": false
     },
     "community_favorite_calendar": {
-      "type": "string"
+      "type": "string",
+      "required": false
     }
   },
   "validations": [],
@@ -95,6 +98,12 @@
     "language": {
       "type": "belongsTo",
       "model": "InfLanguage",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "lang_string": {
+      "type": "belongsTo",
+      "model": "InfLangString",
       "foreignKey": "fk_entity",
       "primaryKey": "pk_entity"
     },
@@ -151,6 +160,12 @@
       "model": "DatDigital",
       "foreignKey": "fk_object_data",
       "primaryKey": "pk_entity"
+    },
+    "subject_inf_role": {
+      "type": "belongsTo",
+      "model": "InfRole",
+      "foreignKey": "fk_temporal_entity",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -175,13 +190,8 @@
       "property": [
         "alternativesNotInProjectByEntityPk",
         "alternativesNotInProjectByTeEntPk",
-        "changeRoleProjectRelation",
-        "addToProjectWithTeEnt",
-        "removeFromProjectWithTeEnt",
-        "addToProject",
         "findOrCreateInfRoles",
         "paginatedListTargetingEntityPreviews",
-        "contentTree",
         "sourcesAndDigitalsOfEntity",
         "queryByParams"
       ]
@@ -433,54 +443,6 @@
         "verb": "get"
       }
     },
-    "changeRoleProjectRelation": {
-      "accepts": [
-        {
-          "arg": "pkProject",
-          "type": "number",
-          "required": true,
-          "description": "Id of the project",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "isInProject",
-          "type": "boolean",
-          "required": true,
-          "description": "Include or exclude from project.",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "data",
-          "type": "InfRole",
-          "required": true,
-          "description": "data",
-          "http": {
-            "source": "body"
-          }
-        },
-        {
-          "arg": "ctx",
-          "type": "object",
-          "http": {
-            "source": "context"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "InfRole",
-        "root": true
-      },
-      "description": "Relate a nested object of a InfRole to the project.",
-      "http": {
-        "path": "/change-project-relation",
-        "verb": "post"
-      }
-    },
     "nestedObjectsOfProject": {
       "accepts": [
         {
@@ -628,40 +590,6 @@
       "http": {
         "path": "/add-to-project",
         "verb": "post"
-      }
-    },
-    "contentTree": {
-      "accepts": [
-        {
-          "arg": "pkProject",
-          "type": "number",
-          "required": false,
-          "description": "Primary Key of the Project.",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "pkExpressionEntity",
-          "type": "number",
-          "required": false,
-          "description": "Primary Key of the F2 Expression entity for which the content tree is needed.",
-          "http": {
-            "source": "query"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": [
-          "InfRole"
-        ],
-        "root": true
-      },
-      "description": "Get an array of role that build the tree of the content of an F2 Expression.",
-      "http": {
-        "path": "/content-tree",
-        "verb": "get"
       }
     },
     "sourcesAndDigitalsOfEntity": {
