@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig, switchMapOr, InfPersistentItem } from 'app/core';
 import { ByPk } from 'app/core/store/model';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { flatten, indexBy, keys, uniq, values } from 'ramda';
+import { flatten, indexBy, keys, uniq, values, sort } from 'ramda';
 import { combineLatest, Observable, of, zip } from 'rxjs';
 import { filter, map, startWith, switchMap, mapTo } from 'rxjs/operators';
 import { cache, spyTag } from '../../../shared';
@@ -967,11 +967,17 @@ export class ConfigurationPipesService {
 
             })
             // Order the fields according to ord_num (from project's config, kleiolab's config) or put it at end of list.
-            return values(fieldDefs).sort((a, b) => (
-              (a.fieldConfig || { ord_num: Number.POSITIVE_INFINITY }).ord_num >
-                (b.fieldConfig || { ord_num: Number.POSITIVE_INFINITY }).ord_num ?
-                1 : -1
-            ))
+            return sort(
+              (a, b) => {
+                const getOrdNum = (item: FieldDefinition) => {
+                  if (item && item.fieldConfig) return item.fieldConfig.ord_num;
+                  return Number.POSITIVE_INFINITY;
+                }
+                const ordNumA = getOrdNum(a);
+                const ordNumB = getOrdNum(b);
+                return ordNumA - ordNumB;
+              },
+              values(fieldDefs))
           })
         )
       })
