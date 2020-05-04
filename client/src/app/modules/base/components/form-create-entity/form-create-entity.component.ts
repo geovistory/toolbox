@@ -913,6 +913,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         initValue: initVal.appellation,
         placeholder: listDefinition.label,
         required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
+        validators: [ValidationService.appellationValidator()],
         data: {
           appearance: this.appearance,
           controlType: 'ctrl-appellation'

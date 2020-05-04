@@ -12,6 +12,9 @@
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please enter a value
   </mat-error>
+  <mat-error *ngIf="formControlFactory.control.hasError('invalidQuillDoc')">
+    Oops, please re-enter the value. Sorry!
+  </mat-error>
   <!-- <mat-hint *ngIf="formControlFactory.config.required">
     * Required
   </mat-hint> -->

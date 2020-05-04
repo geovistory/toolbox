@@ -3,6 +3,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { BaseModule } from '../../base.module';
 import { CtrlAppellationComponent } from './ctrl-appellation.component';
+import { ValidationDirectivesModule } from 'app/core';
+
 
 
 
@@ -12,7 +14,8 @@ export default sandboxOf(CtrlAppellationComponent, {
   imports: [
     BaseModule,
     MatFormFieldModule,
-    FormsModule
+    FormsModule,
+    ValidationDirectivesModule
   ]
 })
   .add('CtrlAppellation | New ', {
@@ -25,8 +28,9 @@ export default sandboxOf(CtrlAppellationComponent, {
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
                     <mat-form-field class="w-100" appearance="legacy">
-                        <gv-ctrl-appellation #ctrl placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-appellation>
-                        <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
+                        <gv-ctrl-appellation #ctrl placeholder="Enter Foo"  name="controlName" [(ngModel)]="model" #m="ngModel" [validAppellation]="f"></gv-ctrl-appellation>
+                        <mat-error *ngIf="m.errors?.emptyQuillDoc">You must enter a value</mat-error>
+                        <mat-error *ngIf="m.errors?.invalidQuillDoc">Error! Please re-enter value.</mat-error>
                         <mat-hint>Hint</mat-hint>
                     </mat-form-field>
                 </form>
@@ -45,7 +49,6 @@ export default sandboxOf(CtrlAppellationComponent, {
                 </pre>
 
                 Invalid: {{m.invalid | json}}
-
             </div>
         </div>`
   })
@@ -101,3 +104,5 @@ export default sandboxOf(CtrlAppellationComponent, {
             </div>
         </div>`
   })
+
+
