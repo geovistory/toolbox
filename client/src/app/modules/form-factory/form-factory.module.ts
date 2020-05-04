@@ -8,6 +8,7 @@ import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, PortalModule],
+  exports: [PortalModule],
   providers: [FormFactoryService]
 })
 export class FormFactoryModule { }

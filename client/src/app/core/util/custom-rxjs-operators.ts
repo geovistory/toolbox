@@ -1,65 +1,10 @@
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { concat, values, sort } from 'ramda';
-import { OperatorFunction, pipe, UnaryFunction, Observable } from 'rxjs';
-import { map, filter } from 'rxjs/operators';
-import { FieldList, PeItDetail, PropertyField, RoleDetail, TeEntDetail } from '../state/models';
-import { U } from './util';
+import { concat, sort, values } from 'ramda';
+import { OperatorFunction, pipe } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { EntityVersionsByPk } from '../active-project';
+import { EntityDetail } from '../state/models';
 import { ByPk } from '../store/model';
-import { InfRole } from 'app/core';
-
-type TeEnOrPeItDetail = TeEntDetail | PeItDetail;
-
-/*****************************************************************************
- * Geovistory Type specific operators
- *****************************************************************************/
-
-/**
- * Returns an Observable that emits a flattened PropertyField[] contained by all items in the
- * Array of TeEntDetail or PeItDetail
- * emitted by the source Observable.
- */
-// export const entityDetails_2_propFields = () => pipe(
-//   map((entityDetails: TeEnOrPeItDetail[]) => entityDetails.map(d => d._fields)),
-//   fieldLists_2_propFields()
-// )
-
-/**
- * Returns an Observable that emits a flattened PropertyField[] contained by all items in the FieldList[]
- * emitted by the source Observable.
- */
-// export const fieldLists_2_propFields = () => mapConcat((fieldList: FieldList) => U.obj2Arr(fieldList)
-//   .filter(field => field.type === 'PropertyField')
-//   .map(field => (field as PropertyField))
-// )
-
-
-// export const entityDetail_2_propFields = () => pipe(
-//   map((entityDetail: TeEnOrPeItDetail) => entityDetail._fields),
-//   fieldList_2_propFields()
-// )
-
-/**
- * Returns an Observable that emits a PropertyField[] consisting of all fields of type 'PropertyField' contained in the PropertyList emitted by the source Observable.
- */
-// export const fieldList_2_propFields = () => map((fieldList: FieldList) => U.obj2Arr(fieldList).filter(field => field.type === 'PropertyField').map(field => (field as PropertyField)))
-
-/**
- * Returns an Observable that emits a flattened RoleDetail[] contained by all items in the PropertyField[]
- * emitted by the source Observable.
- */
-// export const propFields_2_roleDetails = () => mapConcat((propField: PropertyField) => U.obj2Arr(propField._role_list));
-
-/**
- * Returns an Observable that emits an array of pk_entity of Geo-PeIts contained as _leaf_peIt in the RoleDetail[]
- * emitted by the source Observable.
- */
-// export const roleDetails_2_geoPeItPks = () => map((rDs: RoleDetail[]) => rDs
-//   .filter(rD => (rD && rD._leaf_peIt && rD._leaf_peIt.pkEntity && (
-//     rD._leaf_peIt.fkClass === DfhConfig.CLASS_PK_BUILT_WORK ||
-//     rD._leaf_peIt.fkClass === DfhConfig.CLASS_PK_GEOGRAPHICAL_PLACE)))
-//   .map(rD => rD._leaf_peIt.pkEntity))
-
+import { U } from './util';
 
 
 /*****************************************************************************
@@ -174,4 +119,5 @@ export function sortAbc<T>(stringFn: (x: T) => string) {
   }, l)
   )
 }
+
 

@@ -107,7 +107,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
 
   remove(item: Item) {
-    if (this.listDefinition.isIdentityDefining && this.listDefinition.isOutgoing) {
+    if (this.listDefinition.identityDefiningForSource && this.listDefinition.isOutgoing) {
       alert('Item can not be removed, since it is defining the identity of the connected temporal entity. You might want to replace the entire temporal entity.')
     } else {
       this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {

@@ -158,7 +158,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
             )
 
             const definition$ = this.p.inf$.text_property$
-              .by_fk_concerned_entity__fk_class_field$.key(pkEntity + '_'
+              .by_fk_concerned_entity__fk_class_field_indexed$(pkEntity + '_'
                 + appeAndDefFields.definitionField.listDefinitions[0].fkClassField).pipe(
                   map(d => {
                     const definitions = values(d);
@@ -219,7 +219,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
    * called when user clicks on remove
    */
   onRemove(type: TypeItem) {
-    this.p.openRemovePeItDialog(type.label, type.pkEntity)
+    this.p.openRemoveEntityDialog(type.label, type.pkEntity)
   }
 
   /**

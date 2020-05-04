@@ -52,6 +52,10 @@ export class TypeItemComponent implements OnInit {
     if (!this.pkTypeClass) throw new Error('You must provide a pkTypeClass')
     if (!this.pkTypedClass) throw new Error('You must provide a pkTypedClass')
 
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.p.inf.role.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+    })
+
     this.hasTypeRole$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty)
 
     this.pkType$ = this.hasTypeRole$.pipe(

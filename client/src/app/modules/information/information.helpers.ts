@@ -1,4 +1,4 @@
-import { FieldList, InfRole, InfTimePrimitive, SysConfig, UiContext } from 'app/core';
+import { InfRole, InfTimePrimitive, SysConfig } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 
 
@@ -56,47 +56,3 @@ export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
     return timePrimitive;
   }
 }
-
-/**
- * Returns a copy of the given _fields object, where the items are sorted and filtered
- * according to the given uiContext.
- *
- * The order is defined in uiContext.uiElements.
- * If the key of an item in _fields is not present in the given uiContext,
- * it will be omitted inthe returned FieldList
- *
- * @param _fields a FieldList
- * @param uiContext a uiContext definition object.
- */
-export function sortChildrenByUiContext(_fields: FieldList, uiContext: UiContext): FieldList {
-  if (!_fields || !uiContext) return {};
-
-  const res: FieldList = {}
-
-  // create an array with the data unit child keys in the right order
-  uiContext.uiElements.forEach(el => {
-    const key = el.propertyFieldKey ? el.propertyFieldKey : el.propSetKey ? el.propSetKey : null;
-    if (key && _fields[key]) {
-      res[key] = _fields[key];
-    }
-  })
-
-  return res;
-}
-
-
-
-
-
-// /**
-//  * returns a copy of the given RoleDetailList, where the items are sorted
-//  * according to the ord_num in the epr.
-//  *
-//  * @param roleDetailArray a RoleDetailList
-//  * @returns a sorted copy of RoleDetailList
-//  */
-// export function sortRoleDetailListByOrdNum(roleDetailArray: RoleDetailList): RoleDetailList {
-
-//     return indexBy(roleDetailKey, sortRoleDetailsByOrdNum(U.obj2Arr(roleDetailArray)))
-
-// }

@@ -473,8 +473,17 @@ $gv-color-selected: #00ffff;
 
 // full height and display flex
 .gv-flex-fh {
-  @extend .gv-fh;
-  @extend .d-flex;
+  // @extend .gv-fh;
+  // @extend .d-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+
+  display: flex;
+  -webkit-display: flex;
+
+  flex: 1 0 0%;
+  -webkit-flex: 1 1 0%;
+
   height: 100%;
   overflow: hidden;
 }
@@ -1316,12 +1325,18 @@ gv-quill-edit {
     @extend .flex-column;
     @extend .gv-grow-1;
 
-    font-size: $font-size-base;
     font-family: $font-family-base;
   }
 
   .ql-editor {
     @extend .gv-grow-1;
+  }
+}
+gv-text-detail {
+  gv-quill-edit {
+    .ql-container.ql-snow {
+      font-size: $font-size-base;
+    }
   }
 }
 
@@ -2433,7 +2448,7 @@ mat-dialog-actions {
     }
 
     > .ui-table-scrollable-wrapper {
-      flex: 1 1 auto;
+      flex: 1 1 0%;
       overflow: hidden;
 
       > .ui-table-scrollable-view {
@@ -2543,6 +2558,7 @@ mat-dialog-actions {
 
 .gv-add-list-table-and-paginator-container {
   min-width: 320px;
+  margin: 2.5rem 0;
 }
 .gv-add-list-table-container {
   position: relative;
@@ -2563,4 +2579,24 @@ mat-dialog-actions {
   z-index: 1;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.6);
+}
+
+.gv-mat-text-input-placeholder {
+  color: _mat-control-placeholder-color($app-theme);
+}
+
+.mat-form-field[dense] {
+  .mat-form-field-flex > .mat-form-field-infix {
+    padding: 0.4em 0px !important;
+  }
+  .mat-form-field-label-wrapper {
+    top: -1.5em;
+  }
+  &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
+    .mat-form-field-label {
+    transform: translateY(-1.1em) scale(0.75);
+  }
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
 }

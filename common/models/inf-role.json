@@ -190,10 +190,6 @@
       "property": [
         "alternativesNotInProjectByEntityPk",
         "alternativesNotInProjectByTeEntPk",
-        "changeRoleProjectRelation",
-        "addToProjectWithTeEnt",
-        "removeFromProjectWithTeEnt",
-        "addToProject",
         "findOrCreateInfRoles",
         "paginatedListTargetingEntityPreviews",
         "sourcesAndDigitalsOfEntity",
@@ -445,54 +441,6 @@
       "http": {
         "path": "/alternatives-not-in-project-by-te-ent-pk",
         "verb": "get"
-      }
-    },
-    "changeRoleProjectRelation": {
-      "accepts": [
-        {
-          "arg": "pkProject",
-          "type": "number",
-          "required": true,
-          "description": "Id of the project",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "isInProject",
-          "type": "boolean",
-          "required": true,
-          "description": "Include or exclude from project.",
-          "http": {
-            "source": "query"
-          }
-        },
-        {
-          "arg": "data",
-          "type": "InfRole",
-          "required": true,
-          "description": "data",
-          "http": {
-            "source": "body"
-          }
-        },
-        {
-          "arg": "ctx",
-          "type": "object",
-          "http": {
-            "source": "context"
-          }
-        }
-      ],
-      "returns": {
-        "arg": "data",
-        "type": "InfRole",
-        "root": true
-      },
-      "description": "Relate a nested object of a InfRole to the project.",
-      "http": {
-        "path": "/change-project-relation",
-        "verb": "post"
       }
     },
     "nestedObjectsOfProject": {

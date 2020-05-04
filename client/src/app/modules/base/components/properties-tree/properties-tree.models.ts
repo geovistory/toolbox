@@ -17,23 +17,31 @@ export type CreateControlType = 'role';
 //   fk_property_of_origin: number
 // }
 
+export interface FieldProperty {
+  pkProperty?: number;
+  pkPropertyOfProperty?: number;
+}
+
 export interface FieldDefinition {
   listType: ListType
   label: string;
   ontoInfoUrl: string
   ontoInfoLabel: string
-  property: {
-    pkProperty?: number;
-    pkPropertyOfProperty?: number;
-  }
+
+  fkClassField: number
+
+  property: FieldProperty
+
   // pkProperty: number
   isOutgoing: boolean
   sourceClass: number
   targetClasses?: number[]
   targetMaxQuantity?: number
+  targetMinQuantity?: number
   listDefinitions: ListDefinition[]
-  isIdentityDefining: boolean
+  identityDefiningForSource: boolean
   fieldConfig?: ProClassFieldConfig
+  removedFromAllProfiles: boolean
 }
 
 export interface ListDefinition {
@@ -41,19 +49,29 @@ export interface ListDefinition {
   label: string;
   ontoInfoUrl: string
   ontoInfoLabel: string
+
   fkClassField: number
-  property: {
-    pkProperty?: number;
-    pkPropertyOfProperty?: number;
-  }
+
+  property: FieldProperty
+
   // pkProperty: number
   isOutgoing: boolean
-  isIdentityDefining: boolean
+
+  identityDefiningForSource: boolean
+
+  identityDefiningForTarget: boolean
+
   sourceClass: number
+  sourceClassLabel: string
 
   targetClass: number
   targetClassLabel?: string
-  targetMaxQuantity?: number
+  targetMaxQuantity: number
+  targetMinQuantity: number
+  sourceMaxQuantity: number
+  sourceMinQuantity: number
+
+  removedFromAllProfiles: boolean
 }
 
 export interface PropertyItemTypeMap {
@@ -109,6 +127,7 @@ export interface TemporalEntityItem extends BasicRoleItem {
   // fkClass: number; // fk_class of TemporalEntity
   row: TemporalEntityRow
   pkEntity: number; // pk of TemporalEntity
+  teEnProjRel: ProInfoProjRel
 }
 // export interface TemporalEntityCellDefinition {
 //   fieldDefinition: FieldDefinition,
@@ -118,10 +137,12 @@ export interface TemporalEntityItem extends BasicRoleItem {
 export interface TemporalEntityRow { [key: string]: TemporalEntityCell }
 export interface TemporalEntityCell {
   pkProperty: number
+  isOutgoing: boolean
   label: string
   entityPreview: EntityPreview
-  itemsCount: number
+  items?: RoleItem[]
   firstItem?: RoleItem
+  itemsCount: number
   isTimeSpan?: boolean;
 }
 
@@ -179,7 +200,7 @@ export interface AddListComponentInterface {
 
   items$: Observable<ItemList>
   p: ActiveProjectService,
-  t: PropertiesTreeService
+  // t: PropertiesTreeService
 
 }
 

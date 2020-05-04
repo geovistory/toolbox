@@ -1,12 +1,8 @@
-<div>
+<input type="text" matInput placeholder="{{placeholder}}" (input)="searchTermChanged($event.target.value)"
+  [formControl]="formControl" (blur)="onBlur()" (focus)="onFocus()" [matAutocomplete]="auto">
 
-  <input type="text" matInput (input)="searchTermChanged($event.target.value)" [formControl]="formControl"
-    (blur)="onBlur()" (focus)="onFocus()" [matAutocomplete]="auto">
-
-  <mat-autocomplete #auto="matAutocomplete"  [displayWith]="displayFn">
-    <mat-option *ngFor="let option of (options$ | async)" [value]="option">
-      {{option.notes}} <small class="text-muted">{{ option.iso6391}}</small>
-    </mat-option>
-  </mat-autocomplete>
-
-</div>
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" [panelWidth]="300">
+  <mat-option *ngFor="let option of (options$ | async)" [value]="option">
+    {{option.notes}} <small class="text-muted">{{ option.iso6391}}</small>
+  </mat-option>
+</mat-autocomplete>

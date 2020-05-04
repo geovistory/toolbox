@@ -2,17 +2,18 @@ import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectService, InfRoleApi } from 'app/core';
 import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject, zip, merge } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
-import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from '../../../../../../node_modules/rxjs/operators';
-import { InfActions, LoadPaginatedRoleListMeta } from '../../../../core/inf/inf.actions';
+import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { InfActions } from '../../../../core/inf/inf.actions';
 import { PaginateByParam } from '../../../../core/store/actions';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { FieldDefinition, ListDefinition, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityTableI } from '../properties-tree/properties-tree.models';
+import { PaginationService } from '../../services/pagination.service';
+import { ListDefinition, PropertyListComponentInterface, TemporalEntityItem, TemporalEntityCell } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { TemporalEntityTable } from './TemporalEntityTable';
-import { PaginationService } from '../../services/pagination.service';
+import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 
 
 
@@ -58,8 +59,8 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     public i: InformationPipesService,
     public inf: InfActions,
     public roleApi: InfRoleApi,
-    private paginationService: PaginationService
-
+    private paginationService: PaginationService,
+    private listDialog: EntityPreviewsPaginatedDialogService
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
@@ -127,25 +128,40 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
 
   remove(item: TemporalEntityItem) {
-    // remove the temporal entity and all the roles, text-properties loaded in app cache
-    // so that they are removed from project's app cache
-    combineLatest(
-      this.i.pipeTemporalEntityRemoveProperties(item.pkEntity),
-      this.p.pkProject$
-    ).pipe(first(), takeUntil(this.destroy$)).subscribe(([d, pkProject]) => {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      this.inf.temporal_entity.remove([d.temporalEntity], pkProject);
-      if (d.roles.length) this.inf.role.remove(d.roles, pkProject);
-      if (d.textProperties.length) this.inf.text_property.remove(d.textProperties, pkProject)
+      // remove the role
+      this.inf.role.remove([item.role], pkProject)
 
+      // remove the related temporal entity
+      this.p.removeEntityFromProject(item.pkEntity)
     })
+    // combineLatest(
+    //   this.i.pipeTemporalEntityRemoveProperties(item.pkEntity),
+    //   this.p.pkProject$
+    // ).pipe(first(), takeUntil(this.destroy$)).subscribe(([d, pkProject]) => {
 
-    // remove the temporal entity using a backend-function that removes all related roles,
-    // text-properties, even if not loaded in app cache
+    //   this.inf.temporal_entity.remove([d.temporalEntity], pkProject);
+    //   if (d.roles.length) this.inf.role.remove(d.roles, pkProject);
+    //   if (d.textProperties.length) this.inf.text_property.remove(d.textProperties, pkProject)
+
+    // })
+
+  }
+
+  openList(cell: TemporalEntityCell) {
+    const pkEntities = cell.items.map(i => cell.isOutgoing ? i.role.fk_entity : i.role.fk_temporal_entity)
+    this.listDialog.open(true, pkEntities, 'Items')
   }
 
   openInNewTab(item: TemporalEntityItem) {
     this.p.addEntityTab(item.pkEntity, this.listDefinition.targetClass, 'teEn')
+  }
+
+  addAndOpenInNewTab(item: TemporalEntityItem) {
+    this.p.addEntityToProject(item.pkEntity, () => {
+      this.openInNewTab(item)
+    })
   }
 
   markAsFavorite(item: TemporalEntityItem) {
@@ -161,12 +177,13 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 }
 
 
-export function createPaginateBy(listDefinition: ListDefinition, pkEntity: number): PaginateByParam[] {
+export function createPaginateBy(listDefinition: ListDefinition, pkEntity: number, alternatives = false): PaginateByParam[] {
   if (listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'entity-preview') {
     return [
       { fk_property: listDefinition.property.pkProperty },
       { fk_target_class: listDefinition.targetClass },
-      { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity }
-    ];
+      { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity },
+      { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
+    ]
   }
 }

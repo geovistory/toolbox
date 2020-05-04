@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
 import { FormFactory, FormFactoryConfig, FormFactoryService } from 'app/modules/form-factory/services/form-factory.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -21,8 +21,9 @@ export type MapAndTimeContFormGroupFactory = TableFormGroupFactory
   templateUrl: './map-and-time-cont-form.component.html',
   styleUrls: ['./map-and-time-cont-form.component.scss']
 })
-export class MapAndTimeContFormComponent implements OnInit, OnDestroy, FormFactoryComponent {
+export class MapAndTimeContFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
+  afterViewInit$ = new BehaviorSubject(false);
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
   @Input() initVal$: Observable<MapAndTimeContInput>;
@@ -142,7 +143,9 @@ export class MapAndTimeContFormComponent implements OnInit, OnDestroy, FormFacto
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
-
+  ngAfterViewInit() {
+    this.afterViewInit$.next(true)
+  }
   checkValidity() {
     this.formFactory.markAllAsTouched()
   }

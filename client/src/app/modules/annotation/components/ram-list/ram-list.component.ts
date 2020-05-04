@@ -90,9 +90,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   }
 
   rowTrackByFn(_, i: RamListItem) {
-    console.log('trackby' + i.statement.fk_property, _)
-    return _;//i.statement.pk_entity
-
+    return _;
   }
 
   ngOnInit() {

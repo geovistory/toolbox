@@ -1,9 +1,7 @@
-<div *ngIf="empty" class="click-container" (click)="openModal()">
+<div class="d-flex gv-cursor-pointer" (click)="onContainerClick(); $event.stopPropagation();">
+  <div *ngIf="shouldLabelFloat">
+    <gv-entity-preview *ngIf="(entityPreview$|async)" [preview]="entityPreview$|async"></gv-entity-preview>
+  </div>
 
-</div>
-<div *ngIf="shouldLabelFloat" class="d-flex">
-  <gv-entity-preview [preview]="entityPreview$ | async" (click)="openModal()"></gv-entity-preview>
-  <button class="ml-auto" mat-icon-button (click)="openModal()" [disabled]="disabled">
-    <mat-icon>edit</mat-icon>
-  </button>
+  <input type="text" matInput placeholder="{{placeholder}}" disabled *ngIf="!shouldLabelFloat" autocomplete="off">
 </div>

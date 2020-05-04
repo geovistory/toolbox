@@ -19,6 +19,9 @@
 
       {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
       <span *ngIf="preview?.time_span">&nbsp;•&nbsp;{{preview?.time_span | timeSpan}}</span>
+
+      <span *ngIf="showId">&nbsp;•&nbsp; ID: {{preview?.pk_entity}}</span>
+
     </div>
   </div>
 
@@ -46,6 +49,9 @@
 
       {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
       <span *ngIf="preview?.time_span">&nbsp;•&nbsp;{{preview?.time_span | timeSpan}}</span>
+
+      <span *ngIf="showId">&nbsp;•&nbsp; ID: {{preview?.pk_entity}}</span>
+
     </div>
   </div>
 
@@ -58,7 +64,7 @@
     <mat-icon>tab</mat-icon>
     Open {{preview?.entity_label | truncate:[10]}} in new Tab
   </button>
-  <button *ngIf="preview?.fk_project === null && preview.entity_type == 'peIt'" mat-menu-item
+  <button *ngIf="preview?.fk_project === null && preview?.entity_type == 'peIt'" mat-menu-item
     (click)="addAndOpenInNewTab()">
     <mat-icon color="primary">add</mat-icon>
     Add to project and open

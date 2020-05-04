@@ -5,6 +5,18 @@ import { CommonModule } from '@angular/common';
 
 
 @Directive({
+  selector: '[validAppellation]',
+  providers: [{ provide: NG_VALIDATORS, useExisting: AppellationValidatorDirective, multi: true }]
+})
+export class AppellationValidatorDirective implements Validator {
+  @Input() validAppellation: { [key: string]: FormGroup }
+
+  validate(control: AbstractControl): { [key: string]: any } | null {
+    return ValidationService.appellationValidator()(control);
+  }
+}
+
+@Directive({
   selector: '[gvNoInvalidChildren]',
   providers: [{ provide: NG_VALIDATORS, useExisting: NoInvalidChildrenDirective, multi: true }]
 })
@@ -25,7 +37,7 @@ export class NoInvalidChildrenDirective implements Validator {
   ]
 })
 export class EqualValidator implements Validator {
-  
+
   @Input('validateEqual') public validateEqual: string
   @Input('reverse') public reverse: string
 
@@ -61,7 +73,8 @@ export class EqualValidator implements Validator {
 
 const directives = [
   NoInvalidChildrenDirective,
-  EqualValidator
+  EqualValidator,
+  AppellationValidatorDirective
 ]
 
 @NgModule({

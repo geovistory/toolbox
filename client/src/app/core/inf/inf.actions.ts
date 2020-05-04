@@ -110,6 +110,7 @@ export interface LoadPaginatedRoleListMeta extends LoadActionMeta {
   isOutgoing: boolean // If true, the source entity is domain, else range.
   limit: number // number of items per page.
   offset: number // offset.
+  alternatives: boolean
 }
 export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, InfTemporalEntity> {
 
@@ -155,7 +156,8 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
           pkProperty,
           isOutgoing,
           limit,
-          offset
+          offset,
+          alternatives: false
         },
         payload: null,
       };
@@ -178,7 +180,8 @@ export class InfTemporalEntityActionFactory extends InfActionFactory<Payload, In
           fkTargetClass,
           isOutgoing,
           limit,
-          offset
+          offset,
+          alternatives: true
         },
         payload: null,
       };
@@ -221,7 +224,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
   // Suffixes of load action types
   // static readonly ALTERNATIVES_OUTGOING = 'ALTERNATIVES_OUTGOING';
   static readonly ALTERNATIVES_INGOING = 'ALTERNATIVES_INGOING';
-  static readonly ADD_TO_PROJECT_WITH_TE_EN = 'ADD_TO_PROJECT_WITH_TE_EN';
+  // static readonly ADD_TO_PROJECT_WITH_TE_EN = 'ADD_TO_PROJECT_WITH_TE_EN';
   static readonly PAGINATED_LIST = 'PAGINATED_LIST';
   static readonly CONTENT_TREE = 'CONTENT_TREE';
   static readonly SOURCES_AND_DIGITALS_OF_ENTITY = 'SOURCES_AND_DIGITALS_OF_ENTITY';
@@ -229,7 +232,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
 
   // loadOutgoingAlternatives: (pkTemporalEntity, pkProperty, pkProject) => ActionResultObservable<InfRole>;
   loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfRole>;
-  addToProjectWithTeEnt: (pkRoles: number[], pkProject: number) => ActionResultObservable<InfRole>;
+  // addToProjectWithTeEnt: (pkRoles: number[], pkProject: number) => ActionResultObservable<InfRole>;
   loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedRolesList>;
 
   // contentTree: (pkProject: number, pkExpressionEntity: number) => void;
@@ -313,24 +316,24 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
       };
     }
 
-    this.addToProjectWithTeEnt = (pkRoles: number[], pkProject: number) => {
-      const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, AddToProjectWithTeEntActionMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::UPSERT' + '::' + InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
-        meta: {
-          addPending,
-          pk: pkProject,
-          pkRoles
-        },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
+    // this.addToProjectWithTeEnt = (pkRoles: number[], pkProject: number) => {
+    //   const addPending = U.uuid()
+    //   const action: FluxStandardAction<Payload, AddToProjectWithTeEntActionMeta> = {
+    //     type: this.actionPrefix + '.' + this.modelName + '::UPSERT' + '::' + InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
+    //     meta: {
+    //       addPending,
+    //       pk: pkProject,
+    //       pkRoles
+    //     },
+    //     payload: null,
+    //   };
+    //   this.ngRedux.dispatch(action)
+    //   return {
+    //     pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+    //     resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
+    //     key: addPending
+    //   };
+    // }
 
     this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
       const addPending = U.uuid()
@@ -344,7 +347,8 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
           pkProperty,
           isOutgoing,
           limit,
-          offset
+          offset,
+          alternatives: false
         },
         payload: null,
       };

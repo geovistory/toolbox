@@ -3,6 +3,7 @@ import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { TimePrimitive } from 'app/core/date-time/time-primitive';
 import { U } from 'app/core/util/util';
 import { values } from 'ramda';
+import { isValidQuillDoc } from '../quill-doc-validation/validate-quill-doc';
 
 
 @Injectable()
@@ -34,6 +35,37 @@ export class ValidationService {
     };
   }
 
+
+  /**
+   * Validates the qullDoc to have at least one character
+   */
+  static emptyQuillDocValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+      if (
+        !value || !value.quill_doc || !value.quill_doc.ops || value.quill_doc.ops.length < 1
+        || (value.quill_doc.ops.length === 1 && value.quill_doc.ops[0].insert === '\n')
+      ) {
+        return { 'emptyQuillDoc': { value: control.value } }
+      }
+      return null
+
+    };
+  }
+
+  static appellationValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+
+      const isEmpty = ValidationService.emptyQuillDocValidator()(control);
+      if (isEmpty) return isEmpty;
+
+      const value = control.value.quill_doc;
+      if (isValidQuillDoc(value).err) {
+        return { 'invalidQuillDoc': { value: control.value } }
+      }
+      return null
+    };
+  }
 
   static hexColorValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {

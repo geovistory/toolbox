@@ -1,9 +1,9 @@
 <div class="p-2" [hidden]="!itemsCount">
   <h4 class="mb-3">
-    We found {{itemsCount}} other {{(t.showControl$ | async)?.targetClassLabel}}s in the repository of Geovistory
+    We found {{itemsCount}} other {{listDefinition?.targetClassLabel}}s in the repository of Geovistory
   </h4>
   <div class="mb-3">
-    Select and add {{(t.showControl$ | async)?.targetClassLabel}}s from the list below, <br>
+    Select and add {{listDefinition?.targetClassLabel}}s from the list below, <br>
     or create a new one.
   </div>
 </div>
@@ -39,7 +39,7 @@
         </th>
         <td mat-cell *matCellDef="let row">
           <mat-radio-button (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-            [checked]="selection.isSelected(row)" [aria-label]="select">
+            [checked]="selection.isSelected(row)">
           </mat-radio-button>
         </td>
       </ng-container>
@@ -89,9 +89,9 @@
 
 
 <div class="my-3">
-  <button [disabled]="(selectedCount$ | async) < 1" type="submit" class="btn btn-primary mr-2" (click)="add()">Add
+  <button [disabled]="(selectedCount$ | async) < 1" type="submit" mat-flat-button color="primary" class="mr-2"
+    (click)="add()">Add
     selected</button>
-  <button type="submit" class="btn btn-primary mr-2"
-    (click)="t.showControl$.next(null); t.showCreateRole$.next(listDefinition)">Create new</button>
-  <button type="button" class="btn btn-link" (click)="t.showControl$.next(null)">Cancel</button>
+  <button type="submit" mat-flat-button color="primary" class="mr-2" (click)="next.emit()">Create new</button>
+  <button type="button" mat-button (click)="close.emit()">Cancel</button>
 </div>

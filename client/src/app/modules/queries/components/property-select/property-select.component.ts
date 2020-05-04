@@ -155,11 +155,6 @@ class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFo
   templateUrl: './property-select.component.html',
   styleUrls: ['./property-select.component.scss'],
   providers: [{ provide: MatFormFieldControl, useExisting: PropertySelectComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
 export class PropertySelectComponent extends PropertySelectMatControl implements OnDestroy, OnInit {
 

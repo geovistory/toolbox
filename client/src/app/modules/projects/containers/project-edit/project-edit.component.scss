@@ -131,10 +131,20 @@ $tabs-height: 32px;
 
 .gv-pe-upper {
   flex: 1 1 auto;
-  overflow: auto;
+  -webkit-flex: 1 1 0%;
+
+  overflow: hidden;
+
+  display: flex;
+  -webkit-display: flex;
 }
 
 .gv-pe-lower {
   flex: 0 0 192px;
+  -webkit-flex: 0 0 192px;
+
   overflow: auto;
+
+  display: flex;
+  -webkit-display: flex;
 }

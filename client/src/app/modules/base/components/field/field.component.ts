@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { NestedTreeControl } from '../../../../../../node_modules/@angular/cdk/tree';
-import { MatDialog } from '../../../../../../node_modules/@angular/material';
+import { MatDialog, MatDialogConfig } from '../../../../../../node_modules/@angular/material';
 import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { first, map, shareReplay, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService } from '../../../../core';
+import { ActiveProjectService, SysConfig } from '../../../../core';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
@@ -13,6 +13,8 @@ import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-cla
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
+import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
+import { AddOrCreateEntityDialogData, AddOrCreateEntityDialogComponent, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number
@@ -122,8 +124,11 @@ export class FieldComponent implements OnInit {
         this.timeSpan.openModal(item, this.pkEntity)
       })
     }
+    // More than one target class?
     else if (this.fieldDefinition.targetClasses && this.fieldDefinition.targetClasses.length > 1) {
-      // show a select list
+
+      // Let the user select target class first
+
       const data: ChooseClassDialogData = {
         pkClasses: this.fieldDefinition.targetClasses,
         title: 'Choose a class'
@@ -131,15 +136,44 @@ export class FieldComponent implements OnInit {
       this.dialog.open(ChooseClassDialogComponent, { data })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe(chosenClass => {
           if (chosenClass) {
+
+            // open add dialog
+
             const listDef = this.fieldDefinition.listDefinitions.find(l => l.targetClass === chosenClass)
-            this.t.showControl$.next(listDef)
+            this.openAddDialog(listDef);
           }
         });
     }
+    // Only one target class!
     else {
-      this.t.showControl$.next(this.fieldDefinition.listDefinitions[0])
+
+      // open add dialog
+
+      const listDef = this.fieldDefinition.listDefinitions[0];
+      this.openAddDialog(listDef);
     }
   }
+
+  private openAddDialog(listDef: ListDefinition) {
+    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
+      .includes(listDef.listType);
+    const showAddList = (!isValueLike && !listDef.identityDefiningForTarget)
+    const data: AddDialogData = {
+      listDefinition: listDef,
+      pkEntity: this.pkEntity
+    };
+    const config: MatDialogConfig = {
+      height: isValueLike ? '50%' : '100%',
+      width: showAddList ? '980px' : '500px',
+      maxWidth: '100%',
+      data,
+    }
+    // if (!isValueLike) config.height = 'calc(100% - 30px)'
+    this.dialog.open(AddDialogComponent, config);
+  }
+
+
+
 
   toggle() {
     if (this.treeControl) {

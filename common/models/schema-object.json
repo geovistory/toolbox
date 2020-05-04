@@ -43,7 +43,9 @@
       "permission": "ALLOW",
       "property": [
         "getRamList",
-        "contentTree"
+        "contentTree",
+        "removeEntityFromProject",
+        "addEntityToProject"
       ]
     }
   ],
@@ -129,6 +131,88 @@
       "description": "Get SchemaObject with everything needed to build the tree of the content of an F2 Expression.",
       "http": {
         "path": "/content-tree",
+        "verb": "get"
+      }
+    },
+    "removeEntityFromProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Remove entity with outgoing statements and namings from project.",
+      "http": {
+        "path": "/remove-entity-from-project",
+        "verb": "get"
+      }
+    },
+    "addEntityToProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Add entity with outgoing statements and namings to project.",
+      "http": {
+        "path": "/add-entity-to-project",
         "verb": "get"
       }
     }

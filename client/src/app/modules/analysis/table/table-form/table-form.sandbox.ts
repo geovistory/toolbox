@@ -14,7 +14,7 @@ export default sandboxOf(TableFormComponent, {
 })
   .add('Table Form | Empty ', {
     context: {
-      pkProject: 24,
+      pkProject: 591,
       f: {},
     },
     template: `
@@ -35,7 +35,7 @@ export default sandboxOf(TableFormComponent, {
   })
   .add('Table Form | Preset ', {
     context: {
-      pkProject: 27,
+      pkProject: 591,
       f: {},
       initVal$: of(mockQuery)
     },

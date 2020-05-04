@@ -3,89 +3,108 @@
   {{config?.data?.controlType}}</div>
  -->
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-appellation'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-appellation [formControl]="formControlFactory.control" [required]="config?.required">
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-appellation'" class="w-100"
+  [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-appellation placeholder="Start typing..." [formControl]="formControlFactory.control"
+    [required]="config?.required">
   </gv-ctrl-appellation>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please enter a value
   </mat-error>
-</mat-form-field>
-
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-place'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-place [formControl]="formControlFactory.control" [required]="config?.required">
-  </gv-ctrl-place>
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
-    Please enter lat and long
+  <mat-error *ngIf="formControlFactory.control.hasError('invalidQuillDoc')">
+    Oops, please re-enter the value. Sorry!
   </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
 </mat-form-field>
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-language'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-language [formControl]="formControlFactory.control" [required]="config?.required">
+
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-language'" class="w-100"
+  [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-language placeholder="Select a language..." [formControl]="formControlFactory.control"
+    [required]="config?.required">
   </gv-ctrl-language>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please select a language
   </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
 </mat-form-field>
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-text-property'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-text-property [formControl]="formControlFactory.control" [required]="config?.required">
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-text-property'" class="w-100"
+  [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-text-property placeholder="Start typing..." [formControl]="formControlFactory.control"
+    [required]="config?.required">
   </gv-ctrl-text-property>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please enter text and select a language
   </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
 </mat-form-field>
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-lang-string'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-lang-string [formControl]="formControlFactory.control" [required]="config?.required">
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-lang-string'" class="w-100"
+  [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-lang-string placeholder="Start typing..." [formControl]="formControlFactory.control"
+    [required]="config?.required">
   </gv-ctrl-lang-string>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please enter text and select a language
   </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
 </mat-form-field>
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-time-span'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-time-span [formControl]="formControlFactory.control" [required]="config?.required">
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-time-span'" class="w-100"
+  [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-time-span placeholder="Edit time span..." [formControl]="formControlFactory.control"
+    [required]="config?.required">
   </gv-ctrl-time-span>
+  <mat-icon matSuffix svgIcon="calendar"></mat-icon>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please add a time span
   </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
 </mat-form-field>
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-target-class'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <mat-select [formControl]="formControlFactory.control" [required]="config?.required">
-    <mat-option *ngFor="let listDefinition of config?.data.fieldDefinition.listDefinitions;" [value]="listDefinition">
-      {{listDefinition.targetClassLabel}}
-    </mat-option>
-  </mat-select>
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
-    Please select a target class
-  </mat-error>
-</mat-form-field>
-
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-entity'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-entity [formControl]="formControlFactory.control" [pkClass]="config?.data?.listDefinition.targetClass"
-    [required]="config?.required">
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-entity'" class="w-100" [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-entity [placeholder]="('Add ' + config?.data?.listDefinition.targetClassLabel +'...')"
+    [formControl]="formControlFactory.control" [pkClass]="config?.data?.listDefinition.targetClass"
+    [property]="config?.data?.listDefinition.property" [required]="config?.required"
+    [showAddList]="!config.data.listDefinition.identityDefiningForTarget"
+    [disableExistingWithStatement]="entityCtrlDisableStatement">
   </gv-ctrl-entity>
+  <mat-icon matSuffix svgIcon="pencil"></mat-icon>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
-    Please select or create an entity
+    Please add an entity
   </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
 </mat-form-field>
 
-<mat-form-field *ngIf="config?.data.controlType === 'ctrl-type'" class="w-100" appearance="legacy">
-  <mat-label>{{config?.placeholder}}</mat-label>
-  <gv-ctrl-type [formControl]="formControlFactory.control" [autoopen]="false"
+<mat-form-field *ngIf="config?.data.controlType === 'ctrl-type'" class="w-100" [appearance]="config.data.appearance">
+  <!-- <mat-label>{{config?.placeholder}}</mat-label> -->
+  <gv-ctrl-type placeholder="Choose type..." [formControl]="formControlFactory.control" [autoopen]="false"
     [pkTypedClass]="config?.data?.listDefinition.sourceClass" [pkTypeClass]="config?.data?.listDefinition.targetClass"
     [required]="config?.required">
   </gv-ctrl-type>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
-    Please select or create an entity
+    Please select a type
   </mat-error>
+  <!-- <mat-hint *ngIf="formControlFactory.config.required">
+    * Required
+  </mat-hint> -->
 </mat-form-field>

@@ -2,7 +2,7 @@ import { CdkPortalOutlet, ComponentPortal, PortalInjector } from '@angular/cdk/p
 import { ComponentRef, InjectionToken } from '@angular/core';
 import { FormGroup, ValidatorFn, Validators, FormControl, AbstractControl } from "@angular/forms";
 import { QueryFilterComponent } from 'app/modules/queries/components/query-filter/query-filter.component';
-import { Subject } from 'rxjs';
+import { Subject, ReplaySubject } from 'rxjs';
 import { filter, switchMap, takeUntil, first } from 'rxjs/operators';
 import { FormChildFactoryConfig, FormFactoryGlobal } from '../services/form-factory.service';
 import { FormArrayFactory } from './form-array-factory';
@@ -19,14 +19,15 @@ export class FormChildFactory<Ch> extends AbstractControlFactory {
 
   public control: FormGroup
   public control$ = new Subject<AbstractControl>()
-  public portal: ComponentPortal<ComponentRef<QueryFilterComponent>>
+  public portal: ComponentPortal<ComponentRef<any>>
   private validators: ValidatorFn[]
   private childComponent: FormFactoryComponent
+  public childComponent$ = new ReplaySubject<{ [key: string]: FormFactoryComponent }>()
   constructor(
     public globalConfig: FormFactoryGlobal<any, any, any, any>,
     public config: FormChildFactoryConfig<Ch>,
     private level: number,
-    private parent?: FormGroupFactory | FormArrayFactory<any, any>
+    private parent?: FormGroupFactory | FormArrayFactory<any, any, Ch>
   ) {
     super()
     this.validators = config.required ? [Validators.required, ...config.validators || []] : config.validators
@@ -36,7 +37,7 @@ export class FormChildFactory<Ch> extends AbstractControlFactory {
      * instanciates the form factory component
      */
 
-    this.portal = new ComponentPortal<ComponentRef<QueryFilterComponent>>(
+    this.portal = new ComponentPortal<ComponentRef<FormFactoryComponent>>(
       this.config.component, null, this.createInjector({
         // initVal$: config.initVal$,
         ...config.getInjectData(config.data)
@@ -58,6 +59,10 @@ export class FormChildFactory<Ch> extends AbstractControlFactory {
   attached(e: ComponentRef<FormFactoryComponent>, o: CdkPortalOutlet) {
 
     this.childComponent = e.instance;
+
+    e.instance.afterViewInit$.pipe(first(x => x === true)).subscribe(() => {
+      this.childComponent$.next({ [this.portal.component.name]: this.childComponent })
+    })
 
     e.instance.formFactory$.pipe(
       filter(o => o !== null),
