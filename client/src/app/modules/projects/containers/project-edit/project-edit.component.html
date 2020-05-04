@@ -160,11 +160,11 @@
               (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-analysis-detail>
 
-            <gv-project-settings-data class="gv-tab-content" *ngIf="tab.component=='classes-settings'"
-              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+            <gv-project-settings-data class="gv-flex-fh" *ngIf="tab.component=='classes-settings'" [basePath]="tab.path"
+              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-project-settings-data>
 
-            <gv-ontome-profiles-settings class="gv-tab-content" *ngIf="tab.component=='ontome-profiles-settings'"
+            <gv-ontome-profiles-settings class="gv-flex-fh" *ngIf="tab.component=='ontome-profiles-settings'"
               [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-ontome-profiles-settings>
 

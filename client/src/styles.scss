@@ -473,8 +473,17 @@ $gv-color-selected: #00ffff;
 
 // full height and display flex
 .gv-flex-fh {
-  @extend .gv-fh;
-  @extend .d-flex;
+  // @extend .gv-fh;
+  // @extend .d-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+
+  display: flex;
+  -webkit-display: flex;
+
+  flex: 1 0 0%;
+  -webkit-flex: 1 1 0%;
+
   height: 100%;
   overflow: hidden;
 }
@@ -2439,7 +2448,7 @@ mat-dialog-actions {
     }
 
     > .ui-table-scrollable-wrapper {
-      flex: 1 1 auto;
+      flex: 1 1 0%;
       overflow: hidden;
 
       > .ui-table-scrollable-view {
