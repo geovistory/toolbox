@@ -149,6 +149,35 @@ export class SchemaObjectApi extends BaseLoopBackApi {
   }
 
   /**
+   * Get a object containing apllations and definition of a type (project variant).
+   *
+   * @param {number} pkProject Pk of the project.
+   *
+   * @param {number} pkType Pk of the type.
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `SchemaObject` object.)
+   * </em>
+   */
+  public typeOfProject(pkProject: any, pkType: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/SchemaObjects/type-of-project";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
+    if (typeof pkType !== 'undefined' && pkType !== null) _urlParams.pkType = pkType;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `SchemaObject`.
    */

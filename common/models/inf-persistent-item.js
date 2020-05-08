@@ -365,19 +365,6 @@ module.exports = function(InfPersistentItem) {
     });
   };
 
-  /**
-   * Get all type of project with all appellations
-   * and all text properties
-   */
-  InfPersistentItem.typeOfProject = function(pkProject, pkType, cb) {
-    let filter = {
-      where: ['pk_entity', '=', pkType],
-      include: InfPersistentItem.getTypeIncludeObject(pkProject),
-    };
-
-    return InfPersistentItem.findComplex(filter, cb);
-  };
-
   InfPersistentItem.ownProperties = function(pkProject, pkEntity, cb) {
     const mainQuery = new SqlPeItOwnProperties(
       InfPersistentItem.app.models

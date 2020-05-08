@@ -83,15 +83,15 @@ export class InfEpics {
           this.schemaObjectService.storeSchemaObject(schemaObject, pk)
         }
       ),
-      infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
-        (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
-        InfPersistentItemActionFactory.TYPE_OF_PROJECT,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.persistent_item.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
-        }
-      ),
+      // infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
+      //   (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
+      //   InfPersistentItemActionFactory.TYPE_OF_PROJECT,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.persistent_item.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), pk);
+      //   }
+      // ),
       infPersistentItemEpicsFactory.createUpsertEpic<ModifyActionMeta<InfPersistentItem>>((meta) => this.peItApi
         .findOrCreateInfPersistentItems(meta.pk, meta.items),
         (results, pk) => {
