@@ -30,7 +30,7 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
   loadNestedObject: (pkProject: number, pkEntity: number) => ActionResultObservable<LoadNestetedPeItResult>;
 
   typesOfProject: (pkProject: number) => void;
-  typeOfProject: (pkProject: number, pkEntity: number) => ActionResultObservable<LoadNestetedPeItResult>;
+  // typeOfProject: (pkProject: number, pkEntity: number) => ActionResultObservable<LoadNestetedPeItResult>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
@@ -77,21 +77,21 @@ export class InfPersistentItemActionFactory extends InfActionFactory<Payload, In
     }
 
 
-    this.typeOfProject = (pkProject: number, pkEntity: number) => {
-      const addPending = U.uuid();
+    // this.typeOfProject = (pkProject: number, pkEntity: number) => {
+    //   const addPending = U.uuid();
 
-      const action: FluxStandardAction<Payload, LoadTypeOfProjectAction> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfPersistentItemActionFactory.TYPE_OF_PROJECT,
-        meta: { addPending, pk: pkProject, pkEntity },
-        payload: null,
-      };
-      this.ngRedux.dispatch(action)
-      return {
-        pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<LoadNestetedPeItResult>>(['resolved', addPending]).pipe(filter(x => !!x)),
-        key: addPending
-      };
-    }
+    //   const action: FluxStandardAction<Payload, LoadTypeOfProjectAction> = {
+    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfPersistentItemActionFactory.TYPE_OF_PROJECT,
+    //     meta: { addPending, pk: pkProject, pkEntity },
+    //     payload: null,
+    //   };
+    //   this.ngRedux.dispatch(action)
+    //   return {
+    //     pending$: this.ngRedux.select<boolean>(['pending', addPending]),
+    //     resolved$: this.ngRedux.select<SucceedActionMeta<LoadNestetedPeItResult>>(['resolved', addPending]).pipe(filter(x => !!x)),
+    //     key: addPending
+    //   };
+    // }
 
     return this;
   }

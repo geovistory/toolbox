@@ -7,6 +7,8 @@ var SqlEntityRemoveFromProject = require('../../dist/server/sql-builders/sql-ent
   .SqlEntityRemoveFromProject;
 var SqlEntityAddToProject = require('../../dist/server/sql-builders/sql-entity-add-to-project')
   .SqlEntityAddToProject;
+var SqlTypeItem = require('../../dist/server/sql-builders/sql-type-item')
+  .SqlTypeItem;
 
 var _ = require('lodash');
 
@@ -70,6 +72,24 @@ module.exports = function(SchemaObject) {
       accountId
     );
     SchemaObject.query(pkProject, q, cb);
+  };
+
+  /**
+   * Get one type of project with all appellations
+   * and the entity definitions (text properties)
+   */
+  SchemaObject.typeOfProject = function(pkProject, pkType, cb) {
+    const mainQuery = new SqlTypeItem(SchemaObject.app.models).create(
+      pkProject,
+      pkType
+    );
+    const connector = SchemaObject.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      const item = result[0];
+      const data = !item ? {} : item.data;
+      return cb(false, data);
+    });
   };
 
   /**

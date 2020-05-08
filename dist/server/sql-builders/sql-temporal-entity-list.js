@@ -184,20 +184,11 @@ class SqlTemporalEntityList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfRole')} as objects
           FROM
           (
-            SELECT
-            *
-            FROM
-            tw2
+            SELECT * FROM tw2
             UNION ALL
-            SELECT
-            *
-            FROM
-            tw4
+            SELECT * FROM tw4
             UNION ALL
-            SELECT
-            *
-            FROM
-            tw9
+            SELECT * FROM tw9
           ) AS t1
         ) as t1
         GROUP BY true
@@ -210,10 +201,7 @@ class SqlTemporalEntityList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfTemporalEntity')} as objects
           FROM
           (
-            SELECT
-            *
-            FROM
-            tw3
+            SELECT * FROM tw3
           ) AS t1
         ) as t1
         GROUP BY true
@@ -226,10 +214,7 @@ class SqlTemporalEntityList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfAppellation')} as objects
           FROM
           (
-            SELECT
-            *
-            FROM
-            tw5
+            SELECT * FROM tw5
           ) AS t1
         ) as t1
         GROUP BY true
@@ -242,10 +227,7 @@ class SqlTemporalEntityList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfLanguage')} as objects
           FROM
           (
-            SELECT
-            *
-            FROM
-            tw6
+            SELECT * FROM tw6
           ) AS t1
         ) as t2
         GROUP BY true
@@ -258,10 +240,7 @@ class SqlTemporalEntityList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfTimePrimitive')} as objects
           FROM
           (
-            SELECT
-            *
-            FROM
-            tw7
+            SELECT * FROM tw7
           ) AS t1
         ) as t1
         GROUP BY true
@@ -274,10 +253,7 @@ class SqlTemporalEntityList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfPlace')} as objects
           FROM
           (
-            SELECT
-            *
-            FROM
-            tw8
+            SELECT * FROM tw8
           ) AS t1
         ) as t1
         GROUP BY true

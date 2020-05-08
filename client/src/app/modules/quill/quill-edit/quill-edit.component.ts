@@ -538,7 +538,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
     if (
       ops &&
-      ops.length < 7 // exclude large deltas from copy & paste
+      ops.length < 20 // exclude large deltas from copy & paste
     ) {
 
       const d = new Delta();
@@ -578,8 +578,14 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   private addRetainDelta(d: Delta, op: Op) {
 
     if (op.insert) {
+      if (op.insert.length > 1) {
+        for (let i = 0; i < op.insert.length; i++) {
+          d.retain(1, { charid: ++this.quillEditorService.latestId })
+        }
+        return true;
+      }
       // is this a new character with invalid charid ?
-      if (op.insert !== '\n' &&
+      else if (op.insert !== '\n' &&
         (
           !op.attributes || !op.attributes.charid || op.attributes.charid < this.quillEditorService.latestId
         )
@@ -593,8 +599,8 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
           !op.attributes || !op.attributes.blockid || op.attributes.blockid <= this.quillEditorService.latestId
         )
       ) {
-
         d.retain(1, { blockid: ++this.quillEditorService.latestId }, 'api')
+        return true;
       }
     }
     // if retain deletes charid
