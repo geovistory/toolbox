@@ -15,6 +15,7 @@ export interface ConfirmDialogData {
 
 }
 
+export type ConfirmDialogReturn = boolean
 
 @Component({
   selector: 'gv-confirm-dialog',
@@ -24,7 +25,7 @@ export interface ConfirmDialogData {
 export class ConfirmDialogComponent {
 
   constructor(
-    public dialogRef: MatDialogRef<ConfirmDialogComponent>,
+    public dialogRef: MatDialogRef<ConfirmDialogComponent, ConfirmDialogReturn>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData) { }
 
   onNoClick(): void {
