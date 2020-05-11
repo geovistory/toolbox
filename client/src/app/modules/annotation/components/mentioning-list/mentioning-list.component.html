@@ -44,8 +44,14 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #mainMenu="matMenu" xPosition="before">
+          <button *ngIf="element.rangeInfoEntity" mat-menu-item (click)="openEntity(element.rangeInfoEntity)">
+            <mat-icon>tab</mat-icon>
+            Open entity in new tab
+          </button>
+          <mat-divider></mat-divider>
+          <div class="dropdown-header">Danger Zone</div>
           <button mat-menu-item (click)="remove(element)">
-            <mat-icon>delete</mat-icon>
+            <mat-icon color="warn">delete</mat-icon>
             <span>Remove</span>
           </button>
         </mat-menu>
