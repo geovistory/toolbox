@@ -1,4 +1,5 @@
-<as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" [useTransition]="true" *ngIf="!deleted">
+<as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': t.layoutMode!=='both'}" [direction]="'horizontal'"
+  gutterSize="1" (dragEnd)="t.onResizeArea($event)" [useTransition]="true" *ngIf="!deleted">
 
 
   <!-------------------------------------------------------------------
@@ -6,7 +7,8 @@
   -------------------------------------------------------------------->
   <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-    <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea" (openRight)="run()">
+    <gv-detail-top-bar [openRightAreaBtn]="t.layoutMode=='left-only'" [closeLeftAreaBtn]="t.layoutMode=='both'"
+      (closeLeft)="t.setLayoutMode('right-only')" (openRight)="t.setLayoutMode('both'); run();">
       <span class="ml-2 mat-caption mat-text-secondary">
         Analysis Configuration
       </span>
@@ -51,9 +53,10 @@
   <!-------------------------------------------------------------------
     Analysis Results
   -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeRight" *ngIf="t.showRightArea" class="d-flex flex-column">
+  <as-split-area [size]="t.splitSizeRight" *ngIf="!(t.layoutMode=='left-only')" class="d-flex flex-column">
 
-    <gv-detail-top-bar [closeRightAreaBtn]="true" (closeRight)="t.setShowRightArea(false)">
+    <gv-detail-top-bar [openLeftAreaBtn]="t.layoutMode=='right-only'" [closeRightAreaBtn]="t.layoutMode=='both'"
+      (closeRight)="t.setLayoutMode('left-only')" (openLeft)="t.setLayoutMode('both');">
       <span class="ml-2 mat-caption mat-text-secondary">
         Analysis Results
       </span>

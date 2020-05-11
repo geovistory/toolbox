@@ -22,7 +22,7 @@ export class EntityDetailAPIActions {
 
   static readonly TOGGLE_BOOLEAN = 'PeItActions::TOGGLE_BOOLEAN';
 
-  static readonly SET_SHOW_RIGHT_AREA = 'Entity::SET_SHOW_RIGHT_AREA';
+  // static readonly SET_SHOW_RIGHT_AREA = 'Entity::SET_SHOW_RIGHT_AREA';
 
   static readonly SET_RIGHT_PANEL_ACTIVE_TAB = 'Entity::SET_RIGHT_PANEL_ACTIVE_TAB';
 
@@ -39,13 +39,13 @@ export class EntityDetailAPIActions {
   })
 
 
-  setShowRightArea = (showRightArea: boolean): EntityDetailAPIAction => ({
-    type: EntityDetailAPIActions.SET_SHOW_RIGHT_AREA,
-    meta: null,
-    payload: {
-      showRightArea
-    }
-  })
+  // setShowRightArea = (showRightArea: boolean): EntityDetailAPIAction => ({
+  //   type: EntityDetailAPIActions.SET_SHOW_RIGHT_AREA,
+  //   meta: null,
+  //   payload: {
+  //     showRightArea
+  //   }
+  // })
 
   /**
    * Toggle booleans

@@ -1,16 +1,14 @@
 <div class="gv-flex-fh mat-typography">
-  <as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': !t.showRightArea}" [direction]="'horizontal'"
-    gutterSize="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
+  <as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': t.layoutMode!=='both'}"
+    [direction]="'horizontal'" gutterSize="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
 
     <!-------------------------------------------------------------------
        Left area
     -------------------------------------------------------------------->
     <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-      <gv-detail-top-bar height="5rem" [openRightAreaBtn]="!t.showRightArea" (openRight)="t.setShowRightArea(true);"
-        *ngIf="(showHeader$ | async)">
-
-
+      <gv-detail-top-bar height="5rem" [openRightAreaBtn]="t.layoutMode=='left-only'"
+        (openRight)="t.setLayoutMode('both')" *ngIf="(showHeader$ | async)">
 
         <div class="summary">
           <div class="summary-icon" dnd-draggable [dragData]="preview$ | async">
@@ -116,11 +114,11 @@
       Right area
     -------------------------------------------------------------------->
     <as-split-area [size]="t.splitSizeRight" class="gv-split-area" [ngClass]="{
-        'd-flex flex-column': t.showRightArea,
-        'd-none': !t.showRightArea
+        'd-flex flex-column': t.layoutMode!=='left-only',
+        'd-none': t.layoutMode=='left-only'
       }">
       <button matRipple class="gv-split-area-toggle-button align-left mat-border-right mat-border-bottom"
-        (click)="t.setShowRightArea(false)">
+        (click)="rightArrowClick()">
         <mat-icon aria-label="Close right area">chevron_right</mat-icon>
         <div class="gv-focus-overlay"></div>
       </button>

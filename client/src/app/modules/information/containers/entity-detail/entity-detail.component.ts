@@ -125,7 +125,7 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
     })
 
     this.showRightArea$.pipe(first(b => b !== undefined), takeUntil(this.destroy$)).subscribe((b) => {
-      this.t.setShowRightArea(b)
+      this.t.setLayoutMode(b ? 'both' : 'left-only')
     })
 
     this.listOf = { pkEntity: this.pkEntity, type: 'entity' }
@@ -177,6 +177,11 @@ export class EntityDetailComponent implements SubstoreComponent, TabLayoutCompon
 
   rightTabIndexChange(i: number) {
     this.localStore.dispatch(this.actions.setRightPanelActiveTab(i))
+  }
+
+  rightArrowClick() {
+    if (this.t.layoutMode == 'right-only') this.t.setLayoutMode('both');
+    else this.t.setLayoutMode('left-only')
   }
 
   /**

@@ -6,12 +6,22 @@
     <mat-icon aria-label="Close right area">chevron_right</mat-icon>
   </button>
 
+  <button fxFlex="24px" mat-stroked-button class="close-right-area-btn mr-3 text-muted" *ngIf="openLeftAreaBtn"
+    (click)="openLeft.emit()">
+    <mat-icon aria-label="Close right area">chevron_right</mat-icon>
+  </button>
+
   <div fxFlex fxLayout="row" fxLayoutAlign="start baseline">
     <ng-content></ng-content>
   </div>
 
   <button fxFlex="24px" mat-stroked-button class="open-right-area-btn ml-3 text-muted" *ngIf="openRightAreaBtn"
     (click)="openRight.emit()">
+    <mat-icon aria-label="Open left area">chevron_left</mat-icon>
+  </button>
+
+  <button fxFlex="24px" mat-stroked-button class="open-right-area-btn ml-3 text-muted" *ngIf="closeLeftAreaBtn"
+    (click)="closeLeft.emit()">
     <mat-icon aria-label="Open left area">chevron_left</mat-icon>
   </button>
 
