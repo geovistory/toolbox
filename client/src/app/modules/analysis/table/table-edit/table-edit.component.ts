@@ -40,7 +40,7 @@ export class TableEditComponent implements OnInit, OnDestroy {
       if (this.formComponent.formFactory.formGroup.valid) {
         const q = this.formComponent.formFactory.formGroupFactory.valueChanges$.value;
         this.queryDefinition$.next(q.queryDefinition)
-        this.ts.t.setShowRightArea(true);
+        this.ts.t.setLayoutMode('both');
       } else {
         this.formComponent.formFactory.markAllAsTouched()
       }

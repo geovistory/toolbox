@@ -26,12 +26,12 @@ export function entityDetailReducer(state: EntityDetail = INITIAL_STATE, a: Acti
       state = {};
       break;
 
-    case EntityDetailAPIActions.SET_SHOW_RIGHT_AREA:
-      state = {
-        ...state,
-        showRightArea: action.payload.showRightArea
-      }
-      break;
+    // case EntityDetailAPIActions.SET_SHOW_RIGHT_AREA:
+    //   state = {
+    //     ...state,
+    //     showRightArea: action.payload.showRightArea
+    //   }
+    //   break;
 
     case EntityDetailAPIActions.SET_RIGHT_PANEL_ACTIVE_TAB:
       state = {

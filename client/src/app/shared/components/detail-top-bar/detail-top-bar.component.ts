@@ -9,10 +9,17 @@ export class DetailTopBarComponent implements OnInit {
 
   @Input() closeRightAreaBtn: boolean;
   @Input() openRightAreaBtn: boolean;
+
+  @Input() closeLeftAreaBtn: boolean;
+  @Input() openLeftAreaBtn: boolean;
+
   @Input() height: string;
 
   @Output() openRight = new EventEmitter<void>()
   @Output() closeRight = new EventEmitter<void>()
+
+  @Output() openLeft = new EventEmitter<void>()
+  @Output() closeLeft = new EventEmitter<void>()
 
   @HostBinding('class.gv-flex-shrink-0') noshrink = true;
 
