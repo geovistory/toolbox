@@ -8,12 +8,13 @@ import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-del
 import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil, switchMap } from 'rxjs/operators';
-import { MatSort, MatTableDataSource } from '../../../../../../node_modules/@angular/material';
+import { MatSort, MatTableDataSource, MatDialog } from '../../../../../../node_modules/@angular/material';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { ByPk } from '../../../../core/store/model';
 import { QuillDoc } from '../../../quill';
 import { ChunksPks } from '../../../quill/quill-edit/quill-edit.component';
 import { combineLatestOrEmpty } from '../../../../core/util/combineLatestOrEmpty';
+import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 
 
 // this is not for state, only for the table view
@@ -142,7 +143,8 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
     public ngRedux: NgRedux<IAppState>,
     private p: ActiveProjectService,
     private inf: InfActions,
-    fb: FormBuilder
+    fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.mentioningCreateCtrl = new FormControl(null, [Validators.required])
     this.formGroup = fb.group({ 'mentioningCreateCtrl': this.mentioningCreateCtrl })
@@ -301,9 +303,29 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   remove(row: Row) {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.inf.role.remove([row.role], pkProject)
+    this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn>(ConfirmDialogComponent, {
+      data: {
+        title: 'Remove Annotation',
+        paragraphs: [
+          'Are you sure?',
+          '(This can\'t be undone)',
+        ],
+        yesBtnColor: 'warn',
+        yesBtnText: 'Remove',
+        noBtnText: 'Cancel'
+      }
     })
+      .afterClosed()
+      .subscribe(confirmed => {
+        if (confirmed) {
+          this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+            this.inf.role.remove([row.role], pkProject)
+          })
+        }
+      })
+  }
+  openEntity(entity: EntityPreview) {
+    this.p.addEntityTab(entity.pk_entity, entity.fk_class, entity.entity_type)
   }
 
   ngOnDestroy() {
