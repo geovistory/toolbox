@@ -61,7 +61,7 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
       -- roles
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           information.v_role t1,
@@ -91,7 +91,7 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
       -- outgoing_roles of temporal_entity
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw3
@@ -146,7 +146,7 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
       -- ingoing_roles of temporal_entity
       tw9 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw3
@@ -196,7 +196,7 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM
           (
             SELECT * FROM tw2

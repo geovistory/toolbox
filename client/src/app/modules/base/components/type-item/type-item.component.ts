@@ -5,7 +5,7 @@ import { InformationPipesService } from '../../services/information-pipes.servic
 import { FormGroup, FormBuilder, FormControl } from '../../../../../../node_modules/@angular/forms';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { switchMap, map, takeUntil, first, filter } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfRole, ProInfoProjRel } from '../../../../core';
+import { ActiveProjectService, InfStatement, ProInfoProjRel } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 
 @Component({
@@ -22,7 +22,7 @@ export class TypeItemComponent implements OnInit {
 
   isViewMode: boolean;
 
-  hasTypeRole$: Observable<InfRole>
+  hasTypeRole$: Observable<InfStatement>
   pkType$: Observable<number>
   typeLabel$: Observable<string>
 
@@ -59,7 +59,7 @@ export class TypeItemComponent implements OnInit {
     this.hasTypeRole$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty)
 
     this.pkType$ = this.hasTypeRole$.pipe(
-      map(e => e ? e.fk_entity : undefined)
+      map(e => e ? e.fk_object_info : undefined)
     )
     this.typeLabel$ = this.pkType$.pipe(
       switchMap(pkType => this.p.streamEntityPreview(pkType).pipe(
@@ -80,7 +80,7 @@ export class TypeItemComponent implements OnInit {
     ).subscribe(([role, fk_project]) => {
       const value = this.formGroup.get('typeCtrl').value;
       if (
-        (role && role.fk_entity == value) ||
+        (role && role.fk_object_info == value) ||
         (!role && !value)
       ) {
         this.editing = false
@@ -91,10 +91,10 @@ export class TypeItemComponent implements OnInit {
         // old ea
         const calls$ = [];
         if (role) {
-          const oldEa = new InfRole({
+          const oldEa = new InfStatement({
             pk_entity: role.pk_entity,
-            fk_temporal_entity: role.fk_temporal_entity,
-            fk_entity: role.fk_entity,
+            fk_subject_info: role.fk_subject_info,
+            fk_object_info: role.fk_object_info,
             fk_property: role.fk_property,
             entity_version_project_rels: [{
               fk_project,
@@ -107,9 +107,9 @@ export class TypeItemComponent implements OnInit {
 
         // new ea
         if (value) {
-          const newEa = new InfRole({
-            fk_temporal_entity: this.pkEntity,
-            fk_entity: value,
+          const newEa = new InfStatement({
+            fk_subject_info: this.pkEntity,
+            fk_object_info: value,
             fk_property: this.pkProperty,
             entity_version_project_rels: [{ is_in_project: true } as ProInfoProjRel]
           })

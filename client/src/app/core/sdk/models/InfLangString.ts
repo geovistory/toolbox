@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole,
+  InfStatement,
   InfLanguage
 } from '../index';
 
@@ -13,7 +13,7 @@ export interface InfLangStringInterface {
   "string"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  is_object_of_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
   language?: InfLanguage;
 }
 
@@ -24,7 +24,7 @@ export class InfLangString implements InfLangStringInterface {
   "string": string;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  is_object_of_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
   language?: InfLanguage;
   constructor(data?: InfLangStringInterface) {
     Object.assign(this, data);
@@ -42,7 +42,7 @@ export class InfLangString implements InfLangStringInterface {
   * @license MIT
   * This method creates an instance of InfLangString for dynamic purposes.
   **/
-  public static factory(data: InfLangStringInterface): InfLangString{
+  public static factory(data: InfLangStringInterface): InfLangString {
     return new InfLangString(data);
   }
   /**
@@ -86,7 +86,7 @@ export class InfLangString implements InfLangStringInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         is_object_of_roles: {
@@ -94,7 +94,7 @@ export class InfLangString implements InfLangStringInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         language: {
@@ -102,7 +102,7 @@ export class InfLangString implements InfLangStringInterface {
           type: 'InfLanguage',
           model: 'InfLanguage',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_language',
+          keyFrom: 'fk_language',
           keyTo: 'pk_entity'
         },
       }

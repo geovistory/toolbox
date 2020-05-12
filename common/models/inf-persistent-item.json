@@ -22,16 +22,16 @@
   },
   "validations": [],
   "relations": {
-    "pi_roles": {
+    "incoming_statements": {
       "type": "hasMany",
-      "model": "InfRole",
-      "foreignKey": "fk_entity",
+      "model": "InfStatement",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
-    "te_roles": {
+    "outgoing_statements": {
       "type": "hasMany",
-      "model": "InfRole",
-      "foreignKey": "fk_temporal_entity",
+      "model": "InfStatement",
+      "foreignKey": "fk_subject_info",
       "primaryKey": "pk_entity"
     },
     "text_properties": {

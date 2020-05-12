@@ -30,7 +30,7 @@ import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfLangString } from '../../models/InfLangString';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
-import { InfRole } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfRole';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
@@ -75,7 +75,7 @@ export class SDKModels {
     InfAppellation: InfAppellation,
     InfLangString: InfLangString,
     InfTemporalEntity: InfTemporalEntity,
-    InfRole: InfRole,
+    InfRole: InfStatement,
     InfLanguage: InfLanguage,
     InfPersistentItem: InfPersistentItem,
     InfTimePrimitive: InfTimePrimitive,
@@ -83,7 +83,7 @@ export class SDKModels {
     DatNamespace: DatNamespace,
     InfTextProperty: InfTextProperty,
     SysSystemType: SysSystemType,
-    
+
   };
 
   public get(modelName: string): any {

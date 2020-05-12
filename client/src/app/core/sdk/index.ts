@@ -16,7 +16,7 @@
 * ============================================================================
 * import { NgModule }       from '@angular/core';
 * import { BrowserModule }  from '@angular/platform-browser';
-* // App Root 
+* // App Root
 * import { AppComponent }   from './app.component';
 * // Feature Modules
 * import { SDK[Browser|Node|Native]Module } from './shared/sdk/sdk.module';
@@ -78,7 +78,7 @@ import { ProDfhProfileProjRelApi } from './services/custom/ProDfhProfileProjRel'
 import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfLangStringApi } from './services/custom/InfLangString';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
-import { InfRoleApi } from './services/custom/InfRole';
+import { InfStatementApi } from './services/custom/InfRole';
 import { InfLanguageApi } from './services/custom/InfLanguage';
 import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
 import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
@@ -96,10 +96,10 @@ import { SysSystemTypeApi } from './services/custom/SysSystemType';
 *  3.- Progressive applications (Angular Mobile, Ionic, WebViews, etc)
 **/
 @NgModule({
-  imports:      [ CommonModule, HttpClientModule ],
-  declarations: [ ],
-  exports:      [ ],
-  providers:    [
+  imports: [CommonModule, HttpClientModule],
+  declarations: [],
+  exports: [],
+  providers: [
     ErrorHandler,
     SocketConnection
   ]
@@ -110,8 +110,8 @@ export class SDKBrowserModule {
     useClass: CookieBrowser
   }): ModuleWithProviders {
     return {
-      ngModule  : SDKBrowserModule,
-      providers : [
+      ngModule: SDKBrowserModule,
+      providers: [
         LoopBackAuth,
         LoggerService,
         SDKModels,
@@ -146,7 +146,7 @@ export class SDKBrowserModule {
         InfAppellationApi,
         InfLangStringApi,
         InfTemporalEntityApi,
-        InfRoleApi,
+        InfStatementApi,
         InfLanguageApi,
         InfPersistentItemApi,
         InfTimePrimitiveApi,

@@ -157,7 +157,7 @@ module.exports = function(InfTemporalEntity) {
                ******************************************/
               if (requestedTeEnt.te_roles) {
                 // prepare parameters
-                const InfRole = InfTemporalEntity.app.models.InfRole;
+                const InfStatement = InfTemporalEntity.app.models.InfStatement;
 
                 //… filter roles that are truthy (not null), iterate over them,
                 // return the promise that the teEnt will be
@@ -169,7 +169,7 @@ module.exports = function(InfTemporalEntity) {
                     role.fk_temporal_entity = resultingEntity.pk_entity;
 
                     // find or create the Entity and the role pointing to the Entity
-                    return InfRole.findOrCreateInfRole(
+                    return InfStatement.findOrCreateInfStatement(
                       pkProject,
                       role,
                       ctxWithoutBody
@@ -199,7 +199,7 @@ module.exports = function(InfTemporalEntity) {
                ******************************************/
               if (requestedTeEnt.ingoing_roles) {
                 // prepare parameters
-                const InfRole = InfTemporalEntity.app.models.InfRole;
+                const InfStatement = InfTemporalEntity.app.models.InfStatement;
 
                 //… filter roles that are truthy (not null), iterate over them,
                 // return the promise that the teEnt will be
@@ -211,7 +211,7 @@ module.exports = function(InfTemporalEntity) {
                     role.fk_entity = resultingEntity.pk_entity;
 
                     // find or create the Entity and the role pointing to the Entity
-                    return InfRole.findOrCreateInfRole(
+                    return InfStatement.findOrCreateInfStatement(
                       pkProject,
                       role,
                       ctxWithoutBody

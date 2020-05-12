@@ -8,7 +8,7 @@ import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/a
 import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { InfRole, InfTimePrimitive, ProProject, ProTextProperty } from '../sdk';
+import { InfStatement, InfTimePrimitive, ProProject, ProTextProperty } from '../sdk';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator
@@ -77,7 +77,7 @@ export class U {
   /**
    *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
   */
-  static getCalendarFromRole(role: InfRole): CalendarType {
+  static getCalendarFromRole(role: InfStatement): CalendarType {
     if (!role) return null;
 
     const cal = (role.entity_version_project_rels && role.entity_version_project_rels[0].calendar) ?
@@ -89,13 +89,13 @@ export class U {
   }
 
   /**
-   * Converts InfRole to TimePrimitive
-   * @param r the InfRole to convert
+   * Converts InfStatement to TimePrimitive
+   * @param r the InfStatement to convert
    */
-  static infRole2TimePrimitive(r: InfRole): TimePrimitive {
+  static infRole2TimePrimitive(r: InfStatement): TimePrimitive {
 
     // from InfTimePrimitve to TimePrimitive
-    const infTp: InfTimePrimitive = r ? r.time_primitive : null;
+    const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
     let timePrimitive: TimePrimitive = null;
     const obj: any = {}
 

@@ -1,4 +1,4 @@
-import { InfRole, InfTimePrimitive, SysConfig } from 'app/core';
+import { InfStatement, InfTimePrimitive, SysConfig } from 'app/core';
 import { CalendarType, TimePrimitive } from 'app/core/date-time/time-primitive';
 
 
@@ -13,7 +13,7 @@ export function propSetKeyFromFk(fkPropSet: number) {
 
 }
 
-export function getCalendarFromRole(role: InfRole): CalendarType {
+export function getCalendarFromRole(role: InfStatement): CalendarType {
   if (!role) return null;
 
   const cal = (role.entity_version_project_rels && role.entity_version_project_rels[0].calendar) ?
@@ -25,10 +25,10 @@ export function getCalendarFromRole(role: InfRole): CalendarType {
 }
 
 
-export function infRole2TimePrimitive(r: InfRole): TimePrimitive {
+export function infRole2TimePrimitive(r: InfStatement): TimePrimitive {
 
   // from InfTimePrimitve to TimePrimitive
-  const infTp: InfTimePrimitive = r ? r.time_primitive : null;
+  const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
   let timePrimitive: TimePrimitive = null;
   const obj: any = {}
 

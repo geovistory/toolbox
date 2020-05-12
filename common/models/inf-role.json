@@ -1,12 +1,12 @@
 {
-  "name": "InfRole",
+  "name": "InfStatement",
   "base": "InfEntity",
   "idInjection": false,
   "options": {
     "validateUpsert": true,
     "postgresql": {
       "schema": "information",
-      "table": "v_role"
+      "table": "v_statement"
     }
   },
   "mixins": {
@@ -71,100 +71,82 @@
   },
   "validations": [],
   "relations": {
-    "persistent_item": {
-      "type": "belongsTo",
-      "model": "InfPersistentItem",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "range_temporal_entity": {
-      "type": "belongsTo",
-      "model": "InfTemporalEntity",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "appellation": {
-      "type": "belongsTo",
-      "model": "InfAppellation",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "time_primitive": {
-      "type": "belongsTo",
-      "model": "InfTimePrimitive",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "language": {
-      "type": "belongsTo",
-      "model": "InfLanguage",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "lang_string": {
-      "type": "belongsTo",
-      "model": "InfLangString",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "temporal_entity": {
+    "subject_temporal_entity": {
       "type": "belongsTo",
       "model": "InfTemporalEntity",
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
     },
-    "place": {
-      "type": "belongsTo",
-      "model": "InfPlace",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "persistent_item_preview": {
-      "type": "belongsTo",
-      "model": "WarEntityPreview",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "temporal_entity_preview": {
-      "type": "belongsTo",
-      "model": "WarEntityPreview",
-      "foreignKey": "fk_temporal_entity",
-      "primaryKey": "pk_entity"
-    },
-    "domain_pe_it": {
+    "subject_persistent_item": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
       "foreignKey": "fk_temporal_entity",
       "primaryKey": "pk_entity"
     },
-    "range_pe_it": {
-      "type": "belongsTo",
-      "model": "InfPersistentItem",
-      "foreignKey": "fk_entity",
-      "primaryKey": "pk_entity"
-    },
-    "domain_chunk": {
-      "type": "belongsTo",
-      "model": "DatChunk",
-      "foreignKey": "fk_subject_data",
-      "primaryKey": "pk_entity"
-    },
-    "range_chunk": {
-      "type": "belongsTo",
-      "model": "DatChunk",
-      "foreignKey": "fk_object_data",
-      "primaryKey": "pk_entity"
-    },
-    "domain_digital": {
+    "subject_digital": {
       "type": "belongsTo",
       "model": "DatDigital",
       "foreignKey": "fk_object_data",
       "primaryKey": "pk_entity"
     },
-    "subject_inf_role": {
+    "subject_chunk": {
       "type": "belongsTo",
-      "model": "InfRole",
-      "foreignKey": "fk_temporal_entity",
+      "model": "DatChunk",
+      "foreignKey": "fk_subject_data",
+      "primaryKey": "pk_entity"
+    },
+    "subject_statement": {
+      "type": "belongsTo",
+      "model": "InfStatement",
+      "foreignKey": "fk_subject_info",
+      "primaryKey": "pk_entity"
+    },
+    "object_persistent_item": {
+      "type": "belongsTo",
+      "model": "InfPersistentItem",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "object_temporal_entity": {
+      "type": "belongsTo",
+      "model": "InfTemporalEntity",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "object_appellation": {
+      "type": "belongsTo",
+      "model": "InfAppellation",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "object_time_primitive": {
+      "type": "belongsTo",
+      "model": "InfTimePrimitive",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "object_language": {
+      "type": "belongsTo",
+      "model": "InfLanguage",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "object_lang_string": {
+      "type": "belongsTo",
+      "model": "InfLangString",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "object_place": {
+      "type": "belongsTo",
+      "model": "InfPlace",
+      "foreignKey": "fk_entity",
+      "primaryKey": "pk_entity"
+    },
+    "object_chunk": {
+      "type": "belongsTo",
+      "model": "DatChunk",
+      "foreignKey": "fk_object_data",
       "primaryKey": "pk_entity"
     }
   },
@@ -190,7 +172,7 @@
       "property": [
         "alternativesNotInProjectByEntityPk",
         "alternativesNotInProjectByTeEntPk",
-        "findOrCreateInfRoles",
+        "findOrCreateInfStatements",
         "paginatedListTargetingEntityPreviews",
         "sourcesAndDigitalsOfEntity",
         "queryByParams"
@@ -275,7 +257,7 @@
         "verb": "get"
       }
     },
-    "findOrCreateInfRole": {
+    "findOrCreateInfStatement": {
       "accepts": [
         {
           "arg": "projectId",
@@ -288,7 +270,7 @@
         },
         {
           "arg": "data",
-          "type": "InfRole",
+          "type": "InfStatement",
           "required": true,
           "description": "data",
           "http": {
@@ -305,7 +287,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "InfRole",
+        "type": "InfStatement",
         "root": true
       },
       "description": "Find or create an information role version.",
@@ -314,7 +296,7 @@
         "verb": "post"
       }
     },
-    "findOrCreateInfRoles": {
+    "findOrCreateInfStatements": {
       "accepts": [
         {
           "arg": "pk_project",
@@ -328,7 +310,7 @@
         {
           "arg": "data",
           "type": [
-            "InfRole"
+            "InfStatement"
           ],
           "required": true,
           "description": "data",
@@ -347,7 +329,7 @@
       "returns": {
         "arg": "data",
         "type": [
-          "InfRole"
+          "InfStatement"
         ],
         "root": true
       },
@@ -390,7 +372,7 @@
       "returns": {
         "arg": "data",
         "type": [
-          "InfRole"
+          "InfStatement"
         ],
         "root": true
       },
@@ -433,7 +415,7 @@
       "returns": {
         "arg": "data",
         "type": [
-          "InfRole"
+          "InfStatement"
         ],
         "root": true
       },
@@ -466,10 +448,10 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "InfRole",
+        "type": "InfStatement",
         "root": true
       },
-      "description": "Find nested objects of InfRoles of the project.",
+      "description": "Find nested objects of InfStatements of the project.",
       "http": {
         "path": "/nested-objects-of-project",
         "verb": "get"
@@ -505,7 +487,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "InfRole",
+        "type": "InfStatement",
         "root": true
       },
       "description": "Add roles with their associated temporal entity to the project.",
@@ -544,7 +526,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "InfRole",
+        "type": "InfStatement",
         "root": true
       },
       "description": "Remove roles with their associated temporal entity from the project.",
@@ -583,7 +565,7 @@
       ],
       "returns": {
         "arg": "data",
-        "type": "InfRole",
+        "type": "InfStatement",
         "root": true
       },
       "description": "Add roles without any related entities to the project.",
@@ -693,7 +675,7 @@
         }
       ],
       "returns": {
-        "arg": "InfRole",
+        "arg": "InfStatement",
         "type": "array",
         "root": true
       },

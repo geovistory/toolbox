@@ -33,9 +33,9 @@
   },
   "validations": [],
   "relations": {
-    "subject_of_roles": {
+    "outgoing_statements": {
       "type": "hasMany",
-      "model": "InfRole",
+      "model": "InfStatement",
       "foreignKey": "fk_subject_data",
       "primaryKey": "pk_entity"
     },

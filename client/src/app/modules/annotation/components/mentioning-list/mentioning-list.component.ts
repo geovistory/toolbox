@@ -1,7 +1,7 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, IAppState, SubstoreComponent, DatDigital, latestVersion, InfRole } from 'app/core';
+import { ActiveProjectService, DatChunk, EntityPreview, IAppState, SubstoreComponent, DatDigital, latestVersion, InfStatement } from 'app/core';
 import { RootEpics } from 'app/core/store/epics';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -20,7 +20,7 @@ import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '
 // this is not for state, only for the table view
 export interface Row {
   // data for actions
-  role: InfRole;
+  role: InfStatement;
   domainInfoEntity: EntityPreview;
   domainChunk: DatChunk;
   digital: DatDigital; // the digital
@@ -196,7 +196,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         const addRange$ = addDomain$.pipe(
           mergeMap((rows) => {
-            const ranges = rows.map(row => row.role.fk_entity)
+            const ranges = rows.map(row => row.role.fk_object_info)
             const pks = flatten(ranges) as any as number[]; // https://github.com/types/npm-ramda/issues/356
             return combineLatestOrEmpty(pks.map(pk => this.p.streamEntityPreview(pk)))
               .pipe(
@@ -205,7 +205,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
                   const prevs = indexBy((i) => i.pk_entity.toString(), previews)
                   rows = rows.map(row => ({
                     ...row,
-                    rangeInfoEntity: prevs[row.role.fk_entity],
+                    rangeInfoEntity: prevs[row.role.fk_object_info],
                     domainLabel: this.getDomainLabel(row),
                     rangeLabel: this.getRangeLabel(prevs, row),
                     propertyLabel: this.getPropertyLabel(row)
@@ -272,8 +272,8 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private getRangeLabel(prevs: ByPk<EntityPreview>, row: Row): string {
-    if (row.role && row.role.fk_entity) {
-      const e = prevs[row.role.fk_entity];
+    if (row.role && row.role.fk_object_info) {
+      const e = prevs[row.role.fk_object_info];
       return [e.entity_label, e.class_label, e.type_label].join(' ');
     }
   }
@@ -293,7 +293,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
   submit() {
     if (this.formGroup.valid) {
       this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-        const role: InfRole = this.mentioningCreateCtrl.value;
+        const role: InfStatement = this.mentioningCreateCtrl.value;
         this.inf.role.upsert([role], pkProject).resolved$
           .pipe(first(r => !!r), takeUntil(this.destroy$)).subscribe(resolved => {
             // this.create$.next(false)

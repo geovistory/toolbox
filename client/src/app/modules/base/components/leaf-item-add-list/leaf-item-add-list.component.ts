@@ -4,7 +4,7 @@ import { AfterViewInit, Component, Input, OnInit, Output, EventEmitter } from '@
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { first, map, takeUntil, shareReplay, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
-import { ActiveProjectService, InfRole, InfTextProperty, PaginationObjectApi, EntityPreview } from '../../../../core';
+import { ActiveProjectService, InfStatement, InfTextProperty, PaginationObjectApi, EntityPreview } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { BasicRoleItem, Item, ItemList, ListDefinition, TextPropertyItem, EntityPreviewItem, LanguageItem, AppellationItem, PlaceItem, LangStringItem } from '../properties-tree/properties-tree.models';
@@ -66,7 +66,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       .includes(this.listDefinition.listType)) return;
 
     const relateBy = this.listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity';
-    const filterObject: Partial<InfRole> = {
+    const filterObject: Partial<InfStatement> = {
       [relateBy]: this.pkEntity,
       fk_property: this.listDefinition.property.pkProperty,
       fk_property_of_property: this.listDefinition.property.pkPropertyOfProperty
@@ -215,7 +215,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       )
     }
     else {
-      const roles: InfRole[] = this.selection.selected.map(option => (option as BasicRoleItem).role);
+      const roles: InfStatement[] = this.selection.selected.map(option => (option as BasicRoleItem).role);
       this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.role.upsert(roles, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
           this.close.emit()

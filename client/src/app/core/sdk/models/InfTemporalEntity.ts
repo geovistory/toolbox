@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole,
+  InfStatement,
   InfTextProperty
 } from '../index';
 
@@ -10,8 +10,8 @@ export interface InfTemporalEntityInterface {
   "fk_class": number;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  te_roles?: InfRole[];
-  ingoing_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
 }
 
@@ -19,8 +19,8 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
   "fk_class": number;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  te_roles?: InfRole[];
-  ingoing_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfTemporalEntityInterface) {
     Object.assign(this, data);
@@ -38,7 +38,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
   * @license MIT
   * This method creates an instance of InfTemporalEntity for dynamic purposes.
   **/
-  public static factory(data: InfTemporalEntityInterface): InfTemporalEntity{
+  public static factory(data: InfTemporalEntityInterface): InfTemporalEntity {
     return new InfTemporalEntity(data);
   }
   /**
@@ -70,7 +70,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         te_roles: {
@@ -78,7 +78,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_temporal_entity'
         },
         ingoing_roles: {
@@ -86,7 +86,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         text_properties: {
@@ -94,7 +94,7 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
           type: 'InfTextProperty[]',
           model: 'InfTextProperty',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_concerned_entity'
         },
       }

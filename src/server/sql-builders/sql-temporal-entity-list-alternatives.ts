@@ -83,7 +83,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
       -- roles
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')}
+          ${this.createSelect('t1', 'InfStatement')}
         FROM
           tw0 t1
         LIMIT ${this.addParam(limit)} -- add limit
@@ -105,7 +105,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
       -- outgoing_roles of temporal_entity
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')}
+          ${this.createSelect('t1', 'InfStatement')}
           --t1.fk_property,
           --t1.fk_entity,
           --t1.fk_temporal_entity,
@@ -187,7 +187,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM
           (
             SELECT

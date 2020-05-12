@@ -9,8 +9,8 @@ const models = require('../../server/server').models;
 var SqlEntityPreviewList = require('../../dist/server/sql-builders/sql-entity-preview-list')
   .SqlEntityPreviewList;
 
-module.exports = function(InfRole) {
-  InfRole.findOrCreateInfRoles = function(pk_project, roles, ctx) {
+module.exports = function(InfStatement) {
+  InfStatement.findOrCreateInfStatements = function(pk_project, roles, ctx) {
     return new Promise((resolve, reject) => {
       const promiseArray = roles.map((role, i) => {
         const context = {
@@ -23,7 +23,7 @@ module.exports = function(InfRole) {
           },
         };
 
-        return InfRole.findOrCreateInfRole(pk_project, role, context);
+        return InfStatement.findOrCreateInfStatement(pk_project, role, context);
       });
       Promise.map(promiseArray, promise => promise)
         .catch(err => reject(err))
@@ -33,7 +33,7 @@ module.exports = function(InfRole) {
     });
   };
 
-  InfRole.findOrCreateInfRole = function(pkProject, role, ctx) {
+  InfStatement.findOrCreateInfStatement = function(pkProject, role, ctx) {
     return new Promise((resolve, reject) => {
       // the model to find or create
       let model = {
@@ -66,8 +66,8 @@ module.exports = function(InfRole) {
             ...object.fk,
           };
 
-          InfRole._findOrCreateByValue(
-            InfRole,
+          InfStatement._findOrCreateByValue(
+            InfStatement,
             pkProject,
             model,
             requestedRole,
@@ -88,7 +88,7 @@ module.exports = function(InfRole) {
     });
   };
 
-  InfRole.alternativesNotInProjectByEntityPk = function(
+  InfStatement.alternativesNotInProjectByEntityPk = function(
     entityPk,
     propertyPk,
     pkProject,
@@ -240,13 +240,13 @@ module.exports = function(InfRole) {
         ]);
       }
 
-      return InfRole.findComplex(filter, cb);
+      return InfStatement.findComplex(filter, cb);
     };
 
-    InfRole.findComplex(rolesInProjectFilter, findThem);
+    InfStatement.findComplex(rolesInProjectFilter, findThem);
   };
 
-  InfRole.alternativesNotInProjectByTeEntPk = function(
+  InfStatement.alternativesNotInProjectByTeEntPk = function(
     teEntPk,
     propertyPk,
     pkProject,
@@ -371,14 +371,19 @@ module.exports = function(InfRole) {
         ]);
       }
 
-      return InfRole.findComplex(filter, cb);
+      return InfStatement.findComplex(filter, cb);
     };
 
-    InfRole.findComplex(rolesInProjectFilter, findThem);
+    InfStatement.findComplex(rolesInProjectFilter, findThem);
   };
 
-  InfRole.removeFromProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
-    const q = new SqlBuilderLbModels(InfRole.app.models);
+  InfStatement.removeFromProjectWithTeEnt = function(
+    pk_project,
+    pk_roles,
+    ctx,
+    cb
+  ) {
+    const q = new SqlBuilderLbModels(InfStatement.app.models);
 
     if (!ctx.req.accessToken.userId)
       return Error('AccessToken.userId is missing');
@@ -392,7 +397,7 @@ module.exports = function(InfRole) {
          .join(', ')}], $1, $2, false) t1;
     `;
 
-    const connector = InfRole.dataSource.connector;
+    const connector = InfStatement.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       if (err) return cb(err, resultObjects);
       cb(false, resultObjects);
@@ -408,7 +413,7 @@ module.exports = function(InfRole) {
    * @param pk_project
    * @param pk_typed_class
    */
-  InfRole.addToProject = function(pk_project, pk_roles, ctx, cb) {
+  InfStatement.addToProject = function(pk_project, pk_roles, ctx, cb) {
     if (!ctx.req.accessToken.userId)
       return Error('AccessToken.userId is missing');
     const accountId = ctx.req.accessToken.userId;
@@ -428,7 +433,7 @@ module.exports = function(InfRole) {
       from roles;
       `;
 
-    const connector = InfRole.dataSource.connector;
+    const connector = InfStatement.dataSource.connector;
     connector.execute(sql_stmt, params, (err, resultObjects) => {
       if (err) cb(err, resultObjects);
 
@@ -499,7 +504,7 @@ module.exports = function(InfRole) {
         },
       };
 
-      InfRole.findComplex(filter, cb);
+      InfStatement.findComplex(filter, cb);
     });
   };
 
@@ -507,7 +512,7 @@ module.exports = function(InfRole) {
    * load paginated list by roles, that point to an
    * entity_preview
    */
-  InfRole.paginatedListTargetingEntityPreviews = function(
+  InfStatement.paginatedListTargetingEntityPreviews = function(
     fkProject,
     fkSourceEntity,
     fkProperty,
@@ -517,7 +522,7 @@ module.exports = function(InfRole) {
     offset,
     cb
   ) {
-    const mainQuery = new SqlEntityPreviewList(InfRole.app.models).create(
+    const mainQuery = new SqlEntityPreviewList(InfStatement.app.models).create(
       fkProject,
       fkSourceEntity,
       fkProperty,
@@ -526,7 +531,7 @@ module.exports = function(InfRole) {
       limit,
       offset
     );
-    const connector = InfRole.dataSource.connector;
+    const connector = InfStatement.dataSource.connector;
     connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
       if (err) return cb(err);
       const item = result[0];
@@ -541,7 +546,7 @@ module.exports = function(InfRole) {
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the role
    */
-  InfRole.queryByParams = function(
+  InfStatement.queryByParams = function(
     ofProject,
     pkProject,
     pkEntity,
@@ -579,7 +584,7 @@ module.exports = function(InfRole) {
     };
 
     if (pkProject) {
-      const joinThisProject = InfRole.app.models.ProInfoProjRel.getJoinObject(
+      const joinThisProject = InfStatement.app.models.ProInfoProjRel.getJoinObject(
         ofProject,
         pkProject
       );
@@ -589,7 +594,7 @@ module.exports = function(InfRole) {
       };
     }
 
-    return InfRole.findComplex(filter, (err, res) => {
+    return InfStatement.findComplex(filter, (err, res) => {
       if (err) cb(err);
       res.forEach(role => {
         role.fk_subject_tables_row = parseInt(role.fk_subject_tables_row, 10);
@@ -605,13 +610,13 @@ module.exports = function(InfRole) {
    * Get an nested object with everything needed to display the
    * links made from an entity towards sources and digitals.
    */
-  InfRole.sourcesAndDigitalsOfEntity = function(
+  InfStatement.sourcesAndDigitalsOfEntity = function(
     ofProject,
     pkProject,
     pkEntity,
     cb
   ) {
-    const joinThisProject = InfRole.app.models.ProInfoProjRel.getJoinObject(
+    const joinThisProject = InfStatement.app.models.ProInfoProjRel.getJoinObject(
       ofProject,
       pkProject
     );
@@ -634,7 +639,7 @@ module.exports = function(InfRole) {
       },
     };
 
-    return InfRole.findComplex(filter, (err, roles) => {
+    return InfStatement.findComplex(filter, (err, roles) => {
       if (err) return cb(err);
 
       const textPks = _.uniq(
@@ -645,7 +650,7 @@ module.exports = function(InfRole) {
 
       if (!textPks.length) return cb(null, roles);
 
-      InfRole.app.models.DatDigital.findComplex(
+      InfStatement.app.models.DatDigital.findComplex(
         {
           where: ['pk_text', 'IN', textPks],
         },
@@ -778,7 +783,7 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
     else if (hasRelatedModel(requestedRole.subject_inf_role)) {
       //create the subject first
 
-      return models.InfRole.findOrCreateInfRole(
+      return models.InfStatement.findOrCreateInfStatement(
         pkProject,
         requestedRole.subject_inf_role,
         ctxWithoutBody
@@ -1022,7 +1027,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     }
   });
 
-  // InfRole.nestedObjectsOfProject = function(pk_project, pk_roles, cb) {
+  // InfStatement.nestedObjectsOfProject = function(pk_project, pk_roles, cb) {
   //   const innerJoinThisProject = {
   //     $relation: {
   //       name: 'entity_version_project_rels',
@@ -1114,7 +1119,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
   //     },
   //   };
 
-  //   InfRole.findComplex(filter, cb);
+  //   InfStatement.findComplex(filter, cb);
   // };
 
   // /**
@@ -1134,7 +1139,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
   //  * @param pk_project
   //  * @param pk_typed_class
   //  */
-  // InfRole.addToProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
+  // InfStatement.addToProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
   //   if (!ctx.req.accessToken.userId)
   //     return Error('AccessToken.userId is missing');
   //   const accountId = ctx.req.accessToken.userId;
@@ -1146,11 +1151,11 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
   //       .join(', ')}], $1, $2, true);
   //   `;
 
-  //   const connector = InfRole.dataSource.connector;
+  //   const connector = InfStatement.dataSource.connector;
   //   connector.execute(sql_stmt, params, (err, resultObjects) => {
   //     if (err) return cb(err, resultObjects);
 
-  //     InfRole.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
+  //     InfStatement.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
   //       cb(err, result);
   //     });
   //   });

@@ -5,11 +5,11 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
+import { LoopBackFilter, } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfRole } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfRole';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
@@ -28,7 +28,7 @@ import { InfPlace } from '../../models/InfPlace';
  * Api services for the `InfRole` model.
  */
 @Injectable()
-export class InfRoleApi extends BaseLoopBackApi {
+export class InfStatementApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -37,7 +37,7 @@ export class InfRoleApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http,  connection,  models, auth, errorHandler);
+    super(http, connection, models, auth, errorHandler);
   }
 
   /**
@@ -69,7 +69,7 @@ export class InfRoleApi extends BaseLoopBackApi {
   public paginatedListTargetingEntityPreviews(pkProject: any, pkSourceEntity: any, pkProperty: any, pkTargetClass: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfRoles/paginated-list-targeting-entity-previews";
+      "/InfRoles/paginated-list-targeting-entity-previews";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -102,10 +102,10 @@ export class InfRoleApi extends BaseLoopBackApi {
    * This usually means the response is a `InfRole` object.)
    * </em>
    */
-  public findOrCreateInfRoles(pk_project: any, data: any, customHeaders?: Function): Observable<InfRole[]> {
+  public findOrCreateInfRoles(pk_project: any, data: any, customHeaders?: Function): Observable<InfStatement[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfRoles/find-or-create-many";
+      "/InfRoles/find-or-create-many";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -113,8 +113,8 @@ export class InfRoleApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<InfRole>) =>
-        instances.map((instance: InfRole) => new InfRole(instance))
+    return result.pipe(map((instances: Array<InfStatement>) =>
+      instances.map((instance: InfStatement) => new InfStatement(instance))
     ));
   }
 
@@ -139,7 +139,7 @@ export class InfRoleApi extends BaseLoopBackApi {
   public alternativesNotInProjectByEntityPk(entityPk: any, propertyPk: any, pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfRoles/alternatives-not-in-project-by-entity-pk";
+      "/InfRoles/alternatives-not-in-project-by-entity-pk";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -171,7 +171,7 @@ export class InfRoleApi extends BaseLoopBackApi {
   public alternativesNotInProjectByTeEntPk(teEntPk: any, propertyPk: any, pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfRoles/alternatives-not-in-project-by-te-ent-pk";
+      "/InfRoles/alternatives-not-in-project-by-te-ent-pk";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -203,7 +203,7 @@ export class InfRoleApi extends BaseLoopBackApi {
   public sourcesAndDigitalsOfEntity(ofProject: any, pkProject: any = {}, pkEntity: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfRoles/sources-and-digitals-of-entity";
+      "/InfRoles/sources-and-digitals-of-entity";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -241,7 +241,7 @@ export class InfRoleApi extends BaseLoopBackApi {
   public queryByParams(ofProject: any, pkProject: any = {}, pkEntity: any = {}, pkInfoRange: any = {}, pkInfoDomain: any = {}, pkProperty: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfRoles/find-by-params";
+      "/InfRoles/find-by-params";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

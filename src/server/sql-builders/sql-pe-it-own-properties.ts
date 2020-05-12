@@ -59,7 +59,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
       -- has type role
       tw5 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
         FROM
           tw1
@@ -129,7 +129,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM (
             SELECT * FROM tw5
           ) AS t1

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, IAppState, InfRole, ProInfoProjRel } from 'app/core';
+import { ActiveProjectService, IAppState, InfStatement, ProInfoProjRel } from 'app/core';
 import { PaginateByParam } from 'app/core/store/actions';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
@@ -56,7 +56,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   targetIsUnique: boolean;
 
-  rolesByPk: ByPk<InfRole> = {}
+  rolesByPk: ByPk<InfStatement> = {}
 
   constructor(
     public p: ActiveProjectService,
@@ -201,7 +201,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
         // prepare api call to add related temporal entity
         const r = this.rolesByPk[pk]
-        const entityToAdd = this.listDefinition.isOutgoing ? r.fk_entity : r.fk_temporal_entity;
+        const entityToAdd = this.listDefinition.isOutgoing ? r.fk_object_info : r.fk_subject_info;
 
         // add api call to array
         obs$.push(this.s.store(this.s.api.addEntityToProject(pkProject, entityToAdd), pkProject))

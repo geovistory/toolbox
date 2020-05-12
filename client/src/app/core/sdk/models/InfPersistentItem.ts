@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole,
+  InfStatement,
   DfhClass,
   InfTextProperty
 } from '../index';
@@ -11,8 +11,8 @@ export interface InfPersistentItemInterface {
   "fk_class": number;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  pi_roles?: InfRole[];
-  te_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
+  outgoing_statements?: InfStatement[];
   dfh_class?: DfhClass;
   text_properties?: InfTextProperty[];
 }
@@ -21,8 +21,8 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   "fk_class": number;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  pi_roles?: InfRole[];
-  te_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
+  outgoing_statements?: InfStatement[];
   dfh_class?: DfhClass;
   text_properties?: InfTextProperty[];
   constructor(data?: InfPersistentItemInterface) {
@@ -41,7 +41,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   * @license MIT
   * This method creates an instance of InfPersistentItem for dynamic purposes.
   **/
-  public static factory(data: InfPersistentItemInterface): InfPersistentItem{
+  public static factory(data: InfPersistentItemInterface): InfPersistentItem {
     return new InfPersistentItem(data);
   }
   /**
@@ -73,7 +73,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         pi_roles: {
@@ -81,7 +81,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         te_roles: {
@@ -89,7 +89,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_temporal_entity'
         },
         dfh_class: {
@@ -97,7 +97,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'DfhClass',
           model: 'DfhClass',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_class',
+          keyFrom: 'fk_class',
           keyTo: 'pk_class'
         },
         text_properties: {
@@ -105,7 +105,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'InfTextProperty[]',
           model: 'InfTextProperty',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_concerned_entity'
         },
       }

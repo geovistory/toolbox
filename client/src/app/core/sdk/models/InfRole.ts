@@ -14,14 +14,14 @@ import {
 } from '../index';
 
 declare var Object: any;
-export interface InfRoleInterface {
-  "fk_temporal_entity"?: number;
+export interface InfStatementInterface {
+  "fk_subject_info"?: number;
   "fk_subject_data"?: number;
   "fk_subject_tables_cell"?: number;
   "fk_subject_tables_row"?: number;
   "fk_property"?: number;
   "fk_property_of_property"?: number;
-  "fk_entity"?: number;
+  "fk_object_info"?: number;
   "fk_object_data"?: number;
   "fk_object_tables_cell"?: number;
   "fk_object_tables_row"?: number;
@@ -30,32 +30,32 @@ export interface InfRoleInterface {
   "community_favorite_calendar"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  range_temporal_entity?: InfTemporalEntity;
-  appellation?: InfAppellation;
-  lang_string?: InfLangString;
-  temporal_entity?: InfTemporalEntity;
+  object_temporal_entity?: InfTemporalEntity;
+  object_appellation?: InfAppellation;
+  object_lang_string?: InfLangString;
+  subject_temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
-  domain_chunk?: DatChunk;
-  range_chunk?: DatChunk;
-  domain_digital?: DatDigital;
-  subject_inf_role?: InfRole;
-  language?: InfLanguage;
-  persistent_item?: InfPersistentItem;
-  domain_pe_it?: InfPersistentItem;
-  range_pe_it?: InfPersistentItem;
-  time_primitive?: InfTimePrimitive;
-  place?: InfPlace;
+  subject_chunk?: DatChunk;
+  object_chunk?: DatChunk;
+  subject_digital?: DatDigital;
+  subject_statement?: InfStatement;
+  object_language?: InfLanguage;
+  object_persistent_item?: InfPersistentItem;
+  subject_persistent_item?: InfPersistentItem;
+  object_persistent_item?: InfPersistentItem;
+  object_time_primitive?: InfTimePrimitive;
+  object_place?: InfPlace;
 }
 
-export class InfRole implements InfRoleInterface {
-  "fk_temporal_entity": number;
+export class InfStatement implements InfStatementInterface {
+  "fk_subject_info": number;
   "fk_subject_data": number;
   "fk_subject_tables_cell": number;
   "fk_subject_tables_row": number;
   "fk_property": number;
   "fk_property_of_property": number;
-  "fk_entity": number;
+  "fk_object_info": number;
   "fk_object_data": number;
   "fk_object_tables_cell": number;
   "fk_object_tables_row": number;
@@ -64,23 +64,23 @@ export class InfRole implements InfRoleInterface {
   "community_favorite_calendar": string;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  range_temporal_entity?: InfTemporalEntity;
-  appellation?: InfAppellation;
-  lang_string?: InfLangString;
-  temporal_entity?: InfTemporalEntity;
+  object_temporal_entity?: InfTemporalEntity;
+  object_appellation?: InfAppellation;
+  object_lang_string?: InfLangString;
+  subject_temporal_entity?: InfTemporalEntity;
   persistent_item_preview?: WarEntityPreview;
   temporal_entity_preview?: WarEntityPreview;
-  domain_chunk?: DatChunk;
-  range_chunk?: DatChunk;
-  domain_digital?: DatDigital;
-  subject_inf_role?: InfRole;
-  language?: InfLanguage;
-  persistent_item?: InfPersistentItem;
-  domain_pe_it?: InfPersistentItem;
-  range_pe_it?: InfPersistentItem;
-  time_primitive?: InfTimePrimitive;
-  place?: InfPlace;
-  constructor(data?: InfRoleInterface) {
+  subject_chunk?: DatChunk;
+  object_chunk?: DatChunk;
+  subject_digital?: DatDigital;
+  subject_statement?: InfStatement;
+  object_language?: InfLanguage;
+  object_persistent_item?: InfPersistentItem;
+  subject_persistent_item?: InfPersistentItem;
+  object_persistent_item?: InfPersistentItem;
+  object_time_primitive?: InfTimePrimitive;
+  object_place?: InfPlace;
+  constructor(data?: InfStatementInterface) {
     Object.assign(this, data);
   }
   /**
@@ -96,8 +96,8 @@ export class InfRole implements InfRoleInterface {
   * @license MIT
   * This method creates an instance of InfRole for dynamic purposes.
   **/
-  public static factory(data: InfRoleInterface): InfRole{
-    return new InfRole(data);
+  public static factory(data: InfStatementInterface): InfStatement {
+    return new InfStatement(data);
   }
   /**
   * @method getModelDefinition
@@ -186,7 +186,7 @@ export class InfRole implements InfRoleInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         range_temporal_entity: {
@@ -194,7 +194,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfTemporalEntity',
           model: 'InfTemporalEntity',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         appellation: {
@@ -202,7 +202,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfAppellation',
           model: 'InfAppellation',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         lang_string: {
@@ -210,7 +210,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfLangString',
           model: 'InfLangString',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         temporal_entity: {
@@ -218,7 +218,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfTemporalEntity',
           model: 'InfTemporalEntity',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_temporal_entity',
+          keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
         persistent_item_preview: {
@@ -226,7 +226,7 @@ export class InfRole implements InfRoleInterface {
           type: 'WarEntityPreview',
           model: 'WarEntityPreview',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         temporal_entity_preview: {
@@ -234,7 +234,7 @@ export class InfRole implements InfRoleInterface {
           type: 'WarEntityPreview',
           model: 'WarEntityPreview',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_temporal_entity',
+          keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
         domain_chunk: {
@@ -242,7 +242,7 @@ export class InfRole implements InfRoleInterface {
           type: 'DatChunk',
           model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_subject_data',
+          keyFrom: 'fk_subject_data',
           keyTo: 'pk_entity'
         },
         range_chunk: {
@@ -250,7 +250,7 @@ export class InfRole implements InfRoleInterface {
           type: 'DatChunk',
           model: 'DatChunk',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_data',
+          keyFrom: 'fk_object_data',
           keyTo: 'pk_entity'
         },
         domain_digital: {
@@ -258,7 +258,7 @@ export class InfRole implements InfRoleInterface {
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_data',
+          keyFrom: 'fk_object_data',
           keyTo: 'pk_entity'
         },
         subject_inf_role: {
@@ -266,7 +266,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfRole',
           model: 'InfRole',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_temporal_entity',
+          keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
         language: {
@@ -274,7 +274,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfLanguage',
           model: 'InfLanguage',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         persistent_item: {
@@ -282,7 +282,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         domain_pe_it: {
@@ -290,7 +290,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_temporal_entity',
+          keyFrom: 'fk_temporal_entity',
           keyTo: 'pk_entity'
         },
         range_pe_it: {
@@ -298,7 +298,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         time_primitive: {
@@ -306,7 +306,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfTimePrimitive',
           model: 'InfTimePrimitive',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
         place: {
@@ -314,7 +314,7 @@ export class InfRole implements InfRoleInterface {
           type: 'InfPlace',
           model: 'InfPlace',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_entity',
+          keyFrom: 'fk_entity',
           keyTo: 'pk_entity'
         },
       }

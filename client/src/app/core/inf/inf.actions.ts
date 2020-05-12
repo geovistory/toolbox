@@ -2,7 +2,7 @@
 import { filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { StandardActionsFactory, LoadActionMeta, ActionResultObservable, SucceedActionMeta, ModifyActionMeta } from 'app/core/store/actions';
-import { InfPersistentItem, InfRole, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString } from '../sdk';
+import { InfPersistentItem, InfStatement, InfTemporalEntity, InfAppellation, InfPlace, InfTimePrimitive, InfTextProperty, InfLanguage, DatDigital, InfLangString } from '../sdk';
 import { NgRedux } from '@angular-redux/store';
 import { IAppState, U } from 'app/core';
 import { InfPersistentItemSlice } from './inf.models';
@@ -210,7 +210,7 @@ export interface SourcesAndDigitalsOfEntity extends LoadActionMeta {
   pkEntity: number,
 }
 export interface SourcesAndDigitalsOfEntityResult {
-  roles: InfRole[],
+  roles: InfStatement[],
   digitals: DatDigital[],
 }
 
@@ -219,7 +219,7 @@ export interface LoadOutgoingAlternativeRoles extends LoadActionMeta { pkTempora
 export interface LoadIngoingAlternativeRoles extends LoadActionMeta { pkEntity: number, pkProperty: number };
 export interface AddToProjectWithTeEntActionMeta { pkRoles: number[], pk: number, addPending: string };
 
-export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
+export class InfStatementActionFactory extends InfActionFactory<Payload, InfStatement> {
 
   // Suffixes of load action types
   // static readonly ALTERNATIVES_OUTGOING = 'ALTERNATIVES_OUTGOING';
@@ -230,9 +230,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
   static readonly SOURCES_AND_DIGITALS_OF_ENTITY = 'SOURCES_AND_DIGITALS_OF_ENTITY';
   static readonly BY_PARAMS = 'BY_PARAMS';
 
-  // loadOutgoingAlternatives: (pkTemporalEntity, pkProperty, pkProject) => ActionResultObservable<InfRole>;
-  loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfRole>;
-  // addToProjectWithTeEnt: (pkRoles: number[], pkProject: number) => ActionResultObservable<InfRole>;
+  loadIngoingAlternatives: (pkEntity, pkProperty, pkProjec) => ActionResultObservable<InfStatement>;
   loadPaginatedList: (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => ActionResultObservable<PaginatedRolesList>;
 
   // contentTree: (pkProject: number, pkExpressionEntity: number) => void;
@@ -248,7 +246,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
-  createActions(): InfRoleActionFactory {
+  createActions(): InfStatementActionFactory {
     Object.assign(this, this.createInfActions(infRoot, 'role'))
 
     this.findByParams = (
@@ -260,7 +258,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
       pkProperty: number,
     ) => {
       const action: FluxStandardAction<Payload, FindRoleByParams> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.BY_PARAMS,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.BY_PARAMS,
         meta: {
           addPending: U.uuid(),
           pk: pkProject,
@@ -276,30 +274,10 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
     }
 
 
-    // this.loadOutgoingAlternatives = (pkTemporalEntity: number, pkProperty: number, pkProject: number) => {
-    //   const addPending = U.uuid()
-    //   const action: FluxStandardAction<Payload, LoadOutgoingAlternativeRoles> = {
-    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.ALTERNATIVES_OUTGOING,
-    //     meta: {
-    //       addPending,
-    //       pk: pkProject,
-    //       pkTemporalEntity,
-    //       pkProperty,
-    //     },
-    //     payload: null,
-    //   };
-    //   this.ngRedux.dispatch(action)
-    //   return {
-    //     pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-    //     resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
-    //     key: addPending
-    //   };
-    // }
-
     this.loadIngoingAlternatives = (pkEntity: number, pkProperty: number, pkProject: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadIngoingAlternativeRoles> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.ALTERNATIVES_INGOING,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.ALTERNATIVES_INGOING,
         meta: {
           addPending,
           pk: pkProject,
@@ -311,34 +289,16 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
       this.ngRedux.dispatch(action)
       return {
         pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-        resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
+        resolved$: this.ngRedux.select<SucceedActionMeta<InfStatement>>(['resolved', addPending]).pipe(filter(x => !!x)),
         key: addPending
       };
     }
 
-    // this.addToProjectWithTeEnt = (pkRoles: number[], pkProject: number) => {
-    //   const addPending = U.uuid()
-    //   const action: FluxStandardAction<Payload, AddToProjectWithTeEntActionMeta> = {
-    //     type: this.actionPrefix + '.' + this.modelName + '::UPSERT' + '::' + InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
-    //     meta: {
-    //       addPending,
-    //       pk: pkProject,
-    //       pkRoles
-    //     },
-    //     payload: null,
-    //   };
-    //   this.ngRedux.dispatch(action)
-    //   return {
-    //     pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-    //     resolved$: this.ngRedux.select<SucceedActionMeta<InfRole>>(['resolved', addPending]).pipe(filter(x => !!x)),
-    //     key: addPending
-    //   };
-    // }
 
     this.loadPaginatedList = (pkProject: number, pkSourceEntity: number, pkProperty: number, fkTargetClass: number, isOutgoing: boolean, limit: number, offset: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, LoadPaginatedRoleListMeta> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.PAGINATED_LIST,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.PAGINATED_LIST,
         meta: {
           addPending,
           pk: pkProject,
@@ -361,23 +321,6 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
     }
 
 
-
-    // /**
-    //  * Loads the hierarchy of an F2 Expression's content
-    //  */
-    // this.contentTree = (pkProject, pkExpressionEntity) => {
-    //   const action: FluxStandardAction<Payload, ContentTreeMeta> = {
-    //     type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.CONTENT_TREE,
-    //     meta: {
-    //       addPending: U.uuid(),
-    //       pk: pkProject,
-    //       pkExpressionEntity
-    //     },
-    //     payload: null,
-    //   };
-    //   this.ngRedux.dispatch(action)
-    // }
-
     /**
     * Get an nested object with everything needed to display the
     * links made from an entity towards sources and digitals.
@@ -385,7 +328,7 @@ export class InfRoleActionFactory extends InfActionFactory<Payload, InfRole> {
     this.sourcesAndDigitalsOfEntity = (ofProject: boolean, pkProject: number, pkEntity: number) => {
       const addPending = U.uuid()
       const action: FluxStandardAction<Payload, SourcesAndDigitalsOfEntity> = {
-        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfRoleActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
+        type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + InfStatementActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
         meta: {
           addPending,
           ofProject,
@@ -451,7 +394,7 @@ export class InfActions {
 
   persistent_item = new InfPersistentItemActionFactory(this.ngRedux).createActions();
   temporal_entity = new InfTemporalEntityActionFactory(this.ngRedux).createActions()
-  role = new InfRoleActionFactory(this.ngRedux).createActions()
+  role = new InfStatementActionFactory(this.ngRedux).createActions()
 
   // TODO: pimp those up to real Inf Actions!
   language = new StandardActionsFactory<Payload, InfLanguage>(this.ngRedux).createCrudActions(infRoot, 'language')

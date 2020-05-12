@@ -1,6 +1,6 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, InfRoleApi } from 'app/core';
+import { ActiveProjectService, InfStatementApi } from 'app/core';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { PageEvent } from '../../../../../../node_modules/@angular/material';
@@ -58,7 +58,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     public t: PropertiesTreeService,
     public i: InformationPipesService,
     public inf: InfActions,
-    public roleApi: InfRoleApi,
+    public roleApi: InfStatementApi,
     private paginationService: PaginationService,
     private listDialog: EntityPreviewsPaginatedDialogService
   ) {
@@ -150,7 +150,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   }
 
   openList(cell: TemporalEntityCell) {
-    const pkEntities = cell.items.map(i => cell.isOutgoing ? i.role.fk_entity : i.role.fk_temporal_entity)
+    const pkEntities = cell.items.map(i => cell.isOutgoing ? i.role.fk_object_info : i.role.fk_subject_info)
     this.listDialog.open(true, pkEntities, 'Items')
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { InfRole, ActiveProjectService } from 'app/core';
+import { InfStatement, ActiveProjectService } from 'app/core';
 import { PropertiesTreeService } from 'app/modules/base/components/properties-tree/properties-tree.service';
 import { FieldDefinition, ListDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
@@ -9,7 +9,7 @@ import { first, takeUntil } from 'rxjs/operators';
 export interface RamListRemoveDialogData {
 
   // the root statement of the dialog
-  statement: InfRole;
+  statement: InfStatement;
 
   propertyLabel: string;
 

@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { InfRole, InfTextProperty } from "../sdk";
+import { InfStatement, InfTextProperty } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
@@ -40,31 +40,31 @@ export const infDefinitions: ReducerConfigCollection = {
     // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
-      indexByFn: (item) => {
+      indexByFn: (item: InfStatement) => {
         return item.pk_entity.toString()
       }
     },
     groupBy: [
       {
         keyInStore: 'subject',
-        groupByFn: (d: InfRole): string => indexRoleBySubject(d)
+        groupByFn: (d: InfStatement): string => indexRoleBySubject(d)
       },
       {
         keyInStore: 'subject+property',
-        groupByFn: (d: InfRole): string => indexRoleBySubjectProperty(d)
+        groupByFn: (d: InfStatement): string => indexRoleBySubjectProperty(d)
       },
       {
         keyInStore: 'object',
-        groupByFn: (d: InfRole): string => indexRoleByObject(d)
+        groupByFn: (d: InfStatement): string => indexRoleByObject(d)
       },
       {
         keyInStore: 'object+property',
-        groupByFn: (d: InfRole): string => indexRoleByObjectProperty(d)
+        groupByFn: (d: InfStatement): string => indexRoleByObjectProperty(d)
       },
 
       {
         keyInStore: 'fk_subject_data',
-        groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_subject_data)
+        groupByFn: (d: InfStatement): string => U.toStr0undef(d.fk_subject_data)
       },
     ]
   },

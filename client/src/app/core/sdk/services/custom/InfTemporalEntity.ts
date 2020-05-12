@@ -5,14 +5,14 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
+import { LoopBackFilter, } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { InfRole } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfRole';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
 
@@ -29,7 +29,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http,  connection,  models, auth, errorHandler);
+    super(http, connection, models, auth, errorHandler);
   }
 
   /**
@@ -53,7 +53,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   public findOrCreateInfTemporalEntities(pk_project: any, data: any, customHeaders?: Function): Observable<InfTemporalEntity[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/find-or-create-many";
+      "/InfTemporalEntities/find-or-create-many";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -62,7 +62,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfTemporalEntity>) =>
-        instances.map((instance: InfTemporalEntity) => new InfTemporalEntity(instance))
+      instances.map((instance: InfTemporalEntity) => new InfTemporalEntity(instance))
     ));
   }
 
@@ -95,7 +95,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   public alternativeTemporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, pkTargetClass: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/paginated-list-alternatives";
+      "/InfTemporalEntities/paginated-list-alternatives";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -139,7 +139,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   public temporalEntityList(pkProject: any, pkSourceEntity: any, pkProperty: any, pkTargetClass: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/paginated-list";
+      "/InfTemporalEntities/paginated-list";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -173,7 +173,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   public ownProperties(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/own-properties";
+      "/InfTemporalEntities/own-properties";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -204,7 +204,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   public findOrCreateInfTemporalEntity(pkProject: any, data: any, customHeaders?: Function): Observable<InfTemporalEntity[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/findOrCreate";
+      "/InfTemporalEntities/findOrCreate";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -213,7 +213,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfTemporalEntity>) =>
-        instances.map((instance: InfTemporalEntity) => new InfTemporalEntity(instance))
+      instances.map((instance: InfTemporalEntity) => new InfTemporalEntity(instance))
     ));
   }
 
@@ -240,7 +240,7 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   public changeTeEntProjectRelation(pkProject: any, isInProject: any, data: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/change-project-relation";
+      "/InfTemporalEntities/change-project-relation";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data

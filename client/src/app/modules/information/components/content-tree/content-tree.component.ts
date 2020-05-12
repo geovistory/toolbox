@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ActiveProjectService, DatDigital, InfRole, latestVersion, switchMapOr, SysConfig, EntityPreview } from 'app/core';
+import { ActiveProjectService, DatDigital, InfStatement, latestVersion, switchMapOr, SysConfig, EntityPreview } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
@@ -23,7 +23,7 @@ import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '
 interface RoleNode {
 
   // the role
-  role: InfRole;
+  role: InfStatement;
 
   // the name of the node, being tha favorite appellation of Expression Portion or some symbol for Digitals
   // name: string;
@@ -44,7 +44,7 @@ interface RoleNode {
 }
 
 export interface ContentTreeNode {
-  role: InfRole;
+  role: InfStatement;
   expandable: boolean;
   // name: string;
   isDigital: boolean;
@@ -216,7 +216,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     )
 
     const pkType$ = hasTypeRole$.pipe(
-      map(e => e ? e.fk_entity : undefined)
+      map(e => e ? e.fk_object_info : undefined)
     )
     const typeLabel$ = pkType$.pipe(
       switchMap(pkType => this.labelOfEntity(pkType)),
@@ -245,12 +245,12 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           // Observe the children of this node
           const sections$ = combineLatestOrEmpty(isPartOfRoles.map(role => {
             const node$: Observable<RoleNode> = combineLatest(
-              this.observeChildren(role.fk_temporal_entity)
+              this.observeChildren(role.fk_subject_info)
             ).pipe(
               map(([children]) => ({
                 role,
                 isDigital: false,
-                pkEntity: role.fk_temporal_entity,
+                pkEntity: role.fk_subject_info,
                 pkDigital: undefined,
                 children
               }))
@@ -302,7 +302,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           if (xs.length !== 1) console.warn('number of expressions must be one');
         }),
         filter((xs) => xs.length > 0),
-        map((x) => x[0].fk_temporal_entity)
+        map((x) => x[0].fk_subject_info)
       );
   }
 
@@ -321,7 +321,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           // if (xs.length !== 1) console.warn('number of expressions must be one');
         }),
         filter((xs) => xs.length > 0),
-        map((x) => x[0].fk_entity)
+        map((x) => x[0].fk_object_info)
       );
   }
 
@@ -401,10 +401,10 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   parentOfDraggedChanged = (parent: ContentTreeNode, dragged: ContentTreeNode): boolean => {
     if (this.dragNodeExpandOverArea === 'above') {
-      return dragged.role.fk_entity !== parent.role.fk_entity;
+      return dragged.role.fk_object_info !== parent.role.fk_object_info;
     }
     else {
-      return dragged.role.fk_entity !== parent.role.fk_temporal_entity;
+      return dragged.role.fk_object_info !== parent.role.fk_subject_info;
     }
   }
 
@@ -446,7 +446,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.dragNodeExpandOverTime = 0;
   }
 
-  prepareNewEntityAssociatoin(dropNode: ContentTreeNode, draggedNode: ContentTreeNode, pkExpression: number): InfRole {
+  prepareNewEntityAssociatoin(dropNode: ContentTreeNode, draggedNode: ContentTreeNode, pkExpression: number): InfStatement {
 
     let fk_entity: number; // parent pk
     let parentIsF2Expression: boolean;
@@ -454,14 +454,14 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
     if (this.dragNodeExpandOverArea === 'above') {
       // take the parent of the target node as new parent of the dragged node
-      fk_entity = dropNode.role.fk_entity;
+      fk_entity = dropNode.role.fk_object_info;
       parentIsF2Expression = (pkExpression == fk_entity);
     }
     //  else if (this.dragNodeExpandOverArea === 'below') {
     // }
     else {
       // take the target node as new parent of the dragged node
-      fk_entity = dropNode.role.fk_temporal_entity;
+      fk_entity = dropNode.role.fk_subject_info;
     }
 
 
@@ -472,11 +472,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     }
 
     return {
-      fk_entity,
-      fk_temporal_entity: draggedNode.role.fk_temporal_entity,
+      fk_object_info,
+      fk_subject_info: draggedNode.role.fk_subject_info,
       fk_subject_data: draggedNode.role.fk_subject_data,
       fk_property
-    } as InfRole;
+    } as InfStatement;
   }
 
   /**
@@ -540,9 +540,9 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
             this.inf.role.upsert([{
               fk_subject_data: resolved.items[0].pk_entity,
-              fk_entity: pkParent,
+              fk_object_info: pkParent,
               fk_property: this.isReproProp(parentIsF2Expression)
-            } as InfRole], pkProject)
+            } as InfStatement], pkProject)
 
           }
         })
@@ -570,10 +570,10 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         this.inf.persistent_item.loadMinimal(pkProject, result.pkEntity)
 
         this.inf.role.upsert([{
-          fk_temporal_entity: result.pkEntity,
-          fk_entity: pkParent,
+          fk_subject_info: result.pkEntity,
+          fk_object_info: pkParent,
           fk_property: this.isPartOfProp(parentIsF2Expression)
-        } as InfRole], pkProject)
+        } as InfStatement], pkProject)
 
       })
     })
@@ -656,7 +656,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   openExpressionPortion(node: ContentTreeNode) {
     this.p.addEntityTab(
-      node.role.fk_temporal_entity,
+      node.role.fk_subject_info,
       DfhConfig.CLASS_PK_EXPRESSION_PORTION,
       'peIt'
     )

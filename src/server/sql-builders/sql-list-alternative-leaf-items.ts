@@ -46,14 +46,14 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       WITH
       -- alternative roles (that are in at least one other project)
       tw0 AS (
-        SELECT ${this.createSelect('t1', 'InfRole')}
+        SELECT ${this.createSelect('t1', 'InfStatement')}
         FROM
         information.v_role t1
         WHERE ${[
         ...this.getFiltersByObject('t1', filterObject),
         't1.is_in_project_count > 0'].join(' AND ')}
       EXCEPT
-        SELECT ${this.createSelect('t1', 'InfRole')}
+        SELECT ${this.createSelect('t1', 'InfStatement')}
         FROM
         information.v_role t1,
         projects.info_proj_rel t2
@@ -76,7 +76,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       -- roles
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')}
+          ${this.createSelect('t1', 'InfStatement')}
         FROM
           tw0 t1
           LIMIT ${this.addParam(limit)} -- add limit
@@ -172,7 +172,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM
           (
             SELECT * FROM tw2

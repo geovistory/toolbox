@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService, InfRole, InfTemporalEntityApi } from 'app/core';
+import { ActiveProjectService, InfStatement, InfTemporalEntityApi } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
@@ -79,13 +79,13 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.loading$.next(true)
 
     // create the role to add
-    const r: Partial<InfRole> = {}
+    const r: Partial<InfStatement> = {}
     if (lDef.isOutgoing) {
-      r.fk_temporal_entity = this.data.pkEntity
-      r.fk_entity = pkEntity
+      r.fk_subject_info = this.data.pkEntity
+      r.fk_object_info = pkEntity
     } else {
-      r.fk_entity = this.data.pkEntity
-      r.fk_temporal_entity = pkEntity
+      r.fk_object_info = this.data.pkEntity
+      r.fk_subject_info = pkEntity
     }
     r.fk_property = lDef.property.pkProperty;
     r.fk_property_of_property = lDef.property.pkPropertyOfProperty;

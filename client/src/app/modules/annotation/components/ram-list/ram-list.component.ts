@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ActiveProjectService, InfRole, switchMapOr, EntityPreview } from 'app/core';
+import { ActiveProjectService, InfStatement, switchMapOr, EntityPreview } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { values, equals } from 'ramda';
@@ -30,7 +30,7 @@ interface AnnotatedText {
 }
 export interface RamListItem {
   // the statement (role) connecting source and target
-  statement: InfRole
+  statement: InfStatement
   // the path of the source (is part of, etc)
   path: GraphPath;
   // the exact reference
@@ -121,7 +121,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   private pipeItems(): Observable<RamListItem[]> {
 
     // the roles associating the root entity with the next items
-    const basicRoles$: Observable<InfRole[]> = this.p.inf$.role$.by_object_and_property$({
+    const basicRoles$: Observable<InfStatement[]> = this.p.inf$.role$.by_object_and_property$({
       fk_property: this.fkProperty,
       fk_entity: this.pkEntity
     }).pipe(
@@ -130,7 +130,7 @@ export class RamListComponent implements OnInit, OnDestroy {
       tap((s) => {
 
       }),
-      distinctUntilChanged<InfRole[]>(equals),
+      distinctUntilChanged<InfStatement[]>(equals),
       tap((s) => {
 
       }),
@@ -171,7 +171,7 @@ export class RamListComponent implements OnInit, OnDestroy {
 
                           if (rolesToExpression.length < 1) return new BehaviorSubject(item)
 
-                          return this.pipePathRecursivly(rolesToExpression[0].fk_entity, '').pipe(
+                          return this.pipePathRecursivly(rolesToExpression[0].fk_object_info, '').pipe(
                             map((path) => {
                               const annotatedText: AnnotatedText = {
                                 label: this.quillPipe.transform(chunk.quill_doc.ops)
@@ -226,7 +226,7 @@ export class RamListComponent implements OnInit, OnDestroy {
           // I map the input value to a Observable and switchMap will subscribe to the new one
           const rowsArray$: Observable<RamListItem>[] = basicRoles.map(role => {
             return combineLatest(
-              this.pipePathRecursivly(role.fk_temporal_entity, prefix),
+              this.pipePathRecursivly(role.fk_subject_info, prefix),
               this.getReference(role.pk_entity)
             ).pipe(
               map(([path, location]) => {
@@ -255,7 +255,7 @@ export class RamListComponent implements OnInit, OnDestroy {
         switchMap((roles) => {
           if (roles.length < 1) return new BehaviorSubject(undefined);
           return combineLatest(roles.map(r => {
-            return this.p.inf$.lang_string$.by_pk_entity$.key(r.fk_entity)
+            return this.p.inf$.lang_string$.by_pk_entity$.key(r.fk_object_info)
               .pipe(
                 map(langStr => !langStr ? null :
                   !langStr.quill_doc ? null :
@@ -290,25 +290,25 @@ export class RamListComponent implements OnInit, OnDestroy {
                 fk_property: 1316,
                 fk_temporal_entity: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 979 -- R4 – carriers provided by
               this.p.inf$.role$.by_subject_and_property$({
                 fk_property: 979,
                 fk_temporal_entity: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 1305 -- geovP4 – is server response to request
               this.p.inf$.role$.by_subject_and_property$({
                 fk_property: 1305,
                 fk_temporal_entity: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 1016 -- R42 – is representative manifestation singleton for
               this.p.inf$.role$.by_object_and_property$({
                 fk_property: 1016,
                 fk_entity: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_temporal_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_subject_info : undefined)),
             )
               .pipe(
                 map((pks) => pks.find(pk => !!pk)),
@@ -394,7 +394,7 @@ export class RamListComponent implements OnInit, OnDestroy {
                     segments: [segP, segE, ...graphPath.segments]
                   };
 
-                  return this.pipePathRecursivly(rs[0].fk_entity, undefined, path)
+                  return this.pipePathRecursivly(rs[0].fk_object_info, undefined, path)
                 }
 
                 return finish(segE, graphPath);
@@ -464,25 +464,25 @@ export class RamListComponent implements OnInit, OnDestroy {
    * @param pkEntity Persistent item/temporal entity that is mentionned i.e. CRM Entity
    */
   getMentions(pkEntity: number) {
-    const fakeStatements: InfRole[] = [
+    const fakeStatements: InfStatement[] = [
       {
         pk_entity: 789,
-        fk_temporal_entity: 737367, // subject (F2 Expression) !!
+        fk_subject_info: 737367, // subject (F2 Expression) !!
         fk_property: 1218, // predicate (geovP2 mentions)
-        fk_entity: pkEntity, // object (E1 CRM Entity / e.g. a Person)
-      } as InfRole,
+        fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
+      } as InfStatement,
       {
         pk_entity: 790,
-        fk_temporal_entity: 737367, // subject (F2 Expression) !!
+        fk_subject_info: 737367, // subject (F2 Expression) !!
         fk_property: 1316, // predicate (geovP5 carrier provided by)
-        fk_entity: 737365, // object (F5 Item / e.g. Copy of a book)
-      } as InfRole,
+        fk_object_info: 737365, // object (F5 Item / e.g. Copy of a book)
+      } as InfStatement,
       {
         pk_entity: 791,
-        fk_temporal_entity: 747097, // subject (geovC5 Expression Portion) !!
+        fk_subject_info: 747097, // subject (geovC5 Expression Portion) !!
         fk_property: 1218, // predicate (geovP2 mentions)
-        fk_entity: pkEntity, // object (E1 CRM Entity / e.g. a Person)
-      } as InfRole
+        fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
+      } as InfStatement
     ];
     this.inf.role.loadSucceeded(fakeStatements, '', 591);
   }
@@ -523,7 +523,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEdit(statement: InfRole) {
+  onEdit(statement: InfStatement) {
     const data: RamListEditDialogData = {
       statement,
       propertyLabel: this.getPropertyLabel()
@@ -536,7 +536,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     })
   }
 
-  onRemove(statement: InfRole) {
+  onRemove(statement: InfStatement) {
     const propertyHasReferences = this.propertyHasReference()
     const data: RamListRemoveDialogData = {
       statement,

@@ -38,7 +38,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
       -- roles 'has appellation'
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw1 t0,
@@ -70,7 +70,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
       -- roles outgoing of temporal_entity 'Name use for language'
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw3
@@ -156,7 +156,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM
           (
             SELECT * FROM tw2

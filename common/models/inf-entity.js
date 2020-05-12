@@ -103,7 +103,7 @@ module.exports = function(InfEntity) {
    * - Provide a entity_version_project_rel[0] to customize the project relation
    * - Provide pi_roles to findOrCreate the roles and its children
    *
-   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
+   * Remark: To findOrCreate a role or an object (InfStatement; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
    *
    * @param {LoopackModel} Model The loopback model InfPersistentItem.
    * @param {number} projectId the project id
@@ -234,7 +234,7 @@ module.exports = function(InfEntity) {
    * - Provide a entity_version_project_rel[0] to customize the project relation, else a new one is created with default values
    * - Provide te_roles to findOrCreate the roles and its children
    *
-   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
+   * Remark: To findOrCreate a role or an object (InfStatement; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
    *
    * @param {LoopackModel} Model The loopback model InfTemporalEntity.
    * @param {number} projectId the project id
@@ -351,7 +351,7 @@ module.exports = function(InfEntity) {
    * DatChunk
    *
    * Those Models still use the entity_version which is deprecated:
-   * InfRole, InfTimePrimitive, InfAppellation, InfLanguage
+   * InfStatement, InfTimePrimitive, InfAppellation, InfLanguage
    *
    * The data object is relevant for finding a record.
    * - Provide a data object with all values relevant to uniquely identify this type of record.
@@ -361,9 +361,9 @@ module.exports = function(InfEntity) {
    * the same fk_entity and fk_temporal_entity, and there can't be two timePrimitives with the same values.
    * Therefore the 'unique identifier' relevant to findOrCreate are the values of the objects, not the pk_entity.
    *
-   * Remark: To find or create a role or an object (e.g. InfRole, InfTimePrimitive or InfAppellation), use find or create object
+   * Remark: To find or create a role or an object (e.g. InfStatement, InfTimePrimitive or InfAppellation), use find or create object
    *
-   * @param {LoopackModel} Model The loopback model like e.g. InfRole
+   * @param {LoopackModel} Model The loopback model like e.g. InfStatement
    * @param {number} projectId the project id
    * @param {any} dataObject the data object containing the values we check for existing entities
    * @param {any} requestedObject [optional] plain object. Provide a epr to customize the project relation

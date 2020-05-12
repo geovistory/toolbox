@@ -103,7 +103,7 @@ module.exports = function(InfPersistentItem) {
            ******************************************/
           if (requestedPeIt.pi_roles) {
             // prepare parameters
-            const InfRole = InfPersistentItem.app.models.InfRole;
+            const InfStatement = InfPersistentItem.app.models.InfStatement;
 
             //… filter roles that are truthy (not null), iterate over them,
             // return the promise that the PeIt will be
@@ -114,7 +114,7 @@ module.exports = function(InfPersistentItem) {
                 // use the pk_entity from the created peIt to set the fk_entity of the role
                 role.fk_entity = resultingEntity.pk_entity;
                 // find or create the teEnt and the role pointing to the teEnt
-                return InfRole.findOrCreateInfRole(
+                return InfStatement.findOrCreateInfStatement(
                   pkProject,
                   role,
                   ctxWithoutBody
@@ -145,7 +145,7 @@ module.exports = function(InfPersistentItem) {
            ******************************************/
           if (requestedPeIt.te_roles) {
             // prepare parameters
-            const InfRole = InfPersistentItem.app.models.InfRole;
+            const InfStatement = InfPersistentItem.app.models.InfStatement;
 
             //… filter roles that are truthy (not null), iterate over them,
             // return the promise that the PeIt will be
@@ -156,7 +156,7 @@ module.exports = function(InfPersistentItem) {
                 // use the pk_entity from the created peIt to set the fk_temporal_entity of the role
                 role.fk_temporal_entity = resultingEntity.pk_entity;
                 // find or create the teEnt and the role pointing to the teEnt
-                return InfRole.findOrCreateInfRole(
+                return InfStatement.findOrCreateInfStatement(
                   pkProject,
                   role,
                   ctxWithoutBody

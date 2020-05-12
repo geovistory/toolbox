@@ -175,7 +175,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
               map(([namings, definition]) => {
                 // get one naming of the naming of that type
                 let naming = namings.find(n =>
-                  !!values(n.row).find(r => (!!r && r.pkProperty === 1113 && r.firstItem.role.fk_entity === defaultLanguage.pk_entity))
+                  !!values(n.row).find(r => (!!r && r.pkProperty === 1113 && r.firstItem.role.fk_object_info === defaultLanguage.pk_entity))
                 )
                 naming = naming ? naming : namings[0];
 

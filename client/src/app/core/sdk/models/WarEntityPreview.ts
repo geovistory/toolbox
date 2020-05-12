@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  InfRole,
+  InfStatement,
   InfTextProperty
 } from '../index';
 
@@ -18,8 +18,8 @@ export interface WarEntityPreviewInterface {
   "first_second"?: number;
   "last_second"?: number;
   "tmsp_last_modification"?: any;
-  te_roles?: InfRole[];
-  pi_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
 }
 
@@ -36,8 +36,8 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   "first_second": number;
   "last_second": number;
   "tmsp_last_modification": any;
-  te_roles?: InfRole[];
-  pi_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
   constructor(data?: WarEntityPreviewInterface) {
     Object.assign(this, data);
@@ -55,7 +55,7 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   * @license MIT
   * This method creates an instance of WarEntityPreview for dynamic purposes.
   **/
-  public static factory(data: WarEntityPreviewInterface): WarEntityPreview{
+  public static factory(data: WarEntityPreviewInterface): WarEntityPreview {
     return new WarEntityPreview(data);
   }
   /**
@@ -127,7 +127,7 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_temporal_entity'
         },
         pi_roles: {
@@ -135,7 +135,7 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         text_properties: {
@@ -143,7 +143,7 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
           type: 'InfTextProperty[]',
           model: 'InfTextProperty',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_concerned_entity'
         },
       }

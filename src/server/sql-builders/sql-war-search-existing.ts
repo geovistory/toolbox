@@ -149,7 +149,7 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
             t1.type_label_headline,
             ${relatedStatement ? `
               COALESCE(
-                json_agg(${this.createBuildObject('t2', 'InfRole')})
+                json_agg(${this.createBuildObject('t2', 'InfStatement')})
                 FILTER (WHERE t2.pk_entity IS NOT NULL),
                 '[]'
               )  related_statements,

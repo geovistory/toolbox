@@ -59,7 +59,7 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
       -- roles
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           information.v_role t1,
@@ -93,7 +93,7 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM
           (
             SELECT

@@ -66,7 +66,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- roles
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw0
@@ -107,7 +107,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- has type role
       tw5 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
         FROM
           tw1
@@ -125,7 +125,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       -- has appellation for language roles
       tw6 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw1
@@ -207,7 +207,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM (
             SELECT * FROM tw2
             UNION ALL

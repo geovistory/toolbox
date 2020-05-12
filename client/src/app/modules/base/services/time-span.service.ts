@@ -3,7 +3,7 @@ import { equals } from 'ramda';
 import { MatDialog } from '../../../../../node_modules/@angular/material';
 import { combineLatest, of } from '../../../../../node_modules/rxjs';
 import { mergeMap, map } from '../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfRole } from '../../../core';
+import { ActiveProjectService, InfStatement } from '../../../core';
 import { InfActions } from '../../../core/inf/inf.actions';
 import { InfTimePrimitiveWithCalendar } from '../components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
@@ -44,8 +44,8 @@ export class TimeSpanService {
     return this.p.pkProject$.pipe(
       mergeMap((pkProject) => {
         const o = this.createOldData(item)
-        const toUpsert: InfRole[] = [];
-        let toDelete: InfRole[] = [];
+        const toUpsert: InfStatement[] = [];
+        let toDelete: InfStatement[] = [];
 
         item.properties.forEach(prop => {
           if (prop.items.length > 1) {
@@ -81,14 +81,14 @@ export class TimeSpanService {
     )
   }
 
-  convertToRole(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfRole {
-    const role: InfRole = {
-      fk_temporal_entity: fkTeEn,
+  convertToRole(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatement {
+    const role: InfStatement = {
+      fk_subject_info: fkTeEn,
       fk_property: parseInt(key),
       entity_version_project_rels: [{
         calendar: t.calendar
       }],
-      time_primitive: {
+      object_time_primitive: {
         ...t,
         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
       },
@@ -119,7 +119,7 @@ export class TimeSpanService {
     const old: {
       [key: string]: {
         tp: InfTimePrimitiveWithCalendar,
-        r: InfRole,
+        r: InfStatement,
       }
     } = {}
     item.properties.forEach((prop) => {

@@ -1,5 +1,5 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { ActiveProjectService, EntityPreview, InfLanguage, InfStatement, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from 'app/core';
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
 
@@ -87,7 +87,7 @@ export interface ItemBasics {
 
 // Items connected through a role
 export interface BasicRoleItem extends ItemBasics {
-  role: InfRole
+  role: InfStatement
   isOutgoing?: boolean
   error?: string
 }
@@ -212,7 +212,7 @@ export interface AddListComponentInterface {
  */
 export interface TemporalEntityRemoveProperties {
   temporalEntity: InfTemporalEntity
-  roles: InfRole[]
+  roles: InfStatement[]
   textProperties: InfTextProperty[]
 }
 

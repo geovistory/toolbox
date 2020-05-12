@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole
+  InfStatement
 } from '../index';
 
 declare var Object: any;
@@ -11,7 +11,7 @@ export interface InfAppellationInterface {
   "string"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  roles?: InfRole[];
+  incoming_statements?: InfStatement[];
 }
 
 export class InfAppellation implements InfAppellationInterface {
@@ -20,7 +20,7 @@ export class InfAppellation implements InfAppellationInterface {
   "string": string;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  roles?: InfRole[];
+  incoming_statements?: InfStatement[];
   constructor(data?: InfAppellationInterface) {
     Object.assign(this, data);
   }
@@ -37,7 +37,7 @@ export class InfAppellation implements InfAppellationInterface {
   * @license MIT
   * This method creates an instance of InfAppellation for dynamic purposes.
   **/
-  public static factory(data: InfAppellationInterface): InfAppellation{
+  public static factory(data: InfAppellationInterface): InfAppellation {
     return new InfAppellation(data);
   }
   /**
@@ -77,7 +77,7 @@ export class InfAppellation implements InfAppellationInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
         roles: {
@@ -85,7 +85,7 @@ export class InfAppellation implements InfAppellationInterface {
           type: 'InfRole[]',
           model: 'InfRole',
           relationType: 'hasMany',
-                  keyFrom: 'pk_entity',
+          keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
       }

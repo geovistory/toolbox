@@ -156,7 +156,7 @@ export class SqlRamList extends SqlBuilderLbModels {
       -- 1317 = is part of, 1316 = carrier provided by, 979 = carriers provided by, 1305 = is server res. to req., 1016 = is rep. manif. sing. for
       tw3 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw0
@@ -172,7 +172,7 @@ export class SqlRamList extends SqlBuilderLbModels {
       -- 1 = has reference
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw0
@@ -250,7 +250,7 @@ export class SqlRamList extends SqlBuilderLbModels {
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM (
             SELECT * FROM tw3
             UNION ALL

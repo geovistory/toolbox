@@ -9,40 +9,40 @@ const initVal1: CtrlEntityModel = { pkEntity: 767402 }
 const initVal2: CtrlEntityModel = {
   'persistent_item': {
     pk_entity: undefined,
-    'pi_roles': [
+    'incoming_statements': [
       {
-        fk_temporal_entity: undefined,
+        fk_subject_info: undefined,
         fk_subject_data: undefined,
         fk_subject_tables_cell: undefined,
         fk_subject_tables_row: undefined,
         community_favorite_calendar: undefined,
         fk_object_data: undefined,
         fk_object_tables_cell: undefined,
-        fk_entity: undefined,
+        fk_object_info: undefined,
         fk_object_tables_row: undefined,
         fk_property_of_property: undefined,
         is_standard_in_project_count: undefined,
         is_in_project_count: undefined,
         pk_entity: undefined,
         'fk_property': 1111,
-        'temporal_entity': {
-          'te_roles': [
+        'subject_temporal_entity': {
+          'outgoing_statements': [
             {
-              fk_temporal_entity: undefined,
+              fk_subject_info: undefined,
               fk_subject_data: undefined,
               fk_subject_tables_cell: undefined,
               fk_subject_tables_row: undefined,
               community_favorite_calendar: undefined,
               fk_object_data: undefined,
               fk_object_tables_cell: undefined,
-              fk_entity: undefined,
+              fk_object_info: undefined,
               fk_object_tables_row: undefined,
               fk_property_of_property: undefined,
               is_standard_in_project_count: undefined,
               is_in_project_count: undefined,
               pk_entity: undefined,
               'fk_property': 1113,
-              'appellation': {
+              'object_appellation': {
                 pk_entity: undefined,
                 string: undefined,
 
@@ -128,21 +128,21 @@ const initVal2: CtrlEntityModel = {
             },
             {
 
-              fk_temporal_entity: undefined,
+              fk_subject_info: undefined,
               fk_subject_data: undefined,
               fk_subject_tables_cell: undefined,
               fk_subject_tables_row: undefined,
               community_favorite_calendar: undefined,
               fk_object_data: undefined,
               fk_object_tables_cell: undefined,
-              fk_entity: undefined,
+              fk_object_info: undefined,
               fk_object_tables_row: undefined,
               fk_property_of_property: undefined,
               is_standard_in_project_count: undefined,
               is_in_project_count: undefined,
               pk_entity: undefined,
               'fk_property': 1112,
-              'language': {
+              'object_language': {
                 'fk_class': 54,
                 'pk_language': 'deu',
                 'lang_type': 'living',
@@ -155,7 +155,7 @@ const initVal2: CtrlEntityModel = {
               }
             },
             {
-              fk_temporal_entity: undefined,
+              fk_subject_info: undefined,
               fk_subject_data: undefined,
               fk_subject_tables_cell: undefined,
               fk_subject_tables_row: undefined,
@@ -168,7 +168,7 @@ const initVal2: CtrlEntityModel = {
               is_in_project_count: undefined,
               pk_entity: undefined,
               'fk_property': 1430,
-              'fk_entity': 741575,
+              'fk_object_info': 741575,
             }
           ],
           'fk_class': 365,

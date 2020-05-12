@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EntityPreview, InfRole } from 'app/core';
+import { EntityPreview, InfStatement } from 'app/core';
 import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
 
 export interface HitPreview extends EntitySearchHit {
