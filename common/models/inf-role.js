@@ -386,33 +386,6 @@ module.exports = function(InfStatement) {
     InfStatement.findComplex(statementsInProjectFilter, findThem);
   };
 
-  // InfStatement.removeFromProjectWithTeEnt = function(
-  //   pk_project,
-  //   pk_statements,
-  //   ctx,
-  //   cb
-  // ) {
-  //   const q = new SqlBuilderLbModels(InfStatement.app.models);
-
-  //   if (!ctx.req.accessToken.userId)
-  //     return Error('AccessToken.userId is missing');
-  //   const accountId = ctx.req.accessToken.userId;
-  //   const params = [parseInt(pk_project), accountId];
-
-  //   const sql_stmt = `
-  //     select ${q.createSelect('t1', 'ProInfoProjRel')}
-  //      FROM information.relate_outgoing_statements_with_te_ens_to_project(ARRAY[${pk_statements
-  //        .map(r => r * 1)
-  //        .join(', ')}], $1, $2, false) t1;
-  //   `;
-
-  //   const connector = InfStatement.dataSource.connector;
-  //   connector.execute(sql_stmt, params, (err, resultObjects) => {
-  //     if (err) return cb(err, resultObjects);
-  //     cb(false, resultObjects);
-  //   });
-  // };
-
   /**
    * Add statements to the project
    *
@@ -466,9 +439,9 @@ module.exports = function(InfStatement) {
         where: ['pk_entity', 'IN', pk_statements],
         include: {
           entity_version_project_rels: innerJoinThisProject,
-          appellation: {
+          object_appellation: {
             $relation: {
-              name: 'appellation',
+              name: 'object_appellation',
               joinType: 'left join',
               orderBy: [
                 {
@@ -477,9 +450,9 @@ module.exports = function(InfStatement) {
               ],
             },
           },
-          language: {
+          object_language: {
             $relation: {
-              name: 'language',
+              name: 'object_language',
               joinType: 'left join',
               orderBy: [
                 {
@@ -488,9 +461,9 @@ module.exports = function(InfStatement) {
               ],
             },
           },
-          time_primitive: {
+          object_time_primitive: {
             $relation: {
-              name: 'time_primitive',
+              name: 'object_time_primitive',
               joinType: 'left join',
               orderBy: [
                 {
@@ -499,9 +472,9 @@ module.exports = function(InfStatement) {
               ],
             },
           },
-          place: {
+          object_place: {
             $relation: {
-              name: 'place',
+              name: 'object_place',
               joinType: 'left join',
               orderBy: [
                 {
@@ -559,21 +532,21 @@ module.exports = function(InfStatement) {
     ofProject,
     pkProject,
     pkEntity,
-    fkEntity,
-    fkTemporalEntity,
+    fkObjectInfo,
+    fkSubjectInfo,
     pkProperty,
     cb
   ) {
-    if (!pkEntity && !fkEntity && !fkTemporalEntity) {
+    if (!pkEntity && !fkObjectInfo && !fkSubjectInfo) {
       return cb(
-        'please provide at least a pkEntity, fkEntity or fkTemporalEntity'
+        'please provide at least a pkEntity, fkObjectInfo or fkSubjectInfo'
       );
     }
 
     const w = {
       pk_entity: pkEntity,
-      fk_object_info: fkEntity,
-      fk_subject_info: fkTemporalEntity,
+      fk_object_info: fkObjectInfo,
+      fk_subject_info: fkSubjectInfo,
       fk_property: pkProperty,
     };
     let where = [];
@@ -646,9 +619,9 @@ module.exports = function(InfStatement) {
       where: ['fk_entity', '=', pkEntity],
       include: {
         entity_version_project_rels: joinThisProject,
-        domain_chunk: {
+        subject_chunk: {
           $relation: {
-            name: 'domain_chunk',
+            name: 'subject_chunk',
             joinType: 'left join',
             orderBy: [
               {
@@ -761,18 +734,18 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_subject_info: relatedModel.pk_entity },
-            relatedModel: { temporal_entity: relatedModel },
+            relatedModel: { subject_temporal_entity: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if subject is a inf persistent_item
-    else if (hasRelatedModel(reqStatement.domain_pe_it)) {
+    else if (hasRelatedModel(reqStatement.subject_persistent_item)) {
       //create the subject first
       return models.InfPersistentItem.findOrCreatePeIt(
         pkProject,
-        reqStatement.domain_pe_it,
+        reqStatement.subject_persistent_item,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -780,33 +753,33 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_subject_info: relatedModel.pk_entity },
-            relatedModel: { domain_pe_it: relatedModel },
+            relatedModel: { subject_persistent_item: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if subject is a inf chunk
-    else if (hasRelatedModel(reqStatement.domain_chunk)) {
+    else if (hasRelatedModel(reqStatement.subject_chunk)) {
       //create the subject first
-      return models.DatChunk.create(reqStatement.domain_chunk)
+      return models.DatChunk.create(reqStatement.subject_chunk)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
             fk: { fk_subject_data: relatedModel.pk_entity },
-            relatedModel: { domain_chunk: relatedModel },
+            relatedModel: { subject_chunk: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
     // if subject is a inf statement (we have a statement of statement)
-    else if (hasRelatedModel(reqStatement.subject_inf_statement)) {
+    else if (hasRelatedModel(reqStatement.subject_statement)) {
       //create the subject first
 
       return models.InfStatement.findOrCreateInfStatement(
         pkProject,
-        reqStatement.subject_inf_statement,
+        reqStatement.subject_statement,
         ctxWithoutBody
       )
         .then(res => {
@@ -814,7 +787,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_subject_info: relatedModel.pk_entity },
-            relatedModel: { subject_inf_statement: relatedModel },
+            relatedModel: { subject_statement: relatedModel },
           });
         })
         .catch(err => reject(err));
@@ -884,11 +857,11 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
      ******************************************************/
 
     // if object is a temporal_entity
-    else if (hasRelatedModel(reqStatement.range_temporal_entity)) {
+    else if (hasRelatedModel(reqStatement.object_temporal_entity)) {
       //create the object first
       return models.InfTemporalEntity.findOrCreateInfTemporalEntity(
         pkProject,
-        reqStatement.range_temporal_entity,
+        reqStatement.object_temporal_entity,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -896,17 +869,17 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { range_temporal_entity: relatedModel },
+            relatedModel: { object_temporal_entity: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
-    // if object is an inf persistent_item
-    else if (hasRelatedModel(reqStatement.persistent_item)) {
+    // if object is an inf object_persistent_item
+    else if (hasRelatedModel(reqStatement.object_persistent_item)) {
       //create the object first
       return models.InfPersistentItem.findOrCreatePeIt(
         pkProject,
-        reqStatement.persistent_item,
+        reqStatement.object_persistent_item,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -914,40 +887,18 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { persistent_item: relatedModel },
-          });
-        })
-        .catch(err => reject(err));
-    }
-
-    // if object is an inf persistent_item
-    // TODO: THIS IS REDUNDANT WITH THE ONE ABOVE!
-    // Remove the unsed 'else if' here and
-    // remove the relation in inf-statement.json
-    else if (hasRelatedModel(reqStatement.range_pe_it)) {
-      //create the object first
-      return models.InfPersistentItem.findOrCreatePeIt(
-        pkProject,
-        reqStatement.range_pe_it,
-        ctxWithoutBody
-      )
-        .then(resArray => {
-          const relatedModel = helpers.toObject(resArray[0]);
-          // return the foreign key and the related model
-          resolve({
-            fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { range_pe_it: relatedModel },
+            relatedModel: { object_persistent_item: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if object is an inf place
-    else if (hasRelatedModel(reqStatement.place)) {
+    else if (hasRelatedModel(reqStatement.object_place)) {
       //create the subject first
       return models.InfPlace.findOrCreatePlace(
         pkProject,
-        reqStatement.place,
+        reqStatement.object_place,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -955,80 +906,80 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { place: relatedModel },
+            relatedModel: { object_place: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if object is an inf appellation
-    else if (hasRelatedModel(reqStatement.appellation)) {
+    else if (hasRelatedModel(reqStatement.object_appellation)) {
       //create the subject first
-      return models.InfAppellation.create(reqStatement.appellation)
+      return models.InfAppellation.create(reqStatement.object_appellation)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { appellation: relatedModel },
+            relatedModel: { object_appellation: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if object is an inf lang_string
-    else if (hasRelatedModel(reqStatement.lang_string)) {
+    else if (hasRelatedModel(reqStatement.object_lang_string)) {
       //create the subject first
-      return models.InfLangString.create(reqStatement.lang_string)
+      return models.InfLangString.create(reqStatement.object_lang_string)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { lang_string: relatedModel },
+            relatedModel: { object_lang_string: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if object is an inf language
-    else if (hasRelatedModel(reqStatement.language)) {
+    else if (hasRelatedModel(reqStatement.object_language)) {
       //create the subject first
       return models.InfLanguage.find({
-        where: { pk_entity: reqStatement.language.pk_entity },
+        where: { pk_entity: reqStatement.object_language.pk_entity },
       })
         .then(resArr => {
           const relatedModel = helpers.toObject(resArr[0]);
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { language: relatedModel },
+            relatedModel: { object_language: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if object is an inf time_primitive
-    else if (hasRelatedModel(reqStatement.time_primitive)) {
+    else if (hasRelatedModel(reqStatement.object_time_primitive)) {
       //create the subject first
-      return models.InfTimePrimitive.create(reqStatement.time_primitive)
+      return models.InfTimePrimitive.create(reqStatement.object_time_primitive)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { time_primitive: relatedModel },
+            relatedModel: { object_time_primitive: relatedModel },
           });
         })
         .catch(err => reject(err));
     }
 
     // if object is an inf chunk
-    else if (hasRelatedModel(reqStatement.range_chunk)) {
+    else if (hasRelatedModel(reqStatement.object_chunk)) {
       //create the subject first
       return models.DatChunk.findOrCreateChunk(
         pkProject,
-        reqStatement.range_chunk,
+        reqStatement.object_chunk,
         ctxWithoutBody
       )
         .then(resArr => {
@@ -1036,7 +987,7 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },
-            relatedModel: { range_chunk: relatedModel },
+            relatedModel: { object_chunk: relatedModel },
           });
         })
         .catch(err => reject(err));

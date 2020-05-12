@@ -5,13 +5,13 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter, } from '../../models/BaseModels';
+import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfStatement } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfStatement';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
 
@@ -28,7 +28,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http, connection, models, auth, errorHandler);
+    super(http,  connection,  models, auth, errorHandler);
   }
 
   /**
@@ -58,7 +58,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
   public search(pkProject: any = {}, searchString: any = {}, pkClasses: any = {}, entityType: any = {}, limit: any = {}, page: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/WarEntityPreviews/search";
+    "/WarEntityPreviews/search";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -99,7 +99,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
   public searchExisting(pkProject: any, searchString: any = {}, pkClasses: any = {}, entityType: any = {}, limit: any = {}, page: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/WarEntityPreviews/search-existing";
+    "/WarEntityPreviews/search-existing";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -142,7 +142,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
   public searchExistingWithRelatedStatement(pkProject: any, searchString: any = {}, pkClasses: any = {}, entityType: any = {}, limit: any = {}, page: any, relatedStatement: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/WarEntityPreviews/search-existing-with-related-statement";
+    "/WarEntityPreviews/search-existing-with-related-statement";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -172,7 +172,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
   public createAll(customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/WarEntityPreviews/create-all";
+    "/WarEntityPreviews/create-all";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -205,7 +205,7 @@ export class WarEntityPreviewApi extends BaseLoopBackApi {
   public paginatedListByPks(pkProject: any, pkEntities: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/WarEntityPreviews/paginated-list-by-pks";
+    "/WarEntityPreviews/paginated-list-by-pks";
     let _routeParams: any = {};
     let _postBody: any = {
       pkEntities: pkEntities

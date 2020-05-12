@@ -57,28 +57,28 @@ module.exports = function(InfPersistentItem) {
       if (requestedPeIt.fk_class == 220) {
         requestedPeIt.te_statements = [
           ...(requestedPeIt.outgoing_statements || []),
-          { fk_property: 1016, range_pe_it: { fk_class: 218 } },
+          { fk_property: 1016, object_persistent_item: { fk_class: 218 } },
         ];
       }
       // Add F2 Expression, if this is a F3 Manifestation Product Type
       else if (requestedPeIt.fk_class == 219) {
         requestedPeIt.incoming_statements = [
           ...(requestedPeIt.incoming_statements || []),
-          { fk_property: 979, domain_pe_it: { fk_class: 218 } },
+          { fk_property: 979, subject_persistent_item: { fk_class: 218 } },
         ];
       }
       // Add F2 Expression, if this is a F5 Item
       else if (requestedPeIt.fk_class == 221) {
         requestedPeIt.incoming_statements = [
           ...(requestedPeIt.incoming_statements || []),
-          { fk_property: 1316, domain_pe_it: { fk_class: 218 } },
+          { fk_property: 1316, subject_persistent_item: { fk_class: 218 } },
         ];
       }
       // Add F2 Expression, if this is a geovC4 Web Request
       else if (requestedPeIt.fk_class == 502) {
         requestedPeIt.incoming_statements = [
           ...(requestedPeIt.incoming_statements || []),
-          { fk_property: 1305, domain_pe_it: { fk_class: 218 } },
+          { fk_property: 1305, subject_persistent_item: { fk_class: 218 } },
         ];
       }
 
@@ -291,9 +291,9 @@ module.exports = function(InfPersistentItem) {
             joinType: 'left join',
           },
           entity_version_project_rels: innerJoinThisProject,
-          temporal_entity: {
+          subject_temporal_entity: {
             $relation: {
-              name: 'temporal_entity',
+              name: 'subject_temporal_entity',
               joinType: 'inner join',
               orderBy: [
                 {
@@ -313,9 +313,9 @@ module.exports = function(InfPersistentItem) {
                 ],
               },
               entity_version_project_rels: innerJoinThisProject,
-              appellation: {
+              object_appellation: {
                 $relation: {
-                  name: 'appellation',
+                  name: 'object_appellation',
                   joinType: 'left join',
                   orderBy: [
                     {
@@ -324,9 +324,9 @@ module.exports = function(InfPersistentItem) {
                   ],
                 },
               },
-              language: {
+              object_language: {
                 $relation: {
-                  name: 'language',
+                  name: 'object_language',
                   joinType: 'left join',
                   orderBy: [
                     {

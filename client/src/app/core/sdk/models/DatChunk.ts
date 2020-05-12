@@ -44,7 +44,7 @@ export class DatChunk implements DatChunkInterface {
   * @license MIT
   * This method creates an instance of DatChunk for dynamic purposes.
   **/
-  public static factory(data: DatChunkInterface): DatChunk {
+  public static factory(data: DatChunkInterface): DatChunk{
     return new DatChunk(data);
   }
   /**
@@ -92,15 +92,15 @@ export class DatChunk implements DatChunkInterface {
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',
-          keyFrom: 'fk_text',
+                  keyFrom: 'fk_text',
           keyTo: 'pk_text'
         },
-        subject_of_roles: {
-          name: 'subject_of_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        outgoing_statements: {
+          name: 'outgoing_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_subject_data'
         },
         namespace: {
@@ -108,7 +108,7 @@ export class DatChunk implements DatChunkInterface {
           type: 'DatNamespace',
           model: 'DatNamespace',
           relationType: 'belongsTo',
-          keyFrom: 'fk_namespace',
+                  keyFrom: 'fk_namespace',
           keyTo: 'pk_entity'
         },
       }

@@ -85,7 +85,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
       WHERE
         tw4.fk_object_info = t1.pk_entity
     ),
-    -- ingoing_statements of temporal_entity
+    -- incoming_statements of temporal_entity
     tw9 AS (
       SELECT
         ${this.createSelect('t1', 'InfStatement')},

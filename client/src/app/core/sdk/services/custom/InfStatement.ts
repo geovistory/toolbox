@@ -5,19 +5,18 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter, } from '../../models/BaseModels';
+import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InfStatement } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfStatement';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
+import { DatDigital } from '../../models/DatDigital';
+import { DatChunk } from '../../models/DatChunk';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfLangString } from '../../models/InfLangString';
-import { WarEntityPreview } from '../../models/WarEntityPreview';
-import { DatChunk } from '../../models/DatChunk';
-import { DatDigital } from '../../models/DatDigital';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';
@@ -25,7 +24,7 @@ import { InfPlace } from '../../models/InfPlace';
 
 
 /**
- * Api services for the `InfRole` model.
+ * Api services for the `InfStatement` model.
  */
 @Injectable()
 export class InfStatementApi extends BaseLoopBackApi {
@@ -37,7 +36,7 @@ export class InfStatementApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http, connection, models, auth, errorHandler);
+    super(http,  connection,  models, auth, errorHandler);
   }
 
   /**
@@ -63,13 +62,13 @@ export class InfStatementApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfRole` object.)
+   * This usually means the response is a `InfStatement` object.)
    * </em>
    */
   public paginatedListTargetingEntityPreviews(pkProject: any, pkSourceEntity: any, pkProperty: any, pkTargetClass: any, isOutgoing: any, limit: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfRoles/paginated-list-targeting-entity-previews";
+    "/InfStatements/paginated-list-targeting-entity-previews";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -85,13 +84,13 @@ export class InfStatementApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find or create information role.
+   * Find or create information statement.
    *
    * @param {number} pk_project Id of the project
    *
    * @param {object} data Request data.
    *
-   *  - `data` – `{InfRole}` - data
+   *  - `data` – `{InfStatement}` - data
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -99,13 +98,13 @@ export class InfStatementApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfRole` object.)
+   * This usually means the response is a `InfStatement` object.)
    * </em>
    */
-  public findOrCreateInfRoles(pk_project: any, data: any, customHeaders?: Function): Observable<InfStatement[]> {
+  public findOrCreateInfStatements(pk_project: any, data: any, customHeaders?: Function): Observable<InfStatement[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfRoles/find-or-create-many";
+    "/InfStatements/find-or-create-many";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -114,14 +113,14 @@ export class InfStatementApi extends BaseLoopBackApi {
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfStatement>) =>
-      instances.map((instance: InfStatement) => new InfStatement(instance))
+        instances.map((instance: InfStatement) => new InfStatement(instance))
     ));
   }
 
   /**
-   * Get roles (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.
+   * Get statements (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.
    *
-   * @param {number} entityPk Key of the persistent item (fk_entity)
+   * @param {number} entityPk Key of the persistent item (fk_object_info)
    *
    * @param {number} propertyPk Key of the property (fk_property)
    *
@@ -133,13 +132,13 @@ export class InfStatementApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfRole` object.)
+   * This usually means the response is a `InfStatement` object.)
    * </em>
    */
   public alternativesNotInProjectByEntityPk(entityPk: any, propertyPk: any, pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfRoles/alternatives-not-in-project-by-entity-pk";
+    "/InfStatements/alternatives-not-in-project-by-entity-pk";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -151,9 +150,9 @@ export class InfStatementApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get roles (with children) of given propertyPk and teEntPk from Repo that are not in project of given projectId.
+   * Get statements (with children) of given propertyPk and teEntPk from Repo that are not in project of given projectId.
    *
-   * @param {number} teEntPk Key of the temporal entity (fk_temporal_entity)
+   * @param {number} teEntPk Key of the temporal entity (fk_subject_info)
    *
    * @param {number} propertyPk Key of the property (fk_property)
    *
@@ -165,13 +164,13 @@ export class InfStatementApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfRole` object.)
+   * This usually means the response is a `InfStatement` object.)
    * </em>
    */
   public alternativesNotInProjectByTeEntPk(teEntPk: any, propertyPk: any, pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfRoles/alternatives-not-in-project-by-te-ent-pk";
+    "/InfStatements/alternatives-not-in-project-by-te-ent-pk";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -183,7 +182,7 @@ export class InfStatementApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get an nested object of role with everything needed to display the links made from an entity towards sources and digitals.
+   * Get an nested object of statement with everything needed to display the links made from an entity towards sources and digitals.
    *
    * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
    *
@@ -197,13 +196,13 @@ export class InfStatementApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfRole` object.)
+   * This usually means the response is a `InfStatement` object.)
    * </em>
    */
   public sourcesAndDigitalsOfEntity(ofProject: any, pkProject: any = {}, pkEntity: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfRoles/sources-and-digitals-of-entity";
+    "/InfStatements/sources-and-digitals-of-entity";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -215,19 +214,19 @@ export class InfStatementApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find roles by params.
+   * Find statements by params.
    *
    * @param {boolean} ofProject if true, finds project version. if false, finds repo version.
    *
    * @param {number} pkProject Primary Key of the Project. If provided and ofProject=false, makes a left join with project
    *
-   * @param {number} pkEntity Primary Key of the role (pk_entity)
+   * @param {number} pkEntity Primary Key of the statement (pk_entity)
    *
-   * @param {number} pkInfoRange Foreign Key of the role pointing to the range entity (fk_entity)
+   * @param {number} pkInfoRange Foreign Key of the statement pointing to the range entity (fk_object_info)
    *
-   * @param {number} pkInfoDomain Foreign Key of the role pointing to the domain entity (fk_temporal_entity)
+   * @param {number} pkInfoDomain Foreign Key of the statement pointing to the domain entity (fk_subject_info)
    *
-   * @param {number} pkProperty Foreign Key of the role pointing to the property (fk_property)
+   * @param {number} pkProperty Foreign Key of the statement pointing to the property (fk_property)
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -235,13 +234,13 @@ export class InfStatementApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfRole` object.)
+   * This usually means the response is a `InfStatement` object.)
    * </em>
    */
   public queryByParams(ofProject: any, pkProject: any = {}, pkEntity: any = {}, pkInfoRange: any = {}, pkInfoDomain: any = {}, pkProperty: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfRoles/find-by-params";
+    "/InfStatements/find-by-params";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -257,9 +256,9 @@ export class InfStatementApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfRole`.
+   * i.e. `InfStatement`.
    */
   public getModelName() {
-    return "InfRole";
+    return "InfStatement";
   }
 }

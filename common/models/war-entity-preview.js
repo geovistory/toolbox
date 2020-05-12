@@ -501,94 +501,94 @@ module.exports = function(WarEntityPreview) {
     });
   };
 
-  /**
-   * Internal function to create the include property of
-   * a filter object for findComplex()
-   *
-   * Usage: add the returned object to the include property of a persistent item relation
-   * of findComplex() filter, e.g.:
-   * {
-   *    ...
-   *    include: InfPersistentItem.getIncludeObject(true, 123)
-   * }
-   *
-   * @param ofProject {boolean}
-   * @param project {number}
-   * @returns include object of findComplex filter
-   */
-  WarEntityPreview.getTeEnIncludeObject = function(ofProject, pkProject) {
-    let projectJoin = {};
+  // /**
+  //  * Internal function to create the include property of
+  //  * a filter object for findComplex()
+  //  *
+  //  * Usage: add the returned object to the include property of a persistent item relation
+  //  * of findComplex() filter, e.g.:
+  //  * {
+  //  *    ...
+  //  *    include: InfPersistentItem.getIncludeObject(true, 123)
+  //  * }
+  //  *
+  //  * @param ofProject {boolean}
+  //  * @param project {number}
+  //  * @returns include object of findComplex filter
+  //  */
+  // WarEntityPreview.getTeEnIncludeObject = function(ofProject, pkProject) {
+  //   let projectJoin = {};
 
-    // if a pkProject is provided, create the relation
-    if (pkProject) {
-      // get the join object. If ofProject is false, the join will be a left join.
-      projectJoin = {
-        entity_version_project_rels: WarEntityPreview.app.models.ProInfoProjRel.getJoinObject(
-          ofProject,
-          pkProject
-        ),
-      };
-    }
+  //   // if a pkProject is provided, create the relation
+  //   if (pkProject) {
+  //     // get the join object. If ofProject is false, the join will be a left join.
+  //     projectJoin = {
+  //       entity_version_project_rels: WarEntityPreview.app.models.ProInfoProjRel.getJoinObject(
+  //         ofProject,
+  //         pkProject
+  //       ),
+  //     };
+  //   }
 
-    return {
-      outgoing_statements: {
-        $relation: {
-          name: 'outgoing_statements',
-          joinType: 'inner join',
-          orderBy: [
-            {
-              pk_entity: 'asc',
-            },
-          ],
-        },
-        ...projectJoin,
-        appellation: {
-          $relation: {
-            name: 'appellation',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-        language: {
-          $relation: {
-            name: 'language',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-        time_primitive: {
-          $relation: {
-            name: 'time_primitive',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-        place: {
-          $relation: {
-            name: 'place',
-            joinType: 'left join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-        },
-      },
-    };
-  };
+  //   return {
+  //     outgoing_statements: {
+  //       $relation: {
+  //         name: 'outgoing_statements',
+  //         joinType: 'inner join',
+  //         orderBy: [
+  //           {
+  //             pk_entity: 'asc',
+  //           },
+  //         ],
+  //       },
+  //       ...projectJoin,
+  //       appellation: {
+  //         $relation: {
+  //           name: 'appellation',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       language: {
+  //         $relation: {
+  //           name: 'language',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       time_primitive: {
+  //         $relation: {
+  //           name: 'time_primitive',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //       place: {
+  //         $relation: {
+  //           name: 'place',
+  //           joinType: 'left join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     },
+  //   };
+  // };
 
   WarEntityPreview.createAll = function(cb) {
     const sql_stmt = `

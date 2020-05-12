@@ -42,7 +42,7 @@ export class InfLangString implements InfLangStringInterface {
   * @license MIT
   * This method creates an instance of InfLangString for dynamic purposes.
   **/
-  public static factory(data: InfLangStringInterface): InfLangString {
+  public static factory(data: InfLangStringInterface): InfLangString{
     return new InfLangString(data);
   }
   /**
@@ -86,23 +86,23 @@ export class InfLangString implements InfLangStringInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        is_object_of_roles: {
-          name: 'is_object_of_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_object_info'
         },
         language: {
           name: 'language',
           type: 'InfLanguage',
           model: 'InfLanguage',
           relationType: 'belongsTo',
-          keyFrom: 'fk_language',
+                  keyFrom: 'fk_language',
           keyTo: 'pk_entity'
         },
       }

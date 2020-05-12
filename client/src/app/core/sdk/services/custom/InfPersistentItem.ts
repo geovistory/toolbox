@@ -5,14 +5,14 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter, } from '../../models/BaseModels';
+import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { InfStatement } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfStatement';
 import { DfhClass } from '../../models/DfhClass';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
@@ -30,7 +30,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http, connection, models, auth, errorHandler);
+    super(http,  connection,  models, auth, errorHandler);
   }
 
   /**
@@ -54,7 +54,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   public findOrCreateInfPersistentItems(pk_project: any, data: any, customHeaders?: Function): Observable<InfPersistentItem[]> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfPersistentItems/find-or-create-many";
+    "/InfPersistentItems/find-or-create-many";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -63,7 +63,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
     if (typeof pk_project !== 'undefined' && pk_project !== null) _urlParams.pk_project = pk_project;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result.pipe(map((instances: Array<InfPersistentItem>) =>
-      instances.map((instance: InfPersistentItem) => new InfPersistentItem(instance))
+        instances.map((instance: InfPersistentItem) => new InfPersistentItem(instance))
     ));
   }
 
@@ -86,7 +86,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   public ownProperties(pkProject: any, pkEntity: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfPersistentItems/own-properties";
+    "/InfPersistentItems/own-properties";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -113,40 +113,11 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   public typesOfProject(pkProject: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfPersistentItems/types-of-project";
+    "/InfPersistentItems/types-of-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get a minimal nested object of the type in the project.
-   *
-   * @param {number} pkProject Pk of the project.
-   *
-   * @param {number} pkType Pk of the type.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public typeOfProject(pkProject: any, pkType: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfPersistentItems/type-of-project";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkType !== 'undefined' && pkType !== null) _urlParams.pkType = pkType;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -170,7 +141,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   public typesOfClassesAndProject(pk_project: any, pk_typed_classes: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfPersistentItems/types-of-classes-and-project";
+    "/InfPersistentItems/types-of-classes-and-project";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
@@ -199,7 +170,7 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
   public typeNested(pk_project: any, pk_entity: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/InfPersistentItems/type-nested";
+    "/InfPersistentItems/type-nested";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

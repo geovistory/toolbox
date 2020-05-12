@@ -2,11 +2,10 @@
 import {
   ProInfoProjRel,
   InfTemporalEntity,
+  DatDigital,
+  DatChunk,
   InfAppellation,
   InfLangString,
-  WarEntityPreview,
-  DatChunk,
-  DatDigital,
   InfLanguage,
   InfPersistentItem,
   InfTimePrimitive,
@@ -30,18 +29,15 @@ export interface InfStatementInterface {
   "community_favorite_calendar"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
+  subject_temporal_entity?: InfTemporalEntity;
+  subject_digital?: DatDigital;
+  subject_chunk?: DatChunk;
+  subject_statement?: InfStatement;
   object_temporal_entity?: InfTemporalEntity;
   object_appellation?: InfAppellation;
   object_lang_string?: InfLangString;
-  subject_temporal_entity?: InfTemporalEntity;
-  persistent_item_preview?: WarEntityPreview;
-  temporal_entity_preview?: WarEntityPreview;
-  subject_chunk?: DatChunk;
   object_chunk?: DatChunk;
-  subject_digital?: DatDigital;
-  subject_statement?: InfStatement;
   object_language?: InfLanguage;
-  object_persistent_item?: InfPersistentItem;
   subject_persistent_item?: InfPersistentItem;
   object_persistent_item?: InfPersistentItem;
   object_time_primitive?: InfTimePrimitive;
@@ -64,18 +60,15 @@ export class InfStatement implements InfStatementInterface {
   "community_favorite_calendar": string;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
+  subject_temporal_entity?: InfTemporalEntity;
+  subject_digital?: DatDigital;
+  subject_chunk?: DatChunk;
+  subject_statement?: InfStatement;
   object_temporal_entity?: InfTemporalEntity;
   object_appellation?: InfAppellation;
   object_lang_string?: InfLangString;
-  subject_temporal_entity?: InfTemporalEntity;
-  persistent_item_preview?: WarEntityPreview;
-  temporal_entity_preview?: WarEntityPreview;
-  subject_chunk?: DatChunk;
   object_chunk?: DatChunk;
-  subject_digital?: DatDigital;
-  subject_statement?: InfStatement;
   object_language?: InfLanguage;
-  object_persistent_item?: InfPersistentItem;
   subject_persistent_item?: InfPersistentItem;
   object_persistent_item?: InfPersistentItem;
   object_time_primitive?: InfTimePrimitive;
@@ -85,18 +78,18 @@ export class InfStatement implements InfStatementInterface {
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `InfRole`.
+   * i.e. `InfStatement`.
    */
   public static getModelName() {
-    return "InfRole";
+    return "InfStatement";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of InfRole for dynamic purposes.
+  * This method creates an instance of InfStatement for dynamic purposes.
   **/
-  public static factory(data: InfStatementInterface): InfStatement {
+  public static factory(data: InfStatementInterface): InfStatement{
     return new InfStatement(data);
   }
   /**
@@ -108,13 +101,13 @@ export class InfStatement implements InfStatementInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'InfRole',
-      plural: 'InfRoles',
-      path: 'InfRoles',
+      name: 'InfStatement',
+      plural: 'InfStatements',
+      path: 'InfStatements',
       idName: 'pk_entity',
       properties: {
-        "fk_temporal_entity": {
-          name: 'fk_temporal_entity',
+        "fk_subject_info": {
+          name: 'fk_subject_info',
           type: 'number',
           default: 0
         },
@@ -143,8 +136,8 @@ export class InfStatement implements InfStatementInterface {
           type: 'number',
           default: 0
         },
-        "fk_entity": {
-          name: 'fk_entity',
+        "fk_object_info": {
+          name: 'fk_object_info',
           type: 'number',
           default: 0
         },
@@ -186,135 +179,111 @@ export class InfStatement implements InfStatementInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        range_temporal_entity: {
-          name: 'range_temporal_entity',
+        subject_temporal_entity: {
+          name: 'subject_temporal_entity',
           type: 'InfTemporalEntity',
           model: 'InfTemporalEntity',
           relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
+                  keyFrom: 'fk_subject_info',
           keyTo: 'pk_entity'
         },
-        appellation: {
-          name: 'appellation',
-          type: 'InfAppellation',
-          model: 'InfAppellation',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
-          keyTo: 'pk_entity'
-        },
-        lang_string: {
-          name: 'lang_string',
-          type: 'InfLangString',
-          model: 'InfLangString',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
-          keyTo: 'pk_entity'
-        },
-        temporal_entity: {
-          name: 'temporal_entity',
-          type: 'InfTemporalEntity',
-          model: 'InfTemporalEntity',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_temporal_entity',
-          keyTo: 'pk_entity'
-        },
-        persistent_item_preview: {
-          name: 'persistent_item_preview',
-          type: 'WarEntityPreview',
-          model: 'WarEntityPreview',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
-          keyTo: 'pk_entity'
-        },
-        temporal_entity_preview: {
-          name: 'temporal_entity_preview',
-          type: 'WarEntityPreview',
-          model: 'WarEntityPreview',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_temporal_entity',
-          keyTo: 'pk_entity'
-        },
-        domain_chunk: {
-          name: 'domain_chunk',
-          type: 'DatChunk',
-          model: 'DatChunk',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_subject_data',
-          keyTo: 'pk_entity'
-        },
-        range_chunk: {
-          name: 'range_chunk',
-          type: 'DatChunk',
-          model: 'DatChunk',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_object_data',
-          keyTo: 'pk_entity'
-        },
-        domain_digital: {
-          name: 'domain_digital',
+        subject_digital: {
+          name: 'subject_digital',
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',
-          keyFrom: 'fk_object_data',
+                  keyFrom: 'fk_object_data',
           keyTo: 'pk_entity'
         },
-        subject_inf_role: {
-          name: 'subject_inf_role',
-          type: 'InfRole',
-          model: 'InfRole',
+        subject_chunk: {
+          name: 'subject_chunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
           relationType: 'belongsTo',
-          keyFrom: 'fk_temporal_entity',
+                  keyFrom: 'fk_subject_data',
           keyTo: 'pk_entity'
         },
-        language: {
-          name: 'language',
+        subject_statement: {
+          name: 'subject_statement',
+          type: 'InfStatement',
+          model: 'InfStatement',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_subject_info',
+          keyTo: 'pk_entity'
+        },
+        object_temporal_entity: {
+          name: 'object_temporal_entity',
+          type: 'InfTemporalEntity',
+          model: 'InfTemporalEntity',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_object_info',
+          keyTo: 'pk_entity'
+        },
+        object_appellation: {
+          name: 'object_appellation',
+          type: 'InfAppellation',
+          model: 'InfAppellation',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_object_info',
+          keyTo: 'pk_entity'
+        },
+        object_lang_string: {
+          name: 'object_lang_string',
+          type: 'InfLangString',
+          model: 'InfLangString',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_object_info',
+          keyTo: 'pk_entity'
+        },
+        object_chunk: {
+          name: 'object_chunk',
+          type: 'DatChunk',
+          model: 'DatChunk',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_object_data',
+          keyTo: 'pk_entity'
+        },
+        object_language: {
+          name: 'object_language',
           type: 'InfLanguage',
           model: 'InfLanguage',
           relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
+                  keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
-        persistent_item: {
-          name: 'persistent_item',
+        subject_persistent_item: {
+          name: 'subject_persistent_item',
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
+                  keyFrom: 'fk_subject_info',
           keyTo: 'pk_entity'
         },
-        domain_pe_it: {
-          name: 'domain_pe_it',
+        object_persistent_item: {
+          name: 'object_persistent_item',
           type: 'InfPersistentItem',
           model: 'InfPersistentItem',
           relationType: 'belongsTo',
-          keyFrom: 'fk_temporal_entity',
+                  keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
-        range_pe_it: {
-          name: 'range_pe_it',
-          type: 'InfPersistentItem',
-          model: 'InfPersistentItem',
-          relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
-          keyTo: 'pk_entity'
-        },
-        time_primitive: {
-          name: 'time_primitive',
+        object_time_primitive: {
+          name: 'object_time_primitive',
           type: 'InfTimePrimitive',
           model: 'InfTimePrimitive',
           relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
+                  keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
-        place: {
-          name: 'place',
+        object_place: {
+          name: 'object_place',
           type: 'InfPlace',
           model: 'InfPlace',
           relationType: 'belongsTo',
-          keyFrom: 'fk_entity',
+                  keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
       }

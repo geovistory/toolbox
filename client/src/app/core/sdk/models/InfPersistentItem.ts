@@ -41,7 +41,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   * @license MIT
   * This method creates an instance of InfPersistentItem for dynamic purposes.
   **/
-  public static factory(data: InfPersistentItemInterface): InfPersistentItem {
+  public static factory(data: InfPersistentItemInterface): InfPersistentItem{
     return new InfPersistentItem(data);
   }
   /**
@@ -73,31 +73,31 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        pi_roles: {
-          name: 'pi_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_object_info'
         },
-        te_roles: {
-          name: 'te_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        outgoing_statements: {
+          name: 'outgoing_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
-          keyTo: 'fk_temporal_entity'
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_subject_info'
         },
         dfh_class: {
           name: 'dfh_class',
           type: 'DfhClass',
           model: 'DfhClass',
           relationType: 'belongsTo',
-          keyFrom: 'fk_class',
+                  keyFrom: 'fk_class',
           keyTo: 'pk_class'
         },
         text_properties: {
@@ -105,7 +105,7 @@ export class InfPersistentItem implements InfPersistentItemInterface {
           type: 'InfTextProperty[]',
           model: 'InfTextProperty',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_concerned_entity'
         },
       }

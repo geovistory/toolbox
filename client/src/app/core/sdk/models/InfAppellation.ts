@@ -37,7 +37,7 @@ export class InfAppellation implements InfAppellationInterface {
   * @license MIT
   * This method creates an instance of InfAppellation for dynamic purposes.
   **/
-  public static factory(data: InfAppellationInterface): InfAppellation {
+  public static factory(data: InfAppellationInterface): InfAppellation{
     return new InfAppellation(data);
   }
   /**
@@ -77,16 +77,16 @@ export class InfAppellation implements InfAppellationInterface {
           type: 'ProInfoProjRel[]',
           model: 'ProInfoProjRel',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
+                  keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        roles: {
-          name: 'roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
-          keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+                  keyFrom: 'pk_entity',
+          keyTo: 'fk_object_info'
         },
       }
     }

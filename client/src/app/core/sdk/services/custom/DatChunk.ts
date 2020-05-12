@@ -5,14 +5,14 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter, } from '../../models/BaseModels';
+import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DatChunk } from '../../models/DatChunk';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { DatDigital } from '../../models/DatDigital';
-import { InfStatement } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfStatement';
 import { DatNamespace } from '../../models/DatNamespace';
 
 
@@ -29,11 +29,11 @@ export class DatChunkApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http, connection, models, auth, errorHandler);
+    super(http,  connection,  models, auth, errorHandler);
   }
 
   /**
-   * Get the chunks related to the digital, with their roles.
+   * Get the chunks related to the digital, with their statements.
    *
    * @param {number} pkProject Primary key of the project
    *
@@ -51,7 +51,7 @@ export class DatChunkApi extends BaseLoopBackApi {
   public ofDigital(pkProject: any, pkDigital: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-      "/DatChunks/of-digital";
+    "/DatChunks/of-digital";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};

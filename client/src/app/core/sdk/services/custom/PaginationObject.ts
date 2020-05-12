@@ -40,7 +40,7 @@ export class PaginationObjectApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
-   *  - `filterObject` – `{object}` - Object to filter the roles
+   *  - `filterObject` – `{object}` - Object to filter the statements
    *
    * @returns {object[]} An empty reference that will be
    *   populated with the actual data once the response is returned
