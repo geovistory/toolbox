@@ -25,8 +25,8 @@ module.exports = function(ProInfoProjRel) {
         WHERE
         t2.Pk_entity = $1
         AND
-        t3.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =
-        t2.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'}
+        t3.${isOutgoing ? 'fk_subject_info' : 'fk_object_info'} =
+        t2.${isOutgoing ? 'fk_subject_info' : 'fk_object_info'}
         AND
         t3.fk_property = t2.fk_property
         AND

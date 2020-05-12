@@ -232,11 +232,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     return combineLatest(
       this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1317,  // is part of
-        fk_entity: pkRange
+        fk_object_info: pkRange
       }),
       this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1216,  // is reproduction of
-        fk_entity: pkRange
+        fk_object_info: pkRange
       })
     )
       .pipe(
@@ -292,7 +292,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     return this.r.inf$.statement$
       .by_object_and_property$(
         {
-          fk_entity: pkEntity,
+          fk_object_info: pkEntity,
           fk_property: this.fkPropertyFromSource
         },
         false
@@ -311,7 +311,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     return this.r.inf$.statement$
       .by_subject_and_property$(
         {
-          fk_temporal_entity: pkEntity,
+          fk_subject_info: pkEntity,
           fk_property: this.fkPropertyFromSource
         },
         false
@@ -448,20 +448,20 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   prepareNewEntityAssociatoin(dropNode: ContentTreeNode, draggedNode: ContentTreeNode, pkExpression: number): InfStatement {
 
-    let fk_entity: number; // parent pk
+    let fk_object_info: number; // parent pk
     let parentIsF2Expression: boolean;
     let fk_property;
 
     if (this.dragNodeExpandOverArea === 'above') {
       // take the parent of the target node as new parent of the dragged node
-      fk_entity = dropNode.statement.fk_object_info;
-      parentIsF2Expression = (pkExpression == fk_entity);
+      fk_object_info = dropNode.statement.fk_object_info;
+      parentIsF2Expression = (pkExpression == fk_object_info);
     }
     //  else if (this.dragNodeExpandOverArea === 'below') {
     // }
     else {
       // take the target node as new parent of the dragged node
-      fk_entity = dropNode.statement.fk_subject_info;
+      fk_object_info = dropNode.statement.fk_subject_info;
     }
 
 

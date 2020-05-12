@@ -16,7 +16,7 @@
     }
   },
   "properties": {
-    "fk_temporal_entity": {
+    "fk_subject_info": {
       "type": "number",
       "default": 0
     },
@@ -40,7 +40,7 @@
       "type": "number",
       "default": 0
     },
-    "fk_entity": {
+    "fk_object_info": {
       "type": "number",
       "default": 0
     },
@@ -74,13 +74,13 @@
     "subject_temporal_entity": {
       "type": "belongsTo",
       "model": "InfTemporalEntity",
-      "foreignKey": "fk_temporal_entity",
+      "foreignKey": "fk_subject_info",
       "primaryKey": "pk_entity"
     },
     "subject_persistent_item": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
-      "foreignKey": "fk_temporal_entity",
+      "foreignKey": "fk_subject_info",
       "primaryKey": "pk_entity"
     },
     "subject_digital": {
@@ -104,43 +104,43 @@
     "object_persistent_item": {
       "type": "belongsTo",
       "model": "InfPersistentItem",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "object_temporal_entity": {
       "type": "belongsTo",
       "model": "InfTemporalEntity",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "object_appellation": {
       "type": "belongsTo",
       "model": "InfAppellation",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "object_time_primitive": {
       "type": "belongsTo",
       "model": "InfTimePrimitive",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "object_language": {
       "type": "belongsTo",
       "model": "InfLanguage",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "object_lang_string": {
       "type": "belongsTo",
       "model": "InfLangString",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "object_place": {
       "type": "belongsTo",
       "model": "InfPlace",
-      "foreignKey": "fk_entity",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "object_chunk": {
@@ -345,7 +345,7 @@
           "arg": "entityPk",
           "type": "number",
           "required": true,
-          "description": "Key of the persistent item (fk_entity)",
+          "description": "Key of the persistent item (fk_object_info)",
           "http": {
             "source": "query"
           }
@@ -388,7 +388,7 @@
           "arg": "teEntPk",
           "type": "number",
           "required": true,
-          "description": "Key of the temporal entity (fk_temporal_entity)",
+          "description": "Key of the temporal entity (fk_subject_info)",
           "http": {
             "source": "query"
           }
@@ -650,7 +650,7 @@
           "arg": "pkInfoRange",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the statement pointing to the range entity (fk_entity)",
+          "description": "Foreign Key of the statement pointing to the range entity (fk_object_info)",
           "http": {
             "source": "query"
           }
@@ -659,7 +659,7 @@
           "arg": "pkInfoDomain",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the statement pointing to the domain entity (fk_temporal_entity)",
+          "description": "Foreign Key of the statement pointing to the domain entity (fk_subject_info)",
           "http": {
             "source": "query"
           }

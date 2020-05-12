@@ -123,7 +123,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     // the statements associating the root entity with the next items
     const basicRoles$: Observable<InfStatement[]> = this.p.inf$.statement$.by_object_and_property$({
       fk_property: this.fkProperty,
-      fk_entity: this.pkEntity
+      fk_object_info: this.pkEntity
     }).pipe(
 
       // TODO find out why this is triggered on wrong moments
@@ -249,7 +249,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   getReference(pkSubjectRole: number): Observable<Reference> {
     return this.p.inf$.statement$.by_subject_and_property$({
       fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
-      fk_temporal_entity: pkSubjectRole
+      fk_subject_info: pkSubjectRole
     })
       .pipe(
         switchMap((statements) => {
@@ -288,25 +288,25 @@ export class RamListComponent implements OnInit, OnDestroy {
               // 1316 -- geovP5 – carrier provided by
               this.p.inf$.statement$.by_subject_and_property$({
                 fk_property: 1316,
-                fk_temporal_entity: pkEntity
+                fk_subject_info: pkEntity
               })
                 .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 979 -- R4 – carriers provided by
               this.p.inf$.statement$.by_subject_and_property$({
                 fk_property: 979,
-                fk_temporal_entity: pkEntity
+                fk_subject_info: pkEntity
               })
                 .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 1305 -- geovP4 – is server response to request
               this.p.inf$.statement$.by_subject_and_property$({
                 fk_property: 1305,
-                fk_temporal_entity: pkEntity
+                fk_subject_info: pkEntity
               })
                 .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 1016 -- R42 – is representative manifestation singleton for
               this.p.inf$.statement$.by_object_and_property$({
                 fk_property: 1016,
-                fk_entity: pkEntity
+                fk_object_info: pkEntity
               })
                 .pipe(map((r) => r.length ? r[0].fk_subject_info : undefined)),
             )
@@ -378,7 +378,7 @@ export class RamListComponent implements OnInit, OnDestroy {
           return this.p.inf$.statement$
             .by_subject_and_property$({
               fk_property: 1317,
-              fk_temporal_entity: pkEntity
+              fk_subject_info: pkEntity
             })
             .pipe(
               switchMap((rs) => {

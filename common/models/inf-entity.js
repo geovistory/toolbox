@@ -225,7 +225,7 @@ module.exports = function(InfEntity) {
    * 1. in the simplest case, the given dataObject has a pk_entity for which the existing temporal entity is retrieved from db.
    * 2. in a more complex case, the given dataObject holds an array of statements ('outgoing_statements') for which the function checks,
    *    if there is an existing temporal entity whose identity defining statements do excactly match the given statements.
-   *    Remark: The given 'outgoing_statements' must have a valid fk_entity and fk_property in order to be compared
+   *    Remark: The given 'outgoing_statements' must have a valid fk_object_info and fk_property in order to be compared
    *    to the existing temporal entitites
    *
    * If none of the above checks retrieves an exsisting temporal entity, a new one is created.
@@ -358,7 +358,7 @@ module.exports = function(InfEntity) {
    * - The method will remove the pk_entity from the data object, if one is provided accidentially.
    *
    * Explanation: The values of statements and objects are unique. For example, there can't be two statements with
-   * the same fk_entity and fk_temporal_entity, and there can't be two timePrimitives with the same values.
+   * the same fk_object_info and fk_subject_info, and there can't be two timePrimitives with the same values.
    * Therefore the 'unique identifier' relevant to findOrCreate are the values of the objects, not the pk_entity.
    *
    * Remark: To find or create a statement or an object (e.g. InfStatement, InfTimePrimitive or InfAppellation), use find or create object

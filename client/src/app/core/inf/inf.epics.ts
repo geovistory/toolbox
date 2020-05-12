@@ -262,7 +262,7 @@ export class InfEpics {
     const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
       { fk_target_class: meta.fkTargetClass },
-      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity },
+      { [meta.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: meta.pkSourceEntity },
       { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
     ];
     // call action to set pagination loading on true

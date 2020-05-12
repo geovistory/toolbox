@@ -65,7 +65,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     if (!['appellation', 'language', 'place', 'text-property', 'lang-string', 'entity-preview']
       .includes(this.listDefinition.listType)) return;
 
-    const relateBy = this.listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity';
+    const relateBy = this.listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info';
     const filterObject: Partial<InfStatement> = {
       [relateBy]: this.pkEntity,
       fk_property: this.listDefinition.property.pkProperty,
@@ -120,7 +120,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
   }
 
   private getItems(res: PaginationObject): ItemList {
-    const relateBy = this.listDefinition.isOutgoing ? 'fk_entity' : 'fk_temporal_entity';
+    const relateBy = this.listDefinition.isOutgoing ? 'fk_object_info' : 'fk_subject_info';
     if (this.listDefinition.listType === 'entity-preview') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.war.entity_preview)
       return res.schemas.inf.statement.map(statement => {

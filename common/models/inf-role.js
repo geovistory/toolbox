@@ -46,13 +46,13 @@ module.exports = function(InfStatement) {
       // the model to find or create
       let model = {
         // pk_entity: statement.pk_entity,
-        fk_temporal_entity: statement.fk_temporal_entity,
+        fk_subject_info: statement.fk_subject_info,
         fk_subject_data: statement.fk_subject_data,
         fk_subject_tables_cell: statement.fk_subject_tables_cell,
         fk_subject_tables_row: statement.fk_subject_tables_row,
         fk_property: statement.fk_property,
         fk_property_of_property: statement.fk_property_of_property,
-        fk_entity: statement.fk_entity,
+        fk_object_info: statement.fk_object_info,
         fk_object_data: statement.fk_object_data,
         fk_object_tables_cell: statement.fk_object_tables_cell,
         fk_object_tables_row: statement.fk_object_tables_row,
@@ -104,9 +104,9 @@ module.exports = function(InfStatement) {
     cb
   ) {
     const statementsInProjectFilter = {
-      /** Select statements with fk_entity and fk_property … */
+      /** Select statements with fk_object_info and fk_property … */
       where: [
-        'fk_entity',
+        'fk_object_info',
         '=',
         entityPk,
         'and',
@@ -146,9 +146,9 @@ module.exports = function(InfStatement) {
       }
 
       const filter = {
-        /** Select statements with fk_entity and fk_property … */
+        /** Select statements with fk_object_info and fk_property … */
         where: [
-          'fk_entity',
+          'fk_object_info',
           '=',
           entityPk,
           'and',
@@ -262,9 +262,9 @@ module.exports = function(InfStatement) {
     cb
   ) {
     const statementsInProjectFilter = {
-      /** Select statements with fk_temporal_entity and fk_property … */
+      /** Select statements with fk_subject_info and fk_property … */
       where: [
-        'fk_temporal_entity',
+        'fk_subject_info',
         '=',
         teEntPk,
         'and',
@@ -304,9 +304,9 @@ module.exports = function(InfStatement) {
       }
 
       const filter = {
-        /** Select statements with fk_temporal_entity and fk_property … */
+        /** Select statements with fk_subject_info and fk_property … */
         where: [
-          'fk_temporal_entity',
+          'fk_subject_info',
           '=',
           teEntPk,
           'and',
@@ -572,8 +572,8 @@ module.exports = function(InfStatement) {
 
     const w = {
       pk_entity: pkEntity,
-      fk_entity: fkEntity,
-      fk_temporal_entity: fkTemporalEntity,
+      fk_object_info: fkEntity,
+      fk_subject_info: fkTemporalEntity,
       fk_property: pkProperty,
     };
     let where = [];
@@ -716,9 +716,9 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if fk_subject_information is a given
-    if (requestedRole.fk_temporal_entity) {
+    if (requestedRole.fk_subject_info) {
       resolve({
-        fk: { fk_temporal_entity: requestedRole.fk_temporal_entity },
+        fk: { fk_subject_info: requestedRole.fk_subject_info },
       });
     }
     // if fk_subject_data is a given
@@ -760,7 +760,7 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_temporal_entity: relatedModel.pk_entity },
+            fk: { fk_subject_info: relatedModel.pk_entity },
             relatedModel: { temporal_entity: relatedModel },
           });
         })
@@ -779,7 +779,7 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_temporal_entity: relatedModel.pk_entity },
+            fk: { fk_subject_info: relatedModel.pk_entity },
             relatedModel: { domain_pe_it: relatedModel },
           });
         })
@@ -813,7 +813,7 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_temporal_entity: relatedModel.pk_entity },
+            fk: { fk_subject_info: relatedModel.pk_entity },
             relatedModel: { subject_inf_statement: relatedModel },
           });
         })
@@ -851,9 +851,9 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if fk_object_information is a given
-    if (requestedRole.fk_entity) {
+    if (requestedRole.fk_object_info) {
       resolve({
-        fk: { fk_entity: requestedRole.fk_entity },
+        fk: { fk_object_info: requestedRole.fk_object_info },
       });
     }
     // if fk_object_data is a given
@@ -895,7 +895,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { range_temporal_entity: relatedModel },
           });
         })
@@ -913,7 +913,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { persistent_item: relatedModel },
           });
         })
@@ -935,7 +935,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { range_pe_it: relatedModel },
           });
         })
@@ -954,7 +954,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { place: relatedModel },
           });
         })
@@ -969,7 +969,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { appellation: relatedModel },
           });
         })
@@ -984,7 +984,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { lang_string: relatedModel },
           });
         })
@@ -1001,7 +1001,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArr[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { language: relatedModel },
           });
         })
@@ -1016,7 +1016,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { time_primitive: relatedModel },
           });
         })
@@ -1035,7 +1035,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
           const relatedModel = helpers.toObject(resArr[0]);
           // return the foreign key and the related model
           resolve({
-            fk: { fk_entity: relatedModel.pk_entity },
+            fk: { fk_object_info: relatedModel.pk_entity },
             relatedModel: { range_chunk: relatedModel },
           });
         })

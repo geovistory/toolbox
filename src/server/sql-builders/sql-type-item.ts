@@ -45,7 +45,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
           information.v_statement t1,
           projects.info_proj_rel t2
         WHERE t1.fk_property = 1111
-        AND t1.fk_entity = t0.pk_entity
+        AND t1.fk_object_info = t0.pk_entity
         AND t1.pk_entity = t2.fk_entity
         AND t2.fk_project = ${this.addParam(fkProject)}
         AND t2.is_in_project = true
@@ -62,7 +62,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
           information.v_temporal_entity t1,
           projects.info_proj_rel t2
         WHERE
-          t0.fk_temporal_entity = t1.pk_entity
+          t0.fk_subject_info = t1.pk_entity
           AND t1.pk_entity = t2.fk_entity
           AND t2.is_in_project = true
           AND t2.fk_project = ${this.addParam(fkProject)}
@@ -77,7 +77,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
           CROSS JOIN information.v_statement t1,
           projects.info_proj_rel t2
         WHERE
-          tw3.pk_entity = t1.fk_temporal_entity
+          tw3.pk_entity = t1.fk_subject_info
           AND t1.pk_entity = t2.fk_entity
           AND t2.is_in_project = true
           AND t2.fk_project = ${this.addParam(fkProject)}
@@ -90,7 +90,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
           tw4
           CROSS JOIN information.v_appellation t1
         WHERE
-          tw4.fk_entity = t1.pk_entity
+          tw4.fk_object_info = t1.pk_entity
       ),
       -- language
       tw6 AS (
@@ -100,7 +100,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
           tw4
           CROSS JOIN information.v_language t1
         WHERE
-          tw4.fk_entity = t1.pk_entity
+          tw4.fk_object_info = t1.pk_entity
       ),
       -- text_properties
       tw7 AS (

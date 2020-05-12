@@ -67,7 +67,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
           information.v_statement t1,
           data_for_history.v_property t2,
           projects.info_proj_rel t3
-        WHERE t1.fk_temporal_entity = tw1.pk_entity
+        WHERE t1.fk_subject_info = tw1.pk_entity
         AND t1.fk_property = t2.pk_property
         AND t2.is_has_type_subproperty = true
         AND t1.pk_entity = t3.fk_entity

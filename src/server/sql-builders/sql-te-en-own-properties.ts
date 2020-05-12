@@ -40,7 +40,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         CROSS JOIN information.v_statement t1,
         projects.info_proj_rel t2
       WHERE
-        tw3.pk_entity = t1.fk_temporal_entity
+        tw3.pk_entity = t1.fk_subject_info
         AND t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
@@ -53,7 +53,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         tw4
         CROSS JOIN information.v_appellation t1
       WHERE
-        tw4.fk_entity = t1.pk_entity
+        tw4.fk_object_info = t1.pk_entity
     ),
     -- language
     tw6 AS (
@@ -63,7 +63,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         tw4
         CROSS JOIN information.v_language t1
       WHERE
-        tw4.fk_entity = t1.pk_entity
+        tw4.fk_object_info = t1.pk_entity
     ),
     -- time_primitive
     tw7 AS (
@@ -73,7 +73,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         tw4
         CROSS JOIN information.v_time_primitive t1
       WHERE
-        tw4.fk_entity = t1.pk_entity
+        tw4.fk_object_info = t1.pk_entity
     ),
     -- place
     tw8 AS (
@@ -83,7 +83,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         tw4
         CROSS JOIN information.v_place t1
       WHERE
-        tw4.fk_entity = t1.pk_entity
+        tw4.fk_object_info = t1.pk_entity
     ),
     -- ingoing_statements of temporal_entity
     tw9 AS (
@@ -95,7 +95,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         CROSS JOIN information.v_statement t1,
         projects.info_proj_rel t2
       WHERE
-        tw3.pk_entity = t1.fk_entity
+        tw3.pk_entity = t1.fk_object_info
         AND t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
@@ -126,7 +126,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         information.v_statement t1,
         data_for_history.v_property t2,
         projects.info_proj_rel t3
-      WHERE t1.fk_temporal_entity = tw3.pk_entity
+      WHERE t1.fk_subject_info = tw3.pk_entity
       AND t1.fk_property = t2.pk_property
       AND t2.is_has_type_subproperty = true
       AND t1.pk_entity = t3.fk_entity

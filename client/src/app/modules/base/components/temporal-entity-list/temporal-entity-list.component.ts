@@ -182,7 +182,7 @@ export function createPaginateBy(listDefinition: ListDefinition, pkEntity: numbe
     return [
       { fk_property: listDefinition.property.pkProperty },
       { fk_target_class: listDefinition.targetClass },
-      { [listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: pkEntity },
+      { [listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info']: pkEntity },
       { [alternatives ? 'alternatives' : 'ofProject']: alternatives }
     ]
   }

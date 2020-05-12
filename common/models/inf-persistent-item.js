@@ -111,8 +111,8 @@ module.exports = function(InfPersistentItem) {
             const promise = Promise.map(
               requestedPeIt.incoming_statements.filter(statement => statement),
               statement => {
-                // use the pk_entity from the created peIt to set the fk_entity of the statement
-                statement.fk_entity = resultingEntity.pk_entity;
+                // use the pk_entity from the created peIt to set the fk_object_info of the statement
+                statement.fk_object_info = resultingEntity.pk_entity;
                 // find or create the teEnt and the statement pointing to the teEnt
                 return InfStatement.findOrCreateInfStatement(
                   pkProject,
@@ -153,8 +153,8 @@ module.exports = function(InfPersistentItem) {
             const promise = Promise.map(
               requestedPeIt.outgoing_statements.filter(statement => statement),
               statement => {
-                // use the pk_entity from the created peIt to set the fk_temporal_entity of the statement
-                statement.fk_temporal_entity = resultingEntity.pk_entity;
+                // use the pk_entity from the created peIt to set the fk_subject_info of the statement
+                statement.fk_subject_info = resultingEntity.pk_entity;
                 // find or create the teEnt and the statement pointing to the teEnt
                 return InfStatement.findOrCreateInfStatement(
                   pkProject,

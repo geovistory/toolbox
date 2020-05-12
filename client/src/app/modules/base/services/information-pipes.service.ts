@@ -583,7 +583,7 @@ export class InformationPipesService {
   @spyTag pipeTemporalEntityRemoveProperties(pkEntity: number): Observable<TemporalEntityRemoveProperties> {
     return combineLatest(
       this.p.inf$.temporal_entity$.by_pk_entity_key$(pkEntity),
-      this.p.inf$.statement$.by_subject$({ fk_temporal_entity: pkEntity }),
+      this.p.inf$.statement$.by_subject$({ fk_subject_info: pkEntity }),
       this.p.inf$.text_property$.by_fk_concerned_entity_indexed$(pkEntity)
     ).pipe(
       map(([temporalEntity, statements, textProperties]) => {
@@ -617,7 +617,7 @@ export class InformationPipesService {
           switchMap(fieldDefs => {
             return combineLatest(fieldDefs.map(fieldDef => this.p.inf$.statement$.by_subject_and_property$({
               fk_property: fieldDef.property.pkProperty,
-              fk_temporal_entity: pkEntity
+              fk_subject_info: pkEntity
             })
               .pipe(
                 switchMapOr([], statements => combineLatest(
@@ -1151,7 +1151,7 @@ export class InformationPipesService {
   @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number): Observable<InfStatement> {
     return this.p.inf$.statement$.by_subject_and_property_indexed$({
       fk_property: hasTypeProperty,
-      fk_temporal_entity: pkEntity
+      fk_subject_info: pkEntity
     }).pipe(
       map(items => {
         if (!items || Object.keys(items).length < 1) return undefined;

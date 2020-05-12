@@ -167,8 +167,8 @@ module.exports = function(InfTemporalEntity) {
                     statement => statement
                   ),
                   statement => {
-                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the statement
-                    statement.fk_temporal_entity = resultingEntity.pk_entity;
+                    // use the pk_entity from the created teEnt to set the fk_subject_info of the statement
+                    statement.fk_subject_info = resultingEntity.pk_entity;
 
                     // find or create the Entity and the statement pointing to the Entity
                     return InfStatement.findOrCreateInfStatement(
@@ -211,8 +211,8 @@ module.exports = function(InfTemporalEntity) {
                     statement => statement
                   ),
                   statement => {
-                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the statement
-                    statement.fk_entity = resultingEntity.pk_entity;
+                    // use the pk_entity from the created teEnt to set the fk_subject_info of the statement
+                    statement.fk_object_info = resultingEntity.pk_entity;
 
                     // find or create the Entity and the statement pointing to the Entity
                     return InfStatement.findOrCreateInfStatement(
@@ -264,19 +264,19 @@ module.exports = function(InfTemporalEntity) {
     return new Promise((resolve, reject) => {
       if (!outgoing_statements || !outgoing_statements.length) resolve([]);
 
-      const outgoing_statements_with_fk_entity = outgoing_statements
-        .filter(statement => !!statement.fk_entity)
+      const outgoing_statements_with_fk_object_info = outgoing_statements
+        .filter(statement => !!statement.fk_object_info)
         .map(statement => ({
           fk_property: statement.fk_property,
-          fk_entity: statement.fk_entity,
+          fk_object_info: statement.fk_object_info,
         }));
 
-      const outgoing_statements_without_fk_entity = outgoing_statements.filter(
-        statement => !statement.fk_entity
+      const outgoing_statements_without_fk_object_info = outgoing_statements.filter(
+        statement => !statement.fk_object_info
       );
 
       Promise.all(
-        outgoing_statements_without_fk_entity.map(statement => {
+        outgoing_statements_without_fk_object_info.map(statement => {
           // Time Primitive
           if (
             statement.time_primitive &&
@@ -289,7 +289,7 @@ module.exports = function(InfTemporalEntity) {
               InfTimePrimitive.create(statement.time_primitive).then(obj => {
                 res({
                   fk_property: statement.fk_property,
-                  fk_entity: obj.pk_entity,
+                  fk_object_info: obj.pk_entity,
                 });
               });
             });
@@ -305,7 +305,7 @@ module.exports = function(InfTemporalEntity) {
               }).then(objs => {
                 res({
                   fk_property: statement.fk_property,
-                  fk_entity: objs[0].pk_entity,
+                  fk_object_info: objs[0].pk_entity,
                 });
               });
             });
@@ -320,7 +320,7 @@ module.exports = function(InfTemporalEntity) {
                 .then(obj => {
                   res({
                     fk_property: statement.fk_property,
-                    fk_entity: obj.pk_entity,
+                    fk_object_info: obj.pk_entity,
                   });
                 })
                 .catch(err => {
@@ -340,30 +340,18 @@ module.exports = function(InfTemporalEntity) {
               InfAppellation.create(statement.appellation).then(obj => {
                 res({
                   fk_property: statement.fk_property,
-                  fk_entity: obj.pk_entity,
+                  fk_object_info: obj.pk_entity,
                 });
               });
             });
           }
-
-          // // Temporal Entity
-          // if (statement.temporal_entity && Object.keys(statement.temporal_entity).length) {
-
-          //   return new Promise((res, rej) => {
-          //     InfTemporalEntity.findOrCreateInfTemporalEntity(pkProject, statement.temporal_entity, ctxWithoutBody)
-          //       .then(obj => {
-          //         const fk_entity = obj[0].pk_entity;
-          //         res({
-          //           fk_property: statement.fk_property,
-          //           fk_entity
-          //         })
-          //       })
-          //   })
-          // }
         })
       )
         .then(resolvedRoles => {
-          resolve([...outgoing_statements_with_fk_entity, ...resolvedRoles]);
+          resolve([
+            ...outgoing_statements_with_fk_object_info,
+            ...resolvedRoles,
+          ]);
         })
         .catch(error => reject(error));
     });

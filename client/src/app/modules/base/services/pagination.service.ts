@@ -105,11 +105,11 @@ class RolePageLoader {
       const t = combineLatest([
         this.p.inf$.statement$.by_object_and_property_indexed$({
           fk_property: l.property.pkProperty,
-          fk_entity: pkEntity
+          fk_object_info: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
         this.p.inf$.statement$.by_subject_and_property_indexed$({
           fk_property: l.property.pkProperty,
-          fk_temporal_entity: pkEntity
+          fk_subject_info: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
       ]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
       this.paginationTriggers.set(triggerKey, t);

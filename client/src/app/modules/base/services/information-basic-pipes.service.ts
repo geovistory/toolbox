@@ -40,7 +40,7 @@ export class InformationBasicPipesService {
 
   @spyTag pipeRelatedTemporalEntities(pkEntity: number): Observable<InfTemporalEntity[]> {
     return this.p.inf$.statement$
-      .by_object$({ fk_entity: pkEntity })
+      .by_object$({ fk_object_info: pkEntity })
       .pipe(
         auditTime(1),
         switchMapOr([], (statements) => combineLatest(
@@ -67,7 +67,7 @@ export class InformationBasicPipesService {
   * Pipe outgoing statements of an entity
   */
   @spyTag pipeOutgoingRoles(pkEntity): Observable<InfStatement[]> {
-    return this.p.inf$.statement$.by_subject$({ fk_temporal_entity: pkEntity })
+    return this.p.inf$.statement$.by_subject$({ fk_subject_info: pkEntity })
   }
 
 
@@ -75,7 +75,7 @@ export class InformationBasicPipesService {
    * Pipe ingoing statements of an entity
    */
   @spyTag pipeIngoingRoles(pkEntity): Observable<InfStatement[]> {
-    return this.p.inf$.statement$.by_object$({ fk_entity: pkEntity })
+    return this.p.inf$.statement$.by_object$({ fk_object_info: pkEntity })
   }
 
 
@@ -84,13 +84,13 @@ export class InformationBasicPipesService {
       return this.p.inf$.statement$.by_subject_and_property$({
         fk_property: listDefinition.property.pkProperty,
         fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        fk_temporal_entity: pkEntity
+        fk_subject_info: pkEntity
       })
     } else {
       return this.p.inf$.statement$.by_object_and_property$({
         fk_property: listDefinition.property.pkProperty,
         fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        fk_entity: pkEntity
+        fk_object_info: pkEntity
       })
     }
   }
@@ -101,7 +101,7 @@ export class InformationBasicPipesService {
   @spyTag pipeOutgoingRolesByProperty(pkProperty, pkEntity): Observable<InfStatement[]> {
     return this.p.inf$.statement$.by_subject_and_property$({
       fk_property: pkProperty,
-      fk_temporal_entity: pkEntity
+      fk_subject_info: pkEntity
     })
 
   }
@@ -113,7 +113,7 @@ export class InformationBasicPipesService {
   @spyTag pipeIngoingRolesByProperty(pkProperty, pkEntity): Observable<InfStatement[]> {
     return this.p.inf$.statement$.by_object_and_property$({
       fk_property: pkProperty,
-      fk_entity: pkEntity
+      fk_object_info: pkEntity
     })
   }
 
@@ -123,7 +123,7 @@ export class InformationBasicPipesService {
   @spyTag pipeOutgoingBasicRoleItemsByProperty(pkProperty, pkEntity, pkProject: number): Observable<BasicRoleItem[]> {
     return this.p.inf$.statement$.by_subject_and_property$({
       fk_property: pkProperty,
-      fk_temporal_entity: pkEntity
+      fk_subject_info: pkEntity
     }).pipe(
       switchMap(statements => combineLatestOrEmpty(
         statements.map(statement => this.pipeBasicRoleItem(pkProject, statement, true))
@@ -139,7 +139,7 @@ export class InformationBasicPipesService {
   @spyTag pipeIngoingBasicRoleItemsByProperty(pkProperty, pkEntity, pkProject: number): Observable<BasicRoleItem[]> {
     return this.p.inf$.statement$.by_object_and_property$({
       fk_property: pkProperty,
-      fk_entity: pkEntity
+      fk_object_info: pkEntity
     }).pipe(
       switchMap(statements => combineLatestOrEmpty(
         statements.map(statement => this.pipeBasicRoleItem(pkProject, statement, false))
@@ -271,14 +271,14 @@ export class InformationBasicPipesService {
     * Pipe repo outgoing statements.
     */
   @spyTag pipeRepoOutgoingRoles(pkEntity): Observable<InfStatement[]> {
-    return this.p.inf$.statement$.by_subject$({ fk_temporal_entity: pkEntity }, false)
+    return this.p.inf$.statement$.by_subject$({ fk_subject_info: pkEntity }, false)
   }
 
   /**
   * Pipe repo ingoing statements.
   */
   @spyTag pipeRepoIngoingRoles(pkEntity): Observable<InfStatement[]> {
-    return this.p.inf$.statement$.by_object$({ fk_entity: pkEntity }, false)
+    return this.p.inf$.statement$.by_object$({ fk_object_info: pkEntity }, false)
   }
 
   /**
@@ -292,7 +292,7 @@ export class InformationBasicPipesService {
       this.p.inf$.statement$
         .by_subject_and_property$({
           fk_property: pkProperty,
-          fk_temporal_entity: pkEntity
+          fk_subject_info: pkEntity
         }, false)
       // .pipe(filter(x => !!x))
     ).pipe(
@@ -315,7 +315,7 @@ export class InformationBasicPipesService {
       this.p.inf$.statement$
         .by_object_and_property$({
           fk_property: pkProperty,
-          fk_entity: pkEntity
+          fk_object_info: pkEntity
         }, false)
       // .pipe(filter(x => !!x))
     ).pipe(
@@ -364,11 +364,11 @@ export class InformationBasicPipesService {
     return combineLatest(
       this.p.inf$.statement$.by_object_and_property_indexed$({
         fk_property: pkProperty,
-        fk_entity: pkEntity
+        fk_object_info: pkEntity
       }, false),
       this.p.inf$.statement$.by_object_and_property_indexed$({
         fk_property: pkProperty,
-        fk_entity: pkEntity
+        fk_object_info: pkEntity
       }).pipe(
         map(inproject => inproject ? Object.keys(inproject) : [])
       )
@@ -386,11 +386,11 @@ export class InformationBasicPipesService {
     return combineLatest(
       this.p.inf$.statement$.by_subject_and_property_indexed$({
         fk_property: pkProperty,
-        fk_temporal_entity: pkEntity
+        fk_subject_info: pkEntity
       }, false),
       this.p.inf$.statement$.by_subject_and_property_indexed$({
         fk_property: pkProperty,
-        fk_temporal_entity: pkEntity
+        fk_subject_info: pkEntity
       }).pipe(
         map(inproject => inproject ? Object.keys(inproject) : [])
       ),

@@ -31,13 +31,13 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
     offset: number
   ) {
     const mainWhere = `
-      --if isOutgoing join with fk_temporal_entity , else fk_entity
-      t1.${isOutgoing ? 'fk_temporal_entity' : 'fk_entity'} =
+      --if isOutgoing join with fk_subject_info , else fk_object_info
+      t1.${isOutgoing ? 'fk_subject_info' : 'fk_object_info'} =
         ${this.addParam(fkSourceEntity)}
       --  add the pk_entity of the 'source' entity here
       AND t1.fk_property = ${this.addParam(fkProperty)} -- add the pk_property
       AND t2.fk_project = ${this.addParam(fkProject)} -- add the pk_project here
-      AND t1.${isOutgoing ? 'fk_entity' : 'fk_temporal_entity'} = t3.pk_entity
+      AND t1.${isOutgoing ? 'fk_object_info' : 'fk_subject_info'} = t3.pk_entity
       AND t1.pk_entity = t2.fk_entity
       AND t2.is_in_project = true
       AND t3.fk_class = ${this.addParam(fkTargetClass)}

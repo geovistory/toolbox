@@ -3,7 +3,7 @@ import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
 import { Lb3Models } from '../utils/interfaces';
 import { logSql } from '../utils';
 export interface SearchExistingRelatedStatement {
-  relateBy: 'fk_entity' | 'fk_temporal_entity',
+  relateBy: 'fk_object_info' | 'fk_subject_info',
   filter: {
     key: 'fk_property' | 'fk_property_of_property',
     value: number

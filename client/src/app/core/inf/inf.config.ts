@@ -150,10 +150,10 @@ export const infDefinitions: ReducerConfigCollection = {
  * or to retrieve statements from such a group index
  */
 export function indexRoleBySubject(fks: IndexRoleBySubject = {}): string {
-  return `${fks.fk_temporal_entity || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`
+  return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`
 }
 export interface IndexRoleBySubject {
-  fk_temporal_entity?: number;
+  fk_subject_info?: number;
   fk_subject_data?: number;
   fk_subject_tables_row?: number;
   fk_subject_tables_cell?: number;
@@ -171,10 +171,10 @@ export interface IndexRoleBySubject {
  * or to retrieve statements from such a group index
  */
 export function indexRoleByObject(fks: IndexRoleByObject = {}): string {
-  return `${fks.fk_entity || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`
+  return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`
 }
 export interface IndexRoleByObject {
-  fk_entity?: number;
+  fk_object_info?: number;
   fk_object_data?: number;
   fk_object_tables_row?: number;
   fk_object_tables_cell?: number;
@@ -193,10 +193,10 @@ export interface IndexRoleByObject {
  * or to retrieve statements from such a group index
  */
 export function indexRoleBySubjectProperty(fks: IndexRoleBySubjectProperty = {}): string {
-  return `${fks.fk_temporal_entity || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
+  return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
 export interface IndexRoleBySubjectProperty {
-  fk_temporal_entity?: number;
+  fk_subject_info?: number;
   fk_subject_data?: number;
   fk_subject_tables_row?: number;
   fk_subject_tables_cell?: number;
@@ -217,10 +217,10 @@ export interface IndexRoleBySubjectProperty {
  * or to retrieve statements from such a group index
  */
 export function indexRoleByObjectProperty(fks: IndexRoleByObjectProperty = {}): string {
-  return `${fks.fk_entity || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
+  return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
 export interface IndexRoleByObjectProperty {
-  fk_entity?: number;
+  fk_object_info?: number;
   fk_object_data?: number;
   fk_object_tables_row?: number;
   fk_object_tables_cell?: number;

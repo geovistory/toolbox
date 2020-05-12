@@ -5,7 +5,7 @@ import { logSql } from '../utils';
 
 interface RoleParams {
   [index: string]: number | undefined;
-  fk_temporal_entity?: number;
+  fk_subject_info?: number;
   fk_subject_data?: number;
   fk_subject_tables_row?: number;
   fk_subject_tables_cell?: number;
@@ -13,7 +13,7 @@ interface RoleParams {
   fk_property?: number;
   fk_property_of_property?: number;
 
-  fk_entity?: number;
+  fk_object_info?: number;
   fk_object_data?: number;
   fk_object_tables_row?: number;
   fk_object_tables_cell?: number;
@@ -90,7 +90,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_appellation t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       --lang_string
       tw4 AS (
@@ -100,7 +100,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_lang_string t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- language of lang_string
       tw5 AS (
@@ -120,7 +120,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_language t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- time_primitive
       tw7 AS (
@@ -130,7 +130,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_time_primitive t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- place
       tw8 AS (
@@ -140,7 +140,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_place t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- object entity_preview
       tw9 AS (
@@ -150,7 +150,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN war.entity_preview t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
           AND t1.fk_project IS NULL
       ),
       -- subject entity_preview
@@ -161,7 +161,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN war.entity_preview t1
         WHERE
-          tw2.fk_temporal_entity = t1.pk_entity
+          tw2.fk_subject_info = t1.pk_entity
           AND t1.fk_project IS NULL
       ),
       ------------------------------------

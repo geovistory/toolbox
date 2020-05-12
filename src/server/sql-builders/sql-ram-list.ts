@@ -26,12 +26,12 @@ export class SqlRamList extends SqlBuilderLbModels {
 
   private getSqlForLinkedEntities(pkEntity: number, fkProject: number, fkProperty: number) {
     return `
-    WITH RECURSIVE tw0 (fk_temporal_entity, fk_subject_data, fk_property, fk_entity, fk_object_data, level, pk_entity, path, pk_chunk, pk_digital) AS (
+    WITH RECURSIVE tw0 (fk_subject_info, fk_subject_data, fk_property, fk_object_info, fk_object_data, level, pk_entity, path, pk_chunk, pk_digital) AS (
 
-      SELECT    t1.fk_temporal_entity,
+      SELECT    t1.fk_subject_info,
                 t1.fk_subject_data,
                 t1.fk_property,
-                t1.fk_entity,
+                t1.fk_object_info,
                 t1.fk_object_data,
                 0,
                 t1.pk_entity,
@@ -47,15 +47,15 @@ export class SqlRamList extends SqlBuilderLbModels {
                 ON t3.pk_entity = t1.fk_subject_data
       LEFT JOIN	data.digital t4
                 ON t3.fk_text = t4.pk_text
-      WHERE     t1.fk_entity = ${this.addParam(pkEntity)}
+      WHERE     t1.fk_object_info = ${this.addParam(pkEntity)}
       AND       t1.fk_property IN ( ${this.addParam(fkProperty)} )
 
       UNION ALL
 
-      SELECT    p.fk_temporal_entity,
+      SELECT    p.fk_subject_info,
                 p.fk_subject_data,
                 p.fk_property,
-                p.fk_entity,
+                p.fk_object_info,
                 p.fk_object_data,
                 t0.level + 1,
                 p.pk_entity,
@@ -69,7 +69,7 @@ export class SqlRamList extends SqlBuilderLbModels {
                 (
                       -- statements where subject_info equals subject_info of parent statement (-> going out of parent subject)
                       (
-                        p.fk_temporal_entity = t0.fk_temporal_entity
+                        p.fk_subject_info = t0.fk_subject_info
                         AND   p.fk_property IN (
                                   1317, -- is part of,
                                   1316, -- geovP5 – carrier provided by
@@ -80,7 +80,7 @@ export class SqlRamList extends SqlBuilderLbModels {
               OR
                       -- statements where subject_info equals object_info of parent statement (-> going out of parent object)
                       (
-                        p.fk_temporal_entity = t0.fk_entity
+                        p.fk_subject_info = t0.fk_object_info
                         AND   p.fk_property IN (
                                   1317, -- is part of,
                                   1316, -- geovP5 – carrier provided by
@@ -91,7 +91,7 @@ export class SqlRamList extends SqlBuilderLbModels {
                       OR
                       -- statements where object_info equals object_info of parent statement (-> going in to parent object)
                       (
-                        p.fk_entity = t0.fk_entity
+                        p.fk_object_info = t0.fk_object_info
                         AND   p.fk_property IN (
                                   1016 -- R42 – is representative manifestation singleton for
                               )
@@ -118,7 +118,7 @@ export class SqlRamList extends SqlBuilderLbModels {
         FROM
           war.entity_preview t1
         JOIN tw0 t3
-          ON t1.pk_entity = t3.fk_temporal_entity
+          ON t1.pk_entity = t3.fk_subject_info
         CROSS JOIN
           projects.info_proj_rel t2
         WHERE t1.pk_entity = t2.fk_entity
@@ -139,7 +139,7 @@ export class SqlRamList extends SqlBuilderLbModels {
         FROM
           war.entity_preview t1
         JOIN tw0 t3
-          ON t1.pk_entity = t3.fk_entity
+          ON t1.pk_entity = t3.fk_object_info
         CROSS JOIN
           projects.info_proj_rel t2
         WHERE t1.pk_entity = t2.fk_entity
@@ -179,7 +179,7 @@ export class SqlRamList extends SqlBuilderLbModels {
         CROSS JOIN
           information.v_statement t1,
           projects.info_proj_rel t2
-        WHERE t1.fk_temporal_entity = tw0.pk_entity
+        WHERE t1.fk_subject_info = tw0.pk_entity
         AND t1.fk_property_of_property = 1
         AND t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
@@ -193,7 +193,7 @@ export class SqlRamList extends SqlBuilderLbModels {
           tw4
         CROSS JOIN
           information.v_lang_string t1
-        WHERE t1.pk_entity = tw4.fk_entity
+        WHERE t1.pk_entity = tw4.fk_object_info
       ),
       -- chunks
       twd3 AS (

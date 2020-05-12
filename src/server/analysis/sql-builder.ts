@@ -400,7 +400,7 @@ export class SqlBuilder extends SqlBuilderBase {
   joinEntities(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
     fromsArray.push(`
                     LEFT JOIN war.entity_preview ${thisTableAlias} ON
-                    (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
+                    (${parentTableAlias}.fk_object_info = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_subject_info = ${thisTableAlias}.pk_entity)
                     AND
                      ${this.createEntityWhere(node, thisTableAlias, fkProject)}
                 `);
@@ -416,14 +416,14 @@ export class SqlBuilder extends SqlBuilderBase {
     const secondLevelWheres = [];
     if (node.data.ingoingProperties && node.data.ingoingProperties.length) {
       secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_object_info AND ${thisTableAlias}.fk_property IN (${this.addParams(
         node.data.ingoingProperties
       )}))
                     `);
     }
     if (node.data.outgoingProperties && node.data.outgoingProperties.length) {
       secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_temporal_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_subject_info AND ${thisTableAlias}.fk_property IN (${this.addParams(
         node.data.outgoingProperties
       )}))
                     `);
@@ -501,7 +501,7 @@ export class SqlBuilder extends SqlBuilderBase {
               ? 'IS NULL'
               : 'IS NOT NULL'; // DEFAULT
 
-        where = `${childNode._tableAlias}.fk_entity ${equals}`;
+        where = `${childNode._tableAlias}.fk_object_info ${equals}`;
       }
 
       else if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
