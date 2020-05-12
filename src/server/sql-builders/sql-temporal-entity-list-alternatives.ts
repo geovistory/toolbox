@@ -12,7 +12,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
 
   /**
    * Returns a SchemaObject with everything needed to create a paginated list of
-   * temporal entities, related to the given source entity through roles not in the current project
+   * temporal entities, related to the given source entity through statements not in the current project
    *
    * @param fkProject project
    * @param fkSourceEntity the entity on which we are in the GUI
@@ -33,11 +33,11 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
   ) {
     const sql = `
       WITH
-      -- alternative roles (that are in at least one other project)
+      -- alternative statements (that are in at least one other project)
       tw0 AS (
         SELECT t1.*
         FROM
-        information.v_role t1,
+        information.v_statement t1,
         information.temporal_entity t2
         WHERE
         -- if isOutgoing join with fk_temporal_entity , else fk_entity
@@ -48,12 +48,12 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
         AND t1.${isOutgoing ? 'fk_entity' : 'fk_temporal_entity'}  = t2.pk_entity
         -- ensure the target temporal entity has right class
         AND t2.fk_class = ${this.addParam(fkTargetClass)}
-        -- ensure the role is in at least one project
+        -- ensure the statement is in at least one project
         AND t1.is_in_project_count > 0
       EXCEPT
         SELECT t1.*
         FROM
-        information.v_role t1,
+        information.v_statement t1,
         projects.info_proj_rel t2,
         information.temporal_entity t3
         WHERE
@@ -80,7 +80,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
         GROUP BY
           TRUE
       ),
-      -- roles
+      -- statements
       tw2 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')}
@@ -102,7 +102,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
           -- if isOutgoing join with fk_entity, else fk_temporal_entity
           tw2.${isOutgoing ? 'fk_entity' : 'fk_temporal_entity'} = t1.pk_entity
       ),
-      -- outgoing_roles of temporal_entity
+      -- outgoing_statements of temporal_entity
       tw4 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')}
@@ -117,7 +117,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
           --t1.pk_entity
         FROM
           tw3
-          CROSS JOIN information.v_role t1
+          CROSS JOIN information.v_statement t1
         WHERE
           tw3.pk_entity = t1.fk_temporal_entity
       ),
@@ -182,7 +182,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
       ------------------------------------
       --- group parts by model
       ------------------------------------
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select
@@ -293,7 +293,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
         'count', tw1.count,
         'schemas', json_build_object (
           'inf', json_strip_nulls(json_build_object(
-            'role', role.json,
+            'statement', statement.json,
             'temporal_entity', temporal_entity.json,
             'appellation', appellation.json,
             'language', language.json,
@@ -307,7 +307,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
       FROM
       tw1
       LEFT JOIN paginatedRoles ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN temporal_entity ON true
       LEFT JOIN appellation ON true
       LEFT JOIN language ON true

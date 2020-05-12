@@ -99,16 +99,16 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
         this.domainChunk
       )
     ) {
-      const role = new InfStatement({
+      const statement = new InfStatement({
         fk_object_info: this.rangeInfoEntity.pk_entity,
         fk_property: this.property.pk_property
       })
       if (this.domainInfoEntity) {
-        role.fk_subject_info = this.domainInfoEntity.pk_entity;
+        statement.fk_subject_info = this.domainInfoEntity.pk_entity;
       } else if (this.domainChunk) {
-        role.subject_chunk = this.domainChunk;
+        statement.subject_chunk = this.domainChunk;
       }
-      this.onChange(role)
+      this.onChange(statement)
     } else {
       this.onChange(null)
     }

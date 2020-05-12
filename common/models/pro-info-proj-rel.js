@@ -20,8 +20,8 @@ module.exports = function(ProInfoProjRel) {
           WHEN $1 THEN 0
           ELSE null END
         FROM
-        information.role t2,
-        information.role t3
+        information.statement t2,
+        information.statement t3
         WHERE
         t2.Pk_entity = $1
         AND

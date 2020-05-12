@@ -58,7 +58,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     public t: PropertiesTreeService,
     public i: InformationPipesService,
     public inf: InfActions,
-    public roleApi: InfStatementApi,
+    public statementApi: InfStatementApi,
     private paginationService: PaginationService,
     private listDialog: EntityPreviewsPaginatedDialogService
   ) {
@@ -117,7 +117,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
     this.table = new TemporalEntityTable(this.rows$, columns$, this.destroy$, this.listDefinition, customCols);
 
-    this.itemsCount$ = this.p.inf$.role$.pagination$.pipeCount(paginateBy)
+    this.itemsCount$ = this.p.inf$.statement$.pagination$.pipeCount(paginateBy)
 
   }
 
@@ -130,8 +130,8 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   remove(item: TemporalEntityItem) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      // remove the role
-      this.inf.role.remove([item.role], pkProject)
+      // remove the statement
+      this.inf.statement.remove([item.statement], pkProject)
 
       // remove the related temporal entity
       this.p.removeEntityFromProject(item.pkEntity)
@@ -142,7 +142,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
     // ).pipe(first(), takeUntil(this.destroy$)).subscribe(([d, pkProject]) => {
 
     //   this.inf.temporal_entity.remove([d.temporalEntity], pkProject);
-    //   if (d.roles.length) this.inf.role.remove(d.roles, pkProject);
+    //   if (d.statements.length) this.inf.statement.remove(d.statements, pkProject);
     //   if (d.textProperties.length) this.inf.text_property.remove(d.textProperties, pkProject)
 
     // })
@@ -150,7 +150,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
   }
 
   openList(cell: TemporalEntityCell) {
-    const pkEntities = cell.items.map(i => cell.isOutgoing ? i.role.fk_object_info : i.role.fk_subject_info)
+    const pkEntities = cell.items.map(i => cell.isOutgoing ? i.statement.fk_object_info : i.statement.fk_subject_info)
     this.listDialog.open(true, pkEntities, 'Items')
   }
 
@@ -166,7 +166,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
   markAsFavorite(item: TemporalEntityItem) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.pro$.info_proj_rel.markRoleAsFavorite(pkProject, item.role.pk_entity, item.isOutgoing)
+      this.p.pro$.info_proj_rel.markRoleAsFavorite(pkProject, item.statement.pk_entity, item.isOutgoing)
     })
   }
 

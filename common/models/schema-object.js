@@ -23,7 +23,7 @@ module.exports = function(SchemaObject) {
   };
 
   /**
-   * Get an array of roles that build the tree of the content of an F2 Expression.
+   * Get an array of statements that build the tree of the content of an F2 Expression.
    */
   SchemaObject.contentTree = function(pkProject, pkExpressionEntity, cb) {
     const q = new SqlContentTree(SchemaObject.app.models).create(

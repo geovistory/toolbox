@@ -37,7 +37,7 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
       UNION ALL
       -- the outgoing statements
       SELECT t1.pk_entity, null::int
-      FROM information.v_role t1,
+      FROM information.v_statement t1,
         projects.info_proj_rel t2
       WHERE t1.fk_temporal_entity = ${this.addParam(pkEntity)}
       AND t1.pk_entity = t2.fk_entity
@@ -47,7 +47,7 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
       UNION ALL
       -- the ingoing statements of property 'has appellation'
       SELECT t1.pk_entity, t1.fk_temporal_entity
-      FROM information."role" t1,
+      FROM information."statement" t1,
         projects.info_proj_rel t2
       WHERE t1.fk_entity = ${this.addParam(pkEntity)}
       AND t1.fk_property = 1111
@@ -88,7 +88,7 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
 
         -- the outgoing statements (not in already selected statements)
         SELECT t1.pk_entity, null::int
-        FROM information.v_role t1, tw,
+        FROM information.v_statement t1, tw,
           projects.info_proj_rel t2
         WHERE tw.pk_related = t1.fk_temporal_entity
         AND t1.pk_entity NOT IN (tw.pk)
@@ -100,7 +100,7 @@ export class SqlEntityRemoveFromProject extends SqlBuilderLbModels {
 
         -- the ingoing statements of property 'has appellation'
         SELECT t1.pk_entity, t1.fk_temporal_entity
-        FROM information."role" t1,	tw,
+        FROM information."statement" t1,	tw,
           projects.info_proj_rel t2
         WHERE tw.pk_related = t1.fk_entity
         AND t1.fk_property = 1111

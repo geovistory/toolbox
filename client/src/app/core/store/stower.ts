@@ -7,7 +7,7 @@ import { proDefinitions } from '../pro/pro.config';
 
 export interface FlatObject {
   persistent_item?: InfPersistentItem[]
-  role?: InfStatement[]
+  statement?: InfStatement[]
   temporal_entity?: InfTemporalEntity[]
   appellation?: InfAppellation[]
   time_primitive?: InfTimePrimitive[]

@@ -52,7 +52,7 @@
       <div class="gv-ct-node-col gv-ct-button">
         <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: node.isDigital,
-          pkParent: node.role.fk_temporal_entity,
+          pkParent: node.statement.fk_subject_info,
           node: node
         }"></ng-container>
       </div>

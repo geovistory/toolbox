@@ -52,7 +52,7 @@ export interface QueryPathSegment {
     // for entities table
     classes?: number[];
     types?: number[];
-    // for role table
+    // for statement table
     outgoingProperties?: number[];
     ingoingProperties?: number[];
   };

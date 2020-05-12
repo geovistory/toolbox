@@ -56,7 +56,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   targetIsUnique: boolean;
 
-  rolesByPk: ByPk<InfStatement> = {}
+  statementsByPk: ByPk<InfStatement> = {}
 
   constructor(
     public p: ActiveProjectService,
@@ -104,7 +104,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
     const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity, true)
 
-    this.itemsCount$ = infRepo.role$.pagination$.pipeCount(paginateBy)
+    this.itemsCount$ = infRepo.statement$.pagination$.pipeCount(paginateBy)
 
     const nextPage$ = new Subject();
     pagination$.pipe(
@@ -149,10 +149,10 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
       shareReplay({ refCount: true, bufferSize: 1 }),
       tap((rows) => {
         if (!allowMultiSelect && rows.length === 1) {
-          setTimeout(() => this.selection.select(rows[0].role.pk_entity))
+          setTimeout(() => this.selection.select(rows[0].statement.pk_entity))
         }
         rows.forEach(row => {
-          this.rolesByPk[row.role.pk_entity] = row.role;
+          this.statementsByPk[row.statement.pk_entity] = row.statement;
         })
       })
     )
@@ -200,7 +200,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
         projRels.push(proRel)
 
         // prepare api call to add related temporal entity
-        const r = this.rolesByPk[pk]
+        const r = this.statementsByPk[pk]
         const entityToAdd = this.listDefinition.isOutgoing ? r.fk_object_info : r.fk_subject_info;
 
         // add api call to array

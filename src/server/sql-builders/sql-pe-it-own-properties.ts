@@ -56,7 +56,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
           information.v_language t1
         WHERE t1.pk_entity = tw3.fk_language
       ),
-      -- has type role
+      -- has type statement
       tw5 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')},
@@ -64,7 +64,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
         FROM
           tw1
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           data_for_history.v_property t2,
           projects.info_proj_rel t3
         WHERE t1.fk_temporal_entity = tw1.pk_entity
@@ -125,7 +125,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
@@ -139,7 +139,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
-          'role', role.json,
+          'statement', statement.json,
           'persistent_item', persistent_item.json,
           'text_property', text_property.json,
           'language', language.json
@@ -152,7 +152,7 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
       persistent_item
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN info_proj_rel ON true
     `;
     return { sql, params: this.params };

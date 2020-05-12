@@ -257,7 +257,7 @@ class InfStatementSelections extends Selector {
 
   by_subject_and_property$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<InfStatement[]> {
     return this.by_subject_and_property_indexed$(foreignKeys, ofProject).pipe(
-      map(roleIdx => values(roleIdx))
+      map(statementIdx => values(statementIdx))
     )
   }
   by_subject_and_property_indexed$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
@@ -285,7 +285,7 @@ class InfStatementSelections extends Selector {
 
   by_object_and_property$(foreignKeys: IndexRoleByObjectProperty, ofProject = true): Observable<InfStatement[]> {
     return this.by_object_and_property_indexed$(foreignKeys, ofProject).pipe(
-      map(roleIdx => values(roleIdx))
+      map(statementIdx => values(statementIdx))
     )
   }
 
@@ -405,7 +405,7 @@ export class InfSelector {
 
   persistent_item$ = new InfPersistentItemSelections(this.ngRedux, this.pkProject$, infDefinitions, 'persistent_item');
   temporal_entity$ = new InfTemporalEntitySelections(this.ngRedux, this.pkProject$, infDefinitions, 'temporal_entity');
-  role$ = new InfStatementSelections(this.ngRedux, this.pkProject$, infDefinitions, 'role');
+  statement$ = new InfStatementSelections(this.ngRedux, this.pkProject$, infDefinitions, 'statement');
   appellation$ = new InfAppellationSelections(this.ngRedux, this.pkProject$, infDefinitions, 'appellation');
   place$ = new InfPlaceSelections(this.ngRedux, this.pkProject$, infDefinitions, 'place');
   text_property$ = new InfTextPropertySelections(this.ngRedux, this.pkProject$, infDefinitions, 'text_property');

@@ -499,7 +499,7 @@
         "type": "SchemaObject",
         "root": true
       },
-      "description": "Add a temporal entity with its outgoing roles to a project.",
+      "description": "Add a temporal entity with its outgoing statements to a project.",
       "http": {
         "path": "/add-to-project",
         "verb": "post"

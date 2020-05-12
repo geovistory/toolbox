@@ -545,8 +545,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
 
-  private getInitListDef(fDef: FieldDefinition, roles: InfStatement[]): Observable<ListDefinition> {
-    const statement = roles.find(r => this.sameProperty(r, fDef) && !!((r.fk_subject_info || r.fk_object_info)))
+  private getInitListDef(fDef: FieldDefinition, statements: InfStatement[]): Observable<ListDefinition> {
+    const statement = statements.find(r => this.sameProperty(r, fDef) && !!((r.fk_subject_info || r.fk_object_info)))
     if (!statement) return of(undefined);
 
     return this.p.streamEntityPreview(statement.fk_subject_info || statement.fk_object_info).pipe(
@@ -596,7 +596,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Returns true if property of role and listDefinition match
+   * Returns true if property of statement and listDefinition match
    * @param r
    * @param lDef
    */
@@ -716,11 +716,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private appellationsHook(x: any, id: number) {
-    const roles: InfStatement[] = x.filter((i) => !!i);
-    this.searchStringParts[id] = roles
+    const statements: InfStatement[] = x.filter((i) => !!i);
+    this.searchStringParts[id] = statements
       .map((item) => (U.stringFromQuillDoc(item.object_appellation.quill_doc)))
       .join(' ');
-    return roles;
+    return statements;
   }
 
   private textPropHook(x: any, id: number) {
@@ -760,7 +760,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         obs$.push(this.inf.temporal_entity.upsert([value.temporal_entity], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else if (value.statement) {
-        obs$.push(this.inf.role.upsert([value.statement], pkProject).resolved$.pipe(filter(x => !!x)))
+        obs$.push(this.inf.statement.upsert([value.statement], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else if (value.text_property) {
         obs$.push(this.inf.text_property.upsert([value.text_property], pkProject).resolved$.pipe(filter(x => !!x)))
@@ -810,7 +810,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
           const value: InfStatement[] = Object.keys(v).map(key => {
-            const role: InfStatement = {
+            const statement: InfStatement = {
               fk_property: parseInt(key, 10),
               object_time_primitive: {
                 ...v[key],
@@ -818,7 +818,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               },
               ...{} as any
             }
-            return role
+            return statement
           });
           return value;
         }
@@ -1120,10 +1120,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 function getRoleKey(m: EntityModel, isOutgoing: boolean) {
   if (m === 'temporal_entity') {
-    return isOutgoing ? 'te_roles' : 'ingoing_roles';
+    return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
   }
   else if (m === 'persistent_item') {
-    return isOutgoing ? 'outgoing_roles' : 'pi_roles';
+    return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
   }
 }
 

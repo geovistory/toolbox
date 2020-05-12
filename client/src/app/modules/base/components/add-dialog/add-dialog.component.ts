@@ -78,7 +78,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
 
     this.loading$.next(true)
 
-    // create the role to add
+    // create the statement to add
     const r: Partial<InfStatement> = {}
     if (lDef.isOutgoing) {
       r.fk_subject_info = this.data.pkEntity
@@ -101,8 +101,8 @@ export class AddDialogComponent implements OnInit, OnDestroy {
       )
       .subscribe(([pkProject, model]) => {
 
-        // create api call for upserting the role
-        const obs$: Observable<any>[] = [this.p.inf.role.upsert([r], pkProject).resolved$.pipe(first(x => !!x))]
+        // create api call for upserting the statement
+        const obs$: Observable<any>[] = [this.p.inf.statement.upsert([r], pkProject).resolved$.pipe(first(x => !!x))]
 
         if (!isInProject && model == 'temporal_entity') {
           // crate api call for adding teEnToProject

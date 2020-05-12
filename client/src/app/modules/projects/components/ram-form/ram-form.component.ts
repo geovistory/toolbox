@@ -7,7 +7,7 @@ import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rx
 
 
 /**
- * This component is a form to create roles (~statements) of these properties:
+ * This component is a form to create statements (~statements) of these properties:
  * r: chunk --> geovP11 – Refers to (~annotates) --> CRM Entity
  * a: F2, F3, F4, F5, geovC4 (~source) -->  P129 – is About --> CRM Entity
  * m: F2, F3, F4, F5, geovC4 (~source) --> geovP2 – Mentions --> CRM Entity
@@ -174,7 +174,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
         ([pkProject, val]) => {
           this.saving = true;
           if (!!val) {
-            this.p.inf.role.upsert([val], pkProject).resolved$
+            this.p.inf.statement.upsert([val], pkProject).resolved$
               .pipe(first(res => !!res), takeUntil(this.destroy$)).subscribe(
                 success => {
                   this.saving = false;

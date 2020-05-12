@@ -16,7 +16,7 @@ import { War } from '../war/war.models';
 export interface InfObject {
   persistent_item: InfPersistentItem[]
   temporal_entity: InfTemporalEntity[]
-  role: InfStatement[]
+  statement: InfStatement[]
   place: InfPlace[]
   language: InfLanguage[]
   appellation: InfAppellation[]
@@ -45,7 +45,7 @@ export interface SchemaObject {
 export interface PaginationObject {
   count: number
   schemas: SchemaObject
-  roles: number[]
+  statements: number[]
 }
 
 export interface IAppState {

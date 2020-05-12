@@ -248,7 +248,7 @@ export class SqlBuilder extends SqlBuilderBase {
           _tableAlias: thisTableAlias
         };
 
-        // JOIN roles
+        // JOIN statements
         if (this.isRolesJoin(segment)) {
           this.joinRoles(
             node,
@@ -363,7 +363,7 @@ export class SqlBuilder extends SqlBuilderBase {
     }
 
     if (level > 0) {
-      // JOIN roles
+      // JOIN statements
       if (this.isRolesJoin(nodeWithAlias)) {
         this.joinRoles(
           nodeWithAlias,
@@ -489,7 +489,7 @@ export class SqlBuilder extends SqlBuilderBase {
         where = `${childNode._tableAlias}.pk_entity IS NOT NULL`;
       }
 
-      // create the where clause for the role table
+      // create the where clause for the statement table
       else if (
         (childNode.data.ingoingProperties && childNode.data.ingoingProperties.length) ||
         (childNode.data.outgoingProperties && childNode.data.outgoingProperties.length)
@@ -559,7 +559,7 @@ export class SqlBuilder extends SqlBuilderBase {
   }
 
   /**
-   * Returns true, if given node is for joining roles
+   * Returns true, if given node is for joining statements
    * @param {*} node
    */
   isRolesJoin(node: QueryNode) {

@@ -110,7 +110,7 @@
           "arg": "isOutgoing",
           "type": "boolean",
           "required": true,
-          "description": "True, if the role is outgoing, else false",
+          "description": "True, if the statement is outgoing, else false",
           "http": {
             "source": "body"
           }
@@ -121,9 +121,9 @@
         "type": "ProInfoProjRel",
         "root": true
       },
-      "description": "Marks the role as favorite for the given fk_project.",
+      "description": "Marks the statement as favorite for the given fk_project.",
       "http": {
-        "path": "/mark-role-as-favorite",
+        "path": "/mark-statement-as-favorite",
         "verb": "put"
       }
     },

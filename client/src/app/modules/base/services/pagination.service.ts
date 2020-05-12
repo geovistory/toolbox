@@ -103,11 +103,11 @@ class RolePageLoader {
     if (!this.paginationTriggers.has(triggerKey)) {
       const ofProject = !alternatives;
       const t = combineLatest([
-        this.p.inf$.role$.by_object_and_property_indexed$({
+        this.p.inf$.statement$.by_object_and_property_indexed$({
           fk_property: l.property.pkProperty,
           fk_entity: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
-        this.p.inf$.role$.by_subject_and_property_indexed$({
+        this.p.inf$.statement$.by_subject_and_property_indexed$({
           fk_property: l.property.pkProperty,
           fk_temporal_entity: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
@@ -127,18 +127,18 @@ export class PaginationService {
 
   temporalEntity = new RolePageLoader(
     this.p,
-    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
+    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
     this.p.inf.temporal_entity.loadPaginatedList)
 
   temporalEntityAlternative = new RolePageLoader(
     this.p,
-    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
+    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
     this.p.inf.temporal_entity.loadPaginatedAlternativeList)
 
-  roles = new RolePageLoader(
+  statements = new RolePageLoader(
     this.p,
-    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
-    this.p.inf.role.loadPaginatedList
+    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
+    this.p.inf.statement.loadPaginatedList
   )
 
   constructor(

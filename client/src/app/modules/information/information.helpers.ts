@@ -13,13 +13,13 @@ export function propSetKeyFromFk(fkPropSet: number) {
 
 }
 
-export function getCalendarFromRole(role: InfStatement): CalendarType {
-  if (!role) return null;
+export function getCalendarFromRole(statement: InfStatement): CalendarType {
+  if (!statement) return null;
 
-  const cal = (role.entity_version_project_rels && role.entity_version_project_rels[0].calendar) ?
-    role.entity_version_project_rels[0].calendar :
-    role.community_favorite_calendar ?
-      role.community_favorite_calendar : null;
+  const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
+    statement.entity_version_project_rels[0].calendar :
+    statement.community_favorite_calendar ?
+      statement.community_favorite_calendar : null;
 
   return cal as CalendarType;
 }

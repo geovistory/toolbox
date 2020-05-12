@@ -112,7 +112,7 @@
         ],
         "root": true
       },
-      "description": "Get the chunks related to the digital, with their roles.",
+      "description": "Get the chunks related to the digital, with their statements.",
       "http": {
         "path": "/of-digital",
         "verb": "get"

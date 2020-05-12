@@ -53,7 +53,7 @@ export class TypeItemComponent implements OnInit {
     if (!this.pkTypedClass) throw new Error('You must provide a pkTypedClass')
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.inf.role.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+      this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
     })
 
     this.hasTypeRole$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty)
@@ -77,11 +77,11 @@ export class TypeItemComponent implements OnInit {
     combineLatest(this.hasTypeRole$, this.p.pkProject$).pipe(
       first(),
       takeUntil(this.destroy$)
-    ).subscribe(([role, fk_project]) => {
+    ).subscribe(([statement, fk_project]) => {
       const value = this.formGroup.get('typeCtrl').value;
       if (
-        (role && role.fk_object_info == value) ||
-        (!role && !value)
+        (statement && statement.fk_object_info == value) ||
+        (!statement && !value)
       ) {
         this.editing = false
       }
@@ -90,18 +90,18 @@ export class TypeItemComponent implements OnInit {
 
         // old ea
         const calls$ = [];
-        if (role) {
+        if (statement) {
           const oldEa = new InfStatement({
-            pk_entity: role.pk_entity,
-            fk_subject_info: role.fk_subject_info,
-            fk_object_info: role.fk_object_info,
-            fk_property: role.fk_property,
+            pk_entity: statement.pk_entity,
+            fk_subject_info: statement.fk_subject_info,
+            fk_object_info: statement.fk_object_info,
+            fk_property: statement.fk_property,
             entity_version_project_rels: [{
               fk_project,
               is_in_project: false
             } as ProInfoProjRel]
           })
-          const call$ = this.inf.role.remove([oldEa], fk_project).resolved$
+          const call$ = this.inf.statement.remove([oldEa], fk_project).resolved$
           calls$.push(call$);
         }
 
@@ -113,7 +113,7 @@ export class TypeItemComponent implements OnInit {
             fk_property: this.pkProperty,
             entity_version_project_rels: [{ is_in_project: true } as ProInfoProjRel]
           })
-          const call$ = this.inf.role.upsert([newEa], fk_project).resolved$
+          const call$ = this.inf.statement.upsert([newEa], fk_project).resolved$
           calls$.push(call$);
         }
 

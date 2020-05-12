@@ -49,20 +49,20 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
       tw1 AS (
        SELECT count(*)
        FROM
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2,
           information.v_entity_class_map t3
        WHERE
          ${mainWhere}
        GROUP BY TRUE
       ),
-      -- roles
+      -- statements
       tw2 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2,
           information.v_entity_class_map t3
         WHERE
@@ -88,7 +88,7 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select
@@ -114,7 +114,7 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
         'count', tw1.count,
         'schemas', json_build_object (
           'inf', json_strip_nulls(json_build_object(
-            'role', role.json
+            'statement', statement.json
           )),
           'pro', json_strip_nulls(json_build_object(
             'info_proj_rel', info_proj_rel.json
@@ -126,7 +126,7 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
       FROM
       tw1
       LEFT JOIN paginatedRoles ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN info_proj_rel ON true
 
     `;

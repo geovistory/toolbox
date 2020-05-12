@@ -15,8 +15,8 @@ export interface LabelGeneratorSettings {
   // e.g.: for a AppeForLanguage it will take only label and language, when you put it to 2
   fieldsMax?: number;
 
-  // maximum number of roles per propertyField taken into account for the label generator
-  rolesMax?: number;
+  // maximum number of statements per propertyField taken into account for the label generator
+  statementsMax?: number;
 
   // path of that element in the store. useful to attatch leaf-pe-it-view
   path: string[];
@@ -77,13 +77,13 @@ export class U {
   /**
    *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
   */
-  static getCalendarFromRole(role: InfStatement): CalendarType {
-    if (!role) return null;
+  static getCalendarFromRole(statement: InfStatement): CalendarType {
+    if (!statement) return null;
 
-    const cal = (role.entity_version_project_rels && role.entity_version_project_rels[0].calendar) ?
-      role.entity_version_project_rels[0].calendar :
-      role.community_favorite_calendar ?
-        role.community_favorite_calendar : null;
+    const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
+      statement.entity_version_project_rels[0].calendar :
+      statement.community_favorite_calendar ?
+        statement.community_favorite_calendar : null;
 
     return cal as CalendarType;
   }

@@ -28,11 +28,11 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
 
   /**
    * Returns a SchemaObject with everything needed to create a list of
-   * leaf items (to add), related to the given source entity through roles
+   * leaf items (to add), related to the given source entity through statements
    * that are not in the current project
    *
    * @param fkProject project
-   * @param filterObject RoleParams to filter the roles
+   * @param filterObject RoleParams to filter the statements
    * @param limit page size for pagination
    * @param offset offset for pagination
    */
@@ -44,18 +44,18 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
   ) {
     const sql = `
       WITH
-      -- alternative roles (that are in at least one other project)
+      -- alternative statements (that are in at least one other project)
       tw0 AS (
         SELECT ${this.createSelect('t1', 'InfStatement')}
         FROM
-        information.v_role t1
+        information.v_statement t1
         WHERE ${[
         ...this.getFiltersByObject('t1', filterObject),
         't1.is_in_project_count > 0'].join(' AND ')}
       EXCEPT
         SELECT ${this.createSelect('t1', 'InfStatement')}
         FROM
-        information.v_role t1,
+        information.v_statement t1,
         projects.info_proj_rel t2
         WHERE
         ${[
@@ -73,7 +73,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         GROUP BY
           TRUE
       ),
-      -- roles
+      -- statements
       tw2 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')}
@@ -167,7 +167,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       ------------------------------------
       --- group parts by model
       ------------------------------------
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select
@@ -272,7 +272,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         'count', coalesce(tw1.count,0),
         'schemas', json_build_object(
           'inf', json_strip_nulls(json_build_object(
-            'role', role.json,
+            'statement', statement.json,
             'lang_string', lang_string.json,
             'appellation', appellation.json,
             'language', language.json,
@@ -289,7 +289,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
       (select 0 ) as one_row
       LEFT JOIN tw1 ON true
       LEFT JOIN paginatedRoles ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN appellation ON true
       LEFT JOIN lang_string ON true
       LEFT JOIN language ON true

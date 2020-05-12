@@ -38,7 +38,7 @@ export class SqlRamList extends SqlBuilderLbModels {
                 ARRAY[t1.pk_entity],
                 t3.pk_entity pk_chunk,
                 t4.pk_entity pk_digital
-      FROM      information.role t1
+      FROM      information.statement t1
       JOIN      projects.info_proj_rel t2
                 ON   t1.pk_entity = t2.fk_entity
                 AND  t2.fk_project = ${this.addParam(fkProject)}
@@ -62,7 +62,7 @@ export class SqlRamList extends SqlBuilderLbModels {
                 ARRAY_APPEND(t0.path, p.pk_entity),
                 NULL::integer as pk_chunk,
                 NULL::integer as pk_digital
-      FROM      information.role p,
+      FROM      information.statement p,
                 tw0 t0,
                 projects.info_proj_rel t2
       WHERE
@@ -161,7 +161,7 @@ export class SqlRamList extends SqlBuilderLbModels {
         FROM
           tw0
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2
         WHERE t1.pk_entity = tw0.pk_entity
         AND t1.pk_entity = t2.fk_entity
@@ -177,7 +177,7 @@ export class SqlRamList extends SqlBuilderLbModels {
         FROM
           tw0
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2
         WHERE t1.fk_temporal_entity = tw0.pk_entity
         AND t1.fk_property_of_property = 1
@@ -246,7 +246,7 @@ export class SqlRamList extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
@@ -295,7 +295,7 @@ export class SqlRamList extends SqlBuilderLbModels {
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
-          'role', role.json,
+          'statement', statement.json,
           'lang_string', lang_string.json
         )),
         'pro', json_strip_nulls(json_build_object(
@@ -312,7 +312,7 @@ export class SqlRamList extends SqlBuilderLbModels {
       FROM
       (select 0 ) as one_row
       LEFT JOIN entity_preview ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN lang_string ON true
       LEFT JOIN info_proj_rel ON true
       LEFT JOIN chunk ON true

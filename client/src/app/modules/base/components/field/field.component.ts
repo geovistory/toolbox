@@ -63,7 +63,7 @@ export class FieldComponent implements OnInit {
     const limit = temporalEntityListDefaultLimit
     const offset = temporalEntityListDefaultPageIndex
     /**
-     * Trigger loading of role lists
+     * Trigger loading of statement lists
      */
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.fieldDefinition.listDefinitions.forEach(l => {
@@ -71,7 +71,7 @@ export class FieldComponent implements OnInit {
           this.pag.temporalEntity.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
         else if (l.listType === 'entity-preview') {
-          this.pag.roles.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
+          this.pag.statements.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
         }
       })
     })
@@ -82,7 +82,7 @@ export class FieldComponent implements OnInit {
       this.listsWithCounts$ = combineLatest(this.fieldDefinition.listDefinitions.map(l => {
         let obs$: Observable<number>;
         if (l.listType === 'temporal-entity' || l.listType === 'entity-preview') {
-          obs$ = this.p.inf$.role$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
+          obs$ = this.p.inf$.statement$.pagination$.pipeCount(createPaginateBy(l, this.pkEntity))
         } else {
           obs$ = this.i.pipeListLength(l, this.pkEntity)
         }

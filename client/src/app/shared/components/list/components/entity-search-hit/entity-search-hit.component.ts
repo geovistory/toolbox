@@ -13,7 +13,7 @@ export class EntitySearchHitComponent implements OnInit {
   @Input() hit: EntitySearchHit;
 
   /**
-   * True if this is about selecting a pe-it as range of a role
+   * True if this is about selecting a pe-it as range of a statement
    */
   @Input() selectRoleRange: boolean;
 

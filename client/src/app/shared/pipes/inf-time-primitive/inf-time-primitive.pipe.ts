@@ -9,11 +9,11 @@ export class InfTimePrimitivePipe implements PipeTransform {
 
   constructor(private timePrimitivePipe: TimePrimitivePipe) { }
 
-  transform(role: InfStatement): string {
-    if (!role) return '';
-    if (!role.object_time_primitive || !Object.keys(role.object_time_primitive).length) return '';
+  transform(statement: InfStatement): string {
+    if (!statement) return '';
+    if (!statement.object_time_primitive || !Object.keys(statement.object_time_primitive).length) return '';
 
-    return this.timePrimitivePipe.transform(U.infRole2TimePrimitive(role));
+    return this.timePrimitivePipe.transform(U.infRole2TimePrimitive(statement));
 
   }
 

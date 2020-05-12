@@ -130,13 +130,13 @@ module.exports = function(InfTemporalEntity) {
 
       InfTemporalEntity.resolveRoleValues(
         pkProject,
-        requestedTeEnt.te_roles,
+        requestedTeEnt.outgoing_statements,
         ctxWithoutBody
       )
         .then(resolvedRoles => {
           const teEnWithResolvedRoles = {
             ...requestedTeEnt,
-            te_roles: resolvedRoles,
+            outgoing_statements: resolvedRoles,
           };
           InfTemporalEntity._findOrCreateTeEnt(
             InfTemporalEntity,
@@ -153,36 +153,38 @@ module.exports = function(InfTemporalEntity) {
               const promiseArray = [];
 
               /******************************************
-               * te_roles (= outgoing_roles)
+               * outgoing_statements (= outgoing_statements)
                ******************************************/
-              if (requestedTeEnt.te_roles) {
+              if (requestedTeEnt.outgoing_statements) {
                 // prepare parameters
                 const InfStatement = InfTemporalEntity.app.models.InfStatement;
 
-                //… filter roles that are truthy (not null), iterate over them,
+                //… filter statements that are truthy (not null), iterate over them,
                 // return the promise that the teEnt will be
                 // returned together with all nested items
                 const promise = Promise.map(
-                  requestedTeEnt.te_roles.filter(role => role),
-                  role => {
-                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
-                    role.fk_temporal_entity = resultingEntity.pk_entity;
+                  requestedTeEnt.outgoing_statements.filter(
+                    statement => statement
+                  ),
+                  statement => {
+                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the statement
+                    statement.fk_temporal_entity = resultingEntity.pk_entity;
 
-                    // find or create the Entity and the role pointing to the Entity
+                    // find or create the Entity and the statement pointing to the Entity
                     return InfStatement.findOrCreateInfStatement(
                       pkProject,
-                      role,
+                      statement,
                       ctxWithoutBody
                     );
                   }
                 )
-                  .then(roles => {
-                    //attach the roles to resultingTeEnt
-                    res.te_roles = [];
-                    for (var i = 0; i < roles.length; i++) {
-                      const role = roles[i];
-                      if (role && role[0]) {
-                        res.te_roles.push(role[0]);
+                  .then(statements => {
+                    //attach the statements to resultingTeEnt
+                    res.outgoing_statements = [];
+                    for (var i = 0; i < statements.length; i++) {
+                      const statement = statements[i];
+                      if (statement && statement[0]) {
+                        res.outgoing_statements.push(statement[0]);
                       }
                     }
 
@@ -190,41 +192,43 @@ module.exports = function(InfTemporalEntity) {
                   })
                   .catch(err => reject(err));
 
-                // add promise for outgoing_roles
+                // add promise for outgoing_statements
                 promiseArray.push(promise);
               }
 
               /******************************************
-               * ingoing_roles
+               * ingoing_statements
                ******************************************/
-              if (requestedTeEnt.ingoing_roles) {
+              if (requestedTeEnt.ingoing_statements) {
                 // prepare parameters
                 const InfStatement = InfTemporalEntity.app.models.InfStatement;
 
-                //… filter roles that are truthy (not null), iterate over them,
+                //… filter statements that are truthy (not null), iterate over them,
                 // return the promise that the teEnt will be
                 // returned together with all nested items
                 const promise = Promise.map(
-                  requestedTeEnt.ingoing_roles.filter(role => role),
-                  role => {
-                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
-                    role.fk_entity = resultingEntity.pk_entity;
+                  requestedTeEnt.ingoing_statements.filter(
+                    statement => statement
+                  ),
+                  statement => {
+                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the statement
+                    statement.fk_entity = resultingEntity.pk_entity;
 
-                    // find or create the Entity and the role pointing to the Entity
+                    // find or create the Entity and the statement pointing to the Entity
                     return InfStatement.findOrCreateInfStatement(
                       pkProject,
-                      role,
+                      statement,
                       ctxWithoutBody
                     );
                   }
                 )
-                  .then(roles => {
-                    //attach the roles to resultingTeEnt
-                    res.ingoing_roles = [];
-                    for (var i = 0; i < roles.length; i++) {
-                      const role = roles[i];
-                      if (role && role[0]) {
-                        res.ingoing_roles.push(role[0]);
+                  .then(statements => {
+                    //attach the statements to resultingTeEnt
+                    res.ingoing_statements = [];
+                    for (var i = 0; i < statements.length; i++) {
+                      const statement = statements[i];
+                      if (statement && statement[0]) {
+                        res.ingoing_statements.push(statement[0]);
                       }
                     }
 
@@ -232,7 +236,7 @@ module.exports = function(InfTemporalEntity) {
                   })
                   .catch(err => reject(err));
 
-                // add promise for ingoing_roles
+                // add promise for ingoing_statements
                 promiseArray.push(promise);
               }
 
@@ -254,34 +258,37 @@ module.exports = function(InfTemporalEntity) {
 
   InfTemporalEntity.resolveRoleValues = function(
     pkProject,
-    te_roles,
+    outgoing_statements,
     ctxWithoutBody
   ) {
     return new Promise((resolve, reject) => {
-      if (!te_roles || !te_roles.length) resolve([]);
+      if (!outgoing_statements || !outgoing_statements.length) resolve([]);
 
-      const te_roles_with_fk_entity = te_roles
-        .filter(role => !!role.fk_entity)
-        .map(role => ({
-          fk_property: role.fk_property,
-          fk_entity: role.fk_entity,
+      const outgoing_statements_with_fk_entity = outgoing_statements
+        .filter(statement => !!statement.fk_entity)
+        .map(statement => ({
+          fk_property: statement.fk_property,
+          fk_entity: statement.fk_entity,
         }));
 
-      const te_roles_without_fk_entity = te_roles.filter(
-        role => !role.fk_entity
+      const outgoing_statements_without_fk_entity = outgoing_statements.filter(
+        statement => !statement.fk_entity
       );
 
       Promise.all(
-        te_roles_without_fk_entity.map(role => {
+        outgoing_statements_without_fk_entity.map(statement => {
           // Time Primitive
-          if (role.time_primitive && Object.keys(role.time_primitive).length) {
+          if (
+            statement.time_primitive &&
+            Object.keys(statement.time_primitive).length
+          ) {
             const InfTimePrimitive =
               InfTemporalEntity.app.models.InfTimePrimitive;
 
             return new Promise((res, rej) => {
-              InfTimePrimitive.create(role.time_primitive).then(obj => {
+              InfTimePrimitive.create(statement.time_primitive).then(obj => {
                 res({
-                  fk_property: role.fk_property,
+                  fk_property: statement.fk_property,
                   fk_entity: obj.pk_entity,
                 });
               });
@@ -289,15 +296,15 @@ module.exports = function(InfTemporalEntity) {
           }
 
           // Language
-          if (role.language && Object.keys(role.language).length) {
+          if (statement.language && Object.keys(statement.language).length) {
             const InfLanguage = InfTemporalEntity.app.models.InfLanguage;
 
             return new Promise((res, rej) => {
               InfLanguage.find({
-                where: { pk_entity: role.language.pk_entity },
+                where: { pk_entity: statement.language.pk_entity },
               }).then(objs => {
                 res({
-                  fk_property: role.fk_property,
+                  fk_property: statement.fk_property,
                   fk_entity: objs[0].pk_entity,
                 });
               });
@@ -305,14 +312,14 @@ module.exports = function(InfTemporalEntity) {
           }
 
           // Place
-          if (role.place && Object.keys(role.place).length) {
+          if (statement.place && Object.keys(statement.place).length) {
             const InfPlace = InfTemporalEntity.app.models.InfPlace;
 
             return new Promise((res, rej) => {
-              InfPlace.create(role.place)
+              InfPlace.create(statement.place)
                 .then(obj => {
                   res({
-                    fk_property: role.fk_property,
+                    fk_property: statement.fk_property,
                     fk_entity: obj.pk_entity,
                   });
                 })
@@ -323,13 +330,16 @@ module.exports = function(InfTemporalEntity) {
           }
 
           // Appellation
-          if (role.appellation && Object.keys(role.appellation).length) {
+          if (
+            statement.appellation &&
+            Object.keys(statement.appellation).length
+          ) {
             const InfAppellation = InfTemporalEntity.app.models.InfAppellation;
 
             return new Promise((res, rej) => {
-              InfAppellation.create(role.appellation).then(obj => {
+              InfAppellation.create(statement.appellation).then(obj => {
                 res({
-                  fk_property: role.fk_property,
+                  fk_property: statement.fk_property,
                   fk_entity: obj.pk_entity,
                 });
               });
@@ -337,14 +347,14 @@ module.exports = function(InfTemporalEntity) {
           }
 
           // // Temporal Entity
-          // if (role.temporal_entity && Object.keys(role.temporal_entity).length) {
+          // if (statement.temporal_entity && Object.keys(statement.temporal_entity).length) {
 
           //   return new Promise((res, rej) => {
-          //     InfTemporalEntity.findOrCreateInfTemporalEntity(pkProject, role.temporal_entity, ctxWithoutBody)
+          //     InfTemporalEntity.findOrCreateInfTemporalEntity(pkProject, statement.temporal_entity, ctxWithoutBody)
           //       .then(obj => {
           //         const fk_entity = obj[0].pk_entity;
           //         res({
-          //           fk_property: role.fk_property,
+          //           fk_property: statement.fk_property,
           //           fk_entity
           //         })
           //       })
@@ -353,7 +363,7 @@ module.exports = function(InfTemporalEntity) {
         })
       )
         .then(resolvedRoles => {
-          resolve([...te_roles_with_fk_entity, ...resolvedRoles]);
+          resolve([...outgoing_statements_with_fk_entity, ...resolvedRoles]);
         })
         .catch(error => reject(error));
     });
@@ -361,7 +371,7 @@ module.exports = function(InfTemporalEntity) {
 
   // /**
   //  * internal function to get a rich object of project or repo.
-  //  * a rich object of the TeEn with all its roles
+  //  * a rich object of the TeEn with all its statements
   //  *
   //  * @param  {number} pkProject primary key of project
   //  * @param  {number} pkEntity  pk_entity of the teEn
@@ -383,23 +393,23 @@ module.exports = function(InfTemporalEntity) {
 
   //   //   const promises = []
   //   //   res.forEach(teEn => {
-  //   //     teEn.te_roles.forEach((role, ri) => {
+  //   //     teEn.outgoing_statements.forEach((statement, ri) => {
 
   //   //       if (
-  //   //         Object.keys(role.range_temporal_entity).length > 0
+  //   //         Object.keys(statement.range_temporal_entity).length > 0
   //   //         // &&
-  //   //         // role.range_temporal_entity.pk_entity !== teEn.pk_entity
+  //   //         // statement.range_temporal_entity.pk_entity !== teEn.pk_entity
   //   //       ) {
   //   //         const promise = new Promise((resolve, reject) => {
 
   //   //           const filter = {
-  //   //             "where": ["pk_entity", "=", role.range_temporal_entity.pk_entity],
+  //   //             "where": ["pk_entity", "=", statement.range_temporal_entity.pk_entity],
   //   //             "include": InfTemporalEntity.getIncludeObject(ofProject, pkProject)
   //   //           }
 
   //   //           InfTemporalEntity.findComplex(filter, (err, res) => {
   //   //             if (err) return cb(err);
-  //   //             role.range_temporal_entity = res[0]
+  //   //             statement.range_temporal_entity = res[0]
 
   //   //           })
 
@@ -439,7 +449,7 @@ module.exports = function(InfTemporalEntity) {
 
   // /**
   //  * remote method to get a rich object of project.
-  //  * a rich object of the TeEn with all its roles
+  //  * a rich object of the TeEn with all its statements
   //  *
   //  * @param  {number} pkProject primary key of project
   //  * @param  {number} pkEntity  pk_entity of the teEn
@@ -480,9 +490,9 @@ module.exports = function(InfTemporalEntity) {
 
   //   return {
   //     ...projectJoin,
-  //     te_roles: {
+  //     outgoing_statements: {
   //       $relation: {
-  //         name: 'te_roles',
+  //         name: 'outgoing_statements',
   //         joinType: 'inner join',
   //         orderBy: [
   //           {
@@ -536,9 +546,9 @@ module.exports = function(InfTemporalEntity) {
   //         },
   //       },
   //     },
-  //     ingoing_roles: {
+  //     ingoing_statements: {
   //       $relation: {
-  //         name: 'ingoing_roles',
+  //         name: 'ingoing_statements',
   //         joinType: 'left join',
   //       },
   //       ...projectJoin,
@@ -547,9 +557,9 @@ module.exports = function(InfTemporalEntity) {
   //           name: 'temporal_entity',
   //           joinType: 'left join',
   //         },
-  //         te_roles: {
+  //         outgoing_statements: {
   //           $relation: {
-  //             name: 'te_roles',
+  //             name: 'outgoing_statements',
   //             joinType: 'inner join',
   //             orderBy: [
   //               {
@@ -609,7 +619,7 @@ module.exports = function(InfTemporalEntity) {
   // };
 
   /**
-   * Adds temporal entity, its outgoing roles to add
+   * Adds temporal entity, its outgoing statements to add
    * and the text properties to the project
    */
   // InfTemporalEntity.addToProject = function(pk_project, pk_entity, ctx, cb) {

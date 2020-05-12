@@ -7,7 +7,7 @@ var _ = require('lodash');
 module.exports = function(PaginationObject) {
   /**
    * Returns a PaginationObject with everything needed to create a list of
-   * leaf items (to add), related to the given source entity through roles
+   * leaf items (to add), related to the given source entity through statements
    * that are not in the current project
    */
   PaginationObject.listAlternativeLeafItems = function(

@@ -10,9 +10,13 @@ var SqlEntityPreviewList = require('../../dist/server/sql-builders/sql-entity-pr
   .SqlEntityPreviewList;
 
 module.exports = function(InfStatement) {
-  InfStatement.findOrCreateInfStatements = function(pk_project, roles, ctx) {
+  InfStatement.findOrCreateInfStatements = function(
+    pk_project,
+    statements,
+    ctx
+  ) {
     return new Promise((resolve, reject) => {
-      const promiseArray = roles.map((role, i) => {
+      const promiseArray = statements.map((statement, i) => {
         const context = {
           ...ctx,
           req: {
@@ -23,7 +27,11 @@ module.exports = function(InfStatement) {
           },
         };
 
-        return InfStatement.findOrCreateInfStatement(pk_project, role, context);
+        return InfStatement.findOrCreateInfStatement(
+          pk_project,
+          statement,
+          context
+        );
       });
       Promise.map(promiseArray, promise => promise)
         .catch(err => reject(err))
@@ -33,25 +41,26 @@ module.exports = function(InfStatement) {
     });
   };
 
-  InfStatement.findOrCreateInfStatement = function(pkProject, role, ctx) {
+  InfStatement.findOrCreateInfStatement = function(pkProject, statement, ctx) {
     return new Promise((resolve, reject) => {
       // the model to find or create
       let model = {
-        // pk_entity: role.pk_entity,
-        fk_temporal_entity: role.fk_temporal_entity,
-        fk_subject_data: role.fk_subject_data,
-        fk_subject_tables_cell: role.fk_subject_tables_cell,
-        fk_subject_tables_row: role.fk_subject_tables_row,
-        fk_property: role.fk_property,
-        fk_property_of_property: role.fk_property_of_property,
-        fk_entity: role.fk_entity,
-        fk_object_data: role.fk_object_data,
-        fk_object_tables_cell: role.fk_object_tables_cell,
-        fk_object_tables_row: role.fk_object_tables_row,
-        // notes: role.notes,
+        // pk_entity: statement.pk_entity,
+        fk_temporal_entity: statement.fk_temporal_entity,
+        fk_subject_data: statement.fk_subject_data,
+        fk_subject_tables_cell: statement.fk_subject_tables_cell,
+        fk_subject_tables_row: statement.fk_subject_tables_row,
+        fk_property: statement.fk_property,
+        fk_property_of_property: statement.fk_property_of_property,
+        fk_entity: statement.fk_entity,
+        fk_object_data: statement.fk_object_data,
+        fk_object_tables_cell: statement.fk_object_tables_cell,
+        fk_object_tables_row: statement.fk_object_tables_row,
+        // notes: statement.notes,
       };
 
-      let requestedRole = ctx && ctx.req && ctx.req.body ? ctx.req.body : role;
+      let requestedRole =
+        ctx && ctx.req && ctx.req.body ? ctx.req.body : statement;
       const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
       const subject = getSubject(pkProject, requestedRole, ctxWithoutBody);
@@ -94,8 +103,8 @@ module.exports = function(InfStatement) {
     pkProject,
     cb
   ) {
-    const rolesInProjectFilter = {
-      /** Select roles with fk_entity and fk_property … */
+    const statementsInProjectFilter = {
+      /** Select statements with fk_entity and fk_property … */
       where: [
         'fk_entity',
         '=',
@@ -129,15 +138,15 @@ module.exports = function(InfStatement) {
       },
     };
 
-    const findThem = function(err, roles) {
+    const findThem = function(err, statements) {
       const entitiesInProj = [];
 
-      for (var i = 0; i < roles.length; i++) {
-        entitiesInProj.push(roles[i].pk_entity);
+      for (var i = 0; i < statements.length; i++) {
+        entitiesInProj.push(statements[i].pk_entity);
       }
 
       const filter = {
-        /** Select roles with fk_entity and fk_property … */
+        /** Select statements with fk_entity and fk_property … */
         where: [
           'fk_entity',
           '=',
@@ -157,10 +166,10 @@ module.exports = function(InfStatement) {
           },
         ],
         include: {
-          /** include the temporal_entity of the role */
-          temporal_entity: {
+          /** include the subject_temporal_entity of the statement */
+          subject_temporal_entity: {
             $relation: {
-              name: 'temporal_entity',
+              name: 'subject_temporal_entity',
               joinType: 'inner join',
               orderBy: [
                 {
@@ -168,9 +177,9 @@ module.exports = function(InfStatement) {
                 },
               ],
             },
-            te_roles: {
+            outgoing_statements: {
               $relation: {
-                name: 'te_roles',
+                name: 'outgoing_statements',
                 joinType: 'left join',
                 orderBy: [
                   {
@@ -179,9 +188,9 @@ module.exports = function(InfStatement) {
                 ],
                 where: ['is_in_project_count', '>', '0'], // new
               },
-              language: {
+              object_language: {
                 $relation: {
-                  name: 'language',
+                  name: 'object_language',
                   joinType: 'left join',
                   //"where": ["is_community_favorite", "=", "true"],
                   orderBy: [
@@ -192,9 +201,9 @@ module.exports = function(InfStatement) {
                 },
                 //,...innerJoinThisProject, // … get project's version
               },
-              appellation: {
+              object_appellation: {
                 $relation: {
-                  name: 'appellation',
+                  name: 'object_appellation',
                   joinType: 'left join',
                   //  "where": ["is_community_favorite", "=", "true"],
                   orderBy: [
@@ -204,9 +213,9 @@ module.exports = function(InfStatement) {
                   ],
                 },
               },
-              time_primitive: {
+              object_time_primitive: {
                 $relation: {
-                  name: 'time_primitive',
+                  name: 'object_time_primitive',
                   joinType: 'left join',
                   orderBy: [
                     {
@@ -215,9 +224,9 @@ module.exports = function(InfStatement) {
                   ],
                 },
               },
-              place: {
+              object_place: {
                 $relation: {
-                  name: 'place',
+                  name: 'object_place',
                   joinType: 'left join',
                   orderBy: [
                     {
@@ -243,7 +252,7 @@ module.exports = function(InfStatement) {
       return InfStatement.findComplex(filter, cb);
     };
 
-    InfStatement.findComplex(rolesInProjectFilter, findThem);
+    InfStatement.findComplex(statementsInProjectFilter, findThem);
   };
 
   InfStatement.alternativesNotInProjectByTeEntPk = function(
@@ -252,8 +261,8 @@ module.exports = function(InfStatement) {
     pkProject,
     cb
   ) {
-    const rolesInProjectFilter = {
-      /** Select roles with fk_temporal_entity and fk_property … */
+    const statementsInProjectFilter = {
+      /** Select statements with fk_temporal_entity and fk_property … */
       where: [
         'fk_temporal_entity',
         '=',
@@ -287,15 +296,15 @@ module.exports = function(InfStatement) {
       },
     };
 
-    const findThem = function(err, roles) {
-      const rolesInProj = [];
+    const findThem = function(err, statements) {
+      const statementsInProj = [];
 
-      for (var i = 0; i < roles.length; i++) {
-        rolesInProj.push(roles[i].pk_entity);
+      for (var i = 0; i < statements.length; i++) {
+        statementsInProj.push(statements[i].pk_entity);
       }
 
       const filter = {
-        /** Select roles with fk_temporal_entity and fk_property … */
+        /** Select statements with fk_temporal_entity and fk_property … */
         where: [
           'fk_temporal_entity',
           '=',
@@ -315,9 +324,9 @@ module.exports = function(InfStatement) {
           },
         ],
         include: {
-          language: {
+          object_language: {
             $relation: {
-              name: 'language',
+              name: 'object_language',
               joinType: 'left join',
               orderBy: [
                 {
@@ -326,9 +335,9 @@ module.exports = function(InfStatement) {
               ],
             },
           },
-          appellation: {
+          object_appellation: {
             $relation: {
-              name: 'appellation',
+              name: 'object_appellation',
               joinType: 'left join',
               orderBy: [
                 {
@@ -337,9 +346,9 @@ module.exports = function(InfStatement) {
               ],
             },
           },
-          time_primitive: {
+          object_time_primitive: {
             $relation: {
-              name: 'time_primitive',
+              name: 'object_time_primitive',
               joinType: 'left join',
               orderBy: [
                 {
@@ -348,9 +357,9 @@ module.exports = function(InfStatement) {
               ],
             },
           },
-          place: {
+          object_place: {
             $relation: {
-              name: 'place',
+              name: 'object_place',
               joinType: 'left join',
               orderBy: [
                 {
@@ -362,58 +371,58 @@ module.exports = function(InfStatement) {
         },
       };
 
-      if (rolesInProj.length > 0) {
+      if (statementsInProj.length > 0) {
         filter.where = filter.where.concat([
           'and',
           'pk_entity',
           'NOT IN',
-          rolesInProj,
+          statementsInProj,
         ]);
       }
 
       return InfStatement.findComplex(filter, cb);
     };
 
-    InfStatement.findComplex(rolesInProjectFilter, findThem);
+    InfStatement.findComplex(statementsInProjectFilter, findThem);
   };
 
-  InfStatement.removeFromProjectWithTeEnt = function(
-    pk_project,
-    pk_roles,
-    ctx,
-    cb
-  ) {
-    const q = new SqlBuilderLbModels(InfStatement.app.models);
+  // InfStatement.removeFromProjectWithTeEnt = function(
+  //   pk_project,
+  //   pk_statements,
+  //   ctx,
+  //   cb
+  // ) {
+  //   const q = new SqlBuilderLbModels(InfStatement.app.models);
 
-    if (!ctx.req.accessToken.userId)
-      return Error('AccessToken.userId is missing');
-    const accountId = ctx.req.accessToken.userId;
-    const params = [parseInt(pk_project), accountId];
+  //   if (!ctx.req.accessToken.userId)
+  //     return Error('AccessToken.userId is missing');
+  //   const accountId = ctx.req.accessToken.userId;
+  //   const params = [parseInt(pk_project), accountId];
 
-    const sql_stmt = `
-      select ${q.createSelect('t1', 'ProInfoProjRel')}
-       FROM information.relate_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles
-         .map(r => r * 1)
-         .join(', ')}], $1, $2, false) t1;
-    `;
+  //   const sql_stmt = `
+  //     select ${q.createSelect('t1', 'ProInfoProjRel')}
+  //      FROM information.relate_outgoing_statements_with_te_ens_to_project(ARRAY[${pk_statements
+  //        .map(r => r * 1)
+  //        .join(', ')}], $1, $2, false) t1;
+  //   `;
 
-    const connector = InfStatement.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, resultObjects) => {
-      if (err) return cb(err, resultObjects);
-      cb(false, resultObjects);
-    });
-  };
+  //   const connector = InfStatement.dataSource.connector;
+  //   connector.execute(sql_stmt, params, (err, resultObjects) => {
+  //     if (err) return cb(err, resultObjects);
+  //     cb(false, resultObjects);
+  //   });
+  // };
 
   /**
-   * Add roles to the project
+   * Add statements to the project
    *
-   * This query will not add any related entitie but the given roles
+   * This query will not add any related entitie but the given statements
    *
    * @param pk_namespace
    * @param pk_project
    * @param pk_typed_class
    */
-  InfStatement.addToProject = function(pk_project, pk_roles, ctx, cb) {
+  InfStatement.addToProject = function(pk_project, pk_statements, ctx, cb) {
     if (!ctx.req.accessToken.userId)
       return Error('AccessToken.userId is missing');
     const accountId = ctx.req.accessToken.userId;
@@ -421,16 +430,16 @@ module.exports = function(InfStatement) {
 
     const sql_stmt = `
       WITH
-      -- Find the roles
-      roles AS (
+      -- Find the statements
+      statements AS (
         select pk_entity, community_favorite_calendar as calendar
-        from information.v_role
-        where pk_entity IN (${pk_roles.map(r => r * 1)})
+        from information.v_statement
+        where pk_entity IN (${pk_statements.map(r => r * 1)})
       )
       -- add the project relations
       insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
       SELECT $1, true, pk_entity, calendar, $2
-      from roles;
+      from statements;
       `;
 
     const connector = InfStatement.dataSource.connector;
@@ -454,7 +463,7 @@ module.exports = function(InfStatement) {
       };
 
       const filter = {
-        where: ['pk_entity', 'IN', pk_roles],
+        where: ['pk_entity', 'IN', pk_statements],
         include: {
           entity_version_project_rels: innerJoinThisProject,
           appellation: {
@@ -509,7 +518,7 @@ module.exports = function(InfStatement) {
   };
 
   /**
-   * load paginated list by roles, that point to an
+   * load paginated list by statements, that point to an
    * entity_preview
    */
   InfStatement.paginatedListTargetingEntityPreviews = function(
@@ -541,10 +550,10 @@ module.exports = function(InfStatement) {
   };
 
   /**
-   * Find role by one of the params
+   * Find statement by one of the params
    *
    * @param  {number} pkProject primary key of project
-   * @param  {number} pkEntity  pk_entity of the role
+   * @param  {number} pkEntity  pk_entity of the statement
    */
   InfStatement.queryByParams = function(
     ofProject,
@@ -596,11 +605,23 @@ module.exports = function(InfStatement) {
 
     return InfStatement.findComplex(filter, (err, res) => {
       if (err) cb(err);
-      res.forEach(role => {
-        role.fk_subject_tables_row = parseInt(role.fk_subject_tables_row, 10);
-        role.fk_subject_tables_cell = parseInt(role.fk_subject_tables_cell, 10);
-        role.fk_object_tables_row = parseInt(role.fk_object_tables_row, 10);
-        role.fk_object_tables_cell = parseInt(role.fk_object_tables_cell, 10);
+      res.forEach(statement => {
+        statement.fk_subject_tables_row = parseInt(
+          statement.fk_subject_tables_row,
+          10
+        );
+        statement.fk_subject_tables_cell = parseInt(
+          statement.fk_subject_tables_cell,
+          10
+        );
+        statement.fk_object_tables_row = parseInt(
+          statement.fk_object_tables_row,
+          10
+        );
+        statement.fk_object_tables_cell = parseInt(
+          statement.fk_object_tables_cell,
+          10
+        );
       });
       cb(false, res);
     });
@@ -639,16 +660,16 @@ module.exports = function(InfStatement) {
       },
     };
 
-    return InfStatement.findComplex(filter, (err, roles) => {
+    return InfStatement.findComplex(filter, (err, statements) => {
       if (err) return cb(err);
 
       const textPks = _.uniq(
-        roles
-          .filter(role => role.domain_chunk)
-          .map(role => role.domain_chunk.fk_text)
+        statements
+          .filter(statement => statement.subject_chunk)
+          .map(statement => statement.subject_chunk.fk_text)
       );
 
-      if (!textPks.length) return cb(null, roles);
+      if (!textPks.length) return cb(null, statements);
 
       InfStatement.app.models.DatDigital.findComplex(
         {
@@ -658,7 +679,7 @@ module.exports = function(InfStatement) {
           if (err2) return cb(err2);
 
           cb(null, {
-            roles,
+            statements,
             digitals,
           });
         }
@@ -676,7 +697,7 @@ function hasRelatedModel(relatedModel) {
  * Get the pk_entity of the subject asyncronously.
  * The promise will return an object with two members:
  * - 'fk', containing one key-value pair
- *   - the key is the name of the role foreign key pointing to the subject
+ *   - the key is the name of the statement foreign key pointing to the subject
  *   - the value is the primary key of the subject
  * - 'relatedModelone' (optional), containing one key-value pair
  *   - the key is the name of the related model according to loopbacks model definition
@@ -779,13 +800,13 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
         })
         .catch(err => reject(err));
     }
-    // if subject is a inf role (we have a statement of statement)
-    else if (hasRelatedModel(requestedRole.subject_inf_role)) {
+    // if subject is a inf statement (we have a statement of statement)
+    else if (hasRelatedModel(requestedRole.subject_inf_statement)) {
       //create the subject first
 
       return models.InfStatement.findOrCreateInfStatement(
         pkProject,
-        requestedRole.subject_inf_role,
+        requestedRole.subject_inf_statement,
         ctxWithoutBody
       )
         .then(res => {
@@ -793,14 +814,14 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
           // return the foreign key and the related model
           resolve({
             fk: { fk_temporal_entity: relatedModel.pk_entity },
-            relatedModel: { subject_inf_role: relatedModel },
+            relatedModel: { subject_inf_statement: relatedModel },
           });
         })
         .catch(err => reject(err));
     } else {
       reject({
-        message: 'Subject of role not found',
-        role: requestedRole,
+        message: 'Subject of statement not found',
+        statement: requestedRole,
       });
     }
   });
@@ -811,7 +832,7 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
  * Get the pk_entity of the object asyncronously.
  * The promise will return a js-object with two members:
  * - 'fk', containing one key-value pair
- *   - the key is the name of the role foreign key pointing to the object
+ *   - the key is the name of the statement foreign key pointing to the object
  *   - the value is the primary key of the object
  * - 'relatedModelone' (optional), containing one key-value pair
  *   - the key is the name of the related model according to loopbacks model definition
@@ -902,7 +923,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     // if object is an inf persistent_item
     // TODO: THIS IS REDUNDANT WITH THE ONE ABOVE!
     // Remove the unsed 'else if' here and
-    // remove the relation in inf-role.json
+    // remove the relation in inf-statement.json
     else if (hasRelatedModel(requestedRole.range_pe_it)) {
       //create the object first
       return models.InfPersistentItem.findOrCreatePeIt(
@@ -1021,143 +1042,9 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
         .catch(err => reject(err));
     } else {
       reject({
-        message: 'Object of role not found',
-        role: requestedRole,
+        message: 'Object of statement not found',
+        statement: requestedRole,
       });
     }
   });
-
-  // InfStatement.nestedObjectsOfProject = function(pk_project, pk_roles, cb) {
-  //   const innerJoinThisProject = {
-  //     $relation: {
-  //       name: 'entity_version_project_rels',
-  //       joinType: 'inner join',
-  //       where: [
-  //         'fk_project',
-  //         '=',
-  //         pk_project,
-  //         'and',
-  //         'is_in_project',
-  //         '=',
-  //         'true',
-  //       ],
-  //     },
-  //   };
-
-  //   const filter = {
-  //     where: ['pk_entity', 'IN', pk_roles],
-  //     include: {
-  //       entity_version_project_rels: innerJoinThisProject,
-  //       temporal_entity: {
-  //         $relation: {
-  //           name: 'temporal_entity',
-  //           joinType: 'inner join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //         // "entity_version_project_rels": innerJoinThisProject,
-  //         te_roles: {
-  //           $relation: {
-  //             name: 'te_roles',
-  //             joinType: 'inner join',
-  //             orderBy: [
-  //               {
-  //                 pk_entity: 'asc',
-  //               },
-  //             ],
-  //           },
-  //           entity_version_project_rels: innerJoinThisProject,
-  //           appellation: {
-  //             $relation: {
-  //               name: 'appellation',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //           language: {
-  //             $relation: {
-  //               name: 'language',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //           time_primitive: {
-  //             $relation: {
-  //               name: 'time_primitive',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //           place: {
-  //             $relation: {
-  //               name: 'place',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   };
-
-  //   InfStatement.findComplex(filter, cb);
-  // };
-
-  // /**
-  //  * Add roles with their associated temporal entity to the project
-  //  *
-  //  * This query will add those things to the project:
-  //  * - Roles that are enabled for the project
-  //  *
-  //  * This query will not add
-  //  * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
-  //  * - The value-like items (time-primitive, appellation, language), since they never belong to projects
-  //  *
-  //  * See this page for details
-  //  * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
-  //  *
-  //  * @param pk_namespace
-  //  * @param pk_project
-  //  * @param pk_typed_class
-  //  */
-  // InfStatement.addToProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
-  //   if (!ctx.req.accessToken.userId)
-  //     return Error('AccessToken.userId is missing');
-  //   const accountId = ctx.req.accessToken.userId;
-  //   const params = [parseInt(pk_project), accountId];
-
-  //   const sql_stmt = `
-  //     select information.relate_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles
-  //       .map(r => r * 1)
-  //       .join(', ')}], $1, $2, true);
-  //   `;
-
-  //   const connector = InfStatement.dataSource.connector;
-  //   connector.execute(sql_stmt, params, (err, resultObjects) => {
-  //     if (err) return cb(err, resultObjects);
-
-  //     InfStatement.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
-  //       cb(err, result);
-  //     });
-  //   });
-  // };
 }

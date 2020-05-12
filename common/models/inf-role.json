@@ -290,7 +290,7 @@
         "type": "InfStatement",
         "root": true
       },
-      "description": "Find or create an information role version.",
+      "description": "Find or create an information statement version.",
       "http": {
         "path": "/findOrCreate",
         "verb": "post"
@@ -333,7 +333,7 @@
         ],
         "root": true
       },
-      "description": "Find or create information role.",
+      "description": "Find or create information statement.",
       "http": {
         "path": "/find-or-create-many",
         "verb": "post"
@@ -376,7 +376,7 @@
         ],
         "root": true
       },
-      "description": "Get roles (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.",
+      "description": "Get statements (with children) of given fkProperty and fkEntity from Repo that are not in project of given projectId.",
       "http": {
         "path": "/alternatives-not-in-project-by-entity-pk",
         "verb": "get"
@@ -419,7 +419,7 @@
         ],
         "root": true
       },
-      "description": "Get roles (with children) of given propertyPk and teEntPk from Repo that are not in project of given projectId.",
+      "description": "Get statements (with children) of given propertyPk and teEntPk from Repo that are not in project of given projectId.",
       "http": {
         "path": "/alternatives-not-in-project-by-te-ent-pk",
         "verb": "get"
@@ -437,10 +437,10 @@
           }
         },
         {
-          "arg": "pk_roles",
+          "arg": "pk_statements",
           "type": "array",
           "required": true,
-          "description": "Array of primary keys of roles (array of pk_entity).",
+          "description": "Array of primary keys of statements (array of pk_entity).",
           "http": {
             "source": "query"
           }
@@ -469,10 +469,10 @@
           }
         },
         {
-          "arg": "pk_roles",
+          "arg": "pk_statements",
           "type": "array",
           "required": true,
-          "description": "Array of primary keys of roles (array of pk_entity).",
+          "description": "Array of primary keys of statements (array of pk_entity).",
           "http": {
             "source": "body"
           }
@@ -490,7 +490,7 @@
         "type": "InfStatement",
         "root": true
       },
-      "description": "Add roles with their associated temporal entity to the project.",
+      "description": "Add statements with their associated temporal entity to the project.",
       "http": {
         "path": "/add-to-project-with-temporal-entity",
         "verb": "post"
@@ -508,10 +508,10 @@
           }
         },
         {
-          "arg": "pk_roles",
+          "arg": "pk_statements",
           "type": "array",
           "required": true,
-          "description": "Array of primary keys of roles (array of pk_entity).",
+          "description": "Array of primary keys of statements (array of pk_entity).",
           "http": {
             "source": "body"
           }
@@ -529,7 +529,7 @@
         "type": "InfStatement",
         "root": true
       },
-      "description": "Remove roles with their associated temporal entity from the project.",
+      "description": "Remove statements with their associated temporal entity from the project.",
       "http": {
         "path": "/remove-from-project-with-temporal-entity",
         "verb": "post"
@@ -547,10 +547,10 @@
           }
         },
         {
-          "arg": "pk_roles",
+          "arg": "pk_statements",
           "type": "array",
           "required": true,
-          "description": "Array of primary keys of roles (array of pk_entity).",
+          "description": "Array of primary keys of statements (array of pk_entity).",
           "http": {
             "source": "body"
           }
@@ -568,7 +568,7 @@
         "type": "InfStatement",
         "root": true
       },
-      "description": "Add roles without any related entities to the project.",
+      "description": "Add statements without any related entities to the project.",
       "http": {
         "path": "/add-to-project",
         "verb": "post"
@@ -611,7 +611,7 @@
         ],
         "root": true
       },
-      "description": "Get an nested object of role with everything needed to display the links made from an entity towards sources and digitals.",
+      "description": "Get an nested object of statement with everything needed to display the links made from an entity towards sources and digitals.",
       "http": {
         "path": "/sources-and-digitals-of-entity",
         "verb": "get"
@@ -641,7 +641,7 @@
           "arg": "pkEntity",
           "type": "number",
           "required": false,
-          "description": "Primary Key of the role (pk_entity)",
+          "description": "Primary Key of the statement (pk_entity)",
           "http": {
             "source": "query"
           }
@@ -650,7 +650,7 @@
           "arg": "pkInfoRange",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the role pointing to the range entity (fk_entity)",
+          "description": "Foreign Key of the statement pointing to the range entity (fk_entity)",
           "http": {
             "source": "query"
           }
@@ -659,7 +659,7 @@
           "arg": "pkInfoDomain",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the role pointing to the domain entity (fk_temporal_entity)",
+          "description": "Foreign Key of the statement pointing to the domain entity (fk_temporal_entity)",
           "http": {
             "source": "query"
           }
@@ -668,7 +668,7 @@
           "arg": "pkProperty",
           "type": "number",
           "required": false,
-          "description": "Foreign Key of the role pointing to the property (fk_property)",
+          "description": "Foreign Key of the statement pointing to the property (fk_property)",
           "http": {
             "source": "query"
           }
@@ -679,7 +679,7 @@
         "type": "array",
         "root": true
       },
-      "description": "Find roles by params.",
+      "description": "Find statements by params.",
       "http": {
         "path": "/find-by-params",
         "verb": "get"

@@ -30,14 +30,14 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
     ),
-    -- outgoing_roles of temporal_entity
+    -- outgoing_statements of temporal_entity
     tw4 AS (
       SELECT
         ${this.createSelect('t1', 'InfStatement')},
         ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
       FROM
         tw3
-        CROSS JOIN information.v_role t1,
+        CROSS JOIN information.v_statement t1,
         projects.info_proj_rel t2
       WHERE
         tw3.pk_entity = t1.fk_temporal_entity
@@ -85,14 +85,14 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
       WHERE
         tw4.fk_entity = t1.pk_entity
     ),
-    -- ingoing_roles of temporal_entity
+    -- ingoing_statements of temporal_entity
     tw9 AS (
       SELECT
         ${this.createSelect('t1', 'InfStatement')},
         ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
       FROM
         tw3
-        CROSS JOIN information.v_role t1,
+        CROSS JOIN information.v_statement t1,
         projects.info_proj_rel t2
       WHERE
         tw3.pk_entity = t1.fk_entity
@@ -115,7 +115,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
       AND t2.is_in_project = true
       AND t2.fk_project = ${this.addParam(fkProject)}
     ),
-    -- has type role
+    -- has type statement
     tw11 AS (
       SELECT
         ${this.createSelect('t1', 'InfStatement')},
@@ -123,7 +123,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
       FROM
         tw3
       CROSS JOIN
-        information.v_role t1,
+        information.v_statement t1,
         data_for_history.v_property t2,
         projects.info_proj_rel t3
       WHERE t1.fk_temporal_entity = tw3.pk_entity
@@ -187,7 +187,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
       ) as t1
       GROUP BY true
     ),
-    role AS (
+    statement AS (
       SELECT json_agg(t1.objects) as json
       FROM (
         select
@@ -291,7 +291,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
     select
     json_build_object(
       'inf', json_strip_nulls(json_build_object(
-        'role', role.json,
+        'statement', statement.json,
         'temporal_entity', temporal_entity.json,
         'appellation', appellation.json,
         'language', language.json,
@@ -305,7 +305,7 @@ export class SqlTemporalEntityOwnProperties extends SqlBuilderLbModels {
     ) as data
     FROM
     temporal_entity
-    LEFT JOIN role ON true
+    LEFT JOIN statement ON true
     LEFT JOIN appellation ON true
     LEFT JOIN language ON true
     LEFT JOIN time_primitive ON true

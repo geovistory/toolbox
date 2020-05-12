@@ -70,7 +70,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
         takeUntil(this.destroy$)
       ).subscribe(([limit, offset, pkProject]) => {
         nextPage$.next()
-        this.pag.roles.addPageLoader(
+        this.pag.statements.addPageLoader(
           pkProject,
           this.listDefinition,
           this.pkEntity,
@@ -96,7 +96,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
         shareReplay({ refCount: true, bufferSize: 1 }),
       )
 
-      this.itemsCount$ = this.p.inf$.role$.pagination$.pipeCount(paginateBy)
+      this.itemsCount$ = this.p.inf$.statement$.pagination$.pipeCount(paginateBy)
 
 
     } else {
@@ -119,8 +119,8 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
         } else {
 
-          const role = (item as BasicRoleItem).role;
-          this.inf.role.remove([role], pkProject)
+          const statement = (item as BasicRoleItem).statement;
+          this.inf.statement.remove([statement], pkProject)
 
         }
       })

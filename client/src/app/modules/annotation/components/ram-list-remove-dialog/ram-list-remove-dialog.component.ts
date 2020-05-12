@@ -70,14 +70,14 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
 
   onRemove() {
     combineLatest(
-      this.p.inf$.role$.by_subject_and_property$({
+      this.p.inf$.statement$.by_subject_and_property$({
         fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
         fk_temporal_entity: this.data.statement.pk_entity
       }),
       this.p.pkProject$
     ).pipe(first()).subscribe(([references, pkProject]) => {
 
-      this.p.inf.role.remove([this.data.statement, ...references], pkProject).resolved$
+      this.p.inf.statement.remove([this.data.statement, ...references], pkProject).resolved$
         .pipe(takeUntil(this.destroy$)).subscribe(
           res => {
             if (res) this.dialogRef.close()

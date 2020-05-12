@@ -35,14 +35,14 @@ export class SqlTypeItem extends SqlBuilderLbModels {
         AND t2.is_in_project = true
 
       ),
-      -- roles 'has appellation'
+      -- statements 'has appellation'
       tw2 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw1 t0,
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2
         WHERE t1.fk_property = 1111
         AND t1.fk_entity = t0.pk_entity
@@ -67,14 +67,14 @@ export class SqlTypeItem extends SqlBuilderLbModels {
           AND t2.is_in_project = true
           AND t2.fk_project = ${this.addParam(fkProject)}
       ),
-      -- roles outgoing of temporal_entity 'Name use for language'
+      -- statements outgoing of temporal_entity 'Name use for language'
       tw4 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw3
-          CROSS JOIN information.v_role t1,
+          CROSS JOIN information.v_statement t1,
           projects.info_proj_rel t2
         WHERE
           tw3.pk_entity = t1.fk_temporal_entity
@@ -151,7 +151,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-       role AS (
+       statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select
@@ -220,7 +220,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
           'persistent_item', persistent_item.json,
-          'role', role.json,
+          'statement', statement.json,
           'temporal_entity', temporal_entity.json,
           'appellation', appellation.json,
           'language', language.json,
@@ -233,7 +233,7 @@ export class SqlTypeItem extends SqlBuilderLbModels {
       FROM
       persistent_item
       LEFT JOIN info_proj_rel ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN temporal_entity ON true
       LEFT JOIN appellation ON true
       LEFT JOIN language ON true

@@ -123,11 +123,11 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     const relateBy = this.listDefinition.isOutgoing ? 'fk_entity' : 'fk_temporal_entity';
     if (this.listDefinition.listType === 'entity-preview') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.war.entity_preview)
-      return res.schemas.inf.role.map(role => {
-        const preview: EntityPreview = leafItems[role[relateBy]] as EntityPreview;
+      return res.schemas.inf.statement.map(statement => {
+        const preview: EntityPreview = leafItems[statement[relateBy]] as EntityPreview;
         const item: EntityPreviewItem = {
-          role,
-          preview: !preview ? { pk_entity: role[relateBy] } as EntityPreview : preview,
+          statement,
+          preview: !preview ? { pk_entity: statement[relateBy] } as EntityPreview : preview,
           fkClass: !preview ? undefined : preview.fk_class,
           label: !preview ? undefined : preview.entity_label,
           ordNum: undefined,
@@ -138,10 +138,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     }
     else if (this.listDefinition.listType === 'appellation') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.appellation)
-      return res.schemas.inf.role.map(role => {
-        const appellation = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const appellation = leafItems[statement[relateBy]];
         const item: AppellationItem = {
-          role,
+          statement,
           fkClass: appellation.fk_class,
           label: appellation.string,
           ordNum: undefined,
@@ -152,10 +152,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     }
     else if (this.listDefinition.listType === 'place') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.place)
-      return res.schemas.inf.role.map(role => {
-        const place = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const place = leafItems[statement[relateBy]];
         const item: PlaceItem = {
-          role,
+          statement,
           fkClass: place.fk_class,
           label: 'WGS84: ' + place.lat + '°, ' + place.long + '°',
           ordNum: undefined,
@@ -168,10 +168,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.lang_string)
       const languages = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
 
-      return res.schemas.inf.role.map(role => {
-        const langString = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const langString = leafItems[statement[relateBy]];
         const item: LangStringItem = {
-          role,
+          statement,
           fkClass: langString.fk_class,
           label: langString.string,
           language: languages[langString.fk_language],
@@ -183,10 +183,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     }
     else if (this.listDefinition.listType === 'language') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
-      return res.schemas.inf.role.map(role => {
-        const language = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const language = leafItems[statement[relateBy]];
         const item: LanguageItem = {
-          role,
+          statement,
           fkClass: language.fk_class,
           label: language.notes,
           ordNum: undefined,
@@ -215,8 +215,8 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       )
     }
     else {
-      const roles: InfStatement[] = this.selection.selected.map(option => (option as BasicRoleItem).role);
-      this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.role.upsert(roles, pkProject)
+      const statements: InfStatement[] = this.selection.selected.map(option => (option as BasicRoleItem).statement);
+      this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.statement.upsert(statements, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
           this.close.emit()
         })

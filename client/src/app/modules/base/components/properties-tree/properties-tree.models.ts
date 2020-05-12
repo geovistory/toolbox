@@ -6,7 +6,6 @@ import { PropertiesTreeService } from './properties-tree.service';
 export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'entity-preview' | 'has-type' | 'temporal-entity' | 'persistent-item';
 export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'entity-preview' | 'has-type';
 
-export type CreateControlType = 'role';
 
 // /**
 //  * This interface is a intermediate solution, useful as long as
@@ -85,9 +84,9 @@ export interface ItemBasics {
   label: string
 }
 
-// Items connected through a role
+// Items connected through a statement
 export interface BasicRoleItem extends ItemBasics {
-  role: InfStatement
+  statement: InfStatement
   isOutgoing?: boolean
   error?: string
 }
@@ -212,7 +211,7 @@ export interface AddListComponentInterface {
  */
 export interface TemporalEntityRemoveProperties {
   temporalEntity: InfTemporalEntity
-  roles: InfStatement[]
+  statements: InfStatement[]
   textProperties: InfTextProperty[]
 }
 

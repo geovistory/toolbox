@@ -51,20 +51,20 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
       tw1 AS (
        SELECT count(*)
        FROM
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2,
           information.temporal_entity t3
        WHERE
          ${mainWhere}
        GROUP BY TRUE
       ),
-      -- roles
+      -- statements
       tw2 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2,
           information.temporal_entity t3
         WHERE
@@ -88,14 +88,14 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
           AND t2.is_in_project = true
           AND t2.fk_project = ${this.addParam(fkProject)}
       ),
-      -- outgoing_roles of temporal_entity
+      -- outgoing_statements of temporal_entity
       tw4 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw3
-          CROSS JOIN information.v_role t1,
+          CROSS JOIN information.v_statement t1,
           projects.info_proj_rel t2
         WHERE
           tw3.pk_entity = t1.fk_temporal_entity
@@ -143,14 +143,14 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
         WHERE
           tw4.fk_entity = t1.pk_entity
       ),
-      -- ingoing_roles of temporal_entity
+      -- ingoing_statements of temporal_entity
       tw9 AS (
         SELECT
           ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw3
-          CROSS JOIN information.v_role t1,
+          CROSS JOIN information.v_statement t1,
           projects.info_proj_rel t2
         WHERE
           tw3.pk_entity = t1.fk_entity
@@ -191,7 +191,7 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select
@@ -283,7 +283,7 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
         'count', tw1.count,
         'schemas', json_build_object (
           'inf', json_strip_nulls(json_build_object(
-            'role', role.json,
+            'statement', statement.json,
             'temporal_entity', temporal_entity.json,
             'appellation', appellation.json,
             'language', language.json,
@@ -300,7 +300,7 @@ export class SqlTemporalEntityList extends SqlBuilderLbModels {
       FROM
       tw1
       LEFT JOIN paginatedRoles ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN temporal_entity ON true
       LEFT JOIN appellation ON true
       LEFT JOIN language ON true

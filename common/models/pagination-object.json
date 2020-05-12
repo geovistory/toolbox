@@ -58,7 +58,7 @@
           "arg": "filterObject",
           "type": "object",
           "required": true,
-          "description": "Object to filter the roles",
+          "description": "Object to filter the statements",
           "http": {
             "source": "body"
           }

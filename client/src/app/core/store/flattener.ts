@@ -81,8 +81,8 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfPersistentItem(item);
-        this.role.flatten(item.incoming_statements)
-        this.role.flatten(item.outgoing_statements)
+        this.statement.flatten(item.incoming_statements)
+        this.statement.flatten(item.outgoing_statements)
         this.text_property.flatten(item.text_properties)
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
@@ -94,16 +94,16 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfTemporalEntity(item);
-        this.role.flatten(item.outgoing_statements)
-        this.role.flatten(item.incoming_statements)
+        this.statement.flatten(item.outgoing_statements)
+        this.statement.flatten(item.incoming_statements)
         this.text_property.flatten(item.text_properties)
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
 
-  role = new ModelFlattener<InfPersistentItemSlice, InfStatement>(
-    this.infActions.role,
+  statement = new ModelFlattener<InfPersistentItemSlice, InfStatement>(
+    this.infActions.statement,
     InfStatement.getModelDefinition(),
     (items) => {
       items.forEach(item => {
@@ -112,7 +112,7 @@ export class Flattener {
 
         // Subject
         if (item.subject_temporal_entity) this.temporal_entity.flatten([item.subject_temporal_entity])
-        else if (item.subject_statement) this.role.flatten([item.subject_statement])
+        else if (item.subject_statement) this.statement.flatten([item.subject_statement])
 
         // Object
         if (item.object_persistent_item) this.persistent_item.flatten([item.object_persistent_item])
@@ -199,7 +199,7 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new DatChunk(item);
-        this.role.flatten(item.outgoing_statements)
+        this.statement.flatten(item.outgoing_statements)
       })
     })
 
@@ -260,7 +260,7 @@ export class Flattener {
 
       persistent_item: this.persistent_item,
       temporal_entity: this.temporal_entity,
-      role: this.role,
+      statement: this.statement,
       appellation: this.appellation,
       place: this.place,
       time_primitive: this.time_primitive,

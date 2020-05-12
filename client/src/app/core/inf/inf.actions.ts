@@ -210,7 +210,7 @@ export interface SourcesAndDigitalsOfEntity extends LoadActionMeta {
   pkEntity: number,
 }
 export interface SourcesAndDigitalsOfEntityResult {
-  roles: InfStatement[],
+  statements: InfStatement[],
   digitals: DatDigital[],
 }
 
@@ -247,7 +247,7 @@ export class InfStatementActionFactory extends InfActionFactory<Payload, InfStat
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
   createActions(): InfStatementActionFactory {
-    Object.assign(this, this.createInfActions(infRoot, 'role'))
+    Object.assign(this, this.createInfActions(infRoot, 'statement'))
 
     this.findByParams = (
       ofProject: boolean,
@@ -394,7 +394,7 @@ export class InfActions {
 
   persistent_item = new InfPersistentItemActionFactory(this.ngRedux).createActions();
   temporal_entity = new InfTemporalEntityActionFactory(this.ngRedux).createActions()
-  role = new InfStatementActionFactory(this.ngRedux).createActions()
+  statement = new InfStatementActionFactory(this.ngRedux).createActions()
 
   // TODO: pimp those up to real Inf Actions!
   language = new StandardActionsFactory<Payload, InfLanguage>(this.ngRedux).createCrudActions(infRoot, 'language')

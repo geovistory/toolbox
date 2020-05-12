@@ -84,9 +84,9 @@ export class FormPart {
             })
           }
         }
-        // Q: is this list a role list ??
+        // Q: is this list a statement list ??
         else {
-          // Q: This is a list that connects one role per item
+          // Q: This is a list that connects one statement per item
           const initList = this.initVal.initListDefinition
           const initProperty = initList.property.pkProperty;
 
@@ -296,7 +296,7 @@ export class FormPart {
 
       const v = val as CtrlTimeSpanDialogResult;
       const value: InfStatement[] = Object.keys(v).map(key => {
-        const role: InfStatement = {
+        const statement: InfStatement = {
           fk_property: parseInt(key, 10),
           object_time_primitive: {
             ...v[key],
@@ -304,7 +304,7 @@ export class FormPart {
           },
           ...{} as any
         }
-        return role
+        return statement
       });
       return value;
     }

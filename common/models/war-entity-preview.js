@@ -531,9 +531,9 @@ module.exports = function(WarEntityPreview) {
     }
 
     return {
-      te_roles: {
+      outgoing_statements: {
         $relation: {
-          name: 'te_roles',
+          name: 'outgoing_statements',
           joinType: 'inner join',
           orderBy: [
             {

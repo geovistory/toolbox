@@ -49,7 +49,7 @@ export class TimeSpanService {
 
         item.properties.forEach(prop => {
           if (prop.items.length > 1) {
-            toDelete = [...toDelete, ...prop.items.slice(1, prop.items.length).map(i => i.role)]
+            toDelete = [...toDelete, ...prop.items.slice(1, prop.items.length).map(i => i.statement)]
           }
         });
 
@@ -72,8 +72,8 @@ export class TimeSpanService {
         })
 
         return combineLatest(
-          toUpsert.length > 0 ? this.inf.role.upsert(toUpsert, pkProject).resolved$ : of(true),
-          toDelete.length > 0 ? this.inf.role.remove(toDelete, pkProject).resolved$ : of(true)
+          toUpsert.length > 0 ? this.inf.statement.upsert(toUpsert, pkProject).resolved$ : of(true),
+          toDelete.length > 0 ? this.inf.statement.remove(toDelete, pkProject).resolved$ : of(true)
         )
 
       }),
@@ -82,7 +82,7 @@ export class TimeSpanService {
   }
 
   convertToRole(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatement {
-    const role: InfStatement = {
+    const statement: InfStatement = {
       fk_subject_info: fkTeEn,
       fk_property: parseInt(key),
       entity_version_project_rels: [{
@@ -94,7 +94,7 @@ export class TimeSpanService {
       },
       ...{} as any
     }
-    return role
+    return statement
   }
 
   createDialogData(item: TimeSpanItem): CtrlTimeSpanDialogResult {
@@ -132,7 +132,7 @@ export class TimeSpanService {
             duration: i.duration,
             julian_day: i.julianDay
           } as InfTimePrimitiveWithCalendar,
-          r: prop.items[0].role
+          r: prop.items[0].statement
         }
       }
 
