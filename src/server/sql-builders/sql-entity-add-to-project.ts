@@ -37,13 +37,13 @@ export class SqlEntityAddToProject extends SqlBuilderLbModels {
       UNION ALL
       -- the outgoing statements
       SELECT t1.pk_entity, null::int, t1.calendar
-      FROM information.get_outgoing_roles_to_add(${this.addParam(pkEntity)},  ${this.addParam(fkProject)}) t1
+      FROM information.get_outgoing_statements_to_add(${this.addParam(pkEntity)},  ${this.addParam(fkProject)}) t1
 
       UNION ALL
       -- the ingoing statements of property 'has appellation'
-      SELECT t1.pk_entity, t1.fk_temporal_entity, null::calendar_type
-      FROM information.v_role t1
-      WHERE t1.fk_entity = ${this.addParam(pkEntity)}
+      SELECT t1.pk_entity, t1.fk_subject_info, null::calendar_type
+      FROM information.v_statement t1
+      WHERE t1.fk_object_info = ${this.addParam(pkEntity)}
       AND t1.fk_property = 1111
       AND t1.is_in_project_count > 0
 
@@ -80,16 +80,16 @@ export class SqlEntityAddToProject extends SqlBuilderLbModels {
         CROSS JOIN LATERAL
           (
             SELECT *
-            FROM information.get_outgoing_roles_to_add(tw.pk_related,  ${this.addParam(fkProject)})
+            FROM information.get_outgoing_statements_to_add(tw.pk_related,  ${this.addParam(fkProject)})
           ) t1
         WHERE t1.pk_entity NOT IN (tw.pk)
 
         UNION ALL
 
         -- the ingoing statements of property 'has appellation'
-        SELECT t1.pk_entity, t1.fk_temporal_entity, null::calendar_type
-        FROM information.v_role t1,	tw
-        WHERE tw.pk_related = t1.fk_entity
+        SELECT t1.pk_entity, t1.fk_subject_info, null::calendar_type
+        FROM information.v_statement t1,	tw
+        WHERE tw.pk_related = t1.fk_object_info
         AND t1.fk_property = 1111
         AND t1.is_in_project_count > 0
 

@@ -299,10 +299,13 @@ module.exports = function(InfEntity) {
       } else {
         // If there is no pk_entity, find or create the record
 
-        const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`;
+        // const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`;
+        const sql_stmt = `Insert Into information.temporal_entity (fk_class)
+                          Values ($1)
+                          Returning *`;
         const params = [
           dataObject.fk_class,
-          JSON.stringify(dataObject.te_roles),
+          // JSON.stringify(dataObject.te_roles),
         ];
 
         const connector = InfTemporalEntity.dataSource.connector;

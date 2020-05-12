@@ -33,14 +33,14 @@ export class SqlTeEnAddToProject extends SqlBuilderLbModels {
         ${this.addParam(accountId)}::int,
         true
       UNION
-      -- the roles
+      -- the statements
       SELECT
         pk_entity,
         calendar,
         ${this.addParam(fkProject)}::int,
         ${this.addParam(accountId)}::int,
         true
-      FROM  information.get_outgoing_roles_to_add (${this.addParam(pkEntity)}::int,${this.addParam(fkProject)}::int)
+      FROM  information.get_outgoing_statements_to_add (${this.addParam(pkEntity)}::int,${this.addParam(fkProject)}::int)
       UNION
       -- the text properties
       SELECT
