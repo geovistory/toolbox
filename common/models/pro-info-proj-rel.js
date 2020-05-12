@@ -4,13 +4,13 @@ var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models'
   .SqlBuilderLbModels;
 
 module.exports = function(ProInfoProjRel) {
-  ProInfoProjRel.markRoleAsFavorite = function(
+  ProInfoProjRel.markStatementAsFavorite = function(
     pkProject,
-    pkRole,
+    pkStatement,
     isOutgoing,
     cb
   ) {
-    const params = [pkRole, pkProject];
+    const params = [pkStatement, pkProject];
     const q = new SqlBuilderLbModels(ProInfoProjRel.app.models);
     const sql = `
       WITH tw1 AS (

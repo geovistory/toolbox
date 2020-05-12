@@ -22,7 +22,7 @@ export class TypeItemComponent implements OnInit {
 
   isViewMode: boolean;
 
-  hasTypeRole$: Observable<InfStatement>
+  hasTypeStatement$: Observable<InfStatement>
   pkType$: Observable<number>
   typeLabel$: Observable<string>
 
@@ -56,9 +56,9 @@ export class TypeItemComponent implements OnInit {
       this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
     })
 
-    this.hasTypeRole$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty)
+    this.hasTypeStatement$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty)
 
-    this.pkType$ = this.hasTypeRole$.pipe(
+    this.pkType$ = this.hasTypeStatement$.pipe(
       map(e => e ? e.fk_object_info : undefined)
     )
     this.typeLabel$ = this.pkType$.pipe(
@@ -74,7 +74,7 @@ export class TypeItemComponent implements OnInit {
   }
 
   onSubmit() {
-    combineLatest(this.hasTypeRole$, this.p.pkProject$).pipe(
+    combineLatest(this.hasTypeStatement$, this.p.pkProject$).pipe(
       first(),
       takeUntil(this.destroy$)
     ).subscribe(([statement, fk_project]) => {

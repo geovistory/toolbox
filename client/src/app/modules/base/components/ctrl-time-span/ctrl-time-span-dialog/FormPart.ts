@@ -104,7 +104,7 @@ export class FormPart {
               fixed: true,
               required: this.isRequired(thisList),
               classSelect: false,
-              formControlDef: this.addFormControlDef(thisList, this.initVal.initRole.value)
+              formControlDef: this.addFormControlDef(thisList, this.initVal.initStatement.value)
             })
           }
 
@@ -320,13 +320,13 @@ export class FormPart {
 export interface FormPartInitValue {
   initListDefinition: ListDefinition
   initTextProperty?: FormPartInitValueTextProperty
-  initRole?: FormPartInitValueRole
+  initStatement?: FormPartInitValueStatement
   initTimeSpan?: CtrlTimeSpanDialogResult
 }
 /**
- * A FormPartInitValueRole contains the values pass to a Form Part Val
+ * A FormPartInitValueStatement contains the values pass to a Form Part Val
  */
-export interface FormPartInitValueRole {
+export interface FormPartInitValueStatement {
   targetClass: number
   fkProperty: number
   value: number | InfAppellation | InfPlace | InfLanguage | InfLangString

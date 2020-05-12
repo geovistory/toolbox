@@ -59,12 +59,12 @@ module.exports = function(InfStatement) {
         // notes: statement.notes,
       };
 
-      let requestedRole =
+      let reqStatement =
         ctx && ctx.req && ctx.req.body ? ctx.req.body : statement;
       const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-      const subject = getSubject(pkProject, requestedRole, ctxWithoutBody);
-      const object = getObject(pkProject, requestedRole, ctxWithoutBody);
+      const subject = getSubject(pkProject, reqStatement, ctxWithoutBody);
+      const object = getObject(pkProject, reqStatement, ctxWithoutBody);
 
       Promise.all([subject, object])
         .then(([subject, object]) => {
@@ -79,7 +79,7 @@ module.exports = function(InfStatement) {
             InfStatement,
             pkProject,
             model,
-            requestedRole,
+            reqStatement,
             ctxWithoutBody
           )
             .catch(err => reject(err))
@@ -704,10 +704,10 @@ function hasRelatedModel(relatedModel) {
  *   - the value is the related model (e.g. the related time_primitive)
  *
  * @param {*} pkProject
- * @param {*} requestedRole
+ * @param {*} reqStatement
  * @param {*} ctxWithoutBody
  */
-function getSubject(pkProject, requestedRole, ctxWithoutBody) {
+function getSubject(pkProject, reqStatement, ctxWithoutBody) {
   return new Promise((resolve, reject) => {
     /******************************************************
      * First case: the primary key of subject is known
@@ -716,27 +716,27 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if fk_subject_information is a given
-    if (requestedRole.fk_subject_info) {
+    if (reqStatement.fk_subject_info) {
       resolve({
-        fk: { fk_subject_info: requestedRole.fk_subject_info },
+        fk: { fk_subject_info: reqStatement.fk_subject_info },
       });
     }
     // if fk_subject_data is a given
-    else if (requestedRole.fk_subject_data) {
+    else if (reqStatement.fk_subject_data) {
       resolve({
-        fk: { fk_subject_data: requestedRole.fk_subject_data },
+        fk: { fk_subject_data: reqStatement.fk_subject_data },
       });
     }
     // if fk_subject_tables_cell is a given
-    else if (requestedRole.fk_subject_tables_cell) {
+    else if (reqStatement.fk_subject_tables_cell) {
       resolve({
-        fk: { fk_subject_tables_cell: requestedRole.fk_subject_tables_cell },
+        fk: { fk_subject_tables_cell: reqStatement.fk_subject_tables_cell },
       });
     }
     // if fk_subject_tables_row is a given
-    else if (requestedRole.fk_subject_tables_row) {
+    else if (reqStatement.fk_subject_tables_row) {
       resolve({
-        fk: { fk_subject_tables_row: requestedRole.fk_subject_tables_row },
+        fk: { fk_subject_tables_row: reqStatement.fk_subject_tables_row },
       });
     }
 
@@ -749,11 +749,11 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if subject is an inf temporal_entity
-    else if (hasRelatedModel(requestedRole.temporal_entity)) {
+    else if (hasRelatedModel(reqStatement.temporal_entity)) {
       //create the subject first
       return models.InfTemporalEntity.findOrCreateInfTemporalEntity(
         pkProject,
-        requestedRole.temporal_entity,
+        reqStatement.temporal_entity,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -768,11 +768,11 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if subject is a inf persistent_item
-    else if (hasRelatedModel(requestedRole.domain_pe_it)) {
+    else if (hasRelatedModel(reqStatement.domain_pe_it)) {
       //create the subject first
       return models.InfPersistentItem.findOrCreatePeIt(
         pkProject,
-        requestedRole.domain_pe_it,
+        reqStatement.domain_pe_it,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -787,9 +787,9 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if subject is a inf chunk
-    else if (hasRelatedModel(requestedRole.domain_chunk)) {
+    else if (hasRelatedModel(reqStatement.domain_chunk)) {
       //create the subject first
-      return models.DatChunk.create(requestedRole.domain_chunk)
+      return models.DatChunk.create(reqStatement.domain_chunk)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
@@ -801,12 +801,12 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
         .catch(err => reject(err));
     }
     // if subject is a inf statement (we have a statement of statement)
-    else if (hasRelatedModel(requestedRole.subject_inf_statement)) {
+    else if (hasRelatedModel(reqStatement.subject_inf_statement)) {
       //create the subject first
 
       return models.InfStatement.findOrCreateInfStatement(
         pkProject,
-        requestedRole.subject_inf_statement,
+        reqStatement.subject_inf_statement,
         ctxWithoutBody
       )
         .then(res => {
@@ -821,7 +821,7 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
     } else {
       reject({
         message: 'Subject of statement not found',
-        statement: requestedRole,
+        statement: reqStatement,
       });
     }
   });
@@ -839,10 +839,10 @@ function getSubject(pkProject, requestedRole, ctxWithoutBody) {
  *   - the value is the related model (e.g. the related time_primitive)
  *
  * @param {*} pkProject
- * @param {*} requestedRole
+ * @param {*} reqStatement
  * @param {*} ctxWithoutBody
  */
-function getObject(pkProject, requestedRole, ctxWithoutBody) {
+function getObject(pkProject, reqStatement, ctxWithoutBody) {
   return new Promise((resolve, reject) => {
     /******************************************************
      * First case: the primary key of object is known
@@ -851,27 +851,27 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if fk_object_information is a given
-    if (requestedRole.fk_object_info) {
+    if (reqStatement.fk_object_info) {
       resolve({
-        fk: { fk_object_info: requestedRole.fk_object_info },
+        fk: { fk_object_info: reqStatement.fk_object_info },
       });
     }
     // if fk_object_data is a given
-    else if (requestedRole.fk_object_data) {
+    else if (reqStatement.fk_object_data) {
       resolve({
-        fk: { fk_object_data: requestedRole.fk_object_data },
+        fk: { fk_object_data: reqStatement.fk_object_data },
       });
     }
     // if fk_object_tables_cell is a given
-    else if (requestedRole.fk_object_tables_cell) {
+    else if (reqStatement.fk_object_tables_cell) {
       resolve({
-        fk: { fk_object_tables_cell: requestedRole.fk_object_tables_cell },
+        fk: { fk_object_tables_cell: reqStatement.fk_object_tables_cell },
       });
     }
     // if fk_object_tables_row is a given
-    else if (requestedRole.fk_object_tables_row) {
+    else if (reqStatement.fk_object_tables_row) {
       resolve({
-        fk: { fk_object_tables_row: requestedRole.fk_subject_tables_row },
+        fk: { fk_object_tables_row: reqStatement.fk_subject_tables_row },
       });
     }
 
@@ -884,11 +884,11 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if object is a temporal_entity
-    else if (hasRelatedModel(requestedRole.range_temporal_entity)) {
+    else if (hasRelatedModel(reqStatement.range_temporal_entity)) {
       //create the object first
       return models.InfTemporalEntity.findOrCreateInfTemporalEntity(
         pkProject,
-        requestedRole.range_temporal_entity,
+        reqStatement.range_temporal_entity,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -902,11 +902,11 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
         .catch(err => reject(err));
     }
     // if object is an inf persistent_item
-    else if (hasRelatedModel(requestedRole.persistent_item)) {
+    else if (hasRelatedModel(reqStatement.persistent_item)) {
       //create the object first
       return models.InfPersistentItem.findOrCreatePeIt(
         pkProject,
-        requestedRole.persistent_item,
+        reqStatement.persistent_item,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -924,11 +924,11 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     // TODO: THIS IS REDUNDANT WITH THE ONE ABOVE!
     // Remove the unsed 'else if' here and
     // remove the relation in inf-statement.json
-    else if (hasRelatedModel(requestedRole.range_pe_it)) {
+    else if (hasRelatedModel(reqStatement.range_pe_it)) {
       //create the object first
       return models.InfPersistentItem.findOrCreatePeIt(
         pkProject,
-        requestedRole.range_pe_it,
+        reqStatement.range_pe_it,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -943,11 +943,11 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if object is an inf place
-    else if (hasRelatedModel(requestedRole.place)) {
+    else if (hasRelatedModel(reqStatement.place)) {
       //create the subject first
       return models.InfPlace.findOrCreatePlace(
         pkProject,
-        requestedRole.place,
+        reqStatement.place,
         ctxWithoutBody
       )
         .then(resArray => {
@@ -962,9 +962,9 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if object is an inf appellation
-    else if (hasRelatedModel(requestedRole.appellation)) {
+    else if (hasRelatedModel(reqStatement.appellation)) {
       //create the subject first
-      return models.InfAppellation.create(requestedRole.appellation)
+      return models.InfAppellation.create(reqStatement.appellation)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
@@ -977,9 +977,9 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if object is an inf lang_string
-    else if (hasRelatedModel(requestedRole.lang_string)) {
+    else if (hasRelatedModel(reqStatement.lang_string)) {
       //create the subject first
-      return models.InfLangString.create(requestedRole.lang_string)
+      return models.InfLangString.create(reqStatement.lang_string)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
@@ -992,10 +992,10 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if object is an inf language
-    else if (hasRelatedModel(requestedRole.language)) {
+    else if (hasRelatedModel(reqStatement.language)) {
       //create the subject first
       return models.InfLanguage.find({
-        where: { pk_entity: requestedRole.language.pk_entity },
+        where: { pk_entity: reqStatement.language.pk_entity },
       })
         .then(resArr => {
           const relatedModel = helpers.toObject(resArr[0]);
@@ -1009,9 +1009,9 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if object is an inf time_primitive
-    else if (hasRelatedModel(requestedRole.time_primitive)) {
+    else if (hasRelatedModel(reqStatement.time_primitive)) {
       //create the subject first
-      return models.InfTimePrimitive.create(requestedRole.time_primitive)
+      return models.InfTimePrimitive.create(reqStatement.time_primitive)
         .then(res => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
@@ -1024,11 +1024,11 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     }
 
     // if object is an inf chunk
-    else if (hasRelatedModel(requestedRole.range_chunk)) {
+    else if (hasRelatedModel(reqStatement.range_chunk)) {
       //create the subject first
       return models.DatChunk.findOrCreateChunk(
         pkProject,
-        requestedRole.range_chunk,
+        reqStatement.range_chunk,
         ctxWithoutBody
       )
         .then(resArr => {
@@ -1043,7 +1043,7 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
     } else {
       reject({
         message: 'Object of statement not found',
-        statement: requestedRole,
+        statement: reqStatement,
       });
     }
   });

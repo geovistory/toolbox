@@ -274,7 +274,7 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      paginatedRoles AS (
+      paginatedStatements AS (
         SELECT COALESCE(json_agg(t1.pk_entity), '[]'::json) as json
         FROM
           tw2 as t1
@@ -292,12 +292,12 @@ export class SqlTemporalEntityListAlternatives extends SqlBuilderLbModels {
             'place', place.json
           ))
         ),
-        'paginatedRoles', paginatedRoles.json
+        'paginatedStatements', paginatedStatements.json
       ) as data
 
       FROM
       tw1
-      LEFT JOIN paginatedRoles ON true
+      LEFT JOIN paginatedStatements ON true
       LEFT JOIN statement ON true
       LEFT JOIN temporal_entity ON true
       LEFT JOIN appellation ON true

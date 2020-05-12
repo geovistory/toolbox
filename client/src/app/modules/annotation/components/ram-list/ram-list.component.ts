@@ -121,7 +121,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   private pipeItems(): Observable<RamListItem[]> {
 
     // the statements associating the root entity with the next items
-    const basicRoles$: Observable<InfStatement[]> = this.p.inf$.statement$.by_object_and_property$({
+    const basicStatements$: Observable<InfStatement[]> = this.p.inf$.statement$.by_object_and_property$({
       fk_property: this.fkProperty,
       fk_object_info: this.pkEntity
     }).pipe(
@@ -139,7 +139,7 @@ export class RamListComponent implements OnInit, OnDestroy {
 
     // if property is 'refers to' we need to get the chunk and the digital
     if (this.fkProperty == DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
-      return basicRoles$.pipe(
+      return basicStatements$.pipe(
         switchMap(statements => {
           return combineLatestOrEmpty(
             statements.map(statement => this.p.dat$.chunk$.by_pk_entity$.key(statement.fk_subject_data)
@@ -218,13 +218,13 @@ export class RamListComponent implements OnInit, OnDestroy {
     ) {
       return combineLatest(
         this.rootEntity$,
-        basicRoles$
+        basicStatements$
       ).pipe(
-        switchMap(([rootEntity, basicRoles]) => {
+        switchMap(([rootEntity, basicStatements]) => {
           const prefix = ''; // `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
 
           // I map the input value to a Observable and switchMap will subscribe to the new one
-          const rowsArray$: Observable<RamListItem>[] = basicRoles.map(statement => {
+          const rowsArray$: Observable<RamListItem>[] = basicStatements.map(statement => {
             return combineLatest(
               this.pipePathRecursivly(statement.fk_subject_info, prefix),
               this.getReference(statement.pk_entity)
@@ -246,10 +246,10 @@ export class RamListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getReference(pkSubjectRole: number): Observable<Reference> {
+  getReference(pkSubjectStatement: number): Observable<Reference> {
     return this.p.inf$.statement$.by_subject_and_property$({
       fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
-      fk_subject_info: pkSubjectRole
+      fk_subject_info: pkSubjectStatement
     })
       .pipe(
         switchMap((statements) => {

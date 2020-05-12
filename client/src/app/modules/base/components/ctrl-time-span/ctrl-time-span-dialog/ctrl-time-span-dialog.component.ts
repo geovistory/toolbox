@@ -164,18 +164,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
   */
   createTimeSpanForm() {
 
-    // const initRole: FormPartInitValueRole = {
-    //   targetClass: this.listDefinition.targetClass,
-    //   value: this.pkEntity,
-    //   fkProperty: this.listDefinition.pkProperty,
-    // };
-    // const resultTemplate = {
 
-    // };
-    // const mergeDef: MergeDef = {
-    //   target: ['temporal_entity'],
-    //   appendMethod: 'set'
-    // };
 
 
     const formParts$ = this.c.pipeSpecificFieldDefinitions(50).pipe(

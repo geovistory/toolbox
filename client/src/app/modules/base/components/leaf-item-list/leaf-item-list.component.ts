@@ -6,7 +6,7 @@ import { Observable, Subject, BehaviorSubject, combineLatest, merge } from '../.
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, BasicRoleItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
@@ -85,7 +85,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
       // Piping from store
       this.items$ = pagination$.pipe(
         distinctUntilChanged(equals),
-        switchMap(([limit, offset, pkProject]) => this.i.pipeRoleListPage(
+        switchMap(([limit, offset, pkProject]) => this.i.pipeStatementListPage(
           paginateBy,
           limit,
           offset,
@@ -119,7 +119,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
         } else {
 
-          const statement = (item as BasicRoleItem).statement;
+          const statement = (item as BasicStatementItem).statement;
           this.inf.statement.remove([statement], pkProject)
 
         }

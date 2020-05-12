@@ -20,7 +20,7 @@ import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '
  * Food data with nested structure.
  * Each node has a name and an optiona list of children.
  */
-interface RoleNode {
+interface StatementNode {
 
   // the statement
   statement: InfStatement;
@@ -40,7 +40,7 @@ interface RoleNode {
   // typeLabel: string;
 
   // children of the node
-  children?: RoleNode[];
+  children?: StatementNode[];
 }
 
 export interface ContentTreeNode {
@@ -78,7 +78,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   pkRoot$: Observable<number>
   pkRoot: number;
   rootIsF2Expression: boolean;
-  contentTree$: Observable<RoleNode[]>;
+  contentTree$: Observable<StatementNode[]>;
 
   temp$: Observable<any>;
 
@@ -102,7 +102,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     node => node.level, node => node.expandable);
 
   treeFlattener = new MatTreeFlattener(
-    (node: RoleNode, level: number): ContentTreeNode => {
+    (node: StatementNode, level: number): ContentTreeNode => {
       const { children, ...rest } = node;
       return {
         ...rest,
@@ -174,7 +174,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         .pipe(first(), takeUntil(this.destroy$)).subscribe(() => {
           this.contentTree$ = this.observeChildren(pkRoot)
 
-          this.contentTree$.pipe(distinctUntilChanged<RoleNode[]>(equals), takeUntil(this.destroy$))
+          this.contentTree$.pipe(distinctUntilChanged<StatementNode[]>(equals), takeUntil(this.destroy$))
             .subscribe((x) => {
               this.loading = false
               // store ids of expanded nodes
@@ -210,12 +210,12 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   private typeLabelOfExprPortion(pkExpressionPortion: number) {
 
-    const hasTypeRole$ = this.i.pipeTypeOfEntity(
+    const hasTypeStatement$ = this.i.pipeTypeOfEntity(
       pkExpressionPortion,
       DfhConfig.PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE
     )
 
-    const pkType$ = hasTypeRole$.pipe(
+    const pkType$ = hasTypeStatement$.pipe(
       map(e => e ? e.fk_object_info : undefined)
     )
     const typeLabel$ = pkType$.pipe(
@@ -227,7 +227,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   }
 
-  observeChildren(pkRange): Observable<RoleNode[]> {
+  observeChildren(pkRange): Observable<StatementNode[]> {
     if (!pkRange) return new BehaviorSubject([])
     return combineLatest(
       this.p.inf$.statement$.by_object_and_property$({
@@ -240,11 +240,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       })
     )
       .pipe(
-        switchMap(([isPartOfRoles, isReproOfRoles]) => {
+        switchMap(([isPartOfStatements, isReproOfStatements]) => {
 
           // Observe the children of this node
-          const sections$ = combineLatestOrEmpty(isPartOfRoles.map(statement => {
-            const node$: Observable<RoleNode> = combineLatest(
+          const sections$ = combineLatestOrEmpty(isPartOfStatements.map(statement => {
+            const node$: Observable<StatementNode> = combineLatest(
               this.observeChildren(statement.fk_subject_info)
             ).pipe(
               map(([children]) => ({
@@ -260,8 +260,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           }))
 
           // Observe the leafs of this node
-          const digitals$ = combineLatestOrEmpty(isReproOfRoles.map(statement => {
-            const node$: Observable<RoleNode> = this.p.dat$.digital$.latestVersion(statement.fk_subject_data).pipe(
+          const digitals$ = combineLatestOrEmpty(isReproOfStatements.map(statement => {
+            const node$: Observable<StatementNode> = this.p.dat$.digital$.latestVersion(statement.fk_subject_data).pipe(
               filter(x => !!x),
               map(datDigital => ({
                 statement,

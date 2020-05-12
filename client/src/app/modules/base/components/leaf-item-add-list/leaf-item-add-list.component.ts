@@ -7,7 +7,7 @@ import { first, map, takeUntil, shareReplay, distinctUntilChanged, tap, switchMa
 import { ActiveProjectService, InfStatement, InfTextProperty, PaginationObjectApi, EntityPreview } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { BasicRoleItem, Item, ItemList, ListDefinition, TextPropertyItem, EntityPreviewItem, LanguageItem, AppellationItem, PlaceItem, LangStringItem } from '../properties-tree/properties-tree.models';
+import { BasicStatementItem, Item, ItemList, ListDefinition, TextPropertyItem, EntityPreviewItem, LanguageItem, AppellationItem, PlaceItem, LangStringItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { equals, indexBy } from 'ramda';
 import { PaginationObject } from 'app/core/store/model';
@@ -215,7 +215,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       )
     }
     else {
-      const statements: InfStatement[] = this.selection.selected.map(option => (option as BasicRoleItem).statement);
+      const statements: InfStatement[] = this.selection.selected.map(option => (option as BasicStatementItem).statement);
       this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.statement.upsert(statements, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
           this.close.emit()

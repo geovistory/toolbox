@@ -181,7 +181,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       // the selected pks
-      const pkRoles: number[] = this.selection.selected;
+      const pkStatements: number[] = this.selection.selected;
 
       // array of entity project rels
       const projRels: Partial<ProInfoProjRel>[] = []
@@ -189,7 +189,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
       // array of observables
       const obs$: Observable<any>[] = [];
 
-      pkRoles.forEach(pk => {
+      pkStatements.forEach(pk => {
         // pepare entity project rel
         const proRel: Partial<ProInfoProjRel> = {
           fk_project: pkProject,

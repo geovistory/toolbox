@@ -128,20 +128,20 @@ module.exports = function(InfTemporalEntity) {
 
       const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-      InfTemporalEntity.resolveRoleValues(
+      InfTemporalEntity.resolveStatementValues(
         pkProject,
         requestedTeEnt.outgoing_statements,
         ctxWithoutBody
       )
-        .then(resolvedRoles => {
-          const teEnWithResolvedRoles = {
+        .then(resolvedStatements => {
+          const teEnWithResolvedStatements = {
             ...requestedTeEnt,
-            outgoing_statements: resolvedRoles,
+            outgoing_statements: resolvedStatements,
           };
           InfTemporalEntity._findOrCreateTeEnt(
             InfTemporalEntity,
             pkProject,
-            teEnWithResolvedRoles,
+            teEnWithResolvedStatements,
             ctxWithoutBody
           )
             .then(resultingEntities => {
@@ -256,7 +256,7 @@ module.exports = function(InfTemporalEntity) {
     });
   };
 
-  InfTemporalEntity.resolveRoleValues = function(
+  InfTemporalEntity.resolveStatementValues = function(
     pkProject,
     outgoing_statements,
     ctxWithoutBody
@@ -347,10 +347,10 @@ module.exports = function(InfTemporalEntity) {
           }
         })
       )
-        .then(resolvedRoles => {
+        .then(resolvedStatements => {
           resolve([
             ...outgoing_statements_with_fk_object_info,
-            ...resolvedRoles,
+            ...resolvedStatements,
           ]);
         })
         .catch(error => reject(error));

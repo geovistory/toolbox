@@ -166,7 +166,7 @@ export class TemporalEntityListComponent implements OnInit, OnDestroy, PropertyL
 
   markAsFavorite(item: TemporalEntityItem) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.pro$.info_proj_rel.markRoleAsFavorite(pkProject, item.statement.pk_entity, item.isOutgoing)
+      this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, item.statement.pk_entity, item.isOutgoing)
     })
   }
 

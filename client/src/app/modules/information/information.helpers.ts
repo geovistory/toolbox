@@ -13,7 +13,7 @@ export function propSetKeyFromFk(fkPropSet: number) {
 
 }
 
-export function getCalendarFromRole(statement: InfStatement): CalendarType {
+export function getCalendarFromStatement(statement: InfStatement): CalendarType {
   if (!statement) return null;
 
   const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
@@ -25,7 +25,7 @@ export function getCalendarFromRole(statement: InfStatement): CalendarType {
 }
 
 
-export function infRole2TimePrimitive(r: InfStatement): TimePrimitive {
+export function infStatement2TimePrimitive(r: InfStatement): TimePrimitive {
 
   // from InfTimePrimitve to TimePrimitive
   const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
@@ -34,13 +34,13 @@ export function infRole2TimePrimitive(r: InfStatement): TimePrimitive {
 
   if (
     infTp && infTp.duration && infTp.julian_day &&
-    getCalendarFromRole(r)
+    getCalendarFromStatement(r)
   ) {
     // add duration
     obj.duration = infTp.duration
 
     // add calendar
-    obj.calendar = getCalendarFromRole(r)
+    obj.calendar = getCalendarFromStatement(r)
 
     // add julian day
     obj.julianDay = infTp.julian_day;

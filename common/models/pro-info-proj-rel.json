@@ -81,12 +81,12 @@
         "patchOrCreate",
         "updateEprAttributes",
         "bulkUpdateEprAttributes",
-        "markRoleAsFavorite"
+        "markStatementAsFavorite"
       ]
     }
   ],
   "methods": {
-    "markRoleAsFavorite": {
+    "markStatementAsFavorite": {
       "accepts": [
         {
           "arg": "pkProject",
@@ -98,7 +98,7 @@
           }
         },
         {
-          "arg": "pkRole",
+          "arg": "pkStatement",
           "type": "number",
           "required": true,
           "description": "fk_entity",

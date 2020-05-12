@@ -5,7 +5,7 @@ import { SDKModels } from './SDKModels';
 import { BaseLoopBackApi } from '../core/base.service';
 import { LoopBackConfig } from '../../lb.config';
 import { LoopBackAuth } from '../core/auth.service';
-import { LoopBackFilter,  } from '../../models/BaseModels';
+import { LoopBackFilter, } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,7 +26,7 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
     @Inject(LoopBackAuth) protected auth: LoopBackAuth,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler
   ) {
-    super(http,  connection,  models, auth, errorHandler);
+    super(http, connection, models, auth, errorHandler);
   }
 
   /**
@@ -48,7 +48,7 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProInfoProjRels";
+      "/ProInfoProjRels";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -78,10 +78,10 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
    * This usually means the response is a `ProInfoProjRel` object.)
    * </em>
    */
-  public markRoleAsFavorite(pkProject: any, pkRole: any, isOutgoing: any, customHeaders?: Function): Observable<any> {
+  public markStatementAsFavorite(pkProject: any, pkRole: any, isOutgoing: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProInfoProjRels/mark-role-as-favorite";
+      "/ProInfoProjRels/mark-role-as-favorite";
     let _routeParams: any = {};
     let _postBody: any = {
       isOutgoing: isOutgoing
@@ -116,7 +116,7 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
   public updateEprAttributes(pkProject: any, pkEntity: any, eprAttributes: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProInfoProjRels/updateEprAttributes";
+      "/ProInfoProjRels/updateEprAttributes";
     let _routeParams: any = {};
     let _postBody: any = {
       eprAttributes: eprAttributes
@@ -149,7 +149,7 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
   public bulkUpdateEprAttributes(pkProject: any, items: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProInfoProjRels/bulk-update-attributes";
+      "/ProInfoProjRels/bulk-update-attributes";
     let _routeParams: any = {};
     let _postBody: any = {
       items: items

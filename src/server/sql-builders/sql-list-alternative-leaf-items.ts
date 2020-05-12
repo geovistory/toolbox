@@ -3,7 +3,7 @@ import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
 import { Lb3Models } from '../utils/interfaces';
 import { logSql } from '../utils';
 
-interface RoleParams {
+interface StatementParams {
   [index: string]: number | undefined;
   fk_subject_info?: number;
   fk_subject_data?: number;
@@ -32,13 +32,13 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
    * that are not in the current project
    *
    * @param fkProject project
-   * @param filterObject RoleParams to filter the statements
+   * @param filterObject StatementParams to filter the statements
    * @param limit page size for pagination
    * @param offset offset for pagination
    */
   create(
     fkProject: number,
-    filterObject: RoleParams,
+    filterObject: StatementParams,
     limit: number,
     offset: number
   ) {
@@ -262,7 +262,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      paginatedRoles AS (
+      paginatedStatements AS (
         SELECT COALESCE(json_agg(t1.pk_entity), '[]'::json) as json
         FROM
           tw2 as t1
@@ -283,12 +283,12 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
             'entity_preview', entity_preview.json
           ))
         ),
-        'paginatedRoles', paginatedRoles.json
+        'paginatedStatements', paginatedStatements.json
       ) as data
       FROM
       (select 0 ) as one_row
       LEFT JOIN tw1 ON true
-      LEFT JOIN paginatedRoles ON true
+      LEFT JOIN paginatedStatements ON true
       LEFT JOIN statement ON true
       LEFT JOIN appellation ON true
       LEFT JOIN lang_string ON true
@@ -301,7 +301,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
     return { sql, params: this.params };
   }
 
-  getFiltersByObject(tableAlias: string, filterObject: RoleParams): string[] {
+  getFiltersByObject(tableAlias: string, filterObject: StatementParams): string[] {
     const filters: string[] = []
     for (const column in filterObject) {
       const value = filterObject[column];

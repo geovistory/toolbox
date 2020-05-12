@@ -7,7 +7,7 @@ import { tag } from '../../../../node_modules/rxjs-spy/operators';
 import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel } from '../sdk';
 import { PaginateByParam } from '../store/actions';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
-import { infDefinitions, infRoot, IndexRoleBySubjectProperty, indexRoleBySubjectProperty, IndexRoleByObjectProperty, indexRoleByObjectProperty, IndexRoleBySubject, indexRoleBySubject, IndexRoleByObject, indexRoleByObject } from './inf.config';
+import { infDefinitions, infRoot, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementByObject, indexStatementByObject } from './inf.config';
 import { values } from 'd3';
 
 class Selector {
@@ -241,8 +241,8 @@ class InfStatementSelections extends Selector {
     return selection$
   }
 
-  by_subject$(foreignKeys: IndexRoleBySubject, ofProject = true): Observable<InfStatement[]> {
-    const key = indexRoleBySubject(foreignKeys);
+  by_subject$(foreignKeys: IndexStatementBySubject, ofProject = true): Observable<InfStatement[]> {
+    const key = indexStatementBySubject(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_subject').key(key)
     if (ofProject) {
       return selection$.pipe(
@@ -255,13 +255,13 @@ class InfStatementSelections extends Selector {
     );
   }
 
-  by_subject_and_property$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<InfStatement[]> {
+  by_subject_and_property$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<InfStatement[]> {
     return this.by_subject_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(statementIdx => values(statementIdx))
     )
   }
-  by_subject_and_property_indexed$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
-    const key = indexRoleBySubjectProperty(foreignKeys);
+  by_subject_and_property_indexed$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+    const key = indexStatementBySubjectProperty(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_subject+property').key(key)
     if (ofProject) {
       return selection$.pipe(this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity))
@@ -269,8 +269,8 @@ class InfStatementSelections extends Selector {
     return selection$
   }
 
-  by_object$(foreignKeys: IndexRoleByObject, ofProject = true): Observable<InfStatement[]> {
-    const key = indexRoleByObject(foreignKeys);
+  by_object$(foreignKeys: IndexStatementByObject, ofProject = true): Observable<InfStatement[]> {
+    const key = indexStatementByObject(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_object').key(key)
     if (ofProject) {
       return selection$.pipe(
@@ -283,14 +283,14 @@ class InfStatementSelections extends Selector {
     );
   }
 
-  by_object_and_property$(foreignKeys: IndexRoleByObjectProperty, ofProject = true): Observable<InfStatement[]> {
+  by_object_and_property$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<InfStatement[]> {
     return this.by_object_and_property_indexed$(foreignKeys, ofProject).pipe(
       map(statementIdx => values(statementIdx))
     )
   }
 
-  by_object_and_property_indexed$(foreignKeys: IndexRoleByObjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
-    const key = indexRoleByObjectProperty(foreignKeys);
+  by_object_and_property_indexed$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+    const key = indexStatementByObjectProperty(foreignKeys);
     const selection$ = this.selector<ByPk<InfStatement>>('by_object+property').key(key)
     if (ofProject) {
       return selection$.pipe(

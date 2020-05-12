@@ -15,7 +15,7 @@ export class EntitySearchHitComponent implements OnInit {
   /**
    * True if this is about selecting a pe-it as range of a statement
    */
-  @Input() selectRoleRange: boolean;
+  @Input() selectStatementRange: boolean;
 
   /**
   * flag to indicate if this search hit is in the context of a project-wide

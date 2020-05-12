@@ -12,7 +12,7 @@ import { FluxActionObservable, ModifyActionMeta, PaginateByParam } from '../stor
 import { SchemaObject } from '../store/model';
 import { SchemaObjectService } from '../store/schema-object.service';
 import { InfEpicsFactory } from './inf-epic-factory';
-import { FindRoleByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeRoles, LoadPaginatedRoleListMeta, PaginatedRolesList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from './inf.actions';
+import { FindStatementByParams, InfActions, InfPersistentItemActionFactory, InfStatementActionFactory, InfTemporalEntityActionFactory, InfTextPropertyActionFactory, LoadAlternativeTextProperties, LoadByPkMeta, LoadIngoingAlternativeStatements, LoadPaginatedStatementListMeta, PaginatedStatementList, SourcesAndDigitalsOfEntity, SourcesAndDigitalsOfEntityResult } from './inf.actions';
 import { infRoot } from './inf.config';
 import { InfPersistentItemSlice, InfStatementSlice, InfTemporalEntitySlice, InfTextPropertySlice } from './inf.models';
 
@@ -39,7 +39,7 @@ export class InfEpics {
     const infTemporalEntityEpicsFactory = new InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>
       (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
 
-    const infRoleEpicsFactory = new InfEpicsFactory<InfStatementSlice, InfStatement>
+    const infStatementEpicsFactory = new InfEpicsFactory<InfStatementSlice, InfStatement>
       (infRoot, 'statement', this.infActions.statement, this.notification, this.infoProjRelApi, this.proActions);
 
     const infTextPropertyEpicsFactory = new InfEpicsFactory<InfTextPropertySlice, InfTextProperty>
@@ -118,7 +118,7 @@ export class InfEpics {
       /**
        * Epic to load paginated Temporal Entity List
        */
-      (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
+      (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
         ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
@@ -132,7 +132,7 @@ export class InfEpics {
       /**
        * Epic to load paginated Alternative Temporal Entity List
        */
-      (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
+      (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
         ofType(infTemporalEntityEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_ALTERNATIVE_LIST)),
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
@@ -155,10 +155,10 @@ export class InfEpics {
 
 
       /**
-       * Role
+       * Statement
        *
        */
-      infRoleEpicsFactory.createLoadEpic<LoadIngoingAlternativeRoles>(
+      infStatementEpicsFactory.createLoadEpic<LoadIngoingAlternativeStatements>(
         (meta) => this.statementApi.alternativesNotInProjectByEntityPk(meta.pkEntity, meta.pkProperty, meta.pk),
         InfStatementActionFactory.ALTERNATIVES_INGOING,
         (results, pk) => {
@@ -167,7 +167,7 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), null);
         }
       ),
-      infRoleEpicsFactory.createUpsertEpic<ModifyActionMeta<InfStatement>>((meta) => this.statementApi
+      infStatementEpicsFactory.createUpsertEpic<ModifyActionMeta<InfStatement>>((meta) => this.statementApi
         .findOrCreateInfStatements(meta.pk, meta.items),
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
@@ -176,22 +176,22 @@ export class InfEpics {
         }
       ),
 
-      (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
-        ofType(infRoleEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
+      (action$: FluxActionObservable<any, LoadPaginatedStatementListMeta>, store) => action$.pipe(
+        ofType(infStatementEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
         mergeMap(action => new Observable<Action>((globalActions) => {
           const meta = action.meta;
           const apiCal$ = this.statementApi.paginatedListTargetingEntityPreviews(
             meta.pk, meta.pkSourceEntity, meta.pkProperty, meta.fkTargetClass, meta.isOutgoing, meta.limit, meta.offset
           )
           const pkProject = meta.pk;
-          this.handleTemporalEntityListAction(action, infRoleEpicsFactory, globalActions, apiCal$, pkProject);
+          this.handleTemporalEntityListAction(action, infStatementEpicsFactory, globalActions, apiCal$, pkProject);
         }))
       ),
 
-      infRoleEpicsFactory.createRemoveEpic(),
+      infStatementEpicsFactory.createRemoveEpic(),
 
 
-      infRoleEpicsFactory.createLoadEpic<FindRoleByParams>(
+      infStatementEpicsFactory.createLoadEpic<FindStatementByParams>(
         (meta) => this.statementApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
         InfStatementActionFactory.BY_PARAMS,
         (results, pk) => {
@@ -201,7 +201,7 @@ export class InfEpics {
         }
       ),
 
-      infRoleEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
+      infStatementEpicsFactory.createLoadEpic<SourcesAndDigitalsOfEntity>(
         (meta) => this.statementApi.sourcesAndDigitalsOfEntity(meta.ofProject, meta.pk, meta.pkEntity),
         InfStatementActionFactory.SOURCES_AND_DIGITALS_OF_ENTITY,
         (results, pk) => {
@@ -257,7 +257,7 @@ export class InfEpics {
     globalActions,
     apiCall$: Observable<any>,
     pkProject) {
-    const meta: LoadPaginatedRoleListMeta = action.meta;
+    const meta: LoadPaginatedStatementListMeta = action.meta;
     const pendingKey = meta.addPending;
     const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
@@ -268,11 +268,11 @@ export class InfEpics {
     // call action to set pagination loading on true
     this.infActions.statement.loadPage(paginateBy, meta.limit, meta.offset, pkProject);
     // call api to load data
-    apiCall$.subscribe((data: PaginatedRolesList) => {
+    apiCall$.subscribe((data: PaginatedStatementList) => {
       // call action to store records
       this.schemaObjectService.storeSchemaObject(data.schemas, pkProject);
       // call action to store pagination
-      this.infActions.statement.loadPageSucceeded(data.paginatedRoles, data.count, paginateBy, meta.limit, meta.offset, pkProject);
+      this.infActions.statement.loadPageSucceeded(data.paginatedStatements, data.count, paginateBy, meta.limit, meta.offset, pkProject);
       // call action to conclude the pending request
       epicsFactory.actions.loadSucceeded([], pendingKey, pkProject);
     }, error => {

@@ -58,7 +58,7 @@ export class TimeSpanService {
           if (!o[key] && !n[key]) { }
           // if only in new, upsert
           else if (!o[key] && n[key]) {
-            toUpsert.push(this.convertToRole(key, n[key], fkTeEn))
+            toUpsert.push(this.convertToStatement(key, n[key], fkTeEn))
           }
           // if only in old, delete
           else if (o[key] && !n[key]) {
@@ -67,7 +67,7 @@ export class TimeSpanService {
           // if in both and different, delete old, upsert new
           else if (o[key] && n[key] && !equals(o[key].tp, n[key])) {
             toDelete.push(o[key].r)
-            toUpsert.push(this.convertToRole(key, n[key], fkTeEn))
+            toUpsert.push(this.convertToStatement(key, n[key], fkTeEn))
           }
         })
 
@@ -81,7 +81,7 @@ export class TimeSpanService {
     )
   }
 
-  convertToRole(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatement {
+  convertToStatement(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatement {
     const statement: InfStatement = {
       fk_subject_info: fkTeEn,
       fk_property: parseInt(key),

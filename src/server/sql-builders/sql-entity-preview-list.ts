@@ -104,7 +104,7 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      paginatedRoles AS (
+      paginatedStatements AS (
         SELECT COALESCE(json_agg(t1.pk_entity), '[]'::json) as json
         FROM
           tw2 as t1
@@ -120,12 +120,12 @@ export class SqlEntityPreviewList extends SqlBuilderLbModels {
             'info_proj_rel', info_proj_rel.json
           ))
         ),
-        'paginatedRoles', paginatedRoles.json
+        'paginatedStatements', paginatedStatements.json
       ) as data
 
       FROM
       tw1
-      LEFT JOIN paginatedRoles ON true
+      LEFT JOIN paginatedStatements ON true
       LEFT JOIN statement ON true
       LEFT JOIN info_proj_rel ON true
 

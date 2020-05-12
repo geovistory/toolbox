@@ -3,7 +3,7 @@ import { TimePrimitive, InfStatement, U } from 'app/core';
 import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
 
 @Pipe({
-  name: 'infTimePrimitiveRole'
+  name: 'infTimePrimitiveStatement'
 })
 export class InfTimePrimitivePipe implements PipeTransform {
 
@@ -13,7 +13,7 @@ export class InfTimePrimitivePipe implements PipeTransform {
     if (!statement) return '';
     if (!statement.object_time_primitive || !Object.keys(statement.object_time_primitive).length) return '';
 
-    return this.timePrimitivePipe.transform(U.infRole2TimePrimitive(statement));
+    return this.timePrimitivePipe.transform(U.infStatement2TimePrimitive(statement));
 
   }
 

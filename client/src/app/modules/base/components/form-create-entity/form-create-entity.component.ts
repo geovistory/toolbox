@@ -429,7 +429,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                       if (fDef.listType == 'text-property') {
                         return { text_properties: items }
                       } else {
-                        const key = getRoleKey(parentModel, fDef.isOutgoing)
+                        const key = getStatementKey(parentModel, fDef.isOutgoing)
                         return { [key]: items }
                       }
                     },
@@ -791,10 +791,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    */
 
   private timeSpanCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const initRoles: InfStatement[] = arrayConfig.initValue || [];
+    const initStatements: InfStatement[] = arrayConfig.initValue || [];
     const initValue: CtrlTimeSpanModel = {}
-    for (let i = 0; i < initRoles.length; i++) {
-      const element = initRoles[i];
+    for (let i = 0; i < initStatements.length; i++) {
+      const element = initStatements[i];
       initValue[element.fk_property] = element.object_time_primitive;
     }
     const controlConfig: LocalNodeConfig = {
@@ -1118,7 +1118,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 }
 
-function getRoleKey(m: EntityModel, isOutgoing: boolean) {
+function getStatementKey(m: EntityModel, isOutgoing: boolean) {
   if (m === 'temporal_entity') {
     return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
   }

@@ -77,7 +77,7 @@ export class U {
   /**
    *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
   */
-  static getCalendarFromRole(statement: InfStatement): CalendarType {
+  static getCalendarFromStatement(statement: InfStatement): CalendarType {
     if (!statement) return null;
 
     const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
@@ -92,7 +92,7 @@ export class U {
    * Converts InfStatement to TimePrimitive
    * @param r the InfStatement to convert
    */
-  static infRole2TimePrimitive(r: InfStatement): TimePrimitive {
+  static infStatement2TimePrimitive(r: InfStatement): TimePrimitive {
 
     // from InfTimePrimitve to TimePrimitive
     const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
@@ -101,13 +101,13 @@ export class U {
 
     if (
       infTp && infTp.duration && infTp.julian_day &&
-      U.getCalendarFromRole(r)
+      U.getCalendarFromStatement(r)
     ) {
       // add duration
       obj.duration = infTp.duration
 
       // add calendar
-      obj.calendar = U.getCalendarFromRole(r)
+      obj.calendar = U.getCalendarFromStatement(r)
 
       // add julian day
       obj.julianDay = infTp.julian_day;

@@ -249,8 +249,8 @@ export class SqlBuilder extends SqlBuilderBase {
         };
 
         // JOIN statements
-        if (this.isRolesJoin(segment)) {
-          this.joinRoles(
+        if (this.isStatementsJoin(segment)) {
+          this.joinStatements(
             node,
             leftTableAlias,
             thisTableAlias,
@@ -336,7 +336,7 @@ export class SqlBuilder extends SqlBuilderBase {
   }
 
   createColumnSelect(segment: QueryNodeWithAlias, columnLabel: string) {
-    if (this.isRolesJoin(segment)) {
+    if (this.isStatementsJoin(segment)) {
     }
 
     else if (this.isEntitesJoin(segment)) {
@@ -364,8 +364,8 @@ export class SqlBuilder extends SqlBuilderBase {
 
     if (level > 0) {
       // JOIN statements
-      if (this.isRolesJoin(nodeWithAlias)) {
-        this.joinRoles(
+      if (this.isStatementsJoin(nodeWithAlias)) {
+        this.joinStatements(
           nodeWithAlias,
           leftTableAlias,
           nodeWithAlias._tableAlias,
@@ -408,7 +408,7 @@ export class SqlBuilder extends SqlBuilderBase {
 
 
 
-  joinRoles(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
+  joinStatements(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
     const topLevelWheres = [];
     topLevelWheres.push(`
                 ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
@@ -562,7 +562,7 @@ export class SqlBuilder extends SqlBuilderBase {
    * Returns true, if given node is for joining statements
    * @param {*} node
    */
-  isRolesJoin(node: QueryNode) {
+  isStatementsJoin(node: QueryNode) {
     if (!node || typeof node.data !== 'object') return false;
     return node.data.ingoingProperties || node.data.outgoingProperties;
   }
