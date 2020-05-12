@@ -1953,17 +1953,14 @@ From
 $BODY$;
 
 --  fn-14 refactor function war.enriched_nodes__create_some
-
-CREATE OR REPLACE FUNCTION war.enriched_nodes__create_some(
-	param_pk_entities integer[],
-	param_fk_project integer)
-    RETURNS SETOF war.enriched_node
-    LANGUAGE 'sql'
-
-    COST 100
-    VOLATILE
-    ROWS 1000
-AS $BODY$
+Create Or Replace Function war.enriched_nodes__create_some (
+    param_pk_entities integer[],
+    param_fk_project integer
+)
+    Returns Setof war.enriched_node
+    Language 'sql'
+    Cost 100 Volatile Rows 1000
+    As $BODY$
     With
     -- all entities per project
     tw1 As (
@@ -2005,12 +2002,12 @@ tw5 As (
         t1.fk_property,
         t2.fk_project,
         coalesce(t2.fk_project, 0) As project,
-        t2.ord_num_of_domain,
-        t2.ord_num_of_range,
-        t1.is_in_project_count
-    From
-        information.v_statement t1,
-        projects.info_proj_rel t2
+    t2.ord_num_of_domain,
+    t2.ord_num_of_range,
+    t1.is_in_project_count
+From
+    information.v_statement t1,
+    projects.info_proj_rel t2
     Where
         t1.fk_property = 1113
         And t1.fk_subject_info = Any (param_pk_entities)
@@ -2039,10 +2036,10 @@ tw6 As (
         t1.is_in_project_count,
         t2.fk_project,
         coalesce(t2.fk_project, 0) As "coalesce",
-        t2.ord_num_of_text_property
-    From
-        information.v_text_property t1,
-        projects.info_proj_rel t2
+    t2.ord_num_of_text_property
+From
+    information.v_text_property t1,
+    projects.info_proj_rel t2
     Where
         t1.fk_concerned_entity = Any (param_pk_entities)
         And t2.fk_entity = t1.pk_entity
@@ -2053,19 +2050,19 @@ tw7 As (
     Select
         t1.*,
         coalesce(t2.field_order, t7.field_order) As field_order,
-        coalesce(t2.is_in_project_count, t7.is_in_project_count) As is_in_project_count,
-        coalesce(t2.ord_num_of_range, t7.ord_num_of_text_property) As ord_num,
-        regexp_replace(coalesce(t3.string, t7.string), E'[\\n\\r]+', '', 'g') As string
-    From
-        tw1 t1
-        -- join outgoing statements
+    coalesce(t2.is_in_project_count, t7.is_in_project_count) As is_in_project_count,
+    coalesce(t2.ord_num_of_range, t7.ord_num_of_text_property) As ord_num,
+    regexp_replace(coalesce(t3.string, t7.string), E'[\\n\\r]+', '', 'g') As string
+From
+    tw1 t1
+    -- join outgoing statements
     Left Join tw5 t2 On t1.fk_project Is Not Distinct From t2.fk_project
         And t2.fk_subject_info = t1.pk_entity
         -- join appellation with outgoing statements
     Left Join information.appellation t3 On t2.fk_object_info = t3.pk_entity
     -- join text properties
-    Left Join tw6 t7 On t1.pk_entity = t7.fk_concerned_entity
-        And t1.fk_project Is Not Distinct From t7.fk_project
+        Left Join tw6 t7 On t1.pk_entity = t7.fk_concerned_entity
+            And t1.fk_project Is Not Distinct From t7.fk_project
 ),
 -- own_entity_label per project
 tw8 As (
@@ -2077,13 +2074,13 @@ tw8 As (
         field_order As own_entity_label_field_order
     From
         tw7
-Where
-    string Is Not Null
-Order By
-    fk_project,
-    pk_entity,
-    field_order Asc,
-    ord_num Asc
+    Where
+        string Is Not Null
+    Order By
+        fk_project,
+        pk_entity,
+        field_order Asc,
+        ord_num Asc
 ),
 -- own_full_text per project
 tw9 As (
@@ -2091,8 +2088,8 @@ tw9 As (
         fk_project,
         pk_entity,
         string_agg(string, '; ') As own_full_text
-    From
-        tw7
+From
+    tw7
     Where
         string Is Not Null
     Group By
@@ -2152,12 +2149,12 @@ tw12 As (
         t3.own_full_text
     From
         tw7 t1
-    Left Join tw8 t2 On t2.pk_entity = t1.pk_entity
-        And t2.fk_project = t1.fk_project
-        And t2.fk_project = param_fk_project
-    Left Join tw9 t3 On t3.pk_entity = t1.pk_entity
-        And t3.fk_project = t1.fk_project
-        And t3.fk_project = param_fk_project
+        Left Join tw8 t2 On t2.pk_entity = t1.pk_entity
+            And t2.fk_project = t1.fk_project
+            And t2.fk_project = param_fk_project
+        Left Join tw9 t3 On t3.pk_entity = t1.pk_entity
+            And t3.fk_project = t1.fk_project
+            And t3.fk_project = param_fk_project
 ),
 -- repo variant
 tw13 As (
@@ -2172,7 +2169,7 @@ tw13 As (
     From
         tw1 t1
     Left Join tw10 t2 On t2.pk_entity = t1.pk_entity
-    Left Join tw11 t3 On t3.pk_entity = t1.pk_entity
+        Left Join tw11 t3 On t3.pk_entity = t1.pk_entity
 ),
 tw14 As (
     Select
@@ -2208,9 +2205,9 @@ tw15 As (
         t1.duration,
         commons.time_primitive__get_first_second (t1.julian_day) As first_second,
         commons.time_primitive__get_last_second (t1.julian_day, t1.duration, 'gregorian') As last_second_gregorian,
-        commons.time_primitive__get_last_second (t1.julian_day, t1.duration, 'julian') As last_second_julian
-    From
-        information.time_primitive t1
+    commons.time_primitive__get_last_second (t1.julian_day, t1.duration, 'julian') As last_second_julian
+From
+    information.time_primitive t1
 ),
 -- select statements with time primitive, first and last second
 tw16 As (
@@ -2235,63 +2232,63 @@ tw16 As (
                 j1.julian_day,
                 j1.duration,
                 commons.time_primitive__get_first_second (j1.julian_day) As first_second,
-                commons.time_primitive__get_last_second (j1.julian_day, j1.duration, 'gregorian') As last_second_gregorian,
+            commons.time_primitive__get_last_second (j1.julian_day, j1.duration, 'gregorian') As last_second_gregorian,
+            commons.time_primitive__get_last_second (j1.julian_day, j1.duration, 'julian') As last_second_julian
+    From
+        information.time_primitive j1
+    Where
+        j1.pk_entity = t1.fk_object_info) t2 On t1.fk_subject_info = Any (param_pk_entities)
+    And (t1.fk_property = Any (Array[71,
+            72,
+            150,
+            151,
+            152,
+            153]))
+    And t2.pk_entity = t1.fk_object_info,
+    projects.info_proj_rel t3
+    Where
+        t1.pk_entity = t3.fk_entity
+        And t3.is_in_project = True
+    Union All ( Select Distinct On (t1.fk_subject_info,
+            t1.fk_property)
+            t1.fk_subject_info,
+            t1.fk_property,
+            Null::integer As fk_project,
+            t1.community_favorite_calendar,
+            t2.julian_day,
+            t2.duration,
+            t2.first_second,
+            Case When t1.community_favorite_calendar = 'gregorian' Then
+                t2.last_second_gregorian
+            Else
+                t2.last_second_julian
+            End last_second
+        From
+            information.v_statement t1
+            Join Lateral (
+                Select
+                    j1.pk_entity,
+                    j1.julian_day,
+                    j1.duration,
+                    commons.time_primitive__get_first_second (j1.julian_day) As first_second,
+                    commons.time_primitive__get_last_second (j1.julian_day, j1.duration, 'gregorian') As last_second_gregorian,
                 commons.time_primitive__get_last_second (j1.julian_day, j1.duration, 'julian') As last_second_julian
             From
                 information.time_primitive j1
             Where
                 j1.pk_entity = t1.fk_object_info) t2 On t1.fk_subject_info = Any (param_pk_entities)
-            And (t1.fk_property = Any (Array[71,
-                    72,
-                    150,
-                    151,
-                    152,
-                    153]))
-            And t2.pk_entity = t1.fk_object_info,
-            projects.info_proj_rel t3
-        Where
-            t1.pk_entity = t3.fk_entity
-            And t3.is_in_project = True
-        Union All ( Select Distinct On (t1.fk_subject_info,
-                t1.fk_property)
-                t1.fk_subject_info,
-                t1.fk_property,
-                Null::integer As fk_project,
-                t1.community_favorite_calendar,
-                t2.julian_day,
-                t2.duration,
-                t2.first_second,
-                Case When t1.community_favorite_calendar = 'gregorian' Then
-                    t2.last_second_gregorian
-                Else
-                    t2.last_second_julian
-                End last_second
-            From
-                information.v_statement t1
-                Join Lateral (
-                    Select
-                        j1.pk_entity,
-                        j1.julian_day,
-                        j1.duration,
-                        commons.time_primitive__get_first_second (j1.julian_day) As first_second,
-                        commons.time_primitive__get_last_second (j1.julian_day, j1.duration, 'gregorian') As last_second_gregorian,
-                        commons.time_primitive__get_last_second (j1.julian_day, j1.duration, 'julian') As last_second_julian
-                    From
-                        information.time_primitive j1
-                    Where
-                        j1.pk_entity = t1.fk_object_info) t2 On t1.fk_subject_info = Any (param_pk_entities)
-                    And t1.fk_property = Any (Array[71,
-                        72,
-                        150,
-                        151,
-                        152,
-                        153])
-                    And t1.is_in_project_count > 0
-                Order By
-                    t1.fk_subject_info,
-                    t1.fk_property,
-                    t1.is_in_project_count Desc,
-                    t1.tmsp_creation Desc)
+            And t1.fk_property = Any (Array[71,
+                72,
+                150,
+                151,
+                152,
+                153])
+            And t1.is_in_project_count > 0
+        Order By
+            t1.fk_subject_info,
+            t1.fk_property,
+            t1.is_in_project_count Desc,
+            t1.tmsp_creation Desc)
 ),
 -- create time spans, first_second and last_second
 tw17 As (
@@ -2350,3 +2347,85 @@ From
     Join war.v_class_preview t3 On t1.fk_class = t3.fk_class
         And t1.fk_project Is Not Distinct From t3.fk_project
 $BODY$;
+
+-- 11 rename indexes and constraints
+Alter Index information.role_pk_entity_idx Rename To statement_pk_entity_idx;
+
+Alter Index information.role_fk_entity_idx Rename To statement_fk_object_info_idx;
+
+Alter Index information.role_fk_temporal_entity_idx Rename To statement_fk_subject_info_idx;
+
+Alter Table information.statement Rename Constraint information_role_pk_entity_unique To information_statement_pk_entity_unique;
+
+-- 12 recreate vm_statement
+Drop Materialized View war.vm_statement;
+
+Create Materialized View war.vm_statement Tablespace pg_default As
+With tw1 As (
+    Select
+        t1.pk_entity,
+        t1.fk_property,
+        t1.fk_object_info,
+        t1.fk_subject_info,
+        t2.is_in_project_count,
+        t1.notes,
+        t1.tmsp_creation,
+        t1.tmsp_last_modification,
+        t1.sys_period
+    From
+        information.statement t1
+        Left Join Lateral (
+            Select
+                count(info_proj_rel.pk_entity)::integer As is_in_project_count
+            From
+                projects.info_proj_rel
+            Where
+                info_proj_rel.fk_entity = t1.pk_entity
+                And info_proj_rel.is_in_project = True
+            Group By
+                info_proj_rel.fk_entity) t2 On True
+)
+Select
+    t1.pk_entity,
+    t1.fk_object_info,
+    t1.fk_subject_info,
+    t1.fk_property,
+    t2.fk_project,
+    coalesce(t2.fk_project, 0) As project,
+    t2.ord_num_of_domain,
+    t2.ord_num_of_range,
+    t1.is_in_project_count
+From
+    tw1 t1,
+    projects.info_proj_rel t2
+Where
+    t2.fk_entity = t1.pk_entity
+    And t2.is_in_project = True
+Union
+Select
+    t1.pk_entity,
+    t1.fk_object_info,
+    t1.fk_subject_info,
+    t1.fk_property,
+    Null::integer As fk_project,
+    0 As project,
+    Null::integer As ord_num_of_domain,
+    Null::integer As ord_num_of_range,
+    t1.is_in_project_count
+From
+    tw1 t1
+Where
+    t1.is_in_project_count > 0 With DATA;
+
+Create Index vm_statement_fk_object_info_idx On war.vm_statement Using btree (fk_object_info) Tablespace pg_default;
+
+Create Index vm_statement_fk_project_idx On war.vm_statement Using btree (fk_project) Tablespace pg_default;
+
+Create Index vm_statement_fk_property_idx On war.vm_statement Using btree (fk_property) Tablespace pg_default;
+
+Create Index vm_statement_fk_subject_info_idx On war.vm_statement Using btree (fk_subject_info) Tablespace pg_default;
+
+Create Index vm_statement_pk_entity_idx On war.vm_statement Using btree (pk_entity) Tablespace pg_default;
+
+Create Unique Index vm_statement_pk_entity_project_idx On war.vm_statement Using btree (pk_entity, project) Tablespace pg_default;
+

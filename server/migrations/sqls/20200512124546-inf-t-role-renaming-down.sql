@@ -2799,3 +2799,84 @@ From
         And t1.fk_project Is Not Distinct From t3.fk_project
 $BODY$;
 
+-- 11 rename indexes and constraints
+Alter Index information.statement_pk_entity_idx Rename To role_pk_entity_idx;
+
+Alter Index information.statement_fk_object_info_idx Rename To role_fk_entity_idx;
+
+Alter Index information.statement_fk_subject_info_idx Rename To role_fk_temporal_entity_idx;
+
+Alter Table information.role Rename Constraint information_statement_pk_entity_unique To information_role_pk_entity_unique;
+
+-- 12 recreate vm_statement
+Drop Materialized View war.vm_statement;
+
+Create Materialized View war.vm_statement Tablespace pg_default As
+With tw1 As (
+    Select
+        t1.pk_entity,
+        t1.fk_property,
+        t1.fk_entity,
+        t1.fk_temporal_entity,
+        t2.is_in_project_count,
+        t1.notes,
+        t1.tmsp_creation,
+        t1.tmsp_last_modification,
+        t1.sys_period
+    From
+        information.role t1
+        Left Join Lateral (
+            Select
+                count(info_proj_rel.pk_entity)::integer As is_in_project_count
+            From
+                projects.info_proj_rel
+            Where
+                info_proj_rel.fk_entity = t1.pk_entity
+                And info_proj_rel.is_in_project = True
+            Group By
+                info_proj_rel.fk_entity) t2 On True
+)
+Select
+    t1.pk_entity,
+    t1.fk_entity,
+    t1.fk_temporal_entity,
+    t1.fk_property,
+    t2.fk_project,
+    coalesce(t2.fk_project, 0) As project,
+    t2.ord_num_of_domain,
+    t2.ord_num_of_range,
+    t1.is_in_project_count
+From
+    tw1 t1,
+    projects.info_proj_rel t2
+Where
+    t2.fk_entity = t1.pk_entity
+    And t2.is_in_project = True
+Union
+Select
+    t1.pk_entity,
+    t1.fk_entity,
+    t1.fk_temporal_entity,
+    t1.fk_property,
+    Null::integer As fk_project,
+    0 As project,
+    Null::integer As ord_num_of_domain,
+    Null::integer As ord_num_of_range,
+    t1.is_in_project_count
+From
+    tw1 t1
+Where
+    t1.is_in_project_count > 0 With DATA;
+
+Create Index vm_statement_fk_entity_idx On war.vm_statement Using btree (fk_entity) Tablespace pg_default;
+
+Create Index vm_statement_fk_project_idx On war.vm_statement Using btree (fk_project) Tablespace pg_default;
+
+Create Index vm_statement_fk_property_idx On war.vm_statement Using btree (fk_property) Tablespace pg_default;
+
+Create Index vm_statement_fk_temporal_entity_idx On war.vm_statement Using btree (fk_temporal_entity) Tablespace pg_default;
+
+Create Index vm_statement_pk_entity_idx On war.vm_statement Using btree (pk_entity) Tablespace pg_default;
+
+Create Unique Index vm_statement_pk_entity_project_idx On war.vm_statement Using btree (pk_entity, project) Tablespace pg_default;
+
