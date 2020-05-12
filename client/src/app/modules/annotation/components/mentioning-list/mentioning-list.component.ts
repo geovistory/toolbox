@@ -229,7 +229,7 @@ export class MentioningListComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.inf.statement.sourcesAndDigitalsOfEntity(true, pkProject, this.listOf.pkEntity)
 
-        const rows$ = this.p.inf$.statement$.by_object$({ fk_entity: this.listOf.pkEntity })
+        const rows$ = this.p.inf$.statement$.by_object$({ fk_object_info: this.listOf.pkEntity })
           .pipe(
             switchMap((statements) => combineLatestOrEmpty(
               statements.filter(statement => statement.fk_property === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO)

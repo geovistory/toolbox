@@ -1,11 +1,10 @@
 import { InfTemporalEntity } from 'app/core';
 
 export const mockNaming: InfTemporalEntity = {
-  ...{} as any,
   outgoing_statements: [
     {
       fk_property: 1113,
-      appellation: {
+      object_appellation: {
         fk_class: 40,
         quill_doc: {
           latestId: 19,
@@ -112,7 +111,7 @@ export const mockNaming: InfTemporalEntity = {
     },
     {
       fk_property: 1112,
-      language: {
+      object_language: {
         fk_class: 54,
         pk_language: 'nld',
         lang_type: 'living',
@@ -121,16 +120,18 @@ export const mockNaming: InfTemporalEntity = {
         iso6392t: 'nld',
         iso6391: 'nl ',
         notes: 'Dutch',
-        pk_entity: 21740
-      }
+        pk_entity: 21740,
+
+      }, ...{} as any,
+
     },
     {
       fk_property: 1111,
-      fk_entity: 738123
+      fk_object_info: 738123
     },
     {
       fk_property: 152,
-      time_primitive: {
+      object_time_primitive: {
         julian_day: 2406621,
         duration: '1 year',
         calendar: 'gregorian',
@@ -139,7 +140,7 @@ export const mockNaming: InfTemporalEntity = {
     },
     {
       fk_property: 153,
-      time_primitive: {
+      object_time_primitive: {
         julian_day: 2407351,
         duration: '1 year',
         calendar: 'gregorian',
@@ -148,8 +149,10 @@ export const mockNaming: InfTemporalEntity = {
     },
     {
       fk_property: 1430,
-      fk_entity: 746080
+      fk_object_info: 746080
     }
   ],
-  fk_class: 365
+  fk_class: 365,
+  ...{} as any,
+
 }
