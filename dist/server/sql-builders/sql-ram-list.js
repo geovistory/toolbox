@@ -20,19 +20,19 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
     }
     getSqlForLinkedEntities(pkEntity, fkProject, fkProperty) {
         return `
-    WITH RECURSIVE tw0 (fk_temporal_entity, fk_subject_data, fk_property, fk_entity, fk_object_data, level, pk_entity, path, pk_chunk, pk_digital) AS (
+    WITH RECURSIVE tw0 (fk_subject_info, fk_subject_data, fk_property, fk_object_info, fk_object_data, level, pk_entity, path, pk_chunk, pk_digital) AS (
 
-      SELECT    t1.fk_temporal_entity,
+      SELECT    t1.fk_subject_info,
                 t1.fk_subject_data,
                 t1.fk_property,
-                t1.fk_entity,
+                t1.fk_object_info,
                 t1.fk_object_data,
                 0,
                 t1.pk_entity,
                 ARRAY[t1.pk_entity],
                 t3.pk_entity pk_chunk,
                 t4.pk_entity pk_digital
-      FROM      information.role t1
+      FROM      information.statement t1
       JOIN      projects.info_proj_rel t2
                 ON   t1.pk_entity = t2.fk_entity
                 AND  t2.fk_project = ${this.addParam(fkProject)}
@@ -41,29 +41,29 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
                 ON t3.pk_entity = t1.fk_subject_data
       LEFT JOIN	data.digital t4
                 ON t3.fk_text = t4.pk_text
-      WHERE     t1.fk_entity = ${this.addParam(pkEntity)}
+      WHERE     t1.fk_object_info = ${this.addParam(pkEntity)}
       AND       t1.fk_property IN ( ${this.addParam(fkProperty)} )
 
       UNION ALL
 
-      SELECT    p.fk_temporal_entity,
+      SELECT    p.fk_subject_info,
                 p.fk_subject_data,
                 p.fk_property,
-                p.fk_entity,
+                p.fk_object_info,
                 p.fk_object_data,
                 t0.level + 1,
                 p.pk_entity,
                 ARRAY_APPEND(t0.path, p.pk_entity),
                 NULL::integer as pk_chunk,
                 NULL::integer as pk_digital
-      FROM      information.role p,
+      FROM      information.statement p,
                 tw0 t0,
                 projects.info_proj_rel t2
       WHERE
                 (
                       -- statements where subject_info equals subject_info of parent statement (-> going out of parent subject)
                       (
-                        p.fk_temporal_entity = t0.fk_temporal_entity
+                        p.fk_subject_info = t0.fk_subject_info
                         AND   p.fk_property IN (
                                   1317, -- is part of,
                                   1316, -- geovP5 – carrier provided by
@@ -74,7 +74,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
               OR
                       -- statements where subject_info equals object_info of parent statement (-> going out of parent object)
                       (
-                        p.fk_temporal_entity = t0.fk_entity
+                        p.fk_subject_info = t0.fk_object_info
                         AND   p.fk_property IN (
                                   1317, -- is part of,
                                   1316, -- geovP5 – carrier provided by
@@ -85,7 +85,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
                       OR
                       -- statements where object_info equals object_info of parent statement (-> going in to parent object)
                       (
-                        p.fk_entity = t0.fk_entity
+                        p.fk_object_info = t0.fk_object_info
                         AND   p.fk_property IN (
                                   1016 -- R42 – is representative manifestation singleton for
                               )
@@ -112,7 +112,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         FROM
           war.entity_preview t1
         JOIN tw0 t3
-          ON t1.pk_entity = t3.fk_temporal_entity
+          ON t1.pk_entity = t3.fk_subject_info
         CROSS JOIN
           projects.info_proj_rel t2
         WHERE t1.pk_entity = t2.fk_entity
@@ -133,7 +133,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         FROM
           war.entity_preview t1
         JOIN tw0 t3
-          ON t1.pk_entity = t3.fk_entity
+          ON t1.pk_entity = t3.fk_object_info
         CROSS JOIN
           projects.info_proj_rel t2
         WHERE t1.pk_entity = t2.fk_entity
@@ -150,12 +150,12 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
       -- 1317 = is part of, 1316 = carrier provided by, 979 = carriers provided by, 1305 = is server res. to req., 1016 = is rep. manif. sing. for
       tw3 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw0
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2
         WHERE t1.pk_entity = tw0.pk_entity
         AND t1.pk_entity = t2.fk_entity
@@ -166,14 +166,14 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
       -- 1 = has reference
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw0
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2
-        WHERE t1.fk_temporal_entity = tw0.pk_entity
+        WHERE t1.fk_subject_info = tw0.pk_entity
         AND t1.fk_property_of_property = 1
         AND t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
@@ -187,7 +187,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
           tw4
         CROSS JOIN
           information.v_lang_string t1
-        WHERE t1.pk_entity = tw4.fk_entity
+        WHERE t1.pk_entity = tw4.fk_object_info
       ),
       -- chunks
       twd3 AS (
@@ -240,11 +240,11 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM (
             SELECT * FROM tw3
             UNION ALL
@@ -289,7 +289,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
-          'role', role.json,
+          'statement', statement.json,
           'lang_string', lang_string.json
         )),
         'pro', json_strip_nulls(json_build_object(
@@ -306,7 +306,7 @@ class SqlRamList extends sql_builder_lb_models_1.SqlBuilderLbModels {
       FROM
       (select 0 ) as one_row
       LEFT JOIN entity_preview ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN lang_string ON true
       LEFT JOIN info_proj_rel ON true
       LEFT JOIN chunk ON true

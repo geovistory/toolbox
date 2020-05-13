@@ -297,7 +297,7 @@ class OntoMe {
      * was deactivated for the given geovistoryProject.
      *
      * The report also shows the number of instances
-     * (persistent items, temporal entities and roles)
+     * (persistent items, temporal entities and statements)
      * being in the geovistoryProject for each class and property
      * of the given ontomeProfile.
      * @param geovistoryProjectId
@@ -475,14 +475,14 @@ class OntoMe {
           SELECT 'maintained' status, pk_property
           FROM ptw6
         ),
-        -- left join the number of roles in given project for each property of given profile
+        -- left join the number of statements in given project for each property of given profile
         ptw8 AS (
           SELECT t1.status, t1.pk_property, t2.pk_entity
           FROM
             ptw7 t1
           LEFT JOIN LATERAL (
             SELECT t2.pk_entity
-            FROM information.role t2,
+            FROM information.statement t2,
               projects.info_proj_rel t3
             WHERE t1.pk_property = t2.fk_property
             AND t2.pk_entity = t3.fk_entity

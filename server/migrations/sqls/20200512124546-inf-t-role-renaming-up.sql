@@ -791,7 +791,7 @@ Group By
     Create TEMP Table removed_statements On Commit Drop As
     -- select recent info_proj_rel to statements where is_in_project = false
     Select
-        t1.fk_entity As fk_statement, t1.fk_project, t2.fk_entity, t2.fk_subject_info
+        t1.fk_entity As fk_statement, t1.fk_project, t2.fk_object_info, t2.fk_subject_info
     From
         changed_info_proj_rel t1, information.statement t2
     Where

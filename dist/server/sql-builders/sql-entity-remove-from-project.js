@@ -29,19 +29,19 @@ class SqlEntityRemoveFromProject extends sql_builder_lb_models_1.SqlBuilderLbMod
       UNION ALL
       -- the outgoing statements
       SELECT t1.pk_entity, null::int
-      FROM information.v_role t1,
+      FROM information.v_statement t1,
         projects.info_proj_rel t2
-      WHERE t1.fk_temporal_entity = ${this.addParam(pkEntity)}
+      WHERE t1.fk_subject_info = ${this.addParam(pkEntity)}
       AND t1.pk_entity = t2.fk_entity
       AND t2.fk_project = ${this.addParam(fkProject)}
       AND t2.is_in_project = true
 
       UNION ALL
       -- the ingoing statements of property 'has appellation'
-      SELECT t1.pk_entity, t1.fk_temporal_entity
-      FROM information."role" t1,
+      SELECT t1.pk_entity, t1.fk_subject_info
+      FROM information."statement" t1,
         projects.info_proj_rel t2
-      WHERE t1.fk_entity = ${this.addParam(pkEntity)}
+      WHERE t1.fk_object_info = ${this.addParam(pkEntity)}
       AND t1.fk_property = 1111
       AND t1.pk_entity = t2.fk_entity
       AND t2.fk_project = ${this.addParam(fkProject)}
@@ -80,9 +80,9 @@ class SqlEntityRemoveFromProject extends sql_builder_lb_models_1.SqlBuilderLbMod
 
         -- the outgoing statements (not in already selected statements)
         SELECT t1.pk_entity, null::int
-        FROM information.v_role t1, tw,
+        FROM information.v_statement t1, tw,
           projects.info_proj_rel t2
-        WHERE tw.pk_related = t1.fk_temporal_entity
+        WHERE tw.pk_related = t1.fk_subject_info
         AND t1.pk_entity NOT IN (tw.pk)
         AND t1.pk_entity = t2.fk_entity
         AND t2.fk_project = ${this.addParam(fkProject)}
@@ -91,10 +91,10 @@ class SqlEntityRemoveFromProject extends sql_builder_lb_models_1.SqlBuilderLbMod
         UNION ALL
 
         -- the ingoing statements of property 'has appellation'
-        SELECT t1.pk_entity, t1.fk_temporal_entity
-        FROM information."role" t1,	tw,
+        SELECT t1.pk_entity, t1.fk_subject_info
+        FROM information."statement" t1,	tw,
           projects.info_proj_rel t2
-        WHERE tw.pk_related = t1.fk_entity
+        WHERE tw.pk_related = t1.fk_object_info
         AND t1.fk_property = 1111
         AND t1.pk_entity = t2.fk_entity
         AND t2.fk_project = ${this.addParam(fkProject)}

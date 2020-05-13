@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, AbstractControl } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfStatement, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig, InfLangString, InfTemporalEntityApi } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig, InfLangString, InfTemporalEntityApi } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
@@ -23,6 +23,7 @@ import { MatFormFieldAppearance } from '@angular/material';
 import { Appearance } from 'cesium';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { InfStatement } from 'app/core/sdk/models/InfStatement';
 type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
@@ -228,11 +229,19 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
             const isInfStatement = (obj: any): obj is InfStatement => {
               return !!obj && (
-                !!obj.lang_string ||
-                !!obj.place ||
-                !!obj.language ||
-                !!obj.appellation ||
-                !!obj.time_primitive
+                !!obj.object_lang_string ||
+                !!obj.object_place ||
+                !!obj.object_language ||
+                !!obj.object_appellation ||
+                !!obj.object_time_primitive
+              )
+            }
+
+            const isCtrlEntityModel = (obj: any): obj is CtrlEntityModel => {
+              return !!obj && (
+                !!obj.persistent_item ||
+                !!obj.temporal_entity ||
+                !!obj.pkEntity
               )
             }
 
@@ -256,8 +265,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 statement.fk_subject_info = this.pkSourceEntity;
 
                 // assign object
-                if (item && item.object_persistent_item) statement.object_persistent_item = item.object_persistent_item
-                else if (item && item.subject_temporal_entity) statement.object_temporal_entity = item.subject_temporal_entity
+                if (isCtrlEntityModel(item) && item.persistent_item) {
+                  statement.object_persistent_item = item.persistent_item
+                }
+                else if (isCtrlEntityModel(item) && item.temporal_entity) {
+                  statement.object_temporal_entity = item.temporal_entity
+                }
                 else if (isInfStatement(item)) {
                   statement.object_lang_string = item.object_lang_string;
                   statement.object_place = item.object_place;
@@ -267,12 +280,17 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 }
 
               } else {
-                // assign subject
-                if (item && item.object_persistent_item) statement.subject_persistent_item = item.object_persistent_item
-                else if (item && item.subject_temporal_entity) statement.subject_temporal_entity = item.subject_temporal_entity
-
                 // assign object
                 statement.fk_object_info = this.pkSourceEntity;
+
+                // assign subject
+                if (isCtrlEntityModel(item) && item.persistent_item) {
+                  statement.subject_persistent_item = item.persistent_item
+                }
+                else if (isCtrlEntityModel(item) && item.temporal_entity) {
+                  statement.subject_temporal_entity = item.temporal_entity
+                }
+
               }
               return { statement }
             }

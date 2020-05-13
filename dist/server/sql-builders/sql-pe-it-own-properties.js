@@ -49,18 +49,18 @@ class SqlPeItOwnProperties extends sql_builder_lb_models_1.SqlBuilderLbModels {
           information.v_language t1
         WHERE t1.pk_entity = tw3.fk_language
       ),
-      -- has type role
+      -- has type statement
       tw5 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
         FROM
           tw1
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           data_for_history.v_property t2,
           projects.info_proj_rel t3
-        WHERE t1.fk_temporal_entity = tw1.pk_entity
+        WHERE t1.fk_subject_info = tw1.pk_entity
         AND t1.fk_property = t2.pk_property
         AND t2.is_has_type_subproperty = true
         AND t1.pk_entity = t3.fk_entity
@@ -118,11 +118,11 @@ class SqlPeItOwnProperties extends sql_builder_lb_models_1.SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM (
             SELECT * FROM tw5
           ) AS t1
@@ -132,7 +132,7 @@ class SqlPeItOwnProperties extends sql_builder_lb_models_1.SqlBuilderLbModels {
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
-          'role', role.json,
+          'statement', statement.json,
           'persistent_item', persistent_item.json,
           'text_property', text_property.json,
           'language', language.json
@@ -145,7 +145,7 @@ class SqlPeItOwnProperties extends sql_builder_lb_models_1.SqlBuilderLbModels {
       persistent_item
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN info_proj_rel ON true
     `;
         return { sql, params: this.params };

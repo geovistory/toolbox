@@ -3,7 +3,7 @@ import { IAccount } from '../account.model';
 
 const INITIAL_STATE: IAccount = {
   account: undefined,
-  statements: undefined
+  roles: undefined
 };
 
 const accountRootReducer = (lastState: IAccount = INITIAL_STATE, action: AccountAction): IAccount => {
