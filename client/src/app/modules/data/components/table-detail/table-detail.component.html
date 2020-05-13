@@ -29,6 +29,8 @@
 </div>
 <mat-divider></mat-divider>
 
-<gv-table [loading]="loading " [rows$]="rows$" [columns$]="columns$" [sortBy$]="sortBy$"
-  [sortDirection$]="sortDirection$" [colFiltersEnabled]="colFiltersEnabled" (sortChange)="onSortChange($event)"
-  (filterChange)="onFilterChange($event)"></gv-table>
+<!--  [columnComments$]="" [loading]="" -->
+<gv-table [headers$]="headers$" [table$]="table$" [loading]="loading" [sortingEnabled]="true"
+  [filteringEnabled]="colFiltersEnabled" [lineBreak]="lineBrakeInCells" class="gv-overflow-hidden"
+  (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)">
+</gv-table>

@@ -13,6 +13,8 @@ import { DfhConfig } from '../../shared/dfh-config';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ImporterComponent } from 'app/modules/data/components/importer/importer.component';
 
 /**
  * Food data with nested structure.
@@ -120,7 +122,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private inf: InfActions,
     private dat: DatSelector,
     private ref: ChangeDetectorRef,
-    private i: InformationPipesService
+    private i: InformationPipesService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -599,6 +602,14 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
       })
     })
+  }
+
+  addTable(pkParent: number, parentIsF2Expression = false) {
+    this.dialog.open(ImporterComponent, {
+      height: 'calc(100% - 30px)',
+      width: '90%',
+      maxHeight: '100%'
+    });
   }
 
   remove(node: ContentTreeNode) {

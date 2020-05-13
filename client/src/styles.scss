@@ -479,6 +479,11 @@ $gv-color-selected: #00ffff;
   overflow: hidden;
 }
 
+// 
+.gv-f-1-0-auto {
+  flex: 1 0 auto;
+}
+
 .gv-scroll-y-container {
   display: flex;
   flex-direction: column;
@@ -2562,4 +2567,20 @@ mat-dialog-actions {
   align-items: center;
   z-index: 1;
   background-color: rgba(255, 255, 255, 0.6);
+}
+
+gv-importer {
+  .gv-drop-zone {
+    height: 100%;
+    width: 100%;
+    border: 2px dotted #9643b3;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .gv-drop-zone-content {
+    margin:auto
+  }
 }

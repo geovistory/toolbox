@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { TabRow, DatColumn, TColFilter } from '../../../../../../../../src/server/table/interfaces';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SysConfig } from 'app/core';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TColFilter } from '../../../../../../../../src/server/table/interfaces';
 
 @Component({
   selector: 'gv-table',
@@ -9,34 +10,71 @@ import { SysConfig } from 'app/core';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit {
-  readonly dtText = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT;
-  readonly dtNumeric = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
+  destroy$ = new Subject<boolean>();
 
   @Input() loading = false;
-  @Input() rows$: Observable<TabRow[]>
-  @Input() columns$: Observable<{
-    display: string,
-    value: number,
-    datColumn: DatColumn
-  }[]>
-  @Input() sortBy$: Observable<string | number>;
-  @Input() sortDirection$: Observable<'ASC' | 'DESC'>;
-  @Input() colFiltersEnabled: boolean;
+  @Input() headers$: Observable<{ colLabel: string, comment: string, type: 'number' | 'string' }[]>;
+  @Input() table$: Observable<string[][]>;
+  @Input() filteringEnabled = false; //optional
+  @Input() sortingEnabled = false; //optional
+  @Input() lineBreak = false; //optional
+  @Input() sortBy$: Observable<{ colNb: number, direction: string }>; //optional
 
-  @Output() sortChange = new EventEmitter<string>()
-  @Output() filterChange = new EventEmitter<{ colName: string, filter: TColFilter | null }>()
+  @Output() sortDemanded = new EventEmitter<{ colNb: number, direction: string }>();
+  @Output() filterDemanded = new EventEmitter<Array<{ col: number, filter: TColFilter }>>();
+  @Output() cellClicked = new EventEmitter<{ col: number, row: number }>();
 
+  headers: { colLabel: string, comment: string, type: 'number' | 'string' }[];
+  table: string[][];
+  curSort: { colNb: number, direction: string };
+  filters: Array<{ col: number, value: string }>;
   constructor() { }
 
   ngOnInit() {
+    this.headers = [];
+    this.table = [];
+    this.curSort = { colNb: -1, direction: '' };
+    this.filters = [];
 
+    //listen to input headers (from parent)
+    this.headers$.pipe(takeUntil(this.destroy$))
+      .subscribe(headers => this.headers = headers);
+
+    //listen to input table (from parent)
+    this.table$.pipe(takeUntil(this.destroy$))
+      .subscribe(table => this.table = table);
+
+    //listen to sortBy option (from parent or from html)
+    if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$))
+      .subscribe(sort => this.curSort = sort);
   }
 
-  onSortChange(colName: string) {
-    this.sortChange.emit(colName)
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
-  onFilterChange(colName: string, filter: TColFilter | null) {
-    this.filterChange.emit({ colName, filter })
+  sort(col: number) {
+    if (!this.sortingEnabled) return;
+
+    if (col == this.curSort.colNb) this.curSort.direction = this.curSort.direction == 'ASC' ? 'DESC' : 'ASC'
+    else this.curSort = { colNb: col, direction: 'ASC' }
+
+    this.sortDemanded.emit(this.curSort);
+  }
+
+  filter(col: number, event: any) {
+    if (!this.filteringEnabled) return;
+
+    if (event) {
+      if (event.numeric) event.numeric.value = parseFloat(event.numeric.value);
+      this.filters[col + ''] = { col: col, filter: event };
+    } else this.filters.splice(col, 1);
+
+    this.filterDemanded.emit(Object.keys(this.filters).map(f => this.filters[f]));
+  }
+
+  cellClick(row: number, col: number) {
+    this.cellClicked.emit({ col: col, row: row });
   }
 }

@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableComponent } from './components/table/table.component';
+import { NgModule } from '@angular/core';
 import { MaterialModule } from 'app/core/material/material.module';
 import { TableModule } from 'primeng/table';
-import { ColFilterTextComponent } from './components/table/col-filter-text/col-filter-text.component';
 import { ColFilterNumericComponent } from './components/table/col-filter-numeric/col-filter-numeric.component';
+import { ColFilterTextComponent } from './components/table/col-filter-text/col-filter-text.component';
+import { TableComponent } from './components/table/table.component';
+
 
 
 
@@ -20,7 +21,7 @@ import { ColFilterNumericComponent } from './components/table/col-filter-numeric
   imports: [
     CommonModule,
     MaterialModule,
-    TableModule
+    TableModule,
   ]
 })
 export class DigitalTableModule { }

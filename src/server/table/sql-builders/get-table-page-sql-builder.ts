@@ -81,7 +81,7 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
 
     SELECT
     json_build_object (
-        'rows', tw4.rows,
+        'rows', COALESCE(tw4.rows, '[]'::json),
         'length', tw3.length
     ) as data
     FROM tw4
@@ -229,7 +229,7 @@ export class GetTablePageSqlBuilder extends SqlBuilderBase {
       else {
         const pkCol = options.sortBy
         const datCol = colMeta.find((col) => col.pk_entity == parseInt(pkCol, 10))
-        const cellCol = datCol ?.fk_data_type == 3292 ? 'string_value' : 'numeric_value';
+        const cellCol = datCol?.fk_data_type == 3292 ? 'string_value' : 'numeric_value';
         return `ORDER BY ${this.colTableAliasMap.get(pkCol)}.${cellCol} ${options.sortDirection}`
       }
     }

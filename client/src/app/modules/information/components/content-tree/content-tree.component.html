@@ -91,6 +91,11 @@
       <span>Add a Text</span>
     </button>
 
+    <button mat-menu-item *ngIf="!isDigital" (click)="addTable(pkParent, parentIsF2Expression)">
+      <mat-icon>folder</mat-icon>
+      <span>Add a Table</span>
+    </button>
+
     <!-- is expression portion -->
     <mat-divider *ngIf="!isDigital && !parentIsF2Expression"></mat-divider>
 

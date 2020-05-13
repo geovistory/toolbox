@@ -2,27 +2,16 @@ import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular
 import { ActiveProjectService, DatDigitalApi, DatColumn, SysConfig } from 'app/core';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
-import { Observable, Subject, BehaviorSubject, combineLatest } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
 import { first, map, takeUntil, shareReplay, distinctUntilChanged, switchMap, tap, filter, debounceTime, auditTime } from 'rxjs/operators';
 import { PageEvent } from '@angular/material/paginator';
 import { equals, values, without, indexBy, pick, keys, omit } from 'ramda';
 import { FormControl } from '@angular/forms';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { TColFilters, TColFilter } from '../../../../../../../src/server/table/interfaces'
-
-// TODO import this interface from backend
-interface TabCell {
-  pk_cell: number;
-  string_value?: string;
-  numeric_value?: number;
-}
-// TODO import this interface from backend
-interface TabRow {
-  pk_row: number,
-  [key: number]: TabCell
-}
-
-
+import { TColFilters, TColFilter, TabRow, TColFilterOpText, TColFilterOpNumeric } from '../../../../../../../src/server/table/interfaces'
+import { combine } from 'cesium';
+import { WorkerWrapperService } from '../../services/worker-wrapper.service';
+import { text } from 'd3';
 
 @Component({
   selector: 'gv-table-detail',
@@ -32,60 +21,82 @@ interface TabRow {
 export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
   destroy$ = new Subject<boolean>();
 
-  // path to the substore
-  @Input() basePath: string[];
-
-  // Primary key of the text digital to be viewed or edited
-  @Input() pkEntity: number;
+  @Input() basePath: string[]; // path to the substore
+  @Input() pkEntity: number; // Primary key of the text digital to be viewed or edited
 
   t: TabLayout;
 
+  readonly dtText = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT;
+  readonly dtNumeric = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
 
-
+  //fetched rows
   rows$: Observable<TabRow[]>
 
+  // total count of records found in database according to the filters
+  // (biggest number in pagination UI)
+  // Value of length$ is updated AFTER Api call
+  length$: Observable<number[]>;
+
+  /**
+   * configuration parameters that trigger new api call and 
+   * are needed to generate a SQL query (backend side)
+   * Values are updated BEFORW Api call
+   */
+  pageSize$ = new BehaviorSubject(20)
+  pageIndex$ = new BehaviorSubject(0)
+  sortBy$ = new BehaviorSubject<string | number>('pk_row')
+  sortDirection$ = new BehaviorSubject<'ASC' | 'DESC'>('ASC');
+  filters$ = new BehaviorSubject<TColFilters>({});
+
+  // options passed to 'column toggle UI' allowing users to ahow/hide columns
   colToggleOptions$: Observable<{
     display: string,
     value: number,
     datColumn: DatColumn
   }[]>
 
-  // total number of records in table
-  length$: Observable<number[]>;
-
-  pageSize$ = new BehaviorSubject(20)
-
-  pageIndex$ = new BehaviorSubject(0)
-
+  // control managing the selction of the colToggleOptions, for:
+  // a) listening to changes in 'column toggle UI'
+  // b) to set the initial value of selected columns to show
   colToggleCtrl = new FormControl([])
-  queriedCols: number[] = [];
-  firstApiCall = true;
 
+  // value of this observable is an array contiaing the items
+  // of colToggleOptions that are checked / selected (by colToggleCtrl)
   columns$: Observable<{
     display: string,
     value: number,
     datColumn: DatColumn
   }[]>
-  columnLabels: { [key: number]: string } = {}
 
-  loading = false;
+  // used to tell stupid table component to show spinner
+  loading = true;
 
-  sortBy$ = new BehaviorSubject<string | number>('pk_row')
-  sortDirection$ = new BehaviorSubject<'ASC' | 'DESC'>('ASC');
-
-  filters$ = new BehaviorSubject<TColFilters>({});
-
-
+  //for stupid table component:
+  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' }[]>;
+  table$: ReplaySubject<string[][]>;
   colFiltersEnabled = false;
   lineBrakeInCells = false;
+
+  //to target data on event of the stupid table component
+  dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number }[][];
+  colMapping: number | string[];
+
+  // Array of pk_entity of columns that have been queried 
+  // Value is updated after the API call
+  // (for optimisation)
+  queriedCols: number[] = [];
+
+  // flag that indicates if the api is called the first time 
+  // (set to false after the first api call)
+  // (for optimisation)
+  firstApiCall = true;
 
   constructor(
     public ref: ChangeDetectorRef,
     private digitalApi: DatDigitalApi,
-    private p: ActiveProjectService
-  ) {
-
-  }
+    private p: ActiveProjectService,
+    private worker: WorkerWrapperService,
+  ) { }
 
   ngOnInit() {
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
@@ -129,14 +140,46 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         filters: this.filters$.value
       })),
       tap(() => {
-        this.loading = false
+        this.loading = false;
+        // this.firstApiCall = false; TODO: check if this would work
       }),
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
-    this.rows$ = res$.pipe(
-      map(res => res.rows)
-    )
+    //creating the table and the data mapping
+    this.table$ = new ReplaySubject();
+    res$.pipe(
+      map(res => {
+        this.colMapping = ['pk_row', ...res.columns.map(pk => parseInt(pk, 10))];
+
+        this.dataMapping = [];
+        const rows: TabRow[] = res.rows;
+        const table: string[][] = [];
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const keys = Object.keys(row);
+          table[i] = [];
+          this.dataMapping[i] = [];
+
+          table[i][0] = row.pk_row.toString();
+          this.dataMapping[i][0] = { pk_row: row.pk_row };
+          for (let j = 0; j < keys.length; j++) {
+            const key = keys[j];
+            if (key == 'pk_row') continue;
+            table[i].push(row[key].string_value || (row[key].numeric_value || '').toString());
+            this.dataMapping[i].push({
+              pk_row: row.pk_row,
+              pk_col: parseInt(res.columns[j], 10),
+              pk_cell: row[key].pk_cell
+            })
+          }
+        }
+
+        return table;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe(table => this.table$.next(table));
 
     this.length$ = res$.pipe(
       map(res => res.length)
@@ -157,6 +200,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.colToggleOptions$ = this.p.dat$.column$.by_fk_digital$.key(this.pkEntity).pipe(
       map(indexedCols => values(indexedCols).map(col => col)),
       tap(cols => {
+        // make all checkboxes as checked
         this.colToggleCtrl.setValue(cols.map(col => col.pk_entity))
       }),
       switchMap(cols => combineLatestOrEmpty(
@@ -184,6 +228,24 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       }),
       shareReplay({ bufferSize: 1, refCount: true })
     );
+
+    //set the headers 
+    this.headers$ = new ReplaySubject();
+    this.columns$.pipe(
+      map(cols => {
+        const columns: { colLabel: string, comment: string, type: 'number' | 'string' }[] = [];
+        columns.push({ colLabel: 'Row ID', comment: 'number', type: 'number' });
+        for (let i = 0; i < cols.length; i++) {
+          columns.push({
+            colLabel: cols[i].display,
+            comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+            type: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+          });
+        }
+        return columns;
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe(cols => this.headers$.next(cols));
   }
 
   /**
@@ -223,30 +285,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.pageSize$.next(e.pageSize)
   }
 
-  onSortChange(colName: string) {
-    if (this.sortBy$.value === colName) {
-      this.sortDirection$.next(this.sortDirection$.value === 'ASC' ? 'DESC' : 'ASC')
-    } else {
-      this.sortBy$.next(colName);
-      this.sortDirection$.next('ASC')
-    }
-  }
-
-  onFilterChange(value: { colName: string, filter: TColFilter | null }) {
-    let filters: TColFilters;
-    if (filter) {
-      filters = {
-        ...this.filters$.value,
-        [value.colName]: value.filter
-      }
-    } else {
-      filters = omit([value.colName], this.filters$.value)
-    }
-
-    this.pageIndex$.next(0)
-    this.filters$.next(filters)
-  }
-
   // cleanupFilters(filters) {
   //   const f = {};
   //   [... this.colToggleCtrl.value, 'pk_row']
@@ -258,6 +296,35 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   //   filters = f;
   //   return filters
   // }
+
+  onFilterChange(allFilters: { col: number, filter: TColFilter }[]) {
+    let filters: TColFilters = {};
+
+    allFilters.forEach(incFilter => {
+      const colName = this.colMapping[incFilter.col];
+      filters[colName] = incFilter.filter;
+    });
+
+    this.pageIndex$.next(0);
+    this.filters$.next(filters);
+  }
+
+  onSortChangesort(sortOpt: { colNb: number, direction: string }) {
+    const colName = this.colMapping[sortOpt.colNb]
+
+    if (this.sortBy$.value === colName) {
+      this.sortDirection$.next(this.sortDirection$.value === 'ASC' ? 'DESC' : 'ASC')
+    } else {
+      this.sortBy$.next(colName);
+      this.sortDirection$.next('ASC')
+    }
+
+  }
+
+  click(cell: { col: number, row: number }) {
+    // console.log('CLICK', cell);
+    // console.log(this.dataMapping[cell.row][cell.col])
+  }
 
   ngOnDestroy() {
     this.destroy$.next(true);

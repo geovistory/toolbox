@@ -13,7 +13,7 @@ export const logSql = (sql: string, params: any[]) => {
     if (!existsSync(dir)) {
       mkdirSync(dir);
     }
-    const filename = 'sql-' + new Date().toISOString()
+    const filename = 'sql-' + formatDate(new Date())
     const log = sqlFormatter.format(sql, { language: 'pl/sql' });
     writeFileSync(dir + '/' + filename, log, 'utf-8')
 
@@ -24,3 +24,22 @@ export const logSql = (sql: string, params: any[]) => {
   }
 }
 
+function formatDate(date: Date): string {
+  const yy = setStringLen(date.getUTCFullYear(), 4, '0', 'before');
+  const mm = setStringLen(date.getUTCMonth() + 1, 2, '0', 'before');
+  const dd = setStringLen(date.getUTCDate(), 2, '0', 'before');
+  const h = setStringLen(date.getUTCHours(), 2, '0', 'before');
+  const m = setStringLen(date.getUTCMinutes(), 2, '0', 'before');
+  const s = setStringLen(date.getUTCSeconds(), 2, '0', 'before');
+  const ms = setStringLen(date.getUTCMilliseconds(), 2, '0', 'before');
+  return yy + '-' + mm + '-' + dd + ' ' + h + 'h' + m + '-' + s + '-' + ms;
+}
+
+function setStringLen(str: number, len: number, char: string, where: string) {
+  let toReturn: string = str + '';
+  while (toReturn.length < len) {
+    if (where == 'before') toReturn = char + toReturn;
+    else toReturn += char;
+  }
+  return toReturn;
+}

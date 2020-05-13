@@ -73,7 +73,7 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
 
     SELECT
     json_build_object (
-        'rows', tw4.rows,
+        'rows', COALESCE(tw4.rows, '[]'::json),
         'length', tw3.length
     ) as data
     FROM tw4
