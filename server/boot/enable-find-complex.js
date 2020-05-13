@@ -16,7 +16,7 @@ var include = [
   'DfhLabel',
   'DfhProperty',
   'InfPersistentItem',
-  'InfRole',
+  'InfStatement',
   'InfAppellation',
   'InfTemporalEntity',
   'InfLanguage',

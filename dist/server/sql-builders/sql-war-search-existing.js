@@ -122,7 +122,7 @@ class SqlWarSearchExisiting extends sql_builder_lb_models_1.SqlBuilderLbModels {
             t1.type_label_headline,
             ${relatedStatement ? `
               COALESCE(
-                json_agg(${this.createBuildObject('t2', 'InfRole')})
+                json_agg(${this.createBuildObject('t2', 'InfStatement')})
                 FILTER (WHERE t2.pk_entity IS NOT NULL),
                 '[]'
               )  related_statements,
@@ -134,7 +134,7 @@ class SqlWarSearchExisiting extends sql_builder_lb_models_1.SqlBuilderLbModels {
               ) projects
           FROM tw2 t1
           ${relatedStatement ? `
-            LEFT JOIN information.v_role t2
+            LEFT JOIN information.v_statement t2
             ON t1.pk_entity = t2.${relatedStatement.relateBy}
             AND t2.${relatedStatement.filter.key} = ${relatedStatement.filter.value}
             AND t2.is_in_project_count > 0

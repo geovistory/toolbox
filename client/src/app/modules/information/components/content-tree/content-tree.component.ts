@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ActiveProjectService, DatDigital, InfRole, latestVersion, switchMapOr, SysConfig, EntityPreview } from 'app/core';
+import { ActiveProjectService, DatDigital, InfStatement, latestVersion, switchMapOr, SysConfig, EntityPreview } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
@@ -20,10 +20,10 @@ import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '
  * Food data with nested structure.
  * Each node has a name and an optiona list of children.
  */
-interface RoleNode {
+interface StatementNode {
 
-  // the role
-  role: InfRole;
+  // the statement
+  statement: InfStatement;
 
   // the name of the node, being tha favorite appellation of Expression Portion or some symbol for Digitals
   // name: string;
@@ -40,11 +40,11 @@ interface RoleNode {
   // typeLabel: string;
 
   // children of the node
-  children?: RoleNode[];
+  children?: StatementNode[];
 }
 
 export interface ContentTreeNode {
-  role: InfRole;
+  statement: InfStatement;
   expandable: boolean;
   // name: string;
   isDigital: boolean;
@@ -78,7 +78,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   pkRoot$: Observable<number>
   pkRoot: number;
   rootIsF2Expression: boolean;
-  contentTree$: Observable<RoleNode[]>;
+  contentTree$: Observable<StatementNode[]>;
 
   temp$: Observable<any>;
 
@@ -102,7 +102,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     node => node.level, node => node.expandable);
 
   treeFlattener = new MatTreeFlattener(
-    (node: RoleNode, level: number): ContentTreeNode => {
+    (node: StatementNode, level: number): ContentTreeNode => {
       const { children, ...rest } = node;
       return {
         ...rest,
@@ -145,7 +145,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   loadRootEntity(pkEntity: number, fkClass: number, pkProject) {
 
     // if we start from a source like class
-    // load the role that associates source --> expression
+    // load the statement that associates source --> expression
     if (fkClass !== DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
       this.rootIsF2Expression = true;
       this.fkPropertyFromSource = this.getFkPropertyFromSource(fkClass);
@@ -174,7 +174,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         .pipe(first(), takeUntil(this.destroy$)).subscribe(() => {
           this.contentTree$ = this.observeChildren(pkRoot)
 
-          this.contentTree$.pipe(distinctUntilChanged<RoleNode[]>(equals), takeUntil(this.destroy$))
+          this.contentTree$.pipe(distinctUntilChanged<StatementNode[]>(equals), takeUntil(this.destroy$))
             .subscribe((x) => {
               this.loading = false
               // store ids of expanded nodes
@@ -210,13 +210,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   private typeLabelOfExprPortion(pkExpressionPortion: number) {
 
-    const hasTypeRole$ = this.i.pipeTypeOfEntity(
+    const hasTypeStatement$ = this.i.pipeTypeOfEntity(
       pkExpressionPortion,
       DfhConfig.PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE
     )
 
-    const pkType$ = hasTypeRole$.pipe(
-      map(e => e ? e.fk_entity : undefined)
+    const pkType$ = hasTypeStatement$.pipe(
+      map(e => e ? e.fk_object_info : undefined)
     )
     const typeLabel$ = pkType$.pipe(
       switchMap(pkType => this.labelOfEntity(pkType)),
@@ -227,30 +227,30 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   }
 
-  observeChildren(pkRange): Observable<RoleNode[]> {
+  observeChildren(pkRange): Observable<StatementNode[]> {
     if (!pkRange) return new BehaviorSubject([])
     return combineLatest(
-      this.p.inf$.role$.by_object_and_property$({
+      this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1317,  // is part of
-        fk_entity: pkRange
+        fk_object_info: pkRange
       }),
-      this.p.inf$.role$.by_object_and_property$({
+      this.p.inf$.statement$.by_object_and_property$({
         fk_property: 1216,  // is reproduction of
-        fk_entity: pkRange
+        fk_object_info: pkRange
       })
     )
       .pipe(
-        switchMap(([isPartOfRoles, isReproOfRoles]) => {
+        switchMap(([isPartOfStatements, isReproOfStatements]) => {
 
           // Observe the children of this node
-          const sections$ = combineLatestOrEmpty(isPartOfRoles.map(role => {
-            const node$: Observable<RoleNode> = combineLatest(
-              this.observeChildren(role.fk_temporal_entity)
+          const sections$ = combineLatestOrEmpty(isPartOfStatements.map(statement => {
+            const node$: Observable<StatementNode> = combineLatest(
+              this.observeChildren(statement.fk_subject_info)
             ).pipe(
               map(([children]) => ({
-                role,
+                statement,
                 isDigital: false,
-                pkEntity: role.fk_temporal_entity,
+                pkEntity: statement.fk_subject_info,
                 pkDigital: undefined,
                 children
               }))
@@ -260,14 +260,14 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           }))
 
           // Observe the leafs of this node
-          const digitals$ = combineLatestOrEmpty(isReproOfRoles.map(role => {
-            const node$: Observable<RoleNode> = this.p.dat$.digital$.latestVersion(role.fk_subject_data).pipe(
+          const digitals$ = combineLatestOrEmpty(isReproOfStatements.map(statement => {
+            const node$: Observable<StatementNode> = this.p.dat$.digital$.latestVersion(statement.fk_subject_data).pipe(
               filter(x => !!x),
               map(datDigital => ({
-                role,
+                statement,
                 isDigital: true,
                 pkEntity: undefined,
-                pkDigital: role.fk_subject_data,
+                pkDigital: statement.fk_subject_data,
                 datDigital,
                 children: []
               }))
@@ -288,11 +288,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
    * Returns an observable number with the
    */
   private getExpressionWhereSourceIsRange(pkEntity: number): Observable<number> {
-    this.inf.role.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
-    return this.r.inf$.role$
+    this.inf.statement.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
+    return this.r.inf$.statement$
       .by_object_and_property$(
         {
-          fk_entity: pkEntity,
+          fk_object_info: pkEntity,
           fk_property: this.fkPropertyFromSource
         },
         false
@@ -302,16 +302,16 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           if (xs.length !== 1) console.warn('number of expressions must be one');
         }),
         filter((xs) => xs.length > 0),
-        map((x) => x[0].fk_temporal_entity)
+        map((x) => x[0].fk_subject_info)
       );
   }
 
   private getExpressionWhereSourceIsDomain(pkEntity: number): Observable<number> {
-    this.inf.role.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
-    return this.r.inf$.role$
+    this.inf.statement.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
+    return this.r.inf$.statement$
       .by_subject_and_property$(
         {
-          fk_temporal_entity: pkEntity,
+          fk_subject_info: pkEntity,
           fk_property: this.fkPropertyFromSource
         },
         false
@@ -321,7 +321,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           // if (xs.length !== 1) console.warn('number of expressions must be one');
         }),
         filter((xs) => xs.length > 0),
-        map((x) => x[0].fk_entity)
+        map((x) => x[0].fk_object_info)
       );
   }
 
@@ -401,10 +401,10 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   parentOfDraggedChanged = (parent: ContentTreeNode, dragged: ContentTreeNode): boolean => {
     if (this.dragNodeExpandOverArea === 'above') {
-      return dragged.role.fk_entity !== parent.role.fk_entity;
+      return dragged.statement.fk_object_info !== parent.statement.fk_object_info;
     }
     else {
-      return dragged.role.fk_entity !== parent.role.fk_temporal_entity;
+      return dragged.statement.fk_object_info !== parent.statement.fk_subject_info;
     }
   }
 
@@ -423,11 +423,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           if (this.parentOfDraggedChanged(dropNode, this.dragNode)) {
             // A: Yes. different parent. change the parent (and the order)
 
-            // remove the current role from project
-            this.inf.role.remove([this.dragNode.role], pkProject)
+            // remove the current statement from project
+            this.inf.statement.remove([this.dragNode.statement], pkProject)
 
-            // find or create a new role bewteen the dragged and the new parent
-            this.inf.role.upsert([this.prepareNewEntityAssociatoin(dropNode, this.dragNode, pkExpression)], pkProject)
+            // find or create a new statement bewteen the dragged and the new parent
+            this.inf.statement.upsert([this.prepareNewEntityAssociatoin(dropNode, this.dragNode, pkExpression)], pkProject)
 
           }
 
@@ -446,22 +446,22 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.dragNodeExpandOverTime = 0;
   }
 
-  prepareNewEntityAssociatoin(dropNode: ContentTreeNode, draggedNode: ContentTreeNode, pkExpression: number): InfRole {
+  prepareNewEntityAssociatoin(dropNode: ContentTreeNode, draggedNode: ContentTreeNode, pkExpression: number): InfStatement {
 
-    let fk_entity: number; // parent pk
+    let fk_object_info: number; // parent pk
     let parentIsF2Expression: boolean;
     let fk_property;
 
     if (this.dragNodeExpandOverArea === 'above') {
       // take the parent of the target node as new parent of the dragged node
-      fk_entity = dropNode.role.fk_entity;
-      parentIsF2Expression = (pkExpression == fk_entity);
+      fk_object_info = dropNode.statement.fk_object_info;
+      parentIsF2Expression = (pkExpression == fk_object_info);
     }
     //  else if (this.dragNodeExpandOverArea === 'below') {
     // }
     else {
       // take the target node as new parent of the dragged node
-      fk_entity = dropNode.role.fk_temporal_entity;
+      fk_object_info = dropNode.statement.fk_subject_info;
     }
 
 
@@ -472,11 +472,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     }
 
     return {
-      fk_entity,
-      fk_temporal_entity: draggedNode.role.fk_temporal_entity,
-      fk_subject_data: draggedNode.role.fk_subject_data,
+      fk_object_info,
+      fk_subject_info: draggedNode.statement.fk_subject_info,
+      fk_subject_data: draggedNode.statement.fk_subject_data,
       fk_property
-    } as InfRole;
+    } as InfStatement;
   }
 
   /**
@@ -538,11 +538,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           if (resolved) {
             // resolved.items[0].pk_entity
 
-            this.inf.role.upsert([{
+            this.inf.statement.upsert([{
               fk_subject_data: resolved.items[0].pk_entity,
-              fk_entity: pkParent,
+              fk_object_info: pkParent,
               fk_property: this.isReproProp(parentIsF2Expression)
-            } as InfRole], pkProject)
+            } as InfStatement], pkProject)
 
           }
         })
@@ -569,11 +569,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         // TODO: Integrate this in the create or add entity component
         this.inf.persistent_item.loadMinimal(pkProject, result.pkEntity)
 
-        this.inf.role.upsert([{
-          fk_temporal_entity: result.pkEntity,
-          fk_entity: pkParent,
+        this.inf.statement.upsert([{
+          fk_subject_info: result.pkEntity,
+          fk_object_info: pkParent,
           fk_property: this.isPartOfProp(parentIsF2Expression)
-        } as InfRole], pkProject)
+        } as InfStatement], pkProject)
 
       })
     })
@@ -624,8 +624,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
           if (confirmed) {
             this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-              // remove the current role from project
-              this.inf.role.remove([node.role], pkProject)
+              // remove the current statement from project
+              this.inf.statement.remove([node.statement], pkProject)
 
             })
           }
@@ -647,16 +647,16 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
   openText(node: ContentTreeNode) {
-    this.p.addTextTab(node.role.fk_subject_data)
+    this.p.addTextTab(node.statement.fk_subject_data)
   }
 
   openTable(node: ContentTreeNode) {
-    this.p.addTableTab(node.role.fk_subject_data)
+    this.p.addTableTab(node.statement.fk_subject_data)
   }
 
   openExpressionPortion(node: ContentTreeNode) {
     this.p.addEntityTab(
-      node.role.fk_temporal_entity,
+      node.statement.fk_subject_info,
       DfhConfig.CLASS_PK_EXPRESSION_PORTION,
       'peIt'
     )
@@ -667,7 +667,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   storeIdsOfExpandedNodes() {
     this.expandedNodeIds = {}
     this.treeControl.expansionModel.selected.forEach(node => {
-      this.expandedNodeIds[node.role.pk_entity] = node.role.pk_entity
+      this.expandedNodeIds[node.statement.pk_entity] = node.statement.pk_entity
     })
   }
 
@@ -676,7 +676,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   expandNodesWithStoredId() {
     this.dataSource._flattenedData.pipe(first()).subscribe(nodes => {
       nodes.forEach(node => {
-        if (this.expandedNodeIds[node.role.pk_entity]) {
+        if (this.expandedNodeIds[node.statement.pk_entity]) {
           this.treeControl.expand(node);
         }
       })

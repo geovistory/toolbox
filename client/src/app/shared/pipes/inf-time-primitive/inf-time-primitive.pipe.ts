@@ -1,19 +1,19 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TimePrimitive, InfRole, U } from 'app/core';
+import { TimePrimitive, InfStatement, U } from 'app/core';
 import { TimePrimitivePipe } from '../time-primitive/time-primitive.pipe';
 
 @Pipe({
-  name: 'infTimePrimitiveRole'
+  name: 'infTimePrimitiveStatement'
 })
 export class InfTimePrimitivePipe implements PipeTransform {
 
   constructor(private timePrimitivePipe: TimePrimitivePipe) { }
 
-  transform(role: InfRole): string {
-    if (!role) return '';
-    if (!role.time_primitive || !Object.keys(role.time_primitive).length) return '';
+  transform(statement: InfStatement): string {
+    if (!statement) return '';
+    if (!statement.object_time_primitive || !Object.keys(statement.object_time_primitive).length) return '';
 
-    return this.timePrimitivePipe.transform(U.infRole2TimePrimitive(role));
+    return this.timePrimitivePipe.transform(U.infStatement2TimePrimitive(statement));
 
   }
 

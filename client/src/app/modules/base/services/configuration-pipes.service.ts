@@ -1036,7 +1036,6 @@ export class ConfigurationPipesService {
          * Manifestation Singleton – F4, 220
          * Item – F5, 221
          * Web Request – geovC4, 502
-         * Web Request – geovC4, 502
          */
         if ([
           DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE,

@@ -4,10 +4,10 @@ import { AfterViewInit, Component, Input, OnInit, Output, EventEmitter } from '@
 import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { first, map, takeUntil, shareReplay, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
-import { ActiveProjectService, InfRole, InfTextProperty, PaginationObjectApi, EntityPreview } from '../../../../core';
+import { ActiveProjectService, InfStatement, InfTextProperty, PaginationObjectApi, EntityPreview } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { BasicRoleItem, Item, ItemList, ListDefinition, TextPropertyItem, EntityPreviewItem, LanguageItem, AppellationItem, PlaceItem, LangStringItem } from '../properties-tree/properties-tree.models';
+import { BasicStatementItem, Item, ItemList, ListDefinition, TextPropertyItem, EntityPreviewItem, LanguageItem, AppellationItem, PlaceItem, LangStringItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { equals, indexBy } from 'ramda';
 import { PaginationObject } from 'app/core/store/model';
@@ -65,8 +65,8 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     if (!['appellation', 'language', 'place', 'text-property', 'lang-string', 'entity-preview']
       .includes(this.listDefinition.listType)) return;
 
-    const relateBy = this.listDefinition.isOutgoing ? 'fk_temporal_entity' : 'fk_entity';
-    const filterObject: Partial<InfRole> = {
+    const relateBy = this.listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info';
+    const filterObject: Partial<InfStatement> = {
       [relateBy]: this.pkEntity,
       fk_property: this.listDefinition.property.pkProperty,
       fk_property_of_property: this.listDefinition.property.pkPropertyOfProperty
@@ -120,14 +120,14 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
   }
 
   private getItems(res: PaginationObject): ItemList {
-    const relateBy = this.listDefinition.isOutgoing ? 'fk_entity' : 'fk_temporal_entity';
+    const relateBy = this.listDefinition.isOutgoing ? 'fk_object_info' : 'fk_subject_info';
     if (this.listDefinition.listType === 'entity-preview') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.war.entity_preview)
-      return res.schemas.inf.role.map(role => {
-        const preview: EntityPreview = leafItems[role[relateBy]] as EntityPreview;
+      return res.schemas.inf.statement.map(statement => {
+        const preview: EntityPreview = leafItems[statement[relateBy]] as EntityPreview;
         const item: EntityPreviewItem = {
-          role,
-          preview: !preview ? { pk_entity: role[relateBy] } as EntityPreview : preview,
+          statement,
+          preview: !preview ? { pk_entity: statement[relateBy] } as EntityPreview : preview,
           fkClass: !preview ? undefined : preview.fk_class,
           label: !preview ? undefined : preview.entity_label,
           ordNum: undefined,
@@ -138,10 +138,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     }
     else if (this.listDefinition.listType === 'appellation') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.appellation)
-      return res.schemas.inf.role.map(role => {
-        const appellation = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const appellation = leafItems[statement[relateBy]];
         const item: AppellationItem = {
-          role,
+          statement,
           fkClass: appellation.fk_class,
           label: appellation.string,
           ordNum: undefined,
@@ -152,10 +152,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     }
     else if (this.listDefinition.listType === 'place') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.place)
-      return res.schemas.inf.role.map(role => {
-        const place = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const place = leafItems[statement[relateBy]];
         const item: PlaceItem = {
-          role,
+          statement,
           fkClass: place.fk_class,
           label: 'WGS84: ' + place.lat + '°, ' + place.long + '°',
           ordNum: undefined,
@@ -168,10 +168,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.lang_string)
       const languages = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
 
-      return res.schemas.inf.role.map(role => {
-        const langString = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const langString = leafItems[statement[relateBy]];
         const item: LangStringItem = {
-          role,
+          statement,
           fkClass: langString.fk_class,
           label: langString.string,
           language: languages[langString.fk_language],
@@ -183,10 +183,10 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     }
     else if (this.listDefinition.listType === 'language') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
-      return res.schemas.inf.role.map(role => {
-        const language = leafItems[role[relateBy]];
+      return res.schemas.inf.statement.map(statement => {
+        const language = leafItems[statement[relateBy]];
         const item: LanguageItem = {
-          role,
+          statement,
           fkClass: language.fk_class,
           label: language.notes,
           ordNum: undefined,
@@ -215,8 +215,8 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
       )
     }
     else {
-      const roles: InfRole[] = this.selection.selected.map(option => (option as BasicRoleItem).role);
-      this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.role.upsert(roles, pkProject)
+      const statements: InfStatement[] = this.selection.selected.map(option => (option as BasicStatementItem).statement);
+      this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.statement.upsert(statements, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
           this.close.emit()
         })

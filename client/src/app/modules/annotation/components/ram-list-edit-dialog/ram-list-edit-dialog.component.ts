@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { InfRole, EntityPreview } from 'app/core';
+import { InfStatement, EntityPreview } from 'app/core';
 import { FieldDefinition, ListDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { PropertiesTreeService } from 'app/modules/base/components/properties-tree/properties-tree.service';
@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 export interface RamListEditDialogData {
 
   // the root statement of the dialog
-  statement: InfRole;
+  statement: InfStatement;
 
   propertyLabel: string
 

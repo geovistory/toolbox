@@ -1,4 +1,4 @@
-import { InfPersistentItem, InfRole } from 'app/core';
+import { InfPersistentItem, InfStatement } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLangStringSlice } from 'app/core/inf/inf.models';
 import { keys, omit, values } from 'ramda';
@@ -81,8 +81,8 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfPersistentItem(item);
-        this.role.flatten(item.pi_roles)
-        this.role.flatten(item.te_roles)
+        this.statement.flatten(item.incoming_statements)
+        this.statement.flatten(item.outgoing_statements)
         this.text_property.flatten(item.text_properties)
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
@@ -94,34 +94,34 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new InfTemporalEntity(item);
-        this.role.flatten(item.te_roles)
-        this.role.flatten(item.ingoing_roles)
+        this.statement.flatten(item.outgoing_statements)
+        this.statement.flatten(item.incoming_statements)
         this.text_property.flatten(item.text_properties)
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
 
 
-  role = new ModelFlattener<InfPersistentItemSlice, InfRole>(
-    this.infActions.role,
-    InfRole.getModelDefinition(),
+  statement = new ModelFlattener<InfPersistentItemSlice, InfStatement>(
+    this.infActions.statement,
+    InfStatement.getModelDefinition(),
     (items) => {
       items.forEach(item => {
-        item = new InfRole(item);
+        item = new InfStatement(item);
         this.info_proj_rel.flatten(item.entity_version_project_rels)
 
         // Subject
-        if (item.temporal_entity) this.temporal_entity.flatten([item.temporal_entity])
-        else if (item.subject_inf_role) this.role.flatten([item.subject_inf_role])
+        if (item.subject_temporal_entity) this.temporal_entity.flatten([item.subject_temporal_entity])
+        else if (item.subject_statement) this.statement.flatten([item.subject_statement])
 
         // Object
-        if (item.persistent_item) this.persistent_item.flatten([item.persistent_item])
-        else if (item.appellation) this.appellation.flatten([item.appellation])
-        else if (item.place) this.place.flatten([item.place])
-        else if (item.time_primitive) this.time_primitive.flatten([item.time_primitive])
-        else if (item.language) this.language.flatten([item.language])
-        else if (item.domain_chunk) this.chunk.flatten([item.domain_chunk])
-        else if (item.lang_string) this.lang_string.flatten([item.lang_string])
+        if (item.object_persistent_item) this.persistent_item.flatten([item.object_persistent_item])
+        else if (item.object_appellation) this.appellation.flatten([item.object_appellation])
+        else if (item.object_place) this.place.flatten([item.object_place])
+        else if (item.object_time_primitive) this.time_primitive.flatten([item.object_time_primitive])
+        else if (item.object_language) this.language.flatten([item.object_language])
+        else if (item.subject_chunk) this.chunk.flatten([item.subject_chunk])
+        else if (item.object_lang_string) this.lang_string.flatten([item.object_lang_string])
       })
     })
 
@@ -199,7 +199,7 @@ export class Flattener {
     (items) => {
       items.forEach(item => {
         item = new DatChunk(item);
-        this.role.flatten(item.subject_of_roles)
+        this.statement.flatten(item.outgoing_statements)
       })
     })
 
@@ -260,7 +260,7 @@ export class Flattener {
 
       persistent_item: this.persistent_item,
       temporal_entity: this.temporal_entity,
-      role: this.role,
+      statement: this.statement,
       appellation: this.appellation,
       place: this.place,
       time_primitive: this.time_primitive,

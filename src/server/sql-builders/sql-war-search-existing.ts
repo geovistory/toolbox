@@ -3,7 +3,7 @@ import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
 import { Lb3Models } from '../utils/interfaces';
 import { logSql } from '../utils';
 export interface SearchExistingRelatedStatement {
-  relateBy: 'fk_entity' | 'fk_temporal_entity',
+  relateBy: 'fk_object_info' | 'fk_subject_info',
   filter: {
     key: 'fk_property' | 'fk_property_of_property',
     value: number
@@ -149,7 +149,7 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
             t1.type_label_headline,
             ${relatedStatement ? `
               COALESCE(
-                json_agg(${this.createBuildObject('t2', 'InfRole')})
+                json_agg(${this.createBuildObject('t2', 'InfStatement')})
                 FILTER (WHERE t2.pk_entity IS NOT NULL),
                 '[]'
               )  related_statements,
@@ -161,7 +161,7 @@ export class SqlWarSearchExisiting extends SqlBuilderLbModels {
               ) projects
           FROM tw2 t1
           ${relatedStatement ? `
-            LEFT JOIN information.v_role t2
+            LEFT JOIN information.v_statement t2
             ON t1.pk_entity = t2.${relatedStatement.relateBy}
             AND t2.${relatedStatement.filter.key} = ${relatedStatement.filter.value}
             AND t2.is_in_project_count > 0

@@ -55,7 +55,7 @@ module.exports = function(InfEntity) {
       }
 
       if (!hasErr) {
-        // Since persistent items can be connected to different roles
+        // Since persistent items can be connected to different statements
         // it is possible that there is already an epr between the given
         // project and the given pk_entity.
 
@@ -101,9 +101,9 @@ module.exports = function(InfEntity) {
    *
    * The requstedObject is relevant for related models.
    * - Provide a entity_version_project_rel[0] to customize the project relation
-   * - Provide pi_roles to findOrCreate the roles and its children
+   * - Provide incoming_statements to findOrCreate the statements and its children
    *
-   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
+   * Remark: To findOrCreate a statement or an object (InfStatement; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
    *
    * @param {LoopackModel} Model The loopback model InfPersistentItem.
    * @param {number} projectId the project id
@@ -223,18 +223,18 @@ module.exports = function(InfEntity) {
    *
    * The function first performes two checks to find out if the requested temporal entity already exists:
    * 1. in the simplest case, the given dataObject has a pk_entity for which the existing temporal entity is retrieved from db.
-   * 2. in a more complex case, the given dataObject holds an array of roles ('te_roles') for which the function checks,
-   *    if there is an existing temporal entity whose identity defining roles do excactly match the given roles.
-   *    Remark: The given 'te_roles' must have a valid fk_entity and fk_property in order to be compared
+   * 2. in a more complex case, the given dataObject holds an array of statements ('outgoing_statements') for which the function checks,
+   *    if there is an existing temporal entity whose identity defining statements do excactly match the given statements.
+   *    Remark: The given 'outgoing_statements' must have a valid fk_object_info and fk_property in order to be compared
    *    to the existing temporal entitites
    *
    * If none of the above checks retrieves an exsisting temporal entity, a new one is created.
    *
    * The requstedObject is relevant for related models.
    * - Provide a entity_version_project_rel[0] to customize the project relation, else a new one is created with default values
-   * - Provide te_roles to findOrCreate the roles and its children
+   * - Provide outgoing_statements to findOrCreate the statements and its children
    *
-   * Remark: To findOrCreate a role or an object (InfRole; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
+   * Remark: To findOrCreate a statement or an object (InfStatement; InfTimePrimitive, InfAppellation, ...), use _findOrCreateByValue
    *
    * @param {LoopackModel} Model The loopback model InfTemporalEntity.
    * @param {number} projectId the project id
@@ -299,10 +299,13 @@ module.exports = function(InfEntity) {
       } else {
         // If there is no pk_entity, find or create the record
 
-        const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`;
+        // const sql_stmt = `SELECT * from information.temporal_entity_find_or_create( $1, $2::jsonb )`;
+        const sql_stmt = `Insert Into information.temporal_entity (fk_class)
+                          Values ($1)
+                          Returning *`;
         const params = [
           dataObject.fk_class,
-          JSON.stringify(dataObject.te_roles),
+          // JSON.stringify(dataObject.outgoing_statements),
         ];
 
         const connector = InfTemporalEntity.dataSource.connector;
@@ -342,25 +345,25 @@ module.exports = function(InfEntity) {
   };
 
   /**
-   * Finds or creates an entity role or an object by value
+   * Finds or creates an entity statement or an object by value
    *
    * Those Models use this method:
    * DatChunk
    *
    * Those Models still use the entity_version which is deprecated:
-   * InfRole, InfTimePrimitive, InfAppellation, InfLanguage
+   * InfStatement, InfTimePrimitive, InfAppellation, InfLanguage
    *
    * The data object is relevant for finding a record.
    * - Provide a data object with all values relevant to uniquely identify this type of record.
    * - The method will remove the pk_entity from the data object, if one is provided accidentially.
    *
-   * Explanation: The values of roles and objects are unique. For example, there can't be two roles with
-   * the same fk_entity and fk_temporal_entity, and there can't be two timePrimitives with the same values.
+   * Explanation: The values of statements and objects are unique. For example, there can't be two statements with
+   * the same fk_object_info and fk_subject_info, and there can't be two timePrimitives with the same values.
    * Therefore the 'unique identifier' relevant to findOrCreate are the values of the objects, not the pk_entity.
    *
-   * Remark: To find or create a role or an object (e.g. InfRole, InfTimePrimitive or InfAppellation), use find or create object
+   * Remark: To find or create a statement or an object (e.g. InfStatement, InfTimePrimitive or InfAppellation), use find or create object
    *
-   * @param {LoopackModel} Model The loopback model like e.g. InfRole
+   * @param {LoopackModel} Model The loopback model like e.g. InfStatement
    * @param {number} projectId the project id
    * @param {any} dataObject the data object containing the values we check for existing entities
    * @param {any} requestedObject [optional] plain object. Provide a epr to customize the project relation

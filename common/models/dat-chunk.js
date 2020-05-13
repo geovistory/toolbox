@@ -6,8 +6,8 @@ const logSql = require('../../server/scripts/log-deserialized-sql');
 
 module.exports = function(DatChunk) {
   /**
-   * Get the chunks related to the digital, with their roles.
-   * @param {*} pkProject is needed for filtering the roles
+   * Get the chunks related to the digital, with their statements.
+   * @param {*} pkProject is needed for filtering the statements
    * @param {*} pkEntity the pk of the digital
    * @param {*} cb
    */
@@ -46,9 +46,9 @@ module.exports = function(DatChunk) {
         {
           where: ['pk_entity', 'IN', resultObjects[0].chunk_pks],
           include: {
-            subject_of_roles: {
+            outgoing_statements: {
               $relation: {
-                name: 'subject_of_roles',
+                name: 'outgoing_statements',
                 joinType: 'left join',
                 orderBy: [
                   {

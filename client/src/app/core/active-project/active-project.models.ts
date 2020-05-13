@@ -143,10 +143,10 @@ export interface ProjectDetail extends ProjectPreview {
   // chunk List
   chunks?: ChunkList;
 
-  // InfPersistentItems with roles by pk_entity
+  // InfPersistentItems with statements by pk_entity
   peItGraphs?: PeItList;
 
-  // InfPersistentItems with roles by pk_entity
+  // InfPersistentItems with statements by pk_entity
   teEnGraphs?: TeEnList;
 
   // // ComQuery list by pk_entity
@@ -227,11 +227,11 @@ export interface ProjectDetail extends ProjectPreview {
   // TODO: check, if needed
   creatingMentioning?: boolean;
 
-  // Array of pk_entities of mentionings (a.k.a. roles of property "is mentioned in")
+  // Array of pk_entities of mentionings (a.k.a. statements of property "is mentioned in")
   // that are focused by a click on a chunk (in text editor)
   mentioningsFocusedInText?: number[]
 
-  // Array of pk_entities of mentionings (a.k.a. roles of property "is mentioned in")
+  // Array of pk_entities of mentionings (a.k.a. statements of property "is mentioned in")
   // that are focused by click on mentioning in a list/table view
   mentioningsFocusedInTable?: number[]
 

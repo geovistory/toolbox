@@ -159,9 +159,9 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
             colWithAliases.queryPath = column.queryPath.map((segment) => {
                 thisTableAlias = this.addTableAlias();
                 const node = Object.assign(Object.assign({}, segment), { _tableAlias: thisTableAlias });
-                // JOIN roles
-                if (this.isRolesJoin(segment)) {
-                    this.joinRoles(node, leftTableAlias, thisTableAlias, fkProject, this.froms);
+                // JOIN statements
+                if (this.isStatementsJoin(segment)) {
+                    this.joinStatements(node, leftTableAlias, thisTableAlias, fkProject, this.froms);
                 }
                 // JOIN entities
                 else if (this.isEntitesJoin(segment)) {
@@ -225,7 +225,7 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         });
     }
     createColumnSelect(segment, columnLabel) {
-        if (this.isRolesJoin(segment)) {
+        if (this.isStatementsJoin(segment)) {
         }
         else if (this.isEntitesJoin(segment)) {
             this.selects.push(`COALESCE(json_agg( distinct jsonb_build_object(
@@ -244,9 +244,9 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         let parEntTabAlias = parentEntityTableAlias;
         const nodeWithAlias = Object.assign(Object.assign({}, node), { _tableAlias: this.addTableAlias(), _parentEntityTableAlias: parEntTabAlias });
         if (level > 0) {
-            // JOIN roles
-            if (this.isRolesJoin(nodeWithAlias)) {
-                this.joinRoles(nodeWithAlias, leftTableAlias, nodeWithAlias._tableAlias, fkProject, this.filterFroms);
+            // JOIN statements
+            if (this.isStatementsJoin(nodeWithAlias)) {
+                this.joinStatements(nodeWithAlias, leftTableAlias, nodeWithAlias._tableAlias, fkProject, this.filterFroms);
                 leftTableAlias = nodeWithAlias._tableAlias;
             }
             // JOIN entities
@@ -263,12 +263,12 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
     joinEntities(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
         fromsArray.push(`
                     LEFT JOIN war.entity_preview ${thisTableAlias} ON
-                    (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
+                    (${parentTableAlias}.fk_object_info = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_subject_info = ${thisTableAlias}.pk_entity)
                     AND
                      ${this.createEntityWhere(node, thisTableAlias, fkProject)}
                 `);
     }
-    joinRoles(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
+    joinStatements(node, parentTableAlias, thisTableAlias, fkProject, fromsArray) {
         const topLevelWheres = [];
         topLevelWheres.push(`
                 ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
@@ -276,12 +276,12 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         const secondLevelWheres = [];
         if (node.data.ingoingProperties && node.data.ingoingProperties.length) {
             secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.ingoingProperties)}))
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_object_info AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.ingoingProperties)}))
                     `);
         }
         if (node.data.outgoingProperties && node.data.outgoingProperties.length) {
             secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_temporal_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.outgoingProperties)}))
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_subject_info AND ${thisTableAlias}.fk_property IN (${this.addParams(node.data.outgoingProperties)}))
                     `);
         }
         if (secondLevelWheres.length) {
@@ -329,7 +329,7 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
             if (childNode.data.classes || childNode.data.types) {
                 where = `${childNode._tableAlias}.pk_entity IS NOT NULL`;
             }
-            // create the where clause for the role table
+            // create the where clause for the statement table
             else if ((childNode.data.ingoingProperties && childNode.data.ingoingProperties.length) ||
                 (childNode.data.outgoingProperties && childNode.data.outgoingProperties.length)) {
                 const equals = childNode.data.operator === 'IS'
@@ -337,7 +337,7 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
                     : childNode.data.operator === 'IS NOT'
                         ? 'IS NULL'
                         : 'IS NOT NULL'; // DEFAULT
-                where = `${childNode._tableAlias}.fk_entity ${equals}`;
+                where = `${childNode._tableAlias}.fk_object_info ${equals}`;
             }
             else if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
                 // const n = node;
@@ -380,10 +380,10 @@ class SqlBuilder extends sql_builder_base_1.SqlBuilderBase {
         return nodeWheres;
     }
     /**
-     * Returns true, if given node is for joining roles
+     * Returns true, if given node is for joining statements
      * @param {*} node
      */
-    isRolesJoin(node) {
+    isStatementsJoin(node) {
         if (!node || typeof node.data !== 'object')
             return false;
         return node.data.ingoingProperties || node.data.outgoingProperties;

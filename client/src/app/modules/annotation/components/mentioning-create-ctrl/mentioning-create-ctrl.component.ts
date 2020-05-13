@@ -1,11 +1,11 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DatChunk, EntityPreview, IAppState, InfRole } from 'app/core';
+import { DatChunk, EntityPreview, IAppState, InfStatement } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Subject } from 'rxjs';
 
-type CtrlModel = InfRole;
+type CtrlModel = InfStatement;
 
 @Component({
   selector: 'gv-mentioning-create-ctrl',
@@ -99,16 +99,16 @@ export class MentioningCreateCtrlComponent implements OnInit, OnChanges, OnDestr
         this.domainChunk
       )
     ) {
-      const role = new InfRole({
-        fk_entity: this.rangeInfoEntity.pk_entity,
+      const statement = new InfStatement({
+        fk_object_info: this.rangeInfoEntity.pk_entity,
         fk_property: this.property.pk_property
       })
       if (this.domainInfoEntity) {
-        role.fk_temporal_entity = this.domainInfoEntity.pk_entity;
+        statement.fk_subject_info = this.domainInfoEntity.pk_entity;
       } else if (this.domainChunk) {
-        role.domain_chunk = this.domainChunk;
+        statement.subject_chunk = this.domainChunk;
       }
-      this.onChange(role)
+      this.onChange(statement)
     } else {
       this.onChange(null)
     }

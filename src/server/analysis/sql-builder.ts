@@ -248,9 +248,9 @@ export class SqlBuilder extends SqlBuilderBase {
           _tableAlias: thisTableAlias
         };
 
-        // JOIN roles
-        if (this.isRolesJoin(segment)) {
-          this.joinRoles(
+        // JOIN statements
+        if (this.isStatementsJoin(segment)) {
+          this.joinStatements(
             node,
             leftTableAlias,
             thisTableAlias,
@@ -336,7 +336,7 @@ export class SqlBuilder extends SqlBuilderBase {
   }
 
   createColumnSelect(segment: QueryNodeWithAlias, columnLabel: string) {
-    if (this.isRolesJoin(segment)) {
+    if (this.isStatementsJoin(segment)) {
     }
 
     else if (this.isEntitesJoin(segment)) {
@@ -363,9 +363,9 @@ export class SqlBuilder extends SqlBuilderBase {
     }
 
     if (level > 0) {
-      // JOIN roles
-      if (this.isRolesJoin(nodeWithAlias)) {
-        this.joinRoles(
+      // JOIN statements
+      if (this.isStatementsJoin(nodeWithAlias)) {
+        this.joinStatements(
           nodeWithAlias,
           leftTableAlias,
           nodeWithAlias._tableAlias,
@@ -400,7 +400,7 @@ export class SqlBuilder extends SqlBuilderBase {
   joinEntities(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
     fromsArray.push(`
                     LEFT JOIN war.entity_preview ${thisTableAlias} ON
-                    (${parentTableAlias}.fk_entity = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_temporal_entity = ${thisTableAlias}.pk_entity)
+                    (${parentTableAlias}.fk_object_info = ${thisTableAlias}.pk_entity OR ${parentTableAlias}.fk_subject_info = ${thisTableAlias}.pk_entity)
                     AND
                      ${this.createEntityWhere(node, thisTableAlias, fkProject)}
                 `);
@@ -408,7 +408,7 @@ export class SqlBuilder extends SqlBuilderBase {
 
 
 
-  joinRoles(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
+  joinStatements(node: QueryNode, parentTableAlias: string, thisTableAlias: string, fkProject: number, fromsArray: string[]) {
     const topLevelWheres = [];
     topLevelWheres.push(`
                 ${thisTableAlias}.fk_project = ${this.addParam(fkProject)}
@@ -416,14 +416,14 @@ export class SqlBuilder extends SqlBuilderBase {
     const secondLevelWheres = [];
     if (node.data.ingoingProperties && node.data.ingoingProperties.length) {
       secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_object_info AND ${thisTableAlias}.fk_property IN (${this.addParams(
         node.data.ingoingProperties
       )}))
                     `);
     }
     if (node.data.outgoingProperties && node.data.outgoingProperties.length) {
       secondLevelWheres.push(`
-                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_temporal_entity AND ${thisTableAlias}.fk_property IN (${this.addParams(
+                    (${parentTableAlias}.pk_entity = ${thisTableAlias}.fk_subject_info AND ${thisTableAlias}.fk_property IN (${this.addParams(
         node.data.outgoingProperties
       )}))
                     `);
@@ -489,7 +489,7 @@ export class SqlBuilder extends SqlBuilderBase {
         where = `${childNode._tableAlias}.pk_entity IS NOT NULL`;
       }
 
-      // create the where clause for the role table
+      // create the where clause for the statement table
       else if (
         (childNode.data.ingoingProperties && childNode.data.ingoingProperties.length) ||
         (childNode.data.outgoingProperties && childNode.data.outgoingProperties.length)
@@ -501,7 +501,7 @@ export class SqlBuilder extends SqlBuilderBase {
               ? 'IS NULL'
               : 'IS NOT NULL'; // DEFAULT
 
-        where = `${childNode._tableAlias}.fk_entity ${equals}`;
+        where = `${childNode._tableAlias}.fk_object_info ${equals}`;
       }
 
       else if (childNode.data && childNode.data.operator === 'ENTITY_LABEL_CONTAINS') {
@@ -559,10 +559,10 @@ export class SqlBuilder extends SqlBuilderBase {
   }
 
   /**
-   * Returns true, if given node is for joining roles
+   * Returns true, if given node is for joining statements
    * @param {*} node
    */
-  isRolesJoin(node: QueryNode) {
+  isStatementsJoin(node: QueryNode) {
     if (!node || typeof node.data !== 'object') return false;
     return node.data.ingoingProperties || node.data.outgoingProperties;
   }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ActiveProjectService, IAppState, InfRole, ProInfoProjRel } from 'app/core';
+import { ActiveProjectService, IAppState, InfStatement, ProInfoProjRel } from 'app/core';
 import { PaginateByParam } from 'app/core/store/actions';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
@@ -56,7 +56,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   targetIsUnique: boolean;
 
-  rolesByPk: ByPk<InfRole> = {}
+  statementsByPk: ByPk<InfStatement> = {}
 
   constructor(
     public p: ActiveProjectService,
@@ -104,7 +104,7 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
     const paginateBy: PaginateByParam[] = createPaginateBy(this.listDefinition, this.pkEntity, true)
 
-    this.itemsCount$ = infRepo.role$.pagination$.pipeCount(paginateBy)
+    this.itemsCount$ = infRepo.statement$.pagination$.pipeCount(paginateBy)
 
     const nextPage$ = new Subject();
     pagination$.pipe(
@@ -149,10 +149,10 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
       shareReplay({ refCount: true, bufferSize: 1 }),
       tap((rows) => {
         if (!allowMultiSelect && rows.length === 1) {
-          setTimeout(() => this.selection.select(rows[0].role.pk_entity))
+          setTimeout(() => this.selection.select(rows[0].statement.pk_entity))
         }
         rows.forEach(row => {
-          this.rolesByPk[row.role.pk_entity] = row.role;
+          this.statementsByPk[row.statement.pk_entity] = row.statement;
         })
       })
     )
@@ -174,46 +174,54 @@ export class TemporalEntityAddListComponent implements OnInit, OnDestroy, AddLis
 
   /**
    * makes separate api calls to add items to project:
-   * - one for all selected statements
    * - one per related temporal entity
+   * - one for all selected statements
    */
   add() {
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       // the selected pks
-      const pkRoles: number[] = this.selection.selected;
+      const pkStatements: number[] = this.selection.selected;
 
-      // array of entity project rels
-      const projRels: Partial<ProInfoProjRel>[] = []
 
-      // array of observables
-      const obs$: Observable<any>[] = [];
+      // prepare api calls to add target entities to project
+      const entities$ = pkStatements.map(pk => {
 
-      pkRoles.forEach(pk => {
+        // get pk of target entity
+        const r = this.statementsByPk[pk]
+        const pkEntity = this.listDefinition.isOutgoing ? r.fk_object_info : r.fk_subject_info;
+
+        // create api call
+        return this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+      })
+
+      // prepare entity project rels for the statement pointing to target entity
+      const projRels: Partial<ProInfoProjRel>[] = pkStatements.map(pk => {
+
         // pepare entity project rel
         const proRel: Partial<ProInfoProjRel> = {
           fk_project: pkProject,
           fk_entity: pk,
           is_in_project: true
         }
-        // add entity project rel to array
-        projRels.push(proRel)
 
-        // prepare api call to add related temporal entity
-        const r = this.rolesByPk[pk]
-        const entityToAdd = this.listDefinition.isOutgoing ? r.fk_entity : r.fk_temporal_entity;
-
-        // add api call to array
-        obs$.push(this.s.store(this.s.api.addEntityToProject(pkProject, entityToAdd), pkProject))
+        return proRel;
       })
 
-      // add a bulk upsert api call for array of entity project rels
-      const bulkUpsert = this.p.pro$.info_proj_rel.upsert(projRels, pkProject).resolved$.pipe(first(res => !!res))
-      obs$.push(bulkUpsert)
+      // wait until target entities are added to project
+      combineLatest(entities$).pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
 
-      combineLatest(obs$).pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
-        // this.t.showControl$.next(null)
-        this.close.emit()
+        // add the statements pointing to these entities to project
+        this.p.pro$.info_proj_rel.upsert(projRels, pkProject).resolved$
+          .pipe(
+            first(res => !!res),
+            takeUntil(this.destroy$)
+          ).subscribe(() => {
+
+            // done!
+            this.close.emit()
+          })
+
       })
 
 

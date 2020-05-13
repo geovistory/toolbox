@@ -33,10 +33,10 @@
   },
   "validations": [],
   "relations": {
-    "is_object_of_roles": {
+    "incoming_statements": {
       "type": "hasMany",
-      "model": "InfRole",
-      "foreignKey": "fk_entity",
+      "model": "InfStatement",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "language": {

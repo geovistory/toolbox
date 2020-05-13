@@ -98,15 +98,15 @@ class SqlBuilderMapAndTime extends sql_builder_1.SqlBuilder {
             war.vm_statement t3,
             information.v_place t4
           WHERE
-            t1.fk_entity = t0.geo_entity_pk
+            t1.fk_object_info = t0.geo_entity_pk
             AND	t1.fk_project = ${fkProject}
           AND
-            t2.pk_entity = t1.fk_temporal_entity AND t2.fk_project = ${fkProject}
+            t2.pk_entity = t1.fk_subject_info AND t2.fk_project = ${fkProject}
             AND t2.fk_class = 84 --Presence
           AND
-            t3.fk_temporal_entity = t2.pk_entity AND t3.fk_project = ${fkProject}
+            t3.fk_subject_info = t2.pk_entity AND t3.fk_project = ${fkProject}
           AND
-            t4.pk_entity = t3.fk_entity
+            t4.pk_entity = t3.fk_object_info
 
         )
         SELECT

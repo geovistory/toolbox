@@ -359,7 +359,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
 
       // AUTO ADAPT CALENDAR
       // if calendar field is pristine, and form is dirty (user changed a value), and the value was
-      // not set by an existing role (role.pk_entity) fit calendar to the date
+      // not set by an existing statement (statement.pk_entity) fit calendar to the date
       // according to the switch-day of 2299161 (1582-10-4/1582-10-15)
       if (calendarField.pristine && fg.dirty && !this.calendarGivenByWriteValue) {
         const g = new GregorianDateTime();

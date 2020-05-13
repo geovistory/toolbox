@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, IAppState, InfRole, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
+import { ActiveProjectService, IAppState, InfStatement, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
 import { InfSelector } from 'app/core/inf/inf.service';
@@ -19,7 +19,7 @@ import { PaginateByParam } from '../../../core/store/actions';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { ClassAndTypeNode } from '../components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { AppellationItem, BasicRoleItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LanguageItem, ListDefinition, PlaceItem, PropertyItemTypeMap, RoleItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, LangStringItem } from '../components/properties-tree/properties-tree.models';
+import { AppellationItem, BasicStatementItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LanguageItem, ListDefinition, PlaceItem, PropertyItemTypeMap, StatementItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, LangStringItem } from '../components/properties-tree/properties-tree.models';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -71,12 +71,12 @@ export class InformationPipesService {
 
       case 'time-span':
         return combineLatest(
-          this.b.pipeOutgoingRolesByProperty(72, pkEntity),
-          this.b.pipeOutgoingRolesByProperty(71, pkEntity),
-          this.b.pipeOutgoingRolesByProperty(150, pkEntity),
-          this.b.pipeOutgoingRolesByProperty(151, pkEntity),
-          this.b.pipeOutgoingRolesByProperty(152, pkEntity),
-          this.b.pipeOutgoingRolesByProperty(153, pkEntity)
+          this.b.pipeOutgoingStatementsByProperty(72, pkEntity),
+          this.b.pipeOutgoingStatementsByProperty(71, pkEntity),
+          this.b.pipeOutgoingStatementsByProperty(150, pkEntity),
+          this.b.pipeOutgoingStatementsByProperty(151, pkEntity),
+          this.b.pipeOutgoingStatementsByProperty(152, pkEntity),
+          this.b.pipeOutgoingStatementsByProperty(153, pkEntity)
         ).pipe(
           tap((x) => {
 
@@ -106,17 +106,10 @@ export class InformationPipesService {
     }
   }
 
-  // @spyTag pipeListRoles(listDefinition: ListDefinition, pkEntity: number): Observable<InfRole[]> {
-  //   return (listDefinition.isOutgoing ?
-  //     this.b.pipeOutgoingRolesByProperty(listDefinition.property.pkProperty, pkEntity) :
-  //     this.b.pipeIngoingRolesByProperty(listDefinition.property.pkProperty, pkEntity)
-  //   )
-  // }
-
-  @spyTag pipeListBasicRoleItems(listDefinition: ListDefinition, pkEntity: number, pkProject: number): Observable<BasicRoleItem[]> {
+  @spyTag pipeListBasicStatementItems(listDefinition: ListDefinition, pkEntity: number, pkProject: number): Observable<BasicStatementItem[]> {
     return (listDefinition.isOutgoing ?
-      this.b.pipeOutgoingBasicRoleItemsByProperty(listDefinition.property.pkProperty, pkEntity, pkProject) :
-      this.b.pipeIngoingBasicRoleItemsByProperty(listDefinition.property.pkProperty, pkEntity, pkProject)
+      this.b.pipeOutgoingBasicStatementItemsByProperty(listDefinition.property.pkProperty, pkEntity, pkProject) :
+      this.b.pipeIngoingBasicStatementItemsByProperty(listDefinition.property.pkProperty, pkEntity, pkProject)
     )
   }
 
@@ -124,10 +117,10 @@ export class InformationPipesService {
    * Pipe the items in appellation field
    */
   @spyTag pipeListAppellation<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<AppellationItem[]> {
-    return this.b.pipeRolesOfList(listDefinition, pkEntity)
+    return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               limitTo(limit),
@@ -140,11 +133,11 @@ export class InformationPipesService {
  */
   @spyTag pipeListEntityPreview<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<EntityPreviewItem[]> {
 
-    return this.b.pipeRolesOfList(listDefinition, pkEntity)
+    return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
         tag(`before-${pkEntity}-${listDefinition.property.pkProperty}-${listDefinition.targetClass}`),
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)
                 .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1),
@@ -161,10 +154,10 @@ export class InformationPipesService {
 
   @spyTag pipeListLanguage<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<LanguageItem[]> {
 
-    return this.b.pipeRolesOfList(listDefinition, pkEntity)
+    return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               limitTo(limit),
@@ -177,10 +170,10 @@ export class InformationPipesService {
    */
   @spyTag pipeListPlace<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<PlaceItem[]> {
 
-    return this.b.pipeRolesOfList(listDefinition, pkEntity)
+    return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               limitTo(limit),
@@ -193,10 +186,10 @@ export class InformationPipesService {
  */
   @spyTag pipeListLangString<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<LangStringItem[]> {
 
-    return this.b.pipeRolesOfList(listDefinition, pkEntity)
+    return this.b.pipeStatementsOfList(listDefinition, pkEntity)
       .pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemLangString(r)))
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemLangString(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               limitTo(limit),
@@ -236,7 +229,7 @@ export class InformationPipesService {
   }
 
 
-  pipeRoleListPage(
+  pipeStatementListPage(
     paginateBy: PaginateByParam[],
     limit: number,
     offset: number,
@@ -245,23 +238,23 @@ export class InformationPipesService {
     alternative = false): Observable<EntityPreviewItem[]> {
 
     // prepare page loader
-    const pageLoader$ = alternative ? this.infRepo.role$.pagination$ : this.p.inf$.role$.pagination$;
+    const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.p.inf$.statement$.pagination$;
 
-    // prepare basic role item loader
-    const basicRoleItemLoader = (pkRole, isOutgoing, pkProj) => {
+    // prepare basic statement item loader
+    const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
       return alternative ?
-        this.b.pipeAlternativeBasicRoleItemByPkRole(pkRole, isOutgoing) :
-        this.b.pipeBasicRoleItemByPkRole(pkProj, pkRole, isOutgoing)
+        this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
     }
 
-    const paginatedRolePks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+    const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
 
-    return paginatedRolePks$.pipe(
-      switchMap((paginatedRolePks) => combineLatestOrEmpty(
-        paginatedRolePks.map(pkRole => basicRoleItemLoader(pkRole, listDefinition.isOutgoing, pkProject)
+    return paginatedStatementPks$.pipe(
+      switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
           .pipe(
             filter(x => !!x),
-            switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.role.fk_entity : x.role.fk_temporal_entity)
+            switchMap(x => this.p.streamEntityPreview(x.isOutgoing ? x.statement.fk_object_info : x.statement.fk_subject_info)
               .pipe(
                 map((preview) => {
                   const item: EntityPreviewItem = {
@@ -282,7 +275,7 @@ export class InformationPipesService {
 
 
   /**
-   * Pipe the temporal entities connected to given entity by roles that are in the current project
+   * Pipe the temporal entities connected to given entity by statements that are in the current project
    */
   @spyTag pipeTemporalEntityTableRows(
     paginateBy: PaginateByParam[],
@@ -295,16 +288,16 @@ export class InformationPipesService {
 
     const propertyItemType = this.propertyItemType(fieldDefinitions)
 
-    const targetEntityOfRoleItem = (r: BasicRoleItem) => r.isOutgoing ? r.role.fk_entity : r.role.fk_temporal_entity;
+    const targetEntityOfStatementItem = (r: BasicStatementItem) => r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info;
 
     // prepare page loader
-    const pageLoader$ = alternative ? this.infRepo.role$.pagination$ : this.p.inf$.role$.pagination$;
+    const pageLoader$ = alternative ? this.infRepo.statement$.pagination$ : this.p.inf$.statement$.pagination$;
 
-    // prepare basic role item loader
-    const basicRoleItemLoader = (pkRole, isOutgoing, pkProj) => {
+    // prepare basic statement item loader
+    const basicStatementItemLoader = (pkStatement, isOutgoing, pkProj) => {
       return alternative ?
-        this.b.pipeAlternativeBasicRoleItemByPkRole(pkRole, isOutgoing) :
-        this.b.pipeBasicRoleItemByPkRole(pkProj, pkRole, isOutgoing)
+        this.b.pipeAlternativeBasicStatementItemByPkStatement(pkStatement, isOutgoing) :
+        this.b.pipeBasicStatementItemByPkStatement(pkProj, pkStatement, isOutgoing)
     }
 
     // prepare TeEnRow loader
@@ -314,18 +307,18 @@ export class InformationPipesService {
         this.pipeItemTeEnRow(targetEntityPk, fieldDef, propItemType, pkProj, false)
     }
 
-    const paginatedRolePks$ = pageLoader$.pipePage(paginateBy, limit, offset)
+    const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
 
-    const rows$ = paginatedRolePks$.pipe(
-      switchMap((paginatedRolePks) => combineLatestOrEmpty(
-        paginatedRolePks.map(pkRole => basicRoleItemLoader(pkRole, listDefinition.isOutgoing, pkProject)
+    const rows$ = paginatedStatementPks$.pipe(
+      switchMap((paginatedStatementPks) => combineLatestOrEmpty(
+        paginatedStatementPks.map(pkStatement => basicStatementItemLoader(pkStatement, listDefinition.isOutgoing, pkProject)
           .pipe(filter(x => !!x))
         )
       )
         .pipe(
-          switchMap((teEnRoles) => combineLatestOrEmpty(
-            teEnRoles.map((basicRoleItem) => {
-              const pkTeEn = targetEntityOfRoleItem(basicRoleItem);
+          switchMap((teEnStatement) => combineLatestOrEmpty(
+            teEnStatement.map((basicStatementItem) => {
+              const pkTeEn = targetEntityOfStatementItem(basicStatementItem);
               return combineLatest(
                 rowLoader(
                   pkTeEn,
@@ -337,7 +330,7 @@ export class InformationPipesService {
               ).pipe(
                 map(([row, teEnProjRel]) => {
                   const item: TemporalEntityItem = {
-                    ...basicRoleItem,
+                    ...basicStatementItem,
                     row,
                     pkEntity: pkTeEn,
                     teEnProjRel
@@ -357,25 +350,25 @@ export class InformationPipesService {
 
   @spyTag pipeItemTeEnRow(pkEntity: number, fieldDefinitions: FieldDefinition[], propertyItemType: PropertyItemTypeMap, pkProject: number, repo: boolean): Observable<TemporalEntityRow> {
 
-    // pipe outgoing roles
-    const outgoingRoles$ = repo ? this.b.pipeRepoOutgoingRoles(pkEntity) : this.b.pipeOutgoingRoles(pkEntity);
-    // pipe ingoing roles
-    const ingoingRoles$ = repo ? this.b.pipeRepoIngoingRoles(pkEntity) : this.b.pipeIngoingRoles(pkEntity);
+    // pipe outgoing statements
+    const outgoingStatements$ = repo ? this.b.pipeRepoOutgoingStatements(pkEntity) : this.b.pipeOutgoingStatements(pkEntity);
+    // pipe ingoing statements
+    const ingoingStatements$ = repo ? this.b.pipeRepoIngoingStatements(pkEntity) : this.b.pipeIngoingStatements(pkEntity);
 
 
-    // pipe all roles with leaf items
-    const outgoingItems$: Observable<RoleItem[]> = outgoingRoles$.pipe(
-      switchMap(roles => combineLatestOrEmpty(
-        roles.map(r => {
+    // pipe all statements with leaf items
+    const outgoingItems$: Observable<StatementItem[]> = outgoingStatements$.pipe(
+      switchMap(statements => combineLatestOrEmpty(
+        statements.map(r => {
           const isOutgoing = true;
           return this.pipeItem(propertyItemType, r, pkProject, isOutgoing);
         })
       ))
 
     )
-    const ingoingItems$: Observable<RoleItem[]> = ingoingRoles$.pipe(
-      switchMapOr([], roles => combineLatest(
-        roles.map(r => {
+    const ingoingItems$: Observable<StatementItem[]> = ingoingStatements$.pipe(
+      switchMapOr([], statements => combineLatest(
+        statements.map(r => {
           const isOutgoing = false;
           return this.pipeItem(propertyItemType, r, pkProject, isOutgoing);
         })
@@ -384,15 +377,15 @@ export class InformationPipesService {
     )
 
     const sortItems = repo ?
-      (item: RoleItem[]) => item.sort((a, b) => a.role.is_in_project_count > b.role.is_in_project_count ? 1 : -1) :
-      (item: RoleItem[]) => item;
+      (item: StatementItem[]) => item.sort((a, b) => a.statement.is_in_project_count > b.statement.is_in_project_count ? 1 : -1) :
+      (item: StatementItem[]) => item;
 
 
     return combineLatest(outgoingItems$, ingoingItems$).pipe(
 
       map(([outgoingItems, ingoingItems]) => {
-        const groupedOut = groupBy((i) => (i.role ? i.role.fk_property.toString() : undefined), outgoingItems);
-        const groupedIn = groupBy((i) => (i.role ? i.role.fk_property.toString() : undefined), ingoingItems);
+        const groupedOut = groupBy((i) => (i.statement ? i.statement.fk_property.toString() : undefined), outgoingItems);
+        const groupedIn = groupBy((i) => (i.statement ? i.statement.fk_property.toString() : undefined), ingoingItems);
         return { groupedOut, groupedIn }
       }),
       // auditTime(10),
@@ -470,7 +463,7 @@ export class InformationPipesService {
 
   }
 
-  @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfRole, pkProject: number, propIsOutgoing: boolean) {
+  @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfStatement, pkProject: number, propIsOutgoing: boolean) {
     const itemType = propertyItemType[(r.fk_property + '_' + propIsOutgoing)];
     let listType: ItemType;
     if (!itemType) {
@@ -478,7 +471,7 @@ export class InformationPipesService {
         projRel: undefined,
         ordNum: undefined,
         label: 'Error in data',
-        role: undefined,
+        statement: undefined,
         isOutgoing: undefined,
         fkClass: undefined,
         error: 'Error in data'
@@ -502,7 +495,7 @@ export class InformationPipesService {
       projRel: undefined,
       ordNum: undefined,
       label: 'Error in data',
-      role: undefined,
+      statement: undefined,
       isOutgoing: undefined,
       fkClass: undefined,
       error: 'Error in data'
@@ -590,13 +583,13 @@ export class InformationPipesService {
   @spyTag pipeTemporalEntityRemoveProperties(pkEntity: number): Observable<TemporalEntityRemoveProperties> {
     return combineLatest(
       this.p.inf$.temporal_entity$.by_pk_entity_key$(pkEntity),
-      this.p.inf$.role$.by_subject$({ fk_temporal_entity: pkEntity }),
+      this.p.inf$.statement$.by_subject$({ fk_subject_info: pkEntity }),
       this.p.inf$.text_property$.by_fk_concerned_entity_indexed$(pkEntity)
     ).pipe(
-      map(([temporalEntity, roles, textProperties]) => {
+      map(([temporalEntity, statements, textProperties]) => {
         const res: TemporalEntityRemoveProperties = {
           temporalEntity,
-          roles: roles,
+          statements: statements,
           textProperties: values(textProperties)
         }
         return res
@@ -622,15 +615,15 @@ export class InformationPipesService {
           DfhConfig.ClASS_PK_TIME_SPAN
         ).pipe(
           switchMap(fieldDefs => {
-            return combineLatest(fieldDefs.map(fieldDef => this.p.inf$.role$.by_subject_and_property$({
+            return combineLatest(fieldDefs.map(fieldDef => this.p.inf$.statement$.by_subject_and_property$({
               fk_property: fieldDef.property.pkProperty,
-              fk_temporal_entity: pkEntity
+              fk_subject_info: pkEntity
             })
               .pipe(
-                switchMapOr([], roles => combineLatest(
-                  roles.map(role => combineLatest(
-                    this.p.inf$.time_primitive$.by_pk_entity$.key(role.fk_entity).pipe(filter(x => !!x)),
-                    this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity)
+                switchMapOr([], statements => combineLatest(
+                  statements.map(statement => combineLatest(
+                    this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info).pipe(filter(x => !!x)),
+                    this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + statement.pk_entity)
                   ).pipe(map(([infTimePrimitive, projRel]) => {
                     const timePrimitive = new TimePrimitive({
                       julianDay: infTimePrimitive.julian_day,
@@ -638,7 +631,7 @@ export class InformationPipesService {
                       duration: (infTimePrimitive.duration as Granularity)
                     })
                     const item: TimePrimitiveItem = {
-                      role,
+                      statement,
                       ordNum: undefined,
                       projRel,
                       timePrimitive,
@@ -673,15 +666,15 @@ export class InformationPipesService {
     )
   }
 
-  @spyTag pipeItemAppellation(role: InfRole): Observable<AppellationItem> {
-    return this.p.inf$.appellation$.by_pk_entity$.key(role.fk_entity).pipe(
+  @spyTag pipeItemAppellation(statement: InfStatement): Observable<AppellationItem> {
+    return this.p.inf$.appellation$.by_pk_entity$.key(statement.fk_object_info).pipe(
       filter(x => !!x),
       map(appellation => {
         if (!appellation) return null;
         const node: AppellationItem = {
           ordNum: undefined,
           projRel: undefined,
-          role,
+          statement,
           label: appellation.string,
           fkClass: appellation.fk_class
         }
@@ -689,15 +682,15 @@ export class InformationPipesService {
       }))
   }
 
-  @spyTag pipeItemLanguage(role: InfRole): Observable<LanguageItem> {
-    return this.p.inf$.language$.by_pk_entity$.key(role.fk_entity).pipe(
+  @spyTag pipeItemLanguage(statement: InfStatement): Observable<LanguageItem> {
+    return this.p.inf$.language$.by_pk_entity$.key(statement.fk_object_info).pipe(
       filter(x => !!x),
       map(language => {
         if (!language) return null;
         const node: LanguageItem = {
           ordNum: undefined,
           projRel: undefined,
-          role,
+          statement,
           label: language.notes,
           fkClass: language.fk_class
         }
@@ -705,15 +698,15 @@ export class InformationPipesService {
       }))
   }
 
-  @spyTag pipeItemPlace(role: InfRole): Observable<PlaceItem> {
-    return this.p.inf$.place$.by_pk_entity$.key(role.fk_entity).pipe(
+  @spyTag pipeItemPlace(statement: InfStatement): Observable<PlaceItem> {
+    return this.p.inf$.place$.by_pk_entity$.key(statement.fk_object_info).pipe(
       filter(x => !!x),
       map(place => {
         if (!place) return null;
         const node: PlaceItem = {
           ordNum: undefined,
           projRel: undefined,
-          role,
+          statement,
           label: 'WGS84: ' + place.lat + '°, ' + place.long + '°',
           fkClass: place.fk_class
         }
@@ -721,8 +714,8 @@ export class InformationPipesService {
       }))
   }
 
-  @spyTag pipeItemLangString(role: InfRole): Observable<LangStringItem> {
-    return this.p.inf$.lang_string$.by_pk_entity$.key(role.fk_entity).pipe(
+  @spyTag pipeItemLangString(statement: InfStatement): Observable<LangStringItem> {
+    return this.p.inf$.lang_string$.by_pk_entity$.key(statement.fk_object_info).pipe(
       switchMap(
         (langString) => {
           if (!langString) return new BehaviorSubject(null)
@@ -738,7 +731,7 @@ export class InformationPipesService {
                 const node: LangStringItem = {
                   ordNum: undefined,
                   projRel: undefined,
-                  role,
+                  statement,
                   label,
                   fkClass: langString.fk_class,
                   language
@@ -751,8 +744,8 @@ export class InformationPipesService {
   }
 
 
-  @spyTag pipeItemEntityPreview(role: InfRole, isOutgoing: boolean): Observable<EntityPreviewItem> {
-    return this.p.streamEntityPreview((isOutgoing ? role.fk_entity : role.fk_temporal_entity)).pipe(
+  @spyTag pipeItemEntityPreview(statement: InfStatement, isOutgoing: boolean): Observable<EntityPreviewItem> {
+    return this.p.streamEntityPreview((isOutgoing ? statement.fk_object_info : statement.fk_subject_info)).pipe(
       // filter(preview => !preview.loading && !!preview && !!preview.entity_type),
       map(preview => {
         if (!preview) {
@@ -761,7 +754,7 @@ export class InformationPipesService {
         const node: EntityPreviewItem = {
           ordNum: undefined,
           projRel: undefined,
-          role,
+          statement,
           preview,
           label: preview.entity_label || '',
           fkClass: preview.fk_class
@@ -773,11 +766,11 @@ export class InformationPipesService {
   /**
    * @param pk
    */
-  @spyTag pipeItemTimePrimitive(role: InfRole, pkProject): Observable<TimePrimitiveItem> {
+  @spyTag pipeItemTimePrimitive(statement: InfStatement, pkProject): Observable<TimePrimitiveItem> {
     if (pkProject) {
       return combineLatest(
-        this.p.inf$.time_primitive$.by_pk_entity$.key(role.fk_entity).pipe(filter(x => !!x)),
-        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + role.pk_entity).pipe(filter(x => !!x))
+        this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info).pipe(filter(x => !!x)),
+        this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + statement.pk_entity).pipe(filter(x => !!x))
       ).pipe(
         map(([infTimePrimitive, projRel]) => {
           if (!infTimePrimitive) return null;
@@ -789,7 +782,7 @@ export class InformationPipesService {
           const node: TimePrimitiveItem = {
             ordNum: undefined,
             projRel: undefined,
-            role,
+            statement,
             timePrimitive,
             label: this.timePrimitivePipe.transform(timePrimitive),
             fkClass: infTimePrimitive.fk_class
@@ -797,17 +790,17 @@ export class InformationPipesService {
           return node
         }))
     } else {
-      return this.infRepo.time_primitive$.by_pk_entity$.key(role.fk_entity).pipe(filter(x => !!x)).pipe(
+      return this.infRepo.time_primitive$.by_pk_entity$.key(statement.fk_object_info).pipe(filter(x => !!x)).pipe(
         map(infTimePrimitive => {
           const timePrimitive = new TimePrimitive({
             julianDay: infTimePrimitive.julian_day,
-            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType),
+            calendar: ((statement.community_favorite_calendar || 'gregorian') as CalendarType),
             duration: (infTimePrimitive.duration as Granularity)
           })
           const node: TimePrimitiveItem = {
             ordNum: undefined,
             projRel: undefined,
-            role,
+            statement,
             timePrimitive,
             label: this.timePrimitivePipe.transform(timePrimitive),
             fkClass: infTimePrimitive.fk_class
@@ -831,7 +824,7 @@ export class InformationPipesService {
       case 'lang-string':
       case 'temporal-entity':
       case 'time-span':
-        return this.pipeAltListRoles(l, pkEntity).pipe(map(items => items.length))
+        return this.pipeAltListStatements(l, pkEntity).pipe(map(items => items.length))
 
       case 'text-property':
         return this.pipeAltListTextProperty(l, pkEntity).pipe(map(items => items.length))
@@ -852,10 +845,10 @@ export class InformationPipesService {
     // else if (l.listType === 'time-span') return this.pipeAlternativeTimeSpanItem(pkEntity).pipe(map((ts) => [ts]))
   }
 
-  @spyTag pipeAltListRoles(listDefinition: ListDefinition, pkEntity: number): Observable<InfRole[]> {
+  @spyTag pipeAltListStatements(listDefinition: ListDefinition, pkEntity: number): Observable<InfStatement[]> {
     return (listDefinition.isOutgoing ?
-      this.b.pipeAlternativeIngoingRoles(listDefinition.property.pkProperty, pkEntity) :
-      this.b.pipeAlternativeIngoingRoles(listDefinition.property.pkProperty, pkEntity)
+      this.b.pipeAlternativeIngoingStatements(listDefinition.property.pkProperty, pkEntity) :
+      this.b.pipeAlternativeIngoingStatements(listDefinition.property.pkProperty, pkEntity)
     )
   }
 
@@ -865,11 +858,11 @@ export class InformationPipesService {
   @spyTag pipeAltListEntityPreview<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
 
     return (listDefinition.isOutgoing ?
-      this.b.pipeAlternativeOutgoingRoles(listDefinition.property.pkProperty, pkEntity) :
-      this.b.pipeAlternativeIngoingRoles(listDefinition.property.pkProperty, pkEntity)
+      this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity) :
+      this.b.pipeAlternativeIngoingStatements(listDefinition.property.pkProperty, pkEntity)
     ).pipe(
-      switchMap((roles) => {
-        return combineLatest(roles.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
+      switchMap((statements) => {
+        return combineLatest(statements.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
           .pipe(
             map(nodes => nodes
               .filter(node => !!node)
@@ -886,9 +879,9 @@ export class InformationPipesService {
   @spyTag pipeAltListPlace<T>(listDefinition: ListDefinition, pkEntity): Observable<PlaceItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeAlternativeOutgoingRoles(listDefinition.property.pkProperty, pkEntity).pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
+      return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
@@ -902,9 +895,9 @@ export class InformationPipesService {
   @spyTag pipeAltListLangString<T>(listDefinition: ListDefinition, pkEntity): Observable<LangStringItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeAlternativeOutgoingRoles(listDefinition.property.pkProperty, pkEntity).pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemLangString(r)))
+      return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemLangString(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
@@ -918,9 +911,9 @@ export class InformationPipesService {
   @spyTag pipeAltListAppellation<T>(listDefinition: ListDefinition, pkEntity): Observable<AppellationItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeAlternativeOutgoingRoles(listDefinition.property.pkProperty, pkEntity).pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
+      return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
@@ -934,9 +927,9 @@ export class InformationPipesService {
   @spyTag pipeAltListLanguage<T>(listDefinition: ListDefinition, pkEntity): Observable<LanguageItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeAlternativeOutgoingRoles(listDefinition.property.pkProperty, pkEntity).pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
+      return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
@@ -991,9 +984,9 @@ export class InformationPipesService {
   @spyTag pipeRepoListAppellation<T>(listDefinition: ListDefinition, pkEntity): Observable<AppellationItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeRepoOutgoingRolesByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemAppellation(r)))
+      return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemAppellation(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
@@ -1007,9 +1000,9 @@ export class InformationPipesService {
   @spyTag pipeRepoListLanguage<T>(listDefinition: ListDefinition, pkEntity): Observable<LanguageItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeRepoOutgoingRolesByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemLanguage(r)))
+      return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemLanguage(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
@@ -1023,9 +1016,9 @@ export class InformationPipesService {
   @spyTag pipeRepoListPlace<T>(listDefinition: ListDefinition, pkEntity): Observable<PlaceItem[]> {
 
     if (listDefinition.isOutgoing) {
-      return this.b.pipeRepoOutgoingRolesByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
-        switchMap((roles) => {
-          return combineLatest(roles.map((r, i) => this.pipeItemPlace(r)))
+      return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemPlace(r)))
             .pipe(
               map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
               startWith([]))
@@ -1034,16 +1027,16 @@ export class InformationPipesService {
   }
 
   /**
-  * Pipe the items in entity preview field, connected by community favorite roles
+  * Pipe the items in entity preview field, connected by community favorite statements
   */
   @spyTag pipeRepoListEntityPreview<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
 
     return (listDefinition.isOutgoing ?
-      this.b.pipeRepoOutgoingRolesByProperty(listDefinition.property.pkProperty, pkEntity) :
-      this.b.pipeRepoIngoingRolesByProperty(listDefinition.property.pkProperty, pkEntity)
+      this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity) :
+      this.b.pipeRepoIngoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity)
     ).pipe(
-      switchMap((roles) => {
-        return combineLatest(roles.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
+      switchMap((statements) => {
+        return combineLatest(statements.map((r, i) => this.pipeItemEntityPreview(r, listDefinition.isOutgoing)))
           .pipe(
             map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)
               // .sort((a, b) => a.ordNum > b.ordNum ? 1 : -1)
@@ -1067,19 +1060,19 @@ export class InformationPipesService {
           switchMap(fieldDefinitions => {
 
             return combineLatest(fieldDefinitions.map(fieldDef =>
-              this.b.pipeRepoOutgoingRolesByProperty(fieldDef.property.pkProperty, pkEntity)
+              this.b.pipeRepoOutgoingStatementsByProperty(fieldDef.property.pkProperty, pkEntity)
                 .pipe(
-                  switchMapOr([], roles => combineLatest(
-                    roles.map(role =>
-                      this.infRepo.time_primitive$.by_pk_entity$.key(role.fk_entity)
+                  switchMapOr([], statements => combineLatest(
+                    statements.map(statement =>
+                      this.infRepo.time_primitive$.by_pk_entity$.key(statement.fk_object_info)
                         .pipe(map((infTimePrimitive) => {
                           const timePrimitive = new TimePrimitive({
                             julianDay: infTimePrimitive.julian_day,
-                            calendar: ((role.community_favorite_calendar || 'gregorian') as CalendarType),
+                            calendar: ((statement.community_favorite_calendar || 'gregorian') as CalendarType),
                             duration: (infTimePrimitive.duration as Granularity)
                           })
                           const item: TimePrimitiveItem = {
-                            role,
+                            statement,
                             ordNum: undefined,
                             projRel: undefined,
                             timePrimitive,
@@ -1155,10 +1148,10 @@ export class InformationPipesService {
   /**
    * Pipes the pk_entity of the type of an entity
    */
-  @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number): Observable<InfRole> {
-    return this.p.inf$.role$.by_subject_and_property_indexed$({
+  @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number): Observable<InfStatement> {
+    return this.p.inf$.statement$.by_subject_and_property_indexed$({
       fk_property: hasTypeProperty,
-      fk_temporal_entity: pkEntity
+      fk_subject_info: pkEntity
     }).pipe(
       map(items => {
         if (!items || Object.keys(items).length < 1) return undefined;

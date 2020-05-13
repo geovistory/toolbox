@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { ProInfoProjRel } from '../../models/ProInfoProjRel';
-import { InfRole } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfStatement';
 import { DfhClass } from '../../models/DfhClass';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
@@ -118,35 +118,6 @@ export class InfPersistentItemApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get a minimal nested object of the type in the project.
-   *
-   * @param {number} pkProject Pk of the project.
-   *
-   * @param {number} pkType Pk of the type.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfPersistentItem` object.)
-   * </em>
-   */
-  public typeOfProject(pkProject: any, pkType: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfPersistentItems/type-of-project";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkType !== 'undefined' && pkType !== null) _urlParams.pkType = pkType;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

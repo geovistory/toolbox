@@ -3,9 +3,9 @@ import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
 import { Lb3Models } from '../utils/interfaces';
 import { logSql } from '../utils';
 
-interface RoleParams {
+interface StatementParams {
   [index: string]: number | undefined;
-  fk_temporal_entity?: number;
+  fk_subject_info?: number;
   fk_subject_data?: number;
   fk_subject_tables_row?: number;
   fk_subject_tables_cell?: number;
@@ -13,7 +13,7 @@ interface RoleParams {
   fk_property?: number;
   fk_property_of_property?: number;
 
-  fk_entity?: number;
+  fk_object_info?: number;
   fk_object_data?: number;
   fk_object_tables_row?: number;
   fk_object_tables_cell?: number;
@@ -28,34 +28,34 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
 
   /**
    * Returns a SchemaObject with everything needed to create a list of
-   * leaf items (to add), related to the given source entity through roles
+   * leaf items (to add), related to the given source entity through statements
    * that are not in the current project
    *
    * @param fkProject project
-   * @param filterObject RoleParams to filter the roles
+   * @param filterObject StatementParams to filter the statements
    * @param limit page size for pagination
    * @param offset offset for pagination
    */
   create(
     fkProject: number,
-    filterObject: RoleParams,
+    filterObject: StatementParams,
     limit: number,
     offset: number
   ) {
     const sql = `
       WITH
-      -- alternative roles (that are in at least one other project)
+      -- alternative statements (that are in at least one other project)
       tw0 AS (
-        SELECT ${this.createSelect('t1', 'InfRole')}
+        SELECT ${this.createSelect('t1', 'InfStatement')}
         FROM
-        information.v_role t1
+        information.v_statement t1
         WHERE ${[
         ...this.getFiltersByObject('t1', filterObject),
         't1.is_in_project_count > 0'].join(' AND ')}
       EXCEPT
-        SELECT ${this.createSelect('t1', 'InfRole')}
+        SELECT ${this.createSelect('t1', 'InfStatement')}
         FROM
-        information.v_role t1,
+        information.v_statement t1,
         projects.info_proj_rel t2
         WHERE
         ${[
@@ -73,10 +73,10 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         GROUP BY
           TRUE
       ),
-      -- roles
+      -- statements
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')}
+          ${this.createSelect('t1', 'InfStatement')}
         FROM
           tw0 t1
           LIMIT ${this.addParam(limit)} -- add limit
@@ -90,7 +90,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_appellation t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       --lang_string
       tw4 AS (
@@ -100,7 +100,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_lang_string t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- language of lang_string
       tw5 AS (
@@ -120,7 +120,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_language t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- time_primitive
       tw7 AS (
@@ -130,7 +130,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_time_primitive t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- place
       tw8 AS (
@@ -140,7 +140,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN information.v_place t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
       ),
       -- object entity_preview
       tw9 AS (
@@ -150,7 +150,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN war.entity_preview t1
         WHERE
-          tw2.fk_entity = t1.pk_entity
+          tw2.fk_object_info = t1.pk_entity
           AND t1.fk_project IS NULL
       ),
       -- subject entity_preview
@@ -161,18 +161,18 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
           tw2
           CROSS JOIN war.entity_preview t1
         WHERE
-          tw2.fk_temporal_entity = t1.pk_entity
+          tw2.fk_subject_info = t1.pk_entity
           AND t1.fk_project IS NULL
       ),
       ------------------------------------
       --- group parts by model
       ------------------------------------
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select
           distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM
           (
             SELECT * FROM tw2
@@ -262,7 +262,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      paginatedRoles AS (
+      paginatedStatements AS (
         SELECT COALESCE(json_agg(t1.pk_entity), '[]'::json) as json
         FROM
           tw2 as t1
@@ -272,7 +272,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
         'count', coalesce(tw1.count,0),
         'schemas', json_build_object(
           'inf', json_strip_nulls(json_build_object(
-            'role', role.json,
+            'statement', statement.json,
             'lang_string', lang_string.json,
             'appellation', appellation.json,
             'language', language.json,
@@ -283,13 +283,13 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
             'entity_preview', entity_preview.json
           ))
         ),
-        'paginatedRoles', paginatedRoles.json
+        'paginatedStatements', paginatedStatements.json
       ) as data
       FROM
       (select 0 ) as one_row
       LEFT JOIN tw1 ON true
-      LEFT JOIN paginatedRoles ON true
-      LEFT JOIN role ON true
+      LEFT JOIN paginatedStatements ON true
+      LEFT JOIN statement ON true
       LEFT JOIN appellation ON true
       LEFT JOIN lang_string ON true
       LEFT JOIN language ON true
@@ -301,7 +301,7 @@ export class SqlListAlternativeLeafItems extends SqlBuilderLbModels {
     return { sql, params: this.params };
   }
 
-  getFiltersByObject(tableAlias: string, filterObject: RoleParams): string[] {
+  getFiltersByObject(tableAlias: string, filterObject: StatementParams): string[] {
     const filters: string[] = []
     for (const column in filterObject) {
       const value = filterObject[column];

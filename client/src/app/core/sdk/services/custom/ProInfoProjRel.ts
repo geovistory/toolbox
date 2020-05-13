@@ -59,15 +59,15 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
   }
 
   /**
-   * Marks the role as favorite for the given fk_project.
+   * Marks the statement as favorite for the given fk_project.
    *
    * @param {number} pkProject fk_project
    *
-   * @param {number} pkRole fk_entity
+   * @param {number} pkStatement fk_entity
    *
    * @param {object} data Request data.
    *
-   *  - `isOutgoing` – `{boolean}` - True, if the role is outgoing, else false
+   *  - `isOutgoing` – `{boolean}` - True, if the statement is outgoing, else false
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -78,17 +78,17 @@ export class ProInfoProjRelApi extends BaseLoopBackApi {
    * This usually means the response is a `ProInfoProjRel` object.)
    * </em>
    */
-  public markRoleAsFavorite(pkProject: any, pkRole: any, isOutgoing: any, customHeaders?: Function): Observable<any> {
+  public markStatementAsFavorite(pkProject: any, pkStatement: any, isOutgoing: any, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/ProInfoProjRels/mark-role-as-favorite";
+    "/ProInfoProjRels/mark-statement-as-favorite";
     let _routeParams: any = {};
     let _postBody: any = {
       isOutgoing: isOutgoing
     };
     let _urlParams: any = {};
     if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    if (typeof pkRole !== 'undefined' && pkRole !== null) _urlParams.pkRole = pkRole;
+    if (typeof pkStatement !== 'undefined' && pkStatement !== null) _urlParams.pkStatement = pkStatement;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

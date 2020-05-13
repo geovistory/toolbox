@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole,
+  InfStatement,
   DfhClass,
   InfTextProperty
 } from '../index';
@@ -11,8 +11,8 @@ export interface InfPersistentItemInterface {
   "fk_class": number;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  pi_roles?: InfRole[];
-  te_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
+  outgoing_statements?: InfStatement[];
   dfh_class?: DfhClass;
   text_properties?: InfTextProperty[];
 }
@@ -21,8 +21,8 @@ export class InfPersistentItem implements InfPersistentItemInterface {
   "fk_class": number;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  pi_roles?: InfRole[];
-  te_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
+  outgoing_statements?: InfStatement[];
   dfh_class?: DfhClass;
   text_properties?: InfTextProperty[];
   constructor(data?: InfPersistentItemInterface) {
@@ -76,21 +76,21 @@ export class InfPersistentItem implements InfPersistentItemInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        pi_roles: {
-          name: 'pi_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+          keyTo: 'fk_object_info'
         },
-        te_roles: {
-          name: 'te_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        outgoing_statements: {
+          name: 'outgoing_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_temporal_entity'
+          keyTo: 'fk_subject_info'
         },
         dfh_class: {
           name: 'dfh_class',

@@ -3,7 +3,7 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { ListDefinition } from '../../properties-tree/properties-tree.models';
-import { InfLanguage, U, InfRole, InfTextProperty, InfAppellation, InfPlace, InfLangString } from 'app/core';
+import { InfLanguage, U, InfStatement, InfTextProperty, InfAppellation, InfPlace, InfLangString } from 'app/core';
 import { shareReplay, map } from 'rxjs/operators';
 import { CtrlTimeSpanDialogResult } from './ctrl-time-span-dialog.component';
 
@@ -84,9 +84,9 @@ export class FormPart {
             })
           }
         }
-        // Q: is this list a role list ??
+        // Q: is this list a statement list ??
         else {
-          // Q: This is a list that connects one role per item
+          // Q: This is a list that connects one statement per item
           const initList = this.initVal.initListDefinition
           const initProperty = initList.property.pkProperty;
 
@@ -104,7 +104,7 @@ export class FormPart {
               fixed: true,
               required: this.isRequired(thisList),
               classSelect: false,
-              formControlDef: this.addFormControlDef(thisList, this.initVal.initRole.value)
+              formControlDef: this.addFormControlDef(thisList, this.initVal.initStatement.value)
             })
           }
 
@@ -203,12 +203,12 @@ export class FormPart {
     if (listDefinition.listType === 'appellation') {
       if (!val) return null;
 
-      const value: InfRole = {
+      const value: InfStatement = {
         ...{} as any,
-        fk_entity: undefined,
+        fk_object_info: undefined,
         fk_property: listDefinition.property.pkProperty,
         fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        appellation: {
+        object_appellation: {
           ...val,
           fk_class: listDefinition.targetClass,
         },
@@ -218,12 +218,12 @@ export class FormPart {
     else if (listDefinition.listType === 'language') {
       if (!val) return null;
 
-      const value: InfRole = {
+      const value: InfStatement = {
         ...{} as any,
-        fk_entity: undefined,
+        fk_object_info: undefined,
         fk_property: listDefinition.property.pkProperty,
         fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        language: {
+        object_language: {
           ...val,
           fk_class: listDefinition.targetClass,
         },
@@ -233,12 +233,12 @@ export class FormPart {
     else if (listDefinition.listType === 'lang-string') {
       if (!val) return null;
 
-      const value: InfRole = {
+      const value: InfStatement = {
         ...{} as any,
-        fk_entity: undefined,
+        fk_object_info: undefined,
         fk_property: listDefinition.property.pkProperty,
         fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        lang_string: {
+        object_lang_string: {
           ...val,
           fk_class: listDefinition.targetClass,
         },
@@ -248,12 +248,12 @@ export class FormPart {
     else if (listDefinition.listType === 'place') {
       if (!val) return null;
 
-      const value: InfRole = {
+      const value: InfStatement = {
         ...{} as any,
-        fk_entity: undefined,
+        fk_object_info: undefined,
         fk_property: listDefinition.property.pkProperty,
         fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-        place: {
+        object_place: {
           ...val,
           fk_class: listDefinition.targetClass,
         },
@@ -267,16 +267,16 @@ export class FormPart {
     ) {
       if (!val) return null;
 
-      let value: InfRole = {
+      let value: InfStatement = {
         ...{} as any,
         fk_property: listDefinition.property.pkProperty,
         fk_property_of_property: listDefinition.property.pkPropertyOfProperty
       };
 
       if (listDefinition.isOutgoing) {
-        value = { ...value, fk_entity: val }
+        value = { ...value, fk_object_info: val }
       } else {
-        value = { ...value, fk_temporal_entity: val }
+        value = { ...value, fk_subject_info: val }
       }
 
       return value;
@@ -295,16 +295,16 @@ export class FormPart {
       if (!val) return null;
 
       const v = val as CtrlTimeSpanDialogResult;
-      const value: InfRole[] = Object.keys(v).map(key => {
-        const role: InfRole = {
+      const value: InfStatement[] = Object.keys(v).map(key => {
+        const statement: InfStatement = {
           fk_property: parseInt(key, 10),
-          time_primitive: {
+          object_time_primitive: {
             ...v[key],
             fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
           },
           ...{} as any
         }
-        return role
+        return statement
       });
       return value;
     }
@@ -320,13 +320,13 @@ export class FormPart {
 export interface FormPartInitValue {
   initListDefinition: ListDefinition
   initTextProperty?: FormPartInitValueTextProperty
-  initRole?: FormPartInitValueRole
+  initStatement?: FormPartInitValueStatement
   initTimeSpan?: CtrlTimeSpanDialogResult
 }
 /**
- * A FormPartInitValueRole contains the values pass to a Form Part Val
+ * A FormPartInitValueStatement contains the values pass to a Form Part Val
  */
-export interface FormPartInitValueRole {
+export interface FormPartInitValueStatement {
   targetClass: number
   fkProperty: number
   value: number | InfAppellation | InfPlace | InfLanguage | InfLangString

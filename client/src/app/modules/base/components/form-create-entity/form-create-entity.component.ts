@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, AbstractControl } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfRole, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig, InfLangString, InfTemporalEntityApi } from 'app/core';
+import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig, InfLangString, InfTemporalEntityApi } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { ActionResultObservable } from 'app/core/store/actions';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
@@ -23,6 +23,7 @@ import { MatFormFieldAppearance } from '@angular/material';
 import { Appearance } from 'cesium';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { InfStatement } from 'app/core/sdk/models/InfStatement';
 type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
@@ -109,7 +110,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   @Output() cancel = new EventEmitter<void>()
   @Output() searchString = new EventEmitter<string>()
-  @Output() saved = new EventEmitter<InfPersistentItem | InfTemporalEntity | InfRole | InfTextProperty>()
+  @Output() saved = new EventEmitter<InfPersistentItem | InfTemporalEntity | InfStatement | InfTextProperty>()
 
   appearance: MatFormFieldAppearance = 'outline';
 
@@ -224,15 +225,23 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             hideFieldTitle: false,
             pkClass: null
           },
-          mapValue: (items: CtrlEntityModel[] | InfTextProperty[] | InfRole[]): { statement?: Partial<InfRole>, text_property?: Partial<InfTextProperty> } => {
+          mapValue: (items: CtrlEntityModel[] | InfTextProperty[] | InfStatement[]): { statement?: Partial<InfStatement>, text_property?: Partial<InfTextProperty> } => {
 
-            const isInfRole = (obj: any): obj is InfRole => {
+            const isInfStatement = (obj: any): obj is InfStatement => {
               return !!obj && (
-                !!obj.lang_string ||
-                !!obj.place ||
-                !!obj.language ||
-                !!obj.appellation ||
-                !!obj.time_primitive
+                !!obj.object_lang_string ||
+                !!obj.object_place ||
+                !!obj.object_language ||
+                !!obj.object_appellation ||
+                !!obj.object_time_primitive
+              )
+            }
+
+            const isCtrlEntityModel = (obj: any): obj is CtrlEntityModel => {
+              return !!obj && (
+                !!obj.persistent_item ||
+                !!obj.temporal_entity ||
+                !!obj.pkEntity
               )
             }
 
@@ -245,7 +254,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               };
               return { text_property }
             } else {
-              const statement: Partial<InfRole> = {
+              const statement: Partial<InfStatement> = {
                 fk_property: data.listDefinition.property.pkProperty,
                 fk_property_of_property: data.listDefinition.property.pkPropertyOfProperty,
               }
@@ -253,26 +262,35 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
               if (data.listDefinition.isOutgoing) {
                 // assign subject
-                statement.fk_temporal_entity = this.pkSourceEntity;
+                statement.fk_subject_info = this.pkSourceEntity;
 
                 // assign object
-                if (item && item.persistent_item) statement.persistent_item = item.persistent_item
-                else if (item && item.temporal_entity) statement.range_temporal_entity = item.temporal_entity
-                else if (isInfRole(item)) {
-                  statement.lang_string = item.lang_string;
-                  statement.place = item.place;
-                  statement.appellation = item.appellation;
-                  statement.language = item.language;
-                  statement.time_primitive = item.time_primitive;
+                if (isCtrlEntityModel(item) && item.persistent_item) {
+                  statement.object_persistent_item = item.persistent_item
+                }
+                else if (isCtrlEntityModel(item) && item.temporal_entity) {
+                  statement.object_temporal_entity = item.temporal_entity
+                }
+                else if (isInfStatement(item)) {
+                  statement.object_lang_string = item.object_lang_string;
+                  statement.object_place = item.object_place;
+                  statement.object_appellation = item.object_appellation;
+                  statement.object_language = item.object_language;
+                  statement.object_time_primitive = item.object_time_primitive;
                 }
 
               } else {
-                // assign subject
-                if (item && item.persistent_item) statement.domain_pe_it = item.persistent_item
-                else if (item && item.temporal_entity) statement.temporal_entity = item.temporal_entity
-
                 // assign object
-                statement.fk_entity = this.pkSourceEntity;
+                statement.fk_object_info = this.pkSourceEntity;
+
+                // assign subject
+                if (isCtrlEntityModel(item) && item.persistent_item) {
+                  statement.subject_persistent_item = item.persistent_item
+                }
+                else if (isCtrlEntityModel(item) && item.temporal_entity) {
+                  statement.subject_temporal_entity = item.temporal_entity
+                }
+
               }
               return { statement }
             }
@@ -429,7 +447,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                       if (fDef.listType == 'text-property') {
                         return { text_properties: items }
                       } else {
-                        const key = getRoleKey(parentModel, fDef.isOutgoing)
+                        const key = getStatementKey(parentModel, fDef.isOutgoing)
                         return { [key]: items }
                       }
                     },
@@ -460,7 +478,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   getListNodes(arrayConfig: FormArrayConfig<FormArrayData>, listType: ListType): Observable<LocalNodeConfig[]> {
     const initialValue = arrayConfig.initValue || [];
     const textProps: InfTextProperty[] = initialValue.filter((v) => !!v.fk_class_field)
-    const statements: InfRole[] = initialValue.filter((v) => !v.fk_class_field)
+    const statements: InfStatement[] = initialValue.filter((v) => !v.fk_class_field)
     const listDefinitions = arrayConfig.data.lists.fieldDefinition.listDefinitions;
     const parentModel = arrayConfig.data.lists.parentModel;
     const listDefIdx = indexBy((lDef) => (lDef.targetClass || 0).toString(), listDefinitions)
@@ -483,13 +501,13 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     // get the target class for each initial statement
     const o$ = statements.map((s) => {
       // -> for each initVal
-      const relObj = s.appellation || s.language || s.place || s.lang_string || s.temporal_entity || s.persistent_item;
+      const relObj = s.object_appellation || s.object_language || s.object_place || s.object_lang_string || s.subject_temporal_entity || s.object_persistent_item;
       if (relObj) {
         // --> if statement.appellation, .place, .lang_string, .time_primitive, .language
         return of({ fk_class: relObj.fk_class, statement: s })
       } else {
         // --> else get related entity preview and its class
-        return this.p.streamEntityPreview(isOutgoing ? s.fk_entity : s.fk_temporal_entity).pipe(
+        return this.p.streamEntityPreview(isOutgoing ? s.fk_object_info : s.fk_subject_info).pipe(
           map(preview => ({ fk_class: preview.fk_class, statement: s }))
         )
       }
@@ -525,19 +543,19 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       return;
     }
     else if (initVal.initTeEn) {
-      if (fDef.isOutgoing && initVal.initTeEn.te_roles) {
-        return this.getInitListDef(fDef, initVal.initTeEn.te_roles);
+      if (fDef.isOutgoing && initVal.initTeEn.outgoing_statements) {
+        return this.getInitListDef(fDef, initVal.initTeEn.outgoing_statements);
       }
-      else if (!fDef.isOutgoing && initVal.initTeEn.ingoing_roles) {
-        return this.getInitListDef(fDef, initVal.initTeEn.ingoing_roles);
+      else if (!fDef.isOutgoing && initVal.initTeEn.incoming_statements) {
+        return this.getInitListDef(fDef, initVal.initTeEn.incoming_statements);
       }
     }
     else if (initVal.initPeIt) {
-      if (fDef.isOutgoing && initVal.initPeIt.te_roles) {
-        return this.getInitListDef(fDef, initVal.initPeIt.te_roles);
+      if (fDef.isOutgoing && initVal.initPeIt.outgoing_statements) {
+        return this.getInitListDef(fDef, initVal.initPeIt.outgoing_statements);
       }
-      else if (!fDef.isOutgoing && initVal.initPeIt.pi_roles) {
-        return this.getInitListDef(fDef, initVal.initPeIt.pi_roles);
+      else if (!fDef.isOutgoing && initVal.initPeIt.incoming_statements) {
+        return this.getInitListDef(fDef, initVal.initPeIt.incoming_statements);
       }
     }
     return;
@@ -545,11 +563,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
 
-  private getInitListDef(fDef: FieldDefinition, roles: InfRole[]): Observable<ListDefinition> {
-    const statement = roles.find(r => this.sameProperty(r, fDef) && !!((r.fk_temporal_entity || r.fk_entity)))
+  private getInitListDef(fDef: FieldDefinition, statements: InfStatement[]): Observable<ListDefinition> {
+    const statement = statements.find(r => this.sameProperty(r, fDef) && !!((r.fk_subject_info || r.fk_object_info)))
     if (!statement) return of(undefined);
 
-    return this.p.streamEntityPreview(statement.fk_temporal_entity || statement.fk_entity).pipe(
+    return this.p.streamEntityPreview(statement.fk_subject_info || statement.fk_object_info).pipe(
       map(entity => {
         const lDef = fDef.listDefinitions.find(ld => ld.targetClass === entity.fk_class);
         return lDef;
@@ -562,10 +580,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
   /**
    * gets the init value for the field definition out of the initial entity value
    */
-  getInitValueForFieldNode(lDef: FieldDefinition, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): InfRole[] | InfTextProperty[] {
+  getInitValueForFieldNode(lDef: FieldDefinition, initVal: { initTeEn: InfTemporalEntity, initPeIt: InfPersistentItem }): InfStatement[] | InfTextProperty[] {
     if (lDef.listType == 'time-span') {
-      if (initVal.initTeEn && initVal.initTeEn.te_roles) {
-        return initVal.initTeEn.te_roles.filter(r => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(r.fk_property))
+      if (initVal.initTeEn && initVal.initTeEn.outgoing_statements) {
+        return initVal.initTeEn.outgoing_statements.filter(r => DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.includes(r.fk_property))
       }
     }
     if (lDef.listType === 'text-property') {
@@ -577,30 +595,30 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       }
     }
     else if (initVal.initTeEn) {
-      if (lDef.isOutgoing && initVal.initTeEn.te_roles) {
-        return initVal.initTeEn.te_roles.filter(r => this.sameProperty(r, lDef))
+      if (lDef.isOutgoing && initVal.initTeEn.outgoing_statements) {
+        return initVal.initTeEn.outgoing_statements.filter(r => this.sameProperty(r, lDef))
       }
-      else if (!lDef.isOutgoing && initVal.initTeEn.ingoing_roles) {
-        return initVal.initTeEn.ingoing_roles.filter(r => this.sameProperty(r, lDef))
+      else if (!lDef.isOutgoing && initVal.initTeEn.incoming_statements) {
+        return initVal.initTeEn.incoming_statements.filter(r => this.sameProperty(r, lDef))
       }
     }
     else if (initVal.initPeIt) {
-      if (lDef.isOutgoing && initVal.initPeIt.te_roles) {
-        return initVal.initPeIt.te_roles.filter(r => this.sameProperty(r, lDef))
+      if (lDef.isOutgoing && initVal.initPeIt.outgoing_statements) {
+        return initVal.initPeIt.outgoing_statements.filter(r => this.sameProperty(r, lDef))
       }
-      else if (!lDef.isOutgoing && initVal.initPeIt.pi_roles) {
-        return initVal.initPeIt.pi_roles.filter(r => this.sameProperty(r, lDef))
+      else if (!lDef.isOutgoing && initVal.initPeIt.incoming_statements) {
+        return initVal.initPeIt.incoming_statements.filter(r => this.sameProperty(r, lDef))
       }
     }
     return undefined;
   }
 
   /**
-   * Returns true if property of role and listDefinition match
+   * Returns true if property of statement and listDefinition match
    * @param r
    * @param lDef
    */
-  sameProperty(r: InfRole, lDef: ListDefinition | FieldDefinition): boolean {
+  sameProperty(r: InfStatement, lDef: ListDefinition | FieldDefinition): boolean {
     return r.fk_property ?
       r.fk_property === lDef.property.pkProperty :
       r.fk_property_of_property ? r.fk_property_of_property === lDef.property.pkPropertyOfProperty : false
@@ -716,11 +734,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 
   private appellationsHook(x: any, id: number) {
-    const roles: InfRole[] = x.filter((i) => !!i);
-    this.searchStringParts[id] = roles
-      .map((item) => (U.stringFromQuillDoc(item.appellation.quill_doc)))
+    const statements: InfStatement[] = x.filter((i) => !!i);
+    this.searchStringParts[id] = statements
+      .map((item) => (U.stringFromQuillDoc(item.object_appellation.quill_doc)))
       .join(' ');
-    return roles;
+    return statements;
   }
 
   private textPropHook(x: any, id: number) {
@@ -760,7 +778,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         obs$.push(this.inf.temporal_entity.upsert([value.temporal_entity], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else if (value.statement) {
-        obs$.push(this.inf.role.upsert([value.statement], pkProject).resolved$.pipe(filter(x => !!x)))
+        obs$.push(this.inf.statement.upsert([value.statement], pkProject).resolved$.pipe(filter(x => !!x)))
       }
       else if (value.text_property) {
         obs$.push(this.inf.text_property.upsert([value.text_property], pkProject).resolved$.pipe(filter(x => !!x)))
@@ -791,11 +809,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
    */
 
   private timeSpanCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
-    const initRoles: InfRole[] = arrayConfig.initValue || [];
+    const initStatements: InfStatement[] = arrayConfig.initValue || [];
     const initValue: CtrlTimeSpanModel = {}
-    for (let i = 0; i < initRoles.length; i++) {
-      const element = initRoles[i];
-      initValue[element.fk_property] = element.time_primitive;
+    for (let i = 0; i < initStatements.length; i++) {
+      const element = initStatements[i];
+      initValue[element.fk_property] = element.object_time_primitive;
     }
     const controlConfig: LocalNodeConfig = {
       control: {
@@ -809,16 +827,16 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         mapValue: (val) => {
           if (!val) return null;
           const v = val as CtrlTimeSpanDialogResult;
-          const value: InfRole[] = Object.keys(v).map(key => {
-            const role: InfRole = {
+          const value: InfStatement[] = Object.keys(v).map(key => {
+            const statement: InfStatement = {
               fk_property: parseInt(key, 10),
-              time_primitive: {
+              object_time_primitive: {
                 ...v[key],
                 fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
               },
               ...{} as any
             }
-            return role
+            return statement
           });
           return value;
         }
@@ -834,7 +852,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       const listDefinition = arrayConfig.data.controls.listDefinition;
       // with [{}] we make sure at least one item is added
       const initItems = arrayConfig.initValue || [{}];
-      const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => ({
+      const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
         control: {
           placeholder: listDefinition.label,
           required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
@@ -842,14 +860,14 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
             appearance: this.appearance,
             controlType: 'ctrl-language'
           },
-          initValue: initVal.language || defaultLanguage,
+          initValue: initVal.object_language || defaultLanguage,
           mapValue: (val) => {
             if (!val) return null;
-            const value: InfRole = {
+            const value: InfStatement = {
               ...{} as any,
-              fk_entity: undefined,
+              fk_object_info: undefined,
               fk_property: listDefinition.property.pkProperty,
-              language: {
+              object_language: {
                 ...val,
                 fk_class: listDefinition.targetClass,
               },
@@ -867,10 +885,10 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const listDefinition = arrayConfig.data.controls.listDefinition;
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => {
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => {
       const initValue = !initVal ?
         undefined : listDefinition.isOutgoing ?
-          initVal.fk_entity : initVal.fk_temporal_entity;
+          initVal.fk_object_info : initVal.fk_subject_info;
       return {
         control: {
           initValue,
@@ -884,15 +902,15 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           mapValue: (val) => {
             if (!val) return null;
 
-            let value: InfRole = {
+            let value: InfStatement = {
               ...{} as any,
               fk_property: listDefinition.property.pkProperty,
             };
 
             if (listDefinition.isOutgoing) {
-              value = { ...value, fk_entity: val }
+              value = { ...value, fk_object_info: val }
             } else {
-              value = { ...value, fk_temporal_entity: val }
+              value = { ...value, fk_subject_info: val }
             }
 
             return value;
@@ -908,9 +926,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const listDefinition = arrayConfig.data.controls.listDefinition;
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => ({
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
       control: {
-        initValue: initVal.appellation,
+        initValue: initVal.object_appellation,
         placeholder: listDefinition.label,
         required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
         validators: [ValidationService.appellationValidator()],
@@ -920,11 +938,11 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         },
         mapValue: (val) => {
           if (!val) return null;
-          const value: InfRole = {
+          const value: InfStatement = {
             ...{} as any,
-            fk_entity: undefined,
+            fk_object_info: undefined,
             fk_property: listDefinition.property.pkProperty,
-            appellation: {
+            object_appellation: {
               ...val,
               fk_class: listDefinition.targetClass,
             },
@@ -942,7 +960,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     const listDefinition = arrayConfig.data.controls.listDefinition;
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
-    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => ({
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => ({
       childFactory: {
         component: FgPlaceComponent,
         getInjectData: (d) => {
@@ -952,16 +970,16 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         data: {
           place: {
             appearance: this.appearance,
-            initVal$: of(initVal.place)
+            initVal$: of(initVal.object_place)
           }
         },
         mapValue: (val) => {
           if (!val) return null;
-          const value: InfRole = {
+          const value: InfStatement = {
             ...{} as any,
-            fk_entity: undefined,
+            fk_object_info: undefined,
             fk_property: listDefinition.property.pkProperty,
-            place: {
+            object_place: {
               ...val,
               fk_class: listDefinition.targetClass,
             },
@@ -1026,12 +1044,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
           }
         },
         mapValue: (val: InfLangString) => {
-          const value: InfRole = {
+          const value: InfStatement = {
             ...{} as any,
-            fk_entity: undefined,
+            fk_object_info: undefined,
             fk_property: listDefinition.property.pkProperty,
             fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
-            lang_string: {
+            object_lang_string: {
               ...val,
               fk_class: listDefinition.targetClass,
             },
@@ -1051,19 +1069,19 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     return this.c.pipeModelOfClass(listDefinition.targetClass).pipe(
       map(basicModel => {
 
-        const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfRole) => {
+        const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => {
           let initValue: CtrlEntityModel = {}
 
           if (listDefinition.isOutgoing) {
             // assign the object as init value for ctrl-entity
-            if (initVal.persistent_item) initValue.persistent_item = initVal.persistent_item
-            else if (initVal.range_temporal_entity) initValue.temporal_entity = initVal.range_temporal_entity
-            else if (initVal.fk_entity) initValue.pkEntity = initVal.fk_entity
+            if (initVal.object_persistent_item) initValue.persistent_item = initVal.object_persistent_item
+            else if (initVal.object_temporal_entity) initValue.temporal_entity = initVal.object_temporal_entity
+            else if (initVal.fk_object_info) initValue.pkEntity = initVal.fk_object_info
           } else {
             // assign the subject as init value for ctrl-entity
-            if (initVal.domain_pe_it) initValue.persistent_item = initVal.domain_pe_it
-            else if (initVal.temporal_entity) initValue.temporal_entity = initVal.temporal_entity
-            else if (initVal.fk_temporal_entity) initValue.pkEntity = initVal.fk_temporal_entity
+            if (initVal.subject_persistent_item) initValue.persistent_item = initVal.subject_persistent_item
+            else if (initVal.subject_temporal_entity) initValue.temporal_entity = initVal.subject_temporal_entity
+            else if (initVal.fk_subject_info) initValue.pkEntity = initVal.fk_subject_info
           }
 
 
@@ -1085,7 +1103,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
               mapValue: (val: CtrlEntityModel) => {
                 if (!val || (!val.pkEntity && !val.temporal_entity && !val.persistent_item)) return null;
 
-                const statement: InfRole = {
+                const statement: InfStatement = {
                   ...{} as any,
                   fk_property: listDefinition.property.pkProperty,
                   fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
@@ -1093,15 +1111,15 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
                 if (listDefinition.isOutgoing) {
                   // assign object
-                  if (val.pkEntity) statement.fk_entity = val.pkEntity;
-                  else if (val.persistent_item) statement.persistent_item = val.persistent_item
-                  else if (val.temporal_entity) statement.range_temporal_entity = val.temporal_entity
+                  if (val.pkEntity) statement.fk_object_info = val.pkEntity;
+                  else if (val.persistent_item) statement.object_persistent_item = val.persistent_item
+                  else if (val.temporal_entity) statement.object_temporal_entity = val.temporal_entity
 
                 } else {
                   // assign subject
-                  if (val.pkEntity) statement.fk_temporal_entity = val.pkEntity;
-                  else if (val.persistent_item) statement.domain_pe_it = val.persistent_item
-                  else if (val.temporal_entity) statement.temporal_entity = val.temporal_entity
+                  if (val.pkEntity) statement.fk_subject_info = val.pkEntity;
+                  else if (val.persistent_item) statement.subject_persistent_item = val.persistent_item
+                  else if (val.temporal_entity) statement.subject_temporal_entity = val.temporal_entity
                 }
 
                 return statement;
@@ -1118,12 +1136,12 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
 }
 
-function getRoleKey(m: EntityModel, isOutgoing: boolean) {
+function getStatementKey(m: EntityModel, isOutgoing: boolean) {
   if (m === 'temporal_entity') {
-    return isOutgoing ? 'te_roles' : 'ingoing_roles';
+    return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
   }
   else if (m === 'persistent_item') {
-    return isOutgoing ? 'outgoing_roles' : 'pi_roles';
+    return isOutgoing ? 'outgoing_statements' : 'incoming_statements';
   }
 }
 

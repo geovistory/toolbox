@@ -4,13 +4,13 @@ declare var Object: any;
 export interface PaginationObjectInterface {
   "count"?: number;
   "schemas"?: any;
-  "paginatedRoles"?: Array<any>;
+  "paginatedStatements"?: Array<any>;
 }
 
 export class PaginationObject implements PaginationObjectInterface {
   "count": number;
   "schemas": any;
-  "paginatedRoles": Array<any>;
+  "paginatedStatements": Array<any>;
   constructor(data?: PaginationObjectInterface) {
     Object.assign(this, data);
   }
@@ -52,8 +52,8 @@ export class PaginationObject implements PaginationObjectInterface {
           name: 'schemas',
           type: 'any'
         },
-        "paginatedRoles": {
-          name: 'paginatedRoles',
+        "paginatedStatements": {
+          name: 'paginatedStatements',
           type: 'Array&lt;any&gt;'
         },
       },

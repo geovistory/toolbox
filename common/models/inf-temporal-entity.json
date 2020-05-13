@@ -27,16 +27,16 @@
   },
   "validations": [],
   "relations": {
-    "te_roles": {
+    "outgoing_statements": {
       "type": "hasMany",
-      "model": "InfRole",
-      "foreignKey": "fk_temporal_entity",
+      "model": "InfStatement",
+      "foreignKey": "fk_subject_info",
       "primaryKey": "pk_entity"
     },
-    "ingoing_roles": {
+    "incoming_statements": {
       "type": "hasMany",
-      "model": "InfRole",
-      "foreignKey": "fk_entity",
+      "model": "InfStatement",
+      "foreignKey": "fk_object_info",
       "primaryKey": "pk_entity"
     },
     "text_properties": {
@@ -499,7 +499,7 @@
         "type": "SchemaObject",
         "root": true
       },
-      "description": "Add a temporal entity with its outgoing roles to a project.",
+      "description": "Add a temporal entity with its outgoing statements to a project.",
       "http": {
         "path": "/add-to-project",
         "verb": "post"

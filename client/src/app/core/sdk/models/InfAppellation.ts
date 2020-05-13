@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole
+  InfStatement
 } from '../index';
 
 declare var Object: any;
@@ -11,7 +11,7 @@ export interface InfAppellationInterface {
   "string"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  roles?: InfRole[];
+  incoming_statements?: InfStatement[];
 }
 
 export class InfAppellation implements InfAppellationInterface {
@@ -20,7 +20,7 @@ export class InfAppellation implements InfAppellationInterface {
   "string": string;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  roles?: InfRole[];
+  incoming_statements?: InfStatement[];
   constructor(data?: InfAppellationInterface) {
     Object.assign(this, data);
   }
@@ -80,13 +80,13 @@ export class InfAppellation implements InfAppellationInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        roles: {
-          name: 'roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+          keyTo: 'fk_object_info'
         },
       }
     }

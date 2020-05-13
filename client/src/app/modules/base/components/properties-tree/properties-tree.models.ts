@@ -1,12 +1,11 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { ActiveProjectService, EntityPreview, InfLanguage, InfRole, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from 'app/core';
+import { ActiveProjectService, EntityPreview, InfLanguage, InfStatement, InfTemporalEntity, InfTextProperty, ProClassFieldConfig, ProInfoProjRel, TimePrimitive } from 'app/core';
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
 
 export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'entity-preview' | 'has-type' | 'temporal-entity' | 'persistent-item';
 export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'entity-preview' | 'has-type';
 
-export type CreateControlType = 'role';
 
 // /**
 //  * This interface is a intermediate solution, useful as long as
@@ -85,35 +84,35 @@ export interface ItemBasics {
   label: string
 }
 
-// Items connected through a role
-export interface BasicRoleItem extends ItemBasics {
-  role: InfRole
+// Items connected through a statement
+export interface BasicStatementItem extends ItemBasics {
+  statement: InfStatement
   isOutgoing?: boolean
   error?: string
 }
 
-export interface AppellationItem extends BasicRoleItem {
+export interface AppellationItem extends BasicStatementItem {
   fkClass: number;
   label: string
 }
 
-export interface LanguageItem extends BasicRoleItem {
+export interface LanguageItem extends BasicStatementItem {
   fkClass: number;
   label: string
 }
 
-export interface PlaceItem extends BasicRoleItem {
+export interface PlaceItem extends BasicStatementItem {
   fkClass: number;
   label: string
 }
 
-export interface LangStringItem extends BasicRoleItem {
+export interface LangStringItem extends BasicStatementItem {
   fkClass: number;
   label: string
   language: InfLanguage
 }
 
-export interface TimePrimitiveItem extends BasicRoleItem {
+export interface TimePrimitiveItem extends BasicStatementItem {
   fkClass: number;
   label: string
   timePrimitive: TimePrimitive;
@@ -123,7 +122,7 @@ export interface TemporalEntityTableI {
   rows$: Observable<TemporalEntityItem[]>
   columns$: Observable<FieldDefinition[]>
 }
-export interface TemporalEntityItem extends BasicRoleItem {
+export interface TemporalEntityItem extends BasicStatementItem {
   // fkClass: number; // fk_class of TemporalEntity
   row: TemporalEntityRow
   pkEntity: number; // pk of TemporalEntity
@@ -140,13 +139,13 @@ export interface TemporalEntityCell {
   isOutgoing: boolean
   label: string
   entityPreview: EntityPreview
-  items?: RoleItem[]
-  firstItem?: RoleItem
+  items?: StatementItem[]
+  firstItem?: StatementItem
   itemsCount: number
   isTimeSpan?: boolean;
 }
 
-export interface EntityPreviewItem extends BasicRoleItem {
+export interface EntityPreviewItem extends BasicStatementItem {
   preview: EntityPreview
   fkClass: number
 }
@@ -170,7 +169,7 @@ export interface TimeSpanProperty {
   listDefinition: ListDefinition,
   items: TimePrimitiveItem[]
 }
-export type RoleItem = AppellationItem | EntityPreviewItem | LanguageItem | PlaceItem | TimePrimitiveItem;
+export type StatementItem = AppellationItem | EntityPreviewItem | LanguageItem | PlaceItem | TimePrimitiveItem;
 export type Item = AppellationItem | EntityPreviewItem | LanguageItem | PlaceItem | TextPropertyItem | TimeSpanItem;
 export type ItemList = Item[];
 
@@ -212,7 +211,7 @@ export interface AddListComponentInterface {
  */
 export interface TemporalEntityRemoveProperties {
   temporalEntity: InfTemporalEntity
-  roles: InfRole[]
+  statements: InfStatement[]
   textProperties: InfTextProperty[]
 }
 

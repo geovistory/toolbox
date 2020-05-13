@@ -128,20 +128,20 @@ module.exports = function(InfTemporalEntity) {
 
       const ctxWithoutBody = _.omit(ctx, ['req.body']);
 
-      InfTemporalEntity.resolveRoleValues(
+      InfTemporalEntity.resolveStatementValues(
         pkProject,
-        requestedTeEnt.te_roles,
+        requestedTeEnt.outgoing_statements,
         ctxWithoutBody
       )
-        .then(resolvedRoles => {
-          const teEnWithResolvedRoles = {
+        .then(resolvedStatements => {
+          const teEnWithResolvedStatements = {
             ...requestedTeEnt,
-            te_roles: resolvedRoles,
+            outgoing_statements: resolvedStatements,
           };
           InfTemporalEntity._findOrCreateTeEnt(
             InfTemporalEntity,
             pkProject,
-            teEnWithResolvedRoles,
+            teEnWithResolvedStatements,
             ctxWithoutBody
           )
             .then(resultingEntities => {
@@ -153,36 +153,38 @@ module.exports = function(InfTemporalEntity) {
               const promiseArray = [];
 
               /******************************************
-               * te_roles (= outgoing_roles)
+               * outgoing_statements (= outgoing_statements)
                ******************************************/
-              if (requestedTeEnt.te_roles) {
+              if (requestedTeEnt.outgoing_statements) {
                 // prepare parameters
-                const InfRole = InfTemporalEntity.app.models.InfRole;
+                const InfStatement = InfTemporalEntity.app.models.InfStatement;
 
-                //… filter roles that are truthy (not null), iterate over them,
+                //… filter statements that are truthy (not null), iterate over them,
                 // return the promise that the teEnt will be
                 // returned together with all nested items
                 const promise = Promise.map(
-                  requestedTeEnt.te_roles.filter(role => role),
-                  role => {
-                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
-                    role.fk_temporal_entity = resultingEntity.pk_entity;
+                  requestedTeEnt.outgoing_statements.filter(
+                    statement => statement
+                  ),
+                  statement => {
+                    // use the pk_entity from the created teEnt to set the fk_subject_info of the statement
+                    statement.fk_subject_info = resultingEntity.pk_entity;
 
-                    // find or create the Entity and the role pointing to the Entity
-                    return InfRole.findOrCreateInfRole(
+                    // find or create the Entity and the statement pointing to the Entity
+                    return InfStatement.findOrCreateInfStatement(
                       pkProject,
-                      role,
+                      statement,
                       ctxWithoutBody
                     );
                   }
                 )
-                  .then(roles => {
-                    //attach the roles to resultingTeEnt
-                    res.te_roles = [];
-                    for (var i = 0; i < roles.length; i++) {
-                      const role = roles[i];
-                      if (role && role[0]) {
-                        res.te_roles.push(role[0]);
+                  .then(statements => {
+                    //attach the statements to resultingTeEnt
+                    res.outgoing_statements = [];
+                    for (var i = 0; i < statements.length; i++) {
+                      const statement = statements[i];
+                      if (statement && statement[0]) {
+                        res.outgoing_statements.push(statement[0]);
                       }
                     }
 
@@ -190,41 +192,43 @@ module.exports = function(InfTemporalEntity) {
                   })
                   .catch(err => reject(err));
 
-                // add promise for outgoing_roles
+                // add promise for outgoing_statements
                 promiseArray.push(promise);
               }
 
               /******************************************
-               * ingoing_roles
+               * incoming_statements
                ******************************************/
-              if (requestedTeEnt.ingoing_roles) {
+              if (requestedTeEnt.incoming_statements) {
                 // prepare parameters
-                const InfRole = InfTemporalEntity.app.models.InfRole;
+                const InfStatement = InfTemporalEntity.app.models.InfStatement;
 
-                //… filter roles that are truthy (not null), iterate over them,
+                //… filter statements that are truthy (not null), iterate over them,
                 // return the promise that the teEnt will be
                 // returned together with all nested items
                 const promise = Promise.map(
-                  requestedTeEnt.ingoing_roles.filter(role => role),
-                  role => {
-                    // use the pk_entity from the created teEnt to set the fk_temporal_entity of the role
-                    role.fk_entity = resultingEntity.pk_entity;
+                  requestedTeEnt.incoming_statements.filter(
+                    statement => statement
+                  ),
+                  statement => {
+                    // use the pk_entity from the created teEnt to set the fk_subject_info of the statement
+                    statement.fk_object_info = resultingEntity.pk_entity;
 
-                    // find or create the Entity and the role pointing to the Entity
-                    return InfRole.findOrCreateInfRole(
+                    // find or create the Entity and the statement pointing to the Entity
+                    return InfStatement.findOrCreateInfStatement(
                       pkProject,
-                      role,
+                      statement,
                       ctxWithoutBody
                     );
                   }
                 )
-                  .then(roles => {
-                    //attach the roles to resultingTeEnt
-                    res.ingoing_roles = [];
-                    for (var i = 0; i < roles.length; i++) {
-                      const role = roles[i];
-                      if (role && role[0]) {
-                        res.ingoing_roles.push(role[0]);
+                  .then(statements => {
+                    //attach the statements to resultingTeEnt
+                    res.incoming_statements = [];
+                    for (var i = 0; i < statements.length; i++) {
+                      const statement = statements[i];
+                      if (statement && statement[0]) {
+                        res.incoming_statements.push(statement[0]);
                       }
                     }
 
@@ -232,7 +236,7 @@ module.exports = function(InfTemporalEntity) {
                   })
                   .catch(err => reject(err));
 
-                // add promise for ingoing_roles
+                // add promise for incoming_statements
                 promiseArray.push(promise);
               }
 
@@ -252,68 +256,71 @@ module.exports = function(InfTemporalEntity) {
     });
   };
 
-  InfTemporalEntity.resolveRoleValues = function(
+  InfTemporalEntity.resolveStatementValues = function(
     pkProject,
-    te_roles,
+    outgoing_statements,
     ctxWithoutBody
   ) {
     return new Promise((resolve, reject) => {
-      if (!te_roles || !te_roles.length) resolve([]);
+      if (!outgoing_statements || !outgoing_statements.length) resolve([]);
 
-      const te_roles_with_fk_entity = te_roles
-        .filter(role => !!role.fk_entity)
-        .map(role => ({
-          fk_property: role.fk_property,
-          fk_entity: role.fk_entity,
+      const outgoing_statements_with_fk_object_info = outgoing_statements
+        .filter(statement => !!statement.fk_object_info)
+        .map(statement => ({
+          fk_property: statement.fk_property,
+          fk_object_info: statement.fk_object_info,
         }));
 
-      const te_roles_without_fk_entity = te_roles.filter(
-        role => !role.fk_entity
+      const outgoing_statements_without_fk_object_info = outgoing_statements.filter(
+        statement => !statement.fk_object_info
       );
 
       Promise.all(
-        te_roles_without_fk_entity.map(role => {
+        outgoing_statements_without_fk_object_info.map(statement => {
           // Time Primitive
-          if (role.time_primitive && Object.keys(role.time_primitive).length) {
+          if (
+            statement.time_primitive &&
+            Object.keys(statement.time_primitive).length
+          ) {
             const InfTimePrimitive =
               InfTemporalEntity.app.models.InfTimePrimitive;
 
             return new Promise((res, rej) => {
-              InfTimePrimitive.create(role.time_primitive).then(obj => {
+              InfTimePrimitive.create(statement.time_primitive).then(obj => {
                 res({
-                  fk_property: role.fk_property,
-                  fk_entity: obj.pk_entity,
+                  fk_property: statement.fk_property,
+                  fk_object_info: obj.pk_entity,
                 });
               });
             });
           }
 
           // Language
-          if (role.language && Object.keys(role.language).length) {
+          if (statement.language && Object.keys(statement.language).length) {
             const InfLanguage = InfTemporalEntity.app.models.InfLanguage;
 
             return new Promise((res, rej) => {
               InfLanguage.find({
-                where: { pk_entity: role.language.pk_entity },
+                where: { pk_entity: statement.language.pk_entity },
               }).then(objs => {
                 res({
-                  fk_property: role.fk_property,
-                  fk_entity: objs[0].pk_entity,
+                  fk_property: statement.fk_property,
+                  fk_object_info: objs[0].pk_entity,
                 });
               });
             });
           }
 
           // Place
-          if (role.place && Object.keys(role.place).length) {
+          if (statement.place && Object.keys(statement.place).length) {
             const InfPlace = InfTemporalEntity.app.models.InfPlace;
 
             return new Promise((res, rej) => {
-              InfPlace.create(role.place)
+              InfPlace.create(statement.place)
                 .then(obj => {
                   res({
-                    fk_property: role.fk_property,
-                    fk_entity: obj.pk_entity,
+                    fk_property: statement.fk_property,
+                    fk_object_info: obj.pk_entity,
                   });
                 })
                 .catch(err => {
@@ -323,99 +330,32 @@ module.exports = function(InfTemporalEntity) {
           }
 
           // Appellation
-          if (role.appellation && Object.keys(role.appellation).length) {
+          if (
+            statement.appellation &&
+            Object.keys(statement.appellation).length
+          ) {
             const InfAppellation = InfTemporalEntity.app.models.InfAppellation;
 
             return new Promise((res, rej) => {
-              InfAppellation.create(role.appellation).then(obj => {
+              InfAppellation.create(statement.appellation).then(obj => {
                 res({
-                  fk_property: role.fk_property,
-                  fk_entity: obj.pk_entity,
+                  fk_property: statement.fk_property,
+                  fk_object_info: obj.pk_entity,
                 });
               });
             });
           }
-
-          // // Temporal Entity
-          // if (role.temporal_entity && Object.keys(role.temporal_entity).length) {
-
-          //   return new Promise((res, rej) => {
-          //     InfTemporalEntity.findOrCreateInfTemporalEntity(pkProject, role.temporal_entity, ctxWithoutBody)
-          //       .then(obj => {
-          //         const fk_entity = obj[0].pk_entity;
-          //         res({
-          //           fk_property: role.fk_property,
-          //           fk_entity
-          //         })
-          //       })
-          //   })
-          // }
         })
       )
-        .then(resolvedRoles => {
-          resolve([...te_roles_with_fk_entity, ...resolvedRoles]);
+        .then(resolvedStatements => {
+          resolve([
+            ...outgoing_statements_with_fk_object_info,
+            ...resolvedStatements,
+          ]);
         })
         .catch(error => reject(error));
     });
   };
-
-  // /**
-  //  * internal function to get a rich object of project or repo.
-  //  * a rich object of the TeEn with all its roles
-  //  *
-  //  * @param  {number} pkProject primary key of project
-  //  * @param  {number} pkEntity  pk_entity of the teEn
-  //  */
-  // InfTemporalEntity.nestedObject = function(
-  //   ofProject,
-  //   pkProject,
-  //   pkEntity,
-  //   cb
-  // ) {
-  //   const filter = {
-  //     where: ['pk_entity', '=', pkEntity],
-  //     include: InfTemporalEntity.getIncludeObject(ofProject, pkProject),
-  //   };
-
-  //   return InfTemporalEntity.findComplex(filter, cb);
-  //   // return InfTemporalEntity.findComplex(filter, (err, res) => {
-  //   //   if (err) return cb(err)
-
-  //   //   const promises = []
-  //   //   res.forEach(teEn => {
-  //   //     teEn.te_roles.forEach((role, ri) => {
-
-  //   //       if (
-  //   //         Object.keys(role.range_temporal_entity).length > 0
-  //   //         // &&
-  //   //         // role.range_temporal_entity.pk_entity !== teEn.pk_entity
-  //   //       ) {
-  //   //         const promise = new Promise((resolve, reject) => {
-
-  //   //           const filter = {
-  //   //             "where": ["pk_entity", "=", role.range_temporal_entity.pk_entity],
-  //   //             "include": InfTemporalEntity.getIncludeObject(ofProject, pkProject)
-  //   //           }
-
-  //   //           InfTemporalEntity.findComplex(filter, (err, res) => {
-  //   //             if (err) return cb(err);
-  //   //             role.range_temporal_entity = res[0]
-
-  //   //           })
-
-  //   //         })
-  //   //         promises.push(promise);
-  //   //       }
-  //   //     })
-  //   //   })
-
-  //   //   Promise.all(promises)
-  //   //     .then(() => {
-  //   //       cb(false, res)
-  //   //     })
-  //   //     .catch(err => cb(err))
-  //   // });
-  // };
 
   /**
    * remote method to get a schema object with the
@@ -436,197 +376,4 @@ module.exports = function(InfTemporalEntity) {
       return cb(false, data);
     });
   };
-
-  // /**
-  //  * remote method to get a rich object of project.
-  //  * a rich object of the TeEn with all its roles
-  //  *
-  //  * @param  {number} pkProject primary key of project
-  //  * @param  {number} pkEntity  pk_entity of the teEn
-  //  */
-  // InfTemporalEntity.nestedObjectOfProject = function(pkProject, pkEntity, cb) {
-  //   const ofProject = true;
-  //   return InfTemporalEntity.nestedObject(ofProject, pkProject, pkEntity, cb);
-  // };
-
-  // /**
-  //  * Internal function to create the include property of
-  //  * a filter object for findComplex()
-  //  *
-  //  * Usage: add the returned object to the include property of a persistent item relation
-  //  * of findComplex() filter, e.g.:
-  //  * {
-  //  *    ...
-  //  *    include: InfPersistentItem.getIncludeObject(true, 123)
-  //  * }
-  //  *
-  //  * @param ofProject {boolean}
-  //  * @param project {number}
-  //  * @returns include object of findComplex filter
-  //  */
-  // InfTemporalEntity.getIncludeObject = function(ofProject, pkProject) {
-  //   let projectJoin = {};
-
-  //   // if a pkProject is provided, create the relation
-  //   if (pkProject) {
-  //     // get the join object. If ofProject is false, the join will be a left join.
-  //     projectJoin = {
-  //       entity_version_project_rels: InfTemporalEntity.app.models.ProInfoProjRel.getJoinObject(
-  //         ofProject,
-  //         pkProject
-  //       ),
-  //     };
-  //   }
-
-  //   return {
-  //     ...projectJoin,
-  //     te_roles: {
-  //       $relation: {
-  //         name: 'te_roles',
-  //         joinType: 'inner join',
-  //         orderBy: [
-  //           {
-  //             pk_entity: 'asc',
-  //           },
-  //         ],
-  //       },
-  //       ...projectJoin,
-  //       appellation: {
-  //         $relation: {
-  //           name: 'appellation',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       language: {
-  //         $relation: {
-  //           name: 'language',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       time_primitive: {
-  //         $relation: {
-  //           name: 'time_primitive',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       place: {
-  //         $relation: {
-  //           name: 'place',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     },
-  //     ingoing_roles: {
-  //       $relation: {
-  //         name: 'ingoing_roles',
-  //         joinType: 'left join',
-  //       },
-  //       ...projectJoin,
-  //       temporal_entity: {
-  //         $relation: {
-  //           name: 'temporal_entity',
-  //           joinType: 'left join',
-  //         },
-  //         te_roles: {
-  //           $relation: {
-  //             name: 'te_roles',
-  //             joinType: 'inner join',
-  //             orderBy: [
-  //               {
-  //                 pk_entity: 'asc',
-  //               },
-  //             ],
-  //           },
-  //           ...projectJoin,
-  //           appellation: {
-  //             $relation: {
-  //               name: 'appellation',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //           language: {
-  //             $relation: {
-  //               name: 'language',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //           time_primitive: {
-  //             $relation: {
-  //               name: 'time_primitive',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //           place: {
-  //             $relation: {
-  //               name: 'place',
-  //               joinType: 'left join',
-  //               orderBy: [
-  //                 {
-  //                   pk_entity: 'asc',
-  //                 },
-  //               ],
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   };
-  // };
-
-  /**
-   * Adds temporal entity, its outgoing roles to add
-   * and the text properties to the project
-   */
-  // InfTemporalEntity.addToProject = function(pk_project, pk_entity, ctx, cb) {
-  //   if (!ctx.req.accessToken.userId)
-  //     return Error('AccessToken.userId is missing');
-  //   const accountId = ctx.req.accessToken.userId;
-
-  //   const mainQuery = new SqlTeEnAddToProject(
-  //     InfTemporalEntity.app.models
-  //   ).create(pk_project, pk_entity, accountId);
-
-  //   const connector = InfTemporalEntity.dataSource.connector;
-  //   connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
-  //     if (err) return cb(err);
-  //     InfTemporalEntity.ownProperties(pk_project, pk_entity, (err, result) => {
-  //       cb(err, result);
-  //     });
-  //   });
-  // };
 };

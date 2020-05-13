@@ -103,7 +103,7 @@
     "dataSource": "postgres1",
     "public": true
   },
-  "InfRole": {
+  "InfStatement": {
     "dataSource": "postgres1",
     "public": true
   },

@@ -159,23 +159,12 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
 
 
   /**
-  * Takes the given role sets and adds a form control for each of them.
+  * Takes the given statement sets and adds a form control for each of them.
   * Called by this class during ngOninit.
   */
   createTimeSpanForm() {
 
-    // const initRole: FormPartInitValueRole = {
-    //   targetClass: this.listDefinition.targetClass,
-    //   value: this.pkEntity,
-    //   fkProperty: this.listDefinition.pkProperty,
-    // };
-    // const resultTemplate = {
 
-    // };
-    // const mergeDef: MergeDef = {
-    //   target: ['temporal_entity'],
-    //   appendMethod: 'set'
-    // };
 
 
     const formParts$ = this.c.pipeSpecificFieldDefinitions(50).pipe(
@@ -189,7 +178,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
           let resultTemplate;
           let mergeDef: MergeDef;
           resultTemplate = {}
-          // mergeDef = { target: ['te_roles'],  }
+          // mergeDef = { target: ['te_statements'],  }
 
           return new FormPart(this.formGroup, field.label, field.listDefinitions, {
             initListDefinition: {

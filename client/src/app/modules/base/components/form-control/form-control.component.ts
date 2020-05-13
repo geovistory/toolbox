@@ -101,7 +101,7 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getRelateByOfRelatedStatement() {
     const lDef = this.config.data.listDefinition
-    return lDef.isOutgoing ? 'fk_entity' : 'fk_temporal_entity';
+    return lDef.isOutgoing ? 'fk_object_info' : 'fk_subject_info';
   }
 
   ngAfterViewInit() {

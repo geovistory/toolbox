@@ -1,27 +1,7 @@
 'use strict';
 
-module.exports = function (InfLanguage) {
-
-  // InfLanguage.findOrCreateLang = function (projectId, data) {
-
-  //   const dataObject = {
-  //     pk_entity: data.pk_entity,
-  //     pk_language: data.pk_language,
-  //     fk_class: data.fk_class,
-  //     lang_type: data.lang_type,
-  //     scope: data.scope,
-  //     iso6392b: data.iso6392b,
-  //     iso6392t: data.iso6392t,
-  //     iso6391: data.iso6391,
-  //     notes: data.notes,
-  //   };
-
-  //   return InfLanguage.findOrCreateObjectOrRole(InfLanguage, projectId, dataObject);
-
-  // }
-
-
-  InfLanguage.queryByString = function (searchstring, cb) {
+module.exports = function(InfLanguage) {
+  InfLanguage.queryByString = function(searchstring, cb) {
     let sql_stmt;
     let params = [];
 
@@ -31,9 +11,8 @@ module.exports = function (InfLanguage) {
         FROM information."language"
         WHERE iso6391 IN ('en','de','fr','nl','it','es')
         ORDER BY POSITION(iso6391 IN 'en, de, fr, nl, it, es');
-        `
+        `;
     } else {
-
       sql_stmt = `
       select pk_entity, pk_language, fk_class, lang_type, "scope",iso6392b, iso6392t, iso6391, notes
       from (
@@ -48,25 +27,23 @@ module.exports = function (InfLanguage) {
         LIMIT 6;
         `;
 
-        params.push(searchstring + ':*');
+      params.push(searchstring + ':*');
     }
-
 
     const connector = InfLanguage.dataSource.connector;
 
     connector.execute(sql_stmt, params, (err, resultObjects) => {
-      console.log(resultObjects)
+      console.log(resultObjects);
       var languages = [];
 
       if (resultObjects) {
         languages = resultObjects.map(languageRaw => {
-          const languageData = connector.fromRow('InfLanguage', languageRaw)
-          return new InfLanguage(languageData)
-        })
+          const languageData = connector.fromRow('InfLanguage', languageRaw);
+          return new InfLanguage(languageData);
+        });
       }
 
       cb(null, languages);
     });
-
   };
 };

@@ -15,16 +15,16 @@ export class SqlContentTree extends SqlBuilderLbModels {
    */
   create(fkProject: number, pkEntity: number) {
     const sql = `
-      -- query recusivly all the roles we need to create the tree
+      -- query recusivly all the statements we need to create the tree
       -- tw0 delivers
-      -- - pk_entity: the roles we need
-      -- - fk_temporal_entity: the entity_preview we need (Expression Portion)
+      -- - pk_entity: the statements we need
+      -- - fk_subject_info: the entity_preview we need (Expression Portion)
       -- - fk_subject_data: the data.digital we need
-      WITH RECURSIVE tw0 (fk_temporal_entity, fk_subject_data, fk_property, fk_entity, fk_object_data, level, pk_entity, path) AS (
-          SELECT  t1.fk_temporal_entity, t1.fk_subject_data, t1.fk_property, t1.fk_entity, t1.fk_object_data, 0, t1.pk_entity, ARRAY[t1.pk_entity]
-          FROM    information.role t1,
+      WITH RECURSIVE tw0 (fk_subject_info, fk_subject_data, fk_property, fk_object_info, fk_object_data, level, pk_entity, path) AS (
+          SELECT  t1.fk_subject_info, t1.fk_subject_data, t1.fk_property, t1.fk_object_info, t1.fk_object_data, 0, t1.pk_entity, ARRAY[t1.pk_entity]
+          FROM    information.statement t1,
                   projects.info_proj_rel t2
-          WHERE   t1.fk_entity = ${this.addParam(pkEntity)}
+          WHERE   t1.fk_object_info = ${this.addParam(pkEntity)}
           AND     t1.pk_entity = t2.fk_entity
           AND 	  t2.fk_project = ${this.addParam(fkProject)}
           AND     t2.is_in_project = true
@@ -32,11 +32,11 @@ export class SqlContentTree extends SqlBuilderLbModels {
 
           UNION ALL
 
-          SELECT  p.fk_temporal_entity, p.fk_subject_data, p.fk_property, p.fk_entity, p.fk_object_data, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
-          FROM    information.role p,
+          SELECT  p.fk_subject_info, p.fk_subject_data, p.fk_property, p.fk_object_info, p.fk_object_data, t0.level + 1, p.pk_entity, ARRAY_APPEND(t0.path, p.pk_entity)
+          FROM    information.statement p,
                   tw0 t0,
                   projects.info_proj_rel t2
-          WHERE 	t0.fk_temporal_entity = p.fk_entity
+          WHERE 	t0.fk_subject_info = p.fk_object_info
           AND     p.pk_entity = t2.fk_entity
           AND     t2.fk_project = ${this.addParam(fkProject)}
           AND     t2.is_in_project = true
@@ -51,7 +51,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
         FROM
           war.entity_preview t1
         JOIN tw0 t3
-          ON t1.pk_entity = t3.fk_temporal_entity
+          ON t1.pk_entity = t3.fk_subject_info
         CROSS JOIN
           projects.info_proj_rel t2
         WHERE t1.pk_entity = t2.fk_entity
@@ -63,15 +63,15 @@ export class SqlContentTree extends SqlBuilderLbModels {
           ELSE 1
           END
       ),
-      -- roles
+      -- statements
       tw2 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw0
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2
         WHERE
         tw0.pk_entity = t1.pk_entity
@@ -104,35 +104,35 @@ export class SqlContentTree extends SqlBuilderLbModels {
           information.v_language t1
         WHERE t1.pk_entity = tw3.fk_language
       ),
-      -- has type role
+      -- has type statement
       tw5 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
         FROM
           tw1
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           data_for_history.v_property t2,
           projects.info_proj_rel t3
-        WHERE t1.fk_temporal_entity = tw1.pk_entity
+        WHERE t1.fk_subject_info = tw1.pk_entity
         AND t1.fk_property = t2.pk_property
         AND t2.is_has_type_subproperty = true
         AND t1.pk_entity = t3.fk_entity
         AND t3.is_in_project = true
         AND t3.fk_project = ${this.addParam(fkProject)}
       ),
-      -- has appellation for language roles
+      -- has appellation for language statements
       tw6 AS (
         SELECT
-          ${this.createSelect('t1', 'InfRole')},
+          ${this.createSelect('t1', 'InfStatement')},
           ${this.createBuildObject('t2', 'ProInfoProjRel')} proj_rel
         FROM
           tw1
         CROSS JOIN
-          information.v_role t1,
+          information.v_statement t1,
           projects.info_proj_rel t2
-        WHERE t1.fk_entity = tw1.pk_entity
+        WHERE t1.fk_object_info = tw1.pk_entity
         AND t1.fk_property = 1111
         AND t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
@@ -203,11 +203,11 @@ export class SqlContentTree extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
-      role AS (
+      statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
           select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', 'InfRole')} as objects
+          ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM (
             SELECT * FROM tw2
             UNION ALL
@@ -232,7 +232,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       SELECT
       json_build_object (
         'inf', json_strip_nulls(json_build_object(
-          'role', role.json,
+          'statement', statement.json,
           'text_property', text_property.json,
           'language', language.json
         )),
@@ -251,7 +251,7 @@ export class SqlContentTree extends SqlBuilderLbModels {
       LEFT JOIN entity_preview ON true
       LEFT JOIN text_property ON true
       LEFT JOIN language ON true
-      LEFT JOIN role ON true
+      LEFT JOIN statement ON true
       LEFT JOIN digital ON true
       LEFT JOIN info_proj_rel ON true
     `;

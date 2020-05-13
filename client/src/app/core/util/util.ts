@@ -8,15 +8,15 @@ import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/a
 import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';
 import { CalendarType, TimePrimitive } from '../date-time/time-primitive';
-import { InfRole, InfTimePrimitive, ProProject, ProTextProperty } from '../sdk';
+import { InfStatement, InfTimePrimitive, ProProject, ProTextProperty } from '../sdk';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator
   // e.g.: for a AppeForLanguage it will take only label and language, when you put it to 2
   fieldsMax?: number;
 
-  // maximum number of roles per propertyField taken into account for the label generator
-  rolesMax?: number;
+  // maximum number of statements per propertyField taken into account for the label generator
+  statementsMax?: number;
 
   // path of that element in the store. useful to attatch leaf-pe-it-view
   path: string[];
@@ -77,37 +77,37 @@ export class U {
   /**
    *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
   */
-  static getCalendarFromRole(role: InfRole): CalendarType {
-    if (!role) return null;
+  static getCalendarFromStatement(statement: InfStatement): CalendarType {
+    if (!statement) return null;
 
-    const cal = (role.entity_version_project_rels && role.entity_version_project_rels[0].calendar) ?
-      role.entity_version_project_rels[0].calendar :
-      role.community_favorite_calendar ?
-        role.community_favorite_calendar : null;
+    const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
+      statement.entity_version_project_rels[0].calendar :
+      statement.community_favorite_calendar ?
+        statement.community_favorite_calendar : null;
 
     return cal as CalendarType;
   }
 
   /**
-   * Converts InfRole to TimePrimitive
-   * @param r the InfRole to convert
+   * Converts InfStatement to TimePrimitive
+   * @param r the InfStatement to convert
    */
-  static infRole2TimePrimitive(r: InfRole): TimePrimitive {
+  static infStatement2TimePrimitive(r: InfStatement): TimePrimitive {
 
     // from InfTimePrimitve to TimePrimitive
-    const infTp: InfTimePrimitive = r ? r.time_primitive : null;
+    const infTp: InfTimePrimitive = r ? r.object_time_primitive : null;
     let timePrimitive: TimePrimitive = null;
     const obj: any = {}
 
     if (
       infTp && infTp.duration && infTp.julian_day &&
-      U.getCalendarFromRole(r)
+      U.getCalendarFromStatement(r)
     ) {
       // add duration
       obj.duration = infTp.duration
 
       // add calendar
-      obj.calendar = U.getCalendarFromRole(r)
+      obj.calendar = U.getCalendarFromStatement(r)
 
       // add julian day
       obj.julianDay = infTp.julian_day;
