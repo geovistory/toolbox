@@ -4,39 +4,26 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build project",
-      "group": "build",
+      "label": "Watch and Compile Project",
       "type": "shell",
       "command": "npm",
-      "args": [
-        "run",
-        "-s",
-        "build"
-      ],
-      "problemMatcher": "$tsc"
+      "args": ["--silent", "run", "build:watch"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$tsc-watch"
     },
     {
-      "label": "Build project: watch",
-      "group": "build",
+      "label": "Build, Test and Lint",
       "type": "shell",
       "command": "npm",
-      "args": [
-        "run",
-        "-s",
-        "build:watch"
-      ],
-      "problemMatcher": "$tsc"
-    },
-    {
-      "label": "Create schemas and validators of ts server",
-      "group": "build",
-      "type": "shell",
-      "command": "npm",
-      "args": [
-        "run",
-        "create-schemas"
-      ],
-      "problemMatcher": "$tsc"
+      "args": ["--silent", "run", "test:dev"],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": ["$tsc", "$eslint-compact", "$eslint-stylish"]
     }
   ]
 }

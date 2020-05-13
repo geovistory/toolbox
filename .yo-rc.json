@@ -1,23 +1,6 @@
 {
-  "generator-loopback": {},
-  "generator-fireloop": {
-    "version": "1.0.0-beta.2.7",
-    "clients": {
-      "server": {
-        "path": "./",
-        "type": "server"
-      },
-      "geovistory": {
-        "path": "./client",
-        "type": "ng2web",
-        "name": "geovistory",
-        "sdkPath": "client/src/app/core/sdk"
-      }
-    },
-    "promptValues": {
-      "sdkFeatures": [
-        "Enable PubSub + IO + FireLoop functionality"
-      ]
-    }
+  "@loopback/cli": {
+    "version": "2.6.0",
+    "packageManager": "npm"
   }
 }
