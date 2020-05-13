@@ -38,7 +38,7 @@ export class AnalysisLayoutComponent implements OnInit, OnDestroy {
   ) {
     this.t = ts.t;
     this.t.defaultSizeRight = 50;
-    this.t.setShowRightArea(true);
+    this.t.setLayoutMode('both');
 
     this.pkAnalysis$.pipe(
       tap((pk) => {
@@ -64,9 +64,6 @@ export class AnalysisLayoutComponent implements OnInit, OnDestroy {
   }
 
   run() {
-    if (!this.t.showRightArea) {
-      this.t.setShowRightArea(true);
-    }
     this.a.runAnalysis()
   }
 
