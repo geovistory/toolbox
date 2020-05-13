@@ -13,11 +13,6 @@ type CtrlModel = InfPlace
   templateUrl: './ctrl-place.component.html',
   styleUrls: ['./ctrl-place.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlPlaceComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
 export class CtrlPlaceComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;
@@ -118,7 +113,7 @@ export class CtrlPlaceComponent implements OnDestroy, ControlValueAccessor, MatF
     })
 
     this.shouldLabelFloat$ = combineLatest(this.focused$, this.value$).pipe(
-      map(([focused, model]) => (!!focused || (model && (model.lat || model.long) )) ? true : false),
+      map(([focused, model]) => (!!focused || (model && (model.lat || model.long))) ? true : false),
       tap(x => { this.shouldLabelFloat = x })
     )
   }

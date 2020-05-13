@@ -20,11 +20,7 @@ type CtrlModel = InfTimePrimitiveWithCalendar;
   templateUrl: './ctrl-time-primitive.component.html',
   styleUrls: ['./ctrl-time-primitive.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimePrimitiveComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
+
 })
 export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;
@@ -174,9 +170,9 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   }
 
 
-  onContainerClick(event: MouseEvent) {
-    // TODO: implement this
-
+  onContainerClick() {
+    this.openMenu()
+    this.onFocus()
   }
 
   writeValue(value: CtrlModel | null): void {
@@ -210,7 +206,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
         case '1 second': this.setFormValue(dt.year, dt.month, dt.day, dt.hours, dt.minutes, dt.seconds)
           break;
       }
-    } else  {
+    } else {
       this.clearForm()
     }
   }
@@ -268,7 +264,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   ngAfterViewInit() {
     if (this.autofocus) setTimeout(() => { this.trigger.openMenu() })
 
-    this.trigger.onMenuOpen.pipe(takeUntil(this.destroy$)).subscribe(()=>{
+    this.trigger.onMenuOpen.pipe(takeUntil(this.destroy$)).subscribe(() => {
       setTimeout(() => { this.yearInput.nativeElement.focus() })
     })
   }

@@ -96,12 +96,13 @@
       <span>Add a Table</span>
     </button>
 
-    <!-- is expression portion -->
-    <mat-divider *ngIf="!isDigital && !parentIsF2Expression"></mat-divider>
+    <mat-divider *ngIf="!parentIsF2Expression"></mat-divider>
+
+    <div *ngIf="!parentIsF2Expression" class="dropdown-header">Danger Zone</div>
 
     <!-- is expression portion or digital -->
-    <button mat-menu-item *ngIf="!parentIsF2Expression" (click)="removeExpressionPortion(node)">
-      <mat-icon>delete</mat-icon>
+    <button mat-menu-item *ngIf="!parentIsF2Expression" (click)="removeStatement(node)">
+      <mat-icon color="warn">delete</mat-icon>
       <span>Remove</span>
     </button>
 

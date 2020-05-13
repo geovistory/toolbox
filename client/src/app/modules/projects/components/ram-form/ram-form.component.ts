@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, InfRole, InfRoleInterface, InfTextProperty, InfLangString } from 'app/core';
+import { ActiveProjectService, DatChunk, EntityPreview, InfLangString, InfRole, InfTextProperty } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { delay, filter, first, map, switchMap, takeUntil, shareReplay } from 'rxjs/operators';
-import { ActionResultObservable } from 'app/core/store/actions';
+import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 
 
 /**

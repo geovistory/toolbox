@@ -11,8 +11,12 @@
       <span class="mat-body-strong" [ngClass]="{'mat-text-secondary': !(typeItem.hasTypeRole$ |async)}">
         {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
         <span matTooltip="Required and not changeable (identity defining)"
-          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
           *
+        </span>
+        <span [matTooltip]="'Defines identity of target'"
+          *ngIf="fieldDefinition.listDefinitions[0].identityDefiningForTarget">
+          !
         </span>
       </span>
       <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity"
@@ -52,9 +56,12 @@
         [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
         {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
         <span matTooltip="Required and not changeable (identity defining)"
-          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].isIdentityDefining">
+          *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
           *
         </span>
+        <mat-icon *ngIf="fieldDefinition.removedFromAllProfiles" svgIcon="alert" color="warn"
+          matTooltip="This property of this field has been removed from all your OntoMe profiles. Try to not use it anymore.">
+        </mat-icon>
       </span>
       <span class="mat-body right-col" [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">
         &nbsp;({{itemsCount$ | async}}) </span>

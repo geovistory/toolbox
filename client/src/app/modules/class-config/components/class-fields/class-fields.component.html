@@ -154,7 +154,7 @@
     <mat-expansion-panel-header>
       <mat-panel-title>
         <strong>
-          {{field.label}} {{field?.propertyField?.isIdentityDefining ? '*' : ''}}
+          {{field.label}} {{field?.propertyField?.identityDefiningForSource ? '*' : ''}}
         </strong>
         <span *ngIf="field?.propertyField?.targetClasses; let truncated" class="mat-text-secondary ml-2">
           <span>

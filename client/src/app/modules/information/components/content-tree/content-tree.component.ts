@@ -6,14 +6,15 @@ import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
 import { equals, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subject, pipe } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DatSelector } from '../../../../core/dat/dat.service';
 import { DfhConfig } from '../../shared/dfh-config';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material';
+import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ImporterComponent } from 'app/modules/data/components/importer/importer.component';
 
 /**
@@ -123,7 +124,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private dat: DatSelector,
     private ref: ChangeDetectorRef,
     private i: InformationPipesService,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -284,47 +285,19 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   }
 
 
-  // private observeTypeLabel(role) {
-  //   if (role.fk_subject_data) {
-  //     return new BehaviorSubject('Text');
-  //   }
-  //   else {
-  //     return this.typeLabelOfExprPortion(role.fk_temporal_entity)
-  //   }
-  // }
-
-  // /**
-  //  * Observe the name of the node
-  //  */
-  // private observeName(role) {
-  //   // Q: is the node a information and thus an expression portion?
-  //   if (role.fk_temporal_entity) {
-  //     // A: Yes it is an expression portion, lets find the favorit appellaiton
-  //     return this.labelOfEntity(role.fk_temporal_entity)
-  //       .pipe(startWith('No Name'));
-  //   }
-  //   else {
-  //     // A: No it is a digital, lets take the first chars of the text
-  //     return this.p.dat$.digital$.by_pk_entity$.key(role.fk_subject_data)
-  //       .pipe(
-  //         filter(x => !!x),
-  //         map(versions => latestVersion(versions)),
-  //         map(x => x.string.substring(0, 20) + (x.string.length > 20 ? '…' : '')),
-  //         startWith(''));
-  //   }
-  // }
-
-
   /**
    * Returns an observable number with the
    */
   private getExpressionWhereSourceIsRange(pkEntity: number): Observable<number> {
     this.inf.role.findByParams(false, null, null, pkEntity, null, this.fkPropertyFromSource);
     return this.r.inf$.role$
-      .by_object_and_property$({
-        fk_entity: pkEntity,
-        fk_property: this.fkPropertyFromSource
-      })
+      .by_object_and_property$(
+        {
+          fk_entity: pkEntity,
+          fk_property: this.fkPropertyFromSource
+        },
+        false
+      )
       .pipe(
         tap((xs) => {
           if (xs.length !== 1) console.warn('number of expressions must be one');
@@ -337,10 +310,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   private getExpressionWhereSourceIsDomain(pkEntity: number): Observable<number> {
     this.inf.role.findByParams(false, null, null, null, pkEntity, this.fkPropertyFromSource);
     return this.r.inf$.role$
-      .by_subject_and_property$({
-        fk_temporal_entity: pkEntity,
-        fk_property: this.fkPropertyFromSource
-      })
+      .by_subject_and_property$(
+        {
+          fk_temporal_entity: pkEntity,
+          fk_property: this.fkPropertyFromSource
+        },
+        false
+      )
       .pipe(
         tap((xs) => {
           // if (xs.length !== 1) console.warn('number of expressions must be one');
@@ -612,38 +588,58 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     });
   }
 
-  remove(node: ContentTreeNode) {
-    if (node.isDigital) this.removeDigital(node);
-    else this.removeExpressionPortion(node);
-  }
+  // remove(node: ContentTreeNode) {
+  //   if (node.isDigital) this.removeDigital(node);
+  //   else this.removeExpressionPortion(node);
+  // }
 
-  private removeDigital(node: ContentTreeNode) {
-    const role = node.role;
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+  // private removeDigital(node: ContentTreeNode) {
 
-      // remove the current role from project
-      this.inf.role.remove([role], pkProject)
 
-      // get the digital
-      this.dat.digital$.by_pk_entity$.key(role.fk_subject_data).pipe(
-        map(versions => latestVersion(versions))
-      ).subscribe(digital => {
-        // remove the digital
-        if (digital) this.dat.digital.delete([digital])
+
+  // }
+
+  removeStatement(node: ContentTreeNode) {
+    if (this.treeControl.getDescendants(node).length) {
+      this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn>(ConfirmDialogComponent, {
+        data: {
+          title: 'Section can\'t be removed',
+          paragraphs: [
+            'This section contains other elements.',
+            'Move these elements to another place in this panel (drag & drop) or remove them, if you don\'t need them anymore.',
+          ],
+          yesBtnColor: 'primary',
+          yesBtnText: 'Aknowledge',
+          noBtnText: '',
+          hideNoButton: true
+        }
       })
-    })
-  }
-
-  private removeExpressionPortion(node: ContentTreeNode) {
-    if (this.treeControl.getDescendants(node).length) return alert('You can not remove a section with content in it.');
+    }
     else {
-
-      this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-
-        // remove the current role from project
-        this.inf.role.remove([node.role], pkProject)
-
+      this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn>(ConfirmDialogComponent, {
+        data: {
+          title: 'Remove ' + (node.isDigital ? 'Text' : 'Section'),
+          paragraphs: [
+            'Are you sure?',
+            '(This can\'t be undone)',
+          ],
+          yesBtnColor: 'warn',
+          yesBtnText: 'Remove',
+          noBtnText: 'Cancel'
+        }
       })
+        .afterClosed()
+        .subscribe(confirmed => {
+          if (confirmed) {
+            this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+
+              // remove the current role from project
+              this.inf.role.remove([node.role], pkProject)
+
+            })
+          }
+        })
+
     }
 
   }

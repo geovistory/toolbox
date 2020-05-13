@@ -1,28 +1,26 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ViewChild, ElementRef } from '@angular/core';
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject, BehaviorSubject, of, Observable } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap, catchError } from '../../../../../../node_modules/rxjs/operators';
 import { InfLanguage, InfLanguageApi } from '../../../../core';
+import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 
-type CtrlModel = InfLanguage;
+export type CtrlLanguageModel = InfLanguage;
 
 @Component({
   selector: 'gv-ctrl-language',
   templateUrl: './ctrl-language.component.html',
   styleUrls: ['./ctrl-language.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlLanguageComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
 })
-export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlLanguageModel> {
   static nextId = 0;
 
-  model: CtrlModel;
+  model: CtrlLanguageModel;
+  @ViewChild(MatInput, { static: false }) matInput: MatInput;
+  @ViewChild(MatAutocompleteTrigger, { static: false }) matAutocompleteTrigger: MatAutocompleteTrigger;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
@@ -73,10 +71,10 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   private _disabled = false;
 
   @Input()
-  get value(): CtrlModel | null {
+  get value(): CtrlLanguageModel | null {
     return this.model;
   }
-  set value(value: CtrlModel | null) {
+  set value(value: CtrlLanguageModel | null) {
     if (!value || !value.pk_entity) {
       this.model = undefined
     } else {
@@ -106,7 +104,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
       this.value = value;
     })
 
-   this.options$ = this.searchTerm$.pipe(
+    this.options$ = this.searchTerm$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       tap(() => this.searching = true),
@@ -147,11 +145,18 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   }
 
 
-  onContainerClick(event: MouseEvent) {
+  onContainerClick() {
     // TODO: implement this
+    this.matInput.focus()
+    setTimeout(() => {
+      this.matAutocompleteTrigger.openPanel()
+    })
+    // this.onFocus()
+    // this.searchTerm$.next('')
+
   }
 
-  writeValue(value: CtrlModel | null): void {
+  writeValue(value: CtrlLanguageModel | null): void {
     this.formControl.setValue(value);
   }
 
@@ -171,7 +176,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
     this.onTouched();
     this.blur.emit()
     this.focused = false;
-    if(this.empty) this.formControl.setValue(undefined)
+    if (this.empty) this.formControl.setValue(undefined)
   }
 
   onFocus() {

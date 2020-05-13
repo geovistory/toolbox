@@ -1,11 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
-import { U } from 'app/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FormGroupFactory } from '../core/form-group-factory';
-import { FormArrayFactory } from '../core/form-array-factory';
-import { FormControlFactory } from '../core/form-control-factory';
-import { FormChildFactory } from '../core/form-child-factory';
 
 export class FormFactory {
   constructor(
@@ -28,6 +24,9 @@ export interface FormArrayConfig<A> {
   maxLength?: number;
   validators?: ValidatorFn[]
 
+  initValue?: any[] // initial value of the array
+
+
   // If this is a list, the number defines how many children are added on init
   addOnInit?: number;
 
@@ -41,6 +40,7 @@ export interface FormControlConfig<M> {
   required: boolean;
   disabled$?: BehaviorSubject<boolean>;
   validators?: ValidatorFn[]
+
   initValue? // initial value of the control
 
   mapValue: (d) => any

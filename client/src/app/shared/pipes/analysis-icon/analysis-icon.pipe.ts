@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { PeItDetail, U, SysConfig } from 'app/core';
+import { EntityDetail, U, SysConfig } from 'app/core';
 
 @Pipe({
   name: 'analysisIcon'

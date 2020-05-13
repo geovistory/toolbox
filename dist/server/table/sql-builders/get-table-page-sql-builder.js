@@ -23,7 +23,9 @@ class GetTablePageSqlBuilder extends sql_builder_base_1.SqlBuilderBase {
     -- master columns
     WITH tw1 AS (
       Select
-      ROW_NUMBER() OVER (),
+      ROW_NUMBER() OVER (
+        ${this.addOrderBy(options, colMeta)}
+      ),
       t1.pk_row${masterColumns.length ? ',' : ''}
       ${this.addColumnSelects(masterColumns)}
       From  tables.row t1

@@ -16,6 +16,7 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
   @Input() pkEntity: number
   @Input() dragEnabled = true;
   @Input() openTabOnClick = false;
+  @Input() showId = false;
 
   constructor(private p: ActiveProjectService) { }
 
@@ -34,7 +35,7 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
     this.p.addEntityTab(this.preview.pk_entity, this.preview.fk_class, this.preview.entity_type)
   }
   addAndOpenInNewTab() {
-    this.p.addPeItToProject(this.preview.pk_entity, () => {
+    this.p.addEntityToProject(this.preview.pk_entity, () => {
       this.p.addEntityTab(this.preview.pk_entity, this.preview.fk_class, this.preview.entity_type)
     })
   }

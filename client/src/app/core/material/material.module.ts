@@ -33,7 +33,7 @@ const modules = [
   MatStepperModule,
   MatSliderModule,
   MatToolbarModule,
-  MatRippleModule
+  MatRippleModule,
 ]
 
 @NgModule({

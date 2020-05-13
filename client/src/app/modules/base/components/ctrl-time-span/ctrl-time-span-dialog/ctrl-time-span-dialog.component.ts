@@ -8,9 +8,9 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from '../../../..
 import { debounceTime, first, mergeMap, takeUntil, map } from '../../../../../../../node_modules/rxjs/operators';
 import { ConfigurationPipesService } from '../../../services/configuration-pipes.service';
 import { InfTimePrimitiveWithCalendar } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
-import { MergeDef } from '../../form-create-role/form-create-role.component';
-import { FormPart } from '../../form-create-role/FormPart';
+
 import { FieldDefinition } from '../../properties-tree/properties-tree.models';
+import { FormPart, MergeDef } from './FormPart';
 
 export interface CtrlTimeSpanDialogResult {
   // key is the dfh_pk_property, expressing what the time primitive means for the time span

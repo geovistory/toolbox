@@ -1,6 +1,6 @@
 import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, Inject, HostBinding } from '@angular/core';
-import { IAppState, InfPersistentItem, PeItDetail } from 'app/core';
+import { IAppState, InfPersistentItem, EntityDetail } from 'app/core';
 import { SubstoreComponent } from 'app/core/state/models/substore-component';
 import { RootEpics } from 'app/core/store/epics';
 import { Observable, Subject } from 'rxjs';
@@ -27,7 +27,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
 
   @HostBinding('class.h-100') h = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
-  
+
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
@@ -39,7 +39,7 @@ export class TypeEditFormComponent extends TypeEditFormAPIActions implements OnI
   @select() peItDetail$: Observable<InfPersistentItem>;
 
   // the state object of the child components
-  peItDetail: PeItDetail;
+  peItDetail: EntityDetail;
 
   // Emitted when user clicks close
   @Output() close = new EventEmitter<void>();

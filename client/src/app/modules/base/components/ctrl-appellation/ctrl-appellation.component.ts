@@ -1,31 +1,30 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output, OnDestroy, Optional, Self, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Subject } from 'rxjs';
 import { InfAppellation } from '../../../../core';
 import { QuillDoc } from 'app/modules/quill';
+import { QuillEditComponent } from 'app/modules/quill/quill-edit/quill-edit.component';
 
-type CtrlModel = InfAppellation;
+export type CtrlAppellationModel = InfAppellation;
 
 @Component({
   selector: 'gv-ctrl-appellation',
   templateUrl: './ctrl-appellation.component.html',
-  styleUrls: ['./ctrl-appellation.component.css'],
+  styleUrls: ['./ctrl-appellation.component.scss'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlAppellationComponent }],
-  host: {
-    '[class.example-floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-    '[attr.aria-describedby]': 'describedBy',
-  }
+
 })
-export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
+export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlAppellationModel> {
   static nextId = 0;
 
-  model: CtrlModel;
+  model: CtrlAppellationModel;
 
   @Output() blur = new EventEmitter<void>();
   @Output() focus = new EventEmitter<void>();
+
+  @ViewChild(QuillEditComponent, { static: false }) quillEditComponent: QuillEditComponent;
 
   autofilled?: boolean;
   // emits true on destroy of this component
@@ -71,10 +70,10 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   private _disabled = false;
 
   @Input()
-  get value(): CtrlModel | null {
+  get value(): CtrlAppellationModel | null {
     return this.model;
   }
-  set value(value: CtrlModel | null) {
+  set value(value: CtrlAppellationModel | null) {
 
 
     if (
@@ -102,7 +101,8 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   fkClass: number
 
   constructor(
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    private ref: ChangeDetectorRef
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -136,12 +136,12 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   }
 
 
-  onContainerClick(event: MouseEvent) {
-    // TODO: implement this
-
+  onContainerClick() {
+    this.onFocus()
+    this.quillEditComponent.focusOnEnd()
   }
 
-  writeValue(value: CtrlModel | null): void {
+  writeValue(value: CtrlAppellationModel | null): void {
     this.value = value;
     if (value && value.quill_doc) this.quillDoc = value.quill_doc
     if (value && value.fk_class) this.fkClass = value.fk_class
@@ -160,9 +160,9 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
   }
 
   onBlur() {
+    this.focused = false;
     this.onTouched();
     this.blur.emit()
-    this.focused = false;
   }
 
   onFocus() {

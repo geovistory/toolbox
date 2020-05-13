@@ -1,13 +1,14 @@
-<as-split class="gv-split-style" [direction]="'horizontal'" gutterSize="1" [useTransition]="t.useTransition"
-  (dragEnd)="t.onResizeArea($event)">
+<as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': t.layoutMode!=='both'}" [direction]="'horizontal'"
+  gutterSize="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
 
   <!-------------------------------------------------------------------
        Text Editor
     -------------------------------------------------------------------->
   <as-split-area [size]="t.splitSizeLeft" class="gv-flex-fh">
 
-    <gv-detail-top-bar [openRightAreaBtn]="!t.showRightArea"
-      (openRight)="t.setShowRightArea(true); annotationsVisible$.next(true);">
+    <gv-detail-top-bar [openRightAreaBtn]="t.layoutMode=='left-only'" [closeLeftAreaBtn]="t.layoutMode=='both'"
+      (closeLeft)="t.setLayoutMode('right-only')"
+      (openRight)="t.setLayoutMode('both');  annotationsVisible$.next(true);">
 
       <!--  *ngIf="(readOnly$|async)" -->
       <gv-version-picker class="d-inline-block ml-2" [versionList]="(versions$ | async)"
@@ -22,7 +23,7 @@
         <button class="btn btn-sm btn-link" (click)="annotate()" *ngIf="(showAnnotateBtn$|async)">
           <i class="fa fa-plus" aria-hidden="true"></i> Annotate…
         </button>
-        <button class="btn btn-sm btn-link" (click)="t.setShowRightArea(true); annotationsVisible$.next(true)"
+        <button class="btn btn-sm btn-link" (click)="t.setLayoutMode('both'); annotationsVisible$.next(true)"
           *ngIf="!(annotationsVisible$|async)">
           Show Annotations
         </button>
@@ -57,7 +58,8 @@
       Annotations
     -------------------------------------------------------------------->
   <as-split-area [size]="t.splitSizeRight" class="gv-flex-fh">
-    <gv-detail-top-bar closeRightAreaBtn="true" (closeRight)="t.setShowRightArea(false)">
+    <gv-detail-top-bar [openLeftAreaBtn]="t.layoutMode=='right-only'" [closeRightAreaBtn]="t.layoutMode=='both'"
+      (closeRight)="t.setLayoutMode('left-only')" (openLeft)="t.setLayoutMode('both');">
       Annotations
       <span class="ml-auto">
         <button class="btn btn-link btn-sm ml-2" (click)="onAdd()">

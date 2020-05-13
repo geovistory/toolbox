@@ -1,6 +1,6 @@
 import { dispatch } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DatNamespace, DfhClass, InfPersistentItem, PeItDetail } from 'app/core';
+import { DatNamespace, DfhClass, InfPersistentItem, EntityDetail } from 'app/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Types } from './types.models';
 
@@ -9,7 +9,7 @@ interface MetaData {
   types?: InfPersistentItem[],
   typeClass?: DfhClass,
   type?: InfPersistentItem,
-  peItDetail?: PeItDetail,
+  peItDetail?: EntityDetail,
   namespace?: DatNamespace;
   pkTypeClass?: number;
   pkProject?: number;
@@ -42,82 +42,82 @@ export class TypesAPIActions {
 
   static readonly DESTROY = 'Types::DESTROY';
 
-//   @dispatch()
-//   load = (pkProject: number, pkTypeClass: number): TypesAPIAction => ({
-//     type: TypesAPIActions.LOAD,
-//     meta: { pkProject, pkTypeClass },
-//     payload: null,
-//   });
+  //   @dispatch()
+  //   load = (pkProject: number, pkTypeClass: number): TypesAPIAction => ({
+  //     type: TypesAPIActions.LOAD,
+  //     meta: { pkProject, pkTypeClass },
+  //     payload: null,
+  //   });
 
-//   loadSucceeded = (types: InfPersistentItem[]): TypesAPIAction => ({
-//     type: TypesAPIActions.LOAD_SUCCEEDED,
-//     meta: { types },
-//     payload: null
-//   })
+  //   loadSucceeded = (types: InfPersistentItem[]): TypesAPIAction => ({
+  //     type: TypesAPIActions.LOAD_SUCCEEDED,
+  //     meta: { types },
+  //     payload: null
+  //   })
 
-//   loadFailed = (error): TypesAPIAction => ({
-//     type: TypesAPIActions.LOAD_FAILED,
-//     meta: null,
-//     payload: null,
-//     error,
-//   })
+  //   loadFailed = (error): TypesAPIAction => ({
+  //     type: TypesAPIActions.LOAD_FAILED,
+  //     meta: null,
+  //     payload: null,
+  //     error,
+  //   })
 
-//   /*********************************************************************
-//  *  Methods related to the add form
-//  *********************************************************************/
-//   @dispatch()
-//   openAddForm = (create: CreateOrAddEntity): TypesAPIAction => ({
-//     type: TypesAPIActions.OPEN_ADD_FORM,
-//     meta: { create },
-//     payload: null
-//   })
+  //   /*********************************************************************
+  //  *  Methods related to the add form
+  //  *********************************************************************/
+  //   @dispatch()
+  //   openAddForm = (create: CreateOrAddEntity): TypesAPIAction => ({
+  //     type: TypesAPIActions.OPEN_ADD_FORM,
+  //     meta: { create },
+  //     payload: null
+  //   })
 
-//   @dispatch()
-//   closeAddForm = (): TypesAPIAction => ({
-//     type: TypesAPIActions.CLOSE_ADD_FORM,
-//     meta: null,
-//     payload: null
-//   })
-
-
-//   @dispatch()
-//   createSucceeded = (type: InfPersistentItem): TypesAPIAction => ({
-//     type: TypesAPIActions.CREATE_SUCCEEDED,
-//     meta: { type },
-//     payload: null
-//   })
-
-//   /*********************************************************************
-//    *  Methods related to the edit form
-//    *********************************************************************/
+  //   @dispatch()
+  //   closeAddForm = (): TypesAPIAction => ({
+  //     type: TypesAPIActions.CLOSE_ADD_FORM,
+  //     meta: null,
+  //     payload: null
+  //   })
 
 
-//   @dispatch()
-//   openEditForm = (pkProject: number, type: InfPersistentItem): TypesAPIAction => ({
-//     type: TypesAPIActions.OPEN_EDIT_FORM,
-//     meta: { pkProject, type },
-//     payload: null
-//   })
+  //   @dispatch()
+  //   createSucceeded = (type: InfPersistentItem): TypesAPIAction => ({
+  //     type: TypesAPIActions.CREATE_SUCCEEDED,
+  //     meta: { type },
+  //     payload: null
+  //   })
 
-//   openEditFormSucceeded = (peItDetail: PeItDetail): TypesAPIAction => ({
-//     type: TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED,
-//     meta: { peItDetail },
-//     payload: null
-//   })
+  //   /*********************************************************************
+  //    *  Methods related to the edit form
+  //    *********************************************************************/
 
-//   openEditFormFailed = (error): TypesAPIAction => ({
-//     type: TypesAPIActions.OPEN_EDIT_FORM_FAILED,
-//     meta: null,
-//     payload: null,
-//     error
-//   })
 
-//   @dispatch()
-//   closeEditForm = (): TypesAPIAction => ({
-//     type: TypesAPIActions.CLOSE_EDIT_FORM,
-//     meta: null,
-//     payload: null
-//   })
+  //   @dispatch()
+  //   openEditForm = (pkProject: number, type: InfPersistentItem): TypesAPIAction => ({
+  //     type: TypesAPIActions.OPEN_EDIT_FORM,
+  //     meta: { pkProject, type },
+  //     payload: null
+  //   })
+
+  //   openEditFormSucceeded = (peItDetail: PeItDetail): TypesAPIAction => ({
+  //     type: TypesAPIActions.OPEN_EDIT_FORM_SUCCEEDED,
+  //     meta: { peItDetail },
+  //     payload: null
+  //   })
+
+  //   openEditFormFailed = (error): TypesAPIAction => ({
+  //     type: TypesAPIActions.OPEN_EDIT_FORM_FAILED,
+  //     meta: null,
+  //     payload: null,
+  //     error
+  //   })
+
+  //   @dispatch()
+  //   closeEditForm = (): TypesAPIAction => ({
+  //     type: TypesAPIActions.CLOSE_EDIT_FORM,
+  //     meta: null,
+  //     payload: null
+  //   })
 
 
   /*********************************************************************

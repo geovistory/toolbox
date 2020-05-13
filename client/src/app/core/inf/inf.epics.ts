@@ -34,16 +34,16 @@ export class InfEpics {
 
   public createEpics(): Epic {
     const infPersistentItemEpicsFactory = new InfEpicsFactory<InfPersistentItemSlice, InfPersistentItem>
-      (infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi);
+      (infRoot, 'persistent_item', this.infActions.persistent_item, this.notification, this.infoProjRelApi, this.proActions);
 
     const infTemporalEntityEpicsFactory = new InfEpicsFactory<InfTemporalEntitySlice, InfTemporalEntity>
-      (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi);
+      (infRoot, 'temporal_entity', this.infActions.temporal_entity, this.notification, this.infoProjRelApi, this.proActions);
 
     const infRoleEpicsFactory = new InfEpicsFactory<InfRoleSlice, InfRole>
-      (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi);
+      (infRoot, 'role', this.infActions.role, this.notification, this.infoProjRelApi, this.proActions);
 
     const infTextPropertyEpicsFactory = new InfEpicsFactory<InfTextPropertySlice, InfTextProperty>
-      (infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi);
+      (infRoot, 'text_property', this.infActions.text_property, this.notification, this.infoProjRelApi, this.proActions);
 
     return combineEpics(
       /**
@@ -83,15 +83,15 @@ export class InfEpics {
           this.schemaObjectService.storeSchemaObject(schemaObject, pk)
         }
       ),
-      infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
-        (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
-        InfPersistentItemActionFactory.TYPE_OF_PROJECT,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.persistent_item.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk);
-        }
-      ),
+      // infPersistentItemEpicsFactory.createLoadEpic<LoadTypeOfProjectAction>(
+      //   (meta) => this.peItApi.typeOfProject(meta.pk, meta.pkEntity),
+      //   InfPersistentItemActionFactory.TYPE_OF_PROJECT,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.persistent_item.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), pk);
+      //   }
+      // ),
       infPersistentItemEpicsFactory.createUpsertEpic<ModifyActionMeta<InfPersistentItem>>((meta) => this.peItApi
         .findOrCreateInfPersistentItems(meta.pk, meta.items),
         (results, pk) => {
@@ -167,15 +167,6 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), null);
         }
       ),
-      // infRoleEpicsFactory.createLoadEpic<LoadOutgoingAlternativeRoles>(
-      //   (meta) => this.roleApi.alternativesNotInProjectByTeEntPk(meta.pkTemporalEntity, meta.pkProperty, meta.pk),
-      //   InfRoleActionFactory.ALTERNATIVES_OUTGOING,
-      //   (results, pk) => {
-      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-      //     flattener.role.flatten(results);
-      //     storeFlattened(flattener.getFlattened(), null);
-      //   }
-      // ),
       infRoleEpicsFactory.createUpsertEpic<ModifyActionMeta<InfRole>>((meta) => this.roleApi
         .findOrCreateInfRoles(meta.pk, meta.items),
         (results, pk) => {
@@ -184,15 +175,15 @@ export class InfEpics {
           storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
-      infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
-        .addToProjectWithTeEnt(meta.pk, meta.pkRoles),
-        InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
-        (results, pk) => {
-          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          flattener.role.flatten(results);
-          storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        }
-      ),
+      // infRoleEpicsFactory.createCustomUpsertEpic<AddToProjectWithTeEntActionMeta>((meta) => this.roleApi
+      //   .addToProjectWithTeEnt(meta.pk, meta.pkRoles),
+      //   InfRoleActionFactory.ADD_TO_PROJECT_WITH_TE_EN,
+      //   (results, pk) => {
+      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+      //     flattener.role.flatten(results);
+      //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
+      //   }
+      // ),
 
       (action$: FluxActionObservable<any, LoadPaginatedRoleListMeta>, store) => action$.pipe(
         ofType(infRoleEpicsFactory.type('LOAD', InfTemporalEntityActionFactory.PAGINATED_LIST)),
@@ -211,7 +202,12 @@ export class InfEpics {
 
       infRoleEpicsFactory.createLoadEpic<FindRoleByParams>(
         (meta) => this.roleApi.queryByParams(meta.ofProject, meta.pk, meta.pkEntity, meta.pkInfoRange, meta.pkInfoDomain, meta.pkProperty),
-        InfRoleActionFactory.BY_PARAMS
+        InfRoleActionFactory.BY_PARAMS,
+        (results, pk) => {
+          const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
+          flattener.role.flatten(results);
+          storeFlattened(flattener.getFlattened(), pk, 'LOAD');
+        }
       ),
 
       // infRoleEpicsFactory.createLoadEpic<ContentTreeMeta>(
@@ -284,7 +280,8 @@ export class InfEpics {
     const paginateBy: PaginateByParam[] = [
       { fk_property: meta.pkProperty },
       { fk_target_class: meta.fkTargetClass },
-      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity }
+      { [meta.isOutgoing ? 'fk_temporal_entity' : 'fk_entity']: meta.pkSourceEntity },
+      { [meta.alternatives ? 'alternatives' : 'ofProject']: meta.alternatives }
     ];
     // call action to set pagination loading on true
     this.infActions.role.loadPage(paginateBy, meta.limit, meta.offset, pkProject);

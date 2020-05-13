@@ -155,67 +155,6 @@ export class InfTemporalEntityApi extends BaseLoopBackApi {
   }
 
   /**
-   * Get e nested objects of all information about the temporal entities.
-   *
-   * @param {number} pkProject Pk of project.
-   *
-   * @param {object} data Request data.
-   *
-   *  - `pkEntities` – `{any}` - Primary Keys of the temporal entities (array of pk_entity)
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfTemporalEntity` object.)
-   * </em>
-   */
-  public graphsOfProject(pkProject: any = {}, pkEntities: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/graphs-of-project";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      pkEntities: pkEntities
-    };
-    let _urlParams: any = {};
-    if (typeof pkProject !== 'undefined' && pkProject !== null) _urlParams.pkProject = pkProject;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Get e nested objects of all information about the temporal entities.
-   *
-   * @param {object} data Request data.
-   *
-   *  - `pkEntities` – `{any}` - Primary Keys of the temporal entities (array of pk_entity)
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `InfTemporalEntity` object.)
-   * </em>
-   */
-  public graphsOfRepo(pkEntities: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/InfTemporalEntities/graphs-of-repo";
-    let _routeParams: any = {};
-    let _postBody: any = {
-      pkEntities: pkEntities
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * Get e schema object of own properties of the temporal entity in project version.
    *
    * @param {number} pkProject Pk project

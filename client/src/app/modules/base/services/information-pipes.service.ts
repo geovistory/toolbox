@@ -207,7 +207,7 @@ export class InformationPipesService {
 
   @spyTag pipeListTextProperty<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<TextPropertyItem[]> {
     return this.p.pkProject$.pipe(
-      switchMap(pkProject => this.p.inf$.text_property$.by_fk_concerned_entity__fk_class_field$.key(pkEntity + '_' + listDefinition.fkClassField)
+      switchMap(pkProject => this.p.inf$.text_property$.by_fk_concerned_entity__fk_class_field_indexed$(pkEntity + '_' + listDefinition.fkClassField)
         .pipe(
           map(textPropertyByPk => values(textPropertyByPk)),
           switchMapOr([], textProperties => combineLatest(
@@ -321,25 +321,33 @@ export class InformationPipesService {
         paginatedRolePks.map(pkRole => basicRoleItemLoader(pkRole, listDefinition.isOutgoing, pkProject)
           .pipe(filter(x => !!x))
         )
-      ).pipe(
-        switchMap((teEnRoles) => combineLatestOrEmpty(
-          teEnRoles.map((basicRoleItem) => rowLoader(
-            targetEntityOfRoleItem(basicRoleItem),
-            fieldDefinitions,
-            propertyItemType,
-            pkProject
-          ).pipe(
-            map(row => {
-              const item: TemporalEntityItem = {
-                ...basicRoleItem,
-                row,
-                pkEntity: targetEntityOfRoleItem(basicRoleItem),
-              };
-              return item
+      )
+        .pipe(
+          switchMap((teEnRoles) => combineLatestOrEmpty(
+            teEnRoles.map((basicRoleItem) => {
+              const pkTeEn = targetEntityOfRoleItem(basicRoleItem);
+              return combineLatest(
+                rowLoader(
+                  pkTeEn,
+                  fieldDefinitions,
+                  propertyItemType,
+                  pkProject
+                ),
+                this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
+              ).pipe(
+                map(([row, teEnProjRel]) => {
+                  const item: TemporalEntityItem = {
+                    ...basicRoleItem,
+                    row,
+                    pkEntity: pkTeEn,
+                    teEnProjRel
+                  };
+                  return item
+                })
+              )
             })
-          ))
+          )),
         )),
-      )),
 
     )
     return rows$
@@ -401,11 +409,13 @@ export class InformationPipesService {
                   const items = sortItems(d.groupedOut[listDefinition.property.pkProperty])
                   const firstItem = items[0];
                   cell = {
+                    isOutgoing: listDefinition.isOutgoing,
                     itemsCount: items.length,
                     entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
                     label: firstItem.label,
                     pkProperty: listDefinition.property.pkProperty,
-                    firstItem
+                    firstItem,
+                    items
                   }
                 }
               } else {
@@ -413,11 +423,13 @@ export class InformationPipesService {
                   const items = sortItems(d.groupedIn[listDefinition.property.pkProperty])
                   const firstItem = items[0];
                   cell = {
+                    isOutgoing: listDefinition.isOutgoing,
                     itemsCount: items.length,
                     entityPreview: ((firstItem || {}) as EntityPreviewItem).preview,
                     label: firstItem.label,
                     pkProperty: listDefinition.property.pkProperty,
-                    firstItem
+                    firstItem,
+                    items
                   }
                 }
               }
@@ -436,6 +448,7 @@ export class InformationPipesService {
                 label = this.timeSpanPipe.transform(timeSpan);
               }
               cell = {
+                isOutgoing: listDefinition.isOutgoing,
                 itemsCount,
                 label,
                 entityPreview: undefined,
@@ -576,9 +589,9 @@ export class InformationPipesService {
 
   @spyTag pipeTemporalEntityRemoveProperties(pkEntity: number): Observable<TemporalEntityRemoveProperties> {
     return combineLatest(
-      this.p.inf$.temporal_entity$.by_pk_entity$.key(pkEntity),
+      this.p.inf$.temporal_entity$.by_pk_entity_key$(pkEntity),
       this.p.inf$.role$.by_subject$({ fk_temporal_entity: pkEntity }),
-      this.p.inf$.text_property$.by_fk_concerned_entity$.key(pkEntity)
+      this.p.inf$.text_property$.by_fk_concerned_entity_indexed$(pkEntity)
     ).pipe(
       map(([temporalEntity, roles, textProperties]) => {
         const res: TemporalEntityRemoveProperties = {
@@ -935,8 +948,8 @@ export class InformationPipesService {
 
     const key = pkEntity + '_' + listDefinition.fkClassField;
     return combineLatest(
-      this.infRepo.text_property$.by_fk_concerned_entity__fk_class_field$.key(key),
-      this.p.inf$.text_property$.by_fk_concerned_entity__fk_class_field$.key(key).pipe(
+      this.infRepo.text_property$.by_fk_concerned_entity__fk_class_field_indexed$(key),
+      this.p.inf$.text_property$.by_fk_concerned_entity__fk_class_field_indexed$(key).pipe(
         map(inproject => inproject ? Object.keys(inproject) : [])
       )
     ).pipe(

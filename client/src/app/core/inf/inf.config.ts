@@ -3,11 +3,11 @@ import { InfRole, InfTextProperty } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
-export const facetteByPk = 'by_project';
+// export const facetteByPk = 'by_project';
 
 export const infDefinitions: ReducerConfigCollection = {
   persistent_item: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -22,7 +22,7 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   temporal_entity: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -37,7 +37,7 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   role: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -61,43 +61,16 @@ export const infDefinitions: ReducerConfigCollection = {
         keyInStore: 'object+property',
         groupByFn: (d: InfRole): string => indexRoleByObjectProperty(d)
       },
-      // {
-      //   keyInStore: 'fk_entity',
-      //   groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_entity)
-      // },
-      // {
-      //   keyInStore: 'fk_temporal_entity',
-      //   groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_temporal_entity)
-      // },
-      // {
-      //   keyInStore: 'fk_property',
-      //   groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_property)
-      // },
-      // {
-      //   keyInStore: 'fk_property__fk_temporal_entity',
-      //   groupByFn: (d: InfRole): string => U.toStrContains0undef([d.fk_property, d.fk_temporal_entity])
-      // },
-      // {
-      //   keyInStore: 'fk_property__fk_entity',
-      //   groupByFn: (d: InfRole): string => U.toStrContains0undef([d.fk_property, d.fk_entity])
-      // },
-      // {
-      //   keyInStore: 'fk_property_of_property__fk_temporal_entity',
-      //   groupByFn: (d: InfRole): string => U.toStrContains0undef([d.fk_property_of_property, d.fk_temporal_entity])
-      // },
+
       {
         keyInStore: 'fk_subject_data',
         groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_subject_data)
       },
-      // {
-      //   keyInStore: 'fk_object_data',
-      //   groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_object_data)
-      // }
     ]
   },
 
   text_property: {
-    facetteByPk,
+    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -116,7 +89,6 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   lang_string: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -126,7 +98,6 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: []
   },
   appellation: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -136,7 +107,6 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: []
   },
   time_primitive: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -146,7 +116,6 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: []
   },
   place: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -156,7 +125,6 @@ export const infDefinitions: ReducerConfigCollection = {
     groupBy: []
   },
   language: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {

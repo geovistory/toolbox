@@ -3,6 +3,12 @@ const SqlRamList = require('../../dist/server/sql-builders/sql-ram-list')
   .SqlRamList;
 var SqlContentTree = require('../../dist/server/sql-builders/sql-content-tree')
   .SqlContentTree;
+var SqlEntityRemoveFromProject = require('../../dist/server/sql-builders/sql-entity-remove-from-project')
+  .SqlEntityRemoveFromProject;
+var SqlEntityAddToProject = require('../../dist/server/sql-builders/sql-entity-add-to-project')
+  .SqlEntityAddToProject;
+var SqlTypeItem = require('../../dist/server/sql-builders/sql-type-item')
+  .SqlTypeItem;
 
 var _ = require('lodash');
 
@@ -25,6 +31,65 @@ module.exports = function(SchemaObject) {
       pkExpressionEntity
     );
     SchemaObject.query(pkProject, q, cb);
+  };
+
+  /**
+   * Remove entity, outgoing statements, text properties
+   * and namings from project
+   */
+  SchemaObject.removeEntityFromProject = function(
+    pkProject,
+    pkEntity,
+    ctx,
+    cb
+  ) {
+    if (!ctx.req.accessToken.userId)
+      return reject(Error('AccessToken missing'));
+
+    const accountId = ctx.req.accessToken.userId;
+
+    const q = new SqlEntityRemoveFromProject(SchemaObject.app.models).create(
+      pkProject,
+      pkEntity,
+      accountId
+    );
+    SchemaObject.query(pkProject, q, cb);
+  };
+
+  /**
+   * Add entity, outgoing statements, text properties
+   * and namings to project
+   */
+  SchemaObject.addEntityToProject = function(pkProject, pkEntity, ctx, cb) {
+    if (!ctx.req.accessToken.userId)
+      return reject(Error('AccessToken missing'));
+
+    const accountId = ctx.req.accessToken.userId;
+
+    const q = new SqlEntityAddToProject(SchemaObject.app.models).create(
+      pkProject,
+      pkEntity,
+      accountId
+    );
+    SchemaObject.query(pkProject, q, cb);
+  };
+
+  /**
+   * Get one type of project with all appellations
+   * and the entity definitions (text properties)
+   */
+  SchemaObject.typeOfProject = function(pkProject, pkType, cb) {
+    const mainQuery = new SqlTypeItem(SchemaObject.app.models).create(
+      pkProject,
+      pkType
+    );
+    const connector = SchemaObject.dataSource.connector;
+    connector.execute(mainQuery.sql, mainQuery.params, (err, result) => {
+      if (err) return cb(err);
+      const item = result[0];
+      const data = !item ? {} : item.data;
+      return cb(false, data);
+    });
   };
 
   /**

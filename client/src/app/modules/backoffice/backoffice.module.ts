@@ -19,9 +19,7 @@ import { AccountListComponent } from './components/account-list/account-list.com
 import { AccountListAPIActions } from './components/account-list/api/account-list.actions';
 import { AccountListAPIEpics } from './components/account-list/api/account-list.epics';
 import { ClassFieldListComponent } from './components/class-field-list/class-field-list.component';
-import { HasTypeAPIActions } from './components/has-type/api/has-type.actions';
-import { HasTypeAPIEpics } from './components/has-type/api/has-type.epics';
-import { HasTypeComponent } from './components/has-type/has-type.component';
+
 // import { PropertyListAPIActions } from './components/property-list/api/property-list.actions';
 // import { PropertyListAPIEpics } from './components/property-list/api/property-list.epics';
 // import { PropertyListComponent } from './components/property-list/property-list.component';
@@ -71,8 +69,6 @@ import { MaterialModule } from 'app/core/material/material.module';
     AccountListAPIEpics,
     // WarehouseAPIEpics,
     // WarehouseAPIActions,
-    HasTypeAPIEpics,
-    HasTypeAPIActions
   ],
   declarations: [
     MainComponent,
@@ -89,7 +85,6 @@ import { MaterialModule } from 'app/core/material/material.module';
     // ClassMainComponent,
     AccountListComponent,
     WarehouseComponent,
-    HasTypeComponent
   ]
 })
 export class BackofficeModule { }

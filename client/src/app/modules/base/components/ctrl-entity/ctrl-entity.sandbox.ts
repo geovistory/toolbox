@@ -2,10 +2,319 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { BaseModule } from '../../base.module';
-import { CtrlEntityComponent } from './ctrl-entity.component';
+import { CtrlEntityComponent, CtrlEntityModel } from './ctrl-entity.component';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 
+const initVal1: CtrlEntityModel = { pkEntity: 767402 }
+const initVal2: CtrlEntityModel = {
+  'persistent_item': {
+    pk_entity: undefined,
+    'pi_roles': [
+      {
+        fk_temporal_entity: undefined,
+        fk_subject_data: undefined,
+        fk_subject_tables_cell: undefined,
+        fk_subject_tables_row: undefined,
+        community_favorite_calendar: undefined,
+        fk_object_data: undefined,
+        fk_object_tables_cell: undefined,
+        fk_entity: undefined,
+        fk_object_tables_row: undefined,
+        fk_property_of_property: undefined,
+        is_standard_in_project_count: undefined,
+        is_in_project_count: undefined,
+        pk_entity: undefined,
+        'fk_property': 1111,
+        'temporal_entity': {
+          'te_roles': [
+            {
+              fk_temporal_entity: undefined,
+              fk_subject_data: undefined,
+              fk_subject_tables_cell: undefined,
+              fk_subject_tables_row: undefined,
+              community_favorite_calendar: undefined,
+              fk_object_data: undefined,
+              fk_object_tables_cell: undefined,
+              fk_entity: undefined,
+              fk_object_tables_row: undefined,
+              fk_property_of_property: undefined,
+              is_standard_in_project_count: undefined,
+              is_in_project_count: undefined,
+              pk_entity: undefined,
+              'fk_property': 1113,
+              'appellation': {
+                pk_entity: undefined,
+                string: undefined,
 
+                'fk_class': 40,
+                'quill_doc': {
+                  'latestId': 17,
+                  'ops': [
+                    {
+                      'attributes': {
+                        'charid': '7'
+                      },
+                      'insert': 'H'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '8'
+                      },
+                      'insert': 'a'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '9'
+                      },
+                      'insert': 'n'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '10'
+                      },
+                      'insert': 's'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '11'
+                      },
+                      'insert': ' '
+                    },
+                    {
+                      'attributes': {
+                        'charid': '12'
+                      },
+                      'insert': 'M'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '13'
+                      },
+                      'insert': 'u'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '14'
+                      },
+                      'insert': 's'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '15'
+                      },
+                      'insert': 't'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '16'
+                      },
+                      'insert': 'e'
+                    },
+                    {
+                      'attributes': {
+                        'charid': '17'
+                      },
+                      'insert': 'r'
+                    },
+                    {
+                      'attributes': {
+                        'blockid': '1'
+                      },
+                      'insert': '\n'
+                    }
+                  ]
+                }
+              }
+            },
+            {
+
+              fk_temporal_entity: undefined,
+              fk_subject_data: undefined,
+              fk_subject_tables_cell: undefined,
+              fk_subject_tables_row: undefined,
+              community_favorite_calendar: undefined,
+              fk_object_data: undefined,
+              fk_object_tables_cell: undefined,
+              fk_entity: undefined,
+              fk_object_tables_row: undefined,
+              fk_property_of_property: undefined,
+              is_standard_in_project_count: undefined,
+              is_in_project_count: undefined,
+              pk_entity: undefined,
+              'fk_property': 1112,
+              'language': {
+                'fk_class': 54,
+                'pk_language': 'deu',
+                'lang_type': 'living',
+                'scope': 'individual',
+                'iso6392b': 'ger',
+                'iso6392t': 'deu',
+                'iso6391': 'de ',
+                'notes': 'German',
+                'pk_entity': 18605
+              }
+            },
+            {
+              fk_temporal_entity: undefined,
+              fk_subject_data: undefined,
+              fk_subject_tables_cell: undefined,
+              fk_subject_tables_row: undefined,
+              community_favorite_calendar: undefined,
+              fk_object_data: undefined,
+              fk_object_tables_cell: undefined,
+              fk_object_tables_row: undefined,
+              fk_property_of_property: undefined,
+              is_standard_in_project_count: undefined,
+              is_in_project_count: undefined,
+              pk_entity: undefined,
+              'fk_property': 1430,
+              'fk_entity': 741575,
+            }
+          ],
+          'fk_class': 365,
+          pk_entity: undefined,
+
+        }
+
+      }
+    ],
+    'text_properties': [
+      {
+        'fk_concerned_entity': undefined,
+        'string': undefined,
+        'pk_entity': undefined,
+        'fk_class_field': 219,
+        'quill_doc': {
+          'latestId': 20,
+          'ops': [
+            {
+              'attributes': {
+                'charid': '2'
+              },
+              'insert': 'D'
+            },
+            {
+              'attributes': {
+                'charid': '3'
+              },
+              'insert': 'e'
+            },
+            {
+              'attributes': {
+                'charid': '4'
+              },
+              'insert': 'r'
+            },
+            {
+              'attributes': {
+                'charid': '5'
+              },
+              'insert': ' '
+            },
+            {
+              'attributes': {
+                'charid': '8'
+              },
+              'insert': 'l'
+            },
+            {
+              'attributes': {
+                'charid': '9'
+              },
+              'insert': 'a'
+            },
+            {
+              'attributes': {
+                'charid': '10'
+              },
+              'insert': 'c'
+            },
+            {
+              'attributes': {
+                'charid': '11'
+              },
+              'insert': 'h'
+            },
+            {
+              'attributes': {
+                'charid': '12'
+              },
+              'insert': 'e'
+            },
+            {
+              'attributes': {
+                'charid': '13'
+              },
+              'insert': 'n'
+            },
+            {
+              'attributes': {
+                'charid': '14'
+              },
+              'insert': 'd'
+            },
+            {
+              'attributes': {
+                'charid': '15'
+              },
+              'insert': 'e'
+            },
+            {
+              'attributes': {
+                'charid': '16'
+              },
+              'insert': ' '
+            },
+            {
+              'attributes': {
+                'charid': '17'
+              },
+              'insert': 'H'
+            },
+            {
+              'attributes': {
+                'charid': '18'
+              },
+              'insert': 'a'
+            },
+            {
+              'attributes': {
+                'charid': '19'
+              },
+              'insert': 'n'
+            },
+            {
+              'attributes': {
+                'charid': '20'
+              },
+              'insert': 's'
+            },
+            {
+              'attributes': {
+                'blockid': '1'
+              },
+              'insert': '\n'
+            }
+          ]
+        },
+        'language': {
+          'fk_class': 54,
+          'pk_language': 'deu',
+          'lang_type': 'living',
+          'scope': 'individual',
+          'iso6392b': 'ger',
+          'iso6392t': 'deu',
+          'iso6391': 'de ',
+          'notes': 'German',
+          'pk_entity': 18605
+        },
+        'fk_language': 18605
+      }
+    ],
+    'fk_class': 21
+  }
+
+}
 
 
 export default sandboxOf(CtrlEntityComponent, {
@@ -23,7 +332,42 @@ export default sandboxOf(CtrlEntityComponent, {
       parentPath: ''
     },
     template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+        <gv-init-state [projectFromApi]="591" ></gv-init-state>
+
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:430px;height:400px" class="d-flex mr-4">
+                <form #f="ngForm" class="gv-grow-1">
+                    <mat-form-field class="w-100" appearance="fill">
+                        <gv-ctrl-entity [pkClass]="21" placeholder="Add a Person..." name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-entity>
+                        <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
+                        <mat-icon matSuffix svgIcon="pencil"></mat-icon>
+                    </mat-form-field>
+                </form>
+            </div>
+            <div>
+                <p>Form.valid: {{f.valid | json}}</p>
+
+                <p>Form.touched: {{f.touched | json}}</p>
+
+                <p>Form.dirty: {{f.dirty | json}}</p>
+
+                <p>Form.value </p>
+                <pre>
+                    {{f.value | json}}
+                </pre>
+
+                Invalid: {{m.invalid | json}}
+
+            </div>
+        </div>`
+  })
+  .add('CtrlEntity | Existing pkEntity', {
+    context: {
+      model: initVal1,
+      parentPath: ''
+    },
+    template: `
+        <gv-init-state [projectFromApi]="591" ></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
@@ -51,13 +395,13 @@ export default sandboxOf(CtrlEntityComponent, {
             </div>
         </div>`
   })
-  .add('CtrlEntity | Existing ', {
+  .add('CtrlEntity | Existing persistent_item', {
     context: {
-      model: 26172,
+      model: initVal2,
       parentPath: ''
     },
     template: `
-        <gv-init-state [projectFromApi]="24" ></gv-init-state>
+        <gv-init-state [projectFromApi]="591" ></gv-init-state>
 
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">

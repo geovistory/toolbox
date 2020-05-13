@@ -7,6 +7,7 @@ import { QuillEditComponent, IndexedCharids } from './quill-edit.component';
 import { textBüchel, _33095characters, wikiRats } from './quill-edit.sandbox.mock';
 import { ChangeDetectorRef } from '../../../../../node_modules/@angular/core';
 import { ConfirmDialogModule } from 'app/shared/components/confirm-dialog/confirm-dialog.module';
+import { isValidQuillDoc } from 'app/core/quill-doc-validation/validate-quill-doc';
 
 
 
@@ -27,14 +28,18 @@ export default sandboxOf(QuillEditComponent, {
       quillDoc: {
         latestId: 7,
         contents: {}
-      }
+      },
+      isValidQuillDoc: isValidQuillDoc
     },
     template: `
         <div class="container">
             <div class="row">
                 <div class="col-6">
                     <gv-quill-edit [quillDoc]="quillDoc"
-                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
+                    (quillDocChange)="quillDoc=$event; validation = isValidQuillDoc($event)" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
+                </div>
+                <div class="col-6">
+                    {{validation|json}}
                 </div>
             </div>
         </div>

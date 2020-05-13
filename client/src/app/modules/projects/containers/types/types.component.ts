@@ -18,6 +18,7 @@ import { typesReducer } from './api/types.reducer';
 import { FieldDefinition, TemporalEntityItem } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { createPaginateBy } from 'app/modules/base/components/temporal-entity-list/temporal-entity-list.component';
 import { PaginationService } from 'app/modules/base/services/pagination.service';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 
 interface TypeItem {
   pkEntity: number
@@ -67,7 +68,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     public c: ConfigurationPipesService,
     public b: InformationBasicPipesService,
     public i: InformationPipesService,
-    private pag: PaginationService
+    private pag: PaginationService,
+    public s: SchemaObjectService
   ) {
   }
 
@@ -158,7 +160,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
             )
 
             const definition$ = this.p.inf$.text_property$
-              .by_fk_concerned_entity__fk_class_field$.key(pkEntity + '_'
+              .by_fk_concerned_entity__fk_class_field_indexed$(pkEntity + '_'
                 + appeAndDefFields.definitionField.listDefinitions[0].fkClassField).pipe(
                   map(d => {
                     const definitions = values(d);
@@ -219,7 +221,7 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
    * called when user clicks on remove
    */
   onRemove(type: TypeItem) {
-    this.p.openRemovePeItDialog(type.label, type.pkEntity)
+    this.p.openRemoveEntityDialog(type.label, type.pkEntity)
   }
 
   /**
@@ -236,7 +238,8 @@ export class TypesComponent implements OnInit, OnDestroy, SubstoreComponent {
     }).subscribe(result => {
       if (result.action === 'added' || result.action === 'created') {
         this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-          this.inf.persistent_item.typeOfProject(pkProject, result.pkEntity)
+          this.s.store(this.s.api.typeOfProject(pkProject, result.pkEntity), pkProject)
+          // this.inf.persistent_item.typeOfProject(pkProject, result.pkEntity)
         })
       } else if (result.action === 'alreadyInProjectClicked') {
         this.edit(result.pkEntity)

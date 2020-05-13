@@ -102,6 +102,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   ngOnInit() {
 
     this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$);
+    this.t.setLayoutMode('left-only')
 
     /**
      * initialize the editor with the latest (!) version
@@ -181,7 +182,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
       this.ref.detectChanges()
     })
     // TODO find out why this is needed
-    this.t.showRightArea$.pipe(delay(0), takeUntil(this.destroy$)).subscribe(() => {
+    this.t.layoutMode$.pipe(delay(0), takeUntil(this.destroy$)).subscribe(() => {
       this.ref.detectChanges()
     })
     // TODO find out why this is needed
@@ -312,7 +313,7 @@ export class TextDetailComponent implements OnInit, OnDestroy, SubstoreComponent
   }
 
   annotate() {
-    this.t.setShowRightArea(true)
+    this.t.setLayoutMode('both')
     this.setChunk(this.selectedDelta$.value);
     this.p.ramOpen$.next(true);
   }

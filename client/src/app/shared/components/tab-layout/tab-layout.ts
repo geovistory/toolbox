@@ -7,12 +7,14 @@ import { takeUntil } from 'rxjs/operators';
 import { TabBase } from './tab-layout.models';
 import { tabBaseReducer } from './tab-layout.reducer';
 
+export type TabLayoutMode = 'left-only' | 'right-only' | 'both';
+
 type Payload = Tab<any>;
 interface MetaData {
   tabTitle?: string,
   tabTooltip?: string,
   loading?: boolean,
-  showRightArea?: boolean
+  layoutMode?: TabLayoutMode
 };
 export type TabBaseAPIAction = FluxStandardAction<Payload, MetaData>;
 
@@ -29,8 +31,8 @@ export class TabLayout {
    * Stuff for handling split area rendering
    * START
    */
-  @select() showRightArea$: Observable<boolean>;
-  showRightArea: boolean;
+  @select() layoutMode$: Observable<TabLayoutMode>;
+  layoutMode: TabLayoutMode;
   defaultSizeRight = 32;
   splitSizeLeft: number;
   splitSizeRight: number;
@@ -41,25 +43,33 @@ export class TabLayout {
 
   constructor(public uiId: string, public ref: ChangeDetectorRef, public destroy$: Subject<boolean>) {
     this.basePath = ['activeProject', 'tabLayouts', this.uiId]
-    this.showRightArea$.pipe(takeUntil(this.destroy$)).subscribe(bool => {
-      this.showRightArea = bool;
-      this.setSplitSize(bool)
+    this.layoutMode$.pipe(takeUntil(this.destroy$)).subscribe(mode => {
+      this.layoutMode = mode;
+      this.setSplitSize(mode)
     })
   }
   getBasePath = () => this.basePath;
 
-  setSplitSize(bool) {
-    this.splitSizeLeft = bool ? (100 - this.defaultSizeRight) : 100;
-    this.splitSizeRight = bool ? this.defaultSizeRight : 0;
+  setSplitSize(mode: TabLayoutMode) {
+    if (mode == 'left-only') {
+      this.splitSizeLeft = 100;
+      this.splitSizeRight = 0;
+    } else if (mode == 'right-only') {
+      this.splitSizeLeft = 0;
+      this.splitSizeRight = 100;
+    } else {
+      this.splitSizeLeft = 100 - this.defaultSizeRight;
+      this.splitSizeRight = this.defaultSizeRight
+    }
   }
 
   onActivateTab() {
     this.activated$.next()
     if (this.firstActivation) {
       setTimeout(() => {
-        this.setSplitSize(!this.showRightArea);
+        this.setSplitSize(this.layoutMode);
         this.ref.detectChanges()
-        this.setSplitSize(this.showRightArea)
+        this.setSplitSize(this.layoutMode)
         this.ref.detectChanges()
         setTimeout(() => {
           this.useTransition = true;
@@ -74,10 +84,11 @@ export class TabLayout {
   }
 
   /**
- * When user resizes the areas
- */
+   * When user resizes the areas
+   */
   onResizeArea(event: { gutterNum: number, sizes: Array<number> }) {
-    if (event.sizes[1] < 5) this.setShowRightArea(false)
+    if (event.sizes[1] < 5) this.setLayoutMode('left-only')
+    if (event.sizes[0] < 5) this.setLayoutMode('right-only')
   }
 
 
@@ -92,7 +103,7 @@ export class TabLayout {
 
   static readonly SET_TAB_LOADING = 'TabBase::SET_TAB_LOADING';
 
-  static readonly SET_SHOW_RIGHT_AREA = 'TabBase::SET_SHOW_RIGHT_AREA';
+  static readonly SET_LAYOUT_MODE = 'TabBase::SET_LAYOUT_MODE';
 
   static readonly DESTROY = 'TabBase::DESTROY';
   /*********************************************************************
@@ -129,9 +140,9 @@ export class TabLayout {
   *  Set right panel state
   *********************************************************************/
   @dispatch()
-  setShowRightArea = (showRightArea: boolean): TabBaseAPIAction => ({
-    type: TabLayout.SET_SHOW_RIGHT_AREA,
-    meta: { showRightArea },
+  setLayoutMode = (layoutMode: TabLayoutMode): TabBaseAPIAction => ({
+    type: TabLayout.SET_LAYOUT_MODE,
+    meta: { layoutMode: layoutMode },
     payload: null,
   });
 

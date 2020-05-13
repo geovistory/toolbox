@@ -40,10 +40,10 @@ export function tabBaseReducer(state: TabBase = INITIAL_STATE, a: Action): TabBa
     /*****************************************************
     * Set show right panel
     *****************************************************/
-    case TabLayout.SET_SHOW_RIGHT_AREA:
+    case TabLayout.SET_LAYOUT_MODE:
       state = {
         ...state,
-        showRightArea: action.meta.showRightArea
+        layoutMode: action.meta.layoutMode
       };
       break;
 

@@ -377,140 +377,6 @@ module.exports = function(InfRole) {
     InfRole.findComplex(rolesInProjectFilter, findThem);
   };
 
-  InfRole.nestedObjectsOfProject = function(pk_project, pk_roles, cb) {
-    const innerJoinThisProject = {
-      $relation: {
-        name: 'entity_version_project_rels',
-        joinType: 'inner join',
-        where: [
-          'fk_project',
-          '=',
-          pk_project,
-          'and',
-          'is_in_project',
-          '=',
-          'true',
-        ],
-      },
-    };
-
-    const filter = {
-      where: ['pk_entity', 'IN', pk_roles],
-      include: {
-        entity_version_project_rels: innerJoinThisProject,
-        temporal_entity: {
-          $relation: {
-            name: 'temporal_entity',
-            joinType: 'inner join',
-            orderBy: [
-              {
-                pk_entity: 'asc',
-              },
-            ],
-          },
-          // "entity_version_project_rels": innerJoinThisProject,
-          te_roles: {
-            $relation: {
-              name: 'te_roles',
-              joinType: 'inner join',
-              orderBy: [
-                {
-                  pk_entity: 'asc',
-                },
-              ],
-            },
-            entity_version_project_rels: innerJoinThisProject,
-            appellation: {
-              $relation: {
-                name: 'appellation',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-            language: {
-              $relation: {
-                name: 'language',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-            time_primitive: {
-              $relation: {
-                name: 'time_primitive',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-            place: {
-              $relation: {
-                name: 'place',
-                joinType: 'left join',
-                orderBy: [
-                  {
-                    pk_entity: 'asc',
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
-    };
-
-    InfRole.findComplex(filter, cb);
-  };
-
-  /**
-   * Add roles with their associated temporal entity to the project
-   *
-   * This query will add those things to the project:
-   * - Roles that are enabled for the project
-   *
-   * This query will not add
-   * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
-   * - The value-like items (time-primitive, appellation, language), since they never belong to projects
-   *
-   * See this page for details
-   * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
-   *
-   * @param pk_namespace
-   * @param pk_project
-   * @param pk_typed_class
-   */
-  InfRole.addToProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
-    if (!ctx.req.accessToken.userId)
-      return Error('AccessToken.userId is missing');
-    const accountId = ctx.req.accessToken.userId;
-    const params = [parseInt(pk_project), accountId];
-
-    const sql_stmt = `
-      select information.relate_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles
-        .map(r => r * 1)
-        .join(', ')}], $1, $2, true);
-    `;
-
-    const connector = InfRole.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, resultObjects) => {
-      if (err) return cb(err, resultObjects);
-
-      InfRole.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
-        cb(err, result);
-      });
-    });
-  };
-
   InfRole.removeFromProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
     const q = new SqlBuilderLbModels(InfRole.app.models);
 
@@ -717,7 +583,7 @@ module.exports = function(InfRole) {
         ofProject,
         pkProject
       );
-      joinThisProject.$relation['select'] = false;
+      // joinThisProject.$relation['select'] = false;
       filter['include'] = {
         entity_version_project_rels: joinThisProject,
       };
@@ -992,8 +858,23 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
      ******************************************************/
 
     // if object is a temporal_entity
-    // TODO, if needed!
-
+    else if (hasRelatedModel(requestedRole.range_temporal_entity)) {
+      //create the object first
+      return models.InfTemporalEntity.findOrCreateInfTemporalEntity(
+        pkProject,
+        requestedRole.range_temporal_entity,
+        ctxWithoutBody
+      )
+        .then(resArray => {
+          const relatedModel = helpers.toObject(resArray[0]);
+          // return the foreign key and the related model
+          resolve({
+            fk: { fk_entity: relatedModel.pk_entity },
+            relatedModel: { range_temporal_entity: relatedModel },
+          });
+        })
+        .catch(err => reject(err));
+    }
     // if object is an inf persistent_item
     else if (hasRelatedModel(requestedRole.persistent_item)) {
       //create the object first
@@ -1140,4 +1021,138 @@ function getObject(pkProject, requestedRole, ctxWithoutBody) {
       });
     }
   });
+
+  // InfRole.nestedObjectsOfProject = function(pk_project, pk_roles, cb) {
+  //   const innerJoinThisProject = {
+  //     $relation: {
+  //       name: 'entity_version_project_rels',
+  //       joinType: 'inner join',
+  //       where: [
+  //         'fk_project',
+  //         '=',
+  //         pk_project,
+  //         'and',
+  //         'is_in_project',
+  //         '=',
+  //         'true',
+  //       ],
+  //     },
+  //   };
+
+  //   const filter = {
+  //     where: ['pk_entity', 'IN', pk_roles],
+  //     include: {
+  //       entity_version_project_rels: innerJoinThisProject,
+  //       temporal_entity: {
+  //         $relation: {
+  //           name: 'temporal_entity',
+  //           joinType: 'inner join',
+  //           orderBy: [
+  //             {
+  //               pk_entity: 'asc',
+  //             },
+  //           ],
+  //         },
+  //         // "entity_version_project_rels": innerJoinThisProject,
+  //         te_roles: {
+  //           $relation: {
+  //             name: 'te_roles',
+  //             joinType: 'inner join',
+  //             orderBy: [
+  //               {
+  //                 pk_entity: 'asc',
+  //               },
+  //             ],
+  //           },
+  //           entity_version_project_rels: innerJoinThisProject,
+  //           appellation: {
+  //             $relation: {
+  //               name: 'appellation',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //           language: {
+  //             $relation: {
+  //               name: 'language',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //           time_primitive: {
+  //             $relation: {
+  //               name: 'time_primitive',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //           place: {
+  //             $relation: {
+  //               name: 'place',
+  //               joinType: 'left join',
+  //               orderBy: [
+  //                 {
+  //                   pk_entity: 'asc',
+  //                 },
+  //               ],
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   };
+
+  //   InfRole.findComplex(filter, cb);
+  // };
+
+  // /**
+  //  * Add roles with their associated temporal entity to the project
+  //  *
+  //  * This query will add those things to the project:
+  //  * - Roles that are enabled for the project
+  //  *
+  //  * This query will not add
+  //  * - The temporal entities (since we can then still decide, which temporal entities will be shown in the result list)
+  //  * - The value-like items (time-primitive, appellation, language), since they never belong to projects
+  //  *
+  //  * See this page for details
+  //  * https://kleiolab.atlassian.net/wiki/spaces/GEOV/pages/693764097/Add+DataUnits+to+Project
+  //  *
+  //  * @param pk_namespace
+  //  * @param pk_project
+  //  * @param pk_typed_class
+  //  */
+  // InfRole.addToProjectWithTeEnt = function(pk_project, pk_roles, ctx, cb) {
+  //   if (!ctx.req.accessToken.userId)
+  //     return Error('AccessToken.userId is missing');
+  //   const accountId = ctx.req.accessToken.userId;
+  //   const params = [parseInt(pk_project), accountId];
+
+  //   const sql_stmt = `
+  //     select information.relate_outgoing_roles_with_te_ens_to_project(ARRAY[${pk_roles
+  //       .map(r => r * 1)
+  //       .join(', ')}], $1, $2, true);
+  //   `;
+
+  //   const connector = InfRole.dataSource.connector;
+  //   connector.execute(sql_stmt, params, (err, resultObjects) => {
+  //     if (err) return cb(err, resultObjects);
+
+  //     InfRole.nestedObjectsOfProject(pk_project, pk_roles, (err, result) => {
+  //       cb(err, result);
+  //     });
+  //   });
+  // };
 }
