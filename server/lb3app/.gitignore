@@ -20,4 +20,3 @@ npm-debug.log
 server/datasources.development.js
 deployment/tmp
 openapi.yml
-dev-logs
