@@ -1,9 +1,0 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-mat-dialog-content {
-  max-height: unset !important;
-  flex: 1 0 0;
-}

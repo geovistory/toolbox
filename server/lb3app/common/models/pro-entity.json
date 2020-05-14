@@ -1,0 +1,43 @@
+{
+  "name": "ProEntity",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "entity_version": {
+      "type": "number",
+      "generated": true
+    },
+    "tmsp_creation": {
+      "type": "string",
+      "generated": true
+    },
+    "tmsp_last_modification": {
+      "type": "string",
+      "generated": true
+    }
+  },
+  "validations": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    }
+  ],
+  "methods": {}
+}

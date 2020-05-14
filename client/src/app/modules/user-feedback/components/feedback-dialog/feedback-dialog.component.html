@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>What can we help you with?</h2>
+<mat-dialog-content class="mat-typography">
+
+  <p>
+    <a (click)="onCloseClick()" mat-flat-button color="primary"
+      href="https://kleiolab.atlassian.net/servicedesk/customer/portal/1/group/1/create/1" target="_blank">
+      <mat-icon svgIcon="forum-outline"></mat-icon>
+      Support / Question
+    </a>
+  </p>
+  <p>
+    <a (click)="onCloseClick()" mat-flat-button color="primary"
+      href="https://kleiolab.atlassian.net/servicedesk/customer/portal/1/group/1/create/8" target="_blank">
+      <mat-icon>lightbulb</mat-icon>
+      suggest improvement / new feature
+    </a>
+  </p>
+
+  <p>
+    <a mat-flat-button (click)="onCloseClick()" color="primary"
+      href="https://kleiolab.atlassian.net/servicedesk/customer/portal/1/group/1/create/6" target="_blank">
+      <mat-icon>bug_report</mat-icon>
+      report bug
+    </a>
+  </p>
+
+  <!-- <p>
+    Use our Help Center to <br>
+  </p>
+  <ul>
+    <li>suggest improvements / new features*</li>
+    <li>report a bug / problem*</li>
+  </ul>
+
+  <p>
+    Thank you for your feedback!
+  </p> -->
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <p> <button mat-button mat-dialog-close>Not now</button></p>
+</mat-dialog-actions>

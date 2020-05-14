@@ -1,0 +1,29 @@
+<h1 mat-dialog-title *ngIf="!deactivating && !deactivated && !error">Deactivate Profile '{{data.profileLabel}}'?</h1>
+
+<h1 mat-dialog-title *ngIf="deactivating">Deactivating Profile ...</h1>
+
+<h1 mat-dialog-title *ngIf="deactivated">Profile '{{data.profileLabel}}' deactivated !</h1>
+
+<h1 mat-dialog-title *ngIf="error">Crap, something went wrong...</h1>
+
+<mat-dialog-content class="pb-1 mat-typography">
+  <gv-ontome-profile-deactivation-report [hidden]="deactivating || error || deactivated" #c [profileId]="data.profileId"
+    [pkProject]="data.pkProject">
+  </gv-ontome-profile-deactivation-report>
+
+
+  <div *ngIf="deactivating">
+
+    <div class="w-100 d-flex align-items-center justify-content-center" style="height: 200px;">
+      <mat-spinner [diameter]="40"></mat-spinner>
+    </div>
+  </div>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+  <button mat-button [disabled]="c.loading || deactivating || error || deactivated" color="primary"
+    (click)="deactivate()">Deactivate Profile</button>
+  <button mat-button [disabled]="deactivating" [mat-dialog-close]="true" cdkFocusInitial>Close</button>
+</mat-dialog-actions>

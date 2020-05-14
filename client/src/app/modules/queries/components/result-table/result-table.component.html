@@ -1,0 +1,78 @@
+<!-- {{(definition$ | async)?.columns | json}}
+{{(a.results$ |async)?.rows | json}} -->
+<p-table #table [resizableColumns]="true" [columns]="displayedColumns$ | async" [value]="items" [scrollable]="true"
+  [rows]="limit" scrollHeight="100%" [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event);" [lazy]="true"
+  [totalRecords]="totalRecords" [virtualRowHeight]="48" [showLoader]="true" [loading]="a.loading" class="h-100">
+
+  <ng-template pTemplate="caption">
+
+    <div class="d-flex">
+      <button class="ml-auto" mat-flat-button [matMenuTriggerFor]="exportMenu">
+        <mat-icon svgIcon="download" color="primary"></mat-icon>
+        Download
+      </button>
+      <mat-menu #exportMenu="matMenu">
+        <button mat-menu-item (click)="download('json')">Download as JSON</button>
+        <button mat-menu-item (click)="download('csv')">Download as CSV</button>
+        <!-- <button  mat-menu-item (click)="onDownload('xlsx')">Download as Excel</button> -->
+      </mat-menu>
+    </div>
+    <mat-divider></mat-divider>
+  </ng-template>
+
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <!-- <th style="width:0.1%; white-space: nowrap;">#</th> -->
+      <th *ngFor="let col of colDefs">
+        <div class="d-flex">
+          <mat-icon *ngIf="col.defaultType" svgIcon="tag-outline" class="mat-text-secondary mat-icon-sm">
+          </mat-icon>
+          <mat-icon *ngIf="!col.defaultType" svgIcon="transit-connection"
+            class="mat-text-secondary mat-icon-sm fa-rotate-90"></mat-icon>
+          <span>{{col.label}}</span>
+        </div>
+      </th>
+    </tr>
+    <mat-progress-bar mode="indeterminate" *ngIf="a.loading"> </mat-progress-bar>
+    <!-- <tr class="loading-bar" *ngIf="a.loading">
+      <th [attr.colspan]="columns.length">
+      </th>
+    </tr> -->
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-index let-columns="columns">
+    <tr style="height:48px">
+      <!-- <td style="width:0.1%; white-space: nowrap;">#
+        {{lazyLoadState?.first}}
+        {{index}}
+      </td> -->
+      <td *ngFor="let col of colDefs">
+        <span *ngIf="col.ofRootTable && col.defaultType === 'entity_preview'">
+          <gv-entity-preview [preview]="rowData[col.id]" [dragEnabled]="false" [openTabOnClick]="true">
+          </gv-entity-preview>
+        </span>
+        <span *ngIf="col.ofRootTable && col.defaultType !== 'entity_preview'">{{rowData[col.id]}}</span>
+        <span *ngIf="!col.ofRootTable">
+          <!-- {{rowData[col.id]?.length}} -->
+          <gv-entity-preview *ngIf="rowData[col.id]?.length === 1" [preview]="rowData[col.id][0]" [dragEnabled]="false"
+            [openTabOnClick]="true"></gv-entity-preview>
+          <button *ngIf="rowData[col.id]?.length > 1" mat-raised-button
+            (click)="openDialog(rowData[col.id])">{{rowData[col.id]?.length}}</button>
+        </span>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- <ng-template pTemplate="loadingbody" let-columns="columns">
+    <tr style="height:48px; background:white;">
+      <td *ngFor="let col of columns">
+        <div class="loading-text"></div>
+      </td>
+    </tr>
+  </ng-template> -->
+  <!-- <ng-template pTemplate="footer" let-state>
+    <tr>
+      <td *ngIf="lazyLoadState" colspan="columns.lenght">
+        ~ {{lazyLoadState.first}} / {{totalRecords}}
+      </td>
+    </tr>
+  </ng-template> -->
+</p-table>

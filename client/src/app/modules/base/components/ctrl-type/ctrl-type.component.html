@@ -1,0 +1,7 @@
+<mat-select [value]="value$|async" (selectionChange)="onSelect($event)" (openedChange)="menuToggled($event)"
+  [placeholder]="placeholder">
+  <mat-option *ngFor="let node of typeOptions$ | async" [value]="node.data.pkType">
+    <span *ngIf="node.data.pkType"> {{node.label}} </span>
+    <i *ngIf="!node.data.pkType"> {{node.label}} </i>
+  </mat-option>
+</mat-select>

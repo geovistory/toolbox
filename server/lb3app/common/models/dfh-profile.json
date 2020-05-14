@@ -1,0 +1,284 @@
+{
+  "name": "DfhProfile",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "v_profile"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "pk_profile": {
+      "id": true,
+      "type": "number"
+    },
+    "owned_by_project": {
+      "type": "number"
+    },
+    "is_ongoing_forced_publication": {
+      "type": "boolean"
+    },
+    "date_profile_published": {
+      "type": "string"
+    },
+    "date_profile_deprecated": {
+      "type": "string"
+    },
+    "tmsp_last_dfh_update": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "updateFromOntoMe"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "getActivationReport",
+        "getDeactivationReport",
+        "updateAndAddToProject",
+        "deactivateProfileForProject",
+        "ofProject"
+      ]
+    }
+  ],
+  "methods": {
+    "ofProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Project pk",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhProfile"
+        ],
+        "root": true
+      },
+      "description": "Get all profiles that are used by the given project.",
+      "http": {
+        "path": "/of-project",
+        "verb": "get"
+      }
+    },
+    "updateFromOntoMe": {
+      "accepts": [
+        {
+          "arg": "pkProfile",
+          "type": "number",
+          "required": true,
+          "description": "OntoMe profile that should be added",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "requestedLanguage",
+          "type": "string",
+          "required": false,
+          "description": "Language ISO Code for the preferred language of labels and descriptions to be loaded. Default language is 'en'.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Pulls profile data including classes and properties from OntoMe and updates profile data in geovistory.",
+      "http": {
+        "path": "/update-from-ontome",
+        "verb": "post"
+      }
+    },
+    "updateAndAddToProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Geovistory project to which the OntoMe profile should be added",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProfile",
+          "type": "number",
+          "required": true,
+          "description": "OntoMe profile that should be added",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "requestedLanguage",
+          "type": "string",
+          "required": false,
+          "description": "Language ISO Code for the preferred language of labels and descriptions to be loaded. Default language is 'en'.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Pulls profile data including classes and properties from OntoMe and adds profile to project.",
+      "http": {
+        "path": "/update-from-ontome-and-add-to-project",
+        "verb": "post"
+      }
+    },
+    "getActivationReport": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Geovistory project for which the activation report should be created",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProfile",
+          "type": "number",
+          "required": true,
+          "description": "OntoMe profile for which the activation report should be created",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "requestedLanguage",
+          "type": "string",
+          "required": false,
+          "description": "Language ISO Code for the preferred language of labels and descriptions to be loaded. Default language is 'en'.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Creates an activation report for the given OntoMe profile and the given Geovistory project.",
+      "http": {
+        "path": "/get-activation-report",
+        "verb": "post"
+      }
+    },
+    "getDeactivationReport": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Geovistory project for which the deactivation report should be created",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProfile",
+          "type": "number",
+          "required": true,
+          "description": "OntoMe profile for which the deactivation report should be created",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Creates an deactivation report for the given OntoMe profile and the given Geovistory project.",
+      "http": {
+        "path": "/get-deactivation-report",
+        "verb": "post"
+      }
+    },
+    "deactivateProfileForProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Geovistory project for which the profile should be deactivated",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProfile",
+          "type": "number",
+          "required": true,
+          "description": "OntoMe profile to deactivate for the given Geovistory project",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Deavtivates an OntoMe profile for a Geovistory project.",
+      "http": {
+        "path": "/deactivate-ontome-profile-for-geovistory-project",
+        "verb": "post"
+      }
+    }
+  }
+}

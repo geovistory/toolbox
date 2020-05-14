@@ -1,0 +1,89 @@
+{
+  "name": "DatNamespace",
+  "base": "AbstractEntity",
+  "options": {
+    "postgresql": {
+      "schema": "data",
+      "table": "namespace"
+    }
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "id": true,
+      "generated": true
+    },
+    "fk_root_namespace": {
+      "type": "number"
+    },
+    "fk_project": {
+      "type": "number",
+      "required": true
+    },
+    "standard_label": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "findById"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "byProject"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": [
+        "find"
+      ]
+    }
+  ],
+  "methods": {
+    "byProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Key of the Project for which the namespaces should be found.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DatNamespace"
+        ],
+        "root": true
+      },
+      "description": "Finds namespaces of a project.",
+      "http": {
+        "path": "/find-by-project",
+        "verb": "get"
+      }
+    }
+  }
+}

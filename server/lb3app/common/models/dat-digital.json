@@ -1,0 +1,257 @@
+{
+  "name": "DatDigital",
+  "base": "DatEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data",
+      "table": "digital"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "entity_version": {
+      "type": "number",
+      "generated": true
+    },
+    "pk_text": {
+      "type": "number",
+      "generated": true
+    },
+    "quill_doc": {
+      "type": "object"
+    },
+    "string": {
+      "type": "string"
+    },
+    "fk_system_type": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": [
+        "getVersion"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "findById",
+        "bulkUpsert",
+        "bulkDelete",
+        "getTablePage"
+      ]
+    }
+  ],
+  "methods": {
+    "bulkUpsert": {
+      "accepts": [
+        {
+          "arg": "pkNamespace",
+          "type": "number",
+          "required": true,
+          "description": "Namespace",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "DatDigital"
+          ],
+          "required": true,
+          "description": "Array DatDigital",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "DatDigital",
+        "root": true
+      },
+      "description": "Creates or updates instances of DatDigital.",
+      "http": {
+        "path": "/bulk-upsert",
+        "verb": "put"
+      }
+    },
+    "bulkDelete": {
+      "accepts": [
+        {
+          "arg": "pks",
+          "type": [
+            "number"
+          ],
+          "required": true,
+          "description": "Array of Primary Key of DatDigitals",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "boolean",
+        "root": true
+      },
+      "description": "Deletes instances of DatDigital.",
+      "http": {
+        "path": "/delete-delete",
+        "verb": "put"
+      }
+    },
+    "getVersion": {
+      "accepts": [
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the digital object (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "entityVersion",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the digital object (entity_version)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DatDigital"
+        ],
+        "root": true
+      },
+      "description": "Finds the version of given digital. If no version specified, latest is returned.",
+      "http": {
+        "path": "/get-version",
+        "verb": "get"
+      }
+    },
+    "getVersions": {
+      "accepts": [
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the digital object (pk_entity)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DatDigital"
+        ],
+        "root": true
+      },
+      "description": "Finds the versions of given pkEntity.",
+      "http": {
+        "path": "/get-versions",
+        "verb": "get"
+      }
+    },
+    "getTablePage": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the table digital.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "options",
+          "type": "object",
+          "required": false,
+          "description": "options",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "object"
+        ],
+        "root": true
+      },
+      "description": "Get page of table",
+      "http": {
+        "path": "/getTablePage",
+        "verb": "post"
+      }
+    }
+  }
+}

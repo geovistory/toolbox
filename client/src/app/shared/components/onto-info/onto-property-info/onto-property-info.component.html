@@ -1,0 +1,9 @@
+
+<a *ngIf="pkProperty" class="badge badge-success" [attr.href]="url"
+  target="_blank">
+  {{label$ |async}}
+</a>
+
+<span *ngIf="!pkProperty" class="badge badge-success" matTooltip="Custom Property">
+  ...
+</span>

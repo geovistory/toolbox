@@ -1,0 +1,10 @@
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="clear.next()">
+    <mat-icon style="margin-top: -3px">clear</mat-icon>
+    <span>Clear filters</span>
+  </button>
+</mat-menu>
+
+<button class="clear" mat-icon-button [matMenuTriggerFor]="menu">
+  <mat-icon>more_vert</mat-icon>
+</button>

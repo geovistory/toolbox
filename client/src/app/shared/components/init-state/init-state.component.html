@@ -1,0 +1,4 @@
+<p *ngIf="p.initializingProject$ | async">Initializing Project</p>
+<div *ngIf="!(p.initializingProject$ | async)">
+    <ng-content> </ng-content>
+</div>

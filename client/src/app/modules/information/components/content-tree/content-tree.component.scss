@@ -1,0 +1,46 @@
+.drop-above {
+  border-top: 10px solid #dddddd;
+  // margin-top: -10px;
+}
+
+.drop-center {
+  background-color: #dddddd;
+}
+
+.indent {
+  width: 40px;
+}
+.mat-header-row {
+  height: 42px;
+}
+.mat-header-cell {
+  height: 42px;
+}
+
+.gv-ct-node {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.gv-ct-node-col {
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+}
+.gv-ct-node-col.gv-ct-label {
+  flex: 1 1 60%;
+  overflow: hidden;
+  padding-right: 4px;
+}
+.gv-ct-node-col.gv-ct-type {
+  flex: 1 1 30%;
+  overflow: hidden;
+}
+.gv-ct-node-col.gv-ct-button {
+  flex: 0 0 40px;
+}
+
+.mat-header-cell.gv-ct-node-col {
+  border-bottom: none;
+}

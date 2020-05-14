@@ -1,0 +1,27 @@
+<!-- Statement Labels -->
+<div class="d-flex box">
+
+  <div class="d-flex">
+    <div class="gv-grow-1 mr-3" *ngFor="let p of (item$ | async)?.properties; let i = index">
+      <div class="text-muted font-xs">
+        {{p?.listDefinition?.label}}
+      </div>
+      <div *ngFor="let jtem of p?.items">
+        {{jtem?.label}}
+      </div>
+    </div>
+
+  </div>
+
+  <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #appMenu="matMenu">
+    <button mat-menu-item (click)="openModal()">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+
+  </mat-menu>
+
+</div>

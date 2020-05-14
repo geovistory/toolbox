@@ -1,0 +1,253 @@
+{
+  "name": "SchemaObject",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "inf": {
+      "id": true,
+      "type": "object"
+    },
+    "pro": {
+      "type": "object"
+    },
+    "dat": {
+      "type": "object"
+    },
+    "sys": {
+      "type": "object"
+    },
+    "dfh": {
+      "type": "object"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "getRamList",
+        "contentTree",
+        "removeEntityFromProject",
+        "addEntityToProject",
+        "typeOfProject"
+      ]
+    }
+  ],
+  "methods": {
+    "getRamList": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkProperty",
+          "type": "number",
+          "required": true,
+          "description": "Key of the property (1218, 1334, 117)",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Get the schema object for the ram list.",
+      "http": {
+        "path": "/ram-list",
+        "verb": "get"
+      }
+    },
+    "contentTree": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the Project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkExpressionEntity",
+          "type": "number",
+          "required": false,
+          "description": "Primary Key of the F2 Expression entity for which the content tree is needed.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Get SchemaObject with everything needed to build the tree of the content of an F2 Expression.",
+      "http": {
+        "path": "/content-tree",
+        "verb": "get"
+      }
+    },
+    "removeEntityFromProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Remove entity with outgoing statements and namings from project.",
+      "http": {
+        "path": "/remove-entity-from-project",
+        "verb": "get"
+      }
+    },
+    "addEntityToProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the entity",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "SchemaObject"
+        ],
+        "root": true
+      },
+      "description": "Add entity with outgoing statements and namings to project.",
+      "http": {
+        "path": "/add-entity-to-project",
+        "verb": "get"
+      }
+    },
+    "typeOfProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkType",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the type.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Get a object containing apllations and definition of a type (project variant).",
+      "http": {
+        "path": "/type-of-project",
+        "verb": "get"
+      }
+    }
+  }
+}

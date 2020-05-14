@@ -1,0 +1,10 @@
+<h2 mat-dialog-title> Edit Type </h2>
+<mat-dialog-content class="gv-grow-1">
+  <gv-entity-detail *ngIf="(peItDetail$ |async)" class="gv-grow-1  d-flex flex-column"
+    [basePath]="data.basePath.concat('peItDetail')"></gv-entity-detail>
+</mat-dialog-content>
+
+
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="true">Ok</button>
+</mat-dialog-actions>

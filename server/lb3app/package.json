@@ -1,0 +1,11 @@
+{
+  "name": "geovistory-lb3",
+  "scripts": {
+    "create-schemas": "node src/common/generate-schema-and-validator.js",
+    "build": "tsc -b src --verbose",
+    "build:watch": "tsc -b src --watch",
+    "clean": "tsc -b src --clean",
+    "build:sdk": "./node_modules/.bin/lb-sdk server/server client/src/app/core/sdk -d ng2web -l angular2"
+  },
+  "description": "package.json from geovistory loopback 3 application"
+}

@@ -1,0 +1,52 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item">Create a new Project</li>
+  </ol>
+</gv-navbar>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <h2>Create a new project</h2>
+
+      <ng-template #rt let-r="result" let-t="term">
+        {{ r.notes}}
+        <small class="text-muted">{{ r.iso6391}}</small>
+      </ng-template>
+
+      <form name="form" (ngSubmit)="f.form.valid && request()" #f="ngForm" novalidate>
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !label.valid }">
+          <label for="label">Name</label>
+          <input autofocus type="text" class="form-control" name="label" [(ngModel)]="model.label" #label="ngModel" required />
+          <div *ngIf="f.submitted && !label.valid" class="help-block form-text text-danger">Name is required</div>
+          <div *ngFor="let message of errorMessages?.label" class="help-block form-text text-danger">{{message}}</div>
+        </div>
+
+        <div class="form-group">
+          <label for="typeahead-http">Project's default language</label>
+
+          <gv-language-search-typeahead  name="language" [(ngModel)]="model.language" #languageSearch="ngModel"></gv-language-search-typeahead>
+
+          <!-- <input id="typeahead-http" type="text" class="form-control"  name="language"
+          [class.is-invalid]="searchFailed" [(ngModel)]="model.language" #languageSearch="ngModel"
+          [ngbTypeahead]="search" [resultTemplate]="rt" placeholder="Search for a language"
+          [inputFormatter]="formatter"  /> -->
+          <!-- <span *ngIf="searching">searching...</span> -->
+          <div class="invalid-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
+        </div>
+
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !text_property.valid }">
+          <label for="description">Description</label>
+          <textarea class="form-control" name="description" [(ngModel)]="model.text_property" #text_property="ngModel"></textarea>
+          <div *ngFor="let message of errorMessages?.text_property" class="help-block form-text text-danger">{{message}}</div>
+        </div>
+
+        <div class="form-group">
+          <button [disabled]="createBtnDisabled" class="btn btn-primary" type="submit">Create</button>
+          <a routerLink="../" class="btn btn-link">Cancel</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<mat-list>
+    <h3 mat-subheader> {{data?.entityPreviews?.length === 0 ? 'No ':''}}Entities</h3>
+    <mat-list-item *ngFor="let preview of data?.entityPreviews; let i = index;">
+        <div class="mr-3">{{i+1}}</div>
+        <gv-entity-preview [preview]="preview" [dragEnabled]="false" (click)="openInTab(preview)">
+        </gv-entity-preview>
+    </mat-list-item>
+</mat-list>

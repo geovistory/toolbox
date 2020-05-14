@@ -1,0 +1,49 @@
+{
+  "name": "InfAppellation",
+  "base": "InfEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "v_appellation"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "quill_doc": {
+      "type": "object",
+      "required": true
+    },
+    "fk_class": {
+      "type": "number",
+      "required": true
+    },
+    "string": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "incoming_statements": {
+      "type": "hasMany",
+      "model": "InfStatement",
+      "foreignKey": "fk_object_info",
+      "primaryKey": "pk_entity"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    }
+  ],
+  "methods": {}
+}

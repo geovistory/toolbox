@@ -1,0 +1,13 @@
+<mat-paginator [length]="pkEntities.length" [pageSize]="limit" [pageIndex]="(offset/limit)"
+  [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPageChange($event)" *ngIf="limit < pkEntities.length">
+</mat-paginator>
+
+<mat-list>
+  <mat-list-item *ngFor="let item of items; let i = index">
+    <div class="mr-3 mat-caption mat-text-secondary">{{i + offset + 1}} </div>
+    <gv-entity-preview [preview]="item" [openTabOnClick]="openTabOnClick" [dragEnabled]="dragEnabled">
+    </gv-entity-preview>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+
+</mat-list>

@@ -1,0 +1,7 @@
+<div *ngIf="formGroupFactory.child.factoryType === 'array'" [formGroup]="formGroupFactory.control">
+  <div formArrayName="childControl">
+    <gv-time-chart-cont-form-array [formArrayFactory]="formGroupFactory.child">
+      <ng-content></ng-content>
+    </gv-time-chart-cont-form-array>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<div class="d-flex gv-cursor-pointer" (click)="onContainerClick(); $event.stopPropagation();">
+  <div *ngIf="shouldLabelFloat">
+    <gv-entity-preview *ngIf="(entityPreview$|async)" [preview]="entityPreview$|async"></gv-entity-preview>
+  </div>
+
+  <input type="text" matInput placeholder="{{placeholder}}" disabled *ngIf="!shouldLabelFloat" autocomplete="off">
+</div>

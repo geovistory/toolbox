@@ -1,0 +1,15 @@
+<gv-analysis-layout>
+
+  <gv-table-form analysis-settings #c [initVal$]="initVal$">
+    <button mat-flat-button color="primary" (click)="a.runAnalysis()" matTooltip="Create Analysis">Run</button>
+  </gv-table-form>
+
+  <div results-top-bar>
+    <div class="ml-3"> {{(a.results$|async)?.full_count}}</div>
+  </div>
+
+  <div results class="h-100">
+    <gv-result-table class="h-100" [definition$]="queryDefinition$"></gv-result-table>
+  </div>
+
+</gv-analysis-layout>

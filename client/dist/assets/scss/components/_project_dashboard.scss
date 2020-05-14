@@ -1,0 +1,179 @@
+// Project Dashboard
+@keyframes bounce1 {
+	0% {
+		height: 4.2rem;
+	}
+	30% {
+		height: 5.7rem;
+	}
+	60% {
+		height: 4.4rem;
+	}
+	90%  {
+		height: 5.2rem;
+	}
+	100% {
+		height: 5rem;
+	}
+}
+@keyframes bounce2 {
+	0% {
+		height: 5.2rem;
+	}
+	30% {
+		height: 6.7rem;
+	}
+	60% {
+		height: 5.4rem;
+	}
+	90%  {
+		height: 6.2rem;
+	}
+	100% {
+		height: 6rem;
+	}
+}
+
+#project-dashboard{
+	#flow{
+		margin-top: 3rem;
+		.gv-icon-box {
+			width: 15rem;
+			height: 21.25rem;
+			text-align: center;
+			.gv-upper-part {
+				height: 12rem;
+				width: inherit;
+				background: none;
+				border: 1px solid transparent;
+				.gv-icon {
+					height: 9rem;
+					font-size: 8rem;
+				}
+				h4 {
+					font-size: 1.25rem;
+					color: theme-color("secondary");
+				}
+			}
+			.gv-upper-part-info:hover {
+				border: 1px solid theme-color("info");
+				border-radius: $border-radius;
+			}
+			.gv-upper-part-primary:hover {
+				border: 1px solid theme-color("primary");
+				border-radius: $border-radius;
+			}
+			.gv-upper-part-success:hover {
+				border: 1px solid theme-color("success");
+				border-radius: $border-radius;
+			}
+			.gv-lower-part {
+				.gv-vertical-line {
+					height: 3.2rem;
+				}
+			}
+		}
+		.gv-arrow-box {
+			width: 4.6rem;
+			height: 21.25rem;
+			text-align: center;
+			.gv-upper-part {
+				height: 11rem;
+				.fa-long-arrow-right {
+					padding-top: 3.2rem;
+					font-size: 2.1rem;
+				}
+			}
+			.gv-lower-part {
+				.gv-vertical-line {
+					height: 4.2rem;
+				}
+			}
+		}
+
+		.gv-lower-part {
+			.gv-vertical-line {
+				width: .0625rem;
+				background-color: theme-color("secondary");
+				background: repeating-linear-gradient(
+				0deg,
+				theme-color("secondary"),
+				theme-color("secondary") 4px,
+				transparent 4px,
+				transparent 8px
+				);
+			}
+			.gv-icon-circles {
+				color: theme-color("secondary");
+				font-size: 1.5rem;
+			}
+		}
+		#sources {
+			.gv-icon {
+				color: theme-color("info");
+			}
+		}
+		#s-to-ku {
+			.gv-icon {
+				color: theme-color("secondary");
+			}
+		}
+		#knowledge-units {
+			.gv-icon {
+				color: theme-color("primary");
+			}
+		}
+		#ku-to-vs {
+			.gv-icon {
+				color: theme-color("secondary");
+			}
+		}
+		#presentation {
+			.gv-icon {
+				color: theme-color("success");
+			}
+		}
+		.gv-active {
+			.gv-upper-part {
+				h4 {
+					color: theme-color("primary");
+				}
+			}
+			.gv-vertical-line {
+				background: none;
+				background-color: theme-color("primary");
+			}
+			.gv-icon-circles {
+				color: theme-color("primary");
+				font-size: 2.5rem;
+				margin-top: -0.4rem;
+			}
+		}
+		#ku-to-vs.gv-active,
+		#s-to-ku.gv-active {
+			.gv-icon {
+				color: theme-color("primary");
+			}
+			.gv-vertical-line {
+				animation: bounce2 .5s;
+				height: 6rem;
+			}
+		}
+		.gv-icon-box.gv-active{
+			.gv-vertical-line {
+				animation: bounce1 .5s;
+				height: 5rem;
+			}
+		}
+	}
+	#carousel{
+		outline:none;
+		.carousel-content {
+			width: 55rem;
+			padding: 1rem 7rem;
+		}
+		.carousel-indicators{
+			display: none;
+		}
+	}
+}

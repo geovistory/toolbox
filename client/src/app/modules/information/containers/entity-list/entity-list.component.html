@@ -1,0 +1,16 @@
+<div class="gv-flex-fh">
+
+  <gv-list-drawer-header>
+
+    <div title>Your Entities</div>
+
+    <gv-classes-and-types-select buttons enabledIn="entities" (select)="startCreate($event)">
+    </gv-classes-and-types-select>
+
+  </gv-list-drawer-header>
+
+
+  <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" [basePath]="basePath.concat('items')"
+    (onOpen)="openEntity($event)" [pkAllowedClasses$]="pkAllowedClasses$">
+  </gv-list>
+</div>

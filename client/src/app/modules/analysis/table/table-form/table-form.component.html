@@ -1,0 +1,5 @@
+<form *ngIf="formFactory?.formGroup" [formGroup]="formFactory.formGroup">
+  <gv-table-form-group [formGroupFactory]="formFactory.formGroupFactory">
+    <ng-content></ng-content>
+  </gv-table-form-group>
+</form>

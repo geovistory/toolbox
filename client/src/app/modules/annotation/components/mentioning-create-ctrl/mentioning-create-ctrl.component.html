@@ -1,0 +1,50 @@
+<div class="card text-white bg-info">
+  <div class="card-body">
+
+    <!-- Domain info entity  -->
+    <div *ngIf="domainInfoEntity">
+      {{(domainInfoEntity?.type_label || domainInfoEntity?.class_label)}} {{domainInfoEntity?.entity_label}}
+      <button class="btn btn-link-white" *ngIf="!domainInfoEntityFixed" (click)="resetSourceEntity()">
+        <i class="fa fa-pencil"></i>
+      </button>
+    </div>
+
+
+    <!-- Drop zone for domain info entity (expression / expression portion)  -->
+    <div class="gv-drop-zone" dnd-droppable *ngIf="!domainInfoEntity && !domainChunk && !domainChunkFixed"
+      (onDropSuccess)="onDropDomainInfoEntity($event.dragData)" [allowDrop]="allowDropDomainInfoEntity()">
+      Drop a Source or Section here!
+    </div>
+
+
+    <!-- Chunk -->
+    <div *ngIf="domainChunk">
+      <span>Text</span> « {{domainChunk?.quill_doc?.ops | quillOpsToStr}} »
+    </div>
+
+    <!-- Advice to select text  -->
+    <div class="gv-select-text" *ngIf="domainChunkFixed && !domainChunk">
+      Select some Text!
+    </div>
+
+    <div class="font-italic text-center py-2">
+      {{property?.label}}
+    </div>
+
+
+    <!-- Range info Entity -->
+    <div *ngIf="rangeInfoEntity">
+      {{(rangeInfoEntity?.type_label || rangeInfoEntity?.class_label)}} {{rangeInfoEntity?.entity_label}}
+      <button class="btn btn-link-white" *ngIf="!rangeInfoEntityFixed" (click)="resetRangeInfoEntity()">
+        <i class="fa fa-pencil"></i>
+      </button>
+    </div>
+
+    <!-- Drop zone for range info entity (any PeIt or TeEn) -->
+    <div class="gv-drop-zone" [allowDrop]="allowDropRangeInfoEntity()" dnd-droppable *ngIf="!rangeInfoEntity"
+      (onDropSuccess)="onDropRangeInfoEntity($event.dragData)">
+      Drag an Entity here!
+    </div>
+
+  </div>
+</div>

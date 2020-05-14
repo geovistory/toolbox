@@ -1,0 +1,243 @@
+<gv-detail-top-bar>
+  <div class="ml-2">Classes used in your project</div>
+  <span class="ml-auto d-flex">
+
+    <mat-checkbox (change)="showBasicClasses$.next(!showBasicClasses$.value)" [checked]="showBasicClasses$ | async">
+      Show Basic Classes
+    </mat-checkbox>
+
+    <div class="ml-5 mr-2">
+      <input matInput (keyup)="textFilter($event.target.value)" placeholder="Filter" autocomplete="false">
+    </div>
+
+  </span>
+</gv-detail-top-bar>
+
+<gv-detail-content class="gv-flex-fh">
+  <!-- <p>
+    Define what kind of data is collected in your project. Do so by enabling and disabling classes in the list below.
+    By enabling a class the collaborators of the project can create and add Entities of that class.
+  </p> -->
+
+
+
+  <table mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true" (matSortChange)="sortData($event)"
+    class="mat-elevation-z1 w-100">
+    <!-- <table class="gv-flex-fh" mat-table [dataSource]="filteredItems$" matSort matSortDisableClear="true"
+    (matSortChange)="sortData($event)" multiTemplateDataRows class="mat-elevation-z1"> -->
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="enabled_in_entities">
+
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="enabled_in_entities"> In Entities
+      </th>
+
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (click)="$event.stopPropagation()"
+          (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
+          [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkClass]"
+          *ngIf="!element.excluded_from_entities">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingClassProjRel[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="required_by_sources">
+
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_sources"> In Sources </th>
+
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox *ngIf="element.required_by_sources" [checked]="element.required_by_sources" [disabled]="true">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="required_by_basics">
+
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_basics"> Basic </th>
+
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox *ngIf="element.required_by_basics" [checked]="element.required_by_basics" [disabled]="true">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Label Column -->
+    <ng-container matColumnDef="label">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="label"> Class </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <strong [innerHtml]="element.label"></strong> {{element.pkClass}}
+      </td>
+    </ng-container>
+
+    <!-- Temporal / Persistent Column -->
+    <ng-container matColumnDef="subclassOf">
+      <th mat-header-cell style="flex: 1 0 0%" *matHeaderCellDef mat-sort-header="subclassOf"> Persistent / Temporal
+      </th>
+      <td mat-cell style="flex: 1 0 0%" *matCellDef="let element">
+        <i *ngIf="element.subclassOf=='peIt'" class="gv-icon gv-icon-persistent-entity">&nbsp;</i>
+        <span *ngIf="element.subclassOf=='peIt'">Persistent</span>
+        <i *ngIf="element.subclassOf=='teEnt'" class="fa fa-star-o">&nbsp;</i>
+        <span *ngIf="element.subclassOf=='teEnt'">Temporal</span>
+      </td>
+    </ng-container>
+
+    <!-- Dfh Standard Label Column -->
+    <ng-container matColumnDef="identifier_in_namespace">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="identifier_in_namespace"> OntoMe
+        Definition
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <gv-onto-class-info [pkClass]="element.pkClass"></gv-onto-class-info>
+        <!-- <a [attr.href]="'http://ontologies.dataforhistory.org/class/' + element.pkClass" target="_blank"
+          (click)="$event.target.stopPropagation()">
+          <span [innerHtml]="element.identifier_in_namespace"></span>
+          <mat-icon inline="true">open_in_new</mat-icon>
+        </a> -->
+      </td>
+    </ng-container>
+
+    <!-- Manage Controlled Vocabulary Column -->
+    <ng-container matColumnDef="subclassOfType">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="subclassOfType"> Types
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <button mat-button color="primary" *ngIf="element.subclassOfType" (click)="openControlledVocab(element)"> Open
+          Controlled Vocabulary </button>
+      </td>
+    </ng-container>
+
+    <!-- Profiles Column -->
+    <ng-container matColumnDef="profiles">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> OntoMe Profiles
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <div class="d-flex align-items-center">
+          <mat-menu #appMenu="matMenu">
+            <a *ngFor="let profile of element.profiles" mat-menu-item
+              [attr.href]="'http://ontome.dataforhistory.org/profile/' + profile.fkProfile" target="_blank">
+              {{profile.label}}
+              <mat-icon color="warn" *ngIf="profile.removedFromApi" svgIcon="alert"
+                matTooltip="This class has been removed from the profile on OntoMe."></mat-icon>
+            </a>
+          </mat-menu>
+
+          <button mat-button color="primary" [matMenuTriggerFor]="appMenu">
+            {{element.profiles.length}} Profiles
+          </button>
+
+          <mat-icon color="warn" *ngIf="element.removedFromAllProfiles" svgIcon="alert"
+            matTooltip="This class has been removed from all OntoMe profiles you have activated."></mat-icon>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Edit -->
+    <ng-container matColumnDef="classConfig">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> Configuration
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+
+        <button mat-button color="primary" *ngIf="!element.excluded_from_entities" (click)="openClassConfig(element)">
+          Configure Class... </button>
+
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_required_by_basics">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_basics"
+        matTooltip="This column is only visible in Default Config Project (375669)"> Required By
+        Basics </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_basics')"
+          [checked]="element.required_by_basics" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_required_by_sources">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
+        mat-sort-header="required_by_sources"
+        matTooltip="This column is only visible in Default Config Project (375669)">
+        Required By
+        Sources </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_sources')"
+          [checked]="element.required_by_sources" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_required_by_entities">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
+        mat-sort-header="required_by_entities"
+        matTooltip="This column is only visible in Default Config Project (375669)">
+        Required By
+        Entities </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'required_by_entities')"
+          [checked]="element.required_by_entities" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column only visible in Default Config Project-->
+    <ng-container matColumnDef="edit_excluded_from_entities">
+      <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
+        mat-sort-header="excluded_from_entities"
+        matTooltip="This column is only visible in Default Config Project (375669)">
+        Excluded from
+        Entities </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-checkbox (change)="toggleSystemRelevantClassBool(element, 'excluded_from_entities')"
+          [checked]="element.excluded_from_entities" [hidden]="p.changingSystemRelevantClass[element.pkClass]">
+        </mat-checkbox>
+        <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" diameter="20" color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> Class Fields </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <a class="nav-link" routerLink="/backoffice/classes/{{element.dfh_pk_class}}" routerLinkActive="active">Edit</a>
+      </td>
+    </ng-container>
+
+    <!-- Collapse / Expand Column -->
+    <!-- <ng-container matColumnDef="expansion">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <div class="d-flex">
+          <span [@indicatorRotate]="expandedElement === element ? 'expanded' : 'collapsed'"
+            class="mat-expansion-indicator"></span>
+        </div>
+      </td>
+    </ng-container> -->
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <!-- <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <p [innerHtml]="element.scopeNote"> </p>
+        </div>
+      </td>
+    </ng-container> -->
+
+    <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element"></tr> -->
+    <!-- <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr> -->
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+  </table>
+
+</gv-detail-content>

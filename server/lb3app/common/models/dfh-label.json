@@ -1,0 +1,86 @@
+{
+  "name": "DfhLabel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data_for_history",
+      "table": "v_label"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "type": {
+      "type": "string",
+      "id": true
+    },
+    "label": {
+      "type": "string"
+    },
+    "language": {
+      "type": "string"
+    },
+    "fk_profile": {
+      "type": "number"
+    },
+    "fk_project": {
+      "type": "number"
+    },
+    "fk_property": {
+      "type": "number"
+    },
+    "fk_class": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "ofProject"
+      ]
+    }
+  ],
+  "methods": {
+    "ofProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": false,
+          "description": "Project pk",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DfhLabel"
+        ],
+        "root": true
+      },
+      "description": "Get all dfh labels needed by the given project.",
+      "http": {
+        "path": "/of-project",
+        "verb": "get"
+      }
+    }
+  }
+}

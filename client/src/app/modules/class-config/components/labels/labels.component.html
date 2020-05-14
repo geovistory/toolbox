@@ -1,0 +1,57 @@
+<div class="mat-typography">
+  <h3>Display Label</h3>
+  <p>
+    <span class="mat-body-strong">{{displayLabel$|async}}</span>
+  </p>
+  <p class="mat-caption">
+    The display label is defined by the {{languageLabel$|async}}* label of your project, if available.
+    <br />Else it is the first of 'Default Labels' below.
+  </p>
+
+  <br>
+  <h3>Labels of your project</h3>
+
+  <gv-property-label-table [fkProject]="fkProject" [fkSystemType]="labelSysType" [fkClass]="fkClass"
+    [fkProperty]="fkProperty" [fkPropertyDomain]="fkPropertyDomain" [fkPropertyRange]="fkPropertyRange">
+  </gv-property-label-table>
+
+  <br>
+  <br>
+
+  <h3>Default Labels</h3>
+
+  <table class="mat-table w-100">
+
+    <tr class="mat-header-row">
+      <th class="mat-header-cell">Label</th>
+      <th class="mat-header-cell">Defined by</th>
+      <th class="mat-header-cell">Language</th>
+    </tr>
+    <tr class="mat-row">
+      <td class="mat-cell mat-body-strong">{{(labels$|async)?.ofDefaultProjectInProjectLang || '--'}}</td>
+      <td class="mat-cell">KleioLab</td>
+      <td class="mat-cell">{{languageLabel$|async}}*</td>
+    </tr>
+    <tr class="mat-row">
+      <td class="mat-cell mat-body-strong">{{(labels$|async)?.ofDefaultProjectInEnglish || '--'}}</td>
+      <td class="mat-cell">KleioLab</td>
+      <td class="mat-cell">English</td>
+    </tr>
+    <tr class="mat-row">
+      <td class="mat-cell">{{(labels$|async)?.ofOntoMeInProjectLang || '--'}}</td>
+      <td class="mat-cell">OntoMe</td>
+      <td class="mat-cell">{{languageLabel$|async}}*</td>
+    </tr>
+    <tr class="mat-row">
+      <td class="mat-cell mat-body-strong">{{(labels$|async)?.ofOntoMeInEnglish || '--'}}</td>
+      <td class="mat-cell">OntoMe</td>
+      <td class="mat-cell">English</td>
+    </tr>
+
+  </table>
+  <br>
+  <p class="mat-caption">* {{languageLabel$|async}} is the default language of your project</p>
+
+
+
+</div>

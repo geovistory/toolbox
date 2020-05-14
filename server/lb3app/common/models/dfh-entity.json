@@ -1,0 +1,23 @@
+{
+  "name": "DfhEntity",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "pk_entity": {
+      "type": "number",
+      "generated": true
+    },
+    "entity_version": {
+      "type": "number",
+      "generated": true
+    }
+  },
+  "validations": [],
+  "relations": {
+  },
+  "acls": [],
+  "methods": {}
+}

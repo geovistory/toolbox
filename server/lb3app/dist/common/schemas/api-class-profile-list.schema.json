@@ -1,0 +1,104 @@
+{
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/ApiClassProfile"
+    },
+    "definitions": {
+        "ApiClassProfile": {
+            "title": "ApiClassProfile",
+            "type": "object",
+            "additionalProperties": {},
+            "properties": {
+                "classID": {
+                    "type": "number",
+                    "title": "classID"
+                },
+                "classIdentifierInNamespace": {
+                    "type": "string",
+                    "title": "classIdentifierInNamespace"
+                },
+                "classLabel": {
+                    "type": "string",
+                    "title": "classLabel"
+                },
+                "classLabelLanguage": {
+                    "type": "string",
+                    "title": "classLabelLanguage"
+                },
+                "classScopeNote": {
+                    "type": "string",
+                    "title": "classScopeNote"
+                },
+                "classScopeNoteLanguage": {
+                    "type": "string",
+                    "title": "classScopeNoteLanguage"
+                },
+                "entityBasicType": {
+                    "type": "number",
+                    "title": "entityBasicType"
+                },
+                "entityBasicTypeLabel": {
+                    "type": [
+                        "null",
+                        "string"
+                    ],
+                    "title": "entityBasicTypeLabel"
+                },
+                "namespaceID": {
+                    "type": "number",
+                    "title": "namespaceID"
+                },
+                "namespaceLabel": {
+                    "type": "string",
+                    "title": "namespaceLabel"
+                },
+                "namespaceLabelLanguage": {
+                    "type": "string",
+                    "title": "namespaceLabelLanguage"
+                },
+                "namespaceURI": {
+                    "type": [
+                        "null",
+                        "string"
+                    ],
+                    "title": "namespaceURI"
+                },
+                "profileAssociationType": {
+                    "type": "string",
+                    "title": "profileAssociationType"
+                },
+                "profileID": {
+                    "type": "number",
+                    "title": "profileID"
+                },
+                "profileLabel": {
+                    "type": "string",
+                    "title": "profileLabel"
+                },
+                "profileLabelLanguage": {
+                    "type": "string",
+                    "title": "profileLabelLanguage"
+                }
+            },
+            "required": [
+                "classID",
+                "classIdentifierInNamespace",
+                "classLabel",
+                "classLabelLanguage",
+                "classScopeNote",
+                "classScopeNoteLanguage",
+                "entityBasicType",
+                "entityBasicTypeLabel",
+                "namespaceID",
+                "namespaceLabel",
+                "namespaceLabelLanguage",
+                "namespaceURI",
+                "profileAssociationType",
+                "profileID",
+                "profileLabel",
+                "profileLabelLanguage"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

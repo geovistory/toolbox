@@ -1,0 +1,134 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "#/definitions/ApiProfile"
+  },
+  "definitions": {
+    "ApiProfile": {
+      "title": "ApiProfile",
+      "type": "object",
+      "additionalProperties": {},
+      "properties": {
+        "profileID": {
+          "type": "number",
+          "title": "profileID"
+        },
+        "profileLabelLanguage": {
+          "type": "string",
+          "title": "profileLabelLanguage"
+        },
+        "profileLabel": {
+          "type": "string",
+          "title": "profileLabel"
+        },
+        "profileDefinitionLanguage": {
+          "type": "string",
+          "title": "profileDefinitionLanguage"
+        },
+        "profileDefinition": {
+          "type": "string",
+          "title": "profileDefinition"
+        },
+        "ownedByProjectID": {
+          "type": "number",
+          "title": "ownedByProjectID"
+        },
+        "ownedByProjectLabelLanguage": {
+          "type": "string",
+          "title": "ownedByProjectLabelLanguage"
+        },
+        "ownedByProjectLabel": {
+          "type": "string",
+          "title": "ownedByProjectLabel"
+        },
+        "selectedByProjects": {
+          "type": "object",
+          "properties": {
+            "numberOfProjects": {
+              "type": [
+                "null",
+                "number"
+              ],
+              "title": "numberOfProjects"
+            },
+            "projects": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/ApiProfileProject"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "projects"
+            }
+          },
+          "required": [
+            "numberOfProjects",
+            "projects"
+          ],
+          "title": "selectedByProjects"
+        },
+        "isOngoingForcedPublication": {
+          "type": "boolean",
+          "title": "isOngoingForcedPublication"
+        },
+        "dateProfilePublished": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "title": "dateProfilePublished"
+        },
+        "dateProfileDeprecated": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "title": "dateProfileDeprecated"
+        }
+      },
+      "required": [
+        "dateProfileDeprecated",
+        "dateProfilePublished",
+        "isOngoingForcedPublication",
+        "ownedByProjectID",
+        "ownedByProjectLabel",
+        "ownedByProjectLabelLanguage",
+        "profileDefinition",
+        "profileDefinitionLanguage",
+        "profileID",
+        "profileLabel",
+        "profileLabelLanguage",
+        "selectedByProjects"
+      ]
+    },
+    "ApiProfileProject": {
+      "title": "ApiProfileProject",
+      "type": "object",
+      "properties": {
+        "projectID": {
+          "type": "number",
+          "title": "projectID"
+        },
+        "projectLabelLanguage": {
+          "type": "string",
+          "title": "projectLabelLanguage"
+        },
+        "projectLabel": {
+          "type": "string",
+          "title": "projectLabel"
+        }
+      },
+      "required": [
+        "projectID",
+        "projectLabel",
+        "projectLabelLanguage"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

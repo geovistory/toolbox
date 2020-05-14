@@ -1,8 +1,0 @@
-<div class="slider-wrapper"
-  [ngStyle]="{'margin-left.px': (minDrawerWidth -  draggableWidth/2), 'width.px': (maxDrawerWidth - minDrawerWidth + draggableWidth/2)}"
-  [hidden]="!(showSlider$ | async)" #sliderWrapper>
-  <div class="slider" lockAxis="x" [ngStyle]="{'margin-left.px': (initMarginLeft - minDrawerWidth), 'width.px': draggableWidth}"
-    cdkDrag (cdkDragStarted)="onDragStarted()" (cdkDragMoved)="onDrag($event)" (cdkDragEnded)="onDrag($event)" [cdkDragBoundary]="'.slider-wrapper'">
-  </div>
-</div>
-<ng-content select="mat-drawer-container"></ng-content>
