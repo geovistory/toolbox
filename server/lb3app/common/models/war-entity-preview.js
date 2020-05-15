@@ -7,12 +7,12 @@ const log = false;
 var SqlWarSearchExisiting = require('../../dist/server/sql-builders/sql-war-search-existing')
   .SqlWarSearchExisiting;
 
-module.exports = function(WarEntityPreview) {
+module.exports = function (WarEntityPreview) {
   // the caches by project
   WarEntityPreview.cachesByProject = {};
-
-  app.on('io-ready', io => {
-    io.of('/WarEntityPreview').on('connection', socket => {
+  app['__foo'] = 'bar';
+  app.on('io-ready', (io) => {
+    io.of('/WarEntityPreview').on('connection', (socket) => {
       if (log) console.log('new connection ' + socket.id);
 
       // Connection Cache
@@ -22,17 +22,17 @@ module.exports = function(WarEntityPreview) {
       };
 
       // Reset the set of streamed pks
-      const resetStreamedPks = pkEntity => {
+      const resetStreamedPks = (pkEntity) => {
         cache.streamedPks = {};
       };
 
       // Extend the set of streamed pks
-      const extendStreamedPks = pkEntity => {
+      const extendStreamedPks = (pkEntity) => {
         cache.streamedPks[pkEntity] = true;
       };
 
       // Manage the room (project) of the socket
-      const safeJoin = newProjectPk => {
+      const safeJoin = (newProjectPk) => {
         newProjectPk = newProjectPk.toString();
         if (newProjectPk !== cache.currentProjectPk) {
           socket.leave(cache.currentProjectPk);
@@ -53,7 +53,7 @@ module.exports = function(WarEntityPreview) {
       };
 
       // emit entity preview
-      const emitPreview = entityPreview => {
+      const emitPreview = (entityPreview) => {
         socket.emit('entityPreview', entityPreview);
 
         // if (log)
@@ -69,7 +69,7 @@ module.exports = function(WarEntityPreview) {
       };
 
       // Get a entityPreview by pk_projekt and pk_entity and add pks (array of pk_entity) to streamedPks
-      socket.on('addToStream', data => {
+      socket.on('addToStream', (data) => {
         let { pk_project, pks } = data;
 
         if (!pk_project) return console.warn('Please provide a pk_project');
@@ -92,7 +92,7 @@ module.exports = function(WarEntityPreview) {
 
         if (sanitizedPks && sanitizedPks.length) {
           // extend the object of streamed sanitizedPks
-          sanitizedPks.forEach(pk => extendStreamedPks(pk));
+          sanitizedPks.forEach((pk) => extendStreamedPks(pk));
 
           if (log)
             console.log(
@@ -120,12 +120,12 @@ module.exports = function(WarEntityPreview) {
 
               if (projectItems) {
                 // emit the ones found in Project
-                projectItems.forEach(item => emitPreview(item));
+                projectItems.forEach((item) => emitPreview(item));
 
                 // query repo for the ones not (yet) in project
                 const notInProject = _.difference(
                   sanitizedPks,
-                  projectItems.map(item => item.pk_entity.toString())
+                  projectItems.map((item) => item.pk_entity.toString())
                 );
                 if (notInProject.length) {
                   WarEntityPreview.findComplex(
@@ -142,7 +142,7 @@ module.exports = function(WarEntityPreview) {
                     (err, repoItems) => {
                       // emit the ones found in Repo
                       if (repoItems)
-                        repoItems.forEach(item => emitPreview(item));
+                        repoItems.forEach((item) => emitPreview(item));
                     }
                   );
                 }
@@ -153,7 +153,7 @@ module.exports = function(WarEntityPreview) {
       });
 
       const streamSub = WarEntityPreview.stream.subscribe(
-        tsmpLastModification => {
+        (tsmpLastModification) => {
           if (cache.currentProjectPk) {
             const entityPks = Object.keys(cache.streamedPks);
             if (entityPks) {
@@ -179,12 +179,12 @@ module.exports = function(WarEntityPreview) {
 
                   if (projectItems) {
                     // emit the ones found in Project
-                    projectItems.forEach(item => emitPreview(item));
+                    projectItems.forEach((item) => emitPreview(item));
 
                     // query repo for the ones not (yet) in project
                     const notInProject = _.difference(
                       entityPks,
-                      projectItems.map(item => item.pk_entity.toString())
+                      projectItems.map((item) => item.pk_entity.toString())
                     );
                     if (notInProject.length) {
                       WarEntityPreview.findComplex(
@@ -205,7 +205,7 @@ module.exports = function(WarEntityPreview) {
                         (err, repoItems) => {
                           // emit the ones found in Repo
                           if (repoItems)
-                            repoItems.forEach(item => emitPreview(item));
+                            repoItems.forEach((item) => emitPreview(item));
                         }
                       );
                     }
@@ -239,7 +239,7 @@ module.exports = function(WarEntityPreview) {
     });
   });
 
-  WarEntityPreview.search = function(
+  WarEntityPreview.search = function (
     projectId,
     searchString,
     pkClasses,
@@ -267,7 +267,7 @@ module.exports = function(WarEntityPreview) {
       var queryString = searchString
         .trim(' ')
         .split(' ')
-        .map(word => {
+        .map((word) => {
           return word + ':*';
         })
         .join(' & ');
@@ -277,13 +277,13 @@ module.exports = function(WarEntityPreview) {
 
     var params = [];
 
-    const addParam = val => {
+    const addParam = (val) => {
       params.push(val);
       return '$' + params.length;
     };
 
-    const addParams = vals => {
-      return vals.map(val => addParam(val)).join(',');
+    const addParams = (vals) => {
+      return vals.map((val) => addParam(val)).join(',');
     };
 
     // // project filter
@@ -361,7 +361,7 @@ module.exports = function(WarEntityPreview) {
     });
   };
 
-  WarEntityPreview.afterRemote('search', function(ctx, resultObjects, next) {
+  WarEntityPreview.afterRemote('search', function (ctx, resultObjects, next) {
     var totalCount = 0;
     if (resultObjects.length > 0) {
       totalCount = resultObjects[0].total_count;
@@ -370,7 +370,7 @@ module.exports = function(WarEntityPreview) {
     // remove column total_count from all resultObjects
     var data = [];
     if (resultObjects) {
-      data = resultObjects.map(searchHit => {
+      data = resultObjects.map((searchHit) => {
         delete searchHit.total_count;
         return searchHit;
       });
@@ -393,7 +393,7 @@ module.exports = function(WarEntityPreview) {
    * Search for existing entities.
    * If not found for the given project, the repo version is returned
    */
-  WarEntityPreview.searchExisting = function(
+  WarEntityPreview.searchExisting = function (
     pkProject,
     searchString,
     pkClasses,
@@ -464,7 +464,7 @@ module.exports = function(WarEntityPreview) {
    * Search for existing entities.
    * If not found for the given project, the repo version is returned
    */
-  WarEntityPreview.searchExistingWithRelatedStatement = function(
+  WarEntityPreview.searchExistingWithRelatedStatement = function (
     pkProject,
     searchString,
     pkClasses,
@@ -590,7 +590,7 @@ module.exports = function(WarEntityPreview) {
   //   };
   // };
 
-  WarEntityPreview.createAll = function(cb) {
+  WarEntityPreview.createAll = function (cb) {
     const sql_stmt = `
       SELECT war.warehouse_update_all();
     `;
@@ -611,7 +611,7 @@ module.exports = function(WarEntityPreview) {
     });
   };
 
-  WarEntityPreview.paginatedListByPks = function(
+  WarEntityPreview.paginatedListByPks = function (
     pkProject,
     pkEntities,
     limit,
@@ -622,7 +622,7 @@ module.exports = function(WarEntityPreview) {
     if (limit > 200) limit = 200;
     if (!offset) offset = 0;
     const params = [];
-    const addParam = param => {
+    const addParam = (param) => {
       params.push(param);
       return '$' + params.length;
     };
@@ -630,12 +630,12 @@ module.exports = function(WarEntityPreview) {
       WITH tw1 AS (
         SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
         FROM war.entity_preview
-        WHERE pk_entity IN (${pkEntities.map(pk => addParam(pk)).join(',')})
+        WHERE pk_entity IN (${pkEntities.map((pk) => addParam(pk)).join(',')})
         AND fk_project = ${addParam(pkProject)}
         UNION
         SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
         FROM war.entity_preview
-        WHERE pk_entity IN (${pkEntities.map(pk => addParam(pk)).join(',')})
+        WHERE pk_entity IN (${pkEntities.map((pk) => addParam(pk)).join(',')})
         AND fk_project IS NULL
       ),
       tw2 AS (

@@ -18,8 +18,13 @@ if (require.main === module) {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
       },
+
+      // Added for mounting Lb3 in Lb4 setup
+      // https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
+      // listenOnStart: false,
     },
   };
+
   application.main(config).catch(err => {
     console.error('Cannot start the application.', err);
     process.exit(1);

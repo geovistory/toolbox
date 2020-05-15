@@ -1,5 +1,5 @@
 import {Client, expect} from '@loopback/testlab';
-import {GeovistoryApplication} from '../..';
+import {GeovistoryApplication} from '../../application';
 import {setupApplication} from './test-helper';
 
 describe('PingController', () => {

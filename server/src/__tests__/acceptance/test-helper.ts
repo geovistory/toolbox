@@ -1,9 +1,5 @@
-import {GeovistoryApplication} from '../..';
-import {
-  createRestAppClient,
-  givenHttpServerConfig,
-  Client,
-} from '@loopback/testlab';
+import {Client, createRestAppClient, givenHttpServerConfig} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../application';
 
 export async function setupApplication(): Promise<AppWithClient> {
   const restConfig = givenHttpServerConfig({
