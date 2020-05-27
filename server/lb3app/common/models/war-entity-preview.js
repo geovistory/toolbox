@@ -10,7 +10,6 @@ var SqlWarSearchExisiting = require('../../dist/server/sql-builders/sql-war-sear
 module.exports = function (WarEntityPreview) {
   // the caches by project
   WarEntityPreview.cachesByProject = {};
-  app['__foo'] = 'bar';
   app.on('io-ready', (io) => {
     io.of('/WarEntityPreview').on('connection', (socket) => {
       if (log) console.log('new connection ' + socket.id);
@@ -428,38 +427,6 @@ module.exports = function (WarEntityPreview) {
     });
   };
 
-  // WarEntityPreview.afterRemote('searchExisting', function(
-  //   ctx,
-  //   resultObjects,
-  //   next
-  // ) {
-  //   var totalCount = 0;
-  //   if (resultObjects.length > 0) {
-  //     totalCount = resultObjects[0].total_count;
-  //   }
-
-  //   // remove column total_count from all resultObjects
-  //   var data = [];
-  //   if (resultObjects) {
-  //     data = resultObjects.map(searchHit => {
-  //       delete searchHit.total_count;
-  //       return searchHit;
-  //     });
-  //   }
-
-  //   if (!ctx.res._headerSent) {
-  //     ctx.res.set('X-Total-Count', totalCount);
-
-  //     ctx.result = {
-  //       totalCount: totalCount,
-  //       data: data,
-  //     };
-  //     next();
-  //   } else {
-  //     next();
-  //   }
-  // });
-
   /**
    * Search for existing entities.
    * If not found for the given project, the repo version is returned
@@ -500,95 +467,6 @@ module.exports = function (WarEntityPreview) {
       }
     });
   };
-
-  // /**
-  //  * Internal function to create the include property of
-  //  * a filter object for findComplex()
-  //  *
-  //  * Usage: add the returned object to the include property of a persistent item relation
-  //  * of findComplex() filter, e.g.:
-  //  * {
-  //  *    ...
-  //  *    include: InfPersistentItem.getIncludeObject(true, 123)
-  //  * }
-  //  *
-  //  * @param ofProject {boolean}
-  //  * @param project {number}
-  //  * @returns include object of findComplex filter
-  //  */
-  // WarEntityPreview.getTeEnIncludeObject = function(ofProject, pkProject) {
-  //   let projectJoin = {};
-
-  //   // if a pkProject is provided, create the relation
-  //   if (pkProject) {
-  //     // get the join object. If ofProject is false, the join will be a left join.
-  //     projectJoin = {
-  //       entity_version_project_rels: WarEntityPreview.app.models.ProInfoProjRel.getJoinObject(
-  //         ofProject,
-  //         pkProject
-  //       ),
-  //     };
-  //   }
-
-  //   return {
-  //     outgoing_statements: {
-  //       $relation: {
-  //         name: 'outgoing_statements',
-  //         joinType: 'inner join',
-  //         orderBy: [
-  //           {
-  //             pk_entity: 'asc',
-  //           },
-  //         ],
-  //       },
-  //       ...projectJoin,
-  //       appellation: {
-  //         $relation: {
-  //           name: 'appellation',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       language: {
-  //         $relation: {
-  //           name: 'language',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       time_primitive: {
-  //         $relation: {
-  //           name: 'time_primitive',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //       place: {
-  //         $relation: {
-  //           name: 'place',
-  //           joinType: 'left join',
-  //           orderBy: [
-  //             {
-  //               pk_entity: 'asc',
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     },
-  //   };
-  // };
 
   WarEntityPreview.createAll = function (cb) {
     const sql_stmt = `

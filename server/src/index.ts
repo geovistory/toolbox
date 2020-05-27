@@ -23,12 +23,10 @@
  * https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
  */
 import {ApplicationConfig} from '@loopback/core';
-import {ExpressServer} from './server';
-
-export {ExpressServer};
+import {GeovistoryServer} from './server';
 
 export async function main(options: ApplicationConfig = {}) {
-  const server = new ExpressServer(options);
+  const server = new GeovistoryServer(options);
   await server.boot();
   await server.start();
   console.log(`Server is running at ${server.url}`);

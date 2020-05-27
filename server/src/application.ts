@@ -38,6 +38,9 @@ export class GeovistoryApplication extends BootMixin(
      * top level path that is potentially called by the angular client
      * defined in /geovistory/client/src/app/app-routing.module.ts
      */
+    // this.static('/', path.join(__dirname, '../'));
+
+
     this.static('/', path.join(__dirname, '../../client/dist'));
     this.static('/home', path.join(__dirname, '../../client/dist'));
     this.static(/\/projects.*/, path.join(__dirname, '../../client/dist'));
@@ -73,4 +76,8 @@ export class GeovistoryApplication extends BootMixin(
       }
     };
   }
+
 }
+
+
+

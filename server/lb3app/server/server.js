@@ -21,9 +21,9 @@ if (['production', 'staging'].includes(process.env.DB_ENV)) {
   app.use(enforce.HTTPS({ trustProtoHeader: true }));
 }
 
-app.start = function() {
+app.start = function () {
   // start the web server
-  var server = app.listen(function() {
+  var server = app.listen(function () {
     app.emit('started', server);
     var baseUrl = app.get('url').replace(/\/$/, '');
     console.log('Web server listening at: %s', baseUrl);
@@ -35,12 +35,18 @@ app.start = function() {
     // Connect to Postgres
     const client = new Client({
       connectionString: app.datasources.postgres1.connector.settings.url,
+      ssl: {
+        rejectUnauthorized: true,
+      },
     });
     client.connect();
 
     // Connect to Postgres a second time for parrallel sessions
     const client2 = new Client({
       connectionString: app.datasources.postgres1.connector.settings.url,
+      ssl: {
+        rejectUnauthorized: true,
+      },
     });
     client2.connect();
 
@@ -83,7 +89,7 @@ app.start = function() {
     app.models.WarEntityPreview.stream = new Subject();
 
     // Listen for all pg_notify channel messages
-    client.on('notification', function(msg) {
+    client.on('notification', function (msg) {
       switch (msg.channel) {
         case 'project_updated':
           needs_update_from_queue = true;
@@ -173,7 +179,7 @@ app.start = function() {
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
-boot(app, __dirname, function(err) {
+boot(app, __dirname, function (err) {
   if (err) throw err;
 
   // start the server if `$ node server.js`

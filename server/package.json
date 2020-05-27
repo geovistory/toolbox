@@ -27,7 +27,7 @@
     "pretest": "npm run clean && npm run build",
     "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
     "posttest": "npm run lint",
-    "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
+    "test:dev": "lb-mocha --timeout 5000 --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
     "migrate": "node ./dist/migrate",
     "prestart": "npm run build",
     "start": "node -r source-map-support/register .",
@@ -36,7 +36,8 @@
     "db-migrate": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations",
     "cm": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations --sql-file true create",
     "mu": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations up",
-    "md": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations down"
+    "md": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations down",
+    "t": "export NO_LOGS='true' && lb-mocha --timeout 4000 dist/__tests__/**/*.js"
   },
   "repository": {
     "type": "git"
@@ -94,6 +95,7 @@
     "@types/pg": "^7.14.1",
     "@types/ramda": "^0.26.33",
     "@types/socket.io": "^2.1.2",
+    "@types/socket.io-client": "^1.4.33",
     "@types/sql-formatter": "^2.3.0",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
@@ -104,6 +106,7 @@
     "json-schema-to-typescript": "^7.1.0",
     "nodemon": "^2.0.3",
     "pascalcase": "^1.0.0",
+    "socket.io-client": "^2.3.0",
     "source-map-support": "^0.5.19",
     "typescript": "~3.8.3",
     "typescript-json-schema": "^0.40.0"

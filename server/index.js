@@ -21,7 +21,10 @@ if (require.main === module) {
 
       // Added for mounting Lb3 in Lb4 setup
       // https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
-      // listenOnStart: false,
+      listenOnStart: false,
+    },
+    websocket: {
+      port: 3000,
     },
   };
 

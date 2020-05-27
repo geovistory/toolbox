@@ -1,10 +1,14 @@
 import {Middleware} from '@loopback/rest';
 
 export const log: Middleware = async (middlewareCtx, next) => {
+
   const {request} = middlewareCtx;
   try {
     // Proceed with next middleware
     await next();
+
+    if (process.env.NO_LOGS === 'true') return;
+
     // Process response
     console.log(
       `

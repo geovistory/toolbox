@@ -155,7 +155,7 @@ export class ActiveProjectService {
           });
           if (pks.length) {
             this.entityPreviewSocket.emit('addToStream', {
-              pk_project: pkProject,
+              pkProject,
               pks
             })
           }
@@ -237,7 +237,7 @@ export class ActiveProjectService {
       this.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProject => {
 
         this.entityPreviewSocket.emit('addToStream', {
-          pk_project: pkProject,
+          pkProject,
           pks: [pkEntity]
         })
         // const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;
