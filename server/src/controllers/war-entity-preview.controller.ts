@@ -8,7 +8,8 @@ interface Cache {
   streamedPks: {[key: string]: boolean}
 }
 /**
- * A demo controller for websocket
+ * EntityPreview Controller
+ * Handles also websockets
  */
 @ws('/WarEntityPreview')
 export class WarEntityPreviewController {
