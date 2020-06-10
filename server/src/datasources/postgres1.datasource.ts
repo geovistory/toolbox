@@ -2,7 +2,7 @@ import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
 const config = {
-  url: '',
+  url: process.env.DATABASE_URL + '?ssl=true',
   name: 'postgres1',
   connector: 'postgresql',
   ssl: {
