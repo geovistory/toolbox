@@ -1155,16 +1155,22 @@ export class InformationPipesService {
   /**
    * Pipes the pk_entity of the type of an entity
    */
-  @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number): Observable<InfRole> {
-    return this.p.inf$.role$.by_subject_and_property_indexed$({
-      fk_property: hasTypeProperty,
-      fk_temporal_entity: pkEntity
-    }).pipe(
-      map(items => {
+  @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number, isOutgoing: boolean): Observable<InfRole> {
+    if (isOutgoing) {
+      return this.p.inf$.role$.by_subject_and_property_indexed$({ fk_property: hasTypeProperty, fk_temporal_entity: pkEntity }).pipe(map(items => {
         if (!items || Object.keys(items).length < 1) return undefined;
         else return values(items)[0]
       })
-    )
+      )
+    }
+    else {
+      return this.p.inf$.role$.by_object_and_property_indexed$({ fk_property: hasTypeProperty, fk_entity: pkEntity }).pipe(
+        map(items => {
+          if (!items || Object.keys(items).length < 1) return undefined;
+          else return values(items)[0]
+        })
+      )
+    }
   }
 
   @spyTag

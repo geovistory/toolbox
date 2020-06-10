@@ -19,6 +19,7 @@ export class TypeItemComponent implements OnInit {
   @Input() pkProperty: number
   @Input() pkTypeClass: number
   @Input() pkTypedClass: number
+  @Input() isOutgoing: boolean
 
   isViewMode: boolean;
 
@@ -51,15 +52,17 @@ export class TypeItemComponent implements OnInit {
     if (!this.pkProperty) throw new Error('You must provide a pkProperty')
     if (!this.pkTypeClass) throw new Error('You must provide a pkTypeClass')
     if (!this.pkTypedClass) throw new Error('You must provide a pkTypedClass')
+    if (this.isOutgoing == undefined) throw new Error('You must provide a isOutgoing')
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.inf.role.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+      if (this.isOutgoing) this.p.inf.role.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+      else this.p.inf.role.findByParams(true, pkProject, null, this.pkEntity, null, this.pkProperty)
     })
 
-    this.hasTypeRole$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty)
+    this.hasTypeRole$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty, this.isOutgoing)
 
     this.pkType$ = this.hasTypeRole$.pipe(
-      map(e => e ? e.fk_entity : undefined)
+      map(e => { console.log(e); return e ? (this.isOutgoing ? e.fk_entity : e.fk_temporal_entity) : undefined })
     )
     this.typeLabel$ = this.pkType$.pipe(
       switchMap(pkType => this.p.streamEntityPreview(pkType).pipe(
@@ -78,19 +81,23 @@ export class TypeItemComponent implements OnInit {
       first(),
       takeUntil(this.destroy$)
     ).subscribe(([role, fk_project]) => {
-      const value = this.formGroup.get('typeCtrl').value;
+      const targetEntity: number = this.formGroup.get('typeCtrl').value;
+      // if same option is chosen or subject equals object...
       if (
-        (role && role.fk_entity == value) ||
-        (!role && !value)
+        (role && targetEntity == (this.isOutgoing ? role.fk_entity : role.fk_temporal_entity)) ||
+        (!role && !targetEntity)
       ) {
+        // ... stop here.
         this.editing = false
       }
+      // if another option is chosen
       else {
         this.loading = true
 
-        // old ea
+        // old statement
         const calls$ = [];
         if (role) {
+          // remove old statement from project
           const oldEa = new InfRole({
             pk_entity: role.pk_entity,
             fk_temporal_entity: role.fk_temporal_entity,
@@ -105,11 +112,14 @@ export class TypeItemComponent implements OnInit {
           calls$.push(call$);
         }
 
-        // new ea
-        if (value) {
+        if (targetEntity) {
+          // create and persist new statement
+          const subject = this.isOutgoing ? this.pkEntity : targetEntity;
+          const object = this.isOutgoing ? targetEntity : this.pkEntity;
+
           const newEa = new InfRole({
-            fk_temporal_entity: this.pkEntity,
-            fk_entity: value,
+            fk_temporal_entity: subject,
+            fk_entity: object,
             fk_property: this.pkProperty,
             entity_version_project_rels: [{ is_in_project: true } as ProInfoProjRel]
           })
