@@ -21,7 +21,7 @@
       </span>
       <gv-type-item #typeItem class="ml-3 text-muted" [pkEntity]="pkEntity"
         [pkProperty]="fieldDefinition.property.pkProperty" [pkTypedClass]="fieldDefinition.sourceClass"
-        [pkTypeClass]="fieldDefinition.listDefinitions[0]?.targetClass">
+        [pkTypeClass]="fieldDefinition.listDefinitions[0]?.targetClass" [isOutgoing]="fieldDefinition.isOutgoing">
       </gv-type-item>
     </div>
 
