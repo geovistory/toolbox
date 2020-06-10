@@ -10,7 +10,7 @@ import {setupApplication} from '../_test-helper';
 
 const pEvent = require('p-event');
 
-describe('Websockets', () => {
+describe('WarEntityPreview', () => {
   let server: GeovistoryServer;
   before('setupApplication', async () => {
     ({server} = await setupApplication());
