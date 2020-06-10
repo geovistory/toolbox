@@ -33,10 +33,6 @@
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "heroku-postbuild": "bash heroku-postbuild.sh",
-    "db-migrate": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations",
-    "cm": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations --sql-file true create",
-    "mu": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations up",
-    "md": "node_modules/db-migrate/bin/db-migrate --config db-migrate/config.json --migrations-dir db-migrate/migrations down",
     "t": "export NO_LOGS='true' && lb-mocha --timeout 4000 dist/__tests__/**/*.js"
   },
   "repository": {
@@ -65,8 +61,6 @@
     "cli-color": "^1.2.0",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
-    "db-migrate": "^0.11.5",
-    "db-migrate-pg": "^0.4.0",
     "express-sslify": "^1.2.0",
     "forever": "^0.15.3",
     "helmet": "^1.3.0",
