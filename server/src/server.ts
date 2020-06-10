@@ -56,8 +56,9 @@ export class GeovistoryServer extends Context {
     this.app.use('/', this.lbApp.requestHandler);
 
     // Create ws server
-    this.wsServer = new WebSocketServer();
+    this.wsServer = new WebSocketServer(this.lbApp);
     this.bind('servers.websocket.server1').to(this.wsServer);
+
     this.wsServer.use((socket, next) => {
       this.log('Global middleware - socket:', socket.id);
       next();

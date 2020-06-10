@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/camelcase */
+import {Subscription} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {get, getModelSchemaRef, HttpErrors, param} from '@loopback/rest';
+import _ from 'lodash';
+import {Subject} from 'rxjs';
 import {Socket} from 'socket.io';
 import {ws} from '../decorators/websocket.decorator';
-import {WarEntityPreview} from '../models';
+import {WarEntityPreview, WarEntityPreviewWithRelations} from '../models';
 import {WarEntityPreviewRepository} from '../repositories';
 import {logSql} from '../utils/helpers';
 import {SqlBuilderBase} from '../utils/sql-builder-base';
-
-
 /**
  * TODO-LB3-LB4
  *
@@ -42,12 +44,18 @@ export class WarEntityPreviewController {
     streamedPks: {}, // the entityPreviews streamed
   };
 
+  streamSub: Subscription;
+
+  tsmpLastModification$ = new Subject<string>()
+
   constructor(
     @ws.socket() // Equivalent to `@inject('ws.socket')`
     private socket: Socket,
     @repository(WarEntityPreviewRepository)
     public warEntityPreviewRepository: WarEntityPreviewRepository,
-  ) {}
+  ) {
+
+  }
 
   /************************ WEBSOCKET ****************************/
   // everything from here until 'RestAPI' is about websockets
@@ -59,6 +67,46 @@ export class WarEntityPreviewController {
   @ws.connect()
   connect(socket: Socket) {
     if (log) this.log('Client connected to ws: %s', this.socket.id);
+    this.streamSub = this.tsmpLastModification$.subscribe(
+      (tsmpLastModification) => {
+        if (this.cache.currentProjectPk) {
+          this.resendCachedPreviews(tsmpLastModification).then(
+            () => {},
+            () => {}
+          );
+        }
+      }
+    );
+  }
+
+  private async resendCachedPreviews(tsmpLastModification: string) {
+    const entityPks = Object.keys(this.cache.streamedPks).map(pk => parseInt(pk, 10));
+    if (entityPks) {
+      // Query entities modified and needed by current cache.
+      const projectItems = await this.warEntityPreviewRepository.find({
+        where: {
+          and: [
+            {tmsp_last_modification: {eq: tsmpLastModification}},
+            {fk_project: {eq: this.cache.currentProjectPk}},
+            {pk_entity: {inq: entityPks}}
+          ]
+        }
+      });
+
+      await this.emitProjectAndRepoPreviews(projectItems, entityPks);
+
+    }
+  }
+
+  /**
+ * The method is invoked when a client disconnects from the server
+ * @param socket
+ */
+  @ws.disconnect()
+  disconnect() {
+    this.log('Client disconnected: %s', this.socket.id);
+    // Unsubscribe the db listener
+    this.streamSub.unsubscribe();
   }
 
   /**
@@ -67,7 +115,7 @@ export class WarEntityPreviewController {
    */
   @ws.subscribe('addToStream')
   // @ws.emit('namespace' | 'requestor' | 'broadcast')
-  handleAddToStream(data: {pkProject: number, pks: (number | string)[]}) {
+  async handleAddToStream(data: {pkProject: number, pks: (number | string)[]}) {
     const pkProject = data.pkProject;
     const pks = data.pks
 
@@ -82,7 +130,7 @@ export class WarEntityPreviewController {
     for (const pk of pks) {
       if (typeof pk === 'number') {
         sanitizedPks.push(pk.toString());
-      } else if (typeof pk === 'string') {
+      } else if (typeof pk === 'string' && !isNaN(parseInt(pk, 10))) {
         sanitizedPks.push(pk);
       } else {
         this.warn('Please provide a proper pk_entity');
@@ -102,75 +150,52 @@ export class WarEntityPreviewController {
         );
       }
 
-      // TODO: Migrate the WarEntityPreview Model and replaces the
-      // following lines by refactored commented code below
-      sanitizedPks.forEach((pk) => this.emitPreview({
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        pk_entity: parseInt(pk, 10),
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        entity_label: 'ToDo (Lb3->Lb4)'
-      }));
 
-      // TODO: Query the entityPreview in DB
-      // WarEntityPreview.findComplex(
-      //   {
-      //     where: [
-      //       'fk_project',
-      //       '=',
-      //       pk_project,
-      //       'AND',
-      //       'pk_entity',
-      //       'IN',
-      //       sanitizedPks,
-      //     ],
-      //   },
-      //   (err, projectItems) => {
-      //     if (err) return new Error(err);
 
-      //     if (projectItems) {
-      //       // emit the ones found in Project
-      //       projectItems.forEach((item) => emitPreview(item));
-
-      //       // query repo for the ones not (yet) in project
-      //       const notInProject = _.difference(
-      //         sanitizedPks,
-      //         projectItems.map((item) => item.pk_entity.toString())
-      //       );
-      //       if (notInProject.length) {
-      //         WarEntityPreview.findComplex(
-      //           {
-      //             where: [
-      //               'fk_project',
-      //               'IS NULL',
-      //               'AND',
-      //               'pk_entity',
-      //               'IN',
-      //               notInProject,
-      //             ],
-      //           },
-      //           (err, repoItems) => {
-      //             // emit the ones found in Repo
-      //             if (repoItems)
-      //               repoItems.forEach((item) => emitPreview(item));
-      //           }
-      //         );
-      //       }
-      //     }
-      //   }
-      // );
+      const projectItems = await this.warEntityPreviewRepository.find({
+        where: {
+          and: [
+            {fk_project: {eq: pkProject}},
+            {pk_entity: {inq: sanitizedPks}},
+          ]
+        }
+      })
+      await this.emitProjectAndRepoPreviews(projectItems, sanitizedPks.map(pk => parseInt(pk, 10)));
     }
 
   }
 
-  /**
-   * The method is invoked when a client disconnects from the server
-   * @param socket
-   */
-  @ws.disconnect()
-  disconnect() {
-    this.log('Client disconnected: %s', this.socket.id);
-  }
 
+
+
+  private async emitProjectAndRepoPreviews(projectItems: WarEntityPreviewWithRelations[], requestedPks: number[]) {
+    if (projectItems) {
+      // emit the ones found in Project
+      projectItems.forEach((item) => this.emitPreview(item));
+
+      // query repo for the ones not (yet) in project
+      const notInProject = _.difference(
+        requestedPks.map((item) => item),
+        projectItems.map((item) => item?.pk_entity)
+      );
+
+      if (notInProject.length) {
+        const repoItems = await this.warEntityPreviewRepository.find(
+          {
+            where: {
+              and: [
+                {fk_project: {eq: null}},
+                {pk_entity: {inq: notInProject}},
+              ],
+            }
+          });
+
+        // emit the ones found in Repo
+        if (repoItems)
+          repoItems.forEach((item) => this.emitPreview(item));
+      }
+    }
+  }
 
   /**
    * Register a handler for 'leaveProjectRoom' events
@@ -185,6 +210,7 @@ export class WarEntityPreviewController {
 
     // reset cache
     this.cache.currentProjectPk = undefined;
+    this.cache.streamedPks = {}
   }
 
 
@@ -223,7 +249,7 @@ export class WarEntityPreviewController {
   };
 
   // emit entity preview
-  emitPreview(entityPreview: {pk_entity: number, entity_label: string}) {
+  emitPreview(entityPreview: WarEntityPreviewWithRelations) {
     // check if this should be: this.socket.nsp.emit()
     this.socket.emit('entityPreview', entityPreview);
 
@@ -269,7 +295,7 @@ export class WarEntityPreviewController {
     @param.query.object('pkClasses') pkClasses: number[],
     @param.query.string('entityType') entityType: string,
     @param.query.number('limit') limit = 10,
-    @param.query.number('page') page: number,
+    @param.query.number('page') page = 1,
   ): Promise<WarEntityPreview[]> {
 
     // throw an error when the parameter is not a natural number
@@ -279,8 +305,8 @@ export class WarEntityPreviewController {
       limit = 200;
     }
 
-    // throw an error when the parameter is no integer or negative
-    if (!Number.isInteger(page) || page < 0) {
+    // throw an error when the parameter is not a natural number
+    if (!Number.isInteger(page) || page < 1) {
       throw new HttpErrors.UnprocessableEntity('page is not zero or a natural number');
     }
 

@@ -85,6 +85,7 @@
     "@loopback/eslint-config": "^8.0.0",
     "@loopback/testlab": "^3.1.6",
     "@types/json2csv": "^4.5.0",
+    "@types/lodash": "^4.14.155",
     "@types/node": "^10.17.24",
     "@types/pg": "^7.14.1",
     "@types/ramda": "^0.26.33",
