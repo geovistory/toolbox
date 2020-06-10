@@ -285,31 +285,6 @@ module.exports = function (WarEntityPreview) {
       return vals.map((val) => addParam(val)).join(',');
     };
 
-    // // project filter
-    // let whereProject;
-    // if (projectId) {
-    //   params.push(projectId);
-    //   whereProject = 'AND fk_project = $' + params.length;
-    // } else {
-    //   whereProject = 'AND fk_project IS NULL';
-    // }
-
-    // data unit type filter
-    // let whereEntityType = '';
-    // if (entityType) {
-    //   params.push(entityType);
-    //   whereEntityType = 'AND entity_type = $' + params.length;
-    // }
-
-    // // class filter
-    // let pkClassParamNrs;
-    // if (pkClasses && pkClasses.length) {
-    //   pkClassParamNrs = pkClasses
-    //     .map((c, i) => '$' + (i + params.length + 1))
-    //     .join(', ');
-    //   params = [...params, ...pkClasses];
-    // }
-
     var sql_stmt = `
         select
         fk_project,
