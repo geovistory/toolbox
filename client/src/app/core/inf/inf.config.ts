@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { InfRole, InfTextProperty } from "../sdk";
+import { InfStatement, InfTextProperty } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
@@ -36,35 +36,35 @@ export const infDefinitions: ReducerConfigCollection = {
       }
     ]
   },
-  role: {
+  statement: {
     // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
-      indexByFn: (item) => {
+      indexByFn: (item: InfStatement) => {
         return item.pk_entity.toString()
       }
     },
     groupBy: [
       {
         keyInStore: 'subject',
-        groupByFn: (d: InfRole): string => indexRoleBySubject(d)
+        groupByFn: (d: InfStatement): string => indexStatementBySubject(d)
       },
       {
         keyInStore: 'subject+property',
-        groupByFn: (d: InfRole): string => indexRoleBySubjectProperty(d)
+        groupByFn: (d: InfStatement): string => indexStatementBySubjectProperty(d)
       },
       {
         keyInStore: 'object',
-        groupByFn: (d: InfRole): string => indexRoleByObject(d)
+        groupByFn: (d: InfStatement): string => indexStatementByObject(d)
       },
       {
         keyInStore: 'object+property',
-        groupByFn: (d: InfRole): string => indexRoleByObjectProperty(d)
+        groupByFn: (d: InfStatement): string => indexStatementByObjectProperty(d)
       },
 
       {
         keyInStore: 'fk_subject_data',
-        groupByFn: (d: InfRole): string => U.toStr0undef(d.fk_subject_data)
+        groupByFn: (d: InfStatement): string => U.toStr0undef(d.fk_subject_data)
       },
     ]
   },
@@ -140,20 +140,20 @@ export const infDefinitions: ReducerConfigCollection = {
 
 
 /**
- * This function creates a key for the given role by
+ * This function creates a key for the given statement by
  * - subject (all subject foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
  * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
- * Use this function to index groups of roles with the same subject
- * or to retrieve roles from such a group index
+ * Use this function to index groups of statements with the same subject
+ * or to retrieve statements from such a group index
  */
-export function indexRoleBySubject(fks: IndexRoleBySubject = {}): string {
-  return `${fks.fk_temporal_entity || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`
+export function indexStatementBySubject(fks: IndexStatementBySubject = {}): string {
+  return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}`
 }
-export interface IndexRoleBySubject {
-  fk_temporal_entity?: number;
+export interface IndexStatementBySubject {
+  fk_subject_info?: number;
   fk_subject_data?: number;
   fk_subject_tables_row?: number;
   fk_subject_tables_cell?: number;
@@ -161,20 +161,20 @@ export interface IndexRoleBySubject {
 
 
 /**
- * This function creates a key for the given role by
+ * This function creates a key for the given statement by
  * - object (all object foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
  * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
- * Use this function to index groups of roles with the same object
- * or to retrieve roles from such a group index
+ * Use this function to index groups of statements with the same object
+ * or to retrieve statements from such a group index
  */
-export function indexRoleByObject(fks: IndexRoleByObject = {}): string {
-  return `${fks.fk_entity || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`
+export function indexStatementByObject(fks: IndexStatementByObject = {}): string {
+  return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}`
 }
-export interface IndexRoleByObject {
-  fk_entity?: number;
+export interface IndexStatementByObject {
+  fk_object_info?: number;
   fk_object_data?: number;
   fk_object_tables_row?: number;
   fk_object_tables_cell?: number;
@@ -182,21 +182,21 @@ export interface IndexRoleByObject {
 
 
 /**
- * This function creates a key for the given role by
+ * This function creates a key for the given statement by
  * - subject (all subject foreign keys)
  * - property (all property foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
  * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
- * Use this function to index groups of roles with the same subject + property
- * or to retrieve roles from such a group index
+ * Use this function to index groups of statements with the same subject + property
+ * or to retrieve statements from such a group index
  */
-export function indexRoleBySubjectProperty(fks: IndexRoleBySubjectProperty = {}): string {
-  return `${fks.fk_temporal_entity || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
+export function indexStatementBySubjectProperty(fks: IndexStatementBySubjectProperty = {}): string {
+  return `${fks.fk_subject_info || '0'}-${fks.fk_subject_data || '0'}-${(fks.fk_subject_tables_row) || '0'}-${(fks.fk_subject_tables_cell) || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
-export interface IndexRoleBySubjectProperty {
-  fk_temporal_entity?: number;
+export interface IndexStatementBySubjectProperty {
+  fk_subject_info?: number;
   fk_subject_data?: number;
   fk_subject_tables_row?: number;
   fk_subject_tables_cell?: number;
@@ -206,21 +206,21 @@ export interface IndexRoleBySubjectProperty {
 
 
 /**
- * This function creates a key for the given role by
+ * This function creates a key for the given statement by
  * - object (all object foreign keys)
  * - property (all property foreign keys)
  *
  * The key is created on the basis of the given foreign keys.
  * Keys are separated by dash '-', undefined keys are replaced by a zero '0'
  *
- * Use this function to index groups of roles with the same object + property
- * or to retrieve roles from such a group index
+ * Use this function to index groups of statements with the same object + property
+ * or to retrieve statements from such a group index
  */
-export function indexRoleByObjectProperty(fks: IndexRoleByObjectProperty = {}): string {
-  return `${fks.fk_entity || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
+export function indexStatementByObjectProperty(fks: IndexStatementByObjectProperty = {}): string {
+  return `${fks.fk_object_info || '0'}-${fks.fk_object_data || '0'}-${fks.fk_object_tables_row || '0'}-${fks.fk_object_tables_cell || '0'}-${fks.fk_property || '0'}-${fks.fk_property_of_property || '0'}`
 }
-export interface IndexRoleByObjectProperty {
-  fk_entity?: number;
+export interface IndexStatementByObjectProperty {
+  fk_object_info?: number;
   fk_object_data?: number;
   fk_object_tables_row?: number;
   fk_object_tables_cell?: number;

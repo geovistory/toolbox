@@ -6,7 +6,7 @@ import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.se
 import { values } from 'ramda';
 import { BehaviorSubject, Subject, of, Observable } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
-import { ChartLineData, TimeChartContInput, TimeChartContOutput, ChartLinePoint } from '../../../../../../../src/common/interfaces';
+import { ChartLineData, TimeChartContInput, TimeChartContOutput, ChartLinePoint } from '../../../../../../../server/lb3app/src/common/interfaces';
 import { AnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent } from '../time-chart-cont-form/time-chart-cont-form.component';
 import { EntityPreviewsPaginatedDialogService } from 'app/shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';

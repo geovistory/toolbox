@@ -13,7 +13,7 @@ import { HighlightPipe } from 'app/shared/pipes/highlight/highlight.pipe';
 import { equals, values, indexBy, intersection } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, first, map, takeUntil, switchMap } from 'rxjs/operators';
-import * as Config from '../../../../../../../common/config/Config';
+import * as Config from '../../../../../../../server/lb3app/common/config/Config';
 import { ProDfhClassProjRel } from '../../../../core/sdk/models/ProDfhClassProjRel';
 import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';

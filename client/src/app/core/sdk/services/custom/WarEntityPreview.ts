@@ -11,7 +11,7 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WarEntityPreview } from '../../models/WarEntityPreview';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { InfRole } from '../../models/InfRole';
+import { InfStatement } from '../../models/InfStatement';
 import { InfTextProperty } from '../../models/InfTextProperty';
 
 

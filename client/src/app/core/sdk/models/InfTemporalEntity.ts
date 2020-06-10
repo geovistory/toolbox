@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole,
+  InfStatement,
   InfTextProperty
 } from '../index';
 
@@ -10,8 +10,8 @@ export interface InfTemporalEntityInterface {
   "fk_class": number;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  te_roles?: InfRole[];
-  ingoing_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
 }
 
@@ -19,8 +19,8 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
   "fk_class": number;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  te_roles?: InfRole[];
-  ingoing_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
   constructor(data?: InfTemporalEntityInterface) {
     Object.assign(this, data);
@@ -73,21 +73,21 @@ export class InfTemporalEntity implements InfTemporalEntityInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        te_roles: {
-          name: 'te_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        outgoing_statements: {
+          name: 'outgoing_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_temporal_entity'
+          keyTo: 'fk_subject_info'
         },
-        ingoing_roles: {
-          name: 'ingoing_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+          keyTo: 'fk_object_info'
         },
         text_properties: {
           name: 'text_properties',

@@ -51,65 +51,7 @@ export class PeItTimelineComponent extends PeItTimelineAPIActions implements OnI
 
   ngOnInit() {
 
-    // this.timeLineData$ = this.b.pipeRelatedTemporalEntities(this.pkEntity).pipe(
-    //   switchMapOr([], (teEns) => combineLatest(
-    //     teEns.map(teEn => (combineLatest(
-    //       this.b.pipeTimeSpan(teEn.pk_entity),
-    //       this.i.pipeLabelOfEntity(teEn.pk_entity),
-    //       this.i.pipeClassLabelOfEntity(teEn.pk_entity)
-    //     )).pipe(
-    //       map(([timeSpan, teEnLabel, classLabel]) => {
-    //         const timeLineRow: TimeLineRow = {
-    //           accentuation: 'none',
-    //           existenceTime: timeSpan,
-    //           label: classLabel + ' ' + teEnLabel
-    //         }
-    //         return timeLineRow
-    //       })
-    //     ))
-    //   )),
-    //   map(rows => ({ rows }))
-    // )
 
-    // subscribe to PropertyFields and create TimeLineData
-    // this.ngRedux.select<FieldList>([...dropLast(1, this.basePath), '_fields'])
-    //   .takeUntil(this.destroy$)
-    //   .subscribe(fields => {
-    //     const timeLineData = {
-    //       rows: []
-    //     }
-
-    //     U.obj2KeyValueArr(fields).forEach(propertyFieldMap => {
-    //       if (propertyFieldMap.value.type === 'PropertyField') {
-    //         const field = propertyFieldMap.value as PropertyField;
-    //         const setLabel = field.label.default;
-    //         const propertyFieldPath = [...this.basePath, '_fields', propertyFieldMap.key]
-
-    //         U.obj2KeyValueArr(field._role_list).forEach(roleDetailMap => {
-    //           const roleDetail = roleDetailMap.value;
-    //           const roleDetailPath = [...propertyFieldPath, '_role_list', roleDetailMap.key];
-
-    //           if (roleDetail._teEnt && roleDetail._teEnt._fields && roleDetail._teEnt._fields._field_48) {
-    //             const teD = roleDetail._teEnt;
-    //             const teEntPath = [...roleDetailPath, '_teEnt'];
-
-    //             // create a TimeLineRow for each TeEntState
-    //             timeLineData.rows.push({
-    //               existenceTime: StateToDataService
-    //                 .existenceTimeStateToExistenceTime(teD._fields._field_48 as ExistenceTimeDetail),
-    //               label: setLabel,
-    //               accentuation: teD.accentuation,
-    //               storeConnector: { path: teEntPath }
-    //             })
-    //           }
-    //         })
-    //       }
-    //     })
-
-    //     if (!equals(this.timeLineData, timeLineData)) {
-    //       this.timeLineData = timeLineData
-    //     }
-    //   })
   }
 
 

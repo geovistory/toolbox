@@ -29,7 +29,7 @@ export * from './ProDfhProfileProjRel';
 export * from './InfAppellation';
 export * from './InfLangString';
 export * from './InfTemporalEntity';
-export * from './InfRole';
+export * from './InfStatement';
 export * from './InfLanguage';
 export * from './InfPersistentItem';
 export * from './InfTimePrimitive';

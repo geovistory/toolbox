@@ -8,10 +8,19 @@ import { PageEvent } from '@angular/material/paginator';
 import { equals, values, without, indexBy, pick, keys, omit } from 'ramda';
 import { FormControl } from '@angular/forms';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { TColFilters, TColFilter, TabRow, TColFilterOpText, TColFilterOpNumeric } from '../../../../../../../src/server/table/interfaces'
-import { combine } from 'cesium';
-import { WorkerWrapperService } from '../../services/worker-wrapper.service';
-import { text } from 'd3';
+import { TColFilters, TColFilter } from '../../../../../../../server/lb3app/src/server/table/interfaces'
+
+// TODO import this interface from backend
+interface TabCell {
+  pk_cell: number;
+  string_value?: string;
+  numeric_value?: number;
+}
+// TODO import this interface from backend
+interface TabRow {
+  pk_row: number,
+  [key: number]: TabCell
+}
 
 @Component({
   selector: 'gv-table-detail',

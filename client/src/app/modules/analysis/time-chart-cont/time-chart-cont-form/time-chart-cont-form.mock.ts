@@ -1,4 +1,4 @@
-import { TimeChartContInput } from '../../../../../../../src/common/interfaces';
+import { TimeChartContInput } from '../../../../../../../server/lb3app/src/common/interfaces';
 
 export const initVal1: TimeChartContInput = {
   'lines': [

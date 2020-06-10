@@ -3,7 +3,7 @@ import { equals } from 'ramda';
 import { MatDialog } from '../../../../../node_modules/@angular/material';
 import { combineLatest, of } from '../../../../../node_modules/rxjs';
 import { mergeMap, map } from '../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfRole } from '../../../core';
+import { ActiveProjectService, InfStatement } from '../../../core';
 import { InfActions } from '../../../core/inf/inf.actions';
 import { InfTimePrimitiveWithCalendar } from '../components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
@@ -44,12 +44,12 @@ export class TimeSpanService {
     return this.p.pkProject$.pipe(
       mergeMap((pkProject) => {
         const o = this.createOldData(item)
-        const toUpsert: InfRole[] = [];
-        let toDelete: InfRole[] = [];
+        const toUpsert: InfStatement[] = [];
+        let toDelete: InfStatement[] = [];
 
         item.properties.forEach(prop => {
           if (prop.items.length > 1) {
-            toDelete = [...toDelete, ...prop.items.slice(1, prop.items.length).map(i => i.role)]
+            toDelete = [...toDelete, ...prop.items.slice(1, prop.items.length).map(i => i.statement)]
           }
         });
 
@@ -58,7 +58,7 @@ export class TimeSpanService {
           if (!o[key] && !n[key]) { }
           // if only in new, upsert
           else if (!o[key] && n[key]) {
-            toUpsert.push(this.convertToRole(key, n[key], fkTeEn))
+            toUpsert.push(this.convertToStatement(key, n[key], fkTeEn))
           }
           // if only in old, delete
           else if (o[key] && !n[key]) {
@@ -67,13 +67,13 @@ export class TimeSpanService {
           // if in both and different, delete old, upsert new
           else if (o[key] && n[key] && !equals(o[key].tp, n[key])) {
             toDelete.push(o[key].r)
-            toUpsert.push(this.convertToRole(key, n[key], fkTeEn))
+            toUpsert.push(this.convertToStatement(key, n[key], fkTeEn))
           }
         })
 
         return combineLatest(
-          toUpsert.length > 0 ? this.inf.role.upsert(toUpsert, pkProject).resolved$ : of(true),
-          toDelete.length > 0 ? this.inf.role.remove(toDelete, pkProject).resolved$ : of(true)
+          toUpsert.length > 0 ? this.inf.statement.upsert(toUpsert, pkProject).resolved$ : of(true),
+          toDelete.length > 0 ? this.inf.statement.remove(toDelete, pkProject).resolved$ : of(true)
         )
 
       }),
@@ -81,20 +81,20 @@ export class TimeSpanService {
     )
   }
 
-  convertToRole(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfRole {
-    const role: InfRole = {
-      fk_temporal_entity: fkTeEn,
+  convertToStatement(key, t: InfTimePrimitiveWithCalendar, fkTeEn: number): InfStatement {
+    const statement: InfStatement = {
+      fk_subject_info: fkTeEn,
       fk_property: parseInt(key),
       entity_version_project_rels: [{
         calendar: t.calendar
       }],
-      time_primitive: {
+      object_time_primitive: {
         ...t,
         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
       },
       ...{} as any
     }
-    return role
+    return statement
   }
 
   createDialogData(item: TimeSpanItem): CtrlTimeSpanDialogResult {
@@ -119,7 +119,7 @@ export class TimeSpanService {
     const old: {
       [key: string]: {
         tp: InfTimePrimitiveWithCalendar,
-        r: InfRole,
+        r: InfStatement,
       }
     } = {}
     item.properties.forEach((prop) => {
@@ -132,7 +132,7 @@ export class TimeSpanService {
             duration: i.duration,
             julian_day: i.julianDay
           } as InfTimePrimitiveWithCalendar,
-          r: prop.items[0].role
+          r: prop.items[0].statement
         }
       }
 

@@ -1,0 +1,242 @@
+{
+  "name": "InfPersistentItem",
+  "base": "InfEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "information",
+      "table": "v_persistent_item"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "fk_class": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "incoming_statements": {
+      "type": "hasMany",
+      "model": "InfStatement",
+      "foreignKey": "fk_object_info",
+      "primaryKey": "pk_entity"
+    },
+    "outgoing_statements": {
+      "type": "hasMany",
+      "model": "InfStatement",
+      "foreignKey": "fk_subject_info",
+      "primaryKey": "pk_entity"
+    },
+    "text_properties": {
+      "type": "hasMany",
+      "model": "InfTextProperty",
+      "foreignKey": "fk_concerned_entity",
+      "primaryKey": "pk_entity"
+    },
+    "dfh_class": {
+      "type": "belongsTo",
+      "model": "DfhClass",
+      "foreignKey": "fk_class",
+      "primaryKey": "pk_class"
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": []
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "typesOfProject",
+        "typesOfClassesAndProject",
+        "typeNested",
+        "ownProperties",
+        "findOrCreateInfPersistentItems"
+      ]
+    }
+  ],
+  "methods": {
+    "findOrCreateInfPersistentItems": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "data",
+          "type": [
+            "InfPersistentItem"
+          ],
+          "required": true,
+          "description": "data",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "InfPersistentItem"
+        ],
+        "root": true
+      },
+      "description": "Find or create many information persistent items.",
+      "http": {
+        "path": "/find-or-create-many",
+        "verb": "post"
+      }
+    },
+    "ownProperties": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkEntity",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the entity.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "object",
+        "root": true
+      },
+      "description": "Get only miminal properties of persistent item.",
+      "http": {
+        "path": "/own-properties",
+        "verb": "get"
+      }
+    },
+    "typesOfProject": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Pk of the project.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Get a minimal nested object of all types in the project.",
+      "http": {
+        "path": "/types-of-project",
+        "verb": "get"
+      }
+    },
+    "typesOfClassesAndProject": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_typed_classes",
+          "type": [
+            "number"
+          ],
+          "required": true,
+          "description": "Primary Keyes of Typed Classes (e.g. pk of Geographical Place to get Geographical Place Types)",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find types of typed class and project. E.g. get the types for the class 'histC8 Geographical Place' (pk_typed_class=363) used in project (pk_project=123)",
+      "http": {
+        "path": "/types-of-classes-and-project",
+        "verb": "get"
+      }
+    },
+    "typeNested": {
+      "accepts": [
+        {
+          "arg": "pk_project",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of Project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pk_entity",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the type. Provide this if you want to query one specific type.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "persistent_items",
+        "type": "InfPersistentItem",
+        "root": true
+      },
+      "description": "Find one type by pk_entity with appellations and text properties.",
+      "http": {
+        "path": "/type-nested",
+        "verb": "get"
+      }
+    }
+  }
+}

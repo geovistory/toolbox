@@ -9,14 +9,14 @@ import { Dfh } from '../dfh/dfh.models';
 import { Inf } from '../inf/inf.models';
 import { LoadingBar } from '../loading-bar/loading-bar.models';
 import { Pro } from '../pro/pro.models';
-import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreview, InfLangString } from '../sdk';
+import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreview, InfLangString } from '../sdk';
 import { Sys } from '../sys/sys.models';
 import { War } from '../war/war.models';
 
 export interface InfObject {
   persistent_item: InfPersistentItem[]
   temporal_entity: InfTemporalEntity[]
-  role: InfRole[]
+  statement: InfStatement[]
   place: InfPlace[]
   language: InfLanguage[]
   appellation: InfAppellation[]
@@ -45,7 +45,7 @@ export interface SchemaObject {
 export interface PaginationObject {
   count: number
   schemas: SchemaObject
-  roles: number[]
+  statements: number[]
 }
 
 export interface IAppState {

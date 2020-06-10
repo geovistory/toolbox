@@ -3,7 +3,7 @@
 
   <div style="display: flex; flex-wrap:wrap; padding: 1rem;" class="bg-success mat-body mt-3">
     <div style="flex: 0 1 auto; overflow:auto">
-      <gv-entity-preview [pkEntity]="data.statement.fk_temporal_entity"></gv-entity-preview>
+      <gv-entity-preview [pkEntity]="data.statement.fk_subject_info"></gv-entity-preview>
     </div>
     <div style="flex: 1 1 auto"></div>
     <div style="flex: 1 1 auto;overflow:auto;display: flex;align-items: center;justify-content: space-around;">
@@ -15,7 +15,7 @@
     </div>
     <div style=" flex: 1 1 auto"></div>
     <div style="flex: 0 1 auto; overflow:auto">
-      <gv-entity-preview [pkEntity]="data.statement.fk_entity"></gv-entity-preview>
+      <gv-entity-preview [pkEntity]="data.statement.fk_object_info"></gv-entity-preview>
     </div>
   </div>
 </h1>
@@ -25,16 +25,6 @@
   <gv-field [pkEntity]="data.statement.pk_entity" [fieldDefinition]="fieldDefinition" [readonly$]="readonly$">
   </gv-field>
 
-  <!-- <div *ngIf="(t.showControl$ | async)">
-    <gv-add-role [pkEntity]="data.statement.pk_entity" [showOntoInfo$]="showOntoInfo$"></gv-add-role>
-  </div>
-
-  <div *ngIf="(t.showCreateRole$ | async)">
-    <gv-form-create-role class="mt-3" [listDefinition]="t.showCreateRole$ | async" [pkEntity]="data.statement.pk_entity"
-      #c>
-    </gv-form-create-role>
-  </div>
- -->
 
 </div>
 <div mat-dialog-actions>

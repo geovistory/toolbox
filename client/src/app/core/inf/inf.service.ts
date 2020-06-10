@@ -4,10 +4,10 @@ import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollect
 import { Observable, combineLatest, pipe, of } from 'rxjs';
 import { filter, first, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
-import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfRole, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel } from '../sdk';
+import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel } from '../sdk';
 import { PaginateByParam } from '../store/actions';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
-import { infDefinitions, infRoot, IndexRoleBySubjectProperty, indexRoleBySubjectProperty, IndexRoleByObjectProperty, indexRoleByObjectProperty, IndexRoleBySubject, indexRoleBySubject, IndexRoleByObject, indexRoleByObject } from './inf.config';
+import { infDefinitions, infRoot, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementByObject, indexStatementByObject } from './inf.config';
 import { values } from 'd3';
 
 class Selector {
@@ -221,10 +221,10 @@ class InfTemporalEntitySelections extends Selector {
 }
 
 
-class InfRoleSelections extends Selector {
+class InfStatementSelections extends Selector {
 
-  private _by_pk_entity$ = this.selector<InfRole>('by_pk_entity')
-  public by_fk_subject_data$ = this.selector<ByPk<InfRole>>('by_fk_subject_data')
+  private _by_pk_entity$ = this.selector<InfStatement>('by_pk_entity')
+  public by_fk_subject_data$ = this.selector<ByPk<InfStatement>>('by_fk_subject_data')
 
   public pagination$ = this.paginationSelector<number>()
 
@@ -241,9 +241,9 @@ class InfRoleSelections extends Selector {
     return selection$
   }
 
-  by_subject$(foreignKeys: IndexRoleBySubject, ofProject = true): Observable<InfRole[]> {
-    const key = indexRoleBySubject(foreignKeys);
-    const selection$ = this.selector<ByPk<InfRole>>('by_subject').key(key)
+  by_subject$(foreignKeys: IndexStatementBySubject, ofProject = true): Observable<InfStatement[]> {
+    const key = indexStatementBySubject(foreignKeys);
+    const selection$ = this.selector<ByPk<InfStatement>>('by_subject').key(key)
     if (ofProject) {
       return selection$.pipe(
         this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
@@ -255,23 +255,23 @@ class InfRoleSelections extends Selector {
     );
   }
 
-  by_subject_and_property$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<InfRole[]> {
+  by_subject_and_property$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<InfStatement[]> {
     return this.by_subject_and_property_indexed$(foreignKeys, ofProject).pipe(
-      map(roleIdx => values(roleIdx))
+      map(statementIdx => values(statementIdx))
     )
   }
-  by_subject_and_property_indexed$(foreignKeys: IndexRoleBySubjectProperty, ofProject = true): Observable<ByPk<InfRole>> {
-    const key = indexRoleBySubjectProperty(foreignKeys);
-    const selection$ = this.selector<ByPk<InfRole>>('by_subject+property').key(key)
+  by_subject_and_property_indexed$(foreignKeys: IndexStatementBySubjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+    const key = indexStatementBySubjectProperty(foreignKeys);
+    const selection$ = this.selector<ByPk<InfStatement>>('by_subject+property').key(key)
     if (ofProject) {
       return selection$.pipe(this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity))
     }
     return selection$
   }
 
-  by_object$(foreignKeys: IndexRoleByObject, ofProject = true): Observable<InfRole[]> {
-    const key = indexRoleByObject(foreignKeys);
-    const selection$ = this.selector<ByPk<InfRole>>('by_object').key(key)
+  by_object$(foreignKeys: IndexStatementByObject, ofProject = true): Observable<InfStatement[]> {
+    const key = indexStatementByObject(foreignKeys);
+    const selection$ = this.selector<ByPk<InfStatement>>('by_object').key(key)
     if (ofProject) {
       return selection$.pipe(
         this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
@@ -283,15 +283,15 @@ class InfRoleSelections extends Selector {
     );
   }
 
-  by_object_and_property$(foreignKeys: IndexRoleByObjectProperty, ofProject = true): Observable<InfRole[]> {
+  by_object_and_property$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<InfStatement[]> {
     return this.by_object_and_property_indexed$(foreignKeys, ofProject).pipe(
-      map(roleIdx => values(roleIdx))
+      map(statementIdx => values(statementIdx))
     )
   }
 
-  by_object_and_property_indexed$(foreignKeys: IndexRoleByObjectProperty, ofProject = true): Observable<ByPk<InfRole>> {
-    const key = indexRoleByObjectProperty(foreignKeys);
-    const selection$ = this.selector<ByPk<InfRole>>('by_object+property').key(key)
+  by_object_and_property_indexed$(foreignKeys: IndexStatementByObjectProperty, ofProject = true): Observable<ByPk<InfStatement>> {
+    const key = indexStatementByObjectProperty(foreignKeys);
+    const selection$ = this.selector<ByPk<InfStatement>>('by_object+property').key(key)
     if (ofProject) {
       return selection$.pipe(
         this.pipeItemsInProject(this.pkProject$, (item) => item.pk_entity),
@@ -405,7 +405,7 @@ export class InfSelector {
 
   persistent_item$ = new InfPersistentItemSelections(this.ngRedux, this.pkProject$, infDefinitions, 'persistent_item');
   temporal_entity$ = new InfTemporalEntitySelections(this.ngRedux, this.pkProject$, infDefinitions, 'temporal_entity');
-  role$ = new InfRoleSelections(this.ngRedux, this.pkProject$, infDefinitions, 'role');
+  statement$ = new InfStatementSelections(this.ngRedux, this.pkProject$, infDefinitions, 'statement');
   appellation$ = new InfAppellationSelections(this.ngRedux, this.pkProject$, infDefinitions, 'appellation');
   place$ = new InfPlaceSelections(this.ngRedux, this.pkProject$, infDefinitions, 'place');
   text_property$ = new InfTextPropertySelections(this.ngRedux, this.pkProject$, infDefinitions, 'text_property');

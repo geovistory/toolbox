@@ -3798,8 +3798,7 @@ THE SOFTWARE.
 
 
 
-geovistory
-UNLICENSED
+geovistory-lb3
 
 has
 MIT

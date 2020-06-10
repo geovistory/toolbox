@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActiveProjectService, DatChunk, EntityPreview, InfLangString, InfRole, InfTextProperty } from 'app/core';
+import { ActiveProjectService, DatChunk, EntityPreview, InfLangString, InfStatement, InfTextProperty } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 
 
 /**
- * This component is a form to create roles (~statements) of these properties:
+ * This component is a form to create statements (~statements) of these properties:
  * r: chunk --> geovP11 – Refers to (~annotates) --> CRM Entity
  * a: F2, F3, F4, F5, geovC4 (~source) -->  P129 – is About --> CRM Entity
  * m: F2, F3, F4, F5, geovC4 (~source) --> geovP2 – Mentions --> CRM Entity
@@ -28,7 +28,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
 
   referenceCtrl = new FormControl()
 
-  ramFormValue$: Observable<InfRole | undefined>;
+  ramFormValue$: Observable<InfStatement | undefined>;
 
   saving: boolean;
 
@@ -89,12 +89,12 @@ export class RamFormComponent implements OnInit, OnDestroy {
         const object = t;
 
         // create statement
-        const statement: InfRole = {
+        const statement: InfStatement = {
           pk_entity: undefined,
 
           // subject
-          fk_temporal_entity: subject.pkEntity,
-          domain_chunk: subject.chunk,
+          fk_subject_info: subject.pkEntity,
+          subject_chunk: subject.chunk,
           fk_subject_data: undefined,
           fk_subject_tables_cell: undefined,
           fk_subject_tables_row: undefined,
@@ -104,7 +104,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
           fk_property_of_property: undefined,
 
           // object
-          fk_entity: object,
+          fk_object_info: object,
           fk_object_data: undefined,
           fk_object_tables_cell: undefined,
           fk_object_tables_row: undefined,
@@ -128,12 +128,12 @@ export class RamFormComponent implements OnInit, OnDestroy {
             fk_language: r.fk_language
           }
 
-          const statementOfStatement: InfRole = {
+          const statementOfStatement: InfStatement = {
             pk_entity: undefined,
 
             // subject
-            subject_inf_role: statement,
-            fk_temporal_entity: undefined,
+            subject_statement: statement,
+            fk_subject_info: undefined,
             fk_subject_data: undefined,
             fk_subject_tables_cell: undefined,
             fk_subject_tables_row: undefined,
@@ -143,11 +143,11 @@ export class RamFormComponent implements OnInit, OnDestroy {
             fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
 
             // object
-            fk_entity: undefined,
+            fk_object_info: undefined,
             fk_object_data: undefined,
             fk_object_tables_cell: undefined,
             fk_object_tables_row: undefined,
-            lang_string: langString,
+            object_lang_string: langString,
 
             // rest
             is_in_project_count: undefined,
@@ -174,7 +174,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
         ([pkProject, val]) => {
           this.saving = true;
           if (!!val) {
-            this.p.inf.role.upsert([val], pkProject).resolved$
+            this.p.inf.statement.upsert([val], pkProject).resolved$
               .pipe(first(res => !!res), takeUntil(this.destroy$)).subscribe(
                 success => {
                   this.saving = false;

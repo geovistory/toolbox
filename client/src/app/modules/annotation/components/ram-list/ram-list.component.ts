@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ActiveProjectService, InfRole, switchMapOr, EntityPreview } from 'app/core';
+import { ActiveProjectService, InfStatement, switchMapOr, EntityPreview } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { values, equals } from 'ramda';
@@ -29,8 +29,8 @@ interface AnnotatedText {
   tooltip?: string;
 }
 export interface RamListItem {
-  // the statement (role) connecting source and target
-  statement: InfRole
+  // the statement (statement) connecting source and target
+  statement: InfStatement
   // the path of the source (is part of, etc)
   path: GraphPath;
   // the exact reference
@@ -120,17 +120,17 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   private pipeItems(): Observable<RamListItem[]> {
 
-    // the roles associating the root entity with the next items
-    const basicRoles$: Observable<InfRole[]> = this.p.inf$.role$.by_object_and_property$({
+    // the statements associating the root entity with the next items
+    const basicStatements$: Observable<InfStatement[]> = this.p.inf$.statement$.by_object_and_property$({
       fk_property: this.fkProperty,
-      fk_entity: this.pkEntity
+      fk_object_info: this.pkEntity
     }).pipe(
 
       // TODO find out why this is triggered on wrong moments
       tap((s) => {
 
       }),
-      distinctUntilChanged<InfRole[]>(equals),
+      distinctUntilChanged<InfStatement[]>(equals),
       tap((s) => {
 
       }),
@@ -139,10 +139,10 @@ export class RamListComponent implements OnInit, OnDestroy {
 
     // if property is 'refers to' we need to get the chunk and the digital
     if (this.fkProperty == DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
-      return basicRoles$.pipe(
-        switchMap(roles => {
+      return basicStatements$.pipe(
+        switchMap(statements => {
           return combineLatestOrEmpty(
-            roles.map(role => this.p.dat$.chunk$.by_pk_entity$.key(role.fk_subject_data)
+            statements.map(statement => this.p.dat$.chunk$.by_pk_entity$.key(statement.fk_subject_data)
               .pipe(
                 switchMap(chunk => {
                   const item: RamListItem = {
@@ -150,7 +150,7 @@ export class RamListComponent implements OnInit, OnDestroy {
                       segments: []
                     },
                     location: undefined,
-                    statement: role,
+                    statement: statement,
                     actions: {
                       edit: this.propertyHasReference()
                     }
@@ -163,15 +163,15 @@ export class RamListComponent implements OnInit, OnDestroy {
                     switchMap(digitals => {
                       if (digitals.length < 1) return new BehaviorSubject(item);
                       const digital = digitals[0];
-                      return this.p.inf$.role$.by_subject_and_property$({
+                      return this.p.inf$.statement$.by_subject_and_property$({
                         fk_subject_data: digital.pk_entity,
                         fk_property: DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF,
                       }).pipe(
-                        switchMap(rolesToExpression => {
+                        switchMap(statementsToExpression => {
 
-                          if (rolesToExpression.length < 1) return new BehaviorSubject(item)
+                          if (statementsToExpression.length < 1) return new BehaviorSubject(item)
 
-                          return this.pipePathRecursivly(rolesToExpression[0].fk_entity, '').pipe(
+                          return this.pipePathRecursivly(statementsToExpression[0].fk_object_info, '').pipe(
                             map((path) => {
                               const annotatedText: AnnotatedText = {
                                 label: this.quillPipe.transform(chunk.quill_doc.ops)
@@ -218,22 +218,22 @@ export class RamListComponent implements OnInit, OnDestroy {
     ) {
       return combineLatest(
         this.rootEntity$,
-        basicRoles$
+        basicStatements$
       ).pipe(
-        switchMap(([rootEntity, basicRoles]) => {
+        switchMap(([rootEntity, basicStatements]) => {
           const prefix = ''; // `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
 
           // I map the input value to a Observable and switchMap will subscribe to the new one
-          const rowsArray$: Observable<RamListItem>[] = basicRoles.map(role => {
+          const rowsArray$: Observable<RamListItem>[] = basicStatements.map(statement => {
             return combineLatest(
-              this.pipePathRecursivly(role.fk_temporal_entity, prefix),
-              this.getReference(role.pk_entity)
+              this.pipePathRecursivly(statement.fk_subject_info, prefix),
+              this.getReference(statement.pk_entity)
             ).pipe(
               map(([path, location]) => {
                 return {
                   path,
                   location,
-                  statement: role,
+                  statement: statement,
                   actions: {
                     edit: this.propertyHasReference()
                   }
@@ -246,16 +246,16 @@ export class RamListComponent implements OnInit, OnDestroy {
     }
   }
 
-  getReference(pkSubjectRole: number): Observable<Reference> {
-    return this.p.inf$.role$.by_subject_and_property$({
+  getReference(pkSubjectStatement: number): Observable<Reference> {
+    return this.p.inf$.statement$.by_subject_and_property$({
       fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
-      fk_temporal_entity: pkSubjectRole
+      fk_subject_info: pkSubjectStatement
     })
       .pipe(
-        switchMap((roles) => {
-          if (roles.length < 1) return new BehaviorSubject(undefined);
-          return combineLatest(roles.map(r => {
-            return this.p.inf$.lang_string$.by_pk_entity$.key(r.fk_entity)
+        switchMap((statements) => {
+          if (statements.length < 1) return new BehaviorSubject(undefined);
+          return combineLatest(statements.map(r => {
+            return this.p.inf$.lang_string$.by_pk_entity$.key(r.fk_object_info)
               .pipe(
                 map(langStr => !langStr ? null :
                   !langStr.quill_doc ? null :
@@ -279,36 +279,36 @@ export class RamListComponent implements OnInit, OnDestroy {
       .pipe(
         filter((ep) => !!ep),
         switchMap((ep) => {
-          // Q: What is subject of is mentioned in role?
+          // Q: What is subject of is mentioned in statement?
           if (ep.fk_class == 218) {
             // A: F2 Expression!
             // ... so we need to find the source: F5 Item, F3 Manifestation Singleton, F4 Manifestation Product Type or geovC4 Web Request
             // because this will give us the entity preview for the entity to display in the path
             return combineLatest(
               // 1316 -- geovP5 – carrier provided by
-              this.p.inf$.role$.by_subject_and_property$({
+              this.p.inf$.statement$.by_subject_and_property$({
                 fk_property: 1316,
-                fk_temporal_entity: pkEntity
+                fk_subject_info: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 979 -- R4 – carriers provided by
-              this.p.inf$.role$.by_subject_and_property$({
+              this.p.inf$.statement$.by_subject_and_property$({
                 fk_property: 979,
-                fk_temporal_entity: pkEntity
+                fk_subject_info: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 1305 -- geovP4 – is server response to request
-              this.p.inf$.role$.by_subject_and_property$({
+              this.p.inf$.statement$.by_subject_and_property$({
                 fk_property: 1305,
-                fk_temporal_entity: pkEntity
+                fk_subject_info: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_object_info : undefined)),
               // 1016 -- R42 – is representative manifestation singleton for
-              this.p.inf$.role$.by_object_and_property$({
+              this.p.inf$.statement$.by_object_and_property$({
                 fk_property: 1016,
-                fk_entity: pkEntity
+                fk_object_info: pkEntity
               })
-                .pipe(map((r) => r.length ? r[0].fk_temporal_entity : undefined)),
+                .pipe(map((r) => r.length ? r[0].fk_subject_info : undefined)),
             )
               .pipe(
                 map((pks) => pks.find(pk => !!pk)),
@@ -374,11 +374,11 @@ export class RamListComponent implements OnInit, OnDestroy {
         // If Expression Portion (uncomment this if() for allowing F2 - Expressions as part of another F2 in a path)
         if (segE.entity.fkClass == 503) {
 
-          // get 'is part of' role
-          return this.p.inf$.role$
+          // get 'is part of' statement
+          return this.p.inf$.statement$
             .by_subject_and_property$({
               fk_property: 1317,
-              fk_temporal_entity: pkEntity
+              fk_subject_info: pkEntity
             })
             .pipe(
               switchMap((rs) => {
@@ -394,7 +394,7 @@ export class RamListComponent implements OnInit, OnDestroy {
                     segments: [segP, segE, ...graphPath.segments]
                   };
 
-                  return this.pipePathRecursivly(rs[0].fk_entity, undefined, path)
+                  return this.pipePathRecursivly(rs[0].fk_object_info, undefined, path)
                 }
 
                 return finish(segE, graphPath);
@@ -464,27 +464,27 @@ export class RamListComponent implements OnInit, OnDestroy {
    * @param pkEntity Persistent item/temporal entity that is mentionned i.e. CRM Entity
    */
   getMentions(pkEntity: number) {
-    const fakeStatements: InfRole[] = [
+    const fakeStatements: InfStatement[] = [
       {
         pk_entity: 789,
-        fk_temporal_entity: 737367, // subject (F2 Expression) !!
+        fk_subject_info: 737367, // subject (F2 Expression) !!
         fk_property: 1218, // predicate (geovP2 mentions)
-        fk_entity: pkEntity, // object (E1 CRM Entity / e.g. a Person)
-      } as InfRole,
+        fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
+      } as InfStatement,
       {
         pk_entity: 790,
-        fk_temporal_entity: 737367, // subject (F2 Expression) !!
+        fk_subject_info: 737367, // subject (F2 Expression) !!
         fk_property: 1316, // predicate (geovP5 carrier provided by)
-        fk_entity: 737365, // object (F5 Item / e.g. Copy of a book)
-      } as InfRole,
+        fk_object_info: 737365, // object (F5 Item / e.g. Copy of a book)
+      } as InfStatement,
       {
         pk_entity: 791,
-        fk_temporal_entity: 747097, // subject (geovC5 Expression Portion) !!
+        fk_subject_info: 747097, // subject (geovC5 Expression Portion) !!
         fk_property: 1218, // predicate (geovP2 mentions)
-        fk_entity: pkEntity, // object (E1 CRM Entity / e.g. a Person)
-      } as InfRole
+        fk_object_info: pkEntity, // object (E1 CRM Entity / e.g. a Person)
+      } as InfStatement
     ];
-    this.inf.role.loadSucceeded(fakeStatements, '', 591);
+    this.inf.statement.loadSucceeded(fakeStatements, '', 591);
   }
 
   /**
@@ -523,7 +523,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onEdit(statement: InfRole) {
+  onEdit(statement: InfStatement) {
     const data: RamListEditDialogData = {
       statement,
       propertyLabel: this.getPropertyLabel()
@@ -536,7 +536,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     })
   }
 
-  onRemove(statement: InfRole) {
+  onRemove(statement: InfStatement) {
     const propertyHasReferences = this.propertyHasReference()
     const data: RamListRemoveDialogData = {
       statement,
