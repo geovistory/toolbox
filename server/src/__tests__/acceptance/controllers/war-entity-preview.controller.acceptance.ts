@@ -5,8 +5,8 @@
 
 import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
-import {GeovistoryServer} from '../../server';
-import {setupApplication} from './_test-helper';
+import {GeovistoryServer} from '../../../server';
+import {setupApplication} from '../_test-helper';
 
 const pEvent = require('p-event');
 
