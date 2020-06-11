@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SysConfig } from 'app/core';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TColFilter } from '../../../../../../../../src/server/table/interfaces';
+import { TColFilter } from '../../../../../../../../server/lb3app/src/server/table/interfaces';
 
 @Component({
   selector: 'gv-table',

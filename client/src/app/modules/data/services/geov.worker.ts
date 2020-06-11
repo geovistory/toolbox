@@ -2,7 +2,7 @@
 
 import * as XLSX from "xlsx";
 import { sort } from 'ramda';
-import { TColFilter } from '../../../../../../src/server/table/interfaces';
+import { TColFilter } from '../../../../../../server/lb3app/src/server/table/interfaces';
 
 addEventListener('message', ({ data }) => {
     if (data.task == 'csvIntoTable') postMessage(csvIntoTable(data.params.binaries, data.params.separator));

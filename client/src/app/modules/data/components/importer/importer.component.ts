@@ -6,7 +6,7 @@ import { ReplaySubject } from 'rxjs';
 import { WorkBook } from 'xlsx/types';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 import { first } from 'rxjs/operators';
-import { TColFilter } from '../../../../../../../src/server/table/interfaces';
+import { TColFilter } from '../../../../../../../server/lb3app/src/server/table/interfaces';
 
 
 @Component({
