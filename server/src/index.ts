@@ -29,5 +29,6 @@ export async function main(options: ApplicationConfig = {}) {
   const server = new GeovistoryServer(options);
   await server.boot();
   await server.start();
+
   console.log(`Server is running at ${server.url}`);
 }

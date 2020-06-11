@@ -12,6 +12,7 @@
  */
 
 import {ApplicationConfig, Context} from '@loopback/core';
+import {RestBindings} from '@loopback/rest';
 import {once} from 'events';
 import express from 'express';
 import * as http from 'http';
@@ -83,6 +84,10 @@ export class GeovistoryServer extends Context {
   public async start() {
     // Rest server
     await this.lbApp.start();
+
+    //for the importer:
+    this.lbApp.bind(RestBindings.REQUEST_BODY_PARSER_OPTIONS).to({limit: '500mb'})
+
     const port = this.lbApp.restServer.config.port || 3000;
     const host = this.lbApp.restServer.config.host ?? '127.0.0.1';
     this.server = this.app.listen(port, host);
