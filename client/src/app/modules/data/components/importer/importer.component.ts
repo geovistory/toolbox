@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { WorkBook } from 'xlsx/types';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
-import { first } from 'rxjs/operators';
-import { TColFilter } from '../../../../../../../server/lb3app/src/server/table/interfaces';
+import { first, takeUntil } from 'rxjs/operators';
+import { TColFilter } from '../../../../../../../server/lb3app/src/server/table/interfaces'
+import { InfLanguage, ActiveProjectService } from 'app/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { values } from 'ramda';
 
 
 @Component({
@@ -14,8 +17,8 @@ import { TColFilter } from '../../../../../../../server/lb3app/src/server/table/
   templateUrl: './importer.component.html',
   styleUrls: ['./importer.component.scss']
 })
-export class ImporterComponent implements OnInit {
-
+export class ImporterComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<boolean>();
   //UI
   mode: string;
   type: string;
@@ -51,10 +54,38 @@ export class ImporterComponent implements OnInit {
   rowsNbs = ['20', '50', '100', '500', '1000'];
   rowsNb: string;
 
+  //informations for server
+  namespaces = [];
+  namespace: any;
+  languages = [];
+  language: InfLanguage;
+
+  //formControls
+  tableNameCtrl = new FormControl('', [Validators.required]);
+  namespaceCtrl = new FormControl('', [Validators.required]);
+  languageCtrl = new FormControl('', [Validators.required]);
+
+
+  tableForm = new FormGroup({
+    tableNameCtrl: this.tableNameCtrl,
+    namespaceCtrl: this.namespaceCtrl,
+    languageCtrl: this.languageCtrl,
+  });
 
   sortBy$: ReplaySubject<number>;
 
-  constructor(private worker: WorkerWrapperService, private dialog: MatDialog) { }
+  constructor(
+    private worker: WorkerWrapperService,
+    private dialog: MatDialog,
+    private p: ActiveProjectService) {
+    this.p.defaultLanguage$.pipe(takeUntil(this.destroy$)).subscribe(defaultLang => this.languageCtrl.setValue(defaultLang))
+    this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
+      this.p.dat$.namespace$.by_fk_project$.key(pkProject).pipe(takeUntil(this.destroy$)).subscribe(namespacesIdx => {
+        this.namespaces = values(namespacesIdx).sort((a, b) => a.pk_entity - b.pk_entity);
+        this.namespaceCtrl.setValue(this.namespaces[0].pk_entity);
+      })
+    })
+  }
 
   ngOnInit() {
     this.reset();
@@ -100,6 +131,7 @@ export class ImporterComponent implements OnInit {
   selectFile(file: File) {
     if (!file) return;
     this.file = file;
+    this.tableNameCtrl.setValue(file.name.substring(0, file.name.lastIndexOf('.')));
 
     this.mode = 'load';
 
@@ -262,21 +294,24 @@ export class ImporterComponent implements OnInit {
   }
 
   load() {
-    const data: ConfirmDialogData = {
-      noBtnText: 'Cancel',
-      yesBtnText: 'Upload',
-      yesBtnColor: 'warn',
-      title: 'Upload your table',
-      paragraphs: ['Do you want to upload your table as it is displayed?'],
-    }
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data });
-    dialog.afterClosed().pipe(first()).subscribe(confirmed => {
-      if (confirmed) {
-        this.mode = 'parsing';
-        alert('//TODO UPLOAD TO SERVER') //TODO
-        setTimeout(() => this.loaded(), 4000);
+
+    if (this.tableForm.valid) {
+      const data: ConfirmDialogData = {
+        noBtnText: 'Cancel',
+        yesBtnText: 'Upload',
+        yesBtnColor: 'warn',
+        title: 'Upload your table',
+        paragraphs: ['Do you want to upload your table as it is \ndisplayed?'],
       }
-    })
+      const dialog = this.dialog.open(ConfirmDialogComponent, { data });
+      dialog.afterClosed().pipe(first()).subscribe(confirmed => {
+        if (confirmed) {
+          this.mode = 'parsing';
+          alert('//TODO UPLOAD TO SERVER') //TODO
+          setTimeout(() => this.loaded(), 4000);
+        }
+      })
+    } else this.tableForm.markAllAsTouched();
   }
 
   loaded() {
@@ -289,7 +324,10 @@ export class ImporterComponent implements OnInit {
     }
     const dialog = this.dialog.open(ConfirmDialogComponent, { data });
   }
-
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 }
 
 

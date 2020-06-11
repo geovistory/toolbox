@@ -15,6 +15,7 @@ import { ImporterComponent } from './components/importer/importer.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
 import { TextDetailComponent } from './components/text-detail/text-detail.component';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { BaseModule } from '../base/base.module';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     CoverModule,
     MaterialModule,
     DigitalTableModule,
-    NgxFileDropModule
+    NgxFileDropModule,
+    BaseModule,
   ],
   providers: [],
   declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent],

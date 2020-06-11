@@ -82,6 +82,31 @@
 </div>
 
 <div mat-dialog-actions>
-    <button mat-button (click)="load()" *ngIf="mode=='preview'">Load</button>
-    <button mat-button cdkFocusInitial [mat-dialog-close]="" *ngIf="mode != 'parsing'">Cancel</button>
+    <form [formGroup]="tableForm">
+
+        <mat-form-field appearance="outline" style="margin-right: 10px" *ngIf="mode=='preview'">
+            <mat-label>Table name</mat-label>
+            <input matInput placeholder="Table name" [formControl]="tableNameCtrl">
+            <mat-error *ngIf="tableNameCtrl.getError('required')">Required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="margin-right: 10px" *ngIf="mode=='preview'">
+            <mat-label>Namespace</mat-label>
+            <mat-select [(value)]="namespace" [formControl]="namespaceCtrl">
+                <mat-option *ngFor="let name of namespaces" [value]="name.pk_entity">{{name.standard_label}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="tableNameCtrl.getError('required')">Required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="margin-right: 10px" *ngIf="mode=='preview'">
+            <mat-label>Language</mat-label>
+            <gv-ctrl-language [required]="true" [formControl]="languageCtrl"></gv-ctrl-language>
+            <mat-error *ngIf="tableNameCtrl.getError('required')">Required</mat-error>
+        </mat-form-field>
+
+        <button mat-button (click)="load()" *ngIf="mode=='preview'">Load</button>
+        <button mat-button cdkFocusInitial [mat-dialog-close]="" *ngIf="mode != 'parsing'">Cancel</button>
+
+    </form>
 </div>
