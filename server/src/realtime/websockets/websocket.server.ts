@@ -1,7 +1,7 @@
 import {Constructor, Context} from '@loopback/context';
 import * as http from 'http';
 import {Server, ServerOptions, Socket} from 'socket.io';
-import {getWebSocketMetadata} from '../decorators/websocket.decorator';
+import {getWebSocketMetadata} from '../../decorators/websocket.decorator';
 import {WebSocketControllerFactory} from './websocket-controller-factory';
 import SocketIOServer = require('socket.io');
 
@@ -20,6 +20,7 @@ export class WebSocketServer extends Context {
   private io: Server;
 
   constructor(
+    private ctx: Context,
     // public readonly httpServer: HttpServer,
     private options: ServerOptions = {},
   ) {
@@ -37,12 +38,12 @@ export class WebSocketServer extends Context {
 
   /**
    * Register a websocket controller
-   * @param ControllerClass
+   * @param controllerClass
    * @param namespace
    */
-  route(ControllerClass: Constructor<any>, namespace?: string | RegExp) {
+  route(controllerClass: Constructor<any>, namespace?: string | RegExp) {
     if (namespace == null) {
-      const meta = getWebSocketMetadata(ControllerClass);
+      const meta = getWebSocketMetadata(controllerClass);
       namespace = meta?.namespace
     }
 
@@ -55,11 +56,12 @@ export class WebSocketServer extends Context {
         socket.nsp.name,
       );
       // Create a request context
-      const reqCtx = new Context(this);
+      // const reqCtx = new Context(this.ctx);
       // Bind websocket
-      reqCtx.bind('ws.socket').to(socket);
+      // reqCtx.bind('ws.socket').to(socket);
+      this.ctx.bind('ws.socket').to(socket);
       // Instantiate the controller instance
-      await new WebSocketControllerFactory(reqCtx, ControllerClass).create(
+      await new WebSocketControllerFactory(this.ctx, controllerClass).create(
         socket,
       );
     });
