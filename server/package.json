@@ -33,7 +33,9 @@
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "heroku-postbuild": "bash heroku-postbuild.sh",
-    "t": "export NO_LOGS='true' && lb-mocha --timeout 4000 dist/__tests__/**/*.js"
+    "t": "export NO_LOGS='true' && lb-mocha --timeout 4000 dist/__tests__/**/*.js",
+    "sdk:build": "bash build-ngx-sdk.sh",
+    "sdk:build-windows": "build-ngx-sdk.sh"
   },
   "repository": {
     "type": "git"
@@ -84,6 +86,7 @@
     "@loopback/build": "^5.4.2",
     "@loopback/eslint-config": "^8.0.0",
     "@loopback/testlab": "^3.1.6",
+    "@openapitools/openapi-generator-cli": "^1.0.13-4.3.1",
     "@types/json2csv": "^4.5.0",
     "@types/node": "^10.17.24",
     "@types/pg": "^7.14.1",

@@ -10,6 +10,9 @@ import { TColFilter } from '../../../../../../../server/lb3app/src/server/table/
 import { InfLanguage, ActiveProjectService } from 'app/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { values } from 'ramda';
+import { ImportTableControllerService } from 'app/core/sdk-lb4';
+import { ImportTable } from '../../../../../../../server/src/models/import-table.model';
+import { Header } from '../../../../../../../server/src/models/import-table-header.model';
 
 
 @Component({
@@ -32,7 +35,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
   //data
   curSort: { colNb: number, direction: string };
   filters: Array<{ col: number, filter: TColFilter }>;
-  headers: { colLabel: string, comment: string, type: 'number' | 'string' }[];
+  headers: Header[];
   table: string[][]; // the full table
   filteredTable: string[][]; //the full table filtered and sorted
   headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' }[]>; //the headers to display
@@ -77,7 +80,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
   constructor(
     private worker: WorkerWrapperService,
     private dialog: MatDialog,
-    private p: ActiveProjectService) {
+    private p: ActiveProjectService,
+    private apiImporter: ImportTableControllerService) {
     this.p.defaultLanguage$.pipe(takeUntil(this.destroy$)).subscribe(defaultLang => this.languageCtrl.setValue(defaultLang))
     this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
       this.p.dat$.namespace$.by_fk_project$.key(pkProject).pipe(takeUntil(this.destroy$)).subscribe(namespacesIdx => {
@@ -307,8 +311,20 @@ export class ImporterComponent implements OnInit, OnDestroy {
       dialog.afterClosed().pipe(first()).subscribe(confirmed => {
         if (confirmed) {
           this.mode = 'parsing';
-          alert('//TODO UPLOAD TO SERVER') //TODO
-          setTimeout(() => this.loaded(), 4000);
+
+          // alert('//TODO UPLOAD TO SERVER') //TODO
+          // setTimeout(() => this.loaded(), 4000);
+
+          let importTable = new ImportTable();
+          importTable.tableName = this.tableNameCtrl.value();
+          importTable.pk_namespace = this.namespaceCtrl.value();
+          importTable.pk_language = this.languageCtrl.value();
+          importTable.headers = this.headers;
+          importTable.rows = this.table;         
+
+          this.apiImporter.importTableControllerImportTable(importTable).subscribe(response => {
+            console.log(response);
+          });
         }
       })
     } else this.tableForm.markAllAsTouched();

@@ -80,10 +80,10 @@ export class PubAccountApi extends BaseLoopBackApi {
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * Der Antworthauptteil enthält Eigenschaften des bei der Anmeldung erstellten AccessToken.
-   * Abhängig vom Wert des Parameters 'include' kann der Hauptteil zusätzliche Eigenschaften enthalten:
+   * Le corps de réponse contient les propriétés de AccessToken créées lors de la connexion.
+   * En fonction de la valeur du paramètre `include`, le corps peut contenir des propriétés supplémentaires :
    * 
-   *   - user - U+007BUserU+007D - Daten des derzeit angemeldeten Benutzers. (`include=user`)
+   *   - `user` - `U+007BUserU+007D` - Données de l'utilisateur connecté. (`include=user`)
    * 
    *
    */

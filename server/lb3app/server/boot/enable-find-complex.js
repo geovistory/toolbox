@@ -64,7 +64,8 @@ module.exports = function(app) {
               source: 'body',
             },
           },
-          returns: { arg: modelName, type: 'array', root: true },
+          // returns: { arg: modelName, type: 'array', root: true },
+          returns: { arg: 'data', type: [modelName], root: true },
         });
       }
     }

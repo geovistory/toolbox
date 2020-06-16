@@ -636,10 +636,12 @@
         }
       ],
       "returns": {
-        "arg": "InfStatement",
-        "type": "array",
+        "arg": "data",
+        "type":["InfStatement"],
         "root": true
       },
+
+      
       "description": "Find statements by params.",
       "http": {
         "path": "/find-by-params",

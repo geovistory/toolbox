@@ -45,6 +45,9 @@ export class ImportTableController {
   ): Promise<object> {
 
 
+    console.log(JSON.stringify(table));
+    return {error: "blablabla"};
+
     const begin = new Date().getTime();
 
     ////// CHECKINGS //////
