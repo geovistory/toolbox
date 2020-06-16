@@ -17,8 +17,9 @@ import express from 'express';
 import * as http from 'http';
 import {AddressInfo} from 'net';
 import {GeovistoryApplication} from './application';
-import {WebSocketServer} from './components/websocket.server';
 import {WarEntityPreviewController} from './controllers';
+import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-notifications-manager';
+import {WebSocketServer} from './realtime/websockets/websocket.server';
 
 
 
@@ -32,11 +33,8 @@ export class GeovistoryServer extends Context {
   public readonly lbApp: GeovistoryApplication;
   private server?: http.Server;
 
-  // web sockets
-  // private wsServerOptions: HttpOptions | HttpsOptions
-  // private io: Server;
-  // httpServer: HttpServer;
   readonly wsServer: WebSocketServer;
+  readonly pgNotifManager: PostgresNotificationsManager;
 
   public url: String;
 
@@ -75,6 +73,9 @@ export class GeovistoryServer extends Context {
       next();
     });
 
+    // Create the Postgres Notification Manager
+    this.pgNotifManager = new PostgresNotificationsManager(this.lbApp);
+
   }
 
   public async boot() {
@@ -93,6 +94,9 @@ export class GeovistoryServer extends Context {
     // Websocket server
     await this.wsServer.start(this.server);
 
+    // Postgres Notification Manager
+    this.pgNotifManager.start()
+
   }
 
   public async stop() {
@@ -108,6 +112,9 @@ export class GeovistoryServer extends Context {
 
     // Websocket server
     await this.wsServer.stop();
+
+    // Postgres Notification Manager
+    this.pgNotifManager.stop()
 
   }
 

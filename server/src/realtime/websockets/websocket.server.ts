@@ -1,7 +1,7 @@
 import {Constructor, Context} from '@loopback/context';
 import * as http from 'http';
 import {Server, ServerOptions, Socket} from 'socket.io';
-import {getWebSocketMetadata} from '../decorators/websocket.decorator';
+import {getWebSocketMetadata} from '../../decorators/websocket.decorator';
 import {WebSocketControllerFactory} from './websocket-controller-factory';
 import SocketIOServer = require('socket.io');
 

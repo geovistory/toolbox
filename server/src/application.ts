@@ -7,15 +7,21 @@ import {RestExplorerBindings, RestExplorerComponent} from '@loopback/rest-explor
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {log} from './middleware/log.middleware';
+import {Streams} from './realtime/streams/streams';
 import {GvSequence} from './sequence';
 
 export class GeovistoryApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
+
+  streams = new Streams()
+
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-    // this.middleware(serveIndex)
+    // make the streams injectable
+    this.bind('streams').to(this.streams)
+
 
     // Set up the custom sequence
     this.sequence(GvSequence);
