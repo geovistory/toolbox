@@ -101,7 +101,7 @@ export class WarEntityPreviewController {
         // Query entities modified and needed by current cache
         const projectItems = await this.findModifiedSinceTmsp(pkProject, entityPks, tmsp);
         const allItems = await this.completeProjectWithRepoPreviews(projectItems, entityPks);
-        result.concat(...allItems)
+        result.push(...allItems)
       }
 
     }
