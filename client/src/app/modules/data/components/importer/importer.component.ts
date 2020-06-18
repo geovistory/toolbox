@@ -332,6 +332,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
             switchMap(response => this.data.apiCall(response))
             )
             .subscribe(response => {
+              if(!response) return;
+              
               if (response.error) this.loaded("Import error", response.error + ' The table has not been imported');
               else this.loaded("Table uploaded", 'The table has correctly been imported');
 

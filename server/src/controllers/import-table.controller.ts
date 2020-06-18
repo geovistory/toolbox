@@ -7,6 +7,12 @@ import { SqlBuilderBase } from '../utils/sql-builder-base';
 import { promises } from 'dns';
 import { model, property } from '@loopback/repository';
 
+// TODO
+// - securisation of communication with server
+// - close after the table was uploaded, and then update the list (as it is already with texts)
+// - change the name of the table into the name the user took
+
+
 enum DataType {
   digital = 3287,
   column = 3291,

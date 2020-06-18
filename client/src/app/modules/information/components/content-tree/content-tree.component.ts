@@ -588,7 +588,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         fk_subject_data: response.fk_digital,
         fk_object_info: pkParent,
         fk_property: this.isReproProp(parentIsF2Expression)
-      } as InfStatement], pkProject).resolved$.pipe(map(r => response))
+      } as InfStatement], pkProject).resolved$.pipe(map(r => r ? response : undefined))
 
       this.dialog.open<ImporterComponent, ImporterDialogData>(ImporterComponent, {
         height: 'calc(100% - 30px)',
