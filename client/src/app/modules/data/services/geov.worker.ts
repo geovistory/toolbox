@@ -14,7 +14,7 @@ addEventListener('message', ({ data }) => {
 
 function csvIntoTable(binaries: string, separator: string): string[][] {
     if (separator == 'TAB') separator = String.fromCharCode(9);
-    return removeEmptyCol(removeEmptyRow(binaries.split("\n").map(row => row.split(separator))));
+    return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split("\n").map(row => row.split(separator))));
 }
 
 function parseWorkbook(binaries: string): XLSX.WorkBook {

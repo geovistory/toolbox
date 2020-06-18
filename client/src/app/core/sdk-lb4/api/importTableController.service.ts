@@ -17,8 +17,8 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { ImporTableResponse } from '../model/models';
 import { ImportTable } from '../model/models';
+import { ImportTableResponse } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -91,9 +91,9 @@ export class ImportTableControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public importTableControllerImportTable(importTable?: ImportTable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ImporTableResponse>;
-    public importTableControllerImportTable(importTable?: ImportTable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ImporTableResponse>>;
-    public importTableControllerImportTable(importTable?: ImportTable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ImporTableResponse>>;
+    public importTableControllerImportTable(importTable?: ImportTable, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ImportTableResponse>;
+    public importTableControllerImportTable(importTable?: ImportTable, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ImportTableResponse>>;
+    public importTableControllerImportTable(importTable?: ImportTable, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ImportTableResponse>>;
     public importTableControllerImportTable(importTable?: ImportTable, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -125,7 +125,7 @@ export class ImportTableControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<ImporTableResponse>(`${this.configuration.basePath}/import-table`,
+        return this.httpClient.post<ImportTableResponse>(`${this.configuration.basePath}/import-table`,
             importTable,
             {
                 responseType: <any>responseType,

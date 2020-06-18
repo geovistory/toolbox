@@ -11,7 +11,10 @@
  */
 
 
-export interface ImporTableResponse { 
+export interface ImportTableResponse { 
     result?: string;
+    duration?: number;
+    error?: number;
+    fk_digital?: number;
 }
 

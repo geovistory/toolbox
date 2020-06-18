@@ -68,11 +68,12 @@ export class PostgresNotificationsManager {
       this.client2.query(sql, (err, res) => {
         this.statementsUpdating = false;
         if (err) {
-          if (err.code === '0A000') {
-            this.updateStatements(true);
-          } else {
-            console.log(err);
-          }
+          // TODO:
+          // if (err.code === '0A000') {
+          //   this.updateStatements(true);
+          // } else {
+          //   console.log(err);
+          // }
         } else {
           console.log(
             `\u{1b}[36m war.vm_statement updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`

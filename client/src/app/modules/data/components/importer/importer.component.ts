@@ -1,19 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject, Observable } from 'rxjs';
 import { WorkBook } from 'xlsx/types';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, takeUntil, switchMap } from 'rxjs/operators';
 import { TColFilter } from '../../../../../../../server/lb3app/src/server/table/interfaces'
 import { InfLanguage, ActiveProjectService } from 'app/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { values } from 'ramda';
-import { ImportTableControllerService } from 'app/core/sdk-lb4';
-import { ImportTable } from '../../../../../../../server/src/models/import-table.model';
-import { Header } from '../../../../../../../server/src/models/import-table-header.model';
+import { ImportTableControllerService, ImportTable } from 'app/core/sdk-lb4';
+import { Header } from 'app/core/sdk-lb4';
+import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
 
+export interface ImporterDialogData {
+  apiCall: (table: ImportTableResponse) => Observable<ImportTableResponse>
+}
 
 @Component({
   selector: 'gv-importer',
@@ -38,7 +41,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
   headers: Header[];
   table: string[][]; // the full table
   filteredTable: string[][]; //the full table filtered and sorted
-  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' }[]>; //the headers to display
+  headers$: ReplaySubject<Header[]>; //the headers to display
   previewTable$: ReplaySubject<string[][]>; //the data to display
 
   //file options CSV
@@ -81,7 +84,9 @@ export class ImporterComponent implements OnInit, OnDestroy {
     private worker: WorkerWrapperService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
-    private apiImporter: ImportTableControllerService) {
+    private apiImporter: ImportTableControllerService,
+    @Inject(MAT_DIALOG_DATA) public data: ImporterDialogData
+  ) {
     this.p.defaultLanguage$.pipe(takeUntil(this.destroy$)).subscribe(defaultLang => this.languageCtrl.setValue(defaultLang))
     this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
       this.p.dat$.namespace$.by_fk_project$.key(pkProject).pipe(takeUntil(this.destroy$)).subscribe(namespacesIdx => {
@@ -312,34 +317,42 @@ export class ImporterComponent implements OnInit, OnDestroy {
         if (confirmed) {
           this.mode = 'parsing';
 
-          // alert('//TODO UPLOAD TO SERVER') //TODO
-          // setTimeout(() => this.loaded(), 4000);
+          const importTable: ImportTable = {
+            tableName: this.tableNameCtrl.value,
+            pk_namespace: this.namespaceCtrl.value,
+            pk_language: this.languageCtrl.value.pk_entity,
+            headers: this.headers,
+            rows: this.table,
+          };
 
-          let importTable = new ImportTable();
-          importTable.tableName = this.tableNameCtrl.value();
-          importTable.pk_namespace = this.namespaceCtrl.value();
-          importTable.pk_language = this.languageCtrl.value();
-          importTable.headers = this.headers;
-          importTable.rows = this.table;         
 
-          this.apiImporter.importTableControllerImportTable(importTable).subscribe(response => {
-            console.log(response);
-          });
+
+          this.apiImporter.importTableControllerImportTable(importTable)
+          .pipe(
+            switchMap(response => this.data.apiCall(response))
+            )
+            .subscribe(response => {
+              if (response.error) this.loaded("Import error", response.error + ' The table has not been imported');
+              else this.loaded("Table uploaded", 'The table has correctly been imported');
+
+              this.mode = 'preview';
+            });
         }
       })
     } else this.tableForm.markAllAsTouched();
   }
 
-  loaded() {
+  loaded(title: string, message: string) {
     const data: ConfirmDialogData = {
       noBtnText: '',
       yesBtnText: 'Ok',
       yesBtnColor: 'primary',
-      title: 'Table uploaded',
-      paragraphs: ['Your table has correctly been uploaded'],
+      title: title,
+      paragraphs: [message],
     }
     const dialog = this.dialog.open(ConfirmDialogComponent, { data });
   }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

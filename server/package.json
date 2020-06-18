@@ -34,8 +34,8 @@
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "heroku-postbuild": "bash heroku-postbuild.sh",
     "t": "export NO_LOGS='true' && lb-mocha --timeout 4000 dist/__tests__/**/*.js",
-    "sdk:build": "bash build-ngx-sdk.sh",
-    "sdk:build-windows": "build-ngx-sdk.sh"
+    "build:sdk": "bash build-ngx-sdk.sh",
+    "build:sdk-windows": "build-ngx-sdk.sh"
   },
   "repository": {
     "type": "git"

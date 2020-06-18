@@ -1,8 +1,11 @@
-import {inject} from '@loopback/context';
-import {post, Request, requestBody, ResponseObject, RestBindings} from '@loopback/rest';
-import {Postgres1DataSource} from '../datasources';
-import {Header} from '../models/import-table-header.model';
-import {ImportTable} from '../models/import-table.model';
+import { inject } from '@loopback/context';
+import { post, Request, requestBody, ResponseObject, RestBindings } from '@loopback/rest';
+import { Postgres1DataSource } from '../datasources';
+import { Header } from '../models/import-table-header.model';
+import { ImportTable } from '../models/import-table.model';
+import { SqlBuilderBase } from '../utils/sql-builder-base';
+import { promises } from 'dns';
+import { model, property } from '@loopback/repository';
 
 enum DataType {
   digital = 3287,
@@ -12,15 +15,31 @@ enum DataType {
   label = 3295,
 }
 
+
+@model()
+class ImportTableResponse {
+  @property()
+  duration?: number;
+
+  @property()
+  error?: string;
+
+  @property()
+  fk_digital?: number;
+}
+
 const IMPORTTABLE_RESPONSE: ResponseObject = {
   description: 'Import table Response',
   content: {
     'application/json': {
       schema: {
         type: 'object',
-        title: 'ImporTableResponse',
+        title: 'ImportTableResponse',
         properties: {
-          result: {type: 'string'}
+          result: { type: 'string' },
+          duration: { type: 'number' },
+          error: { type: 'number' },
+          fk_digital: { type: 'number' },
         },
       },
     },
@@ -35,19 +54,21 @@ export class ImportTableController {
 
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
-  ) {}
+  ) { }
 
 
-  @post('/import-table', {responses: {'200': IMPORTTABLE_RESPONSE, }, })
+  @post('/import-table', {
+    responses: {
+      '200': {
+        description: 'Import a table',
+        content: { 'application/json': { schema: { 'x-ts-type': ImportTableResponse } } }
+      },
+    },
+  })
   async importTable(
     @requestBody()
     table: ImportTable
-  ): Promise<object> {
-
-
-    console.log(JSON.stringify(table));
-    return {error: "blablabla"};
-
+  ): Promise<ImportTableResponse> {
     const begin = new Date().getTime();
 
     ////// CHECKINGS //////
@@ -55,35 +76,35 @@ export class ImportTableController {
     //check consistency - columns name
     for (let i = 0; i < table.headers.length; i++) {
       if (!table.headers[i].colLabel || table.headers[i].colLabel == '') {
-        return {error: "Inconsistency in column name <" + i + ">"};
+        return { error: "Inconsistency in column name <" + i + ">." };
       }
     }
     //check consistency - columns number + data dormat
     for (let i = 0; i < table.rows.length; i++) {
       //columns number
       if (table.rows[i].length != table.headers.length) {
-        return {error: "Inconsistency in columns number in row <" + i + ">"};
+        return { error: "Inconsistency in columns number in row <" + i + ">." };
       }
       //data format
       for (let j = 0; j < table.rows[i].length; j++) {
         //number
         if (table.headers[j].type == 'number') {
           if (isNaN(parseFloat(table.rows[i][j]))) {
-            return {error: "Inconsistency in data format at cell: [" + i + ", " + j + "] ==> It should be a number"};
+            return { error: "Inconsistency in data format at cell: [" + i + ", " + j + "] ==> It should be a number." };
           }
         } else if (table.headers[j].type == 'string') {
           if (String(table.rows[i][j]) != table.rows[i][j]) {
-            return {error: "Inconsistency in data format at cell: [" + i + ", " + j + "] ==> It should be a string"};
+            return { error: "Inconsistency in data format at cell: [" + i + ", " + j + "] ==> It should be a string." };
           }
         }
       }
     }
 
     ////// IMPORTING //////
+    let key_digital: number, keys_columns: number[], keys_rows: number[];
 
     try {
       this.datasource.execute('BEGIN;');
-      let key_digital: number, keys_columns: number[], keys_rows: number[];
 
       key_digital = await getDigital(this.datasource, table.pk_namespace, table.tableName);
 
@@ -98,7 +119,7 @@ export class ImportTableController {
         await this.datasource.execute('COMMIT;'); //this is necessary because we are creating a table, and we want to add element to it
 
       } else {
-        return {error: "This table already exists in this namespace."}
+        return { error: "This table already exists in this namespace." }
       }
 
       let tableToSend = table.rows.map(r => r.map(c => c)); //CORRECTED: Because API can not receive string[][]
@@ -106,7 +127,8 @@ export class ImportTableController {
 
     } catch (e) {
       await this.datasource.execute('ROLLBACK;');
-      return {error: "Error occured during importation, please retry or contact support"};
+      console.log(e);
+      return { error: "Error occured during importation, please retry or contact support." };
     }
 
     await this.datasource.execute('COMMIT;');
@@ -114,106 +136,101 @@ export class ImportTableController {
     const end = new Date().getTime();
     let time = end - begin;
 
-
-    return {result: true};
+    return {
+      duration: time,
+      fk_digital: key_digital
+    };
   }
 }
 
-async function getDigital(datasource: any, fkNamespace: number, tableName: string) {
-  let sql = "SELECT pk_entity FROM data.digital WHERE (fk_namespace = " + fkNamespace + " AND id_for_import_txt = '" + tableName + "')";
-  let key = (await datasource.execute(sql))[0]?.pk_entity;
-  return key;
+async function getDigital(datasource: Postgres1DataSource, fkNamespace: number, tableName: string): Promise<number> {
+  let q = new SqlBuilderBase();
+  q.sql = "SELECT pk_entity FROM data.digital WHERE (fk_namespace = " + q.addParam(fkNamespace) + " AND id_for_import_txt = " + q.addParam(tableName) + ");";
+  return (await datasource.execute(q.sql, q.params))[0]?.pk_entity;
 }
 
-async function createDigital(datasource: any, fkNamespace: number, tableName: string) {
-  let sql = '';
-  sql = "INSERT INTO data.digital (fk_namespace, fk_system_type, id_for_import_txt, notes, metadata, \"string\" ) VALUES ("
-    + fkNamespace + ", "
-    + DataType.digital + " , '"
-    + tableName
-    + "', 'In id_for_import_txt: local file address',"
+async function createDigital(datasource: Postgres1DataSource, fkNamespace: number, tableName: string): Promise<number> {
+  let q = new SqlBuilderBase();
+  q.sql = "INSERT INTO data.digital (fk_namespace, fk_system_type, id_for_import_txt, notes, metadata, \"string\" ) VALUES ("
+    + q.addParam(fkNamespace) + ", "
+    + q.addParam(DataType.digital) + ", "
+    + q.addParam(tableName)
+    + ", 'In id_for_import_txt: local file address',"
     + "NULL,"
     + "''" +
-    ") RETURNING pk_entity "
-  let result = (await datasource.execute(sql))[0].pk_entity;
-  return result
+    ") RETURNING pk_entity;"
+  return (await datasource.execute(q.sql, q.params))[0].pk_entity;
 }
 
-async function createColumns(datasource: any, fkDigital: number, fkNamespace: number, headers: Header[]) {
-  let sql = '';
+async function createColumns(datasource: Postgres1DataSource, fkDigital: number, fkNamespace: number, headers: Header[]): Promise<Array<number>> {
+  let q = new SqlBuilderBase();
+  q.sql = "INSERT INTO data.column (fk_digital, fk_namespace, id_for_import_txt, notes, metadata, fk_data_type, fk_column_content_type, is_imported ) VALUES"
   for (let i = 0; i < headers.length; i++) {
-    sql += "INSERT INTO data.column (fk_digital, fk_namespace, id_for_import_txt, notes, metadata, fk_data_type, fk_column_content_type, is_imported ) VALUES ("
-      + fkDigital + ","
-      + fkNamespace + ","
-      + "'" + headers[i].colLabel + "',"
-      + "'In field id_for_import_txt: original column label',"
-      + "('{\"importer_original_label\":\"" + headers[i].colLabel + "\"}')::JSONB,"
-      + (headers[i].type == 'number' ? DataType.number : DataType.string) + ","
-      + "'" + DataType.column + "',"
-      + "TRUE"
-      + ");";
+    // q.sql += "INSERT INTO data.column (fk_digital, fk_namespace, id_for_import_txt, notes, metadata, fk_data_type, fk_column_content_type, is_imported ) VALUES ("
+    // + q.addParam(fkDigital) + ","
+    // + q.addParam(fkNamespace) + ","
+    // + q.addParam(headers[i].colLabel) + ","
+    // + "'In field id_for_import_txt: original column label',"
+    // + "('{\"importer_original_label\":\"" + q.addParam(headers[i].colLabel) + "\"}')::JSONB,"
+    //   + q.addParam(headers[i].type == 'number' ? DataType.number : DataType.string) + ","
+    //   + q.addParam(DataType.column) + ","
+    //   + "TRUE"
+    //   + ");";
+    let json = { "importer_original_label": headers[i].colLabel };
+    q.sql += `(${q.addParam(fkDigital)}, ${q.addParam(fkNamespace)}, ${q.addParam(headers[i].colLabel)},'In field id_for_import_txt: original column label', ${q.addParam(json)}, ${q.addParam(headers[i].type == 'number' ? DataType.number : DataType.string)}, ${q.addParam(DataType.column)}, TRUE),`
   }
+  await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
 
-  await datasource.execute(sql);
-
-  let result = await datasource.execute('SELECT pk_entity FROM data.column WHERE fk_digital = ' + fkDigital + ' AND fk_namespace = ' + fkNamespace + " ORDER BY pk_entity ASC");
-  let keys = result.map((c: any) => c.pk_entity);
-  return keys;
+  q = new SqlBuilderBase();
+  q.sql = "SELECT pk_entity FROM data.column WHERE fk_digital = " + q.addParam(fkDigital) + " AND fk_namespace = " + q.addParam(fkNamespace) + " ORDER BY pk_entity ASC";
+  let result = await datasource.execute(q.sql, q.params);
+  return result.map((c: any) => c.pk_entity);
 }
 
-async function createTextProperty(datasource: any, colKeys: number[], headers: Header[], fkLanguage: number, fkNamespace: number) {
-  let sql = '';
+async function createTextProperty(datasource: Postgres1DataSource, colKeys: number[], headers: Header[], fkLanguage: number, fkNamespace: number): Promise<any> {
+  let q = new SqlBuilderBase();
+  q.sql = "INSERT INTO data.text_property(fk_entity, string, fk_language, fk_system_type, fk_namespace) VALUES "
   for (let i = 0; i < colKeys.length; i++) {
-    sql += "INSERT INTO data.text_property(fk_entity, string, fk_language, fk_system_type, fk_namespace) VALUES("
-      + colKeys[i] + ","
-      + "'" + headers[i].colLabel + "',"
-      + fkLanguage + ","
-      + DataType.label + ","
-      + fkNamespace
-      + ");";
+    q.sql += `(${q.addParam(colKeys[i])}, ${q.addParam(headers[i].colLabel)},  ${q.addParam(fkLanguage)},  ${q.addParam(DataType.label)},  ${q.addParam(fkNamespace)}),`;
   }
-  await datasource.execute(sql);
-  return;
+  await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
 }
 
-async function createRows(datasource: any, fkDigital: number, rowsNb: number) {
-  let sql = "";
-  let temp = "INSERT INTO tables.row (fk_digital) VALUES (" + fkDigital + ");";
-  for (let i = 0; i < rowsNb; i++) sql += temp; //perf are ok: on my pc (average) 1 million actions like this took 102 ms
+async function createRows(datasource: Postgres1DataSource, fkDigital: number, rowsNb: number): Promise<Array<number>> {
+  let q = new SqlBuilderBase();
+  q.sql = 'INSERT INTO tables.row (fk_digital) VALUES ';
+  let temp = "(" + q.addParam(fkDigital) + "),";
+  for (let i = 0; i < rowsNb; i++) q.sql += temp; //perf are ok: on my pc (average) 1 million actions like this took 102 ms
+  await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
 
-  await datasource.execute(sql);
-
-  let result = await datasource.execute("SELECT pk_row FROM tables.row WHERE fk_digital = " + fkDigital + " ORDER BY pk_row ASC");
-  let keys = result.map((r: any) => r.pk_row);
-
-  return keys;
+  q = new SqlBuilderBase();
+  q.sql = "SELECT pk_row FROM tables.row WHERE fk_digital = " + q.addParam(fkDigital) + " ORDER BY pk_row ASC";
+  let result = await datasource.execute(q.sql, q.params);
+  return result.map((r: any) => r.pk_row);
 }
 
-async function createTablePartition_cell(datasource: any, fkDigital: number) {
-  let sql = "";
-  sql = "SELECT tables.create_cell_table_for_digital(" + fkDigital + ");";
-  await datasource.execute(sql); //since we access the same datasource, and there's no repository for tables
+async function createTablePartition_cell(datasource: Postgres1DataSource, fkDigital: number): Promise<any> {
+  let q = new SqlBuilderBase();
+  q.sql = "SELECT tables.create_cell_table_for_digital(" + q.addParam(fkDigital) + ");";
+  await datasource.execute(q.sql, q.params); //since we access the same datasource, and there's no repository for tables
 }
 
-async function createCells(datasource: any, fkDigital: number, rowKeys: number[], colKeys: number[], types: ('string' | 'number')[], table: string[][]) {
-  let sql = "";
+async function createCells(datasource: Postgres1DataSource, fkDigital: number, rowKeys: number[], colKeys: number[], types: ('string' | 'number')[], table: string[][]): Promise<any> {
+  let q = new SqlBuilderBase();
   let nb = 0;
+  q.sql = `INSERT INTO tables.cell_${fkDigital} (fk_digital, fk_row, fk_column,string_value, numeric_value) VALUES `;
+  let temp = ''
   for (let i = 0; i < rowKeys.length; i++) {
     for (let j = 0; j < colKeys.length; j++) {
       if (table[i][j] == '' || !table[i][j]) continue; //only cells with values are produced
-
-      let fieldName = types[j] == 'string' ? 'string_value' : 'numeric_value';
-      sql += "INSERT INTO tables.cell_" + fkDigital + " (fk_digital, fk_row, fk_column," + fieldName + ") VALUES("
-        + fkDigital + ","
-        + rowKeys[i] + ","
-        + colKeys[j] + ","
-        + "'" + table[i][j] + "');\n";
+      temp += `(${q.addParam(fkDigital)}, ${q.addParam(rowKeys[i])}, ${q.addParam(colKeys[j])}, ${q.addParam(types[j] == 'string' ? table[i][j] : null)}, ${q.addParam(types[j] == 'number' ? parseFloat(table[i][j].trim().replace(/,/g, '.')) : null)}),`
       nb++;
       if (nb % 200000 == 0) {
-        await datasource.execute(sql);
-        sql = "";
+        await datasource.execute(q.sql + temp.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
+        temp = '';
       }
+
     }
   }
-  await datasource.execute(sql);
+  await datasource.execute(q.sql + temp.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
 }
