@@ -104,7 +104,7 @@ export class ImportTableController {
     let key_digital: number, keys_columns: number[], keys_rows: number[];
 
     try {
-      this.datasource.execute('BEGIN;');
+      await this.datasource.execute('BEGIN;');
 
       key_digital = await getDigital(this.datasource, table.pk_namespace, table.tableName);
 
