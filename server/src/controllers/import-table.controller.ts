@@ -95,7 +95,7 @@ export class ImportTableController {
       for (let j = 0; j < table.rows[i].length; j++) {
         //number
         if (table.headers[j].type == 'number') {
-          if (isNaN(parseFloat(table.rows[i][j]))) {
+          if (isNaN(parseFloat(table.rows[i][j] + ''))) {
             return { error: "Inconsistency in data format at cell: [" + i + ", " + j + "] ==> It should be a number." };
           }
         } else if (table.headers[j].type == 'string') {
@@ -117,19 +117,25 @@ export class ImportTableController {
       if (!key_digital) {
         // first try, nothing has been done yet
         key_digital = await createDigital(this.datasource, table.pk_namespace, table.tableName);
+        // console.log('INFOS: Digital created');
         keys_columns = await createColumns(this.datasource, key_digital, table.pk_namespace, table.headers);
+        // console.log('INFOS: Columns created');
         await createTextProperty(this.datasource, keys_columns, table.headers, table.pk_language, table.pk_namespace);
+        // console.log('INFOS: Text properties created');
         keys_rows = await createRows(this.datasource, key_digital, table.rows.length);
+        // console.log('INFOS: Rows created');
 
         await createTablePartition_cell(this.datasource, key_digital);
+        // console.log('INFOS: Partition created');
         await this.datasource.execute('COMMIT;'); //this is necessary because we are creating a table, and we want to add element to it
 
       } else {
         return { error: "This table already exists in this namespace." }
       }
 
-      let tableToSend = table.rows.map(r => r.map(c => c)); //CORRECTED: Because API can not receive string[][]
-      await createCells(this.datasource, key_digital, keys_rows, keys_columns, table.headers.map(h => h.type), tableToSend);
+      let tableToSend = table.rows.map(r => r.map(c => c + '')); 
+      createCells(this.datasource, key_digital, keys_rows, keys_columns, table.headers.map(h => h.type), tableToSend);
+      // console.log('INFOS: Cell creation sent');
 
     } catch (e) {
       await this.datasource.execute('ROLLBACK;');
@@ -182,6 +188,7 @@ async function createColumns(datasource: Postgres1DataSource, fkDigital: number,
     //   + q.addParam(DataType.column) + ","
     //   + "TRUE"
     //   + ");";
+    if (headers[i].colLabel == '' || !headers[i].colLabel) continue;
     let json = { "importer_original_label": headers[i].colLabel };
     q.sql += `(${q.addParam(fkDigital)}, ${q.addParam(fkNamespace)}, ${q.addParam(headers[i].colLabel)},'In field id_for_import_txt: original column label', ${q.addParam(json)}, ${q.addParam(headers[i].type == 'number' ? DataType.number : DataType.string)}, ${q.addParam(DataType.column)}, TRUE),`
   }
@@ -224,19 +231,25 @@ async function createTablePartition_cell(datasource: Postgres1DataSource, fkDigi
 async function createCells(datasource: Postgres1DataSource, fkDigital: number, rowKeys: number[], colKeys: number[], types: ('string' | 'number')[], table: string[][]): Promise<any> {
   let q = new SqlBuilderBase();
   let nb = 0;
-  q.sql = `INSERT INTO tables.cell_${fkDigital} (fk_digital, fk_row, fk_column,string_value, numeric_value) VALUES `;
-  let temp = ''
+  let beginSQL = `INSERT INTO tables.cell_${fkDigital} (fk_digital, fk_row, fk_column,string_value, numeric_value) VALUES `;
+  q.sql = beginSQL;
+
   for (let i = 0; i < rowKeys.length; i++) {
     for (let j = 0; j < colKeys.length; j++) {
       if (table[i][j] == '' || !table[i][j]) continue; //only cells with values are produced
-      temp += `(${q.addParam(fkDigital)}, ${q.addParam(rowKeys[i])}, ${q.addParam(colKeys[j])}, ${q.addParam(types[j] == 'string' ? table[i][j] : null)}, ${q.addParam(types[j] == 'number' ? parseFloat(table[i][j].trim().replace(/,/g, '.')) : null)}),`
+      q.sql += `(${q.addParam(fkDigital)}, ${q.addParam(rowKeys[i])}, ${q.addParam(colKeys[j])}, ${q.addParam(types[j] == 'string' ? table[i][j] : null)}, ${q.addParam(types[j] == 'number' ? parseFloat(table[i][j].trim().replace(/,/g, '.')) : null)}),`
       nb++;
-      if (nb % 200000 == 0) {
-        await datasource.execute(q.sql + temp.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
-        temp = '';
+      if (nb * 5 % 20000 == 0) {
+        await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
+        q = new SqlBuilderBase();
+        q.sql = beginSQL;
+
+        // console.log('Advancement: ' + Math.round(((i * colKeys.length + j) / (rowKeys.length * colKeys.length)) * 100) + '%');
       }
 
     }
   }
-  await datasource.execute(q.sql + temp.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
+  if (q.sql.substring(q.sql.length - 1) == ' ') return; // if there is a values to add
+  await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string
+  // console.log('Advancement: 100%');
 }
