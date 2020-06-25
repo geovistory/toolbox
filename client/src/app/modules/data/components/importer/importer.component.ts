@@ -303,7 +303,6 @@ export class ImporterComponent implements OnInit, OnDestroy {
   }
 
   load() {
-
     if (this.tableForm.valid) {
       const data: ConfirmDialogData = {
         noBtnText: 'Cancel',
@@ -332,8 +331,12 @@ export class ImporterComponent implements OnInit, OnDestroy {
             switchMap(response => this.data.apiCall(response))
             )
             .subscribe(response => {
+
+              console.log(response);
+              if(!response) return;
+              
               if (response.error) this.loaded("Import error", response.error + ' The table has not been imported');
-              else this.loaded("Table uploaded", 'The table has correctly been imported');
+              else this.loaded("Table uploaded", 'The table has correctly been uploaded. The importation into the database may take few minutes (depending on the size of your table).');
 
               this.mode = 'preview';
             });

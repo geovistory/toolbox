@@ -42,7 +42,7 @@ function workbookIntoTable(wb: XLSX.WorkBook, sheetName: string): string[][] {
             const cellref: string = XLSX.utils.encode_cell({ c: j, r: i });
             //empty cells has to be empty string in our case
             if (!sheet[cellref]) table[i - range.s.r][j - range.s.c] = "";
-            else table[i - range.s.r][j - range.s.c] = sheet[cellref].v;
+            else table[i - range.s.r][j - range.s.c] = sheet[cellref].v + '';
         }
     }
 

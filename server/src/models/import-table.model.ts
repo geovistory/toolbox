@@ -22,5 +22,5 @@ export class ImportTable {
       items: {type: 'string'},
     },
   })
-  rows: Array<Array<string>>;
+  rows: Array<Array<string | number>>;
 }
