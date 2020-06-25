@@ -21,6 +21,7 @@ import {GeovistoryApplication} from './application';
 import {WarEntityPreviewController} from './controllers';
 import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-notifications-manager';
 import {WebSocketServer} from './realtime/websockets/websocket.server';
+import {RestApplicationLike, RestServerLike} from '@loopback/testlab';
 
 
 
@@ -29,15 +30,16 @@ const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 
-export class GeovistoryServer extends Context {
+export class GeovistoryServer extends Context implements RestApplicationLike {
   private app: express.Application;
   public readonly lbApp: GeovistoryApplication;
   private server?: http.Server;
+  restServer: RestServerLike = {};
 
   readonly wsServer: WebSocketServer;
   readonly pgNotifManager: PostgresNotificationsManager;
 
-  public url: String;
+  public url: string;
 
   constructor(private options: ApplicationConfig = {}) {
     super();
@@ -96,11 +98,14 @@ export class GeovistoryServer extends Context {
     await once(this.server, 'listening');
     const add = <AddressInfo>this.server.address();
     this.url = `http://${add.address}:${add.port}`;
+    this.restServer.rootUrl = this.url;
+    this.restServer.url = this.url;
+
     // Websocket server
     await this.wsServer.start(this.server);
 
     // Postgres Notification Manager
-    this.pgNotifManager.start()
+    return this.pgNotifManager.start()
 
   }
 
@@ -119,7 +124,7 @@ export class GeovistoryServer extends Context {
     await this.wsServer.stop();
 
     // Postgres Notification Manager
-    this.pgNotifManager.stop()
+    return this.pgNotifManager.stop()
 
   }
 
