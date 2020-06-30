@@ -12,7 +12,6 @@ import { model, property } from '@loopback/repository';
 // - close after the table was uploaded, and then update the list (as it is already with texts)
 // - change the name of the table into the name the user took
 
-
 enum DataType {
   digital = 3287,
   column = 3291,
@@ -20,7 +19,6 @@ enum DataType {
   number = 3293,
   label = 3295,
 }
-
 
 @model()
 class ImportTableResponse {
@@ -96,11 +94,11 @@ export class ImportTableController {
         //number
         if (table.headers[j].type == 'number') {
           if (isNaN(parseFloat(table.rows[i][j] + ''))) {
-            return { error: "Inconsistency in data format at cell: [" + i + ", " + j + "] ==> It should be a number." };
+            return { error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a number." };
           }
         } else if (table.headers[j].type == 'string') {
           if (String(table.rows[i][j]) != table.rows[i][j]) {
-            return { error: "Inconsistency in data format at cell: [" + i + ", " + j + "] ==> It should be a string." };
+            return { error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a string." };
           }
         }
       }

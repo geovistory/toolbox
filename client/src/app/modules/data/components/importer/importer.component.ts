@@ -96,10 +96,16 @@ export class ImporterComponent implements OnInit, OnDestroy {
     })
   }
 
+  /**
+   * On init: reset the screen
+   */
   ngOnInit() {
     this.reset();
   }
 
+  /**
+   * Clean all Importer variable, and reput the drag and drop zone
+   */
   reset() {
     this.mode = 'drag-and-drop';
     this.type = '';
@@ -120,6 +126,11 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.rowsNb = this.rowsNbs[0];
   }
 
+  /**
+   * Function called when users select a file
+   * 
+   * @param files Files from the <input> tag in the html
+   */
   onFileDrop(files: NgxFileDropEntry[]) {
     this.files = files;
     for (const droppedFile of files) {
@@ -132,11 +143,21 @@ export class ImporterComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Get the right number of line to take from the table: When there is a header, the first line has to not being taken
+   * 
+   * @returns the right nb of actual rows of the table
+   */
   getRowsNb() {
     //get the nb of lines to take from table, if there is a header, we need to take one more row
     return this.columnsOption == 'First row' ? parseInt(this.rowsNb) + 1 : parseInt(this.rowsNb);
   }
 
+  /**
+   * Launch the parsing procedure
+   * 
+   * @param file The file to parse and display
+   */
   selectFile(file: File) {
     if (!file) return;
     this.file = file;
@@ -187,6 +208,9 @@ export class ImporterComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Feature that will count the occurences of different separator and set as a attribute the one that is more present in the file
+   */
   chooseDefaultSeparator() {
     let counts = this.separators.map(s => {
       let toRegEx = s;
@@ -201,12 +225,19 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.separator = counts.filter(c => c.count == max)[0].separator;
   }
 
+  /**
+   * Parse the binaries of the file into the string[][] format. Uses the WWW
+   */
   parseCSV() {
     this.mode = 'parsing';
     this.worker.work('csvIntoTable', { separator: this.separator, binaries: this.binaries.trim() })
       .then(result => this.parseHeaders(result));
   }
 
+  /**
+   * Parse the binaries of the file into the workbook format. Uses the WWW.
+   * Making the Step to first parse into workbook allow us to avoid to reparse everything if is was not the first Excel Sheet that the user wanted to import
+   */
   parseWorkbook() {
     this.worker.work('parseWorkbook', { binaries: this.binaries })
       .then(result => {
@@ -217,13 +248,20 @@ export class ImporterComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Parse the Workbook into the string[][] format
+   */
   parseXLS() {
     this.mode = 'parsing';
     this.worker.work('workbookIntoTable', { wb: this.wb, sheetName: this.sheetName })
       .then(result => this.parseHeaders(result));
   }
 
-
+  /**
+   *  Deduction of the headers from the parsed binaries (either CSV or XLSX)
+   * 
+   * @param result the binaries parsed
+   */
   parseHeaders(result: string[][]) {
     if (!result) { // if we come from html: rebuild the result
       if (this.columnsOption != 'First row') // ==> if we had 'first row' and we are going to 'no headers'
@@ -253,11 +291,19 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.parseTable();
   }
 
+  /**
+   * Starting point of data cleaning. Called when global params are changed and/or when filtering and sorting need to be updated
+   */
   parseTable() {
     this.mode = 'preview';
     this.filter(this.filters); // this call will also launch the sorting
   }
 
+  /**
+   * Filters the table according to all previously filters set
+   * 
+   * @param filters All filters in place
+   */
   filter(filters: Array<{ col: number, filter: TColFilter }>) {
     if (this.mode == 'drag-and-drop') return;
 
@@ -280,6 +326,11 @@ export class ImporterComponent implements OnInit, OnDestroy {
     })
   }
 
+  /**
+   * Slort the table according to all previously sorting options set
+   * 
+   * @param sortOpt All sorting options in place
+   */
   sort(sortOpt: { colNb: number, direction: string }) {
     this.curSort = sortOpt; //only usefull when we come from html
 
@@ -294,7 +345,6 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.worker.work('sortTable', {
       table: this.filteredTable,
       colNb: sortOpt.colNb,
-      type: this.headers[sortOpt.colNb].type,
       direction: sortOpt.direction
     }).then(result => {
       this.previewTable$.next(result.slice(0, this.getRowsNb())); //put header back
@@ -302,6 +352,10 @@ export class ImporterComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Event happening when the user click on 'Load' button.
+   * Ask confirmation first
+   */
   load() {
     if (this.tableForm.valid) {
       const data: ConfirmDialogData = {
@@ -324,17 +378,15 @@ export class ImporterComponent implements OnInit, OnDestroy {
             rows: this.table,
           };
 
-
-
           this.apiImporter.importTableControllerImportTable(importTable)
-          .pipe(
-            switchMap(response => this.data.apiCall(response))
+            .pipe(
+              switchMap(response => this.data.apiCall(response))
             )
             .subscribe(response => {
 
               console.log(response);
-              if(!response) return;
-              
+              if (!response) return;
+
               if (response.error) this.loaded("Import error", response.error + ' The table has not been imported');
               else this.loaded("Table uploaded", 'The table has correctly been uploaded. The importation into the database may take few minutes (depending on the size of your table).');
 
@@ -345,6 +397,12 @@ export class ImporterComponent implements OnInit, OnDestroy {
     } else this.tableForm.markAllAsTouched();
   }
 
+  /**
+   * Function triggered when the client get a response from the /import-table call
+   * 
+   * @param title Title of the message from the server
+   * @param message Message from the server
+   */
   loaded(title: string, message: string) {
     const data: ConfirmDialogData = {
       noBtnText: '',
@@ -356,6 +414,9 @@ export class ImporterComponent implements OnInit, OnDestroy {
     const dialog = this.dialog.open(ConfirmDialogComponent, { data });
   }
 
+  /**
+   * Clean destroy of component
+   */
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
@@ -363,6 +424,13 @@ export class ImporterComponent implements OnInit, OnDestroy {
 }
 
 
+/**
+ * Read the column to see if it is a number of a string
+ * 
+ * @param table The table in which the column is
+ * @param colNb The target column
+ * @param comma What comma is used in number (<,> or <.> or ...);
+ */
 function getTypeOfColumn(table: Array<Array<string>>, colNb: number, comma?: string): 'number' | 'string' {
   //We suppose that the table has the same number of col for each rows
   let isNumber = true;

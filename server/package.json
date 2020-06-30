@@ -33,7 +33,7 @@
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "heroku-postbuild": "bash heroku-postbuild.sh",
-    "t": "export NO_LOGS='true' && lb-mocha --timeout 4000 dist/__tests__/**/*.js",
+    "t": "export NO_LOGS='true' && lb-mocha --require ts-node/register --timeout 4000  --recursive true 'src/__tests__/**/*.ts'",
     "build:sdk": "bash build-ngx-sdk.sh",
     "build:sdk-windows": "build-ngx-sdk.sh"
   },
@@ -106,6 +106,7 @@
     "pascalcase": "^1.0.0",
     "socket.io-client": "^2.3.0",
     "source-map-support": "^0.5.19",
+    "ts-node": "^8.10.2",
     "typescript": "~3.9.3",
     "typescript-json-schema": "^0.40.0"
   }

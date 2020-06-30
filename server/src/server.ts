@@ -110,7 +110,6 @@ export class GeovistoryServer extends Context implements RestApplicationLike {
   }
 
   public async stop() {
-
     // Rest server
     if (this.server) {
 

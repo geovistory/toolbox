@@ -8,19 +8,39 @@ addEventListener('message', ({ data }) => {
     if (data.task == 'csvIntoTable') postMessage(csvIntoTable(data.params.binaries, data.params.separator));
     if (data.task == 'parseWorkbook') postMessage(parseWorkbook(data.params.binaries));
     if (data.task == 'workbookIntoTable') postMessage(workbookIntoTable(data.params.wb, data.params.sheetName));
-    if (data.task == 'sortTable') postMessage(sortTable(data.params.table, data.params.colNb, data.params.type, data.params.direction));
+    if (data.task == 'sortTable') postMessage(sortTable(data.params.table, data.params.colNb, data.params.direction));
     if (data.task == 'filterTable') postMessage(filterTable(data.params.table, data.params.filters));
 });
 
+/**
+ * Parse a raw binary string into a 2 dimensions array of strings
+ * 
+ * @param binaries binaries of the file to transform into a CSV
+ * @param separator separator used in the file
+ * @returns the 2 dimensions array of strings correcponding to the binaries
+ */
 function csvIntoTable(binaries: string, separator: string): string[][] {
     if (separator == 'TAB') separator = String.fromCharCode(9);
     return removeEmptyCol(removeEmptyRow(binaries.replace(/\r/g, '').split("\n").map(row => row.split(separator))));
 }
 
+/**
+ * Parse a raw binary string into a XLSX.Workbook (external lib) in order to exploit the workbook
+ * 
+ * @param binaries binaries of the file to transform into a workbook
+ * @returns the workbook corresponding to the binaries
+ */
 function parseWorkbook(binaries: string): XLSX.WorkBook {
     return XLSX.read(binaries, { type: 'binary' });
 }
 
+/**
+ * Transform a XLSX.Workbook object into a 2 dimensions array of strings
+ * 
+ * @param wb the Workbook to transform
+ * @param sheetName Which sheet we need to transform.
+ * @returns the 2 dimensions array of strings correcponding to the workbook
+ */
 function workbookIntoTable(wb: XLSX.WorkBook, sheetName: string): string[][] {
     const table: string[][] = [];
     const sheet: XLSX.WorkSheet = wb.Sheets[sheetName];
@@ -49,7 +69,15 @@ function workbookIntoTable(wb: XLSX.WorkBook, sheetName: string): string[][] {
     return removeEmptyCol(removeEmptyRow(table));
 }
 
-function sortTable(table: string[][], col: number, type: string, direction: string) {
+/**
+ * Sort a 2 dimensions array of string on a column
+ * 
+ * @param table The table to sort
+ * @param col The master column to sort on
+ * @param direction Ascending or descending 
+ * @returns The sorted table
+ */
+function sortTable(table: string[][], col: number, direction: string): string[][] {
     let way1 = direction == 'ASC' ? -1 : 1;
     let way2 = direction == 'ASC' ? 1 : -1;
 
@@ -62,7 +90,14 @@ function sortTable(table: string[][], col: number, type: string, direction: stri
     }, table);
 }
 
-function filterTable(table: string[][], filters: { col: number, filter: TColFilter }[]) {
+/**
+ * Giving a filter, filters a 2 dimensions array of string
+ * 
+ * @param table The table to filter 
+ * @param filters To what column and how should the table be filtered
+ * @returns The filtered table
+ */
+function filterTable(table: string[][], filters: { col: number, filter: TColFilter }[]): string[][] {
     let result = table;
     for (let i = table.length - 1; i >= 0; i--) {
         for (let j = 0; j < filters.length; j++) {
@@ -77,6 +112,13 @@ function filterTable(table: string[][], filters: { col: number, filter: TColFilt
 
 
 ///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Remove all the empty columns from a 2 dimensions array of strings
+ * 
+ * @param table The table to remove the empty columns from
+ * @returns the clean table
+ */
 function removeEmptyCol(table: string[][]): string[][] {
     //remove empty cols: iterate by column and not by rows like just above.
     //could be done in the same iteration, but it will much complicate the code
@@ -99,6 +141,12 @@ function removeEmptyCol(table: string[][]): string[][] {
     return table;
 }
 
+/**
+ * Remove all the empty rows from a 2 dimensions array of strings
+ * 
+ * @param table The table to remove the empty rows from
+ * @returns the clean table
+ */
 function removeEmptyRow(table: string[][]): string[][] {
     //remove empty row: iterate by column and not by rows like just above.
     //could be done in the same iteration, but it will much complicate the code
@@ -117,6 +165,13 @@ function removeEmptyRow(table: string[][]): string[][] {
     return table;
 }
 
+/**
+ * According to the content, should we keep the content or not?
+ * 
+ * @param content The content to apply the filter to
+ * @param filter The Filter
+ * @returns the response to 'Should we keep this content?'
+ */
 function filterKeep(content: string, filter: TColFilter): boolean {
     if (filter.numeric) {
         if (filter.numeric.operator == '=') return parseFloat(content) == filter.numeric.value;
