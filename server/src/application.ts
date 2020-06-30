@@ -1,14 +1,19 @@
-import {BootMixin} from '@loopback/boot';
-import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
-import {ApplicationConfig} from '@loopback/core';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {RestExplorerBindings, RestExplorerComponent} from '@loopback/rest-explorer';
-import {ServiceMixin} from '@loopback/service-proxy';
+import { BootMixin } from '@loopback/boot';
+import { Lb3AppBooterComponent } from '@loopback/booter-lb3app';
+import { ApplicationConfig } from '@loopback/core';
+import { RepositoryMixin } from '@loopback/repository';
+import { RestApplication } from '@loopback/rest';
+import { RestExplorerBindings, RestExplorerComponent } from '@loopback/rest-explorer';
+import { ServiceMixin } from '@loopback/service-proxy';
 import path from 'path';
-import {log} from './middleware/log.middleware';
-import {Streams} from './realtime/streams/streams';
-import {GvSequence} from './sequence';
+import { log } from './middleware/log.middleware';
+import { Streams } from './realtime/streams/streams';
+import { GvSequence } from './sequence';
+import { AuthenticationComponent } from '@loopback/authentication';
+import { JWTAuthenticationComponent, SECURITY_SCHEME_SPEC, UserServiceBindings } from '@loopback/authentication-jwt';
+import { UserService } from './services/user.service';
+import { EmailService } from './services/email.service';
+import { PasswordResetTokenService } from './services/password-reset-token.service';
 
 export class GeovistoryApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -18,6 +23,10 @@ export class GeovistoryApplication extends BootMixin(
 
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+    this.bind('APP_EMAIL_SERVICE').toClass(EmailService)
+    this.bind('APP_USER_SERVICE').toClass(UserService)
+    this.bind('APP_PASSWORD_RESET_TOKEN_SERVICE').toClass(PasswordResetTokenService)
 
     // make the streams injectable
     this.bind('streams').to(this.streams)
@@ -53,6 +62,7 @@ export class GeovistoryApplication extends BootMixin(
     this.static(/\/admin.*/, path.join(__dirname, '../../client/dist'));
     this.static(/\/backoffice.*/, path.join(__dirname, '../../client/dist'));
 
+    this.component(RestExplorerComponent);
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
       path: '/explorer',
@@ -81,6 +91,17 @@ export class GeovistoryApplication extends BootMixin(
         mode: 'fullApp'
       }
     };
+
+    // ------ ADD SNIPPET AT THE BOTTOM ---------
+    // Mount authentication system
+    this.component(AuthenticationComponent);
+    // Mount jwt component
+    this.component(JWTAuthenticationComponent);
+
+    // Bind datasource
+    this.dataSource(DbDataSource, UserServiceBindings.DATASOURCE_NAME);
+    // ------------- END OF SNIPPET -------------
+
   }
 
 }
