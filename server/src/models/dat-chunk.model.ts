@@ -1,5 +1,8 @@
-import {model, property} from '@loopback/repository';
+import {model, property, Entity, hasMany, belongsTo} from '@loopback/repository';
 import {DatEntity} from '.';
+import {InfStatement} from './inf-statement.model';
+import {DatDigital} from './dat-digital.model';
+import {DatNamespace} from './dat-namespace.model';
 
 @model({
   settings: {
@@ -8,7 +11,16 @@ import {DatEntity} from '.';
     postgresql: {schema: 'data', table: 'v_chunk'}
   }
 })
-export class DatChunk extends DatEntity {
+export class DatChunk extends Entity implements DatEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'object',
   })
@@ -23,14 +35,32 @@ export class DatChunk extends DatEntity {
     type: 'number',
     required: true,
   })
+  fk_entity_version: number;
+
+  @hasMany(() => InfStatement, {keyTo: 'fk_subject_data'})
+  outgoing_statements: InfStatement[];
+
+  @property({
+    type: 'number',
+    required: true,
+  })
   fk_text: number;
 
   @property({
     type: 'number',
     required: true,
   })
-  fk_entity_version: number;
+  fk_namespace: number;
 
+  @property({
+    type: 'number',
+  })
+  fk_subject_data?: number;
+
+  @property({
+    type: 'number',
+  })
+  fk_object_data?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

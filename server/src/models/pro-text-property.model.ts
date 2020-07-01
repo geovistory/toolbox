@@ -1,4 +1,4 @@
-import {model, property} from '@loopback/repository';
+import {model, property, Entity} from '@loopback/repository';
 import {ProEntity} from '.';
 
 @model({
@@ -8,7 +8,16 @@ import {ProEntity} from '.';
     postgresql: {schema: 'projects', table: 'text_property'}
   }
 })
-export class ProTextProperty extends ProEntity {
+export class ProTextProperty  extends Entity implements ProEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'string',
     required: true,

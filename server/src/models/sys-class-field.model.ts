@@ -37,6 +37,10 @@ export class SysClassField extends Entity {
   })
   used_table?: string;
 
+  @property({
+    type: 'number',
+  })
+  fk_class_field?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -1,4 +1,8 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {ProDfhClassProjRel} from './pro-dfh-class-proj-rel.model';
+import {DfhProperty} from './dfh-property.model';
+import {ProClassFieldConfig} from './pro-class-field-config.model';
+import {InfPersistentItem} from './inf-persistent-item.model';
 
 @model({
   settings: {
@@ -34,6 +38,20 @@ export class DfhClass extends Entity {
   })
   profiles?: object[];
 
+  @hasMany(() => ProDfhClassProjRel, {keyTo: 'fk_class'})
+  proj_rels: ProDfhClassProjRel[];
+
+  @hasMany(() => DfhProperty, {keyTo: 'has_range'})
+  ingoing_properties: DfhProperty[];
+
+  @hasMany(() => DfhProperty, {keyTo: 'has_domain'})
+  outgoing_properties: DfhProperty[];
+
+  @hasMany(() => ProClassFieldConfig, {keyTo: 'fk_class_for_class_field'})
+  class_field_configs: ProClassFieldConfig[];
+
+  @hasMany(() => InfPersistentItem, {keyTo: 'fk_class'})
+  persistent_items: InfPersistentItem[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

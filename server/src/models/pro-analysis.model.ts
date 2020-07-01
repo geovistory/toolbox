@@ -1,5 +1,7 @@
-import {model, property} from '@loopback/repository';
+import {model, property, Entity, hasOne} from '@loopback/repository';
 import {ProEntity} from '.';
+import {ProProject} from './pro-project.model';
+import {PubAccount} from './pub-account.model';
 
 @model({
   settings: {
@@ -8,7 +10,16 @@ import {ProEntity} from '.';
     postgresql: {schema: 'projects', table: 'analysis'}
   }
 })
-export class ProAnalysis extends ProEntity {
+export class ProAnalysis extends Entity implements ProEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'string',
     required: true,
@@ -55,7 +66,8 @@ export class ProAnalysis extends ProEntity {
 }
 
 export interface ProAnalysisRelations {
-  // describe navigational properties here
+  project?: ProProject;
+  account?: PubAccount;
 }
 
 export type ProAnalysisWithRelations = ProAnalysis & ProAnalysisRelations;

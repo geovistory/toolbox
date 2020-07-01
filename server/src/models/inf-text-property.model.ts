@@ -1,5 +1,8 @@
-import {model, property} from '@loopback/repository';
-import {InfEntity} from '.';
+import {model, property, Entity, hasMany, hasOne} from '@loopback/repository';
+import {InfEntity, ProInfoProjRel} from '.';
+import {InfPersistentItem} from './inf-persistent-item.model';
+import {InfTemporalEntity} from './inf-temporal-entity.model';
+import {InfLanguage} from './inf-language.model';
 
 @model({
   settings: {
@@ -8,7 +11,16 @@ import {InfEntity} from '.';
     plural: 'InfTextProperties'
   }
 })
-export class InfTextProperty extends InfEntity {
+export class InfTextProperty extends Entity implements InfEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'number',
     required: true,
@@ -38,6 +50,9 @@ export class InfTextProperty extends InfEntity {
   })
   string?: string;
 
+  @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
+  entity_version_project_rels: ProInfoProjRel[];
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
@@ -50,7 +65,9 @@ export class InfTextProperty extends InfEntity {
 }
 
 export interface InfTextPropertyRelations {
-  // describe navigational properties here
+  persistent_item?: InfPersistentItem;
+  temporal_entity?: InfTemporalEntity;
+  language?: InfLanguage;
 }
 
 export type InfTextPropertyWithRelations = InfTextProperty & InfTextPropertyRelations;

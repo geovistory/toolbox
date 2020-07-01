@@ -1,5 +1,6 @@
-import {model, property} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {InfEntity} from '.';
+import {InfStatement} from './inf-statement.model';
 
 @model({
   settings: {
@@ -8,7 +9,16 @@ import {InfEntity} from '.';
     postgresql: {schema: 'information', table: 'v_appellation'}
   }
 })
-export class InfAppellation extends InfEntity {
+export class InfAppellation extends Entity implements InfEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'object',
     required: true,
@@ -26,6 +36,13 @@ export class InfAppellation extends InfEntity {
   })
   string?: string;
 
+  @hasMany(() => InfStatement, {keyTo: 'fk_object_info'})
+  incoming_statements: InfStatement[];
+
+  @property({
+    type: 'number',
+  })
+  fk_object_info?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -86,7 +86,7 @@
     "subject_digital": {
       "type": "belongsTo",
       "model": "DatDigital",
-      "foreignKey": "fk_object_data",
+      "foreignKey": "fk_subject_data",
       "primaryKey": "pk_entity"
     },
     "subject_chunk": {
@@ -641,7 +641,7 @@
         "root": true
       },
 
-      
+
       "description": "Find statements by params.",
       "http": {
         "path": "/find-by-params",

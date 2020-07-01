@@ -22,6 +22,10 @@ export class ProProject extends Entity {
   })
   fk_language?: number;
 
+  @property({
+    type: 'number',
+  })
+  fk_project?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

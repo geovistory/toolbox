@@ -1,5 +1,5 @@
-import {model, property} from '@loopback/repository';
-import {DatEntity} from '.';
+import {model, property, Entity, belongsTo} from '@loopback/repository';
+import {DatEntity, DatNamespace} from '.';
 
 @model({
   settings: {
@@ -8,7 +8,16 @@ import {DatEntity} from '.';
     postgresql: {schema: 'data', table: 'digital'}
   }
 })
-export class DatDigital extends DatEntity {
+export class DatDigital extends Entity implements DatEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'number',
     generated: true,
@@ -36,6 +45,14 @@ export class DatDigital extends DatEntity {
   })
   fk_system_type?: number;
 
+
+  @belongsTo(() => DatNamespace, {name: 'namespace'})
+  fk_namespace?: number;
+
+  @property({
+    type: 'number',
+  })
+  fk_subject_data?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

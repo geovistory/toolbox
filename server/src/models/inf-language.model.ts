@@ -1,4 +1,4 @@
-import {model, property} from '@loopback/repository';
+import {model, property, Entity} from '@loopback/repository';
 import {InfEntity} from '.';
 
 @model({
@@ -8,7 +8,16 @@ import {InfEntity} from '.';
     postgresql: {schema: 'information', table: 'v_language'}
   }
 })
-export class InfLanguage extends InfEntity {
+export class InfLanguage extends Entity implements InfEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'number',
     generated: true,
@@ -50,6 +59,15 @@ export class InfLanguage extends InfEntity {
   })
   notes?: string;
 
+  @property({
+    type: 'number',
+  })
+  fk_object_info?: number;
+
+  @property({
+    type: 'number',
+  })
+  fk_language?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

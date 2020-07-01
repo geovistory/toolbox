@@ -1,4 +1,4 @@
-import {model, property} from '@loopback/repository';
+import {model, property, Entity} from '@loopback/repository';
 import {InfEntity} from '.';
 
 @model({
@@ -8,7 +8,16 @@ import {InfEntity} from '.';
     postgresql: {schema: 'information', table: 'v_place'}
   }
 })
-export class InfPlace extends InfEntity {
+export class InfPlace extends Entity implements InfEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'number',
     required: true,
@@ -27,6 +36,10 @@ export class InfPlace extends InfEntity {
   })
   fk_class: number;
 
+  @property({
+    type: 'number',
+  })
+  fk_object_info?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

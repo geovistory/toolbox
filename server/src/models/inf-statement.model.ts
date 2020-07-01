@@ -1,5 +1,13 @@
-import {model, property} from '@loopback/repository';
-import {InfEntity} from '.';
+import {Entity, hasMany, hasOne, model, property} from '@loopback/repository';
+import {InfEntity, ProInfoProjRel} from '.';
+import {DatChunk} from './dat-chunk.model';
+import {DatDigital} from './dat-digital.model';
+import {InfAppellation} from './inf-appellation.model';
+import {InfLangString} from './inf-lang-string.model';
+import {InfLanguage} from './inf-language.model';
+import {InfPersistentItem} from './inf-persistent-item.model';
+import {InfPlace} from './inf-place.model';
+import {InfTemporalEntity} from './inf-temporal-entity.model';
 
 @model({
   settings: {
@@ -8,7 +16,16 @@ import {InfEntity} from '.';
     postgresql: {schema: 'information', table: 'v_statement'}
   }
 })
-export class InfStatement extends InfEntity {
+export class InfStatement extends Entity implements InfEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'number',
     default: 0,
@@ -84,6 +101,9 @@ export class InfStatement extends InfEntity {
   })
   community_favorite_calendar?: string;
 
+  @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
+  entity_version_project_rels: ProInfoProjRel[];
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
@@ -96,7 +116,18 @@ export class InfStatement extends InfEntity {
 }
 
 export interface InfStatementRelations {
-  // describe navigational properties here
+  subject_persistent_item?: InfPersistentItem;
+  subject_temporal_entity?: InfTemporalEntity;
+  subject_digital?: DatDigital;
+  subject_chunk?: DatChunk;
+  subject_statement?: InfStatement;
+  object_persistent_item?: InfPersistentItem;
+  object_temporal_entity?: InfTemporalEntity;
+  object_appellation?: InfAppellation;
+  object_language?: InfLanguage;
+  object_lang_string?: InfLangString;
+  object_place?: InfPlace;
+  object_chunk?: DatChunk;
 }
 
 export type InfStatementWithRelations = InfStatement & InfStatementRelations;

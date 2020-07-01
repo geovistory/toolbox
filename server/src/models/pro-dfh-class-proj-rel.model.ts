@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {ProEntity} from './pro-entity.model';
 
 @model({
   settings: {
@@ -8,7 +9,7 @@ import {Entity, model, property} from '@loopback/repository';
     idInjection: true
   }
 })
-export class ProDfhClassProjRel extends Entity {
+export class ProDfhClassProjRel extends Entity implements ProEntity {
   @property({
     type: 'number',
     id: true,

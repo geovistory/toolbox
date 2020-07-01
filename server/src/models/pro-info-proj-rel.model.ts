@@ -1,4 +1,4 @@
-import {model, property} from '@loopback/repository';
+import {model, property, Entity} from '@loopback/repository';
 import {ProEntity} from '.';
 
 @model({
@@ -8,7 +8,16 @@ import {ProEntity} from '.';
     postgresql: {schema: 'projects', table: 'v_info_proj_rel'}
   }
 })
-export class ProInfoProjRel extends ProEntity {
+export class ProInfoProjRel  extends Entity implements ProEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'number',
     required: true,

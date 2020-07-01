@@ -1,8 +1,8 @@
-import {model, property} from '@loopback/repository';
-import {AbstractEntity} from '.';
+import {model, property, Entity} from '@loopback/repository';
+
 
 @model({settings: {strict: false, postgresql: {schema: 'data', table: 'namespace'}}})
-export class DatNamespace extends AbstractEntity {
+export class DatNamespace extends Entity {
   @property({
     type: 'number',
     id: true,

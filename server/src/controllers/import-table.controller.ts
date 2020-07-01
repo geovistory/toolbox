@@ -1,11 +1,10 @@
-import { inject } from '@loopback/context';
-import { post, Request, requestBody, ResponseObject, RestBindings } from '@loopback/rest';
-import { Postgres1DataSource } from '../datasources';
-import { Header } from '../models/import-table-header.model';
-import { ImportTable } from '../models/import-table.model';
-import { SqlBuilderBase } from '../utils/sql-builder-base';
-import { promises } from 'dns';
-import { model, property } from '@loopback/repository';
+import {inject} from '@loopback/context';
+import {model, property} from '@loopback/repository';
+import {post, Request, requestBody, ResponseObject, RestBindings} from '@loopback/rest';
+import {Postgres1DataSource} from '../datasources';
+import {Header} from '../models/import-table-header.model';
+import {ImportTable} from '../models/import-table.model';
+import {SqlBuilderBase} from '../utils/sql-builder-base';
 
 // TODO
 // - securisation of communication with server
@@ -131,7 +130,7 @@ export class ImportTableController {
         return { error: "This table already exists in this namespace." }
       }
 
-      let tableToSend = table.rows.map(r => r.map(c => c + '')); 
+      let tableToSend = table.rows.map(r => r.map(c => c + ''));
       createCells(this.datasource, key_digital, keys_rows, keys_columns, table.headers.map(h => h.type), tableToSend);
       // console.log('INFOS: Cell creation sent');
 

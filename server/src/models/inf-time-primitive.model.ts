@@ -1,10 +1,19 @@
-import {model, property} from '@loopback/repository';
+import {model, property, Entity} from '@loopback/repository';
 import {InfEntity} from '.';
 
 @model({
   settings: {strict: false, postgresql: {schema: 'information', table: 'v_time_primitive'}}
 })
-export class InfTimePrimitive extends InfEntity {
+export class InfTimePrimitive  extends Entity implements InfEntity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity ?: number;
+
   @property({
     type: 'number',
     required: true,

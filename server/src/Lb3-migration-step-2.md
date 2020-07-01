@@ -7,39 +7,39 @@
 
 ## dat-chunk.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dat-column.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dat-digital.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dat-entity.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dat-namespace.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dat-text-property.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dfh-class.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dfh-entity.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dfh-label.js
 
-- [ ] Relations
+- [x] Relations
 
 ## dfh-profile.js
 
@@ -47,75 +47,71 @@
 
 ## dfh-property.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-appellation.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-entity.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-lang-string.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-language.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-persistent-item.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-place.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-statement.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-temporal-entity.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-text-property.js
 
-- [ ] Relations
+- [x] Relations
 
 ## inf-time-primitive.js
 
-- [ ] Relations
-
-## pagination-object.js
-
-- [ ] Relations
+- [x] Relations
 
 ## pro-analysis.js
 
-- [ ] Relations
+- [x] Relations
 
 ## pro-class-field-config.js
 
-- [ ] Relations
+- [x] Relations
 
 ## pro-dfh-class-proj-rel.js
 
-- [ ] Relations
+- [x] Relations
 
 ## pro-dfh-profile-proj-rel.js
 
-- [ ] Relations
+- [x] Relations
 
 ## pro-entity.js
 
-- [ ] Relations
+- [x] Relations
 
 ## pro-info-proj-rel.js
 
-- [ ] Relations
+- [x] Relations
 
 ## pro-project.js
 

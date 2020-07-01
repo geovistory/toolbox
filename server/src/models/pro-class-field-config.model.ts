@@ -1,4 +1,8 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasOne} from '@loopback/repository';
+import {ProEntity} from '.';
+import {DfhProperty} from './dfh-property.model';
+import {SysClassField} from './sys-class-field.model';
+import {ProProject} from './pro-project.model';
 
 @model({
   settings: {
@@ -8,7 +12,8 @@ import {Entity, model, property} from '@loopback/repository';
     idInjection: false
   }
 })
-export class ProClassFieldConfig extends Entity {
+export class ProClassFieldConfig extends Entity implements ProEntity {
+
   @property({
     type: 'number',
     id: true,
@@ -52,6 +57,7 @@ export class ProClassFieldConfig extends Entity {
   })
   fk_class_for_class_field?: number;
 
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
@@ -64,7 +70,9 @@ export class ProClassFieldConfig extends Entity {
 }
 
 export interface ProClassFieldConfigRelations {
-  // describe navigational properties here
+  property?: DfhProperty;
+  class_field?: SysClassField;
+  project?: ProProject;
 }
 
 export type ProClassFieldConfigWithRelations = ProClassFieldConfig & ProClassFieldConfigRelations;

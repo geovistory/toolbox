@@ -76,6 +76,10 @@ export class DfhProperty extends Entity {
   })
   profiles?: object[];
 
+  @property({
+    type: 'number',
+  })
+  fk_property?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data
