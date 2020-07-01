@@ -1,0 +1,57 @@
+import {model, property} from '@loopback/repository';
+import {DatEntity} from '.';
+
+@model({
+  settings: {
+    strict: false,
+    idInjection: false,
+    postgresql: {schema: 'data', table: 'column'}
+  }
+})
+export class DatColumn extends DatEntity {
+  @property({
+    type: 'number',
+  })
+  fk_digital?: number;
+
+  @property({
+    type: 'number',
+  })
+  fk_data_type?: number;
+
+  @property({
+    type: 'number',
+  })
+  fk_column_content_type?: number;
+
+  @property({
+    type: 'number',
+  })
+  fk_column_relationship_type?: number;
+
+  @property({
+    type: 'number',
+  })
+  fk_original_column?: number;
+
+  @property({
+    type: 'number',
+  })
+  is_imported?: number;
+
+  // Define well-known properties here
+
+  // Indexer property to allow additional data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [prop: string]: any;
+
+  constructor(data?: Partial<DatColumn>) {
+    super(data);
+  }
+}
+
+export interface DatColumnRelations {
+  // describe navigational properties here
+}
+
+export type DatColumnWithRelations = DatColumn & DatColumnRelations;
