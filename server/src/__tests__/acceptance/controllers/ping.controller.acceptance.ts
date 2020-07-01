@@ -1,13 +1,14 @@
 import {Client, expect} from '@loopback/testlab';
-import {GeovistoryApplication} from '../../../application';
+import {GeovistoryServer} from '../../../server';
 import {setupApplication} from '../_test-helper';
 
 describe('PingController', () => {
-  let app: GeovistoryApplication;
+  let app: GeovistoryServer;
   let client: Client;
 
   before('setupApplication', async () => {
     ({app, client} = await setupApplication());
+
   });
 
   after(async () => {

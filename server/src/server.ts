@@ -12,6 +12,7 @@
  */
 
 import {ApplicationConfig, Context} from '@loopback/core';
+import {RestBindings} from '@loopback/rest';
 import {once} from 'events';
 import express from 'express';
 import * as http from 'http';
@@ -20,6 +21,7 @@ import {GeovistoryApplication} from './application';
 import {WarEntityPreviewController} from './controllers';
 import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-notifications-manager';
 import {WebSocketServer} from './realtime/websockets/websocket.server';
+import {RestApplicationLike, RestServerLike} from '@loopback/testlab';
 
 
 
@@ -28,15 +30,16 @@ const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
 
-export class GeovistoryServer extends Context {
+export class GeovistoryServer extends Context implements RestApplicationLike {
   private app: express.Application;
   public readonly lbApp: GeovistoryApplication;
   private server?: http.Server;
+  restServer: RestServerLike = {};
 
   readonly wsServer: WebSocketServer;
   readonly pgNotifManager: PostgresNotificationsManager;
 
-  public url: String;
+  public url: string;
 
   constructor(private options: ApplicationConfig = {}) {
     super();
@@ -85,22 +88,28 @@ export class GeovistoryServer extends Context {
   public async start() {
     // Rest server
     await this.lbApp.start();
+
+    //for the importer:
+    this.lbApp.bind(RestBindings.REQUEST_BODY_PARSER_OPTIONS).to({limit: '500mb'})
+
     const port = this.lbApp.restServer.config.port || 3000;
     const host = this.lbApp.restServer.config.host ?? '127.0.0.1';
     this.server = this.app.listen(port, host);
     await once(this.server, 'listening');
     const add = <AddressInfo>this.server.address();
     this.url = `http://${add.address}:${add.port}`;
+    this.restServer.rootUrl = this.url;
+    this.restServer.url = this.url;
+
     // Websocket server
     await this.wsServer.start(this.server);
 
     // Postgres Notification Manager
-    this.pgNotifManager.start()
+    return this.pgNotifManager.start()
 
   }
 
   public async stop() {
-
     // Rest server
     if (this.server) {
 
@@ -114,7 +123,7 @@ export class GeovistoryServer extends Context {
     await this.wsServer.stop();
 
     // Postgres Notification Manager
-    this.pgNotifManager.stop()
+    return this.pgNotifManager.stop()
 
   }
 

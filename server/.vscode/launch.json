@@ -18,6 +18,30 @@
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
+    },
+    {
+      "name": "Launch Mocha Grep",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/node_modules/.bin/lb-mocha",
+      "stopOnEntry": false,
+      "args": [
+        "--no-timeouts",
+        "--colors",
+        "--require",
+        "ts-node/register",
+        "--timeout",
+        "10000",
+        "'src/__tests__/**/*.ts'",
+        "--grep",
+        "/Static.*/"
+      ],
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": null,
+      "env": {
+        "NODE_ENV": "testing",
+        "NO_LOGS":"true"
+      }
     }
   ]
 }

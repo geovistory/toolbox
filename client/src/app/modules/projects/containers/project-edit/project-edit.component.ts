@@ -11,6 +11,8 @@ import { BasicService } from '../../../../core/basic/basic.service';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
+import { MatDialog } from '@angular/material';
+import { ImporterComponent } from 'app/modules/data/components/importer/importer.component';
 
 
 export interface TabLayoutComponentInterface {
@@ -139,6 +141,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     public p: ActiveProjectService,
     private activatedRoute: ActivatedRoute,
     private sdkStorage: SDKStorage,
+    private dialog: MatDialog, //TODO remove!!
     private basic: BasicService // this initiates the question if geolocalization is allowed
   ) {
 

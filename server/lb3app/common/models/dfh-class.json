@@ -86,8 +86,7 @@
       "permission": "ALLOW",
       "property": [
         "find",
-        "findById",
-        "findComplex"
+        "findById"
       ]
     },
     {

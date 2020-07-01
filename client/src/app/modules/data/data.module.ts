@@ -2,19 +2,21 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularSplitModule } from 'angular-split';
+import { MaterialModule } from 'app/core/material/material.module';
 import { AnnotationModule } from 'app/modules/annotation/annotation.module';
+import { DigitalTableModule } from 'app/shared/components/digital-table/digital-table.module';
 import { CoverModule } from 'app/shared/directives/cover/cover.module';
 import { SelectAutocompleteModule } from 'mat-select-autocomplete';
-import { TableModule } from 'primeng/table';
+import { NgxFileDropModule } from 'ngx-file-drop';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { QuillModule } from '../quill';
-import { ColFilterNumericComponent } from './components/col-filter-numeric/col-filter-numeric.component';
-import { ColFilterTextComponent } from './components/col-filter-text/col-filter-text.component';
+import { ImporterComponent } from './components/importer/importer.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
 import { TextDetailComponent } from './components/text-detail/text-detail.component';
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
-import { MaterialModule } from 'app/core/material/material.module';
+import { BaseModule } from '../base/base.module';
+
 
 @NgModule({
   imports: [
@@ -26,13 +28,16 @@ import { MaterialModule } from 'app/core/material/material.module';
     DetailContentModule,
     DetailTopBarModule,
     AnnotationModule,
-    TableModule,
     SelectAutocompleteModule,
     CoverModule,
-    MaterialModule
+    MaterialModule,
+    DigitalTableModule,
+    NgxFileDropModule,
+    BaseModule,
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ColFilterNumericComponent, ColFilterTextComponent],
-  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent]
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent],
+  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent],
+  entryComponents: [ImporterComponent]
 })
 export class DataModule { }

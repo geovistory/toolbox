@@ -3,7 +3,8 @@
   "description": "package.json for DevOps scripts",
   "version": "0.0.0",
   "scripts": {
-    "loopack-build:watch": "cd server &&  npm run build:watch"
+    "loopack-build:watch": "cd server && npm run build:watch",
+    "install": "echo ##### INSTALL db-migrate #####  && cd db-migrate && npm i && echo ##### INSTALL client ##### && npm i && cd ../client && echo ##### INSTALL SERVER  ##### && npm i && cd ../server && npm i && cd .."
   },
-  "private": true  
+  "private": true
 }

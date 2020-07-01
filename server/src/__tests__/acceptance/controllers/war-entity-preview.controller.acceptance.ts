@@ -11,17 +11,17 @@ import {setupApplication} from '../_test-helper';
 const pEvent = require('p-event');
 
 describe('WarEntityPreview', () => {
-  let server: GeovistoryServer;
+  let app: GeovistoryServer;
   before('setupApplication', async () => {
-    ({server} = await setupApplication());
+    ({app} = await setupApplication());
   });
   after(async () => {
-    await server.stop();
+    await app.stop();
   });
   describe('websocket server', () => {
 
     it('addToStream returns EntityPreview with pk_entity', async () => {
-      const url = server.url;
+      const url = app.url;
       const socketClient = io(`${url}/WarEntityPreview`);
       // add to stream
       socketClient.emit('addToStream', {pkProject: 591, pks: [123456]});
@@ -38,7 +38,7 @@ describe('WarEntityPreview', () => {
     });
 
     it('addToStream returns EntityPreview with fk_class', async () => {
-      const url = server.url;
+      const url = app.url;
       const socketClient = io(`${url}/WarEntityPreview`);
       // add to stream
       socketClient.emit('addToStream', {pkProject: 591, pks: [123456]});

@@ -3,15 +3,15 @@ import {GeovistoryServer} from '../../server';
 import {setupApplication} from './_test-helper';
 
 describe('Static Files', () => {
-  let server: GeovistoryServer;
+  let app: GeovistoryServer;
   let client: Client;
 
   before('setupApplication', async () => {
-    ({server, client} = await setupApplication());
+    ({app, client} = await setupApplication());
   });
 
   after(async () => {
-    await server.stop();
+    await app.stop();
   });
 
   it('exposes angular index.html', async () => {
