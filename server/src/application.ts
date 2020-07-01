@@ -1,19 +1,20 @@
-import { BootMixin } from '@loopback/boot';
-import { Lb3AppBooterComponent } from '@loopback/booter-lb3app';
-import { ApplicationConfig } from '@loopback/core';
-import { RepositoryMixin } from '@loopback/repository';
-import { RestApplication } from '@loopback/rest';
-import { RestExplorerBindings, RestExplorerComponent } from '@loopback/rest-explorer';
-import { ServiceMixin } from '@loopback/service-proxy';
+import {AuthenticationComponent} from '@loopback/authentication';
+import {JWTAuthenticationComponent} from '@loopback/authentication-jwt';
+import {BootMixin} from '@loopback/boot';
+import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
+import {ApplicationConfig} from '@loopback/core';
+import {RepositoryMixin} from '@loopback/repository';
+import {RestApplication} from '@loopback/rest';
+import {RestExplorerBindings, RestExplorerComponent} from '@loopback/rest-explorer';
+import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
-import { log } from './middleware/log.middleware';
-import { Streams } from './realtime/streams/streams';
-import { GvSequence } from './sequence';
-import { AuthenticationComponent } from '@loopback/authentication';
-import { JWTAuthenticationComponent, SECURITY_SCHEME_SPEC, UserServiceBindings } from '@loopback/authentication-jwt';
-import { UserService } from './services/user.service';
-import { EmailService } from './services/email.service';
-import { PasswordResetTokenService } from './services/password-reset-token.service';
+import {Postgres1DataSource} from './datasources/postgres1.datasource';
+import {log} from './middleware/log.middleware';
+import {Streams} from './realtime/streams/streams';
+import {GvSequence} from './sequence';
+import {EmailService} from './services/email.service';
+import {PasswordResetTokenService} from './services/password-reset-token.service';
+import {UserService} from './services/user.service';
 
 export class GeovistoryApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -99,12 +100,11 @@ export class GeovistoryApplication extends BootMixin(
     this.component(JWTAuthenticationComponent);
 
     // Bind datasource
-    this.dataSource(DbDataSource, UserServiceBindings.DATASOURCE_NAME);
+    this.dataSource(Postgres1DataSource, 'datasources.postgres1');
     // ------------- END OF SNIPPET -------------
 
   }
 
 }
-
 
 

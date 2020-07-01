@@ -10,7 +10,6 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
     forceId: false,
     postgresql: {schema: 'war', table: 'entity_preview'},
     validateUpsert: true,

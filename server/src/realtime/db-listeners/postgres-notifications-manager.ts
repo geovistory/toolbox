@@ -95,7 +95,7 @@ export class PostgresNotificationsManager {
       this.client2.query(sql, (err, res) => {
         this.classLabelsUpdating = false;
         if (err) console.log(err);
-        else if(process.env.NO_LOGS !== 'true') {
+        else if (process.env.NO_LOGS !== 'true') {
           console.log(
             `\u{1b}[36m war.entity_preview class_labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
           );
@@ -166,8 +166,9 @@ export class PostgresNotificationsManager {
    */
   async stop() {
     // disconnect clients from pg server
-    await this.client.end()
-    await this.client2.end()
+    // await this.client.end()
+    // await this.client2.end()
+
   }
 
 }

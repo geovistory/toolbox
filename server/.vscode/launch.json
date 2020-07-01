@@ -7,7 +7,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Launch App",
       "skipFiles": [
         "<node_internals>/**"
       ],
@@ -20,28 +20,55 @@
       ]
     },
     {
-      "name": "Launch Mocha Grep",
+      "name": "Launch Tests",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/node_modules/.bin/lb-mocha",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "program": "${workspaceRoot}/node_modules/.bin/_mocha",
       "stopOnEntry": false,
       "args": [
-        "--no-timeouts",
-        "--colors",
-        "--require",
-        "ts-node/register",
         "--timeout",
-        "10000",
-        "'src/__tests__/**/*.ts'",
+        "4000",
+        "--colors",
+        "'dist/__tests__/**/*.js'",
         "--grep",
-        "/Static.*/"
+        "/PingController.*/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
       "env": {
         "NODE_ENV": "testing",
-        "NO_LOGS":"true"
-      }
+        "NO_LOGS": "true"
+      },
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "name": "Launch Tests:watch",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "program": "${workspaceRoot}/node_modules/.bin/_mocha",
+      "stopOnEntry": false,
+      "args": [
+        "--timeout",
+        "4000",
+        "--colors",
+        "'dist/__tests__/**/*.js'",
+        // "--grep",
+        // "/WarEntityPreviewController.*/"
+      ],
+      "cwd": "${workspaceRoot}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
+      "restart": true,
+      "env": {
+        "NODE_ENV": "testing",
+        "NO_LOGS": "true"
+      },
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
     }
   ]
 }

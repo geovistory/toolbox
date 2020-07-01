@@ -10,7 +10,7 @@ import {setupApplication} from '../_test-helper';
 
 const pEvent = require('p-event');
 
-describe('WarEntityPreview', () => {
+describe('WarEntityPreviewController', () => {
   let app: GeovistoryServer;
   before('setupApplication', async () => {
     ({app} = await setupApplication());
@@ -20,11 +20,11 @@ describe('WarEntityPreview', () => {
   });
   describe('websocket server', () => {
 
-    it('addToStream returns EntityPreview with pk_entity', async () => {
+    it('addToStream returns EntityPreview from database with pk_entity', async () => {
       const url = app.url;
       const socketClient = io(`${url}/WarEntityPreview`);
       // add to stream
-      socketClient.emit('addToStream', {pkProject: 591, pks: [123456]});
+      socketClient.emit('addToStream', {pkProject: 591, pks: [25774]});
 
       // wait for response of server being received by client
       const reply = await pEvent(socketClient, 'entityPreview');
@@ -34,14 +34,13 @@ describe('WarEntityPreview', () => {
       // check if the entity preview has pk_entity
       expect(reply).to.have.key('pk_entity');
 
-
     });
 
-    it('addToStream returns EntityPreview with fk_class', async () => {
+    it('addToStream returns EntityPreview from database with fk_class', async () => {
       const url = app.url;
       const socketClient = io(`${url}/WarEntityPreview`);
       // add to stream
-      socketClient.emit('addToStream', {pkProject: 591, pks: [123456]});
+      socketClient.emit('addToStream', {pkProject: 591, pks: [25774]});
 
       // wait for response of server being received by client
       const reply = await pEvent(socketClient, 'entityPreview');

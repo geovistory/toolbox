@@ -49,11 +49,11 @@ describe('ImportTableController', () => {
         expect(res.body).to.containEql({ statusCode: 422 });
     })
 
-    it('Send a column with no name'), async () => {
+    it('Send a column with no name', async () => {
         table.headers[0].colLabel = '';
         const res = await client.post('/import-table').send(table);
         expect(res.body).to.containEql({ error: "Inconsistency in column name <0>." });
-    }
+    })
 
     it('Number of column is not matching in the header and in the table', async () => {
         table.headers[2] = { colLabel: 'col 2', comment: 'string', type: 'string' }
