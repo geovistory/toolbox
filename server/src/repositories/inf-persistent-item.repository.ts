@@ -1,16 +1,17 @@
-import {DefaultCrudRepository, HasManyRepositoryFactory, repository, BelongsToAccessor} from '@loopback/repository';
-import {InfPersistentItem, InfPersistentItemRelations, ProInfoProjRel, InfStatement, InfTextProperty, DfhClass} from '../models';
+import {Getter, inject} from '@loopback/core';
+import {BelongsToAccessor, DefaultCrudRepository, HasManyRepositoryFactory, repository} from '@loopback/repository';
 import {Postgres1DataSource} from '../datasources';
-import {inject, Getter} from '@loopback/core';
+import {DfhClass, InfPersistentItem, InfPersistentItemRelations, InfStatement, InfTextProperty, ProInfoProjRel} from '../models';
+import {DfhClassRepository} from './dfh-class.repository';
 import {InfStatementRepository} from './inf-statement.repository';
 import {InfTextPropertyRepository} from './inf-text-property.repository';
-import {DfhClassRepository} from './dfh-class.repository';
+import {ProInfoProjRelRepository} from './pro-info-proj-rel.repository';
 
 export class InfPersistentItemRepository extends DefaultCrudRepository<
   InfPersistentItem,
   typeof InfPersistentItem.prototype.pk_entity,
   InfPersistentItemRelations
-> {
+  > {
 
   public readonly entity_version_project_rels: HasManyRepositoryFactory<ProInfoProjRel, typeof InfPersistentItem.prototype.pk_entity>;
 
@@ -23,7 +24,11 @@ export class InfPersistentItemRepository extends DefaultCrudRepository<
   public readonly dfh_class: BelongsToAccessor<DfhClass, typeof InfPersistentItem.prototype.pk_entity>;
 
   constructor(
-    @inject('datasources.postgres1') dataSource: Postgres1DataSource, @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>, @repository.getter('InfTextPropertyRepository') protected infTextPropertyRepositoryGetter: Getter<InfTextPropertyRepository>, @repository.getter('DfhClassRepository') protected dfhClassRepositoryGetter: Getter<DfhClassRepository>,
+    @inject('datasources.postgres1') dataSource: Postgres1DataSource,
+    @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>,
+    @repository.getter('InfTextPropertyRepository') protected infTextPropertyRepositoryGetter: Getter<InfTextPropertyRepository>,
+    @repository.getter('DfhClassRepository') protected dfhClassRepositoryGetter: Getter<DfhClassRepository>,
+    @repository.getter('ProInfoProjRelRepository') protected proInfoProjRelRepositoryGetter: Getter<ProInfoProjRelRepository>,
   ) {
     super(InfPersistentItem, dataSource);
     this.dfh_class = this.createBelongsToAccessorFor('dfh_class', dfhClassRepositoryGetter,);

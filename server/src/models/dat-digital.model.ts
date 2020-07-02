@@ -49,10 +49,6 @@ export class DatDigital extends Entity implements DatEntity {
   @belongsTo(() => DatNamespace, {name: 'namespace'})
   fk_namespace?: number;
 
-  @property({
-    type: 'number',
-  })
-  fk_subject_data?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

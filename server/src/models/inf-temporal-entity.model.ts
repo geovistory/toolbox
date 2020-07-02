@@ -48,10 +48,7 @@ export class InfTemporalEntity extends Entity implements InfEntity {
   @hasMany(() => InfTextProperty, {keyTo: 'fk_concerned_entity'})
   text_properties: InfTextProperty[];
 
-  @property({
-    type: 'number',
-  })
-  fk_concerned_entity?: number;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -1,10 +1,17 @@
-import {model, property} from '@loopback/repository';
-import {SysEntity} from '.';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {strict: false, postgresql: {schema: 'system', table: 'system_type'}}
 })
-export class SysSystemType extends SysEntity {
+export class SysSystemType extends Entity {
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'string',
   })

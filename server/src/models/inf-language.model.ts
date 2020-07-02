@@ -59,15 +59,6 @@ export class InfLanguage extends Entity implements InfEntity {
   })
   notes?: string;
 
-  @property({
-    type: 'number',
-  })
-  fk_object_info?: number;
-
-  @property({
-    type: 'number',
-  })
-  fk_language?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

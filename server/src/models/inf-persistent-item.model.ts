@@ -35,20 +35,6 @@ export class InfPersistentItem extends Entity implements InfEntity {
   @belongsTo(() => DfhClass, {name: 'dfh_class'})
   fk_class: number;
 
-  @property({
-    type: 'number',
-  })
-  fk_subject_info?: number;
-
-  @property({
-    type: 'number',
-  })
-  fk_object_info?: number;
-
-  @property({
-    type: 'number',
-  })
-  fk_concerned_entity?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

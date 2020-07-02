@@ -4,12 +4,13 @@ import {Postgres1DataSource} from '../datasources';
 import {inject, Getter} from '@loopback/core';
 import {InfStatementRepository} from './inf-statement.repository';
 import {InfTextPropertyRepository} from './inf-text-property.repository';
+import {ProInfoProjRelRepository} from './pro-info-proj-rel.repository';
 
 export class InfTemporalEntityRepository extends DefaultCrudRepository<
   InfTemporalEntity,
   typeof InfTemporalEntity.prototype.pk_entity,
   InfTemporalEntityRelations
-> {
+  > {
   public readonly entity_version_project_rels: HasManyRepositoryFactory<ProInfoProjRel, typeof InfTemporalEntity.prototype.pk_entity>;
 
   public readonly outgoing_statements: HasManyRepositoryFactory<InfStatement, typeof InfTemporalEntity.prototype.pk_entity>;
@@ -19,7 +20,10 @@ export class InfTemporalEntityRepository extends DefaultCrudRepository<
   public readonly text_properties: HasManyRepositoryFactory<InfTextProperty, typeof InfTemporalEntity.prototype.pk_entity>;
 
   constructor(
-    @inject('datasources.postgres1') dataSource: Postgres1DataSource, @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>, @repository.getter('InfTextPropertyRepository') protected infTextPropertyRepositoryGetter: Getter<InfTextPropertyRepository>,
+    @inject('datasources.postgres1') dataSource: Postgres1DataSource,
+    @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>,
+    @repository.getter('InfTextPropertyRepository') protected infTextPropertyRepositoryGetter: Getter<InfTextPropertyRepository>,
+    @repository.getter('ProInfoProjRelRepository') protected proInfoProjRelRepositoryGetter: Getter<ProInfoProjRelRepository>,
   ) {
     super(InfTemporalEntity, dataSource);
     this.text_properties = this.createHasManyRepositoryFactoryFor('text_properties', infTextPropertyRepositoryGetter,);

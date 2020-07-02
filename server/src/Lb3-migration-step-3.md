@@ -8,7 +8,9 @@
 ## dat-chunk.js
 
 - [x] Controller
-- [ ] Methods
+- [-] Methods
+    - [x] findById
+    - [ ] ofDigital
 
 ## dat-column.js
 

@@ -8,11 +8,15 @@ import {
 } from '@loopback/rest';
 import {DatChunk} from '../models';
 import {DatChunkRepository} from '../repositories';
+import {Postgres1DataSource} from '../datasources/postgres1.datasource';
+import {inject} from '@loopback/core';
 
 export class DatChunkController {
   constructor(
     @repository(DatChunkRepository)
-    public datChunkRepository : DatChunkRepository,
+    public datChunkRepository: DatChunkRepository,
+    @inject('datasources.postgres1')
+    public datasource: Postgres1DataSource,
   ) {}
   @get('/dat-chunks/{id}', {
     responses: {
@@ -32,5 +36,7 @@ export class DatChunkController {
   ): Promise<DatChunk> {
     return this.datChunkRepository.findById(id, filter);
   }
+
+
 
 }

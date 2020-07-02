@@ -1,5 +1,4 @@
-import {model, property} from '@loopback/repository';
-import {ProEntity} from '.';
+import {model, property, Entity} from '@loopback/repository';
 
 @model({
   settings: {
@@ -8,7 +7,15 @@ import {ProEntity} from '.';
     postgresql: {schema: 'system', table: 'analysis_type'}
   }
 })
-export class SysAnalysisType extends ProEntity {
+export class SysAnalysisType extends Entity {
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'string',
   })

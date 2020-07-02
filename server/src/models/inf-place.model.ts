@@ -36,10 +36,7 @@ export class InfPlace extends Entity implements InfEntity {
   })
   fk_class: number;
 
-  @property({
-    type: 'number',
-  })
-  fk_object_info?: number;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -19,7 +19,9 @@ export class DatChunkRepository extends DefaultCrudRepository<
   public readonly namespace: BelongsToAccessor<DatNamespace, typeof DatChunk.prototype.pk_entity>;
 
   constructor(
-    @inject('datasources.postgres1') dataSource: Postgres1DataSource, @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>, @repository.getter('DatDigitalRepository') protected datDigitalRepositoryGetter: Getter<DatDigitalRepository>, @repository.getter('DatNamespaceRepository') protected datNamespaceRepositoryGetter: Getter<DatNamespaceRepository>,
+    @inject('datasources.postgres1') dataSource: Postgres1DataSource,
+     @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>,
+     @repository.getter('DatDigitalRepository') protected datDigitalRepositoryGetter: Getter<DatDigitalRepository>, @repository.getter('DatNamespaceRepository') protected datNamespaceRepositoryGetter: Getter<DatNamespaceRepository>,
   ) {
     super(DatChunk, dataSource);
     this.namespace = this.createBelongsToAccessorFor('namespace', datNamespaceRepositoryGetter,);

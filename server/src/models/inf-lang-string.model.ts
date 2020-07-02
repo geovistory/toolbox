@@ -41,10 +41,7 @@ export class InfLangString extends Entity implements InfEntity {
   @belongsTo(() => InfLanguage, {name: 'language'})
   fk_language: number;
 
-  @property({
-    type: 'number',
-  })
-  fk_object_info?: number;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data

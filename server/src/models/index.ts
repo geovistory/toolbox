@@ -11,7 +11,6 @@ export * from './dat-digital.model';
 export * from './dat-namespace.model';
 export * from './sys-class-field-property-rel.model';
 export * from './sys-class-field.model';
-export * from './sys-entity.model';
 export * from './sys-class-has-type-property.model';
 export * from './sys-system-relevant-class.model';
 export * from './pro-entity.model';

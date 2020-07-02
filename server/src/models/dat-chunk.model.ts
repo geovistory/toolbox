@@ -1,8 +1,7 @@
-import {model, property, Entity, hasMany, belongsTo} from '@loopback/repository';
-import {DatEntity} from '.';
+import {Entity, hasMany, model, property, belongsTo} from '@loopback/repository';
+import {DatEntity, DatNamespace} from '.';
 import {InfStatement} from './inf-statement.model';
 import {DatDigital} from './dat-digital.model';
-import {DatNamespace} from './dat-namespace.model';
 
 @model({
   settings: {
@@ -40,27 +39,30 @@ export class DatChunk extends Entity implements DatEntity {
   @hasMany(() => InfStatement, {keyTo: 'fk_subject_data'})
   outgoing_statements: InfStatement[];
 
-  @property({
-    type: 'number',
-    required: true,
-  })
+
+  @belongsTo(() => DatDigital,
+    {
+      name: 'digital',
+      keyTo: 'pk_text'
+    },
+    {
+      type: 'number',
+      required: true,
+    }
+  )
   fk_text: number;
 
-  @property({
-    type: 'number',
-    required: true,
-  })
+  @belongsTo(() => DatNamespace,
+    {
+      name: 'namespace'
+    },
+    {
+      type: 'number',
+      required: true,
+    }
+  )
   fk_namespace: number;
 
-  @property({
-    type: 'number',
-  })
-  fk_subject_data?: number;
-
-  @property({
-    type: 'number',
-  })
-  fk_object_data?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

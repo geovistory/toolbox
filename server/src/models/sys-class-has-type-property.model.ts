@@ -1,5 +1,4 @@
-import {model, property} from '@loopback/repository';
-import {SysEntity} from '.';
+import {model, property, Entity} from '@loopback/repository';
 
 @model({
   settings: {
@@ -8,7 +7,16 @@ import {SysEntity} from '.';
     postgresql: {schema: 'system', table: 'v_has_type_preview'}
   }
 })
-export class SysClassHasTypeProperty extends SysEntity {
+export class SysClassHasTypeProperty extends Entity {
+
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+    updateOnly: true,
+  })
+  pk_entity?: number;
+
   @property({
     type: 'number',
   })

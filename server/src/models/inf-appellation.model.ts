@@ -39,10 +39,6 @@ export class InfAppellation extends Entity implements InfEntity {
   @hasMany(() => InfStatement, {keyTo: 'fk_object_info'})
   incoming_statements: InfStatement[];
 
-  @property({
-    type: 'number',
-  })
-  fk_object_info?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

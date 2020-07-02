@@ -1,4 +1,4 @@
-import {Entity, hasMany, hasOne, model, property} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
 import {InfEntity, ProInfoProjRel} from '.';
 import {DatChunk} from './dat-chunk.model';
 import {DatDigital} from './dat-digital.model';
@@ -8,6 +8,7 @@ import {InfLanguage} from './inf-language.model';
 import {InfPersistentItem} from './inf-persistent-item.model';
 import {InfPlace} from './inf-place.model';
 import {InfTemporalEntity} from './inf-temporal-entity.model';
+import {InfTimePrimitive} from './inf-time-primitive.model';
 
 @model({
   settings: {
@@ -126,6 +127,7 @@ export interface InfStatementRelations {
   object_appellation?: InfAppellation;
   object_language?: InfLanguage;
   object_lang_string?: InfLangString;
+  object_time_primitive?: InfTimePrimitive;
   object_place?: InfPlace;
   object_chunk?: DatChunk;
 }
