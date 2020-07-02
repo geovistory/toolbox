@@ -17,7 +17,12 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { DatDigital } from '../model/models';
+import { HttpErrorModel } from '../model/models';
+import { InlineObject } from '../model/models';
+import { InlineObject1 } from '../model/models';
+import { InlineObject2 } from '../model/models';
+import { InlineResponse200 } from '../model/models';
+import { User } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -27,7 +32,7 @@ import { Configuration }                                     from '../configurat
 @Injectable({
   providedIn: 'root'
 })
-export class DatDigitalService {
+export class UserControllerService {
 
     protected basePath = 'http://127.0.0.1:3000';
     public defaultHeaders = new HttpHeaders();
@@ -86,17 +91,16 @@ export class DatDigitalService {
     }
 
     /**
-     * Deletes instances of DatDigital.
-     * @param requestBody Array of Primary Key of DatDigitals
+     * @param inlineObject2 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public datDigitalBulkDelete(requestBody: Array<number>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<boolean>;
-    public datDigitalBulkDelete(requestBody: Array<number>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<boolean>>;
-    public datDigitalBulkDelete(requestBody: Array<number>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<boolean>>;
-    public datDigitalBulkDelete(requestBody: Array<number>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-        if (requestBody === null || requestBody === undefined) {
-            throw new Error('Required parameter requestBody was null or undefined when calling datDigitalBulkDelete.');
+    public userControllerLogin(inlineObject2: InlineObject2, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse200>;
+    public userControllerLogin(inlineObject2: InlineObject2, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse200>>;
+    public userControllerLogin(inlineObject2: InlineObject2, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse200>>;
+    public userControllerLogin(inlineObject2: InlineObject2, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (inlineObject2 === null || inlineObject2 === undefined) {
+            throw new Error('Required parameter inlineObject2 was null or undefined when calling userControllerLogin.');
         }
 
         let headers = this.defaultHeaders;
@@ -112,11 +116,7 @@ export class DatDigitalService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -127,10 +127,7 @@ export class DatDigitalService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'application/x-www-form-urlencoded',
-            'application/xml',
-            'text/xml'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -142,8 +139,8 @@ export class DatDigitalService {
             responseType = 'text';
         }
 
-        return this.httpClient.put<boolean>(`${this.configuration.basePath}/lb3-api/DatDigitals/delete-delete`,
-            requestBody,
+        return this.httpClient.post<InlineResponse200>(`${this.configuration.basePath}/users/login`,
+            inlineObject2,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -155,27 +152,16 @@ export class DatDigitalService {
     }
 
     /**
-     * Creates or updates instances of DatDigital.
-     * @param pkNamespace Namespace
-     * @param datDigital Array DatDigital
+     * @param inlineObject 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public datDigitalBulkUpsert(pkNamespace: number, datDigital: Array<DatDigital>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<DatDigital>;
-    public datDigitalBulkUpsert(pkNamespace: number, datDigital: Array<DatDigital>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<DatDigital>>;
-    public datDigitalBulkUpsert(pkNamespace: number, datDigital: Array<DatDigital>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<DatDigital>>;
-    public datDigitalBulkUpsert(pkNamespace: number, datDigital: Array<DatDigital>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-        if (pkNamespace === null || pkNamespace === undefined) {
-            throw new Error('Required parameter pkNamespace was null or undefined when calling datDigitalBulkUpsert.');
-        }
-        if (datDigital === null || datDigital === undefined) {
-            throw new Error('Required parameter datDigital was null or undefined when calling datDigitalBulkUpsert.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pkNamespace !== undefined && pkNamespace !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkNamespace, 'pkNamespace');
+    public userControllerResetPassword(inlineObject: InlineObject, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
+    public userControllerResetPassword(inlineObject: InlineObject, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
+    public userControllerResetPassword(inlineObject: InlineObject, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
+    public userControllerResetPassword(inlineObject: InlineObject, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (inlineObject === null || inlineObject === undefined) {
+            throw new Error('Required parameter inlineObject was null or undefined when calling userControllerResetPassword.');
         }
 
         let headers = this.defaultHeaders;
@@ -191,11 +177,7 @@ export class DatDigitalService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -206,10 +188,7 @@ export class DatDigitalService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'application/x-www-form-urlencoded',
-            'application/xml',
-            'text/xml'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -221,10 +200,9 @@ export class DatDigitalService {
             responseType = 'text';
         }
 
-        return this.httpClient.put<DatDigital>(`${this.configuration.basePath}/lb3-api/DatDigitals/bulk-upsert`,
-            datDigital,
+        return this.httpClient.post<any>(`${this.configuration.basePath}/reset-password`,
+            inlineObject,
             {
-                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -235,24 +213,22 @@ export class DatDigitalService {
     }
 
     /**
-     * Find a model instance by {{id}} from the data source.
-     * @param id Model id
-     * @param filter Filter defining fields and include - must be a JSON-encoded string ({\&quot;something\&quot;:\&quot;value\&quot;})
+     * @param email 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public datDigitalFindById(id: string, filter?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<DatDigital>;
-    public datDigitalFindById(id: string, filter?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<DatDigital>>;
-    public datDigitalFindById(id: string, filter?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<DatDigital>>;
-    public datDigitalFindById(id: string, filter?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling datDigitalFindById.');
+    public userControllerResetPasswordReset(email: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
+    public userControllerResetPasswordReset(email: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
+    public userControllerResetPasswordReset(email: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
+    public userControllerResetPasswordReset(email: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (email === null || email === undefined) {
+            throw new Error('Required parameter email was null or undefined when calling userControllerResetPasswordReset.');
         }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
-        if (filter !== undefined && filter !== null) {
+        if (email !== undefined && email !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>filter, 'filter');
+            <any>email, 'email');
         }
 
         let headers = this.defaultHeaders;
@@ -268,11 +244,7 @@ export class DatDigitalService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -286,7 +258,7 @@ export class DatDigitalService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<DatDigital>(`${this.configuration.basePath}/lb3-api/DatDigitals/${encodeURIComponent(String(id))}`,
+        return this.httpClient.get<any>(`${this.configuration.basePath}/reset-password-request`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
@@ -299,32 +271,16 @@ export class DatDigitalService {
     }
 
     /**
-     * Get page of table
-     * @param pkProject Pk of the project.
-     * @param pkEntity Pk of the table digital.
-     * @param body options
+     * @param inlineObject1 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public datDigitalGetTablePage(pkProject: number, pkEntity: number, body?: object, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<object>>;
-    public datDigitalGetTablePage(pkProject: number, pkEntity: number, body?: object, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<object>>>;
-    public datDigitalGetTablePage(pkProject: number, pkEntity: number, body?: object, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<object>>>;
-    public datDigitalGetTablePage(pkProject: number, pkEntity: number, body?: object, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-        if (pkProject === null || pkProject === undefined) {
-            throw new Error('Required parameter pkProject was null or undefined when calling datDigitalGetTablePage.');
-        }
-        if (pkEntity === null || pkEntity === undefined) {
-            throw new Error('Required parameter pkEntity was null or undefined when calling datDigitalGetTablePage.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pkProject !== undefined && pkProject !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkProject, 'pkProject');
-        }
-        if (pkEntity !== undefined && pkEntity !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkEntity, 'pkEntity');
+    public userControllerSignUp(inlineObject1: InlineObject1, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<User>;
+    public userControllerSignUp(inlineObject1: InlineObject1, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<User>>;
+    public userControllerSignUp(inlineObject1: InlineObject1, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<User>>;
+    public userControllerSignUp(inlineObject1: InlineObject1, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (inlineObject1 === null || inlineObject1 === undefined) {
+            throw new Error('Required parameter inlineObject1 was null or undefined when calling userControllerSignUp.');
         }
 
         let headers = this.defaultHeaders;
@@ -340,11 +296,7 @@ export class DatDigitalService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -355,10 +307,7 @@ export class DatDigitalService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'application/x-www-form-urlencoded',
-            'application/xml',
-            'text/xml'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -370,10 +319,9 @@ export class DatDigitalService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<Array<object>>(`${this.configuration.basePath}/lb3-api/DatDigitals/getTablePage`,
-            body,
+        return this.httpClient.post<User>(`${this.configuration.basePath}/signup`,
+            inlineObject1,
             {
-                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -384,28 +332,29 @@ export class DatDigitalService {
     }
 
     /**
-     * Finds the version of given digital. If no version specified, latest is returned.
-     * @param pkEntity Primary Key of the digital object (pk_entity)
-     * @param entityVersion Primary Key of the digital object (entity_version)
+     * @param userId 
+     * @param verificationToken 
+     * @param redirectOnSuccess 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public datDigitalGetVersion(pkEntity: number, entityVersion?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<DatDigital>>;
-    public datDigitalGetVersion(pkEntity: number, entityVersion?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<DatDigital>>>;
-    public datDigitalGetVersion(pkEntity: number, entityVersion?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<DatDigital>>>;
-    public datDigitalGetVersion(pkEntity: number, entityVersion?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-        if (pkEntity === null || pkEntity === undefined) {
-            throw new Error('Required parameter pkEntity was null or undefined when calling datDigitalGetVersion.');
-        }
+    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pkEntity !== undefined && pkEntity !== null) {
+        if (userId !== undefined && userId !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkEntity, 'pkEntity');
+            <any>userId, 'userId');
         }
-        if (entityVersion !== undefined && entityVersion !== null) {
+        if (verificationToken !== undefined && verificationToken !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>entityVersion, 'entityVersion');
+            <any>verificationToken, 'verificationToken');
+        }
+        if (redirectOnSuccess !== undefined && redirectOnSuccess !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>redirectOnSuccess, 'redirectOnSuccess');
         }
 
         let headers = this.defaultHeaders;
@@ -421,11 +370,6 @@ export class DatDigitalService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -439,9 +383,56 @@ export class DatDigitalService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<DatDigital>>(`${this.configuration.basePath}/lb3-api/DatDigitals/get-version`,
+        return this.httpClient.get<any>(`${this.configuration.basePath}/verify-email`,
             {
                 params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public userControllerWhoAmI(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<string>;
+    public userControllerWhoAmI(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<string>>;
+    public userControllerWhoAmI(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<string>>;
+    public userControllerWhoAmI(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        // authentication (jwt) required
+        if (this.configuration.accessToken) {
+            const accessToken = typeof this.configuration.accessToken === 'function'
+                ? this.configuration.accessToken()
+                : this.configuration.accessToken;
+            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        }
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<string>(`${this.configuration.basePath}/whoAmI`,
+            {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

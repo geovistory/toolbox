@@ -9,10 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { HttpErrorObjectModel } from './httpErrorObjectModel';
 
 
-export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+export interface HttpErrorModel { 
+    error?: HttpErrorObjectModel;
 }
 

@@ -17,7 +17,8 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { DfhClass } from '../model/models';
+import { DatChunkFilter } from '../model/models';
+import { DatChunkWithRelations } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -27,7 +28,7 @@ import { Configuration }                                     from '../configurat
 @Injectable({
   providedIn: 'root'
 })
-export class DfhPropertyService {
+export class DatChunkControllerService {
 
     protected basePath = 'http://127.0.0.1:3000';
     public defaultHeaders = new HttpHeaders();
@@ -86,20 +87,23 @@ export class DfhPropertyService {
     }
 
     /**
-     * Get all properties that are selected by at least one of the profiles used by the given project.
-     * @param pkProject Project pk
+     * @param id 
+     * @param filter 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public dfhPropertyOfProject(pkProject?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<DfhClass>>;
-    public dfhPropertyOfProject(pkProject?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<DfhClass>>>;
-    public dfhPropertyOfProject(pkProject?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<DfhClass>>>;
-    public dfhPropertyOfProject(pkProject?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
+    public datChunkControllerFindById(id: number, filter?: DatChunkFilter, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<DatChunkWithRelations>;
+    public datChunkControllerFindById(id: number, filter?: DatChunkFilter, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<DatChunkWithRelations>>;
+    public datChunkControllerFindById(id: number, filter?: DatChunkFilter, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<DatChunkWithRelations>>;
+    public datChunkControllerFindById(id: number, filter?: DatChunkFilter, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling datChunkControllerFindById.');
+        }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pkProject !== undefined && pkProject !== null) {
+        if (filter !== undefined && filter !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkProject, 'pkProject');
+            <any>filter, 'filter');
         }
 
         let headers = this.defaultHeaders;
@@ -115,11 +119,7 @@ export class DfhPropertyService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -133,7 +133,7 @@ export class DfhPropertyService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<DfhClass>>(`${this.configuration.basePath}/lb3-api/DfhProperties/of-project`,
+        return this.httpClient.get<DatChunkWithRelations>(`${this.configuration.basePath}/dat-chunks/${encodeURIComponent(String(id))}`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

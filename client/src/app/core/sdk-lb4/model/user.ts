@@ -11,8 +11,15 @@
  */
 
 
-export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+export interface User { 
+  [key: string]: object | any;
+
+
+    id?: string;
+    realm?: string;
+    username?: string;
+    email: string;
+    emailVerified?: boolean;
+    verificationToken?: string;
 }
 

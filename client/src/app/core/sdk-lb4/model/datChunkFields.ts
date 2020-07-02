@@ -11,8 +11,15 @@
  */
 
 
-export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+export interface DatChunkFields { 
+  [key: string]: object | any;
+
+
+    pk_entity?: boolean;
+    quill_doc?: boolean;
+    string?: boolean;
+    fk_entity_version?: boolean;
+    fk_text?: boolean;
+    fk_namespace?: boolean;
 }
 

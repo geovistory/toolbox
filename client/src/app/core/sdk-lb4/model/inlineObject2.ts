@@ -11,8 +11,8 @@
  */
 
 
-export interface InlineObject { 
+export interface InlineObject2 { 
+    email: string;
     password: string;
-    resetPasswordToken: string;
 }
 

@@ -11,8 +11,8 @@
  */
 
 
-export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+export interface InlineObject3 { 
+    oldPassword: string;
+    newPassword: string;
 }
 

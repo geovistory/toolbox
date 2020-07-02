@@ -11,8 +11,12 @@
  */
 
 
-export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+export interface DatChunkScopeFilter { 
+    offset?: number;
+    limit?: number;
+    skip?: number;
+    order?: Array<string>;
+    where?: { [key: string]: object; };
+    fields?: { [key: string]: object; };
 }
 

@@ -11,8 +11,16 @@
  */
 
 
-export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+/**
+ * (tsType: DatNamespaceWithRelations, schemaOptions: { includeRelations: true })
+ */
+export interface DatNamespaceWithRelations { 
+  [key: string]: object | any;
+
+
+    pk_entity?: number;
+    fk_root_namespace?: number;
+    fk_project: number;
+    standard_label: string;
 }
 

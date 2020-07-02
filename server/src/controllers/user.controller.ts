@@ -1,14 +1,14 @@
-import { authenticate, TokenService } from '@loopback/authentication';
-import { Credentials, TokenServiceBindings, User, UserRepository } from '@loopback/authentication-jwt';
-import { inject } from '@loopback/core';
-import { Model, model, property, repository } from '@loopback/repository';
-import { get, HttpErrors, oas, param, post, Request, requestBody, Response, RestBindings } from '@loopback/rest';
-import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
-import { genSalt, hash } from 'bcryptjs';
+import {authenticate, TokenService} from '@loopback/authentication';
+import {Credentials, TokenServiceBindings, User, UserRepository} from '@loopback/authentication-jwt';
+import {inject} from '@loopback/core';
+import {Model, model, property, repository} from '@loopback/repository';
+import {get, HttpErrors, oas, param, post, Request, requestBody, Response, RestBindings} from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {genSalt, hash} from 'bcryptjs';
 import _ from 'lodash';
-import { EmailService } from '../services/email.service';
-import { PasswordResetTokenService } from '../services/password-reset-token.service';
-import { UserService } from '../services/user.service';
+import {EmailService} from '../services/email.service';
+import {PasswordResetTokenService} from '../services/password-reset-token.service';
+import {UserService} from '../services/user.service';
 
 
 export interface NewUserRequest extends Credentials {
@@ -36,7 +36,7 @@ export const CredentialsRequestBody = {
   description: 'The input of login function',
   required: true,
   content: {
-    'application/json': { schema: CredentialsSchema },
+    'application/json': {schema: CredentialsSchema},
   },
 };
 
@@ -56,7 +56,7 @@ export const SignupRequestBody = {
   description: 'The input of signup function',
   required: true,
   content: {
-    'application/json': { schema: NewUserSchema },
+    'application/json': {schema: NewUserSchema},
   },
 }
 
@@ -80,7 +80,7 @@ export const ResetPasswordRequestBody = {
   description: 'The input of resetPassword function',
   required: true,
   content: {
-    'application/json': { schema: ResetPasswordRequestSchema },
+    'application/json': {schema: ResetPasswordRequestSchema},
   },
 }
 
@@ -110,7 +110,7 @@ export const VerifyEmailRequestBody = {
   description: 'The input of verify email function',
   required: true,
   content: {
-    'application/json': { schema: VerifyEmailSchema },
+    'application/json': {schema: VerifyEmailSchema},
   },
 }
 
@@ -144,10 +144,10 @@ export class UserController {
     @inject('APP_USER_SERVICE') public userService: UserService,
     @inject('APP_EMAIL_SERVICE') protected emailService: EmailService,
     @inject('APP_PASSWORD_RESET_TOKEN_SERVICE') protected passwordResetTokenService: PasswordResetTokenService,
-    @inject(SecurityBindings.USER, { optional: true })
+    @inject(SecurityBindings.USER, {optional: true})
     public user: UserProfile,
     @repository(UserRepository) protected userRepository: UserRepository,
-  ) { }
+  ) {}
 
 
   @post('/users/login', {
@@ -171,7 +171,7 @@ export class UserController {
   })
   async login(
     @requestBody(CredentialsRequestBody) credentials: Credentials,
-  ): Promise<{ token: string }> {
+  ): Promise<{token: string}> {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
 
@@ -183,7 +183,7 @@ export class UserController {
 
     // create a JSON Web Token based on the user profile
     const token = await this.jwtService.generateToken(userProfile);
-    return { token };
+    return {token};
   }
 
   @authenticate('jwt')
@@ -191,8 +191,10 @@ export class UserController {
     responses: {
       '200': {
         description: '',
-        schema: {
-          type: 'string',
+        content: {
+          'application/json': {
+            schema: {type: 'string'},
+          },
         },
       },
     },
@@ -234,7 +236,7 @@ export class UserController {
       },
     );
 
-    await this.userRepository.userCredentials(savedUser.id).create({ password });
+    await this.userRepository.userCredentials(savedUser.id).create({password});
 
     // send email verification email with email verification token
     if (!savedUser.verificationToken) {
@@ -262,7 +264,9 @@ export class UserController {
         description: 'Validation Succeeded',
         headers: {
           redirect: {
-            type: 'string'
+            schema:{
+              type: 'string'
+            }
           }
         }
       },
@@ -302,12 +306,12 @@ export class UserController {
   @oas.response(200, ResponseWithMsg)
   @oas.response(404, HttpErrorModel)
   async resetPasswordReset(
-    @param.query.string('email', { required: true }) email: string
+    @param.query.string('email', {required: true}) email: string
   ): Promise<ResponseWithMsg> {
 
     const user = await this.userRepository.findOne({
       where: {
-        email: { eq: email }
+        email: {eq: email}
       }
     })
     if (!user) {
@@ -321,7 +325,7 @@ export class UserController {
 
     await this.emailService.sendResetPaswortEmail(user.email, passwordResetToken)
 
-    return { message: `Email to reset password has been sent to ${user.email}` }
+    return {message: `Email to reset password has been sent to ${user.email}`}
   };
 
 
@@ -344,9 +348,9 @@ export class UserController {
 
     const password = await hash(resetPasswordRequest.password, await genSalt());
 
-    await this.userRepository.userCredentials(user.id).patch({ password });
+    await this.userRepository.userCredentials(user.id).patch({password});
 
-    return { message: 'Password reset successful' };
+    return {message: 'Password reset successful'};
   }
 
 }

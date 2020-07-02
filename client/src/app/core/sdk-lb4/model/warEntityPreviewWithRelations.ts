@@ -15,9 +15,6 @@
  * (tsType: WarEntityPreviewWithRelations, schemaOptions: { includeRelations: true })
  */
 export interface WarEntityPreviewWithRelations { 
-  [key: string]: object | any;
-
-
     pk_entity?: number;
     fk_project?: number;
     fk_class?: number;

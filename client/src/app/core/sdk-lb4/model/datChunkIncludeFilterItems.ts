@@ -9,10 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { DatChunkScopeFilter } from './datChunkScopeFilter';
 
 
-export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+export interface DatChunkIncludeFilterItems { 
+    relation?: string;
+    scope?: DatChunkScopeFilter;
 }
 

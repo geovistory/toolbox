@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 import { DatChunkService } from './api/datChunk.service';
+import { DatChunkControllerService } from './api/datChunkController.service';
 import { DatColumnService } from './api/datColumn.service';
 import { DatDigitalService } from './api/datDigital.service';
 import { DatNamespaceService } from './api/datNamespace.service';
@@ -35,6 +36,7 @@ import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';
 import { SysSystemTypeService } from './api/sysSystemType.service';
+import { UserControllerService } from './api/userController.service';
 import { WarEntityPreviewService } from './api/warEntityPreview.service';
 import { WarEntityPreviewControllerService } from './api/warEntityPreviewController.service';
 

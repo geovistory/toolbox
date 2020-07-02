@@ -12,9 +12,8 @@
 
 
 export interface ImportTableResponse { 
-    result?: string;
     duration?: number;
-    error?: number;
+    error?: string;
     fk_digital?: number;
 }
 
