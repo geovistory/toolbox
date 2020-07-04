@@ -15,7 +15,10 @@ export interface NewUserRequest extends Credentials {
   username: string;
 }
 
-const PasswordSchema = {
+
+
+// the requirements for new passwords can be higher
+const RegisterPasswordSchema = {
   type: 'string',
   minLength: 8,
 }
@@ -28,7 +31,7 @@ const CredentialsSchema = {
   required: ['email', 'password'],
   properties: {
     email: EmailSchema,
-    password: PasswordSchema,
+    password: RegisterPasswordSchema,
   },
 };
 
@@ -40,6 +43,27 @@ export const CredentialsRequestBody = {
   },
 };
 
+// the requirements for existing passwords are low
+// (backward compatibility with old passwords)
+const LoginPasswordSchema = {
+  type: 'string',
+}
+const LoginCredentialsSchema = {
+  type: 'object',
+  required: ['email', 'password'],
+  properties: {
+    email: EmailSchema,
+    password: LoginPasswordSchema,
+  },
+};
+
+export const LoginCredentialsRequestBody = {
+  description: 'The input of login function',
+  required: true,
+  content: {
+    'application/json': {schema: LoginCredentialsSchema},
+  },
+}
 const NewUserSchema = {
   type: 'object',
   required: ['email', 'username', 'password'],
@@ -49,7 +73,7 @@ const NewUserSchema = {
       type: 'string',
       maxLength: 15,
     },
-    password: PasswordSchema,
+    password: RegisterPasswordSchema,
   },
 };
 export const SignupRequestBody = {
@@ -69,7 +93,7 @@ const ResetPasswordRequestSchema = {
   type: 'object',
   required: ['password', 'resetPasswordToken'],
   properties: {
-    password: PasswordSchema,
+    password: RegisterPasswordSchema,
     resetPasswordToken: {
       type: 'string'
     }
@@ -170,7 +194,7 @@ export class UserController {
     },
   })
   async login(
-    @requestBody(CredentialsRequestBody) credentials: Credentials,
+    @requestBody(LoginCredentialsRequestBody) credentials: Credentials,
   ): Promise<{token: string}> {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);

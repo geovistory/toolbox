@@ -9,6 +9,8 @@ import { environment } from 'environments/environment';
 import { NgRedux } from '@angular-redux/store';
 import { AccountActions } from '../../api/account.actions';
 import { IAccount } from '../../account.model';
+import { PubAccountService, UserControllerService } from 'app/core/sdk-lb4';
+import { ModelMesh } from 'cesium';
 
 
 
@@ -20,7 +22,11 @@ import { IAccount } from '../../account.model';
 })
 export class LoginComponent implements OnInit {
 
-  model: any = {};
+  model: {
+    email?: string,
+    password?: string
+  } = {};
+
   loading = false;
   returnUrl: string;
   errorMessage: string;
@@ -32,7 +38,8 @@ export class LoginComponent implements OnInit {
     private accountApi: PubAccountApi,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IAccount>,
-    private actions: AccountActions
+    private actions: AccountActions,
+    private userApi: UserControllerService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -45,6 +52,20 @@ export class LoginComponent implements OnInit {
   login() {
     this.startLoading();
     this.errorMessage = '';
+
+    const { email, password } = this.model
+    if (email && password) {
+      this.userApi.userControllerLogin({ email, password })
+        .subscribe(
+          result => {
+
+          },
+          error => {
+
+          }
+        )
+    }
+
     this.accountApi.login(this.model)
       .subscribe(
         data => {
