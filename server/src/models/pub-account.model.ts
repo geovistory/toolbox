@@ -1,10 +1,11 @@
-import {model, property, Entity} from '@loopback/repository';
+import {model, property, Entity, hasOne} from '@loopback/repository';
+import { PubCredential } from './pub-credential.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     caseSensitiveEmail: true,
-    hiddenProperties: ['password', 'verificationToken'],
+    hiddenProperties: ['verificationToken'],
     maxTTL: 31556926,
     ttl: 1209600,
     idInjection: true,
@@ -36,12 +37,6 @@ export class PubAccount extends Entity {
     type: 'string',
     required: true,
   })
-  password: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
   email: string;
 
   @property({
@@ -53,6 +48,10 @@ export class PubAccount extends Entity {
     type: 'string',
   })
   verificationToken?: string;
+
+  @hasOne(() => PubCredential, {keyTo: 'accountId'})
+  accountCredentials: PubCredential;
+
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

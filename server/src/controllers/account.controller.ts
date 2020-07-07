@@ -3,15 +3,15 @@ import {inject} from '@loopback/core';
 import {JsonSchemaWithExtensions, Model, model, property, repository} from '@loopback/repository';
 import {get, HttpErrors, oas, param, post, requestBody, Response, RestBindings} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {genSalt, hash} from 'bcrypt';
+import {hash, genSalt} from 'bcrypt';
 import _ from 'lodash';
 import {JWTService} from '../components/jwt';
 import {JWTBindings} from '../components/jwt/keys';
-import {PubAccount} from '../models';
-import {PubAccountRepository} from '../repositories';
+import {PubAccount} from '../models/pub-account.model';
+import {PubAccountRepository} from '../repositories/pub-account.repository';
+import {AccountService} from '../services/account.service';
 import {EmailService} from '../services/email.service';
 import {PasswordResetTokenService} from '../services/password-reset-token.service';
-import {UserService} from '../services/user.service';
 
 
 // the requirements for new passwords can be higher
@@ -46,15 +46,12 @@ export class LoginResponse {
   @property() lb3Created: string;
 }
 
-
 @model()
 export class SignupRequest {
   @property({required: true, jsonSchema: EmailSchema}) email: string;
   @property({required: true}) username: string;
   @property({required: true, jsonSchema: NewPasswordSchema}) password: string;
 }
-
-
 
 @model()
 export class ResetPasswordRequest {
@@ -64,7 +61,7 @@ export class ResetPasswordRequest {
 
 @model()
 class VerifyEmailRequest {
-  @property({required: true}) userId: string
+  @property({required: true}) accountId: number
   @property({required: true}) verificationToken: string
   @property({required: true, jsonSchema: UrlSchema}) redirectOnSuccess: string
 }
@@ -86,15 +83,15 @@ export class HttpErrorModel extends Model {
   @property() error: HttpErrorObjectModel
 }
 
-export class UserController {
+export class AccountController {
   constructor(
     @inject(JWTBindings.TOKEN_SERVICE)
     public jwtService: JWTService,
-    @inject('APP_USER_SERVICE') public userService: UserService,
+    @inject('APP_ACCOUNT_SERVICE') public accountService: AccountService,
     @inject('APP_EMAIL_SERVICE') protected emailService: EmailService,
     @inject('APP_PASSWORD_RESET_TOKEN_SERVICE') protected passwordResetTokenService: PasswordResetTokenService,
     @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
-    @repository(PubAccountRepository) protected userRepository: PubAccountRepository,
+    @repository(PubAccountRepository) protected accountRepository: PubAccountRepository,
   ) {}
 
 
@@ -120,13 +117,13 @@ export class UserController {
   ): Promise<LoginResponse> {
 
     // ensure the user exists, and the password is correct
-    const user = await this.userService.verifyCredentials(credentials);
+    const account = await this.accountService.verifyCredentials(credentials);
 
     // ensure the email has been verified
-    this.userService.emailVerified(user)
+    this.accountService.emailVerified(account)
 
     // convert a User object into a UserProfile object (reduced set of properties)
-    const userProfile = this.userService.convertToUserProfile(user);
+    const userProfile = this.accountService.convertToUserProfile(account);
 
     // create a JSON Web Token based on the user profile
     const lb4 = await this.jwtService.generateTokenWithExpire(userProfile);
@@ -134,9 +131,9 @@ export class UserController {
     // login the old loopback 3 way
     const lb3 = await lb3PubAccount.login(credentials)
 
-    const pubAccount = user.toJSON() as PubAccount
+    const account2 = account.toJSON() as PubAccount
     return {
-      user: pubAccount,
+      user: account2,
 
       lb4Token: lb4.token,
       lb4ExpiresInMs: lb4.expiresInMs,
@@ -173,7 +170,7 @@ export class UserController {
     description: 'Sign up / register new account',
     responses: {
       '200': {
-        description: 'User',
+        description: 'Account',
         content: {
           'application/json': {
             schema: {
@@ -185,35 +182,39 @@ export class UserController {
     },
   })
   async signUp(
-    @requestBody() newUserRequest: SignupRequest,
+    @requestBody() newAccountRequest: SignupRequest,
   ): Promise<PubAccount> {
-    const password = await hash(newUserRequest.password, await genSalt());
 
-    const verificationToken = await this.userService.generateVerificationToken()
+    //TEMP
+    await this.accountRepository.dataSource.execute('BEGIN;');
+    console.log(await this.accountRepository.dataSource.execute('INSERT INTO public.account (username, email) VALUES (\'gaetanTest\', \'gaetan.muck@kleiolab.ch\') RETURNING id;'));
+    await this.accountRepository.dataSource.execute('ROLLBACK;');
 
-    const savedUser = await this.userRepository.create(
+
+    const password = await hash(newAccountRequest.password, await genSalt());
+
+    const verificationToken = await this.accountService.generateVerificationToken()
+
+    const savedAccount = await this.accountRepository.create(
       {
         emailVerified: false,
         verificationToken,
-        ..._.omit(newUserRequest, 'password'),
-        // TODO: exclude credentials in other table
-        password
+        ..._.omit(newAccountRequest, 'password')
       },
     );
-    // TODO: exclude credentials in other table
-    // await this.userRepository.userCredentials(savedUser.id).create({password});
+    await this.accountRepository.accountCredentials(savedAccount.id).create({password});
 
     // send email verification email with email verification token
-    if (!savedUser.verificationToken) {
+    if (!savedAccount.verificationToken) {
       throw new HttpErrors.InternalServerError()
     }
-    await this.emailService.sendEmailVerificationEmail(savedUser.id, savedUser.email, savedUser.verificationToken)
+    await this.emailService.sendEmailVerificationEmail(savedAccount.id, savedAccount.email, savedAccount.verificationToken)
 
     return new PubAccount({
-      id: savedUser.id,
-      username: savedUser.username,
-      email: savedUser.email,
-      emailVerified: savedUser.emailVerified
+      id: savedAccount.id,
+      username: savedAccount.username,
+      email: savedAccount.email,
+      emailVerified: savedAccount.emailVerified
     });
   }
 
@@ -224,7 +225,7 @@ export class UserController {
         description: 'Validation Failed',
       },
       '404': {
-        description: 'User not found',
+        description: 'Account not found',
       },
       '302': {
         description: 'On Success, redirects browser to url given by redirectOnSuccess property of VerifyEmailRequest',
@@ -244,23 +245,22 @@ export class UserController {
     @inject(RestBindings.Http.RESPONSE) response: Response
   ): Promise<void> {
 
-    const user = await this.userRepository.findById(req.userId)
+    const account = await this.accountRepository.findById(req.accountId)
 
-    if (user && user.verificationToken === req.verificationToken) {
-      user.verificationToken = undefined;
-      user.emailVerified = true;
-      await this.userRepository.update(user)
+    if (account && account.verificationToken === req.verificationToken) {
+      account.verificationToken = undefined;
+      account.emailVerified = true;
+      await this.accountRepository.update(account)
 
       response.redirect(req.redirectOnSuccess);
 
       return;
     }
 
-
-    if (user) {
+    if (account) {
       throw new HttpErrors.Unauthorized(`Invalid token: ${req.verificationToken}`)
     } else {
-      throw new HttpErrors.NotFound(`User not found: ${req.userId}`)
+      throw new HttpErrors.NotFound(`Account not found: ${req.accountId}`)
     }
 
   }
@@ -281,23 +281,23 @@ export class UserController {
     @param.query.string('email', {required: true}) email: string
   ): Promise<ResponseWithMsg> {
 
-    const user = await this.userRepository.findOne({
+    const account = await this.accountRepository.findOne({
       where: {
         email: {eq: email}
       }
     })
-    if (!user) {
+    if (!account) {
       throw new HttpErrors.NotFound(`Email '${email}' not found`)
     }
-    this.userService.emailVerified(user)
+    this.accountService.emailVerified(account)
 
-    const userProfile = this.userService.convertToUserProfile(user)
+    const userProfile = this.accountService.convertToUserProfile(account)
 
     const passwordResetToken = await this.passwordResetTokenService.generateToken(userProfile)
 
-    await this.emailService.sendResetPaswortEmail(user.email, passwordResetToken)
+    await this.emailService.sendResetPaswortEmail(account.email, passwordResetToken)
 
-    return {message: `Email to reset password has been sent to ${user.email}`}
+    return {message: `Email to reset password has been sent to ${account.email}`}
   };
 
 
@@ -322,15 +322,13 @@ export class UserController {
     }
     const userProfile = await this.passwordResetTokenService.verifyToken(resetPasswordRequest.resetPasswordToken)
 
-    const user = await this.userRepository.findById(userProfile.userId);
+    const account = await this.accountRepository.findById(userProfile.userId);
 
-    if (!user) throw new HttpErrors.Unauthorized(`User with id ${userProfile.userId} not found.`)
+    if (!account) throw new HttpErrors.Unauthorized(`User with id ${userProfile.userId} not found.`)
 
     const password = await hash(resetPasswordRequest.password, await genSalt());
 
-    // TODO: exclude credentials in other table
-    // await this.userRepository.userCredentials(user.id).patch({password});
-    await this.userRepository.updateById(user.id, {password});
+    await this.accountRepository.accountCredentials(account.id).patch({password});
 
     return {message: 'Password reset successful'};
   }

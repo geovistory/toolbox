@@ -15,11 +15,11 @@ import {Postgres1DataSource} from './datasources/postgres1.datasource';
 import {log} from './middleware/log.middleware';
 import {Streams} from './realtime/streams/streams';
 import {GvSequence} from './sequence';
+import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
 import {PasswordResetTokenService} from './services/password-reset-token.service';
-import {UserService} from './services/user.service';
-import {NodeENV} from './utils/code.utils';
 import {BasicAuthenticationStrategy} from './strategies/basic-strategy';
+import {NodeENV} from './utils/code.utils';
 
 
 export class GeovistoryApplication extends BootMixin(
@@ -32,7 +32,7 @@ export class GeovistoryApplication extends BootMixin(
     super(options);
 
     this.bind('APP_EMAIL_SERVICE').toClass(EmailService)
-    this.bind('APP_USER_SERVICE').toClass(UserService)
+    this.bind('APP_ACCOUNT_SERVICE').toClass(AccountService)
     this.bind('APP_PASSWORD_RESET_TOKEN_SERVICE').toClass(PasswordResetTokenService)
 
     // make the streams injectable
@@ -72,6 +72,7 @@ export class GeovistoryApplication extends BootMixin(
 
 
     // Bind datasource
+    //TODO: is 2nd param needed?
     this.dataSource(Postgres1DataSource, 'datasources.postgres1');
 
   }
