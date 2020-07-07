@@ -36,3 +36,5 @@ export * from './inf-time-primitive.model';
 export * from './inf-place.model';
 export * from './inf-text-property.model';
 export * from './sys-system-type.model';
+export * from './pub-role-mapping.model';
+export * from './pub-role.model';

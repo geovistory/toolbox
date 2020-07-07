@@ -33,3 +33,5 @@ export * from './sys-class-field.repository';
 export * from './sys-class-has-type-property.repository';
 export * from './sys-system-relevant-class.repository';
 export * from './sys-system-type.repository';
+export * from './pub-role-mapping.repository';
+export * from './pub-role.repository';

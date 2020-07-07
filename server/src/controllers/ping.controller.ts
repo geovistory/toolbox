@@ -1,5 +1,10 @@
-import {Request, RestBindings, get, ResponseObject} from '@loopback/rest';
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/context';
+import {get, param, Request, ResponseObject, RestBindings, requestBody, post} from '@loopback/rest';
+import {SecurityBindings, UserProfile} from '@loopback/security';
+import {Roles} from '../components/authorization/keys';
+import {model, property} from '@loopback/repository';
 
 /**
  * OpenAPI response for ping()
@@ -28,11 +33,18 @@ const PING_RESPONSE: ResponseObject = {
   },
 };
 
+@model()
+class ProjectPongRequest {
+  @property() pkProject: number
+}
 /**
  * A simple controller to bounce back http requests
  */
 export class PingController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+  constructor(
+    @inject(RestBindings.Http.REQUEST) private req: Request,
+    @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
+  ) {}
 
   // Map to `GET /ping`
   @get('/ping', {
@@ -49,4 +61,49 @@ export class PingController {
       headers: Object.assign({}, this.req.headers),
     };
   }
+
+
+  @get('/project-ping', {
+    description: 'Test get access to project: Only Project members get a response.',
+    responses: {
+      '200': PING_RESPONSE,
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  projectPing(
+    @param.query.number('pkProject') pkProject: number
+  ): string {
+    return `Hello ${this.user.name}, you are member of project ${pkProject}!`
+  }
+
+  @post('/project-pong', {
+    description: 'Test post access to project: Only Project members get a response.',
+    responses: {
+      '200': PING_RESPONSE,
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  projectPong(
+    @requestBody() req: ProjectPongRequest
+  ): string {
+    return `Hello ${this.user.name}, you are member of project ${req.pkProject}!`
+  }
+
+
+  @get('/system-admin-ping', {
+    description: 'Test access as system admin: Only system administrators get a response.',
+    responses: {
+      '200': PING_RESPONSE,
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.SYS_ADMIN]})
+  sysAdminPing(): string {
+    return `Hello ${this.user.name}, you are system admin!`
+  }
+
+
+
 }

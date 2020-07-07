@@ -9,3 +9,9 @@ export namespace AuthorizationPolicyBindings {
   export const COMPONENT = BindingKey
     .create<AuthorizationPolicyComponent>('components.AuthorizationPolicyComponent');
 }
+
+export enum Roles {
+  SYS_ADMIN = 'SYS_ADMIN',
+  PROJECT_MEMBER = 'PROJECT_MEMBER',
+  NAMESPACE_MEMBER = 'NAMESPACE_MEMBER',
+}

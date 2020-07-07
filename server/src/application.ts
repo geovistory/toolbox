@@ -2,7 +2,7 @@ import {AuthenticationComponent, registerAuthenticationStrategy} from '@loopback
 import {AuthorizationBindings, AuthorizationComponent, AuthorizationDecision, AuthorizationOptions} from '@loopback/authorization';
 import {BootMixin} from '@loopback/boot';
 import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
-import {ApplicationConfig, createBindingFromClass} from '@loopback/core';
+import {ApplicationConfig} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {RestExplorerBindings, RestExplorerComponent} from '@loopback/rest-explorer';
@@ -10,6 +10,7 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {AuthorizationPolicyComponent} from './components/authorization';
 import {JWTBindings, JWTComponent, JWTComponentConfig} from './components/jwt';
+import {BasicAuthenticationStrategy} from './components/jwt/basic-authentication.strategy';
 import {DefaultFactory, InvokeFactory, LOGGER_LEVEL, LoggingBindings, LoggingComponent, LoggingComponentConfig} from './components/logger';
 import {Postgres1DataSource} from './datasources/postgres1.datasource';
 import {log} from './middleware/log.middleware';
@@ -18,9 +19,7 @@ import {GvSequence} from './sequence';
 import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
 import {PasswordResetTokenService} from './services/password-reset-token.service';
-import {BasicAuthenticationStrategy} from './components/jwt/basic-authentication.strategy';
 import {NodeENV} from './utils/code.utils';
-import {Lb3SecuritySpecEnhancer} from './utils/lb3-security.spec.enhancer';
 
 
 export class GeovistoryApplication extends BootMixin(
@@ -132,7 +131,7 @@ export class GeovistoryApplication extends BootMixin(
         defaultDecision: AuthorizationDecision.DENY,
         precedence: AuthorizationDecision.DENY
       });
-    this.component<AuthorizationComponent>(AuthorizationComponent);
+    this.component(AuthorizationComponent);
     this.component(AuthorizationPolicyComponent);
   }
 
