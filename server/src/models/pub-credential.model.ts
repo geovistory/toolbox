@@ -5,7 +5,16 @@
 
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
+@model({
+  settings: {
+    strict: true,
+    caseSensitiveEmail: true,
+    maxTTL: 31556926,
+    ttl: 1209600,
+    idInjection: true,
+    postgresql: {schema: 'public', table: 'credential'}
+  }
+})
 export class PubCredential extends Entity {
   @property({
     type: 'number',

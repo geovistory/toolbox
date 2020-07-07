@@ -91,7 +91,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="margin-right: 10px" *ngIf="mode=='preview'">
-            <mat-label>Namespace</mat-label>
+            <mat-label>Folder</mat-label>
             <mat-select [(value)]="namespace" [formControl]="namespaceCtrl">
                 <mat-option *ngFor="let name of namespaces" [value]="name.pk_entity">{{name.standard_label}}
                 </mat-option>

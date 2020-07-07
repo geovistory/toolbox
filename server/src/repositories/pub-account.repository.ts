@@ -19,7 +19,7 @@ export class PubAccountRepository extends DefaultCrudRepository<
 
   constructor(
     @inject('datasources.postgres1') dataSource: Postgres1DataSource,
-    @repository.getter('CredentialRepository') protected credentialRepositoryGetter: Getter<PubCredentialRepository>,
+    @repository.getter('PubCredentialRepository') protected credentialRepositoryGetter: Getter<PubCredentialRepository>,
   ) {
     super(PubAccount, dataSource);
     this.accountCredentials = this.createHasOneRepositoryFactoryFor(
