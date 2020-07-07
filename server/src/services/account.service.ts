@@ -3,14 +3,15 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-import { UserService } from '@loopback/authentication';
-import { repository } from '@loopback/repository';
-import { HttpErrors } from '@loopback/rest';
-import { securityId, UserProfile } from '@loopback/security';
-import { compare } from 'bcrypt';
-import { PubAccount } from '../models/pub-account.model';
-import { PubAccountRepository } from '../repositories/pub-account.repository';
+import {UserService} from '@loopback/authentication';
+import {repository} from '@loopback/repository';
+import {HttpErrors} from '@loopback/rest';
+import {securityId, UserProfile} from '@loopback/security';
+import {compare} from 'bcrypt';
+import {PubAccount} from '../models/pub-account.model';
+import {PubAccountRepository} from '../repositories/pub-account.repository';
 import * as crypto from 'crypto';
+import {SignupResponse, SignupValidationError} from '../controllers/account.controller';
 
 /**
  * A pre-defined type for user credentials. It assumes a user logs in
@@ -24,13 +25,13 @@ export type Credentials = {
 export class AccountService implements UserService<PubAccount, Credentials> {
   constructor(
     @repository(PubAccountRepository) public accountRepository: PubAccountRepository,
-  ) { }
+  ) {}
 
   async verifyCredentials(credentials: Credentials): Promise<PubAccount> {
     const invalidCredentialsError = 'Invalid email or password.';
 
     const foundAccount = await this.accountRepository.findOne({
-      where: { email: credentials.email },
+      where: {email: credentials.email},
     });
     if (!foundAccount) {
       throw new HttpErrors.Unauthorized(invalidCredentialsError);
@@ -100,4 +101,18 @@ export class AccountService implements UserService<PubAccount, Credentials> {
     })
   };
 
+  /**
+   * Check if the new email + username already exists in database or not. Throw error if yes.
+   *
+   * @param email  email of new user
+   * @param username username of new user
+   */
+  async validateUniqueness(email: string, username: string): Promise<SignupValidationError> {
+    const checkEmail = await this.accountRepository.findOne({where: {email: email}});
+    const checkUsername = await this.accountRepository.findOne({where: {username: username}});
+    const messages: SignupValidationError = {};
+    if (checkEmail) messages.email = 'Email already exists';
+    if (checkUsername) messages.username = 'Username already exists';
+    return messages;
+  }
 }

@@ -7,7 +7,6 @@ export interface PubAccountInterface {
   "username"?: string;
   "email": string;
   "emailVerified"?: boolean;
-  "password"?: string;
   accessTokens?: any[];
   projects?: any[];
 }
@@ -18,7 +17,6 @@ export class PubAccount implements PubAccountInterface {
   "username": string;
   "email": string;
   "emailVerified": boolean;
-  "password": string;
   accessTokens?: any[];
   projects?: any[];
   constructor(data?: PubAccountInterface) {
@@ -73,10 +71,6 @@ export class PubAccount implements PubAccountInterface {
         "emailVerified": {
           name: 'emailVerified',
           type: 'boolean'
-        },
-        "password": {
-          name: 'password',
-          type: 'string'
         },
       },
       relations: {

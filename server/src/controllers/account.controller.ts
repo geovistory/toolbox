@@ -12,6 +12,7 @@ import {PubAccountRepository} from '../repositories/pub-account.repository';
 import {AccountService} from '../services/account.service';
 import {EmailService} from '../services/email.service';
 import {PasswordResetTokenService} from '../services/password-reset-token.service';
+import {Postgres1DataSource} from '../datasources';
 
 
 // the requirements for new passwords can be higher
@@ -54,6 +55,18 @@ export class SignupRequest {
 }
 
 @model()
+export class SignupValidationError {
+  @property() email?: string;
+  @property() username?: string;
+}
+
+@model()
+export class SignupResponse {
+  @property() success?: PubAccount;
+  @property() validationError?: SignupValidationError
+}
+
+@model()
 export class ResetPasswordRequest {
   @property({required: true, jsonSchema: NewPasswordSchema}) password: string
   @property({required: true}) resetPasswordToken: string
@@ -92,6 +105,7 @@ export class AccountController {
     @inject('APP_PASSWORD_RESET_TOKEN_SERVICE') protected passwordResetTokenService: PasswordResetTokenService,
     @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
     @repository(PubAccountRepository) protected accountRepository: PubAccountRepository,
+    @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
   ) {}
 
 
@@ -183,17 +197,13 @@ export class AccountController {
   })
   async signUp(
     @requestBody() newAccountRequest: SignupRequest,
-  ): Promise<PubAccount> {
-
-    //TEMP
-    await this.accountRepository.dataSource.execute('BEGIN;');
-    console.log(await this.accountRepository.dataSource.execute('INSERT INTO public.account (username, email) VALUES (\'gaetanTest\', \'gaetan.muck@kleiolab.ch\') RETURNING id;'));
-    await this.accountRepository.dataSource.execute('ROLLBACK;');
-
+  ): Promise<SignupResponse> {
 
     const password = await hash(newAccountRequest.password, await genSalt());
 
     const verificationToken = await this.accountService.generateVerificationToken()
+
+    const validationError = await this.accountService.validateUniqueness(newAccountRequest.email, newAccountRequest.username);
 
     const savedAccount = await this.accountRepository.create(
       {
@@ -202,7 +212,7 @@ export class AccountController {
         ..._.omit(newAccountRequest, 'password')
       },
     );
-    await this.accountRepository.accountCredentials(savedAccount.id).create({password});
+    await this.accountRepository.pubAccountCredentials(savedAccount.id).create({password});
 
     // send email verification email with email verification token
     if (!savedAccount.verificationToken) {
@@ -210,13 +220,23 @@ export class AccountController {
     }
     await this.emailService.sendEmailVerificationEmail(savedAccount.id, savedAccount.email, savedAccount.verificationToken)
 
-    return new PubAccount({
-      id: savedAccount.id,
-      username: savedAccount.username,
-      email: savedAccount.email,
-      emailVerified: savedAccount.emailVerified
-    });
+    // create sandbox project for the new account
+    const sql = 'SELECT commons.clone_sandbox_project($1);';
+    const params = [savedAccount.id];
+    await this.dataSource.execute(sql, params);
+
+    if (Object.keys(validationError).length) return {validationError};
+    else return {
+      success: new PubAccount({
+        id: savedAccount.id,
+        username: savedAccount.username,
+        email: savedAccount.email,
+        emailVerified: savedAccount.emailVerified
+      })
+    };
   }
+
+
 
   @post('/verify-email', {
     description: 'Verifies email address. Usually needed to complete registration of new account.',
@@ -328,7 +348,7 @@ export class AccountController {
 
     const password = await hash(resetPasswordRequest.password, await genSalt());
 
-    await this.accountRepository.accountCredentials(account.id).patch({password});
+    await this.accountRepository.pubAccountCredentials(account.id).patch({password});
 
     return {message: 'Password reset successful'};
   }

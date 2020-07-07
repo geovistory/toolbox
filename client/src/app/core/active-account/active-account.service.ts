@@ -7,7 +7,7 @@ import { filter, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';
 import { PubAccountApi, SDKToken } from '../sdk';
-import { LoginRequest, LoginResponse, PubAccount, UserControllerService } from '../sdk-lb4';
+import { LoginRequest, LoginResponse, PubAccount, AccountControllerService } from '../sdk-lb4';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { IAppState } from '../store/model';
 
@@ -24,8 +24,8 @@ export class ActiveAccountService {
     private authService: GvAuthService,
     private accountActions: AccountActions,
     private ngRedux: NgRedux<IAppState>,
-    private userApi: UserControllerService,
-    private accountApi: PubAccountApi,
+    private lb4AccountApi: AccountControllerService,
+    private lb3AccountApi: PubAccountApi,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -68,7 +68,7 @@ export class ActiveAccountService {
     const s$ = new Subject<LoginResponse>();
     // send credentials to server
 
-    this.userApi.userControllerLogin(credentials)
+    this.lb4AccountApi.accountControllerLogin(credentials)
       .subscribe(
         result => {
 
@@ -107,7 +107,7 @@ export class ActiveAccountService {
 
   logout(): Observable<void> {
     const s$ = new Subject<void>()
-    this.accountApi.logout()
+    this.lb3AccountApi.logout()
       .subscribe(
         data => {
           this.authService.clear();

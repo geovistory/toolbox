@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoopBackAuth, LoopBackConfig, ProProjectApi, PubAccountApi, InfLanguageApi, InfLanguage } from 'app/core';
-import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { Observable, merge } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, tap } from '../../../../../../node_modules/rxjs/operators';
+import { InfLanguage, InfLanguageApi, LoopBackAuth, LoopBackConfig, ProProjectApi } from 'app/core';
+import { environment } from 'environments/environment';
+import { Observable } from 'rxjs';
 
 
 export class ProjectLabelDescription {

@@ -12,7 +12,7 @@ export class PubAccountRepository extends DefaultCrudRepository<
   PubAccountRelations
   > {
 
-  public readonly accountCredentials: HasOneRepositoryFactory<
+  public readonly pubAccountCredentials: HasOneRepositoryFactory<
     PubCredential,
     typeof PubAccount.prototype.id
   >;
@@ -22,13 +22,13 @@ export class PubAccountRepository extends DefaultCrudRepository<
     @repository.getter('PubCredentialRepository') protected credentialRepositoryGetter: Getter<PubCredentialRepository>,
   ) {
     super(PubAccount, dataSource);
-    this.accountCredentials = this.createHasOneRepositoryFactoryFor(
-      'accountCredentials',
+    this.pubAccountCredentials = this.createHasOneRepositoryFactoryFor(
+      'pubAccountCredentials',
       credentialRepositoryGetter,
     );
     this.registerInclusionResolver(
-      'userCredentials',
-      this.accountCredentials.inclusionResolver,
+      'pubAccountCredentials',
+      this.pubAccountCredentials.inclusionResolver,
     );
   }
 
@@ -36,7 +36,7 @@ export class PubAccountRepository extends DefaultCrudRepository<
     accountId: typeof PubAccount.prototype.id,
   ): Promise<PubCredential | undefined> {
     try {
-      return await this.accountCredentials(accountId).get();
+      return await this.pubAccountCredentials(accountId).get();
     } catch (err) {
       if (err.code === 'ENTITY_NOT_FOUND') {
         return undefined;

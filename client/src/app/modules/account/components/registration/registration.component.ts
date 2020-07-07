@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoopBackConfig, PubAccount, PubAccountApi } from 'app/core';
+import { LoopBackConfig } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { AccountControllerService, PubAccount, SignupRequest } from 'app/core/sdk-lb4';
 
 
 
@@ -17,12 +18,11 @@ export class RegistrationComponent {
   model: any = {};
   loading = false;
   errorMessages: Object;
-  account: PubAccount;
+
   confirm = false; // if true, form is hidden and confirmation shown.
 
   constructor(
-    private accountApi: PubAccountApi,
-    private router: Router,
+    private accountApi: AccountControllerService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -33,8 +33,13 @@ export class RegistrationComponent {
     this.startLoading();
 
     this.errorMessages = {};
-    this.account = new PubAccount(this.model);
-    this.accountApi.create(this.account)
+    const req: SignupRequest = {
+      email: this.model.email,
+      password: this.model.password,
+      username: this.model.username
+    }
+
+    this.accountApi.accountControllerSignUp(req)
       .subscribe(
         data => {
           this.completeLoading();

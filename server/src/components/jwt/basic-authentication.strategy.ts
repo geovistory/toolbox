@@ -1,21 +1,14 @@
 
+import {asAuthStrategy, AuthenticationStrategy} from '@loopback/authentication/dist/types';
 import {bind, inject} from '@loopback/core';
-import {
-  asSpecEnhancer,
-  mergeSecuritySchemeToSpec,
-  OASEnhancer,
-  OpenApiSpec,
-} from '@loopback/openapi-v3';
 import {HttpErrors, Request} from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
-import {asAuthStrategy, AuthenticationStrategy} from '@loopback/authentication/dist/types';
-import {JWTBindings, JWTService} from '../components/jwt';
 import _ from 'lodash';
+import {JWTBindings, JWTService} from '.';
 
 
-@bind(asAuthStrategy, asSpecEnhancer)
-export class BasicAuthenticationStrategy
-  implements AuthenticationStrategy, OASEnhancer {
+@bind(asAuthStrategy)
+export class BasicAuthenticationStrategy implements AuthenticationStrategy {
   name = 'basic';
 
   constructor(
@@ -38,10 +31,5 @@ export class BasicAuthenticationStrategy
     return token;
   }
 
-  modifySpec(spec: OpenApiSpec): OpenApiSpec {
-    return mergeSecuritySchemeToSpec(spec, this.name, {
-      type: 'http',
-      scheme: 'basic',
-    });
-  }
+
 }

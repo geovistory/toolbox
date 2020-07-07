@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ErrorHandler, LoopBackConfig, PubAccountApi } from 'app/core';
+import { ErrorHandler, LoopBackConfig } from 'app/core';
+import { AccountControllerService, ResetPasswordRequest } from 'app/core/sdk-lb4';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '../../../../../../node_modules/@angular/common/http';
@@ -27,7 +28,7 @@ export class ResetPasswordComponent implements OnInit {
     protected http: HttpClient,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
-    private accountApi: PubAccountApi,
+    private accountApi: AccountControllerService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -40,7 +41,11 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   setPassword(newPassword: string): Observable<any> {
-    return this.accountApi.setPassword(newPassword, (headers) => headers.append('Authorization', this.access_token))
+    const req: ResetPasswordRequest = {
+      password: newPassword,
+      resetPasswordToken: this.access_token
+    }
+    return this.accountApi.accountControllerResetPassword(req)
   }
 
 

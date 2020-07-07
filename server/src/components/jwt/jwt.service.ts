@@ -66,7 +66,7 @@ export class JWTService implements TokenService {
     };
     // Generate a JSON Web Token
     let token: string;
-    const expiresInMs = ms(this.jwtExpiresIn.AUTH_ACCESS);
+    const expiresInMs = ms(this.jwtExpiresIn);
     try {
       token = sign(userInfoForToken, this.jwtSecret, {expiresIn: expiresInMs});
     }

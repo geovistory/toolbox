@@ -12,7 +12,7 @@
 
 
 export interface VerifyEmailRequest { 
-    userId: string;
+    accountId: number;
     verificationToken: string;
     redirectOnSuccess: string;
 }
