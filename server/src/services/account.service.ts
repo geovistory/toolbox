@@ -36,7 +36,7 @@ export class AccountService implements UserService<PubAccount, Credentials> {
       throw new HttpErrors.Unauthorized(invalidCredentialsError);
     }
 
-    const credentialsFound = await this.accountRepository.findById(
+    const credentialsFound = await this.accountRepository.findCredentials(
       foundAccount.id,
     );
     if (!credentialsFound) {

@@ -2,7 +2,7 @@ import {AuthenticationComponent, registerAuthenticationStrategy} from '@loopback
 import {AuthorizationBindings, AuthorizationComponent, AuthorizationDecision, AuthorizationOptions} from '@loopback/authorization';
 import {BootMixin} from '@loopback/boot';
 import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
-import {ApplicationConfig} from '@loopback/core';
+import {ApplicationConfig, createBindingFromClass} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {RestExplorerBindings, RestExplorerComponent} from '@loopback/rest-explorer';
@@ -18,8 +18,9 @@ import {GvSequence} from './sequence';
 import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
 import {PasswordResetTokenService} from './services/password-reset-token.service';
-import {BasicAuthenticationStrategy} from './strategies/basic-strategy';
+import {BasicAuthenticationStrategy} from './components/jwt/basic-authentication.strategy';
 import {NodeENV} from './utils/code.utils';
+import {Lb3SecuritySpecEnhancer} from './utils/lb3-security.spec.enhancer';
 
 
 export class GeovistoryApplication extends BootMixin(
@@ -118,10 +119,7 @@ export class GeovistoryApplication extends BootMixin(
     this.configure<JWTComponentConfig>(JWTBindings.COMPONENT)
       .to({
         secret: process.env.JWT_SECRET ?? 'MY_SECRET',
-        expiresIn: {
-          AUTH_ACCESS: process.env.AUTH_ACCESS_EXPIRES ?? '14 days',
-          AUTH_REFRESH: process.env.AUTH_REFRESH_EXPIRES ?? '90 days'
-        }
+        expiresIn: process.env.AUTH_ACCESS_EXPIRES ?? '14 days',
       });
     this.component(AuthenticationComponent);
 

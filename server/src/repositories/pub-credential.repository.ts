@@ -13,7 +13,7 @@ export class PubCredentialRepository extends DefaultCrudRepository<
     CredentialRelations
     > {
     constructor(
-        @inject(`datasources.Postgres1`)
+        @inject(`datasources.postgres1`)
         dataSource: juggler.DataSource,
     ) {
         super(PubCredential, dataSource);

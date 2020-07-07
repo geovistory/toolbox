@@ -195,7 +195,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_data',
+                  keyFrom: 'fk_subject_data',
           keyTo: 'pk_entity'
         },
         subject_chunk: {
