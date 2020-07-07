@@ -25,13 +25,13 @@ export class EmailService {
   });
 
   async sendEmailVerificationEmail(
-    userId: string,
+    accountId: number,
     email: string,
     verificationToken: string
   ) {
 
     const url = this.restserver.rootUrl
-    const link = `${url}/verify-email?userId=${userId}&verificationToken=${verificationToken}&redirectOnSuccess=${url}/email-verified`
+    const link = `${url}/verify-email?userId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${url}/email-verified`
 
     // send mail with defined transport object
     return this.transporter.sendMail({

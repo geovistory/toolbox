@@ -1,5 +1,5 @@
 import { authenticate, TokenService } from '@loopback/authentication';
-import { Credentials, TokenServiceBindings, User, UserRepository } from '@loopback/authentication-jwt';
+import { Credentials, TokenServiceBindings } from '@loopback/authentication-jwt';
 import { inject } from '@loopback/core';
 import { Model, model, property, repository } from '@loopback/repository';
 import { get, HttpErrors, oas, param, post, Request, requestBody, Response, RestBindings } from '@loopback/rest';
@@ -8,10 +8,12 @@ import { genSalt, hash } from 'bcryptjs';
 import _ from 'lodash';
 import { EmailService } from '../services/email.service';
 import { PasswordResetTokenService } from '../services/password-reset-token.service';
-import { UserService } from '../services/user.service';
+import { Account } from '../models/account.model';
+import { AccountService } from '../services/account.service';
+import { AccountRepository } from '../repositories/account.repository';
 
 
-export interface NewUserRequest extends Credentials {
+export interface NewAccountRequest extends Credentials {
   username: string;
 }
 
@@ -40,7 +42,7 @@ export const CredentialsRequestBody = {
   },
 };
 
-const NewUserSchema = {
+const NewAccountSchema = {
   type: 'object',
   required: ['email', 'username', 'password'],
   properties: {
@@ -56,7 +58,7 @@ export const SignupRequestBody = {
   description: 'The input of signup function',
   required: true,
   content: {
-    'application/json': { schema: NewUserSchema },
+    'application/json': { schema: NewAccountSchema },
   },
 }
 
@@ -86,7 +88,7 @@ export const ResetPasswordRequestBody = {
 
 
 interface VerifyEmailRequest {
-  userId: string,
+  accountId: string,
   verificationToken: string,
   redirectOnSuccess: string
 }
@@ -94,7 +96,7 @@ const VerifyEmailSchema = {
   type: 'object',
   required: ['email', 'username', 'password'],
   properties: {
-    userId: {
+    accountId: {
       type: 'string',
     },
     verificationToken: {
@@ -137,16 +139,16 @@ export class HttpErrorModel extends Model {
 
 
 
-export class UserController {
+export class AccountController {
   constructor(
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public jwtService: TokenService,
-    @inject('APP_USER_SERVICE') public userService: UserService,
+    @inject('APP_ACCOUNT_SERVICE') public accountService: AccountService,
     @inject('APP_EMAIL_SERVICE') protected emailService: EmailService,
     @inject('APP_PASSWORD_RESET_TOKEN_SERVICE') protected passwordResetTokenService: PasswordResetTokenService,
     @inject(SecurityBindings.USER, { optional: true })
     public user: UserProfile,
-    @repository(UserRepository) protected userRepository: UserRepository,
+    @repository(AccountRepository) protected accountRepository: AccountRepository,
   ) { }
 
 
@@ -172,14 +174,14 @@ export class UserController {
   async login(
     @requestBody(CredentialsRequestBody) credentials: Credentials,
   ): Promise<{ token: string }> {
-    // ensure the user exists, and the password is correct
-    const user = await this.userService.verifyCredentials(credentials);
+    // ensure the account exists, and the password is correct
+    const account = await this.accountService.verifyCredentials(credentials);
 
     // ensure the email has been verified
-    this.userService.emailVerified(user)
+    this.accountService.emailVerified(account)
 
     // convert a User object into a UserProfile object (reduced set of properties)
-    const userProfile = this.userService.convertToUserProfile(user);
+    const userProfile = this.accountService.convertToUserProfile(account);
 
     // create a JSON Web Token based on the user profile
     const token = await this.jwtService.generateToken(userProfile);
@@ -207,11 +209,11 @@ export class UserController {
   @post('/signup', {
     responses: {
       '200': {
-        description: 'User',
+        description: 'Account',
         content: {
           'application/json': {
             schema: {
-              'x-ts-type': User,
+              'x-ts-type': Account,
             },
           },
         },
@@ -220,33 +222,41 @@ export class UserController {
   })
   async signUp(
     @requestBody(SignupRequestBody)
-    newUserRequest: NewUserRequest,
-  ): Promise<User> {
-    const password = await hash(newUserRequest.password, await genSalt());
+    newAccountRequest: NewAccountRequest,
+  ): Promise<Account> {
 
-    const verificationToken = await this.userService.generateVerificationToken()
+    ///temp
 
-    const savedUser = await this.userRepository.create(
+      console.log(await this.accountRepository.dataSource.execute('SELECT * FROM public.account LIMIT 10;'));
+
+    ///temp
+
+
+    const password = await hash(newAccountRequest.password, await genSalt());
+
+    const verificationToken = await this.accountService.generateVerificationToken()
+
+    const savedAccount = await this.accountRepository.create(
       {
         emailVerified: false,
         verificationToken,
-        ..._.omit(newUserRequest, 'password')
+        ..._.omit(newAccountRequest, 'password')
       },
     );
 
-    await this.userRepository.userCredentials(savedUser.id).create({ password });
+    await this.accountRepository.accountCredentials(savedAccount.id).create({ password });
 
     // send email verification email with email verification token
-    if (!savedUser.verificationToken) {
+    if (!savedAccount.verificationToken) {
       throw new HttpErrors.InternalServerError()
     }
-    await this.emailService.sendEmailVerificationEmail(savedUser.id, savedUser.email, savedUser.verificationToken)
+    await this.emailService.sendEmailVerificationEmail(savedAccount.id, savedAccount.email, savedAccount.verificationToken)
 
-    return new User({
-      id: savedUser.id,
-      username: savedUser.username,
-      email: savedUser.email,
-      emailVerified: savedUser.emailVerified
+    return new Account({
+      id: savedAccount.id,
+      username: savedAccount.username,
+      email: savedAccount.email,
+      emailVerified: savedAccount.emailVerified
     });
   }
 
@@ -256,7 +266,7 @@ export class UserController {
         description: 'Validation Failed',
       },
       '404': {
-        description: 'User not found',
+        description: 'Account not found',
       },
       '302': {
         description: 'Validation Succeeded',
@@ -269,18 +279,18 @@ export class UserController {
     },
   })
   async verifyEmail(
-    @param.query.string('userId') userId: string,
+    @param.query.string('accountId') accountId: number,
     @param.query.string('verificationToken') verificationToken: string,
     @param.query.string('redirectOnSuccess') redirectOnSuccess: string,
     @inject(RestBindings.Http.RESPONSE) response: Response
   ): Promise<void> {
 
-    const user = await this.userRepository.findById(userId)
+    const account = await this.accountRepository.findById(accountId)
 
-    if (user && user.verificationToken === verificationToken) {
-      user.verificationToken = undefined;
-      user.emailVerified = true;
-      await this.userRepository.update(user)
+    if (account && account.verificationToken === verificationToken) {
+      account.verificationToken = undefined;
+      account.emailVerified = true;
+      await this.accountRepository.update(account)
 
       response.redirect(redirectOnSuccess);
 
@@ -288,10 +298,10 @@ export class UserController {
     }
 
 
-    if (user) {
+    if (account) {
       throw new HttpErrors.Unauthorized(`Invalid token: ${verificationToken}`)
     } else {
-      throw new HttpErrors.NotFound(`User not found: ${userId}`)
+      throw new HttpErrors.NotFound(`User not found: ${accountId}`)
     }
 
   }
@@ -305,23 +315,23 @@ export class UserController {
     @param.query.string('email', { required: true }) email: string
   ): Promise<ResponseWithMsg> {
 
-    const user = await this.userRepository.findOne({
+    const account = await this.accountRepository.findOne({
       where: {
         email: { eq: email }
       }
     })
-    if (!user) {
+    if (!account) {
       throw new HttpErrors.NotFound(`Email '${email}' not found`)
     }
-    this.userService.emailVerified(user)
+    this.accountService.emailVerified(account)
 
-    const userProfile = this.userService.convertToUserProfile(user)
+    const userProfile = this.accountService.convertToUserProfile(account)
 
     const passwordResetToken = await this.passwordResetTokenService.generateToken(userProfile)
 
-    await this.emailService.sendResetPaswortEmail(user.email, passwordResetToken)
+    await this.emailService.sendResetPaswortEmail(account.email, passwordResetToken)
 
-    return { message: `Email to reset password has been sent to ${user.email}` }
+    return { message: `Email to reset password has been sent to ${account.email}` }
   };
 
 
@@ -338,13 +348,13 @@ export class UserController {
     }
     const userProfile = await this.passwordResetTokenService.verifyToken(resetPasswordRequest.resetPasswordToken)
 
-    const user = await this.userRepository.findById(userProfile.userId);
+    const account = await this.accountRepository.findById(userProfile.userId);
 
-    if (!user) throw new HttpErrors.Unauthorized(`User with id ${userProfile.userId} not found.`)
+    if (!account) throw new HttpErrors.Unauthorized(`User with id ${userProfile.userId} not found.`)
 
     const password = await hash(resetPasswordRequest.password, await genSalt());
 
-    await this.userRepository.userCredentials(user.id).patch({ password });
+    await this.accountRepository.accountCredentials(account.id).patch({ password });
 
     return { message: 'Password reset successful' };
   }

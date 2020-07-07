@@ -11,9 +11,10 @@ import { Streams } from './realtime/streams/streams';
 import { GvSequence } from './sequence';
 import { AuthenticationComponent } from '@loopback/authentication';
 import { JWTAuthenticationComponent, SECURITY_SCHEME_SPEC, UserServiceBindings } from '@loopback/authentication-jwt';
-import { UserService } from './services/user.service';
+import { AccountService } from './services/account.service';
 import { EmailService } from './services/email.service';
 import { PasswordResetTokenService } from './services/password-reset-token.service';
+import { DbDataSource, Postgres1DataSource } from './datasources';
 
 export class GeovistoryApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -25,7 +26,7 @@ export class GeovistoryApplication extends BootMixin(
     super(options);
 
     this.bind('APP_EMAIL_SERVICE').toClass(EmailService)
-    this.bind('APP_USER_SERVICE').toClass(UserService)
+    this.bind('APP_ACCOUNT_SERVICE').toClass(AccountService)
     this.bind('APP_PASSWORD_RESET_TOKEN_SERVICE').toClass(PasswordResetTokenService)
 
     // make the streams injectable
@@ -99,7 +100,7 @@ export class GeovistoryApplication extends BootMixin(
     this.component(JWTAuthenticationComponent);
 
     // Bind datasource
-    this.dataSource(DbDataSource, UserServiceBindings.DATASOURCE_NAME);
+    this.dataSource(Postgres1DataSource, 'Postgres1');
     // ------------- END OF SNIPPET -------------
 
   }
