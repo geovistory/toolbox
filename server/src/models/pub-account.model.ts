@@ -4,7 +4,7 @@ import {model, property, Entity} from '@loopback/repository';
   settings: {
     strict: false,
     caseSensitiveEmail: true,
-    hidden: ['password', 'verificationToken'],
+    hiddenProperties: ['password', 'verificationToken'],
     maxTTL: 31556926,
     ttl: 1209600,
     idInjection: true,
@@ -20,7 +20,7 @@ export class PubAccount extends Entity {
     generated: true,
     updateOnly: true,
   })
-  id?: number;
+  id: number;
 
   @property({
     type: 'string',
@@ -49,10 +49,6 @@ export class PubAccount extends Entity {
   })
   emailVerified?: boolean;
 
-  @property({
-    type: 'number',
-  })
-  fk_last_modifier?: number;
   @property({
     type: 'string',
   })

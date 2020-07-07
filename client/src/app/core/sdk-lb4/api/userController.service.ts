@@ -18,11 +18,13 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { HttpErrorModel } from '../model/models';
-import { InlineObject } from '../model/models';
-import { InlineObject1 } from '../model/models';
-import { InlineObject2 } from '../model/models';
-import { InlineResponse200 } from '../model/models';
-import { User } from '../model/models';
+import { LoginRequest } from '../model/models';
+import { LoginResponse } from '../model/models';
+import { PubAccount } from '../model/models';
+import { ResetPasswordRequest } from '../model/models';
+import { ResponseWithMsg } from '../model/models';
+import { SignupRequest } from '../model/models';
+import { VerifyEmailRequest } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -91,138 +93,16 @@ export class UserControllerService {
     }
 
     /**
-     * @param inlineObject2 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public userControllerLogin(inlineObject2: InlineObject2, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<InlineResponse200>;
-    public userControllerLogin(inlineObject2: InlineObject2, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<InlineResponse200>>;
-    public userControllerLogin(inlineObject2: InlineObject2, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<InlineResponse200>>;
-    public userControllerLogin(inlineObject2: InlineObject2, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (inlineObject2 === null || inlineObject2 === undefined) {
-            throw new Error('Required parameter inlineObject2 was null or undefined when calling userControllerLogin.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
-        }
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.post<InlineResponse200>(`${this.configuration.basePath}/users/login`,
-            inlineObject2,
-            {
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param inlineObject 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public userControllerResetPassword(inlineObject: InlineObject, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
-    public userControllerResetPassword(inlineObject: InlineObject, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
-    public userControllerResetPassword(inlineObject: InlineObject, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
-    public userControllerResetPassword(inlineObject: InlineObject, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (inlineObject === null || inlineObject === undefined) {
-            throw new Error('Required parameter inlineObject was null or undefined when calling userControllerResetPassword.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
-        }
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.post<any>(`${this.configuration.basePath}/reset-password`,
-            inlineObject,
-            {
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
      * @param email 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userControllerResetPasswordReset(email: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
-    public userControllerResetPasswordReset(email: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
-    public userControllerResetPasswordReset(email: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
-    public userControllerResetPasswordReset(email: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public userControllerForgotPassword(email: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ResponseWithMsg>;
+    public userControllerForgotPassword(email: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ResponseWithMsg>>;
+    public userControllerForgotPassword(email: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ResponseWithMsg>>;
+    public userControllerForgotPassword(email: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (email === null || email === undefined) {
-            throw new Error('Required parameter email was null or undefined when calling userControllerResetPasswordReset.');
+            throw new Error('Required parameter email was null or undefined when calling userControllerForgotPassword.');
         }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
@@ -233,13 +113,6 @@ export class UserControllerService {
 
         let headers = this.defaultHeaders;
 
-        // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
-        }
         let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -258,7 +131,7 @@ export class UserControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<any>(`${this.configuration.basePath}/reset-password-request`,
+        return this.httpClient.get<ResponseWithMsg>(`${this.configuration.basePath}/forgot-password`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,
@@ -271,27 +144,18 @@ export class UserControllerService {
     }
 
     /**
-     * @param inlineObject1 
+     * Login with existing account
+     * @param loginRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userControllerSignUp(inlineObject1: InlineObject1, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<User>;
-    public userControllerSignUp(inlineObject1: InlineObject1, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<User>>;
-    public userControllerSignUp(inlineObject1: InlineObject1, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<User>>;
-    public userControllerSignUp(inlineObject1: InlineObject1, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (inlineObject1 === null || inlineObject1 === undefined) {
-            throw new Error('Required parameter inlineObject1 was null or undefined when calling userControllerSignUp.');
-        }
+    public userControllerLogin(loginRequest?: LoginRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<LoginResponse>;
+    public userControllerLogin(loginRequest?: LoginRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<LoginResponse>>;
+    public userControllerLogin(loginRequest?: LoginRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<LoginResponse>>;
+    public userControllerLogin(loginRequest?: LoginRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
-        // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
-        }
         let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -319,8 +183,8 @@ export class UserControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<User>(`${this.configuration.basePath}/signup`,
-            inlineObject1,
+        return this.httpClient.post<LoginResponse>(`${this.configuration.basePath}/login`,
+            loginRequest,
             {
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
@@ -332,40 +196,121 @@ export class UserControllerService {
     }
 
     /**
-     * @param userId 
-     * @param verificationToken 
-     * @param redirectOnSuccess 
+     * @param resetPasswordRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public userControllerVerifyEmail(userId?: string, verificationToken?: string, redirectOnSuccess?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (userId !== undefined && userId !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>userId, 'userId');
-        }
-        if (verificationToken !== undefined && verificationToken !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>verificationToken, 'verificationToken');
-        }
-        if (redirectOnSuccess !== undefined && redirectOnSuccess !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>redirectOnSuccess, 'redirectOnSuccess');
-        }
+    public userControllerResetPassword(resetPasswordRequest?: ResetPasswordRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ResponseWithMsg>;
+    public userControllerResetPassword(resetPasswordRequest?: ResetPasswordRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ResponseWithMsg>>;
+    public userControllerResetPassword(resetPasswordRequest?: ResetPasswordRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ResponseWithMsg>>;
+    public userControllerResetPassword(resetPasswordRequest?: ResetPasswordRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
-        // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<ResponseWithMsg>(`${this.configuration.basePath}/reset-password`,
+            resetPasswordRequest,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Sign up / register new account
+     * @param signupRequest 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public userControllerSignUp(signupRequest?: SignupRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<PubAccount>;
+    public userControllerSignUp(signupRequest?: SignupRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<PubAccount>>;
+    public userControllerSignUp(signupRequest?: SignupRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<PubAccount>>;
+    public userControllerSignUp(signupRequest?: SignupRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<PubAccount>(`${this.configuration.basePath}/signup`,
+            signupRequest,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Verifies email address. Usually needed to complete registration of new account.
+     * @param verifyEmailRequest 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public userControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public userControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public userControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public userControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
         let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
@@ -378,14 +323,23 @@ export class UserControllerService {
         }
 
 
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
         let responseType: 'text' | 'json' = 'json';
         if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
-        return this.httpClient.get<any>(`${this.configuration.basePath}/verify-email`,
+        return this.httpClient.post<any>(`${this.configuration.basePath}/verify-email`,
+            verifyEmailRequest,
             {
-                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
@@ -396,6 +350,7 @@ export class UserControllerService {
     }
 
     /**
+     * Decodes the given token and returns the user id.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
@@ -406,13 +361,6 @@ export class UserControllerService {
 
         let headers = this.defaultHeaders;
 
-        // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
-        }
         let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header

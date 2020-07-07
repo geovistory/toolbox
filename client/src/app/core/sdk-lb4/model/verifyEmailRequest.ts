@@ -11,7 +11,9 @@
  */
 
 
-export interface InlineResponse200 { 
-    token?: string;
+export interface VerifyEmailRequest { 
+    userId: string;
+    verificationToken: string;
+    redirectOnSuccess: string;
 }
 

@@ -1,14 +1,25 @@
-import { MyUserService, User, } from '@loopback/authentication-jwt';
-import { HttpErrors } from '@loopback/rest';
+import {repository} from '@loopback/repository';
+import {HttpErrors} from '@loopback/rest';
+import {securityId, UserProfile} from '@loopback/security';
+import {compare} from 'bcrypt';
 import * as crypto from 'crypto';
+import {PubAccount} from '../models';
+import {PubAccountRepository} from '../repositories';
 
+export type Credentials = {
+  email: string;
+  password: string;
+};
 
-export class UserService extends MyUserService {
+export class UserService {
+  constructor(
+    @repository(PubAccountRepository) public userRepository: PubAccountRepository,
+  ) {}
 
   /**
    * Checks if email has been verified. Throws http error if not.
    */
-  emailVerified(user: User) {
+  emailVerified(user: PubAccount) {
     const emailNotVerifiedError = 'Email not yet verified.';
 
     if (!user.emailVerified) {
@@ -41,6 +52,45 @@ export class UserService extends MyUserService {
     })
   };
 
+
+
+  async verifyCredentials(credentials: Credentials): Promise<PubAccount> {
+    const invalidCredentialsError = 'Invalid email or password.';
+
+    const foundUser = await this.userRepository.findOne({
+      where: {email: credentials.email},
+    });
+    if (!foundUser) {
+      throw new HttpErrors.Unauthorized(invalidCredentialsError);
+    }
+
+    const credentialsFound = await this.userRepository.findById(
+      foundUser.id,
+    );
+    if (!credentialsFound) {
+      throw new HttpErrors.Unauthorized(invalidCredentialsError);
+    }
+
+    const passwordMatched = await compare(
+      credentials.password,
+      credentialsFound.password,
+    );
+
+    if (!passwordMatched) {
+      throw new HttpErrors.Unauthorized(invalidCredentialsError);
+    }
+
+    return foundUser;
+  }
+
+  convertToUserProfile(user: PubAccount): UserProfile {
+    return {
+      [securityId]: user.id.toString(),
+      name: user.username,
+      id: user.id,
+      email: user.email,
+    };
+  }
 }
 
 

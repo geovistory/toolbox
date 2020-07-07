@@ -11,15 +11,8 @@
  */
 
 
-export interface User { 
-  [key: string]: object | any;
-
-
-    id?: string;
-    realm?: string;
-    username?: string;
+export interface LoginRequest { 
     email: string;
-    emailVerified?: boolean;
-    verificationToken?: string;
+    password: string;
 }
 

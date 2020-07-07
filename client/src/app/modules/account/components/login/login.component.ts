@@ -38,8 +38,7 @@ export class LoginComponent implements OnInit {
     private accountApi: PubAccountApi,
     private slimLoadingBarService: SlimLoadingBarService,
     private ngRedux: NgRedux<IAccount>,
-    private actions: AccountActions,
-    private userApi: UserControllerService
+    private actions: AccountActions
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -55,35 +54,41 @@ export class LoginComponent implements OnInit {
 
     const { email, password } = this.model
     if (email && password) {
-      this.userApi.userControllerLogin({ email, password })
+      this.activeAccountService.login({ email, password })
         .subscribe(
           result => {
-
+            this.completeLoading();
+            const redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
+            this.router.navigate([redirect]);
           },
           error => {
+            // TODO: error handling for statusCode: 500; ENOTFOUND;
+            // When (db) server not available; e.g. «Network error»
 
+            this.errorMessage = error.message;
+            this.resetLoading();
           }
         )
     }
 
-    this.accountApi.login(this.model)
-      .subscribe(
-        data => {
-          this.completeLoading();
-          this.activeAccountService.updateAccount();
+    // this.accountApi.login(this.model)
+    //   .subscribe(
+    //     data => {
+    //       this.completeLoading();
+    //       this.activeAccountService.updateAccount();
 
-          this.ngRedux.dispatch(this.actions.loginSucceeded(data.user));
+    //       this.ngRedux.dispatch(this.actions.loginSucceeded(data.user));
 
-          const redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
-          this.router.navigate([redirect]);
-        },
-        error => {
-          // TODO: error handling for statusCode: 500; ENOTFOUND;
-          // When (db) server not available; e.g. «Network error»
+    //       const redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
+    //       this.router.navigate([redirect]);
+    //     },
+    //     error => {
+    //       // TODO: error handling for statusCode: 500; ENOTFOUND;
+    //       // When (db) server not available; e.g. «Network error»
 
-          this.errorMessage = error.message;
-          this.resetLoading();
-        });
+    //       this.errorMessage = error.message;
+    //       this.resetLoading();
+    //     });
   }
 
 

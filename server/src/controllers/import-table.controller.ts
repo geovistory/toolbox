@@ -39,10 +39,10 @@ const IMPORTTABLE_RESPONSE: ResponseObject = {
         type: 'object',
         title: 'ImportTableResponse',
         properties: {
-          result: { type: 'string' },
-          duration: { type: 'number' },
-          error: { type: 'number' },
-          fk_digital: { type: 'number' },
+          result: {type: 'string'},
+          duration: {type: 'number'},
+          error: {type: 'number'},
+          fk_digital: {type: 'number'},
         },
       },
     },
@@ -57,17 +57,18 @@ export class ImportTableController {
 
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
-  ) { }
+  ) {}
 
 
   @post('/import-table', {
     responses: {
       '200': {
         description: 'Import a table',
-        content: { 'application/json': { schema: { 'x-ts-type': ImportTableResponse } } }
+        content: {'application/json': {schema: {'x-ts-type': ImportTableResponse}}}
       },
     },
   })
+  // @authorize namespaceMember
   async importTable(
     @requestBody()
     table: ImportTable
@@ -79,25 +80,25 @@ export class ImportTableController {
     //check consistency - columns name
     for (let i = 0; i < table.headers.length; i++) {
       if (!table.headers[i].colLabel || table.headers[i].colLabel == '') {
-        return { error: "Inconsistency in column name <" + i + ">." };
+        return {error: "Inconsistency in column name <" + i + ">."};
       }
     }
     //check consistency - columns number + data dormat
     for (let i = 0; i < table.rows.length; i++) {
       //columns number
       if (table.rows[i].length != table.headers.length) {
-        return { error: "Inconsistency in columns number in row <" + i + ">." };
+        return {error: "Inconsistency in columns number in row <" + i + ">."};
       }
       //data format
       for (let j = 0; j < table.rows[i].length; j++) {
         //number
         if (table.headers[j].type == 'number') {
           if (isNaN(parseFloat(table.rows[i][j] + ''))) {
-            return { error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a number." };
+            return {error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a number."};
           }
         } else if (table.headers[j].type == 'string') {
           if (String(table.rows[i][j]) != table.rows[i][j]) {
-            return { error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a string." };
+            return {error: "Inconsistency in data format at cell: [" + i + ": " + j + "] ==> It should be a string."};
           }
         }
       }
@@ -127,7 +128,7 @@ export class ImportTableController {
         await this.datasource.execute('COMMIT;'); //this is necessary because we are creating a table, and we want to add element to it
 
       } else {
-        return { error: "This table already exists in this namespace." }
+        return {error: "This table already exists in this namespace."}
       }
 
       let tableToSend = table.rows.map(r => r.map(c => c + ''));
@@ -137,7 +138,7 @@ export class ImportTableController {
     } catch (e) {
       await this.datasource.execute('ROLLBACK;');
       console.log(e);
-      return { error: "Error occured during importation, please retry or contact support." };
+      return {error: "Error occured during importation, please retry or contact support."};
     }
 
     await this.datasource.execute('COMMIT;');
@@ -186,7 +187,7 @@ async function createColumns(datasource: Postgres1DataSource, fkDigital: number,
     //   + "TRUE"
     //   + ");";
     if (headers[i].colLabel == '' || !headers[i].colLabel) continue;
-    let json = { "importer_original_label": headers[i].colLabel };
+    let json = {"importer_original_label": headers[i].colLabel};
     q.sql += `(${q.addParam(fkDigital)}, ${q.addParam(fkNamespace)}, ${q.addParam(headers[i].colLabel)},'In field id_for_import_txt: original column label', ${q.addParam(json)}, ${q.addParam(headers[i].type == 'number' ? DataType.number : DataType.string)}, ${q.addParam(DataType.column)}, TRUE),`
   }
   await datasource.execute(q.sql.replace(/.$/, ';'), q.params); // /.$/ ==> last char of a string

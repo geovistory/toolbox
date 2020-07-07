@@ -12,8 +12,6 @@
 
 
 export interface InlineObject1 { 
-    email: string;
-    username: string;
-    password: string;
+    newPassword: string;
 }
 

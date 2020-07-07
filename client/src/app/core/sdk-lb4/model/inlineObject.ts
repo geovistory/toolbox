@@ -12,7 +12,7 @@
 
 
 export interface InlineObject { 
-    password: string;
-    resetPasswordToken: string;
+    oldPassword: string;
+    newPassword: string;
 }
 

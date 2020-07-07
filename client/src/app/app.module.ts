@@ -42,13 +42,9 @@ import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule
 import { KeysModule } from './shared/pipes/keys.module';
 import { WarModule } from './core/war/war.module';
 import { ApiModule } from 'app/core/sdk-lb4/api.module';
-
-// const spy = create()
-// spy.unplug(spy.find(CyclePlugin));
-// spy.unplug(spy.find(GraphPlugin));
-// spy.plug(
-//   new GraphPlugin({ keptDuration: -1 }),
-// );
+import { CookiesModule } from './core/cookies/cookies.module';
+import { GvAuthService } from './core/auth/auth.service';
+import { Configuration, ConfigurationParameters } from './core/sdk-lb4/configuration';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -105,17 +101,30 @@ registerLocaleData(localeDeCh);
     UserFeedbackModule,
     HttpClientModule,
     MaterialModule,
-    ApiModule
+    ApiModule,
+    CookiesModule.forRoot(),
   ],
   providers: [
     EntityEditorService,
     ActiveAccountService,
     AuthGuard,
+    GvAuthService,
     SystemAdminGuard,
     { provide: LOCALE_ID, useValue: 'en-US' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: appearance
+    },
+    {
+      provide: Configuration,
+      useFactory: (authService: GvAuthService) => new Configuration(
+        {
+          basePath: environment.baseUrl,
+          accessToken: authService.getToken().lb4Token
+        }
+      ),
+      deps: [GvAuthService],
+      multi: false
     }
 
   ],

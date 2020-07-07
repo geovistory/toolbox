@@ -11,8 +11,9 @@
  */
 
 
-export interface InlineObject3 { 
-    oldPassword: string;
-    newPassword: string;
+export interface SignupRequest { 
+    email: string;
+    username: string;
+    password: string;
 }
 

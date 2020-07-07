@@ -9,9 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { PubAccount } from './pubAccount';
 
 
-export interface InlineObject4 { 
-    newPassword: string;
+export interface LoginResponse { 
+    user?: PubAccount;
+    lb4Token?: string;
+    lb4ExpiresInMs?: number;
+    lb3Token?: string;
+    lb3Ttl?: number;
+    lb3Created?: string;
 }
 

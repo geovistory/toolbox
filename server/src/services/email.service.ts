@@ -25,7 +25,7 @@ export class EmailService {
   });
 
   async sendEmailVerificationEmail(
-    userId: string,
+    userId: number,
     email: string,
     verificationToken: string
   ) {

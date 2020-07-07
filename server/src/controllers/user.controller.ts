@@ -1,148 +1,77 @@
-import {authenticate, TokenService} from '@loopback/authentication';
-import {Credentials, TokenServiceBindings, User, UserRepository} from '@loopback/authentication-jwt';
+import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
-import {Model, model, property, repository} from '@loopback/repository';
-import {get, HttpErrors, oas, param, post, Request, requestBody, Response, RestBindings} from '@loopback/rest';
+import {JsonSchemaWithExtensions, Model, model, property, repository} from '@loopback/repository';
+import {get, HttpErrors, oas, param, post, requestBody, Response, RestBindings} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {genSalt, hash} from 'bcryptjs';
+import {genSalt, hash} from 'bcrypt';
 import _ from 'lodash';
+import {JWTService} from '../components/jwt';
+import {JWTBindings} from '../components/jwt/keys';
+import {PubAccount} from '../models';
+import {PubAccountRepository} from '../repositories';
 import {EmailService} from '../services/email.service';
 import {PasswordResetTokenService} from '../services/password-reset-token.service';
 import {UserService} from '../services/user.service';
 
 
-export interface NewUserRequest extends Credentials {
-  username: string;
-}
-
-
-
 // the requirements for new passwords can be higher
-const RegisterPasswordSchema = {
+const NewPasswordSchema: JsonSchemaWithExtensions = {
   type: 'string',
   minLength: 8,
 }
-const EmailSchema = {
+const EmailSchema: JsonSchemaWithExtensions = {
   type: 'string',
   format: 'email',
 }
-const CredentialsSchema = {
-  type: 'object',
-  required: ['email', 'password'],
-  properties: {
-    email: EmailSchema,
-    password: RegisterPasswordSchema,
-  },
-};
-
-export const CredentialsRequestBody = {
-  description: 'The input of login function',
-  required: true,
-  content: {
-    'application/json': {schema: CredentialsSchema},
-  },
-};
-
-// the requirements for existing passwords are low
-// (backward compatibility with old passwords)
-const LoginPasswordSchema = {
+const UrlSchema: JsonSchemaWithExtensions = {
   type: 'string',
-}
-const LoginCredentialsSchema = {
-  type: 'object',
-  required: ['email', 'password'],
-  properties: {
-    email: EmailSchema,
-    password: LoginPasswordSchema,
-  },
-};
-
-export const LoginCredentialsRequestBody = {
-  description: 'The input of login function',
-  required: true,
-  content: {
-    'application/json': {schema: LoginCredentialsSchema},
-  },
-}
-const NewUserSchema = {
-  type: 'object',
-  required: ['email', 'username', 'password'],
-  properties: {
-    email: EmailSchema,
-    username: {
-      type: 'string',
-      maxLength: 15,
-    },
-    password: RegisterPasswordSchema,
-  },
-};
-export const SignupRequestBody = {
-  description: 'The input of signup function',
-  required: true,
-  content: {
-    'application/json': {schema: NewUserSchema},
-  },
-}
-
-interface ResetPasswordRequest {
-  password: string
-  resetPasswordToken: string
-}
-
-const ResetPasswordRequestSchema = {
-  type: 'object',
-  required: ['password', 'resetPasswordToken'],
-  properties: {
-    password: RegisterPasswordSchema,
-    resetPasswordToken: {
-      type: 'string'
-    }
-  },
-};
-
-export const ResetPasswordRequestBody = {
-  description: 'The input of resetPassword function',
-  required: true,
-  content: {
-    'application/json': {schema: ResetPasswordRequestSchema},
-  },
+  format: 'url',
 }
 
 
-interface VerifyEmailRequest {
-  userId: string,
-  verificationToken: string,
-  redirectOnSuccess: string
+
+@model()
+export class LoginRequest {
+  @property({required: true}) email: string;
+  @property({required: true}) password: string;
 }
-const VerifyEmailSchema = {
-  type: 'object',
-  required: ['email', 'username', 'password'],
-  properties: {
-    userId: {
-      type: 'string',
-    },
-    verificationToken: {
-      type: 'string'
-    },
-    redirectOnSuccess: {
-      type: 'string',
-      format: 'url',
-    },
-  },
-};
-export const VerifyEmailRequestBody = {
-  description: 'The input of verify email function',
-  required: true,
-  content: {
-    'application/json': {schema: VerifyEmailSchema},
-  },
+
+@model()
+export class LoginResponse {
+  @property() user: PubAccount;
+  @property() lb4Token: string;
+  @property() lb4ExpiresInMs: number;
+  @property() lb3Token: string;
+  @property() lb3Ttl: number;
+  @property() lb3Created: string;
 }
 
 
 @model()
-class ResponseWithMsg {
-  @property()
-  message: string;
+export class SignupRequest {
+  @property({required: true, jsonSchema: EmailSchema}) email: string;
+  @property({required: true}) username: string;
+  @property({required: true, jsonSchema: NewPasswordSchema}) password: string;
+}
+
+
+
+@model()
+export class ResetPasswordRequest {
+  @property({required: true, jsonSchema: NewPasswordSchema}) password: string
+  @property({required: true}) resetPasswordToken: string
+}
+
+@model()
+class VerifyEmailRequest {
+  @property({required: true}) userId: string
+  @property({required: true}) verificationToken: string
+  @property({required: true, jsonSchema: UrlSchema}) redirectOnSuccess: string
+}
+
+@model()
+export class ResponseWithMsg {
+  @property() message: string;
 }
 
 @model()
@@ -157,45 +86,39 @@ export class HttpErrorModel extends Model {
   @property() error: HttpErrorObjectModel
 }
 
-
-
-
-
 export class UserController {
   constructor(
-    @inject(TokenServiceBindings.TOKEN_SERVICE)
-    public jwtService: TokenService,
+    @inject(JWTBindings.TOKEN_SERVICE)
+    public jwtService: JWTService,
     @inject('APP_USER_SERVICE') public userService: UserService,
     @inject('APP_EMAIL_SERVICE') protected emailService: EmailService,
     @inject('APP_PASSWORD_RESET_TOKEN_SERVICE') protected passwordResetTokenService: PasswordResetTokenService,
-    @inject(SecurityBindings.USER, {optional: true})
-    public user: UserProfile,
-    @repository(UserRepository) protected userRepository: UserRepository,
+    @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
+    @repository(PubAccountRepository) protected userRepository: PubAccountRepository,
   ) {}
 
 
-  @post('/users/login', {
+  @post('/login', {
+    description: 'Login with existing account',
     responses: {
       '200': {
-        description: 'Token',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                token: {
-                  type: 'string',
-                },
-              },
-            },
-          },
-        },
+        description: 'Login succeeded and token(s) returned',
+        content: {'application/json': {schema: {'x-ts-type': LoginResponse}}},
       },
     },
   })
   async login(
-    @requestBody(LoginCredentialsRequestBody) credentials: Credentials,
-  ): Promise<{token: string}> {
+    @requestBody() credentials: LoginRequest,
+    @inject('lb3-models.PubAccount') lb3PubAccount: {
+      login: (credentials: LoginRequest) => Promise<{
+        id: string,
+        ttl: number,
+        created: string,
+        userId: number
+      }>
+    }
+  ): Promise<LoginResponse> {
+
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
 
@@ -206,12 +129,29 @@ export class UserController {
     const userProfile = this.userService.convertToUserProfile(user);
 
     // create a JSON Web Token based on the user profile
-    const token = await this.jwtService.generateToken(userProfile);
-    return {token};
+    const lb4 = await this.jwtService.generateTokenWithExpire(userProfile);
+
+    // login the old loopback 3 way
+    const lb3 = await lb3PubAccount.login(credentials)
+
+    const pubAccount = user.toJSON() as PubAccount
+    return {
+      user: pubAccount,
+
+      lb4Token: lb4.token,
+      lb4ExpiresInMs: lb4.expiresInMs,
+
+      lb3Token: lb3.id,
+      lb3Ttl: lb3.ttl,
+      lb3Created: lb3.created,
+    };
   }
 
-  @authenticate('jwt')
+  @authenticate('basic')
+  // authorize projectMember
+  // authorize systemAdmin
   @get('/whoAmI', {
+    description: 'Decodes the given token and returns the user id.',
     responses: {
       '200': {
         description: '',
@@ -224,20 +164,20 @@ export class UserController {
     },
   })
   async whoAmI(
-    @inject(SecurityBindings.USER)
-    currentUserProfile: UserProfile,
+    // @inject(SecurityBindings.USER) currentUserProfile: UserProfile,
   ): Promise<string> {
-    return currentUserProfile[securityId];
+    return this.user[securityId];
   }
 
   @post('/signup', {
+    description: 'Sign up / register new account',
     responses: {
       '200': {
         description: 'User',
         content: {
           'application/json': {
             schema: {
-              'x-ts-type': User,
+              'x-ts-type': PubAccount,
             },
           },
         },
@@ -245,9 +185,8 @@ export class UserController {
     },
   })
   async signUp(
-    @requestBody(SignupRequestBody)
-    newUserRequest: NewUserRequest,
-  ): Promise<User> {
+    @requestBody() newUserRequest: SignupRequest,
+  ): Promise<PubAccount> {
     const password = await hash(newUserRequest.password, await genSalt());
 
     const verificationToken = await this.userService.generateVerificationToken()
@@ -256,11 +195,13 @@ export class UserController {
       {
         emailVerified: false,
         verificationToken,
-        ..._.omit(newUserRequest, 'password')
+        ..._.omit(newUserRequest, 'password'),
+        // TODO: exclude credentials in other table
+        password
       },
     );
-
-    await this.userRepository.userCredentials(savedUser.id).create({password});
+    // TODO: exclude credentials in other table
+    // await this.userRepository.userCredentials(savedUser.id).create({password});
 
     // send email verification email with email verification token
     if (!savedUser.verificationToken) {
@@ -268,7 +209,7 @@ export class UserController {
     }
     await this.emailService.sendEmailVerificationEmail(savedUser.id, savedUser.email, savedUser.verificationToken)
 
-    return new User({
+    return new PubAccount({
       id: savedUser.id,
       username: savedUser.username,
       email: savedUser.email,
@@ -276,7 +217,8 @@ export class UserController {
     });
   }
 
-  @get('/verify-email', {
+  @post('/verify-email', {
+    description: 'Verifies email address. Usually needed to complete registration of new account.',
     responses: {
       '400': {
         description: 'Validation Failed',
@@ -285,10 +227,11 @@ export class UserController {
         description: 'User not found',
       },
       '302': {
-        description: 'Validation Succeeded',
+        description: 'On Success, redirects browser to url given by redirectOnSuccess property of VerifyEmailRequest',
         headers: {
           redirect: {
-            schema:{
+            description: 'Url for browser redirect',
+            schema: {
               type: 'string'
             }
           }
@@ -297,39 +240,44 @@ export class UserController {
     },
   })
   async verifyEmail(
-    @param.query.string('userId') userId: string,
-    @param.query.string('verificationToken') verificationToken: string,
-    @param.query.string('redirectOnSuccess') redirectOnSuccess: string,
+    @requestBody() req: VerifyEmailRequest,
     @inject(RestBindings.Http.RESPONSE) response: Response
   ): Promise<void> {
 
-    const user = await this.userRepository.findById(userId)
+    const user = await this.userRepository.findById(req.userId)
 
-    if (user && user.verificationToken === verificationToken) {
+    if (user && user.verificationToken === req.verificationToken) {
       user.verificationToken = undefined;
       user.emailVerified = true;
       await this.userRepository.update(user)
 
-      response.redirect(redirectOnSuccess);
+      response.redirect(req.redirectOnSuccess);
 
       return;
     }
 
 
     if (user) {
-      throw new HttpErrors.Unauthorized(`Invalid token: ${verificationToken}`)
+      throw new HttpErrors.Unauthorized(`Invalid token: ${req.verificationToken}`)
     } else {
-      throw new HttpErrors.NotFound(`User not found: ${userId}`)
+      throw new HttpErrors.NotFound(`User not found: ${req.userId}`)
     }
 
   }
 
 
 
-  @get('/reset-password-request')
-  @oas.response(200, ResponseWithMsg)
+  @get('/forgot-password', {
+    description: 'Sends a email to the given email address with a link to reset the password.',
+    responses: {
+      '200': {
+        description: 'Confirmation message',
+        content: {'application/json': {schema: {'x-ts-type': ResponseWithMsg}}},
+      },
+    },
+  })
   @oas.response(404, HttpErrorModel)
-  async resetPasswordReset(
+  async forgotPassword(
     @param.query.string('email', {required: true}) email: string
   ): Promise<ResponseWithMsg> {
 
@@ -354,11 +302,19 @@ export class UserController {
 
 
 
-  @post('/reset-password')
-  @oas.response(200, ResponseWithMsg)
+  @post('/reset-password',
+    {
+      description: 'Resets the password. UserId of the user in question is encoded in the resetPasswordToken. Method validates resetPasswordToken and the new password.',
+      responses: {
+        '200': {
+          description: 'Confirmation message',
+          content: {'application/json': {schema: {'x-ts-type': ResponseWithMsg}}},
+        },
+      },
+    })
   @oas.response(401, HttpErrorModel)
   async resetPassword(
-    @requestBody(ResetPasswordRequestBody) resetPasswordRequest: ResetPasswordRequest
+    @requestBody() resetPasswordRequest: ResetPasswordRequest
   ): Promise<ResponseWithMsg> {
 
     if (!resetPasswordRequest.resetPasswordToken) {
@@ -372,7 +328,9 @@ export class UserController {
 
     const password = await hash(resetPasswordRequest.password, await genSalt());
 
-    await this.userRepository.userCredentials(user.id).patch({password});
+    // TODO: exclude credentials in other table
+    // await this.userRepository.userCredentials(user.id).patch({password});
+    await this.userRepository.updateById(user.id, {password});
 
     return {message: 'Password reset successful'};
   }
