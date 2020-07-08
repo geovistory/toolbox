@@ -22,6 +22,7 @@ export class RegistrationComponent {
   validationError: SignupValidationError
 
   confirm = false; // if true, form is hidden and confirmation shown.
+  confirmEmail = ''; //email to inform user
 
   constructor(
     private accountApi: AccountControllerService,
@@ -45,7 +46,7 @@ export class RegistrationComponent {
         data => {
           this.completeLoading();
           this.validationError = data.validationError;
-          if (!this.validationError) this.confirm = true;
+          if (!this.validationError) { this.confirm = true; this.confirmEmail = data.success.email; };
         },
         errResponse => {
 
