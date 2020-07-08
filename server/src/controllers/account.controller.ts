@@ -19,6 +19,8 @@ import {Postgres1DataSource} from '../datasources';
 const NewPasswordSchema: JsonSchemaWithExtensions = {
   type: 'string',
   minLength: 8,
+  maxLength: 20,
+  pattern: /(?=.*[\d])(?=.*[A-Za-z]).*/.source
 }
 const EmailSchema: JsonSchemaWithExtensions = {
   type: 'string',
@@ -72,12 +74,7 @@ export class ResetPasswordRequest {
   @property({required: true}) resetPasswordToken: string
 }
 
-@model()
-class VerifyEmailRequest {
-  @property({required: true}) accountId: number
-  @property({required: true}) verificationToken: string
-  @property({required: true, jsonSchema: UrlSchema}) redirectOnSuccess: string
-}
+
 
 @model()
 export class ResponseWithMsg {
@@ -188,7 +185,7 @@ export class AccountController {
         content: {
           'application/json': {
             schema: {
-              'x-ts-type': PubAccount,
+              'x-ts-type': SignupResponse,
             },
           },
         },
@@ -204,6 +201,8 @@ export class AccountController {
     const verificationToken = await this.accountService.generateVerificationToken()
 
     const validationError = await this.accountService.validateUniqueness(newAccountRequest.email, newAccountRequest.username);
+
+    if (Object.keys(validationError).length) return {validationError};
 
     const savedAccount = await this.accountRepository.create(
       {
@@ -225,8 +224,8 @@ export class AccountController {
     const params = [savedAccount.id];
     await this.dataSource.execute(sql, params);
 
-    if (Object.keys(validationError).length) return {validationError};
-    else return {
+
+    return {
       success: new PubAccount({
         id: savedAccount.id,
         username: savedAccount.username,
@@ -238,7 +237,7 @@ export class AccountController {
 
 
 
-  @post('/verify-email', {
+  @get('/verify-email', {
     description: 'Verifies email address. Usually needed to complete registration of new account.',
     responses: {
       '400': {
@@ -261,26 +260,28 @@ export class AccountController {
     },
   })
   async verifyEmail(
-    @requestBody() req: VerifyEmailRequest,
+    @param.query.number('accountId') accountId: number,
+    @param.query.string('verificationToken') verificationToken: string,
+    @param.query.string('redirectOnSuccess') redirectOnSuccess: string,
     @inject(RestBindings.Http.RESPONSE) response: Response
   ): Promise<void> {
 
-    const account = await this.accountRepository.findById(req.accountId)
+    const account = await this.accountRepository.findById(accountId)
 
-    if (account && account.verificationToken === req.verificationToken) {
+    if (account && account.verificationToken === verificationToken) {
       account.verificationToken = undefined;
       account.emailVerified = true;
       await this.accountRepository.update(account)
 
-      response.redirect(req.redirectOnSuccess);
+      response.redirect(redirectOnSuccess);
 
       return;
     }
 
     if (account) {
-      throw new HttpErrors.Unauthorized(`Invalid token: ${req.verificationToken}`)
+      throw new HttpErrors.Unauthorized(`Invalid token: ${verificationToken}`)
     } else {
-      throw new HttpErrors.NotFound(`Account not found: ${req.accountId}`)
+      throw new HttpErrors.NotFound(`Account not found: ${accountId}`)
     }
 
   }
@@ -342,9 +343,11 @@ export class AccountController {
     }
     const userProfile = await this.passwordResetTokenService.verifyToken(resetPasswordRequest.resetPasswordToken)
 
-    const account = await this.accountRepository.findById(userProfile.userId);
+    const accountId = parseInt(userProfile[securityId])
 
-    if (!account) throw new HttpErrors.Unauthorized(`User with id ${userProfile.userId} not found.`)
+    const account = await this.accountRepository.findById(accountId);
+
+    if (!account) throw new HttpErrors.Unauthorized(`User with id ${accountId} not found.`)
 
     const password = await hash(resetPasswordRequest.password, await genSalt());
 

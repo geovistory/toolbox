@@ -4,6 +4,7 @@ import {FindRoute, InvokeMethod, InvokeMiddleware, ParseParams, Reject, RequestC
 
 const SequenceActions = RestBindings.SequenceActions;
 
+
 export class GvSequence implements SequenceHandler {
   /**
    * Optional invoker for registered middleware in a chain.

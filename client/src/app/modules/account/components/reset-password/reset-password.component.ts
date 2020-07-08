@@ -22,7 +22,8 @@ export class ResetPasswordComponent implements OnInit {
   confirm = false; // if true, form is hidden and confirmation shown.
   returnUrl: string;
   access_token: string;
-  errorMessage: string;
+  errorMessages: {};
+  undefinedError: boolean;
 
   constructor(
     protected http: HttpClient,
@@ -51,18 +52,21 @@ export class ResetPasswordComponent implements OnInit {
 
   resetPassword() {
     this.startLoading();
-    this.errorMessage = '';
+    this.errorMessages = {};
+    this.undefinedError = false;
     this.setPassword(this.model.password)
       .subscribe(
         data => {
           this.completeLoading();
           this.confirm = true;
         },
-        error => {
-          // TODO: error handling for statusCode: 500; ENOTFOUND;
-          // When (db) server not available; e.g. «Network error»
-
-          this.errorMessage = error.message;
+        errResponse => {
+          const error = errResponse.error.error
+          if (error.code === 'VALIDATION_FAILED' && error.details && error.details.length) {
+            this.errorMessages = { password: error.details[0].message }
+          } else {
+            this.undefinedError = true;
+          }
           this.resetLoading();
         });
   }

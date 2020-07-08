@@ -16,9 +16,6 @@ export class HomeComponent implements OnInit {
 
   constructor(
     public activeAccountService: ActiveAccountService,
-
-    // temp
-    private chunkApi: DatChunkControllerService
   ) { }
 
   ngOnInit() {
@@ -28,14 +25,5 @@ export class HomeComponent implements OnInit {
 
   }
 
-  // temp
-
-  getChunk() {
-    this.chunkApi.datChunkControllerFindById(24612186).subscribe(
-      res => {
-        this.chunk = res
-      }
-    )
-  }
 
 }

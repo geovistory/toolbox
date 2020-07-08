@@ -1,18 +1,15 @@
-import {Provider} from "@loopback/core";
 import {
-  Authorizer,
   AuthorizationContext,
-  AuthorizationMetadata,
-  AuthorizationDecision
+
+  AuthorizationDecision, AuthorizationMetadata, Authorizer
 } from '@loopback/authorization';
-import {Roles} from './keys';
-import {inject} from '@loopback/testlab';
+import {Provider} from "@loopback/core";
 import {repository} from '@loopback/repository';
-import {PubAccountProjectRelRepository} from '../../repositories';
-import {RequestContext, HttpErrors} from '@loopback/rest';
-import {securityId} from '@loopback/authorization/node_modules/@loopback/security';
+import {HttpErrors, RequestContext} from '@loopback/rest';
 import {isInteger} from 'lodash';
+import {PubAccountProjectRelRepository} from '../../repositories';
 import {PubRoleMappingRepository} from '../../repositories/pub-role-mapping.repository';
+import {Roles} from './keys';
 
 export class AuthorizationProvider implements Provider<Authorizer> {
   /**

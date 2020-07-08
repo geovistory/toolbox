@@ -55,6 +55,8 @@ const appearance: MatFormFieldDefaultOptions = {
 
 registerLocaleData(localeDeCh);
 
+
+
 // Third party imports
 // Own imports
 @NgModule({
@@ -117,12 +119,14 @@ registerLocaleData(localeDeCh);
     },
     {
       provide: Configuration,
-      useFactory: (authService: GvAuthService) => new Configuration(
-        {
-          basePath: environment.baseUrl,
-          accessToken: authService.getToken().lb4Token
-        }
-      ),
+      useFactory: (authService: GvAuthService) => {
+        const config = new Configuration(
+          {
+            basePath: environment.baseUrl,
+            accessToken: authService.getToken().lb4Token
+          })
+        return authService.setLb4SdkConfig(config)
+      },
       deps: [GvAuthService],
       multi: false
     }

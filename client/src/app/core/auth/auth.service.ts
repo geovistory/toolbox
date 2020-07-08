@@ -5,6 +5,7 @@ import { GvInternalStorage } from '../cookies/cookies.module';
 import { LoopBackAuth } from '../sdk/services/core/auth.service';
 import { SDKToken } from '../sdk';
 import { PubAccount } from '../sdk-lb4/model/models';
+import { Configuration } from '../sdk-lb4';
 
 export class GvAuthToken {
   lb3 = new SDKToken()
@@ -24,7 +25,16 @@ export class GvAuthToken {
 @Injectable()
 export class GvAuthService {
 
-  private gvAuthToken = new GvAuthToken();
+  private _gvAuthToken = new GvAuthToken();
+  private set gvAuthToken(val: GvAuthToken) {
+    this._gvAuthToken = val;
+    this.lb4SdkConfig.accessToken = val.lb4Token
+  }
+  private get gvAuthToken(): GvAuthToken {
+    return this._gvAuthToken;
+  }
+
+  private lb4SdkConfig: Configuration;
 
   protected prefix: string = '$Geovistory::auth$';
   /**
@@ -177,5 +187,10 @@ export class GvAuthService {
     }
 
     return null
+  }
+
+  setLb4SdkConfig(config: Configuration): Configuration {
+    this.lb4SdkConfig = config;
+    return this.lb4SdkConfig
   }
 }

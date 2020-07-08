@@ -1,15 +1,12 @@
 
 const user = 'info@geovistory.org';
 const pass = 'jagen731!murre';
-import { createTransport } from 'nodemailer'
-import { inject } from '@loopback/core';
-import { RestServer } from '@loopback/rest';
+import {createTransport} from 'nodemailer';
+import {UrlBuilder} from '../utils/url-builder';
 
 export class EmailService {
 
-  constructor(
-    @inject('servers.RestServer') protected restserver: RestServer
-  ) { }
+  constructor() {}
 
   transporter = createTransport({
     host: 'asmtp.mail.hostpoint.ch',
@@ -30,8 +27,8 @@ export class EmailService {
     verificationToken: string
   ) {
 
-    const url = this.restserver.rootUrl
-    const link = `${url}/verify-email?userId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${url}/email-verified`
+    const url = new UrlBuilder().getBaseUrl();
+    const link = `${url}/verify-email?accountId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${url}/email-verified`
 
     // send mail with defined transport object
     return this.transporter.sendMail({
@@ -50,7 +47,7 @@ export class EmailService {
     passwordResetToken: string
   ) {
 
-    const url = this.restserver.rootUrl
+    const url = new UrlBuilder().getBaseUrl();
     const link = `${url}/reset-password?access_token=${passwordResetToken}`
 
     // send mail with defined transport object

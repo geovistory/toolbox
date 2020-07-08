@@ -20,10 +20,10 @@ import { Observable }                                        from 'rxjs';
 import { HttpErrorModel } from '../model/models';
 import { LoginRequest } from '../model/models';
 import { LoginResponse } from '../model/models';
-import { PubAccount } from '../model/models';
 import { ResetPasswordRequest } from '../model/models';
 import { ResponseWithMsg } from '../model/models';
 import { SignupRequest } from '../model/models';
+import { SignupResponse } from '../model/models';
 import { VerifyEmailRequest } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -297,9 +297,9 @@ export class AccountControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public accountControllerSignUp(signupRequest?: SignupRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<PubAccount>;
-    public accountControllerSignUp(signupRequest?: SignupRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<PubAccount>>;
-    public accountControllerSignUp(signupRequest?: SignupRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<PubAccount>>;
+    public accountControllerSignUp(signupRequest?: SignupRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<SignupResponse>;
+    public accountControllerSignUp(signupRequest?: SignupRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<SignupResponse>>;
+    public accountControllerSignUp(signupRequest?: SignupRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<SignupResponse>>;
     public accountControllerSignUp(signupRequest?: SignupRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
@@ -346,7 +346,7 @@ export class AccountControllerService {
             responseType = 'text';
         }
 
-        return this.httpClient.post<PubAccount>(`${this.configuration.basePath}/signup`,
+        return this.httpClient.post<SignupResponse>(`${this.configuration.basePath}/signup`,
             signupRequest,
             {
                 responseType: <any>responseType,
