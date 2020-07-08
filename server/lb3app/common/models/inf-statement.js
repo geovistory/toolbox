@@ -9,8 +9,8 @@ const models = require('../../server/server').models;
 var SqlEntityPreviewList = require('../../dist/server/sql-builders/sql-entity-preview-list')
   .SqlEntityPreviewList;
 
-module.exports = function(InfStatement) {
-  InfStatement.findOrCreateInfStatements = function(
+module.exports = function (InfStatement) {
+  InfStatement.findOrCreateInfStatements = function (
     pk_project,
     statements,
     ctx
@@ -33,15 +33,15 @@ module.exports = function(InfStatement) {
           context
         );
       });
-      Promise.map(promiseArray, promise => promise)
-        .catch(err => reject(err))
-        .then(res => {
+      Promise.map(promiseArray, (promise) => promise)
+        .catch((err) => reject(err))
+        .then((res) => {
           return resolve(_.flatten(res));
         });
     });
   };
 
-  InfStatement.findOrCreateInfStatement = function(pkProject, statement, ctx) {
+  InfStatement.findOrCreateInfStatement = function (pkProject, statement, ctx) {
     return new Promise((resolve, reject) => {
       // the model to find or create
       let model = {
@@ -82,8 +82,8 @@ module.exports = function(InfStatement) {
             reqStatement,
             ctxWithoutBody
           )
-            .catch(err => reject(err))
-            .then(resArr => {
+            .catch((err) => reject(err))
+            .then((resArr) => {
               // add related models we retrieved asyncronously
               const result = {
                 ...resArr[0],
@@ -93,11 +93,11 @@ module.exports = function(InfStatement) {
               resolve(result);
             });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     });
   };
 
-  InfStatement.alternativesNotInProjectByEntityPk = function(
+  InfStatement.alternativesNotInProjectByEntityPk = function (
     entityPk,
     propertyPk,
     pkProject,
@@ -138,7 +138,7 @@ module.exports = function(InfStatement) {
       },
     };
 
-    const findThem = function(err, statements) {
+    const findThem = function (err, statements) {
       const entitiesInProj = [];
 
       for (var i = 0; i < statements.length; i++) {
@@ -235,6 +235,17 @@ module.exports = function(InfStatement) {
                   ],
                 },
               },
+              object_dimension: {
+                $relation: {
+                  name: 'object_dimension',
+                  joinType: 'left join',
+                  orderBy: [
+                    {
+                      pk_entity: 'asc',
+                    },
+                  ],
+                },
+              },
             },
           },
         },
@@ -255,7 +266,7 @@ module.exports = function(InfStatement) {
     InfStatement.findComplex(statementsInProjectFilter, findThem);
   };
 
-  InfStatement.alternativesNotInProjectByTeEntPk = function(
+  InfStatement.alternativesNotInProjectByTeEntPk = function (
     teEntPk,
     propertyPk,
     pkProject,
@@ -296,7 +307,7 @@ module.exports = function(InfStatement) {
       },
     };
 
-    const findThem = function(err, statements) {
+    const findThem = function (err, statements) {
       const statementsInProj = [];
 
       for (var i = 0; i < statements.length; i++) {
@@ -368,6 +379,17 @@ module.exports = function(InfStatement) {
               ],
             },
           },
+          object_dimension: {
+            $relation: {
+              name: 'object_dimension',
+              joinType: 'left join',
+              orderBy: [
+                {
+                  pk_entity: 'asc',
+                },
+              ],
+            },
+          },
         },
       };
 
@@ -395,7 +417,7 @@ module.exports = function(InfStatement) {
    * @param pk_project
    * @param pk_typed_class
    */
-  InfStatement.addToProject = function(pk_project, pk_statements, ctx, cb) {
+  InfStatement.addToProject = function (pk_project, pk_statements, ctx, cb) {
     if (!ctx.req.accessToken.userId)
       return Error('AccessToken.userId is missing');
     const accountId = ctx.req.accessToken.userId;
@@ -407,7 +429,7 @@ module.exports = function(InfStatement) {
       statements AS (
         select pk_entity, community_favorite_calendar as calendar
         from information.v_statement
-        where pk_entity IN (${pk_statements.map(r => r * 1)})
+        where pk_entity IN (${pk_statements.map((r) => r * 1)})
       )
       -- add the project relations
       insert into projects.v_info_proj_rel (fk_project, is_in_project, fk_entity, calendar, fk_last_modifier)
@@ -483,6 +505,17 @@ module.exports = function(InfStatement) {
               ],
             },
           },
+          object_dimension: {
+            $relation: {
+              name: 'object_dimension',
+              joinType: 'left join',
+              orderBy: [
+                {
+                  pk_entity: 'asc',
+                },
+              ],
+            },
+          },
         },
       };
 
@@ -494,7 +527,7 @@ module.exports = function(InfStatement) {
    * load paginated list by statements, that point to an
    * entity_preview
    */
-  InfStatement.paginatedListTargetingEntityPreviews = function(
+  InfStatement.paginatedListTargetingEntityPreviews = function (
     fkProject,
     fkSourceEntity,
     fkProperty,
@@ -528,7 +561,7 @@ module.exports = function(InfStatement) {
    * @param  {number} pkProject primary key of project
    * @param  {number} pkEntity  pk_entity of the statement
    */
-  InfStatement.queryByParams = function(
+  InfStatement.queryByParams = function (
     ofProject,
     pkProject,
     pkEntity,
@@ -551,13 +584,13 @@ module.exports = function(InfStatement) {
     };
     let where = [];
     Object.keys(w)
-      .filter(key => !!w[key])
+      .filter((key) => !!w[key])
       .map((key, index, ar) => {
         let part = [key, '=', w[key]];
         if (index !== 0) part = ['AND', ...part];
         return part;
       })
-      .forEach(part => {
+      .forEach((part) => {
         where = [...where, ...part];
       });
 
@@ -578,7 +611,7 @@ module.exports = function(InfStatement) {
 
     return InfStatement.findComplex(filter, (err, res) => {
       if (err) cb(err);
-      res.forEach(statement => {
+      res.forEach((statement) => {
         statement.fk_subject_tables_row = parseInt(
           statement.fk_subject_tables_row,
           10
@@ -604,7 +637,7 @@ module.exports = function(InfStatement) {
    * Get an nested object with everything needed to display the
    * links made from an entity towards sources and digitals.
    */
-  InfStatement.sourcesAndDigitalsOfEntity = function(
+  InfStatement.sourcesAndDigitalsOfEntity = function (
     ofProject,
     pkProject,
     pkEntity,
@@ -638,8 +671,8 @@ module.exports = function(InfStatement) {
 
       const textPks = _.uniq(
         statements
-          .filter(statement => statement.subject_chunk)
-          .map(statement => statement.subject_chunk.fk_text)
+          .filter((statement) => statement.subject_chunk)
+          .map((statement) => statement.subject_chunk.fk_text)
       );
 
       if (!textPks.length) return cb(null, statements);
@@ -729,7 +762,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
         reqStatement.subject_temporal_entity,
         ctxWithoutBody
       )
-        .then(resArray => {
+        .then((resArray) => {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
@@ -737,7 +770,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { subject_temporal_entity: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
 
     // if subject is a inf persistent_item
@@ -748,7 +781,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
         reqStatement.subject_persistent_item,
         ctxWithoutBody
       )
-        .then(resArray => {
+        .then((resArray) => {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
@@ -756,14 +789,14 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { subject_persistent_item: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
 
     // if subject is a inf chunk
     else if (hasRelatedModel(reqStatement.subject_chunk)) {
       //create the subject first
       return models.DatChunk.create(reqStatement.subject_chunk)
-        .then(res => {
+        .then((res) => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
@@ -771,7 +804,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { subject_chunk: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
     // if subject is a inf statement (we have a statement of statement)
     else if (hasRelatedModel(reqStatement.subject_statement)) {
@@ -782,7 +815,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
         reqStatement.subject_statement,
         ctxWithoutBody
       )
-        .then(res => {
+        .then((res) => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
@@ -790,7 +823,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { subject_statement: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     } else {
       reject({
         message: 'Subject of statement not found',
@@ -864,7 +897,7 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
         reqStatement.object_temporal_entity,
         ctxWithoutBody
       )
-        .then(resArray => {
+        .then((resArray) => {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
@@ -872,7 +905,7 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_temporal_entity: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
     // if object is an inf object_persistent_item
     else if (hasRelatedModel(reqStatement.object_persistent_item)) {
@@ -882,7 +915,7 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
         reqStatement.object_persistent_item,
         ctxWithoutBody
       )
-        .then(resArray => {
+        .then((resArray) => {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
@@ -890,18 +923,18 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_persistent_item: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
 
     // if object is an inf place
     else if (hasRelatedModel(reqStatement.object_place)) {
-      //create the subject first
+      //create the object first
       return models.InfPlace.findOrCreatePlace(
         pkProject,
         reqStatement.object_place,
         ctxWithoutBody
       )
-        .then(resArray => {
+        .then((resArray) => {
           const relatedModel = helpers.toObject(resArray[0]);
           // return the foreign key and the related model
           resolve({
@@ -909,14 +942,33 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_place: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
+    }
+
+    // if object is an inf dimension
+    else if (hasRelatedModel(reqStatement.object_dimension)) {
+      //create the object first
+      return models.InfDimension.create(
+        pkProject,
+        reqStatement.object_dimension,
+        ctxWithoutBody
+      )
+        .then((resArray) => {
+          const relatedModel = helpers.toObject(resArray[0]);
+          // return the foreign key and the related model
+          resolve({
+            fk: { fk_object_info: relatedModel.pk_entity },
+            relatedModel: { object_dimension: relatedModel },
+          });
+        })
+        .catch((err) => reject(err));
     }
 
     // if object is an inf appellation
     else if (hasRelatedModel(reqStatement.object_appellation)) {
-      //create the subject first
+      //create the object first
       return models.InfAppellation.create(reqStatement.object_appellation)
-        .then(res => {
+        .then((res) => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
@@ -924,14 +976,14 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_appellation: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
 
     // if object is an inf lang_string
     else if (hasRelatedModel(reqStatement.object_lang_string)) {
-      //create the subject first
+      //create the object first
       return models.InfLangString.create(reqStatement.object_lang_string)
-        .then(res => {
+        .then((res) => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
@@ -939,16 +991,16 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_lang_string: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
 
     // if object is an inf language
     else if (hasRelatedModel(reqStatement.object_language)) {
-      //create the subject first
+      //create the object first
       return models.InfLanguage.find({
         where: { pk_entity: reqStatement.object_language.pk_entity },
       })
-        .then(resArr => {
+        .then((resArr) => {
           const relatedModel = helpers.toObject(resArr[0]);
           // return the foreign key and the related model
           resolve({
@@ -956,14 +1008,14 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_language: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
 
     // if object is an inf time_primitive
     else if (hasRelatedModel(reqStatement.object_time_primitive)) {
-      //create the subject first
+      //create the object first
       return models.InfTimePrimitive.create(reqStatement.object_time_primitive)
-        .then(res => {
+        .then((res) => {
           const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
@@ -971,18 +1023,18 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_time_primitive: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     }
 
     // if object is an inf chunk
     else if (hasRelatedModel(reqStatement.object_chunk)) {
-      //create the subject first
+      //create the object first
       return models.DatChunk.findOrCreateChunk(
         pkProject,
         reqStatement.object_chunk,
         ctxWithoutBody
       )
-        .then(resArr => {
+        .then((resArr) => {
           const relatedModel = helpers.toObject(resArr[0]);
           // return the foreign key and the related model
           resolve({
@@ -990,7 +1042,7 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
             relatedModel: { object_chunk: relatedModel },
           });
         })
-        .catch(err => reject(err));
+        .catch((err) => reject(err));
     } else {
       reject({
         message: 'Object of statement not found',

@@ -148,6 +148,12 @@
       "model": "DatChunk",
       "foreignKey": "fk_object_data",
       "primaryKey": "pk_entity"
+    },
+    "object_dimension": {
+      "type": "belongsTo",
+      "model": "InfDimension",
+      "foreignKey": "fk_object_info",
+      "primaryKey": "pk_entity"
     }
   },
   "acls": [
@@ -637,11 +643,11 @@
       ],
       "returns": {
         "arg": "data",
-        "type":["InfStatement"],
+        "type": [
+          "InfStatement"
+        ],
         "root": true
       },
-
-
       "description": "Find statements by params.",
       "http": {
         "path": "/find-by-params",

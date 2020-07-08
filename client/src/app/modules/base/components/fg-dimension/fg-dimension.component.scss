@@ -1,0 +1,22 @@
+:host {
+  width: 100%;
+}
+
+.gv-fg-dimension-container {
+  display: flex;
+  flex-direction: row;
+  mat-form-field ~ mat-form-field {
+    margin: 0 0 0 1rem;
+  }
+  mat-form-field {
+    ::ng-deep .mat-form-field-infix {
+      width: unset;
+    }
+  }
+  .ctrl-measurement-unit {
+    flex: 1 1 auto;
+  }
+  .ctrl-number {
+    flex: 0 0 120px;
+  }
+}

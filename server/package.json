@@ -35,7 +35,10 @@
     "heroku-postbuild": "bash heroku-postbuild.sh",
     "t": "export NO_LOGS='true' && lb-mocha --require ts-node/register --timeout 4000  --recursive true 'src/__tests__/**/*.ts'",
     "build:sdk": "bash build-ngx-sdk.sh",
-    "build:sdk-windows": "build-ngx-sdk.sh"
+    "build:sdk-windows": "build-ngx-sdk.sh",
+    "build:lb3-sdk": "./node_modules/.bin/lb-sdk lb3app/server/server ../client/src/app/core/sdk -d ng2web -l angular2",
+    "build:lb3-sdk-windows": ".\\node_modules\\.bin\\lb-sdk lb3app\\server\\server ..\\client\\src\\app\\core\\sdk -d ng2web -l angular2"
+
   },
   "repository": {
     "type": "git"
@@ -119,6 +122,7 @@
     "source-map-support": "^0.5.19",
     "ts-node": "^8.10.2",
     "typescript": "~3.9.5",
-    "typescript-json-schema": "^0.40.0"
+    "typescript-json-schema": "^0.40.0",
+    "@mean-expert/loopback-sdk-builder": "kleiolab/loopback-sdk-builder#fix-missing-targetClass"
   }
 }

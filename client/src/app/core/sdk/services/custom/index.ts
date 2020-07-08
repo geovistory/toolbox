@@ -28,6 +28,7 @@ export * from './ProDfhClassProjRel';
 export * from './ProDfhProfileProjRel';
 export * from './InfAppellation';
 export * from './InfLangString';
+export * from './InfDimension';
 export * from './InfTemporalEntity';
 export * from './InfStatement';
 export * from './InfLanguage';

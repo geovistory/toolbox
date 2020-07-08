@@ -1,29 +1,27 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormArray, AbstractControl } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig, InfLangString, InfTemporalEntityApi } from 'app/core';
+import { FormArray } from '@angular/forms';
+import { MatFormFieldAppearance } from '@angular/material';
+import { ActiveProjectService, InfLangString, InfPersistentItem, InfTemporalEntity, InfTextProperty, SysConfig, U, ValidationService } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { ActionResultObservable } from 'app/core/store/actions';
+import { InfStatement } from 'app/core/sdk/models/InfStatement';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
+import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { equals, flatten, indexBy, values, groupBy, sum, uniq } from 'ramda';
+import { equals, flatten, groupBy, indexBy, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService, BasicModel } from '../../services/configuration-pipes.service';
+import { BasicModel, ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
+import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextPropertyComponent, FgTextPropertyInjectData } from '../fg-text-property/fg-text-property.component';
 import { FieldDefinition, FieldProperty, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
-import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
-import { MatFormFieldAppearance } from '@angular/material';
-import { Appearance } from 'cesium';
-import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
-import { InfStatement } from 'app/core/sdk/models/InfStatement';
 type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
@@ -81,7 +79,7 @@ export interface FormChildData {
   langString?: FgLangStringInjectData
 }
 
-export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
+export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
 
 export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
 export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, FormChildData>;

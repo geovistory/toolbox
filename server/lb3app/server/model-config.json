@@ -99,6 +99,10 @@
     "dataSource": "postgres1",
     "public": true
   },
+  "InfDimension": {
+    "dataSource": "postgres1",
+    "public": true
+  },
   "InfTemporalEntity": {
     "dataSource": "postgres1",
     "public": true

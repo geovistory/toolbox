@@ -45,7 +45,7 @@ export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFo
   onTouched = () => { };
 
   get empty() {
-    return this.model === undefined;
+    return this.model ? false : true;
   }
 
   get shouldLabelFloat() { return this.focused || !this.empty; }

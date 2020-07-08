@@ -1,16 +1,16 @@
-import { get } from 'https';
-import { indexBy } from 'ramda';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { ApiProfile, ApiProfileList } from '../../common';
-import { ApiClassProfile, ApiClassProfileList } from '../../common/interfaces/api-class-profile-list.interface';
-import { ApiPropertyProfile, ApiPropertyProfileList } from '../../common/interfaces/api-property-profile-list.interface';
-import { ActivationReportItem, ProfileActivationReport } from '../../common/interfaces/profile-activation-report.interface';
-import { DeactivationReportItem, ProfileDeactivationReport } from '../../common/interfaces/profile-deactivation-report.interface';
-import { isValidApiClassProfileList } from '../../common/validators/api-class-profile-list.validator';
-import { isValidApiProfileList } from '../../common/validators/api-profile-list.validator';
-import { isValidApiPropertyProfileList } from '../../common/validators/api-property-profile-list.validator';
-import { ErrorObj } from '../utils/interfaces';
+import {get} from 'https';
+import {indexBy} from 'ramda';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {ApiProfile, ApiProfileList} from '../../common';
+import {ApiClassProfile, ApiClassProfileList} from '../../common/interfaces/api-class-profile-list.interface';
+import {ApiPropertyProfile, ApiPropertyProfileList} from '../../common/interfaces/api-property-profile-list.interface';
+import {ActivationReportItem, ProfileActivationReport} from '../../common/interfaces/profile-activation-report.interface';
+import {DeactivationReportItem, ProfileDeactivationReport} from '../../common/interfaces/profile-deactivation-report.interface';
+import {isValidApiClassProfileList} from '../../common/validators/api-class-profile-list.validator';
+import {isValidApiProfileList} from '../../common/validators/api-profile-list.validator';
+import {isValidApiPropertyProfileList} from '../../common/validators/api-property-profile-list.validator';
+import {ErrorObj} from '../utils/interfaces';
 type Callback = (err: ErrorObj | false, res?: any) => void;
 interface DeactivationReportQueryRow {
   category: 'property' | 'class',

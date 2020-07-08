@@ -21,9 +21,10 @@ var include = [
   'InfTemporalEntity',
   'InfLanguage',
   'InfTextProperty',
+  'InfDimension',
+  'InfPlace',
   'DatChunk',
   'DatDigital',
-  'InfPlace',
   'DatNamespace',
   'WarEntityPreview',
 ];
