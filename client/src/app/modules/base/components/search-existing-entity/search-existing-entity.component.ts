@@ -50,7 +50,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   // Search
   pkProject: number;
   searchString = '';
-  minSearchStringLength = 2;
+  minSearchStringLength = 0;
   pkNamespace: number;
 
   // Pagination

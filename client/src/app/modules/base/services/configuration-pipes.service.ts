@@ -441,7 +441,7 @@ export class ConfigurationPipesService {
 
 
 
-  @spyTag @cache({ refCount: false }) pipeListTypeOfClass(targetClassPk: number): Observable<ListType> {
+  @spyTag @cache({ refCount: false }) pipeListTypeOfClass(targetClassPk: number, targetMaxQuantity: number): Observable<ListType> {
     return this.p.dfh$.class$.by_pk_class$.key(targetClassPk).pipe(
       filter(i => !!i),
       map(klass => {
@@ -458,10 +458,10 @@ export class ConfigurationPipesService {
         else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
           return 'time-primitive'
         }
-        else if (klass.basic_type === 30) {
+        else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
           return 'has-type'
         }
-        else if (klass.basic_type === 8) {
+        else if (klass.basic_type === 8 || klass.basic_type === 30) {
           return 'entity-preview'
         }
         else {
@@ -733,7 +733,7 @@ export class ConfigurationPipesService {
         return combineLatest(
           this.pipeClassLabel(sourceClass),
           this.pipeClassLabel(targetClass),
-          this.pipeListTypeOfClass(targetClass),
+          this.pipeListTypeOfClass(targetClass, targetMaxQuantity),
           this.pipeLabelOfPropertyField(
             p.pk_property,
             isOutgoing ? p.has_domain : null,

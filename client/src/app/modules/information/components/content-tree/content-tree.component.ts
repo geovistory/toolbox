@@ -212,7 +212,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
     const hasTypeStatement$ = this.i.pipeTypeOfEntity(
       pkExpressionPortion,
-      DfhConfig.PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE
+      DfhConfig.PROPERTY_PK_HAS_EXPRESSION_PORTION_TYPE,
+      false
     )
 
     const pkType$ = hasTypeStatement$.pipe(
