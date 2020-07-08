@@ -11,7 +11,7 @@ import { QueryPathInjectData } from 'app/modules/queries/forms/query-path/query-
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { QueryDefinition, TableInput } from '../../../../../../../src/common/interfaces';
+import { QueryDefinition, TableInput } from '../../../../../../../server/lb3app/src/common/interfaces';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';

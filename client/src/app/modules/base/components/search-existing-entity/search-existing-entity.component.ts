@@ -3,7 +3,7 @@ import { ActiveProjectService, WarEntityPreviewApi } from 'app/core';
 import { EntitySearchHit } from 'app/shared/components/list/api/list.models';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { debounceTime, first, map, takeUntil } from 'rxjs/operators';
-import { SearchExistingRelatedStatement } from '../../../../../../../dist/server/sql-builders/sql-war-search-existing';
+import { SearchExistingRelatedStatement } from '../../../../../../../server/lb3app/dist/server/sql-builders/sql-war-search-existing';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 
 export interface DisableIfHasStatement {

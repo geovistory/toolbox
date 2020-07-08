@@ -1,0 +1,21 @@
+{
+  "restApiRoot": "/lb3-api",
+  "remoting": {
+    "context": false,
+    "rest": {
+      "handleErrors": false,
+      "handleUnknownPaths": false,
+      "normalizeHttpPath": false,
+      "xml": false
+    },
+    "json": {
+      "strict": false,
+      "limit": "2000kb"
+    },
+    "urlencoded": {
+      "extended": true,
+      "limit": "100kb"
+    },
+    "cors": false
+  }
+}

@@ -12,6 +12,7 @@
     "**/*.sandbox.ts",
     "**/*.playground.ts",
     "./app/modules/gv-angular-cesium/angular-cesium-fork/demo/",
-    "./app/modules/gv-angular-cesium/angular-cesium-fork/src/angular-cesium/utils/testingUtils.ts"
+    "./app/modules/gv-angular-cesium/angular-cesium-fork/src/angular-cesium/utils/testingUtils.ts",    "**/*.worker.ts"
+
   ]
 }

@@ -1,7 +1,7 @@
 /// <reference path="../../../../node_modules/@types/cesium/index.d.ts" />
 
 // import { QueryPoint } from 'app/modules/visuals/components/map-query-layer/map-query-layer.component';
-import { CzmlDoubleI, CzmlPoint } from '../../../../../src/common/interfaces/czml-types';
+import { CzmlDoubleI, CzmlPoint } from '../../../../../server/lb3app/src/common/interfaces/czml-types';
 import { TemporalDistribution } from './statistic-helpers';
 import { QueryPoint } from './czml-label-generator';
 

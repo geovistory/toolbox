@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DfhProfileApi } from 'app/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ProfileActivationReport } from '../../../../../../../src/common/interfaces/profile-activation-report.interface'
+import { ProfileActivationReport } from '../../../../../../../server/lb3app/src/common/interfaces/profile-activation-report.interface'
 @Component({
   selector: 'gv-ontome-profile-activation-report',
   templateUrl: './ontome-profile-activation-report.component.html',

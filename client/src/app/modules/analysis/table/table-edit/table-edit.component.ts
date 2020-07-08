@@ -5,7 +5,7 @@ import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.se
 import { Subject, of, Observable } from 'rxjs';
 import { AnalysisService } from '../../services/analysis.service';
 import { TableFormComponent } from '../table-form/table-form.component';
-import { QueryDefinition, TableInput, TableOutput } from '../../../../../../../src/common/interfaces'
+import { QueryDefinition, TableInput, TableOutput } from '../../../../../../../server/lb3app/src/common/interfaces'
 import { map } from 'rxjs/operators';
 
 @Component({

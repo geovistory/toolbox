@@ -1,0 +1,15 @@
+{
+    "name": "geovistory-db-migrate",
+    "description": "package.json for db-migrations scripts",
+    "version": "0.0.0",
+    "scripts": {
+        "cm": "node_modules/db-migrate/bin/db-migrate --config ./config.json --migrations-dir ./migrations --sql-file true create",
+        "mu": "node_modules/db-migrate/bin/db-migrate --config ./config.json --migrations-dir ./migrations up",
+        "md": "node_modules/db-migrate/bin/db-migrate --config ./config.json --migrations-dir ./migrations down"
+    },
+    "dependencies": {
+        "db-migrate": "^0.11.5",
+        "db-migrate-pg": "^0.4.0"
+    },
+    "private": true
+}

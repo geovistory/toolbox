@@ -1,18 +1,17 @@
 
 import { Injectable } from '@angular/core';
-import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig, switchMapOr, InfPersistentItem } from 'app/core';
+import { ActiveProjectService, DfhClass, DfhLabel, DfhProperty, InfLanguage, limitTo, ProClassFieldConfig, ProTextProperty, SysConfig } from 'app/core';
+import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
+import { proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from 'app/core/pro/pro.config';
 import { ByPk } from 'app/core/store/model';
+import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { flatten, indexBy, keys, uniq, values, sort } from 'ramda';
-import { combineLatest, Observable, of, zip } from 'rxjs';
-import { filter, map, startWith, switchMap, mapTo } from 'rxjs/operators';
+import { flatten, indexBy, keys, sort, uniq, values } from 'ramda';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
+import * as Config from '../../../../../../server/lb3app/common/config/Config';
 import { cache, spyTag } from '../../../shared';
 import { FieldDefinition, ListDefinition, ListType } from '../components/properties-tree/properties-tree.models';
-import * as Config from '../../../../../../common/config/Config';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { textPropertyByFksKey, proClassFieldConfgByProjectAndClassKey } from 'app/core/pro/pro.config';
-import { dfhLabelByFksKey } from 'app/core/dfh/dfh.config';
-import { DfhPropertyActionFactory } from 'app/core/dfh/dfh.actions';
 
 export type BasicModel = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'persistent_item' | 'temporal_entity'
 

@@ -3,7 +3,7 @@
 import { CzmlLabelGenerator, QueryPoint } from './czml-label-generator';
 import { CzmlPointGenerator } from './czml-point-generator';
 import { CzmlPositionGenerator } from './czml-position-generator';
-import { CzmlPacket } from '../../../../../src/common/interfaces/czml-types';
+import { CzmlPacket } from '../../../../../server/lb3app/src/common/interfaces/czml-types';
 
 // https://github.com/AnalyticalGraphicsInc/czml-writer/wiki/Packet
 

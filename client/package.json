@@ -61,6 +61,7 @@
     "ng2-dnd": "^5.0.2",
     "ngx-auto-unsubscribe": "^2.4.1",
     "ngx-easy-table": "^6.3.0",
+    "ngx-file-drop": "8.0.0",
     "ngx-json-viewer": "^2.4.0",
     "ngx-socket-io": "^2.1.1",
     "ngx-treeview": "^6.0.2",
@@ -75,6 +76,7 @@
     "rxjs": "^6.5.4",
     "socket.io-client": "^2.3.0",
     "tslib": "^1.10.0",
+    "xlsx": "0.13.3",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
