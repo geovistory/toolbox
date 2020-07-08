@@ -107,8 +107,8 @@ export class FieldComponent implements OnInit {
           return true;
         }))
     } else {
-      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.property.pkProperty, false).pipe(
-        map(hasTypeStatement => hasTypeStatement ? 1 : 0)
+      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.property.pkProperty, this.fieldDefinition.isOutgoing).pipe(
+        map(hasTypeRole => hasTypeRole ? 1 : 0)
       )
     }
 
