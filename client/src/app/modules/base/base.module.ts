@@ -55,6 +55,7 @@ import { FgTextPropertyComponent } from './components/fg-text-property/fg-text-p
 import { FgLangStringComponent } from './components/fg-lang-string/fg-lang-string.component';
 import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { EntityPreviewsPaginatedModule } from 'app/shared/components/entity-previews-paginated/entity-previews-paginated.module';
+import { FgDimensionComponent } from './components/fg-dimension/fg-dimension.component';
 
 const components = [
   PropertiesTreeComponent,
@@ -90,7 +91,8 @@ const components = [
   EntityAddExistingHitComponent,
   FgPlaceComponent,
   FgTextPropertyComponent,
-  FgLangStringComponent
+  FgLangStringComponent,
+  FgDimensionComponent
 ]
 
 const baseModules = [

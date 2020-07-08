@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component } from '@angular/core';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { LoopBackConfig, PubAccountApi } from 'app/core';
+import { LoopBackConfig } from 'app/core';
+import { AccountControllerService } from 'app/core/sdk-lb4';
 import { environment } from 'environments/environment';
+
 
 
 
@@ -19,7 +20,7 @@ export class RequestPasswordResetComponent {
   confirm = false; // if true, form is hidden and confirmation shown.
 
   constructor(
-    private accountApi: PubAccountApi,
+    private accountApi: AccountControllerService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -30,7 +31,8 @@ export class RequestPasswordResetComponent {
     this.startLoading();
 
     this.errorMessage = '';
-    this.accountApi.resetPassword(this.model)
+
+    this.accountApi.accountControllerForgotPassword(this.model.email)
       .subscribe(
         data => {
           this.completeLoading();

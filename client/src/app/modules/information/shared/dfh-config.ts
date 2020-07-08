@@ -95,6 +95,12 @@ export class DfhConfig {
   // dfh_pk_class of place (not geographical place!)
   static CLASS_PK_PLACE = 51;
 
+  // dfh_pk_class of dimension
+  static CLASS_PK_DIMENSION = 52;
+
+  // dfh_pk_class of measurement unit
+  static CLASS_PK_MEASUREMENT_UNIT = 56;
+
   // dfh_pk_class of Reference – geovC13
   static CLASS_PK_REFERENCE = 657;
 

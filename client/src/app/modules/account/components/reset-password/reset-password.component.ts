@@ -1,7 +1,8 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { ErrorHandler, LoopBackConfig, PubAccountApi } from 'app/core';
+import { ErrorHandler, LoopBackConfig } from 'app/core';
+import { AccountControllerService, ResetPasswordRequest } from 'app/core/sdk-lb4';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '../../../../../../node_modules/@angular/common/http';
@@ -21,13 +22,14 @@ export class ResetPasswordComponent implements OnInit {
   confirm = false; // if true, form is hidden and confirmation shown.
   returnUrl: string;
   access_token: string;
-  errorMessage: string;
+  errorMessages: {};
+  undefinedError: boolean;
 
   constructor(
     protected http: HttpClient,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
-    private accountApi: PubAccountApi,
+    private accountApi: AccountControllerService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -40,24 +42,31 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   setPassword(newPassword: string): Observable<any> {
-    return this.accountApi.setPassword(newPassword, (headers) => headers.append('Authorization', this.access_token))
+    const req: ResetPasswordRequest = {
+      password: newPassword,
+      resetPasswordToken: this.access_token
+    }
+    return this.accountApi.accountControllerResetPassword(req)
   }
 
 
   resetPassword() {
     this.startLoading();
-    this.errorMessage = '';
+    this.errorMessages = {};
+    this.undefinedError = false;
     this.setPassword(this.model.password)
       .subscribe(
         data => {
           this.completeLoading();
           this.confirm = true;
         },
-        error => {
-          // TODO: error handling for statusCode: 500; ENOTFOUND;
-          // When (db) server not available; e.g. «Network error»
-
-          this.errorMessage = error.message;
+        errResponse => {
+          const error = errResponse.error.error
+          if (error.code === 'VALIDATION_FAILED' && error.details && error.details.length) {
+            this.errorMessages = { password: error.details[0].message }
+          } else {
+            this.undefinedError = true;
+          }
           this.resetLoading();
         });
   }

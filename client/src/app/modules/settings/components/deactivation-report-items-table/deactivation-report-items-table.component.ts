@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { DeactivationReportItem } from '../../../../../../../src/common/interfaces/profile-deactivation-report.interface';
+import { DeactivationReportItem } from '../../../../../../../server/lb3app/src/common/interfaces/profile-deactivation-report.interface';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 
 @Component({

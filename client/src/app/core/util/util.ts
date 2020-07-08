@@ -3,7 +3,7 @@ import { ProjectPreview } from 'app/core/active-project/active-project.models';
 import { ByPk } from 'app/core/store/model';
 import { TimeSpan } from 'app/core/time-span/time-span';
 import { QuillDoc } from 'app/modules/quill';
-import { SysConfig } from '../../../../../src/common/config/sys-config';
+import { SysConfig } from '../../../../../server/lb3app/src/common/config/sys-config';
 import { AcEntity, AcNotification, ActionType } from '../../../../node_modules/angular-cesium';
 import { TimeSpanItem } from '../../modules/base/components/properties-tree/properties-tree.models';
 import { DfhConfig } from '../../modules/information/shared/dfh-config';

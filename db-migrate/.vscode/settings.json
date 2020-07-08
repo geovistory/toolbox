@@ -1,0 +1,11 @@
+{
+  "pgFormatter.commaBreak": false,
+  "pgFormatter.commaStart": false,
+  "pgFormatter.noGrouping": true,
+  "pgFormatter.commaEnd": true,
+  "pgFormatter.formatType": true,
+  "pgFormatter.functionCase": "lowercase",
+  "pgFormatter.keywordCase": "capitalize",
+  "pgFormatter.spaces": 4,
+  "pgFormatter.noComment": false
+}

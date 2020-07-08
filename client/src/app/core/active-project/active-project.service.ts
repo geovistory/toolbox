@@ -4,31 +4,30 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ProSelector } from 'app/core/pro/pro.service';
 import { AddOrCreateEntityDialogComponent, AddOrCreateEntityDialogData, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { cache } from 'app/shared';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/components/progress-dialog/progress-dialog.component';
 import { difference, equals, groupBy, indexBy, path, values, without } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of as observableOf, Subject, timer, ReplaySubject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { SysConfig } from '../../../../../src/common/config/sys-config';
+import { BehaviorSubject, combineLatest, Observable, of as observableOf, ReplaySubject, Subject, timer } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
+import { SysConfig } from '../../../../../server/lb3app/src/common/config/sys-config';
 import { environment } from '../../../environments/environment';
 import { DatSelector } from '../dat/dat.service';
 import { DfhSelector } from '../dfh/dfh.service';
 import { InfActions } from '../inf/inf.actions';
 import { InfSelector } from '../inf/inf.service';
-import { DatNamespace, InfLanguage, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, ProProject, WarEntityPreview } from '../sdk';
+import { DatNamespace, InfLanguage, InfPersistentItem, InfTemporalEntity, ProProject, WarEntityPreview } from '../sdk';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { ShouldPauseService } from '../services/should-pause.service';
 import { EntityPreviewSocket } from '../sockets/sockets.module';
-import { EntityPreview, EntityType, EntityDetail } from '../state/models';
-import { SucceedActionMeta } from '../store/actions';
+import { EntityDetail, EntityPreview, EntityType } from '../state/models';
 import { IAppState, SchemaObject } from '../store/model';
-import { SystemSelector } from '../sys/sys.service';
-import { ActiveProjectActions } from './active-project.action';
-import { ListType, Panel, ProjectDetail, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk, RamSource } from './active-project.models';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { WarActions } from '../war/war.actions';
 import { SchemaObjectService } from '../store/schema-object.service';
+import { SystemSelector } from '../sys/sys.service';
+import { WarActions } from '../war/war.actions';
+import { ActiveProjectActions } from './active-project.action';
+import { ListType, Panel, ProjectDetail, RamSource, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
 
 
 
@@ -156,7 +155,7 @@ export class ActiveProjectService {
           });
           if (pks.length) {
             this.entityPreviewSocket.emit('addToStream', {
-              pk_project: pkProject,
+              pkProject,
               pks
             })
           }
@@ -238,7 +237,7 @@ export class ActiveProjectService {
       this.pkProject$.pipe(first(pk => !!pk)).subscribe(pkProject => {
 
         this.entityPreviewSocket.emit('addToStream', {
-          pk_project: pkProject,
+          pkProject,
           pks: [pkEntity]
         })
         // const pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE;

@@ -155,7 +155,7 @@ export class FieldComponent implements OnInit {
   }
 
   private openAddDialog(listDef: ListDefinition) {
-    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
+    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string', 'dimension']
       .includes(listDef.listType);
     const showAddList = (!isValueLike && !listDef.identityDefiningForTarget)
     const data: AddDialogData = {

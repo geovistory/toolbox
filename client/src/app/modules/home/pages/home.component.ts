@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActiveAccountService, PubAccount } from 'app/core';
+import { ActiveAccountService } from 'app/core';
+import { PubAccount, DatChunkControllerService, DatChunk } from 'app/core/sdk-lb4';
 
 @Component({
   selector: 'gv-home',
@@ -10,14 +11,19 @@ export class HomeComponent implements OnInit {
 
   account: PubAccount;
 
+  // temp
+  chunk: DatChunk;
+
   constructor(
-    private activeAccountService: ActiveAccountService,
+    public activeAccountService: ActiveAccountService,
   ) { }
 
   ngOnInit() {
     this.activeAccountService.getAccount().subscribe(account => {
       this.account = account;
     })
+
   }
+
 
 }

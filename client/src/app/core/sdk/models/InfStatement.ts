@@ -6,6 +6,7 @@ import {
   DatChunk,
   InfAppellation,
   InfLangString,
+  InfDimension,
   InfLanguage,
   InfPersistentItem,
   InfTimePrimitive,
@@ -37,6 +38,7 @@ export interface InfStatementInterface {
   object_appellation?: InfAppellation;
   object_lang_string?: InfLangString;
   object_chunk?: DatChunk;
+  object_dimension?: InfDimension;
   object_language?: InfLanguage;
   subject_persistent_item?: InfPersistentItem;
   object_persistent_item?: InfPersistentItem;
@@ -68,6 +70,7 @@ export class InfStatement implements InfStatementInterface {
   object_appellation?: InfAppellation;
   object_lang_string?: InfLangString;
   object_chunk?: DatChunk;
+  object_dimension?: InfDimension;
   object_language?: InfLanguage;
   subject_persistent_item?: InfPersistentItem;
   object_persistent_item?: InfPersistentItem;
@@ -195,7 +198,7 @@ export class InfStatement implements InfStatementInterface {
           type: 'DatDigital',
           model: 'DatDigital',
           relationType: 'belongsTo',
-                  keyFrom: 'fk_object_data',
+                  keyFrom: 'fk_subject_data',
           keyTo: 'pk_entity'
         },
         subject_chunk: {
@@ -244,6 +247,14 @@ export class InfStatement implements InfStatementInterface {
           model: 'DatChunk',
           relationType: 'belongsTo',
                   keyFrom: 'fk_object_data',
+          keyTo: 'pk_entity'
+        },
+        object_dimension: {
+          name: 'object_dimension',
+          type: 'InfDimension',
+          model: 'InfDimension',
+          relationType: 'belongsTo',
+                  keyFrom: 'fk_object_info',
           keyTo: 'pk_entity'
         },
         object_language: {

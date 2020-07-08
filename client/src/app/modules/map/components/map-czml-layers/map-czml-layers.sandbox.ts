@@ -4,7 +4,7 @@ import { clone } from 'ramda';
 import { BehaviorSubject } from 'rxjs';
 import { MapCzmlLayersComponent, MapLayer } from './map-czml-layers.component';
 import { MapModule } from '../../map.module';
-import { CzmlPacket } from '../../../../../../../src/common/interfaces';
+import { CzmlPacket } from '../../../../../../../server/lb3app/src/common/interfaces';
 import { data2 } from './map-czml-layers.mock';
 
 const now = new Date();

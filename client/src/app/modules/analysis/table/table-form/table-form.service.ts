@@ -7,7 +7,7 @@ import { QueryPathFormComponent } from 'app/modules/queries/forms/query-path/que
 import { values } from 'd3';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ColDef, ColDefDefaultType, QueryFilter, QueryPathSegment, TableInput } from '../../../../../../../src/common/interfaces';
+import { ColDef, ColDefDefaultType, QueryFilter, QueryPathSegment, TableInput } from '../../../../../../../server/lb3app/src/common/interfaces';
 import { TableFormNodeConfig } from './table-form.component';
 
 interface PathColumn {

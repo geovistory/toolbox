@@ -29,6 +29,7 @@ import { ProDfhClassProjRel } from '../../models/ProDfhClassProjRel';
 import { ProDfhProfileProjRel } from '../../models/ProDfhProfileProjRel';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfLangString } from '../../models/InfLangString';
+import { InfDimension } from '../../models/InfDimension';
 import { InfTemporalEntity } from '../../models/InfTemporalEntity';
 import { InfStatement } from '../../models/InfStatement';
 import { InfLanguage } from '../../models/InfLanguage';
@@ -74,6 +75,7 @@ export class SDKModels {
     ProDfhProfileProjRel: ProDfhProfileProjRel,
     InfAppellation: InfAppellation,
     InfLangString: InfLangString,
+    InfDimension: InfDimension,
     InfTemporalEntity: InfTemporalEntity,
     InfStatement: InfStatement,
     InfLanguage: InfLanguage,
