@@ -13,7 +13,7 @@ import { ClassAndTypeSelectModel, classOrTypeRequiredValidator } from '../class-
 import { propertiesRequiredValidator, PropertyOption, PropertySelectModel } from '../property-select/property-select.component';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';
 import { FormFactoryCompontentInjectData, FormFactoryComponent } from 'app/modules/form-factory/core/form-factory.models';
-import { ClassFilterCondition, SubgroupOperator, SubGroupType } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { ClassFilterCondition, SubgroupOperator, SubGroupType } from '../../../../../../../server/src/lb3/common/interfaces';
 import { QueryFilterService } from './query-filter.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { equals } from 'ramda';

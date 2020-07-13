@@ -2,7 +2,7 @@
 
 import * as XLSX from "xlsx";
 import { sort } from 'ramda';
-import { TColFilter } from '../../../../../../server/lb3app/src/server/table/interfaces';
+import { TColFilter } from '../../../../../../server/src/lb3/server/table/interfaces';
 
 addEventListener('message', ({ data }) => {
     if (data.task == 'csvIntoTable') postMessage(csvIntoTable(data.params.binaries, data.params.separator));
@@ -14,7 +14,7 @@ addEventListener('message', ({ data }) => {
 
 /**
  * Parse a raw binary string into a 2 dimensions array of strings
- * 
+ *
  * @param binaries binaries of the file to transform into a CSV
  * @param separator separator used in the file
  * @returns the 2 dimensions array of strings correcponding to the binaries
@@ -26,7 +26,7 @@ function csvIntoTable(binaries: string, separator: string): string[][] {
 
 /**
  * Parse a raw binary string into a XLSX.Workbook (external lib) in order to exploit the workbook
- * 
+ *
  * @param binaries binaries of the file to transform into a workbook
  * @returns the workbook corresponding to the binaries
  */
@@ -36,7 +36,7 @@ function parseWorkbook(binaries: string): XLSX.WorkBook {
 
 /**
  * Transform a XLSX.Workbook object into a 2 dimensions array of strings
- * 
+ *
  * @param wb the Workbook to transform
  * @param sheetName Which sheet we need to transform.
  * @returns the 2 dimensions array of strings correcponding to the workbook
@@ -71,10 +71,10 @@ function workbookIntoTable(wb: XLSX.WorkBook, sheetName: string): string[][] {
 
 /**
  * Sort a 2 dimensions array of string on a column
- * 
+ *
  * @param table The table to sort
  * @param col The master column to sort on
- * @param direction Ascending or descending 
+ * @param direction Ascending or descending
  * @returns The sorted table
  */
 function sortTable(table: string[][], col: number, direction: string): string[][] {
@@ -92,8 +92,8 @@ function sortTable(table: string[][], col: number, direction: string): string[][
 
 /**
  * Giving a filter, filters a 2 dimensions array of string
- * 
- * @param table The table to filter 
+ *
+ * @param table The table to filter
  * @param filters To what column and how should the table be filtered
  * @returns The filtered table
  */
@@ -115,7 +115,7 @@ function filterTable(table: string[][], filters: { col: number, filter: TColFilt
 
 /**
  * Remove all the empty columns from a 2 dimensions array of strings
- * 
+ *
  * @param table The table to remove the empty columns from
  * @returns the clean table
  */
@@ -143,7 +143,7 @@ function removeEmptyCol(table: string[][]): string[][] {
 
 /**
  * Remove all the empty rows from a 2 dimensions array of strings
- * 
+ *
  * @param table The table to remove the empty rows from
  * @returns the clean table
  */
@@ -167,7 +167,7 @@ function removeEmptyRow(table: string[][]): string[][] {
 
 /**
  * According to the content, should we keep the content or not?
- * 
+ *
  * @param content The content to apply the filter to
  * @param filter The Filter
  * @returns the response to 'Should we keep this content?'

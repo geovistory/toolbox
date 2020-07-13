@@ -12,8 +12,9 @@ import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import * as Config from '../../../../../../server/lb3app/common/config/Config';
 import { cache, spyTag } from '../../../shared';
 import { FieldDefinition, ListDefinition, ListType } from '../components/properties-tree/properties-tree.models';
+import { json } from 'd3';
 
-export type BasicModel = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'persistent_item' | 'temporal_entity'
+export type BasicModel = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'persistent_item' | 'temporal_entity'
 
 interface DfhPropertyStatus extends DfhProperty {
 
@@ -457,6 +458,9 @@ export class ConfigurationPipesService {
         else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
           return 'time-primitive'
         }
+        else if (targetClassPk == DfhConfig.CLASS_PK_DIMENSION) {
+          return 'dimension'
+        }
         else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
           return 'has-type'
         }
@@ -469,6 +473,7 @@ export class ConfigurationPipesService {
       })
     )
   }
+
 
 
   @spyTag @cache({ refCount: false }) pipeModelOfClass(targetClassPk: number): Observable<BasicModel> {
@@ -490,6 +495,9 @@ export class ConfigurationPipesService {
         }
         else if (targetClassPk == DfhConfig.CLASS_PK_REFERENCE) {
           return 'lang_string'
+        }
+        else if (targetClassPk == DfhConfig.CLASS_PK_DIMENSION) {
+          return 'dimension'
         }
         else if (klass.basic_type === 8 || klass.basic_type === 30) {
           return 'persistent_item'
@@ -605,10 +613,10 @@ export class ConfigurationPipesService {
   }
 
   /**
- * returns observable number[] wher the numbers are the pk_class
- * of all type classes that are enabled by at least one of the activated profiles
- * of thte given project
- */
+  * returns observable number[] wher the numbers are the pk_class
+  * of all type classes that are enabled by at least one of the activated profiles
+  * of thte given project
+  */
   @spyTag @cache({ refCount: false }) pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
     return combineLatest([
       this.p.dfh$.class$.by_basic_type$.key(30),

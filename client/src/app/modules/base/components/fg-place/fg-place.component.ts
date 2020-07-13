@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Optional, Inject, OnDestroy, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
 import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
-import { QueryPathSegment } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { QueryPathSegment } from '../../../../../../../server/src/lb3/common/interfaces';
 import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { InfPlace } from 'app/core';
 import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory';

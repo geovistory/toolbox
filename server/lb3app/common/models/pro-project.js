@@ -2,7 +2,7 @@
 
 const Config = require('../config/Config');
 var logSql = require('../../server/scripts/log-deserialized-sql');
-var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
   .SqlBuilderLbModels;
 
 module.exports = function(ProProject) {

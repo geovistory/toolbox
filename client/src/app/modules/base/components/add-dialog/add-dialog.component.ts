@@ -45,7 +45,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: AddDialogData,
     public teEnApi: InfTemporalEntityApi
   ) {
-    this.isLeafItemList = ['appellation', 'language', 'place', 'text-property', 'lang-string', 'entity-preview']
+    this.isLeafItemList = ['appellation', 'language', 'place', 'text-property', 'lang-string', 'dimension', 'entity-preview']
       .includes(data.listDefinition.listType);
 
 
@@ -63,7 +63,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close()
   }
   onNext() {
-    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
+    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string', 'dimension']
       .includes(this.data.listDefinition.listType)
 
     if (isValueLike || this.data.listDefinition.identityDefiningForTarget) {

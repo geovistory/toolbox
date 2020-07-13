@@ -3,7 +3,7 @@ import { ActiveProjectService, SysConfig } from 'app/core';
 import { TabLayoutService } from 'app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MapAndTimeContInput, MapAndTimeContOutput } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { MapAndTimeContInput, MapAndTimeContOutput } from '../../../../../../../server/src/lb3/common/interfaces';
 import { AnalysisService } from '../../services/analysis.service';
 import { MapAndTimeContFormComponent } from '../map-and-time-cont-form/map-and-time-cont-form.component';
 

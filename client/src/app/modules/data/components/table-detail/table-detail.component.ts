@@ -8,7 +8,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { equals, values, without, indexBy, pick, keys, omit } from 'ramda';
 import { FormControl } from '@angular/forms';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { TColFilters, TColFilter } from '../../../../../../../server/lb3app/src/server/table/interfaces'
+import { TColFilters, TColFilter } from '../../../../../../../server/src/lb3/server/table/interfaces'
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
 // TODO import this interface from backend
@@ -48,7 +48,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   length$: Observable<number[]>;
 
   /**
-   * configuration parameters that trigger new api call and 
+   * configuration parameters that trigger new api call and
    * are needed to generate a SQL query (backend side)
    * Values are updated BEFORW Api call
    */
@@ -91,12 +91,12 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number }[][];
   colMapping: number | string[];
 
-  // Array of pk_entity of columns that have been queried 
+  // Array of pk_entity of columns that have been queried
   // Value is updated after the API call
   // (for optimisation)
   queriedCols: number[] = [];
 
-  // flag that indicates if the api is called the first time 
+  // flag that indicates if the api is called the first time
   // (set to false after the first api call)
   // (for optimisation)
   firstApiCall = true;
@@ -239,7 +239,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
-    //set the headers 
+    //set the headers
     this.headers$ = new ReplaySubject();
     this.columns$.pipe(
       map(cols => {

@@ -11,7 +11,8 @@
           class="ellipsis">
           {{item.label}} <span class="mat-caption text-muted">{{item?.language.notes}}</span>
         </span>
-        <span *ngIf="['appellation', 'language', 'place'].includes(listDefinition.listType)" class="ellipsis">
+        <span *ngIf="['appellation', 'language', 'place', 'dimension'].includes(listDefinition.listType)"
+          class="ellipsis">
           {{item.label}}
         </span>
       </span>

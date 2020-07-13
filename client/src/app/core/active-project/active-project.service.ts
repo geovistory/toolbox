@@ -11,7 +11,7 @@ import { ProgressDialogComponent, ProgressDialogData } from 'app/shared/componen
 import { difference, equals, groupBy, indexBy, path, values, without } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of as observableOf, ReplaySubject, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, switchMap, takeUntil } from 'rxjs/operators';
-import { SysConfig } from '../../../../../server/lb3app/src/common/config/sys-config';
+import { SysConfig } from '../../../../../server/src/lb3/common/config/sys-config';
 import { environment } from '../../../environments/environment';
 import { DatSelector } from '../dat/dat.service';
 import { DfhSelector } from '../dfh/dfh.service';
@@ -274,81 +274,7 @@ export class ActiveProjectService {
 
 
 
-  /**
-   * Loads a peIt-Graph, if it is not yet available in state or if
-   * forceReload is true;
-   *
-   * @param pkEntities
-   * @param forceReload
-   */
-  loadPeItGraphs(pkEntities: number[], forceReload?: boolean): Observable<InfPersistentItem[]> {
-    if (!pkEntities || pkEntities.length == 0) return observableOf([]);
 
-    let pkEntitiesToReload = pkEntities;
-
-    if (!forceReload) {
-      const state = this.ngRedux.getState();
-      const keys = Object.keys(((state.activeProject || {}).peItGraphs || {})).map(key => parseInt(key, 10));
-      pkEntitiesToReload = without(keys, pkEntities);
-    }
-
-    if (pkEntitiesToReload && pkEntitiesToReload.length) {
-      this.ngRedux.select<number>(['activeProject', 'pk_project']).pipe(first(pkProject => !!pkProject)).subscribe(pkProject => {
-        this.ngRedux.dispatch(this.actions.loadPeItGraphs(pkProject, pkEntitiesToReload))
-      })
-    }
-
-    return combineLatest(
-      pkEntities.map(pk => this.ngRedux.select<InfPersistentItem>(['activeProject', 'peItGraphs', pk]))
-    ).pipe(
-      filter(items => items.filter(item => !item).length === 0)
-    )
-
-  }
-
-  /**
-     * Loads a teEn-Graph, if it is not yet available in state or if
-     * forceReload is true;
-     *
-     * @param pkEntities
-     * @param forceReload
-     */
-  loadTeEnGraphs(pkEntities: number[], forceReload?: boolean): Observable<InfTemporalEntity[]> {
-    if (!pkEntities || pkEntities.length == 0) return observableOf([]);
-
-
-    let pkEntitiesToReload = pkEntities;
-
-    if (!forceReload) {
-      const state = this.ngRedux.getState();
-      const keys = Object.keys(((state.activeProject || {}).teEnGraphs || {})).map(key => parseInt(key, 10));
-      pkEntitiesToReload = without(keys, pkEntities);
-    }
-
-    if (pkEntitiesToReload && pkEntitiesToReload.length) {
-      this.ngRedux.select<number>(['activeProject', 'pk_project']).pipe(first(pkProject => !!pkProject)).subscribe(pkProject => {
-        this.ngRedux.dispatch(this.actions.loadTeEnGraphs(pkProject, pkEntitiesToReload))
-      })
-    }
-
-    return combineLatest(
-      pkEntities.map(pk => this.ngRedux.select<InfTemporalEntity>(['activeProject', 'teEnGraphs', pk]))
-    ).pipe(filter(items => items.filter(item => !item).length === 0))
-
-  }
-
-  /**
-   * Loads a Entity Detail (PeItDetail or TeEnDetail) in cache for display in Modals
-   *
-   * @param pkEntity
-   * @param forceReload
-   */
-  loadEntityDetailForModal(pkEntity: number, forceReload = true, pkUiContext = SysConfig.PK_UI_CONTEXT_DATAUNITS_EDITABLE) {
-    const state = this.ngRedux.getState();
-    if (!(((state || {}).activeProject || {}).peItModals || {})[pkEntity] || forceReload) {
-      this.ngRedux.dispatch(this.actions.loadEntityDetailForModal(state.activeProject.pk_project, pkEntity, pkUiContext))
-    }
-  }
 
   /**
    * Loads inits a request to get all types for given classes

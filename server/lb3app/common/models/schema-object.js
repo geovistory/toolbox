@@ -1,13 +1,13 @@
 'use strict';
-const SqlRamList = require('../../dist/server/sql-builders/sql-ram-list')
+const SqlRamList = require('../../../dist/lb3/server/sql-builders/sql-ram-list')
   .SqlRamList;
-var SqlContentTree = require('../../dist/server/sql-builders/sql-content-tree')
+var SqlContentTree = require('../../../dist/lb3/server/sql-builders/sql-content-tree')
   .SqlContentTree;
-var SqlEntityRemoveFromProject = require('../../dist/server/sql-builders/sql-entity-remove-from-project')
+var SqlEntityRemoveFromProject = require('../../../dist/lb3/server/sql-builders/sql-entity-remove-from-project')
   .SqlEntityRemoveFromProject;
-var SqlEntityAddToProject = require('../../dist/server/sql-builders/sql-entity-add-to-project')
+var SqlEntityAddToProject = require('../../../dist/lb3/server/sql-builders/sql-entity-add-to-project')
   .SqlEntityAddToProject;
-var SqlTypeItem = require('../../dist/server/sql-builders/sql-type-item')
+var SqlTypeItem = require('../../../dist/lb3/server/sql-builders/sql-type-item')
   .SqlTypeItem;
 
 var _ = require('lodash');

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil, map, switchMap, tap } from 'rxjs/operators';
 import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-settings.component';
-import { ApiProfile } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { ApiProfile } from '../../../../../../../server/src/lb3/common/interfaces';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { MatTableDataSource, MatPaginator, MatDialog } from '@angular/material';
 import { ActiveProjectService } from 'app/core';

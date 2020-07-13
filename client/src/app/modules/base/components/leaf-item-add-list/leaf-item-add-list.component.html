@@ -57,11 +57,10 @@
               {{item.preview.pk_entity}})</span>
           </ng-container>
           <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'lang-string'">
-            {{item.label}} <span class="mat-caption text-muted">{{item.language.notes}}
-              {{item?.statement?.is_in_project_count}}</span>
+            {{item.label}} <span class="mat-caption text-muted">{{item.language.notes}}</span>
           </span>
-          <span *ngIf="['appellation', 'language', 'place'].includes(listDefinition.listType)">
-            {{item.label}} {{item?.statement?.is_in_project_count}}
+          <span *ngIf="['appellation', 'language', 'place', 'dimension'].includes(listDefinition.listType)">
+            {{item.label}}
           </span>
         </td>
       </ng-container>

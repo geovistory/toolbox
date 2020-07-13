@@ -6,7 +6,7 @@ import { ReplaySubject, Subject, Observable } from 'rxjs';
 import { WorkBook } from 'xlsx/types';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 import { first, takeUntil, switchMap } from 'rxjs/operators';
-import { TColFilter } from '../../../../../../../server/lb3app/src/server/table/interfaces'
+import { TColFilter } from '../../../../../../../server/src/lb3/server/table/interfaces'
 import { InfLanguage, ActiveProjectService } from 'app/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { values } from 'ramda';
@@ -128,7 +128,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Function called when users select a file
-   * 
+   *
    * @param files Files from the <input> tag in the html
    */
   onFileDrop(files: NgxFileDropEntry[]) {
@@ -145,7 +145,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Get the right number of line to take from the table: When there is a header, the first line has to not being taken
-   * 
+   *
    * @returns the right nb of actual rows of the table
    */
   getRowsNb() {
@@ -155,7 +155,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Launch the parsing procedure
-   * 
+   *
    * @param file The file to parse and display
    */
   selectFile(file: File) {
@@ -259,7 +259,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    *  Deduction of the headers from the parsed binaries (either CSV or XLSX)
-   * 
+   *
    * @param result the binaries parsed
    */
   parseHeaders(result: string[][]) {
@@ -301,7 +301,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Filters the table according to all previously filters set
-   * 
+   *
    * @param filters All filters in place
    */
   filter(filters: Array<{ col: number, filter: TColFilter }>) {
@@ -328,7 +328,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Slort the table according to all previously sorting options set
-   * 
+   *
    * @param sortOpt All sorting options in place
    */
   sort(sortOpt: { colNb: number, direction: string }) {
@@ -399,7 +399,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Function triggered when the client get a response from the /import-table call
-   * 
+   *
    * @param title Title of the message from the server
    * @param message Message from the server
    */
@@ -426,7 +426,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
 /**
  * Read the column to see if it is a number of a string
- * 
+ *
  * @param table The table in which the column is
  * @param colNb The target column
  * @param comma What comma is used in number (<,> or <.> or ...);

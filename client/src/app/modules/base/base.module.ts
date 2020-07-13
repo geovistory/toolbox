@@ -139,7 +139,8 @@ const baseModules = [
     AddOrCreateEntityDialogComponent,
     FgPlaceComponent,
     FgTextPropertyComponent,
-    FgLangStringComponent
+    FgLangStringComponent,
+    FgDimensionComponent
   ]
 })
 export class BaseModule { }

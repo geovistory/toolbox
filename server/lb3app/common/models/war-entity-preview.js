@@ -4,7 +4,7 @@ var app = require('../../server/server');
 var _ = require('lodash');
 var logSql = require('../../server/scripts/log-deserialized-sql');
 const log = false;
-var SqlWarSearchExisiting = require('../../dist/server/sql-builders/sql-war-search-existing')
+var SqlWarSearchExisiting = require('../../../dist/lb3/server/sql-builders/sql-war-search-existing')
   .SqlWarSearchExisiting;
 
 module.exports = function (WarEntityPreview) {

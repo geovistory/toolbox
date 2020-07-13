@@ -2,11 +2,11 @@
 const _ = require('lodash');
 const Promise = require('bluebird');
 const helpers = require('../helpers');
-var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
   .SqlBuilderLbModels;
 const models = require('../../server/server').models;
 
-var SqlEntityPreviewList = require('../../dist/server/sql-builders/sql-entity-preview-list')
+var SqlEntityPreviewList = require('../../../dist/lb3/server/sql-builders/sql-entity-preview-list')
   .SqlEntityPreviewList;
 
 module.exports = function (InfStatement) {
@@ -948,13 +948,9 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
     // if object is an inf dimension
     else if (hasRelatedModel(reqStatement.object_dimension)) {
       //create the object first
-      return models.InfDimension.create(
-        pkProject,
-        reqStatement.object_dimension,
-        ctxWithoutBody
-      )
-        .then((resArray) => {
-          const relatedModel = helpers.toObject(resArray[0]);
+      return models.InfDimension.create(reqStatement.object_dimension)
+        .then((res) => {
+          const relatedModel = helpers.toObject(res);
           // return the foreign key and the related model
           resolve({
             fk: { fk_object_info: relatedModel.pk_entity },

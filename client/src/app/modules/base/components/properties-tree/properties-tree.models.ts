@@ -3,8 +3,8 @@ import { ActiveProjectService, EntityPreview, InfLanguage, InfStatement, InfTemp
 import { Observable } from 'rxjs';
 import { PropertiesTreeService } from './properties-tree.service';
 
-export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'entity-preview' | 'has-type' | 'temporal-entity' | 'persistent-item';
-export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'entity-preview' | 'has-type';
+export type ListType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'dimension' | 'entity-preview' | 'has-type' | 'temporal-entity' | 'persistent-item';
+export type ItemType = 'language' | 'appellation' | 'place' | 'time-span' | 'time-primitive' | 'lang-string' | 'text-property' | 'dimension' | 'entity-preview' | 'has-type';
 
 
 // /**
@@ -102,6 +102,10 @@ export interface LanguageItem extends BasicStatementItem {
 }
 
 export interface PlaceItem extends BasicStatementItem {
+  fkClass: number;
+  label: string
+}
+export interface DimensionItem extends BasicStatementItem {
   fkClass: number;
   label: string
 }

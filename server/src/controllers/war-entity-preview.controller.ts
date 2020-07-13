@@ -236,7 +236,7 @@ export class WarEntityPreviewController {
     if (notInProject.length) {
       const repoItems = await this.findByProjectAndEntityPks(null, notInProject);
       // add repo versions to result
-      result.concat(...repoItems)
+      result.push(...repoItems)
     }
 
     return result;

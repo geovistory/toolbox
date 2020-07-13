@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
-import { ActivationReportItem } from '../../../../../../../server/lb3app/src/common/interfaces/profile-activation-report.interface';
+import { ActivationReportItem } from '../../../../../../../server/src/lb3/common/interfaces/profile-activation-report.interface';
 
 @Component({
   selector: 'gv-activation-report-items-table',

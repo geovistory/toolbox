@@ -85,11 +85,10 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
                 type: 'root',
               },
               placeholder: '',
-              mapValue: (x: [number, InfPersistentItem]) => {
+              mapValue: (x: [number, number]) => {
                 const value: InfDimension = {
                   fk_class: initVal.fk_class,
-                  fk_measurement_unit: x[1] ? x[1].pk_entity : undefined,
-                  measurement_unit: x[1],
+                  fk_measurement_unit: x[1],
                   numeric_value: x[0],
                   pk_entity: undefined,
                 }

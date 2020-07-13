@@ -1,10 +1,10 @@
 'use strict';
 const Promise = require('bluebird');
 
-const AnalysisRemotes = require('../../dist/server/analysis/analysis-remotes')
+const AnalysisRemotes = require('../../../dist/lb3/server/analysis/analysis-remotes')
   .AnalysisRemotes;
 
-const SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+const SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
   .SqlBuilderLbModels;
 
 module.exports = function(ProAnalysis) {

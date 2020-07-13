@@ -1,8 +1,8 @@
 'use strict';
 const Promise = require('bluebird');
-var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
   .SqlBuilderLbModels;
-const TableRemotes = require('../../dist/server/table/table-remotes')
+const TableRemotes = require('../../../dist/lb3/server/table/table-remotes')
   .TableRemotes;
 module.exports = function(DatDigital) {
   DatDigital.bulkDelete = function(pks, ctx, cb) {

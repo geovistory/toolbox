@@ -4,7 +4,7 @@ import { getFromTo, paginatedBy, paginateKey, paginateName, ReducerConfigCollect
 import { Observable, combineLatest, pipe, of } from 'rxjs';
 import { filter, first, map, switchMap, distinctUntilChanged } from 'rxjs/operators';
 import { tag } from '../../../../node_modules/rxjs-spy/operators';
-import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel } from '../sdk';
+import { InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, InfLangString, ProInfoProjRel, InfDimension } from '../sdk';
 import { PaginateByParam } from '../store/actions';
 import { combineLatestOrEmpty } from '../util/combineLatestOrEmpty';
 import { infDefinitions, infRoot, IndexStatementBySubjectProperty, indexStatementBySubjectProperty, IndexStatementByObjectProperty, indexStatementByObjectProperty, IndexStatementBySubject, indexStatementBySubject, IndexStatementByObject, indexStatementByObject } from './inf.config';
@@ -400,6 +400,17 @@ class InfLanguageSelections extends Selector {
   ) { super(ngRedux, pkProject$, configs, model) }
 }
 
+class InfDimensionSelections extends Selector {
+  public by_pk_entity$ = this.selector<InfDimension>('by_pk_entity')
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public pkProject$: Observable<number | string>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, pkProject$, configs, model) }
+}
+
 
 export class InfSelector {
 
@@ -412,6 +423,7 @@ export class InfSelector {
   lang_string$ = new InfLangStringSelections(this.ngRedux, this.pkProject$, infDefinitions, 'lang_string');
   time_primitive$ = new InfTimePrimitiveSelections(this.ngRedux, this.pkProject$, infDefinitions, 'time_primitive');
   language$ = new InfLanguageSelections(this.ngRedux, this.pkProject$, infDefinitions, 'language');
+  dimension$ = new InfDimensionSelections(this.ngRedux, this.pkProject$, infDefinitions, 'dimension');
 
   constructor(public ngRedux: NgRedux<IAppState>, public pkProject$: Observable<number | string>) { }
 }

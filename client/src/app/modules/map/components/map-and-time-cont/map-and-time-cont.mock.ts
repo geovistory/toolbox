@@ -1,4 +1,4 @@
-import { MapAndTimeContQueryRes } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { MapAndTimeContQueryRes } from '../../../../../../../server/src/lb3/common/interfaces';
 
 export const queryResults1: MapAndTimeContQueryRes = [
   {

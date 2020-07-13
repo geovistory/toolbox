@@ -1,5 +1,5 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { InfStatement, InfTextProperty } from "../sdk";
+import { InfStatement, InfTextProperty, InfDimension } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
@@ -132,7 +132,16 @@ export const infDefinitions: ReducerConfigCollection = {
       }
     },
     groupBy: []
-  }
+  },
+  dimension: {
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item: InfDimension) => {
+        return item.pk_entity.toString()
+      }
+    },
+    groupBy: []
+  },
 }
 
 
