@@ -33,7 +33,7 @@ export class RamListEditDialogComponent implements OnInit {
   ) {
 
     const listDef: ListDefinition = {
-      listType: 'lang-string',
+      listType: 'langString',
       label: 'at reference',
       ontoInfoUrl: '[ontoInfoUrl]',
       ontoInfoLabel: '[ontoInfoLabel]',

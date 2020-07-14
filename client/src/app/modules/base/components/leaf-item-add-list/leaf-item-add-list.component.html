@@ -56,7 +56,7 @@
             <span *ngIf="!item.preview?.fk_class" class="mat-text-secondary">Display problem (id:
               {{item.preview.pk_entity}})</span>
           </ng-container>
-          <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'lang-string'">
+          <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'langString'">
             {{item.label}} <span class="mat-caption text-muted">{{item.language.notes}}</span>
           </span>
           <span *ngIf="['appellation', 'language', 'place', 'dimension'].includes(listDefinition.listType)">

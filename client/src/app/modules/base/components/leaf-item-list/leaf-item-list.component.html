@@ -7,7 +7,7 @@
         </gv-onto-class-info>
 
 
-        <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'lang-string'"
+        <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'langString'"
           class="ellipsis">
           {{item.label}} <span class="mat-caption text-muted">{{item?.language.notes}}</span>
         </span>
@@ -19,11 +19,6 @@
 
       <span class="right-col">
         <mat-menu #appMenu="matMenu">
-          <!-- <button mat-menu-item *ngIf="listDefinition.listType === 'entity-preview'" (click)="openInNewTab(item)">
-              <mat-icon>tab</mat-icon>
-              Open in new Tap
-            </button> -->
-
           <button mat-menu-item (click)="remove(item)">
             <mat-icon>delete</mat-icon>
             Remove

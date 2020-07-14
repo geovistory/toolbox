@@ -5,7 +5,7 @@ import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
 import {ApplicationConfig} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
-import {RestExplorerBindings, RestExplorerComponent} from '@loopback/rest-explorer';
+import {RestExplorerBindings, RestExplorerComponent, RestExplorerConfig} from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {AuthorizationPolicyComponent} from './components/authorization';
@@ -91,7 +91,7 @@ export class GeovistoryApplication extends BootMixin(
     // TODO:
     // - Migrate Lb3 to Lb4 and remove the following line
     // - run: npm uninstall --save @loopback/booter-lb3app
-    this.configure(RestExplorerBindings.COMPONENT).to({
+    this.configure<RestExplorerConfig>(RestExplorerBindings.COMPONENT).to({
       path: '/explorer',
     });
     this.component(RestExplorerComponent);

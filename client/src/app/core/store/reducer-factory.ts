@@ -1,10 +1,15 @@
 import { U } from "app/core";
 import { FluxStandardAction } from "flux-standard-action";
-import { clone, equals, indexBy, omit, values } from "ramda";
-import { combineReducers } from "redux";
+import { clone, equals, indexBy, omit, values, keys } from "ramda";
+import { combineReducers, Reducer, AnyAction } from "redux";
 import { LoadPageMeta, PaginateByParam, LoadPageSucceededMeta } from "./actions";
+import { composeReducers } from '@angular-redux/form';
 
-
+export const PR_ENTITY_MODEL_MAP = 'pkEntityModelMap'
+export interface EntityModelAndClass<ModelName> {
+  modelName: ModelName,
+  fkClass: number
+}
 
 export interface ReducerConfigCollection {
   [key: string]: ReducerConfig
@@ -35,20 +40,22 @@ export interface Meta<Model> { items: Model[], pk?: number }
  */
 export class ReducerFactory<Payload, Model> {
 
-  reducer;
-
   constructor(public actionPrefix: string, public configs: ReducerConfigCollection) { }
 
   public createReducers() {
 
     const reducers = {}
     U.obj2KeyValueArr(this.configs).forEach(x => {
-      reducers[x.key] = this.createReducer(x.key, x.value);
+      reducers[x.key] = this.createModelReducers(x.key, x.value);
     });
+
+    const entityModelMapReducers = keys(this.configs).map(modelName => this.createEntityModelMapReducers(modelName))
+    reducers[PR_ENTITY_MODEL_MAP] = composeReducers(...entityModelMapReducers)
+
     return combineReducers(reducers)
   }
 
-  private createReducer(modelName, config: ReducerConfig) {
+  private createModelReducers(modelName, config: ReducerConfig) {
     const actionPrefix = this.actionPrefix;
     const reducer = (state = {}, action: FluxStandardAction<Payload, Meta<Model>>) => {
 
@@ -224,6 +231,57 @@ export class ReducerFactory<Payload, Model> {
     return reducer;
   }
 
+  /**
+   * Creates an map for pk_entity -> modelName on the level of the schema:
+   * example:
+   */
+  private createEntityModelMapReducers(modelName): Reducer<unknown, FluxStandardAction<Payload, Meta<Model>>> {
+    const actionPrefix = this.actionPrefix;
+    const reducer = (state = {}, action: FluxStandardAction<Payload, Meta<Model>>) => {
+      const modelPath = actionPrefix + '.' + modelName;
+
+      if (!action || !action.meta || !action.meta.items || !action.meta.items.length) return state;
+      const items = action.meta.items;
+
+      switch (action.type) {
+        case modelPath + '::LOAD_SUCCEEDED':
+        case modelPath + '::UPSERT_SUCCEEDED':
+          const idx = {}
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i] as any;
+            if (item.pk_entity) {
+              idx[item.pk_entity] = {
+                modelName,
+                fkClass: item.fkClass
+              }
+            }
+          }
+          state = {
+            ...state,
+            ...idx
+          }
+          break;
+
+        case modelPath + '::DELETE_SUCCEEDED':
+        case modelPath + '::REMOVE_SUCCEEDED':
+          const pkEntities = []
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i] as any;
+            if (item.pk_entity) {
+              pkEntities.push(item.pk_entity);
+            }
+          }
+          state = omit(pkEntities, state)
+          break;
+
+        default:
+          break;
+      }
+      return state;
+    };
+    return reducer;
+  }
+
 
   updatingBy = (name: string) => 'updating_' + by(name);
   deletingBy = (name: string) => 'deleting_' + by(name);
@@ -353,20 +411,6 @@ export class ReducerFactory<Payload, Model> {
       }
     })
 
-    // // cleanup paginations
-    // groups.forEach(g => {
-
-    //   // cleanup groups in group index
-    //   if (state[g.groupByKey]) {
-    //     Object.keys(state[g.groupByKey]).forEach(groupKey => {
-
-    //       state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
-
-    //     })
-    //   }
-
-    // })
-
 
     return state;
   }
@@ -439,10 +483,7 @@ export class ReducerFactory<Payload, Model> {
               }
             }
           }
-          // if (resetPaginations) {
-          //   // if there is some pagination, reset
-          //   state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey, true);
-          // }
+
         })
       }
     })
@@ -452,28 +493,28 @@ export class ReducerFactory<Payload, Model> {
   }
 
 
-  /**
-   * resets pagination within a group, e.g. 'pag_by_fk_property'
-   * TODO: check if can be deleted
-   */
-  private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
-    const paginateBy = pag(groupByKey);
-    if (state[paginateBy] && state[paginateBy][groupKey] && state[paginateBy][groupKey].count !== undefined) {
-      state = {
-        ...state,
-        [paginateBy]: {
-          ...state[paginateBy],
-          [groupKey]: {
-            ...state[paginateBy][groupKey],
-            ...(!isUpsert ? {} : { count: state[paginateBy][groupKey].count + 1 }),
-            rows: {},
-            loading: {}
-          }
-        }
-      };
-    }
-    return state;
-  }
+  // /**
+  //  * resets pagination within a group, e.g. 'pag_by_fk_property'
+  //  * TODO: check if can be deleted
+  //  */
+  // private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
+  //   const paginateBy = pag(groupByKey);
+  //   if (state[paginateBy] && state[paginateBy][groupKey] && state[paginateBy][groupKey].count !== undefined) {
+  //     state = {
+  //       ...state,
+  //       [paginateBy]: {
+  //         ...state[paginateBy],
+  //         [groupKey]: {
+  //           ...state[paginateBy][groupKey],
+  //           ...(!isUpsert ? {} : { count: state[paginateBy][groupKey].count + 1 }),
+  //           rows: {},
+  //           loading: {}
+  //         }
+  //       }
+  //     };
+  //   }
+  //   return state;
+  // }
 
   /**
    * Creates object where the key returned by the configured indexByFn

@@ -276,66 +276,66 @@ export class ActiveProjectService {
 
 
 
-  /**
-   * Loads inits a request to get all types for given classes
-   * @returns Observable for an object containing array of TypePreview grouped
-   *          by the pk of the typed class
-   */
-  streamTypePreviewsByClass(pkClasses: number[], forceReload = false): Observable<TypePreviewsByClass> {
+  // /**
+  //  * Loads inits a request to get all types for given classes
+  //  * @returns Observable for an object containing array of TypePreview grouped
+  //  *          by the pk of the typed class
+  //  */
+  // streamTypePreviewsByClass(pkClasses: number[], forceReload = false): Observable<TypePreviewsByClass> {
 
-    if (!pkClasses || pkClasses.length === 0) return new BehaviorSubject({});
+  //   if (!pkClasses || pkClasses.length === 0) return new BehaviorSubject({});
 
-    if (forceReload) {
-      this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-        this.ngRedux.dispatch(this.actions.loadTypes(pk, pkClasses))
-      })
-    } else {
-      // if there are classes that are not yet loaded
-      const state = this.ngRedux.getState();
-      const loadedPks = Object.keys(path(['activeProject', 'typesByClass'], state) || {}).map(pk => parseInt(pk, 10));
-      const toLoad = difference(pkClasses, loadedPks);
-      if (toLoad.length) {
-        this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
-          this.ngRedux.dispatch(this.actions.loadTypes(pk, toLoad))
-        })
-      }
+  //   if (forceReload) {
+  //     this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+  //       this.ngRedux.dispatch(this.actions.loadTypes(pk, pkClasses))
+  //     })
+  //   } else {
+  //     // if there are classes that are not yet loaded
+  //     const state = this.ngRedux.getState();
+  //     const loadedPks = Object.keys(path(['activeProject', 'typesByClass'], state) || {}).map(pk => parseInt(pk, 10));
+  //     const toLoad = difference(pkClasses, loadedPks);
+  //     if (toLoad.length) {
+  //       this.pkProject$.pipe(first(pk => !!pk)).subscribe(pk => {
+  //         this.ngRedux.dispatch(this.actions.loadTypes(pk, toLoad))
+  //       })
+  //     }
 
-    }
+  //   }
 
-    const types$ = combineLatest(pkClasses.map(pkClass => this.ngRedux.select<TypePeIt[]>(['activeProject', 'typesByClass', pkClass]))).pipe(
-      map(typess => {
-        const ts: TypePeIt[] = [];
-        (typess || []).forEach(types => (types || []).forEach(type => ts.push(type)))
-        return ts;
-      })
-    );
-    const previews$: Observable<EntityPreview[]> = types$.pipe(
-      filter(typess => !!typess),
-      mergeMap(types => {
-        return types.length ?
-          combineLatest(types.map(type => this.streamEntityPreview(type.pk_entity))) :
-          new BehaviorSubject<EntityPreview[]>([])
-      }),
-      filter(pre => !pre.find(p => !(p.pk_entity)))
-    )
+  //   const types$ = combineLatest(pkClasses.map(pkClass => this.ngRedux.select<TypePeIt[]>(['activeProject', 'typesByClass', pkClass]))).pipe(
+  //     map(typess => {
+  //       const ts: TypePeIt[] = [];
+  //       (typess || []).forEach(types => (types || []).forEach(type => ts.push(type)))
+  //       return ts;
+  //     })
+  //   );
+  //   const previews$: Observable<EntityPreview[]> = types$.pipe(
+  //     filter(typess => !!typess),
+  //     mergeMap(types => {
+  //       return types.length ?
+  //         combineLatest(types.map(type => this.streamEntityPreview(type.pk_entity))) :
+  //         new BehaviorSubject<EntityPreview[]>([])
+  //     }),
+  //     filter(pre => !pre.find(p => !(p.pk_entity)))
+  //   )
 
 
-    return combineLatest(previews$, types$).pipe(
-      filter(([previews, types]) => (previews.length === types.length)),
-      map(([previews, types]) => {
-        const previewsByPk = indexBy((e) => e.pk_entity.toString(), previews)
+  //   return combineLatest(previews$, types$).pipe(
+  //     filter(([previews, types]) => (previews.length === types.length)),
+  //     map(([previews, types]) => {
+  //       const previewsByPk = indexBy((e) => e.pk_entity.toString(), previews)
 
-        const a = types
-          .filter(t => !!previewsByPk[t.pk_entity.toString()])
-          .map(type => ({
-            fk_typed_class: type.fk_typed_class,
-            ...previewsByPk[type.pk_entity.toString()]
-          } as TypePreview))
+  //       const a = types
+  //         .filter(t => !!previewsByPk[t.pk_entity.toString()])
+  //         .map(type => ({
+  //           fk_typed_class: type.fk_typed_class,
+  //           ...previewsByPk[type.pk_entity.toString()]
+  //         } as TypePreview))
 
-        return groupBy((t) => t.fk_typed_class.toString(), a);
-      })
-    );
-  }
+  //       return groupBy((t) => t.fk_typed_class.toString(), a);
+  //     })
+  //   );
+  // }
 
   /************************************************************************************
   * Change Project Relations
@@ -399,13 +399,13 @@ export class ActiveProjectService {
   //   this.ngRedux.dispatch(this.actions.setRefiningChunk(bool))
   // }
 
-  mentioningsFocusedInText(pks: number[]) {
-    this.ngRedux.dispatch(this.actions.setMentioningsFocusedInText(pks))
-  }
+  // mentioningsFocusedInText(pks: number[]) {
+  //   this.ngRedux.dispatch(this.actions.setMentioningsFocusedInText(pks))
+  // }
 
-  mentioningsFocusedInTable(pks: number[]) {
-    this.ngRedux.dispatch(this.actions.setMentioningsFocusedInTable(pks))
-  }
+  // mentioningsFocusedInTable(pks: number[]) {
+  //   this.ngRedux.dispatch(this.actions.setMentioningsFocusedInTable(pks))
+  // }
 
   ramReset() {
     this.ramOpen$.next(false);
@@ -664,7 +664,5 @@ export class ActiveProjectService {
 
     return s;
   }
-
-
 
 }

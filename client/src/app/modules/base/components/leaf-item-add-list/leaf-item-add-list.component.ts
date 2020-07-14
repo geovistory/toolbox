@@ -12,6 +12,7 @@ import { InfActions } from '../../../../core/inf/inf.actions';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, ListDefinition, PlaceItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
+import { leafItemListTypes } from '../../base.module';
 
 type Row<M> = Item & {
   store?: {
@@ -70,8 +71,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // stop initialization if this is not a leaf item list
-    if (!['appellation', 'language', 'place', 'text-property', 'lang-string', 'dimension', 'entity-preview']
-      .includes(this.listDefinition.listType)) return;
+    if (!leafItemListTypes.includes(this.listDefinition.listType)) return;
 
     const relateBy = this.listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info';
     const filterObject: Partial<InfStatement> = {
@@ -186,7 +186,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
         return row;
       })
     }
-    else if (this.listDefinition.listType === 'lang-string') {
+    else if (this.listDefinition.listType === 'langString') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.lang_string)
       const languages = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
 

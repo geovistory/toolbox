@@ -230,7 +230,7 @@ export class FormPart {
       };
       return value;
     }
-    else if (listDefinition.listType === 'lang-string') {
+    else if (listDefinition.listType === 'langString') {
       if (!val) return null;
 
       const value: InfStatement = {

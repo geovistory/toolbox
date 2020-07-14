@@ -5,7 +5,7 @@ import { CONTAINER_DATA } from 'app/modules/form-factory/core/form-child-factory
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'app/modules/form-factory/core/form-factory.models';
 import { FormFactory, FormFactoryConfig, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { first, map, takeUntil, filter } from 'rxjs/operators';
 import { CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
@@ -13,6 +13,7 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 type FgDimensionNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgDimensionInjectData extends FormFactoryCompontentInjectData<Observable<InfDimension>> {
   appearance: MatFormFieldAppearance
+  pkClassOfDimension: number; // e.g. 52 for E54 Dimension
 }
 @Component({
   selector: 'gv-fg-dimension',
@@ -25,13 +26,15 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
 
   @Input() initVal$: Observable<InfDimension>
   @Input() appearance: MatFormFieldAppearance
+  @Input() pkClassOfDimension: number;
+
+  pkClassOfMeasurementUnit$: Observable<number>;
+
   formFactory$ = new Subject<FormFactory>();
   formFactory: FormFactory;
   @ViewChildren(MatInput) ctrlNumber: QueryList<MatInput>
   @ViewChildren(CtrlTypeComponent) ctrlMeasurementUnit: QueryList<CtrlTypeComponent>
 
-  pkTypedClass = DfhConfig.CLASS_PK_DIMENSION
-  pkTypeClass = DfhConfig.CLASS_PK_MEASUREMENT_UNIT
 
   constructor(
     private p: ActiveProjectService,
@@ -44,9 +47,22 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
     if (injectedData) {
       if (injectedData.initVal$) {
         this.initVal$ = injectedData.initVal$
-        this.appearance = injectedData.appearance
       }
+      this.appearance = injectedData.appearance
+      this.pkClassOfDimension = injectedData.pkClassOfDimension
     }
+
+    if (!this.pkClassOfDimension) throw new Error('this.pkClassOfDimension is missing')
+
+    this.pkClassOfMeasurementUnit$ = this.p.sys$.config$.main$.pipe(
+      filter(c => !!c),
+      map(config => {
+        const classConfig = config.classes[this.pkClassOfDimension]
+        if (classConfig.mapsToListType && classConfig.mapsToListType.dimension) {
+          return classConfig.mapsToListType.dimension.measurementUnitClass
+        }
+      })
+    )
   }
 
   ngOnInit() {
@@ -87,7 +103,7 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
               placeholder: '',
               mapValue: (x: [number, number]) => {
                 const value: InfDimension = {
-                  fk_class: initVal.fk_class,
+                  fk_class: this.pkClassOfDimension,
                   fk_measurement_unit: x[1],
                   numeric_value: x[0],
                   pk_entity: undefined,

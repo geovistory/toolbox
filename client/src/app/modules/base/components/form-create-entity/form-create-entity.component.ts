@@ -719,7 +719,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       return this.appellationCtrl(arrayConfig)
 
     }
-    else if (listType === 'lang-string') {
+    else if (listType === 'langString') {
 
       return this.langStringCtrl(arrayConfig)
 
@@ -1075,6 +1075,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
     // with [{}] we make sure at least one item is added
     const initItems = arrayConfig.initValue || [{}];
+
     const controlConfigs: LocalNodeConfig[] = initItems.map((dimension: InfDimension) => ({
       childFactory: {
         component: FgDimensionComponent,
@@ -1085,6 +1086,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         data: {
           dimension: {
             appearance: this.appearance,
+            pkClassOfDimension: arrayConfig.data.pkClass,
             initVal$: of(dimension)
           }
         },

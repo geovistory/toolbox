@@ -65,7 +65,7 @@ export class ClassesAndTypesSelectComponent implements OnInit, OnDestroy {
 
     this.data$.pipe(takeUntil(this.destroy$)).subscribe(d => {
       this.dataSource.data = d;
-      this.treeControl.expandAll()
+      // this.treeControl.expandAll()
     })
   }
 

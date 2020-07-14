@@ -31,8 +31,8 @@
         "4000",
         "--colors",
         "'dist/__tests__/**/*.js'",
-        "--grep",
-        "/PingController.*/"
+        // "--grep",
+        // "/PingController.*/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,

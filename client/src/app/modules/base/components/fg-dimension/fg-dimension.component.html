@@ -18,8 +18,8 @@
           [appearance]="appearance">
           <mat-label>{{child.config.placeholder}}</mat-label>
 
-          <gv-ctrl-type #c [pkTypedClass]="pkTypedClass" [pkTypeClass]="pkTypeClass" placeholder="Select ..."
-            [formControl]="child.control">
+          <gv-ctrl-type #c [pkTypedClass]="pkClassOfDimension" [pkTypeClass]="pkClassOfMeasurementUnit$|async"
+            placeholder="Select ..." [formControl]="child.control">
           </gv-ctrl-type>
 
           <mat-error *ngIf="child.control.hasError('required')">
