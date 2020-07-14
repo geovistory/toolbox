@@ -6,14 +6,6 @@
     "loopback-application",
     "loopback"
   ],
-  "main": "index.js",
-  "engines": {
-    "node": ">=10",
-    "npm": "6.7.0"
-  },
-  "cacheDirectories": [
-    "node_modules"
-  ],
   "scripts": {
     "build": "lb-tsc",
     "build:watch": "lb-tsc --watch",
@@ -32,13 +24,11 @@
     "prestart": "npm run build",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
-    "heroku-postbuild": "bash heroku-postbuild.sh",
     "t": "export NO_LOGS='true' && lb-mocha --require ts-node/register --timeout 4000  --recursive true 'src/__tests__/**/*.ts'",
     "build:sdk": "bash build-ngx-sdk.sh",
     "build:sdk-windows": "build-ngx-sdk.sh",
     "build:lb3-sdk": "./node_modules/.bin/lb-sdk lb3app/server/server ../client/src/app/core/sdk -d ng2web -l angular2",
     "build:lb3-sdk-windows": ".\\node_modules\\.bin\\lb-sdk lb3app\\server\\server ..\\client\\src\\app\\core\\sdk -d ng2web -l angular2"
-
   },
   "repository": {
     "type": "git"

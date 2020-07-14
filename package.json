@@ -4,7 +4,16 @@
   "version": "0.0.0",
   "scripts": {
     "loopack-build:watch": "cd server && npm run build:watch",
-    "install": "echo ##### INSTALL db-migrate #####  && cd db-migrate && npm i && echo ##### INSTALL client ##### && npm i && cd ../client && echo ##### INSTALL SERVER  ##### && npm i && cd ../server && npm i && cd .."
+    "install": "cd ./server && npm i",
+    "heroku-postbuild": "bash heroku-postbuild.sh"
   },
-  "private": true
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": ">=12",
+    "npm": "6.13.2"
+  },
+  "cacheDirectories": [
+    "server/node_modules"
+  ]
 }

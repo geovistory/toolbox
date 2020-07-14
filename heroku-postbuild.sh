@@ -1,6 +1,11 @@
 #!/bin/bash
 
 echo '================ Start of heroku-postbuild.sh =============================='
+
+echo '================= Compile Server =============================='
+
+cd ./server && npm run build && cd ..
+
 echo 'Current environment: DB_ENV="'$DB_ENV'"'
 echo ''
 
