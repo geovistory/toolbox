@@ -1,4 +1,4 @@
-import { QueryDefinition } from '../../../../../../../src/common/interfaces';
+import { QueryDefinition } from '../../../../../../../server/src/lb3/common/interfaces';
 
 export const mockQuery: QueryDefinition = {
   'filter': {

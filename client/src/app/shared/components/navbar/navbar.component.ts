@@ -1,14 +1,15 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { Router } from '@angular/router';
-import { ActiveAccountService, LoopBackAuth, LoopBackConfig, PubAccount, PubAccountApi } from 'app/core';
+import { ActiveAccountService, LoopBackConfig } from 'app/core';
+import { PubAccount } from 'app/core/sdk-lb4';
 import { IAccount } from 'app/modules/account/account.model';
 import { AccountActions } from 'app/modules/account/api/account.actions';
+import { FeedbackDialogComponent } from 'app/modules/user-feedback/components/feedback-dialog/feedback-dialog.component';
 import { environment } from 'environments/environment';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material';
-import { FeedbackDialogComponent } from 'app/modules/user-feedback/components/feedback-dialog/feedback-dialog.component';
 
 
 @AutoUnsubscribe()
@@ -26,11 +27,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private activeAccountService: ActiveAccountService,
-    private authService: LoopBackAuth,
     public router: Router,
-    private accountApi: PubAccountApi,
-    private actions: AccountActions,
-    private ngRedux: NgRedux<IAccount>,
     public dialog: MatDialog
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -41,29 +38,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.activeAccountService.getAccount().subscribe(account => {
       this.account = account;
-      this.ngRedux.dispatch(this.actions.accountUpdated(this.account));
     })
-    this.activeAccountService.updateAccount();
   }
 
   ngOnDestroy(): void {
+    this.subscription.unsubscribe()
   }
 
   logout() {
-    this.accountApi.logout()
+    this.activeAccountService.logout()
       .subscribe(
         data => {
-          this.activeAccountService.updateAccount();
-          this.ngRedux.dispatch(this.actions.accountUpdated(this.authService.getCurrentUserData()));
-
           this.router.navigate(['/']);
         },
         error => {
-          // TODO: Error handling Alert
-          console.log(error);
-
           this.router.navigate(['/']);
-
         }
       );
   }

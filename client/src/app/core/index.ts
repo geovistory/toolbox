@@ -1,5 +1,5 @@
 
-export { SysConfig } from '../../../../src/common/config/sys-config';
+export { SysConfig } from '../../../../server/src/lb3/common/config/sys-config';
 export { LoadingBarAction, LoadingBarActions } from './loading-bar/api/loading-bar.actions';
 export { TimeSpan } from './time-span/time-span';
 export { ValidationService } from './validation/validation.service';

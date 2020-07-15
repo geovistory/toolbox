@@ -4,8 +4,9 @@ import { ActiveProjectService, InfStatement, InfTemporalEntityApi } from 'app/co
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
-import { ListDefinition } from '../properties-tree/properties-tree.models';
+import { ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { leafItemListTypes, valueObjectListTypes } from '../../base.module';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
@@ -45,8 +46,8 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: AddDialogData,
     public teEnApi: InfTemporalEntityApi
   ) {
-    this.isLeafItemList = ['appellation', 'language', 'place', 'text-property', 'lang-string', 'entity-preview']
-      .includes(data.listDefinition.listType);
+
+    this.isLeafItemList = leafItemListTypes.includes(data.listDefinition.listType);
 
 
     this.classAndTypePk = { pkClass: data.listDefinition.targetClass, pkType: undefined }
@@ -63,8 +64,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close()
   }
   onNext() {
-    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
-      .includes(this.data.listDefinition.listType)
+    const isValueLike = valueObjectListTypes.includes(this.data.listDefinition.listType)
 
     if (isValueLike || this.data.listDefinition.identityDefiningForTarget) {
       this.activeElement$.next('create-form')

@@ -7,7 +7,7 @@ import { Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { QueryDefinition } from '../../../../../../../src/common/interfaces';
+import { QueryDefinition } from '../../../../../../../server/src/lb3/common/interfaces';
 import { InitStateModule } from 'app/shared/components/init-state/init-state.module';
 import { AnalysisService } from 'app/modules/analysis/services/analysis.service';
 

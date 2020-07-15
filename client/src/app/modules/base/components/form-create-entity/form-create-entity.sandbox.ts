@@ -266,6 +266,64 @@ export default sandboxOf(FormCreateEntityComponent, {
             </div>
         </div>`
   })
+  .add('FormCreateEntityComponent | Localisation – C2', {
+    context: { pkProject },
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-entity [pkClass]="212" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+
+  .add('FormCreateEntityComponent | P14 at distance -> E54 Dimension', {
+    context: {
+      listDefinition: {
+        fkClassField: undefined,
+        identityDefiningForSource: true,
+        identityDefiningForTarget: false,
+        targetMinQuantity: 0,
+        sourceMinQuantity: 0,
+        sourceMaxQuantity: 1,
+        sourceClassLabel: undefined,
+        isOutgoing: true,
+        label: 'at distance',
+        listType: 'dimension',
+        ontoInfoLabel: 'P14',
+        ontoInfoUrl: 'http://ontologies.dataforhistory.org/property/1183',
+        property: { pkProperty: 1183 },
+        targetClass: 52,
+        sourceClass: 212,
+        targetClassLabel: 'Dimension',
+        targetMaxQuantity: -1,
+      }, pkProject
+    },
+    template: `
+        <gv-init-state [projectFromApi]="pkProject" ></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-entity  [pkSourceEntity]="456" [listDefinition]="listDefinition" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+
 
   .add('FormCreateEntityComponent | Was present at -> place', {
     context: {

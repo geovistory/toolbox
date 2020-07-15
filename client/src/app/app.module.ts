@@ -41,13 +41,10 @@ import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
 import { KeysModule } from './shared/pipes/keys.module';
 import { WarModule } from './core/war/war.module';
-
-// const spy = create()
-// spy.unplug(spy.find(CyclePlugin));
-// spy.unplug(spy.find(GraphPlugin));
-// spy.plug(
-//   new GraphPlugin({ keptDuration: -1 }),
-// );
+import { ApiModule } from 'app/core/sdk-lb4/api.module';
+import { CookiesModule } from './core/cookies/cookies.module';
+import { GvAuthService } from './core/auth/auth.service';
+import { Configuration, ConfigurationParameters } from './core/sdk-lb4/configuration';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -57,6 +54,8 @@ const appearance: MatFormFieldDefaultOptions = {
 };
 
 registerLocaleData(localeDeCh);
+
+
 
 // Third party imports
 // Own imports
@@ -103,17 +102,33 @@ registerLocaleData(localeDeCh);
     ValidationDirectivesModule,
     UserFeedbackModule,
     HttpClientModule,
-    MaterialModule
+    MaterialModule,
+    ApiModule,
+    CookiesModule.forRoot(),
   ],
   providers: [
     EntityEditorService,
     ActiveAccountService,
     AuthGuard,
+    GvAuthService,
     SystemAdminGuard,
     { provide: LOCALE_ID, useValue: 'en-US' },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: appearance
+    },
+    {
+      provide: Configuration,
+      useFactory: (authService: GvAuthService) => {
+        const config = new Configuration(
+          {
+            basePath: environment.baseUrl,
+            accessToken: authService.getToken().lb4Token
+          })
+        return authService.setLb4SdkConfig(config)
+      },
+      deps: [GvAuthService],
+      multi: false
     }
 
   ],

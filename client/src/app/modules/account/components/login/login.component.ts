@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-
+import { ActivatedRoute, Router } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-
+import { ActiveAccountService } from 'app/core';
 import { LoopBackConfig } from 'app/core/sdk/lb.config';
-import { ActiveAccountService, PubAccountApi } from 'app/core';
 import { environment } from 'environments/environment';
-import { NgRedux } from '@angular-redux/store';
-import { AccountActions } from '../../api/account.actions';
-import { IAccount } from '../../account.model';
+
+
 
 
 
@@ -20,7 +17,11 @@ import { IAccount } from '../../account.model';
 })
 export class LoginComponent implements OnInit {
 
-  model: any = {};
+  model: {
+    email?: string,
+    password?: string
+  } = {};
+
   loading = false;
   returnUrl: string;
   errorMessage: string;
@@ -29,10 +30,7 @@ export class LoginComponent implements OnInit {
     private activeAccountService: ActiveAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private accountApi: PubAccountApi,
     private slimLoadingBarService: SlimLoadingBarService,
-    private ngRedux: NgRedux<IAccount>,
-    private actions: AccountActions
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
@@ -45,24 +43,31 @@ export class LoginComponent implements OnInit {
   login() {
     this.startLoading();
     this.errorMessage = '';
-    this.accountApi.login(this.model)
-      .subscribe(
-        data => {
-          this.completeLoading();
-          this.activeAccountService.updateAccount();
 
-          this.ngRedux.dispatch(this.actions.loginSucceeded(data.user));
+    const { email, password } = this.model
+    if (email && password) {
+      this.activeAccountService.login({ email, password })
+        .subscribe(
+          result => {
+            this.completeLoading();
+            const redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
+            this.router.navigate([redirect]);
+          },
+          error => {
+            // TODO: error handling for statusCode: 500; ENOTFOUND;
+            // When (db) server not available; e.g. «Network error»
+            if (error && error.error && error.error.error && error.error.error.message) {
+              this.errorMessage = error.error.error.message
+            }
+            else {
+              this.errorMessage = 'Login not possible.';
+            }
 
-          const redirect = this.activeAccountService.redirectUrl ? this.activeAccountService.redirectUrl : this.returnUrl;
-          this.router.navigate([redirect]);
-        },
-        error => {
-          // TODO: error handling for statusCode: 500; ENOTFOUND;
-          // When (db) server not available; e.g. «Network error»
+            this.resetLoading();
+          }
+        )
+    }
 
-          this.errorMessage = error.message;
-          this.resetLoading();
-        });
   }
 
 

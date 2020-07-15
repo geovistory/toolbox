@@ -15,6 +15,8 @@ import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { InformationPipesService } from 'app/modules/base/services/information-pipes.service';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
+import { ImporterComponent, ImporterDialogData } from 'app/modules/data/components/importer/importer.component';
+import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
 
 /**
  * Food data with nested structure.
@@ -577,6 +579,24 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
         } as InfStatement], pkProject)
 
       })
+    })
+  }
+
+  addTable(pkParent: number, parentIsF2Expression = false) {
+    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+
+      const apiCall = (response: ImportTableResponse) => this.inf.statement.upsert([{
+        fk_subject_data: response.fk_digital,
+        fk_object_info: pkParent,
+        fk_property: this.isReproProp(parentIsF2Expression)
+      } as InfStatement], pkProject).resolved$.pipe(map(r => r ? response : undefined))
+
+      this.dialog.open<ImporterComponent, ImporterDialogData>(ImporterComponent, {
+        height: 'calc(100% - 30px)',
+        width: '90%',
+        maxHeight: '100%',
+        data: { apiCall }
+      });
     })
   }
 

@@ -1,29 +1,28 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormArray, AbstractControl } from '@angular/forms';
-import { ActiveProjectService, InfPersistentItem, InfTemporalEntity, InfTextProperty, U, ValidationService, SysConfig, InfLangString, InfTemporalEntityApi } from 'app/core';
+import { FormArray } from '@angular/forms';
+import { MatFormFieldAppearance } from '@angular/material';
+import { ActiveProjectService, InfLangString, InfPersistentItem, InfTemporalEntity, InfTextProperty, SysConfig, U, ValidationService, InfDimension } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { ActionResultObservable } from 'app/core/store/actions';
+import { InfStatement } from 'app/core/sdk/models/InfStatement';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { FormArrayFactory } from 'app/modules/form-factory/core/form-array-factory';
+import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';
 import { FormArrayConfig, FormFactory, FormFactoryService, FormNodeConfig } from 'app/modules/form-factory/services/form-factory.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { equals, flatten, indexBy, values, groupBy, sum, uniq } from 'ramda';
+import { equals, flatten, groupBy, indexBy, sum, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { auditTime, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ConfigurationPipesService, BasicModel } from '../../services/configuration-pipes.service';
+import { BasicModel, ConfigurationPipesService } from '../../services/configuration-pipes.service';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanDialogResult } from '../ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
+import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextPropertyComponent, FgTextPropertyInjectData } from '../fg-text-property/fg-text-property.component';
 import { FieldDefinition, FieldProperty, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
-import { FormChildFactory } from 'app/modules/form-factory/core/form-child-factory';
-import { MatFormFieldAppearance } from '@angular/material';
-import { Appearance } from 'cesium';
-import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
-import { SchemaObjectService } from 'app/core/store/schema-object.service';
-import { InfStatement } from 'app/core/sdk/models/InfStatement';
+import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 type EntityModel = 'persistent_item' | 'temporal_entity'
 export interface FormArrayData {
   // arrayContains: 'fields' | 'lists' | 'controls'
@@ -79,9 +78,10 @@ export interface FormChildData {
   place?: FgPlaceInjectData
   textProperty?: FgTextPropertyInjectData
   langString?: FgLangStringInjectData
+  dimension?: FgDimensionInjectData
 }
 
-export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
+export type ControlType = 'ctrl-target-class' | 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-text-property' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
 
 export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
 export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, FormChildData>;
@@ -233,7 +233,8 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                 !!obj.object_place ||
                 !!obj.object_language ||
                 !!obj.object_appellation ||
-                !!obj.object_time_primitive
+                !!obj.object_time_primitive ||
+                !!obj.object_dimension
               )
             }
 
@@ -277,6 +278,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
                   statement.object_appellation = item.object_appellation;
                   statement.object_language = item.object_language;
                   statement.object_time_primitive = item.object_time_primitive;
+                  statement.object_dimension = item.object_dimension;
                 }
 
               } else {
@@ -501,9 +503,9 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
     // get the target class for each initial statement
     const o$ = statements.map((s) => {
       // -> for each initVal
-      const relObj = s.object_appellation || s.object_language || s.object_place || s.object_lang_string || s.subject_temporal_entity || s.object_persistent_item;
+      const relObj = s.object_appellation || s.object_language || s.object_place || s.object_lang_string || s.subject_temporal_entity || s.object_persistent_item || s.object_dimension;
       if (relObj) {
-        // --> if statement.appellation, .place, .lang_string, .time_primitive, .language
+        // --> if statement.appellation, .place, .lang_string, .time_primitive, .language, .dimension
         return of({ fk_class: relObj.fk_class, statement: s })
       } else {
         // --> else get related entity preview and its class
@@ -717,11 +719,17 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       return this.appellationCtrl(arrayConfig)
 
     }
-    else if (listType === 'lang-string') {
+    else if (listType === 'langString') {
 
       return this.langStringCtrl(arrayConfig)
 
-    } else if (listType === 'has-type') {
+    }
+    else if (listType === 'dimension') {
+
+      return this.dimensionCtrl(arrayConfig)
+
+    }
+    else if (listType === 'has-type') {
 
       return this.typeCtrl(arrayConfig)
 
@@ -1062,6 +1070,44 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
   }
 
+  private dimensionCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
+    const listDefinition = arrayConfig.data.controls.listDefinition;
+
+    // with [{}] we make sure at least one item is added
+    const initItems = arrayConfig.initValue || [{}];
+
+    const controlConfigs: LocalNodeConfig[] = initItems.map((dimension: InfDimension) => ({
+      childFactory: {
+        component: FgDimensionComponent,
+        getInjectData: (d) => {
+          return d.dimension
+        },
+        required: this.ctrlRequired(arrayConfig.data.controls.listDefinition),
+        data: {
+          dimension: {
+            appearance: this.appearance,
+            pkClassOfDimension: arrayConfig.data.pkClass,
+            initVal$: of(dimension)
+          }
+        },
+        mapValue: (val: InfDimension) => {
+          const value: InfStatement = {
+            ...{} as any,
+            fk_object_info: undefined,
+            fk_property: listDefinition.property.pkProperty,
+            fk_property_of_property: listDefinition.property.pkPropertyOfProperty,
+            object_dimension: {
+              ...val,
+              fk_class: listDefinition.targetClass,
+            },
+          };
+          return value;
+        }
+      }
+    }));
+    return of(controlConfigs);
+
+  }
 
   private entityCtrl(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const listDefinition = arrayConfig.data.controls.listDefinition;
