@@ -3,7 +3,7 @@ import {ProEntity} from '.';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'projects', table: 'v_info_proj_rel'}
   }

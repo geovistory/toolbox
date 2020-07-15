@@ -6,7 +6,7 @@ import {DfhClass} from './dfh-class.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'information', table: 'v_persistent_item'}
   }

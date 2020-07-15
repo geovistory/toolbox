@@ -3,7 +3,7 @@ import {PubRole} from './pub-role.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     description: 'Map principals to roles',
     strictObjectIDCoercion: true,
     postgresql: {schema: 'public', table: 'rolemapping'},

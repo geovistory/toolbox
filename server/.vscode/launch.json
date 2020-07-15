@@ -27,7 +27,7 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "4000",
+        "6000",
         "--colors",
         "'dist/__tests__/**/*.js'",
         // "--grep",

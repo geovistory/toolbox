@@ -5,7 +5,7 @@ import {PubAccount} from './pub-account.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'projects', table: 'analysis'}
   }
@@ -53,6 +53,9 @@ export class ProAnalysis extends Entity implements ProEntity {
     type: 'number',
   })
   fk_last_modifier?: number;
+
+
+
 
   // Define well-known properties here
 

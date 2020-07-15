@@ -1,9 +1,8 @@
-import {DatTextProperty} from '../../../models';
-import {DatChunkRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DfhClassRepository, DfhLabelRepository, DfhProfileRepository, DfhPropertyRepository, InfAppellationRepository, InfLangStringRepository, InfLanguageRepository, InfPersistentItemRepository, InfPlaceRepository, InfStatementRepository, InfTemporalEntityRepository, InfTextPropertyRepository, InfTimePrimitiveRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProInfoProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysClassHasTypePropertyRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository} from '../../../repositories';
+import {testdb} from '../../../datasources/testdb.datasource';
+import {DatChunkRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, DfhClassRepository, DfhLabelRepository, DfhProfileRepository, DfhPropertyRepository, InfAppellationRepository, InfLangStringRepository, InfLanguageRepository, InfPersistentItemRepository, InfPlaceRepository, InfStatementRepository, InfTemporalEntityRepository, InfTextPropertyRepository, InfTimePrimitiveRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProInfoProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysClassHasTypePropertyRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository} from '../../../repositories';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
 import {PubRoleRepository} from '../../../repositories/pub-role.repository';
-import {TestdbDataSource, testdb} from '../../../datasources/testdb.datasource';
 
 export async function cleanDb() {
 
@@ -13,15 +12,14 @@ export async function cleanDb() {
     // let datNamespaceRepository: DatNamespaceRepository;
     // let datTextProperty: DatTextProperty;
 
-    // eslint-disable-next-line prefer-const
-    let dfhClassRepository: DfhClassRepository;
+    // let dfhClassRepository: DfhClassRepository;
     // let dfhLabelRepository: DfhLabelRepository;
     // let dfhProfileRepository: DfhProfileRepository;
     // let dfhPropertyRepository: DfhPropertyRepository;
     // let infAppellationRepository: InfAppellationRepository;
     // let infLangStringRepository: InfLangStringRepository;
     // let infLanguageRepository: InfLanguageRepository;
-    let infPersistentItemRepository: InfPersistentItemRepository;
+    // let infPersistentItemRepository: InfPersistentItemRepository;
     // let infPlaceRepository: InfPlaceRepository;
     // let infStatementRepository: InfStatementRepository;
     // let infTemporalEntityRepository: InfTemporalEntityRepository;
@@ -52,7 +50,7 @@ export async function cleanDb() {
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
     const datDigitalRepository = new DatDigitalRepository(testdb);
     const datNamespaceRepository = new DatNamespaceRepository(testdb);
-    const datTextProperty = new DatTextProperty(testdb);
+    const datTextPropertyRepository = new DatTextPropertyRepository(testdb);
     const dfhLabelRepository = new DfhLabelRepository(testdb);
     const dfhProfileRepository = new DfhProfileRepository(testdb);
     const dfhPropertyRepository = new DfhPropertyRepository(testdb);
@@ -64,15 +62,11 @@ export async function cleanDb() {
     const infTemporalEntityRepository = new InfTemporalEntityRepository(testdb, async () => infStatementRepository, async () => infTextPropertyRepository, async () => proInfoProjRelRepository);
     const infTextPropertyRepository = new InfTextPropertyRepository(testdb);
     const infTimePrimitiveRepository = new InfTimePrimitiveRepository(testdb);
-    const proAnalysisRepository = new ProAnalysisRepository(testdb, async () => proProjectRepository, async () => pubAccountRepository);
+    const proAnalysisRepository = new ProAnalysisRepository(testdb);
     const proClassFieldConfigRepository = new ProClassFieldConfigRepository(testdb);
     const proDfhClassProjRelRepository = new ProDfhClassProjRelRepository(testdb);
-
-    // eslint-disable-next-line prefer-const
-    infPersistentItemRepository = new InfPersistentItemRepository(testdb, async () => infStatementRepository, async () => infTextPropertyRepository, async () => dfhClassRepository, async () => proInfoProjRelRepository);
-
-    dfhClassRepository = new DfhClassRepository(testdb, async () => proDfhClassProjRelRepository, async () => dfhPropertyRepository, async () => proClassFieldConfigRepository, async () => infPersistentItemRepository);
-
+    const dfhClassRepository = new DfhClassRepository(testdb, async () => proDfhClassProjRelRepository, async () => dfhPropertyRepository, async () => proClassFieldConfigRepository);
+    const infPersistentItemRepository = new InfPersistentItemRepository(testdb, async () => infStatementRepository, async () => infTextPropertyRepository, async () => dfhClassRepository, async () => proInfoProjRelRepository);
     const proDfhProfileProjRelRepository = new ProDfhProfileProjRelRepository(testdb);
     const proInfoProjRelRepository = new ProInfoProjRelRepository(testdb);
     const proProjectRepository = new ProProjectRepository(testdb);
@@ -91,11 +85,14 @@ export async function cleanDb() {
     const sysSystemTypeRepository = new SysSystemTypeRepository(testdb);
     const warEntityPreviewRepository = new WarEntityPreviewRepository(testdb);
 
+
+    await testdb.execute('DELETE FROM data_for_histroy.api_class');
+
     await datChunkRepository.deleteAll();
     await datColumnRepository.deleteAll();
     await datDigitalRepository.deleteAll();
     await datNamespaceRepository.deleteAll();
-    await datTextProperty.deleteAll();
+    await datTextPropertyRepository.deleteAll();
     await dfhClassRepository.deleteAll();
     await dfhLabelRepository.deleteAll();
     await dfhProfileRepository.deleteAll();

@@ -1,7 +1,7 @@
 import {model, property, Entity} from '@loopback/repository';
 
 
-@model({settings: {strict: false, postgresql: {schema: 'data', table: 'namespace'}}})
+@model({settings: {strict: true, postgresql: {schema: 'data', table: 'namespace'}}})
 export class DatNamespace extends Entity {
   @property({
     type: 'number',

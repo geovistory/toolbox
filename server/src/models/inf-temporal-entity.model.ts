@@ -5,7 +5,7 @@ import {InfTextProperty} from './inf-text-property.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'information', table: 'v_temporal_entity'}
   }

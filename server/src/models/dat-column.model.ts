@@ -4,7 +4,7 @@ import {DatNamespace} from './dat-namespace.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'data', table: 'column'}
   }

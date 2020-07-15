@@ -2,7 +2,7 @@ import {model, property, Entity} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'system', table: 'v_has_type_preview'}
   }

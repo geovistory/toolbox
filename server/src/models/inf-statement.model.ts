@@ -12,7 +12,7 @@ import {InfTimePrimitive} from './inf-time-primitive.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'information', table: 'v_statement'}
   }

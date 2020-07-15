@@ -1,10 +1,11 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
 import {InfEntity} from '.';
 import {InfStatement} from './inf-statement.model';
+import {ProInfoProjRel} from './pro-info-proj-rel.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'information', table: 'v_appellation'}
   }
@@ -38,6 +39,9 @@ export class InfAppellation extends Entity implements InfEntity {
 
   @hasMany(() => InfStatement, {keyTo: 'fk_object_info'})
   incoming_statements: InfStatement[];
+
+  @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
+  entity_version_project_rels: ProInfoProjRel[]
 
   // Define well-known properties here
 
