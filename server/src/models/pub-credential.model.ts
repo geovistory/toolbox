@@ -29,7 +29,7 @@ export class PubCredential extends Entity {
     type: 'string',
     required: true,
   })
-  accountId: string;
+  accountId: number;
 
   // Define well-known properties here
 

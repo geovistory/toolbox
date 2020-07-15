@@ -33,7 +33,10 @@
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "heroku-postbuild": "bash heroku-postbuild.sh",
+    "pret": "cd ../db-migrate && npm run prepare-test && cd ../server && npm run clean && npm run build",
     "t": "export NO_LOGS='true' && lb-mocha --require ts-node/register --timeout 4000  --recursive true 'src/__tests__/**/*.ts'",
+    "pretwindows": "cd ../db-migrate && npm run prepare-test-windows && cd ../server && npm run clean && npm run build",
+    "twindows": "set NO_LOGS='true' && lb-mocha --require ts-node/register --timeout 4000  --recursive true 'src/__tests__/**/*.ts'",
     "build:sdk": "bash build-ngx-sdk.sh",
     "build:sdk-windows": "build-ngx-sdk.sh"
   },

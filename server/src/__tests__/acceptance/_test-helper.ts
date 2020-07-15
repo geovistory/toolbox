@@ -19,10 +19,10 @@ export async function setupApplication(): Promise<AppWithClient> {
 
   const client = createRestAppClient(server);
 
-  return {app: server, client};
+  return {server, client};
 }
 
 export interface AppWithClient {
-  app: GeovistoryServer;
+  server: GeovistoryServer;
   client: Client;
 }
