@@ -35,10 +35,7 @@
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
-      "env": {
-        "NODE_ENV": "testing",
-        "NO_LOGS": "true"
-      },
+      "envFile": "${workspaceFolder}/.vscode/envFile",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -61,10 +58,7 @@
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
       "restart": true,
-      "env": {
-        "NODE_ENV": "testing",
-        "NO_LOGS": "true"
-      },
+      "envFile": "${workspaceFolder}/.vscode/envFile",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]

@@ -58,6 +58,9 @@ typings/
 # dotenv environment variables file
 .env
 
+# .vscode environment variables file
+.vscode/envFile
+
 # Transpiled JavaScript files from Typescript
 /dist
 
