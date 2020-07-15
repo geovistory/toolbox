@@ -375,22 +375,27 @@ export class InformationPipesService {
     const ingoingStatements$ = repo ? this.b.pipeRepoIngoingStatements(pkEntity) : this.b.pipeIngoingStatements(pkEntity);
 
 
-    // pipe all statements with leaf items
+    // pipe all statements with information leaf items
+
     const outgoingItems$: Observable<StatementItem[]> = outgoingStatements$.pipe(
-      switchMapOr([], statements => combineLatestOrEmpty(
-        statements.map(s => {
-          const isOutgoing = true;
-          return this.pipeItem(s, pkProject, isOutgoing);
-        })
+      switchMap(statements => combineLatestOrEmpty(
+        statements
+          .filter(statement => !!statement.fk_object_info) // remove statements not pointing to information
+          .map(s => {
+            const isOutgoing = true;
+            return this.pipeItem(s, pkProject, isOutgoing);
+          })
       ))
 
     )
     const ingoingItems$: Observable<StatementItem[]> = ingoingStatements$.pipe(
-      switchMapOr([], statements => combineLatest(
-        statements.map(s => {
-          const isOutgoing = false;
-          return this.pipeItem(s, pkProject, isOutgoing);
-        })
+      switchMap(statements => combineLatestOrEmpty(
+        statements
+          .filter(statement => !!statement.fk_subject_info) // remove statements not pointing to information
+          .map(s => {
+            const isOutgoing = false;
+            return this.pipeItem(s, pkProject, isOutgoing);
+          })
       ))
 
     )

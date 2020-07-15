@@ -40,8 +40,14 @@ export class RequestPasswordResetComponent {
 
         },
         error => {
-          // TODO: Alert
-          this.errorMessage = error.message;
+
+          if (error && error.error && error.error.error && error.error.error.message) {
+            this.errorMessage = error.error.error.message
+          }
+          else {
+            this.errorMessage = 'Could not send email to reset password.';
+          }
+
           this.resetLoading();
         });
   }

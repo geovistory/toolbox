@@ -19,9 +19,19 @@
 
       <span class="right-col">
         <mat-menu #appMenu="matMenu">
+
+          <ng-container *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'langString'">
+            <button mat-menu-item (click)="openPopup(item)">
+              <mat-icon svgIcon="arrow-expand-all"></mat-icon>
+              <span>Open in popup</span>
+            </button>
+            <mat-divider></mat-divider>
+          </ng-container>
+
+          <div class="dropdown-header">Danger Zone</div>
           <button mat-menu-item (click)="remove(item)">
-            <mat-icon>delete</mat-icon>
-            Remove
+            <mat-icon color="warn">delete</mat-icon>
+            <span>Remove</span>
           </button>
         </mat-menu>
 
