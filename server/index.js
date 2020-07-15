@@ -1,12 +1,14 @@
 const application = require('./dist');
+const PORT = +(process.env.PORT || 3000);
 
 module.exports = application;
 
 if (require.main === module) {
+  console.log('$PORT:', PORT);
   // Run the application
   const config = {
     rest: {
-      port: +(process.env.PORT || 3000),
+      port: PORT,
       host: process.env.HOST,
       // The `gracePeriodForClose` provides a graceful close for http/https
       // servers with keep-alive clients. The default value is `Infinity`
