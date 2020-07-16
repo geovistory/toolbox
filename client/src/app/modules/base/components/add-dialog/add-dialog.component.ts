@@ -1,11 +1,12 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActiveProjectService, InfRole, InfTemporalEntityApi } from 'app/core';
+import { ActiveProjectService, InfStatement, InfTemporalEntityApi } from 'app/core';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
-import { ListDefinition } from '../properties-tree/properties-tree.models';
+import { ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { ClassAndTypePk, NotInProjectClickBehavior } from '../add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { leafItemListTypes, valueObjectListTypes } from '../../base.module';
 
 type ActiveElement = 'add-existing-statements' | 'create-form' | 'create-or-add'
 
@@ -45,8 +46,8 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: AddDialogData,
     public teEnApi: InfTemporalEntityApi
   ) {
-    this.isLeafItemList = ['appellation', 'language', 'place', 'text-property', 'lang-string', 'entity-preview']
-      .includes(data.listDefinition.listType);
+
+    this.isLeafItemList = leafItemListTypes.includes(data.listDefinition.listType);
 
 
     this.classAndTypePk = { pkClass: data.listDefinition.targetClass, pkType: undefined }
@@ -63,8 +64,7 @@ export class AddDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close()
   }
   onNext() {
-    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
-      .includes(this.data.listDefinition.listType)
+    const isValueLike = valueObjectListTypes.includes(this.data.listDefinition.listType)
 
     if (isValueLike || this.data.listDefinition.identityDefiningForTarget) {
       this.activeElement$.next('create-form')
@@ -78,14 +78,14 @@ export class AddDialogComponent implements OnInit, OnDestroy {
 
     this.loading$.next(true)
 
-    // create the role to add
-    const r: Partial<InfRole> = {}
+    // create the statement to add
+    const r: Partial<InfStatement> = {}
     if (lDef.isOutgoing) {
-      r.fk_temporal_entity = this.data.pkEntity
-      r.fk_entity = pkEntity
+      r.fk_subject_info = this.data.pkEntity
+      r.fk_object_info = pkEntity
     } else {
-      r.fk_entity = this.data.pkEntity
-      r.fk_temporal_entity = pkEntity
+      r.fk_object_info = this.data.pkEntity
+      r.fk_subject_info = pkEntity
     }
     r.fk_property = lDef.property.pkProperty;
     r.fk_property_of_property = lDef.property.pkPropertyOfProperty;
@@ -101,8 +101,8 @@ export class AddDialogComponent implements OnInit, OnDestroy {
       )
       .subscribe(([pkProject, model]) => {
 
-        // create api call for upserting the role
-        const obs$: Observable<any>[] = [this.p.inf.role.upsert([r], pkProject).resolved$.pipe(first(x => !!x))]
+        // create api call for upserting the statement
+        const obs$: Observable<any>[] = [this.p.inf.statement.upsert([r], pkProject).resolved$.pipe(first(x => !!x))]
 
         if (!isInProject && model == 'temporal_entity') {
           // crate api call for adding teEnToProject

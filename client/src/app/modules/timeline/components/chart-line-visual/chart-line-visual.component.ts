@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 import { ScaleLinear } from 'd3';
 import { Subject } from 'rxjs';
-import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../src/common/interfaces';
+import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
 import { D3Service } from '../../shared/d3.service';
 
 

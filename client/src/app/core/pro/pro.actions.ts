@@ -73,10 +73,10 @@ export class ProProjectActionFactory extends StandardActionsFactory<Payload, Pro
   }
 }
 
-export interface MarkRoleAsFavoriteActionMeta {
+export interface MarkStatementAsFavoriteActionMeta {
   addPending: string,
   pk: number
-  pkRole: number
+  pkStatement: number
   isOutgoing: boolean
 }
 export class ProInfoProjRelActionFactory extends StandardActionsFactory<Payload, ProInfoProjRel> {
@@ -84,21 +84,21 @@ export class ProInfoProjRelActionFactory extends StandardActionsFactory<Payload,
   // Suffixes of load action types
   static readonly MARK_ROLE_AS_FAVORITE = 'MARK_ROLE_AS_FAVORITE';
 
-  markRoleAsFavorite: (pkProject: number, pkRole: number, isOutgoing: boolean) => ActionResultObservable<ProInfoProjRel>;
+  markStatementAsFavorite: (pkProject: number, pkStatement: number, isOutgoing: boolean) => ActionResultObservable<ProInfoProjRel>;
 
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux) }
 
   createActions(): ProInfoProjRelActionFactory {
     Object.assign(this, this.createCrudActions(proRoot, 'info_proj_rel'))
 
-    this.markRoleAsFavorite = (pkProject: number, pkRole: number, isOutgoing: boolean) => {
+    this.markStatementAsFavorite = (pkProject: number, pkStatement: number, isOutgoing: boolean) => {
       const addPending = U.uuid()
-      const action: FluxStandardAction<Payload, MarkRoleAsFavoriteActionMeta> = {
+      const action: FluxStandardAction<Payload, MarkStatementAsFavoriteActionMeta> = {
         type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE,
         meta: {
           addPending,
           pk: pkProject,
-          pkRole,
+          pkStatement: pkStatement,
           isOutgoing
         },
         payload: null,

@@ -7,25 +7,31 @@
         </gv-onto-class-info>
 
 
-        <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'lang-string'"
+        <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'langString'"
           class="ellipsis">
           {{item.label}} <span class="mat-caption text-muted">{{item?.language.notes}}</span>
         </span>
-        <span *ngIf="['appellation', 'language', 'place'].includes(listDefinition.listType)" class="ellipsis">
+        <span *ngIf="['appellation', 'language', 'place', 'dimension'].includes(listDefinition.listType)"
+          class="ellipsis">
           {{item.label}}
         </span>
       </span>
 
       <span class="right-col">
         <mat-menu #appMenu="matMenu">
-          <!-- <button mat-menu-item *ngIf="listDefinition.listType === 'entity-preview'" (click)="openInNewTab(item)">
-              <mat-icon>tab</mat-icon>
-              Open in new Tap
-            </button> -->
 
+          <ng-container *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'langString'">
+            <button mat-menu-item (click)="openPopup(item)">
+              <mat-icon svgIcon="arrow-expand-all"></mat-icon>
+              <span>Open in popup</span>
+            </button>
+            <mat-divider></mat-divider>
+          </ng-container>
+
+          <div class="dropdown-header">Danger Zone</div>
           <button mat-menu-item (click)="remove(item)">
-            <mat-icon>delete</mat-icon>
-            Remove
+            <mat-icon color="warn">delete</mat-icon>
+            <span>Remove</span>
           </button>
         </mat-menu>
 

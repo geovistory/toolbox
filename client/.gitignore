@@ -1,2 +1,5 @@
 report.*json
 documentation
+
+# Dependency directories
+node_modules/

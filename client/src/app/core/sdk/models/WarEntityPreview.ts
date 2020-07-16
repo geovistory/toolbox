@@ -1,6 +1,6 @@
 /* tslint:disable */
 import {
-  InfRole,
+  InfStatement,
   InfTextProperty
 } from '../index';
 
@@ -18,8 +18,8 @@ export interface WarEntityPreviewInterface {
   "first_second"?: number;
   "last_second"?: number;
   "tmsp_last_modification"?: any;
-  te_roles?: InfRole[];
-  pi_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
 }
 
@@ -36,8 +36,8 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
   "first_second": number;
   "last_second": number;
   "tmsp_last_modification": any;
-  te_roles?: InfRole[];
-  pi_roles?: InfRole[];
+  outgoing_statements?: InfStatement[];
+  incoming_statements?: InfStatement[];
   text_properties?: InfTextProperty[];
   constructor(data?: WarEntityPreviewInterface) {
     Object.assign(this, data);
@@ -122,21 +122,21 @@ export class WarEntityPreview implements WarEntityPreviewInterface {
         },
       },
       relations: {
-        te_roles: {
-          name: 'te_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        outgoing_statements: {
+          name: 'outgoing_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_temporal_entity'
+          keyTo: 'fk_subject_info'
         },
-        pi_roles: {
-          name: 'pi_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+          keyTo: 'fk_object_info'
         },
         text_properties: {
           name: 'text_properties',

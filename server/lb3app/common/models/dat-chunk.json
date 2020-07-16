@@ -1,0 +1,122 @@
+{
+  "name": "DatChunk",
+  "base": "DatEntity",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "data",
+      "table": "v_chunk"
+    }
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "quill_doc": {
+      "type": "object"
+    },
+    "string": {
+      "type": "string"
+    },
+    "fk_text": {
+      "type": "number",
+      "required": true
+    },
+    "fk_entity_version": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "outgoing_statements": {
+      "type": "hasMany",
+      "model": "InfStatement",
+      "foreignKey": "fk_subject_data",
+      "primaryKey": "pk_entity"
+    },
+    "digital": {
+      "type": "belongsTo",
+      "model": "DatDigital",
+      "foreignKey": "fk_text",
+      "primaryKey": "pk_text"
+    }
+  },
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": [
+        "findById"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "ofDigital"
+      ]
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "system_admin",
+      "permission": "ALLOW",
+      "property": []
+    }
+  ],
+  "methods": {
+    "ofDigital": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the project",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "pkDigital",
+          "type": "number",
+          "required": true,
+          "description": "Primary key of the digital",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "ctx",
+          "type": "object",
+          "http": {
+            "source": "context"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "DatChunk"
+        ],
+        "root": true
+      },
+      "description": "Get the chunks related to the digital, with their statements.",
+      "http": {
+        "path": "/of-digital",
+        "verb": "get"
+      }
+    }
+  }
+}

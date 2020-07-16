@@ -8,7 +8,7 @@
         target="_blank">
         {{fieldDefinition.ontoInfoLabel}}
       </a>
-      <span class="mat-body-strong" [ngClass]="{'mat-text-secondary': !(typeItem.hasTypeRole$ |async)}">
+      <span class="mat-body-strong" [ngClass]="{'mat-text-secondary': !(typeItem.hasTypeStatement$ |async)}">
         {{fieldDefinition.listDefinitions.length === 1 ? fieldDefinition.listDefinitions[0].label : fieldDefinition.label}}
         <span matTooltip="Required and not changeable (identity defining)"
           *ngIf="fieldDefinition.listDefinitions[0].isOutgoing && fieldDefinition.listDefinitions[0].identityDefiningForSource">
@@ -60,7 +60,7 @@
           *
         </span>
         <mat-icon *ngIf="fieldDefinition.removedFromAllProfiles" svgIcon="alert" color="warn"
-          matTooltip="This property of this field has been removed from all your OntoMe profiles. Try to not use it anymore.">
+          matTooltip="This property of this field has been removed from the OntoMe profile(s) you have activated. Activate a profile that contains this property if you still want to use it. Otherwise refactor your data to not use this property anymore.">
         </mat-icon>
       </span>
       <span class="mat-body right-col" [ngClass]="{'mat-text-secondary': (listsWithCounts$ |async).length === 0}">

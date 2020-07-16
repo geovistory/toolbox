@@ -1,12 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { InformationBasicPipesService } from '../../services/information-basic-pipes.service';
-import { Observable, Subject, combineLatest } from '../../../../../../node_modules/rxjs';
-import { InformationPipesService } from '../../services/information-pipes.service';
-import { FormGroup, FormBuilder, FormControl } from '../../../../../../node_modules/@angular/forms';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
-import { switchMap, map, takeUntil, first, filter } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, InfRole, ProInfoProjRel } from '../../../../core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '../../../../../../node_modules/@angular/forms';
+import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
+import { first, map, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
+import { ActiveProjectService, InfStatement, ProInfoProjRel } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { InformationPipesService } from '../../services/information-pipes.service';
 
 @Component({
   selector: 'gv-type-item',
@@ -23,7 +21,7 @@ export class TypeItemComponent implements OnInit {
 
   isViewMode: boolean;
 
-  hasTypeRole$: Observable<InfRole>
+  hasTypeStatement$: Observable<InfStatement>
   pkType$: Observable<number>
   typeLabel$: Observable<string>
 
@@ -55,14 +53,14 @@ export class TypeItemComponent implements OnInit {
     if (this.isOutgoing == undefined) throw new Error('You must provide a isOutgoing')
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      if (this.isOutgoing) this.p.inf.role.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
-      else this.p.inf.role.findByParams(true, pkProject, null, this.pkEntity, null, this.pkProperty)
+      if (this.isOutgoing) this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+      else this.p.inf.statement.findByParams(true, pkProject, null, this.pkEntity, null, this.pkProperty)
     })
 
-    this.hasTypeRole$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty, this.isOutgoing)
+    this.hasTypeStatement$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty, this.isOutgoing)
 
-    this.pkType$ = this.hasTypeRole$.pipe(
-      map(e => { console.log(e); return e ? (this.isOutgoing ? e.fk_entity : e.fk_temporal_entity) : undefined })
+    this.pkType$ = this.hasTypeStatement$.pipe(
+      map(e => { console.log(e); return e ? (this.isOutgoing ? e.fk_object_info : e.fk_subject_info) : undefined })
     )
     this.typeLabel$ = this.pkType$.pipe(
       switchMap(pkType => this.p.streamEntityPreview(pkType).pipe(
@@ -77,15 +75,15 @@ export class TypeItemComponent implements OnInit {
   }
 
   onSubmit() {
-    combineLatest(this.hasTypeRole$, this.p.pkProject$).pipe(
+    combineLatest(this.hasTypeStatement$, this.p.pkProject$).pipe(
       first(),
       takeUntil(this.destroy$)
-    ).subscribe(([role, fk_project]) => {
+    ).subscribe(([statement, fk_project]) => {
       const targetEntity: number = this.formGroup.get('typeCtrl').value;
       // if same option is chosen or subject equals object...
       if (
-        (role && targetEntity == (this.isOutgoing ? role.fk_entity : role.fk_temporal_entity)) ||
-        (!role && !targetEntity)
+        (statement && targetEntity == (this.isOutgoing ? statement.fk_object_info : statement.fk_subject_info)) ||
+        (!statement && !targetEntity)
       ) {
         // ... stop here.
         this.editing = false
@@ -96,19 +94,19 @@ export class TypeItemComponent implements OnInit {
 
         // old statement
         const calls$ = [];
-        if (role) {
+        if (statement) {
           // remove old statement from project
-          const oldEa = new InfRole({
-            pk_entity: role.pk_entity,
-            fk_temporal_entity: role.fk_temporal_entity,
-            fk_entity: role.fk_entity,
-            fk_property: role.fk_property,
+          const oldStatement = new InfStatement({
+            pk_entity: statement.pk_entity,
+            fk_subject_info: statement.fk_subject_info,
+            fk_object_info: statement.fk_object_info,
+            fk_property: statement.fk_property,
             entity_version_project_rels: [{
               fk_project,
               is_in_project: false
             } as ProInfoProjRel]
           })
-          const call$ = this.inf.role.remove([oldEa], fk_project).resolved$
+          const call$ = this.inf.statement.remove([oldStatement], fk_project).resolved$
           calls$.push(call$);
         }
 
@@ -117,13 +115,13 @@ export class TypeItemComponent implements OnInit {
           const subject = this.isOutgoing ? this.pkEntity : targetEntity;
           const object = this.isOutgoing ? targetEntity : this.pkEntity;
 
-          const newEa = new InfRole({
-            fk_temporal_entity: subject,
-            fk_entity: object,
+          const newEa = new InfStatement({
+            fk_subject_info: subject,
+            fk_object_info: object,
             fk_property: this.pkProperty,
             entity_version_project_rels: [{ is_in_project: true } as ProInfoProjRel]
           })
-          const call$ = this.inf.role.upsert([newEa], fk_project).resolved$
+          const call$ = this.inf.statement.upsert([newEa], fk_project).resolved$
           calls$.push(call$);
         }
 

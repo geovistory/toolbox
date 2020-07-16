@@ -6,14 +6,15 @@ import { Observable, Subject, BehaviorSubject, combineLatest, merge } from '../.
 import { takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
-import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, BasicRoleItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
+import { EntityPreviewItem, Item, ItemList, ListDefinition, PropertyListComponentInterface, BasicStatementItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
 import { equals } from 'ramda';
 import { PaginateByParam } from 'app/core/store/actions';
-import { PageEvent } from '@angular/material';
+import { PageEvent, MatDialog } from '@angular/material';
+import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'gv-leaf-item-list',
@@ -45,7 +46,8 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
     public t: PropertiesTreeService,
     public i: InformationPipesService,
     public inf: InfActions,
-    public pag: PaginationService
+    public pag: PaginationService,
+    public dialog: MatDialog
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
@@ -70,7 +72,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
         takeUntil(this.destroy$)
       ).subscribe(([limit, offset, pkProject]) => {
         nextPage$.next()
-        this.pag.roles.addPageLoader(
+        this.pag.statements.addPageLoader(
           pkProject,
           this.listDefinition,
           this.pkEntity,
@@ -85,7 +87,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
       // Piping from store
       this.items$ = pagination$.pipe(
         distinctUntilChanged(equals),
-        switchMap(([limit, offset, pkProject]) => this.i.pipeRoleListPage(
+        switchMap(([limit, offset, pkProject]) => this.i.pipeStatementListPage(
           paginateBy,
           limit,
           offset,
@@ -96,7 +98,7 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
         shareReplay({ refCount: true, bufferSize: 1 }),
       )
 
-      this.itemsCount$ = this.p.inf$.role$.pagination$.pipeCount(paginateBy)
+      this.itemsCount$ = this.p.inf$.statement$.pagination$.pipeCount(paginateBy)
 
 
     } else {
@@ -119,8 +121,8 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
         } else {
 
-          const role = (item as BasicRoleItem).role;
-          this.inf.role.remove([role], pkProject)
+          const statement = (item as BasicStatementItem).statement;
+          this.inf.statement.remove([statement], pkProject)
 
         }
       })
@@ -129,6 +131,17 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
   openInNewTab(item: EntityPreviewItem) {
     this.p.addEntityTab(item.preview.pk_entity, item.preview.fk_class, item.preview.entity_type)
+  }
+
+  openPopup(item: BasicStatementItem) {
+    const data: ConfirmDialogData = {
+      hideNoButton: true,
+      noBtnText: '',
+      yesBtnText: 'Ok',
+      title: 'Details',
+      paragraphs: [item.label]
+    }
+    this.dialog.open(ConfirmDialogComponent, { data })
   }
 
   onPageChange(e: PageEvent) {

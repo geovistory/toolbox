@@ -9,10 +9,10 @@ import { createPaginateBy } from '../components/temporal-entity-list/temporal-en
 import { PaginateByParam, ActionResultObservable, SucceedActionMeta } from 'app/core/store/actions';
 import { NgRedux } from '@angular-redux/store';
 import { InfSelector } from 'app/core/inf/inf.service';
-import { PaginatedRolesList } from 'app/core/inf/inf.actions';
+import { PaginatedStatementList } from 'app/core/inf/inf.actions';
 
 
-class RolePageLoader {
+class StatementPageLoader {
   private paginationTriggers = new Map<string, Observable<any>>()
   private pageLoaders = new Map<string, {
     refCount: number,
@@ -28,7 +28,7 @@ class RolePageLoader {
       targetClass: number,
       isOutgoing: boolean,
       limit: number,
-      offset: number) => ActionResultObservable<PaginatedRolesList>
+      offset: number) => ActionResultObservable<PaginatedStatementList>
   ) { }
 
   public addPageLoader(pkProject: number, l: ListDefinition, pkEntity: number, limit, offset, takeUntil$: Observable<any>, alternatives = false) {
@@ -43,7 +43,7 @@ class RolePageLoader {
     if (!this.pageLoaders.has(loaderKey)) {
 
       // emits when load function has been called
-      const loadEvent$ = new Subject<SucceedActionMeta<PaginatedRolesList>>()
+      const loadEvent$ = new Subject<SucceedActionMeta<PaginatedStatementList>>()
 
       const until$ = new Subject<void>()
 
@@ -103,13 +103,13 @@ class RolePageLoader {
     if (!this.paginationTriggers.has(triggerKey)) {
       const ofProject = !alternatives;
       const t = combineLatest([
-        this.p.inf$.role$.by_object_and_property_indexed$({
+        this.p.inf$.statement$.by_object_and_property_indexed$({
           fk_property: l.property.pkProperty,
-          fk_entity: pkEntity
+          fk_object_info: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
-        this.p.inf$.role$.by_subject_and_property_indexed$({
+        this.p.inf$.statement$.by_subject_and_property_indexed$({
           fk_property: l.property.pkProperty,
-          fk_temporal_entity: pkEntity
+          fk_subject_info: pkEntity
         }, ofProject).pipe(map(x => keys(x)), distinctUntilChanged(equals)),
       ]).pipe(shareReplay({ bufferSize: 1, refCount: true }));
       this.paginationTriggers.set(triggerKey, t);
@@ -125,20 +125,20 @@ class RolePageLoader {
 export class PaginationService {
   private infRepo = new InfSelector(this.ngRedux, of('repo'))
 
-  temporalEntity = new RolePageLoader(
+  temporalEntity = new StatementPageLoader(
     this.p,
-    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
+    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
     this.p.inf.temporal_entity.loadPaginatedList)
 
-  temporalEntityAlternative = new RolePageLoader(
+  temporalEntityAlternative = new StatementPageLoader(
     this.p,
-    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
+    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
     this.p.inf.temporal_entity.loadPaginatedAlternativeList)
 
-  roles = new RolePageLoader(
+  statements = new StatementPageLoader(
     this.p,
-    this.p.inf$.role$.pagination$.pipePageLoadNeeded,
-    this.p.inf.role.loadPaginatedList
+    this.p.inf$.statement$.pagination$.pipePageLoadNeeded,
+    this.p.inf.statement.loadPaginatedList
   )
 
   constructor(

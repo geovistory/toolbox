@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { InfRole, ActiveProjectService } from 'app/core';
+import { InfStatement, ActiveProjectService } from 'app/core';
 import { PropertiesTreeService } from 'app/modules/base/components/properties-tree/properties-tree.service';
 import { FieldDefinition, ListDefinition } from 'app/modules/base/components/properties-tree/properties-tree.models';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
@@ -9,7 +9,7 @@ import { first, takeUntil } from 'rxjs/operators';
 export interface RamListRemoveDialogData {
 
   // the root statement of the dialog
-  statement: InfRole;
+  statement: InfStatement;
 
   propertyLabel: string;
 
@@ -35,7 +35,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
   ) {
 
     const listDef: ListDefinition = {
-      listType: 'lang-string',
+      listType: 'langString',
       label: 'at reference',
       ontoInfoUrl: '[ontoInfoUrl]',
       ontoInfoLabel: '[ontoInfoLabel]',
@@ -70,14 +70,14 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
 
   onRemove() {
     combineLatest(
-      this.p.inf$.role$.by_subject_and_property$({
+      this.p.inf$.statement$.by_subject_and_property$({
         fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
-        fk_temporal_entity: this.data.statement.pk_entity
+        fk_subject_info: this.data.statement.pk_entity
       }),
       this.p.pkProject$
     ).pipe(first()).subscribe(([references, pkProject]) => {
 
-      this.p.inf.role.remove([this.data.statement, ...references], pkProject).resolved$
+      this.p.inf.statement.remove([this.data.statement, ...references], pkProject).resolved$
         .pipe(takeUntil(this.destroy$)).subscribe(
           res => {
             if (res) this.dialogRef.close()

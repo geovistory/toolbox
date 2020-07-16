@@ -77,8 +77,9 @@ import { ProDfhClassProjRelApi } from './services/custom/ProDfhClassProjRel';
 import { ProDfhProfileProjRelApi } from './services/custom/ProDfhProfileProjRel';
 import { InfAppellationApi } from './services/custom/InfAppellation';
 import { InfLangStringApi } from './services/custom/InfLangString';
+import { InfDimensionApi } from './services/custom/InfDimension';
 import { InfTemporalEntityApi } from './services/custom/InfTemporalEntity';
-import { InfRoleApi } from './services/custom/InfRole';
+import { InfStatementApi } from './services/custom/InfStatement';
 import { InfLanguageApi } from './services/custom/InfLanguage';
 import { InfPersistentItemApi } from './services/custom/InfPersistentItem';
 import { InfTimePrimitiveApi } from './services/custom/InfTimePrimitive';
@@ -145,8 +146,9 @@ export class SDKBrowserModule {
         ProDfhProfileProjRelApi,
         InfAppellationApi,
         InfLangStringApi,
+        InfDimensionApi,
         InfTemporalEntityApi,
-        InfRoleApi,
+        InfStatementApi,
         InfLanguageApi,
         InfPersistentItemApi,
         InfTimePrimitiveApi,

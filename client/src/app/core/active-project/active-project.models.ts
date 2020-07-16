@@ -1,6 +1,5 @@
 import { DatChunk, DfhProperty, InfLanguage, InfPersistentItem, InfTemporalEntity, ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from 'app/core/sdk';
 import { EntityPreview, EntityPreviewList, EntityDetail, PeItDetailList, } from 'app/core/state/models';
-import { SysClassHasTypePropertySlice } from 'app/core/sys/sys.models';
 // import { CreateOrAddEntity } from 'app/modules/information/containers/create-or-add-entity/create-or-add-entity.component';
 import { ProjectSettingsData } from 'app/modules/projects/containers/project-settings-data/api/project-settings-data.models';
 // import { VisualDetail } from 'app/modules/visuals/containers/visual-detail/api/visual-detail.models';
@@ -143,10 +142,10 @@ export interface ProjectDetail extends ProjectPreview {
   // chunk List
   chunks?: ChunkList;
 
-  // InfPersistentItems with roles by pk_entity
+  // InfPersistentItems with statements by pk_entity
   peItGraphs?: PeItList;
 
-  // InfPersistentItems with roles by pk_entity
+  // InfPersistentItems with statements by pk_entity
   teEnGraphs?: TeEnList;
 
   // // ComQuery list by pk_entity
@@ -227,11 +226,11 @@ export interface ProjectDetail extends ProjectPreview {
   // TODO: check, if needed
   creatingMentioning?: boolean;
 
-  // Array of pk_entities of mentionings (a.k.a. roles of property "is mentioned in")
+  // Array of pk_entities of mentionings (a.k.a. statements of property "is mentioned in")
   // that are focused by a click on a chunk (in text editor)
   mentioningsFocusedInText?: number[]
 
-  // Array of pk_entities of mentionings (a.k.a. roles of property "is mentioned in")
+  // Array of pk_entities of mentionings (a.k.a. statements of property "is mentioned in")
   // that are focused by click on mentioning in a list/table view
   mentioningsFocusedInTable?: number[]
 
@@ -240,9 +239,6 @@ export interface ProjectDetail extends ProjectPreview {
 export interface ProjectCrm {
   classes?: ClassConfigList;
   properties?: PropertyList
-  // fieldList?: FieldList;
-  // hasTypeProperties?: HasTypePropertyList;
-  classHasTypeProperty?: SysClassHasTypePropertySlice
 }
 
 export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig };

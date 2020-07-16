@@ -5,7 +5,7 @@
   </ol>
 </gv-navbar>
 
-<div *ngIf="!account" class="container mt-5">
+<div *ngIf="!(account)" class="container mt-5">
   <div class="row">
     <div class="col text-center">
       <h1>
@@ -27,6 +27,11 @@
       <a class="btn btn-link" routerLink="/registration">Register</a>
     </div>
   </div>
+  <div class="row powered-by">
+    <div class="col text-center mat-text-secondary">
+      <ng-container *ngTemplateOutlet="poweredBy"></ng-container>
+    </div>
+  </div>
 </div>
 
 <div *ngIf="account" class="container mt-5">
@@ -46,5 +51,14 @@
         <a class="btn btn-outline-secondary" routerLink="/account">Personal Settings</a>
       </div>
     </div>
+    <div class="row powered-by justify-content-center">
+      <div class="col-md-6 mat-text-secondary">
+        <ng-container *ngTemplateOutlet="poweredBy"></ng-container>
+      </div>
+    </div>
   </div>
 </div>
+
+<ng-template #poweredBy>
+  Powered by <a href="https://kleiolab.ch" title="KleioLab GmbH – Company website" target="_blank">KleioLab</a>
+</ng-template>

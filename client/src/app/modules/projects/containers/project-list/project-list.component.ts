@@ -1,20 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, OnInit } from '@angular/core';
-import { LoopBackAuth, LoopBackConfig, ProjectPreview, ProProject, ProTextProperty, PubAccount, PubAccountApi, U, IAppState, InfRole } from 'app/core';
-import { environment } from 'environments/environment';
-import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { SysConfig } from '../../../../../../../src/common/config/sys-config';
-import { ProjectsActions } from '../../api/projects.actions';
-import { IProjectList } from '../../projects.model';
 import { Router } from '@angular/router';
-import * as Config from '../../../../../../../common/config/Config';
+import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
+import { IAppState, LoopBackAuth, LoopBackConfig, ProjectPreview, ProProject, ProTextProperty, PubAccount, PubAccountApi, U } from 'app/core';
 import { ProActions } from 'app/core/pro/pro.actions';
-import { InfSelector } from 'app/core/inf/inf.service';
 import { ProSelector } from 'app/core/pro/pro.service';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { takeUntil, map, switchMap, combineLatest, mergeMap } from 'rxjs/operators';
-import { values } from 'ramda';
-import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
+import { environment } from 'environments/environment';
+import * as Config from '../../../../../../../server/lb3app/common/config/Config';
+import { ProjectsActions } from '../../api/projects.actions';
 
 
 @Component({

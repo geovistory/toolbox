@@ -1,7 +1,7 @@
 /* tslint:disable */
 import {
   ProInfoProjRel,
-  InfRole,
+  InfStatement,
   InfLanguage
 } from '../index';
 
@@ -13,7 +13,7 @@ export interface InfLangStringInterface {
   "string"?: string;
   "pk_entity"?: number;
   entity_version_project_rels?: ProInfoProjRel[];
-  is_object_of_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
   language?: InfLanguage;
 }
 
@@ -24,7 +24,7 @@ export class InfLangString implements InfLangStringInterface {
   "string": string;
   "pk_entity": number;
   entity_version_project_rels?: ProInfoProjRel[];
-  is_object_of_roles?: InfRole[];
+  incoming_statements?: InfStatement[];
   language?: InfLanguage;
   constructor(data?: InfLangStringInterface) {
     Object.assign(this, data);
@@ -89,13 +89,13 @@ export class InfLangString implements InfLangStringInterface {
                   keyFrom: 'pk_entity',
           keyTo: 'fk_entity'
         },
-        is_object_of_roles: {
-          name: 'is_object_of_roles',
-          type: 'InfRole[]',
-          model: 'InfRole',
+        incoming_statements: {
+          name: 'incoming_statements',
+          type: 'InfStatement[]',
+          model: 'InfStatement',
           relationType: 'hasMany',
                   keyFrom: 'pk_entity',
-          keyTo: 'fk_entity'
+          keyTo: 'fk_object_info'
         },
         language: {
           name: 'language',

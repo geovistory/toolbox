@@ -1,5 +1,5 @@
 <span *ngIf="node.isDigital">
   {{type}}
 </span>
-<gv-type-item *ngIf="!node.isDigital" [pkEntity]="node.role.fk_temporal_entity" [pkProperty]="1320" [pkTypedClass]="503"
-  [pkTypeClass]="516" [isOutgoing]="true"></gv-type-item>
+<gv-type-item *ngIf="!node.isDigital" [pkEntity]="node.statement.fk_subject_info" [pkProperty]="1320"
+  [pkTypedClass]="503" [pkTypeClass]="516" [isOutgoing]="true"></gv-type-item>

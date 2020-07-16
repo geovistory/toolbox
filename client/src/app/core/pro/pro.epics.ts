@@ -9,7 +9,7 @@ import { NotificationsAPIActions } from '../notifications/components/api/notific
 import { ProClassFieldConfigApi, ProDfhClassProjRel, ProDfhClassProjRelApi, ProTextProperty, ProTextPropertyApi, ProAnalysis, ProAnalysisApi, ProProject, ProProjectApi, ProDfhProfileProjRel, ProDfhProfileProjRelApi } from '../sdk';
 import { LoadActionMeta, ModifyActionMeta, LoadByPkANsVersionActionMeta } from '../store/actions';
 import { StandardEpicsFactory } from '../store/StandardEpicsFactory';
-import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkRoleAsFavoriteActionMeta, ProInfoProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProDfhClassProjRelActionFactory } from './pro.actions';
+import { ProActions, ProTextPropertyActionFactory, ProAnalysisActionFactory, ProProjectActionFactory, ProClassFieldConfigActionFactory, MarkStatementAsFavoriteActionMeta, ProInfoProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProDfhClassProjRelActionFactory } from './pro.actions';
 import { ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice, ProAnalysisSlice, ProProjectSlice, ProDfhProfileProjRelSlice } from './pro.models';
 import { SchemaObject } from '../store/model';
 import { SchemaObjectService } from '../store/schema-object.service';
@@ -89,8 +89,8 @@ export class ProEpics {
           storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
-      proInfoProjRelEpicsFactory.createLoadEpic<MarkRoleAsFavoriteActionMeta>((meta) => this.infoProjRelApi
-        .markRoleAsFavorite(meta.pk, meta.pkRole, meta.isOutgoing),
+      proInfoProjRelEpicsFactory.createLoadEpic<MarkStatementAsFavoriteActionMeta>((meta) => this.infoProjRelApi
+        .markStatementAsFavorite(meta.pk, meta.pkStatement, meta.isOutgoing),
         ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE,
         (results, pk) => {
           const flattener = new Flattener(this.infActions, this.datActions, this.proActions);

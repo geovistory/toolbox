@@ -1,0 +1,99 @@
+{
+  "name": "PaginationObject",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "mixins": {
+    "SetupRemoteMethods": {
+      "ignoreACL": false,
+      "disableAllExcept": []
+    }
+  },
+  "properties": {
+    "count": {
+      "id": true,
+      "type": "number"
+    },
+    "schemas": {
+      "type": "object"
+    },
+    "paginatedStatements": {
+      "type": [
+        "number"
+      ]
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY",
+      "property": "*"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "project_member",
+      "permission": "ALLOW",
+      "property": [
+        "listAlternativeLeafItems"
+      ]
+    }
+  ],
+  "methods": {
+    "listAlternativeLeafItems": {
+      "accepts": [
+        {
+          "arg": "pkProject",
+          "type": "number",
+          "required": true,
+          "description": "Primary Key of the Project.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "filterObject",
+          "type": "object",
+          "required": true,
+          "description": "Object to filter the statements",
+          "http": {
+            "source": "body"
+          }
+        },
+        {
+          "arg": "limit",
+          "type": "number",
+          "required": true,
+          "description": "number of returned items.",
+          "http": {
+            "source": "query"
+          }
+        },
+        {
+          "arg": "offset",
+          "type": "number",
+          "required": true,
+          "description": "offset of the segment of returned items.",
+          "http": {
+            "source": "query"
+          }
+        }
+      ],
+      "returns": {
+        "arg": "data",
+        "type": [
+          "PaginationObject"
+        ],
+        "root": true
+      },
+      "description": "Get PaginationObject to build a list of leaf items not (yet) in project.",
+      "http": {
+        "path": "/list-alternative-leaf-items",
+        "verb": "post"
+      }
+    }
+  }
+}

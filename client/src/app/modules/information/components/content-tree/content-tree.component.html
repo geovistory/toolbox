@@ -52,7 +52,7 @@
       <div class="gv-ct-node-col gv-ct-button">
         <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: node.isDigital,
-          pkParent: node.role.fk_temporal_entity,
+          pkParent: node.statement.fk_subject_info,
           node: node
         }"></ng-container>
       </div>
@@ -90,6 +90,11 @@
       <mat-icon>description</mat-icon>
       <span>Add a Text</span>
     </button>
+
+    <!-- <button mat-menu-item *ngIf="!isDigital" (click)="addTable(pkParent, parentIsF2Expression)">
+      <mat-icon>folder</mat-icon>
+      <span>Add a Table</span>
+    </button> -->
 
     <mat-divider *ngIf="!parentIsF2Expression"></mat-divider>
 

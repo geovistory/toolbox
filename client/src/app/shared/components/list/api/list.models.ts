@@ -1,4 +1,4 @@
-import { EntityPreview, InfRole } from 'app/core';
+import { EntityPreview, InfStatement } from 'app/core';
 
 export interface EntitySearchHit extends EntityPreview {
   full_text_headline?: string;
@@ -6,7 +6,7 @@ export interface EntitySearchHit extends EntityPreview {
   entity_label_headline?: string;
   type_label_headline?: string;
   projects?: number[]
-  related_statements?: InfRole[]
+  related_statements?: InfStatement[]
 }
 
 export interface SearchResponse { data: EntitySearchHit[], totalCount: number };

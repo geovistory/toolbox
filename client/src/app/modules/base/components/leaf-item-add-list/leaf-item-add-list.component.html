@@ -56,12 +56,11 @@
             <span *ngIf="!item.preview?.fk_class" class="mat-text-secondary">Display problem (id:
               {{item.preview.pk_entity}})</span>
           </ng-container>
-          <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'lang-string'">
-            {{item.label}} <span class="mat-caption text-muted">{{item.language.notes}}
-              {{item?.role?.is_in_project_count}}</span>
+          <span *ngIf="listDefinition.listType === 'text-property' || listDefinition.listType === 'langString'">
+            {{item.label}} <span class="mat-caption text-muted">{{item.language.notes}}</span>
           </span>
-          <span *ngIf="['appellation', 'language', 'place'].includes(listDefinition.listType)">
-            {{item.label}} {{item?.role?.is_in_project_count}}
+          <span *ngIf="['appellation', 'language', 'place', 'dimension'].includes(listDefinition.listType)">
+            {{item.label}}
           </span>
         </td>
       </ng-container>
@@ -70,7 +69,8 @@
       <ng-container matColumnDef="projects">
         <th mat-header-cell *matHeaderCellDef> Used By </th>
         <td mat-cell *matCellDef="let item">
-          {{item?.role?.is_in_project_count}} {{item?.role?.is_in_project_count == 1 ? 'Project' : 'Projects'}}
+          {{item?.statement?.is_in_project_count}}
+          {{item?.statement?.is_in_project_count == 1 ? 'Project' : 'Projects'}}
         </td>
       </ng-container>
 

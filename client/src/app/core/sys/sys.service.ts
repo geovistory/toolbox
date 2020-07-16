@@ -1,12 +1,13 @@
 import { NgRedux } from '@angular-redux/store';
-import { SysClassHasTypeProperty, SysAnalysisType } from 'app/core';
+import { SysAnalysisType } from 'app/core';
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
+import { SysConfig } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { ByPk, IAppState } from '../store/model';
 import { SysActions } from './sys.actions';
 import { sysDefinitions, sysRoot } from './sys.config';
-import { SysClassHasTypePropertySlice, SysRelevantClassSlice, SysAnalysisTypeSlice } from './sys.models';
+import { SysAnalysisTypeSlice, SysConfigSlice, SysRelevantClassSlice } from './sys.models';
 
 class Selector<Slice> {
 
@@ -42,22 +43,6 @@ class SysSystemRelevantClassSelections extends Selector<SysRelevantClassSlice> {
   ) { super(ngRedux, configs, model) }
 }
 
-
-// // ClassHasTypeProperty Selectors
-// class SysClassHasTypePropertySelections extends Selector<SysClassHasTypePropertySlice> {
-//   public by_pk_entity$ = this.selector<SysClassHasTypeProperty>('by_pk_entity');
-//   public by_fk_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_fk_class');
-//   public by_dfh_pk_property$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_dfh_pk_property');
-//   public by_pk_type_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_type_class');
-//   public by_pk_typed_class$ = this.selector<ByPk<SysClassHasTypeProperty>>('by_pk_typed_class');
-
-//   constructor(
-//     public ngRedux: NgRedux<IAppState>,
-//     public configs: ReducerConfigCollection,
-//     public model: string
-//   ) { super(ngRedux, configs, model) }
-// }
-
 // AnalysisType Selectors
 class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
   public by_pk_entity$ = this.selector<SysAnalysisType>('by_pk_entity');
@@ -69,9 +54,21 @@ class SysAnalysisTypeSelections extends Selector<SysAnalysisTypeSlice> {
 }
 
 
+// Config Selectors
+class SysConfigSelections extends Selector<SysConfigSlice> {
+  public main$ = this.ngRedux.select<SysConfig>([sysRoot, this.model, 'by_main', 'main'])
+
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
+}
+
 
 export class SystemSelector extends SysActions {
   system_relevant_class$ = new SysSystemRelevantClassSelections(this.ngRedux, sysDefinitions, 'system_relevant_class')
-  // class_has_type_property$ = new SysClassHasTypePropertySelections(this.ngRedux, sysDefinitions, 'class_has_type_property')
   analysis_type$ = new SysAnalysisTypeSelections(this.ngRedux, sysDefinitions, 'analysis_type')
+
+  config$ = new SysConfigSelections(this.ngRedux, sysDefinitions, 'config')
 }

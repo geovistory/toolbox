@@ -10,7 +10,7 @@ import { QueryFilterComponent, QueryFilterInjectData } from 'app/modules/queries
 import { values } from 'ramda';
 import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { TimeChartContInput, TimeChartContLine } from '../../../../../../../src/common/interfaces';
+import { TimeChartContInput, TimeChartContLine } from '../../../../../../../server/src/lb3/common/interfaces';
 
 interface LineControlInitVal {
   queryFilter: QueryFilterInjectData,

@@ -20,7 +20,6 @@
             {{listDefinition.targetClassLabel}}
           </span>
           <span *ngIf="showOntoInfo$ | async" class="font-xs text-muted ml-2"> {{element.pkEntity}}</span>
-          <!-- <span class="font-xs text-muted ml-2"> {{element.role | json}}</span> -->
         </td>
       </ng-container>
 
@@ -89,9 +88,11 @@
               Mark As Favorite
             </button>
 
+            <mat-divider></mat-divider>
+            <div class="dropdown-header">Danger Zone</div>
             <button mat-menu-item (click)="remove(element)">
-              <mat-icon>delete</mat-icon>
-              Remove
+              <mat-icon color="warn">delete</mat-icon>
+              <span>Remove</span>
             </button>
 
           </mat-menu>
