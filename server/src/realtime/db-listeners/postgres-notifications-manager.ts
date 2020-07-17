@@ -29,7 +29,7 @@ export class PostgresNotificationsManager {
   // create postgres client
   createClient() {
     return new Client({
-      connectionString: process.env.DATABASE_URL + '?ssl=true',
+      connectionString: (process.env.DB_ENV == 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
       ssl: {
         rejectUnauthorized: true,
       },
@@ -144,7 +144,7 @@ export class PostgresNotificationsManager {
   async start() {
     // create postgres client for war.updater() queue
     this.client = this.createClient();
-    await this.client.connect()
+    await this.client.connect();
     this.callQueueWorker();
 
     // react to notifications

@@ -6,6 +6,22 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch App",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/index.js",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "runtimeExecutable": null,
+      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
+      "restart": true,
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch App:watch",
       "skipFiles": [
         "<node_internals>/**"
@@ -13,6 +29,7 @@
       "program": "${workspaceFolder}/index.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
+      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
       "restart": true,
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
@@ -27,7 +44,7 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "6000",
+        "20000",
         "--colors",
         "'dist/__tests__/**/*.js'",
         // "--grep",
@@ -35,7 +52,7 @@
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
-      "envFile": "${workspaceFolder}/.vscode/envFile",
+      "envFile": "${workspaceFolder}/.vscode/envFile.test",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -49,7 +66,7 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "4000",
+        "20000",
         "--colors",
         "'dist/__tests__/**/*.js'",
         // "--grep",
@@ -58,7 +75,7 @@
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
       "restart": true,
-      "envFile": "${workspaceFolder}/.vscode/envFile",
+      "envFile": "${workspaceFolder}/.vscode/envFile.test",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]

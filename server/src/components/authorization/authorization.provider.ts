@@ -7,7 +7,7 @@ import {Provider} from "@loopback/core";
 import {repository} from '@loopback/repository';
 import {HttpErrors, RequestContext} from '@loopback/rest';
 import {isInteger} from 'lodash';
-import {PubAccountProjectRelRepository} from '../../repositories';
+import {PubAccountProjectRelRepository, DatNamespaceRepository} from '../../repositories';
 import {PubRoleMappingRepository} from '../../repositories/pub-role-mapping.repository';
 import {Roles} from './keys';
 
@@ -22,7 +22,8 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
   constructor(
     @repository(PubAccountProjectRelRepository) private pubAccountProjectRelRepo: PubAccountProjectRelRepository,
-    @repository(PubRoleMappingRepository) private pubRoleMappingRepo: PubRoleMappingRepository
+    @repository(PubRoleMappingRepository) private pubRoleMappingRepo: PubRoleMappingRepository,
+    @repository(DatNamespaceRepository) private datNamespaceRepository: DatNamespaceRepository
   ) {}
 
   async authorize(
@@ -38,6 +39,11 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
     if (metadata.allowedRoles?.includes(Roles.SYS_ADMIN)) {
       const decision = await this.authorizeSystemAdmin(context)
+      return decision;
+    }
+
+    if (metadata.allowedRoles?.includes(Roles.NAMESPACE_MEMBER)) {
+      const decision = await this.authorizeNamespaceMember(context);
       return decision;
     }
 
@@ -91,6 +97,24 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     return AuthorizationDecision.DENY
   }
 
+  private async authorizeNamespaceMember(context: AuthorizationContext): Promise<AuthorizationDecision> {
+    let pkProject = this.extractPkProject(context);
+    let pkNamespace = this.extractPkNamespace(context);
+    if (!pkProject || !pkNamespace) return AuthorizationDecision.DENY;
+
+    const linkProjectNamespace = await this.datNamespaceRepository.findOne({
+      where: {
+        and: [
+          {fk_project: pkProject},
+          {pk_entity: pkNamespace}
+        ]
+      }
+    });
+
+    if (linkProjectNamespace) return AuthorizationDecision.ALLOW;
+    else return AuthorizationDecision.DENY;
+  }
+
 
   private extractAccountId(context: AuthorizationContext) {
     const principal = context?.principals[0];
@@ -117,6 +141,19 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     if (typeof pkProject === 'number') {
       if (isInteger(pkProject)) return pkProject;
     };
+  }
 
+  private extractPkNamespace(context: AuthorizationContext) {
+    const requestContext = context.invocationContext?.parent as RequestContext;
+    const request = requestContext?.request;
+    const pkNamespace = request?.query?.pk_namespace || request?.body?.pk_namespace;
+    if (typeof pkNamespace === 'string') {
+      const pk = parseInt(pkNamespace)
+      if (isInteger(pk)) return pk;
+    }
+
+    if (typeof pkNamespace === 'number') {
+      if (isInteger(pkNamespace)) return pkNamespace;
+    };
   }
 }

@@ -1,74 +1,26 @@
 import {testdb} from '../../../datasources/testdb.datasource';
-import {DatChunkRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, DfhClassRepository, DfhLabelRepository, DfhProfileRepository, DfhPropertyRepository, InfAppellationRepository, InfLangStringRepository, InfLanguageRepository, InfPersistentItemRepository, InfPlaceRepository, InfStatementRepository, InfTemporalEntityRepository, InfTextPropertyRepository, InfTimePrimitiveRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProInfoProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysClassHasTypePropertyRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository} from '../../../repositories';
+import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository} from '../../../repositories';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
 import {PubRoleRepository} from '../../../repositories/pub-role.repository';
 
 export async function cleanDb() {
 
-    // let datChunkRepository: DatChunkRepository;
-    // let datColumnRepository: DatColumnRepository;
-    // let datDigitalRepository: DatDigitalRepository;
-    // let datNamespaceRepository: DatNamespaceRepository;
-    // let datTextProperty: DatTextProperty;
+    //delete all versionning table
+    let tables = await testdb.execute(`
+    SELECT table_schema || '.' || table_name as name
+    FROM information_schema."tables"
+    WHERE table_type = 'BASE TABLE' AND table_name LIKE '%_vt'`);
+    tables.forEach(async (t: {name: string}) => await testdb.execute('DELETE FROM ' + t.name));
 
-    // let dfhClassRepository: DfhClassRepository;
-    // let dfhLabelRepository: DfhLabelRepository;
-    // let dfhProfileRepository: DfhProfileRepository;
-    // let dfhPropertyRepository: DfhPropertyRepository;
-    // let infAppellationRepository: InfAppellationRepository;
-    // let infLangStringRepository: InfLangStringRepository;
-    // let infLanguageRepository: InfLanguageRepository;
-    // let infPersistentItemRepository: InfPersistentItemRepository;
-    // let infPlaceRepository: InfPlaceRepository;
-    // let infStatementRepository: InfStatementRepository;
-    // let infTemporalEntityRepository: InfTemporalEntityRepository;
-    // let infTextPropertyRepository: InfTextPropertyRepository;
-    // let infTimePrimitiveRepository: InfTimePrimitiveRepository;
-    // let proAnalysisRepository: ProAnalysisRepository;
-    // let proClassFieldConfigRepository: ProClassFieldConfigRepository;
-    // let proDfhClassProjRelRepository: ProDfhClassProjRelRepository;
-    // let proDfhProfileProjRelRepository: ProDfhProfileProjRelRepository;
-    // let proInfoProjRelRepository: ProInfoProjRelRepository;
-    // let proProjectRepository: ProProjectRepository;
-    // let proTextPropertyRepository: ProTextPropertyRepository;
-    // let pubAccountProjectRelRepository: PubAccountProjectRelRepository;
-    // let pubAccountRepository: PubAccountRepository;
-    // let pubCredentialRepository: PubCredentialRepository;
-    // let pubRoleMappingRepository: PubRoleMappingRepository;
-    // let pubRoleRepository: PubRoleRepository;
-    // let sysAnalysisTypeRepository: SysAnalysisTypeRepository;
-    // let sysAppContextRepository: SysAppContextRepository;
-    // let sysClassFieldPropertyRelRepository: SysClassFieldPropertyRelRepository;
-    // let sysClassFieldRepository: SysClassFieldRepository;
-    // let sysClassHasTypePropertyRepository: SysClassHasTypePropertyRepository;
-    // let sysSystemRelevantClassRepository: SysSystemRelevantClassRepository;
-    // let sysSystemTypeRepository: SysSystemTypeRepository;
-    // let warEntityPreviewRepository: WarEntityPreviewRepository;
-
-    const datChunkRepository = new DatChunkRepository(testdb, async () => infStatementRepository, async () => datDigitalRepository, async () => datNamespaceRepository);
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
     const datDigitalRepository = new DatDigitalRepository(testdb);
     const datNamespaceRepository = new DatNamespaceRepository(testdb);
     const datTextPropertyRepository = new DatTextPropertyRepository(testdb);
-    const dfhLabelRepository = new DfhLabelRepository(testdb);
-    const dfhProfileRepository = new DfhProfileRepository(testdb);
-    const dfhPropertyRepository = new DfhPropertyRepository(testdb);
-    const infAppellationRepository = new InfAppellationRepository(testdb, async () => infStatementRepository, async () => proInfoProjRelRepository);
-    const infLangStringRepository = new InfLangStringRepository(testdb, async () => infStatementRepository, async () => infLanguageRepository);
-    const infLanguageRepository = new InfLanguageRepository(testdb);
-    const infPlaceRepository = new InfPlaceRepository(testdb);
-    const infStatementRepository = new InfStatementRepository(testdb, async () => proInfoProjRelRepository);
-    const infTemporalEntityRepository = new InfTemporalEntityRepository(testdb, async () => infStatementRepository, async () => infTextPropertyRepository, async () => proInfoProjRelRepository);
-    const infTextPropertyRepository = new InfTextPropertyRepository(testdb);
-    const infTimePrimitiveRepository = new InfTimePrimitiveRepository(testdb);
     const proAnalysisRepository = new ProAnalysisRepository(testdb);
     const proClassFieldConfigRepository = new ProClassFieldConfigRepository(testdb);
     const proDfhClassProjRelRepository = new ProDfhClassProjRelRepository(testdb);
-    const dfhClassRepository = new DfhClassRepository(testdb, async () => proDfhClassProjRelRepository, async () => dfhPropertyRepository, async () => proClassFieldConfigRepository);
-    const infPersistentItemRepository = new InfPersistentItemRepository(testdb, async () => infStatementRepository, async () => infTextPropertyRepository, async () => dfhClassRepository, async () => proInfoProjRelRepository);
     const proDfhProfileProjRelRepository = new ProDfhProfileProjRelRepository(testdb);
-    const proInfoProjRelRepository = new ProInfoProjRelRepository(testdb);
     const proProjectRepository = new ProProjectRepository(testdb);
     const proTextPropertyRepository = new ProTextPropertyRepository(testdb);
     const pubAccountProjectRelRepository = new PubAccountProjectRelRepository(testdb);
@@ -80,49 +32,46 @@ export async function cleanDb() {
     const sysAppContextRepository = new SysAppContextRepository(testdb);
     const sysClassFieldPropertyRelRepository = new SysClassFieldPropertyRelRepository(testdb);
     const sysClassFieldRepository = new SysClassFieldRepository(testdb);
-    const sysClassHasTypePropertyRepository = new SysClassHasTypePropertyRepository(testdb);
     const sysSystemRelevantClassRepository = new SysSystemRelevantClassRepository(testdb);
     const sysSystemTypeRepository = new SysSystemTypeRepository(testdb);
     const warEntityPreviewRepository = new WarEntityPreviewRepository(testdb);
 
+    await testdb.execute('DELETE FROM data.chunk');
+    await testdb.execute('DELETE FROM data_for_history.api_class');
+    await testdb.execute('DELETE FROM data_for_history.api_property');
+    await testdb.execute('DELETE FROM data_for_history.api_profile');
+    await testdb.execute('DELETE FROM data_for_history.property_of_property');
+    await testdb.execute('DELETE FROM information.appellation');
+    await testdb.execute('DELETE FROM information.lang_string');
+    await testdb.execute('DELETE FROM information.language');
+    await testdb.execute('DELETE FROM information.persistent_item');
+    await testdb.execute('DELETE FROM information.place');
+    await testdb.execute('DELETE FROM information.statement');
+    await testdb.execute('DELETE FROM information.temporal_entity');
+    await testdb.execute('DELETE FROM information.text_property');
+    await testdb.execute('DELETE FROM information.time_primitive');
+    await testdb.execute('DELETE FROM projects.info_proj_rel');
+    await testdb.execute('DELETE FROM public.accesstoken'); //constraint on pubAccount
 
-    await testdb.execute('DELETE FROM data_for_histroy.api_class');
-
-    await datChunkRepository.deleteAll();
     await datColumnRepository.deleteAll();
     await datDigitalRepository.deleteAll();
     await datNamespaceRepository.deleteAll();
     await datTextPropertyRepository.deleteAll();
-    await dfhClassRepository.deleteAll();
-    await dfhLabelRepository.deleteAll();
-    await dfhProfileRepository.deleteAll();
-    await dfhPropertyRepository.deleteAll();
-    await infAppellationRepository.deleteAll();
-    await infLangStringRepository.deleteAll();
-    await infLanguageRepository.deleteAll();
-    await infPersistentItemRepository.deleteAll();
-    await infPlaceRepository.deleteAll();
-    await infStatementRepository.deleteAll();
-    await infTemporalEntityRepository.deleteAll();
-    await infTextPropertyRepository.deleteAll();
-    await infTimePrimitiveRepository.deleteAll();
     await proAnalysisRepository.deleteAll();
     await proClassFieldConfigRepository.deleteAll();
     await proDfhClassProjRelRepository.deleteAll();
     await proDfhProfileProjRelRepository.deleteAll();
-    await proInfoProjRelRepository.deleteAll();
     await proProjectRepository.deleteAll();
     await proTextPropertyRepository.deleteAll();
     await pubAccountProjectRelRepository.deleteAll();
-    await pubAccountRepository.deleteAll();
     await pubCredentialRepository.deleteAll();
+    await pubAccountRepository.deleteAll();
     await pubRoleMappingRepository.deleteAll();
     await pubRoleRepository.deleteAll();
     await sysAnalysisTypeRepository.deleteAll();
     await sysAppContextRepository.deleteAll();
     await sysClassFieldPropertyRelRepository.deleteAll();
     await sysClassFieldRepository.deleteAll();
-    await sysClassHasTypePropertyRepository.deleteAll();
     await sysSystemRelevantClassRepository.deleteAll();
     await sysSystemTypeRepository.deleteAll();
     await warEntityPreviewRepository.deleteAll();

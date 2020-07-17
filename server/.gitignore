@@ -59,7 +59,8 @@ typings/
 .env
 
 # .vscode environment variables file
-.vscode/envFile
+.vscode/envFile.test
+.vscode/envFile.dev
 
 # Transpiled JavaScript files from Typescript
 /dist

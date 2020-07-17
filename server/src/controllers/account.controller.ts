@@ -74,8 +74,6 @@ export class ResetPasswordRequest {
   @property({required: true}) resetPasswordToken: string
 }
 
-
-
 @model()
 export class ResponseWithMsg {
   @property() message: string;
@@ -273,7 +271,7 @@ export class AccountController {
       account.emailVerified = true;
       await this.accountRepository.update(account)
 
-      response.redirect(redirectOnSuccess);
+      if (redirectOnSuccess) response.redirect(redirectOnSuccess);
 
       return;
     }

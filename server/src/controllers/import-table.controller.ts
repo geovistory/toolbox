@@ -5,6 +5,9 @@ import {Postgres1DataSource} from '../datasources';
 import {Header} from '../models/import-table-header.model';
 import {ImportTable} from '../models/import-table.model';
 import {SqlBuilderBase} from '../utils/sql-builder-base';
+import {authenticate} from '@loopback/authentication';
+import {authorize} from '@loopback/authorization';
+import {Roles} from '../components/authorization';
 
 // TODO
 // - securisation of communication with server
@@ -60,6 +63,8 @@ export class ImportTableController {
   ) {}
 
 
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER, Roles.NAMESPACE_MEMBER]})
   @post('/import-table', {
     responses: {
       '200': {

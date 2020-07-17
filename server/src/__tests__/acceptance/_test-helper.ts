@@ -1,6 +1,7 @@
 import {Client, createRestAppClient, givenHttpServerConfig} from '@loopback/testlab';
 import {GeovistoryServer} from '../../server';
 import {TestdbDataSource} from '../../datasources/testdb.datasource';
+import {Client as pgClient} from 'pg';
 
 export async function setupApplication(): Promise<AppWithClient> {
   const restConfig = givenHttpServerConfig({

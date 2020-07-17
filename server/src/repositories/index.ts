@@ -30,7 +30,6 @@ export * from './sys-analysis-type.repository';
 export * from './sys-app-context.repository';
 export * from './sys-class-field-property-rel.repository';
 export * from './sys-class-field.repository';
-export * from './sys-class-has-type-property.repository';
 export * from './sys-system-relevant-class.repository';
 export * from './sys-system-type.repository';
 export * from './pub-role-mapping.repository';
