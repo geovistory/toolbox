@@ -1,17 +1,15 @@
 import {Client, expect} from '@loopback/testlab';
-import {GeovistoryServer} from '../../../server';
-import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
-import {createAccountVerified, createAccount} from '../../helpers/graphs/account.helper';
-import {setupApplication} from '../_test-helper';
-import {RestExplorerComponent} from '@loopback/rest-explorer';
 import {testdb} from '../../../datasources/testdb.datasource';
-import {request} from 'http';
-import {SqlBuilderBase} from '../../../utils/sql-builder-base';
+import {PubAccount} from '../../../models';
 import {PubAccountRepository} from '../../../repositories';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {GeovistoryServer} from '../../../server';
 import {AccountService} from '../../../services/account.service';
-import {PubAccount} from '../../../models';
 import {PasswordResetTokenService} from '../../../services/password-reset-token.service';
+import {SqlBuilderBase} from '../../../utils/sql-builder-base';
+import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
+import {createAccount, createAccountVerified} from '../../helpers/graphs/account.helper';
+import {setupApplication} from '../_test-helper';
 
 const qs = require('querystring');
 
@@ -32,7 +30,7 @@ describe('AccountController', () => {
     });
 
 
-    describe('POST /login', async () => {
+    describe('POST /login', () => {
         before(async () => {
             await createAccountVerified('gaetan.muck@gmail.com', 'gaetanmuck', 'testtest1');
         });
@@ -49,7 +47,7 @@ describe('AccountController', () => {
         })
     });
 
-    describe('GET /whoAmI', async () => {
+    describe('GET /whoAmI', () => {
         before(async () => {
             await createAccountVerified('gaetan.muck@gmail.com', 'gaetanmuck', 'testtest1');
         });
@@ -73,7 +71,7 @@ describe('AccountController', () => {
         })
     });
 
-    describe('POST /signup', async () => {
+    describe('POST /signup', () => {
         before(async () => {
             await createAccountVerified('gaetan.muck@gmail.com', 'gaetanmuck', 'testtest1');
         });
@@ -99,15 +97,15 @@ describe('AccountController', () => {
         })
     });
 
-    describe('GET /verify-email', async () => {
-        let validationToken = 'foobarToken';
+    describe('GET /verify-email', () => {
+        const validationToken = 'foobarToken';
         before(async () => {
             await createAccount('gaetan.muck@gmail.com', 'gaetanmuck', 'testtest1', validationToken);
         });
 
         it('should reject the request because theverification token is false (info: the link is not taken from the email)', async () => {
             const accountid = (await client.post('/login').send({email: "gaetan.muck@gmail.com", password: "testtest1"})).body.user.id;
-            let params = {
+            const params = {
                 accountId: accountid,
                 verificationToken: 'blablabla',
                 redirectOnSuccess: 'home'
@@ -117,8 +115,8 @@ describe('AccountController', () => {
         })
 
         it('should reject the request because the accountid does not exist (info: the link is not taken from the email)', async () => {
-            const accountid = (await client.post('/login').send({email: "gaetan.muck@gmail.com", password: "testtest1"})).body.user.id;
-            let params = {
+            // const accountid = (await client.post('/login').send({email: "gaetan.muck@gmail.com", password: "testtest1"})).body.user.id;
+            const params = {
                 accountId: -1,
                 verificationToken: validationToken,
                 redirectOnSuccess: 'home'
@@ -129,7 +127,7 @@ describe('AccountController', () => {
 
         it('should accept request (info: the link is not taken from the email)', async () => {
             const accountid = (await client.post('/login').send({email: "gaetan.muck@gmail.com", password: "testtest1"})).body.user.id;
-            let params = {
+            const params = {
                 accountId: accountid,
                 verificationToken: validationToken,
                 redirectOnSuccess: 'home'
@@ -137,27 +135,27 @@ describe('AccountController', () => {
             const res = await client.get('/verify-email?' + qs.stringify(params));
             expect(res.body).to.be.a.String();
 
-            let q = new SqlBuilderBase();
+            const q = new SqlBuilderBase();
             q.sql = 'SELECT emailverified as col FROM public.account WHERE if = ' + q.addParam(accountid) + ';'
-            let result = await testdb.execute(q.sql, q.params);
+            const result = await testdb.execute(q.sql, q.params);
             expect(result.col).to.be.true();
         })
     })
 
-    describe('GET /forgot-password', async () => {
-        let token = 'foobarToken';
+    describe('GET /forgot-password', () => {
+        const token = 'foobarToken';
         before(async () => {
             await createAccount('gaetan.muck@kleiolab.ch', 'gaetanmuck', 'testtest1', token);
         });
 
         it('should reject the request because the email is not known', async () => {
-            let params = {email: 'foo.bar@helloworld.com'};
+            const params = {email: 'foo.bar@helloworld.com'};
             const res = await client.get('/forgot-password?' + qs.stringify(params));
             expect(res.body.error).to.containEql({statusCode: 404, message: "Email '" + params.email + "' not found"});
         })
 
         it('should reject the request because the email is not yet verified', async () => {
-            let params = {email: 'gaetan.muck@kleiolab.ch'};
+            const params = {email: 'gaetan.muck@kleiolab.ch'};
             const res = await client.get('/forgot-password?' + qs.stringify(params));
             expect(res.body.error).to.containEql({statusCode: 401, message: "Email not yet verified"});
         })
@@ -165,18 +163,18 @@ describe('AccountController', () => {
         it('should accept request (info: email sending is not checked)', async () => {
             //switch user to be verified
             const accountid = (await client.post('/login').send({email: "gaetan.muck@gmail.com", password: "testtest1"})).body.user.id;
-            let q = new SqlBuilderBase();
+            const q = new SqlBuilderBase();
             q.sql = 'UPDATE public.account SET verificationToken = NULL, emailverified = true WHERE id = ' + q.addParam(accountid);
             await testdb.execute(q.sql, q.params);
 
-            let params = {email: 'gaetan.muck@gmail.com'};
+            const params = {email: 'gaetan.muck@gmail.com'};
             const res = await client.get('/forgot-password?' + qs.stringify(params));
             expect(res.body).to.containEql({message: "Email to reset password has been sent to " + params.email});
         })
     });
 
-    describe('POST /reset-password', async () => {
-        let email = 'gaetan.muck@kleiolab.ch';
+    describe('POST /reset-password', () => {
+        const email = 'gaetan.muck@kleiolab.ch';
         before(async () => {
             await createAccountVerified(email, 'gaetanmuck', 'testtest1');
         });

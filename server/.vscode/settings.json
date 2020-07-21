@@ -22,7 +22,7 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
   "typescript.preferences.quoteStyle": "single",
-  "eslint.run": "onSave",
+  "eslint.run": "onType",
   "eslint.nodePath": "./node_modules",
   "eslint.validate": [
     "javascript",
