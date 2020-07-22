@@ -29,7 +29,7 @@ export class PostgresNotificationsManager {
   // create postgres client
   createClient() {
     return new Client({
-      connectionString: (process.env.DB_ENV == 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
+      connectionString: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
       ssl: {
         rejectUnauthorized: true,
       },
@@ -144,6 +144,13 @@ export class PostgresNotificationsManager {
   async start() {
     // create postgres client for war.updater() queue
     this.client = this.createClient();
+
+    // this.client
+    // .connect()
+    // .then(() => console.log('connected'))
+    // .catch(err => console.error('connection error', err.stack))
+
+
     await this.client.connect();
     this.callQueueWorker();
 
@@ -166,8 +173,13 @@ export class PostgresNotificationsManager {
    */
   async stop() {
     // disconnect clients from pg server
-    // await this.client.end()
-    // await this.client2.end()
+    try {
+      await this.client.end()
+      await this.client2.end()
+    } catch (e) {
+      console.log(e);
+      throw new Error(e);
+    }
 
   }
 
