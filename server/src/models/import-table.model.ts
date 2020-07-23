@@ -11,9 +11,6 @@ export class ImportTable {
   fileName: string;
 
   @property({required: true})
-  pk_namespace: number;
-
-  @property({required: true})
   pk_language: number;
 
   @property.array(Header, {required: true})

@@ -25,7 +25,7 @@
     "eslint": "lb-eslint --report-unused-disable-directives .",
     "eslint:fix": "npm run eslint -- --fix",
     "pretest": "npm run clean && npm run build",
-    "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
+    "test": "export NO_LOGS='true' && lb-mocha --allow-console-logs \"dist/__tests__\" --timeout 20000",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --timeout 5000 --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
     "migrate": "node ./dist/migrate",

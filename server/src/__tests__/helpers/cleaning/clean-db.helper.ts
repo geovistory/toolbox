@@ -3,15 +3,26 @@ import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTe
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
 import {PubRoleRepository} from '../../../repositories/pub-role.repository';
+import {resetLanguageInitialization} from '../atomic/inf-language.helper';
+import {resetTypeInitialization} from '../atomic/sys-system-type.helper';
 
 export async function cleanDb() {
+    //because we update it to create an information.language
+    await testdb.execute("SELECT setval('information.entity_pk_entity_seq', 1, true);");
 
     //delete all versionning table
-    let tables = await testdb.execute(`
+    const tables = await testdb.execute(`
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE '%_vt'`);
-    tables.forEach(async (t: {name: string}) => await testdb.execute('DELETE FROM ' + t.name));
+    tables.forEach(async (t: {name: string}) => {await testdb.execute('DELETE FROM ' + t.name)});
+
+    //delete all cell partitionned table
+    const cellTables = await testdb.execute(`
+    SELECT table_schema || '.' || table_name as name
+    FROM information_schema."tables"
+    WHERE table_type = 'BASE TABLE' AND table_name LIKE 'cell_%'`);
+    cellTables.forEach(async (t: {name: string}) => {await testdb.execute('DELETE FROM ' + t.name)});
 
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
     const datDigitalRepository = new DatDigitalRepository(testdb);
@@ -36,6 +47,8 @@ export async function cleanDb() {
     const sysSystemTypeRepository = new SysSystemTypeRepository(testdb);
     const warEntityPreviewRepository = new WarEntityPreviewRepository(testdb);
 
+    await testdb.execute('DELETE FROM tables.row');
+    await testdb.execute('DELETE FROM tables.quill_doc_cell');
     await testdb.execute('DELETE FROM data.chunk');
     await testdb.execute('DELETE FROM data_for_history.api_class');
     await testdb.execute('DELETE FROM data_for_history.api_property');
@@ -43,7 +56,6 @@ export async function cleanDb() {
     await testdb.execute('DELETE FROM data_for_history.property_of_property');
     await testdb.execute('DELETE FROM information.appellation');
     await testdb.execute('DELETE FROM information.lang_string');
-    await testdb.execute('DELETE FROM information.language');
     await testdb.execute('DELETE FROM information.persistent_item');
     await testdb.execute('DELETE FROM information.place');
     await testdb.execute('DELETE FROM information.statement');
@@ -53,6 +65,7 @@ export async function cleanDb() {
     await testdb.execute('DELETE FROM projects.info_proj_rel');
     await testdb.execute('DELETE FROM public.accesstoken'); //constraint on pubAccount
 
+    await pubAccountProjectRelRepository.deleteAll(); //update or delete on table "project" violates foreign key constraint "account_project_rel_fk_project_fkey" on table "account_project_rel"
     await datColumnRepository.deleteAll();
     await datDigitalRepository.deleteAll();
     await datNamespaceRepository.deleteAll();
@@ -63,7 +76,6 @@ export async function cleanDb() {
     await proDfhProfileProjRelRepository.deleteAll();
     await proProjectRepository.deleteAll();
     await proTextPropertyRepository.deleteAll();
-    await pubAccountProjectRelRepository.deleteAll();
     await pubCredentialRepository.deleteAll();
     await pubAccountRepository.deleteAll();
     await pubRoleMappingRepository.deleteAll();
@@ -75,4 +87,8 @@ export async function cleanDb() {
     await sysSystemRelevantClassRepository.deleteAll();
     await sysSystemTypeRepository.deleteAll();
     await warEntityPreviewRepository.deleteAll();
+
+    await testdb.execute('DELETE FROM information.language'); //update or delete on table "language" violates foreign key constraint "project_fk_language_fkey" on table "project"
+    resetLanguageInitialization();
+    resetTypeInitialization();
 }

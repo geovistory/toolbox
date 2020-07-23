@@ -222,7 +222,6 @@ export class AccountController {
     const params = [savedAccount.id];
     await this.dataSource.execute(sql, params);
 
-
     return {
       success: new PubAccount({
         id: savedAccount.id,

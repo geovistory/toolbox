@@ -5,9 +5,9 @@ import {
 } from '@loopback/authorization';
 import {Provider} from "@loopback/core";
 import {repository} from '@loopback/repository';
-import {HttpErrors, RequestContext} from '@loopback/rest';
+import {RequestContext} from '@loopback/rest';
 import {isInteger} from 'lodash';
-import {PubAccountProjectRelRepository, DatNamespaceRepository} from '../../repositories';
+import {DatNamespaceRepository, PubAccountProjectRelRepository} from '../../repositories';
 import {PubRoleMappingRepository} from '../../repositories/pub-role-mapping.repository';
 import {Roles} from './keys';
 
@@ -30,25 +30,24 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     context: AuthorizationContext,
     metadata: AuthorizationMetadata,
   ) {
-
+    let decision: AuthorizationDecision = AuthorizationDecision.ALLOW;
 
     if (metadata.allowedRoles?.includes(Roles.PROJECT_MEMBER)) {
-      const decision = await this.authorizeProjectMember(context)
-      return decision;
+      decision = await this.authorizeProjectMember(context)
+      if (decision === AuthorizationDecision.DENY) return decision;
     }
 
     if (metadata.allowedRoles?.includes(Roles.SYS_ADMIN)) {
-      const decision = await this.authorizeSystemAdmin(context)
-      return decision;
+      decision = await this.authorizeSystemAdmin(context)
+      if (decision === AuthorizationDecision.DENY) return decision;
     }
 
     if (metadata.allowedRoles?.includes(Roles.NAMESPACE_MEMBER)) {
-      const decision = await this.authorizeNamespaceMember(context);
-      return decision;
+      decision = await this.authorizeNamespaceMember(context);
+      if (decision === AuthorizationDecision.DENY) return decision;
     }
 
-    throw new HttpErrors.InternalServerError('This type of authorization is not supported.')
-
+    return decision;
   }
 
   private async authorizeProjectMember(context: AuthorizationContext): Promise<AuthorizationDecision> {
@@ -61,7 +60,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
     if (!accountId) return AuthorizationDecision.DENY
 
-    const membbership = await this.pubAccountProjectRelRepo.findOne({
+    const membership = await this.pubAccountProjectRelRepo.findOne({
       where: {
         and: [
           {
@@ -72,7 +71,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
       }
     })
 
-    if (!membbership) return AuthorizationDecision.DENY
+    if (!membership) return AuthorizationDecision.DENY
 
     return AuthorizationDecision.ALLOW
   }
@@ -98,21 +97,23 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   }
 
   private async authorizeNamespaceMember(context: AuthorizationContext): Promise<AuthorizationDecision> {
-    let pkProject = this.extractPkProject(context);
-    let pkNamespace = this.extractPkNamespace(context);
-    if (!pkProject || !pkNamespace) return AuthorizationDecision.DENY;
+    const accountId = this.extractAccountId(context);
+    const pkNamespace = this.extractPkNamespace(context);
+    if (!accountId || !pkNamespace) return AuthorizationDecision.DENY;
 
-    const linkProjectNamespace = await this.datNamespaceRepository.findOne({
+    const namespace = await this.datNamespaceRepository.findById(pkNamespace);
+    const membership = await this.pubAccountProjectRelRepo.findOne({
       where: {
         and: [
-          {fk_project: pkProject},
-          {pk_entity: pkNamespace}
+          {
+            accountId: accountId,
+            'fk_project': namespace.fk_project
+          }
         ]
       }
-    });
-
-    if (linkProjectNamespace) return AuthorizationDecision.ALLOW;
-    else return AuthorizationDecision.DENY;
+    })
+    if (!membership) return AuthorizationDecision.DENY;
+    else return AuthorizationDecision.ALLOW;
   }
 
 
@@ -146,7 +147,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   private extractPkNamespace(context: AuthorizationContext) {
     const requestContext = context.invocationContext?.parent as RequestContext;
     const request = requestContext?.request;
-    const pkNamespace = request?.query?.pk_namespace || request?.body?.pk_namespace;
+    const pkNamespace = request?.query?.pkNamespace || request?.body?.pkNamespace;
     if (typeof pkNamespace === 'string') {
       const pk = parseInt(pkNamespace)
       if (isInteger(pk)) return pk;

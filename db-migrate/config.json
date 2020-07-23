@@ -11,6 +11,15 @@
       "ssl": true
     }
   },
+  "test": {
+    "driver": "pg",
+    "url": {
+      "ENV": "TEST_DATABASE_URL"
+    },
+    "addIfNotExists": {
+      "ssl": true
+    }
+  },
   "review": {
     "driver": "pg",
     "url": {

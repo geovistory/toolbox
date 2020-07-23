@@ -1,5 +1,5 @@
-import {model, property, Entity, hasOne} from '@loopback/repository';
-import { PubCredential } from './pub-credential.model';
+import {Entity, hasOne, model, property} from '@loopback/repository';
+import {PubCredential} from './pub-credential.model';
 
 @model({
   settings: {
