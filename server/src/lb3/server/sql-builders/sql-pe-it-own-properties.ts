@@ -1,6 +1,6 @@
-import { SqlBuilderLbModels } from '../utils/sql-builder-lb-models';
+import {SqlBuilderLbModels} from '../utils/sql-builder-lb-models';
 
-import { Lb3Models } from '../utils/interfaces';
+import {Lb3Models} from '../utils/interfaces';
 
 export class SqlPeItOwnProperties extends SqlBuilderLbModels {
 
@@ -74,6 +74,34 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
         AND t3.is_in_project = true
         AND t3.fk_project = ${this.addParam(fkProject)}
       ),
+
+      -- has dimension statement
+      tw6 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfStatement')},
+          ${this.createBuildObject('t3', 'ProInfoProjRel')} proj_rel
+        FROM
+          tw1
+        CROSS JOIN
+          information.v_statement t1,
+          information.v_dimension t2,
+          projects.info_proj_rel t3
+        WHERE t1.fk_subject_info = tw1.pk_entity
+        AND t1.fk_object_info = t2.pk_entity
+        AND t1.pk_entity = t3.fk_entity
+        AND t3.is_in_project = true
+        AND t3.fk_project = ${this.addParam(fkProject)}
+      ),
+      -- dimension
+      tw7 AS (
+        SELECT
+          ${this.createSelect('t1', 'InfDimension')}
+        FROM
+          tw6
+          CROSS JOIN information.v_dimension t1
+        WHERE
+          tw6.fk_object_info = t1.pk_entity
+      ),
       ------------------------------------
       --- group parts by model
       ------------------------------------
@@ -88,6 +116,8 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
             SELECT proj_rel FROM tw3
             UNION ALL
             SELECT proj_rel FROM tw5
+            UNION ALL
+            SELECT proj_rel FROM tw6
           ) AS t1
         ) as t1
         GROUP BY true
@@ -125,6 +155,18 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
         ) as t1
         GROUP BY true
       ),
+      dimension AS (
+        SELECT json_agg(t1.objects) as json
+        FROM (
+          select distinct on (t1.pk_entity)
+          ${this.createBuildObject('t1', 'InfDimension')} as objects
+          FROM
+          (
+            SELECT * FROM tw7
+          ) AS t1
+        ) as t1
+        GROUP BY true
+      ),
       statement AS (
         SELECT json_agg(t1.objects) as json
         FROM (
@@ -132,6 +174,8 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
           ${this.createBuildObject('t1', 'InfStatement')} as objects
           FROM (
             SELECT * FROM tw5
+            UNION ALL
+            SELECT * FROM tw6
           ) AS t1
         ) as t1
         GROUP BY true
@@ -142,7 +186,8 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
           'statement', statement.json,
           'persistent_item', persistent_item.json,
           'text_property', text_property.json,
-          'language', language.json
+          'language', language.json,
+          'dimension', dimension.json
         )),
         'pro', json_strip_nulls(json_build_object(
           'info_proj_rel', info_proj_rel.json
@@ -154,7 +199,8 @@ export class SqlPeItOwnProperties extends SqlBuilderLbModels {
       LEFT JOIN language ON true
       LEFT JOIN statement ON true
       LEFT JOIN info_proj_rel ON true
+      LEFT JOIN dimension ON true
     `;
-    return { sql, params: this.params };
+    return {sql, params: this.params};
   }
 }
