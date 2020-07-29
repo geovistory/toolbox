@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { ActiveProjectService, DatDigital, InfStatement, latestVersion, switchMapOr, SysConfig, EntityPreview } from 'app/core';
+import { ActiveProjectService, DatDigital, InfStatement, latestVersion, switchMapOr, SysConfig, EntityPreview, ActiveAccountService } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { RepoService } from 'app/core/repo/repo.service';
 import { ByPk } from 'app/core/store/model';
@@ -117,8 +117,11 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   loading = false;
 
+  isAdmin: boolean;
+
   constructor(
     public p: ActiveProjectService,
+    public a: ActiveAccountService,
     private s: SchemaObjectService,
     private r: RepoService,
     private inf: InfActions,
@@ -138,6 +141,9 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     ).subscribe(([pkEntity, fkClass, pkProject]) => {
       this.loadRootEntity(pkEntity, fkClass, pkProject)
     })
+
+    // check if is admin ? (display importer or not)
+    this.a.isSystemAdmin().subscribe(isAdmin => this.isAdmin = isAdmin);
   }
 
   /**

@@ -91,7 +91,7 @@
       <span>Add a Text</span>
     </button>
 
-    <button mat-menu-item *ngIf="!isDigital" (click)="addTable(pkParent, parentIsF2Expression)">
+    <button mat-menu-item *ngIf="!isDigital && isAdmin" (click)="addTable(pkParent, parentIsF2Expression)">
       <mat-icon>folder</mat-icon>
       <span>Add a Table</span>
     </button>
