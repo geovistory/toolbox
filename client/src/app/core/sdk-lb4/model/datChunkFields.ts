@@ -12,9 +12,6 @@
 
 
 export interface DatChunkFields { 
-  [key: string]: object | any;
-
-
     pk_entity?: boolean;
     quill_doc?: boolean;
     string?: boolean;

@@ -13,6 +13,7 @@ import { values } from 'ramda';
 import { ImportTableControllerService, ImportTable } from 'app/core/sdk-lb4';
 import { Header } from 'app/core/sdk-lb4';
 import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
+import { ImportTableSocket } from 'app/core/sockets/sockets.module';
 
 export interface ImporterDialogData {
   apiCall: (table: ImportTableResponse) => Observable<ImportTableResponse>
@@ -25,48 +26,50 @@ export interface ImporterDialogData {
 })
 export class ImporterComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
-  //UI
+  // UI
   mode: string;
   type: string;
+  socketMessage: string;
 
-  //about file
+  // about file
   files: NgxFileDropEntry[] = [];
   file: File;
-  binaries: string; //need for the csv
-  wb: WorkBook; //need for the xls
+  binaries: string; // need for the csv
+  wb: WorkBook; // need for the xls
+  fkDigital: number; // the digital key. Only assigned when the upload has started
 
-  //data
+  // data
   curSort: { colNb: number, direction: string };
   filters: Array<{ col: number, filter: TColFilter }>;
   headers: Header[];
   table: string[][]; // the full table
-  filteredTable: string[][]; //the full table filtered and sorted
-  headers$: ReplaySubject<Header[]>; //the headers to display
-  previewTable$: ReplaySubject<string[][]>; //the data to display
+  filteredTable: string[][]; // the full table filtered and sorted
+  headers$: ReplaySubject<Header[]>; // the headers to display
+  previewTable$: ReplaySubject<string[][]>; // the data to display
 
-  //file options CSV
+  // file options CSV
   separators = [';', ',', '|', 'TAB'];
   separator: string;
   commas = [',', '.'];
   comma: string;
 
-  //file options XLS
+  // file options XLS
   sheetsNames: string[];
   sheetName: string;
 
-  //file options global
+  // file options global
   columnsOptions = ['First row', 'No headers'];
   columnsOption: string;
   rowsNbs = ['20', '50', '100', '500', '1000'];
   rowsNb: string;
 
-  //informations for server
+  // informations for server
   namespaces = [];
   namespace: any;
   languages = [];
   language: InfLanguage;
 
-  //formControls
+  // formControls
   tableNameCtrl = new FormControl('', [Validators.required]);
   namespaceCtrl = new FormControl('', [Validators.required]);
   languageCtrl = new FormControl('', [Validators.required]);
@@ -81,6 +84,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
   sortBy$: ReplaySubject<number>;
 
   constructor(
+    private importTableSocket: ImportTableSocket,
     private worker: WorkerWrapperService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
@@ -94,6 +98,22 @@ export class ImporterComponent implements OnInit, OnDestroy {
         this.namespaceCtrl.setValue(this.namespaces[0].pk_entity);
       })
     })
+
+    this.importTableSocket.on('digitalUpdate', (message: { digital: number, msg: string }) => {
+      if (this.fkDigital == message.digital) {
+        this.socketMessage = message.msg;
+        if (message.msg == 'Your table has correctly been imported') {
+          this.mode = 'drag-and-drop';
+          this.loaded('Table Uploaded', message.msg);
+        }
+      }
+    })
+
+    this.importTableSocket.fromEvent('reconnect')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(disconnect => {
+        this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
+      })
   }
 
   /**
@@ -101,6 +121,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.reset();
+    this.importTableSocket.cleanConnect();
   }
 
   /**
@@ -128,7 +149,6 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Function called when users select a file
-   * 
    * @param files Files from the <input> tag in the html
    */
   onFileDrop(files: NgxFileDropEntry[]) {
@@ -145,17 +165,15 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Get the right number of line to take from the table: When there is a header, the first line has to not being taken
-   * 
    * @returns the right nb of actual rows of the table
    */
   getRowsNb() {
-    //get the nb of lines to take from table, if there is a header, we need to take one more row
-    return this.columnsOption == 'First row' ? parseInt(this.rowsNb) + 1 : parseInt(this.rowsNb);
+    // get the nb of lines to take from table, if there is a header, we need to take one more row
+    return this.columnsOption == 'First row' ? parseInt(this.rowsNb, 10) + 1 : parseInt(this.rowsNb, 10);
   }
 
   /**
    * Launch the parsing procedure
-   * 
    * @param file The file to parse and display
    */
   selectFile(file: File) {
@@ -173,30 +191,30 @@ export class ImporterComponent implements OnInit, OnDestroy {
       paragraphs: []
     }
 
-    //CSV or XLS?
-    const extension: string = file.name.substring(file.name.lastIndexOf(".") + 1).toLowerCase();
+    // CSV or XLS?
+    const extension: string = file.name.substring(file.name.lastIndexOf('.') + 1).toLowerCase();
     if (extension == 'csv') this.type = 'csv';
     else if (extension.indexOf('xls') != -1) this.type = 'xls';
     else {
       this.reset();
-      data.paragraphs = ["Extention <" + extension + "> is not supported"];
+      data.paragraphs = ['Extention <' + extension + '> is not supported'];
       const dialog = this.dialog.open(ConfirmDialogComponent, { data });
       return;
     }
 
-    //readFile
+    // readFile
     const fr: FileReader = new FileReader();
     fr.readAsBinaryString(file);
     fr.onload = () => {
-      if (typeof fr.result != "string") {
+      if (typeof fr.result != 'string') {
         this.reset();
-        data.paragraphs = ["There has been an error while loading the file"];
+        data.paragraphs = ['There has been an error while loading the file'];
         const dialog = this.dialog.open(ConfirmDialogComponent, { data });
         return;
       }
       if (fr.result.length == 0) {
         this.reset();
-        data.paragraphs = ["The file is empty"];
+        data.paragraphs = ['The file is empty'];
         const dialog = this.dialog.open(ConfirmDialogComponent, { data });
         return;
       }
@@ -212,7 +230,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    * Feature that will count the occurences of different separator and set as a attribute the one that is more present in the file
    */
   chooseDefaultSeparator() {
-    let counts = this.separators.map(s => {
+    const counts = this.separators.map(s => {
       let toRegEx = s;
       if (s == 'TAB') toRegEx = String.fromCharCode(9);
       if (s == '|') toRegEx = '\\|';
@@ -221,7 +239,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
         count: (this.binaries.match(new RegExp(toRegEx, 'g')) || []).length
       }
     });
-    let max = Math.max(...counts.map(c => c.count));
+    const max = Math.max(...counts.map(c => c.count));
     this.separator = counts.filter(c => c.count == max)[0].separator;
   }
 
@@ -259,30 +277,29 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    *  Deduction of the headers from the parsed binaries (either CSV or XLSX)
-   * 
    * @param result the binaries parsed
    */
   parseHeaders(result: string[][]) {
     if (!result) { // if we come from html: rebuild the result
-      if (this.columnsOption != 'First row') // ==> if we had 'first row' and we are going to 'no headers'
+      if (this.columnsOption != 'First row') { // ==> if we had 'first row' and we are going to 'no headers'
         result = [this.headers.map(c => c.colLabel)].concat(this.table);
-      else result = this.table;
+      } else result = this.table;
     }
 
     this.headers = [];
     if (this.columnsOption == 'First row') {
       this.table = result.slice(1);
-      //looking at the content of the data
+      // looking at the content of the data
       for (let i = 0; i < result[0].length; i++) {
-        //We suppose that the table has the same number of col for each rows
-        let type = this.type == 'csv' ? getTypeOfColumn(this.table, i, this.comma) : getTypeOfColumn(this.table, i);
+        // We suppose that the table has the same number of col for each rows
+        const type = this.type == 'csv' ? getTypeOfColumn(this.table, i, this.comma) : getTypeOfColumn(this.table, i);
         this.headers.push({ colLabel: result[0][i], comment: type, type: type });
       }
     } else {
       this.table = result;
       for (let i = 0; i < result[0].length; i++) {
-        //We suppose that the table has the same number of col for each rows
-        let type = this.type == 'csv' ? getTypeOfColumn(this.table, i, this.comma) : getTypeOfColumn(this.table, i);
+        // We suppose that the table has the same number of col for each rows
+        const type = this.type == 'csv' ? getTypeOfColumn(this.table, i, this.comma) : getTypeOfColumn(this.table, i);
         this.headers.push({ colLabel: 'Unknown column name', comment: type, type: type });
       }
     }
@@ -301,24 +318,23 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Filters the table according to all previously filters set
-   * 
    * @param filters All filters in place
    */
   filter(filters: Array<{ col: number, filter: TColFilter }>) {
     if (this.mode == 'drag-and-drop') return;
 
-    this.filters = filters; //only usefull when we come from html
+    this.filters = filters; // only usefull when we come from html
 
-    //if no filters are set
+    // if no filters are set
     if (this.filters.length == 0) {
-      this.filteredTable = this.table; //do not take the header
+      this.filteredTable = this.table; // do not take the header
       this.sort(this.curSort);
       return;
     }
 
     this.mode = 'parsing';
     this.worker.work('filterTable', {
-      table: this.table, //do not take the header
+      table: this.table, // do not take the header
       filters: this.filters
     }).then(result => {
       this.filteredTable = result;
@@ -328,15 +344,14 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Slort the table according to all previously sorting options set
-   * 
    * @param sortOpt All sorting options in place
    */
   sort(sortOpt: { colNb: number, direction: string }) {
-    this.curSort = sortOpt; //only usefull when we come from html
+    this.curSort = sortOpt; // only usefull when we come from html
 
-    //if there is no sort
+    // if there is no sort
     if (this.curSort.colNb == -1) {
-      this.previewTable$.next(this.filteredTable.slice(0, this.getRowsNb())); //put header back
+      this.previewTable$.next(this.filteredTable.slice(0, this.getRowsNb())); // put header back
       this.mode = 'preview';
       return;
     }
@@ -347,7 +362,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
       colNb: sortOpt.colNb,
       direction: sortOpt.direction
     }).then(result => {
-      this.previewTable$.next(result.slice(0, this.getRowsNb())); //put header back
+      this.previewTable$.next(result.slice(0, this.getRowsNb())); // put header back
       this.mode = 'preview';
     });
   }
@@ -368,29 +383,27 @@ export class ImporterComponent implements OnInit, OnDestroy {
       const dialog = this.dialog.open(ConfirmDialogComponent, { data });
       dialog.afterClosed().pipe(first()).subscribe(confirmed => {
         if (confirmed) {
-          this.mode = 'parsing';
+          this.mode = 'uploading';
+          this.socketMessage = 'Uploading...'
 
           const importTable: ImportTable = {
+            fileName: this.file.name,
             tableName: this.tableNameCtrl.value,
-            pk_namespace: this.namespaceCtrl.value,
             pk_language: this.languageCtrl.value.pk_entity,
             headers: this.headers,
             rows: this.table,
           };
 
-          this.apiImporter.importTableControllerImportTable(importTable)
-            .pipe(
-              switchMap(response => this.data.apiCall(response))
-            )
+          this.apiImporter.importTableControllerImportTable(this.namespaceCtrl.value, importTable)
+            .pipe(switchMap(response => {
+              this.fkDigital = response.fk_digital;
+              this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
+              return this.data.apiCall(response);
+            }))
             .subscribe(response => {
-
-              console.log(response);
               if (!response) return;
-
-              if (response.error) this.loaded("Import error", response.error + ' The table has not been imported');
-              else this.loaded("Table uploaded", 'The table has correctly been uploaded. The importation into the database may take few minutes (depending on the size of your table).');
-
-              this.mode = 'preview';
+              if (response.error) this.loaded('Import error', 'The table has not been imported: ' + response.error);
+              // else this.loaded('Table uploaded', 'Your table is saved in our database, we are right now creating it. It may take a few moments, based on your table. To know when it will be finished, keep the importer open.');
             });
         }
       })
@@ -399,7 +412,6 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
   /**
    * Function triggered when the client get a response from the /import-table call
-   * 
    * @param title Title of the message from the server
    * @param message Message from the server
    */
@@ -418,27 +430,26 @@ export class ImporterComponent implements OnInit, OnDestroy {
    * Clean destroy of component
    */
   ngOnDestroy() {
+    this.importTableSocket.cleanDisconnect();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
 }
 
-
 /**
  * Read the column to see if it is a number of a string
- * 
  * @param table The table in which the column is
  * @param colNb The target column
  * @param comma What comma is used in number (<,> or <.> or ...);
  */
 function getTypeOfColumn(table: Array<Array<string>>, colNb: number, comma?: string): 'number' | 'string' {
-  //We suppose that the table has the same number of col for each rows
+  // We suppose that the table has the same number of col for each rows
   let isNumber = true;
   for (let i = 0; i < table.length; i++) {
     let content = table[i][colNb];
 
     if (comma == ',') {
-      content = content.replace('.', "}"); // replace dots to prevent parsing a number which is supposed to be a string
+      content = content.replace('.', '}'); // replace dots to prevent parsing a number which is supposed to be a string
       content = content.replace(',', '.');
     }
 

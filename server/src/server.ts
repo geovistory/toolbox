@@ -22,6 +22,7 @@ import {WarEntityPreviewController} from './controllers';
 import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-notifications-manager';
 import {WebSocketServer} from './realtime/websockets/websocket.server';
 import {RestApplicationLike, RestServerLike} from '@loopback/testlab';
+import {ImportTableController} from './controllers/import-table.controller';
 
 
 
@@ -75,6 +76,17 @@ export class GeovistoryServer extends Context implements RestApplicationLike {
       );
       next();
     });
+
+    // Add a ws route to ImportTableController
+    const ns2 = this.wsServer.route(ImportTableController, /^\/ImportTable/);
+    ns2.use((socket, next) => {
+      this.log(
+        'Middleware for namespace %s - socket: %s',
+        socket.nsp.name,
+        socket.id,
+      );
+      next();
+    })
 
     // Create the Postgres Notification Manager
     this.pgNotifManager = new PostgresNotificationsManager(this.lbApp);

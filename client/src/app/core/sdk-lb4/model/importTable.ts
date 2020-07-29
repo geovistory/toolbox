@@ -13,10 +13,10 @@ import { Header } from './header';
 
 
 export interface ImportTable { 
-    tableName?: string;
-    pk_namespace?: number;
-    pk_language?: number;
-    headers?: Array<Header>;
-    rows?: Array<Array<string>>;
+    tableName: string;
+    fileName: string;
+    pk_language: number;
+    headers: Array<Header>;
+    rows: Array<Array<string>>;
 }
 

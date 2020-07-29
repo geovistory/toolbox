@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ImporterComponent, ImporterDialogData } from 'app/modules/data/components/importer/importer.component';
 import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
+import { ImportTableSocket } from 'app/core/sockets/sockets.module';
 
 /**
  * Food data with nested structure.
@@ -117,7 +118,9 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   loading = false;
 
-  isAdmin: boolean;
+  isAdmin = false;
+
+  digitals: { state: 'imported' | 'importing', msg: string }[] = [];
 
   constructor(
     public p: ActiveProjectService,
@@ -128,7 +131,8 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private dat: DatSelector,
     private ref: ChangeDetectorRef,
     private i: InformationPipesService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private importTableSocket: ImportTableSocket,
   ) { }
 
   ngOnInit() {
@@ -143,7 +147,28 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     })
 
     // check if is admin ? (display importer or not)
-    this.a.isSystemAdmin().subscribe(isAdmin => this.isAdmin = isAdmin);
+    this.a.isSystemAdmin()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isAdmin => this.isAdmin = isAdmin);
+
+    this.importTableSocket.emit('listenDigitals', []);
+    this.importTableSocket.on('digitalUpdate', (message) => {
+      if (this.digitals[message.digital]) {
+        if (message.msg == 'Your table has correctly been imported') {
+          this.digitals[message.digital].state = 'imported';
+        } else {
+          this.digitals[message.digital].state = 'importing';
+          this.digitals[message.digital].msg = message.msg;
+        }
+      }
+    })
+
+    this.importTableSocket.fromEvent('reconnect')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(disconnect => {
+        this.importTableSocket.emit('listenDigitals', []);
+      })
+
   }
 
   /**
@@ -354,6 +379,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
+    this.importTableSocket.cleanDisconnect();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

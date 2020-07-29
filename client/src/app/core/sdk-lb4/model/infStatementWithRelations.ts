@@ -16,9 +16,6 @@ import { ProInfoProjRelWithRelations } from './proInfoProjRelWithRelations';
  * (tsType: InfStatementWithRelations, schemaOptions: { includeRelations: true })
  */
 export interface InfStatementWithRelations { 
-  [key: string]: object | any;
-
-
     pk_entity?: number;
     fk_subject_info?: number;
     fk_subject_data?: number;

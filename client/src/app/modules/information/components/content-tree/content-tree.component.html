@@ -53,7 +53,8 @@
         <ng-container *ngTemplateOutlet="menuBtn; context:{
           isDigital: node.isDigital,
           pkParent: node.statement.fk_subject_info,
-          node: node
+          node: node,
+          isLoading: false
         }"></ng-container>
       </div>
     </div>
@@ -66,10 +67,14 @@
 
 
 <ng-template #menuBtn let-isDigital="isDigital" let-pkParent="pkParent" let-parentIsF2Expression="parentIsF2Expression"
-  let-node="node">
-  <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+  let-node="node" let-isLoading="isLoading">
+  <button *ngIf="!isLoading" mat-icon-button [matMenuTriggerFor]="mainMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
+
+  <!--mat-spinner-->
+  <span *ngIf="isLoading">Importing...</span>
+
   <mat-menu #mainMenu="matMenu" xPosition="before">
 
     <!-- is expression portion or digital -->

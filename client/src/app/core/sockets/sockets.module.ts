@@ -11,6 +11,25 @@ export class EntityPreviewSocket extends Socket {
 
 }
 
+@Injectable()
+export class ImportTableSocket extends Socket {
+  connected = false;
+
+  constructor() {
+    super({ url: environment.baseUrl + '/ImportTable' });
+    this.connected = true;
+  }
+
+  cleanConnect() {
+    if (!this.connected) this.connect();
+  }
+
+  cleanDisconnect() {
+    this.disconnect();
+    this.connected = false;
+  }
+
+}
 
 @NgModule({
   declarations: [
@@ -20,7 +39,7 @@ export class EntityPreviewSocket extends Socket {
     SocketIoModule,
     // ...
   ],
-  providers: [EntityPreviewSocket],
+  providers: [EntityPreviewSocket, ImportTableSocket],
   bootstrap: [/** AppComponent **/]
 })
 export class SocketsModule { }

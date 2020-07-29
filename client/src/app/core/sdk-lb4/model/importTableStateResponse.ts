@@ -11,9 +11,7 @@
  */
 
 
-export interface VerifyEmailRequest { 
-    accountId: number;
-    verificationToken: string;
-    redirectOnSuccess: string;
+export interface ImportTableStateResponse { 
+    importing?: boolean;
 }
 

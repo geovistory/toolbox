@@ -24,7 +24,6 @@ import { ResetPasswordRequest } from '../model/models';
 import { ResponseWithMsg } from '../model/models';
 import { SignupRequest } from '../model/models';
 import { SignupResponse } from '../model/models';
-import { VerifyEmailRequest } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -360,14 +359,30 @@ export class AccountControllerService {
 
     /**
      * Verifies email address. Usually needed to complete registration of new account.
-     * @param verifyEmailRequest 
+     * @param accountId 
+     * @param verificationToken 
+     * @param redirectOnSuccess 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public accountControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public accountControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public accountControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public accountControllerVerifyEmail(verifyEmailRequest?: VerifyEmailRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+    public accountControllerVerifyEmail(accountId?: number, verificationToken?: string, redirectOnSuccess?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public accountControllerVerifyEmail(accountId?: number, verificationToken?: string, redirectOnSuccess?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public accountControllerVerifyEmail(accountId?: number, verificationToken?: string, redirectOnSuccess?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public accountControllerVerifyEmail(accountId?: number, verificationToken?: string, redirectOnSuccess?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (accountId !== undefined && accountId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>accountId, 'accountId');
+        }
+        if (verificationToken !== undefined && verificationToken !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>verificationToken, 'verificationToken');
+        }
+        if (redirectOnSuccess !== undefined && redirectOnSuccess !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>redirectOnSuccess, 'redirectOnSuccess');
+        }
 
         let headers = this.defaultHeaders;
 
@@ -398,23 +413,14 @@ export class AccountControllerService {
         }
 
 
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
         let responseType: 'text' | 'json' = 'json';
         if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
             responseType = 'text';
         }
 
-        return this.httpClient.post<any>(`${this.configuration.basePath}/verify-email`,
-            verifyEmailRequest,
+        return this.httpClient.get<any>(`${this.configuration.basePath}/verify-email`,
             {
+                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
