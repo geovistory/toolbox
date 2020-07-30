@@ -3,54 +3,71 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-import { expect } from '@loopback/testlab';
+import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
-import { GeovistoryServer } from '../../../server';
-import { setupApplication } from '../_test-helper';
+import {WarEntityPreview} from '../../../models';
+import {GeovistoryServer} from '../../../server';
+import {createWarEntityPreview} from '../../helpers/atomic/war-entity_preview.helper';
+import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
+import {setupApplication} from '../_test-helper';
 
 const pEvent = require('p-event');
 
 describe('WarEntityPreviewController', () => {
   let server: GeovistoryServer;
   before('setupApplication', async () => {
-    ({ server } = await setupApplication());
+    ({server} = await setupApplication());
   });
   after(async () => {
     await server.stop();
   });
-  describe('websocket server', () => {
+  describe('websockets', () => {
 
-    it('addToStream returns EntityPreview from database with pk_entity', async () => {
-      const url = server.url;
-      const socketClient = io(`${url}/WarEntityPreview`);
-      // add to stream
-      socketClient.emit('addToStream', { pkProject: 591, pks: [25774] });
+    describe('addToStream', () => {
+      let entityPreview: WarEntityPreview;
+      beforeEach(async () => {
+        await cleanDb();
+        entityPreview = await createWarEntityPreview(new WarEntityPreview({
+          pk_entity: 4,
+          fk_project: 8,
+          entity_label: 'foo',
+        }));
 
-      // wait for response of server being received by client
-      const reply = await pEvent(socketClient, 'entityPreview');
+      })
 
-      socketClient.close();
+      it('should return EntityPreview from database with pk_entity', async () => {
+        const url = server.url;
+        const socketClient = io(`${url}/WarEntityPreview`);
+        // add to stream
+        socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [entityPreview.pk_entity]});
 
-      // check if the entity preview has pk_entity
-      expect(reply).to.have.key('pk_entity');
+        // wait for response of server being received by client
+        const reply = await pEvent(socketClient, 'entityPreview');
 
-    });
+        socketClient.close();
 
-    it('addToStream returns EntityPreview from database with fk_class', async () => {
-      const url = server.url;
-      const socketClient = io(`${url}/WarEntityPreview`);
-      // add to stream
-      socketClient.emit('addToStream', { pkProject: 591, pks: [25774] });
+        // check if the entity preview has pk_entity
+        expect(reply).to.have.key('pk_entity');
 
-      // wait for response of server being received by client
-      const reply = await pEvent(socketClient, 'entityPreview');
+      });
 
-      socketClient.close();
+      it('should return EntityPreview from database with fk_class', async () => {
+        const url = server.url;
+        const socketClient = io(`${url}/WarEntityPreview`);
+        // add to stream
+        socketClient.emit('addToStream', {pkProject: entityPreview.fk_project, pks: [entityPreview.pk_entity]});
 
-      // check if the entity preview has fk_class
-      expect(reply).to.have.key('fk_class');
+        // wait for response of server being received by client
+        const reply = await pEvent(socketClient, 'entityPreview');
 
-    });
+        socketClient.close();
+
+        // check if the entity preview has fk_class
+        expect(reply).to.have.key('fk_class');
+
+      });
+    })
+
   })
 
 
