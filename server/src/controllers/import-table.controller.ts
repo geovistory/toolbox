@@ -37,13 +37,9 @@ export class ImportTableController {
   subscriptions: Subscription[] = [];
   subscriptionsCache: { [key: number]: true } = {};
 
+  socket?: Socket;
+
   constructor(
-    @ws.socket() // Equivalent to `@inject('ws.socket')`
-    private socket: Socket,
-
-    // @inject(RestBindings.Http.REQUEST)
-    // private req: Request,
-
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
   ) { }
@@ -137,6 +133,7 @@ export class ImportTableController {
   /************************ WEBSOCKET ****************************/
   @ws.connect()
   connect(socket: Socket) {
+    this.socket = socket;
     console.log('Client connected to ws: %s', this.socket.id);
   }
 
@@ -150,7 +147,10 @@ export class ImportTableController {
   listenDigitals(digitals: number[]) {
     for (const dig of digitals) {
       if (feedBacks[dig] && !this.subscriptionsCache[dig]) {
-        this.subscriptions.push(feedBacks[dig].subscribe(msg => this.socket.emit('digitalUpdate', { digital: dig, msg: msg })))
+        this.subscriptions.push(feedBacks[dig].subscribe(msg => {
+          if (this.socket) this.socket.emit('digitalUpdate', { digital: dig, msg: msg });
+          else throw new Error('Unpossible error');
+        }));
         this.subscriptionsCache[dig] = true;
       }
     }
