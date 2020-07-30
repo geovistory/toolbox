@@ -13,7 +13,8 @@ import { PaginationService } from '../../services/pagination.service';
 import { temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex, createPaginateBy } from '../temporal-entity-list/temporal-entity-list.component';
 import { equals } from 'ramda';
 import { PaginateByParam } from 'app/core/store/actions';
-import { PageEvent } from '@angular/material';
+import { PageEvent, MatDialog } from '@angular/material';
+import { ConfirmDialogData, ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'gv-leaf-item-list',
@@ -45,7 +46,8 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
     public t: PropertiesTreeService,
     public i: InformationPipesService,
     public inf: InfActions,
-    public pag: PaginationService
+    public pag: PaginationService,
+    public dialog: MatDialog
   ) {
     this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
@@ -129,6 +131,17 @@ export class LeafItemListComponent implements OnInit, PropertyListComponentInter
 
   openInNewTab(item: EntityPreviewItem) {
     this.p.addEntityTab(item.preview.pk_entity, item.preview.fk_class, item.preview.entity_type)
+  }
+
+  openPopup(item: BasicStatementItem) {
+    const data: ConfirmDialogData = {
+      hideNoButton: true,
+      noBtnText: '',
+      yesBtnText: 'Ok',
+      title: 'Details',
+      paragraphs: [item.label]
+    }
+    this.dialog.open(ConfirmDialogComponent, { data })
   }
 
   onPageChange(e: PageEvent) {

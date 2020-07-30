@@ -13,7 +13,7 @@ import * as Config from '../../../../../../server/lb3app/common/config/Config';
 import { cache, spyTag } from '../../../shared';
 import { FieldDefinition, ListDefinition, ListType } from '../components/properties-tree/properties-tree.models';
 
-export type BasicModel = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'persistent_item' | 'temporal_entity'
+export type BasicModel = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'persistent_item' | 'temporal_entity'
 
 interface DfhPropertyStatus extends DfhProperty {
 
@@ -440,27 +440,42 @@ export class ConfigurationPipesService {
 
 
 
-  @spyTag @cache({ refCount: false }) pipeListTypeOfClass(targetClassPk: number): Observable<ListType> {
-    return this.p.dfh$.class$.by_pk_class$.key(targetClassPk).pipe(
-      filter(i => !!i),
-      map(klass => {
+  @spyTag @cache({ refCount: false }) pipeListTypeOfClass(targetClassPk: number, targetMaxQuantity: number): Observable<ListType> {
+    return combineLatest(
+      this.p.sys$.config$.main$,
+      this.p.dfh$.class$.by_pk_class$.key(targetClassPk)
+    ).pipe(
+      filter(i => !i.includes(undefined)),
+      map(([config, klass]) => {
 
-        if (targetClassPk == DfhConfig.CLASS_PK_APPELLATION) {
-          return 'appellation'
+        const classConfig = config.classes[targetClassPk];
+        if (classConfig && classConfig.mapsToListType) {
+
+          const keys = Object.keys(classConfig.mapsToListType)
+          const key = keys[0];
+          switch (key) {
+            case 'appellation':
+              return 'appellation';
+            case 'language':
+              return 'language';
+            case 'place':
+              return 'place';
+            case 'timePrimitive':
+              return 'timePrimitive';
+            case 'langString':
+              return 'langString';
+            case 'dimension':
+              return 'dimension';
+            default:
+              console.warn('unsupported list type')
+              break;
+          }
         }
-        else if (targetClassPk == DfhConfig.CLASS_PK_LANGUAGE) {
-          return 'language'
-        }
-        else if (targetClassPk == DfhConfig.CLASS_PK_PLACE) {
-          return 'place'
-        }
-        else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
-          return 'time-primitive'
-        }
-        else if (klass.basic_type === 30) {
+
+        else if (klass.basic_type === 30 && targetMaxQuantity == 1) {
           return 'has-type'
         }
-        else if (klass.basic_type === 8) {
+        else if (klass.basic_type === 8 || klass.basic_type === 30) {
           return 'entity-preview'
         }
         else {
@@ -471,25 +486,36 @@ export class ConfigurationPipesService {
   }
 
 
-  @spyTag @cache({ refCount: false }) pipeModelOfClass(targetClassPk: number): Observable<BasicModel> {
-    return this.p.dfh$.class$.by_pk_class$.key(targetClassPk).pipe(
-      filter(i => !!i),
-      map(klass => {
 
-        if (targetClassPk == DfhConfig.CLASS_PK_APPELLATION) {
-          return 'appellation'
-        }
-        else if (targetClassPk == DfhConfig.CLASS_PK_LANGUAGE) {
-          return 'language'
-        }
-        else if (targetClassPk == DfhConfig.CLASS_PK_PLACE) {
-          return 'place'
-        }
-        else if (targetClassPk == DfhConfig.CLASS_PK_TIME_PRIMITIVE) {
-          return 'time_primitive'
-        }
-        else if (targetClassPk == DfhConfig.CLASS_PK_REFERENCE) {
-          return 'lang_string'
+  @spyTag @cache({ refCount: false }) pipeModelOfClass(targetClassPk: number): Observable<BasicModel> {
+    return combineLatest(
+      this.p.sys$.config$.main$,
+      this.p.dfh$.class$.by_pk_class$.key(targetClassPk)
+    ).pipe(
+      filter(i => !i.includes(undefined)),
+      map(([config, klass]) => {
+        const classConfig = config.classes[targetClassPk];
+        if (classConfig && classConfig.mapsToListType) {
+
+          const keys = Object.keys(classConfig.mapsToListType)
+          const key = keys[0];
+          switch (key) {
+            case 'appellation':
+              return 'appellation';
+            case 'language':
+              return 'language';
+            case 'place':
+              return 'place';
+            case 'timePrimitive':
+              return 'time_primitive';
+            case 'langString':
+              return 'lang_string';
+            case 'dimension':
+              return 'dimension';
+            default:
+              console.warn('unsupported list type')
+              break;
+          }
         }
         else if (klass.basic_type === 8 || klass.basic_type === 30) {
           return 'persistent_item'
@@ -605,10 +631,10 @@ export class ConfigurationPipesService {
   }
 
   /**
- * returns observable number[] wher the numbers are the pk_class
- * of all type classes that are enabled by at least one of the activated profiles
- * of thte given project
- */
+  * returns observable number[] wher the numbers are the pk_class
+  * of all type classes that are enabled by at least one of the activated profiles
+  * of thte given project
+  */
   @spyTag @cache({ refCount: false }) pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
     return combineLatest([
       this.p.dfh$.class$.by_basic_type$.key(30),
@@ -732,7 +758,7 @@ export class ConfigurationPipesService {
         return combineLatest(
           this.pipeClassLabel(sourceClass),
           this.pipeClassLabel(targetClass),
-          this.pipeListTypeOfClass(targetClass),
+          this.pipeListTypeOfClass(targetClass, targetMaxQuantity),
           this.pipeLabelOfPropertyField(
             p.pk_property,
             isOutgoing ? p.has_domain : null,

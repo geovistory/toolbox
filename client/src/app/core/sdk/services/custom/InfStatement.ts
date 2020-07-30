@@ -17,6 +17,7 @@ import { DatDigital } from '../../models/DatDigital';
 import { DatChunk } from '../../models/DatChunk';
 import { InfAppellation } from '../../models/InfAppellation';
 import { InfLangString } from '../../models/InfLangString';
+import { InfDimension } from '../../models/InfDimension';
 import { InfLanguage } from '../../models/InfLanguage';
 import { InfPersistentItem } from '../../models/InfPersistentItem';
 import { InfTimePrimitive } from '../../models/InfTimePrimitive';

@@ -11,7 +11,7 @@ import { DfhSelector } from '../dfh/dfh.service';
 import { InfActions } from '../inf/inf.actions';
 import { LoadingBarActions } from '../loading-bar/api/loading-bar.actions';
 import { ProSelector } from '../pro/pro.service';
-import { DatChunk, DatChunkApi, InfPersistentItem, InfPersistentItemApi, InfTemporalEntity, InfTemporalEntityApi, ProInfoProjRelApi, ProProject, ProProjectApi, SysClassFieldApi, SysClassHasTypePropertyApi } from '../sdk';
+import { DatChunk, DatChunkApi, InfPersistentItemApi, ProInfoProjRelApi, ProProject, ProProjectApi } from '../sdk';
 import { IAppState } from '../store/model';
 import { SystemSelector } from '../sys/sys.service';
 import { U } from '../util/util';
@@ -27,14 +27,10 @@ export class ActiveProjectEpics {
     private dfh: DfhSelector,
     private pro: ProSelector,
     private inf: InfActions,
-    // private peItService: PeItService,
     private peItApi: InfPersistentItemApi,
-    private teEnApi: InfTemporalEntityApi,
     private infProjRelApi: ProInfoProjRelApi,
     private chunkApi: DatChunkApi,
     private projectApi: ProProjectApi,
-    private comClassFieldApi: SysClassFieldApi,
-    private sysHasTypePropsApi: SysClassHasTypePropertyApi,
     private actions: ActiveProjectActions,
     private notificationActions: NotificationsAPIActions,
     private loadingBarActions: LoadingBarActions,
@@ -47,8 +43,6 @@ export class ActiveProjectEpics {
       this.createLoadProjectConfigEpic(),
       this.createLoadProjectUpdatedEpic(),
       this.createLoadChunkEpic(),
-      // this.createLoadPeItGraphEpic(),
-      // this.createLoadTeEnGraphEpic(),
       this.createLoadTypesEpic(),
       this.createClosePanelEpic(),
       this.createActivateTabFocusPanelEpic(),
@@ -118,6 +112,7 @@ export class ActiveProjectEpics {
 
         this.sys.system_relevant_class.load();
         this.sys.analysis_type.load();
+        this.sys.config.load();
 
         this.dat.namespace.load('', action.meta.pk_project);
 
@@ -137,6 +132,7 @@ export class ActiveProjectEpics {
 
           this.sys.system_relevant_class$.by_fk_class$.all$,
           this.sys.analysis_type$.slice$,
+          this.sys.config$.main$,
 
           this.dat.namespace$.by_fk_project$.key(action.meta.pk_project),
 

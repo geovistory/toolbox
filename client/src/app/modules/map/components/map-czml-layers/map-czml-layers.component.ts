@@ -7,7 +7,7 @@ import { combineLatest, from, Observable, Subject } from 'rxjs';
 import { takeUntil, first, map, tap, mapTo, switchMap } from 'rxjs/operators';
 import { JulianDate, BoundingSphere } from 'cesium';
 import { CesiumService } from '../../services/cesium.service';
-import { CzmlPacket } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { CzmlPacket } from '../../../../../../../server/src/lb3/common/interfaces';
 export interface MapLayers {
   layers: MapLayer[]
 }

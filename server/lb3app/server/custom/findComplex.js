@@ -1,7 +1,7 @@
 var ParameterizedSQL = require('loopback-connector/lib/parameterized-sql');
 var SG = require('strong-globalize');
 var g = SG();
-var logSql = require('../../dist/server/utils').logSql;
+var logSql = require('../../../dist/lb3/server/utils').logSql;
 
 module.exports = findComplex;
 

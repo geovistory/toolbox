@@ -1,13 +1,16 @@
 const application = require('./dist');
+const PORT = +(process.env.PORT || 3000);
+const HOST = process.env.HOST || '0.0.0.0'
 
 module.exports = application;
 
 if (require.main === module) {
+  console.log('$PORT:', PORT);
   // Run the application
   const config = {
     rest: {
-      port: +(process.env.PORT || 3000),
-      host: process.env.HOST,
+      port: PORT,
+      host: HOST,
       // The `gracePeriodForClose` provides a graceful close for http/https
       // servers with keep-alive clients. The default value is `Infinity`
       // (don't force-close). If you want to immediately destroy all sockets
@@ -24,7 +27,7 @@ if (require.main === module) {
       listenOnStart: false,
     },
     websocket: {
-      port: 3000,
+      port: PORT,
     },
   };
 

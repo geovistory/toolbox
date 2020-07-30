@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DfhProfileApi } from 'app/core';
 import { takeUntil } from 'rxjs/operators';
-import { ProfileDeactivationReport } from '../../../../../../../server/lb3app/src/common/interfaces/profile-deactivation-report.interface'
+import { ProfileDeactivationReport } from '../../../../../../../server/src/lb3/common/interfaces/profile-deactivation-report.interface'
 
 @Component({
   selector: 'gv-ontome-profile-deactivation-report',

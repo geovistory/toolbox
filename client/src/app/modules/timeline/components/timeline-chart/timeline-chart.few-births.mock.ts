@@ -1,4 +1,4 @@
-import { ChartLinePoint } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
 
 export const few_births: ChartLinePoint[] = [
   {

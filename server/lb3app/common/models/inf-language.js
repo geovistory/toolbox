@@ -33,7 +33,7 @@ module.exports = function(InfLanguage) {
     const connector = InfLanguage.dataSource.connector;
 
     connector.execute(sql_stmt, params, (err, resultObjects) => {
-      console.log(resultObjects);
+      // console.log(resultObjects);
       var languages = [];
 
       if (resultObjects) {

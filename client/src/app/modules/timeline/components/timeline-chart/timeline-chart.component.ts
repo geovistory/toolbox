@@ -4,7 +4,7 @@ import { GregorianDateTime, JulianDateTime } from 'app/core';
 import { DimensionChangeEvent } from 'app/shared/directives/dimension-change/dimension-change.directive';
 import { merge, Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { ChartLine, ChartLineData, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
 import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definition';
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';

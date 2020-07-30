@@ -2027,7 +2027,7 @@ From
 
 $BODY$;
 
-Alter Function war.edges__upsert_some (integer[], integer) Owner To postgres;
+--Alter Function war.edges__upsert_some (integer[], integer) Owner To postgres;
 
 --  fn-13 refactor function war.enriched_nodes__create_all
 Create Or Replace Function war.enriched_nodes__create_all ()

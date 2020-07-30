@@ -38,7 +38,7 @@
         <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
           <label for="password">Password</label>
           <input type="password" class="form-control" name="password" [(ngModel)]="model.password" #password="ngModel"
-            required pattern="(?=.*[\d])(?=.*[A-Za-z]).*" minlength="6" maxlength="20" validateEqual="password2"
+            required pattern="(?=.*[\d])(?=.*[A-Za-z]).*" minlength="8" maxlength="20" validateEqual="password2"
             reverse="true" />
           <div *ngIf="f.submitted && password?.errors?.required" class="help-block form-text text-danger">
             Password is required
@@ -46,7 +46,7 @@
           <div
             *ngIf="f.submitted && (password?.errors?.pattern || password?.errors?.minlength || password?.errors?.maxlength)"
             class="help-block form-text text-danger">
-            Password needs 6-20 characters, one alphabet and one number.
+            Password needs 8-20 characters, one alphabet and one number.
           </div>
           <div *ngFor="let message of errorMessages?.password" class="help-block form-text text-danger">{{message}}
           </div>
@@ -70,7 +70,7 @@
     </div>
     <div class="col-6" *ngIf="confirm">
       <h1>Thanks for registering</h1>
-      <p class="lead mt-5">A verification email has been sent to <strong>{{confirmEmail}}</strong></p>
+      <p class="lead mt-5">A verification email has been sent to <strong>{{model.email}}</strong></p>
       <p>Please open the email and click on the verication link to verify your email address.</p>
       <small class="text-muted">
         No email received? Check your spam folder.

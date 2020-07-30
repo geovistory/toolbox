@@ -1,12 +1,12 @@
 import { InfPersistentItem, InfStatement } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
-import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLangStringSlice } from 'app/core/inf/inf.models';
+import { InfAppellationSlice, InfLanguageSlice, InfPersistentItemSlice, InfPlaceSlice, InfTextPropertySlice, InfTimePrimitiveSlice, InfLangStringSlice, InfDimensionSlice } from 'app/core/inf/inf.models';
 import { keys, omit, values } from 'ramda';
 import { DatActions } from '../dat/dat.actions';
 import { ChunkSlice, DigitalSlice } from '../dat/dat.models';
 import { ProActions } from '../pro/pro.actions';
 import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProProjectSlice, ProTextPropertySlice } from '../pro/pro.models';
-import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty, InfLangString } from '../sdk';
+import { DatChunk, DatDigital, InfAppellation, InfLanguage, InfPlace, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty, InfLangString, InfDimension } from '../sdk';
 import { StandardActionsFactory } from './actions';
 
 export class ModelFlattener<Payload, Model> {
@@ -122,6 +122,7 @@ export class Flattener {
         else if (item.object_language) this.language.flatten([item.object_language])
         else if (item.subject_chunk) this.chunk.flatten([item.subject_chunk])
         else if (item.object_lang_string) this.lang_string.flatten([item.object_lang_string])
+        else if (item.object_dimension) this.dimension.flatten([item.object_dimension])
       })
     })
 
@@ -169,6 +170,16 @@ export class Flattener {
       items.forEach(item => {
         item = new InfLangString(item);
         this.language.flatten([item.language])
+        this.info_proj_rel.flatten(item.entity_version_project_rels)
+      })
+    })
+
+  dimension = new ModelFlattener<InfDimensionSlice, InfDimension>(
+    this.infActions.dimension,
+    InfDimension.getModelDefinition(),
+    (items) => {
+      items.forEach(item => {
+        item = new InfDimension(item);
         this.info_proj_rel.flatten(item.entity_version_project_rels)
       })
     })
@@ -267,6 +278,7 @@ export class Flattener {
       language: this.language,
       text_property: this.text_property,
       lang_string: this.lang_string,
+      dimension: this.dimension,
 
       digital: this.digital,
       chunk: this.chunk,

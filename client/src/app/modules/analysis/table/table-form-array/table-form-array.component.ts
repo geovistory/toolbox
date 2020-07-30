@@ -4,7 +4,7 @@ import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-an
 import { FilterDefinition } from 'app/modules/queries/components/query-filter/query-filter.component';
 import { Observable, of } from 'rxjs';
 import { map, first } from 'rxjs/operators';
-import { ColDef, ColDefDefaultType } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { ColDef, ColDefDefaultType } from '../../../../../../../server/src/lb3/common/interfaces';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
 import { TableFormService } from '../table-form/table-form.service';
 import { FormControlFactory } from 'app/modules/form-factory/core/form-control-factory';

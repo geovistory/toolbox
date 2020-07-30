@@ -4,9 +4,9 @@ const Promise = require('bluebird');
 const Config = require('../config/Config');
 const _ = require('lodash');
 const helpers = require('../helpers');
-var SqlPeItOwnProperties = require('../../dist/server/sql-builders/sql-pe-it-own-properties')
+var SqlPeItOwnProperties = require('../../../dist/lb3/server/sql-builders/sql-pe-it-own-properties')
   .SqlPeItOwnProperties;
-var SqlTypesOfProject = require('../../dist/server/sql-builders/sql-types-of-project')
+var SqlTypesOfProject = require('../../../dist/lb3/server/sql-builders/sql-types-of-project')
   .SqlTypesOfProject;
 
 module.exports = function(InfPersistentItem) {

@@ -1,12 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { InformationBasicPipesService } from '../../services/information-basic-pipes.service';
-import { Observable, Subject, combineLatest } from '../../../../../../node_modules/rxjs';
-import { InformationPipesService } from '../../services/information-pipes.service';
-import { FormGroup, FormBuilder, FormControl } from '../../../../../../node_modules/@angular/forms';
-import { ConfigurationPipesService } from '../../services/configuration-pipes.service';
-import { switchMap, map, takeUntil, first, filter } from '../../../../../../node_modules/rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '../../../../../../node_modules/@angular/forms';
+import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
+import { first, map, switchMap, takeUntil } from '../../../../../../node_modules/rxjs/operators';
 import { ActiveProjectService, InfStatement, ProInfoProjRel } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
+import { InformationPipesService } from '../../services/information-pipes.service';
 
 @Component({
   selector: 'gv-type-item',
@@ -19,6 +17,7 @@ export class TypeItemComponent implements OnInit {
   @Input() pkProperty: number
   @Input() pkTypeClass: number
   @Input() pkTypedClass: number
+  @Input() isOutgoing: boolean
 
   isViewMode: boolean;
 
@@ -51,15 +50,17 @@ export class TypeItemComponent implements OnInit {
     if (!this.pkProperty) throw new Error('You must provide a pkProperty')
     if (!this.pkTypeClass) throw new Error('You must provide a pkTypeClass')
     if (!this.pkTypedClass) throw new Error('You must provide a pkTypedClass')
+    if (this.isOutgoing == undefined) throw new Error('You must provide a isOutgoing')
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+      if (this.isOutgoing) this.p.inf.statement.findByParams(true, pkProject, null, null, this.pkEntity, this.pkProperty)
+      else this.p.inf.statement.findByParams(true, pkProject, null, this.pkEntity, null, this.pkProperty)
     })
 
-    this.hasTypeStatement$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty)
+    this.hasTypeStatement$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty, this.isOutgoing)
 
     this.pkType$ = this.hasTypeStatement$.pipe(
-      map(e => e ? e.fk_object_info : undefined)
+      map(e => { console.log(e); return e ? (this.isOutgoing ? e.fk_object_info : e.fk_subject_info) : undefined })
     )
     this.typeLabel$ = this.pkType$.pipe(
       switchMap(pkType => this.p.streamEntityPreview(pkType).pipe(
@@ -78,20 +79,24 @@ export class TypeItemComponent implements OnInit {
       first(),
       takeUntil(this.destroy$)
     ).subscribe(([statement, fk_project]) => {
-      const value = this.formGroup.get('typeCtrl').value;
+      const targetEntity: number = this.formGroup.get('typeCtrl').value;
+      // if same option is chosen or subject equals object...
       if (
-        (statement && statement.fk_object_info == value) ||
-        (!statement && !value)
+        (statement && targetEntity == (this.isOutgoing ? statement.fk_object_info : statement.fk_subject_info)) ||
+        (!statement && !targetEntity)
       ) {
+        // ... stop here.
         this.editing = false
       }
+      // if another option is chosen
       else {
         this.loading = true
 
-        // old ea
+        // old statement
         const calls$ = [];
         if (statement) {
-          const oldEa = new InfStatement({
+          // remove old statement from project
+          const oldStatement = new InfStatement({
             pk_entity: statement.pk_entity,
             fk_subject_info: statement.fk_subject_info,
             fk_object_info: statement.fk_object_info,
@@ -101,15 +106,18 @@ export class TypeItemComponent implements OnInit {
               is_in_project: false
             } as ProInfoProjRel]
           })
-          const call$ = this.inf.statement.remove([oldEa], fk_project).resolved$
+          const call$ = this.inf.statement.remove([oldStatement], fk_project).resolved$
           calls$.push(call$);
         }
 
-        // new ea
-        if (value) {
+        if (targetEntity) {
+          // create and persist new statement
+          const subject = this.isOutgoing ? this.pkEntity : targetEntity;
+          const object = this.isOutgoing ? targetEntity : this.pkEntity;
+
           const newEa = new InfStatement({
-            fk_subject_info: this.pkEntity,
-            fk_object_info: value,
+            fk_subject_info: subject,
+            fk_object_info: object,
             fk_property: this.pkProperty,
             entity_version_project_rels: [{ is_in_project: true } as ProInfoProjRel]
           })

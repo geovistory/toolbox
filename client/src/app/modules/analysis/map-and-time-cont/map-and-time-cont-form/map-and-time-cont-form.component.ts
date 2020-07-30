@@ -5,7 +5,7 @@ import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { MapAndTimeContInput } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { MapAndTimeContInput } from '../../../../../../../server/src/lb3/common/interfaces';
 import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';

@@ -139,7 +139,6 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     public p: ActiveProjectService,
     private activatedRoute: ActivatedRoute,
     private sdkStorage: SDKStorage,
-    private dialog: MatDialog, //TODO remove!!
     private basic: BasicService // this initiates the question if geolocalization is allowed
   ) {
 

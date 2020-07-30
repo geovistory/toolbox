@@ -1,8 +1,8 @@
 'use strict';
-var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
   .SqlBuilderLbModels;
 
-const OntoMe = require('../../dist/server/ontome/ontome').OntoMe;
+const OntoMe = require('../../../dist/lb3/server/ontome/ontome').OntoMe;
 
 module.exports = function(DfhProfile) {
   DfhProfile.updateFromOntoMe = function(fkProfile, requestedLanguage, cb) {

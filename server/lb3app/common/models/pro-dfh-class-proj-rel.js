@@ -1,6 +1,6 @@
 'use strict';
 // const Promise = require('bluebird');
-var SqlBuilderLbModels = require('../../dist/server/utils/sql-builder-lb-models')
+var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
   .SqlBuilderLbModels;
 
 module.exports = function(ProDfhClassProjRel) {

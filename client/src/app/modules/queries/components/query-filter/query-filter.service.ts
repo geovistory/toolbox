@@ -3,7 +3,7 @@ import { FilterDefNode, QfFormNodeConfig, QfArraySubgroup, QfArrayClassesInitVal
 import { Observable, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
 import { PropertyOption, PropertySelectModel, propertiesRequiredValidator } from '../property-select/property-select.component';
 import { classOrTypeRequiredValidator, ClassAndTypeSelectModel } from '../class-and-type-select/class-and-type-select.component';
-import { SubgroupOperator, ClassFilterCondition } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { SubgroupOperator, ClassFilterCondition } from '../../../../../../../server/src/lb3/common/interfaces';
 
 @Injectable({
   providedIn: 'root'

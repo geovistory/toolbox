@@ -3,7 +3,7 @@ import { ActiveProjectService, U } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { QueryPathSegment } from '../../../../../../server/lb3app/src/common/interfaces';
+import { QueryPathSegment } from '../../../../../../server/src/lb3/common/interfaces';
 import { PropertyOption, PropertySelectModel } from '../components/property-select/property-select.component';
 
 @Injectable({

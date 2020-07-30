@@ -1,13 +1,12 @@
 import { ReducerConfigCollection } from "app/core/store/reducer-factory";
-import { InfStatement, InfTextProperty } from "../sdk";
+import { InfStatement, InfTextProperty, InfDimension } from "../sdk";
 import { U } from '../util/util';
 
 export const infRoot = 'inf';
-// export const facetteByPk = 'by_project';
+export type InfModelName = 'persistent_item' | 'temporal_entity' | 'statement' | 'text_property' | 'appellation' | 'language' | 'place' | 'dimension' | 'lang_string' | 'time_primitive';
 
 export const infDefinitions: ReducerConfigCollection = {
   persistent_item: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -22,7 +21,6 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   temporal_entity: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -37,7 +35,6 @@ export const infDefinitions: ReducerConfigCollection = {
     ]
   },
   statement: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item: InfStatement) => {
@@ -70,7 +67,6 @@ export const infDefinitions: ReducerConfigCollection = {
   },
 
   text_property: {
-    // facetteByPk,
     indexBy: {
       keyInStore: 'pk_entity',
       indexByFn: (item) => {
@@ -132,7 +128,16 @@ export const infDefinitions: ReducerConfigCollection = {
       }
     },
     groupBy: []
-  }
+  },
+  dimension: {
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item: InfDimension) => {
+        return item.pk_entity.toString()
+      }
+    },
+    groupBy: []
+  },
 }
 
 

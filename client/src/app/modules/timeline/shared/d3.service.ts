@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { U } from 'app/core';
 import * as d3 from 'd3';
 import { Observable } from 'rxjs';
-import { ChartLinePoint } from '../../../../../../server/lb3app/src/common/interfaces';
+import { ChartLinePoint } from '../../../../../../server/src/lb3/common/interfaces';
 import { ChartLineDefinition, CursorValues } from '../components/chart-line-visual/chart-line-visual.component';
 import { TimePrimitiveVisual } from '../models/time-primitive-visual';
 import { RangeChangeEvent, Timeline, TimeLineData } from '../models/timeline';

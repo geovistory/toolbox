@@ -1,18 +1,25 @@
 
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
-import { first, map, takeUntil, shareReplay, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
-import { ActiveProjectService, InfStatement, InfTextProperty, PaginationObjectApi, EntityPreview } from '../../../../core';
+import { PaginationObject } from 'app/core/store/model';
+import { equals, indexBy } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { ActiveProjectService, EntityPreview, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTextProperty, PaginationObjectApi } from '../../../../core';
 import { InfActions } from '../../../../core/inf/inf.actions';
 import { InformationPipesService } from '../../services/information-pipes.service';
-import { BasicStatementItem, Item, ItemList, ListDefinition, TextPropertyItem, EntityPreviewItem, LanguageItem, AppellationItem, PlaceItem, LangStringItem } from '../properties-tree/properties-tree.models';
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, Item, ItemList, LangStringItem, LanguageItem, ListDefinition, PlaceItem, TextPropertyItem } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
-import { equals, indexBy } from 'ramda';
-import { PaginationObject } from 'app/core/store/model';
-import { PageEvent } from '@angular/material/paginator';
+import { leafItemListTypes } from '../../base.module';
 
+type Row<M> = Item & {
+  store?: {
+    storeFn?: (items: M[], removePending: string, pk?: number) => void,
+    items: any[]
+  }
+}
 
 @Component({
   selector: 'gv-leaf-item-add-list',
@@ -37,12 +44,12 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   itemsCount: number;
 
-  dataSource = new MatTableDataSource<Item>();
+  dataSource = new MatTableDataSource<Row<any>>();
 
   displayedColumns: string[];
 
   selectedCount$: Observable<number>
-  selection: SelectionModel<Item>;
+  selection: SelectionModel<Row<any>>;
 
   length$: Observable<number[]>;
 
@@ -51,6 +58,8 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
   pageIndex$ = new BehaviorSubject(0)
 
   loading = false;
+
+  valueObjectsToStore = []
 
   constructor(
     public p: ActiveProjectService,
@@ -62,8 +71,7 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     // stop initialization if this is not a leaf item list
-    if (!['appellation', 'language', 'place', 'text-property', 'lang-string', 'entity-preview']
-      .includes(this.listDefinition.listType)) return;
+    if (!leafItemListTypes.includes(this.listDefinition.listType)) return;
 
     const relateBy = this.listDefinition.isOutgoing ? 'fk_subject_info' : 'fk_object_info';
     const filterObject: Partial<InfStatement> = {
@@ -147,7 +155,14 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
           ordNum: undefined,
           projRel: undefined
         }
-        return item;
+        const row: Row<InfAppellation> = {
+          ...item,
+          store: {
+            storeFn: this.p.inf.appellation.loadSucceeded,
+            items: [appellation]
+          }
+        }
+        return row;
       })
     }
     else if (this.listDefinition.listType === 'place') {
@@ -161,10 +176,17 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
           ordNum: undefined,
           projRel: undefined
         }
-        return item;
+        const row: Row<InfPlace> = {
+          ...item,
+          store: {
+            storeFn: this.p.inf.place.loadSucceeded,
+            items: [place]
+          }
+        }
+        return row;
       })
     }
-    else if (this.listDefinition.listType === 'lang-string') {
+    else if (this.listDefinition.listType === 'langString') {
       const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.lang_string)
       const languages = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.language)
 
@@ -178,7 +200,37 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
           ordNum: undefined,
           projRel: undefined
         }
-        return item;
+        const row: Row<InfLangString> = {
+          ...item,
+          store: {
+            storeFn: this.p.inf.lang_string.loadSucceeded,
+            items: [langString]
+          }
+        }
+        return row;
+      })
+    }
+    else if (this.listDefinition.listType === 'dimension') {
+      const leafItems = indexBy((x) => x.pk_entity.toString(), res.schemas.inf.dimension)
+      const entityPreviews = indexBy((x) => x.pk_entity.toString(), res.schemas.war.entity_preview)
+
+      return res.schemas.inf.statement.map(statement => {
+        const dimension = leafItems[statement[relateBy]];
+        const item: DimensionItem = {
+          statement,
+          fkClass: dimension.fk_class,
+          label: `${dimension.numeric_value} ${entityPreviews[dimension.fk_measurement_unit].entity_label}`,
+          ordNum: undefined,
+          projRel: undefined
+        }
+        const row: Row<InfDimension> = {
+          ...item,
+          store: {
+            storeFn: this.p.inf.dimension.loadSucceeded,
+            items: [dimension]
+          }
+        }
+        return row;
       })
     }
     else if (this.listDefinition.listType === 'language') {
@@ -192,7 +244,14 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
           ordNum: undefined,
           projRel: undefined
         }
-        return item;
+        const row: Row<InfLanguage> = {
+          ...item,
+          store: {
+            storeFn: this.p.inf.language.loadSucceeded,
+            items: [language]
+          }
+        }
+        return row;
       })
     }
   }
@@ -216,11 +275,18 @@ export class LeafItemAddListComponent implements OnInit, AfterViewInit {
     }
     else {
       const statements: InfStatement[] = this.selection.selected.map(option => (option as BasicStatementItem).statement);
+
       this.p.pkProject$.pipe(first()).subscribe(pkProject => this.inf.statement.upsert(statements, pkProject)
         .resolved$.pipe(first(x => !!x), takeUntil(this.destroy$)).subscribe(pending => {
           this.close.emit()
         })
       )
+
+      // add leaf values objects to store
+      this.selection.selected.forEach(s => {
+        if (s.store) s.store.storeFn(s.store.items, '')
+      })
+
     }
   }
 

@@ -6,7 +6,7 @@ import { ActiveProjectService, U } from 'app/core';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { QueryFilter } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { QueryFilter } from '../../../../../../../server/src/lb3/common/interfaces';
 
 
 

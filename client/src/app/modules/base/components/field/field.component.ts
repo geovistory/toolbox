@@ -5,16 +5,16 @@ import { MatDialog, MatDialogConfig } from '../../../../../../node_modules/@angu
 import { sum } from '../../../../../../node_modules/ramda';
 import { combineLatest, Observable, Subject } from '../../../../../../node_modules/rxjs';
 import { first, map, shareReplay, takeUntil } from '../../../../../../node_modules/rxjs/operators';
-import { ActiveProjectService, SysConfig } from '../../../../core';
+import { ActiveProjectService } from '../../../../core';
 import { InformationPipesService } from '../../services/information-pipes.service';
 import { PaginationService } from '../../services/pagination.service';
 import { TimeSpanService } from '../../services/time-span.service';
+import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
 import { FieldDefinition, ListDefinition, ListType } from '../properties-tree/properties-tree.models';
 import { PropertiesTreeService } from '../properties-tree/properties-tree.service';
 import { createPaginateBy, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../temporal-entity-list/temporal-entity-list.component';
-import { AddDialogComponent, AddDialogData } from '../add-dialog/add-dialog.component';
-import { AddOrCreateEntityDialogData, AddOrCreateEntityDialogComponent, CreateOrAddEntityEvent } from 'app/modules/base/components/add-or-create-entity-dialog/add-or-create-entity-dialog.component';
+import { valueObjectListTypes } from '../../base.module';
 
 interface ListDefinitionWithItemCount extends ListDefinition {
   itemsCount: number
@@ -107,7 +107,7 @@ export class FieldComponent implements OnInit {
           return true;
         }))
     } else {
-      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.property.pkProperty).pipe(
+      this.itemsCount$ = this.i.pipeTypeOfEntity(this.pkEntity, this.fieldDefinition.property.pkProperty, this.fieldDefinition.isOutgoing).pipe(
         map(hasTypeStatement => hasTypeStatement ? 1 : 0)
       )
     }
@@ -155,8 +155,7 @@ export class FieldComponent implements OnInit {
   }
 
   private openAddDialog(listDef: ListDefinition) {
-    const isValueLike = ['appellation', 'language', 'place', 'text-property', 'lang-string']
-      .includes(listDef.listType);
+    const isValueLike = valueObjectListTypes.includes(listDef.listType);
     const showAddList = (!isValueLike && !listDef.identityDefiningForTarget)
     const data: AddDialogData = {
       listDefinition: listDef,

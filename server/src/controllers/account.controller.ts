@@ -13,6 +13,7 @@ import {AccountService} from '../services/account.service';
 import {EmailService} from '../services/email.service';
 import {PasswordResetTokenService} from '../services/password-reset-token.service';
 import {Postgres1DataSource} from '../datasources';
+import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 
 
 // the requirements for new passwords can be higher
@@ -25,10 +26,6 @@ const NewPasswordSchema: JsonSchemaWithExtensions = {
 const EmailSchema: JsonSchemaWithExtensions = {
   type: 'string',
   format: 'email',
-}
-const UrlSchema: JsonSchemaWithExtensions = {
-  type: 'string',
-  format: 'url',
 }
 
 
@@ -91,6 +88,7 @@ export class HttpErrorModel extends Model {
   @property() error: HttpErrorObjectModel
 }
 
+@tags('account')
 export class AccountController {
   constructor(
     @inject(JWTBindings.TOKEN_SERVICE)

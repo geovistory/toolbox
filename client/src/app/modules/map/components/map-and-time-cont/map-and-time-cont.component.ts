@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import { apply, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject } from 'rxjs';
 import { map, shareReplay, first } from 'rxjs/operators';
-import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlRgbaValue, CzmlSpatialValue, MapAndTimeContOutput, TimeChartContOutput, TimeCzmlValue, CzmlPoint, ChartLinePoint } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { ChartLine, ChartLineData, CzmlDoubleValue, CzmlPacket, CzmlRgbaValue, CzmlSpatialValue, MapAndTimeContOutput, TimeChartContOutput, TimeCzmlValue, CzmlPoint, ChartLinePoint } from '../../../../../../../server/src/lb3/common/interfaces';
 import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 import { ChartLineDefinition } from 'app/modules/timeline/components/chart-line-visual/chart-line-visual.component';
 import { ActiveProjectService, EntityPreview } from 'app/core';

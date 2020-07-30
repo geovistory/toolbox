@@ -35,6 +35,7 @@ import { SysAnalysisTypeService } from './api/sysAnalysisType.service';
 import { SysAppContextService } from './api/sysAppContext.service';
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';
+import { SysConfigControllerService } from './api/sysConfigController.service';
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';
 import { SysSystemTypeService } from './api/sysSystemType.service';
 import { WarEntityPreviewService } from './api/warEntityPreview.service';

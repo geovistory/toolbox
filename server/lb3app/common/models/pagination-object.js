@@ -1,5 +1,5 @@
 'use strict';
-var SqlListAlternativeLeafItems = require('../../dist/server/sql-builders/sql-list-alternative-leaf-items')
+var SqlListAlternativeLeafItems = require('../../../dist/lb3/server/sql-builders/sql-list-alternative-leaf-items')
   .SqlListAlternativeLeafItems;
 
 var _ = require('lodash');

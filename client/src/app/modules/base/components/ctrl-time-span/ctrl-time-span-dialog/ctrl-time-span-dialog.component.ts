@@ -169,7 +169,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit {
 
     const formParts$ = this.c.pipeSpecificFieldDefinitions(50).pipe(
       debounceTime(20),
-      map(fields => fields.filter(f => f.listType === 'time-primitive')),
+      map(fields => fields.filter(f => f.listType === 'timePrimitive')),
       mergeMap(fields => {
         // empty formGroup
         Object.keys(this.formGroup.controls).forEach(key => this.formGroup.removeControl(key));

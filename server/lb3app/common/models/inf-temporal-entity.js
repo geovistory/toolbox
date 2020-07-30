@@ -4,15 +4,12 @@ const Promise = require('bluebird');
 const _ = require('lodash');
 const helpers = require('../helpers');
 
-var SqlTemporalEntityList = require('../../dist/server/sql-builders/sql-temporal-entity-list')
+var SqlTemporalEntityList = require('../../../dist/lb3/server/sql-builders/sql-temporal-entity-list')
   .SqlTemporalEntityList;
-var SqlTemporalEntityListAlternatives = require('../../dist/server/sql-builders/sql-temporal-entity-list-alternatives')
+var SqlTemporalEntityListAlternatives = require('../../../dist/lb3/server/sql-builders/sql-temporal-entity-list-alternatives')
   .SqlTemporalEntityListAlternatives;
-var SqlTemporalEntityOwnProperties = require('../../dist/server/sql-builders/sql-te-en-own-properties')
+var SqlTemporalEntityOwnProperties = require('../../../dist/lb3/server/sql-builders/sql-te-en-own-properties')
   .SqlTemporalEntityOwnProperties;
-
-var SqlTeEnAddToProject = require('../../dist/server/sql-builders/sql-te-en-add-to-project')
-  .SqlTeEnAddToProject;
 
 module.exports = function(InfTemporalEntity) {
   InfTemporalEntity.temporalEntityList = function(

@@ -56,8 +56,13 @@ export class LoginComponent implements OnInit {
           error => {
             // TODO: error handling for statusCode: 500; ENOTFOUND;
             // When (db) server not available; e.g. «Network error»
+            if (error && error.error && error.error.error && error.error.error.message) {
+              this.errorMessage = error.error.error.message
+            }
+            else {
+              this.errorMessage = 'Login not possible.';
+            }
 
-            this.errorMessage = error.message;
             this.resetLoading();
           }
         )

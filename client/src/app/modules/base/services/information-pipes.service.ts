@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { ActiveProjectService, IAppState, InfStatement, InfTextProperty, limitTo, sortAbc, switchMapOr, TimePrimitive, TimeSpan, U } from 'app/core';
 import { Granularity } from 'app/core/date-time/date-time-commons';
 import { CalendarType } from 'app/core/date-time/time-primitive';
+import { InfModelName } from 'app/core/inf/inf.config';
 import { InfSelector } from 'app/core/inf/inf.service';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { ClassAndTypeSelectModel } from 'app/modules/queries/components/class-and-type-select/class-and-type-select.component';
@@ -11,19 +12,17 @@ import { PropertyOption, PropertySelectModel } from 'app/modules/queries/compone
 import { cache, spyTag } from 'app/shared';
 import { TimePrimitivePipe } from 'app/shared/pipes/time-primitive/time-primitive.pipe';
 import { TimeSpanPipe } from 'app/shared/pipes/time-span/time-span.pipe';
-import { equals, flatten, groupBy, indexBy, omit, pick, uniq, values } from 'ramda';
+import { equals, flatten, groupBy, omit, pick, uniq, values } from 'ramda';
 import { BehaviorSubject, combineLatest, empty, iif, Observable, of } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { tag } from 'rxjs-spy/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { PaginateByParam } from '../../../core/store/actions';
 import { combineLatestOrEmpty } from '../../../core/util/combineLatestOrEmpty';
 import { ClassAndTypeNode } from '../components/classes-and-types-select/classes-and-types-select.component';
 import { CtrlTimeSpanDialogResult } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { AppellationItem, BasicStatementItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LanguageItem, ListDefinition, PlaceItem, PropertyItemTypeMap, StatementItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, LangStringItem } from '../components/properties-tree/properties-tree.models';
+import { AppellationItem, BasicStatementItem, DimensionItem, EntityPreviewItem, EntityProperties, FieldDefinition, ItemList, ItemType, LangStringItem, LanguageItem, ListDefinition, PlaceItem, StatementItem, TemporalEntityCell, TemporalEntityItem, TemporalEntityRemoveProperties, TemporalEntityRow, TextPropertyItem, TimePrimitiveItem, TimeSpanItem, TimeSpanProperty, ListType } from '../components/properties-tree/properties-tree.models';
 import { ConfigurationPipesService } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
-import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
-// import { TemporalEntityTableRow } from "../components/temporal-entity-list/TemporalEntityTable";
 
 @Injectable()
 /**
@@ -65,7 +64,8 @@ export class InformationPipesService {
       case 'entity-preview':
       case 'language':
       case 'place':
-      case 'lang-string':
+      case 'dimension':
+      case 'langString':
       case 'temporal-entity':
         return this.pipeList(l, pkEntity).pipe(map(items => items.length))
 
@@ -87,6 +87,7 @@ export class InformationPipesService {
         return this.pipeListTextProperty(l, pkEntity).pipe(map(items => items.length))
 
       default:
+        console.warn('unsupported listType')
         return new BehaviorSubject(0);
     }
   }
@@ -96,7 +97,8 @@ export class InformationPipesService {
     else if (l.listType === 'entity-preview') return this.pipeListEntityPreview(l, pkEntity, limit)
     else if (l.listType === 'language') return this.pipeListLanguage(l, pkEntity, limit)
     else if (l.listType === 'place') return this.pipeListPlace(l, pkEntity, limit)
-    else if (l.listType === 'lang-string') return this.pipeListLangString(l, pkEntity, limit)
+    else if (l.listType === 'dimension') return this.pipeListDimension(l, pkEntity, limit)
+    else if (l.listType === 'langString') return this.pipeListLangString(l, pkEntity, limit)
     else if (l.listType === 'temporal-entity') return this.pipeListEntityPreview(l, pkEntity, limit)
     else if (l.listType === 'text-property') return this.pipeListTextProperty(l, pkEntity, limit)
     else if (l.listType === 'time-span') {
@@ -104,6 +106,7 @@ export class InformationPipesService {
         map((ts) => [ts].filter(i => i.properties.length > 0))
       )
     }
+    else console.warn('unsupported listType')
   }
 
   @spyTag pipeListBasicStatementItems(listDefinition: ListDefinition, pkEntity: number, pkProject: number): Observable<BasicStatementItem[]> {
@@ -182,7 +185,23 @@ export class InformationPipesService {
   }
 
   /**
- * Pipe the items in lang-string list
+   * Pipe the items in place list
+   */
+  @spyTag pipeListDimension<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<DimensionItem[]> {
+
+    return this.b.pipeStatementsOfList(listDefinition, pkEntity)
+      .pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemDimension(r)))
+            .pipe(
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
+              limitTo(limit),
+              startWith([]))
+        }))
+  }
+
+  /**
+ * Pipe the items in langString list
  */
   @spyTag pipeListLangString<T>(listDefinition: ListDefinition, pkEntity: number, limit?: number): Observable<LangStringItem[]> {
 
@@ -286,7 +305,7 @@ export class InformationPipesService {
     fieldDefinitions: FieldDefinition[],
     alternative = false): Observable<TemporalEntityItem[]> {
 
-    const propertyItemType = this.propertyItemType(fieldDefinitions)
+    // const propertyItemType = this.propertyItemType(fieldDefinitions)
 
     const targetEntityOfStatementItem = (r: BasicStatementItem) => r.isOutgoing ? r.statement.fk_object_info : r.statement.fk_subject_info;
 
@@ -301,10 +320,10 @@ export class InformationPipesService {
     }
 
     // prepare TeEnRow loader
-    const rowLoader = (targetEntityPk, fieldDef, propItemType, pkProj) => {
+    const rowLoader = (targetEntityPk, fieldDef, pkProj) => {
       return alternative ?
-        this.pipeItemTeEnRow(targetEntityPk, fieldDef, propItemType, null, true) :
-        this.pipeItemTeEnRow(targetEntityPk, fieldDef, propItemType, pkProj, false)
+        this.pipeItemTeEnRow(targetEntityPk, fieldDef, null, true) :
+        this.pipeItemTeEnRow(targetEntityPk, fieldDef, pkProj, false)
     }
 
     const paginatedStatementPks$ = pageLoader$.pipePage(paginateBy, limit, offset)
@@ -323,7 +342,7 @@ export class InformationPipesService {
                 rowLoader(
                   pkTeEn,
                   fieldDefinitions,
-                  propertyItemType,
+                  // propertyItemType,
                   pkProject
                 ),
                 this.p.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(pkProject + '_' + pkTeEn)
@@ -348,7 +367,7 @@ export class InformationPipesService {
 
 
 
-  @spyTag pipeItemTeEnRow(pkEntity: number, fieldDefinitions: FieldDefinition[], propertyItemType: PropertyItemTypeMap, pkProject: number, repo: boolean): Observable<TemporalEntityRow> {
+  @spyTag pipeItemTeEnRow(pkEntity: number, fieldDefinitions: FieldDefinition[], pkProject: number, repo: boolean): Observable<TemporalEntityRow> {
 
     // pipe outgoing statements
     const outgoingStatements$ = repo ? this.b.pipeRepoOutgoingStatements(pkEntity) : this.b.pipeOutgoingStatements(pkEntity);
@@ -356,22 +375,27 @@ export class InformationPipesService {
     const ingoingStatements$ = repo ? this.b.pipeRepoIngoingStatements(pkEntity) : this.b.pipeIngoingStatements(pkEntity);
 
 
-    // pipe all statements with leaf items
+    // pipe all statements with information leaf items
+
     const outgoingItems$: Observable<StatementItem[]> = outgoingStatements$.pipe(
       switchMap(statements => combineLatestOrEmpty(
-        statements.map(r => {
-          const isOutgoing = true;
-          return this.pipeItem(propertyItemType, r, pkProject, isOutgoing);
-        })
+        statements
+          .filter(statement => !!statement.fk_object_info) // remove statements not pointing to information
+          .map(s => {
+            const isOutgoing = true;
+            return this.pipeItem(s, pkProject, isOutgoing);
+          })
       ))
 
     )
     const ingoingItems$: Observable<StatementItem[]> = ingoingStatements$.pipe(
-      switchMapOr([], statements => combineLatest(
-        statements.map(r => {
-          const isOutgoing = false;
-          return this.pipeItem(propertyItemType, r, pkProject, isOutgoing);
-        })
+      switchMap(statements => combineLatestOrEmpty(
+        statements
+          .filter(statement => !!statement.fk_subject_info) // remove statements not pointing to information
+          .map(s => {
+            const isOutgoing = false;
+            return this.pipeItem(s, pkProject, isOutgoing);
+          })
       ))
 
     )
@@ -384,8 +408,8 @@ export class InformationPipesService {
     return combineLatest(outgoingItems$, ingoingItems$).pipe(
 
       map(([outgoingItems, ingoingItems]) => {
-        const groupedOut = groupBy((i) => (i.statement ? i.statement.fk_property.toString() : undefined), outgoingItems);
-        const groupedIn = groupBy((i) => (i.statement ? i.statement.fk_property.toString() : undefined), ingoingItems);
+        const groupedOut = groupBy((i) => (i && i.statement ? i.statement.fk_property.toString() : undefined), outgoingItems);
+        const groupedIn = groupBy((i) => (i && i.statement ? i.statement.fk_property.toString() : undefined), ingoingItems);
         return { groupedOut, groupedIn }
       }),
       // auditTime(10),
@@ -459,80 +483,39 @@ export class InformationPipesService {
 
 
     )
-    // TODO: pipe all text properties
-
   }
 
-  @spyTag private pipeItem(propertyItemType: PropertyItemTypeMap, r: InfStatement, pkProject: number, propIsOutgoing: boolean) {
-    const itemType = propertyItemType[(r.fk_property + '_' + propIsOutgoing)];
-    let listType: ItemType;
-    if (!itemType) {
-      return of({
-        projRel: undefined,
-        ordNum: undefined,
-        label: 'Error in data',
-        statement: undefined,
-        isOutgoing: undefined,
-        fkClass: undefined,
-        error: 'Error in data'
+
+
+  @spyTag private pipeItem(r: InfStatement, pkProject: number, propIsOutgoing: boolean) {
+
+    const targetEntity = propIsOutgoing ? r.fk_object_info : r.fk_subject_info;
+    return this.p.inf$.getModelOfEntity$(targetEntity).pipe(
+      switchMap(m => {
+        const modelName: InfModelName = m ? m.modelName : undefined;
+        switch (modelName) {
+          case 'appellation':
+            return this.pipeItemAppellation(r);
+          case 'language':
+            return this.pipeItemLanguage(r);
+          case 'place':
+            return this.pipeItemPlace(r);
+          case 'dimension':
+            return this.pipeItemDimension(r);
+          case 'lang_string':
+            return this.pipeItemLangString(r);
+          case 'time_primitive':
+            return this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
+          default:
+            return this.pipeItemEntityPreview(r, propIsOutgoing);
+            break;
+        }
+
+
       })
-    }
-    listType = itemType.listType;
-    const isOutgoing = itemType.isOutgoing
-    if (listType === 'appellation') return this.pipeItemAppellation(r);
-    else if (listType === 'entity-preview') return this.pipeItemEntityPreview(r, isOutgoing);
-    // else if (listType === 'temporal-entity') return this.pipeItemEntityPreview(r, isOutgoing);
-    else if (listType === 'language') return this.pipeItemLanguage(r);
-    else if (listType === 'place') return this.pipeItemPlace(r);
-    else if (listType === 'lang-string') return this.pipeItemLangString(r);
-    else if (listType === 'time-primitive') return this.pipeItemTimePrimitive(r, pkProject); // TODO: emits twice
-    else if (listType === 'time-span') return this.pipeItemTimePrimitive(r, pkProject);
-    else if (listType === 'has-type') return this.pipeItemEntityPreview(r, isOutgoing);
+    )
 
-    // Default!!
 
-    return of({
-      projRel: undefined,
-      ordNum: undefined,
-      label: 'Error in data',
-      statement: undefined,
-      isOutgoing: undefined,
-      fkClass: undefined,
-      error: 'Error in data'
-    })
-
-  }
-
-  /**
-   * TODO: instead of this we'd need a property -> itemType map where
-   * also time-primitve is a type
-   */
-  propertyItemType(fieldDefinitions: FieldDefinition[]): PropertyItemTypeMap {
-    const itemTypes: {
-      pkProperty: number,
-      listType: ItemType,
-      isOutgoing: boolean
-    }[] = []
-
-    fieldDefinitions.forEach(fieldDefinition => {
-      fieldDefinition.listDefinitions.forEach(listDefinition => {
-        const listType: ItemType = listDefinition.listType === 'temporal-entity' || listDefinition.listType === 'persistent-item' ?
-          'entity-preview' : listDefinition.listType;
-        itemTypes.push({
-          pkProperty: listDefinition.property.pkProperty,
-          listType,
-          isOutgoing: listDefinition.isOutgoing
-        })
-      })
-    })
-
-    DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.forEach(pkProperty => {
-      itemTypes.push({
-        pkProperty, listType: 'time-primitive', isOutgoing: true
-      })
-    })
-
-    return indexBy((l) => l.pkProperty + '_' + l.isOutgoing, itemTypes)
   }
 
 
@@ -550,8 +533,11 @@ export class InformationPipesService {
       return this.pipeListPlace(listDef, fkEntity, limit)
         .pipe(map((items) => this.getEntityProperties(listDef, items)))
     }
-
-    else if (listDef.listType === 'lang-string') {
+    else if (listDef.listType === 'dimension') {
+      return this.pipeListDimension(listDef, fkEntity, limit)
+        .pipe(map((items) => this.getEntityProperties(listDef, items)))
+    }
+    else if (listDef.listType === 'langString') {
       return this.pipeListLangString(listDef, fkEntity, limit)
         .pipe(map((items) => this.getEntityProperties(listDef, items)))
     }
@@ -714,6 +700,29 @@ export class InformationPipesService {
       }))
   }
 
+  @spyTag pipeItemDimension(statement: InfStatement): Observable<DimensionItem> {
+    return this.p.inf$.dimension$.by_pk_entity$.key(statement.fk_object_info).pipe(
+      filter(x => !!x),
+      switchMap((dimension) => {
+        return this.p.streamEntityPreview(dimension.fk_measurement_unit)
+          .pipe(
+            map(preview => {
+
+              const node: DimensionItem = {
+                ordNum: undefined,
+                projRel: undefined,
+                statement,
+                label: `${dimension.numeric_value} ${preview.entity_label}`,
+                fkClass: dimension.fk_class,
+              }
+              return node
+            })
+          )
+      })
+    )
+  }
+
+
   @spyTag pipeItemLangString(statement: InfStatement): Observable<LangStringItem> {
     return this.p.inf$.lang_string$.by_pk_entity$.key(statement.fk_object_info).pipe(
       switchMap(
@@ -821,7 +830,7 @@ export class InformationPipesService {
       case 'entity-preview':
       case 'language':
       case 'place':
-      case 'lang-string':
+      case 'langString':
       case 'temporal-entity':
       case 'time-span':
         return this.pipeAltListStatements(l, pkEntity).pipe(map(items => items.length))
@@ -830,6 +839,7 @@ export class InformationPipesService {
         return this.pipeAltListTextProperty(l, pkEntity).pipe(map(items => items.length))
 
       default:
+        console.warn('unsupported listType')
         break;
     }
   }
@@ -839,10 +849,11 @@ export class InformationPipesService {
     else if (l.listType === 'entity-preview') return this.pipeAltListEntityPreview(l, pkEntity)
     else if (l.listType === 'language') return this.pipeAltListLanguage(l, pkEntity)
     else if (l.listType === 'place') return this.pipeAltListPlace(l, pkEntity)
-    else if (l.listType === 'lang-string') return this.pipeAltListLangString(l, pkEntity)
+    else if (l.listType === 'dimension') return this.pipeAltListDimension(l, pkEntity)
+    else if (l.listType === 'langString') return this.pipeAltListLangString(l, pkEntity)
     else if (l.listType === 'temporal-entity') return this.pipeAltListEntityPreview(l, pkEntity)
     else if (l.listType === 'text-property') return this.pipeAltListTextProperty(l, pkEntity)
-    // else if (l.listType === 'time-span') return this.pipeAlternativeTimeSpanItem(pkEntity).pipe(map((ts) => [ts]))
+    else console.warn('unsupported listType')
   }
 
   @spyTag pipeAltListStatements(listDefinition: ListDefinition, pkEntity: number): Observable<InfStatement[]> {
@@ -888,6 +899,24 @@ export class InformationPipesService {
         }))
     }
   }
+
+
+  /**
+   * Pipe the alternative items in dimension list
+   */
+  @spyTag pipeAltListDimension<T>(listDefinition: ListDefinition, pkEntity): Observable<DimensionItem[]> {
+
+    if (listDefinition.isOutgoing) {
+      return this.b.pipeAlternativeOutgoingStatements(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemDimension(r)))
+            .pipe(
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
+              startWith([]))
+        }))
+    }
+  }
+
 
   /**
    * Pipe the alternative items in langString list
@@ -1027,6 +1056,21 @@ export class InformationPipesService {
   }
 
   /**
+  * Pipe place list in the way it is defined by the repository
+  */
+  @spyTag pipeRepoListDimension<T>(listDefinition: ListDefinition, pkEntity): Observable<DimensionItem[]> {
+
+    if (listDefinition.isOutgoing) {
+      return this.b.pipeRepoOutgoingStatementsByProperty(listDefinition.property.pkProperty, pkEntity).pipe(
+        switchMap((statements) => {
+          return combineLatest(statements.map((r, i) => this.pipeItemDimension(r)))
+            .pipe(
+              map(nodes => nodes.filter(node => !!node && node.fkClass === listDefinition.targetClass)),
+              startWith([]))
+        }))
+    }
+  }
+  /**
   * Pipe the items in entity preview field, connected by community favorite statements
   */
   @spyTag pipeRepoListEntityPreview<T>(listDefinition: ListDefinition, pkEntity): Observable<EntityPreviewItem[]> {
@@ -1148,16 +1192,22 @@ export class InformationPipesService {
   /**
    * Pipes the pk_entity of the type of an entity
    */
-  @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number): Observable<InfStatement> {
-    return this.p.inf$.statement$.by_subject_and_property_indexed$({
-      fk_property: hasTypeProperty,
-      fk_subject_info: pkEntity
-    }).pipe(
-      map(items => {
+  @spyTag pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number, isOutgoing: boolean): Observable<InfStatement> {
+    if (isOutgoing) {
+      return this.p.inf$.statement$.by_subject_and_property_indexed$({ fk_property: hasTypeProperty, fk_subject_info: pkEntity }).pipe(map(items => {
         if (!items || Object.keys(items).length < 1) return undefined;
         else return values(items)[0]
       })
-    )
+      )
+    }
+    else {
+      return this.p.inf$.statement$.by_object_and_property_indexed$({ fk_property: hasTypeProperty, fk_object_info: pkEntity }).pipe(
+        map(items => {
+          if (!items || Object.keys(items).length < 1) return undefined;
+          else return values(items)[0]
+        })
+      )
+    }
   }
 
   @spyTag

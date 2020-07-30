@@ -1,7 +1,7 @@
 'use strict';
 const _ = require('lodash');
 
-const TableRemotes = require('../../dist/server/table/table-remotes')
+const TableRemotes = require('../../../dist/lb3/server/table/table-remotes')
   .TableRemotes;
 
 module.exports = function(DatColumn) {

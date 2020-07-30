@@ -5,7 +5,7 @@ import { AnalysisService } from 'app/modules/analysis/services/analysis.service'
 import { Table } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { ColDef, QueryDefinition, TableInput, TableOutput } from '../../../../../../../server/lb3app/src/common/interfaces';
+import { ColDef, QueryDefinition, TableInput, TableOutput } from '../../../../../../../server/src/lb3/common/interfaces';
 import { ResultingEntitiesDialogComponent, EntitiesDialogData } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 
 export interface Example {
