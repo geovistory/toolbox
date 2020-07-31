@@ -10,6 +10,7 @@ import {Streams} from '../realtime/streams/streams';
 import {WarEntityPreviewRepository} from '../repositories';
 import {logSql} from '../utils/helpers';
 import {SqlBuilderBase} from '../utils/sql-builder-base';
+import {indexBy} from 'ramda';
 /**
  * TODO-LB3-LB4
  *
@@ -46,9 +47,9 @@ export class WarEntityPreviewController {
 
   streamSub: Subscription;
 
+  private socket: Socket
+
   constructor(
-    @ws.socket() // Equivalent to `@inject('ws.socket')`
-    private socket: Socket,
     @repository(WarEntityPreviewRepository)
     public warEntityPreviewRepository: WarEntityPreviewRepository,
     @inject('streams')
@@ -66,6 +67,7 @@ export class WarEntityPreviewController {
    */
   @ws.connect()
   connect(socket: Socket) {
+    this.socket = socket
     if (log) this.log('Client connected to ws: %s', this.socket.id);
 
     // Subscribe to stream of timestamps emitted when warehouse updated
@@ -98,10 +100,23 @@ export class WarEntityPreviewController {
       const entityPks = Object.keys(this.cache.streamedPks).map(pk => parseInt(pk, 10));
       if (entityPks?.length) {
         const pkProject = parseInt(this.cache.currentProjectPk, 10)
-        // Query entities modified and needed by current cache
+
+        // Query entities modified and needed by current cache in project version
         const projectItems = await this.findModifiedSinceTmsp(pkProject, entityPks, tmsp);
-        const allItems = await this.completeProjectWithRepoPreviews(projectItems, entityPks);
-        result.push(...allItems)
+        const projectItemsIdx = indexBy((i) => i?.pk_entity?.toString() ?? '', projectItems)
+
+        // Query entities modified and needed by current cache in repo version
+        const repoItems = await this.findModifiedSinceTmsp(null, entityPks, tmsp);
+
+
+        result.push(...projectItems)
+
+        for (const repoItem of repoItems) {
+          if (repoItem.pk_entity && !projectItemsIdx[repoItem.pk_entity.toString()]) {
+            result.push(repoItem)
+          }
+        }
+
       }
 
     }
@@ -165,6 +180,7 @@ export class WarEntityPreviewController {
    * All items that are not parsable to an integer are omitted (e.g. 'foo');
    * @param pks
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private sanitizeNumberArray(pks: any[]) {
     const sanitizedPks: number[] = [];
 
@@ -241,6 +257,7 @@ export class WarEntityPreviewController {
 
     return result;
   }
+
 
 
   /**
