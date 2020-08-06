@@ -145,8 +145,10 @@ export class ImportTableController {
 
   @ws.subscribe('listenDigitals')
   listenDigitals(digitals: number[]) {
+    const importingList = [];
     for (const dig of digitals) {
       if (feedBacks[dig] && !this.subscriptionsCache[dig]) {
+        importingList.push(dig);
         this.subscriptions.push(feedBacks[dig].subscribe(msg => {
           if (this.socket) this.socket.emit('digitalUpdate', { digital: dig, msg: msg });
           else throw new Error('Unpossible error');
@@ -154,6 +156,8 @@ export class ImportTableController {
         this.subscriptionsCache[dig] = true;
       }
     }
+    if (this.socket) this.socket.emit('importingList', importingList);
+    else throw new Error('Unpossible error');
   }
 }
 

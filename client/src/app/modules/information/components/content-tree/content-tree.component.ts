@@ -120,7 +120,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   isAdmin = false;
 
-  digitals: { state: 'imported' | 'importing', msg: string }[] = [];
+  digitals: { state: 'init' | 'imported' | 'importing', msg: BehaviorSubject<string> }[] = [];
 
   constructor(
     public p: ActiveProjectService,
@@ -151,14 +151,25 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(isAdmin => this.isAdmin = isAdmin);
 
-    this.importTableSocket.emit('listenDigitals', []);
+    const digitalsIds = [];
+    digitalsIds.forEach(pk => this.digitals[pk] = { state: 'init', msg: new BehaviorSubject('') });
+    this.importTableSocket.emit('listenDigitals', digitalsIds);
+
+    this.importTableSocket.on('importingList', (message) => {
+      Object.keys(this.digitals).forEach(key => {
+        if (message.indexOf(key) == -1) this.digitals[key].state = 'importing';
+        else this.digitals[key].state = 'imported';
+      })
+    })
+
     this.importTableSocket.on('digitalUpdate', (message) => {
       if (this.digitals[message.digital]) {
         if (message.msg == 'Your table has correctly been imported') {
           this.digitals[message.digital].state = 'imported';
+          this.digitals[message.digital].msg.next('');
         } else {
           this.digitals[message.digital].state = 'importing';
-          this.digitals[message.digital].msg = message.msg;
+          this.digitals[message.digital].msg.next(message.msg);
         }
       }
     })
