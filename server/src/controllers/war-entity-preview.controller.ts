@@ -10,6 +10,7 @@ import {Streams} from '../realtime/streams/streams';
 import {WarEntityPreviewRepository} from '../repositories';
 import {logSql} from '../utils/helpers';
 import {SqlBuilderBase} from '../utils/sql-builder-base';
+import {indexBy} from 'ramda';
 /**
  * TODO-LB3-LB4
  *
@@ -101,10 +102,23 @@ export class WarEntityPreviewController {
       const entityPks = Object.keys(this.cache.streamedPks).map(pk => parseInt(pk, 10));
       if (entityPks?.length) {
         const pkProject = parseInt(this.cache.currentProjectPk, 10)
-        // Query entities modified and needed by current cache
+
+        // Query entities modified and needed by current cache in project version
         const projectItems = await this.findModifiedSinceTmsp(pkProject, entityPks, tmsp);
-        const allItems = await this.completeProjectWithRepoPreviews(projectItems, entityPks);
-        result.push(...allItems)
+        const projectItemsIdx = indexBy((i) => i?.pk_entity?.toString() ?? '', projectItems)
+
+        // Query entities modified and needed by current cache in repo version
+        const repoItems = await this.findModifiedSinceTmsp(null, entityPks, tmsp);
+
+
+        result.push(...projectItems)
+
+        for (const repoItem of repoItems) {
+          if (repoItem.pk_entity && !projectItemsIdx[repoItem.pk_entity.toString()]) {
+            result.push(repoItem)
+          }
+        }
+
       }
 
     }
@@ -245,6 +259,7 @@ export class WarEntityPreviewController {
 
     return result;
   }
+
 
 
   /**
