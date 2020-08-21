@@ -7,7 +7,7 @@ import {InfTextProperty} from './inf-text-property.model';
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'information', table: 'v_temporal_entity'}
+    postgresql: {schema: 'information', table: 'temporal_entity'}
   }
 })
 export class InfTemporalEntity extends Entity implements InfEntity {

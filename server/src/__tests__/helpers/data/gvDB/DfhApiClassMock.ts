@@ -1,0 +1,94 @@
+import {DfhApiClass} from '../../atomic/dfh-api-class.helper';
+
+export class DfhApiClassMock {
+  static readonly EN_365_NAMING: DfhApiClass = {
+    "pk_entity": 3737,
+    "dfh_pk_class": 365,
+    "dfh_basic_type": 9,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Appellation in a language (time-indexed)",
+    "dfh_fk_namespace": 3,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "HistDMI generic classes and properties – ongoing",
+    "dfh_basic_type_label": "Temporal Entity",
+    "dfh_class_scope_note": "This class refers to the fact that an entity (actor, group, concept, etc.) can be identified using a specific appellation in a language during a given time span.The class does not refer to the activity of continously or repetedly naming an entity with this specific appellation but to the possibility of identifying the entity with the given appellation in a given language.\r\nThe appellation is in this sense a property of the entity at given time and for a given language. The FRBRoo class F52_Name_Use_Activity models the activity actually carried out by a person or a group to use a given appellation, which is a distinct phenomenon. F52_Name_Use_Activity is a subclass of activity while the present class is about the given possibility (by use or by law) of using an appellation for identifying a given entity.",
+    "tmsp_last_modification": "2020-07-15T14:27:09.844581+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C10"
+  }
+
+  static readonly EN_21_PERSON: DfhApiClass = {
+    "pk_entity": 3650,
+    "dfh_pk_class": 21,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 4,
+    "dfh_class_label": "Person",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Generic Historical Information Profile",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "This class comprises real persons who live or are assumed to have lived. Legendary figures that may have existed, such as Ulysses and\n            King Arthur, fall into this class if the documentation refers to them as historical figures. In cases where doubt exists as to whether\n            several persons are in fact identical, multiple instances can be created and linked to indicate their relationship. The CRM does not\n            propose a specific form to support reasoning about possible identity. ",
+    "tmsp_last_modification": "2020-07-15T14:27:17.710051+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E21"
+  }
+
+  static readonly EN_40_APPELLATION: DfhApiClass = {
+    "pk_entity": 3726,
+    "dfh_pk_class": 40,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Appellation",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "This class comprises signs, either meaningful or not, or arrangements of signs following a specific syntax, that are used or can be\n            used to refer to and identify a specific instance of some class or category within a certain context. Instances of E41 Appellation do not\n            identify things by their meaning, even if they happen to have one, but instead by convention, tradition, or agreement. Instances of E41\n            Appellation are cultural constructs; as such, they have a context, a history, and a use in time and space by some group of users. A given\n            instance of E41 Appellation can have alternative forms, i.e., other instances of E41 Appellation that are always regarded as equivalent\n            independent from the thing it denotes. Specific subclasses of E41 Appellation should be used when instances of E41 Appellation of a\n            characteristic form are used for particular objects. Instances of E49 Time Appellation, for example, which take the form of instances of\n            E50 Date, can be easily recognised. E41 Appellation should not be confused with the act of naming something. Cf. E15 Identifier Assignment ",
+    "tmsp_last_modification": "2020-07-15T14:27:09.844581+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E41"
+}
+}
+
+
+/**
+ * SQL to create mock items
+ */
+// SELECT jsonb_pretty(jsonb_build_object(
+//   'pk_entity',pk_entity,
+//   'tmsp_last_modification', tmsp_last_modification,
+//   'dfh_pk_class',dfh_pk_class,
+//   'dfh_class_identifier_in_namespace',dfh_class_identifier_in_namespace,
+//   'dfh_class_label_language',dfh_class_label_language,
+//   'dfh_class_label',dfh_class_label,
+//   'dfh_class_scope_note_language',dfh_class_scope_note_language,
+//   'dfh_class_scope_note',dfh_class_scope_note,
+//   'dfh_basic_type',dfh_basic_type,
+//   'dfh_basic_type_label',dfh_basic_type_label,
+//   'dfh_fk_namespace',dfh_fk_namespace,
+//   'dfh_namespace_label_language',dfh_namespace_label_language,
+//   'dfh_namespace_label',dfh_namespace_label,
+//   'dfh_namespace_uri',dfh_namespace_uri,
+//   'dfh_profile_association_type',dfh_profile_association_type,
+//   'dfh_fk_profile',dfh_fk_profile,
+//   'dfh_profile_label_language',dfh_profile_label_language,
+//   'dfh_profile_label',dfh_profile_label
+//   ))
+//   FROM data_for_history.api_class t1
+//   WHERE dfh_pk_class = 365
+//   AND dfh_profile_association_type='selected'

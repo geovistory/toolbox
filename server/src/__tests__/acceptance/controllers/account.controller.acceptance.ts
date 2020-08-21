@@ -10,7 +10,7 @@ import {SqlBuilderBase} from '../../../utils/sql-builder-base';
 import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
 import {createAccount, createAccountVerified} from '../../helpers/graphs/account.helper';
 import {createSandBoxProject} from '../../helpers/graphs/project.helpers';
-import {setupApplication} from '../_test-helper';
+import {setupApplication} from '../../helpers/gv-server-helpers';
 import {init} from '../../helpers/graphs/init.helper';
 
 const qs = require('querystring');

@@ -6,7 +6,7 @@ import { linkAccountProject } from '../../helpers/atomic/pub-account_project_rel
 import { cleanDb } from '../../helpers/cleaning/clean-db.helper';
 import { createAccountVerified } from '../../helpers/graphs/account.helper';
 import { createProjectAndNamespace, createRawProject } from '../../helpers/graphs/project.helpers';
-import { setupApplication } from '../_test-helper';
+import { setupApplication } from '../../helpers/gv-server-helpers';
 import { createTypes } from '../../helpers/atomic/sys-system-type.helper';
 import { createNamespace } from '../../helpers/atomic/dat-namespace.helper';
 import { init } from '../../helpers/graphs/init.helper';

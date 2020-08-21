@@ -79,6 +79,45 @@
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Warehouse",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/warehouse.js",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
+      "restart": true,
+      "outputCapture": "std",
+      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "name": "Launch Warehouse Tests",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "program": "${workspaceRoot}/node_modules/.bin/mocha",
+      "stopOnEntry": false,
+      "args": [
+        "--timeout",
+        "20000",
+        "--colors",
+        "'dist/__tests__/**/warehouse/**/*.js'",
+        "--grep",
+        "/EdgeService.*should have.*/"
+      ],
+      "cwd": "${workspaceRoot}",
+      "restart": false,
+      "envFile": "${workspaceFolder}/.vscode/envFile.test",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
   ]
 }

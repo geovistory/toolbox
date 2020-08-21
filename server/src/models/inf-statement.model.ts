@@ -103,7 +103,7 @@ export class InfStatement extends Entity implements InfEntity {
   community_favorite_calendar?: string;
 
   @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
-  entity_version_project_rels: ProInfoProjRel[];
+  entity_version_project_rels?: ProInfoProjRel[];
 
   // Define well-known properties here
 

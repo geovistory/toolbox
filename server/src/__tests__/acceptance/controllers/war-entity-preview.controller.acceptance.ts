@@ -9,7 +9,7 @@ import {WarEntityPreview} from '../../../models';
 import {GeovistoryServer} from '../../../server';
 import {createWarEntityPreview} from '../../helpers/atomic/war-entity_preview.helper';
 import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
-import {setupApplication} from '../_test-helper';
+import {setupApplication} from '../../helpers/gv-server-helpers';
 
 const pEvent = require('p-event');
 
