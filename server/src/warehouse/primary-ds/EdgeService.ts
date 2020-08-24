@@ -43,7 +43,9 @@ export class EdgeService extends PrimaryDataService<EdgeInitItem, EntityId, Fiel
     deletesSql = ''
 
     constructor(main: Warehouse) {
-        super(main, [])
+        super(main, [
+            'modified_projects_info_proj_rel'
+        ])
     }
 
 
@@ -241,7 +243,7 @@ export interface Edge {
 const updateSql = `
     WITH tw0 AS (
         -- select affected entities
-        SELECT
+        SELECT DISTINCT
             t2.fk_subject_info pk_entity,
             t1.fk_project
         FROM
@@ -252,12 +254,11 @@ const updateSql = `
             information.entity t3 ON t2.fk_subject_info = t3.pk_entity
         WHERE
             t1.tmsp_last_modification > $1
-        AND
-            t1.is_in_project=true
+
         AND
             t3.table_name IN ('temporal_entity', 'persistent_item')
-        UNION ALL
-        SELECT
+        UNION
+        SELECT DISTINCT
             t2.fk_object_info pk_entity,
             t1.fk_project
         FROM
@@ -268,12 +269,11 @@ const updateSql = `
             information.entity t3 ON t2.fk_subject_info = t3.pk_entity
         WHERE
             t1.tmsp_last_modification > $1
-        AND
-            t1.is_in_project=true
+
         AND
             t3.table_name IN ('temporal_entity', 'persistent_item')
-        UNION ALL
-        SELECT
+        UNION
+        SELECT DISTINCT
             t2.pk_entity,
             t1.fk_project
         FROM
@@ -284,10 +284,9 @@ const updateSql = `
             t2.table_name IN ('temporal_entity', 'persistent_item')
         AND
             t1.tmsp_last_modification > $1
-        AND
-            t1.is_in_project=true
+
     ), tw1 AS (
-        SELECT
+        SELECT DISTINCT
         t1.fk_project,
         t1.ord_num_of_domain,
         t1.ord_num_of_range,
@@ -378,17 +377,25 @@ const updateSql = `
         UNION ALL
         SELECT fk_project, fk_property, pk_entity, NULL::json outgoing, incoming
         FROM tw3
-    )
-    SELECT
-    fk_project "fkProject",
-    pk_entity "pkEntity",
-    json_build_object(
-        'outgoing', json_strip_nulls(json_object_agg(fk_property, outgoing)),
-        'incoming', json_strip_nulls(json_object_agg(fk_property, incoming))
-    ) fields
-    FROM tw4
+    ),
+	tw5 AS (
+		SELECT
+		fk_project,
+		pk_entity,
+		json_build_object(
+			'outgoing', json_strip_nulls(json_object_agg(fk_property, outgoing)),
+			'incoming', json_strip_nulls(json_object_agg(fk_property, incoming))
+		) fields
+		FROM tw4
 
-    GROUP BY
-    fk_project,
-    pk_entity
+		GROUP BY
+		fk_project,
+		pk_entity
+	)
+	SELECT
+	t1.fk_project "fkProject",
+	t1.pk_entity "pkEntity",
+	COALESCE(t2.fields, '{}'::json) fields
+	FROM tw0 t1
+	LEFT JOIN tw5 t2 ON t1.pk_entity = t2.pk_entity AND t1.fk_project =  t2.fk_project
 `

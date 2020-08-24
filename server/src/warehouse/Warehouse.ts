@@ -1,4 +1,5 @@
 import {Client} from 'pg';
+import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
 import {Logger} from './base/classes/Logger';
 import {getDbFileSize, getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
@@ -21,12 +22,7 @@ interface NotificationHandler {
 
 export class Warehouse {
 
-    pgClient = new Client({
-        connectionString: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL), // + '?ssl=true',
-        ssl: {
-            rejectUnauthorized: false,
-        },
-    });
+    pgClient: Client
 
     // Indexes holding data given by db
     prim: PrimaryDataServices;
@@ -47,6 +43,13 @@ export class Warehouse {
         this.prim = new PrimaryDataServices(this)
         this.agg = new AggregatedDataServices(this)
         this.dep = new DependencyDataServices(this)
+        const connectionString = getPgUrlForPg8()
+        const ssl = getPgSslForPg8()
+        this.pgClient = new Client({
+            connectionString,
+            // connectionString: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL), // + '?ssl=true',
+            ssl: {rejectUnauthorized: false}
+        });
         // this.updateService = new UpdateService(this)
     }
 
@@ -60,9 +63,9 @@ export class Warehouse {
 
         await this.pgClient.connect();
 
-        this.startListening()
-
         await this.clearDB()
+
+        this.startListening()
 
         await this.initIndexes();
 
@@ -104,23 +107,24 @@ export class Warehouse {
     async initIndexes() {
         this.initializingIndexes = true
         const t1 = Logger.start('Initialize indexes', 0)
+        await this.prim.entity.initIdx();
+
         await this.prim.project.initIdx();
         await this.prim.dfhClassLabel.initIdx();
         await this.prim.proClassLabel.initIdx();
 
         await this.prim.edge.initIdx();
 
-        await this.prim.entity.initIdx();
 
-        // await this.prim.initAllIndexes()
-
-        // await this.prim.entityLabelConfig.initIdx();
+        await this.prim.entityLabelConfig.initIdx();
 
         // await this.prim.fieldsConfig.initIdx();
 
         // await this.prim.classLabel.initIdx();
 
         // await this.prim.fieldLabel.initIdx();
+
+        // await this.prim.initAllIndexes()
 
         Logger.itTook(t1, 'to initialize indexes', 0)
         this.initializingIndexes = false
@@ -152,7 +156,7 @@ export class Warehouse {
         await this.prim.entity.index.forEachKey(async (entityId) => {
             // await this.updateService.addUpdateRequest(entityId)
 
-            await this.agg.entityLabel.updater.addItemToQueue(entityId)
+            // await this.agg.entityLabel.updater.addItemToQueue(entityId)
 
             length++
         })
@@ -202,12 +206,13 @@ export class Warehouse {
     startListening() {
         this.pgClient.on('notification', (msg) => {
             const handler = this.notificationHandlers[msg.channel];
+            const tmsp = msg.payload;
             if (handler) handler.listeners.map(l => l.callback().catch(e => console.log(e)))
         });
     }
 
     async stop() {
-        await this.pgClient.end()
+        this.notificationHandlers = {}
     }
 }
 

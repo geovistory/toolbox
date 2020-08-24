@@ -4,7 +4,7 @@ let config = {
     name: 'postgres1',
     connector: 'postgresql',
     ssl: {
-      rejectUnauthorized: true,
+      rejectUnauthorized: false,
     },
   },
   emailDs: {

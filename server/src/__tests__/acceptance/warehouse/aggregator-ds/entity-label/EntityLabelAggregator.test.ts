@@ -5,14 +5,14 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {EdgeMock} from '../../../../helpers/data/whDb/EdgeMock';
 import {EntityLabelConfigMock} from '../../../../helpers/data/whDb/EntityLabelConfigMock';
 import {EntityMock} from '../../../../helpers/data/whDb/EntityMock';
-import {setupWarehouse} from '../../../../helpers/warehouse-helpers';
+import {setupWarehouseAndConnect} from '../../../../helpers/warehouse-helpers';
 
 describe('EntityLabelAggregator', function () {
     let main: Warehouse;
     let result: EntityLabelAggregator;
 
     before(async () => {
-        main = await setupWarehouse()
+        main = await setupWarehouseAndConnect()
     })
 
     beforeEach(async function () {

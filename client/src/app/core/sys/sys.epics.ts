@@ -3,7 +3,7 @@ import { StandardEpicsFactory } from 'app/core/store/StandardEpicsFactory';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { SysAnalysisType, SysAnalysisTypeApi } from '../sdk';
-import { SysConfig, SysConfigControllerService } from '../sdk-lb4';
+import { SysConfig, SystemConfigurationService } from '../sdk-lb4';
 import { SysSystemRelevantClass } from '../sdk/models/SysSystemRelevantClass';
 import { SysSystemRelevantClassApi } from '../sdk/services/custom/SysSystemRelevantClass';
 import { ModifyActionMeta } from '../store/actions';
@@ -20,7 +20,7 @@ export class SysEpics {
     private notification: NotificationsAPIActions,
     private sysRelevantClassApi: SysSystemRelevantClassApi,
     private sysAnalysisTypeApi: SysAnalysisTypeApi,
-    private sysConfigApi: SysConfigControllerService
+    private sysConfigApi: SystemConfigurationService
   ) { }
 
   public createEpics(): Epic {

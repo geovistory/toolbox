@@ -7,21 +7,23 @@ import {createProject} from '../../../helpers/atomic/pro-project.helper';
 import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupWarehouse} from '../../../helpers/warehouse-helpers';
+import {setupWarehouseAndConnect, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProClassLabelService', () => {
 
   let wh: Warehouse;
   let s: ProClassLabelService;
 
-  before(async () => {
-    wh = await setupWarehouse()
-    // await wh.pgClient.connect()
-  })
+
   beforeEach(async function () {
+    wh = await setupWarehouseAndConnect()
     await cleanDb();
     s = new ProClassLabelService(wh);
     await s.clearAll()
+  })
+
+  afterEach(async function () {
+    await wh.stop()
   })
 
   it('should create pro class label in db', async () => {
@@ -71,10 +73,8 @@ describe('ProClassLabelService', () => {
     const str2 = 'BarClassLabel'
     await updateProTextProperty(label.pk_entity ?? -1, {string: str2})
 
-    // TODO: This should happen automatically by listeners
-    await s.sync();
+    await waitUntilNext(s.afPut$)
 
-    await new Promise(r => setTimeout(r, 10));
     const resultUpdated = await s.index.getFromIdx(id)
     expect(resultUpdated).to.equal(str2)
   })

@@ -1,8 +1,8 @@
-import { Logger } from './Logger';
-import { AbstractAggregator } from './AbstractAggregator';
-import { UniqIndexGeneric } from './UniqIndexGeneric';
-import { StringToKeyModel } from '../interfaces/StringToKeyModel';
-import { KeyModelToString } from '../interfaces/KeyModelToString';
+import {Logger} from './Logger';
+import {AbstractAggregator} from './AbstractAggregator';
+import {UniqIndexGeneric} from './UniqIndexGeneric';
+import {StringToKeyModel} from '../interfaces/StringToKeyModel';
+import {KeyModelToString} from '../interfaces/KeyModelToString';
 import prettyms from 'pretty-ms';
 
 export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> {
@@ -27,11 +27,12 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
     updating = false;
 
     constructor(
-        private name: string,
+        public name: string,
         private aggregatorFactory: (modelId: KeyModel) => Promise<Aggregator>,
         private register: (result: Aggregator) => Promise<void>,
         keyToString: KeyModelToString<KeyModel>,
         stringToKey: StringToKeyModel<KeyModel>,
+        private registerAllHook?: (results: Aggregator[]) => void
     ) {
 
         this._queueA = new UniqIndexGeneric<KeyModel>(keyToString, stringToKey)
@@ -43,9 +44,11 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         await this.growingQueue.addToIdx(id, true)
 
         // initialize new recursive update cycle
-        if (this.updating === false && this.cycleNr > 1) {
+        if (this.updating === false
+             && this.cycleNr > 1
+        ) {
             setTimeout(() => {
-                this.startCylcling().catch(e => { console.error(e) })
+                this.startCylcling().catch(e => {console.error(e)})
             }, 0)
         }
     }
@@ -74,7 +77,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
     async startCylcling() {
         this.updating = true
 
-        const t0 = Logger.start(`Run recursive cycle ${this.cycleNr}`, 0)
+        const t0 = Logger.start(`${this.name} > Run recursive cycle ${this.cycleNr}`, 0)
         await this.runOneCycle();
         Logger.itTook(t0, `to run recursive cycle`, 0)
         this.updating = true
@@ -143,6 +146,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
 
         // Register EntityPreview for each created preview
         i = 0;
+        if (this.registerAllHook) this.registerAllHook(results)
         for (const result of results) {
             await this.register(result)
 

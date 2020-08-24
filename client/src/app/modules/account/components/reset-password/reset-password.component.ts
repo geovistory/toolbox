@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 import { ErrorHandler, LoopBackConfig } from 'app/core';
-import { AccountControllerService, ResetPasswordRequest } from 'app/core/sdk-lb4';
+import { AccountService, ResetPasswordRequest } from 'app/core/sdk-lb4';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '../../../../../../node_modules/@angular/common/http';
@@ -29,7 +29,7 @@ export class ResetPasswordComponent implements OnInit {
     protected http: HttpClient,
     @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
-    private accountApi: AccountControllerService,
+    private accountApi: AccountService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);

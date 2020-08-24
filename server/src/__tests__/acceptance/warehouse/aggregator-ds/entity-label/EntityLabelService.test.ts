@@ -3,13 +3,13 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {EdgeMock} from '../../../../helpers/data/whDb/EdgeMock';
 import {EntityLabelConfigMock} from '../../../../helpers/data/whDb/EntityLabelConfigMock';
 import {EntityMock} from '../../../../helpers/data/whDb/EntityMock';
-import {setupWarehouse, wait} from '../../../../helpers/warehouse-helpers';
+import {setupWarehouseAndConnect, wait} from '../../../../helpers/warehouse-helpers';
 
 describe('EntityLabelService', function () {
     let main: Warehouse;
 
     before(async () => {
-        main = await setupWarehouse()
+        main = await setupWarehouseAndConnect()
     })
     beforeEach(async function () {
         try {

@@ -19,7 +19,6 @@ export * from './httpErrorModel';
 export * from './httpErrorObjectModel';
 export * from './importTable';
 export * from './importTableResponse';
-export * from './importTableStateResponse';
 export * from './infLanguage';
 export * from './infPersistentItem';
 export * from './infPlace';

@@ -19,7 +19,6 @@ import { Observable }                                        from 'rxjs';
 
 import { ImportTable } from '../model/models';
 import { ImportTableResponse } from '../model/models';
-import { ImportTableStateResponse } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
@@ -150,70 +149,6 @@ export class ImportTableControllerService {
 
         return this.httpClient.post<ImportTableResponse>(`${this.configuration.basePath}/import-table`,
             importTable,
-            {
-                params: queryParameters,
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * @param fkDigital 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public importTableControllerImportTableState(fkDigital?: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ImportTableStateResponse>;
-    public importTableControllerImportTableState(fkDigital?: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ImportTableStateResponse>>;
-    public importTableControllerImportTableState(fkDigital?: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ImportTableStateResponse>>;
-    public importTableControllerImportTableState(fkDigital?: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (fkDigital !== undefined && fkDigital !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>fkDigital, 'fkDigital');
-        }
-
-        let headers = this.defaultHeaders;
-
-        // authentication (accesstoken) required
-        if (this.configuration.apiKeys) {
-            const key: string | undefined = this.configuration.apiKeys["accesstoken"] || this.configuration.apiKeys["authorization"];
-            if (key) {
-                headers = headers.set('authorization', key);
-            }
-        }
-
-        // authentication (jwt) required
-        if (this.configuration.accessToken) {
-            const accessToken = typeof this.configuration.accessToken === 'function'
-                ? this.configuration.accessToken()
-                : this.configuration.accessToken;
-            headers = headers.set('Authorization', 'Bearer ' + accessToken);
-        }
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.post<ImportTableStateResponse>(`${this.configuration.basePath}/import-table/state`,
-            null,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

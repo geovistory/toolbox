@@ -27,7 +27,7 @@ export class TestdbDataSource extends juggler.DataSource
       name: 'testdb',
       connector: 'postgresql',
       ssl: {
-        rejectUnauthorized: true,
+        rejectUnauthorized: false,
       },
     });
   }

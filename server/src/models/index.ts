@@ -1,4 +1,5 @@
 export * from './war-entity-preview.model';
+export * from './war-class-preview.model';
 export * from './dat-chunk.model';
 export * from './dat-entity.interface';
 export * from './dfh-profile.model';

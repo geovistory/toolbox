@@ -1,26 +1,33 @@
 import assert from 'assert';
-import { EntityLabelService } from '../../../../warehouse/aggregator-ds/entity-label/EntityLabelService';
-import { DependencyIndex } from '../../../../warehouse/base/classes/DependencyIndex';
-import { entityIdToString, stringToEntityId } from '../../../../warehouse/base/functions';
-import { EntityId } from '../../../../warehouse/primary-ds/EntityService';
-import { Warehouse } from '../../../../warehouse/Warehouse';
+import {EntityLabelService} from '../../../../warehouse/aggregator-ds/entity-label/EntityLabelService';
+import {DependencyIndex} from '../../../../warehouse/base/classes/DependencyIndex';
+import {entityIdToString, stringToEntityId} from '../../../../warehouse/base/functions';
+import {EntityId} from '../../../../warehouse/primary-ds/EntityService';
+import {Warehouse} from '../../../../warehouse/Warehouse';
 
 
-
-const main = new Warehouse()
-const stub1 = new EntityLabelService(main)
-const stub2 = new EntityLabelService(main)
-
-
-const receiver1 = { fkProject: 1, pkEntity: 100 }
-const provider1 = { fkProject: 1, pkEntity: 500 }
-const provider2 = { fkProject: 1, pkEntity: 501 }
-
-const receiver2 = { fkProject: 1, pkEntity: 101 }
 
 describe('DependencyIndex', function () {
     let idx: DependencyIndex<EntityId, string, EntityId, string>
+    let main: Warehouse
+    let stub1: EntityLabelService
+    let stub2: EntityLabelService
+    let receiver1: EntityId
+    let provider1: EntityId
+    let provider2: EntityId
+    let receiver2: EntityId
     before(async () => {
+
+        main = new Warehouse()
+        stub1 = new EntityLabelService(main)
+        stub2 = new EntityLabelService(main)
+
+
+        receiver1 = {fkProject: 1, pkEntity: 100}
+        provider1 = {fkProject: 1, pkEntity: 500}
+        provider2 = {fkProject: 1, pkEntity: 501}
+
+        receiver2 = {fkProject: 1, pkEntity: 101}
         idx = new DependencyIndex(
             stub1,
             stub2,

@@ -106,11 +106,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "20000",
+        "200000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/EdgeService.*should have.*/"
+        "/should add entity label update request if entity added/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

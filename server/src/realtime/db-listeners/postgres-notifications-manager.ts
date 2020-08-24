@@ -1,5 +1,6 @@
 import {Client} from 'pg';
 import {GeovistoryApplication} from '../../application';
+import {getPgUrlForPg8, getPgSslForPg8} from '../../utils/databaseUrl';
 
 /**
  * This class manages notifications from prostgres.
@@ -29,10 +30,8 @@ export class PostgresNotificationsManager {
   // create postgres client
   createClient() {
     return new Client({
-      connectionString: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
-      ssl: {
-        rejectUnauthorized: true,
-      },
+      connectionString: getPgUrlForPg8(),
+      ssl: getPgSslForPg8(),
     })
   }
 
@@ -109,19 +108,19 @@ export class PostgresNotificationsManager {
     // Listen for all pg_notify channel messages
     this.client.on('notification', (msg) => {
       switch (msg.channel) {
-        case 'project_updated':
-          this.warUpdateNeeded = true;
-          this.callQueueWorker();
-          break;
+        // case 'project_updated':
+        //   this.warUpdateNeeded = true;
+        //   this.callQueueWorker();
+        //   break;
         case 'entity_previews_updated':
           if (msg.payload) {
             this.lb4App.streams.warEntityPreviewModificationTmsp$.next(msg.payload);
           }
           break;
-        case 'need_to_check_class_labels':
-          this.classLabelUpdateNeeded = true;
-          this.updateClassLabels();
-          break;
+        // case 'need_to_check_class_labels':
+        //   this.classLabelUpdateNeeded = true;
+        //   this.updateClassLabels();
+        //   break;
         default:
           break;
       }
@@ -133,9 +132,9 @@ export class PostgresNotificationsManager {
    * Add additional channels with multiple lines.
    */
   async listenToPgNotifyChannels() {
-    await this.client.query('LISTEN project_updated');
+    // await this.client.query('LISTEN project_updated');
     await this.client.query('LISTEN entity_previews_updated');
-    await this.client.query('LISTEN need_to_check_class_labels');
+    // await this.client.query('LISTEN need_to_check_class_labels');
   }
 
   /**
@@ -152,7 +151,7 @@ export class PostgresNotificationsManager {
 
 
     await this.client.connect();
-    this.callQueueWorker();
+    // this.callQueueWorker();
 
     // react to notifications
     this.reactOnNotifications()
@@ -161,10 +160,10 @@ export class PostgresNotificationsManager {
     await this.listenToPgNotifyChannels()
 
     // create postgres client for war.vm_statement queue
-    this.client2 = this.createClient();
-    await this.client2.connect()
-    this.updateStatements();
-    this.updateClassLabels();
+    // this.client2 = this.createClient();
+    // await this.client2.connect()
+    // this.updateStatements();
+    // this.updateClassLabels();
 
   }
 

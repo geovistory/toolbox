@@ -2,7 +2,23 @@ import {testdb} from '../../../datasources/testdb.datasource';
 import {WarEntityPreview} from '../../../models';
 import {WarEntityPreviewRepository} from '../../../repositories';
 
+function createWarEntityPreviewRepo() {
+  return new WarEntityPreviewRepository(
+    testdb,
+  )
+}
+
 export async function createWarEntityPreview(entityPreview: WarEntityPreview) {
-  const repo = new WarEntityPreviewRepository(testdb);
-  return repo.create(entityPreview);
+  return createWarEntityPreviewRepo().create(entityPreview);
+}
+
+export async function getWarEntityPreview(pkEntity: number, fkProject: number) {
+  return createWarEntityPreviewRepo().find({
+    where: {
+      and: [
+        {fk_project: {eq: fkProject}},
+        {pk_entity: {eq: pkEntity}},
+      ]
+    }
+  });
 }

@@ -1,10 +1,10 @@
-import { entityIdToString, stringToEntityId } from '../base/functions';
-import { IndexDBGeneric } from '../base/classes/IndexDBGeneric';
-import { PrimaryDataService } from '../base/classes/PrimaryDataService';
-import { Warehouse } from '../Warehouse';
+import {entityIdToString, stringToEntityId} from '../base/functions';
+import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
+import {PrimaryDataService} from '../base/classes/PrimaryDataService';
+import {Warehouse} from '../Warehouse';
 
 
-export interface EntityId { fkProject: number | null, pkEntity: number }
+export interface EntityId {fkProject: number | null, pkEntity: number}
 
 export class EntityService extends PrimaryDataService<InitItem, EntityId, Entity>{
 
@@ -20,8 +20,18 @@ export class EntityService extends PrimaryDataService<InitItem, EntityId, Entity
             'modified_information_persistent_item',
             'modified_information_temporal_entity'
         ])
+
+        /**
+         * Add update requests on aggregaters based on project entity
+         */
+        this.afPut$.subscribe(item => {
+            main.agg.entityLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
+        })
+
+
+
     }
-    dbItemToKeyVal(item: InitItem): { key: EntityId; val: Entity; } {
+    dbItemToKeyVal(item: InitItem): {key: EntityId; val: Entity;} {
         const key: EntityId = {
             pkEntity: item.pkEntity,
             fkProject: item.fkProject,
@@ -31,7 +41,7 @@ export class EntityService extends PrimaryDataService<InitItem, EntityId, Entity
             fkClass: item.fkClass,
             fkProject: item.fkProject,
         };
-        return { key, val }
+        return {key, val}
     }
 
 }

@@ -2,7 +2,7 @@
 CREATE OR REPLACE FUNCTION commons.notify_modification_trigger() RETURNS trigger AS $trigger$
 BEGIN
   -- Notify the channel, e.g.: "modified_projects_text_property"
-  PERFORM pg_notify('modified_' || TG_TABLE_SCHEMA || '_' || TG_TABLE_NAME, 'true');
+  PERFORM pg_notify('modified_' || TG_TABLE_SCHEMA || '_' || TG_TABLE_NAME, now()::text);
   RETURN NEW;
 END;
 $trigger$ LANGUAGE plpgsql;

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { LoopBackConfig } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { AccountControllerService, PubAccount, SignupRequest, SignupValidationError } from 'app/core/sdk-lb4';
+import { AccountService, PubAccount, SignupRequest, SignupValidationError } from 'app/core/sdk-lb4';
 import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 
@@ -25,7 +25,7 @@ export class RegistrationComponent {
   confirmEmail = ''; //email to inform user
 
   constructor(
-    private accountApi: AccountControllerService,
+    private accountApi: AccountService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);

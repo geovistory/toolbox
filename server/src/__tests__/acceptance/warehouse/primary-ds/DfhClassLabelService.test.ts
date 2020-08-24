@@ -5,7 +5,7 @@ import {DfhClassLabelService} from '../../../../warehouse/primary-ds/DfhClassLab
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass, updateDfhApiClass, deleteDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupWarehouse} from '../../../helpers/warehouse-helpers';
+import {setupWarehouseAndConnect} from '../../../helpers/warehouse-helpers';
 
 describe('DfhClassLabelService', () => {
 
@@ -13,7 +13,7 @@ describe('DfhClassLabelService', () => {
   let s: DfhClassLabelService;
 
   before(async () => {
-    wh = await setupWarehouse()
+    wh = await setupWarehouseAndConnect()
     // await wh.pgClient.connect()
   })
   beforeEach(async function () {

@@ -4,7 +4,7 @@ import {ProjectService} from '../../../../warehouse/primary-ds/ProjectService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, updateProjectLanguage, deleteProject} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupWarehouse} from '../../../helpers/warehouse-helpers';
+import {setupWarehouseAndConnect} from '../../../helpers/warehouse-helpers';
 
 describe('ProjectService', () => {
 
@@ -12,7 +12,7 @@ describe('ProjectService', () => {
   let s: ProjectService;
 
   before(async () => {
-    wh = await setupWarehouse()
+    wh = await setupWarehouseAndConnect()
     // await wh.pgClient.connect()
   })
   beforeEach(async function () {

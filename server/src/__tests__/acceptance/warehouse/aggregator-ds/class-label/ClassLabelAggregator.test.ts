@@ -6,7 +6,7 @@ import {ClassIdMock} from '../../../../helpers/data/whDb/ClassIdMock';
 import {DfhClassLabelMock} from '../../../../helpers/data/whDb/DfhClassLabelMock';
 import {ProClassLabelMock} from '../../../../helpers/data/whDb/ProClassLabelMock';
 import {ProjectMock} from '../../../../helpers/data/whDb/ProjectMock';
-import {setupWarehouse} from '../../../../helpers/warehouse-helpers';
+import {setupWarehouseAndConnect} from '../../../../helpers/warehouse-helpers';
 
 
 describe('ClassLabelAggregator', function () {
@@ -14,7 +14,7 @@ describe('ClassLabelAggregator', function () {
     let result: ClassLabelAggregator;
 
     before(async () => {
-        main = await setupWarehouse()
+        main = await setupWarehouseAndConnect()
     })
 
     beforeEach(async function () {

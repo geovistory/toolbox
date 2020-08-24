@@ -1,8 +1,8 @@
-import { classIdToString, stringToClassId } from '../base/functions';
-import { IndexDBGeneric } from '../base/classes/IndexDBGeneric';
-import { PrimaryDataService } from '../base/classes/PrimaryDataService';
-import { PK_DEFAULT_CONFIG_PROJECT, Warehouse } from '../Warehouse';
-import { ClassId } from './FieldsConfigService';
+import {classIdToString, stringToClassId} from '../base/functions';
+import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
+import {PrimaryDataService} from '../base/classes/PrimaryDataService';
+import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
+import {ClassId} from './FieldsConfigService';
 
 
 export interface LabelPart {
@@ -31,7 +31,7 @@ export class EntityLabelConfigService extends PrimaryDataService<InitItem, Class
         super(main, [])
     }
 
-    dbItemToKeyVal(item: InitItem): { key: ClassId; val: EntityLabelConfig; } {
+    dbItemToKeyVal(item: InitItem): {key: ClassId; val: EntityLabelConfig;} {
 
         const pkClass = item.pkClass; //365
 
@@ -72,6 +72,21 @@ export class EntityLabelConfigService extends PrimaryDataService<InitItem, Class
                     ]
                 }
                 break;
+            case 84:
+                val = {
+                    fkClass: pkClass,
+                    labelParts: [
+                        {
+                            ordNum: 1,
+                            field: {
+                                fkProperty: 147,
+                                isOutgoing: true,
+                                nrOfStatementsInLabel: 1
+                            }
+                        }
+                    ]
+                }
+                break;
             default:
                 val = {
                     fkClass: pkClass,
@@ -89,7 +104,7 @@ export class EntityLabelConfigService extends PrimaryDataService<InitItem, Class
                 break;
         }
 
-        return { key, val }
+        return {key, val}
     }
 
     /**
@@ -116,4 +131,5 @@ interface InitItem {
 export const initSql = `
     SELECT DISTINCT pk_class "pkClass"
     FROM data_for_history.v_class
+    WHERE $1::text IS NOT NULL
 `

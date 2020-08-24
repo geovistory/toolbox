@@ -3,12 +3,13 @@ import {expect} from '@loopback/testlab';
 import {ClassLabelService} from '../../../../../warehouse/aggregator-ds/class-label/ClassLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
+import {AtmLanguages} from '../../../../helpers/atomic/inf-language.helper';
 import {createProject} from '../../../../helpers/atomic/pro-project.helper';
+import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
+import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {setupWarehouse, wait} from '../../../../helpers/warehouse-helpers';
-import {createProTextPropertyClassLabel, updateProTextProperty, deleteProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
-import {AtmLanguages} from '../../../../helpers/atomic/inf-language.helper';
-import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
+import {getWarClassPreview} from '../../../../helpers/atomic/war-class-preview.helper';
 
 describe('ClassLabelService', function () {
 
@@ -79,11 +80,11 @@ describe('ClassLabelService', function () {
 
         await wh.start()
 
-        const classLabelId = {
+        const id = {
             pkClass: c.dfh_pk_class,
             fkProject: p.pk_entity ?? -1
         }
-        let result = await s.index.getFromIdx(classLabelId)
+        let result = await s.index.getFromIdx(id)
         expect(result).to.equal('Geburt')
 
         await updateProTextProperty(
@@ -92,9 +93,10 @@ describe('ClassLabelService', function () {
         )
 
         await wait(200)
-        result = await s.index.getFromIdx(classLabelId)
+        result = await s.index.getFromIdx(id)
         expect(result).to.equal('Niederkunft')
-
+        const warPreviews = await getWarClassPreview(id.pkClass, id.fkProject)
+        expect(warPreviews[0].label).to.equal('Niederkunft')
     })
 
     it('should switch class label of Person: de-geovistory to de-ontome', async () => {

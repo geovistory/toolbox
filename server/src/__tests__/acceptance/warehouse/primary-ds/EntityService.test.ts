@@ -12,7 +12,7 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupWarehouse, wait} from '../../../helpers/warehouse-helpers';
+import {setupWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('EntityService', () => {
 
@@ -20,13 +20,13 @@ describe('EntityService', () => {
   let s: EntityService;
 
   before(async () => {
-    wh = await setupWarehouse()
     // await wh.pgClient.connect()
   })
   beforeEach(async function () {
-    await cleanDb();
-    s = new EntityService(wh);
-    await s.clearAll()
+    wh = await setupWarehouse()
+    await wh.clearDB()
+    s = wh.prim.entity;
+    await cleanDb()
   })
 
   it('should have entity in index after initIdx()', async () => {
@@ -34,7 +34,7 @@ describe('EntityService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    await s.initIdx();
+    await wh.start()
     const result = await s.index.getFromIdx({
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -48,7 +48,7 @@ describe('EntityService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    await s.initIdx();
+    await wh.start()
     const id = {
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -72,7 +72,7 @@ describe('EntityService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    await s.initIdx();
+    await wh.start()
     const id = {
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -86,10 +86,23 @@ describe('EntityService', () => {
         is_in_project: false
       }
     )
-    await wait(20)
+    await wait(200)
     result = await s.index.getFromIdx(id)
     expect(result?.fkClass).to.be.undefined()
   })
+
+  it('should add entity label update request if entity added', async () => {
+    await createInfLanguage(InfLanguageMock.GERMAN)
+    await createProProject(ProProjectMock.PROJECT_1)
+    s.afPut$.subscribe(x => console.log('xyz', x))
+    await wh.start()
+    await createInfPersistentItem(InfPersistentItemMock.PERSON_1).catch(e => e)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1).catch(e => e)
+    const item = await waitUntilNext(s.afPut$)
+    await wait(1000)
+    expect(item.key.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
+  })
+
 
 });
 

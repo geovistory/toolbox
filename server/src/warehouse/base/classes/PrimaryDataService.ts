@@ -30,6 +30,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     // True if running sync() should restart right after finishing
     restartSyncing = false;
 
+
     constructor(
         private main: Warehouse,
         private listenTo: string[]
@@ -62,6 +63,8 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     }
 
     async sync() {
+        // const {syncing, restartSyncing, lastUpdateBegin} = this;
+        // console.log('sync' + this.constructor.name, {syncing, restartSyncing, lastUpdateBegin})
 
         // If syncing is true, it sets restartSyncing to true and stops the function here
         if (this.syncing) {
@@ -95,8 +98,8 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         // await the calls produced above
         await Promise.all(calls);
 
+        this.syncing = false;
         if (this.restartSyncing) await this.sync();
-        else this.syncing = false;
     }
 
     /**
@@ -129,7 +132,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
                 t3 = Logger.start(`Start putting items from stream ...`, 2)
                 t4 = Logger.getTime()
             })
-            stream.on('data', (item) => {
+            stream.on('data', (item: DbItem) => {
 
                 i++;
                 // if no date we are in the initial sync process
@@ -139,13 +142,20 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
                     this.index.addToIdx(key, val).catch((e) => {
                         stream.destroy();
                         rej(e);
-                    });;
+                    });
+                    this.afPut$.next({key, val})
                 } else {
                     // put item, and compare to existing vals and add update request if needed
-                    this.putDbItem(item).catch((e) => {
-                        stream.destroy();
-                        rej(e);
-                    });;
+                    this.putDbItem(item)
+                        // .then(() => {
+                        //     // for debugging only: allows acceptance test to wait
+                        //     // until value was updated
+                        //     this.afterPut$.next(item)
+                        // })
+                        .catch((e) => {
+                            stream.destroy();
+                            rej(e);
+                        });;
                 }
 
                 i++
@@ -214,10 +224,11 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
                 i++;
 
                 // delete item and add update request if needed
-                this.del(item).catch((e) => {
-                    stream.destroy();
-                    rej(e);
-                });;
+                this.del(item)
+                    .catch((e) => {
+                        stream.destroy();
+                        rej(e);
+                    });;
 
 
                 i++

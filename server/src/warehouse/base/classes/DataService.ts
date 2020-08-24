@@ -1,6 +1,7 @@
-import { IndexDB } from './IndexDB';
-import { DependencyIndex } from './DependencyIndex';
-import { equals } from 'ramda';
+import {IndexDB} from './IndexDB';
+import {DependencyIndex} from './DependencyIndex';
+import {equals} from 'ramda';
+import {ReplaySubject, Subject, BehaviorSubject} from 'rxjs';
 
 
 
@@ -9,9 +10,21 @@ export abstract class DataService<KeyModel, ValueModel>{
     abstract index: IndexDB<KeyModel, ValueModel>
     abstract clearAll(): Promise<void>
 
+    // emits key value pair after it was put into this.index
+    afPut$: ReplaySubject<{key: KeyModel, val: ValueModel}>;
+
+    // emits key after it was deleted from this.index
+    // also in the case that there was nothing to delete
+    afterDel$: ReplaySubject<KeyModel>;
+
     // array of dependency indexes where this data service is provider
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     isProviderOf: DependencyIndex<any, any, KeyModel, ValueModel>[] = []
+
+    constructor() {
+        this.afPut$ = new ReplaySubject<{key: KeyModel, val: ValueModel}>()
+        this.afterDel$ = new ReplaySubject<KeyModel>()
+    }
 
     /**
      * Adds dep to this.isProviderOf with the effect that this DataService acts
@@ -34,6 +47,7 @@ export abstract class DataService<KeyModel, ValueModel>{
         this.addUpdateRequestsForReceivers(key);
 
         await this.index.removeFromIdx(key)
+        this.afterDel$.next(key)
     }
 
 
@@ -53,6 +67,7 @@ export abstract class DataService<KeyModel, ValueModel>{
             })
             .catch(e => console.error(e))
 
+        this.afPut$.next({key, val})
         await this.index.addToIdx(key, val)
     }
 

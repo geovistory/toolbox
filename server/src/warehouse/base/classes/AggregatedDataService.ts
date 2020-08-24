@@ -10,7 +10,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel, A extends Abst
     }
 
     async initIdx() {
-       return
+        await Promise.all([this.index.clearIdx(), this.updater.clearIdx()])
     }
 
 }
