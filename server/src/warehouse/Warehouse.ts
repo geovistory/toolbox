@@ -6,6 +6,7 @@ import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
 import {Edge} from './primary-ds/EdgeService';
+import ms from 'ms';
 
 // import { UpdateService } from './data-services/UpdateService';
 
@@ -15,7 +16,7 @@ export const PK_ENGLISH = 18889;
 interface NotificationHandler {
     channel: string
     listeners: {
-        callback(): Promise<void>
+        callback(date: Date): Promise<void>
     }[]
 
 }
@@ -40,9 +41,6 @@ export class Warehouse {
     notificationHandlers: {[key: string]: NotificationHandler} = {}
 
     constructor() {
-        this.prim = new PrimaryDataServices(this)
-        this.agg = new AggregatedDataServices(this)
-        this.dep = new DependencyDataServices(this)
         const connectionString = getPgUrlForPg8()
         const ssl = getPgSslForPg8()
         this.pgClient = new Client({
@@ -50,6 +48,9 @@ export class Warehouse {
             // connectionString: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL), // + '?ssl=true',
             ssl: {rejectUnauthorized: false}
         });
+        this.prim = new PrimaryDataServices(this)
+        this.agg = new AggregatedDataServices(this)
+        this.dep = new DependencyDataServices(this)
         // this.updateService = new UpdateService(this)
     }
 
@@ -183,7 +184,7 @@ export class Warehouse {
      * @param channel
      * @param callback
      */
-    async registerDbListener(channel: string, callback: () => Promise<void>) {
+    async registerDbListener(channel: string, callback: (date: Date) => Promise<void>) {
 
         if (!this.notificationHandlers[channel]) {
             await this.pgClient.query(`LISTEN ${channel}`)
@@ -206,8 +207,12 @@ export class Warehouse {
     startListening() {
         this.pgClient.on('notification', (msg) => {
             const handler = this.notificationHandlers[msg.channel];
-            const tmsp = msg.payload;
-            if (handler) handler.listeners.map(l => l.callback().catch(e => console.log(e)))
+            if (typeof msg.payload === 'string') {
+                const date = new Date(msg.payload);
+                if (handler) handler.listeners.map(l => l.callback(date).catch(e => console.log(e)))
+            }else{
+                console.error('payload of notification must be a string convertable to date')
+            }
         });
     }
 

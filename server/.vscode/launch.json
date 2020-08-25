@@ -109,8 +109,8 @@
         "200000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        "--grep",
-        "/should add entity label update request if entity added/"
+        // "--grep",
+        // "/EntityService.*should update entity if class changed/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

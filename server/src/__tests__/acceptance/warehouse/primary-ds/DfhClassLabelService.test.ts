@@ -39,9 +39,6 @@ describe('DfhClassLabelService', () => {
     const c2 = await updateDfhApiClass(c.pk_entity as any, {dfh_class_label: 'Bar'})
     expect(c2.dfh_class_label).to.equal('Bar')
 
-    // TODO: This should happen automatically by listeners
-    await s.sync();
-
     await new Promise(r => setTimeout(r, 10));
     const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
     expect(resultUpdated).to.equal('Bar')
@@ -55,8 +52,6 @@ describe('DfhClassLabelService', () => {
 
     await deleteDfhApiClass(c.pk_entity as any)
 
-    // TODO: This should happen automatically by listeners
-    await s.sync();
 
     await new Promise(r => setTimeout(r, 10));
     const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})

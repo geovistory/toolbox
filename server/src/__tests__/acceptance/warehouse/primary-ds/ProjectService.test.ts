@@ -38,10 +38,6 @@ describe('ProjectService', () => {
     const projectUpdated = await updateProjectLanguage(project.pk_entity as any, 'English')
     expect(projectUpdated.fk_language).to.not.equal(project.fk_language)
 
-
-    // TODO: This should happen automatically by listeners
-    await s.sync();
-
     await new Promise(r => setTimeout(r, 10));
     const resultUpdated = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
     expect(resultUpdated?.fkLanguage).to.not.equal(project.fk_language)
@@ -54,9 +50,6 @@ describe('ProjectService', () => {
     expect(result?.fkLanguage).to.equal(project?.fk_language)
 
     await deleteProject(project.pk_entity ?? -1)
-
-    // TODO: This should happen automatically by listeners
-    await s.sync();
 
     await new Promise(r => setTimeout(r, 10));
     const resultUpdated = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})

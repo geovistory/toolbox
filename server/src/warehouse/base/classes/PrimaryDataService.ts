@@ -32,7 +32,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
 
     constructor(
-        private main: Warehouse,
+        protected main: Warehouse,
         private listenTo: string[]
     ) {
         super()
@@ -44,7 +44,8 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     async initIdx() {
         await this.clearAll()
         await this.addPgListeners()
-        await this.sync()
+        const dbNow = await this.main.pgClient.query('SELECT now() as now');
+        await this.sync(new Date(dbNow.rows?.[0]?.now))
 
     }
 
@@ -58,11 +59,15 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      */
     private async addPgListeners() {
         for (const eventName of this.listenTo) {
-            await this.main.registerDbListener(eventName, () => this.sync())
+            await this.main.registerDbListener(eventName, (tmsp:Date) => this.sync(tmsp))
         }
     }
 
-    async sync() {
+    /**
+     *
+     * @param tmsp the timestamp of oldes modification considered for syncing
+     */
+    async sync(tmsp: Date) {
         // const {syncing, restartSyncing, lastUpdateBegin} = this;
         // console.log('sync' + this.constructor.name, {syncing, restartSyncing, lastUpdateBegin})
 
@@ -92,14 +97,13 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         }
 
         // set this.lastUpdateBegin to current date
-        const dbNow = await this.main.pgClient.query('SELECT now() as now');
-        this.lastUpdateBegin = new Date(dbNow.rows?.[0]?.now)
+        this.lastUpdateBegin = tmsp
 
         // await the calls produced above
         await Promise.all(calls);
 
         this.syncing = false;
-        if (this.restartSyncing) await this.sync();
+        if (this.restartSyncing) await this.sync(tmsp);
     }
 
     /**
@@ -143,7 +147,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
                         stream.destroy();
                         rej(e);
                     });
-                    this.afPut$.next({key, val})
+                    this.afterPut$.next({key, val})
                 } else {
                     // put item, and compare to existing vals and add update request if needed
                     this.putDbItem(item)

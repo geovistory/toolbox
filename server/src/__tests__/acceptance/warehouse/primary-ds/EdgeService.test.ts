@@ -95,7 +95,7 @@ describe('EdgeService', () => {
       }
     )
 
-    await waitUntilNext(s.afPut$)
+    await waitUntilNext(s.afterPut$)
 
     result = await s.index.getFromIdx(id)
     expect(result?.outgoing?.[1113]?.[0].targetLabel).to.equal(InfAppellationMock.JACK_THE_FOO.string)

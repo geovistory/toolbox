@@ -11,7 +11,7 @@ export abstract class DataService<KeyModel, ValueModel>{
     abstract clearAll(): Promise<void>
 
     // emits key value pair after it was put into this.index
-    afPut$: ReplaySubject<{key: KeyModel, val: ValueModel}>;
+    afterPut$: ReplaySubject<{key: KeyModel, val: ValueModel}>;
 
     // emits key after it was deleted from this.index
     // also in the case that there was nothing to delete
@@ -22,7 +22,7 @@ export abstract class DataService<KeyModel, ValueModel>{
     isProviderOf: DependencyIndex<any, any, KeyModel, ValueModel>[] = []
 
     constructor() {
-        this.afPut$ = new ReplaySubject<{key: KeyModel, val: ValueModel}>()
+        this.afterPut$ = new ReplaySubject<{key: KeyModel, val: ValueModel}>()
         this.afterDel$ = new ReplaySubject<KeyModel>()
     }
 
@@ -63,11 +63,11 @@ export abstract class DataService<KeyModel, ValueModel>{
             .then(oldVal => {
                 if (!equals(val, oldVal)) {
                     this.addUpdateRequestsForReceivers(key);
+                    this.afterPut$.next({key, val})
                 }
             })
             .catch(e => console.error(e))
 
-        this.afPut$.next({key, val})
         await this.index.addToIdx(key, val)
     }
 

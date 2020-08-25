@@ -46,7 +46,10 @@ describe('EntityLabelService', function () {
         assert.equal(result, 'Jack the Foo')
     })
     it('should create entity label of person with default start', async () => {
-        await main.initUpdateRequests()
+        await main.agg.entityLabel.updater.addItemsToQueue([
+            EntityMock.NAME_1_ID,
+            EntityMock.PERS_1_ID,
+        ])
         await main.agg.start()
         const result = await main.agg.entityLabel.index.getFromIdx(EntityMock.PERS_1_ID)
         assert.equal(result, 'Jack the Foo')

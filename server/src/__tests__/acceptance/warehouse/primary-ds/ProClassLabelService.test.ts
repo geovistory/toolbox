@@ -73,7 +73,7 @@ describe('ProClassLabelService', () => {
     const str2 = 'BarClassLabel'
     await updateProTextProperty(label.pk_entity ?? -1, {string: str2})
 
-    await waitUntilNext(s.afPut$)
+    await waitUntilNext(s.afterPut$)
 
     const resultUpdated = await s.index.getFromIdx(id)
     expect(resultUpdated).to.equal(str2)
@@ -97,9 +97,6 @@ describe('ProClassLabelService', () => {
     expect(result).to.equal(str)
 
     await deleteProTextProperty(label.pk_entity ?? -1)
-
-    // TODO: This should happen automatically by listeners
-    await s.sync();
 
     await new Promise(r => setTimeout(r, 100));
     const resultUpdated = await s.index.getFromIdx(id)

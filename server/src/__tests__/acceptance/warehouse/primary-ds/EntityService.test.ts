@@ -13,6 +13,7 @@ import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentIte
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {setupWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {getWarEntityPreview} from '../../../helpers/atomic/war-entity_preview.helper';
 
 describe('EntityService', () => {
 
@@ -62,7 +63,7 @@ describe('EntityService', () => {
         fk_class: 987654321
       }
     )
-    await wait(20)
+    await wait(200)
     result = await s.index.getFromIdx(id)
     expect(result?.fkClass).to.equal(987654321)
   })
@@ -91,16 +92,70 @@ describe('EntityService', () => {
     expect(result?.fkClass).to.be.undefined()
   })
 
-  it('should add entity label update request if entity added', async () => {
+  it('should add entity preview with fk_class after entity is added', async () => {
+    let entities = await getWarEntityPreview(
+      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      ProProjectMock.PROJECT_1.pk_entity ?? -1
+    )
+    expect(entities.length).to.equal(0);
+
+
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
-    s.afPut$.subscribe(x => console.log('xyz', x))
     await wh.start()
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1).catch(e => e)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1).catch(e => e)
-    const item = await waitUntilNext(s.afPut$)
-    await wait(1000)
+    const item = await waitUntilNext(s.afterPut$)
     expect(item.key.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
+    expect(wh.agg.entityLabel.updater.growingQueue)
+    await wait(200)
+    entities = await getWarEntityPreview(
+      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      ProProjectMock.PROJECT_1.pk_entity ?? -1
+    )
+    expect(entities.length).to.equal(1);
+    expect(entities?.[0].fk_class).to.equal(InfPersistentItemMock.PERSON_1.fk_class);
+
+  })
+
+
+  it('should delete entity preview when entity is removed', async () => {
+    await wh.start()
+    let entities = await getWarEntityPreview(
+      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      ProProjectMock.PROJECT_1.pk_entity ?? -1
+    )
+    expect(entities.length).to.equal(0);
+    await createInfLanguage(InfLanguageMock.GERMAN)
+    await createProProject(ProProjectMock.PROJECT_1)
+    await createInfPersistentItem(InfPersistentItemMock.PERSON_1).catch(e => e)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1).catch(e => e)
+    const item = await waitUntilNext(s.afterPut$)
+    expect(item.key.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
+    expect(wh.agg.entityLabel.updater.growingQueue)
+    await wait(200)
+    entities = await getWarEntityPreview(
+      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      ProProjectMock.PROJECT_1.pk_entity ?? -1
+    )
+    expect(entities.length).to.equal(1);
+    expect(entities?.[0].fk_class).to.equal(InfPersistentItemMock.PERSON_1.fk_class);
+
+    await updateProInfoProjRel(
+      ProInfoProjRelMock.PROJ_1_PERSON_1.pk_entity ?? -1,
+      {
+        ...ProInfoProjRelMock.PROJ_1_PERSON_1,
+        is_in_project: false
+      }
+    )
+    await wait(200)
+    entities = await getWarEntityPreview(
+      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      ProProjectMock.PROJECT_1.pk_entity ?? -1
+    )
+    expect(entities.length).to.equal(0);
+
+
   })
 
 
