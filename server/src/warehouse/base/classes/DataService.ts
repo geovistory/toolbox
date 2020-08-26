@@ -1,7 +1,7 @@
 import {IndexDB} from './IndexDB';
 import {DependencyIndex} from './DependencyIndex';
 import {equals} from 'ramda';
-import {ReplaySubject, Subject, BehaviorSubject} from 'rxjs';
+import {Subject} from 'rxjs';
 
 
 
@@ -11,19 +11,19 @@ export abstract class DataService<KeyModel, ValueModel>{
     abstract clearAll(): Promise<void>
 
     // emits key value pair after it was put into this.index
-    afterPut$: ReplaySubject<{key: KeyModel, val: ValueModel}>;
+    afterPut$: Subject<{key: KeyModel, val: ValueModel}>;
 
     // emits key after it was deleted from this.index
     // also in the case that there was nothing to delete
-    afterDel$: ReplaySubject<KeyModel>;
+    afterDel$: Subject<KeyModel>;
 
     // array of dependency indexes where this data service is provider
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     isProviderOf: DependencyIndex<any, any, KeyModel, ValueModel>[] = []
 
     constructor() {
-        this.afterPut$ = new ReplaySubject<{key: KeyModel, val: ValueModel}>()
-        this.afterDel$ = new ReplaySubject<KeyModel>()
+        this.afterPut$ = new Subject<{key: KeyModel, val: ValueModel}>()
+        this.afterDel$ = new Subject<KeyModel>()
     }
 
     /**

@@ -2,28 +2,25 @@
 import {expect} from '@loopback/testlab';
 import {ProjectService} from '../../../../warehouse/primary-ds/ProjectService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
-import {createProject, updateProjectLanguage, deleteProject} from '../../../helpers/atomic/pro-project.helper';
+import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupWarehouseAndConnect} from '../../../helpers/warehouse-helpers';
+import {setupWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProjectService', () => {
 
   let wh: Warehouse;
   let s: ProjectService;
 
-  before(async () => {
-    wh = await setupWarehouseAndConnect()
-    // await wh.pgClient.connect()
-  })
   beforeEach(async function () {
     await cleanDb();
-    s = new ProjectService(wh);
-    await s.clearAll()
+    wh = await setupWarehouse()
+    await wh.start()
+    s = wh.prim.project;
   })
 
   it('should have project in index after initIdx()', async () => {
     const project = await createProject('German')
-    await s.initIdx();
+    await waitUntilNext(s.afterPut$)
     const result = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
     expect(result?.fkLanguage).to.equal(project?.fk_language)
 
@@ -31,27 +28,27 @@ describe('ProjectService', () => {
 
   it('should update project', async () => {
     const project = await createProject('German')
-    await s.initIdx();
+    await waitUntilNext(s.afterPut$)
     const result = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
     expect(result?.fkLanguage).to.equal(project?.fk_language)
 
     const projectUpdated = await updateProjectLanguage(project.pk_entity as any, 'English')
     expect(projectUpdated.fk_language).to.not.equal(project.fk_language)
 
-    await new Promise(r => setTimeout(r, 10));
+    await waitUntilNext(s.afterPut$)
     const resultUpdated = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
     expect(resultUpdated?.fkLanguage).to.not.equal(project.fk_language)
   })
 
   it('should delete project', async () => {
     const project = await createProject('German')
-    await s.initIdx();
+    await waitUntilNext(s.afterPut$)
     const result = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
     expect(result?.fkLanguage).to.equal(project?.fk_language)
 
     await deleteProject(project.pk_entity ?? -1)
 
-    await new Promise(r => setTimeout(r, 10));
+    await waitUntilNext(s.afterDel$)
     const resultUpdated = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
     expect(resultUpdated).to.be.undefined()
   })

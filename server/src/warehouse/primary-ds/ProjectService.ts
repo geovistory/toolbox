@@ -13,8 +13,8 @@ export class ProjectService extends PrimaryDataService<DbItem, ProjectId, Projec
     updatesSql = updateSql
     deletesSql = deleteSql;
     index = new IndexDBGeneric<ProjectId, ProjectVal>(projectIdToString, stringToProjectId)
-    constructor(main: Warehouse) {
-        super(main, [])
+    constructor(wh: Warehouse) {
+        super(wh, ['modified_projects_project'])
     }
     dbItemToKeyVal(item: DbItem): { key: ProjectId; val: ProjectVal; } {
         const key: ProjectId = {

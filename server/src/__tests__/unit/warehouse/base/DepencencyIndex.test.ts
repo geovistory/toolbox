@@ -1,26 +1,26 @@
 import assert from 'assert';
-import {EntityLabelService} from '../../../../warehouse/aggregator-ds/entity-label/EntityLabelService';
+import {PEntityLabelService} from '../../../../warehouse/aggregator-ds/p-entity-label/PEntityLabelService';
 import {DependencyIndex} from '../../../../warehouse/base/classes/DependencyIndex';
 import {entityIdToString, stringToEntityId} from '../../../../warehouse/base/functions';
-import {EntityId} from '../../../../warehouse/primary-ds/EntityService';
+import {PEntityId} from '../../../../warehouse/primary-ds/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 
 
 
 describe('DependencyIndex', function () {
-    let idx: DependencyIndex<EntityId, string, EntityId, string>
-    let main: Warehouse
-    let stub1: EntityLabelService
-    let stub2: EntityLabelService
-    let receiver1: EntityId
-    let provider1: EntityId
-    let provider2: EntityId
-    let receiver2: EntityId
+    let idx: DependencyIndex<PEntityId, string, PEntityId, string>
+    let wh: Warehouse
+    let stub1: PEntityLabelService
+    let stub2: PEntityLabelService
+    let receiver1: PEntityId
+    let provider1: PEntityId
+    let provider2: PEntityId
+    let receiver2: PEntityId
     before(async () => {
 
-        main = new Warehouse()
-        stub1 = new EntityLabelService(main)
-        stub2 = new EntityLabelService(main)
+        wh = new Warehouse()
+        stub1 = new PEntityLabelService(wh)
+        stub2 = new PEntityLabelService(wh)
 
 
         receiver1 = {fkProject: 1, pkEntity: 100}

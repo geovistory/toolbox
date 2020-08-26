@@ -16,8 +16,8 @@ export class ProClassLabelService extends PrimaryDataService<DbItem, ProClassLab
 
     index = new IndexDBGeneric<ProClassLabelId, ProClassLabelVal>(proClassIdToString, stringToProClassId)
 
-    constructor(main: Warehouse) {
-        super(main, ['modified_projects_text_property'])
+    constructor(wh: Warehouse) {
+        super(wh, ['modified_projects_text_property'])
     }
 
     dbItemToKeyVal(item: DbItem): {key: ProClassLabelId; val: ProClassLabelVal;} {

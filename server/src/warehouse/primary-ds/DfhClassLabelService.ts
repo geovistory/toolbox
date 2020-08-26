@@ -12,8 +12,8 @@ export class DfhClassLabelService extends PrimaryDataService<DbItem, DfhClassLab
     updatesSql = updateSql
     deletesSql = null;
     index = new IndexDBGeneric<DfhClassLabelId, DfhClassLabelVal>(dfhClassIdToString, stringToDfhClassId)
-    constructor(main: Warehouse) {
-        super(main, [])
+    constructor(wh: Warehouse) {
+        super(wh, ['modified_data_for_history_api_class'])
     }
     dbItemToKeyVal(item: DbItem): {key: DfhClassLabelId; val: DfhClassLabelVal;} {
         const key: DfhClassLabelId = {

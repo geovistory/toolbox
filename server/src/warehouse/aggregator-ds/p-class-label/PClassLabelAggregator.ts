@@ -1,20 +1,20 @@
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {ClassId} from '../../primary-ds/FieldsConfigService';
-import {ClassLabelProviders} from './ClassLabelProviders';
+import {PClassId} from '../../primary-ds/FieldsConfigService';
+import {PClassLabelProviders} from './PClassLabelProviders';
 import {PK_ENGLISH, PK_DEFAULT_CONFIG_PROJECT} from '../../Warehouse';
 
-export class ClassLabelAggregator extends AbstractAggregator<ClassId> {
+export class PClassLabelAggregator extends AbstractAggregator<PClassId> {
 
 
   // the resulting label
-  classLabel: string;
+  classLabel = '';
 
   // For testing / debugging
   labelMissing = true;
 
   constructor(
-    public providers: ClassLabelProviders,
-    public id: ClassId
+    public providers: PClassLabelProviders,
+    public id: PClassId
   ) {
     super()
   }

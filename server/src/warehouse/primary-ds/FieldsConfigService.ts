@@ -3,7 +3,7 @@ import { IndexDBGeneric } from '../base/classes/IndexDBGeneric';
 import { PrimaryDataService } from '../base/classes/PrimaryDataService';
 import { PK_DEFAULT_CONFIG_PROJECT, Warehouse } from '../Warehouse';
 
-export interface ClassId {
+export interface PClassId {
     fkProject: number,
     pkClass: number
 }
@@ -18,21 +18,21 @@ export interface FieldsConfig {
 }
 
 
-export class FieldsConfigService extends PrimaryDataService<InitItem, ClassId, FieldsConfig>{
+export class FieldsConfigService extends PrimaryDataService<InitItem, PClassId, FieldsConfig>{
 
 
     measure = 1000;
     updatesSql = updateSql
     deletesSql = '';
 
-    index = new IndexDBGeneric<ClassId, FieldsConfig>(classIdToString, stringToClassId)
+    index = new IndexDBGeneric<PClassId, FieldsConfig>(classIdToString, stringToClassId)
 
 
-    constructor(main: Warehouse) {
-        super(main, [])
+    constructor(wh: Warehouse) {
+        super(wh, [])
     }
-    dbItemToKeyVal(item: InitItem): { key: ClassId; val: FieldsConfig; } {
-        const key: ClassId = {
+    dbItemToKeyVal(item: InitItem): { key: PClassId; val: FieldsConfig; } {
+        const key: PClassId = {
             fkProject: item.fkProject,
             pkClass: item.fkSourceClass
         }
@@ -45,10 +45,10 @@ export class FieldsConfigService extends PrimaryDataService<InitItem, ClassId, F
 
 
     /**
-     * returns class config of requested project, else of default config project 
-     * @param classId 
+     * returns class config of requested project, else of default config project
+     * @param classId
      */
-    async getClassConfig(classId: ClassId) {
+    async getClassConfig(classId: PClassId) {
         let x = await this.index.getFromIdx(classId)
         if (x) return x
 
@@ -76,22 +76,22 @@ interface InitItem {
 
 export const updateSql = `
 WITH tw1 AS (
-	SELECT 
+	SELECT
 	fk_project,
 	CASE WHEN
-		fk_domain_class IS NOT NULL 
+		fk_domain_class IS NOT NULL
 		THEN true
 		ELSE false
-		END 
-		property_is_outgoing, 
+		END
+		property_is_outgoing,
 	coalesce(fk_domain_class, fk_range_class) fk_source_class,
-	fk_property, 
+	fk_property,
 	ord_num
 	FROM projects.class_field_config
 	ORDER BY ord_num
 )
-    SELECT 
-    fk_project "fkProject", 
+    SELECT
+    fk_project "fkProject",
     fk_source_class "fkSourceClass",
     json_agg(json_build_object(
 		'fkProperty', fk_property,

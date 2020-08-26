@@ -7,7 +7,7 @@ import {createProject} from '../../../helpers/atomic/pro-project.helper';
 import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupWarehouseAndConnect, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProClassLabelService', () => {
 
@@ -16,10 +16,9 @@ describe('ProClassLabelService', () => {
 
 
   beforeEach(async function () {
-    wh = await setupWarehouseAndConnect()
     await cleanDb();
-    s = new ProClassLabelService(wh);
-    await s.clearAll()
+    wh = await setupCleanAndStartWarehouse()
+    s = wh.prim.proClassLabel;
   })
 
   afterEach(async function () {
@@ -44,7 +43,8 @@ describe('ProClassLabelService', () => {
     const str = 'FooClassLabel'
     const label = await createProTextPropertyClassLabel(pkProject, 12, str, AtmLanguages.FRENCH.id)
 
-    await s.initIdx();
+    await waitUntilNext(s.afterPut$)
+
     const result = await s.index.getFromIdx({
       fkProject: label.fk_project ?? -1,
       fkLanguage: label.fk_language ?? -1,
@@ -61,7 +61,7 @@ describe('ProClassLabelService', () => {
     const pkProject = project.pk_entity ?? -1;
     const str = 'FooClassLabel'
     const label = await createProTextPropertyClassLabel(pkProject, 12, str, AtmLanguages.FRENCH.id)
-    await s.initIdx();
+    await waitUntilNext(s.afterPut$)
     const id = {
       fkProject: label.fk_project ?? -1,
       fkLanguage: label.fk_language ?? -1,
@@ -86,7 +86,7 @@ describe('ProClassLabelService', () => {
     const pkProject = project.pk_entity ?? -1;
     const str = 'FooClassLabel'
     const label = await createProTextPropertyClassLabel(pkProject, 12, str, AtmLanguages.FRENCH.id)
-    await s.initIdx();
+    await waitUntilNext(s.afterPut$)
 
     const id = {
       fkProject: label.fk_project ?? -1,
@@ -98,7 +98,7 @@ describe('ProClassLabelService', () => {
 
     await deleteProTextProperty(label.pk_entity ?? -1)
 
-    await new Promise(r => setTimeout(r, 100));
+    await waitUntilNext(s.afterDel$)
     const resultUpdated = await s.index.getFromIdx(id)
     expect(resultUpdated).to.be.undefined()
   })

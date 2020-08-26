@@ -17,8 +17,8 @@ export class FieldLabelService extends PrimaryDataService<InitItem, FieldId, str
     deletesSql = ''
     index = new IndexDBGeneric<FieldId, string>(fieldIdToString, stringToFieldId)
 
-    constructor(main: Warehouse) {
-        super(main, [])
+    constructor(wh: Warehouse) {
+        super(wh, [])
     }
 
     dbItemToKeyVal(item: InitItem): { key: FieldId; val: string; } {

@@ -5,8 +5,7 @@ import {getDbFileSize, getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
-import {Edge} from './primary-ds/EdgeService';
-import ms from 'ms';
+import {Edge} from './primary-ds/PEdgeService';
 
 // import { UpdateService } from './data-services/UpdateService';
 
@@ -45,9 +44,9 @@ export class Warehouse {
         const ssl = getPgSslForPg8()
         this.pgClient = new Client({
             connectionString,
-            // connectionString: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL), // + '?ssl=true',
-            ssl: {rejectUnauthorized: false}
+            ssl
         });
+        Logger.msg(`create warehouse for DB: ${connectionString.split('@')[1]}`)
         this.prim = new PrimaryDataServices(this)
         this.agg = new AggregatedDataServices(this)
         this.dep = new DependencyDataServices(this)
@@ -86,15 +85,15 @@ export class Warehouse {
         Logger.log(`The warehouse uses approximately ${diskUsage.readable} of disk space`)
 
         Logger.log('Example results')
-        Logger.log(await this.agg.entityLabel.index.getFromIdx({
+        Logger.log(await this.agg.pEntityLabel.index.getFromIdx({
             fkProject: 591,
             pkEntity: 741589
         }))
-        Logger.log(await this.agg.entityLabel.index.getFromIdx({
+        Logger.log(await this.agg.pEntityLabel.index.getFromIdx({
             fkProject: 591,
             pkEntity: 741570
         }))
-        Logger.log(await this.agg.classLabel.index.getFromIdx({
+        Logger.log(await this.agg.pClassLabel.index.getFromIdx({
             fkProject: 591,
             pkClass: 365
         }))
@@ -108,16 +107,14 @@ export class Warehouse {
     async initIndexes() {
         this.initializingIndexes = true
         const t1 = Logger.start('Initialize indexes', 0)
-        await this.prim.entity.initIdx();
-
         await this.prim.project.initIdx();
+        await this.prim.pClass.initIdx();
         await this.prim.dfhClassLabel.initIdx();
         await this.prim.proClassLabel.initIdx();
-
-        await this.prim.edge.initIdx();
-
-
         await this.prim.entityLabelConfig.initIdx();
+        await this.prim.pEntity.initIdx();
+        await this.prim.pEdge.initIdx();
+
 
         // await this.prim.fieldsConfig.initIdx();
 
@@ -129,7 +126,6 @@ export class Warehouse {
 
         Logger.itTook(t1, 'to initialize indexes', 0)
         this.initializingIndexes = false
-
     }
 
     // // used for testing
@@ -152,28 +148,28 @@ export class Warehouse {
     async initUpdateRequests() {
         const t1 = Logger.start('Initialize Update Requests', 0)
 
-        let length = 0;
+        const length = 0;
 
-        await this.prim.entity.index.forEachKey(async (entityId) => {
-            // await this.updateService.addUpdateRequest(entityId)
+        // await this.prim.pEntity.index.forEachKey(async (entityId) => {
+        //     // await this.updateService.addUpdateRequest(entityId)
 
-            // await this.agg.entityLabel.updater.addItemToQueue(entityId)
+        //     // await this.agg.entityLabel.updater.addItemToQueue(entityId)
 
-            length++
-        })
+        //     length++
+        // })
 
 
-        await this.prim.project.index.forEachKey(async (projectId) => {
-            // await this.updateService.addUpdateRequest(entityId)
-            await this.prim.dfhClassLabel.index.forEachKey(async (classLabelId) => {
-                await this.agg.classLabel.updater.addItemToQueue({
-                    fkProject: projectId.pkProject,
-                    pkClass: classLabelId.pkClass
-                });
-                length++
-            });
+        // await this.prim.project.index.forEachKey(async (projectId) => {
+        //     // await this.updateService.addUpdateRequest(entityId)
+        //     await this.prim.dfhClassLabel.index.forEachKey(async (classLabelId) => {
+        //         await this.agg.classLabel.updater.addItemToQueue({
+        //             fkProject: projectId.pkProject,
+        //             pkClass: classLabelId.pkClass
+        //         });
+        //         length++
+        //     });
 
-        })
+        // })
 
 
         Logger.itTook(t1, `to initialize ${length} Update Requests`, 0)
@@ -210,7 +206,7 @@ export class Warehouse {
             if (typeof msg.payload === 'string') {
                 const date = new Date(msg.payload);
                 if (handler) handler.listeners.map(l => l.callback(date).catch(e => console.log(e)))
-            }else{
+            } else {
                 console.error('payload of notification must be a string convertable to date')
             }
         });

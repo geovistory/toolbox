@@ -12,11 +12,11 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     abstract measure: number;
 
     // sql statement used to query updates for the index
-    abstract updatesSql: string;
+    abstract get updatesSql(): string;
 
     // sql statement used to query deletes for the index
     // if the warehouse does not need to consider deletets, set this to null
-    abstract deletesSql: string | null;
+    abstract get deletesSql(): string | null;
 
 
     // Stores date and time of the last time the function sync() was called,
@@ -32,7 +32,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
 
     constructor(
-        protected main: Warehouse,
+        protected wh: Warehouse,
         private listenTo: string[]
     ) {
         super()
@@ -44,7 +44,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     async initIdx() {
         await this.clearAll()
         await this.addPgListeners()
-        const dbNow = await this.main.pgClient.query('SELECT now() as now');
+        const dbNow = await this.wh.pgClient.query('SELECT now() as now');
         await this.sync(new Date(dbNow.rows?.[0]?.now))
 
     }
@@ -59,7 +59,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      */
     private async addPgListeners() {
         for (const eventName of this.listenTo) {
-            await this.main.registerDbListener(eventName, (tmsp:Date) => this.sync(tmsp))
+            await this.wh.registerDbListener(eventName, (tmsp:Date) => this.sync(tmsp))
         }
     }
 
@@ -124,7 +124,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         const d = date ?? new Date(0);
         const query = new QueryStream(this.updatesSql, [d])
 
-        const stream = this.main.pgClient.query(query)
+        const stream = this.wh.pgClient.query(query)
         let minMeasure: number | null = null, maxMeasure: number | null = null;
         let i = 0;
         await new Promise((res, rej) => {
@@ -211,7 +211,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         const d = date ?? new Date(0);
         const query = new QueryStream(deletesSql, [d])
 
-        const stream = this.main.pgClient.query(query)
+        const stream = this.wh.pgClient.query(query)
         let minMeasure: number | null = null, maxMeasure: number | null = null;
         let i = 0;
         await new Promise((res, rej) => {

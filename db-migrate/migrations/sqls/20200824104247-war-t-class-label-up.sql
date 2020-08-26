@@ -13,3 +13,8 @@ CREATE TRIGGER last_modification_tmsp
     ON war.class_preview
     FOR EACH ROW
     EXECUTE PROCEDURE commons.tmsp_last_modification();
+
+Create Trigger notify_modification
+    After Insert Or Update Or Delete On war.class_preview
+    For Each STATEMENT
+    Execute Procedure commons.notify_modification_trigger ();

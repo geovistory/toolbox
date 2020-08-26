@@ -4,7 +4,7 @@ import { entityIdToString, stringToEntityId } from '../base/functions';
 import { IndexDBGeneric } from '../base/classes/IndexDBGeneric';
 import { Logger } from '../base/classes/Logger';
 import { Warehouse } from '../Warehouse';
-import { EntityId } from './EntityService';
+import { PEntityId } from './PEntityService';
 
 interface Noun {
     table: string;
@@ -33,23 +33,23 @@ export interface EntityFieldId {
 }
 
 
-export class EdgeService extends PrimaryDataService<EdgeInitItem, EntityId, FieldsPerEntity>{
+export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, FieldsPerEntity>{
 
     measure = 10000;
 
-    index = new IndexDBGeneric<EntityId, FieldsPerEntity>(entityIdToString, stringToEntityId)
+    index = new IndexDBGeneric<PEntityId, FieldsPerEntity>(entityIdToString, stringToEntityId)
 
     updatesSql = updateSql;
     deletesSql = ''
 
-    constructor(main: Warehouse) {
-        super(main, [
+    constructor(wh: Warehouse) {
+        super(wh, [
             'modified_projects_info_proj_rel'
         ])
     }
 
 
-    dbItemToKeyVal(item: EdgeInitItem): { key: EntityId; val: FieldsPerEntity; } {
+    dbItemToKeyVal(item: EdgeInitItem): { key: PEntityId; val: FieldsPerEntity; } {
         const key = { pkEntity: item.pkEntity, fkProject: item.fkProject }
         const val = item.fields
         return { key, val }
@@ -104,7 +104,7 @@ export class EdgeService extends PrimaryDataService<EdgeInitItem, EntityId, Fiel
     private async addEdgeToEdgedsPerEntity(item: StatementItemToIndexate, a: Noun, b: Noun, isOutgoing: boolean) {
         const fkProperty = item.fk_property
         const fkPropStr = fkProperty.toString()
-        const key: EntityId = {
+        const key: PEntityId = {
             fkProject: item.fk_project,
             pkEntity: a.fkInfo,
         }

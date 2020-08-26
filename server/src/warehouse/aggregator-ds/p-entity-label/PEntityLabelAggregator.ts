@@ -1,10 +1,10 @@
 import { AbstractAggregator } from '../../base/classes/AbstractAggregator';
-import { ClassId } from '../../primary-ds/FieldsConfigService';
-import { Edge, FieldsPerEntity } from '../../primary-ds/EdgeService';
+import { PClassId } from '../../primary-ds/FieldsConfigService';
+import { Edge, FieldsPerEntity } from '../../primary-ds/PEdgeService';
 import { EntityLabelConfig } from '../../primary-ds/EntityLabelConfigService';
-import { Entity, EntityId } from '../../primary-ds/EntityService';
+import { ProjectEntity, PEntityId } from '../../primary-ds/PEntityService';
 import { PK_DEFAULT_CONFIG_PROJECT } from '../../Warehouse';
-import { EntityLabelProviders } from './EntityLabelPoviders';
+import { PEntityLabelProviders } from './PEntityLabelPoviders';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -14,7 +14,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class EntityLabelAggregator extends AbstractAggregator<EntityId> {
+export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
     // array of strings to create label
     labelArr: string[] = [];
@@ -26,8 +26,8 @@ export class EntityLabelAggregator extends AbstractAggregator<EntityId> {
     labelMissing = true;
 
     constructor(
-        public providers: EntityLabelProviders,
-        public id: EntityId
+        public providers: PEntityLabelProviders,
+        public id: PEntityId
     ) {
         super()
     }
@@ -66,7 +66,7 @@ export class EntityLabelAggregator extends AbstractAggregator<EntityId> {
     }
 
 
-    async createLabel(entity: Entity, classId: ClassId, entityFieldsWithEdges?: FieldsPerEntity) {
+    async createLabel(entity: ProjectEntity, classId: PClassId, entityFieldsWithEdges?: FieldsPerEntity) {
         // get label config
         const entityLabelConfig = await this.getEntityLabelConfig(classId)
         const labelParts = entityLabelConfig?.labelParts ?? [];
@@ -112,7 +112,7 @@ export class EntityLabelAggregator extends AbstractAggregator<EntityId> {
     * `
     */
     private async createEntityLabelArray(
-        entity: Entity,
+        entity: ProjectEntity,
         edges?: Edge[],
         maxLabelNr = 1
     ) {
@@ -179,7 +179,7 @@ export class EntityLabelAggregator extends AbstractAggregator<EntityId> {
 
 
 
-    private async getEntityLabelConfig(classId: ClassId): Promise<EntityLabelConfig | undefined> {
+    private async getEntityLabelConfig(classId: PClassId): Promise<EntityLabelConfig | undefined> {
 
 
         let res = await this.providers.entityLabelConfig.get(classId)

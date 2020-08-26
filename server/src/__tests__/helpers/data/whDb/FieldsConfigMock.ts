@@ -1,4 +1,4 @@
-import {ClassId, FieldsConfig} from '../../../../warehouse/primary-ds/FieldsConfigService';
+import {PClassId, FieldsConfig} from '../../../../warehouse/primary-ds/FieldsConfigService';
 import {ClassMock} from './ClassMock';
 import {DfhClassLabelMock} from './DfhClassLabelMock';
 import {ProjectMock} from './ProjectMock';
@@ -9,7 +9,7 @@ import {ProjectMock} from './ProjectMock';
 export class FieldsConfigMock {
 
 
-    static readonly NAMING_ID: ClassId = {
+    static readonly NAMING_ID: PClassId = {
         fkProject: ProjectMock.PROJECT_DE_ID.pkProject,
         pkClass: ClassMock.NAMING_ID
     }
@@ -23,7 +23,7 @@ export class FieldsConfigMock {
         }]
     }
 
-    static readonly UNION_ID: ClassId = {
+    static readonly UNION_ID: PClassId = {
         fkProject: ProjectMock.PROJECT_DE_ID.pkProject,
         pkClass: ClassMock.UNION_ID
     }

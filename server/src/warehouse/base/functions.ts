@@ -1,25 +1,25 @@
 import getFolderSize from 'get-folder-size';
-import {ClassId} from '../primary-ds/FieldsConfigService';
+import {PClassId} from '../primary-ds/FieldsConfigService';
 import {DfhClassLabelId} from '../primary-ds/DfhClassLabelService';
-import {EntityId} from '../primary-ds/EntityService';
+import {PEntityId} from '../primary-ds/PEntityService';
 import {FieldId} from '../primary-ds/FieldLabelService';
 import {ProClassLabelId} from '../primary-ds/ProClassLabelService';
 import {ProjectId} from '../primary-ds/ProjectService';
 import {leveldbpath} from './database';
 
-export function entityIdToString(key: EntityId): string {
+export function entityIdToString(key: PEntityId): string {
     return key.fkProject + '_' + key.pkEntity;
 }
-export function stringToEntityId(str: string): EntityId {
+export function stringToEntityId(str: string): PEntityId {
     const [fkProject, pkEntity] = str.split('_');
     return {fkProject: parseInt(fkProject, 10), pkEntity: parseInt(pkEntity, 10)};
 }
 
 
-export function classIdToString(key: ClassId): string {
+export function classIdToString(key: PClassId): string {
     return key.fkProject + '_' + key.pkClass;
 }
-export function stringToClassId(str: string): ClassId {
+export function stringToClassId(str: string): PClassId {
     const [fkProject, pkClass] = str.split('_');
     return {fkProject: parseInt(fkProject, 10), pkClass: parseInt(pkClass, 10)};
 }

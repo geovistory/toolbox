@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {EntityService} from '../../../../warehouse/primary-ds/EntityService';
+import {PEntityService, PEntityId} from '../../../../warehouse/primary-ds/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
@@ -12,30 +12,33 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupWarehouse, wait, waitUntilNext, waitForEntityPreview} from '../../../helpers/warehouse-helpers';
 import {getWarEntityPreview} from '../../../helpers/atomic/war-entity_preview.helper';
 
-describe('EntityService', () => {
+describe('PEntityService', () => {
 
   let wh: Warehouse;
-  let s: EntityService;
+  let s: PEntityService;
 
   before(async () => {
     // await wh.pgClient.connect()
   })
   beforeEach(async function () {
+    await cleanDb();
     wh = await setupWarehouse()
-    await wh.clearDB()
-    s = wh.prim.entity;
-    await cleanDb()
+    await wh.start()
+    await wh.pgClient.query('LISTEN entity_previews_updated;')
+    s = wh.prim.pEntity;
   })
 
-  it('should have entity in index after initIdx()', async () => {
+  it('should have entity in index()', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    await wh.start()
+
+    await waitUntilNext(s.afterPut$)
+
     const result = await s.index.getFromIdx({
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -49,7 +52,9 @@ describe('EntityService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    await wh.start()
+
+    await waitUntilNext(s.afterPut$)
+
     const id = {
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -63,7 +68,9 @@ describe('EntityService', () => {
         fk_class: 987654321
       }
     )
-    await wait(200)
+
+    await waitUntilNext(s.afterPut$)
+
     result = await s.index.getFromIdx(id)
     expect(result?.fkClass).to.equal(987654321)
   })
@@ -73,7 +80,9 @@ describe('EntityService', () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    await wh.start()
+
+    await waitUntilNext(s.afterPut$)
+
     const id = {
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -87,13 +96,15 @@ describe('EntityService', () => {
         is_in_project: false
       }
     )
-    await wait(200)
+
+    await waitUntilNext(s.afterDel$)
+
     result = await s.index.getFromIdx(id)
     expect(result?.fkClass).to.be.undefined()
   })
 
   it('should add entity preview with fk_class after entity is added', async () => {
-    let entities = await getWarEntityPreview(
+    const entities = await getWarEntityPreview(
       InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       ProProjectMock.PROJECT_1.pk_entity ?? -1
     )
@@ -102,25 +113,25 @@ describe('EntityService', () => {
 
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
-    await wh.start()
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1).catch(e => e)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1).catch(e => e)
+    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
     const item = await waitUntilNext(s.afterPut$)
     expect(item.key.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
-    expect(wh.agg.entityLabel.updater.growingQueue)
-    await wait(200)
-    entities = await getWarEntityPreview(
-      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
-      ProProjectMock.PROJECT_1.pk_entity ?? -1
-    )
-    expect(entities.length).to.equal(1);
-    expect(entities?.[0].fk_class).to.equal(InfPersistentItemMock.PERSON_1.fk_class);
+    const id: PEntityId = {
+      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      fkProject: ProProjectMock.PROJECT_1.pk_entity ?? -1
+    }
+    const e = await waitForEntityPreview(wh, [
+      {pk_entity: {eq: id.pkEntity}},
+      {fk_project: {eq: id.fkProject}},
+      {fk_class: {eq: InfPersistentItemMock.PERSON_1.fk_class}},
+    ])
+    expect(e).not.to.be.undefined();
 
   })
 
 
   it('should delete entity preview when entity is removed', async () => {
-    await wh.start()
     let entities = await getWarEntityPreview(
       InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       ProProjectMock.PROJECT_1.pk_entity ?? -1
@@ -128,16 +139,21 @@ describe('EntityService', () => {
     expect(entities.length).to.equal(0);
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProProject(ProProjectMock.PROJECT_1)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1).catch(e => e)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1).catch(e => e)
-    const item = await waitUntilNext(s.afterPut$)
-    expect(item.key.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
-    expect(wh.agg.entityLabel.updater.growingQueue)
-    await wait(200)
-    entities = await getWarEntityPreview(
-      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
-      ProProjectMock.PROJECT_1.pk_entity ?? -1
-    )
+    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
+
+    await waitUntilNext(s.afterPut$)
+    const id: PEntityId = {
+      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
+      fkProject: ProProjectMock.PROJECT_1.pk_entity ?? -1
+    }
+    const item = await s.index.getFromIdx(id)
+    expect(item?.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
+
+    await wait(500)
+
+    entities = await getWarEntityPreview(id.pkEntity, id.fkProject)
+
     expect(entities.length).to.equal(1);
     expect(entities?.[0].fk_class).to.equal(InfPersistentItemMock.PERSON_1.fk_class);
 
@@ -148,7 +164,10 @@ describe('EntityService', () => {
         is_in_project: false
       }
     )
+
+    await waitUntilNext(s.afterDel$)
     await wait(200)
+
     entities = await getWarEntityPreview(
       InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       ProProjectMock.PROJECT_1.pk_entity ?? -1

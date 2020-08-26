@@ -1,25 +1,25 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {EntityId, Entity} from '../../primary-ds/EntityService'
-import {ClassId} from '../../primary-ds/FieldsConfigService'
+import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
+import {PClassId} from '../../primary-ds/FieldsConfigService'
 import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService'
-import {FieldsPerEntity} from '../../primary-ds/EdgeService'
+import {FieldsPerEntity} from '../../primary-ds/PEdgeService'
 import {Warehouse} from '../../Warehouse'
 import {entityIdToString, stringToEntityId, classIdToString, stringToClassId} from '../../base/functions'
 import {ClearAll} from '../../base/classes/ClearAll'
 
-export class EntityLabelDependencies extends ClearAll {
-    entity: DependencyIndex<EntityId, string, EntityId, Entity>
-    entityLabelConfig: DependencyIndex<EntityId, string, ClassId, EntityLabelConfig>
-    entityLabel: DependencyIndex<EntityId, string, EntityId, string>
-    edge: DependencyIndex<EntityId, string, EntityId, FieldsPerEntity>
+export class PEntityLabelDependencies extends ClearAll {
+    entity: DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>
+    entityLabelConfig: DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>
+    entityLabel: DependencyIndex<PEntityId, string, PEntityId, string>
+    edge: DependencyIndex<PEntityId, string, PEntityId, FieldsPerEntity>
 
     // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
-    constructor(private main: Warehouse) {
+    constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
-        this.entity = new DependencyIndex<EntityId, string, EntityId, Entity>(
-            this.main.agg.entityLabel,
-            this.main.prim.entity,
+        this.entity = new DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>(
+            this.wh.agg.pEntityLabel,
+            this.wh.prim.pEntity,
             entityIdToString,
             stringToEntityId,
             entityIdToString,
@@ -27,9 +27,9 @@ export class EntityLabelDependencies extends ClearAll {
         )
 
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
-        this.entityLabelConfig = new DependencyIndex<EntityId, string, ClassId, EntityLabelConfig>(
-            this.main.agg.entityLabel,
-            this.main.prim.entityLabelConfig,
+        this.entityLabelConfig = new DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>(
+            this.wh.agg.pEntityLabel,
+            this.wh.prim.entityLabelConfig,
             entityIdToString,
             stringToEntityId,
             classIdToString,
@@ -38,8 +38,8 @@ export class EntityLabelDependencies extends ClearAll {
 
         // stores the dependency of entityLabel (receiver) on entityLabel (provider)
         this.entityLabel = new DependencyIndex(
-            this.main.agg.entityLabel,
-            this.main.agg.entityLabel,
+            this.wh.agg.pEntityLabel,
+            this.wh.agg.pEntityLabel,
             entityIdToString,
             stringToEntityId,
             entityIdToString,
@@ -48,8 +48,8 @@ export class EntityLabelDependencies extends ClearAll {
 
         // stores the dependency of entityLabel (receiver) on edge (provider)
         this.edge = new DependencyIndex(
-            this.main.agg.entityLabel,
-            this.main.prim.edge,
+            this.wh.agg.pEntityLabel,
+            this.wh.prim.pEdge,
             entityIdToString,
             stringToEntityId,
             entityIdToString,

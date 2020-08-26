@@ -2,7 +2,7 @@ import {classIdToString, stringToClassId} from '../base/functions';
 import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
-import {ClassId} from './FieldsConfigService';
+import {PClassId} from './FieldsConfigService';
 
 
 export interface LabelPart {
@@ -19,24 +19,24 @@ export interface EntityLabelConfig {
 }
 
 
-export class EntityLabelConfigService extends PrimaryDataService<InitItem, ClassId, EntityLabelConfig>{
+export class EntityLabelConfigService extends PrimaryDataService<InitItem, PClassId, EntityLabelConfig>{
 
     measure = 1000;
-    updatesSql = initSql;
+    updatesSql = updateSql;
     deletesSql = '';
 
-    index = new IndexDBGeneric<ClassId, EntityLabelConfig>(classIdToString, stringToClassId)
+    index = new IndexDBGeneric<PClassId, EntityLabelConfig>(classIdToString, stringToClassId)
 
-    constructor(main: Warehouse) {
-        super(main, [])
+    constructor(wh: Warehouse) {
+        super(wh, ['modified_data_for_history_api_class'])
     }
 
-    dbItemToKeyVal(item: InitItem): {key: ClassId; val: EntityLabelConfig;} {
+    dbItemToKeyVal(item: InitItem): {key: PClassId; val: EntityLabelConfig;} {
 
         const pkClass = item.pkClass; //365
 
         // TODO: This needs to be adapted! Load configs for individual projects
-        const key: ClassId = {
+        const key: PClassId = {
             fkProject: PK_DEFAULT_CONFIG_PROJECT,
             pkClass: pkClass
         }
@@ -111,7 +111,7 @@ export class EntityLabelConfigService extends PrimaryDataService<InitItem, Class
      * returns entity label config of requested project, else of default config project
      * @param classId
      */
-    async getEntityLabelConfig(classId: ClassId) {
+    async getEntityLabelConfig(classId: PClassId) {
         let x = await this.index.getFromIdx(classId)
         if (x) return x
         x = await this.index.getFromIdx({
@@ -133,3 +133,12 @@ export const initSql = `
     FROM data_for_history.v_class
     WHERE $1::text IS NOT NULL
 `
+
+
+const updateSql = `
+    SELECT DISTINCT
+        dfh_pk_class "pkClass"
+    FROM
+        data_for_history.api_class t1
+    WHERE
+        t1.tmsp_last_modification >= $1;`

@@ -2,7 +2,7 @@ import {testdb} from '../../../datasources/testdb.datasource';
 import {WarEntityPreview} from '../../../models';
 import {WarEntityPreviewRepository} from '../../../repositories';
 
-function createWarEntityPreviewRepo() {
+export function createWarEntityPreviewRepo() {
   return new WarEntityPreviewRepository(
     testdb,
   )

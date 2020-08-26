@@ -1,21 +1,34 @@
-import {Warehouse} from '../../warehouse/Warehouse';
+/* eslint-disable @typescript-eslint/camelcase */
+import {Where} from '@loopback/repository';
 import {Observable} from 'rxjs';
 import {first} from 'rxjs/operators';
+import {WarEntityPreview, WarClassPreview} from '../../models';
+import {Warehouse} from '../../warehouse/Warehouse';
+import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
+import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 
-export async function setupWarehouseAndConnect() {
+export async function setupWarehouseWithoutStarting() {
 
-    const main = new Warehouse()
-    await main.pgClient.connect()
-    main.startListening()
-    return main;
+    const wh = new Warehouse()
+    // await wh.pgClient.connect()
+    // wh.startListening()
+    return wh;
 }
-
 export async function setupWarehouse() {
 
-    const main = new Warehouse()
-    return main;
+    const wh = new Warehouse()
+    return wh;
 }
+export async function setupCleanAndStartWarehouse() {
 
+    const wh = new Warehouse()
+    await wh.start()
+
+    await wh.pgClient.query('LISTEN entity_previews_updated;')
+    await wh.pgClient.query('LISTEN modified_war_class_preview;')
+
+    return wh;
+}
 /**
  * Returns a Promise that resolves after given miliseconds
  * @param ms
@@ -31,4 +44,65 @@ export async function wait(ms: number) {
  */
 export async function waitUntilNext<M>(observable$: Observable<M>) {
     return new Promise<M>((res) => {observable$.pipe(first()).subscribe((i) => {res(i)})})
+}
+
+/**
+ * Returns a Promis that resolves as soon as the database emits a entity preview
+ * that machtches the given whereFilter.
+ * @param observable$
+ */
+export async function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
+    return new Promise<WarEntityPreview>((res, rej) => {
+        wh.pgClient.on('notification', (msg) => {
+            if (msg.channel === 'entity_previews_updated') {
+                createWarEntityPreviewRepo().find({
+                    where: {
+                        and: [
+                            {tmsp_last_modification: {eq: msg.payload}},
+                            ...whereFilter
+                        ]
+                    }
+                })
+                    .then((result) => {
+                        if (result?.length === 1) {
+                            res(result[0])
+                        } else if (result.length > 1) {
+                            rej('found too many entity peviews')
+                        }
+                    })
+                    .catch(e => rej(e))
+            }
+        })
+    })
+}
+
+
+/**
+ * Returns a Promis that resolves as soon as the database emits a entity preview
+ * that machtches the given whereFilter.
+ * @param observable$
+ */
+export async function waitForClassPreview<M>(wh: Warehouse, whereFilter: Where<WarClassPreview>[]) {
+    return new Promise<WarClassPreview>((res, rej) => {
+        wh.pgClient.on('notification', (msg) => {
+            if (msg.channel === 'modified_war_class_preview') {
+                createWarClassPreviewRepo().find({
+                    where: {
+                        and: [
+                            {tmsp_last_modification: {eq: msg.payload}},
+                            ...whereFilter
+                        ]
+                    }
+                })
+                    .then((result) => {
+                        if (result?.length === 1) {
+                            res(result[0])
+                        } else if (result.length > 1) {
+                            rej('found too many entity peviews')
+                        }
+                    })
+                    .catch(e => rej(e))
+            }
+        })
+    })
 }

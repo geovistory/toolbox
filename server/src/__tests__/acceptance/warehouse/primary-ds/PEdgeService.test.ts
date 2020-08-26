@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {EdgeService} from '../../../../warehouse/primary-ds/EdgeService';
+import {PEdgeService} from '../../../../warehouse/primary-ds/PEdgeService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
@@ -18,18 +18,18 @@ import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupWarehouseAndConnect, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
-describe('EdgeService', () => {
+describe('PEdgeService', () => {
 
   let wh: Warehouse;
-  let s: EdgeService;
+  let s: PEdgeService;
 
   beforeEach(async function () {
-    wh = await setupWarehouseAndConnect()
     await cleanDb();
-    s = wh.prim.edge;
-    await s.clearAll()
+    wh = await setupWarehouse()
+    await wh.start()
+    s = wh.prim.pEdge;
   })
 
   it('should have field edges in index after initIdx()', async () => {
@@ -45,8 +45,8 @@ describe('EdgeService', () => {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
 
+    await wait(500)
 
-    await s.initIdx();
     const result = await s.index.getFromIdx({
       pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
@@ -73,7 +73,8 @@ describe('EdgeService', () => {
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
 
 
-    await s.initIdx();
+    await wait(500)
+
     const id = {
       pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1

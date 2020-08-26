@@ -4,7 +4,7 @@ import {InfLanguageMock} from './InfLanguageMock';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../../../warehouse/Warehouse';
 
 /**
- * pk_entity prefix: 100
+ * pk_entity prefix: 300
  */
 export class ProProjectMock {
 
@@ -14,7 +14,7 @@ export class ProProjectMock {
   })
 
   static readonly PROJECT_1 = new ProProject({
-    pk_entity: 1001,
+    pk_entity: 3001,
     fk_language: InfLanguageMock.GERMAN.pk_entity
   })
 

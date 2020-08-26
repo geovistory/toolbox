@@ -1,15 +1,18 @@
-import {EntityLabelDependencies} from '../aggregator-ds/entity-label/EntityLabelDependencies';
+import {PEntityLabelDependencies} from '../aggregator-ds/p-entity-label/PEntityLabelDependencies';
 import {Warehouse} from '../Warehouse';
-import {ClassLabelDependencies} from '../aggregator-ds/class-label/ClassLabelDependencies';
+import {PClassLabelDependencies} from '../aggregator-ds/p-class-label/PClassLabelDependencies';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
+import {PEntityClassLabelDependencies} from '../aggregator-ds/p-entity-class-label/PEntityClassLabelDependencies';
 
 
 export class DependencyDataServices extends DataServiceBundle {
-    entityLabel: EntityLabelDependencies
-    classLabel: ClassLabelDependencies
-    constructor(main: Warehouse) {
+    pClassLabel: PClassLabelDependencies
+    pEntityLabel: PEntityLabelDependencies
+    pEntityClassLabel: PEntityClassLabelDependencies
+    constructor(wh: Warehouse) {
         super()
-        this.entityLabel = this.registerDataService(new EntityLabelDependencies(main));
-        this.classLabel = this.registerDataService(new ClassLabelDependencies(main));
+        this.pEntityLabel = this.registerDataService(new PEntityLabelDependencies(wh));
+        this.pClassLabel = this.registerDataService(new PClassLabelDependencies(wh));
+        this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelDependencies(wh));
     }
 }

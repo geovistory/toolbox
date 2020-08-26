@@ -2,30 +2,31 @@ import {entityIdToString, stringToEntityId} from '../../base/functions';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {Updater} from '../../base/classes/Updater';
-import {EntityId} from '../../primary-ds/EntityService';
+import {PEntityId} from '../../primary-ds/PEntityService';
 import {Warehouse} from '../../Warehouse';
-import {EntityLabelAggregator} from './EntityLabelAggregator';
-import {EntityLabelProviders} from './EntityLabelPoviders';
+import {PEntityLabelAggregator} from './PEntityLabelAggregator';
+import {PEntityLabelProviders} from './PEntityLabelPoviders';
 import {Logger} from '../../base/classes/Logger';
 
 type ValueModel = string
-export class EntityLabelService extends AggregatedDataService<EntityId, ValueModel, EntityLabelAggregator>{
-    updater: Updater<EntityId, EntityLabelAggregator>;
+export class PEntityLabelService extends AggregatedDataService<PEntityId, ValueModel, PEntityLabelAggregator>{
+    updater: Updater<PEntityId, PEntityLabelAggregator>;
 
-    index = new IndexDBGeneric<EntityId, ValueModel>(entityIdToString, stringToEntityId)
+    index = new IndexDBGeneric<PEntityId, ValueModel>(entityIdToString, stringToEntityId)
 
-    constructor(private main: Warehouse) {
+    constructor(private wh: Warehouse) {
         super()
-        const aggregatorFactory = async (id: EntityId) => {
-            const providers = new EntityLabelProviders(this.main.dep.entityLabel, id)
-            return new EntityLabelAggregator(providers, id).create()
+        const aggregatorFactory = async (id: PEntityId) => {
+            const providers = new PEntityLabelProviders(this.wh.dep.pEntityLabel, id)
+            return new PEntityLabelAggregator(providers, id).create()
         }
-        const register = async (result: EntityLabelAggregator) => {
+        const register = async (result: PEntityLabelAggregator) => {
             await this.put(result.id, result.entityLabel)
             await result.providers.removeProvidersFromIndexes()
         }
 
         this.updater = new Updater(
+            this.wh,
             this.constructor.name,
             aggregatorFactory,
             register,
@@ -35,7 +36,7 @@ export class EntityLabelService extends AggregatedDataService<EntityId, ValueMod
         )
     }
 
-    writeToDb(results: EntityLabelAggregator[]) {
+    writeToDb(results: PEntityLabelAggregator[]) {
         let i = 0;
         let batchSize = 0;
         const maxBatchSize = 1000;
@@ -63,7 +64,7 @@ export class EntityLabelService extends AggregatedDataService<EntityId, ValueMod
                 remaining = remaining - batchSize;
                 const t = Logger.start(`Upserting ${batchSize} entity labels, remaining: ${remaining} of ${results.length}`, 2)
                 const q = this.getUpsertSql(values.slice(0, -1))
-                this.main.pgClient.query(q, params)
+                this.wh.pgClient.query(q, params)
                     .then(() => {
                         Logger.itTook(t, `to batch upsert entity labels`, 2)
                     })
@@ -79,7 +80,7 @@ export class EntityLabelService extends AggregatedDataService<EntityId, ValueMod
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getParamsForUpsert(res: EntityLabelAggregator): any[] {
+    getParamsForUpsert(res: PEntityLabelAggregator): any[] {
         return [res.id.pkEntity, res.id.fkProject, res.id.fkProject, res.entityLabel]
     }
 

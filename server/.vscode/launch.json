@@ -106,11 +106,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "200000",
+        "5000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        // "--grep",
-        // "/EntityService.*should update entity if class changed/"
+        "--grep",
+        "/^PEntityLabelService.*should create entity label of naming/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

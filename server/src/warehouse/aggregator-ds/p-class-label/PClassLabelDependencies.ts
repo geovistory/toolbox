@@ -1,23 +1,23 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
 import {classIdToString, dfhClassIdToString, proClassIdToString, stringToClassId, stringToDfhClassId, stringToProClassId, projectIdToString, stringToProjectId} from '../../base/functions'
-import {ClassId} from '../../primary-ds/FieldsConfigService'
+import {PClassId} from '../../primary-ds/FieldsConfigService'
 import {DfhClassLabelId, DfhClassLabelVal} from '../../primary-ds/DfhClassLabelService'
 import {ProClassLabelId, ProClassLabelVal} from '../../primary-ds/ProClassLabelService'
 import {Warehouse} from '../../Warehouse'
 import {ProjectId, ProjectVal} from '../../primary-ds/ProjectService'
 import {ClearAll} from '../../base/classes/ClearAll'
 
-export class ClassLabelDependencies extends ClearAll {
-  project: DependencyIndex<ClassId, string, ProjectId, ProjectVal>
-  dfhClassLabel: DependencyIndex<ClassId, string, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: DependencyIndex<ClassId, string, ProClassLabelId, ProClassLabelVal>
+export class PClassLabelDependencies extends ClearAll {
+  project: DependencyIndex<PClassId, string, ProjectId, ProjectVal>
+  dfhClassLabel: DependencyIndex<PClassId, string, DfhClassLabelId, DfhClassLabelVal>
+  proClassLabel: DependencyIndex<PClassId, string, ProClassLabelId, ProClassLabelVal>
 
   // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
-  constructor(private main: Warehouse) {
+  constructor(private wh: Warehouse) {
     super()
     this.project = new DependencyIndex(
-      main.agg.classLabel,
-      main.prim.project,
+      wh.agg.pClassLabel,
+      wh.prim.project,
       classIdToString,
       stringToClassId,
       projectIdToString,
@@ -25,8 +25,8 @@ export class ClassLabelDependencies extends ClearAll {
     )
 
     this.dfhClassLabel = new DependencyIndex(
-      main.agg.classLabel,
-      main.prim.dfhClassLabel,
+      wh.agg.pClassLabel,
+      wh.prim.dfhClassLabel,
       classIdToString,
       stringToClassId,
       dfhClassIdToString,
@@ -34,8 +34,8 @@ export class ClassLabelDependencies extends ClearAll {
     )
 
     this.proClassLabel = new DependencyIndex(
-      main.agg.classLabel,
-      main.prim.proClassLabel,
+      wh.agg.pClassLabel,
+      wh.prim.proClassLabel,
       classIdToString,
       stringToClassId,
       proClassIdToString,

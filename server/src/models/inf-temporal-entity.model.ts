@@ -29,15 +29,15 @@ export class InfTemporalEntity extends Entity implements InfEntity {
   @hasMany(() => ProInfoProjRel, {keyTo: 'fk_entity'})
   entity_version_project_rels: ProInfoProjRel[];
 
-  @property({
-    type: 'number',
-  })
-  fk_subject_info?: number;
+  // @property({
+  //   type: 'number',
+  // })
+  // fk_subject_info?: number;
 
-  @property({
-    type: 'number',
-  })
-  fk_object_info?: number;
+  // @property({
+  //   type: 'number',
+  // })
+  // fk_object_info?: number;
 
   @hasMany(() => InfStatement, {keyTo: 'fk_subject_info'})
   outgoing_statements: InfStatement[];

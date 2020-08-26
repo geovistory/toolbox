@@ -4,6 +4,7 @@ import {UniqIndexGeneric} from './UniqIndexGeneric';
 import {StringToKeyModel} from '../interfaces/StringToKeyModel';
 import {KeyModelToString} from '../interfaces/KeyModelToString';
 import prettyms from 'pretty-ms';
+import {Warehouse} from '../../Warehouse';
 
 export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> {
     cycleNr = 1;
@@ -27,6 +28,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
     updating = false;
 
     constructor(
+        private wh: Warehouse,
         public name: string,
         private aggregatorFactory: (modelId: KeyModel) => Promise<Aggregator>,
         private register: (result: Aggregator) => Promise<void>,
@@ -44,8 +46,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         await this.growingQueue.addToIdx(id, true)
 
         // initialize new recursive update cycle
-        if (this.updating === false
-             && this.cycleNr > 1
+        if (this.updating === false && this.wh.initializingIndexes === false
         ) {
             setTimeout(() => {
                 this.startCylcling().catch(e => {console.error(e)})

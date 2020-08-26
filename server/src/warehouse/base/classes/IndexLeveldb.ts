@@ -1,6 +1,6 @@
 import subleveldown from 'subleveldown';
-import { leveldb } from '../database';
-import { LevelUp } from 'levelup';
+import {leveldb} from '../database';
+import {LevelUp} from 'levelup';
 // Temporary implementation as leveldb key-value store
 
 export abstract class IndexLeveldb<KeyModel, ValueModel> {
@@ -11,12 +11,11 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> {
     db: LevelUp;
 
     constructor() {
-        this.db = subleveldown<string, ValueModel>(leveldb, this.indexName, { valueEncoding: 'json' });
+        this.db = subleveldown<string, ValueModel>(leveldb, this.indexName, {valueEncoding: 'json'});
 
     }
 
     async addToIdx(keyModel: KeyModel, val: ValueModel) {
-
         const key = this.keyToString(keyModel);
         await this.db.put(key, val);
 
@@ -76,7 +75,7 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> {
                             console.log(e);
                         });
                 })
-                .on('error', function (err:unknown) {
+                .on('error', function (err: unknown) {
                     rej(err);
                 })
                 .on('close', () => {

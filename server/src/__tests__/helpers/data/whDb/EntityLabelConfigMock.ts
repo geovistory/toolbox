@@ -1,5 +1,5 @@
 import {EntityLabelConfig} from '../../../../warehouse/primary-ds/EntityLabelConfigService';
-import {ClassId} from '../../../../warehouse/primary-ds/FieldsConfigService';
+import {PClassId} from '../../../../warehouse/primary-ds/FieldsConfigService';
 import {ClassMock} from './ClassMock';
 import {ProjectMock} from './ProjectMock';
 
@@ -10,7 +10,7 @@ export class EntityLabelConfigMock {
 
     // Naming
 
-    static readonly NAMING_ID: ClassId = {
+    static readonly NAMING_ID: PClassId = {
         fkProject: ProjectMock.PROJECT_DE_ID.pkProject,
         pkClass: ClassMock.NAMING_ID
     }
@@ -41,7 +41,7 @@ export class EntityLabelConfigMock {
 
     // Person
 
-    static readonly PERSON_ID: ClassId = {
+    static readonly PERSON_ID: PClassId = {
         fkProject: ProjectMock.PROJECT_DE_ID.pkProject,
         pkClass: ClassMock.PERSON_ID
     }
@@ -69,7 +69,7 @@ export class EntityLabelConfigMock {
     }
 
     // Birth
-    static readonly BIRTH_ID: ClassId = {
+    static readonly BIRTH_ID: PClassId = {
         fkProject: ProjectMock.PROJECT_DE_ID.pkProject,
         pkClass: ClassMock.BIRTH_ID
     }
@@ -87,7 +87,7 @@ export class EntityLabelConfigMock {
 
     // Union
 
-    static readonly UNION_ID: ClassId = {
+    static readonly UNION_ID: PClassId = {
         fkProject: ProjectMock.PROJECT_DE_ID.pkProject,
         pkClass: ClassMock.UNION_ID
     }

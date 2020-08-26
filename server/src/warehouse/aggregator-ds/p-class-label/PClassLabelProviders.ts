@@ -1,19 +1,19 @@
 import {Providers} from '../../base/interfaces/Providers';
-import {ClassId} from '../../primary-ds/FieldsConfigService';
+import {PClassId} from '../../primary-ds/FieldsConfigService';
 import {DfhClassLabelId, DfhClassLabelVal} from '../../primary-ds/DfhClassLabelService';
 import {ProClassLabelId, ProClassLabelVal} from '../../primary-ds/ProClassLabelService';
-import {ClassLabelDependencies} from './ClassLabelDependencies';
+import {PClassLabelDependencies} from './PClassLabelDependencies';
 import {Provider} from '../../base/classes/Provider';
 import {ProjectId, ProjectVal} from '../../primary-ds/ProjectService';
 
-export class ClassLabelProviders extends Providers<ClassId> {
-  project: Provider<ClassId, string, ProjectId, ProjectVal>
-  dfhClassLabel: Provider<ClassId, string, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: Provider<ClassId, string, ProClassLabelId, ProClassLabelVal>
+export class PClassLabelProviders extends Providers<PClassId> {
+  project: Provider<PClassId, string, ProjectId, ProjectVal>
+  dfhClassLabel: Provider<PClassId, string, DfhClassLabelId, DfhClassLabelVal>
+  proClassLabel: Provider<PClassId, string, ProClassLabelId, ProClassLabelVal>
 
   constructor(
-    dep: ClassLabelDependencies,
-    protected receiverKey: ClassId
+    dep: PClassLabelDependencies,
+    protected receiverKey: PClassId
   ) {
     super()
     this.project = this.registerProvider(dep.project, receiverKey);

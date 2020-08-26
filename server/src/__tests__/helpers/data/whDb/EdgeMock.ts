@@ -1,4 +1,4 @@
-import { StatementItemToIndexate } from '../../../../warehouse/primary-ds/EdgeService';
+import { StatementItemToIndexate } from '../../../../warehouse/primary-ds/PEdgeService';
 import { EntityMock } from './EntityMock';
 /**
  * Mock data related to edges

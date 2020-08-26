@@ -1,13 +1,14 @@
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
-import {ClassId, FieldsConfig, FieldsConfigService} from '../primary-ds/FieldsConfigService';
+import {PClassId, FieldsConfig, FieldsConfigService} from '../primary-ds/FieldsConfigService';
 import {DfhClassLabelService} from '../primary-ds/DfhClassLabelService';
-import {EdgeService, StatementItemToIndexate} from '../primary-ds/EdgeService';
+import {PEdgeService, StatementItemToIndexate} from '../primary-ds/PEdgeService';
 import {EntityLabelConfig, EntityLabelConfigService} from '../primary-ds/EntityLabelConfigService';
-import {Entity, EntityId, EntityService} from '../primary-ds/EntityService';
+import {ProjectEntity, PEntityId, PEntityService} from '../primary-ds/PEntityService';
 import {FieldId, FieldLabelService} from '../primary-ds/FieldLabelService';
 import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
 import {ProjectService} from '../primary-ds/ProjectService';
 import {Warehouse} from '../Warehouse';
+import {PClassService} from '../primary-ds/PClassService';
 export class PrimaryDataServices extends DataServiceBundle {
     project: ProjectService;
     dfhClassLabel: DfhClassLabelService;
@@ -15,36 +16,37 @@ export class PrimaryDataServices extends DataServiceBundle {
     fieldLabel: FieldLabelService;
     fieldsConfig: FieldsConfigService;
     entityLabelConfig: EntityLabelConfigService;
-    edge: EdgeService;
-    entity: EntityService;
-    constructor(private main: Warehouse) {
+    pEdge: PEdgeService;
+    pEntity: PEntityService;
+    pClass: PClassService;
+    constructor(private wh: Warehouse) {
         super()
-        this.project = this.registerDataService(new ProjectService(this.main));
-        this.fieldsConfig = this.registerDataService(new FieldsConfigService(this.main));
-        this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.main));
-        this.proClassLabel = this.registerDataService(new ProClassLabelService(this.main));
-        this.fieldLabel = this.registerDataService(new FieldLabelService(this.main));
-        this.entityLabelConfig = this.registerDataService(new EntityLabelConfigService(this.main));
-        this.edge = this.registerDataService(new EdgeService(this.main));
-        this.entity = this.registerDataService(new EntityService(this.main));
-
+        this.project = this.registerDataService(new ProjectService(this.wh));
+        this.fieldsConfig = this.registerDataService(new FieldsConfigService(this.wh));
+        this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.wh));
+        this.proClassLabel = this.registerDataService(new ProClassLabelService(this.wh));
+        this.fieldLabel = this.registerDataService(new FieldLabelService(this.wh));
+        this.entityLabelConfig = this.registerDataService(new EntityLabelConfigService(this.wh));
+        this.pEdge = this.registerDataService(new PEdgeService(this.wh));
+        this.pEntity = this.registerDataService(new PEntityService(this.wh));
+        this.pClass = this.registerDataService(new PClassService(this.wh));
     }
 
 
-    async createFieldsConfig(keyModel: ClassId, val: FieldsConfig) {
+    async createFieldsConfig(keyModel: PClassId, val: FieldsConfig) {
         return this.fieldsConfig.index.addToIdx(keyModel, val)
     }
     async createFieldLabel(keyModel: FieldId, val: string) {
         return this.fieldLabel.index.addToIdx(keyModel, val)
     }
-    async createEntityLabelConfig(keyModel: ClassId, val: EntityLabelConfig) {
+    async createEntityLabelConfig(keyModel: PClassId, val: EntityLabelConfig) {
         return this.entityLabelConfig.index.addToIdx(keyModel, val)
     }
-    async createEntity(keyModel: EntityId, val: Entity) {
-        return this.entity.index.addToIdx(keyModel, val)
+    async createEntity(keyModel: PEntityId, val: ProjectEntity) {
+        return this.pEntity.index.addToIdx(keyModel, val)
     }
     async indexateEdges(items: StatementItemToIndexate[]) {
-        return this.edge.indexateItems(items)
+        return this.pEdge.indexateItems(items)
     }
 
 
