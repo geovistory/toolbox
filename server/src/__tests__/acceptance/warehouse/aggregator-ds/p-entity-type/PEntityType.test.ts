@@ -1,27 +1,26 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { expect } from '@loopback/testlab';
-import { Warehouse } from '../../../../../warehouse/Warehouse';
-import { cleanDb } from '../../../../helpers/cleaning/clean-db.helper';
-import { setupCleanAndStartWarehouse, waitForEntityPreview } from '../../../../helpers/warehouse-helpers';
-import { retryWhen } from 'rxjs/operators';
-import { createInfLanguage } from '../../../../helpers/atomic/inf-language.helper';
-import { InfLanguageMock } from '../../../../helpers/data/gvDB/InfLanguageMock';
-import { createProProject } from '../../../../helpers/atomic/pro-project.helper';
-import { ProProjectMock } from '../../../../helpers/data/gvDB/ProProjectMock';
-import { createDfhApiClass } from '../../../../helpers/atomic/dfh-api-class.helper';
-import { createInfTemporalEntity } from '../../../../helpers/atomic/inf-temporal-entity.helper';
-import { InfTemporalEntityMock } from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
-import { createProInfoProjRel, updateProInfoProjRel } from '../../../../helpers/atomic/pro-info-proj-rel.helper';
-import { ProInfoProjRelMock } from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
-import { createInfAppellation } from '../../../../helpers/atomic/inf-appellation.helper';
-import { InfAppellationMock } from '../../../../helpers/data/gvDB/InfAppellationMock';
-import { createInfStatement } from '../../../../helpers/atomic/inf-statement.helper';
-import { InfStatementMock } from '../../../../helpers/data/gvDB/InfStatementMock';
-import { DfhApiClassMock } from '../../../../helpers/data/gvDB/DfhApiClassMock';
-import { createDfhApiProperty } from '../../../../helpers/atomic/dfh-api-property.helper';
-import { DfhApiPropertyMock } from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
-import { createInfPersistentItem } from '../../../../helpers/atomic/inf-persistent-item.helper';
-import { InfPersistentItemMock } from '../../../../helpers/data/gvDB/InfPersistentItemMock';
+import {expect} from '@loopback/testlab';
+import {Warehouse} from '../../../../../warehouse/Warehouse';
+import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
+import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
+import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
+import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
+import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
+import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
+import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
+import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
+import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
+import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
+import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
+import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
+import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
+import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
+import {setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -35,35 +34,34 @@ describe('PEntityType', function () {
     })
 
     it('should create fk_type of geographical place', async () => {
-        const { madrid, project, cityTypeAppe } = await createMock();
+        const {madrid, project, cityTypeAppe} = await createMock();
 
         const result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: madrid.pk_entity } },
-            { fk_project: { eq: project.pk_entity } },
-            { type_label: { eq: cityTypeAppe.string } },
+            {pk_entity: {eq: madrid.pk_entity}},
+            {fk_project: {eq: project.pk_entity}},
+            {type_label: {eq: cityTypeAppe.string}},
         ])
-        expect(result.entity_label).to.equal(cityTypeAppe.string);
+        expect(result.type_label).to.equal(cityTypeAppe.string);
     })
 
     it('should update fk_type of geographical place', async () => {
-        const { madrid, project, cityTypeAppe } = await createMock();
+        const {madrid, project, cityTypeAppe} = await createMock();
 
         let result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: madrid.pk_entity } },
-            { fk_project: { eq: project.pk_entity } },
-            { type_label: { eq: cityTypeAppe.string } },
+            {pk_entity: {eq: madrid.pk_entity}},
+            {fk_project: {eq: project.pk_entity}},
+            {type_label: {eq: cityTypeAppe.string}},
         ])
         expect(result.entity_label).to.equal(cityTypeAppe.string);
 
         await updateProInfoProjRel(
-            ProInfoProjRelMock.PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE.pk_entity ?? -1
-            , {
-                is_in_project: false
-            })
+            ProInfoProjRelMock.PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE.pk_entity ?? -1,
+            {is_in_project: false}
+        )
 
         result = await waitForEntityPreview(wh, [
-            { pk_entity: { eq: madrid.pk_entity } },
-            { fk_project: { eq: project.pk_entity } },
+            {pk_entity: {eq: madrid.pk_entity}},
+            {fk_project: {eq: project.pk_entity}},
         ])
         expect(result.entity_label).to.not.equal(cityTypeAppe.string);
     })
@@ -111,5 +109,5 @@ async function createMock() {
     await createInfStatement(InfStatementMock.NAMING_CITY_TO_GEO_PLACE_TYPE);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAMING_CITY_TO_GEO_PLACE_TYPE);
 
-    return { madrid, project, cityTypeAppe };
+    return {madrid, project, cityTypeAppe};
 }

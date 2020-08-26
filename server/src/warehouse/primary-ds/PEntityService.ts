@@ -41,6 +41,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
             // Add update requests on aggregaters based on project entity
             wh.agg.pEntityLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
             wh.agg.pEntityClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
+            wh.agg.pEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
 
             // Add item to queue to upsert it into db
             upsertQueue.add(item)

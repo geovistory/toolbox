@@ -1,10 +1,6 @@
-import { AbstractAggregator } from '../../base/classes/AbstractAggregator';
-import { PClassId } from '../../primary-ds/FieldsConfigService';
-import { Edge, FieldsPerEntity } from '../../primary-ds/PEdgeService';
-import { EntityLabelConfig } from '../../primary-ds/EntityLabelConfigService';
-import { ProjectEntity, PEntityId } from '../../primary-ds/PEntityService';
-import { PK_DEFAULT_CONFIG_PROJECT } from '../../Warehouse';
-import { PEntityTypeProviders } from './PEntityTypePoviders';
+import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
+import {PEntityId} from '../../primary-ds/PEntityService';
+import {PEntityTypeProviders} from './PEntityTypePoviders';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -16,11 +12,9 @@ export interface ClassLabelConfig {
 
 export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
 
-    // array of strings to create label
-    labelArr: string[] = [];
-
-    // the resulting entityType
-    entityType = '(no label)';
+    // the resulting entityTypeLabel
+    entityTypeLabel?: string;
+    fkEntityType?: number;
 
     // For testing / debugging
     labelMissing = true;
@@ -44,7 +38,7 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
      */
     async create() {
 
-        const entity = await this.providers.entity.get(this.id);
+        const entity = await this.providers.pEntity.get(this.id);
 
         if (entity) {
 
@@ -53,143 +47,42 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
             // that can then be deleted from dependency indexes
             await this.providers.load()
 
-            const fieldsWithEdges = await this.providers.edges.get(this.id)
-
             const classId = {
                 fkProject: entity.fkProject,
                 pkClass: entity.fkClass
             }
 
-            await this.createLabel(entity, classId, fieldsWithEdges)
+            // Find the dfh_pk_property of the 'has type'-subproperty going out of this class
+            const fkHasTypeSubproperty = 1110;
+
+            // Get the 'directed-statements' a.k.a. 'edges' of the entity
+            const fieldsWithEdges = await this.providers.pEdges.get(this.id)
+
+            const hasTypeStmts = fieldsWithEdges?.outgoing?.[fkHasTypeSubproperty];
+
+            if (hasTypeStmts?.length) {
+
+                // this gives the info for war.entity_preview (fk_type)
+                this.fkEntityType = hasTypeStmts[0].fkTarget // fk_object_info
+
+                // this gives the info for war.entity_preview (type_label)
+                const typeEntityId: PEntityId = {
+                    fkProject: entity.fkProject,
+                    pkEntity: this.fkEntityType
+                }
+
+                const entityTypeLabel = await this.providers.pEntityLabel.get(typeEntityId)
+
+                // TODO: find repo entity label if this is undefined
+
+                if (entityTypeLabel) {
+                    this.entityTypeLabel = entityTypeLabel
+                }
+
+            }
+
         }
         return this
     }
-
-
-    async createLabel(entity: ProjectEntity, classId: PClassId, entityFieldsWithEdges?: FieldsPerEntity) {
-        // get label config
-        const entityTypeConfig = await this.getEntityLabelConfig(classId)
-        const labelParts = entityTypeConfig?.labelParts ?? [];
-
-        const promises: Promise<{
-            strings: string[];
-            labelProviders: number[];
-        }>[] = []
-
-        // iterate over fields of label config first
-        for (const labelPart of labelParts) {
-            if (labelPart.field) {
-                const edges = entityFieldsWithEdges?.[labelPart.field.isOutgoing ? 'outgoing' : 'incoming']?.[labelPart.field.fkProperty];
-                promises.push(this.createEntityLabelArray(entity, edges, labelPart?.field?.nrOfStatementsInLabel))
-            }
-        }
-
-        const res = await Promise.all(promises)
-        this.labelArr = []
-        res.forEach(x => {
-            this.labelArr.push(...x.strings)
-        })
-
-        // create string
-        if (this.labelArr.length > 0) {
-            this.labelMissing = false
-            this.entityType = `${this.labelArr.join(', ')}`;
-        }
-    }
-
-
-    /**
-    * Creates strings array for given field-edges (edges must be of same field, i.e. property + direction)
-    *
-    * example result: ["fieldLabel:", "edgeTargetLabel1", "edgeTargetLabel2", ...]
-    *
-    * @param edges Array of edges
-    * @param config `
-    *      fkProject: project
-    *      fkProperty: property of edges/field (needed to get fieldLabel)
-    *      isOutgoing: direction of edges/field (needed to get fieldLabel)
-    *      maxLabelNr max number of edgeTargetLabels
-    * `
-    */
-    private async createEntityLabelArray(
-        entity: ProjectEntity,
-        edges?: Edge[],
-        maxLabelNr = 1
-    ) {
-        const result: {
-            strings: string[],
-            // the id of entities providing the label
-            labelProviders: number[]
-        } = {
-            strings: [],
-            labelProviders: []
-        }
-
-        // are there any edges?
-        if (edges?.length) {
-
-            // stop iteration at smaller number of limit or length of edges
-            const stop = Math.min(maxLabelNr, edges.length);
-
-            for (let i = 0; i < stop; i++) {
-                const e = edges[i];
-
-                let string;
-                if (e.targetIsEntity) {
-                    string = await this.providers.entityTypes.get({ pkEntity: e.fkTarget, fkProject: entity.fkProject })
-                    result.labelProviders.push(e.fkTarget);
-                } else {
-                    string = e.targetLabel;
-                }
-
-                if (string) result.strings.push(string);
-
-            }
-        }
-        return result;
-    }
-
-
-    /************************************************************************
-     * Methods for registering values of this in other indexes
-    ************************************************************************/
-
-
-    // /**
-    //  * Register the aggregated result and cleanup its dependencies (providers)
-    //  */
-    // async register() {
-
-    //     /**
-    //      * update the result index `EntityPreviewIdx`:
-    //      * this adds update requests if needed
-    //      */
-    //     await this.main.agg.entityType.add(this.id, this.entityType)
-
-
-    //     /**
-    //     * cleanup dependency indexes:
-    //     * remove providers from last cycle that are not needed anymore
-    //     */
-    //     await this.providers.removeProvidersFromIndexes()
-
-    //     return this
-    // }
-
-
-
-
-    private async getEntityLabelConfig(classId: PClassId): Promise<EntityLabelConfig | undefined> {
-
-
-        let res = await this.providers.entityTypeConfig.get(classId)
-
-        if (res) return res;
-
-        res = await this.providers.entityTypeConfig.get({ ...classId, fkProject: PK_DEFAULT_CONFIG_PROJECT })
-
-        return res;
-    }
-
 
 }

@@ -1,23 +1,21 @@
-import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
-import {PClassId} from '../../primary-ds/FieldsConfigService'
-import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService'
-import {FieldsPerEntity} from '../../primary-ds/PEdgeService'
-import {Warehouse} from '../../Warehouse'
-import {entityIdToString, stringToEntityId, classIdToString, stringToClassId} from '../../base/functions'
 import {ClearAll} from '../../base/classes/ClearAll'
+import {DependencyIndex} from '../../base/classes/DependencyIndex'
+import {entityIdToString, stringToEntityId} from '../../base/functions'
+import {FieldsPerEntity} from '../../primary-ds/PEdgeService'
+import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
+import {Warehouse} from '../../Warehouse'
+import {PEntityTypeVal} from './PEntityTypeService'
 
 export class PEntityTypeDependencies extends ClearAll {
-    entity: DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>
-    entityTypeConfig: DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>
-    entityType: DependencyIndex<PEntityId, string, PEntityId, string>
-    edge: DependencyIndex<PEntityId, string, PEntityId, FieldsPerEntity>
+    pEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, ProjectEntity>
+    pEntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, string>
+    pEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, FieldsPerEntity>
 
     // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
-        this.entity = new DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>(
+        this.pEntity = new DependencyIndex(
             this.wh.agg.pEntityType,
             this.wh.prim.pEntity,
             entityIdToString,
@@ -26,20 +24,10 @@ export class PEntityTypeDependencies extends ClearAll {
             stringToEntityId,
         )
 
-        // stores the dependency of entityType (receiver) on entityTypeConfig (provider)
-        this.entityTypeConfig = new DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>(
+        // stores the dependency of entityType (receiver) on entityLabel (provider)
+        this.pEntityLabel = new DependencyIndex(
             this.wh.agg.pEntityType,
-            this.wh.prim.entityTypeConfig,
-            entityIdToString,
-            stringToEntityId,
-            classIdToString,
-            stringToClassId
-        )
-
-        // stores the dependency of entityType (receiver) on entityType (provider)
-        this.entityType = new DependencyIndex(
-            this.wh.agg.pEntityType,
-            this.wh.agg.pEntityType,
+            this.wh.agg.pEntityLabel,
             entityIdToString,
             stringToEntityId,
             entityIdToString,
@@ -47,7 +35,7 @@ export class PEntityTypeDependencies extends ClearAll {
         );
 
         // stores the dependency of entityType (receiver) on edge (provider)
-        this.edge = new DependencyIndex(
+        this.pEdge = new DependencyIndex(
             this.wh.agg.pEntityType,
             this.wh.prim.pEdge,
             entityIdToString,
@@ -63,10 +51,9 @@ export class PEntityTypeDependencies extends ClearAll {
 
     async clearAll() {
         await Promise.all([
-            this.edge.clearIdx(),
-            this.entity.clearIdx(),
-            this.entityTypeConfig.clearIdx(),
-            this.entityType.clearIdx(),
+            this.pEdge.clearIdx(),
+            this.pEntity.clearIdx(),
+            this.pEntityLabel.clearIdx(),
         ])
     }
 

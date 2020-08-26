@@ -106,11 +106,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "5000",
+        "50000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/^PEntityLabelService2/"
+        "/PEntityType.*should create fk_type of geographical place/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

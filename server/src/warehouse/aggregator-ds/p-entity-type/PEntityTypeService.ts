@@ -8,11 +8,14 @@ import {Warehouse} from '../../Warehouse';
 import {PEntityTypeAggregator} from './PEntityTypeAggregator';
 import {PEntityTypeProviders} from './PEntityTypePoviders';
 
-type ValueModel = string
-export class PEntityTypeService extends AggregatedDataService<PEntityId, ValueModel, PEntityTypeAggregator>{
+export interface PEntityTypeVal {
+    fkType?: number,
+    typeLabel?: string
+}
+export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal, PEntityTypeAggregator>{
     updater: Updater<PEntityId, PEntityTypeAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, ValueModel>(entityIdToString, stringToEntityId)
+    index = new IndexDBGeneric<PEntityId, PEntityTypeVal>(entityIdToString, stringToEntityId)
 
     constructor(private wh: Warehouse) {
         super()
@@ -21,7 +24,10 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, ValueMo
             return new PEntityTypeAggregator(providers, id).create()
         }
         const register = async (result: PEntityTypeAggregator) => {
-            await this.put(result.id, result.entityType)
+            await this.put(result.id, {
+                fkType: result.fkEntityType,
+                typeLabel: result.entityTypeLabel
+            })
             await result.providers.removeProvidersFromIndexes()
         }
 
@@ -34,16 +40,22 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, ValueMo
             stringToEntityId,
         )
 
-        const upsertQueue = new SqlUpsertQueue<PEntityId, ValueModel>(
+        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTypeVal>(
             'war.entity_preview (entity_type)',
             wh.pgClient,
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, entity_type)
+                INSERT INTO war.entity_preview (pk_entity, project, type_label, fk_type)
                 VALUES ${valuesStr}
                 ON CONFLICT (pk_entity, project) DO UPDATE
-                SET entity_type = EXCLUDED.entity_type
-                WHERE EXCLUDED.entity_type IS DISTINCT FROM war.entity_preview.entity_type;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
+                SET
+                    type_label = EXCLUDED.type_label,
+                    fk_type = EXCLUDED.fk_type
+                WHERE (
+                    EXCLUDED.type_label IS DISTINCT FROM war.entity_preview.type_label
+                    OR
+                    EXCLUDED.fk_type IS DISTINCT FROM war.entity_preview.fk_type
+                );`,
+            (item) => [item.key.pkEntity, item.key.fkProject, item.val.typeLabel, item.val.fkType],
             entityIdToString
         )
 
