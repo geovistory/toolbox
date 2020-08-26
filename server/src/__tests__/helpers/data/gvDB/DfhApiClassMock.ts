@@ -105,7 +105,28 @@ export class DfhApiClassMock {
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "histC8"
   }
+  static readonly EN_335_TIME_PRIMITIVE: DfhApiClass = {
+    "pk_entity": 3735,
+    "dfh_pk_class": 335,
+    "dfh_basic_type": 0,
+    "dfh_fk_profile": 5,
+    "dfh_class_label": "Time Primitive",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": null,
+    "dfh_class_scope_note": "This class comprises instances of E59 Primitive Value for time that should be implemented with appropriate validation, precision and interval logic to express date ranges relevant to cultural documentation. \r\n \r\nE61 Time Primitive is not further elaborated upon within the model.",
+    "tmsp_last_modification": "2020-01-27T08:03:07.706645+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "inferred",
+    "dfh_class_scope_note_language": "",
+    "dfh_class_identifier_in_namespace": "E61"
 }
+}
+
 
 
 /**

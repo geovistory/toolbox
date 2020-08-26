@@ -81,7 +81,7 @@ interface NewDfhApiClass {
   dfh_class_scope_note_language: string,
   dfh_class_scope_note: string,
   dfh_basic_type: number,
-  dfh_basic_type_label: string,
+  dfh_basic_type_label: string | null,
   dfh_fk_namespace: number,
   dfh_namespace_label_language: string,
   dfh_namespace_label: string,
