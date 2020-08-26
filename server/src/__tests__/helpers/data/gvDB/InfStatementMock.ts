@@ -31,6 +31,20 @@ export class InfStatementMock {
     fk_object_info: InfAppellationMock.CITY.pk_entity,
   })
 
+  static readonly NAMING_CITY_TO_GEO_PLACE_TYPE = new InfStatement({
+    pk_entity: 3004,
+    fk_subject_info: InfTemporalEntityMock.NAMING_CITY.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
+  })
+
+  static readonly MADRID_HAS_GEO_PLACE_TYPE_CITY = new InfStatement({
+    pk_entity: 3005,
+    fk_subject_info: InfPersistentItemMock.GEO_PLACE_MADRID.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
+  })
+
 }
 
 

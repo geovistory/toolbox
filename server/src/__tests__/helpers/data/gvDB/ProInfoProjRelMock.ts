@@ -43,4 +43,52 @@ export class ProInfoProjRelMock {
     is_in_project: true
   })
 
+  static readonly PROJ_1_MADRID = new ProInfoProjRel({
+    pk_entity: 2005,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfPersistentItemMock.GEO_PLACE_MADRID.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_CITY_TYPE = new ProInfoProjRel({
+    pk_entity: 2006,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_NAMING_CITY = new ProInfoProjRel({
+    pk_entity: 2007,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfTemporalEntityMock.NAMING_CITY.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE = new ProInfoProjRel({
+    pk_entity: 2008,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.MADRID_HAS_GEO_PLACE_TYPE_CITY.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_NAMING_CITY_TO_APPE_CITY = new ProInfoProjRel({
+    pk_entity: 2009,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.NAMING_CITY_TO_APPE_CITY.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_NAMING_CITY_TO_GEO_PLACE_TYPE = new ProInfoProjRel({
+    pk_entity: 2010,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.NAMING_CITY_TO_GEO_PLACE_TYPE.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
 }
