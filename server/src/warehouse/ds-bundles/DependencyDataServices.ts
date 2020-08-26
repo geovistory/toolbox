@@ -1,4 +1,5 @@
 import {PEntityLabelDependencies} from '../aggregator-ds/p-entity-label/PEntityLabelDependencies';
+import {PEntityTypeDependencies} from '../aggregator-ds/p-entity-type/PEntityTypeDependencies';
 import {Warehouse} from '../Warehouse';
 import {PClassLabelDependencies} from '../aggregator-ds/p-class-label/PClassLabelDependencies';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
@@ -8,6 +9,7 @@ import {PEntityClassLabelDependencies} from '../aggregator-ds/p-entity-class-lab
 export class DependencyDataServices extends DataServiceBundle {
     pClassLabel: PClassLabelDependencies
     pEntityLabel: PEntityLabelDependencies
+    pEntityType: PEntityTypeDependencies
     pEntityClassLabel: PEntityClassLabelDependencies
     constructor(wh: Warehouse) {
         super()
