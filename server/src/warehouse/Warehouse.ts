@@ -63,7 +63,7 @@ export class Warehouse {
 
         await this.pgClient.connect();
 
-        await this.clearDB()
+        await this.clearWhDB()
 
         this.startListening()
 
@@ -71,7 +71,6 @@ export class Warehouse {
 
         await this.initUpdateRequests()
 
-        // await this.updateService.runRecurciveCycle()
         await this.agg.start()
 
         Logger.itTook(t0, 'to start', 0)
@@ -132,7 +131,7 @@ export class Warehouse {
     // initMockDb(dbServices: DbServices) {
     //     this.db = dbServices
     // }
-    async clearDB() {
+    async clearWhDB() {
         const t1 = Logger.start('Clear DB', 0)
 
         await this.prim.clearAll()
@@ -205,7 +204,8 @@ export class Warehouse {
             const handler = this.notificationHandlers[msg.channel];
             if (typeof msg.payload === 'string') {
                 const date = new Date(msg.payload);
-                if (handler) handler.listeners.map(l => l.callback(date).catch(e => console.log(e)))
+                if(isNaN(date.getTime())) console.error(`Invalid Timestamp provided by pg_notify channel ${msg.channel}`, msg.payload)
+                else if (handler) handler.listeners.map(l => l.callback(date).catch(e => console.log(e)))
             } else {
                 console.error('payload of notification must be a string convertable to date')
             }

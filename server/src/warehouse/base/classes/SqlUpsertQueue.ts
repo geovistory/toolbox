@@ -81,7 +81,7 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
 
         this.pgClient.query(q, params)
             .then(() => {
-                Logger.msg(`upserted ${length} by ${this.queueName}`);
+                Logger.msg(`\u{1b}[34m(async) Upserted ${length} ${this.queueName} \u{1b}[0m`);
             })
             .catch(e => {
                 console.log(e);

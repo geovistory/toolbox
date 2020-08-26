@@ -16,7 +16,7 @@ describe('PEntityLabelAggregator', function () {
     })
 
     beforeEach(async function () {
-        await wh.clearDB()
+        await wh.clearWhDB()
 
     })
 

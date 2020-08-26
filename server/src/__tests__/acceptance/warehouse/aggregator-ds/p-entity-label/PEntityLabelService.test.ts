@@ -14,7 +14,7 @@ describe('PEntityLabelService', function () {
     beforeEach(async function () {
         try {
 
-            await wh.clearDB()
+            await wh.clearWhDB()
             // add minimal data
             await wh.prim.createEntity(EntityMock.NAME_1_ID, EntityMock.NAME_1)
             await wh.prim.createEntity(EntityMock.PERS_1_ID, EntityMock.PERS_1)

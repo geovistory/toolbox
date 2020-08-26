@@ -26,5 +26,6 @@ export class Postgres1DataSource extends juggler.DataSource
     dsConfig: object = config,
   ) {
     super(dsConfig);
+    console.log('Geovistory Database:', config.url.split('@')[1])
   }
 }

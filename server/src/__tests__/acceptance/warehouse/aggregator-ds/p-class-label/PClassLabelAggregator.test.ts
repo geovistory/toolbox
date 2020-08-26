@@ -18,7 +18,7 @@ describe('PClassLabelAggregator', function () {
     })
 
     beforeEach(async function () {
-        await wh.clearDB()
+        await wh.clearWhDB()
     })
 
     it('should create class label from: de-project', async () => {

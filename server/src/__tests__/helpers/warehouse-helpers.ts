@@ -51,7 +51,7 @@ export async function waitUntilNext<M>(observable$: Observable<M>) {
  * that machtches the given whereFilter.
  * @param observable$
  */
-export async function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
+export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
     return new Promise<WarEntityPreview>((res, rej) => {
         wh.pgClient.on('notification', (msg) => {
             if (msg.channel === 'entity_previews_updated') {

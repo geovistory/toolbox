@@ -35,74 +35,74 @@ export class PostgresNotificationsManager {
     })
   }
 
-  callQueueWorker() {
-    if (!this.warUpdating) {
-      this.warUpdating = true;
-      this.warUpdateNeeded = false;
-      this.client.query('SELECT war.updater()', (err, res) => {
-        this.warUpdating = false;
-        if (err) console.log(err);
-        // console.log(res.rows[0].entity_preview_update_queue_worker )
-        if (
-          res?.rows?.length &&
-          res.rows[0].updater === true
-        ) {
-          this.statementUpdateNeeded = true;
-          this.updateStatements();
-        }
-        if (this.warUpdateNeeded) this.callQueueWorker();
-      });
-    }
-  };
+  // callQueueWorker() {
+  //   if (!this.warUpdating) {
+  //     this.warUpdating = true;
+  //     this.warUpdateNeeded = false;
+  //     this.client.query('SELECT war.updater()', (err, res) => {
+  //       this.warUpdating = false;
+  //       if (err) console.log(err);
+  //       // console.log(res.rows[0].entity_preview_update_queue_worker )
+  //       if (
+  //         res?.rows?.length &&
+  //         res.rows[0].updater === true
+  //       ) {
+  //         this.statementUpdateNeeded = true;
+  //         this.updateStatements();
+  //       }
+  //       if (this.warUpdateNeeded) this.callQueueWorker();
+  //     });
+  //   }
+  // };
 
-  updateStatements(matViewIsEmpty = false) {
-    if (!this.statementsUpdating) {
-      this.statementsUpdating = true;
-      this.statementUpdateNeeded = false;
-      // Do refresh the mat view. If the view is empty, concurrently is no option
-      // see: https://www.postgresql.org/docs/9.4/sql-refreshmaterializedview.html
-      const sql = `
-      REFRESH MATERIALIZED VIEW ${matViewIsEmpty ? '' : 'CONCURRENTLY'}
-      war.vm_statement;`;
-      this.client2.query(sql, (err, res) => {
-        this.statementsUpdating = false;
-        if (err) {
-          // TODO:
-          // if (err.code === '0A000') {
-          //   this.updateStatements(true);
-          // } else {
-          //   console.log(err);
-          // }
-        } else if (process.env.NO_LOGS !== 'true') {
-          console.log(
-            `\u{1b}[36m war.vm_statement updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
-          );
-        }
-        if (this.statementUpdateNeeded) this.updateStatements();
-      });
-      // // delay a little
-      // setTimeout(() => {
-      // }, 2000)
-    }
-  };
+  // updateStatements(matViewIsEmpty = false) {
+  //   if (!this.statementsUpdating) {
+  //     this.statementsUpdating = true;
+  //     this.statementUpdateNeeded = false;
+  //     // Do refresh the mat view. If the view is empty, concurrently is no option
+  //     // see: https://www.postgresql.org/docs/9.4/sql-refreshmaterializedview.html
+  //     const sql = `
+  //     REFRESH MATERIALIZED VIEW ${matViewIsEmpty ? '' : 'CONCURRENTLY'}
+  //     war.vm_statement;`;
+  //     this.client2.query(sql, (err, res) => {
+  //       this.statementsUpdating = false;
+  //       if (err) {
+  //         // TODO:
+  //         // if (err.code === '0A000') {
+  //         //   this.updateStatements(true);
+  //         // } else {
+  //         //   console.log(err);
+  //         // }
+  //       } else if (process.env.NO_LOGS !== 'true') {
+  //         console.log(
+  //           `\u{1b}[36m war.vm_statement updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+  //         );
+  //       }
+  //       if (this.statementUpdateNeeded) this.updateStatements();
+  //     });
+  //     // // delay a little
+  //     // setTimeout(() => {
+  //     // }, 2000)
+  //   }
+  // };
 
-  updateClassLabels() {
-    if (!this.classLabelsUpdating) {
-      this.classLabelsUpdating = true;
-      this.classLabelUpdateNeeded = false;
-      const sql = `SELECT war.entity_preview__update_class_labels();`;
-      this.client2.query(sql, (err, res) => {
-        this.classLabelsUpdating = false;
-        if (err) console.log(err);
-        else if (process.env.NO_LOGS !== 'true') {
-          console.log(
-            `\u{1b}[36m war.entity_preview class_labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
-          );
-        }
-        if (this.classLabelUpdateNeeded) this.updateClassLabels();
-      });
-    }
-  };
+  // updateClassLabels() {
+  //   if (!this.classLabelsUpdating) {
+  //     this.classLabelsUpdating = true;
+  //     this.classLabelUpdateNeeded = false;
+  //     const sql = `SELECT war.entity_preview__update_class_labels();`;
+  //     this.client2.query(sql, (err, res) => {
+  //       this.classLabelsUpdating = false;
+  //       if (err) console.log(err);
+  //       else if (process.env.NO_LOGS !== 'true') {
+  //         console.log(
+  //           `\u{1b}[36m war.entity_preview class_labels updated \u{1b}[34m ${new Date().toString()}\u{1b}[0m`
+  //         );
+  //       }
+  //       if (this.classLabelUpdateNeeded) this.updateClassLabels();
+  //     });
+  //   }
+  // };
 
   reactOnNotifications() {
     // Listen for all pg_notify channel messages

@@ -35,7 +35,7 @@ export class PEntityClassLabelService extends AggregatedDataService<PEntityId, V
         )
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, ValueModel>(
-            this.constructor.name,
+            'war.entity_preview (class_label)',
             wh.pgClient,
             (valuesStr: string) => `
                 INSERT INTO war.entity_preview (pk_entity, fk_project, project, class_label)

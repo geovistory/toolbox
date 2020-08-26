@@ -22,7 +22,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
         ])
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, ProjectEntity>(
-            this.constructor.name,
+            'war.entity_preview (pk_entity,fk_project,fk_class)',
             wh.pgClient,
             (valuesStr: string) => `
                 INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class)

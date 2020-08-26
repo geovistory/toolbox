@@ -4,7 +4,7 @@ import {ProjectService} from '../../../../warehouse/primary-ds/ProjectService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProjectService', () => {
 
@@ -18,7 +18,7 @@ describe('ProjectService', () => {
     s = wh.prim.project;
   })
 
-  it('should have project in index after initIdx()', async () => {
+  it('should have project in index', async () => {
     const project = await createProject('German')
     await waitUntilNext(s.afterPut$)
     const result = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})

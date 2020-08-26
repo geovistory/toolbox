@@ -34,7 +34,6 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         private register: (result: Aggregator) => Promise<void>,
         keyToString: KeyModelToString<KeyModel>,
         stringToKey: StringToKeyModel<KeyModel>,
-        private registerAllHook?: (results: Aggregator[]) => void
     ) {
 
         this._queueA = new UniqIndexGeneric<KeyModel>(keyToString, stringToKey)
@@ -147,7 +146,6 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
 
         // Register EntityPreview for each created preview
         i = 0;
-        if (this.registerAllHook) this.registerAllHook(results)
         for (const result of results) {
             await this.register(result)
 

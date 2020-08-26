@@ -38,7 +38,7 @@ const updateSql = `
     FROM
         projects.project
     WHERE
-        tmsp_last_modification > $1
+        tmsp_last_modification >= $1
 `
 const deleteSql = `
     SELECT
@@ -46,7 +46,7 @@ const deleteSql = `
     FROM
         projects.project_vt
     WHERE
-        upper(sys_period) > $1
+        upper(sys_period) >= $1
 
     EXCEPT
 

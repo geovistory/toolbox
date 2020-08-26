@@ -110,7 +110,7 @@
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/^PEntityLabelService.*should create entity label of naming/"
+        "/^PEntityLabelService2/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,
