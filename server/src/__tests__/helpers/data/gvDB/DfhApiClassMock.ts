@@ -62,7 +62,49 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
     "dfh_class_identifier_in_namespace": "E41"
-}
+  }
+
+  static readonly EN_364_GEO_PLACE_TYPE: DfhApiClass = {
+    "pk_entity": 3664,
+    "dfh_pk_class": 364,
+    "dfh_basic_type": 30,
+    "dfh_fk_profile": 4,
+    "dfh_class_label": "Geographical place type",
+    "dfh_fk_namespace": 3,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Generic Historical Information Profile",
+    "dfh_namespace_label": "CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing",
+    "dfh_basic_type_label": "Type (controlled vocabulary)",
+    "dfh_class_scope_note": "This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of the 'hictC8 Geographical place'.",
+    "tmsp_last_modification": "2020-03-07T11:47:40.970195+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "histC9"
+  }
+
+  static readonly EN_363_GEO_PLACE: DfhApiClass = {
+    "pk_entity": 3663,
+    "dfh_pk_class": 363,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 4,
+    "dfh_class_label": "Geographical Place",
+    "dfh_fk_namespace": 3,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Generic Historical Information Profile",
+    "dfh_namespace_label": "CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "This class refers to portions of the surface of the Earth intended as constellations of matter which can be represented by photographs, paintings and maps. The relevant portion of the surface of the Earth can be covered by water (river, sea, ...). The more specific identity of instances of this class is provided by a controlled vocabulary of geographical place types.",
+    "tmsp_last_modification": "2020-03-07T11:47:40.970195+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "histC8"
+  }
 }
 
 

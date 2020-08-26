@@ -11,4 +11,14 @@ export class InfPersistentItemMock {
     fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
   })
 
+  static readonly GEO_PLACE_MADRID = new InfPersistentItem({
+    pk_entity: 2002,
+    fk_class: DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class,
+  })
+
+  static readonly GEO_PLACE_TYPE_CITY = new InfPersistentItem({
+    pk_entity: 2003,
+    fk_class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_pk_class,
+  })
+
 }

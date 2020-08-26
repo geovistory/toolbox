@@ -17,5 +17,10 @@ export class InfAppellationMock {
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
     string: 'Jack'
   })
+  static readonly CITY = new InfAppellation({
+    pk_entity: 5003,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'City'
+  })
 
 }

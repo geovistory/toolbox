@@ -24,6 +24,13 @@ export class InfStatementMock {
     fk_object_info: InfAppellationMock.JACK_THE_FOO.pk_entity,
   })
 
+  static readonly NAMING_CITY_TO_APPE_CITY = new InfStatement({
+    pk_entity: 3003,
+    fk_subject_info: InfTemporalEntityMock.NAMING_CITY.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.CITY.pk_entity,
+  })
+
 }
 
 

@@ -60,6 +60,37 @@ export class DfhApiPropertyMock {
     "dfh_domain_instances_min_quantifier": 0,
     "dfh_property_identifier_in_namespace": "P11"
   }
+
+  static readonly EN_1110_HAS_GEO_PLACE_TYPE: DfhApiProperty = {
+    "pk_entity": 3695,
+    "dfh_fk_profile": 4,
+    "dfh_pk_property": 1110,
+    "dfh_fk_namespace": 3,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Generic Historical Information Profile",
+    "dfh_property_label": "has geographical place type",
+    "dfh_property_range": 364,
+    "requested_language": "en",
+    "dfh_namespace_label": "CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing",
+    "dfh_property_domain": 363,
+    "tmsp_last_dfh_update": "2020-03-07T11:47:39.607+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "Associates a geographical place with the type which defines its identity",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": true,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 0,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "histP8"
+  }
 }
 
 
