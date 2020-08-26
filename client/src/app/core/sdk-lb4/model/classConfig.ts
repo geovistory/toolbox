@@ -12,15 +12,10 @@
 import { ListType } from './listType';
 
 
-<<<<<<< HEAD:client/src/app/core/sdk-lb4/model/importTableStateResponse.ts
-export interface ImportTableStateResponse { 
-    importing?: boolean;
-=======
 /**
  * System wide configuration for the class.
  */
 export interface ClassConfig { 
     mapsToListType?: ListType;
->>>>>>> dev:client/src/app/core/sdk-lb4/model/classConfig.ts
 }
 

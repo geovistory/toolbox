@@ -3,7 +3,7 @@ import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
 
-import { AccountControllerService } from './api/accountController.service';
+import { AccountService } from './api/account.service';
 import { DatChunkService } from './api/datChunk.service';
 import { DatChunkControllerService } from './api/datChunkController.service';
 import { DatColumnService } from './api/datColumn.service';
@@ -35,9 +35,9 @@ import { SysAnalysisTypeService } from './api/sysAnalysisType.service';
 import { SysAppContextService } from './api/sysAppContext.service';
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';
-import { SysConfigControllerService } from './api/sysConfigController.service';
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';
 import { SysSystemTypeService } from './api/sysSystemType.service';
+import { SystemConfigurationService } from './api/systemConfiguration.service';
 import { WarEntityPreviewService } from './api/warEntityPreview.service';
 import { WarEntityPreviewControllerService } from './api/warEntityPreviewController.service';
 

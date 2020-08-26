@@ -27,6 +27,7 @@ import { AnnotationModule } from '../annotation/annotation.module';
 import { BaseModule } from '../base/base.module';
 import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
 import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
+import { ContentTreeNodeOptionsComponent } from './components/content-tree-node-options/content-tree-node-options.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
 import { InformationAPIActions } from './containers/entity-list/api/entity-list.actions';
 import { InformationAPIEpics } from './containers/entity-list/api/entity-list.epics';
@@ -76,6 +77,7 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     ContentTreeComponent,
     ContentTreeNodeLabelComponent,
     ContentTreeNodeTypeComponent,
+    ContentTreeNodeOptionsComponent,
   ],
   providers: [
     InformationAPIActions,
