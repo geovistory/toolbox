@@ -113,6 +113,7 @@ export class Warehouse {
         await this.prim.entityLabelConfig.initIdx();
         await this.prim.pEntity.initIdx();
         await this.prim.pEdge.initIdx();
+        await this.prim.dfhClassHasTypeProperty.initIdx();
 
 
         // await this.prim.fieldsConfig.initIdx();

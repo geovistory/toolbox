@@ -48,37 +48,39 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
             await this.providers.load()
 
             const classId = {
-                fkProject: entity.fkProject,
                 pkClass: entity.fkClass
             }
 
             // Find the dfh_pk_property of the 'has type'-subproperty going out of this class
-            const fkHasTypeSubproperty = 1110;
+            const fkHasTypeSubproperty = await this.providers.dfhClassHasTypeProp.get(classId);
 
-            // Get the 'directed-statements' a.k.a. 'edges' of the entity
-            const fieldsWithEdges = await this.providers.pEdges.get(this.id)
+            if (fkHasTypeSubproperty) {
+                // Get the 'directed-statements' a.k.a. 'edges' of the entity
+                const fieldsWithEdges = await this.providers.pEdges.get(this.id)
 
-            const hasTypeStmts = fieldsWithEdges?.outgoing?.[fkHasTypeSubproperty];
+                const hasTypeStmts = fieldsWithEdges?.outgoing?.[fkHasTypeSubproperty];
 
-            if (hasTypeStmts?.length) {
+                if (hasTypeStmts?.length) {
 
-                // this gives the info for war.entity_preview (fk_type)
-                this.fkEntityType = hasTypeStmts[0].fkTarget // fk_object_info
+                    // this gives the info for war.entity_preview (fk_type)
+                    this.fkEntityType = hasTypeStmts[0].fkTarget // fk_object_info
 
-                // this gives the info for war.entity_preview (type_label)
-                const typeEntityId: PEntityId = {
-                    fkProject: entity.fkProject,
-                    pkEntity: this.fkEntityType
+                    // this gives the info for war.entity_preview (type_label)
+                    const typeEntityId: PEntityId = {
+                        fkProject: entity.fkProject,
+                        pkEntity: this.fkEntityType
+                    }
+
+                    const entityTypeLabel = await this.providers.pEntityLabel.get(typeEntityId)
+
+                    // TODO: find repo entity label if this is undefined
+
+                    if (entityTypeLabel) {
+                        this.entityTypeLabel = entityTypeLabel
+                        this.labelMissing = false
+                    }
+
                 }
-
-                const entityTypeLabel = await this.providers.pEntityLabel.get(typeEntityId)
-
-                // TODO: find repo entity label if this is undefined
-
-                if (entityTypeLabel) {
-                    this.entityTypeLabel = entityTypeLabel
-                }
-
             }
 
         }

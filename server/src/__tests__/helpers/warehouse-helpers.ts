@@ -58,7 +58,7 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
                 createWarEntityPreviewRepo().find({
                     where: {
                         and: [
-                            {tmsp_last_modification: {eq: msg.payload}},
+                            {tmsp_last_modification: {gte: msg.payload}},
                             ...whereFilter
                         ]
                     }

@@ -9,6 +9,7 @@ import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
 import {ProjectService} from '../primary-ds/ProjectService';
 import {Warehouse} from '../Warehouse';
 import {PClassService} from '../primary-ds/PClassService';
+import {DfhClassHasTypePropertyService} from '../primary-ds/DfhClassHasTypePropertyService';
 export class PrimaryDataServices extends DataServiceBundle {
     project: ProjectService;
     dfhClassLabel: DfhClassLabelService;
@@ -19,6 +20,8 @@ export class PrimaryDataServices extends DataServiceBundle {
     pEdge: PEdgeService;
     pEntity: PEntityService;
     pClass: PClassService;
+    dfhClassHasTypeProperty: DfhClassHasTypePropertyService;
+
     constructor(private wh: Warehouse) {
         super()
         this.project = this.registerDataService(new ProjectService(this.wh));
@@ -30,6 +33,7 @@ export class PrimaryDataServices extends DataServiceBundle {
         this.pEdge = this.registerDataService(new PEdgeService(this.wh));
         this.pEntity = this.registerDataService(new PEntityService(this.wh));
         this.pClass = this.registerDataService(new PClassService(this.wh));
+        this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
     }
 
 

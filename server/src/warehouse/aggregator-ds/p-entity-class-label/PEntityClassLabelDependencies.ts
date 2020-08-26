@@ -1,6 +1,6 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {entityIdToString, stringToEntityId, classIdToString, stringToClassId} from '../../base/functions'
+import {entityIdToString, stringToEntityId, pClassIdToString, stringToPClassId} from '../../base/functions'
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PClassId} from '../../primary-ds/FieldsConfigService'
@@ -26,8 +26,8 @@ export class PEntityClassLabelDependencies extends ClearAll {
             this.wh.agg.pClassLabel,
             entityIdToString,
             stringToEntityId,
-            classIdToString,
-            stringToClassId,
+            pClassIdToString,
+            stringToPClassId,
         );
 
 

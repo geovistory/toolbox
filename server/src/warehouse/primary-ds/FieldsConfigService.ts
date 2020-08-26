@@ -1,4 +1,4 @@
-import { classIdToString, stringToClassId } from '../base/functions';
+import { pClassIdToString, stringToPClassId } from '../base/functions';
 import { IndexDBGeneric } from '../base/classes/IndexDBGeneric';
 import { PrimaryDataService } from '../base/classes/PrimaryDataService';
 import { PK_DEFAULT_CONFIG_PROJECT, Warehouse } from '../Warehouse';
@@ -25,7 +25,7 @@ export class FieldsConfigService extends PrimaryDataService<InitItem, PClassId, 
     updatesSql = updateSql
     deletesSql = '';
 
-    index = new IndexDBGeneric<PClassId, FieldsConfig>(classIdToString, stringToClassId)
+    index = new IndexDBGeneric<PClassId, FieldsConfig>(pClassIdToString, stringToPClassId)
 
 
     constructor(wh: Warehouse) {

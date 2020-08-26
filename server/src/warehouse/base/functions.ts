@@ -6,6 +6,7 @@ import {FieldId} from '../primary-ds/FieldLabelService';
 import {ProClassLabelId} from '../primary-ds/ProClassLabelService';
 import {ProjectId} from '../primary-ds/ProjectService';
 import {leveldbpath} from './database';
+import {ClassId} from '../primary-ds/DfhClassHasTypePropertyService';
 
 export function entityIdToString(key: PEntityId): string {
     return key.fkProject + '_' + key.pkEntity;
@@ -15,15 +16,24 @@ export function stringToEntityId(str: string): PEntityId {
     return {fkProject: parseInt(fkProject, 10), pkEntity: parseInt(pkEntity, 10)};
 }
 
-
-export function classIdToString(key: PClassId): string {
+// project class id to string
+export function pClassIdToString(key: PClassId): string {
     return key.fkProject + '_' + key.pkClass;
 }
-export function stringToClassId(str: string): PClassId {
+// string to project class
+export function stringToPClassId(str: string): PClassId {
     const [fkProject, pkClass] = str.split('_');
     return {fkProject: parseInt(fkProject, 10), pkClass: parseInt(pkClass, 10)};
 }
 
+// class to string
+export function classIdToString(key: ClassId): string {
+    return key.pkClass.toString();
+}
+// string to class
+export function stringToClassId(str: string): ClassId {
+    return {pkClass: parseInt(str, 10)};
+}
 
 export function fieldIdToString(key: FieldId): string {
     return key.fkProject + '_' + key.fkClass + '_' + key.fkProperty + '_' + key.isOutgoing
@@ -57,12 +67,14 @@ export function stringToDfhClassId(str: string): DfhClassLabelId {
 }
 
 
+
+
 export function proClassIdToString(key: ProClassLabelId): string {
     return key.fkProject + '_' + key.fkClass + '_' + key.fkLanguage
 }
 export function stringToProClassId(str: string): ProClassLabelId {
     const [fkProject, pkClass, fkLanguage] = str.split('_')
-    return {fkProject: parseInt(fkProject, 10), fkClass: parseInt(pkClass, 10), fkLanguage:parseInt(fkLanguage,10)};
+    return {fkProject: parseInt(fkProject, 10), fkClass: parseInt(pkClass, 10), fkLanguage: parseInt(fkLanguage, 10)};
 }
 
 

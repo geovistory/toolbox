@@ -1,6 +1,6 @@
 import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {classIdToString, stringToClassId} from '../base/functions';
+import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
 export interface PClassId {fkProject: number, pkClass: number}
 
@@ -14,7 +14,7 @@ export class PClassService extends PrimaryDataService<InitItem, PClassId, Projec
         return deleteSql
     };
 
-    index = new IndexDBGeneric<PClassId, ProjectClass>(classIdToString, stringToClassId)
+    index = new IndexDBGeneric<PClassId, ProjectClass>(pClassIdToString, stringToPClassId)
 
     constructor(public wh: Warehouse) {
         super(wh, [

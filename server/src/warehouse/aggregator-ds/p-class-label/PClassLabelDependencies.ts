@@ -1,5 +1,5 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {classIdToString, dfhClassIdToString, proClassIdToString, stringToClassId, stringToDfhClassId, stringToProClassId, projectIdToString, stringToProjectId} from '../../base/functions'
+import {pClassIdToString, dfhClassIdToString, proClassIdToString, stringToPClassId, stringToDfhClassId, stringToProClassId, projectIdToString, stringToProjectId} from '../../base/functions'
 import {PClassId} from '../../primary-ds/FieldsConfigService'
 import {DfhClassLabelId, DfhClassLabelVal} from '../../primary-ds/DfhClassLabelService'
 import {ProClassLabelId, ProClassLabelVal} from '../../primary-ds/ProClassLabelService'
@@ -18,8 +18,8 @@ export class PClassLabelDependencies extends ClearAll {
     this.project = new DependencyIndex(
       wh.agg.pClassLabel,
       wh.prim.project,
-      classIdToString,
-      stringToClassId,
+      pClassIdToString,
+      stringToPClassId,
       projectIdToString,
       stringToProjectId
     )
@@ -27,8 +27,8 @@ export class PClassLabelDependencies extends ClearAll {
     this.dfhClassLabel = new DependencyIndex(
       wh.agg.pClassLabel,
       wh.prim.dfhClassLabel,
-      classIdToString,
-      stringToClassId,
+      pClassIdToString,
+      stringToPClassId,
       dfhClassIdToString,
       stringToDfhClassId
     )
@@ -36,8 +36,8 @@ export class PClassLabelDependencies extends ClearAll {
     this.proClassLabel = new DependencyIndex(
       wh.agg.pClassLabel,
       wh.prim.proClassLabel,
-      classIdToString,
-      stringToClassId,
+      pClassIdToString,
+      stringToPClassId,
       proClassIdToString,
       stringToProClassId
     )

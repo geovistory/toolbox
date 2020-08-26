@@ -1,17 +1,18 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {entityIdToString, stringToEntityId} from '../../base/functions'
+import {entityIdToString, stringToEntityId, classIdToString, stringToClassId} from '../../base/functions'
 import {FieldsPerEntity} from '../../primary-ds/PEdgeService'
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityTypeVal} from './PEntityTypeService'
+import {ClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService'
 
 export class PEntityTypeDependencies extends ClearAll {
     pEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, ProjectEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, string>
     pEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, FieldsPerEntity>
+    dfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, ClassId, DfhClassHasTypePropVal>
 
-    // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
@@ -44,8 +45,16 @@ export class PEntityTypeDependencies extends ClearAll {
             stringToEntityId,
         );
 
-        // stores the dependency of entityFullText (receiver) on the classLabel (provider)
-        // entityClassLabelDep = new EntityClassDependencyIndex();
+        // stores the dependency of entityType (receiver) on dfhClassHasTypeProperty
+        this.dfhClassHasTypeProp = new DependencyIndex(
+            this.wh.agg.pEntityType,
+            this.wh.prim.dfhClassHasTypeProperty,
+            entityIdToString,
+            stringToEntityId,
+            classIdToString,
+            stringToClassId,
+        );
+
 
     }
 

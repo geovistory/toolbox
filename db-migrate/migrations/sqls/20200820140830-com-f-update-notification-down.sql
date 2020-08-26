@@ -1,3 +1,6 @@
+-- 10
+DROP TRIGGER notify_modification ON data_for_history.api_property;
+ 
 -- 9
 DROP TRIGGER notify_modification ON projects.dfh_profile_proj_rel;
  

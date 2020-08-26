@@ -2,7 +2,7 @@ import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../base/classes/Updater';
-import {classIdToString, stringToClassId} from '../../base/functions';
+import {pClassIdToString, stringToPClassId} from '../../base/functions';
 import {PClassId} from '../../primary-ds/FieldsConfigService';
 import {Warehouse} from '../../Warehouse';
 import {PClassLabelAggregator} from './PClassLabelAggregator';
@@ -12,7 +12,7 @@ type ValueModel = string
 export class PClassLabelService extends AggregatedDataService<PClassId, ValueModel, PClassLabelAggregator>{
     updater: Updater<PClassId, PClassLabelAggregator>;
 
-    index = new IndexDBGeneric<PClassId, ValueModel>(classIdToString, stringToClassId)
+    index = new IndexDBGeneric<PClassId, ValueModel>(pClassIdToString, stringToPClassId)
 
     constructor(private wh: Warehouse) {
         super()
@@ -29,8 +29,8 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
             this.constructor.name,
             aggregatorFactory,
             register,
-            classIdToString,
-            stringToClassId,
+            pClassIdToString,
+            stringToPClassId,
             // (results) => this.writeToDb(results)
         )
 
@@ -44,7 +44,7 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
                 SET label = EXCLUDED.label
                 WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label;`,
             (item) => [item.key.pkClass, item.key.fkProject, item.val],
-            classIdToString
+            pClassIdToString
         )
 
         /**

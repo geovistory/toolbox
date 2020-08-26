@@ -44,7 +44,7 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntity
             'war.entity_preview (entity_type)',
             wh.pgClient,
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, project, type_label, fk_type)
+                INSERT INTO war.entity_preview (pk_entity, fk_project, project, type_label, fk_type)
                 VALUES ${valuesStr}
                 ON CONFLICT (pk_entity, project) DO UPDATE
                 SET
@@ -55,7 +55,7 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntity
                     OR
                     EXCLUDED.fk_type IS DISTINCT FROM war.entity_preview.fk_type
                 );`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val.typeLabel, item.val.fkType],
+            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val.typeLabel, item.val.fkType],
             entityIdToString
         )
 

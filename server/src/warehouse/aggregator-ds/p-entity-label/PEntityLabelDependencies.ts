@@ -4,7 +4,7 @@ import {PClassId} from '../../primary-ds/FieldsConfigService'
 import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService'
 import {FieldsPerEntity} from '../../primary-ds/PEdgeService'
 import {Warehouse} from '../../Warehouse'
-import {entityIdToString, stringToEntityId, classIdToString, stringToClassId} from '../../base/functions'
+import {entityIdToString, stringToEntityId, pClassIdToString, stringToPClassId} from '../../base/functions'
 import {ClearAll} from '../../base/classes/ClearAll'
 
 export class PEntityLabelDependencies extends ClearAll {
@@ -32,8 +32,8 @@ export class PEntityLabelDependencies extends ClearAll {
             this.wh.prim.entityLabelConfig,
             entityIdToString,
             stringToEntityId,
-            classIdToString,
-            stringToClassId
+            pClassIdToString,
+            stringToPClassId
         )
 
         // stores the dependency of entityLabel (receiver) on entityLabel (provider)

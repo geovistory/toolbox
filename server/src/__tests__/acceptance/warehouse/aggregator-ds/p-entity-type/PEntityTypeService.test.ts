@@ -25,7 +25,7 @@ import {setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../hel
 /**
  * Testing whole stack from postgres to warehouse
  */
-describe('PEntityType', function () {
+describe('PEntityTypeService', function () {
     let wh: Warehouse;
 
     beforeEach(async function () {
@@ -52,7 +52,7 @@ describe('PEntityType', function () {
             {fk_project: {eq: project.pk_entity}},
             {type_label: {eq: cityTypeAppe.string}},
         ])
-        expect(result.entity_label).to.equal(cityTypeAppe.string);
+        expect(result.type_label).to.equal(cityTypeAppe.string);
 
         await updateProInfoProjRel(
             ProInfoProjRelMock.PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE.pk_entity ?? -1,
