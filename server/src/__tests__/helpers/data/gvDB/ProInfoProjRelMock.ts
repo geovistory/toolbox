@@ -5,7 +5,6 @@ import {InfStatementMock} from './InfStatementMock';
 import {InfTemporalEntityMock} from './InfTemporalEntityMock';
 import {ProProjectMock} from './ProProjectMock';
 import {PubAccountMock} from './PubAccountMock';
-import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
 
 /**
  * pk_entity prefixed with 200

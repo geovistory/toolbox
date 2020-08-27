@@ -33,10 +33,10 @@ describe('PEntityTimeSpan', function () {
     })
 
     it('should create timespanval of time primitive - Ongoing throughout', async () => {
-        const {teEn, project} = await createMock();
+        const {shipVoyage, project} = await createMock();
 
         const result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: teEn.pk_entity}},
+            {pk_entity: {eq: shipVoyage.pk_entity}},
             {fk_project: {eq: project.pk_entity}}
         ])
         const expected: PEntityTimeSpanVal = {
@@ -99,7 +99,7 @@ async function createMock() {
     await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END);
 
     // - shipVoyage
-    const teEn = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+    const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
     // TimePrimitive 1
@@ -162,7 +162,7 @@ interface PEntityTimeSpanVal {
     p81a?: PEntityTimePrimitive; // end of the begin | left inner bound | surely from
     p82a?: PEntityTimePrimitive; // begin of the begin | left outer bound | not before
     p81b?: PEntityTimePrimitive; // begin of the end | right inner bound | surely to
-    p82b?: PEntityTimePrimitive; // end of the end | right outer bound | not after
+    p82b?: PEntityTimePrimitive; // end of the end | right outer bound | not after
 }
 
 
