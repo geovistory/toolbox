@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Where} from '@loopback/repository';
 import {Observable} from 'rxjs';
-import {first} from 'rxjs/operators';
+import {first, filter} from 'rxjs/operators';
 import {WarEntityPreview, WarClassPreview} from '../../models';
 import {Warehouse} from '../../warehouse/Warehouse';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
@@ -82,6 +82,36 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
  * that machtches the given whereFilter.
  * @param observable$
  */
+export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarEntityPreview) => boolean) {
+    return new Promise<WarEntityPreview>((res, rej) => {
+        wh.pgClient.on('notification', (msg) => {
+            if (msg.channel === 'entity_previews_updated') {
+                createWarEntityPreviewRepo().find({
+                    where: {
+                        and: [
+                            {tmsp_last_modification: {gte: msg.payload}}
+                        ]
+                    }
+                })
+                    .then((result) => {
+                        if (result?.length === 1 && compare(result[0])) {
+                            res(result[0])
+                        } else if (result.length > 1) {
+                            rej('found too many entity peviews')
+                        }
+                    })
+                    .catch(e => rej(e))
+            }
+        })
+    })
+}
+
+
+/**
+ * Returns a Promis that resolves as soon as the database emits a entity preview
+ * that machtches the given whereFilter.
+ * @param observable$
+ */
 export async function waitForClassPreview<M>(wh: Warehouse, whereFilter: Where<WarClassPreview>[]) {
     return new Promise<WarClassPreview>((res, rej) => {
         wh.pgClient.on('notification', (msg) => {
@@ -108,3 +138,11 @@ export async function waitForClassPreview<M>(wh: Warehouse, whereFilter: Where<W
 }
 
 
+export function waitUntilSatisfy<M>(obs$: Observable<M>, compare: (item: M) => boolean) {
+    return new Promise<M>((res, rej) => {
+        const sub = obs$.pipe(filter(item => compare(item))).subscribe((x) => {
+            res(x)
+            sub.unsubscribe()
+        })
+    })
+}

@@ -84,7 +84,7 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
                 Logger.msg(`\u{1b}[34m(async) Upserted ${length} ${this.queueName} \u{1b}[0m`);
             })
             .catch(e => {
-                console.log(e);
+                console.log(`Error on upserting ${length} items in ${this.queueName}:`,e);
             });
 
         this.queue = {};

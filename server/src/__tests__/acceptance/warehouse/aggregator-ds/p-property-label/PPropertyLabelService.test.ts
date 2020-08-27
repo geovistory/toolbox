@@ -1,29 +1,20 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
-import {Observable} from 'rxjs';
-import {filter} from 'rxjs/operators';
 import {PPropertyLabelService} from '../../../../../warehouse/aggregator-ds/p-property-label/PPropertyLabelService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {AtmLanguages, createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {createProTextPropertyPropertyLabel, updateProTextProperty, deleteProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
+import {createProTextPropertyPropertyLabel, deleteProTextProperty, updateProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
-function waitUntilSatisfy<M>(obs$: Observable<M>, compare: (item: M) => boolean) {
-    return new Promise<M>((res, rej) => {
-        const sub = obs$.pipe(filter(item => compare(item))).subscribe((x) => {
-            res(x)
-            sub.unsubscribe()
-        })
-    })
-}
+
 
 describe('PPropertyLabelService', function () {
 

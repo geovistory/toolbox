@@ -2,11 +2,12 @@ import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
 import {PEntityId} from '../../primary-ds/PEntityService';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
 import {Granularity, CalendarType} from '../../primary-ds/PEdgeService';
+import {PEntityTimeSpanVal} from './PEntityTimeSpanService';
 
 export class PEntityTimeSpanAggregator extends AbstractAggregator<PEntityId> {
 
     // the resulting entityTimeSpan
-    entityTimeSpan = '{}';
+    entityTimeSpan: PEntityTimeSpanVal = {};
 
     // For testing / debugging
     labelMissing = true;
@@ -41,46 +42,36 @@ export class PEntityTimeSpanAggregator extends AbstractAggregator<PEntityId> {
 
             const fieldsWithEdges = await this.providers.pEdges.get(this.id);
 
-            const obj: {[key: string]: {duration: Granularity, julianDay: number, calendar: CalendarType}} = {};
-
             //ongoing throughout
-            if (fieldsWithEdges?.outgoing?.[71]) obj["p81"] = {
-                duration: fieldsWithEdges?.outgoing?.[71].targetValue.timePrimitive.duration,
-                julianDay: fieldsWithEdges?.outgoing?.[71].targetValue.timePrimitive.julianDay,
-                calendar: fieldsWithEdges?.outgoing?.[71].targetValue.timePrimitive.calendar
+            if (fieldsWithEdges?.outgoing?.[71]?.length) {
+                this.entityTimeSpan["p81"] = fieldsWithEdges.outgoing[71][0].targetValue?.timePrimitive;
             }
             //at some time within
-            if (fieldsWithEdges?.outgoing?.[72]) obj["p82"] = {
-                duration: fieldsWithEdges?.outgoing?.[72].targetValue.timePrimitive.duration,
-                julianDay: fieldsWithEdges?.outgoing?.[72].targetValue.timePrimitive.julianDay,
-                calendar: fieldsWithEdges?.outgoing?.[72].targetValue.timePrimitive.calendar
-            }
-            //end of the begin
-            if (fieldsWithEdges?.outgoing?.[150]) obj["p81a"] = {
-                duration: fieldsWithEdges?.outgoing?.[150].targetValue.timePrimitive.duration,
-                julianDay: fieldsWithEdges?.outgoing?.[150].targetValue.timePrimitive.julianDay,
-                calendar: fieldsWithEdges?.outgoing?.[150].targetValue.timePrimitive.calendar
-            }
-            //begin of the end
-            if (fieldsWithEdges?.outgoing?.[151]) obj["p81b"] = {
-                duration: fieldsWithEdges?.outgoing?.[151].targetValue.timePrimitive.duration,
-                julianDay: fieldsWithEdges?.outgoing?.[151].targetValue.timePrimitive.julianDay,
-                calendar: fieldsWithEdges?.outgoing?.[151].targetValue.timePrimitive.calendar
-            }
-            //begin of the begin
-            if (fieldsWithEdges?.outgoing?.[152]) obj["p82a"] = {
-                duration: fieldsWithEdges?.outgoing?.[152].targetValue.timePrimitive.duration,
-                julianDay: fieldsWithEdges?.outgoing?.[152].targetValue.timePrimitive.julianDay,
-                calendar: fieldsWithEdges?.outgoing?.[152].targetValue.timePrimitive.calendar
-            }
-            //end of the end
-            if (fieldsWithEdges?.outgoing?.[153]) obj["p82b"] = {
-                duration: fieldsWithEdges?.outgoing?.[153].targetValue.timePrimitive.duration,
-                julianDay: fieldsWithEdges?.outgoing?.[153].targetValue.timePrimitive.julianDay,
-                calendar: fieldsWithEdges?.outgoing?.[153].targetValue.timePrimitive.calendar
+            if (fieldsWithEdges?.outgoing?.[72]?.length) {
+                this.entityTimeSpan["p82"] = fieldsWithEdges.outgoing[72][0].targetValue?.timePrimitive;
             }
 
-            this.entityTimeSpan = JSON.stringify(obj);
+            //end of the begin
+            if (fieldsWithEdges?.outgoing?.[150]?.length) {
+                this.entityTimeSpan["p81a"] = fieldsWithEdges.outgoing[150][0].targetValue?.timePrimitive;
+            }
+
+            //begin of the end
+            if (fieldsWithEdges?.outgoing?.[151]?.length) {
+                this.entityTimeSpan["p81b"] = fieldsWithEdges.outgoing[151][0].targetValue?.timePrimitive;
+            }
+
+            //begin of the begin
+            if (fieldsWithEdges?.outgoing?.[152]?.length) {
+                this.entityTimeSpan["p82a"] = fieldsWithEdges.outgoing[152][0].targetValue?.timePrimitive;
+            }
+
+            //end of the end
+            if (fieldsWithEdges?.outgoing?.[153]?.length) {
+                this.entityTimeSpan["p82b"] = fieldsWithEdges.outgoing[153][0].targetValue?.timePrimitive;
+            }
+
+
         }
         return this
     }

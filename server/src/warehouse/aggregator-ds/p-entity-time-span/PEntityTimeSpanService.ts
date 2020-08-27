@@ -7,8 +7,16 @@ import {PEntityId} from '../../primary-ds/PEntityService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
+import {PEntityTimePrimitive} from '../../primary-ds/PEdgeService';
 
-// export interface PEntityTimeSpanVal {}
+export interface PEntityTimeSpanVal {
+    p82?: PEntityTimePrimitive; // At some time within | outer bounds | not before – not after
+    p81?: PEntityTimePrimitive; // Ongoing throughout | inner bounds | surely from – surely to
+    p81a?: PEntityTimePrimitive; // end of the begin | left inner bound | surely from
+    p82a?: PEntityTimePrimitive; // begin of the begin | left outer bound | not before
+    p81b?: PEntityTimePrimitive; // begin of the end | right inner bound | surely to
+    p82b?: PEntityTimePrimitive; // end of the end | right outer bound | not after
+}
 
 /**
  * This Data Service manages the key-value store containing
@@ -31,7 +39,7 @@ import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
 export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEntityTimeSpanVal, PEntityTimeSpanAggregator>{
     updater: Updater<PEntityId, PEntityTimeSpanAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, string>(entityIdToString, stringToEntityId)
+    index = new IndexDBGeneric<PEntityId, PEntityTimeSpanVal>(entityIdToString, stringToEntityId)
 
     constructor(private wh: Warehouse) {
         super()
@@ -55,22 +63,16 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             stringToEntityId,
         )
 
-        const upsertQueue = new SqlUpsertQueue<PEntityId, string>(
+        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTimeSpanVal>(
             'war.entity_preview (entity_type)',
             wh.pgClient,
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project,  time_span)
+                INSERT INTO war.entity_preview (pk_entity, fk_project, project, time_span)
                 VALUES ${valuesStr}
                 ON CONFLICT (pk_entity, project) DO UPDATE
-                SET
-                    type_label = EXCLUDED.type_label,
-                    fk_type = EXCLUDED.fk_type
-                WHERE (
-                    EXCLUDED.type_label IS DISTINCT FROM war.entity_preview.type_label
-                    OR
-                    EXCLUDED.fk_type IS DISTINCT FROM war.entity_preview.fk_type
-                );`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val.typeLabel, item.val.fkType],
+                SET time_span = EXCLUDED.time_span
+                WHERE EXCLUDED.time_span IS DISTINCT FROM war.entity_preview.time_span;`,
+            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
             entityIdToString
         )
 

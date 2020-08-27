@@ -106,11 +106,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "7000",
+        "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/PPropertyLabelService.*/"
+        "/PEntityTimeSpan.*/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

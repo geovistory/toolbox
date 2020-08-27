@@ -1,44 +1,57 @@
 /* eslint-disable @typescript-eslint/camelcase */
+import {expect} from '@loopback/testlab';
+import {PEntityTimeSpanVal} from '../../../../../warehouse/aggregator-ds/p-entity-time-span/PEntityTimeSpanService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
+import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
+import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
+import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
-import {expect} from '@loopback/testlab';
-import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
-import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
-import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
-import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
-import {PEntityTimePrimitive} from '../../../../../warehouse/primary-ds/PEdgeService';
+import {setupCleanAndStartWarehouse, waitForEntityPreview, waitUntilSatisfy, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/PEdgeService';
+import {equals} from 'ramda';
 
 /**
  * Testing whole stack from postgres to warehouse
  */
 describe('PEntityTimeSpan', function () {
     let wh: Warehouse;
+    let edgeService: PEdgeService;
 
     beforeEach(async function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
+        edgeService = wh.prim.pEdge
     })
 
-    it('should create timespanval of time primitive - Ongoing throughout', async () => {
+    it('should create edges with time primitives', async () => {
         const {shipVoyage, project} = await createMock();
 
-        const result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: shipVoyage.pk_entity}},
-            {fk_project: {eq: project.pk_entity}}
-        ])
+        const edgesOfShipVoyage = await waitUntilSatisfy(edgeService.afterPut$, (item => {
+            return item.key.fkProject === project.pk_entity
+                && item.key.pkEntity === shipVoyage.pk_entity
+                && item.val.outgoing?.[71]?.length > 0
+        }))
+
+        expect(edgesOfShipVoyage).not.to.be.undefined();
+    })
+
+
+    it('should create timespanval of time primitive', async () => {
+        const {shipVoyage, project} = await createMock();
+
         const expected: PEntityTimeSpanVal = {
             "p81": {
                 "calendar": "gregorian",
@@ -71,6 +84,12 @@ describe('PEntityTimeSpan', function () {
                 "julianDay": 2362734
             }
         }
+        const result = await waitForEntityPreviewUntil(wh, (entPreview) => {
+            return entPreview.pk_entity === shipVoyage.pk_entity
+                && entPreview.fk_project === project.pk_entity
+                && equals(entPreview.time_span, expected)
+        })
+
         expect(result.time_span).to.deepEqual(expected);
     })
 })
@@ -147,23 +166,6 @@ async function createMock() {
     return {shipVoyage, project};
 }
 
-
-/**
- * TODO
- * These interfaces are now in the test file because the implementation
- * does not yet exist.
- * Move the interfaces to the PEntityTimeSpanService.ts, once this file exists.
- */
-
-
-interface PEntityTimeSpanVal {
-    p82?: PEntityTimePrimitive; // At some time within | outer bounds | not before – not after
-    p81?: PEntityTimePrimitive; // Ongoing throughout | inner bounds | surely from – surely to
-    p81a?: PEntityTimePrimitive; // end of the begin | left inner bound | surely from
-    p82a?: PEntityTimePrimitive; // begin of the begin | left outer bound | not before
-    p81b?: PEntityTimePrimitive; // begin of the end | right inner bound | surely to
-    p82b?: PEntityTimePrimitive; // end of the end | right outer bound | not after
-}
 
 
 /**

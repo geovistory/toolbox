@@ -8,6 +8,7 @@ export class EntityMock {
     // Naming 1
 
     static readonly NAME_1: ProjectEntity = {
+        entityType: 'teEn',
         fkProject: 591,
         pkEntity: 22,
         fkClass: 365,
@@ -20,6 +21,7 @@ export class EntityMock {
     // Naming 2
 
     static readonly NAME_2: ProjectEntity = {
+        entityType: 'teEn',
         fkProject: 591,
         pkEntity: 23,
         fkClass: 365,
@@ -31,6 +33,7 @@ export class EntityMock {
 
     // Naming 3
     static readonly NAME_3: ProjectEntity = {
+        entityType: 'teEn',
         fkProject: 591,
         pkEntity: 24,
         fkClass: 365,
@@ -44,6 +47,7 @@ export class EntityMock {
     // Person 1
 
     static readonly PERS_1: ProjectEntity = {
+        entityType: 'peIt',
         fkProject: 591,
         pkEntity: 33,
         fkClass: 21,
@@ -56,6 +60,7 @@ export class EntityMock {
 
     // Person 2
     static readonly PERS_2: ProjectEntity = {
+        entityType: 'peIt',
         fkProject: 591,
         pkEntity: 34,
         fkClass: 21,
@@ -68,6 +73,7 @@ export class EntityMock {
 
     // Person 3
     static readonly PERS_3: ProjectEntity = {
+        entityType: 'peIt',
         fkProject: 591,
         pkEntity: 35,
         fkClass: 21,
@@ -80,6 +86,7 @@ export class EntityMock {
 
     // Birth 1
     static readonly BIRTH_1: ProjectEntity = {
+        entityType: 'teEn',
         fkProject: 591,
         pkEntity: 41,
         fkClass: 61,
@@ -92,6 +99,7 @@ export class EntityMock {
 
     // UNION 1
     static readonly UNION_1: ProjectEntity = {
+        entityType: 'teEn',
         fkProject: 591,
         pkEntity: 51,
         fkClass: 66, // ??

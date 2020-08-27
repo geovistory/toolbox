@@ -1,7 +1,7 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
 import {entityIdToString, stringToEntityId} from '../../base/functions'
-import {FieldsPerEntity} from '../../primary-ds/PEdgeService'
+import {EntityFields} from '../../primary-ds/PEdgeService'
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityTimeSpanVal} from './PEntityTimeSpanService'
@@ -31,7 +31,7 @@ export class PEntityTimeSpanDependencies extends ClearAll {
      */
 
     pEntity: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, ProjectEntity>
-    pEdge: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, FieldsPerEntity>
+    pEdge: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>
 
     constructor(private wh: Warehouse) {
         super()
