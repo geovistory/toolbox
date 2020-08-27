@@ -15,6 +15,11 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
 import {expect} from '@loopback/testlab';
+import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
+import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
+import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
+import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
+import {PEntityTimePrimitive} from '../../../../../warehouse/primary-ds/PEdgeService';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -27,35 +32,48 @@ describe('PEntityTimeSpan', function () {
         wh = await setupCleanAndStartWarehouse()
     })
 
-    it('should create fk_type of geographical place', async () => {
+    it('should create timespanval of time primitive - Ongoing throughout', async () => {
         const {teEn, project} = await createMock();
 
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: teEn.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
-            {time_span: {eq: {}}},
+            {fk_project: {eq: project.pk_entity}}
         ])
         const expected: PEntityTimeSpanVal = {
-            "p81a": {
+            "p81": {
                 "calendar": "gregorian",
                 "duration": "1 day",
                 "julianDay": 2362729
             },
+            "p82": {
+                "calendar": "gregorian",
+                "duration": "1 day",
+                "julianDay": 2362730
+            },
+            "p81a": {
+                "calendar": "gregorian",
+                "duration": "1 day",
+                "julianDay": 2362731
+            },
             "p81b": {
                 "calendar": "gregorian",
                 "duration": "1 day",
-                "julianDay": 2362970
+                "julianDay": 2362732
+            },
+            "p82a": {
+                "calendar": "julian",
+                "duration": "1 day",
+                "julianDay": 2362733
+            },
+            "p82b": {
+                "calendar": "julian",
+                "duration": "1 day",
+                "julianDay": 2362734
             }
         }
         expect(result.time_span).to.deepEqual(expected);
     })
-
-
-
 })
-
-
-
 
 // create the mock data:
 async function createMock() {
@@ -80,36 +98,51 @@ async function createMock() {
     // P82b end of the end
     await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END);
 
-
     // - shipVoyage
-    const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+    const teEn = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
     // TimePrimitive 1
+    await createInfTimePrimitive(InfTimePrimitiveMock.TP_1);
     // Stmt to TimePrimitive 1
+    await createInfStatement(InfStatementMock.SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1);
     // Project rel for stmt (With calender info !)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1)
 
     // TimePrimitive 2
+    await createInfTimePrimitive(InfTimePrimitiveMock.TP_2);
     // Stmt to TimePrimitive 2
+    await createInfStatement(InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2);
     // Project rel for stmt (With calender info !)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2)
 
     // TimePrimitive 3
+    await createInfTimePrimitive(InfTimePrimitiveMock.TP_3);
     // Stmt to TimePrimitive 3
+    await createInfStatement(InfStatementMock.SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3);
     // Project rel for stmt (With calender info !)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3)
 
     // TimePrimitive 4
+    await createInfTimePrimitive(InfTimePrimitiveMock.TP_4);
     // Stmt to TimePrimitive 4
+    await createInfStatement(InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4);
     // Project rel for stmt (With calender info !)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4)
 
     // TimePrimitive 5
+    await createInfTimePrimitive(InfTimePrimitiveMock.TP_5);
     // Stmt to TimePrimitive 5
+    await createInfStatement(InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5);
     // Project rel for stmt (With calender info !)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5)
 
-    // TimePrimitive 5
-    // Stmt to TimePrimitive 5
+    // TimePrimitive 6
+    await createInfTimePrimitive(InfTimePrimitiveMock.TP_6);
+    // Stmt to TimePrimitive 6
+    await createInfStatement(InfStatementMock.SHIP_VOYAGE_END_OF_THE_END_TP_6);
     // Project rel for stmt (With calender info !)
-
-
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_END_OF_THE_END_TP_6)
 
     return {teEn, project};
 }
@@ -121,22 +154,7 @@ async function createMock() {
  * does not yet exist.
  * Move the interfaces to the PEntityTimeSpanService.ts, once this file exists.
  */
-type CalendarType = 'gregorian' | 'julian';
-type Granularity =
-    '1 century' |
-    '1 decade' |
-    '1 year' |
-    '1 month' |
-    '1 day' |
-    '1 hour' |
-    '1 minute' |
-    '1 second';
 
-interface PEntityTimePrimitive {
-    julianDay?: number;
-    duration?: Granularity;
-    calendar?: CalendarType;
-}
 
 interface PEntityTimeSpanVal {
     p82?: PEntityTimePrimitive; // At some time within | outer bounds | not before – not after

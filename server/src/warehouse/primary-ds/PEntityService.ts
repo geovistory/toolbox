@@ -25,12 +25,12 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
             'war.entity_preview (pk_entity,fk_project,fk_class)',
             wh.pgClient,
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class)
+                INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
                 VALUES ${valuesStr}
                 ON CONFLICT (pk_entity, project) DO UPDATE
-                SET fk_class = EXCLUDED.fk_class
-                WHERE EXCLUDED.fk_class IS DISTINCT FROM war.entity_preview.fk_class;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val.fkClass],
+                SET fk_class = EXCLUDED.fk_class, entity_type = EXCLUDED.entity_type
+                WHERE EXCLUDED.fk_class IS DISTINCT FROM war.entity_preview.fk_class OR EXCLUDED.entity_type IS DISTINCT FROM war.entity_preview.entity_type;`,
+            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val.fkClass, item.val.entityType],
             entityIdToString
         )
 
@@ -42,6 +42,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
             wh.agg.pEntityLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
             wh.agg.pEntityClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
             wh.agg.pEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
+            if(item.val.entityType === 'teEn') wh.agg.pEntityTimeSpan.updater.addItemToQueue(item.key).catch(e => console.log(e))
 
             // Add item to queue to upsert it into db
             upsertQueue.add(item)
@@ -66,6 +67,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
             pkEntity: item.pkEntity,
             fkClass: item.fkClass,
             fkProject: item.fkProject,
+            entityType: item.entityType
         };
         return {key, val}
     }
@@ -95,14 +97,16 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
 interface InitItem {
     fkProject: number,
     pkEntity: number,
-    fkClass: number
+    fkClass: number,
+    entityType: 'peIt' | 'teEn'
 }
 
 export const updateSql = `
 SELECT
     t1.fk_project "fkProject",
 	t2.pk_entity "pkEntity",
-	t2.fk_class "fkClass"
+    t2.fk_class "fkClass",
+    'peIt' as "entityType"
 FROM
 projects.info_proj_rel t1
 JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
@@ -116,7 +120,8 @@ UNION ALL
 SELECT
     t1.fk_project "fkProject",
 	t2.pk_entity "pkEntity",
-	t2.fk_class "fkClass"
+	t2.fk_class "fkClass",
+    'teEn' as "entityType"
 FROM
 projects.info_proj_rel t1
 JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity
@@ -152,6 +157,7 @@ export interface ProjectEntity {
     pkEntity: number
     fkClass: number
     fkProject: number
+    entityType: 'peIt' | 'teEn'
 }
 
 
