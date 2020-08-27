@@ -35,14 +35,27 @@ describe('PEntityTimeSpan', function () {
             {fk_project: {eq: project.pk_entity}},
             {time_span: {eq: {}}},
         ])
-        expect(result.time_span).to.equal({
-
-        });
+        const expected: PEntityTimeSpanVal = {
+            "p81a": {
+                "calendar": "gregorian",
+                "duration": "1 day",
+                "julianDay": 2362729
+            },
+            "p81b": {
+                "calendar": "gregorian",
+                "duration": "1 day",
+                "julianDay": 2362970
+            }
+        }
+        expect(result.time_span).to.deepEqual(expected);
     })
 
 
 
 })
+
+
+
 
 // create the mock data:
 async function createMock() {
@@ -50,7 +63,8 @@ async function createMock() {
     await createInfLanguage(InfLanguageMock.GERMAN);
     const project = await createProProject(ProProjectMock.PROJECT_1);
 
-    // - Class: Naming, TimePrimitive
+    // - Class: Ship Voyage, TimePrimitive
+    await createDfhApiClass(DfhApiClassMock.EN_523_SHIP_VOYAGE);
     await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE);
 
     // P81 ongoing throughout
@@ -67,28 +81,33 @@ async function createMock() {
     await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END);
 
 
-    // - teEn Y (Naming of peIt X = 'City')
-    const teEn = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_CITY);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_CITY);
+    // - shipVoyage
+    const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
 
     // TimePrimitive 1
     // Stmt to TimePrimitive 1
+    // Project rel for stmt (With calender info !)
 
     // TimePrimitive 2
     // Stmt to TimePrimitive 2
+    // Project rel for stmt (With calender info !)
 
     // TimePrimitive 3
     // Stmt to TimePrimitive 3
+    // Project rel for stmt (With calender info !)
 
     // TimePrimitive 4
     // Stmt to TimePrimitive 4
+    // Project rel for stmt (With calender info !)
 
     // TimePrimitive 5
     // Stmt to TimePrimitive 5
+    // Project rel for stmt (With calender info !)
 
     // TimePrimitive 5
     // Stmt to TimePrimitive 5
-
+    // Project rel for stmt (With calender info !)
 
 
 
@@ -96,4 +115,57 @@ async function createMock() {
 }
 
 
+/**
+ * TODO
+ * These interfaces are now in the test file because the implementation
+ * does not yet exist.
+ * Move the interfaces to the PEntityTimeSpanService.ts, once this file exists.
+ */
+type CalendarType = 'gregorian' | 'julian';
+type Granularity =
+    '1 century' |
+    '1 decade' |
+    '1 year' |
+    '1 month' |
+    '1 day' |
+    '1 hour' |
+    '1 minute' |
+    '1 second';
 
+interface PEntityTimePrimitive {
+    julianDay?: number;
+    duration?: Granularity;
+    calendar?: CalendarType;
+}
+
+interface PEntityTimeSpanVal {
+    p82?: PEntityTimePrimitive; // At some time within | outer bounds | not before – not after
+    p81?: PEntityTimePrimitive; // Ongoing throughout | inner bounds | surely from – surely to
+    p81a?: PEntityTimePrimitive; // end of the begin | left inner bound | surely from
+    p82a?: PEntityTimePrimitive; // begin of the begin | left outer bound | not before
+    p81b?: PEntityTimePrimitive; // begin of the end | right inner bound | surely to
+    p82b?: PEntityTimePrimitive; // end of the end | right outer bound | not after
+}
+
+
+/**
+
+select *
+FROM
+information.time_primitive t1,
+projects.info_proj_rel t2
+WHERE t1.pk_entity=t2.fk_entity
+LIMIT 10;
+
+
+select t2.calendar
+FROM
+information."statement" t0,
+information.time_primitive t1,
+projects.info_proj_rel t2
+WHERE
+t0.fk_object_info = t1.pk_entity
+AND t0.pk_entity=t2.fk_entity
+LIMIT 10
+
+ */

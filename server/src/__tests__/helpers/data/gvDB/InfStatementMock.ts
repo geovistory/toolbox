@@ -4,6 +4,7 @@ import {DfhApiPropertyMock} from './DfhApiPropertyMock';
 import {InfAppellationMock} from './InfAppellationMock';
 import {InfPersistentItemMock} from './InfPersistentItemMock';
 import {InfTemporalEntityMock} from './InfTemporalEntityMock';
+import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
 
 /**
  * pk_entity prefix: 300
@@ -44,6 +45,52 @@ export class InfStatementMock {
     fk_property: DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
   })
+
+
+  static readonly SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1 = new InfStatement({
+    pk_entity: 3006,
+    fk_subject_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT.dfh_pk_property,
+    fk_object_info: InfTimePrimitiveMock.TP_1.pk_entity,
+  })
+
+  static readonly SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2 = new InfStatement({
+    pk_entity: 3007,
+    fk_subject_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN.dfh_pk_property,
+    fk_object_info: InfTimePrimitiveMock.TP_2.pk_entity,
+  })
+
+  static readonly SHIP_VOYAGE_END_OF_THE_BEGIN_TP_3 = new InfStatement({
+    pk_entity: 3008,
+    fk_subject_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN.dfh_pk_property,
+    fk_object_info: InfTimePrimitiveMock.TP_3.pk_entity,
+  })
+
+  static readonly SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4 = new InfStatement({
+    pk_entity: 3009,
+    fk_subject_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END.dfh_pk_property,
+    fk_object_info: InfTimePrimitiveMock.TP_4.pk_entity,
+  })
+
+  static readonly SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5 = new InfStatement({
+    pk_entity: 3010,
+    fk_subject_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN.dfh_pk_property,
+    fk_object_info: InfTimePrimitiveMock.TP_5.pk_entity,
+  })
+
+  static readonly SHIP_VOYAGE_END_OF_THE_END_TP_6 = new InfStatement({
+    pk_entity: 3011,
+    fk_subject_info: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_153_END_OF_THE_END.dfh_pk_property,
+    fk_object_info: InfTimePrimitiveMock.TP_6.pk_entity,
+  })
+
+
+
 
 }
 

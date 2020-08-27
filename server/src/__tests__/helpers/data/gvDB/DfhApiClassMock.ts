@@ -22,6 +22,28 @@ export class DfhApiClassMock {
     "dfh_class_identifier_in_namespace": "C10"
   }
 
+  static readonly EN_523_SHIP_VOYAGE: DfhApiClass = {
+    "pk_entity": 3809,
+    "dfh_pk_class": 523,
+    "dfh_basic_type": 9,
+    "dfh_fk_profile": 8,
+    "dfh_class_label": "Ship voyage",
+    "dfh_fk_namespace": 66,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Maritime history",
+    "dfh_namespace_label": "Maritime history ongoing",
+    "dfh_basic_type_label": "Temporal Entity",
+    "dfh_class_scope_note": "Used to denote a (long) journey, especially by ship, going from a place of departure to a place of arrival.",
+    "tmsp_last_modification": "2020-01-05T07:40:56.599142+00:00",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": "selected",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C1"
+}
+
+
   static readonly EN_21_PERSON: DfhApiClass = {
     "pk_entity": 3650,
     "dfh_pk_class": 21,

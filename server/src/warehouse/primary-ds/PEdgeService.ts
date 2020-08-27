@@ -24,15 +24,6 @@ export interface FieldsPerEntity {
     incoming: DirectedFields
 }
 
-
-export interface EntityFieldId {
-    pkEntity: number;
-    fkProject: number | null
-    fkProperty: number
-    isOutgoing: boolean
-}
-
-
 export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, FieldsPerEntity>{
 
     measure = 10000;

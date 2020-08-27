@@ -5,6 +5,7 @@ import {InfStatementMock} from './InfStatementMock';
 import {InfTemporalEntityMock} from './InfTemporalEntityMock';
 import {ProProjectMock} from './ProProjectMock';
 import {PubAccountMock} from './PubAccountMock';
+import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
 
 /**
  * pk_entity prefixed with 200
@@ -87,6 +88,23 @@ export class ProInfoProjRelMock {
     pk_entity: 2010,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.NAMING_CITY_TO_GEO_PLACE_TYPE.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_SHIP_VOYAGE = new ProInfoProjRel({
+    pk_entity: 2011,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfTemporalEntityMock.SHIP_VOYAGE.pk_entity,
+    fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_STMT_SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1 = new ProInfoProjRel({
+    pk_entity: 2012,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.SHIP_VOYAGE_ONGOING_THROUGHOUT_TP_1.pk_entity,
+    calendar: 'gregorian', // or 'julian'
     fk_last_modifier:PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })

@@ -12,6 +12,25 @@ export interface PEntityTypeVal {
     fkType?: number,
     typeLabel?: string
 }
+
+/**
+ * This Data Service manages the key-value store containing
+ * as a key the PEntityId (pkEntity and fkProject)
+ * and as value the PEntityTypeVal (fkType, typeLabel)
+ *
+ * One example key-value pair in the this.index is:
+ * Key for the Project Entity Geo. Place 'Madrid' with pkEntity = 2002 in fkProject = 3001
+ *  - '2002_3001'
+ *
+ * Val for the Geo. Place Type 'City' with pkEntity = 2003 in fkProject = 3001
+ *  - fkType: 2003
+ *  - typeLabel: 'Citiy'
+ *
+ *
+ *
+ * -> The Val is the result of the PEntityTypeAggregator
+ *
+ */
 export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal, PEntityTypeAggregator>{
     updater: Updater<PEntityId, PEntityTypeAggregator>;
 
