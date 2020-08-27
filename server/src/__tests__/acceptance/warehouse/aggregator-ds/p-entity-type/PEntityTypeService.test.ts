@@ -86,13 +86,13 @@ async function createMock() {
     const madrid = await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_MADRID);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_MADRID);
 
-    // - stmt (has geo. place type, (Madrid has type 'City'))
-    await createInfStatement(InfStatementMock.MADRID_HAS_GEO_PLACE_TYPE_CITY);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE);
-
     // - peIt (Geo Place Type X)
     await createInfPersistentItem(InfPersistentItemMock.GEO_PLACE_TYPE_CITY);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_CITY_TYPE);
+
+    // - stmt (has geo. place type, (Madrid has type 'City'))
+    await createInfStatement(InfStatementMock.MADRID_HAS_GEO_PLACE_TYPE_CITY);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MADRID_HAS_GEO_PLACE_CITY_TYPE);
 
     // - appe ('City)
     const cityTypeAppe = await createInfAppellation(InfAppellationMock.CITY)

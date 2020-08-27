@@ -224,13 +224,26 @@ export interface Edge {
         appellation?: string | null
         dimension?: any
         place?: any
-        timePrimitive?: any
+        timePrimitive?: PEntityTimePrimitive
         language?: any
         langString?: any
     }
 }
-
-
+export type CalendarType = 'gregorian' | 'julian';
+export type Granularity =
+    '1 century' |
+    '1 decade' |
+    '1 year' |
+    '1 month' |
+    '1 day' |
+    '1 hour' |
+    '1 minute' |
+    '1 second';
+export interface PEntityTimePrimitive {
+    julianDay?: number;
+    duration?: Granularity;
+    calendar?: CalendarType;
+}
 
 
 const updateSql = `
@@ -283,6 +296,7 @@ const updateSql = `
         t1.fk_project,
         t1.ord_num_of_domain,
         t1.ord_num_of_range,
+        t1.calendar,
         t2.pk_entity as pk_statement,
         t2.fk_property,
         t2.fk_subject_info,
@@ -292,6 +306,8 @@ const updateSql = `
         t3.string as appellation,
         t4.notes as language,
         t7.string as lang_string
+        t6.julian_day,
+        t6.duration
         FROM
         tw0 t0
         JOIN projects.info_proj_rel t1 ON t1.fk_project = t0.fk_project
@@ -331,7 +347,12 @@ const updateSql = `
                 'targetValue', json_strip_nulls(json_build_object(
                     'appellation', t1.appellation,
                     'language', t1.language,
-                    'lang_string', t1.lang_string
+                    'lang_string', t1.lang_string,
+                    'timePrimitive', json_strip_nulls(json_build_object(
+                        'julianDay', t6.julian_day
+                        'duration', t6.duration
+                        'calendar', t1.calendar
+                    ))
                 ))
             ) ORDER BY t1.ord_num_of_range ASC
         ) outgoing
@@ -355,7 +376,12 @@ const updateSql = `
                 'targetValue', json_strip_nulls(json_build_object(
                     'appellation', t1.appellation,
                     'language', t1.language,
-                    'langString', t1.lang_string
+                    'langString', t1.lang_string,
+                    'timePrimitive', json_strip_nulls(json_build_object(
+                        'julianDay', t6.julian_day
+                        'duration', t6.duration
+                        'calendar', t1.calendar
+                    ))
                 ))
             ) ORDER BY t1.ord_num_of_domain ASC
         ) incoming
