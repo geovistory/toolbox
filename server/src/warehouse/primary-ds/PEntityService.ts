@@ -9,8 +9,6 @@ export interface PEntityId {fkProject: number, pkEntity: number}
 export class PEntityService extends PrimaryDataService<InitItem, PEntityId, ProjectEntity>{
 
     measure = 1000;
-    updatesSql = updateSql;
-    deletesSql = deleteSql;
 
     index = new IndexDBGeneric<PEntityId, ProjectEntity>(entityIdToString, stringToEntityId)
 
@@ -70,6 +68,12 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
         return {key, val}
     }
 
+    getUpdatesSql(tmsp: Date) {
+        return updateSql
+    }
+    getDeletesSql(tmsp: Date) {
+        return deleteSql
+    };
 
     deleteEntityPreview(key: PEntityId) {
         const params = [key.pkEntity, key.fkProject];

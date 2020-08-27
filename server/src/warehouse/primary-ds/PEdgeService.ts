@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { PrimaryDataService } from '../base/classes/PrimaryDataService';
-import { entityIdToString, stringToEntityId } from '../base/functions';
-import { IndexDBGeneric } from '../base/classes/IndexDBGeneric';
-import { Logger } from '../base/classes/Logger';
-import { Warehouse } from '../Warehouse';
-import { PEntityId } from './PEntityService';
+import {PrimaryDataService} from '../base/classes/PrimaryDataService';
+import {entityIdToString, stringToEntityId} from '../base/functions';
+import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
+import {Logger} from '../base/classes/Logger';
+import {Warehouse} from '../Warehouse';
+import {PEntityId} from './PEntityService';
 
 interface Noun {
     table: string;
@@ -19,19 +19,16 @@ interface Noun {
 interface DirectedFields {
     [pkPropery: string]: Edge[]
 }
-export interface FieldsPerEntity {
+export interface EntityFields {
     outgoing: DirectedFields
     incoming: DirectedFields
 }
 
-export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, FieldsPerEntity>{
+export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, EntityFields>{
 
     measure = 10000;
 
-    index = new IndexDBGeneric<PEntityId, FieldsPerEntity>(entityIdToString, stringToEntityId)
-
-    updatesSql = updateSql;
-    deletesSql = ''
+    index = new IndexDBGeneric<PEntityId, EntityFields>(entityIdToString, stringToEntityId)
 
     constructor(wh: Warehouse) {
         super(wh, [
@@ -40,11 +37,16 @@ export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, Fi
     }
 
 
-    dbItemToKeyVal(item: EdgeInitItem): { key: PEntityId; val: FieldsPerEntity; } {
-        const key = { pkEntity: item.pkEntity, fkProject: item.fkProject }
+    dbItemToKeyVal(item: EdgeInitItem): {key: PEntityId; val: EntityFields;} {
+        const key = {pkEntity: item.pkEntity, fkProject: item.fkProject}
         const val = item.fields
-        return { key, val }
+        return {key, val}
     }
+
+    getUpdatesSql(tmsp: Date) {
+        return updateSql
+    }
+    getDeletesSql = undefined;
 
 
     // function is only used to easily add mock data
@@ -100,7 +102,7 @@ export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, Fi
             pkEntity: a.fkInfo,
         }
         let val = await this.index.getFromIdx(key);
-        if (!val) val = { outgoing: {}, incoming: {} };
+        if (!val) val = {outgoing: {}, incoming: {}};
         const outgoing = val.outgoing
         const incoming = val.incoming
 
@@ -159,7 +161,7 @@ export interface StatementItemToIndexate {
 export interface EdgeInitItem {
     fkProject: number,
     pkEntity: number,
-    fields: FieldsPerEntity
+    fields: EntityFields
 }
 
 

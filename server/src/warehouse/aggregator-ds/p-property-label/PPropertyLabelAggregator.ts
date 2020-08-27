@@ -1,20 +1,20 @@
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
-import {PClassLabelProviders} from './PClassLabelProviders';
-import {PK_ENGLISH, PK_DEFAULT_CONFIG_PROJECT} from '../../Warehouse';
+import {PPropertyId} from '../../primary-ds/PPropertyService';
+import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../Warehouse';
+import {PPropertyLabelProviders} from './PPropertyLabelProviders';
 
-export class PClassLabelAggregator extends AbstractAggregator<PClassId> {
+export class PPropertyLabelAggregator extends AbstractAggregator<PPropertyId> {
 
 
   // the resulting label
-  classLabel = '';
+  PropertyLabel = '';
 
   // For testing / debugging
   labelMissing = true;
 
   constructor(
-    public providers: PClassLabelProviders,
-    public id: PClassId
+    public providers: PPropertyLabelProviders,
+    public id: PPropertyId
   ) {
     super()
   }
@@ -31,73 +31,73 @@ export class PClassLabelAggregator extends AbstractAggregator<PClassId> {
       // project language
       const proLang = project.fkLanguage
 
-      // class label
-      let classLabel: string | undefined;
+      // property label
+      let propertyLabel: string | undefined;
 
       /**
        * Try to get label in project language
        */
 
       // from project
-      classLabel = await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
+      propertyLabel = await this.providers.proPropertyLabel.get({
+        fkProperty: this.id.pkProperty,
         fkLanguage: proLang,
         fkProject: this.id.fkProject
       })
 
-      if (classLabel) return this.finalize(classLabel);
+      if (propertyLabel) return this.finalize(propertyLabel);
 
       // from geovistory
-      classLabel = await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
+      propertyLabel = await this.providers.proPropertyLabel.get({
+        fkProperty: this.id.pkProperty,
         fkLanguage: proLang,
         fkProject: PK_DEFAULT_CONFIG_PROJECT
       })
 
-      if (classLabel) return this.finalize(classLabel);
+      if (propertyLabel) return this.finalize(propertyLabel);
 
       // from ontome
       const iso6391ProLang = pkLanguageIso6391Map[proLang];
       if (iso6391ProLang) {
-        classLabel = await this.providers.dfhClassLabel.get({
-          pkClass: this.id.pkClass,
+        propertyLabel = await this.providers.dfhPropertyLabel.get({
+          pkProperty: this.id.pkProperty,
           language: iso6391ProLang
 
         })
       }
 
-      if (classLabel) return this.finalize(classLabel);
+      if (propertyLabel) return this.finalize(propertyLabel);
 
       /**
       * Try to get label in english
       */
 
       // from project
-      classLabel = await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
+      propertyLabel = await this.providers.proPropertyLabel.get({
+        fkProperty: this.id.pkProperty,
         fkLanguage: defaultLang,
         fkProject: this.id.fkProject
       })
 
-      if (classLabel) return this.finalize(classLabel);
+      if (propertyLabel) return this.finalize(propertyLabel);
 
       // from geovistory
-      classLabel = await this.providers.proClassLabel.get({
-        fkClass: this.id.pkClass,
+      propertyLabel = await this.providers.proPropertyLabel.get({
+        fkProperty: this.id.pkProperty,
         fkLanguage: defaultLang,
         fkProject: PK_DEFAULT_CONFIG_PROJECT
       })
 
-      if (classLabel) return this.finalize(classLabel);
+      if (propertyLabel) return this.finalize(propertyLabel);
 
       // from ontome
-      classLabel = await this.providers.dfhClassLabel.get({
-        pkClass: this.id.pkClass,
+      propertyLabel = await this.providers.dfhPropertyLabel.get({
+        pkProperty: this.id.pkProperty,
         language: 'en'
 
       })
 
-      if (classLabel) return this.finalize(classLabel);
+      if (propertyLabel) return this.finalize(propertyLabel);
 
     }
 
@@ -105,7 +105,7 @@ export class PClassLabelAggregator extends AbstractAggregator<PClassId> {
   }
 
   finalize(label: string) {
-    this.classLabel = label;
+    this.PropertyLabel = label;
     this.labelMissing = false;
     return this;
   }

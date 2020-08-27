@@ -2,7 +2,7 @@ import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
-import {PClassId} from './FieldsConfigService';
+import {PClassId} from './PClassFieldsConfigService';
 
 
 export interface LabelPart {
@@ -22,8 +22,6 @@ export interface EntityLabelConfig {
 export class EntityLabelConfigService extends PrimaryDataService<InitItem, PClassId, EntityLabelConfig>{
 
     measure = 1000;
-    updatesSql = updateSql;
-    deletesSql = '';
 
     index = new IndexDBGeneric<PClassId, EntityLabelConfig>(pClassIdToString, stringToPClassId)
 
@@ -120,6 +118,10 @@ export class EntityLabelConfigService extends PrimaryDataService<InitItem, PClas
         })
         return x
     }
+    getUpdatesSql(tmsp: Date) {
+        return updateSql
+    }
+    getDeletesSql = undefined;
 
 }
 

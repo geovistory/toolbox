@@ -56,3 +56,8 @@ Create Trigger notify_modification
     After Insert Or Update Or Delete On data_for_history.api_property For Each STATEMENT
     Execute Procedure commons.notify_modification_trigger ();
 
+-- 11
+Create Trigger notify_modification
+    After Insert Or Update Or Delete On projects.class_field_config For Each STATEMENT
+    Execute Procedure commons.notify_modification_trigger ();
+

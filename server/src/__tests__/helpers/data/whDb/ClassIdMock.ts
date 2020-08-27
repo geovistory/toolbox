@@ -1,4 +1,4 @@
-import {PClassId} from '../../../../warehouse/primary-ds/FieldsConfigService';
+import {PClassId} from '../../../../warehouse/primary-ds/PClassFieldsConfigService';
 import {ProjectMock} from './ProjectMock';
 import {ClassMock} from './ClassMock';
 

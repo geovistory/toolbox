@@ -28,10 +28,10 @@ describe('PEntityTimeSpan', function () {
     })
 
     it('should create fk_type of geographical place', async () => {
-        const {teEn, project} = await createMock();
+        const {shipVoyage, project} = await createMock();
 
         const result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: teEn.pk_entity}},
+            {pk_entity: {eq: shipVoyage.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
             {time_span: {eq: {}}},
         ])
@@ -111,7 +111,7 @@ async function createMock() {
 
 
 
-    return {teEn, project};
+    return {shipVoyage, project};
 }
 
 

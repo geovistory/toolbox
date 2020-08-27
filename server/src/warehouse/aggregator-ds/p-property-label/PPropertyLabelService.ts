@@ -2,26 +2,26 @@ import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../base/classes/Updater';
-import {pClassIdToString, stringToPClassId} from '../../base/functions';
-import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
+import {pPropertyIdToString, stringToPPropertyId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {PClassLabelAggregator} from './PClassLabelAggregator';
-import {PClassLabelProviders} from './PClassLabelProviders';
+import {PPropertyLabelAggregator} from './PPropertyLabelAggregator';
+import {PPropertyLabelProviders} from './PPropertyLabelProviders';
+import {PPropertyId} from '../../primary-ds/PPropertyService';
 
 type ValueModel = string
-export class PClassLabelService extends AggregatedDataService<PClassId, ValueModel, PClassLabelAggregator>{
-    updater: Updater<PClassId, PClassLabelAggregator>;
+export class PPropertyLabelService extends AggregatedDataService<PPropertyId, ValueModel, PPropertyLabelAggregator>{
+    updater: Updater<PPropertyId, PPropertyLabelAggregator>;
 
-    index = new IndexDBGeneric<PClassId, ValueModel>(pClassIdToString, stringToPClassId)
+    index = new IndexDBGeneric<PPropertyId, ValueModel>(pPropertyIdToString, stringToPPropertyId)
 
     constructor(private wh: Warehouse) {
         super()
-        const aggregatorFactory = async (id: PClassId) => {
-            const providers = new PClassLabelProviders(this.wh.dep.pClassLabel, id)
-            return new PClassLabelAggregator(providers, id).create()
+        const aggregatorFactory = async (id: PPropertyId) => {
+            const providers = new PPropertyLabelProviders(this.wh.dep.pPropertyLabel, id)
+            return new PPropertyLabelAggregator(providers, id).create()
         }
-        const register = async (result: PClassLabelAggregator) => {
-            await this.put(result.id, result.classLabel)
+        const register = async (result: PPropertyLabelAggregator) => {
+            await this.put(result.id, result.PropertyLabel)
             await result.providers.removeProvidersFromIndexes()
         }
         this.updater = new Updater(
@@ -29,12 +29,12 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
             this.constructor.name,
             aggregatorFactory,
             register,
-            pClassIdToString,
-            stringToPClassId,
+            pPropertyIdToString,
+            stringToPPropertyId,
             // (results) => this.writeToDb(results)
         )
 
-        const upsertQueue = new SqlUpsertQueue<PClassId, ValueModel>(
+        const upsertQueue = new SqlUpsertQueue<PPropertyId, ValueModel>(
             this.constructor.name,
             wh.pgClient,
             (valuesStr: string) => `
@@ -43,8 +43,8 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
                 ON CONFLICT (fk_class, fk_project) DO UPDATE
                 SET label = EXCLUDED.label
                 WHERE EXCLUDED.label IS DISTINCT FROM war.class_preview.label;`,
-            (item) => [item.key.pkClass, item.key.fkProject, item.val],
-            pClassIdToString
+            (item) => [item.key.pkProperty, item.key.fkProject, item.val],
+            pPropertyIdToString
         )
 
         /**
@@ -59,7 +59,7 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
     }
 
 
-    // writeToDb(results: PClassLabelAggregator[]) {
+    // writeToDb(results: PPropertyLabelAggregator[]) {
     //     let i = 0;
     //     let batchSize = 0;
     //     const maxBatchSize = 1000;
@@ -86,7 +86,7 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
     //             AND project = $3
     //             AND class_label IS DISTINCT FROM $1
     //         `
-    //         this.main.pgClient.query(updateEntityPreviewQ, [res.classLabel, res.id.pkClass, res.id.fkProject])
+    //         this.main.pgClient.query(updateEntityPreviewQ, [res.PropertyLabel, res.id.pkProperty, res.id.fkProject])
     //             .then(() => {
     //                 Logger.msg(`Updated class labels of entity previews`, 2)
     //             })
@@ -118,8 +118,8 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
     //     }
     // }
     // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // getParamsForUpsert(res: PClassLabelAggregator): any[] {
-    //     return [res.id.pkClass, res.id.fkProject, res.classLabel]
+    // getParamsForUpsert(res: PPropertyLabelAggregator): any[] {
+    //     return [res.id.pkProperty, res.id.fkProject, res.PropertyLabel]
     // }
 
     // getUpsertSql(valuesStr: string) {

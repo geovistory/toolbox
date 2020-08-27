@@ -15,6 +15,7 @@ export const PK_ENGLISH = 18889;
 interface NotificationHandler {
     channel: string
     listeners: {
+        listenerName: string,
         callback(date: Date): Promise<void>
     }[]
 
@@ -106,23 +107,8 @@ export class Warehouse {
     async initIndexes() {
         this.initializingIndexes = true
         const t1 = Logger.start('Initialize indexes', 0)
-        await this.prim.project.initIdx();
-        await this.prim.pClass.initIdx();
-        await this.prim.dfhClassLabel.initIdx();
-        await this.prim.proClassLabel.initIdx();
-        await this.prim.entityLabelConfig.initIdx();
-        await this.prim.pEntity.initIdx();
-        await this.prim.pEdge.initIdx();
-        await this.prim.dfhClassHasTypeProperty.initIdx();
 
-
-        // await this.prim.fieldsConfig.initIdx();
-
-        // await this.prim.classLabel.initIdx();
-
-        // await this.prim.fieldLabel.initIdx();
-
-        // await this.prim.initAllIndexes()
+        await this.prim.initAllIndexes()
 
         Logger.itTook(t1, 'to initialize indexes', 0)
         this.initializingIndexes = false
@@ -179,21 +165,20 @@ export class Warehouse {
      * Registers a postgres db listener and add a notification handler
      * @param channel
      * @param callback
+     * @param name for debugging
      */
-    async registerDbListener(channel: string, callback: (date: Date) => Promise<void>) {
-
-        if (!this.notificationHandlers[channel]) {
-            await this.pgClient.query(`LISTEN ${channel}`)
-            this.notificationHandlers[channel] = {
-                channel,
-                listeners: []
-            }
+    async registerDbListener(channel: string, callback: (date: Date) => Promise<void>, listenerName: string) {
+        await this.pgClient.query(`LISTEN ${channel}`)
+        this.notificationHandlers[channel] = {
+            channel,
+            listeners: [
+                ...(this.notificationHandlers?.[channel]?.listeners ?? []),
+                {
+                    listenerName,
+                    callback
+                }
+            ]
         }
-
-        this.notificationHandlers[channel].listeners.push({
-            callback
-        })
-
     }
 
     /**
@@ -205,8 +190,10 @@ export class Warehouse {
             const handler = this.notificationHandlers[msg.channel];
             if (typeof msg.payload === 'string') {
                 const date = new Date(msg.payload);
-                if(isNaN(date.getTime())) console.error(`Invalid Timestamp provided by pg_notify channel ${msg.channel}`, msg.payload)
-                else if (handler) handler.listeners.map(l => l.callback(date).catch(e => console.log(e)))
+                if (isNaN(date.getTime())) console.error(`Invalid Timestamp provided by pg_notify channel ${msg.channel}`, msg.payload)
+                else if (handler) handler.listeners.map(l => {
+                    l.callback(date).catch(e => console.log(e))
+                })
             } else {
                 console.error('payload of notification must be a string convertable to date')
             }

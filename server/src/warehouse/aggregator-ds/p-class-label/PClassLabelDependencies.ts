@@ -1,6 +1,6 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
 import {pClassIdToString, dfhClassIdToString, proClassIdToString, stringToPClassId, stringToDfhClassId, stringToProClassId, projectIdToString, stringToProjectId} from '../../base/functions'
-import {PClassId} from '../../primary-ds/FieldsConfigService'
+import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {DfhClassLabelId, DfhClassLabelVal} from '../../primary-ds/DfhClassLabelService'
 import {ProClassLabelId, ProClassLabelVal} from '../../primary-ds/ProClassLabelService'
 import {Warehouse} from '../../Warehouse'

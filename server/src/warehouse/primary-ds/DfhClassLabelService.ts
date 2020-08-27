@@ -9,8 +9,6 @@ export interface DfhClassLabelId {
 export type DfhClassLabelVal = string;
 export class DfhClassLabelService extends PrimaryDataService<DbItem, DfhClassLabelId, DfhClassLabelVal>{
     measure = 1000;
-    updatesSql = updateSql
-    deletesSql = null;
     index = new IndexDBGeneric<DfhClassLabelId, DfhClassLabelVal>(dfhClassIdToString, stringToDfhClassId)
     constructor(wh: Warehouse) {
         super(wh, ['modified_data_for_history_api_class'])
@@ -24,6 +22,10 @@ export class DfhClassLabelService extends PrimaryDataService<DbItem, DfhClassLab
 
         return {key, val}
     }
+    getUpdatesSql(tmsp: Date) {
+        return updateSql
+   }
+   getDeletesSql = undefined;
 }
 
 interface DbItem {

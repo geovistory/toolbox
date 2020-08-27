@@ -20,8 +20,6 @@ export type DfhClassHasTypePropVal = number;
  */
 export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, ClassId, DfhClassHasTypePropVal>{
     measure = 1000;
-    updatesSql = updateSql
-    deletesSql = null;
     index = new IndexDBGeneric<ClassId, DfhClassHasTypePropVal>(classIdToString, stringToClassId)
     constructor(wh: Warehouse) {
         super(wh, ['modified_data_for_history_api_property'])
@@ -34,6 +32,10 @@ export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, C
 
         return {key, val}
     }
+    getUpdatesSql(tmsp: Date) {
+         return updateSql
+    }
+    getDeletesSql = undefined;
 }
 
 interface DbItem {

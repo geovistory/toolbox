@@ -1,3 +1,6 @@
+-- 11
+DROP TRIGGER notify_modification ON projects.class_field_config;
+
 -- 10
 DROP TRIGGER notify_modification ON data_for_history.api_property;
  

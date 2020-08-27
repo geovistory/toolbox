@@ -2,16 +2,16 @@ import {Provider} from '../../base/classes/Provider';
 import {Providers} from "../../base/interfaces/Providers";
 import {EntityFields} from '../../primary-ds/PEdgeService';
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService';
-import {PEntityTypeDependencies} from './PEntityTypeDependencies';
-import {PEntityTypeVal} from './PEntityTypeService';
+import {PEntityFullTextDependencies} from './PEntityFullTextDependencies';
+import {PEntityFullTextVal} from './PEntityFullTextService';
 import {ClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService';
-export class PEntityTypeProviders extends Providers<PEntityId> {
-    pEntity: Provider<PEntityId, PEntityTypeVal, PEntityId, ProjectEntity>;
-    pEdges: Provider<PEntityId, PEntityTypeVal, PEntityId, EntityFields>;
-    pEntityLabel: Provider<PEntityId, PEntityTypeVal, PEntityId, string>;
-    dfhClassHasTypeProp: Provider<PEntityId, PEntityTypeVal, ClassId, DfhClassHasTypePropVal>;
+export class PEntityFullTextProviders extends Providers<PEntityId> {
+    pEntity: Provider<PEntityId, PEntityFullTextVal, PEntityId, ProjectEntity>;
+    pEdges: Provider<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>;
+    pEntityLabel: Provider<PEntityId, PEntityFullTextVal, PEntityId, string>;
+    dfhClassHasTypeProp: Provider<PEntityId, PEntityFullTextVal, ClassId, DfhClassHasTypePropVal>;
     constructor(
-        dep: PEntityTypeDependencies,
+        dep: PEntityFullTextDependencies,
         protected receiverKey: PEntityId
     ) {
         super()

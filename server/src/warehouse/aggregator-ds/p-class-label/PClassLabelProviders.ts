@@ -1,5 +1,5 @@
 import {Providers} from '../../base/interfaces/Providers';
-import {PClassId} from '../../primary-ds/FieldsConfigService';
+import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
 import {DfhClassLabelId, DfhClassLabelVal} from '../../primary-ds/DfhClassLabelService';
 import {ProClassLabelId, ProClassLabelVal} from '../../primary-ds/ProClassLabelService';
 import {PClassLabelDependencies} from './PClassLabelDependencies';

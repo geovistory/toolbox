@@ -1,48 +1,57 @@
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
-import {PClassId, FieldsConfig, FieldsConfigService} from '../primary-ds/FieldsConfigService';
+import {DfhClassHasTypePropertyService} from '../primary-ds/DfhClassHasTypePropertyService';
 import {DfhClassLabelService} from '../primary-ds/DfhClassLabelService';
-import {PEdgeService, StatementItemToIndexate} from '../primary-ds/PEdgeService';
+import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
 import {EntityLabelConfig, EntityLabelConfigService} from '../primary-ds/EntityLabelConfigService';
-import {ProjectEntity, PEntityId, PEntityService} from '../primary-ds/PEntityService';
-import {FieldId, FieldLabelService} from '../primary-ds/FieldLabelService';
+import {PClassFieldsConfigService, PClassId} from '../primary-ds/PClassFieldsConfigService';
+import {PClassService} from '../primary-ds/PClassService';
+import {PEdgeService, StatementItemToIndexate} from '../primary-ds/PEdgeService';
+import {PEntityId, PEntityService, ProjectEntity} from '../primary-ds/PEntityService';
+import {PPropertyService} from '../primary-ds/PPropertyService';
 import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
 import {ProjectService} from '../primary-ds/ProjectService';
 import {Warehouse} from '../Warehouse';
-import {PClassService} from '../primary-ds/PClassService';
-import {DfhClassHasTypePropertyService} from '../primary-ds/DfhClassHasTypePropertyService';
+import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
 export class PrimaryDataServices extends DataServiceBundle {
     project: ProjectService;
+
+    dfhClassHasTypeProperty: DfhClassHasTypePropertyService;
     dfhClassLabel: DfhClassLabelService;
+    dfhPropertyLabel: DfhPropertyLabelService;
+
     proClassLabel: ProClassLabelService;
-    fieldLabel: FieldLabelService;
-    fieldsConfig: FieldsConfigService;
+    proPropertyLabel: ProPropertyLabelService;
+
+    pClass: PClassService;
+    pProperty: PPropertyService;
+
+    pClassFieldsConfig: PClassFieldsConfigService;
     entityLabelConfig: EntityLabelConfigService;
+
     pEdge: PEdgeService;
     pEntity: PEntityService;
-    pClass: PClassService;
-    dfhClassHasTypeProperty: DfhClassHasTypePropertyService;
 
     constructor(private wh: Warehouse) {
         super()
         this.project = this.registerDataService(new ProjectService(this.wh));
-        this.fieldsConfig = this.registerDataService(new FieldsConfigService(this.wh));
+
+        this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
         this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.wh));
+        this.dfhPropertyLabel = this.registerDataService(new DfhPropertyLabelService(this.wh));
+
         this.proClassLabel = this.registerDataService(new ProClassLabelService(this.wh));
-        this.fieldLabel = this.registerDataService(new FieldLabelService(this.wh));
+        this.proPropertyLabel = this.registerDataService(new ProPropertyLabelService(this.wh));
+
+        this.pClass = this.registerDataService(new PClassService(this.wh));
+        this.pProperty = this.registerDataService(new PPropertyService(this.wh));
+
+        this.pClassFieldsConfig = this.registerDataService(new PClassFieldsConfigService(this.wh));
         this.entityLabelConfig = this.registerDataService(new EntityLabelConfigService(this.wh));
+
         this.pEdge = this.registerDataService(new PEdgeService(this.wh));
         this.pEntity = this.registerDataService(new PEntityService(this.wh));
-        this.pClass = this.registerDataService(new PClassService(this.wh));
-        this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
     }
 
-
-    async createFieldsConfig(keyModel: PClassId, val: FieldsConfig) {
-        return this.fieldsConfig.index.addToIdx(keyModel, val)
-    }
-    async createFieldLabel(keyModel: FieldId, val: string) {
-        return this.fieldLabel.index.addToIdx(keyModel, val)
-    }
     async createEntityLabelConfig(keyModel: PClassId, val: EntityLabelConfig) {
         return this.entityLabelConfig.index.addToIdx(keyModel, val)
     }

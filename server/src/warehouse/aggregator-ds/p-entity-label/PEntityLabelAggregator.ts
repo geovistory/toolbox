@@ -1,6 +1,6 @@
 import { AbstractAggregator } from '../../base/classes/AbstractAggregator';
-import { PClassId } from '../../primary-ds/FieldsConfigService';
-import { Edge, FieldsPerEntity } from '../../primary-ds/PEdgeService';
+import { PClassId } from '../../primary-ds/PClassFieldsConfigService';
+import { Edge, EntityFields } from '../../primary-ds/PEdgeService';
 import { EntityLabelConfig } from '../../primary-ds/EntityLabelConfigService';
 import { ProjectEntity, PEntityId } from '../../primary-ds/PEntityService';
 import { PK_DEFAULT_CONFIG_PROJECT } from '../../Warehouse';
@@ -66,7 +66,7 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
     }
 
 
-    async createLabel(entity: ProjectEntity, classId: PClassId, entityFieldsWithEdges?: FieldsPerEntity) {
+    async createLabel(entity: ProjectEntity, classId: PClassId, entityFieldsWithEdges?: EntityFields) {
         // get label config
         const entityLabelConfig = await this.getEntityLabelConfig(classId)
         const labelParts = entityLabelConfig?.labelParts ?? [];

@@ -1,28 +1,28 @@
 import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {proClassIdToString, stringToProClassId} from '../base/functions';
+import {proPropertyIdToString, stringToProPropertyId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
-export interface ProClassLabelId {
+export interface ProPropertyLabelId {
     fkProject: number
-    fkClass: number
+    fkProperty: number
     fkLanguage: number
 }
-export type ProClassLabelVal = string
+export type ProPropertyLabelVal = string
 
-export class ProClassLabelService extends PrimaryDataService<DbItem, ProClassLabelId, ProClassLabelVal>{
+export class ProPropertyLabelService extends PrimaryDataService<DbItem, ProPropertyLabelId, ProPropertyLabelVal>{
     measure = 1000;
 
 
-    index = new IndexDBGeneric<ProClassLabelId, ProClassLabelVal>(proClassIdToString, stringToProClassId)
+    index = new IndexDBGeneric<ProPropertyLabelId, ProPropertyLabelVal>(proPropertyIdToString, stringToProPropertyId)
 
     constructor(wh: Warehouse) {
         super(wh, ['modified_projects_text_property'])
     }
 
-    dbItemToKeyVal(item: DbItem): {key: ProClassLabelId; val: ProClassLabelVal;} {
-        const key: ProClassLabelId = {
+    dbItemToKeyVal(item: DbItem): {key: ProPropertyLabelId; val: ProPropertyLabelVal;} {
+        const key: ProPropertyLabelId = {
             fkProject: item.fkProject,
-            fkClass: item.fkClass,
+            fkProperty: item.fkProperty,
             fkLanguage: item.fkLanguage
         }
         const val = item.label
@@ -39,7 +39,7 @@ export class ProClassLabelService extends PrimaryDataService<DbItem, ProClassLab
 
 interface DbItem {
     fkProject: number,
-    fkClass: number,
+    fkProperty: number,
     fkLanguage: number,
     label: string
 }
@@ -48,13 +48,13 @@ interface DbItem {
 export const updateSql = `
 SELECT
     fk_project "fkProject",
-    fk_dfh_class "fkClass",
+    fk_dfh_property "fkProperty",
     fk_language "fkLanguage",
     string "label"
 FROM
     projects.text_property
 WHERE
-    fk_dfh_class IS NOT NULL
+    fk_dfh_property IS NOT NULL
 AND
     tmsp_last_modification > $1
 `;
@@ -63,7 +63,7 @@ AND
 const deleteSql = `
     SELECT
         fk_project "fkProject",
-        fk_dfh_class "fkClass",
+        fk_dfh_property "fkProperty",
         fk_language "fkLanguage"
     FROM
         projects.text_property_vt
@@ -74,7 +74,7 @@ const deleteSql = `
 
     SELECT
         fk_project "fkProject",
-        fk_dfh_class "fkClass",
+        fk_dfh_property "fkProperty",
         fk_language "fkLanguage"
     FROM
         projects.text_property;

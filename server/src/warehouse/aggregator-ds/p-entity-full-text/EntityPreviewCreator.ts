@@ -19,10 +19,10 @@
 //     label: string
 //     classLabel: string
 
-//     // For testing / debugging 
+//     // For testing / debugging
 //     labelDependsOnEntity: number[]
 
-//     // For testing / debugging 
+//     // For testing / debugging
 //     labelMissing?: boolean
 // }
 
@@ -140,12 +140,12 @@
 //      * This function iterates over all fields. Per field:
 //      * 1. it adds string elements to the full text of the entity
 //      * 2. it adds all the edges (statements) to the entity
-//      * 
+//      *
 //      * The order of the iteration is defined so:
 //      * - it first iterates over fields of the class fields configuration in the given order of these fields
 //      * - if edges are left, it iterates over the remaining edges, grouped by field, in an arbitrary order
-//      *  
-//      * @param entityFieldsWithEdges 
+//      *
+//      * @param entityFieldsWithEdges
 //      */
 //     async createFullTextAndEdges(entityFieldsWithEdges: EdgesPerEntity) {
 //         const c = await this.getFieldsConfig(this.classId)
@@ -356,7 +356,7 @@
 
 
 //     /************************************************************************
-//      * Methods for registering values of this in other indexes    
+//      * Methods for registering values of this in other indexes
 //     ************************************************************************/
 
 
@@ -393,7 +393,7 @@
 //      */
 //     async registerPreview() {
 
-//         /** 
+//         /**
 //          * update the result index `EntityPreviewIdx`:
 //          * this adds update requests if needed
 //          */

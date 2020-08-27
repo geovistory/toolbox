@@ -5,18 +5,24 @@ import {PEntityTypeService} from '../aggregator-ds/p-entity-type/PEntityTypeServ
 import {Warehouse} from '../Warehouse';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
 import {PEntityClassLabelService} from '../aggregator-ds/p-entity-class-label/PEntityClassLabelService';
+import {PEntityFullTextService} from '../aggregator-ds/p-entity-full-text/PEntityFullTextService';
+import {PPropertyLabelService} from '../aggregator-ds/p-property-label/PPropertyLabelService';
 export class AggregatedDataServices extends DataServiceBundle {
     pClassLabel: PClassLabelService
+    pPropertyLabel: PPropertyLabelService
     pEntityLabel: PEntityLabelService;
     pEntityType: PEntityTypeService;
     pEntityClassLabel: PEntityClassLabelService;
+    pEntityFullText: PEntityFullTextService;
 
     constructor(wh: Warehouse) {
         super()
         this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
         this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
         this.pClassLabel = this.registerDataService(new PClassLabelService(wh))
+        this.pPropertyLabel = this.registerDataService(new PPropertyLabelService(wh))
         this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
+        this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
     }
 
 
@@ -25,5 +31,6 @@ export class AggregatedDataServices extends DataServiceBundle {
         await this.pEntityClassLabel.updater.startCylcling()
         await this.pEntityLabel.updater.startCylcling()
         await this.pEntityType.updater.startCylcling()
+        await this.pEntityFullText.updater.startCylcling()
     }
 }

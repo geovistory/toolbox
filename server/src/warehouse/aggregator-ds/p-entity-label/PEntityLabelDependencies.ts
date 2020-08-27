@@ -1,8 +1,8 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
-import {PClassId} from '../../primary-ds/FieldsConfigService'
+import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService'
-import {FieldsPerEntity} from '../../primary-ds/PEdgeService'
+import {EntityFields} from '../../primary-ds/PEdgeService'
 import {Warehouse} from '../../Warehouse'
 import {entityIdToString, stringToEntityId, pClassIdToString, stringToPClassId} from '../../base/functions'
 import {ClearAll} from '../../base/classes/ClearAll'
@@ -11,7 +11,7 @@ export class PEntityLabelDependencies extends ClearAll {
     entity: DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>
     entityLabelConfig: DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>
     entityLabel: DependencyIndex<PEntityId, string, PEntityId, string>
-    edge: DependencyIndex<PEntityId, string, PEntityId, FieldsPerEntity>
+    edge: DependencyIndex<PEntityId, string, PEntityId, EntityFields>
 
     // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
     constructor(private wh: Warehouse) {

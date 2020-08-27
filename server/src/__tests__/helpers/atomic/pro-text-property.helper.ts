@@ -17,6 +17,19 @@ export async function createProTextPropertyClassLabel(fkProject: number, fkClass
     return repo.findById(created.pk_entity)
 }
 
+export async function createProTextPropertyPropertyLabel(fkProject: number, fkProperty: number, propertyLabel: string, fkLanguage = AtmLanguages.ENGLISH.id) {
+    const item = new ProTextProperty({
+        fk_language: fkLanguage,
+        fk_project: fkProject,
+        fk_system_type: 639, // label of an entity
+        fk_dfh_property: fkProperty,
+        string: propertyLabel
+    })
+    const repo = new ProTextPropertyRepository(testdb)
+    const created = await repo.create(item);
+    return repo.findById(created.pk_entity)
+}
+
 export async function updateProTextProperty(pkEntity: number, patch: Partial<ProTextProperty>) {
     const repo = new ProTextPropertyRepository(testdb)
     await repo.updateById(pkEntity, patch);
