@@ -2,8 +2,9 @@ import {flatten} from 'ramda';
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
 import {PClassFieldVal} from '../../primary-ds/PClassFieldsConfigService';
 import {PClassId} from '../../primary-ds/PClassService';
-import {EntityFields, Edge} from '../../primary-ds/PEdgeService';
+import {Edge, EntityFields} from '../../primary-ds/PEdgeService';
 import {PEntityId} from '../../primary-ds/PEntityService';
+import {PFieldId} from '../p-property-label/PPropertyLabelService';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
 
 export interface ClassLabelConfig {
@@ -24,7 +25,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
 
     fullTextArr: string[] = [];
-    fullText: string;
+    fullText = '';
 
     constructor(
         public providers: PEntityFullTextProviders,
@@ -44,39 +45,31 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
      *  Gets values from Indexes and chaches dependencies in itself.
      */
     async create() {
+        // load previous providers in a cache
+        // in the end (after create), this cahche will contain only deprecated providers
+        // that can then be deleted from dependency indexes
+        await this.providers.load()
 
         const entity = await this.providers.pEntity.get(this.id);
+        if (!entity) return this;
 
-        if (entity) {
+        // get entity fields of that entity
+        const edges = await this.providers.pEdges.get(this.id)
+        if (!edges) return this;
+        // if no edges, return
 
-            // load previous providers in a cache
-            // in the end (after create), this cahche will contain only deprecated providers
-            // that can then be deleted from dependency indexes
-            await this.providers.load()
+        // get fields of that class
+        const pClassId: PClassId = {pkClass: entity.fkClass, fkProject: entity.fkProject}
+        const classFields = await this.providers.pClassFields.get(pClassId)
 
-            const pClassId: PClassId = {
-                pkClass: entity.fkClass,
-                fkProject: entity.fkProject
-            }
-            // get entity fields of that entity
-            const edges: EntityFields = {
-                incoming: {}, outgoing: {}
-            }
+        // create fulltext
+        const fullText = await this.loopOverFields(edges, classFields, entity.fkProject, entity.fkClass)
 
-            // if no edges, return
+        // get class label
+        let classLabel = await this.providers.pClassLabel.get(pClassId)
 
-            // get fields of that class
-            const classFields: PClassFieldVal = []
-
-            // create fulltext
-            const fullText: string = ''
-
-            // get class label
-            let classLabel = 'foo'
-
-            classLabel = classLabel ?? `[${entity.fkClass}]`;
-            this.fullText = `${classLabel} – ${fullText}`;
-        }
+        classLabel = classLabel ?? `[${entity.fkClass}]`;
+        this.fullText = `${classLabel} – ${fullText}`;
         return this
     }
 
@@ -92,7 +85,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
      *
      * @param entityFields
      */
-    async loopOverFields(entityFields: EntityFields, classFields: PClassFieldVal, fkProject: number, fkClass: number) {
+    async loopOverFields(entityFields: EntityFields, classFields: PClassFieldVal = [], fkProject: number, fkClass: number) {
 
         const loopedCache: {[key: string]: boolean;} = {};
 
@@ -116,13 +109,17 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
         // loop over the remaining fields of the entity (not covered by class config)
         const isOutgoing = true;
-        const isIncoming = false;
-        for (const fkProperty in entityFields) {
+        for (const fkProperty in entityFields.outgoing) {
 
             if (!loopedCache[fieldKey(fkProperty, isOutgoing)]) {
                 const edges = entityFields.outgoing[fkProperty];
                 promises.push(this.loopOverEdges(edges, fkProject, fkClass, parseInt(fkProperty, 10), isOutgoing));
             }
+
+        }
+        const isIncoming = false;
+        for (const fkProperty in entityFields.incoming) {
+
             if (!loopedCache[fieldKey(fkProperty, isIncoming)]) {
                 const edges = entityFields.incoming[fkProperty];
                 promises.push(this.loopOverEdges(edges, fkProject, fkClass, parseInt(fkProperty, 10), isIncoming));
@@ -161,47 +158,47 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         const result: string[] = [];
 
 
-        // const fieldId: PFieldId = {fkProject, fkClass, fkProperty, isOutgoing}
+        const fieldId: PFieldId = {fkProject, fkClass, fkProperty, isOutgoing}
 
-        // // are there any edges?
-        // if (edges?.length) {
+        // are there any edges?
+        if (edges?.length) {
 
-        //     // stop iteration at smaller number of limit or length of edges
-        //     const stop = Math.min(this.MAX_STMTS_PER_FIELD, edges.length);
+            // stop iteration at smaller number of limit or length of edges
+            const stop = Math.min(this.MAX_STMTS_PER_FIELD, edges.length);
 
-        //     for (let i = 0; i < stop; i++) {
-        //         const e = edges[i];
-        //         let fieldLabel = '';
+            for (let i = 0; i < stop; i++) {
+                const e = edges[i];
+                let fieldLabel = '';
 
-        //         if (i === 0) {
-        //             // create fieldLabel (the label for property in correct direction)
-        //             let l = await this.getFieldLabel(fieldId)
-        //             l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},]`
-        //             fieldLabel = (`${l}: `);
-        //         }
+                if (i === 0) {
+                    // create fieldLabel (the label for property in correct direction)
+                    let l = await this.providers.pClassFieldLabel.get(fieldId)
+                    l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},]`
+                    fieldLabel = (`${l}: `);
+                }
 
-        //         let targetLabel;
-        //         if (e.targetIsEntity) {
-        //             targetLabel = await this.getEpLabel({pkEntity: e.fkTarget, fkProject: fkProject})
-        //             targetLabel = targetLabel ?? `[e${e.fkTarget}]`
-        //             const targetEntityId: PEntityId = {fkProject, pkEntity: e.fkTarget}
-        //             const fkTargetClass = (await this.getEntity(targetEntityId))?.fkClass
+                let targetLabel;
+                if (e.targetIsEntity) {
+                    targetLabel = await this.providers.pEntity.get({pkEntity: e.fkTarget, fkProject: fkProject})
+                    targetLabel = targetLabel ?? `[e${e.fkTarget}]`
+                    const targetEntityId: PEntityId = {fkProject, pkEntity: e.fkTarget}
+                    const fkTargetClass = (await this.providers.pEntity.get(targetEntityId))?.fkClass
 
-        //             const targetClassLabel = (fkTargetClass ?
-        //                 await this.getClassLabel({fkProject, pkClass: fkTargetClass}) :
-        //                 false) ?? `[c${fkTargetClass}]`;
+                    const targetClassLabel = (fkTargetClass ?
+                        await this.providers.pClassLabel.get({fkProject, pkClass: fkTargetClass}) :
+                        false) ?? `[c${fkTargetClass}]`;
 
-        //             targetLabel = `${targetClassLabel} – ${targetLabel}`
+                    targetLabel = `${targetClassLabel} – ${targetLabel}`
 
 
-        //         } else {
-        //             targetLabel = e.targetLabel;
-        //         }
+                } else {
+                    targetLabel = e.targetLabel;
+                }
 
-        //         result.push(`${fieldLabel}'${targetLabel}'`);
+                result.push(`${fieldLabel}'${targetLabel}'`);
 
-        //     }
-        // }
+            }
+        }
         return result;
     }
 

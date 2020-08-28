@@ -21,6 +21,8 @@ describe('PClassLabelService', function () {
         await cleanDb()
     })
 
+    afterEach(async function () {await wh.stop()})
+
     it('should create class label of Person: de-ontome', async () => {
         const {prel, cla} = await createBasicMock();
         const result = await waitForClassPreview(wh, [

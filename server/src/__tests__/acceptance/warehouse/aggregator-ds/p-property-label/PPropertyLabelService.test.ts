@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
 import {PPropertyLabelService} from '../../../../../warehouse/aggregator-ds/p-property-label/PPropertyLabelService';
-import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../../../../../warehouse/Warehouse';
+import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
-import {AtmLanguages, createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
+import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {createProTextPropertyPropertyLabel, deleteProTextProperty, updateProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
+import {createProTextProperty, deleteProTextProperty, updateProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
+import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 
@@ -26,112 +28,184 @@ describe('PPropertyLabelService', function () {
         s = wh.agg.pPropertyLabel
     })
 
-    it('should create property label of Brought into life: de-ontome', async () => {
-        const {prel, cla} = await createBasicMock();
+    it('should create outgoing property label for en from ontome', async () => {
+        const {prel, dfhProp} = await createDfhLabelMock();
 
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.fkProject === prel.fk_project
-                && item.key.pkProperty === cla.dfh_pk_property
-                && item.val === 'Foo'
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
+                && item.val === DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label
         })
 
-        expect(result.val).to.equal('Foo')
+        expect(result.val).to.equal(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label)
     })
-    it('should create property label of "Brought into life": de-geovistory', async () => {
-        const {prel, cla, gvTxt} = await createGeovistoryLabelMock();
+
+
+    it('should create incoming property label for en from ontome', async () => {
+        const {prel, dfhProp} = await createDfhLabelMock();
+        const expected = '[reverse of: ' + DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label + ']'
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.fkProject === prel.fk_project
-                && item.key.pkProperty === cla.dfh_pk_property
-                && item.val === gvTxt.string
+                && item.key.fkClass === dfhProp.dfh_property_range
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === false
+                && item.val === expected
         })
-        expect(result.val).to.equal('Geborenes Kind')
+
+        expect(result.val).to.equal(expected)
     })
-    it('should create property label of "Brought into life": de-project', async () => {
-        const {prel, cla, proTxt} = await createProjectLabelMock();
+
+    it('should create outgoing property label for de from geovistory', async () => {
+        const {prel, dfhProp, gvTxt} = await createGeovistoryLabelMock();
+        const expected = gvTxt.string
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.fkProject === prel.fk_project
-                && item.key.pkProperty === cla.dfh_pk_property
-                && item.val === proTxt.string
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
+                && item.val === expected
         })
-        expect(result.val).to.equal('Brachte zur Welt')
+
+        expect(result.val).to.equal(expected)
     })
-    it('should update property label of "Brought into life": de-project', async () => {
-        const {prel, cla, proTxt} = await createProjectLabelMock();
+
+
+    it('should create incoming property label for de from geovistory', async () => {
+        const {prel, dfhProp, gvTxt} = await createGeovistoryLabelIncomingMock();
+        const expected = gvTxt.string
+        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
+            return item.key.fkProject === prel.fk_project
+                && item.key.fkClass === dfhProp.dfh_property_range
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === false
+                && item.val === expected
+        })
+
+        expect(result.val).to.equal(expected)
+    })
+
+    it('should create outgoing property label de from project', async () => {
+        const {prel, dfhProp, proTxt} = await createProjectLabelMock();
+        const expected = proTxt.string
+        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
+            return item.key.fkProject === prel.fk_project
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
+                && item.val === expected
+        })
+        expect(result.val).to.equal(expected)
+    })
+
+    it('should create incoming property label de from project', async () => {
+        const {prel, dfhProp, proTxt} = await createProjectLabelIncomingMock();
+        const expected = proTxt.string
+        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
+            return item.key.fkProject === prel.fk_project
+                && item.key.fkClass === dfhProp.dfh_property_range
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === false
+                && item.val === expected
+        })
+        expect(result.val).to.equal(expected)
+    })
+    it('should update outgoing property label de from project', async () => {
+        const {prel, dfhProp, proTxt} = await createProjectLabelMock();
         await updateProTextProperty(
             proTxt.pk_entity ?? -1,
             {string: 'Brachte zur Welt 2'}
         )
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.fkProject === prel.fk_project
-                && item.key.pkProperty === cla.dfh_pk_property
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
                 && item.val === 'Brachte zur Welt 2'
         })
         expect(result.val).to.equal('Brachte zur Welt 2')
     })
 
-    it('should switch property label of "Brought into life": de-project to de-geovistory', async () => {
-        const {prel, cla, proTxt} = await createProjectLabelMock();
+    it('should switch outgoing property label de-project to de-geovistory', async () => {
+        const {prel, dfhProp, gvTxt, proTxt} = await createProjectLabelMock();
+        let result = await waitUntilSatisfy(s.afterPut$, (item) => {
+            return item.key.fkProject === prel.fk_project
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
+                && item.val === proTxt.string
+        })
+        expect(result.val).to.equal(proTxt.string)
 
         await deleteProTextProperty(proTxt.pk_entity ?? -1)
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
+        result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.fkProject === prel.fk_project
-                && item.key.pkProperty === cla.dfh_pk_property
-                && item.val === 'Geborenes Kind'
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
+                && item.val === gvTxt.string
         })
-        expect(result.val).to.equal('Geborenes Kind')
+        expect(result.val).to.equal(gvTxt.string)
 
     })
 
-    it('should switch property label of "Brought into life": de-project to de-ontome', async () => {
-        const {prel, cla, proTxt, gvTxt} = await createProjectLabelMock();
-
+    it('should switch outgoing property label from de-project to de-ontome', async () => {
+        const {prel, dfhProp, proTxt, gvTxt} = await createProjectLabelMock();
+        let result = await waitUntilSatisfy(s.afterPut$, (item) => {
+            return item.key.fkProject === prel.fk_project
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
+                && item.val === proTxt.string
+        })
+        expect(result.val).to.equal(proTxt.string)
         await deleteProTextProperty(proTxt.pk_entity ?? -1)
         await deleteProTextProperty(gvTxt.pk_entity ?? -1)
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
+        result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.fkProject === prel.fk_project
-                && item.key.pkProperty === cla.dfh_pk_property
-                && item.val === 'Foo'
+                && item.key.fkClass === dfhProp.dfh_property_domain
+                && item.key.fkProperty === dfhProp.dfh_pk_property
+                && item.key.isOutgoing === true
+                && item.val === dfhProp.dfh_property_label
         })
-        expect(result.val).to.equal('Foo')
+        expect(result.val).to.equal(dfhProp.dfh_property_label)
 
     })
 
 
 })
-async function createBasicMock() {
+async function createDfhLabelMock() {
     await createInfLanguage(InfLanguageMock.GERMAN);
     await createProProject(ProProjectMock.PROJECT_1);
     const prel = await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
-    const cla = await createDfhApiProperty({
-        dfh_pk_property: 1,
-        dfh_property_label: 'Foo',
-        dfh_property_label_language: 'de',
-        dfh_fk_profile: ProDfhProfileProjRelMock.PROJ_1_PROFILE_4.fk_profile
-    });
-    return {prel, cla}
+    const dfhProp = await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
+    return {prel, dfhProp}
 }
 
 async function createGeovistoryLabelMock() {
-    const {prel, cla} = await createBasicMock();
+    const {prel, dfhProp} = await createDfhLabelMock();
     await createTypes()
-    const gvTxt = await createProTextPropertyPropertyLabel(
-        PK_DEFAULT_CONFIG_PROJECT,
-        1,
-        'Geborenes Kind',
-        AtmLanguages.GERMAN.id
-    )
-    return {prel, cla, gvTxt}
+    const gvTxt = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_PROPERTY_BROUGHT_INTO_LIFE)
+    return {prel, dfhProp, gvTxt}
+}
+
+async function createGeovistoryLabelIncomingMock() {
+    const {prel, dfhProp} = await createDfhLabelMock();
+    await createTypes()
+    const gvTxt = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_PROPERTY_BROUGHT_INTO_LIFE_REVERSE)
+    return {prel, dfhProp, gvTxt}
+}
+
+async function createProjectLabelMock() {
+    const {prel, dfhProp, gvTxt} = await createGeovistoryLabelMock();
+    const proTxt = await createProTextProperty(ProTextPropertyMock.PROJ_1_PROPERTY_BROUGHT_INTO_LIFE)
+    return {prel, dfhProp, gvTxt, proTxt}
 }
 
 
-async function createProjectLabelMock() {
-    const {prel, cla, gvTxt} = await createGeovistoryLabelMock();
-    await createTypes()
-    const proTxt = await createProTextPropertyPropertyLabel(
-        prel.fk_project ?? -1,
-        1,
-        'Brachte zur Welt',
-        AtmLanguages.GERMAN.id
-    )
-    return {prel, cla, gvTxt, proTxt}
+async function createProjectLabelIncomingMock() {
+    const {prel, dfhProp, gvTxt} = await createGeovistoryLabelMock();
+    const proTxt = await createProTextProperty(ProTextPropertyMock.PROJ_1_PROPERTY_BROUGHT_INTO_LIFE_REVERSE)
+    return {prel, dfhProp, gvTxt, proTxt}
 }

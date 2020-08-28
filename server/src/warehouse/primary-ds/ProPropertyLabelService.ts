@@ -5,6 +5,8 @@ import {Warehouse} from '../Warehouse';
 export interface ProPropertyLabelId {
     fkProject: number
     fkProperty: number
+    fkClass: number
+    isOutgoing: boolean
     fkLanguage: number
 }
 export type ProPropertyLabelVal = string
@@ -23,6 +25,8 @@ export class ProPropertyLabelService extends PrimaryDataService<DbItem, ProPrope
         const key: ProPropertyLabelId = {
             fkProject: item.fkProject,
             fkProperty: item.fkProperty,
+            fkClass: item.fkPropertyDomain ?? item.fkPropertyRange ?? -99,
+            isOutgoing: !!item.fkPropertyDomain,
             fkLanguage: item.fkLanguage
         }
         const val = item.label
@@ -40,6 +44,8 @@ export class ProPropertyLabelService extends PrimaryDataService<DbItem, ProPrope
 interface DbItem {
     fkProject: number,
     fkProperty: number,
+    fkPropertyDomain: number | null,
+    fkPropertyRange: number | null,
     fkLanguage: number,
     label: string
 }
@@ -49,6 +55,8 @@ export const updateSql = `
 SELECT
     fk_project "fkProject",
     fk_dfh_property "fkProperty",
+    fk_dfh_property_domain "fkPropertyDomain",
+    fk_dfh_property_range "fkPropertyRange",
     fk_language "fkLanguage",
     string "label"
 FROM
@@ -56,26 +64,43 @@ FROM
 WHERE
     fk_dfh_property IS NOT NULL
 AND
-    tmsp_last_modification > $1
+    fk_system_type = 639
+AND
+    tmsp_last_modification >= $1
 `;
 
 
 const deleteSql = `
-    SELECT
+WITH tw1 AS (
+	SELECT
         fk_project "fkProject",
         fk_dfh_property "fkProperty",
+        fk_dfh_property_domain "fkPropertyDomain",
+        fk_dfh_property_range "fkPropertyRange",
         fk_language "fkLanguage"
     FROM
         projects.text_property_vt
     WHERE
-        upper(sys_period) > $1
-
+        upper(sys_period) >= $1
     EXCEPT
 
     SELECT
         fk_project "fkProject",
         fk_dfh_property "fkProperty",
+        fk_dfh_property_domain "fkPropertyDomain",
+        fk_dfh_property_range "fkPropertyRange",
         fk_language "fkLanguage"
     FROM
-        projects.text_property;
+        projects.text_property
+	)
+	SELECT
+        "fkProject",
+        "fkProperty",
+        COALESCE("fkPropertyDomain", "fkPropertyRange") "fkClass",
+        CASE WHEN "fkPropertyDomain" IS NOT NULL THEN true ELSE false END "isOutgoing",
+        "fkLanguage"
+    FROM
+    tw1;
+
+
 `

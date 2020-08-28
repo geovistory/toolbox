@@ -9,6 +9,7 @@ import {ClassId} from '../primary-ds/DfhClassHasTypePropertyService';
 import {PPropertyId} from '../primary-ds/PPropertyService';
 import {DfhPropertyLabelId} from '../primary-ds/DfhPropertyLabelService';
 import {ProPropertyLabelId} from '../primary-ds/ProPropertyLabelService';
+import {PFieldId} from '../aggregator-ds/p-property-label/PPropertyLabelService';
 
 export function entityIdToString(key: PEntityId): string {
     return key.fkProject + '_' + key.pkEntity;
@@ -37,6 +38,23 @@ export function stringToPPropertyId(str: string): PPropertyId {
     const [fkProject, pkProperty] = str.split('_');
     return {fkProject: parseInt(fkProject, 10), pkProperty: parseInt(pkProperty, 10)};
 }
+
+
+// project field id to string
+export function pFieldIdToString(key: PFieldId): string {
+    return key.fkProject + '_' + key.fkClass + '_' + key.fkProperty + '_' + key.isOutgoing;;
+}
+// string to project field
+export function stringToPFieldId(str: string): PFieldId {
+    const [fkProject, fkClass, fkProperty, isOutgoing] = str.split('_');
+    return {
+        fkProject: parseInt(fkProject, 10),
+        fkClass: parseInt(fkClass, 10),
+        fkProperty: parseInt(fkProperty, 10),
+        isOutgoing: isOutgoing === 'true'
+    };
+}
+
 
 
 // class to string
@@ -88,11 +106,17 @@ export function stringToProClassId(str: string): ProClassLabelId {
 
 
 export function proPropertyIdToString(key: ProPropertyLabelId): string {
-    return key.fkProject + '_' + key.fkProperty + '_' + key.fkLanguage
+    return key.fkProject + '_' + key.fkClass + '_' + key.fkProperty + '_' + key.isOutgoing + '_' + key.fkLanguage
 }
 export function stringToProPropertyId(str: string): ProPropertyLabelId {
-    const [fkProject, pkProperty, fkLanguage] = str.split('_')
-    return {fkProject: parseInt(fkProject, 10), fkProperty: parseInt(pkProperty, 10), fkLanguage: parseInt(fkLanguage, 10)};
+    const [fkProject, fkClass, fkProperty, isOutgoing, fkLanguage] = str.split('_')
+    return {
+        fkProject: parseInt(fkProject, 10),
+        fkClass: parseInt(fkClass, 10),
+        fkProperty: parseInt(fkProperty, 10),
+        isOutgoing: isOutgoing === 'true',
+        fkLanguage: parseInt(fkLanguage, 10)
+    };
 }
 
 

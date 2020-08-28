@@ -109,8 +109,8 @@
         "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        "--grep",
-        "/PEntityTimeSpan.*/"
+        // "--grep",
+        // "/PEntityFullText.*/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

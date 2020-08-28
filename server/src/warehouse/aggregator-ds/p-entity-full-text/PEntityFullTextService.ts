@@ -57,17 +57,13 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
             'war.entity_preview (entity_type)',
             wh.pgClient,
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, full_text, fk_type)
+                INSERT INTO war.entity_preview (pk_entity, fk_project, project, full_text)
                 VALUES ${valuesStr}
                 ON CONFLICT (pk_entity, project) DO UPDATE
                 SET
-                    full_text = EXCLUDED.full_text,
-                    fk_type = EXCLUDED.fk_type
-                WHERE (
-                    EXCLUDED.full_text IS DISTINCT FROM war.entity_preview.full_text
-                    OR
-                    EXCLUDED.fk_type IS DISTINCT FROM war.entity_preview.fk_type
-                );`,
+                    full_text = EXCLUDED.full_text
+                WHERE
+                    EXCLUDED.full_text IS DISTINCT FROM war.entity_preview.full_text;`,
             (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
             entityIdToString
         )

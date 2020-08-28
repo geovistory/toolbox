@@ -56,6 +56,8 @@ FROM
 WHERE
     fk_dfh_class IS NOT NULL
 AND
+    fk_system_type = 639
+AND
     tmsp_last_modification > $1
 `;
 

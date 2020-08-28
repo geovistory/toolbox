@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
+import {PEntityFullTextService} from '../../../../../warehouse/aggregator-ds/p-entity-full-text/PEntityFullTextService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
@@ -18,27 +19,39 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
+import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
+import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
+import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 
 /**
  * Testing whole stack from postgres to warehouse
  */
 describe('PEntityFullText', function () {
     let wh: Warehouse;
+    let s: PEntityFullTextService;
 
     beforeEach(async function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
+        s = wh.agg.pEntityFullText
     })
 
     it('should full text of naming', async () => {
         const {naming, project} = await createNamingMock();
 
-        const result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: naming.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
-            {full_text: {eq: `Naming – has spelling: 'Jack the foo', is appellation of: 'Person – [e33]'`}},
-        ])
+        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
+            return item.key.pkEntity === naming.pk_entity
+                && item.key.fkProject === project.pk_entity
+                && item.val === `Appellation in a language (time-indexed) – refers to name: 'Jack the foo'`
+        })
+
+        // const result = await waitForEntityPreview(wh, [
+        //     {pk_entity: {eq: naming.pk_entity}},
+        //     {fk_project: {eq: project.pk_entity}},
+        //     {full_text: {eq: `Naming – has spelling: 'Jack the foo', is appellation of: 'Person – [e33]'`}},
+        // ])
         expect(result).not.to.be.undefined();
     })
 
@@ -70,6 +83,9 @@ async function createNamingMock() {
     const project = await createProProject(ProProjectMock.PROJECT_1);
     await createProProject(ProProjectMock.DEFAULT_PROJECT);
     await createDfhApiClass(DfhApiClassMock.EN_365_NAMING);
+    await createProDfhProfileProjRel(ProDfhProfileProjRelMock.PROJ_1_PROFILE_4);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_1113_REFERS_TO_NAME);
 
     const naming = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1);

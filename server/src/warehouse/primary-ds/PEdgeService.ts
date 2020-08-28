@@ -32,7 +32,7 @@ export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, En
 
     constructor(wh: Warehouse) {
         super(wh, [
-            'modified_projects_info_proj_rel'
+            'modified_projects_info_proj_rel',
         ])
     }
 

@@ -1,20 +1,20 @@
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {PPropertyId} from '../../primary-ds/PPropertyService';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../Warehouse';
 import {PPropertyLabelProviders} from './PPropertyLabelProviders';
+import {PFieldId} from './PPropertyLabelService';
 
-export class PPropertyLabelAggregator extends AbstractAggregator<PPropertyId> {
+export class PPropertyLabelAggregator extends AbstractAggregator<PFieldId> {
 
 
   // the resulting label
-  PropertyLabel = '';
+  propertyLabel = '';
 
   // For testing / debugging
   labelMissing = true;
 
   constructor(
     public providers: PPropertyLabelProviders,
-    public id: PPropertyId
+    public id: PFieldId
   ) {
     super()
   }
@@ -40,18 +40,22 @@ export class PPropertyLabelAggregator extends AbstractAggregator<PPropertyId> {
 
       // from project
       propertyLabel = await this.providers.proPropertyLabel.get({
-        fkProperty: this.id.pkProperty,
+        fkProject: this.id.fkProject,
+        fkClass: this.id.fkClass,
+        fkProperty: this.id.fkProperty,
+        isOutgoing: this.id.isOutgoing,
         fkLanguage: proLang,
-        fkProject: this.id.fkProject
       })
 
       if (propertyLabel) return this.finalize(propertyLabel);
 
       // from geovistory
       propertyLabel = await this.providers.proPropertyLabel.get({
-        fkProperty: this.id.pkProperty,
+        fkProject: PK_DEFAULT_CONFIG_PROJECT,
+        fkClass: this.id.fkClass,
+        fkProperty: this.id.fkProperty,
+        isOutgoing: this.id.isOutgoing,
         fkLanguage: proLang,
-        fkProject: PK_DEFAULT_CONFIG_PROJECT
       })
 
       if (propertyLabel) return this.finalize(propertyLabel);
@@ -60,13 +64,15 @@ export class PPropertyLabelAggregator extends AbstractAggregator<PPropertyId> {
       const iso6391ProLang = pkLanguageIso6391Map[proLang];
       if (iso6391ProLang) {
         propertyLabel = await this.providers.dfhPropertyLabel.get({
-          pkProperty: this.id.pkProperty,
+          pkProperty: this.id.fkProperty,
           language: iso6391ProLang
-
         })
       }
 
-      if (propertyLabel) return this.finalize(propertyLabel);
+      if (propertyLabel) {
+        propertyLabel = this.completeReverseLabels(propertyLabel);
+        return this.finalize(propertyLabel);
+      }
 
       /**
       * Try to get label in english
@@ -74,30 +80,36 @@ export class PPropertyLabelAggregator extends AbstractAggregator<PPropertyId> {
 
       // from project
       propertyLabel = await this.providers.proPropertyLabel.get({
-        fkProperty: this.id.pkProperty,
+        fkProject: this.id.fkProject,
+        fkClass: this.id.fkClass,
+        fkProperty: this.id.fkProperty,
+        isOutgoing: this.id.isOutgoing,
         fkLanguage: defaultLang,
-        fkProject: this.id.fkProject
       })
 
       if (propertyLabel) return this.finalize(propertyLabel);
 
       // from geovistory
       propertyLabel = await this.providers.proPropertyLabel.get({
-        fkProperty: this.id.pkProperty,
+        fkProject: PK_DEFAULT_CONFIG_PROJECT,
+        fkClass: this.id.fkClass,
+        fkProperty: this.id.fkProperty,
+        isOutgoing: this.id.isOutgoing,
         fkLanguage: defaultLang,
-        fkProject: PK_DEFAULT_CONFIG_PROJECT
       })
 
       if (propertyLabel) return this.finalize(propertyLabel);
 
       // from ontome
       propertyLabel = await this.providers.dfhPropertyLabel.get({
-        pkProperty: this.id.pkProperty,
+        pkProperty: this.id.fkProperty,
         language: 'en'
 
       })
-
-      if (propertyLabel) return this.finalize(propertyLabel);
+      if (propertyLabel) {
+        propertyLabel = this.completeReverseLabels(propertyLabel);
+        return this.finalize(propertyLabel);
+      }
 
     }
 
@@ -105,10 +117,21 @@ export class PPropertyLabelAggregator extends AbstractAggregator<PPropertyId> {
   }
 
   finalize(label: string) {
-    this.PropertyLabel = label;
+    this.propertyLabel = label;
     this.labelMissing = false;
     return this;
   }
+
+  /**
+   * Completes labels of incoming properties, when no incoming label was found
+   * @param propertyLabel
+   */
+  private completeReverseLabels(propertyLabel: string) {
+    if (!this.id.isOutgoing)
+      propertyLabel = '[reverse of: ' + propertyLabel + ']';
+    return propertyLabel;
+  }
+
 }
 
 

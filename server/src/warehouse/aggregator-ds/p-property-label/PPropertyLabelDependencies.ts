@@ -1,16 +1,16 @@
+import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {pPropertyIdToString, dfhPropertyIdToString, proPropertyIdToString, stringToPPropertyId, stringToDfhPropertyId, stringToProPropertyId, projectIdToString, stringToProjectId} from '../../base/functions'
+import {dfhPropertyIdToString, pFieldIdToString, projectIdToString, proPropertyIdToString, stringToDfhPropertyId, stringToPFieldId, stringToProjectId, stringToProPropertyId} from '../../base/functions'
 import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../primary-ds/DfhPropertyLabelService'
+import {ProjectId, ProjectVal} from '../../primary-ds/ProjectService'
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../Warehouse'
-import {ProjectId, ProjectVal} from '../../primary-ds/ProjectService'
-import {ClearAll} from '../../base/classes/ClearAll'
-import {PPropertyId} from '../../primary-ds/PPropertyService'
+import {PFieldId} from './PPropertyLabelService'
 
 export class PPropertyLabelDependencies extends ClearAll {
-  project: DependencyIndex<PPropertyId, string, ProjectId, ProjectVal>
-  dfhPropertyLabel: DependencyIndex<PPropertyId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
-  proPropertyLabel: DependencyIndex<PPropertyId, string, ProPropertyLabelId, ProPropertyLabelVal>
+  project: DependencyIndex<PFieldId, string, ProjectId, ProjectVal>
+  dfhPropertyLabel: DependencyIndex<PFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
+  proPropertyLabel: DependencyIndex<PFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
 
   // entityFulltextPropertyLabelDep: DependencyIndex<EntityId, string, PropertyId, string>;
   constructor(private wh: Warehouse) {
@@ -18,8 +18,8 @@ export class PPropertyLabelDependencies extends ClearAll {
     this.project = new DependencyIndex(
       wh.agg.pPropertyLabel,
       wh.prim.project,
-      pPropertyIdToString,
-      stringToPPropertyId,
+      pFieldIdToString,
+      stringToPFieldId,
       projectIdToString,
       stringToProjectId
     )
@@ -27,8 +27,8 @@ export class PPropertyLabelDependencies extends ClearAll {
     this.dfhPropertyLabel = new DependencyIndex(
       wh.agg.pPropertyLabel,
       wh.prim.dfhPropertyLabel,
-      pPropertyIdToString,
-      stringToPPropertyId,
+      pFieldIdToString,
+      stringToPFieldId,
       dfhPropertyIdToString,
       stringToDfhPropertyId
     )
@@ -36,8 +36,8 @@ export class PPropertyLabelDependencies extends ClearAll {
     this.proPropertyLabel = new DependencyIndex(
       wh.agg.pPropertyLabel,
       wh.prim.proPropertyLabel,
-      pPropertyIdToString,
-      stringToPPropertyId,
+      pFieldIdToString,
+      stringToPFieldId,
       proPropertyIdToString,
       stringToProPropertyId
     )

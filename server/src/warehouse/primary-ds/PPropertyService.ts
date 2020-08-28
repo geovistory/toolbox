@@ -2,6 +2,7 @@ import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {pPropertyIdToString, stringToPPropertyId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
+import {PFieldId} from '../aggregator-ds/p-property-label/PPropertyLabelService';
 export interface PPropertyId {fkProject: number, pkProperty: number}
 
 export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, ProjectProperty>{
@@ -23,7 +24,21 @@ export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, 
      */
     this.afterPut$.subscribe(item => {
       // Add update requests on aggregaters based on project property
-      wh.agg.pPropertyLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
+      const outgoingField: PFieldId = {
+        fkProject: item.key.fkProject,
+        fkClass: item.val.fkDomain,
+        fkProperty: item.val.fkProperty,
+        isOutgoing: true
+      }
+      wh.agg.pPropertyLabel.updater.addItemToQueue(outgoingField).catch(e => console.log(e))
+
+      const incomingField: PFieldId = {
+        fkProject: item.key.fkProject,
+        fkClass: item.val.fkRange,
+        fkProperty: item.val.fkProperty,
+        isOutgoing: false
+      }
+      wh.agg.pPropertyLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
     })
 
     /**
@@ -40,10 +55,7 @@ export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, 
       pkProperty: item.fkProperty,
       fkProject: item.fkProject,
     };
-    const val: ProjectProperty = {
-      fkProperty: item.fkProperty,
-      fkProject: item.fkProject,
-    };
+    const val: ProjectProperty = item
     return {key, val}
   }
 
@@ -59,6 +71,8 @@ export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, 
 interface InitItem {
   fkProject: number,
   fkProperty: number,
+  fkDomain: number
+  fkRange: number
 }
 
 const updateSql = `
@@ -72,7 +86,9 @@ const updateSql = `
   )
   SELECT DISTINCT
     dfh_pk_property "fkProperty",
-    fk_project "fkProject"
+    fk_project "fkProject",
+    dfh_property_domain "fkDomain",
+    dfh_property_range "fkRange"
   FROM
     tw1 t1,
     data_for_history.api_property t2
@@ -100,7 +116,9 @@ export const deleteSql = `
 `
 export interface ProjectProperty {
   fkProperty: number
-  fkProject: number
+  fkProject: number,
+  fkDomain: number
+  fkRange: number
 }
 
 

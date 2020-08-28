@@ -202,6 +202,7 @@ export class Warehouse {
 
     async stop() {
         this.notificationHandlers = {}
+        await this.pgClient.end();
     }
 }
 

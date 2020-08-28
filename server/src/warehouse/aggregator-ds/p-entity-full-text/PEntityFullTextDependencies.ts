@@ -1,17 +1,20 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {entityIdToString, stringToEntityId, classIdToString, stringToClassId} from '../../base/functions'
+import {entityIdToString, pClassIdToString, stringToEntityId, stringToPClassId, pFieldIdToString, stringToPFieldId} from '../../base/functions'
+import {PClassFieldVal, PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {EntityFields} from '../../primary-ds/PEdgeService'
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
-import {ClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService'
 import {PEntityFullTextVal} from './PEntityFullTextService'
+import {PFieldId} from '../p-property-label/PPropertyLabelService'
 
 export class PEntityFullTextDependencies extends ClearAll {
     pEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, ProjectEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, string>
     pEdge: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>
-    dfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityFullTextVal, ClassId, DfhClassHasTypePropVal>
+    pClassLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, string>
+    pClassFields: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, PClassFieldVal>
+    pClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PFieldId, string>
 
     constructor(private wh: Warehouse) {
         super()
@@ -46,16 +49,33 @@ export class PEntityFullTextDependencies extends ClearAll {
         );
 
         // stores the dependency of entityFullText (receiver) on dfhClassHasTypeProperty
-        this.dfhClassHasTypeProp = new DependencyIndex(
+        this.pClassFields = new DependencyIndex(
             this.wh.agg.pEntityFullText,
-            this.wh.prim.dfhClassHasTypeProperty,
+            this.wh.prim.pClassFieldsConfig,
             entityIdToString,
             stringToEntityId,
-            classIdToString,
-            stringToClassId,
+            pClassIdToString,
+            stringToPClassId,
         );
 
+        // stores the dependency of entityFullText (receiver) on project class labels
+        this.pClassLabel = new DependencyIndex(
+            this.wh.agg.pEntityFullText,
+            this.wh.agg.pClassLabel,
+            entityIdToString,
+            stringToEntityId,
+            pClassIdToString,
+            stringToPClassId,
+        );
 
+        this.pClassFieldLabel = new DependencyIndex(
+            this.wh.agg.pEntityFullText,
+            this.wh.agg.pPropertyLabel,
+            entityIdToString,
+            stringToEntityId,
+            pFieldIdToString,
+            stringToPFieldId,
+        );
     }
 
     async clearAll() {

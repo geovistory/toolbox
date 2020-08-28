@@ -41,6 +41,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
             wh.agg.pEntityClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
             wh.agg.pEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
             if(item.val.entityType === 'teEn') wh.agg.pEntityTimeSpan.updater.addItemToQueue(item.key).catch(e => console.log(e))
+            wh.agg.pEntityFullText.updater.addItemToQueue(item.key).catch(e => console.log(e))
 
             // Add item to queue to upsert it into db
             upsertQueue.add(item)

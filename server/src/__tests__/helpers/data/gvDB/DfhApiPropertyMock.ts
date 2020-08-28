@@ -2,7 +2,7 @@
 export class DfhApiPropertyMock {
   static readonly EN_1111_IS_APPE_OF: DfhApiProperty = {
     "pk_entity": 4185,
-    "dfh_fk_profile": 17,
+    "dfh_fk_profile": 4,
     "dfh_pk_property": 1111,
     "dfh_fk_namespace": 3,
     "dfh_is_inherited": true,
@@ -276,6 +276,36 @@ export class DfhApiPropertyMock {
     "dfh_property_identifier_in_namespace": "P82b"
   }
 
+  static readonly EN_86_BROUGHT_INTO_LIFE: DfhApiProperty = {
+    "pk_entity": 3679,
+    "dfh_fk_profile": 4,
+    "dfh_pk_property": 86,
+    "dfh_fk_namespace": 1,
+    "dfh_is_inherited": false,
+    "removed_from_api": true,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Generic Historical Information Profile",
+    "dfh_property_label": "brought into life",
+    "dfh_property_range": 21,
+    "requested_language": "en",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_property_domain": 61,
+    "tmsp_last_dfh_update": "2020-03-07T11:47:39.607+00:00",
+    "dfh_identity_defining": true,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property links an E67Birth event to an E21 Person in the role of offspring. Twins, triplets etc. are brought into life by\n            the same Birth event. This is not intended for use with general Natural History material, only people. There is no explicit method for\n            modelling conception and gestation except by using extensions. ",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": 1,
+    "dfh_domain_instances_min_quantifier": 1,
+    "dfh_property_identifier_in_namespace": "P98"
+  }
 
 }
 

@@ -6,6 +6,7 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, deleteDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {setupCleanAndStartWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 
 describe('DfhPropertyLabelService', () => {
 
@@ -22,10 +23,10 @@ describe('DfhPropertyLabelService', () => {
   })
 
   it('should have api property label in index after initIdx()', async () => {
-    const c = await createDfhApiProperty({dfh_property_label: 'Foo'})
+    const prop = await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
     await waitUntilNext(s.afterPut$);
-    const result = await s.index.getFromIdx({pkProperty: c.dfh_pk_property, language: c.dfh_property_label_language})
-    expect(result).to.equal('Foo')
+    const result = await s.index.getFromIdx({pkProperty: prop.dfh_pk_property, language: prop.dfh_property_label_language})
+    expect(result).to.equal(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label)
 
   })
 
