@@ -1,9 +1,9 @@
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../Warehouse';
-import {PPropertyLabelProviders} from './PPropertyLabelProviders';
-import {PFieldId} from './PPropertyLabelService';
+import {PClassFieldLabelProviders} from './PClassFieldLabelProviders';
+import {PClassFieldId} from './PClassFieldLabelService';
 
-export class PPropertyLabelAggregator extends AbstractAggregator<PFieldId> {
+export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldId> {
 
 
   // the resulting label
@@ -13,8 +13,8 @@ export class PPropertyLabelAggregator extends AbstractAggregator<PFieldId> {
   labelMissing = true;
 
   constructor(
-    public providers: PPropertyLabelProviders,
-    public id: PFieldId
+    public providers: PClassFieldLabelProviders,
+    public id: PClassFieldId
   ) {
     super()
   }

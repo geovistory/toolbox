@@ -5,14 +5,14 @@ import {EntityFields} from '../../primary-ds/PEdgeService';
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService';
 import {PEntityFullTextDependencies} from './PEntityFullTextDependencies';
 import {PEntityFullTextVal} from './PEntityFullTextService';
-import {PFieldId} from '../p-property-label/PPropertyLabelService';
+import {PClassFieldId} from '../p-class-field-label/PClassFieldLabelService';
 export class PEntityFullTextProviders extends Providers<PEntityId> {
     pEntity: Provider<PEntityId, PEntityFullTextVal, PEntityId, ProjectEntity>;
     pEdges: Provider<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>;
     pEntityLabel: Provider<PEntityId, PEntityFullTextVal, PEntityId, string>;
     pClassLabel: Provider<PEntityId, PEntityFullTextVal, PClassId, string>;
     pClassFields: Provider<PEntityId, PEntityFullTextVal, PClassId, PClassFieldVal>;
-    pClassFieldLabel: Provider<PEntityId, PEntityFullTextVal, PFieldId, string>;
+    pClassFieldLabel: Provider<PEntityId, PEntityFullTextVal, PClassFieldId, string>;
 
     constructor(
         dep: PEntityFullTextDependencies,

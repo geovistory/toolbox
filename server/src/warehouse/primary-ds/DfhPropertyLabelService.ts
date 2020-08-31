@@ -35,7 +35,7 @@ interface DbItem {
 }
 
 const updateSql = `
-    SELECT
+    SELECT DISTINCT
         dfh_pk_property "pkProperty",
         dfh_property_label_language "language",
         dfh_property_label "label"

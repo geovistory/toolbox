@@ -21,4 +21,14 @@ export class InfTemporalEntityMock {
     fk_class: DfhApiClassMock.EN_523_SHIP_VOYAGE.dfh_pk_class,
   })
 
+  static readonly BIRTH_1 = new InfTemporalEntity({
+    pk_entity: 4004,
+    fk_class: DfhApiClassMock.EN_61_BIRTH.dfh_pk_class,
+  })
+
+  static readonly UNION_1 = new InfTemporalEntity({
+    pk_entity: 4005,
+    fk_class: DfhApiClassMock.EN_633_UNION.dfh_pk_class,
+  })
+
 }

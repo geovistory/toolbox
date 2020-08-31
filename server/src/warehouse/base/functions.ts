@@ -9,7 +9,8 @@ import {ClassId} from '../primary-ds/DfhClassHasTypePropertyService';
 import {PPropertyId} from '../primary-ds/PPropertyService';
 import {DfhPropertyLabelId} from '../primary-ds/DfhPropertyLabelService';
 import {ProPropertyLabelId} from '../primary-ds/ProPropertyLabelService';
-import {PFieldId} from '../aggregator-ds/p-property-label/PPropertyLabelService';
+import {PClassFieldId} from '../aggregator-ds/p-class-field-label/PClassFieldLabelService';
+import {OutgoingProperyId} from '../primary-ds/DfhOutgoingPropertyService';
 
 export function entityIdToString(key: PEntityId): string {
     return key.fkProject + '_' + key.pkEntity;
@@ -41,11 +42,11 @@ export function stringToPPropertyId(str: string): PPropertyId {
 
 
 // project field id to string
-export function pFieldIdToString(key: PFieldId): string {
+export function pClassFieldIdToString(key: PClassFieldId): string {
     return key.fkProject + '_' + key.fkClass + '_' + key.fkProperty + '_' + key.isOutgoing;;
 }
 // string to project field
-export function stringToPFieldId(str: string): PFieldId {
+export function stringToPClassFieldId(str: string): PClassFieldId {
     const [fkProject, fkClass, fkProperty, isOutgoing] = str.split('_');
     return {
         fkProject: parseInt(fkProject, 10),
@@ -118,6 +119,22 @@ export function stringToProPropertyId(str: string): ProPropertyLabelId {
         fkLanguage: parseInt(fkLanguage, 10)
     };
 }
+
+
+
+export function outgoingProperyIdToString(key: OutgoingProperyId): string {
+    return key.fkDomain + '_' + key.fkProperty
+}
+export function stringToOutgoingProperyId(str: string): OutgoingProperyId {
+    const [fkDomain, fkProperty] = str.split('_')
+    return {
+        fkDomain: parseInt(fkDomain, 10),
+        fkProperty: parseInt(fkProperty, 10)
+    };
+}
+
+
+
 
 
 /**

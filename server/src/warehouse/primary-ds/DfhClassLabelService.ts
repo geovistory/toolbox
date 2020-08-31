@@ -35,7 +35,7 @@ interface DbItem {
 }
 
 const updateSql = `
-    SELECT
+    SELECT DISTINCT
         dfh_pk_class "pkClass",
         dfh_class_label_language "language",
         dfh_class_label "label"

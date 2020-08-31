@@ -153,4 +153,44 @@ export class ProInfoProjRelMock {
     is_in_project: true
   })
 
+  static readonly PROJ_1_STMT_BIRTH_1_BROUGHT_INTO_LIFE_PERON_1 = new ProInfoProjRel({
+    pk_entity: 2018,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.BIRTH_1_BROUGHT_INTO_LIFE_PERSON_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+  static readonly PROJ_1_STMT_BIRTH_1_STEMS_FROM_UNION_1 = new ProInfoProjRel({
+    pk_entity: 2019,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.BIRTH_1_STEMS_FROM_UNION_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_BIRTH = new ProInfoProjRel({
+    pk_entity: 2020,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfTemporalEntityMock.BIRTH_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly PROJ_1_UNION_1 = new ProInfoProjRel({
+    pk_entity: 2021,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfTemporalEntityMock.UNION_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+
+  static readonly PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1 = new ProInfoProjRel({
+    pk_entity: 2022,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_entity: InfStatementMock.UNOIN_1_HAS_PARTNER_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
 }

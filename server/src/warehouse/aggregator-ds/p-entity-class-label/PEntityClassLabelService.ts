@@ -35,15 +35,19 @@ export class PEntityClassLabelService extends AggregatedDataService<PEntityId, V
         )
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, ValueModel>(
+            wh,
             'war.entity_preview (class_label)',
-            wh.pgClient,
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, class_label)
-                VALUES ${valuesStr}
-                ON CONFLICT (pk_entity, project) DO UPDATE
-                SET class_label = EXCLUDED.class_label
-                WHERE EXCLUDED.class_label IS DISTINCT FROM war.entity_preview.class_label;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
+                UPDATE war.entity_preview
+                SET class_label = x.column3
+                FROM
+                (
+                    values ${valuesStr}
+                ) as x
+                WHERE pk_Entity = x.column1::int
+                AND project = x.column2::int
+                AND class_label IS DISTINCT FROM x.column3`,
+            (item) => [item.key.pkEntity, item.key.fkProject, item.val],
             entityIdToString
         )
 

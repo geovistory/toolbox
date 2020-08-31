@@ -60,21 +60,25 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntity
         )
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTypeVal>(
+            wh,
             'war.entity_preview (entity_type)',
-            wh.pgClient,
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, type_label, fk_type)
-                VALUES ${valuesStr}
-                ON CONFLICT (pk_entity, project) DO UPDATE
+                UPDATE war.entity_preview
                 SET
-                    type_label = EXCLUDED.type_label,
-                    fk_type = EXCLUDED.fk_type
-                WHERE (
-                    EXCLUDED.type_label IS DISTINCT FROM war.entity_preview.type_label
+                    type_label = x.column3,
+                    fk_type = x.column4::int
+                FROM
+                (
+                    values ${valuesStr}
+                ) as x
+                WHERE pk_entity = x.column1::int
+                AND project = x.column2::int
+                AND (
+                    type_label IS DISTINCT FROM x.column3
                     OR
-                    EXCLUDED.fk_type IS DISTINCT FROM war.entity_preview.fk_type
+                    fk_type IS DISTINCT FROM x.column4::int
                 );`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val.typeLabel, item.val.fkType],
+            (item) => [item.key.pkEntity, item.key.fkProject, item.val.typeLabel, item.val.fkType],
             entityIdToString
         )
 

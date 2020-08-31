@@ -166,7 +166,7 @@ describe('PEntityService', () => {
     )
 
     await waitUntilNext(s.afterDel$)
-    await wait(200)
+    await wait(20)
 
     entities = await getWarEntityPreview(
       InfPersistentItemMock.PERSON_1.pk_entity ?? -1,

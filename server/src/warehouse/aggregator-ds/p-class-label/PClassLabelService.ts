@@ -35,8 +35,8 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
         )
 
         const upsertQueue = new SqlUpsertQueue<PClassId, ValueModel>(
+            wh,
             this.constructor.name,
-            wh.pgClient,
             (valuesStr: string) => `
                 INSERT INTO war.class_preview (fk_class, fk_project, label)
                 VALUES ${valuesStr}

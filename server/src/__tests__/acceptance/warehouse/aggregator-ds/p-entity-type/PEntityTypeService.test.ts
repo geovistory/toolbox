@@ -32,6 +32,7 @@ describe('PEntityTypeService', function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
     })
+    afterEach(async function () {await wh.stop()})
 
     it('should create fk_type of geographical place', async () => {
         const {madrid, project, cityTypeAppe} = await createMock();

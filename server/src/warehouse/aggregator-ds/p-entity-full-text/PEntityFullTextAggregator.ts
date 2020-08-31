@@ -4,8 +4,9 @@ import {PClassFieldVal} from '../../primary-ds/PClassFieldsConfigService';
 import {PClassId} from '../../primary-ds/PClassService';
 import {Edge, EntityFields} from '../../primary-ds/PEdgeService';
 import {PEntityId} from '../../primary-ds/PEntityService';
-import {PFieldId} from '../p-property-label/PPropertyLabelService';
+import {PClassFieldId} from '../p-class-field-label/PClassFieldLabelService';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
+import {PK_DEFAULT_CONFIG_PROJECT} from '../../Warehouse';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -60,7 +61,13 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
         // get fields of that class
         const pClassId: PClassId = {pkClass: entity.fkClass, fkProject: entity.fkProject}
-        const classFields = await this.providers.pClassFields.get(pClassId)
+        // first look for config of this project
+        let classFields = await this.providers.pClassFields.get(pClassId)
+
+        if (!classFields) {
+            // second look for config of default config project
+            classFields = await this.providers.pClassFields.get({pkClass: pClassId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
+        }
 
         // create fulltext
         const fullText = await this.loopOverFields(edges, classFields, entity.fkProject, entity.fkClass)
@@ -158,7 +165,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         const result: string[] = [];
 
 
-        const fieldId: PFieldId = {fkProject, fkClass, fkProperty, isOutgoing}
+        const fieldId: PClassFieldId = {fkProject, fkClass, fkProperty, isOutgoing}
 
         // are there any edges?
         if (edges?.length) {
@@ -171,15 +178,18 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
                 let fieldLabel = '';
 
                 if (i === 0) {
-                    // create fieldLabel (the label for property in correct direction)
+                    // Get the fieldLabel (the label for property in correct direction)
                     let l = await this.providers.pClassFieldLabel.get(fieldId)
-                    l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},]`
+                    l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},proj${fkProject}]`
                     fieldLabel = (`${l}: `);
                 }
 
                 let targetLabel;
                 if (e.targetIsEntity) {
-                    targetLabel = await this.providers.pEntity.get({pkEntity: e.fkTarget, fkProject: fkProject})
+                    targetLabel = await this.providers.pEntityLabel.get({pkEntity: e.fkTarget, fkProject: fkProject})
+
+                    // TODO Get repo variant, if needed
+
                     targetLabel = targetLabel ?? `[e${e.fkTarget}]`
                     const targetEntityId: PEntityId = {fkProject, pkEntity: e.fkTarget}
                     const fkTargetClass = (await this.providers.pEntity.get(targetEntityId))?.fkClass

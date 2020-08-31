@@ -21,9 +21,7 @@ describe('ProClassLabelService', () => {
     s = wh.prim.proClassLabel;
   })
 
-  afterEach(async function () {
-    await wh.stop()
-  })
+  afterEach(async function () {await wh.stop()})
 
   it('should create pro class label in db', async () => {
     await createLanguages();

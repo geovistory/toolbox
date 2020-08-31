@@ -35,7 +35,9 @@ export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, C
     getUpdatesSql(tmsp: Date) {
          return updateSql
     }
-    getDeletesSql = undefined;
+    getDeletesSql(tmsp: Date) {
+        return deleteSql
+    }
 }
 
 interface DbItem {
@@ -53,8 +55,45 @@ const updateSql = `
         tmsp_last_modification >= $1
     AND
         dfh_is_has_type_subproperty = true
-    --ORDER BY
-    --    dfh_property_domain,
-    --    dfh_pk_property,
-    --    tmsp_last_dfh_update DESC;
+`
+
+
+const deleteSql = `
+
+-- give me all records where latest item in version history
+-- dfh_is_has_type_subproperty = true ...
+WITH tw1 AS (
+    SELECT
+        dfh_property_domain,
+        dfh_pk_property,
+        dfh_is_has_type_subproperty
+    FROM
+        data_for_history.api_property_vt
+    WHERE
+        tmsp_last_modification >= $1
+    ORDER BY entity_version desc
+    LIMIT 1
+)
+SELECT
+        dfh_property_domain "pkClass",
+        dfh_pk_property "fkProperty"
+FROM tw1
+WHERE
+    dfh_is_has_type_subproperty = true
+
+
+    EXCEPT
+-- ... excluding the items, where in current version it is still:
+-- dfh_is_has_type_subproperty = true
+
+SELECT DISTINCT
+    dfh_property_domain "pkClass",
+    dfh_pk_property "fkProperty"
+FROM
+    data_for_history.api_property
+WHERE
+    dfh_is_has_type_subproperty = true;
+
+-- ... as a result we get only the items that have been set to false
+
 `

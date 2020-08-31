@@ -2,7 +2,7 @@ import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {pPropertyIdToString, stringToPPropertyId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
-import {PFieldId} from '../aggregator-ds/p-property-label/PPropertyLabelService';
+import {PClassFieldId} from '../aggregator-ds/p-class-field-label/PClassFieldLabelService';
 export interface PPropertyId {fkProject: number, pkProperty: number}
 
 export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, ProjectProperty>{
@@ -24,7 +24,7 @@ export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, 
      */
     this.afterPut$.subscribe(item => {
       // Add update requests on aggregaters based on project property
-      const outgoingField: PFieldId = {
+      const outgoingField: PClassFieldId = {
         fkProject: item.key.fkProject,
         fkClass: item.val.fkDomain,
         fkProperty: item.val.fkProperty,
@@ -32,7 +32,7 @@ export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, 
       }
       wh.agg.pPropertyLabel.updater.addItemToQueue(outgoingField).catch(e => console.log(e))
 
-      const incomingField: PFieldId = {
+      const incomingField: PClassFieldId = {
         fkProject: item.key.fkProject,
         fkClass: item.val.fkRange,
         fkProperty: item.val.fkProperty,

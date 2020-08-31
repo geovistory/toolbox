@@ -14,4 +14,11 @@ export class ProDfhProfileProjRelMock {
     enabled: true
   })
 
+  static readonly PROJ_1_PROFILE_12 = new ProDfhProfileProjRel({
+    pk_entity: 1001,
+    fk_project: ProProjectMock.PROJECT_1.pk_entity,
+    fk_profile: 12,
+    enabled: true
+  })
+
 }

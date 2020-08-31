@@ -51,7 +51,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     async getProviders(receiver: ReceiverKeyModel): Promise<ProviderKeyModel[]> {
         return new Promise((res, rej) => {
             const receiverStr = this.receiverKeyToString(receiver);
-            const keys = this.receiverToProvider.db.createKeyStream(this.createStreamOptions(receiverStr))
+            const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
             const batch: ProviderKeyModel[] = []
             keys.on('data', (key: string) => {
                 const providerStr = key.split(sep)[1]
@@ -74,7 +74,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     async getReceivers(provider: ProviderKeyModel): Promise<ReceiverKeyModel[]> {
         return new Promise((res, rej) => {
             const providerStr = this.providerKeyToString(provider);
-            const keys = this.providerToReceiver.db.createKeyStream(this.createStreamOptions(providerStr))
+            const keys = this.providerToReceiver.db.createKeyStream(createStreamOptions(providerStr))
             const batch: ReceiverKeyModel[] = []
             keys.on('data', (key: string) => {
                 const receiverStr = key.split(sep)[1]
@@ -92,7 +92,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     async getProviderMap(receiver: ReceiverKeyModel): Promise<DependencyMap> {
         return new Promise((res, rej) => {
             const receiverStr = this.receiverKeyToString(receiver);
-            const keys = this.receiverToProvider.db.createKeyStream(this.createStreamOptions(receiverStr))
+            const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
             const map: DependencyMap = {}
             keys.on('data', (key: string) => {
                 const providerStr = key.split(sep)[1]
@@ -120,7 +120,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     }
 
     /**
-     * remove all dependencies of receiver
+     * remove all providers of receiver
      * keeps both directions in sync
      * @param receiver
      */
@@ -131,6 +131,36 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         }
     }
 
+
+
+    // async removeReceiverByString(providerStr: string, receiverStr: string): Promise<void> {
+    //     await this.receiverToProvider.removeFromIdx(this.createReceiverToProviderStr(receiverStr, providerStr))
+    //     await this.providerToReceiver.removeFromIdx(this.createProviderToReceiverStr(providerStr, receiverStr))
+    // }
+
+    // async removeReceiver(provider: ProviderKeyModel, receiver: ReceiverKeyModel): Promise<void> {
+    //     const providerStr = this.providerKeyToString(provider)
+    //     const receiverStr = this.receiverKeyToString(receiver)
+
+    //     await this.removeReceiverByString(providerStr, receiverStr);
+    // }
+
+    // /**
+    //  * remove all receivers of provider
+    //  * keeps both directions in sync
+    //  * @param provider
+    //  */
+    // async removeAllReceivers(provider: ProviderKeyModel): Promise<void> {
+    //     const dependencies = await this.getReceivers(provider)
+    //     for (const receiver of dependencies) {
+    //         await this.removeReceiver(provider, receiver)
+    //     }
+    // }
+
+
+
+
+
     /**
      * Adds updated request for all receivers of the provider
      * @param provider key of the provider
@@ -138,7 +168,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     addUpdateRequestToReceiversOf(provider: ProviderKeyModel) {
         return new Promise((res, rej) => {
             const providerStr = this.providerKeyToString(provider);
-            const keys = this.providerToReceiver.db.createKeyStream(this.createStreamOptions(providerStr))
+            const keys = this.providerToReceiver.db.createKeyStream(createStreamOptions(providerStr))
             keys.on('data', (key: string) => {
                 const receiverStr = key.split(sep)[1]
                 this.receiverDS.updater.addItemToQueue(this.stringToReceiverKey(receiverStr))
@@ -159,23 +189,25 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         await this.receiverToProvider.clearIdx()
     }
 
-    /**
-     * Returns an object for streaming keys that begin with the given string
-     *
-     * @param str beginning of the streamed keys
-     *
-     * Read more here:
-     * https://github.com/Level/levelup/issues/285#issuecomment-57205251
-     *
-     * Read more about '!' and '~' here:
-     * https://medium.com/@kevinsimper/how-to-get-range-of-keys-in-leveldb-and-how-gt-and-lt-works-29a8f1e11782
-     * @param str
-     */
-    private createStreamOptions(str: string) {
-        return {
-            gte: str + '!',
-            lte: str + '~'
-        }
-    }
 
+
+}
+
+/**
+  * Returns an object for streaming keys that begin with the given string
+  *
+  * @param str beginning of the streamed keys
+  *
+  * Read more here:
+  * https://github.com/Level/levelup/issues/285#issuecomment-57205251
+  *
+  * Read more about '!' and '~' here:
+  * https://medium.com/@kevinsimper/how-to-get-range-of-keys-in-leveldb-and-how-gt-and-lt-works-29a8f1e11782
+  * @param str
+  */
+export function createStreamOptions(str: string) {
+    return {
+        gte: str + '!',
+        lte: str + '~'
+    }
 }

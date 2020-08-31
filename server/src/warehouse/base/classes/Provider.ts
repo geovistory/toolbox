@@ -1,6 +1,6 @@
-import {DependencyIndex, DependencyMap} from './DependencyIndex';
 import {omit} from 'ramda';
 import {ProviderInterface} from '../interfaces/Providers';
+import {createStreamOptions, DependencyIndex, DependencyMap} from './DependencyIndex';
 
 export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements ProviderInterface<ReceiverKeyModel> {
     providerCache: DependencyMap = {};
@@ -12,6 +12,28 @@ export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, Prov
         this.providerCache = await this.dependencyIndex.getProviderMap(receiverKey);
     }
 
+    /**
+     * Gets array of items where the provider key starts with given string.
+     *
+     * Attention: This does not register dependencies -> manual retrigger needed
+     *
+     * @param str
+     */
+    async getItemsStartingWith(str: string): Promise<{key: ProviderKeyModel, value: ProviderValModel}[]> {
+        return new Promise((res, rej) => {
+            const keys = this.dependencyIndex.providerDS.index.db.createReadStream(createStreamOptions(str))
+            const batch: {key: ProviderKeyModel, value: ProviderValModel}[] = []
+            keys.on('data', (item) => {
+                batch.push(item)
+            })
+            keys.on('error', function (err: unknown) {
+                rej(err)
+            })
+            keys.on('end', function () {
+                res(batch)
+            })
+        })
+    }
     /**
      * gets value from providing DataService
      * removes the provider from cache

@@ -23,6 +23,7 @@ describe('PPropertyService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pProperty;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should add project-property', async () => {
     const {prel, prop} = await createPPropertyMockData();

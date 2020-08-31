@@ -2,6 +2,7 @@ import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
+import {PClassFieldId} from '../aggregator-ds/p-class-field-label/PClassFieldLabelService';
 export interface PClassId {fkProject: number, pkClass: number}
 
 export class PClassService extends PrimaryDataService<InitItem, PClassId, ProjectClass>{
@@ -24,6 +25,19 @@ export class PClassService extends PrimaryDataService<InitItem, PClassId, Projec
     this.afterPut$.subscribe(item => {
       // Add update requests on aggregaters based on project class
       wh.agg.pClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
+
+
+      // Generate incoming class field for 'has appellation' property 1111
+      if ([8, 9, 30].includes(item.val.basicType)) {
+        wh.agg.pClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
+        const incomingField: PClassFieldId = {
+          fkProject: item.key.fkProject,
+          fkClass: item.val.fkClass,
+          fkProperty: 1111,
+          isOutgoing: false
+        }
+        wh.agg.pPropertyLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
+      }
     })
 
     /**
@@ -43,6 +57,7 @@ export class PClassService extends PrimaryDataService<InitItem, PClassId, Projec
     const val: ProjectClass = {
       fkClass: item.fkClass,
       fkProject: item.fkProject,
+      basicType: item.basicType
     };
     return {key, val}
   }
@@ -60,6 +75,7 @@ export class PClassService extends PrimaryDataService<InitItem, PClassId, Projec
 interface InitItem {
   fkProject: number,
   fkClass: number,
+  basicType: number
 }
 
 const updateSql = `
@@ -73,7 +89,8 @@ const updateSql = `
   )
   SELECT DISTINCT
     dfh_pk_class "fkClass",
-    fk_project "fkProject"
+    fk_project "fkProject",
+    dfh_basic_type "basicType"
   FROM
     tw1 t1,
     data_for_history.api_class t2
@@ -102,6 +119,7 @@ export const deleteSql = `
 export interface ProjectClass {
   fkClass: number
   fkProject: number
+  basicType: number
 }
 
 

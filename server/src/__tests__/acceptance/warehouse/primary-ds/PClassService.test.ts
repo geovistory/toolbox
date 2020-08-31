@@ -23,6 +23,7 @@ describe('PClassService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pClass;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should add project-class', async () => {
     const {prel, cla} = await createPClassMockData();

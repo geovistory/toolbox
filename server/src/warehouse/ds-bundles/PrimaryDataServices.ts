@@ -12,12 +12,14 @@ import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
 import {ProjectService} from '../primary-ds/ProjectService';
 import {Warehouse} from '../Warehouse';
 import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
+import {DfhOutgoingPropertyService} from '../primary-ds/DfhOutgoingPropertyService';
 export class PrimaryDataServices extends DataServiceBundle {
     project: ProjectService;
 
-    dfhClassHasTypeProperty: DfhClassHasTypePropertyService;
     dfhClassLabel: DfhClassLabelService;
     dfhPropertyLabel: DfhPropertyLabelService;
+    dfhClassHasTypeProperty: DfhClassHasTypePropertyService;
+    dfhOutgoingProperty: DfhOutgoingPropertyService;
 
     proClassLabel: ProClassLabelService;
     proPropertyLabel: ProPropertyLabelService;
@@ -35,9 +37,10 @@ export class PrimaryDataServices extends DataServiceBundle {
         super()
         this.project = this.registerDataService(new ProjectService(this.wh));
 
-        this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
         this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.wh));
         this.dfhPropertyLabel = this.registerDataService(new DfhPropertyLabelService(this.wh));
+        this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
+        this.dfhOutgoingProperty = this.registerDataService(new DfhOutgoingPropertyService(this.wh));
 
         this.proClassLabel = this.registerDataService(new ProClassLabelService(this.wh));
         this.proPropertyLabel = this.registerDataService(new ProPropertyLabelService(this.wh));

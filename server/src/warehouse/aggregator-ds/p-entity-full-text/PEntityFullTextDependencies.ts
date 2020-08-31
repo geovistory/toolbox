@@ -1,12 +1,12 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {entityIdToString, pClassIdToString, stringToEntityId, stringToPClassId, pFieldIdToString, stringToPFieldId} from '../../base/functions'
+import {entityIdToString, pClassIdToString, stringToEntityId, stringToPClassId, pClassFieldIdToString, stringToPClassFieldId} from '../../base/functions'
 import {PClassFieldVal, PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {EntityFields} from '../../primary-ds/PEdgeService'
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityFullTextVal} from './PEntityFullTextService'
-import {PFieldId} from '../p-property-label/PPropertyLabelService'
+import {PClassFieldId} from '../p-class-field-label/PClassFieldLabelService'
 
 export class PEntityFullTextDependencies extends ClearAll {
     pEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, ProjectEntity>
@@ -14,7 +14,7 @@ export class PEntityFullTextDependencies extends ClearAll {
     pEdge: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>
     pClassLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, string>
     pClassFields: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, PClassFieldVal>
-    pClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PFieldId, string>
+    pClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassFieldId, string>
 
     constructor(private wh: Warehouse) {
         super()
@@ -73,8 +73,8 @@ export class PEntityFullTextDependencies extends ClearAll {
             this.wh.agg.pPropertyLabel,
             entityIdToString,
             stringToEntityId,
-            pFieldIdToString,
-            stringToPFieldId,
+            pClassFieldIdToString,
+            stringToPClassFieldId,
         );
     }
 

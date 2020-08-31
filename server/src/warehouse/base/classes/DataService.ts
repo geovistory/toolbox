@@ -78,9 +78,9 @@ export abstract class DataService<KeyModel, ValueModel>{
      *
      * This happens in syncronous way (does not await)!
      */
-    private addUpdateRequestsForReceivers(key: KeyModel) {
+    private addUpdateRequestsForReceivers(providerKey: KeyModel) {
         for (const dep of this.isProviderOf) {
-            dep.addUpdateRequestToReceiversOf(key).catch(e => console.error(e));
+            dep.addUpdateRequestToReceiversOf(providerKey).catch(e => console.error(e));
         }
     }
 }

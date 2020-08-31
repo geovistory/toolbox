@@ -14,8 +14,8 @@ export interface LabelPart {
     ordNum: number
 }
 export interface EntityLabelConfig {
-    fkClass: number
-    labelParts: LabelPart[]
+    fkClass?: number
+    labelParts?: LabelPart[]
 }
 
 
@@ -87,17 +87,17 @@ export class EntityLabelConfigService extends PrimaryDataService<InitItem, PClas
                 break;
             default:
                 val = {
-                    fkClass: pkClass,
-                    labelParts: [
-                        {
-                            ordNum: 1,
-                            field: {
-                                fkProperty: 1111,
-                                isOutgoing: false,
-                                nrOfStatementsInLabel: 1
-                            }
-                        }
-                    ]
+                    // fkClass: pkClass,
+                    // labelParts: [
+                    //     {
+                    //         ordNum: 1,
+                    //         field: {
+                    //             fkProperty: 1111,
+                    //             isOutgoing: false,
+                    //             nrOfStatementsInLabel: 1
+                    //         }
+                    //     }
+                    // ]
                 }
                 break;
         }

@@ -89,6 +89,28 @@ export class InfStatementMock {
     fk_object_info: InfTimePrimitiveMock.TP_6.pk_entity,
   })
 
+  static readonly BIRTH_1_BROUGHT_INTO_LIFE_PERSON_1 = new InfStatement({
+    pk_entity: 3012,
+    fk_subject_info: InfTemporalEntityMock.BIRTH_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.PERSON_1.pk_entity,
+  })
+
+
+  static readonly BIRTH_1_STEMS_FROM_UNION_1 = new InfStatement({
+    pk_entity: 3013,
+    fk_subject_info: InfTemporalEntityMock.BIRTH_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1435_STEMS_FROM.dfh_pk_property,
+    fk_object_info: InfTemporalEntityMock.UNION_1.pk_entity,
+  })
+
+
+  static readonly UNOIN_1_HAS_PARTNER_1 = new InfStatement({
+    pk_entity: 3014,
+    fk_subject_info: InfTemporalEntityMock.UNION_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1436_HAS_PARTNER.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.PERSON_1.pk_entity,
+  })
 
 
 

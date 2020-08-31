@@ -10,7 +10,7 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../helpers/data/gvDB/ProTextPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
 
 describe('ProPropertyLabelService', () => {
 
@@ -24,9 +24,8 @@ describe('ProPropertyLabelService', () => {
     s = wh.prim.proPropertyLabel;
   })
 
-  afterEach(async function () {
-    await wh.stop()
-  })
+
+  afterEach(async function () {await wh.stop()})
 
   it('should create pro Property label in db', async () => {
     const txtProp = await createMock();
@@ -48,6 +47,27 @@ describe('ProPropertyLabelService', () => {
     expect(result).to.equal(txtProp.string)
 
   })
+
+  it('should have pro Property label "person - has appellations" in index', async () => {
+    await createTypes();
+    await createInfLanguage(InfLanguageMock.GERMAN);
+    const txtProp = await createProTextProperty(ProTextPropertyMock.PROJ_1_PROPERTY_PERSON_HAS_APPELLATION)
+
+    const result = await waitUntilSatisfy(s.afterPut$, (item) => {
+      return item.key.fkProject === txtProp.fk_project
+        && item.key.fkClass === txtProp.fk_dfh_property_range
+        && item.key.fkProperty === txtProp.fk_dfh_property
+        && item.key.isOutgoing === false
+        && item.key.fkLanguage === txtProp.fk_language
+        && item.val === txtProp.string
+    })
+
+    expect(result)
+
+  })
+
+
+
 
   // it('should update pro Property label in index', async () => {
   //   await createLanguages();

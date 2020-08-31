@@ -5,10 +5,13 @@ import {EntityFields} from '../../primary-ds/PEdgeService';
 import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService';
 import {ProjectEntity, PEntityId} from '../../primary-ds/PEntityService';
 import {PEntityLabelDependencies} from './PEntityLabelDependencies';
+import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService';
+import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
 export class PEntityLabelProviders extends Providers<PEntityId> {
     entity: Provider<PEntityId, string, PEntityId, ProjectEntity>;
     entityLabels: Provider<PEntityId, string, PEntityId, string>;
     entityLabelConfig: Provider<PEntityId, string, PClassId, EntityLabelConfig>;
+    identifyingProperty: Provider<PEntityId, string, ClassId,IdentifyingPropertyVal>;
     edges: Provider<PEntityId, string, PEntityId, EntityFields>;
     constructor(
         dep: PEntityLabelDependencies,
@@ -18,6 +21,7 @@ export class PEntityLabelProviders extends Providers<PEntityId> {
         this.entity = this.registerProvider(dep.entity, receiverKey)
         this.entityLabels = this.registerProvider(dep.entityLabel, receiverKey);
         this.entityLabelConfig = this.registerProvider(dep.entityLabelConfig, receiverKey);
+        this.identifyingProperty = this.registerProvider(dep.identifyingProperty, receiverKey);
         this.edges = this.registerProvider(dep.edge, receiverKey)
     }
 

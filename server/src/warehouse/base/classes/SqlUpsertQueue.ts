@@ -1,8 +1,9 @@
-import {Client} from 'pg';
 import {values} from 'ramda';
 import {BehaviorSubject, race, timer} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
+import {Warehouse} from '../../Warehouse';
 import {Logger} from './Logger';
+import {omit} from 'ramda';
 
 /**
  *
@@ -15,8 +16,8 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
     queueing = false;
 
     constructor(
+        private wh: Warehouse,
         private queueName: string,
-        private pgClient: Client,
         private getSql: (valuesStr: string) => string,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         private itemToParams: (item: {key: KeyModel; val: ValueModel;}) => any[],
@@ -38,6 +39,19 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
     }
 
     /**
+     * remove item from queue
+     */
+    public remove(key: KeyModel) {
+        const str = this.keyModelToString(key);
+        if (this.queue[str]) {
+            this.queue = omit([str], this.queue)
+            this.queueLength--;
+            this.queueLength$.next(this.queueLength);
+        }
+    }
+
+
+    /**
      * Activates a new race of the timer (emitting after maxQueueTime)
      * versus the queueLength (emitting when maxQueueLength reached).
      * Once the race is won by eighter timer or queueLength, the
@@ -50,7 +64,7 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
             timer(this.maxQueueTime)
         ).pipe(first()).subscribe(() => {
             this.queueing = false;
-            this.fire();
+            this.fire()
         });
     }
 
@@ -78,17 +92,19 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
         const placeholder = values(this.queue).map(row => `(${addParams(row)})`).join(',');
         const q = this.getSql(placeholder);
 
-
-        this.pgClient.query(q, params)
+        this.wh.pgClient.query(q, params)
             .then(() => {
                 Logger.msg(`\u{1b}[34m(async) Upserted ${length} ${this.queueName} \u{1b}[0m`);
             })
             .catch(e => {
-                console.log(`Error on upserting ${length} items in ${this.queueName}:`,e);
+                console.log(`Error on upserting items in ${this.queueName}:
+                PARAMS: ${params}
+                SQL
+                ${q}`, e);
             });
-
         this.queue = {};
         this.queueLength = 0;
         this.queueLength$.next(this.queueLength);
+        return length;
     }
 }

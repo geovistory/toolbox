@@ -9,7 +9,7 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProClassFieldConfigMock} from '../../../helpers/data/gvDB/ProClassFieldConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
 
 describe('PClassFieldsConfigService', () => {
 
@@ -21,17 +21,15 @@ describe('PClassFieldsConfigService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pClassFieldsConfig;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should add project-class', async () => {
     const {one} = await createPClassMockData();
-    await waitUntilNext(s.afterPut$)
-    await waitUntilNext(s.afterPut$)
-    const result = await s.index.getFromIdx({
-      fkProject: one.fk_project ?? -1,
-      pkClass: one.fk_domain_class ?? -1
+    const result =   await waitUntilSatisfy(s.afterPut$, (i) => {
+      return i.key.fkProject === one.fk_project
+        && i.key.pkClass === one.fk_domain_class
     })
-    expect(result?.length).to.equal(2)
-
+    expect(result.val.length).to.equal(2)
   })
 
 

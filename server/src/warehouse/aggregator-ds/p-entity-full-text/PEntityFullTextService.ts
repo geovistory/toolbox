@@ -54,17 +54,30 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
         )
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityFullTextVal>(
-            'war.entity_preview (entity_type)',
-            wh.pgClient,
+            wh,
+            'war.entity_preview (full_text)',
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, full_text)
-                VALUES ${valuesStr}
-                ON CONFLICT (pk_entity, project) DO UPDATE
-                SET
-                    full_text = EXCLUDED.full_text
-                WHERE
-                    EXCLUDED.full_text IS DISTINCT FROM war.entity_preview.full_text;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
+                UPDATE war.entity_preview
+                SET full_text = x.column3
+                FROM
+                (
+                    values ${valuesStr}
+                ) as x
+                WHERE pk_Entity = x.column1::int
+                AND project = x.column2::int
+                AND full_text IS DISTINCT FROM x.column3
+            `,
+            (item) => [item.key.pkEntity, item.key.fkProject, item.val],
+            // (valuesStr: string) => `
+            //     INSERT INTO war.entity_preview (pk_entity, fk_project, project, full_text)
+            //     VALUES ${valuesStr}
+            //     ON CONFLICT (pk_entity, project) DO UPDATE
+            //     SET
+            //         full_text = EXCLUDED.full_text
+            //     WHERE
+            //         EXCLUDED.full_text IS DISTINCT FROM war.entity_preview.full_text;`,
+            // (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
+
             entityIdToString
         )
 
@@ -72,7 +85,6 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
          * Add actions after a new class type is put/updated into index
          */
         this.afterPut$.subscribe(item => {
-
             // Add item to queue to upsert it into db
             upsertQueue.add(item)
         })

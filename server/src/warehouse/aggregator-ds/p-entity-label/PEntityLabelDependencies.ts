@@ -4,12 +4,15 @@ import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService'
 import {EntityFields} from '../../primary-ds/PEdgeService'
 import {Warehouse} from '../../Warehouse'
-import {entityIdToString, stringToEntityId, pClassIdToString, stringToPClassId} from '../../base/functions'
+import {entityIdToString, stringToEntityId, pClassIdToString, stringToPClassId, stringToClassId, classIdToString} from '../../base/functions'
 import {ClearAll} from '../../base/classes/ClearAll'
+import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService'
+import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
 
 export class PEntityLabelDependencies extends ClearAll {
     entity: DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>
     entityLabelConfig: DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>
+    identifyingProperty: DependencyIndex<PEntityId, string, ClassId, IdentifyingPropertyVal>
     entityLabel: DependencyIndex<PEntityId, string, PEntityId, string>
     edge: DependencyIndex<PEntityId, string, PEntityId, EntityFields>
 
@@ -35,6 +38,16 @@ export class PEntityLabelDependencies extends ClearAll {
             pClassIdToString,
             stringToPClassId
         )
+        // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
+        this.identifyingProperty = new DependencyIndex<PEntityId, string, ClassId, IdentifyingPropertyVal>(
+            this.wh.agg.pEntityLabel,
+            this.wh.agg.identifyingProperty,
+            entityIdToString,
+            stringToEntityId,
+            classIdToString,
+            stringToClassId
+        )
+
 
         // stores the dependency of entityLabel (receiver) on entityLabel (provider)
         this.entityLabel = new DependencyIndex(

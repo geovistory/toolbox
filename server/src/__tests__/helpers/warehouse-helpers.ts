@@ -6,6 +6,7 @@ import {WarEntityPreview, WarClassPreview} from '../../models';
 import {Warehouse} from '../../warehouse/Warehouse';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
+import {forEach} from 'lodash';
 
 export async function setupWarehouseWithoutStarting() {
 
@@ -94,10 +95,13 @@ export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarE
                     }
                 })
                     .then((result) => {
-                        if (result?.length === 1 && compare(result[0])) {
-                            res(result[0])
-                        } else if (result.length > 1) {
-                            rej('found too many entity peviews')
+
+                        if (result?.length) {
+                            result.forEach(i => {
+                                if (compare(i)) {
+                                    res(result[0])
+                                }
+                            })
                         }
                     })
                     .catch(e => rej(e))

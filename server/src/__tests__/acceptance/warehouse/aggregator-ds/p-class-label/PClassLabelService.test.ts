@@ -17,8 +17,8 @@ describe('PClassLabelService', function () {
 
     let wh: Warehouse;
     beforeEach(async function () {
-        wh = await setupCleanAndStartWarehouse()
         await cleanDb()
+        wh = await setupCleanAndStartWarehouse()
     })
 
     afterEach(async function () {await wh.stop()})

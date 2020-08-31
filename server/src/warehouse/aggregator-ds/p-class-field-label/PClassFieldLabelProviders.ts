@@ -1,20 +1,20 @@
 import {Providers} from '../../base/interfaces/Providers';
 
-import {PPropertyLabelDependencies} from './PPropertyLabelDependencies';
+import {PClassFieldLabelDependencies} from './PClassFieldLabelDependencies';
 import {Provider} from '../../base/classes/Provider';
 import {ProjectId, ProjectVal} from '../../primary-ds/ProjectService';
 import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../primary-ds/DfhPropertyLabelService';
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../primary-ds/ProPropertyLabelService';
-import {PFieldId} from './PPropertyLabelService';
+import {PClassFieldId} from './PClassFieldLabelService';
 
-export class PPropertyLabelProviders extends Providers<PFieldId> {
-  project: Provider<PFieldId, string, ProjectId, ProjectVal>
-  dfhPropertyLabel: Provider<PFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
-  proPropertyLabel: Provider<PFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
+export class PClassFieldLabelProviders extends Providers<PClassFieldId> {
+  project: Provider<PClassFieldId, string, ProjectId, ProjectVal>
+  dfhPropertyLabel: Provider<PClassFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
+  proPropertyLabel: Provider<PClassFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
 
   constructor(
-    dep: PPropertyLabelDependencies,
-    protected receiverKey: PFieldId
+    dep: PClassFieldLabelDependencies,
+    protected receiverKey: PClassFieldId
   ) {
     super()
     this.project = this.registerProvider(dep.project, receiverKey);

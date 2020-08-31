@@ -109,8 +109,8 @@
         "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        // "--grep",
-        // "/PEntityFullText.*/"
+        "--grep",
+        "/PEntityLabelService2.*C9/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

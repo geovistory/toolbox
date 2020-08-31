@@ -21,6 +21,7 @@ describe('DfhPropertyLabelService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.dfhPropertyLabel;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should have api property label in index after initIdx()', async () => {
     const prop = await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
@@ -62,4 +63,3 @@ describe('DfhPropertyLabelService', () => {
   })
 
 });
-

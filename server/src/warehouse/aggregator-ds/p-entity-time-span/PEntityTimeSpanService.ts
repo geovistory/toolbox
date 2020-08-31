@@ -64,15 +64,19 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
         )
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTimeSpanVal>(
-            'war.entity_preview (entity_type)',
-            wh.pgClient,
+            wh,
+            'war.entity_preview (time_span)',
             (valuesStr: string) => `
-                INSERT INTO war.entity_preview (pk_entity, fk_project, project, time_span)
-                VALUES ${valuesStr}
-                ON CONFLICT (pk_entity, project) DO UPDATE
-                SET time_span = EXCLUDED.time_span
-                WHERE EXCLUDED.time_span IS DISTINCT FROM war.entity_preview.time_span;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
+            UPDATE war.entity_preview
+            SET time_span = x.column3::jsonb
+            FROM
+            (
+                values ${valuesStr}
+            ) as x
+            WHERE pk_entity = x.column1::int
+            AND project = x.column2::int
+            AND time_span IS DISTINCT FROM x.column3::jsonb;`,
+            (item) => [item.key.pkEntity, item.key.fkProject, item.val],
             entityIdToString
         )
 

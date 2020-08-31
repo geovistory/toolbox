@@ -18,7 +18,9 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
+import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -31,9 +33,11 @@ describe('PEntityLabelService2', function () {
         wh = await setupCleanAndStartWarehouse()
 
     })
+    afterEach(async function () {await wh.stop()})
 
     it('should create entity label of naming', async () => {
-        const {naming, project, appellation} = await createNamingMock();
+        const project = await createProject();
+        const {naming, appellation} = await createNamingMock();
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: naming.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
@@ -42,7 +46,8 @@ describe('PEntityLabelService2', function () {
         expect(result.entity_label).to.equal(appellation.string)
     })
     it('should create entity label of person', async () => {
-        const {person, project, appellation} = await createNamingAndPersonMock();
+        const project = await createProject();
+        const {person, appellation} = await createNamingAndPersonMock();
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: person.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
@@ -51,7 +56,8 @@ describe('PEntityLabelService2', function () {
         expect(result.entity_label).to.equal(appellation.string)
     })
     it('should update entity label of person after removing stmt 1111 from project', async () => {
-        const {person, project, appellation} = await createNamingAndPersonMock();
+        const project = await createProject();
+        const {person, appellation} = await createNamingAndPersonMock();
         let result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: person.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
@@ -75,7 +81,8 @@ describe('PEntityLabelService2', function () {
     })
 
     it('should create entity label of naming and add person', async () => {
-        const {naming, project, appellation} = await createNamingMock();
+        const project = await createProject();
+        const {naming, appellation} = await createNamingMock();
         let result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: naming.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
@@ -91,36 +98,114 @@ describe('PEntityLabelService2', function () {
         ])
         expect(result.entity_label).to.equal(appellation.string)
     })
+
+    it('should create entity label of Presence – E93 (-- without )', async () => {
+
+    })
+
+    it('should create entity label of Birth – E67 (-- with identifying property)', async () => {
+        const project = await createProject();
+        const {appellation} = await createNamingMock();
+        await createPersonMock();
+        const birth = await createBirthMock()
+        const result = await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === birth.pk_entity
+                && item.fk_project === project.pk_entity
+                && item.entity_label === appellation.string
+        })
+        expect(result)
+    })
+
+    it('should create entity label of Union – C9 (-- with identifying property)', async () => {
+
+        const project = await createProject();
+        const {appellation} = await createNamingMock();
+        await createPersonMock();
+        const union = await createUnionMock()
+        const result = await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === union.pk_entity
+                && item.fk_project === project.pk_entity
+                && item.entity_label === appellation.string
+        })
+        expect(result)
+    })
 })
+
+
+
+
+
+
 async function createNamingAndPersonMock() {
     // NAMING
-    const {naming, project, appellation} = await createNamingMock();
+    const {naming, appellation} = await createNamingMock();
     // PERSON
     const person = await createPersonMock();
-    return {naming, person, project, appellation};
+    return {naming, person, appellation};
 }
 
 async function createPersonMock() {
     await createDfhApiClass(DfhApiClassMock.EN_21_PERSON);
     const person = await createInfPersistentItem(InfPersistentItemMock.PERSON_1);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1);
-    await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON);
     return person;
 }
 
-async function createNamingMock() {
+async function createProject() {
     await createInfLanguage(InfLanguageMock.GERMAN);
     const project = await createProProject(ProProjectMock.PROJECT_1);
     await createProProject(ProProjectMock.DEFAULT_PROJECT);
+    return project
+}
+
+async function createNamingMock() {
     await createDfhApiClass(DfhApiClassMock.EN_365_NAMING);
 
+    // TeEn
     const naming = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1);
 
     const appellation = await createInfAppellation(InfAppellationMock.JACK_THE_FOO);
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE);
-    return {naming, project, appellation};
+
+    await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON);
+    return {naming, appellation};
+}
+
+
+async function createBirthMock() {
+
+    // MODEL + LABELS
+    await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM);
+
+    // TeEn
+    const birth = await createInfTemporalEntity(InfTemporalEntityMock.BIRTH_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_BIRTH);
+
+    // Stmts
+    await createInfStatement(InfStatementMock.BIRTH_1_BROUGHT_INTO_LIFE_PERSON_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_BIRTH_1_BROUGHT_INTO_LIFE_PERON_1);
+    return birth;
+}
+
+
+async function createUnionMock() {
+
+    // MODEL + LABELS
+    await createDfhApiClass(DfhApiClassMock.EN_633_UNION);
+    await createDfhApiProperty(DfhApiPropertyMock.EN_1436_HAS_PARTNER);
+
+    // TeEn
+    const birth = await createInfTemporalEntity(InfTemporalEntityMock.UNION_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_UNION_1);
+
+    // Stmts
+    await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_1);
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
+    return birth;
 }
 

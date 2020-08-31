@@ -1,4 +1,4 @@
-import {Client} from 'pg';
+import {Client, Pool, PoolClient} from 'pg';
 import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
 import {Logger} from './base/classes/Logger';
 import {getDbFileSize, getMemoryUsage} from './base/functions';
@@ -23,7 +23,8 @@ interface NotificationHandler {
 
 export class Warehouse {
 
-    pgClient: Client
+    pgPool: Pool;
+    pgClient: PoolClient;
 
     // Indexes holding data given by db
     prim: PrimaryDataServices;
@@ -43,10 +44,12 @@ export class Warehouse {
     constructor() {
         const connectionString = getPgUrlForPg8()
         const ssl = getPgSslForPg8()
-        this.pgClient = new Client({
+        this.pgPool = new Pool({
+            max: 15,
             connectionString,
             ssl
         });
+
         Logger.msg(`create warehouse for DB: ${connectionString.split('@')[1]}`)
         this.prim = new PrimaryDataServices(this)
         this.agg = new AggregatedDataServices(this)
@@ -62,7 +65,7 @@ export class Warehouse {
 
         const t0 = Logger.start('Start Warehouse', 0)
 
-        await this.pgClient.connect();
+        this.pgClient = await this.pgPool.connect();
 
         await this.clearWhDB()
 
@@ -202,7 +205,7 @@ export class Warehouse {
 
     async stop() {
         this.notificationHandlers = {}
-        await this.pgClient.end();
+        // await this.pgClient.end();
     }
 }
 

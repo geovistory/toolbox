@@ -23,6 +23,7 @@ describe('PEntityClassLabelService', function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
     })
+    afterEach(async function () {await wh.stop()})
 
     it('should create entity class label of Person', async () => {
         const {prel, pers, cla} = await createBasicMock();

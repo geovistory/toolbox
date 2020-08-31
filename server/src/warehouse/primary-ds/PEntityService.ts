@@ -11,7 +11,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
     measure = 1000;
 
     index = new IndexDBGeneric<PEntityId, ProjectEntity>(entityIdToString, stringToEntityId)
-
+    upsertQueue: SqlUpsertQueue<PEntityId, ProjectEntity>;
     constructor(public wh: Warehouse) {
         super(wh, [
             'modified_projects_info_proj_rel',
@@ -19,9 +19,9 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
             'modified_information_temporal_entity'
         ])
 
-        const upsertQueue = new SqlUpsertQueue<PEntityId, ProjectEntity>(
+        this.upsertQueue = new SqlUpsertQueue(
+            wh,
             'war.entity_preview (pk_entity,fk_project,fk_class)',
-            wh.pgClient,
             (valuesStr: string) => `
                 INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type)
                 VALUES ${valuesStr}
@@ -40,18 +40,18 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
             wh.agg.pEntityLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
             wh.agg.pEntityClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
             wh.agg.pEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
-            if(item.val.entityType === 'teEn') wh.agg.pEntityTimeSpan.updater.addItemToQueue(item.key).catch(e => console.log(e))
+            if (item.val.entityType === 'teEn') wh.agg.pEntityTimeSpan.updater.addItemToQueue(item.key).catch(e => console.log(e))
             wh.agg.pEntityFullText.updater.addItemToQueue(item.key).catch(e => console.log(e))
 
             // Add item to queue to upsert it into db
-            upsertQueue.add(item)
+            this.upsertQueue.add(item)
         })
 
         /**
         * Remove entity preview from db
         */
         this.afterDel$.subscribe(item => {
-            this.deleteEntityPreview(item)
+            this.deleteEntityPreview(item).catch(e=>console.log(e))
         })
 
 
@@ -78,7 +78,12 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
         return deleteSql
     };
 
-    deleteEntityPreview(key: PEntityId) {
+    async deleteEntityPreview(key: PEntityId) {
+
+        // remove potential upsert requests, that could be executed with a delay
+        // and thus re-add the entity preview
+        this.upsertQueue.remove(key)
+
         const params = [key.pkEntity, key.fkProject];
 
         const q = `
@@ -87,7 +92,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, Proj
         AND fk_project = $2;`
         this.wh.pgClient.query(q, params)
             .then(() => {
-                Logger.msg(`deleted a entity preview`, 2)
+                Logger.msg(`deleted entity preview pkEntity:${key.pkEntity}, fkProject:${key.fkProject}`, 2)
             })
             .catch(e => {
                 console.log(e)
@@ -140,8 +145,7 @@ AND (
 export const deleteSql = `
 SELECT
     t1.fk_project "fkProject",
-	t2.pk_entity "pkEntity",
-	t2.fk_class "fkClass"
+	t2.pk_entity "pkEntity"
 FROM
 projects.info_proj_rel t1
 JOIN information.persistent_item t2 ON t1.fk_entity = t2.pk_entity
@@ -150,8 +154,7 @@ AND t1.tmsp_last_modification >= $1
 UNION ALL
 SELECT
     t1.fk_project "fkProject",
-	t2.pk_entity "pkEntity",
-	t2.fk_class "fkClass"
+	t2.pk_entity "pkEntity"
 FROM
 projects.info_proj_rel t1
 JOIN information.temporal_entity t2 ON t1.fk_entity = t2.pk_entity

@@ -37,15 +37,15 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
      *  Gets values from Indexes and chaches dependencies in itself.
      */
     async create() {
+        // load previous providers in a cache
+        // in the end (after create), this cahche will contain only deprecated providers
+        // that can then be deleted from dependency indexes
+        await this.providers.load()
 
         const entity = await this.providers.pEntity.get(this.id);
-
         if (entity) {
 
-            // load previous providers in a cache
-            // in the end (after create), this cahche will contain only deprecated providers
-            // that can then be deleted from dependency indexes
-            await this.providers.load()
+            if (!entity.fkClass) return this
 
             const classId = {
                 pkClass: entity.fkClass

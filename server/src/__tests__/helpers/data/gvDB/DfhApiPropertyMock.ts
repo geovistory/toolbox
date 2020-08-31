@@ -61,6 +61,37 @@ export class DfhApiPropertyMock {
     "dfh_property_identifier_in_namespace": "P11"
   }
 
+  static readonly EN_1112_USED_IN_LANGUAGE: DfhApiProperty = {
+    "pk_entity": 3788,
+    "dfh_fk_profile": 5,
+    "dfh_pk_property": 1112,
+    "dfh_fk_namespace": 3,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_property_label": "used in language",
+    "dfh_property_range": 54,
+    "requested_language": "en",
+    "dfh_namespace_label": "HistDMI generic classes and properties – ongoing",
+    "dfh_property_domain": 365,
+    "tmsp_last_dfh_update": "2020-07-15T14:27:07.611+00:00",
+    "dfh_identity_defining": true,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property associates the language for which the appellation is a valid identifier of an entity for a given time span",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P10"
+  }
+
   static readonly EN_1110_HAS_GEO_PLACE_TYPE: DfhApiProperty = {
     "pk_entity": 3695,
     "dfh_fk_profile": 4,
@@ -307,6 +338,67 @@ export class DfhApiPropertyMock {
     "dfh_property_identifier_in_namespace": "P98"
   }
 
+  static readonly EN_1435_STEMS_FROM: DfhApiProperty = {
+    "pk_entity": 3918,
+    "dfh_fk_profile": 12,
+    "dfh_pk_property": 1435,
+    "dfh_fk_namespace": 112,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Biographical basics and family",
+    "dfh_property_label": "stems from",
+    "dfh_property_range": 633,
+    "requested_language": "en",
+    "dfh_namespace_label": "Social and economic life (HistDMI) ongoing",
+    "dfh_property_domain": 61,
+    "tmsp_last_dfh_update": "2020-08-29T07:16:38.24+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property models the biological origin of a birth from the physical union of the parents. This is the common scenario. For more specific situations, like adoption or artificial procreation, a more suitable model should be applied.",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 1,
+    "dfh_range_instances_min_quantifier": 1,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P22"
+  }
+
+  static readonly EN_1436_HAS_PARTNER: DfhApiProperty = {
+    "pk_entity": 4013,
+    "dfh_fk_profile": 12,
+    "dfh_pk_property": 1436,
+    "dfh_fk_namespace": 112,
+    "dfh_is_inherited": false,
+    "removed_from_api": false,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Biographical basics and family",
+    "dfh_property_label": "has partner",
+    "dfh_property_range": 21,
+    "requested_language": "en",
+    "dfh_namespace_label": "Social and economic life (HistDMI) ongoing",
+    "dfh_property_domain": 633,
+    "tmsp_last_dfh_update": "2020-08-29T07:16:38.24+00:00",
+    "dfh_identity_defining": false,
+    "is_enabled_in_profile": null,
+    "dfh_property_scope_note": "This property associates the two (always two) persons participating to the union",
+    "dfh_profile_label_language": "en",
+    "dfh_is_has_type_subproperty": false,
+    "dfh_property_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_profile_association_type": null,
+    "dfh_property_scope_note_language": "en",
+    "dfh_range_instances_max_quantifier": 2,
+    "dfh_range_instances_min_quantifier": 2,
+    "dfh_domain_instances_max_quantifier": -1,
+    "dfh_domain_instances_min_quantifier": 0,
+    "dfh_property_identifier_in_namespace": "P20"
+}
 }
 
 

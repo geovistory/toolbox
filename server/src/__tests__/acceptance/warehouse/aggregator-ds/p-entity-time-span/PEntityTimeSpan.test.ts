@@ -35,6 +35,7 @@ describe('PEntityTimeSpan', function () {
         wh = await setupCleanAndStartWarehouse()
         edgeService = wh.prim.pEdge
     })
+    afterEach(async function () {await wh.stop()})
 
     it('should create edges with time primitives', async () => {
         const {shipVoyage, project} = await createMock();
