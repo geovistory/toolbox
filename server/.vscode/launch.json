@@ -111,7 +111,7 @@
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/RClassFieldLabelService/"
+        "/REntityTi/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

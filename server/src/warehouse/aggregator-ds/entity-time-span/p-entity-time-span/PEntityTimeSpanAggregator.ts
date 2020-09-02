@@ -1,6 +1,6 @@
 import {keys} from 'ramda';
-import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {PEntityId} from '../../primary-ds/entity/PEntityService';
+import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
+import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
 import {PEntityTimeSpan, TimeSpanKeys} from './PEntityTimeSpanService';
 type KeyMap = {
@@ -82,35 +82,6 @@ export class PEntityTimeSpanAggregator extends AbstractAggregator<PEntityId> {
             if (first !== Number.POSITIVE_INFINITY) this.firstSecond = first;
             if (last !== Number.NEGATIVE_INFINITY) this.lastSecond = last;
             if (Object.keys(timeSpan).length) this.entityTimeSpan = timeSpan
-            // //ongoing throughout
-            // if (fieldsWithEdges?.outgoing?.[71]?.length) {
-            //     this.entityTimeSpan["p81"] = fieldsWithEdges.outgoing[71][0].targetValue?.timePrimitive ?? undefined;
-            // }
-            // //at some time within
-            // if (fieldsWithEdges?.outgoing?.[72]?.length) {
-            //     this.entityTimeSpan["p82"] = fieldsWithEdges.outgoing[72][0].targetValue?.timePrimitive ?? undefined;
-            // }
-
-            // //end of the begin
-            // if (fieldsWithEdges?.outgoing?.[150]?.length) {
-            //     this.entityTimeSpan["p81a"] = fieldsWithEdges.outgoing[150][0].targetValue?.timePrimitive ?? undefined;
-            // }
-
-            // //begin of the end
-            // if (fieldsWithEdges?.outgoing?.[151]?.length) {
-            //     this.entityTimeSpan["p81b"] = fieldsWithEdges.outgoing[151][0].targetValue?.timePrimitive ?? undefined;
-            // }
-
-            // //begin of the begin
-            // if (fieldsWithEdges?.outgoing?.[152]?.length) {
-            //     this.entityTimeSpan["p82a"] = fieldsWithEdges.outgoing[152][0].targetValue?.timePrimitive ?? undefined;
-            // }
-
-            // //end of the end
-            // if (fieldsWithEdges?.outgoing?.[153]?.length) {
-            //     this.entityTimeSpan["p82b"] = fieldsWithEdges.outgoing[153][0].targetValue?.timePrimitive ?? undefined;
-            // }
-
 
         }
         return this

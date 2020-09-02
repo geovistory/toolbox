@@ -1,12 +1,12 @@
-import {Provider} from '../../base/classes/Provider';
-import {Providers} from "../../base/interfaces/Providers";
-import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
-import {EntityFields} from "../../primary-ds/edge/edge.commons";
-import {EntityLabelConfig} from '../../primary-ds/ProEntityLabelConfigService';
-import {PEntity, PEntityId} from '../../primary-ds/entity/PEntityService';
+import {Provider} from '../../../base/classes/Provider';
+import {Providers} from "../../../base/interfaces/Providers";
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
+import {EntityFields} from "../../../primary-ds/edge/edge.commons";
+import {EntityLabelConfig} from '../../../primary-ds/ProEntityLabelConfigService';
+import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PEntityLabelDependencies} from './PEntityLabelDependencies';
-import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService';
-import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
+import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 export class PEntityLabelProviders extends Providers<PEntityId> {
     entity: Provider<PEntityId, string, PEntityId, PEntity>;
     entityLabels: Provider<PEntityId, string, PEntityId, string>;

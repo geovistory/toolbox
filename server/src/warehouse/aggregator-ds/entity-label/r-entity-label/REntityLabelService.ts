@@ -1,52 +1,27 @@
-import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
-import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../base/classes/Updater';
-import {pEntityIdToString, stringToPEntityId, sqlForTsVector} from '../../base/functions';
-import {PEntityId} from '../../primary-ds/entity/PEntityService';
-import {Warehouse} from '../../Warehouse';
-import {PEntityTypeAggregator} from './PEntityTypeAggregator';
-import {PEntityTypeProviders} from './PEntityTypePoviders';
+import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
+import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
+import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
+import {Updater} from '../../../base/classes/Updater';
+import {rEntityIdToString, stringToREntityId, sqlForTsVector} from '../../../base/functions';
+import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {Warehouse} from '../../../Warehouse';
+import {REntityLabelAggregator} from './REntityLabelAggregator';
+import {REntityLabelProviders} from './REntityLabelPoviders';
 
-export interface PEntityTypeVal {
-    fkType?: number,
-    typeLabel?: string
-}
+type ValueModel = string
+export class REntityLabelService extends AggregatedDataService<REntityId, ValueModel, REntityLabelAggregator>{
+    updater: Updater<REntityId, REntityLabelAggregator>;
 
-/**
- * This Data Service manages the key-value store containing
- * as a key the PEntityId (pkEntity and fkProject)
- * and as value the PEntityTypeVal (fkType, typeLabel)
- *
- * One example key-value pair in the this.index is:
- * Key for the Project Entity Geo. Place 'Madrid' with pkEntity = 2002 in fkProject = 3001
- *  - '2002_3001'
- *
- * Val for the Geo. Place Type 'City' with pkEntity = 2003 in fkProject = 3001
- *  - fkType: 2003
- *  - typeLabel: 'Citiy'
- *
- *
- *
- * -> The Val is the result of the PEntityTypeAggregator
- *
- */
-export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal, PEntityTypeAggregator>{
-    updater: Updater<PEntityId, PEntityTypeAggregator>;
-
-    index = new IndexDBGeneric<PEntityId, PEntityTypeVal>(pEntityIdToString, stringToPEntityId)
+    index = new IndexDBGeneric<REntityId, ValueModel>(rEntityIdToString, stringToREntityId)
 
     constructor(private wh: Warehouse) {
         super()
-        const aggregatorFactory = async (id: PEntityId) => {
-            const providers = new PEntityTypeProviders(this.wh.dep.pEntityType, id)
-            return new PEntityTypeAggregator(providers, id).create()
+        const aggregatorFactory = async (id: REntityId) => {
+            const providers = new REntityLabelProviders(this.wh.dep.rEntityLabel, id)
+            return new REntityLabelAggregator(providers, id).create()
         }
-        const register = async (result: PEntityTypeAggregator) => {
-            await this.put(result.id, {
-                fkType: result.fkEntityType,
-                typeLabel: result.entityTypeLabel
-            })
+        const register = async (result: REntityLabelAggregator) => {
+            await this.put(result.id, result.entityLabel)
             await result.providers.removeProvidersFromIndexes()
         }
 
@@ -55,36 +30,30 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntity
             this.constructor.name,
             aggregatorFactory,
             register,
-            pEntityIdToString,
-            stringToPEntityId,
+            rEntityIdToString,
+            stringToREntityId,
         )
 
-        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTypeVal>(
+        const upsertQueue = new SqlUpsertQueue<REntityId, ValueModel>(
             wh,
-            'war.entity_preview (entity_type)',
+            'war.entity_preview (entity_label)',
             (valuesStr: string) => `
                 UPDATE war.entity_preview
-                SET
-                    type_label = x.column3,
-                    fk_type = x.column4::int,
-                    ${sqlForTsVector}
+                SET entity_label = x.column3,
+                ${sqlForTsVector}
                 FROM
                 (
                     values ${valuesStr}
                 ) as x
                 WHERE pk_entity = x.column1::int
                 AND project = x.column2::int
-                AND (
-                    type_label IS DISTINCT FROM x.column3
-                    OR
-                    fk_type IS DISTINCT FROM x.column4::int
-                );`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val.typeLabel, item.val.fkType],
-            pEntityIdToString
+                AND entity_label IS DISTINCT FROM x.column3;`,
+            (item) => [item.key.pkEntity, 0, item.val],
+            rEntityIdToString
         )
 
         /**
-         * Add actions after a new class type is put/updated into index
+         * Add actions after a new class label is put/updated into index
          */
         this.afterPut$.subscribe(item => {
 
@@ -93,7 +62,7 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntity
         })
     }
 
-    // writeToDb(results: PEntityTypeAggregator[]) {
+    // writeToDb(results: REntityLabelAggregator[]) {
     //     let i = 0;
     //     let batchSize = 0;
     //     const maxBatchSize = 1000;
@@ -137,8 +106,8 @@ export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntity
     // }
 
     // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // getParamsForUpsert(res: PEntityTypeAggregator): any[] {
-    //     return [res.id.pkEntity, res.id.fkProject, res.id.fkProject, res.entityType]
+    // getParamsForUpsert(res: REntityLabelAggregator): any[] {
+    //     return [res.id.pkEntity, res.id.fkProject, res.id.fkProject, res.entityLabel]
     // }
 
     // getUpsertSql(valuesStr: string) {

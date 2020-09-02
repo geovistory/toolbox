@@ -4,14 +4,17 @@ import {IdentifyingPropertyService} from '../aggregator-ds/identifying-property/
 import {PClassFieldLabelService} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PClassLabelService} from '../aggregator-ds/class-label/p-class-label/PClassLabelService';
 import {PEntityFullTextService} from '../aggregator-ds/p-entity-full-text/PEntityFullTextService';
-import {PEntityLabelService} from '../aggregator-ds/p-entity-label/PEntityLabelService';
-import {PEntityTimeSpanService} from '../aggregator-ds/p-entity-time-span/PEntityTimeSpanService';
-import {PEntityTypeService} from '../aggregator-ds/p-entity-type/PEntityTypeService';
+import {PEntityLabelService} from '../aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
+import {PEntityTimeSpanService} from '../aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
+import {PEntityTypeService} from '../aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
 import {Warehouse} from '../Warehouse';
 import {RClassLabelService} from '../aggregator-ds/class-label/r-class-label/RClassLabelService';
 import {REntityClassLabelService} from '../aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelService';
 import {RClassFieldLabelService} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
+import {REntityLabelService} from '../aggregator-ds/entity-label/r-entity-label/REntityLabelService';
+import {REntityTimeSpanService} from '../aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
+import {REntityTypeService} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeService';
 export class AggregatedDataServices extends DataServiceBundle {
     // Model aggregators
     identifyingProperty: IdentifyingPropertyService;
@@ -28,7 +31,10 @@ export class AggregatedDataServices extends DataServiceBundle {
     // Repo aggregators
     rClassLabel: RClassLabelService
     rClassFieldLabel: RClassFieldLabelService
+    rEntityLabel: REntityLabelService;
+    rEntityType: REntityTypeService;
     rEntityClassLabel: REntityClassLabelService
+    rEntityTimeSpan: REntityTimeSpanService;
 
 
     constructor(wh: Warehouse) {
@@ -37,11 +43,10 @@ export class AggregatedDataServices extends DataServiceBundle {
         this.identifyingProperty = this.registerDataService(new IdentifyingPropertyService(wh));
 
         // Project aggegators
-
-        this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
-        this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
         this.pClassLabel = this.registerDataService(new PClassLabelService(wh))
         this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelService(wh))
+        this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
+        this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
         this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
         this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
         this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
@@ -49,7 +54,10 @@ export class AggregatedDataServices extends DataServiceBundle {
         // Repo aggregators
         this.rClassLabel = this.registerDataService(new RClassLabelService(wh))
         this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelService(wh))
+        this.rEntityLabel = this.registerDataService(new REntityLabelService(wh));
+        this.rEntityType = this.registerDataService(new REntityTypeService(wh));
         this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
+        this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
 
     }
 

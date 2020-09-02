@@ -1,34 +1,22 @@
-import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
-import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../base/classes/Updater';
-import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
-import {PEntityId} from '../../primary-ds/entity/PEntityService';
-import {Warehouse} from '../../Warehouse';
-import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
-import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
-import {EntityTimePrimitive} from "../../primary-ds/edge/edge.commons";
+import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
+import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
+import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
+import {Updater} from '../../../base/classes/Updater';
+import {rEntityIdToString, stringToREntityId, sqlForTsVector} from '../../../base/functions';
+import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {Warehouse} from '../../../Warehouse';
+import {REntityTypeAggregator} from './REntityTypeAggregator';
+import {REntityTypeProviders} from './REntityTypePoviders';
 
-export type TimeSpanKeys =
-    'p82'       // At some time within | outer bounds | not before – not after
-    | 'p81'     // Ongoing throughout | inner bounds | surely from – surely to
-    | 'p81a'    // end of the begin | left inner bound | surely from
-    | 'p82a'    // begin of the begin | left outer bound | not before
-    | 'p81b'    // begin of the end | right inner bound | surely to
-    | 'p82b'    // end of the end | right outer bound | not after
-export type PEntityTimeSpanVal = {
-    timeSpan?: PEntityTimeSpan;
-    firstSecond?: number
-    lastSecond?: number
-}
-export type PEntityTimeSpan = {
-    [key in TimeSpanKeys]?: EntityTimePrimitive;
+export interface REntityTypeVal {
+    fkType?: number,
+    typeLabel?: string
 }
 
 /**
  * This Data Service manages the key-value store containing
- * as a key the PEntityId (pkEntity and fkProject)
- * and as value the PEntityTimeSpanVal (fkType, typeLabel)
+ * as a key the REntityId (pkEntity and fkProject)
+ * and as value the REntityTypeVal (fkType, typeLabel)
  *
  * One example key-value pair in the this.index is:
  * Key for the Project Entity Geo. Place 'Madrid' with pkEntity = 2002 in fkProject = 3001
@@ -40,25 +28,24 @@ export type PEntityTimeSpan = {
  *
  *
  *
- * -> The Val is the result of the PEntityTimeSpanAggregator
+ * -> The Val is the result of the REntityTypeAggregator
  *
  */
-export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEntityTimeSpanVal, PEntityTimeSpanAggregator>{
-    updater: Updater<PEntityId, PEntityTimeSpanAggregator>;
+export class REntityTypeService extends AggregatedDataService<REntityId, REntityTypeVal, REntityTypeAggregator>{
+    updater: Updater<REntityId, REntityTypeAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, PEntityTimeSpanVal>(pEntityIdToString, stringToPEntityId)
+    index = new IndexDBGeneric<REntityId, REntityTypeVal>(rEntityIdToString, stringToREntityId)
 
     constructor(private wh: Warehouse) {
         super()
-        const aggregatorFactory = async (id: PEntityId) => {
-            const providers = new PEntityTimeSpanProviders(this.wh.dep.pEntityTimeSpan, id)
-            return new PEntityTimeSpanAggregator(providers, id).create()
+        const aggregatorFactory = async (id: REntityId) => {
+            const providers = new REntityTypeProviders(this.wh.dep.rEntityType, id)
+            return new REntityTypeAggregator(providers, id).create()
         }
-        const register = async (result: PEntityTimeSpanAggregator) => {
+        const register = async (result: REntityTypeAggregator) => {
             await this.put(result.id, {
-                timeSpan: result.entityTimeSpan,
-                firstSecond: result.firstSecond,
-                lastSecond: result.lastSecond
+                fkType: result.fkEntityType,
+                typeLabel: result.entityTypeLabel
             })
             await result.providers.removeProvidersFromIndexes()
         }
@@ -68,27 +55,32 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             this.constructor.name,
             aggregatorFactory,
             register,
-            pEntityIdToString,
-            stringToPEntityId,
+            rEntityIdToString,
+            stringToREntityId,
         )
 
-        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTimeSpanVal>(
+        const upsertQueue = new SqlUpsertQueue<REntityId, REntityTypeVal>(
             wh,
-            'war.entity_preview (time_span)',
+            'war.entity_preview (entity_type)',
             (valuesStr: string) => `
-            UPDATE war.entity_preview
-            SET time_span = x.column3::jsonb,
-                first_second = x.column4::bigint,
-                last_second = x.column5::bigint
-            FROM
-            (
-                values ${valuesStr}
-            ) as x
-            WHERE pk_entity = x.column1::int
-            AND project = x.column2::int
-            AND time_span IS DISTINCT FROM x.column3::jsonb;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val.timeSpan, item.val.firstSecond, item.val.lastSecond],
-            pEntityIdToString
+                UPDATE war.entity_preview
+                SET
+                    type_label = x.column3,
+                    fk_type = x.column4::int,
+                    ${sqlForTsVector}
+                FROM
+                (
+                    values ${valuesStr}
+                ) as x
+                WHERE pk_entity = x.column1::int
+                AND project = x.column2::int
+                AND (
+                    type_label IS DISTINCT FROM x.column3
+                    OR
+                    fk_type IS DISTINCT FROM x.column4::int
+                );`,
+            (item) => [item.key.pkEntity, 0, item.val.typeLabel, item.val.fkType],
+            rEntityIdToString
         )
 
         /**
@@ -101,7 +93,7 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
         })
     }
 
-    // writeToDb(results: PEntityTimeSpanAggregator[]) {
+    // writeToDb(results: REntityTypeAggregator[]) {
     //     let i = 0;
     //     let batchSize = 0;
     //     const maxBatchSize = 1000;
@@ -145,7 +137,7 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
     // }
 
     // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // getParamsForUpsert(res: PEntityTimeSpanAggregator): any[] {
+    // getParamsForUpsert(res: REntityTypeAggregator): any[] {
     //     return [res.id.pkEntity, res.id.fkProject, res.id.fkProject, res.entityType]
     // }
 

@@ -12,25 +12,25 @@ export interface ClassField {
     isOutgoing: boolean,
     ordNum: number
 }
-export type PClassFieldVal = ClassField[]
-export class PClassFieldsConfigService extends PrimaryDataService<InitItem, PClassId, PClassFieldVal>{
+export type ProClassFieldVal = ClassField[]
+export class ProClassFieldsConfigService extends PrimaryDataService<InitItem, PClassId, ProClassFieldVal>{
 
 
     measure = 1000;
 
 
-    index = new IndexDBGeneric<PClassId, PClassFieldVal>(pClassIdToString, stringToPClassId)
+    index = new IndexDBGeneric<PClassId, ProClassFieldVal>(pClassIdToString, stringToPClassId)
 
 
     constructor(wh: Warehouse) {
         super(wh, ['modified_projects_class_field_config'])
     }
-    dbItemToKeyVal(item: InitItem): {key: PClassId; val: PClassFieldVal;} {
+    dbItemToKeyVal(item: InitItem): {key: PClassId; val: ProClassFieldVal;} {
         const key: PClassId = {
             fkProject: item.fkProject,
             pkClass: item.fkSourceClass
         }
-        const val: PClassFieldVal = item.fields
+        const val: ProClassFieldVal = item.fields
         return {key, val}
     }
 

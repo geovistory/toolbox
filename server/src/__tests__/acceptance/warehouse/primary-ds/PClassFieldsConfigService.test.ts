@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {PClassFieldsConfigService} from '../../../../warehouse/primary-ds/PClassFieldsConfigService';
+import {ProClassFieldsConfigService} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createProClassFieldConfig} from '../../../helpers/atomic/pro-class-field-config.helper';
@@ -14,7 +14,7 @@ import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/wa
 describe('PClassFieldsConfigService', () => {
 
   let wh: Warehouse;
-  let s: PClassFieldsConfigService;
+  let s: ProClassFieldsConfigService;
 
   beforeEach(async function () {
     await cleanDb();

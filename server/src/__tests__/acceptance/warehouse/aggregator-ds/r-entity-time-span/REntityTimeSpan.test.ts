@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
-import {PEntityTimeSpan} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
+import {REntityTimeSpan} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
 import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
@@ -27,7 +27,7 @@ import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview
 /**
  * Testing whole stack from postgres to warehouse
  */
-describe('PEntityTimeSpan', function () {
+describe('REntityTimeSpan', function () {
     let wh: Warehouse;
     let edgeService: PEdgeService;
 
@@ -52,9 +52,9 @@ describe('PEntityTimeSpan', function () {
 
 
     it('should create timespanval of time primitive', async () => {
-        const {shipVoyage, project} = await createMock();
+        const {shipVoyage} = await createMock();
 
-        const expectedTimeSpan: PEntityTimeSpan = {
+        const expectedTimeSpan: REntityTimeSpan = {
             "p81": {
                 "calendar": "gregorian",
                 "duration": "1 day",
@@ -91,7 +91,7 @@ describe('PEntityTimeSpan', function () {
 
         const result = await waitForEntityPreviewUntil(wh, (entPreview) => {
             return entPreview.pk_entity === shipVoyage.pk_entity
-                && entPreview.fk_project === project.pk_entity
+                && entPreview.fk_project === null
                 && equals(entPreview.time_span, expectedTimeSpan)
                 && entPreview.first_second === expectedFirstSec
                 && entPreview.last_second === expectedLastSec
@@ -102,13 +102,13 @@ describe('PEntityTimeSpan', function () {
 
     it('should create empty (null) time values', async () => {
         // - Langage and Project
-        const project = await createProjectAndModelMock();
+        await createProjectAndModelMock();
 
         // - shipVoyage
         const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
         await wait(800)
-        const result = await getWarEntityPreview(shipVoyage.pk_entity ?? -1, project.pk_entity ?? -1)
+        const result = await getWarEntityPreview(shipVoyage.pk_entity ?? -1, 0)
 
         expect(result?.[0].time_span).to.be.null()
         expect(result?.[0].first_second).to.be.null()

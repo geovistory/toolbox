@@ -2,7 +2,7 @@ import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
-import {PClassId} from './PClassFieldsConfigService';
+import {PClassId} from './ProClassFieldsConfigService';
 
 
 export interface LabelPart {

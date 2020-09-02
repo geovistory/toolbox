@@ -1,6 +1,6 @@
 import {Provider} from '../../base/classes/Provider';
 import {Providers} from "../../base/interfaces/Providers";
-import {PClassFieldVal, PClassId} from '../../primary-ds/PClassFieldsConfigService';
+import {ProClassFieldVal, PClassId} from '../../primary-ds/ProClassFieldsConfigService';
 import {EntityFields} from "../../primary-ds/edge/edge.commons";
 import {PEntityId, PEntity} from '../../primary-ds/entity/PEntityService';
 import {PEntityFullTextDependencies} from './PEntityFullTextDependencies';
@@ -11,7 +11,7 @@ export class PEntityFullTextProviders extends Providers<PEntityId> {
     pEdges: Provider<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>;
     pEntityLabel: Provider<PEntityId, PEntityFullTextVal, PEntityId, string>;
     pClassLabel: Provider<PEntityId, PEntityFullTextVal, PClassId, string>;
-    pClassFields: Provider<PEntityId, PEntityFullTextVal, PClassId, PClassFieldVal>;
+    pClassFields: Provider<PEntityId, PEntityFullTextVal, PClassId, ProClassFieldVal>;
     pClassFieldLabel: Provider<PEntityId, PEntityFullTextVal, PClassFieldId, string>;
 
     constructor(

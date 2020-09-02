@@ -1,5 +1,5 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
-import {PClassId} from '../../../primary-ds/PClassFieldsConfigService';
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {PClassLabelProviders} from './PClassLabelProviders';
 import {PK_ENGLISH, PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {pkLanguageIso6391Map} from '../class-label.commons';

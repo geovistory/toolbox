@@ -1,7 +1,7 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
 import {pEntityIdToString, pClassIdToString, stringToPEntityId, stringToPClassId, pClassFieldIdToString, stringToPClassFieldId} from '../../base/functions'
-import {PClassFieldVal, PClassId} from '../../primary-ds/PClassFieldsConfigService'
+import {ProClassFieldVal, PClassId} from '../../primary-ds/ProClassFieldsConfigService'
 import {EntityFields} from "../../primary-ds/edge/edge.commons"
 import {PEntityId, PEntity} from '../../primary-ds/entity/PEntityService'
 import {Warehouse} from '../../Warehouse'
@@ -13,7 +13,7 @@ export class PEntityFullTextDependencies extends ClearAll {
     pEntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, string>
     pEdge: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>
     pClassLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, string>
-    pClassFields: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, PClassFieldVal>
+    pClassFields: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, ProClassFieldVal>
     pClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassFieldId, string>
 
     constructor(private wh: Warehouse) {

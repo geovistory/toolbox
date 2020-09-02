@@ -1,6 +1,6 @@
 import {flatten} from 'ramda';
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {PClassFieldVal} from '../../primary-ds/PClassFieldsConfigService';
+import {ProClassFieldVal} from '../../primary-ds/ProClassFieldsConfigService';
 import {PClassId} from '../../primary-ds/class/PClassService';
 import {Edge, EntityFields} from "../../primary-ds/edge/edge.commons";
 import {PEntityId} from '../../primary-ds/entity/PEntityService';
@@ -92,7 +92,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
      *
      * @param entityFields
      */
-    async loopOverFields(entityFields: EntityFields, classFields: PClassFieldVal = [], fkProject: number, fkClass: number) {
+    async loopOverFields(entityFields: EntityFields, classFields: ProClassFieldVal = [], fkProject: number, fkClass: number) {
 
         const loopedCache: {[key: string]: boolean;} = {};
 

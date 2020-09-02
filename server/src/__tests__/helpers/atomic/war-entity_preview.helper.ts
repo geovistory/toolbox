@@ -12,11 +12,11 @@ export async function createWarEntityPreview(entityPreview: WarEntityPreview) {
   return createWarEntityPreviewRepo().create(entityPreview);
 }
 
-export async function getWarEntityPreview(pkEntity: number, fkProject: number) {
+export async function getWarEntityPreview(pkEntity: number, fkProject?: number) {
   return createWarEntityPreviewRepo().find({
     where: {
       and: [
-        {fk_project: {eq: fkProject}},
+        {project: {eq: fkProject}},
         {pk_entity: {eq: pkEntity}},
       ]
     }

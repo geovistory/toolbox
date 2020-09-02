@@ -3,7 +3,7 @@ import {DfhClassHasTypePropertyService} from '../primary-ds/DfhClassHasTypePrope
 import {DfhClassLabelService} from '../primary-ds/DfhClassLabelService';
 import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
 import {EntityLabelConfig, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
-import {PClassFieldsConfigService, PClassId} from '../primary-ds/PClassFieldsConfigService';
+import {ProClassFieldsConfigService, PClassId} from '../primary-ds/ProClassFieldsConfigService';
 import {PClassService} from '../primary-ds/class/PClassService';
 import {PEdgeService} from '../primary-ds/edge/PEdgeService';
 import {StatementItemToIndexate} from "../primary-ds/edge/edge.commons";
@@ -33,7 +33,7 @@ export class PrimaryDataServices extends DataServiceBundle {
     pClass: PClassService;
     pProperty: PPropertyService;
 
-    pClassFieldsConfig: PClassFieldsConfigService;
+    pClassFieldsConfig: ProClassFieldsConfigService;
 
     pEdge: PEdgeService;
     pEntity: PEntityService;
@@ -59,7 +59,7 @@ export class PrimaryDataServices extends DataServiceBundle {
         this.pClass = this.registerDataService(new PClassService(this.wh));
         this.pProperty = this.registerDataService(new PPropertyService(this.wh));
 
-        this.pClassFieldsConfig = this.registerDataService(new PClassFieldsConfigService(this.wh));
+        this.pClassFieldsConfig = this.registerDataService(new ProClassFieldsConfigService(this.wh));
         this.proEntityLabelConfig = this.registerDataService(new ProEntityLabelConfigService(this.wh));
 
         this.pEdge = this.registerDataService(new PEdgeService(this.wh));

@@ -3,7 +3,7 @@ import {DependencyIndex} from '../../../base/classes/DependencyIndex'
 import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId} from '../../../base/functions'
 import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService'
 import {Warehouse} from '../../../Warehouse'
-import {PClassId} from '../../../primary-ds/PClassFieldsConfigService'
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
 
 export class PEntityClassLabelDependencies extends ClearAll {
     entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>

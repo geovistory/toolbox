@@ -1,5 +1,5 @@
-import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {PEntityId} from '../../primary-ds/entity/PEntityService';
+import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
+import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PEntityTypeProviders} from './PEntityTypePoviders';
 
 export interface ClassLabelConfig {

@@ -27,7 +27,7 @@ import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityL
 /**
  * Testing whole stack from postgres to warehouse
  */
-describe('PEntityLabelService2', function () {
+describe('REntityLabelService', function () {
     let wh: Warehouse;
 
     beforeEach(async function () {
@@ -38,31 +38,31 @@ describe('PEntityLabelService2', function () {
     afterEach(async function () {await wh.stop()})
 
     it('should create entity label of naming', async () => {
-        const project = await createProject();
+        await createProject();
         const {naming, appellation} = await createNamingMock();
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: naming.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
+            {fk_project: {eq: null}},
             {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
     })
     it('should create entity label of person', async () => {
-        const project = await createProject();
+        await createProject();
         const {person, appellation} = await createNamingAndPersonMock();
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
+            {fk_project: {eq: null}},
             {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
     })
     it('should update entity label of person after removing stmt 1111 from project', async () => {
-        const project = await createProject();
+        await createProject();
         const {person, appellation} = await createNamingAndPersonMock();
         let result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
+            {fk_project: {eq: null}},
             {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
@@ -76,18 +76,18 @@ describe('PEntityLabelService2', function () {
 
         result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
+            {fk_project: {eq: null}},
             {entity_label: {eq: '(no label)'}},
         ])
         expect(result.entity_label).to.equal('(no label)')
     })
 
     it('should create entity label of naming and add person', async () => {
-        const project = await createProject();
+        await createProject();
         const {naming, appellation} = await createNamingMock();
         let result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: naming.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
+            {fk_project: {eq: null}},
             {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
@@ -95,7 +95,7 @@ describe('PEntityLabelService2', function () {
         const person = await createPersonMock();
         result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: person.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
+            {fk_project: {eq: null}},
             {entity_label: {eq: appellation.string}},
         ])
         expect(result.entity_label).to.equal(appellation.string)
@@ -106,27 +106,26 @@ describe('PEntityLabelService2', function () {
     })
 
     it('should create entity label of Birth – E67 (-- with identifying property)', async () => {
-        const project = await createProject();
+        await createProject();
         const {appellation} = await createNamingMock();
         await createPersonMock();
         const birth = await createBirthMock()
         const result = await waitForEntityPreviewUntil(wh, (item) => {
             return item.pk_entity === birth.pk_entity
-                && item.fk_project === project.pk_entity
+                && item.fk_project === null
                 && item.entity_label === appellation.string
         })
         expect(result)
     })
 
     it('should create entity label of Union – C9 (-- with identifying property)', async () => {
-
-        const project = await createProject();
+        await createProject();
         const {appellation} = await createNamingMock();
         await createPersonMock();
         const union = await createUnionMock()
         const result = await waitForEntityPreviewUntil(wh, (item) => {
             return item.pk_entity === union.pk_entity
-                && item.fk_project === project.pk_entity
+                && item.fk_project === null
                 && item.entity_label === appellation.string
         })
         expect(result)

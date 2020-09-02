@@ -1,5 +1,5 @@
 import getFolderSize from 'get-folder-size';
-import {PClassId} from '../primary-ds/PClassFieldsConfigService';
+import {PClassId} from '../primary-ds/ProClassFieldsConfigService';
 import {DfhClassLabelId} from '../primary-ds/DfhClassLabelService';
 import {PEntityId} from '../primary-ds/entity/PEntityService';
 import {ProClassLabelId} from '../primary-ds/ProClassLabelService';

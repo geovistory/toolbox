@@ -1,6 +1,6 @@
 import {Provider} from '../../../base/classes/Provider';
 import {Providers} from "../../../base/interfaces/Providers";
-import {PClassId} from '../../../primary-ds/PClassFieldsConfigService';
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService';
 import {PEntityClassLabelDependencies} from './PEntityClassLabelDependencies';
 export class PEntityClassLabelProviders extends Providers<PEntityId> {

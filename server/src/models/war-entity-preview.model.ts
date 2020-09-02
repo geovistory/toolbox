@@ -31,6 +31,11 @@ export class WarEntityPreview extends Entity {
   @property({
     type: 'number',
   })
+  project?: number;
+
+  @property({
+    type: 'number',
+  })
   fk_class?: number;
 
   @property({

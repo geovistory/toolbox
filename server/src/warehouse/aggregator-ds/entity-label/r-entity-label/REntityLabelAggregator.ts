@@ -1,11 +1,11 @@
-import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {EntityLabelConfig, LabelPart} from '../../primary-ds/ProEntityLabelConfigService';
-import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
-import {Edge, EntityFields} from "../../primary-ds/edge/edge.commons";
-import {PEntityId} from '../../primary-ds/entity/PEntityService';
-import {PK_DEFAULT_CONFIG_PROJECT} from '../../Warehouse';
-import {PEntityLabelProviders} from './PEntityLabelPoviders';
 import {keys} from 'lodash';
+import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {Edge, EntityFields} from "../../../primary-ds/edge/edge.commons";
+import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {EntityLabelConfig, LabelPart} from '../../../primary-ds/ProEntityLabelConfigService';
+import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
+import {REntityLabelProviders} from './REntityLabelPoviders';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -15,7 +15,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
+export class REntityLabelAggregator extends AbstractAggregator<REntityId> {
 
     // array of strings to create label
     labelArr: string[] = [];
@@ -27,8 +27,8 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
     labelMissing = true;
 
     constructor(
-        public providers: PEntityLabelProviders,
-        public id: PEntityId
+        public providers: REntityLabelProviders,
+        public id: REntityId
     ) {
         super()
     }
@@ -58,8 +58,7 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
             if (keys(fieldsWithEdges).length === 0) return this;
 
-            const classId = {
-                fkProject: entity.fkProject,
+            const classId: RClassId = {
                 pkClass: entity.fkClass
             }
 
@@ -69,10 +68,10 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
     }
 
 
-    async createLabel(classId: PClassId, entityFields?: EntityFields) {
+    async createLabel(classId: RClassId, entityFields?: EntityFields) {
         const labelParts = await this.getLabelParts(classId);
 
-        const entityLabel = await this.loopOverLabelParts(classId.fkProject, labelParts, entityFields)
+        const entityLabel = await this.loopOverLabelParts(labelParts, entityFields)
 
         if (entityLabel !== '') {
             this.labelMissing = false
@@ -94,7 +93,7 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
      *
      * @param pClassId
      */
-    private async getLabelParts(pClassId: PClassId) {
+    private async getLabelParts(pClassId: RClassId) {
         // in case of Appellation in a langage use this config hard coded
         // to prevent infinit loops
         if (pClassId.pkClass === 365) {
@@ -145,14 +144,14 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
         ]
     }
 
-    private async loopOverLabelParts(fkProject: number, labelParts: LabelPart[], entityFields?: EntityFields) {
+    private async loopOverLabelParts(labelParts: LabelPart[], entityFields?: EntityFields) {
         const promises: Promise<string>[] = []
 
         // iterate over label parts
         for (const labelPart of labelParts) {
             if (labelPart.field) {
                 const edges = entityFields?.[labelPart.field.isOutgoing ? 'outgoing' : 'incoming']?.[labelPart.field.fkProperty];
-                promises.push(this.loopOverEdges(fkProject, edges, labelPart?.field?.nrOfStatementsInLabel))
+                promises.push(this.loopOverEdges(edges, labelPart?.field?.nrOfStatementsInLabel))
             }
         }
 
@@ -167,14 +166,12 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
     *
     * @param edges Array of edges
     * @param config `
-    *      fkProject: project
     *      fkProperty: property of edges/field (needed to get fieldLabel)
     *      isOutgoing: direction of edges/field (needed to get fieldLabel)
     *      maxLabelNr max number of edgeTargetLabels
     * `
     */
     private async loopOverEdges(
-        fkProject: number,
         edges?: Edge[],
         maxLabelNr = 1
     ) {
@@ -192,7 +189,7 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
                 let string;
                 if (e.targetIsEntity) {
-                    string = await this.providers.entityLabels.get({pkEntity: e.fkTarget, fkProject})
+                    string = await this.providers.entityLabels.get({pkEntity: e.fkTarget})
                 } else {
                     string = e.targetLabel;
                 }
@@ -205,43 +202,9 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
     }
 
 
-    /************************************************************************
-     * Methods for registering values of this in other indexes
-    ************************************************************************/
+    private async getEntityLabelConfig(classId: RClassId): Promise<EntityLabelConfig | undefined> {
 
-
-    // /**
-    //  * Register the aggregated result and cleanup its dependencies (providers)
-    //  */
-    // async register() {
-
-    //     /**
-    //      * update the result index `EntityPreviewIdx`:
-    //      * this adds update requests if needed
-    //      */
-    //     await this.main.agg.entityLabel.add(this.id, this.entityLabel)
-
-
-    //     /**
-    //     * cleanup dependency indexes:
-    //     * remove providers from last cycle that are not needed anymore
-    //     */
-    //     await this.providers.removeProvidersFromIndexes()
-
-    //     return this
-    // }
-
-
-
-
-    private async getEntityLabelConfig(classId: PClassId): Promise<EntityLabelConfig | undefined> {
-
-
-        let res = await this.providers.entityLabelConfig.get(classId)
-
-        if (res) return res;
-
-        res = await this.providers.entityLabelConfig.get({...classId, fkProject: PK_DEFAULT_CONFIG_PROJECT})
+        const res = await this.providers.entityLabelConfig.get({pkClass: classId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
 
         return res;
     }

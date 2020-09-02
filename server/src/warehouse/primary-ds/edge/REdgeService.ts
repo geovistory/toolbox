@@ -116,11 +116,12 @@ WITH tw0 AS (
 		SELECT
 			AVG(t.ord_num_of_domain)::numeric(10,2) ord_num_of_domain,
 		   	AVG(t.ord_num_of_range)::numeric(10,2) ord_num_of_range,
-			mode() WITHIN GROUP (ORDER BY t.calendar) AS calendar
+            mode() WITHIN GROUP (ORDER BY t.calendar) AS calendar,
+            count(t.pk_entity) is_in_project_count
 		FROM projects.info_proj_rel t
 		WHERE t.fk_entity = t2.pk_entity AND t.is_in_project = true
   		GROUP BY t.fk_entity) t1 ON true
-
+    WHERE t1.is_in_project_count > 0
 ),
 -- outgoing
 tw2 AS (

@@ -1,13 +1,13 @@
-import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {PEntityId, PEntity} from '../../primary-ds/entity/PEntityService'
-import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
-import {EntityLabelConfig} from '../../primary-ds/ProEntityLabelConfigService'
-import {EntityFields} from "../../primary-ds/edge/edge.commons"
-import {Warehouse} from '../../Warehouse'
-import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId, stringToRClassId, rClassIdToString} from '../../base/functions'
-import {ClearAll} from '../../base/classes/ClearAll'
-import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService'
-import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
+import {DependencyIndex} from '../../../base/classes/DependencyIndex'
+import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService'
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
+import {EntityLabelConfig} from '../../../primary-ds/ProEntityLabelConfigService'
+import {EntityFields} from "../../../primary-ds/edge/edge.commons"
+import {Warehouse} from '../../../Warehouse'
+import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId, stringToRClassId, rClassIdToString} from '../../../base/functions'
+import {ClearAll} from '../../../base/classes/ClearAll'
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
+import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService'
 
 export class PEntityLabelDependencies extends ClearAll {
     entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>

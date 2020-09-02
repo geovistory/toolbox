@@ -1,5 +1,5 @@
 import {EntityLabelConfig} from '../../../../warehouse/primary-ds/ProEntityLabelConfigService';
-import {PClassId} from '../../../../warehouse/primary-ds/PClassFieldsConfigService';
+import {PClassId} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
 import {ClassMock} from './ClassMock';
 import {ProjectMock} from './ProjectMock';
 

@@ -3,7 +3,7 @@ import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../../base/classes/Updater';
 import {pClassIdToString, stringToPClassId} from '../../../base/functions';
-import {PClassId} from '../../../primary-ds/PClassFieldsConfigService';
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../Warehouse';
 import {PClassLabelAggregator} from './PClassLabelAggregator';
 import {PClassLabelProviders} from './PClassLabelProviders';
