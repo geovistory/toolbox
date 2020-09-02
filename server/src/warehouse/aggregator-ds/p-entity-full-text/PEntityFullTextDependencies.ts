@@ -70,7 +70,7 @@ export class PEntityFullTextDependencies extends ClearAll {
 
         this.pClassFieldLabel = new DependencyIndex(
             this.wh.agg.pEntityFullText,
-            this.wh.agg.pPropertyLabel,
+            this.wh.agg.pClassFieldLabel,
             entityIdToString,
             stringToEntityId,
             pClassFieldIdToString,

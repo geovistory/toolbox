@@ -47,9 +47,10 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         // initialize new recursive update cycle
         if (this.updating === false && this.wh.initializingIndexes === false
         ) {
-            setTimeout(() => {
+            this.updating = true;
+            // setTimeout(() => {
                 this.startCylcling().catch(e => {console.error(e)})
-            }, 0)
+            // }, 0)
         }
     }
 
@@ -80,7 +81,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         const t0 = Logger.start(`${this.name} > Run recursive cycle ${this.cycleNr}`, 0)
         await this.runOneCycle();
         Logger.itTook(t0, `to run recursive cycle`, 0)
-        this.updating = true
+        // this.updating = true
 
 
         const t1 = Logger.start(`get length of growingQueue`)
@@ -101,8 +102,8 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
 
     // run one update cycle
     // TODO: implement this using streams instead of storing everythin in memory
-    async runOneCycle() {
-        this.updating = true
+    private async runOneCycle() {
+        // this.updating = true
         const length = await this.growingQueue.getLength()
         const results: Aggregator[] = [];
         let i = 0
@@ -170,7 +171,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         await this.shrinkingQueue.clearIdx()
 
         this.cycleNr++
-        this.updating = false
+        // this.updating = false
     }
 
     private switchActivePendingIdx() {

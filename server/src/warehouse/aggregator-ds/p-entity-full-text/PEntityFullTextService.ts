@@ -2,7 +2,7 @@ import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../base/classes/Updater';
-import {entityIdToString, stringToEntityId} from '../../base/functions';
+import {entityIdToString, stringToEntityId, sqlForTsVector} from '../../base/functions';
 import {PEntityId} from '../../primary-ds/PEntityService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityFullTextAggregator} from './PEntityFullTextAggregator';
@@ -58,7 +58,8 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
             'war.entity_preview (full_text)',
             (valuesStr: string) => `
                 UPDATE war.entity_preview
-                SET full_text = x.column3
+                SET full_text = x.column3,
+                ${sqlForTsVector}
                 FROM
                 (
                     values ${valuesStr}
@@ -68,16 +69,6 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
                 AND full_text IS DISTINCT FROM x.column3
             `,
             (item) => [item.key.pkEntity, item.key.fkProject, item.val],
-            // (valuesStr: string) => `
-            //     INSERT INTO war.entity_preview (pk_entity, fk_project, project, full_text)
-            //     VALUES ${valuesStr}
-            //     ON CONFLICT (pk_entity, project) DO UPDATE
-            //     SET
-            //         full_text = EXCLUDED.full_text
-            //     WHERE
-            //         EXCLUDED.full_text IS DISTINCT FROM war.entity_preview.full_text;`,
-            // (item) => [item.key.pkEntity, item.key.fkProject, item.key.fkProject, item.val],
-
             entityIdToString
         )
 
@@ -90,61 +81,5 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
         })
     }
 
-    // writeToDb(results: PEntityFullTextAggregator[]) {
-    //     let i = 0;
-    //     let batchSize = 0;
-    //     const maxBatchSize = 1000;
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     let params: any[] = []
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     const addParam = (val: any) => {
-    //         params.push(val)
-    //         return '$' + params.length;
-    //     }
-    //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //     const addParams = (vals: any[]) => {
-    //         return vals.map(val => addParam(val)).join(',');
-    //     }
-    //     let values = ''
-    //     let remaining = results.length;
-
-
-    //     for (const res of results) {
-    //         const arr = this.getParamsForUpsert(res)
-    //         values = values + `(${addParams(arr)}),`
-    //         i++
-    //         batchSize++
-    //         if (i % maxBatchSize === 0 || i === results.length) {
-    //             remaining = remaining - batchSize;
-    //             const t = Logger.start(`Upserting ${batchSize} entity labels, remaining: ${remaining} of ${results.length}`, 2)
-    //             const q = this.getUpsertSql(values.slice(0, -1))
-    //             this.wh.pgClient.query(q, params)
-    //                 .then(() => {
-    //                     Logger.itTook(t, `to batch upsert entity labels`, 2)
-    //                 })
-    //                 .catch(e => {
-    //                     console.log(e)
-    //                 })
-
-    //             params = []
-    //             values = ''
-    //             batchSize = 0;
-    //         }
-    //     }
-    // }
-
-    // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // getParamsForUpsert(res: PEntityFullTextAggregator): any[] {
-    //     return [res.id.pkEntity, res.id.fkProject, res.id.fkProject, res.entityFullText]
-    // }
-
-    // getUpsertSql(valuesStr: string) {
-    //     return `
-    //     INSERT INTO war.entity_preview (pk_entity, fk_project, project, entity_label)
-    //     VALUES ${valuesStr}
-    //     ON CONFLICT (pk_entity, project) DO UPDATE
-    //     SET entity_label = EXCLUDED.entity_label
-    //     WHERE EXCLUDED.entity_label IS DISTINCT FROM war.entity_preview.entity_label;`
-    // }
 }
 

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
-import {PEntityTimeSpanVal} from '../../../../../warehouse/aggregator-ds/p-entity-time-span/PEntityTimeSpanService';
+import {equals} from 'ramda';
+import {PEntityTimeSpan} from '../../../../../warehouse/aggregator-ds/p-entity-time-span/PEntityTimeSpanService';
+import {PEdgeService} from '../../../../../warehouse/primary-ds/PEdgeService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -19,9 +21,8 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, waitUntilSatisfy, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {PEdgeService} from '../../../../../warehouse/primary-ds/PEdgeService';
-import {equals} from 'ramda';
+import {setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy, wait} from '../../../../helpers/warehouse-helpers';
+import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -53,7 +54,7 @@ describe('PEntityTimeSpan', function () {
     it('should create timespanval of time primitive', async () => {
         const {shipVoyage, project} = await createMock();
 
-        const expected: PEntityTimeSpanVal = {
+        const expectedTimeSpan: PEntityTimeSpan = {
             "p81": {
                 "calendar": "gregorian",
                 "duration": "1 day",
@@ -85,38 +86,40 @@ describe('PEntityTimeSpan', function () {
                 "julianDay": 2362734
             }
         }
+        const expectedFirstSec = '204139785600';
+        const expectedLastSec = '204140303999';
+
         const result = await waitForEntityPreviewUntil(wh, (entPreview) => {
             return entPreview.pk_entity === shipVoyage.pk_entity
                 && entPreview.fk_project === project.pk_entity
-                && equals(entPreview.time_span, expected)
+                && equals(entPreview.time_span, expectedTimeSpan)
+                && entPreview.first_second === expectedFirstSec
+                && entPreview.last_second === expectedLastSec
         })
 
-        expect(result.time_span).to.deepEqual(expected);
+        expect(result.time_span).to.deepEqual(expectedTimeSpan);
+    })
+
+    it('should create empty (null) time values', async () => {
+        // - Langage and Project
+        const project = await createProjectAndModelMock();
+
+        // - shipVoyage
+        const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+        await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
+        await wait(800)
+        const result = await getWarEntityPreview(shipVoyage.pk_entity ?? -1, project.pk_entity ?? -1)
+
+        expect(result?.[0].time_span).to.be.null()
+        expect(result?.[0].first_second).to.be.null()
+        expect(result?.[0].last_second).to.be.null()
     })
 })
 
 // create the mock data:
 async function createMock() {
     // - Langage and Project
-    await createInfLanguage(InfLanguageMock.GERMAN);
-    const project = await createProProject(ProProjectMock.PROJECT_1);
-
-    // - Class: Ship Voyage, TimePrimitive
-    await createDfhApiClass(DfhApiClassMock.EN_523_SHIP_VOYAGE);
-    await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE);
-
-    // P81 ongoing throughout
-    await createDfhApiProperty(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT);
-    // P82 at some time within
-    await createDfhApiProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN);
-    // P81a end of the begin
-    await createDfhApiProperty(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN);
-    // P81b begin of the end
-    await createDfhApiProperty(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END);
-    // P82a begin of the begin
-    await createDfhApiProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN);
-    // P82b end of the end
-    await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END);
+    const project = await createProjectAndModelMock();
 
     // - shipVoyage
     const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
@@ -169,6 +172,29 @@ async function createMock() {
 
 
 
+
+async function createProjectAndModelMock() {
+    await createInfLanguage(InfLanguageMock.GERMAN);
+    const project = await createProProject(ProProjectMock.PROJECT_1);
+
+    // - Class: Ship Voyage, TimePrimitive
+    await createDfhApiClass(DfhApiClassMock.EN_523_SHIP_VOYAGE);
+    await createDfhApiClass(DfhApiClassMock.EN_335_TIME_PRIMITIVE);
+
+    // P81 ongoing throughout
+    await createDfhApiProperty(DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT);
+    // P82 at some time within
+    await createDfhApiProperty(DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN);
+    // P81a end of the begin
+    await createDfhApiProperty(DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN);
+    // P81b begin of the end
+    await createDfhApiProperty(DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END);
+    // P82a begin of the begin
+    await createDfhApiProperty(DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN);
+    // P82b end of the end
+    await createDfhApiProperty(DfhApiPropertyMock.EN_153_END_OF_THE_END);
+    return project;
+}
 /**
 
 select *

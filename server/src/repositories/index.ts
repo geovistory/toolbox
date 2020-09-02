@@ -35,3 +35,4 @@ export * from './sys-system-relevant-class.repository';
 export * from './sys-system-type.repository';
 export * from './pub-role-mapping.repository';
 export * from './pub-role.repository';
+export * from './pro-entity-label-config.repository';

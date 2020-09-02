@@ -189,7 +189,7 @@ export interface Edge {
         appellation?: string | null
         dimension?: any
         place?: any
-        timePrimitive?: PEntityTimePrimitive
+        timePrimitive?: PEntityTimePrimitiveWithBoundaries | null
         language?: any
         langString?: any
     }
@@ -207,8 +207,31 @@ export type Granularity =
 export interface PEntityTimePrimitive {
     julianDay?: number;
     duration?: Granularity;
-    calendar?: CalendarType;
+    calendar?: CalendarType
 }
+export interface PEntityTimePrimitiveWithBoundaries extends PEntityTimePrimitive {
+    firstSecond?: number
+    lastSecond?: number
+}
+
+const targetLabel = `'targetLabel', COALESCE( t1.appellation,  t1.language,  t1.lang_string)`
+
+const targetValue = `'targetValue', json_strip_nulls(json_build_object(
+    'appellation', t1.appellation,
+    'language', t1.language,
+    'langString', t1.lang_string,
+    'timePrimitive', CASE WHEN t1.julian_day IS NOT NULL THEN
+                        json_strip_nulls(json_build_object(
+                            'julianDay', t1.julian_day,
+                            'duration', t1.duration,
+                            'calendar', t1.calendar,
+                            'firstSecond', commons.time_primitive__get_first_second(t1.julian_day),
+                            'lastSecond', commons.time_primitive__get_last_second(t1.julian_day,t1.duration,t1.calendar)
+                        ))
+                    ELSE
+                        null
+                    END
+))`
 
 
 const updateSql = `
@@ -311,17 +334,8 @@ tw2 AS (
             'fkTarget', t1.fk_object_info,
             'ordNumWithinField', t1.ord_num_of_range,
             'targetIsEntity', t1.object_table IN ('temporal_entity', 'persistent_item'),
-            'targetLabel', COALESCE( t1.appellation,  t1.language,  t1.lang_string),
-            'targetValue', json_strip_nulls(json_build_object(
-                'appellation', t1.appellation,
-                'language', t1.language,
-                'lang_string', t1.lang_string,
-                'timePrimitive', json_strip_nulls(json_build_object(
-                    'julianDay', t1.julian_day,
-                    'duration', t1.duration,
-                    'calendar', t1.calendar
-                ))
-            ))
+            ${targetLabel},
+            ${targetValue}
         ) ORDER BY t1.ord_num_of_range ASC
     ) outgoing
     FROM tw1 t1
@@ -340,17 +354,8 @@ tw3 AS (
             'fkTarget', t1.fk_subject_info,
             'ordNumWithinField', t1.ord_num_of_domain,
             'targetIsEntity', t1.subject_table IN ('temporal_entity', 'persistent_item'),
-            'targetLabel', COALESCE( t1.appellation,  t1.language,  t1.lang_string),
-            'targetValue', json_strip_nulls(json_build_object(
-                'appellation', t1.appellation,
-                'language', t1.language,
-                'langString', t1.lang_string,
-                'timePrimitive', json_strip_nulls(json_build_object(
-                    'julianDay', t1.julian_day,
-                    'duration', t1.duration,
-                    'calendar', t1.calendar
-                ))
-            ))
+            ${targetLabel},
+            ${targetValue}
         ) ORDER BY t1.ord_num_of_domain ASC
     ) incoming
     FROM tw1 t1

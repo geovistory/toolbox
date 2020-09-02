@@ -7,7 +7,7 @@ import {createProject} from '../../../helpers/atomic/pro-project.helper';
 import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
 
 describe('ProClassLabelService', () => {
 
@@ -59,22 +59,26 @@ describe('ProClassLabelService', () => {
     const pkProject = project.pk_entity ?? -1;
     const str = 'FooClassLabel'
     const label = await createProTextPropertyClassLabel(pkProject, 12, str, AtmLanguages.FRENCH.id)
-    await waitUntilNext(s.afterPut$)
-    const id = {
-      fkProject: label.fk_project ?? -1,
-      fkLanguage: label.fk_language ?? -1,
-      fkClass: label.fk_dfh_class ?? -1
-    }
-    const result = await s.index.getFromIdx(id)
-    expect(result).to.equal(str)
+    let result = await waitUntilSatisfy(s.afterPut$, (item) => {
+      return item.key.fkProject === label.fk_project
+        && item.key.fkLanguage === label.fk_language
+        && item.key.fkClass === label.fk_dfh_class
+        && item.val === str
+    })
+
+    expect(result.val).to.equal(str)
 
     const str2 = 'BarClassLabel'
     await updateProTextProperty(label.pk_entity ?? -1, {string: str2})
 
-    await waitUntilNext(s.afterPut$)
+    result = await waitUntilSatisfy(s.afterPut$, (item) => {
+      return item.key.fkProject === label.fk_project
+        && item.key.fkLanguage === label.fk_language
+        && item.key.fkClass === label.fk_dfh_class
+        && item.val === str2
+    })
 
-    const resultUpdated = await s.index.getFromIdx(id)
-    expect(resultUpdated).to.equal(str2)
+    expect(result.val).to.equal(str2)
   })
 
   it('should delete pro class label in index', async () => {

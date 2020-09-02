@@ -21,6 +21,8 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
+import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
+import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -206,6 +208,8 @@ async function createUnionMock() {
     // Stmts
     await createInfStatement(InfStatementMock.UNOIN_1_HAS_PARTNER_1);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1);
+
+    await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
     return birth;
 }
 

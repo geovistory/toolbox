@@ -2,7 +2,7 @@ import {DataServiceBundle} from '../base/classes/DataServiceBundle';
 import {DfhClassHasTypePropertyService} from '../primary-ds/DfhClassHasTypePropertyService';
 import {DfhClassLabelService} from '../primary-ds/DfhClassLabelService';
 import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
-import {EntityLabelConfig, EntityLabelConfigService} from '../primary-ds/EntityLabelConfigService';
+import {EntityLabelConfig, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
 import {PClassFieldsConfigService, PClassId} from '../primary-ds/PClassFieldsConfigService';
 import {PClassService} from '../primary-ds/PClassService';
 import {PEdgeService, StatementItemToIndexate} from '../primary-ds/PEdgeService';
@@ -23,12 +23,12 @@ export class PrimaryDataServices extends DataServiceBundle {
 
     proClassLabel: ProClassLabelService;
     proPropertyLabel: ProPropertyLabelService;
+    proEntityLabelConfig: ProEntityLabelConfigService;
 
     pClass: PClassService;
     pProperty: PPropertyService;
 
     pClassFieldsConfig: PClassFieldsConfigService;
-    entityLabelConfig: EntityLabelConfigService;
 
     pEdge: PEdgeService;
     pEntity: PEntityService;
@@ -49,14 +49,14 @@ export class PrimaryDataServices extends DataServiceBundle {
         this.pProperty = this.registerDataService(new PPropertyService(this.wh));
 
         this.pClassFieldsConfig = this.registerDataService(new PClassFieldsConfigService(this.wh));
-        this.entityLabelConfig = this.registerDataService(new EntityLabelConfigService(this.wh));
+        this.proEntityLabelConfig = this.registerDataService(new ProEntityLabelConfigService(this.wh));
 
         this.pEdge = this.registerDataService(new PEdgeService(this.wh));
         this.pEntity = this.registerDataService(new PEntityService(this.wh));
     }
 
     async createEntityLabelConfig(keyModel: PClassId, val: EntityLabelConfig) {
-        return this.entityLabelConfig.index.addToIdx(keyModel, val)
+        return this.proEntityLabelConfig.index.addToIdx(keyModel, val)
     }
     async createEntity(keyModel: PEntityId, val: ProjectEntity) {
         return this.pEntity.index.addToIdx(keyModel, val)

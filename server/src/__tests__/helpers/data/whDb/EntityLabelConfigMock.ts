@@ -1,4 +1,4 @@
-import {EntityLabelConfig} from '../../../../warehouse/primary-ds/EntityLabelConfigService';
+import {EntityLabelConfig} from '../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {PClassId} from '../../../../warehouse/primary-ds/PClassFieldsConfigService';
 import {ClassMock} from './ClassMock';
 import {ProjectMock} from './ProjectMock';
@@ -16,7 +16,6 @@ export class EntityLabelConfigMock {
     }
 
     static readonly NAMING_1_STMT_VAL: EntityLabelConfig = {
-        fkClass: ClassMock.NAMING_ID,
         labelParts: [{
             field: {
                 fkProperty: 1113,
@@ -28,7 +27,6 @@ export class EntityLabelConfigMock {
     }
 
     static readonly NAMING_2_STMT_VAL: EntityLabelConfig = {
-        fkClass: ClassMock.NAMING_ID,
         labelParts: [{
             field: {
                 fkProperty: 1113,
@@ -47,7 +45,6 @@ export class EntityLabelConfigMock {
     }
 
     static readonly PERSON_1_STMT_VAL: EntityLabelConfig = {
-        fkClass: ClassMock.PERSON_ID,
         labelParts: [{
             field: {
                 fkProperty: 1111,
@@ -57,7 +54,6 @@ export class EntityLabelConfigMock {
         }]
     }
     static readonly PERSON_2_STMT_VAL: EntityLabelConfig = {
-        fkClass: ClassMock.PERSON_ID,
         labelParts: [{
             field: {
                 fkProperty: 1111,
@@ -74,7 +70,6 @@ export class EntityLabelConfigMock {
         pkClass: ClassMock.BIRTH_ID
     }
     static readonly BIRTH_VAL: EntityLabelConfig = {
-        fkClass: ClassMock.BIRTH_ID,
         labelParts: [{
             field: {
                 fkProperty: 41,
@@ -93,7 +88,6 @@ export class EntityLabelConfigMock {
     }
 
     static readonly UNION_VAL: EntityLabelConfig = {
-        fkClass: ClassMock.UNION_ID,
         labelParts: [{
             field: {
                 fkProperty: 52,

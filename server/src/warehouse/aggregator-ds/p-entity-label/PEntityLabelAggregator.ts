@@ -1,5 +1,5 @@
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {EntityLabelConfig, LabelPart} from '../../primary-ds/EntityLabelConfigService';
+import {EntityLabelConfig, LabelPart} from '../../primary-ds/ProEntityLabelConfigService';
 import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
 import {Edge, EntityFields} from '../../primary-ds/PEdgeService';
 import {PEntityId} from '../../primary-ds/PEntityService';
@@ -95,6 +95,22 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
      * @param pClassId
      */
     private async getLabelParts(pClassId: PClassId) {
+        // in case of Appellation in a langage use this config hard coded
+        // to prevent infinit loops
+        if (pClassId.pkClass === 365) {
+            return [
+                {
+                    ordNum: 1,
+                    field: {
+                        fkProperty: 1113,
+                        isOutgoing: true,
+                        nrOfStatementsInLabel: 1
+                    }
+                }
+            ]
+        }
+
+
         const entityLabelConfig = await this.getEntityLabelConfig(pClassId);
 
         if (entityLabelConfig?.labelParts) {
@@ -103,7 +119,7 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
         const identifyingProps = await this.providers.identifyingProperty.get({pkClass: pClassId.pkClass})
 
-        if (identifyingProps) {
+        if (identifyingProps?.length) {
             return identifyingProps.map((item, i) => {
                 const labelPart: LabelPart = {
                     field: {

@@ -62,12 +62,8 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
     const membership = await this.pubAccountProjectRelRepo.findOne({
       where: {
-        and: [
-          {
-            accountId: accountId,
-            'fk_project': pkProject
-          }
-        ]
+        'account_id': {eq: accountId},
+        'fk_project': {eq: pkProject}
       }
     })
 
@@ -106,7 +102,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
       where: {
         and: [
           {
-            accountId: accountId,
+            'account_id': accountId,
             'fk_project': namespace.fk_project
           }
         ]
@@ -133,7 +129,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   private extractPkProject(context: AuthorizationContext) {
     const requestContext = context.invocationContext?.parent as RequestContext;
     const request = requestContext?.request;
-    const pkProject = request?.query?.pkProject || request?.body?.pkProject;
+    const pkProject = request?.query?.pkProject || request?.body?.pkProject || request?.body?.fk_project;
     if (typeof pkProject === 'string') {
       const pk = parseInt(pkProject)
       if (isInteger(pk)) return pk;

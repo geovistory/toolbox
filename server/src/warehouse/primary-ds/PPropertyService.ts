@@ -30,7 +30,7 @@ export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, 
         fkProperty: item.val.fkProperty,
         isOutgoing: true
       }
-      wh.agg.pPropertyLabel.updater.addItemToQueue(outgoingField).catch(e => console.log(e))
+      wh.agg.pClassFieldLabel.updater.addItemToQueue(outgoingField).catch(e => console.log(e))
 
       const incomingField: PClassFieldId = {
         fkProject: item.key.fkProject,
@@ -38,7 +38,7 @@ export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, 
         fkProperty: item.val.fkProperty,
         isOutgoing: false
       }
-      wh.agg.pPropertyLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
+      wh.agg.pClassFieldLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
     })
 
     /**

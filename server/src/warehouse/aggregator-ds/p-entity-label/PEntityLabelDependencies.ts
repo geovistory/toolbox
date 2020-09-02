@@ -1,7 +1,7 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
 import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
 import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
-import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService'
+import {EntityLabelConfig} from '../../primary-ds/ProEntityLabelConfigService'
 import {EntityFields} from '../../primary-ds/PEdgeService'
 import {Warehouse} from '../../Warehouse'
 import {entityIdToString, stringToEntityId, pClassIdToString, stringToPClassId, stringToClassId, classIdToString} from '../../base/functions'
@@ -32,7 +32,7 @@ export class PEntityLabelDependencies extends ClearAll {
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
         this.entityLabelConfig = new DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>(
             this.wh.agg.pEntityLabel,
-            this.wh.prim.entityLabelConfig,
+            this.wh.prim.proEntityLabelConfig,
             entityIdToString,
             stringToEntityId,
             pClassIdToString,

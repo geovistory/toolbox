@@ -9,13 +9,20 @@ import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
 import {PEntityTimePrimitive} from '../../primary-ds/PEdgeService';
 
-export interface PEntityTimeSpanVal {
-    p82?: PEntityTimePrimitive; // At some time within | outer bounds | not before – not after
-    p81?: PEntityTimePrimitive; // Ongoing throughout | inner bounds | surely from – surely to
-    p81a?: PEntityTimePrimitive; // end of the begin | left inner bound | surely from
-    p82a?: PEntityTimePrimitive; // begin of the begin | left outer bound | not before
-    p81b?: PEntityTimePrimitive; // begin of the end | right inner bound | surely to
-    p82b?: PEntityTimePrimitive; // end of the end | right outer bound | not after
+export type TimeSpanKeys =
+    'p82'       // At some time within | outer bounds | not before – not after
+    | 'p81'     // Ongoing throughout | inner bounds | surely from – surely to
+    | 'p81a'    // end of the begin | left inner bound | surely from
+    | 'p82a'    // begin of the begin | left outer bound | not before
+    | 'p81b'    // begin of the end | right inner bound | surely to
+    | 'p82b'    // end of the end | right outer bound | not after
+export type PEntityTimeSpanVal = {
+    timeSpan?: PEntityTimeSpan;
+    firstSecond?: number
+    lastSecond?: number
+}
+export type PEntityTimeSpan = {
+    [key in TimeSpanKeys]?: PEntityTimePrimitive;
 }
 
 /**
@@ -48,9 +55,11 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             return new PEntityTimeSpanAggregator(providers, id).create()
         }
         const register = async (result: PEntityTimeSpanAggregator) => {
-            await this.put(result.id,
-                result.entityTimeSpan
-            )
+            await this.put(result.id, {
+                timeSpan: result.entityTimeSpan,
+                firstSecond: result.firstSecond,
+                lastSecond: result.lastSecond
+            })
             await result.providers.removeProvidersFromIndexes()
         }
 
@@ -68,7 +77,9 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             'war.entity_preview (time_span)',
             (valuesStr: string) => `
             UPDATE war.entity_preview
-            SET time_span = x.column3::jsonb
+            SET time_span = x.column3::jsonb,
+                first_second = x.column4::bigint,
+                last_second = x.column5::bigint
             FROM
             (
                 values ${valuesStr}
@@ -76,7 +87,7 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             WHERE pk_entity = x.column1::int
             AND project = x.column2::int
             AND time_span IS DISTINCT FROM x.column3::jsonb;`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val],
+            (item) => [item.key.pkEntity, item.key.fkProject, item.val.timeSpan, item.val.firstSecond, item.val.lastSecond],
             entityIdToString
         )
 

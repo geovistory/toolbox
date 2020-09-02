@@ -29,6 +29,7 @@ import { ProDfhProfileProjRelService } from './api/proDfhProfileProjRel.service'
 import { ProInfoProjRelService } from './api/proInfoProjRel.service';
 import { ProProjectService } from './api/proProject.service';
 import { ProTextPropertyService } from './api/proTextProperty.service';
+import { ProjectConfigurationService } from './api/projectConfiguration.service';
 import { PubAccountService } from './api/pubAccount.service';
 import { SchemaObjectService } from './api/schemaObject.service';
 import { SysAnalysisTypeService } from './api/sysAnalysisType.service';

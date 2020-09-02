@@ -15,7 +15,7 @@ export class AggregatedDataServices extends DataServiceBundle {
 
     // Project aggegators
     pClassLabel: PClassLabelService
-    pPropertyLabel: PClassFieldLabelService
+    pClassFieldLabel: PClassFieldLabelService
     pEntityLabel: PEntityLabelService;
     pEntityType: PEntityTypeService;
     pEntityClassLabel: PEntityClassLabelService;
@@ -34,7 +34,7 @@ export class AggregatedDataServices extends DataServiceBundle {
         this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
         this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
         this.pClassLabel = this.registerDataService(new PClassLabelService(wh))
-        this.pPropertyLabel = this.registerDataService(new PClassFieldLabelService(wh))
+        this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelService(wh))
         this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
         this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
         this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
@@ -45,11 +45,19 @@ export class AggregatedDataServices extends DataServiceBundle {
 
 
     async start() {
+        // Model aggregators
+        await this.identifyingProperty.updater.startCylcling()
+
+        // Project aggegators
         await this.pClassLabel.updater.startCylcling()
+        await this.pClassFieldLabel.updater.startCylcling()
         await this.pEntityClassLabel.updater.startCylcling()
         await this.pEntityLabel.updater.startCylcling()
         await this.pEntityType.updater.startCylcling()
         await this.pEntityFullText.updater.startCylcling()
         await this.pEntityTimeSpan.updater.startCylcling()
+
+        // Repo aggregators
+
     }
 }

@@ -1,9 +1,8 @@
-import {values} from 'ramda';
+import {omit, values} from 'ramda';
 import {BehaviorSubject, race, timer} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
 import {Warehouse} from '../../Warehouse';
 import {Logger} from './Logger';
-import {omit} from 'ramda';
 
 /**
  *
@@ -91,20 +90,25 @@ export class SqlUpsertQueue<KeyModel, ValueModel> {
         const length = this.queueLength;
         const placeholder = values(this.queue).map(row => `(${addParams(row)})`).join(',');
         const q = this.getSql(placeholder);
-
-        this.wh.pgClient.query(q, params)
-            .then(() => {
-                Logger.msg(`\u{1b}[34m(async) Upserted ${length} ${this.queueName} \u{1b}[0m`);
-            })
-            .catch(e => {
-                console.log(`Error on upserting items in ${this.queueName}:
+        if (this.wh.status !== 'stopped') {
+            this.wh.pgClient.query(q, params)
+                .then(() => {
+                    Logger.msg(`\u{1b}[34m(async) Upserted ${length} ${this.queueName} \u{1b}[0m`);
+                })
+                .catch(e => {
+                    console.log(`Error on upserting items in ${this.queueName}:
                 PARAMS: ${params}
                 SQL
                 ${q}`, e);
-            });
+                });
+        }
+        // console.log(this.queueName,this.queue)
+
         this.queue = {};
         this.queueLength = 0;
         this.queueLength$.next(this.queueLength);
+
+
         return length;
     }
 }

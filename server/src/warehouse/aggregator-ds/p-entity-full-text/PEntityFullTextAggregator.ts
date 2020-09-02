@@ -191,14 +191,14 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
                     // TODO Get repo variant, if needed
 
                     targetLabel = targetLabel ?? `[e${e.fkTarget}]`
-                    const targetEntityId: PEntityId = {fkProject, pkEntity: e.fkTarget}
-                    const fkTargetClass = (await this.providers.pEntity.get(targetEntityId))?.fkClass
+                    // const targetEntityId: PEntityId = {fkProject, pkEntity: e.fkTarget}
+                    // const fkTargetClass = (await this.providers.pEntity.get(targetEntityId))?.fkClass
 
-                    const targetClassLabel = (fkTargetClass ?
-                        await this.providers.pClassLabel.get({fkProject, pkClass: fkTargetClass}) :
-                        false) ?? `[c${fkTargetClass}]`;
+                    // const targetClassLabel = (fkTargetClass ?
+                    //     await this.providers.pClassLabel.get({fkProject, pkClass: fkTargetClass}) :
+                    //     false) ?? `[c${fkTargetClass}]`;
 
-                    targetLabel = `${targetClassLabel} – ${targetLabel}`
+                    // targetLabel = `${targetClassLabel} – ${targetLabel}`
 
 
                 } else {

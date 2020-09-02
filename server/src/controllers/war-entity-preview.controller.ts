@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {inject, Subscription} from '@loopback/core';
-import {repository} from '@loopback/repository';
+import {repository, Fields} from '@loopback/repository';
 import {get, getModelSchemaRef, HttpErrors, param} from '@loopback/rest';
 import _ from 'lodash';
 import {Socket} from 'socket.io';
@@ -28,13 +28,26 @@ import {indexBy} from 'ramda';
 
 const log = true;
 
+// Fields to include in streamed WarEntityPreviews
+// see about Lb4 filters: https://loopback.io/doc/en/lb4/Fields-filter.html
+const includeFieldsForSteam: Fields<WarEntityPreview> = {
+  pk_entity: true,
+  fk_project: true,
+  fk_class: true,
+  class_label: true,
+  entity_label: true,
+  entity_type: true,
+  type_label: true,
+  fk_type: true,
+}
+
 interface Cache {
   currentProjectPk: string | undefined,
   streamedPks: {[key: string]: boolean}
 }
 /**
  * EntityPreview Controller
- * Handles also websockets
+ * Handlentity_typees also websockets
  */
 @ws('/WarEntityPreview')
 export class WarEntityPreviewController {
@@ -209,6 +222,7 @@ export class WarEntityPreviewController {
    */
   private async findByProjectAndEntityPks(pkProject: number | null, entityPks: number[]) {
     return this.warEntityPreviewRepository.find({
+      fields: includeFieldsForSteam,
       where: {
         and: [
           {fk_project: {eq: pkProject}},
@@ -228,6 +242,7 @@ export class WarEntityPreviewController {
    */
   private async findModifiedSinceTmsp(pkProject: number | null, entityPks: number[], tsmpLastModification: string) {
     return this.warEntityPreviewRepository.find({
+      fields: includeFieldsForSteam,
       where: {
         and: [
           {tmsp_last_modification: {eq: tsmpLastModification}},

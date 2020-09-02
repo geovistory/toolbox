@@ -8,7 +8,10 @@ export abstract class DataServiceBundle {
     }
 
     async initAllIndexes() {
-        await Promise.all(this.registered.map(x => x.initIdx()));
+        for (const ds of this.registered) {
+            await ds.initIdx()
+        }
+        // await Promise.all(this.registered.map(x => x.initIdx()));
     }
 
     registerDataService<M extends ClearAll>(dep: M) {

@@ -1,5 +1,5 @@
 import { testdb } from '../../../datasources/testdb.datasource';
-import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository } from '../../../repositories';
+import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository, ProEntityLabelConfigRepository } from '../../../repositories';
 import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
 import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';
 import { PubRoleRepository } from '../../../repositories/pub-role.repository';
@@ -34,6 +34,7 @@ export async function cleanDb() {
     const proDfhProfileProjRelRepository = new ProDfhProfileProjRelRepository(testdb);
     const proProjectRepository = new ProProjectRepository(testdb);
     const proTextPropertyRepository = new ProTextPropertyRepository(testdb);
+    const proEntityLabelConfigRepository = new ProEntityLabelConfigRepository(testdb);
     const pubAccountProjectRelRepository = new PubAccountProjectRelRepository(testdb);
     const pubAccountRepository = new PubAccountRepository(testdb, async () => pubCredentialRepository);
     const pubCredentialRepository = new PubCredentialRepository(testdb);
@@ -157,6 +158,10 @@ export async function cleanDb() {
     await testdb.execute('ALTER TABLE projects.text_property DISABLE TRIGGER versioning_trigger');
     await proTextPropertyRepository.deleteAll();
     await testdb.execute('ALTER TABLE projects.text_property ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE projects.entity_label_config DISABLE TRIGGER versioning_trigger');
+    await proEntityLabelConfigRepository.deleteAll();
+    await testdb.execute('ALTER TABLE projects.entity_label_config ENABLE TRIGGER versioning_trigger');
 
     await pubCredentialRepository.deleteAll();
 

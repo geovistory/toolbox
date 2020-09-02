@@ -27,7 +27,7 @@ describe('PPropertyLabelService', function () {
     beforeEach(async function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.pPropertyLabel
+        s = wh.agg.pClassFieldLabel
     })
     afterEach(async function () {await wh.stop()})
 
@@ -119,7 +119,7 @@ describe('PPropertyLabelService', function () {
     it('should create incoming property label of person "has appellations"', async () => {
         const {project, apiProp, hasAppePropLabel} = await createPersonMock();
         const expected = hasAppePropLabel.string
-        const result = await waitUntilSatisfy(wh.agg.pPropertyLabel.afterPut$, (item) => {
+        const result = await waitUntilSatisfy(wh.agg.pClassFieldLabel.afterPut$, (item) => {
             return item.key.fkProject === project.pk_entity
                 && item.key.fkClass === DfhApiClassMock.EN_21_PERSON.dfh_pk_class
                 && item.key.fkProperty === apiProp.dfh_pk_property

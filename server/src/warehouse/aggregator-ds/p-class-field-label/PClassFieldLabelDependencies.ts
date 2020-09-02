@@ -16,7 +16,7 @@ export class PClassFieldLabelDependencies extends ClearAll {
   constructor(private wh: Warehouse) {
     super()
     this.project = new DependencyIndex(
-      wh.agg.pPropertyLabel,
+      wh.agg.pClassFieldLabel,
       wh.prim.project,
       pClassFieldIdToString,
       stringToPClassFieldId,
@@ -25,7 +25,7 @@ export class PClassFieldLabelDependencies extends ClearAll {
     )
 
     this.dfhPropertyLabel = new DependencyIndex(
-      wh.agg.pPropertyLabel,
+      wh.agg.pClassFieldLabel,
       wh.prim.dfhPropertyLabel,
       pClassFieldIdToString,
       stringToPClassFieldId,
@@ -34,7 +34,7 @@ export class PClassFieldLabelDependencies extends ClearAll {
     )
 
     this.proPropertyLabel = new DependencyIndex(
-      wh.agg.pPropertyLabel,
+      wh.agg.pClassFieldLabel,
       wh.prim.proPropertyLabel,
       pClassFieldIdToString,
       stringToPClassFieldId,

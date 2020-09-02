@@ -1,7 +1,7 @@
 import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {Updater} from '../../base/classes/Updater';
-import {entityIdToString, stringToEntityId} from '../../base/functions';
+import {entityIdToString, stringToEntityId, sqlForTsVector} from '../../base/functions';
 import {PEntityId} from '../../primary-ds/PEntityService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityClassLabelAggregator} from './PEntityClassLabelAggregator';
@@ -39,7 +39,8 @@ export class PEntityClassLabelService extends AggregatedDataService<PEntityId, V
             'war.entity_preview (class_label)',
             (valuesStr: string) => `
                 UPDATE war.entity_preview
-                SET class_label = x.column3
+                SET class_label = x.column3,
+                ${sqlForTsVector}
                 FROM
                 (
                     values ${valuesStr}

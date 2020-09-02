@@ -64,14 +64,24 @@ export class WarEntityPreview extends Entity {
   time_span?: object;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  first_second?: number;
+  first_second?: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  last_second?: number;
+  last_second?: string;
+
+  @property({
+    type: 'string',
+  })
+  full_text?: string;
+
+  @property({
+    type: 'string',
+  })
+  ts_vector?: string;
 
   @property({
     type: 'string',

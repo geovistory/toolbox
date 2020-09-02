@@ -174,7 +174,7 @@ export class PostgresNotificationsManager {
     // disconnect clients from pg server
     try {
       await this.client.end()
-      await this.client2.end()
+      // await this.client2.end()
     } catch (e) {
       console.log(e);
       throw new Error(e);

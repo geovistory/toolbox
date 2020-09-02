@@ -2,7 +2,7 @@ import {Provider} from '../../base/classes/Provider';
 import {Providers} from "../../base/interfaces/Providers";
 import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
 import {EntityFields} from '../../primary-ds/PEdgeService';
-import {EntityLabelConfig} from '../../primary-ds/EntityLabelConfigService';
+import {EntityLabelConfig} from '../../primary-ds/ProEntityLabelConfigService';
 import {ProjectEntity, PEntityId} from '../../primary-ds/PEntityService';
 import {PEntityLabelDependencies} from './PEntityLabelDependencies';
 import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService';

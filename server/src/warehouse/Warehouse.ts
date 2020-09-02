@@ -39,6 +39,8 @@ export class Warehouse {
 
     initializingIndexes = false
 
+    status: 'stopped' | 'starting' | 'running' = 'stopped'
+
     notificationHandlers: {[key: string]: NotificationHandler} = {}
 
     constructor() {
@@ -62,7 +64,7 @@ export class Warehouse {
      */
     async start() {
 
-
+        this.status = 'starting';
         const t0 = Logger.start('Start Warehouse', 0)
 
         this.pgClient = await this.pgPool.connect();
@@ -100,6 +102,7 @@ export class Warehouse {
             fkProject: 591,
             pkClass: 365
         }))
+        this.status = 'running';
 
     };
 
@@ -204,8 +207,10 @@ export class Warehouse {
     }
 
     async stop() {
+        this.status = 'stopped';
         this.notificationHandlers = {}
-        // await this.pgClient.end();
+        this.pgClient.release();
+
     }
 }
 

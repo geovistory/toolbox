@@ -29,7 +29,7 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilSatisfy, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -48,10 +48,10 @@ describe('PEntityFullText', function () {
     it('should create full text of naming', async () => {
         const {naming, project} = await createNamingMock();
 
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.pkEntity === naming.pk_entity
-                && item.key.fkProject === project.pk_entity
-                && item.val === `Appellation in a language (time-indexed) – refers to name: 'Jack the foo'`
+        const result = await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === naming.pk_entity
+                && item.fk_project === project.pk_entity
+                && item.full_text === `Appellation in a language (time-indexed) – refers to name: 'Jack the foo'`
         })
 
         expect(result).not.to.be.undefined();
@@ -60,7 +60,7 @@ describe('PEntityFullText', function () {
     it('should create full text of naming with person', async () => {
         const {naming, project} = await createNamingAndPersonMock();
 
-        const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Person – Jack the foo'`
+        const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === naming.pk_entity
                 && item.key.fkProject === project.pk_entity
@@ -73,7 +73,7 @@ describe('PEntityFullText', function () {
     it('should create incoming property label of person "has appellations"', async () => {
         const {project, hasAppePropLabel} = await createNamingAndPersonMock();
         const expected = hasAppePropLabel.string
-        const result = await waitUntilSatisfy(wh.agg.pPropertyLabel.afterPut$, (item) => {
+        const result = await waitUntilSatisfy(wh.agg.pClassFieldLabel.afterPut$, (item) => {
             return item.key.fkProject === project.pk_entity
                 && item.key.fkClass === DfhApiClassMock.EN_21_PERSON.dfh_pk_class
                 && item.key.fkProperty === 1111
@@ -85,7 +85,7 @@ describe('PEntityFullText', function () {
     it('should create full text of person', async () => {
         const {person, project} = await createNamingAndPersonMock();
 
-        const expected = `Person – has appellations: 'Appellation in a language (time-indexed) – Jack the foo'`
+        const expected = `Person – has appellations: 'Jack the foo'`
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === person.pk_entity
                 && item.key.fkProject === project.pk_entity
@@ -97,20 +97,20 @@ describe('PEntityFullText', function () {
     it('should update full text of person', async () => {
         const {person, project} = await createNamingAndPersonMock();
 
-        let expected = `Person – has appellations: 'Appellation in a language (time-indexed) – Jack the foo'`
+        let expected = `Person – has appellations: 'Jack the foo'`
         let result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === person.pk_entity
                 && item.key.fkProject === project.pk_entity
                 && item.val === expected
         })
         await createProTextProperty({
-            fk_dfh_class: 365,
+            fk_dfh_class: 21,
             fk_project: ProProjectMock.PROJECT_1.pk_entity,
             fk_language: ProProjectMock.PROJECT_1.fk_language,
             fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
-            string: 'Naming'
+            string: 'Human'
         })
-        expected = `Person – has appellations: 'Naming – Jack the foo'`
+        expected = `Human – has appellations: 'Jack the foo'`
         result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === person.pk_entity
                 && item.key.fkProject === project.pk_entity

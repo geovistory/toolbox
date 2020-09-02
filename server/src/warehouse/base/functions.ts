@@ -120,6 +120,15 @@ export function stringToProPropertyId(str: string): ProPropertyLabelId {
     };
 }
 
+// this sql is useful for update statements of all entity preview parts
+// contributing to the TSearch Vector of an entity preview:
+// entity_label, type_label, class_label, full_text
+export const sqlForTsVector = `ts_vector = (
+    SELECT
+    setweight(to_tsvector(coalesce(entity_label, '')), 'A') ||
+    setweight(to_tsvector(coalesce(type_label, class_label, '')), 'B') ||
+    setweight(to_tsvector(coalesce(full_text, '')), 'C')
+)`
 
 
 export function outgoingProperyIdToString(key: OutgoingProperyId): string {

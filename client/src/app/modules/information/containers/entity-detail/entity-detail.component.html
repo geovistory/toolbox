@@ -59,7 +59,14 @@
                     Ontology Info
                   </mat-slide-toggle>
                 </button>
+                <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>
+                <gv-entity-label-config-open-btn [fkClass]="fkClass$ | async">
 
+                  <button mat-menu-item *ngIf="!(isViewMode$ | async)">
+                    <mat-icon svgIcon="cogs"></mat-icon>
+                    <span>Configure {{classLabel$|async}} labels</span>
+                  </button>
+                </gv-entity-label-config-open-btn>
 
                 <!-- remove -->
                 <mat-divider *ngIf="!(isViewMode$ | async)"></mat-divider>

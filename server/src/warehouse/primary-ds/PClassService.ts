@@ -36,7 +36,7 @@ export class PClassService extends PrimaryDataService<InitItem, PClassId, Projec
           fkProperty: 1111,
           isOutgoing: false
         }
-        wh.agg.pPropertyLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
+        wh.agg.pClassFieldLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
       }
     })
 
