@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {ProjectService} from '../../../../warehouse/primary-ds/ProjectService';
+import {ProProjectService} from '../../../../warehouse/primary-ds/ProProjectService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {setupWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
-describe('ProjectService', () => {
+describe('ProProjectService', () => {
 
   let wh: Warehouse;
-  let s: ProjectService;
+  let s: ProProjectService;
 
   beforeEach(async function () {
     await cleanDb();

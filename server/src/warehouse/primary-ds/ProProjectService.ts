@@ -8,7 +8,7 @@ export interface ProjectId {
 export interface ProjectVal {
     fkLanguage: number
 }
-export class ProjectService extends PrimaryDataService<DbItem, ProjectId, ProjectVal>{
+export class ProProjectService extends PrimaryDataService<DbItem, ProjectId, ProjectVal>{
     measure = 1000;
 
     index = new IndexDBGeneric<ProjectId, ProjectVal>(projectIdToString, stringToProjectId)

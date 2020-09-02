@@ -9,12 +9,12 @@ import {PEdgeService, StatementItemToIndexate} from '../primary-ds/PEdgeService'
 import {PEntityId, PEntityService, ProjectEntity} from '../primary-ds/PEntityService';
 import {PPropertyService} from '../primary-ds/PPropertyService';
 import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
-import {ProjectService} from '../primary-ds/ProjectService';
+import {ProProjectService} from '../primary-ds/ProProjectService';
 import {Warehouse} from '../Warehouse';
 import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
 import {DfhOutgoingPropertyService} from '../primary-ds/DfhOutgoingPropertyService';
 export class PrimaryDataServices extends DataServiceBundle {
-    project: ProjectService;
+    project: ProProjectService;
 
     dfhClassLabel: DfhClassLabelService;
     dfhPropertyLabel: DfhPropertyLabelService;
@@ -35,7 +35,7 @@ export class PrimaryDataServices extends DataServiceBundle {
 
     constructor(private wh: Warehouse) {
         super()
-        this.project = this.registerDataService(new ProjectService(this.wh));
+        this.project = this.registerDataService(new ProProjectService(this.wh));
 
         this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.wh));
         this.dfhPropertyLabel = this.registerDataService(new DfhPropertyLabelService(this.wh));

@@ -1,4 +1,4 @@
-import {ProjectId, ProjectVal} from '../../../../warehouse/primary-ds/ProjectService'
+import {ProjectId, ProjectVal} from '../../../../warehouse/primary-ds/ProProjectService'
 
 export class ProjectMock {
 

@@ -3,7 +3,7 @@ import {PClassId} from '../primary-ds/PClassFieldsConfigService';
 import {DfhClassLabelId} from '../primary-ds/DfhClassLabelService';
 import {PEntityId} from '../primary-ds/PEntityService';
 import {ProClassLabelId} from '../primary-ds/ProClassLabelService';
-import {ProjectId} from '../primary-ds/ProjectService';
+import {ProjectId} from '../primary-ds/ProProjectService';
 import {leveldbpath} from './database';
 import {ClassId} from '../primary-ds/DfhClassHasTypePropertyService';
 import {PPropertyId} from '../primary-ds/PPropertyService';

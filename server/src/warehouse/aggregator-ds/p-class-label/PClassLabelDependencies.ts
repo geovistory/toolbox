@@ -4,7 +4,7 @@ import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {DfhClassLabelId, DfhClassLabelVal} from '../../primary-ds/DfhClassLabelService'
 import {ProClassLabelId, ProClassLabelVal} from '../../primary-ds/ProClassLabelService'
 import {Warehouse} from '../../Warehouse'
-import {ProjectId, ProjectVal} from '../../primary-ds/ProjectService'
+import {ProjectId, ProjectVal} from '../../primary-ds/ProProjectService'
 import {ClearAll} from '../../base/classes/ClearAll'
 
 export class PClassLabelDependencies extends ClearAll {

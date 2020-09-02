@@ -4,7 +4,7 @@ import {DfhClassLabelId, DfhClassLabelVal} from '../../primary-ds/DfhClassLabelS
 import {ProClassLabelId, ProClassLabelVal} from '../../primary-ds/ProClassLabelService';
 import {PClassLabelDependencies} from './PClassLabelDependencies';
 import {Provider} from '../../base/classes/Provider';
-import {ProjectId, ProjectVal} from '../../primary-ds/ProjectService';
+import {ProjectId, ProjectVal} from '../../primary-ds/ProProjectService';
 
 export class PClassLabelProviders extends Providers<PClassId> {
   project: Provider<PClassId, string, ProjectId, ProjectVal>
