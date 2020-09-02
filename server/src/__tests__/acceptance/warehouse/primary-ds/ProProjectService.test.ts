@@ -15,7 +15,7 @@ describe('ProProjectService', () => {
     await cleanDb();
     wh = await setupWarehouse()
     await wh.start()
-    s = wh.prim.project;
+    s = wh.prim.proProject;
   })
 
   it('should have project in index', async () => {

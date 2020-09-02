@@ -1,8 +1,8 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {entityIdToString, stringToEntityId} from '../../base/functions'
+import {pEntityIdToString, stringToPEntityId} from '../../base/functions'
 import {EntityFields} from '../../primary-ds/PEdgeService'
-import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
+import {PEntityId, PEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityTimeSpanVal} from './PEntityTimeSpanService'
 
@@ -30,7 +30,7 @@ export class PEntityTimeSpanDependencies extends ClearAll {
      *
      */
 
-    pEntity: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, ProjectEntity>
+    pEntity: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, PEntity>
     pEdge: DependencyIndex<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>
 
     constructor(private wh: Warehouse) {
@@ -39,20 +39,20 @@ export class PEntityTimeSpanDependencies extends ClearAll {
         this.pEntity = new DependencyIndex(
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEntity,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         )
 
         // stores the dependency of entityType (receiver) on edge (provider)
         this.pEdge = new DependencyIndex(
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEdge,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         );
 
     }

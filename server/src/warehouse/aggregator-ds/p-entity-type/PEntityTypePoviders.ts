@@ -1,12 +1,12 @@
 import {Provider} from '../../base/classes/Provider';
 import {Providers} from "../../base/interfaces/Providers";
 import {EntityFields} from '../../primary-ds/PEdgeService';
-import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService';
+import {PEntityId, PEntity} from '../../primary-ds/PEntityService';
 import {PEntityTypeDependencies} from './PEntityTypeDependencies';
 import {PEntityTypeVal} from './PEntityTypeService';
 import {ClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService';
 export class PEntityTypeProviders extends Providers<PEntityId> {
-    pEntity: Provider<PEntityId, PEntityTypeVal, PEntityId, ProjectEntity>;
+    pEntity: Provider<PEntityId, PEntityTypeVal, PEntityId, PEntity>;
     pEdges: Provider<PEntityId, PEntityTypeVal, PEntityId, EntityFields>;
     pEntityLabel: Provider<PEntityId, PEntityTypeVal, PEntityId, string>;
     dfhClassHasTypeProp: Provider<PEntityId, PEntityTypeVal, ClassId, DfhClassHasTypePropVal>;

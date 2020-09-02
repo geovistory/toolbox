@@ -1,16 +1,16 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
+import {PEntityId, PEntity} from '../../primary-ds/PEntityService'
 import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {EntityLabelConfig} from '../../primary-ds/ProEntityLabelConfigService'
 import {EntityFields} from '../../primary-ds/PEdgeService'
 import {Warehouse} from '../../Warehouse'
-import {entityIdToString, stringToEntityId, pClassIdToString, stringToPClassId, stringToClassId, classIdToString} from '../../base/functions'
+import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId, stringToClassId, classIdToString} from '../../base/functions'
 import {ClearAll} from '../../base/classes/ClearAll'
 import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService'
 import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
 
 export class PEntityLabelDependencies extends ClearAll {
-    entity: DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>
+    entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>
     entityLabelConfig: DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>
     identifyingProperty: DependencyIndex<PEntityId, string, ClassId, IdentifyingPropertyVal>
     entityLabel: DependencyIndex<PEntityId, string, PEntityId, string>
@@ -20,21 +20,21 @@ export class PEntityLabelDependencies extends ClearAll {
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
-        this.entity = new DependencyIndex<PEntityId, string, PEntityId, ProjectEntity>(
+        this.entity = new DependencyIndex<PEntityId, string, PEntityId, PEntity>(
             this.wh.agg.pEntityLabel,
             this.wh.prim.pEntity,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         )
 
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
         this.entityLabelConfig = new DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>(
             this.wh.agg.pEntityLabel,
             this.wh.prim.proEntityLabelConfig,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
             pClassIdToString,
             stringToPClassId
         )
@@ -42,8 +42,8 @@ export class PEntityLabelDependencies extends ClearAll {
         this.identifyingProperty = new DependencyIndex<PEntityId, string, ClassId, IdentifyingPropertyVal>(
             this.wh.agg.pEntityLabel,
             this.wh.agg.identifyingProperty,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
             classIdToString,
             stringToClassId
         )
@@ -53,20 +53,20 @@ export class PEntityLabelDependencies extends ClearAll {
         this.entityLabel = new DependencyIndex(
             this.wh.agg.pEntityLabel,
             this.wh.agg.pEntityLabel,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         );
 
         // stores the dependency of entityLabel (receiver) on edge (provider)
         this.edge = new DependencyIndex(
             this.wh.agg.pEntityLabel,
             this.wh.prim.pEdge,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         );
 
         // stores the dependency of entityFullText (receiver) on the classLabel (provider)

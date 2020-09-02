@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {entityIdToString, stringToEntityId} from '../base/functions';
+import {pEntityIdToString, stringToPEntityId} from '../base/functions';
 import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {Logger} from '../base/classes/Logger';
 import {Warehouse} from '../Warehouse';
@@ -28,7 +28,7 @@ export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, En
 
     measure = 10000;
 
-    index = new IndexDBGeneric<PEntityId, EntityFields>(entityIdToString, stringToEntityId)
+    index = new IndexDBGeneric<PEntityId, EntityFields>(pEntityIdToString, stringToPEntityId)
 
     constructor(wh: Warehouse) {
         super(wh, [

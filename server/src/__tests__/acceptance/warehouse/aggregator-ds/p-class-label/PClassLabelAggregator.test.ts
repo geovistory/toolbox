@@ -22,7 +22,7 @@ describe('PClassLabelAggregator', function () {
     })
 
     it('should create class label from: de-project', async () => {
-        await wh.prim.project.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
+        await wh.prim.proProject.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_EN_ID, DfhClassLabelMock.NAMING_EN_LABEL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_DE_ID, DfhClassLabelMock.NAMING_DE_LABEL)
         await wh.prim.proClassLabel.put(ProClassLabelMock.PROJECT_DE_NAMING_DE_ID, ProClassLabelMock.PROJECT_DE_NAMING_DE_LABEL)
@@ -34,7 +34,7 @@ describe('PClassLabelAggregator', function () {
 
 
     it('should create class label from: de-geovistory', async () => {
-        await wh.prim.project.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
+        await wh.prim.proProject.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_EN_ID, DfhClassLabelMock.NAMING_EN_LABEL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_DE_ID, DfhClassLabelMock.NAMING_DE_LABEL)
         await wh.prim.proClassLabel.put(ProClassLabelMock.GV_NAMING_DE_ID, ProClassLabelMock.GV_NAMING_DE_LABEL)
@@ -45,7 +45,7 @@ describe('PClassLabelAggregator', function () {
     })
 
     it('should create class label from: de-ontome', async () => {
-        await wh.prim.project.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
+        await wh.prim.proProject.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_EN_ID, DfhClassLabelMock.NAMING_EN_LABEL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_DE_ID, DfhClassLabelMock.NAMING_DE_LABEL)
         const providers = new PClassLabelProviders(wh.dep.pClassLabel, ClassIdMock.NAMING_ID)
@@ -55,7 +55,7 @@ describe('PClassLabelAggregator', function () {
     })
 
     it('should create class label from: en-project', async () => {
-        await wh.prim.project.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
+        await wh.prim.proProject.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_EN_ID, DfhClassLabelMock.NAMING_EN_LABEL)
         await wh.prim.proClassLabel.put(ProClassLabelMock.GV_NAMING_EN_ID, ProClassLabelMock.GV_NAMING_EN_LABEL)
         await wh.prim.proClassLabel.put(ProClassLabelMock.PROJECT_DE_NAMING_EN_ID, ProClassLabelMock.PROJECT_DE_NAMING_EN_LABEL)
@@ -66,7 +66,7 @@ describe('PClassLabelAggregator', function () {
     })
 
     it('should create class label from: en-geovistory', async () => {
-        await wh.prim.project.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
+        await wh.prim.proProject.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_EN_ID, DfhClassLabelMock.NAMING_EN_LABEL)
         await wh.prim.proClassLabel.put(ProClassLabelMock.GV_NAMING_EN_ID, ProClassLabelMock.GV_NAMING_EN_LABEL)
         const providers = new PClassLabelProviders(wh.dep.pClassLabel, ClassIdMock.NAMING_ID)
@@ -76,7 +76,7 @@ describe('PClassLabelAggregator', function () {
     })
 
     it('should create class label from: en-ontome', async () => {
-        await wh.prim.project.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
+        await wh.prim.proProject.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)
         await wh.prim.dfhClassLabel.put(DfhClassLabelMock.NAMING_EN_ID, DfhClassLabelMock.NAMING_EN_LABEL)
         const providers = new PClassLabelProviders(wh.dep.pClassLabel, ClassIdMock.NAMING_ID)
         const aggregator = new PClassLabelAggregator(providers, ClassIdMock.NAMING_ID)

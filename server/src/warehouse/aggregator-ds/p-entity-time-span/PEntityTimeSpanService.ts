@@ -2,7 +2,7 @@ import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../base/classes/Updater';
-import {entityIdToString, stringToEntityId} from '../../base/functions';
+import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
 import {PEntityId} from '../../primary-ds/PEntityService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
@@ -46,7 +46,7 @@ export type PEntityTimeSpan = {
 export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEntityTimeSpanVal, PEntityTimeSpanAggregator>{
     updater: Updater<PEntityId, PEntityTimeSpanAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, PEntityTimeSpanVal>(entityIdToString, stringToEntityId)
+    index = new IndexDBGeneric<PEntityId, PEntityTimeSpanVal>(pEntityIdToString, stringToPEntityId)
 
     constructor(private wh: Warehouse) {
         super()
@@ -68,8 +68,8 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             this.constructor.name,
             aggregatorFactory,
             register,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         )
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTimeSpanVal>(
@@ -88,7 +88,7 @@ export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEn
             AND project = x.column2::int
             AND time_span IS DISTINCT FROM x.column3::jsonb;`,
             (item) => [item.key.pkEntity, item.key.fkProject, item.val.timeSpan, item.val.firstSecond, item.val.lastSecond],
-            entityIdToString
+            pEntityIdToString
         )
 
         /**

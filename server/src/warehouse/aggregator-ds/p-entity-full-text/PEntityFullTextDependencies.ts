@@ -1,15 +1,15 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {entityIdToString, pClassIdToString, stringToEntityId, stringToPClassId, pClassFieldIdToString, stringToPClassFieldId} from '../../base/functions'
+import {pEntityIdToString, pClassIdToString, stringToPEntityId, stringToPClassId, pClassFieldIdToString, stringToPClassFieldId} from '../../base/functions'
 import {PClassFieldVal, PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {EntityFields} from '../../primary-ds/PEdgeService'
-import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
+import {PEntityId, PEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityFullTextVal} from './PEntityFullTextService'
 import {PClassFieldId} from '../p-class-field-label/PClassFieldLabelService'
 
 export class PEntityFullTextDependencies extends ClearAll {
-    pEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, ProjectEntity>
+    pEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, PEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, string>
     pEdge: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>
     pClassLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, string>
@@ -22,38 +22,38 @@ export class PEntityFullTextDependencies extends ClearAll {
         this.pEntity = new DependencyIndex(
             this.wh.agg.pEntityFullText,
             this.wh.prim.pEntity,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         )
 
         // stores the dependency of entityFullText (receiver) on entityLabel (provider)
         this.pEntityLabel = new DependencyIndex(
             this.wh.agg.pEntityFullText,
             this.wh.agg.pEntityLabel,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         );
 
         // stores the dependency of entityFullText (receiver) on edge (provider)
         this.pEdge = new DependencyIndex(
             this.wh.agg.pEntityFullText,
             this.wh.prim.pEdge,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         );
 
         // stores the dependency of entityFullText (receiver) on dfhClassHasTypeProperty
         this.pClassFields = new DependencyIndex(
             this.wh.agg.pEntityFullText,
             this.wh.prim.pClassFieldsConfig,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
             pClassIdToString,
             stringToPClassId,
         );
@@ -62,8 +62,8 @@ export class PEntityFullTextDependencies extends ClearAll {
         this.pClassLabel = new DependencyIndex(
             this.wh.agg.pEntityFullText,
             this.wh.agg.pClassLabel,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
             pClassIdToString,
             stringToPClassId,
         );
@@ -71,8 +71,8 @@ export class PEntityFullTextDependencies extends ClearAll {
         this.pClassFieldLabel = new DependencyIndex(
             this.wh.agg.pEntityFullText,
             this.wh.agg.pClassFieldLabel,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
             pClassFieldIdToString,
             stringToPClassFieldId,
         );

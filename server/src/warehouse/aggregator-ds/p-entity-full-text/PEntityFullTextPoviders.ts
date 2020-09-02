@@ -2,12 +2,12 @@ import {Provider} from '../../base/classes/Provider';
 import {Providers} from "../../base/interfaces/Providers";
 import {PClassFieldVal, PClassId} from '../../primary-ds/PClassFieldsConfigService';
 import {EntityFields} from '../../primary-ds/PEdgeService';
-import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService';
+import {PEntityId, PEntity} from '../../primary-ds/PEntityService';
 import {PEntityFullTextDependencies} from './PEntityFullTextDependencies';
 import {PEntityFullTextVal} from './PEntityFullTextService';
 import {PClassFieldId} from '../p-class-field-label/PClassFieldLabelService';
 export class PEntityFullTextProviders extends Providers<PEntityId> {
-    pEntity: Provider<PEntityId, PEntityFullTextVal, PEntityId, ProjectEntity>;
+    pEntity: Provider<PEntityId, PEntityFullTextVal, PEntityId, PEntity>;
     pEdges: Provider<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>;
     pEntityLabel: Provider<PEntityId, PEntityFullTextVal, PEntityId, string>;
     pClassLabel: Provider<PEntityId, PEntityFullTextVal, PClassId, string>;

@@ -111,7 +111,7 @@
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/TimeSpan/"
+        "/REd/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

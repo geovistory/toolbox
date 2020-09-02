@@ -20,7 +20,7 @@ import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 
 
 
-describe('PPropertyLabelService', function () {
+describe('PClassFieldLabelService', function () {
 
     let wh: Warehouse;
     let s: PClassFieldLabelService;

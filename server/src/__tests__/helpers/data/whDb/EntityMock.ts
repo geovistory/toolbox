@@ -1,4 +1,4 @@
-import { ProjectEntity } from '../../../../warehouse/primary-ds/PEntityService';
+import { PEntity } from '../../../../warehouse/primary-ds/PEntityService';
 import { PEntityId } from '../../../../warehouse/primary-ds/PEntityService';
 /**
  * Mock data related to entities
@@ -7,7 +7,7 @@ export class EntityMock {
 
     // Naming 1
 
-    static readonly NAME_1: ProjectEntity = {
+    static readonly NAME_1: PEntity = {
         entityType: 'teEn',
         fkProject: 591,
         pkEntity: 22,
@@ -20,7 +20,7 @@ export class EntityMock {
 
     // Naming 2
 
-    static readonly NAME_2: ProjectEntity = {
+    static readonly NAME_2: PEntity = {
         entityType: 'teEn',
         fkProject: 591,
         pkEntity: 23,
@@ -32,7 +32,7 @@ export class EntityMock {
     };
 
     // Naming 3
-    static readonly NAME_3: ProjectEntity = {
+    static readonly NAME_3: PEntity = {
         entityType: 'teEn',
         fkProject: 591,
         pkEntity: 24,
@@ -46,7 +46,7 @@ export class EntityMock {
 
     // Person 1
 
-    static readonly PERS_1: ProjectEntity = {
+    static readonly PERS_1: PEntity = {
         entityType: 'peIt',
         fkProject: 591,
         pkEntity: 33,
@@ -59,7 +59,7 @@ export class EntityMock {
 
 
     // Person 2
-    static readonly PERS_2: ProjectEntity = {
+    static readonly PERS_2: PEntity = {
         entityType: 'peIt',
         fkProject: 591,
         pkEntity: 34,
@@ -72,7 +72,7 @@ export class EntityMock {
 
 
     // Person 3
-    static readonly PERS_3: ProjectEntity = {
+    static readonly PERS_3: PEntity = {
         entityType: 'peIt',
         fkProject: 591,
         pkEntity: 35,
@@ -85,7 +85,7 @@ export class EntityMock {
 
 
     // Birth 1
-    static readonly BIRTH_1: ProjectEntity = {
+    static readonly BIRTH_1: PEntity = {
         entityType: 'teEn',
         fkProject: 591,
         pkEntity: 41,
@@ -98,7 +98,7 @@ export class EntityMock {
 
 
     // UNION 1
-    static readonly UNION_1: ProjectEntity = {
+    static readonly UNION_1: PEntity = {
         entityType: 'teEn',
         fkProject: 591,
         pkEntity: 51,

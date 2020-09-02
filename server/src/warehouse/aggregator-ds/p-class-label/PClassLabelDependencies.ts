@@ -17,7 +17,7 @@ export class PClassLabelDependencies extends ClearAll {
     super()
     this.project = new DependencyIndex(
       wh.agg.pClassLabel,
-      wh.prim.project,
+      wh.prim.proProject,
       pClassIdToString,
       stringToPClassId,
       projectIdToString,

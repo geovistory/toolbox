@@ -11,11 +11,12 @@ import {DfhPropertyLabelId} from '../primary-ds/DfhPropertyLabelService';
 import {ProPropertyLabelId} from '../primary-ds/ProPropertyLabelService';
 import {PClassFieldId} from '../aggregator-ds/p-class-field-label/PClassFieldLabelService';
 import {OutgoingProperyId} from '../primary-ds/DfhOutgoingPropertyService';
+import {REntityId} from '../primary-ds/REntityService';
 
-export function entityIdToString(key: PEntityId): string {
+export function pEntityIdToString(key: PEntityId): string {
     return key.fkProject + '_' + key.pkEntity;
 }
-export function stringToEntityId(str: string): PEntityId {
+export function stringToPEntityId(str: string): PEntityId {
     const [fkProject, pkEntity] = str.split('_');
     return {fkProject: parseInt(fkProject, 10), pkEntity: parseInt(pkEntity, 10)};
 }
@@ -56,6 +57,12 @@ export function stringToPClassFieldId(str: string): PClassFieldId {
     };
 }
 
+export function entityIdToString(key: REntityId): string {
+    return '' + key.pkEntity;
+}
+export function stringToEntityId(str: string): REntityId {
+    return {pkEntity: parseInt(str, 10)};
+}
 
 
 // class to string

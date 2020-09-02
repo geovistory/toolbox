@@ -2,7 +2,7 @@ import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../base/classes/Updater';
-import {entityIdToString, stringToEntityId, sqlForTsVector} from '../../base/functions';
+import {pEntityIdToString, stringToPEntityId, sqlForTsVector} from '../../base/functions';
 import {PEntityId} from '../../primary-ds/PEntityService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityLabelAggregator} from './PEntityLabelAggregator';
@@ -12,7 +12,7 @@ type ValueModel = string
 export class PEntityLabelService extends AggregatedDataService<PEntityId, ValueModel, PEntityLabelAggregator>{
     updater: Updater<PEntityId, PEntityLabelAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, ValueModel>(entityIdToString, stringToEntityId)
+    index = new IndexDBGeneric<PEntityId, ValueModel>(pEntityIdToString, stringToPEntityId)
 
     constructor(private wh: Warehouse) {
         super()
@@ -30,8 +30,8 @@ export class PEntityLabelService extends AggregatedDataService<PEntityId, ValueM
             this.constructor.name,
             aggregatorFactory,
             register,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         )
 
         const upsertQueue = new SqlUpsertQueue<PEntityId, ValueModel>(
@@ -49,7 +49,7 @@ export class PEntityLabelService extends AggregatedDataService<PEntityId, ValueM
                 AND project = x.column2::int
                 AND entity_label IS DISTINCT FROM x.column3;`,
             (item) => [item.key.pkEntity, item.key.fkProject, item.val],
-            entityIdToString
+            pEntityIdToString
         )
 
         /**

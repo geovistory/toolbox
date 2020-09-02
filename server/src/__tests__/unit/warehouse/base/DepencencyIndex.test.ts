@@ -1,7 +1,7 @@
 import assert from 'assert';
 import {PEntityLabelService} from '../../../../warehouse/aggregator-ds/p-entity-label/PEntityLabelService';
 import {DependencyIndex} from '../../../../warehouse/base/classes/DependencyIndex';
-import {entityIdToString, stringToEntityId} from '../../../../warehouse/base/functions';
+import {pEntityIdToString, stringToPEntityId} from '../../../../warehouse/base/functions';
 import {PEntityId} from '../../../../warehouse/primary-ds/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 
@@ -31,10 +31,10 @@ describe('DependencyIndex', function () {
         idx = new DependencyIndex(
             stub1,
             stub2,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         )
 
     })
@@ -52,8 +52,8 @@ describe('DependencyIndex', function () {
     it('should getProviderMap', async () => {
         const result = await idx.getProviderMap(receiver1)
         assert.deepStrictEqual(result, {
-            [entityIdToString(provider1)]: true,
-            [entityIdToString(provider2)]: true,
+            [pEntityIdToString(provider1)]: true,
+            [pEntityIdToString(provider2)]: true,
         })
     })
     it('should getReceivers', async () => {
@@ -64,7 +64,7 @@ describe('DependencyIndex', function () {
     })
 
     it('should removeProviderByString', async () => {
-        await idx.removeProviderByString(entityIdToString(receiver1), entityIdToString(provider1))
+        await idx.removeProviderByString(pEntityIdToString(receiver1), pEntityIdToString(provider1))
         const result = await idx.getProviders(receiver1)
         assert.deepStrictEqual(result, [provider2])
     })

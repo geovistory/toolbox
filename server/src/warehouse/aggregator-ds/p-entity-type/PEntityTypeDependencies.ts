@@ -1,14 +1,14 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {entityIdToString, stringToEntityId, classIdToString, stringToClassId} from '../../base/functions'
+import {pEntityIdToString, stringToPEntityId, classIdToString, stringToClassId} from '../../base/functions'
 import {EntityFields} from '../../primary-ds/PEdgeService'
-import {PEntityId, ProjectEntity} from '../../primary-ds/PEntityService'
+import {PEntityId, PEntity} from '../../primary-ds/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityTypeVal} from './PEntityTypeService'
 import {ClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService'
 
 export class PEntityTypeDependencies extends ClearAll {
-    pEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, ProjectEntity>
+    pEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, PEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, string>
     pEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityFields>
     dfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, ClassId, DfhClassHasTypePropVal>
@@ -19,38 +19,38 @@ export class PEntityTypeDependencies extends ClearAll {
         this.pEntity = new DependencyIndex(
             this.wh.agg.pEntityType,
             this.wh.prim.pEntity,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         )
 
         // stores the dependency of entityType (receiver) on entityLabel (provider)
         this.pEntityLabel = new DependencyIndex(
             this.wh.agg.pEntityType,
             this.wh.agg.pEntityLabel,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         );
 
         // stores the dependency of entityType (receiver) on edge (provider)
         this.pEdge = new DependencyIndex(
             this.wh.agg.pEntityType,
             this.wh.prim.pEdge,
-            entityIdToString,
-            stringToEntityId,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
         );
 
         // stores the dependency of entityType (receiver) on dfhClassHasTypeProperty
         this.dfhClassHasTypeProp = new DependencyIndex(
             this.wh.agg.pEntityType,
             this.wh.prim.dfhClassHasTypeProperty,
-            entityIdToString,
-            stringToEntityId,
+            pEntityIdToString,
+            stringToPEntityId,
             classIdToString,
             stringToClassId,
         );
