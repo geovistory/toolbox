@@ -1,8 +1,8 @@
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
 import {EntityLabelConfig, LabelPart} from '../../primary-ds/ProEntityLabelConfigService';
 import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
-import {Edge, EntityFields} from '../../primary-ds/PEdgeService';
-import {PEntityId} from '../../primary-ds/PEntityService';
+import {Edge, EntityFields} from "../../primary-ds/edge/edge.commons";
+import {PEntityId} from '../../primary-ds/entity/PEntityService';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../Warehouse';
 import {PEntityLabelProviders} from './PEntityLabelPoviders';
 import {keys} from 'lodash';

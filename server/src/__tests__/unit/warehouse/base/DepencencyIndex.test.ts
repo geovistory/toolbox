@@ -2,7 +2,7 @@ import assert from 'assert';
 import {PEntityLabelService} from '../../../../warehouse/aggregator-ds/p-entity-label/PEntityLabelService';
 import {DependencyIndex} from '../../../../warehouse/base/classes/DependencyIndex';
 import {pEntityIdToString, stringToPEntityId} from '../../../../warehouse/base/functions';
-import {PEntityId} from '../../../../warehouse/primary-ds/PEntityService';
+import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 
 

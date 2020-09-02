@@ -1,10 +1,10 @@
 import {flatten} from 'ramda';
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
 import {PClassFieldVal} from '../../primary-ds/PClassFieldsConfigService';
-import {PClassId} from '../../primary-ds/PClassService';
-import {Edge, EntityFields} from '../../primary-ds/PEdgeService';
-import {PEntityId} from '../../primary-ds/PEntityService';
-import {PClassFieldId} from '../p-class-field-label/PClassFieldLabelService';
+import {PClassId} from '../../primary-ds/class/PClassService';
+import {Edge, EntityFields} from "../../primary-ds/edge/edge.commons";
+import {PEntityId} from '../../primary-ds/entity/PEntityService';
+import {PClassFieldId} from '../class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../Warehouse';
 

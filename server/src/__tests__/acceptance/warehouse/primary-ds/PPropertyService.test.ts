@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {PPropertyService} from '../../../../warehouse/primary-ds/PPropertyService';
+import {PPropertyService} from '../../../../warehouse/primary-ds/property/PPropertyService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';

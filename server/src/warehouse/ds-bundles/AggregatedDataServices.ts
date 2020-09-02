@@ -1,14 +1,17 @@
 // import { EntityPreviewService } from '../data-services/aggregated/EntityPreviewService';
-import {PClassLabelService} from '../aggregator-ds/p-class-label/PClassLabelService';
-import {PEntityLabelService} from '../aggregator-ds/p-entity-label/PEntityLabelService';
-import {PEntityTypeService} from '../aggregator-ds/p-entity-type/PEntityTypeService';
-import {Warehouse} from '../Warehouse';
-import {DataServiceBundle} from '../base/classes/DataServiceBundle';
-import {PEntityClassLabelService} from '../aggregator-ds/p-entity-class-label/PEntityClassLabelService';
-import {PEntityFullTextService} from '../aggregator-ds/p-entity-full-text/PEntityFullTextService';
-import {PClassFieldLabelService} from '../aggregator-ds/p-class-field-label/PClassFieldLabelService';
-import {PEntityTimeSpanService} from '../aggregator-ds/p-entity-time-span/PEntityTimeSpanService';
+import {PEntityClassLabelService} from '../aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
 import {IdentifyingPropertyService} from '../aggregator-ds/identifying-property/IdentifyingPropertyService';
+import {PClassFieldLabelService} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PClassLabelService} from '../aggregator-ds/class-label/p-class-label/PClassLabelService';
+import {PEntityFullTextService} from '../aggregator-ds/p-entity-full-text/PEntityFullTextService';
+import {PEntityLabelService} from '../aggregator-ds/p-entity-label/PEntityLabelService';
+import {PEntityTimeSpanService} from '../aggregator-ds/p-entity-time-span/PEntityTimeSpanService';
+import {PEntityTypeService} from '../aggregator-ds/p-entity-type/PEntityTypeService';
+import {DataServiceBundle} from '../base/classes/DataServiceBundle';
+import {Warehouse} from '../Warehouse';
+import {RClassLabelService} from '../aggregator-ds/class-label/r-class-label/RClassLabelService';
+import {REntityClassLabelService} from '../aggregator-ds/entity-class-label/r-entity-class-label/REntityClassLabelService';
+import {RClassFieldLabelService} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 export class AggregatedDataServices extends DataServiceBundle {
     // Model aggregators
     identifyingProperty: IdentifyingPropertyService;
@@ -23,6 +26,10 @@ export class AggregatedDataServices extends DataServiceBundle {
     pEntityTimeSpan: PEntityTimeSpanService;
 
     // Repo aggregators
+    rClassLabel: RClassLabelService
+    rClassFieldLabel: RClassFieldLabelService
+    rEntityClassLabel: REntityClassLabelService
+
 
     constructor(wh: Warehouse) {
         super()
@@ -40,6 +47,9 @@ export class AggregatedDataServices extends DataServiceBundle {
         this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
 
         // Repo aggregators
+        this.rClassLabel = this.registerDataService(new RClassLabelService(wh))
+        this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelService(wh))
+        this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
 
     }
 
@@ -58,6 +68,7 @@ export class AggregatedDataServices extends DataServiceBundle {
         await this.pEntityTimeSpan.updater.startCylcling()
 
         // Repo aggregators
+        await this.rClassLabel.updater.startCylcling()
 
     }
 }

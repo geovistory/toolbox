@@ -1,8 +1,8 @@
 import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
-import {classIdToString, stringToClassId} from '../base/functions';
+import {rClassIdToString, stringToRClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
-export interface ClassId {
+export interface RClassId {
     pkClass: number
 }
 export type DfhClassHasTypePropVal = number;
@@ -18,14 +18,14 @@ export type DfhClassHasTypePropVal = number;
  *      '363': 1110
  * }
  */
-export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, ClassId, DfhClassHasTypePropVal>{
+export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, RClassId, DfhClassHasTypePropVal>{
     measure = 1000;
-    index = new IndexDBGeneric<ClassId, DfhClassHasTypePropVal>(classIdToString, stringToClassId)
+    index = new IndexDBGeneric<RClassId, DfhClassHasTypePropVal>(rClassIdToString, stringToRClassId)
     constructor(wh: Warehouse) {
         super(wh, ['modified_data_for_history_api_property'])
     }
-    dbItemToKeyVal(item: DbItem): {key: ClassId; val: DfhClassHasTypePropVal;} {
-        const key: ClassId = {
+    dbItemToKeyVal(item: DbItem): {key: RClassId; val: DfhClassHasTypePropVal;} {
+        const key: RClassId = {
             pkClass: item.fkClass
         }
         const val: DfhClassHasTypePropVal = item.fkProperty

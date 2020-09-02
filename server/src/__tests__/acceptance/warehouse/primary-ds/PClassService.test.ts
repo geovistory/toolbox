@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {PClassService} from '../../../../warehouse/primary-ds/PClassService';
+import {PClassService} from '../../../../warehouse/primary-ds/class/PClassService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createProDfhProfileProjRel, updateProDfhProfileProjRel} from '../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';

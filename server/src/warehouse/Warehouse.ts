@@ -5,7 +5,7 @@ import {getDbFileSize, getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
-import {Edge} from './primary-ds/PEdgeService';
+import {Edge} from "./primary-ds/edge/edge.commons";
 
 // import { UpdateService } from './data-services/UpdateService';
 

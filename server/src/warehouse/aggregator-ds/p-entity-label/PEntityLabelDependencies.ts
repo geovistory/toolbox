@@ -1,18 +1,18 @@
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {PEntityId, PEntity} from '../../primary-ds/PEntityService'
+import {PEntityId, PEntity} from '../../primary-ds/entity/PEntityService'
 import {PClassId} from '../../primary-ds/PClassFieldsConfigService'
 import {EntityLabelConfig} from '../../primary-ds/ProEntityLabelConfigService'
-import {EntityFields} from '../../primary-ds/PEdgeService'
+import {EntityFields} from "../../primary-ds/edge/edge.commons"
 import {Warehouse} from '../../Warehouse'
-import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId, stringToClassId, classIdToString} from '../../base/functions'
+import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId, stringToRClassId, rClassIdToString} from '../../base/functions'
 import {ClearAll} from '../../base/classes/ClearAll'
 import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService'
-import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
+import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
 
 export class PEntityLabelDependencies extends ClearAll {
     entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>
     entityLabelConfig: DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>
-    identifyingProperty: DependencyIndex<PEntityId, string, ClassId, IdentifyingPropertyVal>
+    identifyingProperty: DependencyIndex<PEntityId, string, RClassId, IdentifyingPropertyVal>
     entityLabel: DependencyIndex<PEntityId, string, PEntityId, string>
     edge: DependencyIndex<PEntityId, string, PEntityId, EntityFields>
 
@@ -39,13 +39,13 @@ export class PEntityLabelDependencies extends ClearAll {
             stringToPClassId
         )
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
-        this.identifyingProperty = new DependencyIndex<PEntityId, string, ClassId, IdentifyingPropertyVal>(
+        this.identifyingProperty = new DependencyIndex<PEntityId, string, RClassId, IdentifyingPropertyVal>(
             this.wh.agg.pEntityLabel,
             this.wh.agg.identifyingProperty,
             pEntityIdToString,
             stringToPEntityId,
-            classIdToString,
-            stringToClassId
+            rClassIdToString,
+            stringToRClassId
         )
 
 

@@ -1,17 +1,19 @@
 import getFolderSize from 'get-folder-size';
 import {PClassId} from '../primary-ds/PClassFieldsConfigService';
 import {DfhClassLabelId} from '../primary-ds/DfhClassLabelService';
-import {PEntityId} from '../primary-ds/PEntityService';
+import {PEntityId} from '../primary-ds/entity/PEntityService';
 import {ProClassLabelId} from '../primary-ds/ProClassLabelService';
 import {ProjectId} from '../primary-ds/ProProjectService';
 import {leveldbpath} from './database';
-import {ClassId} from '../primary-ds/DfhClassHasTypePropertyService';
-import {PPropertyId} from '../primary-ds/PPropertyService';
+import {RClassId} from '../primary-ds/DfhClassHasTypePropertyService';
+import {PPropertyId} from '../primary-ds/property/PPropertyService';
 import {DfhPropertyLabelId} from '../primary-ds/DfhPropertyLabelService';
 import {ProPropertyLabelId} from '../primary-ds/ProPropertyLabelService';
-import {PClassFieldId} from '../aggregator-ds/p-class-field-label/PClassFieldLabelService';
+import {PClassFieldId} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {OutgoingProperyId} from '../primary-ds/DfhOutgoingPropertyService';
-import {REntityId} from '../primary-ds/REntityService';
+import {REntityId} from '../primary-ds/entity/REntityService';
+import {RClassFieldId} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
+import {RPropertyId} from '../primary-ds/property/RPropertyService';
 
 export function pEntityIdToString(key: PEntityId): string {
     return key.fkProject + '_' + key.pkEntity;
@@ -41,6 +43,15 @@ export function stringToPPropertyId(str: string): PPropertyId {
     return {fkProject: parseInt(fkProject, 10), pkProperty: parseInt(pkProperty, 10)};
 }
 
+// repo property id to string
+export function rPropertyIdToString(key: RPropertyId): string {
+    return '' + key.pkProperty;
+}
+// string to repo property
+export function stringToRPropertyId(str: string): RPropertyId {
+    return {pkProperty: parseInt(str, 10)};
+}
+
 
 // project field id to string
 export function pClassFieldIdToString(key: PClassFieldId): string {
@@ -57,20 +68,35 @@ export function stringToPClassFieldId(str: string): PClassFieldId {
     };
 }
 
-export function entityIdToString(key: REntityId): string {
+
+// repo field id to string
+export function rClassFieldIdToString(key: RClassFieldId): string {
+    return key.fkClass + '_' + key.fkProperty + '_' + key.isOutgoing;;
+}
+// string to repo field
+export function stringToRClassFieldId(str: string): RClassFieldId {
+    const [fkClass, fkProperty, isOutgoing] = str.split('_');
+    return {
+        fkClass: parseInt(fkClass, 10),
+        fkProperty: parseInt(fkProperty, 10),
+        isOutgoing: isOutgoing === 'true'
+    };
+}
+
+export function rEntityIdToString(key: REntityId): string {
     return '' + key.pkEntity;
 }
-export function stringToEntityId(str: string): REntityId {
+export function stringToREntityId(str: string): REntityId {
     return {pkEntity: parseInt(str, 10)};
 }
 
 
 // class to string
-export function classIdToString(key: ClassId): string {
+export function rClassIdToString(key: RClassId): string {
     return key.pkClass.toString();
 }
 // string to class
-export function stringToClassId(str: string): ClassId {
+export function stringToRClassId(str: string): RClassId {
     return {pkClass: parseInt(str, 10)};
 }
 

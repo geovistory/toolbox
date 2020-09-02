@@ -2,11 +2,11 @@ import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
 import {pEntityIdToString, pClassIdToString, stringToPEntityId, stringToPClassId, pClassFieldIdToString, stringToPClassFieldId} from '../../base/functions'
 import {PClassFieldVal, PClassId} from '../../primary-ds/PClassFieldsConfigService'
-import {EntityFields} from '../../primary-ds/PEdgeService'
-import {PEntityId, PEntity} from '../../primary-ds/PEntityService'
+import {EntityFields} from "../../primary-ds/edge/edge.commons"
+import {PEntityId, PEntity} from '../../primary-ds/entity/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityFullTextVal} from './PEntityFullTextService'
-import {PClassFieldId} from '../p-class-field-label/PClassFieldLabelService'
+import {PClassFieldId} from '../class-field-label/p-class-field-label/PClassFieldLabelService'
 
 export class PEntityFullTextDependencies extends ClearAll {
     pEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, PEntity>

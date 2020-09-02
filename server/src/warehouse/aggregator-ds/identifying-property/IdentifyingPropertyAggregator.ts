@@ -1,9 +1,9 @@
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
+import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
 import {IdentifyingPropertyProviders} from './IdentifyingPropertyProviders';
 import {IdentifyingPropertyVal} from './IdentifyingPropertyService';
 
-export class IdentifyingPropertyAggregator extends AbstractAggregator<ClassId> {
+export class IdentifyingPropertyAggregator extends AbstractAggregator<RClassId> {
 
 
   // the resulting label
@@ -11,7 +11,7 @@ export class IdentifyingPropertyAggregator extends AbstractAggregator<ClassId> {
 
   constructor(
     public providers: IdentifyingPropertyProviders,
-    public id: ClassId
+    public id: RClassId
   ) {
     super()
   }

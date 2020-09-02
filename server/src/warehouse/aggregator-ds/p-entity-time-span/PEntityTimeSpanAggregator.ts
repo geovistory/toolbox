@@ -1,6 +1,6 @@
 import {keys} from 'ramda';
 import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {PEntityId} from '../../primary-ds/PEntityService';
+import {PEntityId} from '../../primary-ds/entity/PEntityService';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
 import {PEntityTimeSpan, TimeSpanKeys} from './PEntityTimeSpanService';
 type KeyMap = {

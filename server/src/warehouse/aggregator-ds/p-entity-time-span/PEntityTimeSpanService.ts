@@ -3,11 +3,11 @@ import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../base/classes/Updater';
 import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
-import {PEntityId} from '../../primary-ds/PEntityService';
+import {PEntityId} from '../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
-import {PEntityTimePrimitive} from '../../primary-ds/PEdgeService';
+import {EntityTimePrimitive} from "../../primary-ds/edge/edge.commons";
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -22,7 +22,7 @@ export type PEntityTimeSpanVal = {
     lastSecond?: number
 }
 export type PEntityTimeSpan = {
-    [key in TimeSpanKeys]?: PEntityTimePrimitive;
+    [key in TimeSpanKeys]?: EntityTimePrimitive;
 }
 
 /**

@@ -1,15 +1,15 @@
 import {Provider} from '../../base/classes/Provider';
 import {Providers} from "../../base/interfaces/Providers";
-import {EntityFields} from '../../primary-ds/PEdgeService';
-import {PEntityId, PEntity} from '../../primary-ds/PEntityService';
+import {EntityFields} from "../../primary-ds/edge/edge.commons";
+import {PEntityId, PEntity} from '../../primary-ds/entity/PEntityService';
 import {PEntityTimeSpanDependencies} from './PEntityTimeSpanDependencies';
 import {PEntityTimeSpanVal} from './PEntityTimeSpanService';
-import {ClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService';
+import {RClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService';
 export class PEntityTimeSpanProviders extends Providers<PEntityId> {
     pEntity: Provider<PEntityId, PEntityTimeSpanVal, PEntityId, PEntity>;
     pEdges: Provider<PEntityId, PEntityTimeSpanVal, PEntityId, EntityFields>;
     pEntityLabel: Provider<PEntityId, PEntityTimeSpanVal, PEntityId, string>;
-    dfhClassHasTypeProp: Provider<PEntityId, PEntityTimeSpanVal, ClassId, DfhClassHasTypePropVal>;
+    dfhClassHasTypeProp: Provider<PEntityId, PEntityTimeSpanVal, RClassId, DfhClassHasTypePropVal>;
     constructor(
         dep: PEntityTimeSpanDependencies,
         protected receiverKey: PEntityId

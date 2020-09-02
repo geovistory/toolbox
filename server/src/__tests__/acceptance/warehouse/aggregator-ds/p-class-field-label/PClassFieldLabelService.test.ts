@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
-import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/p-class-field-label/PClassFieldLabelService';
+import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
@@ -204,14 +204,14 @@ async function createDfhLabelMock() {
 async function createGeovistoryLabelMock() {
     const {prel, dfhProp} = await createDfhLabelMock();
     await createTypes()
-    const gvTxt = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_PROPERTY_BROUGHT_INTO_LIFE)
+    const gvTxt = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_DE_PROPERTY_BROUGHT_INTO_LIFE)
     return {prel, dfhProp, gvTxt}
 }
 
 async function createGeovistoryLabelIncomingMock() {
     const {prel, dfhProp} = await createDfhLabelMock();
     await createTypes()
-    const gvTxt = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_PROPERTY_BROUGHT_INTO_LIFE_REVERSE)
+    const gvTxt = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_DE_PROPERTY_BROUGHT_INTO_LIFE_REVERSE)
     return {prel, dfhProp, gvTxt}
 }
 

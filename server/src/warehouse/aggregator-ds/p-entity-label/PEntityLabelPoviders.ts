@@ -1,17 +1,17 @@
 import {Provider} from '../../base/classes/Provider';
 import {Providers} from "../../base/interfaces/Providers";
 import {PClassId} from '../../primary-ds/PClassFieldsConfigService';
-import {EntityFields} from '../../primary-ds/PEdgeService';
+import {EntityFields} from "../../primary-ds/edge/edge.commons";
 import {EntityLabelConfig} from '../../primary-ds/ProEntityLabelConfigService';
-import {PEntity, PEntityId} from '../../primary-ds/PEntityService';
+import {PEntity, PEntityId} from '../../primary-ds/entity/PEntityService';
 import {PEntityLabelDependencies} from './PEntityLabelDependencies';
 import {IdentifyingPropertyVal} from '../identifying-property/IdentifyingPropertyService';
-import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
+import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
 export class PEntityLabelProviders extends Providers<PEntityId> {
     entity: Provider<PEntityId, string, PEntityId, PEntity>;
     entityLabels: Provider<PEntityId, string, PEntityId, string>;
     entityLabelConfig: Provider<PEntityId, string, PClassId, EntityLabelConfig>;
-    identifyingProperty: Provider<PEntityId, string, ClassId,IdentifyingPropertyVal>;
+    identifyingProperty: Provider<PEntityId, string, RClassId,IdentifyingPropertyVal>;
     edges: Provider<PEntityId, string, PEntityId, EntityFields>;
     constructor(
         dep: PEntityLabelDependencies,

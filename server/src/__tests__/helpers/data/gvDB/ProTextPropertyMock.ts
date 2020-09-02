@@ -12,7 +12,7 @@ import {DfhApiClassMock} from './DfhApiClassMock';
  */
 export class ProTextPropertyMock {
 
-  static readonly PROJ_DEF_PROPERTY_BROUGHT_INTO_LIFE = new ProTextProperty({
+  static readonly PROJ_DEF_DE_PROPERTY_BROUGHT_INTO_LIFE = new ProTextProperty({
     pk_entity: 5001,
     fk_project: PK_DEFAULT_CONFIG_PROJECT,
     fk_language: InfLanguageMock.GERMAN.pk_entity,
@@ -22,7 +22,7 @@ export class ProTextPropertyMock {
     string: 'Brachte zur Welt (default)'
 
   })
-  static readonly PROJ_DEF_PROPERTY_BROUGHT_INTO_LIFE_REVERSE = new ProTextProperty({
+  static readonly PROJ_DEF_DE_PROPERTY_BROUGHT_INTO_LIFE_REVERSE = new ProTextProperty({
     pk_entity: 5002,
     fk_project: PK_DEFAULT_CONFIG_PROJECT,
     fk_language: InfLanguageMock.GERMAN.pk_entity,
@@ -62,5 +62,26 @@ export class ProTextPropertyMock {
     fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
     string: 'has appellations'
   })
+
+  static readonly PROJ_DEF_EN_PROPERTY_BROUGHT_INTO_LIFE = new ProTextProperty({
+    pk_entity: 5006,
+    fk_project: PK_DEFAULT_CONFIG_PROJECT,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_dfh_property: DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_pk_property,
+    fk_dfh_property_domain: DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_domain,
+    fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
+    string: 'Brought into life (default)'
+
+  })
+  static readonly PROJ_DEF_EN_PROPERTY_BROUGHT_INTO_LIFE_REVERSE = new ProTextProperty({
+    pk_entity: 5007,
+    fk_project: PK_DEFAULT_CONFIG_PROJECT,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_dfh_property: DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_pk_property,
+    fk_dfh_property_range: DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_range,
+    fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
+    string: 'Was born (default)'
+  })
+
 
 }

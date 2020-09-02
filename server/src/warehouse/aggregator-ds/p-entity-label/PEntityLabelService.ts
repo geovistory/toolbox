@@ -3,7 +3,7 @@ import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../base/classes/Updater';
 import {pEntityIdToString, stringToPEntityId, sqlForTsVector} from '../../base/functions';
-import {PEntityId} from '../../primary-ds/PEntityService';
+import {PEntityId} from '../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityLabelAggregator} from './PEntityLabelAggregator';
 import {PEntityLabelProviders} from './PEntityLabelPoviders';

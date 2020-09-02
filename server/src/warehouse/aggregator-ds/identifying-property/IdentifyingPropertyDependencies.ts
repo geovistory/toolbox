@@ -1,13 +1,13 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {classIdToString, outgoingProperyIdToString, stringToClassId, stringToOutgoingProperyId} from '../../base/functions'
-import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
+import {rClassIdToString, outgoingProperyIdToString, stringToRClassId, stringToOutgoingProperyId} from '../../base/functions'
+import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService'
 import {OutgoingPropertyVal, OutgoingProperyId} from '../../primary-ds/DfhOutgoingPropertyService'
 import {Warehouse} from '../../Warehouse'
 import {IdentifyingPropertyVal} from './IdentifyingPropertyService'
 
 export class IdentifyingPropertyDependencies extends ClearAll {
-  outgoingProperty: DependencyIndex<ClassId, IdentifyingPropertyVal, OutgoingProperyId, OutgoingPropertyVal>
+  outgoingProperty: DependencyIndex<RClassId, IdentifyingPropertyVal, OutgoingProperyId, OutgoingPropertyVal>
 
   // entityFulltextPropertyLabelDep: DependencyIndex<EntityId, string, PropertyId, string>;
   constructor(private wh: Warehouse) {
@@ -15,8 +15,8 @@ export class IdentifyingPropertyDependencies extends ClearAll {
     this.outgoingProperty = new DependencyIndex(
       wh.agg.identifyingProperty,
       wh.prim.dfhOutgoingProperty,
-      classIdToString,
-      stringToClassId,
+      rClassIdToString,
+      stringToRClassId,
       outgoingProperyIdToString,
       stringToOutgoingProperyId
     )

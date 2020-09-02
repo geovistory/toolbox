@@ -1,8 +1,8 @@
 import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {Updater} from '../../base/classes/Updater';
-import {classIdToString, stringToClassId} from '../../base/functions';
-import {ClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
+import {rClassIdToString, stringToRClassId} from '../../base/functions';
+import {RClassId} from '../../primary-ds/DfhClassHasTypePropertyService';
 import {Warehouse} from '../../Warehouse';
 import {IdentifyingPropertyAggregator} from './IdentifyingPropertyAggregator';
 import {IdentifyingPropertyProviders} from './IdentifyingPropertyProviders';
@@ -10,14 +10,14 @@ import {OutgoingPropertyVal} from '../../primary-ds/DfhOutgoingPropertyService';
 
 
 export type IdentifyingPropertyVal = OutgoingPropertyVal[]
-export class IdentifyingPropertyService extends AggregatedDataService<ClassId, IdentifyingPropertyVal, IdentifyingPropertyAggregator>{
-    updater: Updater<ClassId, IdentifyingPropertyAggregator>;
+export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal, IdentifyingPropertyAggregator>{
+    updater: Updater<RClassId, IdentifyingPropertyAggregator>;
 
-    index = new IndexDBGeneric<ClassId, IdentifyingPropertyVal>(classIdToString, stringToClassId)
+    index = new IndexDBGeneric<RClassId, IdentifyingPropertyVal>(rClassIdToString, stringToRClassId)
 
     constructor(private wh: Warehouse) {
         super()
-        const aggregatorFactory = async (id: ClassId) => {
+        const aggregatorFactory = async (id: RClassId) => {
             const providers = new IdentifyingPropertyProviders(this.wh.dep.identifyingProperty, id)
             return new IdentifyingPropertyAggregator(providers, id).create()
         }
@@ -30,8 +30,8 @@ export class IdentifyingPropertyService extends AggregatedDataService<ClassId, I
             this.constructor.name,
             aggregatorFactory,
             register,
-            classIdToString,
-            stringToClassId,
+            rClassIdToString,
+            stringToRClassId,
         )
 
 

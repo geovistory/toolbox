@@ -1,5 +1,5 @@
-import { PEntity } from '../../../../warehouse/primary-ds/PEntityService';
-import { PEntityId } from '../../../../warehouse/primary-ds/PEntityService';
+import { PEntity } from '../../../../warehouse/primary-ds/entity/PEntityService';
+import { PEntityId } from '../../../../warehouse/primary-ds/entity/PEntityService';
 /**
  * Mock data related to entities
  */

@@ -1,17 +1,17 @@
 import {ClearAll} from '../../base/classes/ClearAll'
 import {DependencyIndex} from '../../base/classes/DependencyIndex'
-import {pEntityIdToString, stringToPEntityId, classIdToString, stringToClassId} from '../../base/functions'
-import {EntityFields} from '../../primary-ds/PEdgeService'
-import {PEntityId, PEntity} from '../../primary-ds/PEntityService'
+import {pEntityIdToString, stringToPEntityId, rClassIdToString, stringToRClassId} from '../../base/functions'
+import {EntityFields} from "../../primary-ds/edge/edge.commons"
+import {PEntityId, PEntity} from '../../primary-ds/entity/PEntityService'
 import {Warehouse} from '../../Warehouse'
 import {PEntityTypeVal} from './PEntityTypeService'
-import {ClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService'
+import {RClassId, DfhClassHasTypePropVal} from '../../primary-ds/DfhClassHasTypePropertyService'
 
 export class PEntityTypeDependencies extends ClearAll {
     pEntity: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, PEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, string>
     pEdge: DependencyIndex<PEntityId, PEntityTypeVal, PEntityId, EntityFields>
-    dfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, ClassId, DfhClassHasTypePropVal>
+    dfhClassHasTypeProp: DependencyIndex<PEntityId, PEntityTypeVal, RClassId, DfhClassHasTypePropVal>
 
     constructor(private wh: Warehouse) {
         super()
@@ -51,8 +51,8 @@ export class PEntityTypeDependencies extends ClearAll {
             this.wh.prim.dfhClassHasTypeProperty,
             pEntityIdToString,
             stringToPEntityId,
-            classIdToString,
-            stringToClassId,
+            rClassIdToString,
+            stringToRClassId,
         );
 
 

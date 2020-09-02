@@ -4,17 +4,20 @@ import {DfhClassLabelService} from '../primary-ds/DfhClassLabelService';
 import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
 import {EntityLabelConfig, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
 import {PClassFieldsConfigService, PClassId} from '../primary-ds/PClassFieldsConfigService';
-import {PClassService} from '../primary-ds/PClassService';
-import {PEdgeService, StatementItemToIndexate} from '../primary-ds/PEdgeService';
-import {PEntityId, PEntityService, PEntity} from '../primary-ds/PEntityService';
-import {PPropertyService} from '../primary-ds/PPropertyService';
+import {PClassService} from '../primary-ds/class/PClassService';
+import {PEdgeService} from '../primary-ds/edge/PEdgeService';
+import {StatementItemToIndexate} from "../primary-ds/edge/edge.commons";
+import {PEntityId, PEntityService, PEntity} from '../primary-ds/entity/PEntityService';
+import {PPropertyService} from '../primary-ds/property/PPropertyService';
 import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
 import {ProProjectService} from '../primary-ds/ProProjectService';
 import {Warehouse} from '../Warehouse';
 import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
 import {DfhOutgoingPropertyService} from '../primary-ds/DfhOutgoingPropertyService';
-import {REntityService} from '../primary-ds/REntityService';
-import {REdgeService} from '../primary-ds/REdgeService';
+import {REntityService} from '../primary-ds/entity/REntityService';
+import {REdgeService} from '../primary-ds/edge/REdgeService';
+import {RClassService} from '../primary-ds/class/RClassService';
+import {RPropertyService} from '../primary-ds/property/RPropertyService';
 export class PrimaryDataServices extends DataServiceBundle {
 
     dfhClassLabel: DfhClassLabelService;
@@ -34,6 +37,9 @@ export class PrimaryDataServices extends DataServiceBundle {
 
     pEdge: PEdgeService;
     pEntity: PEntityService;
+
+    rClass: RClassService;
+    rProperty: RPropertyService;
 
     rEntity: REntityService;
     rEdge: REdgeService;
@@ -61,6 +67,10 @@ export class PrimaryDataServices extends DataServiceBundle {
 
         this.rEntity = this.registerDataService(new REntityService(this.wh));
         this.rEdge = this.registerDataService(new REdgeService(this.wh));
+
+        this.rClass = this.registerDataService(new RClassService(this.wh));
+        this.rProperty = this.registerDataService(new RPropertyService(this.wh));
+
     }
 
     async createEntityLabelConfig(keyModel: PClassId, val: EntityLabelConfig) {

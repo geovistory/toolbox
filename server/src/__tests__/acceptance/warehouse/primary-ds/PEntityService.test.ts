@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {PEntityService, PEntityId} from '../../../../warehouse/primary-ds/PEntityService';
+import {PEntityService, PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
