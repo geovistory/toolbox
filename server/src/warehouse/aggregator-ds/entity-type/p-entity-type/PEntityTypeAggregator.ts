@@ -70,13 +70,17 @@ export class PEntityTypeAggregator extends AbstractAggregator<PEntityId> {
                         fkProject: entity.fkProject,
                         pkEntity: this.fkEntityType
                     }
-
-                    const entityTypeLabel = await this.providers.pEntityLabel.get(typeEntityId)
+                    // fetch project variant of the type's entityLabel
+                    let l = await this.providers.pEntityLabel.get(typeEntityId)
+                    // if project variant missing, try to fetch repo variant
+                    if (!l) {
+                        l = await this.providers.rEntityLabel.get({pkEntity: typeEntityId.pkEntity})
+                    }
 
                     // TODO: find repo entity label if this is undefined
 
-                    if (entityTypeLabel) {
-                        this.entityTypeLabel = entityTypeLabel
+                    if (l) {
+                        this.entityTypeLabel = l.entityLabel
                         this.labelMissing = false
                     }
 

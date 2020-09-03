@@ -35,7 +35,7 @@ export class REntityClassLabelDependencies extends ClearAll {
 
     async clearAll() {
         await Promise.all([
-            this.rClassLabel.clearIdx(),
+            this.rClassLabel.clearAll(),
         ])
     }
 

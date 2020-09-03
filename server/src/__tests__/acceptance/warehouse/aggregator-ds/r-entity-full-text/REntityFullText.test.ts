@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
-import {PEntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
+import {REntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -34,23 +34,23 @@ import {setupCleanAndStartWarehouse, waitUntilSatisfy, waitForEntityPreviewUntil
 /**
  * Testing whole stack from postgres to warehouse
  */
-describe('PEntityFullText', function () {
+describe('REntityFullText', function () {
     let wh: Warehouse;
-    let s: PEntityFullTextService;
+    let s: REntityFullTextService;
 
     beforeEach(async function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
-        s = wh.agg.pEntityFullText
+        s = wh.agg.rEntityFullText
     })
     afterEach(async function () {await wh.stop()})
 
     it('should create full text of naming', async () => {
-        const {naming, project} = await createNamingMock();
+        const {naming} = await createNamingMock();
 
         const result = await waitForEntityPreviewUntil(wh, (item) => {
             return item.pk_entity === naming.pk_entity
-                && item.fk_project === project.pk_entity
+                && item.fk_project === null
                 && item.full_text === `Appellation in a language (time-indexed) – refers to name: 'Jack the foo'`
         })
 
@@ -58,12 +58,11 @@ describe('PEntityFullText', function () {
     })
 
     it('should create full text of naming with person', async () => {
-        const {naming, project} = await createNamingAndPersonMock();
+        const {naming} = await createNamingAndPersonMock();
 
         const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === naming.pk_entity
-                && item.key.fkProject === project.pk_entity
                 && item.val === expected
         })
 
@@ -83,24 +82,22 @@ describe('PEntityFullText', function () {
         expect(result.val).to.equal(expected)
     })
     it('should create full text of person', async () => {
-        const {person, project} = await createNamingAndPersonMock();
+        const {person} = await createNamingAndPersonMock();
 
         const expected = `Person – has appellations: 'Jack the foo'`
         const result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === person.pk_entity
-                && item.key.fkProject === project.pk_entity
                 && item.val === expected
         })
 
         expect(result).not.to.be.undefined();
     })
     it('should update full text of person', async () => {
-        const {person, project} = await createNamingAndPersonMock();
+        const {person} = await createNamingAndPersonMock();
 
         let expected = `Person – has appellations: 'Jack the foo'`
         let result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === person.pk_entity
-                && item.key.fkProject === project.pk_entity
                 && item.val === expected
         })
         await createProTextProperty({
@@ -113,7 +110,6 @@ describe('PEntityFullText', function () {
         expected = `Human – has appellations: 'Jack the foo'`
         result = await waitUntilSatisfy(s.afterPut$, (item) => {
             return item.key.pkEntity === person.pk_entity
-                && item.key.fkProject === project.pk_entity
                 && item.val === expected
         })
 
@@ -134,7 +130,7 @@ describe('PEntityFullText', function () {
         await updateProInfoProjRel(namingProjRel.pk_entity ?? -1, {is_in_project: false})
 
         await waitUntilNext(s.afterDel$)
-        const item = await s.index.getFromIdx({pkEntity: naming.pk_entity ?? -1, fkProject: namingProjRel.fk_project ?? -1})
+        const item = await s.index.getFromIdx({pkEntity: naming.pk_entity ?? -1})
         expect(item).to.be.undefined()
     })
 

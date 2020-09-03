@@ -111,7 +111,7 @@
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/REntityTi/"
+        "/PEntityFullText.*/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

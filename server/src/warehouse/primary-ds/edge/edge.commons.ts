@@ -97,30 +97,26 @@ export const edgeSqlTargetValue = `'targetValue', json_strip_nulls(json_build_ob
                     END
 ))`
 
-export const buildOutgoingEdges = `json_agg(
-    json_build_object(
-        'fkProperty', t1.fk_property,
-        'isOutgoing', true,
-        'fkStatement', t1.pk_statement,
-        'fkSource', t1.fk_subject_info,
-        'fkTarget', t1.fk_object_info,
-        'ordNumWithinField', t1.ord_num_of_range,
-        'targetIsEntity', t1.object_table IN ('temporal_entity', 'persistent_item'),
-        ${edgeSqlTargetLabel},
-        ${edgeSqlTargetValue}
-    ) ORDER BY t1.ord_num_of_range ASC
-) outgoing`
+export const buildOutgoingEdges = `json_build_object(
+    'fkProperty', t1.fk_property,
+    'isOutgoing', true,
+    'fkStatement', t1.pk_statement,
+    'fkSource', t1.fk_subject_info,
+    'fkTarget', t1.fk_object_info,
+    'ordNumWithinField', t1.ord_num_of_range,
+    'targetIsEntity', t1.object_table IN ('temporal_entity', 'persistent_item'),
+    ${edgeSqlTargetLabel},
+    ${edgeSqlTargetValue}
+)`
 
-export const buildIncomingEdges = `json_agg(
-    json_build_object(
-        'fkProperty', t1.fk_property,
-        'isOutgoing', true,
-        'fkStatement', t1.pk_statement,
-        'fkSource', t1.fk_object_info,
-        'fkTarget', t1.fk_subject_info,
-        'ordNumWithinField', t1.ord_num_of_domain,
-        'targetIsEntity', t1.subject_table IN ('temporal_entity', 'persistent_item'),
-        ${edgeSqlTargetLabel},
-        ${edgeSqlTargetValue}
-    ) ORDER BY t1.ord_num_of_domain ASC
-) incoming`
+export const buildIncomingEdges = `json_build_object(
+    'fkProperty', t1.fk_property,
+    'isOutgoing', true,
+    'fkStatement', t1.pk_statement,
+    'fkSource', t1.fk_object_info,
+    'fkTarget', t1.fk_subject_info,
+    'ordNumWithinField', t1.ord_num_of_domain,
+    'targetIsEntity', t1.subject_table IN ('temporal_entity', 'persistent_item'),
+    ${edgeSqlTargetLabel},
+    ${edgeSqlTargetValue}
+)`

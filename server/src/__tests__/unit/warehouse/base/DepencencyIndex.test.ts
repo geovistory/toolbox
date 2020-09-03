@@ -4,11 +4,12 @@ import {DependencyIndex} from '../../../../warehouse/base/classes/DependencyInde
 import {pEntityIdToString, stringToPEntityId} from '../../../../warehouse/base/functions';
 import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
+import {EntityLabelVal} from '../../../../warehouse/aggregator-ds/entity-label/entity-label.commons';
 
 
 
 describe('DependencyIndex', function () {
-    let idx: DependencyIndex<PEntityId, string, PEntityId, string>
+    let idx: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>
     let wh: Warehouse
     let stub1: PEntityLabelService
     let stub2: PEntityLabelService
@@ -39,7 +40,7 @@ describe('DependencyIndex', function () {
 
     })
     beforeEach(async function () {
-        await idx.clearIdx()
+        await idx.clearAll()
         await idx.addProvider(receiver1, provider1)
         await idx.addProvider(receiver1, provider2)
         await idx.addProvider(receiver2, provider2)

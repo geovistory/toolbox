@@ -8,19 +8,20 @@ import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId
 import {ClearAll} from '../../../base/classes/ClearAll'
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService'
+import {EntityLabelVal} from '../entity-label.commons'
 
 export class PEntityLabelDependencies extends ClearAll {
-    entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>
-    entityLabelConfig: DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>
-    identifyingProperty: DependencyIndex<PEntityId, string, RClassId, IdentifyingPropertyVal>
-    entityLabel: DependencyIndex<PEntityId, string, PEntityId, string>
-    edge: DependencyIndex<PEntityId, string, PEntityId, EntityFields>
+    entity: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, PEntity>
+    entityLabelConfig: DependencyIndex<PEntityId, EntityLabelVal, PClassId, EntityLabelConfig>
+    identifyingProperty: DependencyIndex<PEntityId, EntityLabelVal, RClassId, IdentifyingPropertyVal>
+    entityLabel: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>
+    edge: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityFields>
 
     // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
-        this.entity = new DependencyIndex<PEntityId, string, PEntityId, PEntity>(
+        this.entity = new DependencyIndex(
             this.wh.agg.pEntityLabel,
             this.wh.prim.pEntity,
             pEntityIdToString,
@@ -30,7 +31,7 @@ export class PEntityLabelDependencies extends ClearAll {
         )
 
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
-        this.entityLabelConfig = new DependencyIndex<PEntityId, string, PClassId, EntityLabelConfig>(
+        this.entityLabelConfig = new DependencyIndex(
             this.wh.agg.pEntityLabel,
             this.wh.prim.proEntityLabelConfig,
             pEntityIdToString,
@@ -39,7 +40,7 @@ export class PEntityLabelDependencies extends ClearAll {
             stringToPClassId
         )
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
-        this.identifyingProperty = new DependencyIndex<PEntityId, string, RClassId, IdentifyingPropertyVal>(
+        this.identifyingProperty = new DependencyIndex(
             this.wh.agg.pEntityLabel,
             this.wh.agg.identifyingProperty,
             pEntityIdToString,
@@ -76,10 +77,10 @@ export class PEntityLabelDependencies extends ClearAll {
 
     async clearAll() {
         await Promise.all([
-            this.edge.clearIdx(),
-            this.entity.clearIdx(),
-            this.entityLabelConfig.clearIdx(),
-            this.entityLabel.clearIdx(),
+            this.edge.clearAll(),
+            this.entity.clearAll(),
+            this.entityLabelConfig.clearAll(),
+            this.entityLabel.clearAll(),
         ])
     }
 

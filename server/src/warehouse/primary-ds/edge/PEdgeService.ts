@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {Logger} from '../../base/classes/Logger';
+import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
+import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
 import {PEntityId} from '../entity/PEntityService';
-import {EdgeInitItem, EntityFields, StatementItemToIndexate, Edge, edgeSqlTargetLabel, edgeSqlTargetValue, buildOutgoingEdges, buildIncomingEdges} from './edge.commons';
+import {buildIncomingEdges, buildOutgoingEdges, Edge, EdgeInitItem, EntityFields, StatementItemToIndexate} from './edge.commons';
 
 interface Noun {
     table: string;
@@ -230,7 +230,14 @@ WITH tw0 AS (
 ),
 -- outgoing
 tw2 AS (
-    SELECT  fk_project, fk_property, fk_subject_info pk_entity, ${buildOutgoingEdges}
+    SELECT
+        fk_project,
+        fk_property,
+        fk_subject_info pk_entity,
+        json_agg(
+            ${buildOutgoingEdges}
+            ORDER BY t1.ord_num_of_range ASC
+        ) outgoing
     FROM tw1 t1
     WHERE t1.subject_table IN ('temporal_entity', 'persistent_item')
     GROUP BY fk_project, fk_property, fk_subject_info
@@ -238,7 +245,14 @@ tw2 AS (
 ),
 -- incoming
 tw3 AS (
-    SELECT  fk_project, fk_property, fk_object_info pk_entity, ${buildIncomingEdges}
+    SELECT
+        fk_project,
+        fk_property,
+        fk_object_info pk_entity,
+        json_agg(
+            ${buildIncomingEdges}
+             ORDER BY t1.ord_num_of_domain ASC
+        ) incoming
     FROM tw1 t1
     WHERE t1.object_table IN ('temporal_entity', 'persistent_item')
     GROUP BY fk_project, fk_property, fk_object_info

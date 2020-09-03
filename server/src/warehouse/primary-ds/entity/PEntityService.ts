@@ -55,6 +55,12 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, PEnt
         * Remove entity preview from db
         */
         this.afterDel$.subscribe(item => {
+            wh.agg.pEntityLabel.del(item).catch(e => console.log(e))
+            wh.agg.pEntityClassLabel.del(item).catch(e => console.log(e))
+            wh.agg.pEntityType.del(item).catch(e => console.log(e))
+            wh.agg.pEntityTimeSpan.del(item).catch(e => console.log(e))
+            wh.agg.pEntityFullText.del(item).catch(e => console.log(e))
+
             this.deleteEntityPreview(item).catch(e => console.log(e))
         })
 

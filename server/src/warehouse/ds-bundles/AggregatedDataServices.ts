@@ -3,7 +3,7 @@ import {PEntityClassLabelService} from '../aggregator-ds/entity-class-label/p-en
 import {IdentifyingPropertyService} from '../aggregator-ds/identifying-property/IdentifyingPropertyService';
 import {PClassFieldLabelService} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PClassLabelService} from '../aggregator-ds/class-label/p-class-label/PClassLabelService';
-import {PEntityFullTextService} from '../aggregator-ds/p-entity-full-text/PEntityFullTextService';
+import {PEntityFullTextService} from '../aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
 import {PEntityLabelService} from '../aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 import {PEntityTimeSpanService} from '../aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
 import {PEntityTypeService} from '../aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
@@ -15,6 +15,7 @@ import {RClassFieldLabelService} from '../aggregator-ds/class-field-label/r-clas
 import {REntityLabelService} from '../aggregator-ds/entity-label/r-entity-label/REntityLabelService';
 import {REntityTimeSpanService} from '../aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
 import {REntityTypeService} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeService';
+import {REntityFullTextService} from '../aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
 export class AggregatedDataServices extends DataServiceBundle {
     // Model aggregators
     identifyingProperty: IdentifyingPropertyService;
@@ -34,6 +35,7 @@ export class AggregatedDataServices extends DataServiceBundle {
     rEntityLabel: REntityLabelService;
     rEntityType: REntityTypeService;
     rEntityClassLabel: REntityClassLabelService
+    rEntityFullText: REntityFullTextService;
     rEntityTimeSpan: REntityTimeSpanService;
 
 
@@ -57,6 +59,7 @@ export class AggregatedDataServices extends DataServiceBundle {
         this.rEntityLabel = this.registerDataService(new REntityLabelService(wh));
         this.rEntityType = this.registerDataService(new REntityTypeService(wh));
         this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
+        this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
         this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
 
     }

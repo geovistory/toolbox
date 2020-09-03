@@ -18,21 +18,24 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext} from '../../../../helpers/warehouse-helpers';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
 import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
+import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
+import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 
 /**
  * Testing whole stack from postgres to warehouse
  */
 describe('PEntityLabelService', function () {
     let wh: Warehouse;
-
+    let s: PEntityLabelService
     beforeEach(async function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
+        s = wh.agg.pEntityLabel
 
     })
     afterEach(async function () {await wh.stop()})
@@ -131,6 +134,22 @@ describe('PEntityLabelService', function () {
         })
         expect(result)
     })
+
+    it('should delete entity label from index when entity is removed from project', async () => {
+        const project = await createProject();
+        const {naming, namingProRel, appellation} = await createNamingMock();
+        const result = await waitForEntityPreview(wh, [
+            {pk_entity: {eq: naming.pk_entity}},
+            {fk_project: {eq: project.pk_entity}},
+            {entity_label: {eq: appellation.string}},
+        ])
+        expect(result)
+        await updateProInfoProjRel(namingProRel.pk_entity ?? -1, {is_in_project: false})
+
+        await waitUntilNext(s.afterDel$)
+        const item = await s.index.getFromIdx({pkEntity: naming.pk_entity ?? -1, fkProject: project.pk_entity ?? -1})
+        expect(item).to.be.undefined()
+    })
 })
 
 
@@ -165,7 +184,7 @@ async function createNamingMock() {
 
     // TeEn
     const naming = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1);
+    const namingProRel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1);
 
     const appellation = await createInfAppellation(InfAppellationMock.JACK_THE_FOO);
     await createInfStatement(InfStatementMock.NAME_1_TO_APPE);
@@ -173,7 +192,7 @@ async function createNamingMock() {
 
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON);
-    return {naming, appellation};
+    return {naming, namingProRel, appellation};
 }
 
 

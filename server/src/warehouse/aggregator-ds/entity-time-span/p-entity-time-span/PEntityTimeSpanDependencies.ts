@@ -59,8 +59,8 @@ export class PEntityTimeSpanDependencies extends ClearAll {
 
     async clearAll() {
         await Promise.all([
-            this.pEdge.clearIdx(),
-            this.pEntity.clearIdx(),
+            this.pEdge.clearAll(),
+            this.pEntity.clearAll(),
         ])
     }
 

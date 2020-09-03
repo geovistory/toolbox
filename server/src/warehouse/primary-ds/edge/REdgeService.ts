@@ -83,7 +83,6 @@ WITH tw0 AS (
 
 ), tw1 AS (
     SELECT DISTINCT
-	null as fk_project,
 	t1.ord_num_of_domain,
  	t1.ord_num_of_range,
     t1.calendar,
@@ -97,7 +96,8 @@ WITH tw0 AS (
     t4.notes as language,
     t7.string as lang_string,
     t6.julian_day,
-    t6.duration
+    t6.duration,
+    t1.is_in_project_count
     FROM
     tw0 t0
     JOIN information."statement" t2 ON (
@@ -125,7 +125,15 @@ WITH tw0 AS (
 ),
 -- outgoing
 tw2 AS (
-    SELECT  fk_property, fk_subject_info pk_entity, ${buildOutgoingEdges}
+    SELECT
+        fk_property,
+        fk_subject_info pk_entity,
+        json_agg(
+            ${buildOutgoingEdges}
+            ORDER BY
+                t1.ord_num_of_range ASC,
+                t1.is_in_project_count DESC
+        ) outgoing
     FROM tw1 t1
     WHERE t1.subject_table IN ('temporal_entity', 'persistent_item')
     GROUP BY fk_property, fk_subject_info
@@ -133,11 +141,19 @@ tw2 AS (
 ),
 -- incoming
 tw3 AS (
-    SELECT  fk_property, fk_object_info pk_entity, ${buildIncomingEdges}
+    SELECT
+        fk_property,
+        fk_object_info pk_entity,
+        json_agg(
+            ${buildIncomingEdges}
+             ORDER BY
+                t1.ord_num_of_domain ASC,
+                t1.is_in_project_count DESC
+        ) incoming
     FROM tw1 t1
     WHERE t1.object_table IN ('temporal_entity', 'persistent_item')
-    GROUP BY fk_project, fk_property, fk_object_info
-    ORDER BY fk_project, fk_property, fk_object_info
+    GROUP BY fk_property, fk_object_info
+    ORDER BY fk_property, fk_object_info
 ),
 tw4 AS (
     SELECT fk_property, pk_entity, outgoing, NULL::json incoming

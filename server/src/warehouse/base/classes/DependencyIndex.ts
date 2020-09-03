@@ -1,6 +1,7 @@
 import {IndexDB} from './IndexDB';
 import {AggregatedDataService} from './AggregatedDataService';
 import {DataService} from './DataService';
+import {ClearAll} from './ClearAll';
 export interface DependencyMap {[key: string]: true}
 
 class UniqIdx extends IndexDB<string, true> {
@@ -10,7 +11,8 @@ class UniqIdx extends IndexDB<string, true> {
 
 const sep = ':'
 
-export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> {
+export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> extends ClearAll {
+
 
     constructor(
         public receiverDS: AggregatedDataService<ReceiverKeyModel, ReceiverValModel, any>,
@@ -20,6 +22,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         public providerKeyToString: (key: ProviderKeyModel) => string,
         public stringToProviderKey: (str: string) => ProviderKeyModel,
     ) {
+        super()
         providerDS.registerProviderOf(this)
     }
 
@@ -184,11 +187,14 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     }
 
 
-    async clearIdx(): Promise<void> {
+    async clearAll(): Promise<void> {
         await this.providerToReceiver.clearIdx()
         await this.receiverToProvider.clearIdx()
     }
 
+    initIdx(): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
 
 
 }

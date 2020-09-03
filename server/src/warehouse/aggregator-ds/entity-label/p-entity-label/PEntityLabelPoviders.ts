@@ -7,12 +7,13 @@ import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PEntityLabelDependencies} from './PEntityLabelDependencies';
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {EntityLabelVal} from '../entity-label.commons';
 export class PEntityLabelProviders extends Providers<PEntityId> {
-    entity: Provider<PEntityId, string, PEntityId, PEntity>;
-    entityLabels: Provider<PEntityId, string, PEntityId, string>;
-    entityLabelConfig: Provider<PEntityId, string, PClassId, EntityLabelConfig>;
-    identifyingProperty: Provider<PEntityId, string, RClassId,IdentifyingPropertyVal>;
-    edges: Provider<PEntityId, string, PEntityId, EntityFields>;
+    entity: Provider<PEntityId, EntityLabelVal, PEntityId, PEntity>;
+    entityLabels: Provider<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>;
+    entityLabelConfig: Provider<PEntityId, EntityLabelVal, PClassId, EntityLabelConfig>;
+    identifyingProperty: Provider<PEntityId, EntityLabelVal, RClassId,IdentifyingPropertyVal>;
+    edges: Provider<PEntityId, EntityLabelVal, PEntityId, EntityFields>;
     constructor(
         dep: PEntityLabelDependencies,
         protected receiverKey: PEntityId

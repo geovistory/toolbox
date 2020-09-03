@@ -62,7 +62,6 @@ export class REntityTypeAggregator extends AbstractAggregator<REntityId> {
 
                 if (hasTypeStmts?.length) {
 
-                    // TODO: get most often used entity type
                     // this gives the info for war.entity_preview (fk_type)
                     this.fkEntityType = hasTypeStmts[0].fkTarget // fk_object_info
 
@@ -71,11 +70,11 @@ export class REntityTypeAggregator extends AbstractAggregator<REntityId> {
                         pkEntity: this.fkEntityType
                     }
 
-                    const entityTypeLabel = await this.providers.rEntityLabel.get(typeEntityId)
+                    const l = await this.providers.rEntityLabel.get(typeEntityId)
 
 
-                    if (entityTypeLabel) {
-                        this.entityTypeLabel = entityTypeLabel
+                    if (l) {
+                        this.entityTypeLabel = l.entityLabel
                         this.labelMissing = false
                     }
 

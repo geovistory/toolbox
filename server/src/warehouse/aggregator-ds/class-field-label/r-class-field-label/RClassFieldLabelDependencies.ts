@@ -36,8 +36,8 @@ export class RClassFieldLabelDependencies extends ClearAll {
 
   async clearAll() {
     await Promise.all([
-      this.dfhPropertyLabel.clearIdx(),
-      this.proPropertyLabel.clearIdx(),
+      this.dfhPropertyLabel.clearAll(),
+      this.proPropertyLabel.clearAll(),
     ])
   }
 

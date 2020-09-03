@@ -192,7 +192,8 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
                 let string;
                 if (e.targetIsEntity) {
-                    string = await this.providers.entityLabels.get({pkEntity: e.fkTarget, fkProject})
+                    const label = await this.providers.entityLabels.get({pkEntity: e.fkTarget, fkProject})
+                    string = label?.entityLabel;
                 } else {
                     string = e.targetLabel;
                 }

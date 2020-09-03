@@ -6,10 +6,11 @@ import {REntityId, REntity} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
 import {REntityTypeVal} from './REntityTypeService'
 import {RClassId, DfhClassHasTypePropVal} from '../../../primary-ds/DfhClassHasTypePropertyService'
+import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 
 export class REntityTypeDependencies extends ClearAll {
     rEntity: DependencyIndex<REntityId, REntityTypeVal, REntityId, REntity>
-    rEntityLabel: DependencyIndex<REntityId, REntityTypeVal, REntityId, string>
+    rEntityLabel: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityLabelVal>
     rEdge: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityFields>
     dfhClassHasTypeProp: DependencyIndex<REntityId, REntityTypeVal, RClassId, DfhClassHasTypePropVal>
 
@@ -60,9 +61,9 @@ export class REntityTypeDependencies extends ClearAll {
 
     async clearAll() {
         await Promise.all([
-            this.rEdge.clearIdx(),
-            this.rEntity.clearIdx(),
-            this.rEntityLabel.clearIdx(),
+            this.rEdge.clearAll(),
+            this.rEntity.clearAll(),
+            this.rEntityLabel.clearAll(),
         ])
     }
 

@@ -59,8 +59,8 @@ export class REntityTimeSpanDependencies extends ClearAll {
 
     async clearAll() {
         await Promise.all([
-            this.rEdge.clearIdx(),
-            this.rEntity.clearIdx(),
+            this.rEdge.clearAll(),
+            this.rEntity.clearAll(),
         ])
     }
 

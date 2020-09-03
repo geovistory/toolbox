@@ -35,7 +35,7 @@ export class PEntityClassLabelDependencies extends ClearAll {
 
     async clearAll() {
         await Promise.all([
-            this.pClassLabel.clearIdx(),
+            this.pClassLabel.clearAll(),
         ])
     }
 

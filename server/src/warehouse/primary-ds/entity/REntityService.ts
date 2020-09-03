@@ -41,7 +41,7 @@ export class REntityService extends PrimaryDataService<InitItem, REntityId, REnt
                 // Add update requests on aggregaters based on project entity
                 wh.agg.rEntityLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
                 wh.agg.rEntityClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
-                // wh.agg.pEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
+                wh.agg.rEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
                 if (item.val.entityType === 'teEn') wh.agg.rEntityTimeSpan.updater.addItemToQueue(item.key).catch(e => console.log(e))
                 // wh.agg.pEntityFullText.updater.addItemToQueue(item.key).catch(e => console.log(e))
 

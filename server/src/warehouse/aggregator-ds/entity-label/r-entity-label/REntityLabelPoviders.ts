@@ -7,12 +7,13 @@ import {REntity, REntityId} from '../../../primary-ds/entity/REntityService';
 import {REntityLabelDependencies} from './REntityLabelDependencies';
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {EntityLabelVal} from '../entity-label.commons';
 export class REntityLabelProviders extends Providers<REntityId> {
-    entity: Provider<REntityId, string, REntityId, REntity>;
-    entityLabels: Provider<REntityId, string, REntityId, string>;
-    entityLabelConfig: Provider<REntityId, string, PClassId, EntityLabelConfig>;
-    identifyingProperty: Provider<REntityId, string, RClassId,IdentifyingPropertyVal>;
-    edges: Provider<REntityId, string, REntityId, EntityFields>;
+    entity: Provider<REntityId, EntityLabelVal, REntityId, REntity>;
+    entityLabels: Provider<REntityId, EntityLabelVal, REntityId, EntityLabelVal>;
+    entityLabelConfig: Provider<REntityId, EntityLabelVal, PClassId, EntityLabelConfig>;
+    identifyingProperty: Provider<REntityId, EntityLabelVal, RClassId,IdentifyingPropertyVal>;
+    edges: Provider<REntityId, EntityLabelVal, REntityId, EntityFields>;
     constructor(
         dep: REntityLabelDependencies,
         protected receiverKey: REntityId

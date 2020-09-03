@@ -37,8 +37,8 @@ export class RClassLabelDependencies extends ClearAll {
 
   async clearAll() {
     await Promise.all([
-      this.dfhClassLabel.clearIdx(),
-      this.proClassLabel.clearIdx(),
+      this.dfhClassLabel.clearAll(),
+      this.proClassLabel.clearAll(),
     ])
   }
 

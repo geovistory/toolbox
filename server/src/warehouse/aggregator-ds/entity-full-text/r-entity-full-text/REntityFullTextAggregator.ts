@@ -1,12 +1,12 @@
 import {flatten} from 'ramda';
-import {AbstractAggregator} from '../../base/classes/AbstractAggregator';
-import {ProClassFieldVal} from '../../primary-ds/ProClassFieldsConfigService';
-import {PClassId} from '../../primary-ds/class/PClassService';
-import {Edge, EntityFields} from "../../primary-ds/edge/edge.commons";
-import {PEntityId} from '../../primary-ds/entity/PEntityService';
-import {PClassFieldId} from '../class-field-label/p-class-field-label/PClassFieldLabelService';
-import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
-import {PK_DEFAULT_CONFIG_PROJECT} from '../../Warehouse';
+import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
+import {Edge, EntityFields} from "../../../primary-ds/edge/edge.commons";
+import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService';
+import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
+import {RClassFieldId} from '../../class-field-label/r-class-field-label/RClassFieldLabelService';
+import {REntityFullTextProviders} from './REntityFullTextPoviders';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -16,7 +16,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
+export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
 
     // Defines the maximum number of statements per field
     // taken into consideration for the fulltext
@@ -29,8 +29,8 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
     fullText = '';
 
     constructor(
-        public providers: PEntityFullTextProviders,
-        public id: PEntityId
+        public providers: REntityFullTextProviders,
+        public id: REntityId
     ) {
         super()
     }
@@ -51,29 +51,24 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         // that can then be deleted from dependency indexes
         await this.providers.load()
 
-        const entity = await this.providers.pEntity.get(this.id);
+        const entity = await this.providers.rEntity.get(this.id);
         if (!entity) return this;
 
         // get entity fields of that entity
-        const edges = await this.providers.pEdges.get(this.id)
+        const edges = await this.providers.rEdges.get(this.id)
         if (!edges) return this;
         // if no edges, return
 
         // get fields of that class
-        const pClassId: PClassId = {pkClass: entity.fkClass, fkProject: entity.fkProject}
-        // first look for config of this project
-        let classFields = await this.providers.pClassFields.get(pClassId)
-
-        if (!classFields) {
-            // second look for config of default config project
-            classFields = await this.providers.pClassFields.get({pkClass: pClassId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
-        }
+        const rClassId: RClassId = {pkClass: entity.fkClass}
+        // look for config of efault config project
+        const classFields = await  this.providers.pClassFields.get({pkClass: rClassId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
 
         // create fulltext
-        const fullText = await this.loopOverFields(edges, classFields, entity.fkProject, entity.fkClass)
+        const fullText = await this.loopOverFields(edges, classFields, entity.fkClass)
 
         // get class label
-        let classLabel = await this.providers.pClassLabel.get(pClassId)
+        let classLabel = await this.providers.rClassLabel.get(rClassId)
 
         classLabel = classLabel ?? `[${entity.fkClass}]`;
         this.fullText = `${classLabel} – ${fullText}`;
@@ -92,7 +87,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
      *
      * @param entityFields
      */
-    async loopOverFields(entityFields: EntityFields, classFields: ProClassFieldVal = [], fkProject: number, fkClass: number) {
+    async loopOverFields(entityFields: EntityFields, classFields: ProClassFieldVal = [], fkClass: number) {
 
         const loopedCache: {[key: string]: boolean;} = {};
 
@@ -107,7 +102,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
                 const edges = entityFields?.[cF.isOutgoing ? 'outgoing' : 'incoming']?.[cF.fkProperty];
 
                 // add edges to resulting entity
-                promises.push(this.loopOverEdges(edges, fkProject, fkClass, cF.fkProperty, cF.isOutgoing));
+                promises.push(this.loopOverEdges(edges, fkClass, cF.fkProperty, cF.isOutgoing));
             }
 
             // mark field as covered
@@ -120,7 +115,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
             if (!loopedCache[fieldKey(fkProperty, isOutgoing)]) {
                 const edges = entityFields.outgoing[fkProperty];
-                promises.push(this.loopOverEdges(edges, fkProject, fkClass, parseInt(fkProperty, 10), isOutgoing));
+                promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isOutgoing));
             }
 
         }
@@ -129,7 +124,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
             if (!loopedCache[fieldKey(fkProperty, isIncoming)]) {
                 const edges = entityFields.incoming[fkProperty];
-                promises.push(this.loopOverEdges(edges, fkProject, fkClass, parseInt(fkProperty, 10), isIncoming));
+                promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isIncoming));
             }
         }
 
@@ -157,7 +152,6 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
     */
     private async loopOverEdges(
         edges: Edge[],
-        fkProject: number,
         fkClass: number,
         fkProperty: number,
         isOutgoing: boolean
@@ -165,7 +159,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         const result: string[] = [];
 
 
-        const fieldId: PClassFieldId = {fkProject, fkClass, fkProperty, isOutgoing}
+        const fieldId: RClassFieldId = {fkClass, fkProperty, isOutgoing}
 
         // are there any edges?
         if (edges?.length) {
@@ -179,20 +173,19 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
                 if (i === 0) {
                     // Get the fieldLabel (the label for property in correct direction)
-                    let l = await this.providers.pClassFieldLabel.get(fieldId)
-                    l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},proj${fkProject}]`
+                    let l = await this.providers.rClassFieldLabel.get(fieldId)
+                    l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},repo]`
                     fieldLabel = (`${l}: `);
                 }
 
                 let targetLabel;
                 if (e.targetIsEntity) {
-                    targetLabel = await this.providers.pEntityLabel.get({pkEntity: e.fkTarget, fkProject: fkProject})
+                    // Fetch repo variant of related entity label
+                    const rEntLabel = await this.providers.rEntityLabel.get({pkEntity: e.fkTarget})
+                    targetLabel = rEntLabel?.entityLabel ?? `[e${e.fkTarget}]`
 
-                    // TODO Get repo variant, if needed
-
-                    targetLabel = targetLabel ?? `[e${e.fkTarget}]`
-                    // const targetEntityId: PEntityId = {fkProject, pkEntity: e.fkTarget}
-                    // const fkTargetClass = (await this.providers.pEntity.get(targetEntityId))?.fkClass
+                    // const targetEntityId: REntityId = {fkProject, pkEntity: e.fkTarget}
+                    // const fkTargetClass = (await this.providers.rEntity.get(targetEntityId))?.fkClass
 
                     // const targetClassLabel = (fkTargetClass ?
                     //     await this.providers.pClassLabel.get({fkProject, pkClass: fkTargetClass}) :

@@ -1,10 +1,10 @@
-import {AggregatedDataService} from '../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
-import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../base/classes/Updater';
-import {pEntityIdToString, stringToPEntityId, sqlForTsVector} from '../../base/functions';
-import {PEntityId} from '../../primary-ds/entity/PEntityService';
-import {Warehouse} from '../../Warehouse';
+import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
+import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
+import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
+import {Updater} from '../../../base/classes/Updater';
+import {pEntityIdToString, stringToPEntityId, sqlForTsVector} from '../../../base/functions';
+import {PEntityId} from '../../../primary-ds/entity/PEntityService';
+import {Warehouse} from '../../../Warehouse';
 import {PEntityFullTextAggregator} from './PEntityFullTextAggregator';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
 
@@ -36,6 +36,7 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
     constructor(private wh: Warehouse) {
         super()
         const aggregatorFactory = async (id: PEntityId) => {
+            console.log(id)
             const providers = new PEntityFullTextProviders(this.wh.dep.pEntityFullText, id)
             return new PEntityFullTextAggregator(providers, id).create()
         }

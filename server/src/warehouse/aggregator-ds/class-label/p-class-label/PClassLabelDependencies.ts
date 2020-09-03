@@ -46,9 +46,9 @@ export class PClassLabelDependencies extends ClearAll {
 
   async clearAll() {
     await Promise.all([
-      this.project.clearIdx(),
-      this.dfhClassLabel.clearIdx(),
-      this.proClassLabel.clearIdx(),
+      this.project.clearAll(),
+      this.dfhClassLabel.clearAll(),
+      this.proClassLabel.clearAll(),
     ])
   }
 

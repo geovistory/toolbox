@@ -7,12 +7,12 @@ import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityLabelAggregator} from './REntityLabelAggregator';
 import {REntityLabelProviders} from './REntityLabelPoviders';
+import {EntityLabelVal} from '../entity-label.commons';
 
-type ValueModel = string
-export class REntityLabelService extends AggregatedDataService<REntityId, ValueModel, REntityLabelAggregator>{
+export class REntityLabelService extends AggregatedDataService<REntityId, EntityLabelVal, REntityLabelAggregator>{
     updater: Updater<REntityId, REntityLabelAggregator>;
 
-    index = new IndexDBGeneric<REntityId, ValueModel>(rEntityIdToString, stringToREntityId)
+    index = new IndexDBGeneric<REntityId, EntityLabelVal>(rEntityIdToString, stringToREntityId)
 
     constructor(private wh: Warehouse) {
         super()
@@ -21,7 +21,10 @@ export class REntityLabelService extends AggregatedDataService<REntityId, ValueM
             return new REntityLabelAggregator(providers, id).create()
         }
         const register = async (result: REntityLabelAggregator) => {
-            await this.put(result.id, result.entityLabel)
+            await this.put(result.id, {
+                entityLabel: result.entityLabel,
+                labelMissing: result.labelMissing
+            })
             await result.providers.removeProvidersFromIndexes()
         }
 
@@ -34,7 +37,7 @@ export class REntityLabelService extends AggregatedDataService<REntityId, ValueM
             stringToREntityId,
         )
 
-        const upsertQueue = new SqlUpsertQueue<REntityId, ValueModel>(
+        const upsertQueue = new SqlUpsertQueue<REntityId, EntityLabelVal>(
             wh,
             'war.entity_preview (entity_label)',
             (valuesStr: string) => `
@@ -48,7 +51,7 @@ export class REntityLabelService extends AggregatedDataService<REntityId, ValueM
                 WHERE pk_entity = x.column1::int
                 AND project = x.column2::int
                 AND entity_label IS DISTINCT FROM x.column3;`,
-            (item) => [item.key.pkEntity, 0, item.val],
+            (item) => [item.key.pkEntity, 0, item.val.entityLabel],
             rEntityIdToString
         )
 

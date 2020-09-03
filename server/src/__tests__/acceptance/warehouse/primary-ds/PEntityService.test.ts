@@ -131,52 +131,6 @@ describe('PEntityService', () => {
   })
 
 
-  it('should delete entity preview when entity is removed', async () => {
-    let entities = await getWarEntityPreview(
-      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
-      ProProjectMock.PROJECT_1.pk_entity ?? -1
-    )
-    expect(entities.length).to.equal(0);
-    await createInfLanguage(InfLanguageMock.GERMAN)
-    await createProProject(ProProjectMock.PROJECT_1)
-    await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-
-    await waitUntilNext(s.afterPut$)
-    const id: PEntityId = {
-      pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
-      fkProject: ProProjectMock.PROJECT_1.pk_entity ?? -1
-    }
-    const item = await s.index.getFromIdx(id)
-    expect(item?.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
-
-    await wait(500)
-
-    entities = await getWarEntityPreview(id.pkEntity, id.fkProject)
-
-    expect(entities.length).to.equal(1);
-    expect(entities?.[0].fk_class).to.equal(InfPersistentItemMock.PERSON_1.fk_class);
-
-    await updateProInfoProjRel(
-      ProInfoProjRelMock.PROJ_1_PERSON_1.pk_entity ?? -1,
-      {
-        ...ProInfoProjRelMock.PROJ_1_PERSON_1,
-        is_in_project: false
-      }
-    )
-
-    await waitUntilNext(s.afterDel$)
-    await wait(20)
-
-    entities = await getWarEntityPreview(
-      InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
-      ProProjectMock.PROJECT_1.pk_entity ?? -1
-    )
-    expect(entities.length).to.equal(0);
-
-
-  })
-
 
 });
 

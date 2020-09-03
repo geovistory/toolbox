@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
-import {PEntityTimeSpan} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
+import {PEntityTimeSpan, PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
 import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
@@ -10,7 +10,7 @@ import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper'
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
-import {createProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
@@ -21,7 +21,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy, wait} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy, wait, waitForEntityPreview, waitUntilNext} from '../../../../helpers/warehouse-helpers';
 import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
 
 /**
@@ -30,11 +30,13 @@ import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview
 describe('PEntityTimeSpan', function () {
     let wh: Warehouse;
     let edgeService: PEdgeService;
+    let s: PEntityTimeSpanService
 
     beforeEach(async function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
         edgeService = wh.prim.pEdge
+        s = wh.agg.pEntityTimeSpan
     })
     afterEach(async function () {await wh.stop()})
 
@@ -114,6 +116,26 @@ describe('PEntityTimeSpan', function () {
         expect(result?.[0].first_second).to.be.null()
         expect(result?.[0].last_second).to.be.null()
     })
+
+
+    it('should delete entity time span from index when entity is removed from project', async () => {
+        await createProjectAndModelMock();
+        const shipVoyage = await createInfTemporalEntity(InfTemporalEntityMock.SHIP_VOYAGE);
+        const prel = await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
+
+        const result = await waitForEntityPreview(wh, [
+            {pk_entity: {eq: shipVoyage.pk_entity}},
+            {fk_project: {eq: prel.fk_project}}
+        ])
+        expect(result)
+        // remove person from the project
+        await updateProInfoProjRel(prel.pk_entity ?? -1, {is_in_project: false})
+
+        await waitUntilNext(s.afterDel$)
+        const item = await s.index.getFromIdx({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1})
+        expect(item).to.be.undefined()
+    })
+
 })
 
 // create the mock data:
