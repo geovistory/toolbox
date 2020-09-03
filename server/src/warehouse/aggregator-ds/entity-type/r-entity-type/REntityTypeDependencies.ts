@@ -7,8 +7,9 @@ import {Warehouse} from '../../../Warehouse'
 import {REntityTypeVal} from './REntityTypeService'
 import {RClassId, DfhClassHasTypePropVal} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {EntityLabelVal} from '../../entity-label/entity-label.commons'
+import {Dependencies} from '../../../base/classes/Dependencies'
 
-export class REntityTypeDependencies extends ClearAll {
+export class REntityTypeDependencies extends Dependencies {
     rEntity: DependencyIndex<REntityId, REntityTypeVal, REntityId, REntity>
     rEntityLabel: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityLabelVal>
     rEdge: DependencyIndex<REntityId, REntityTypeVal, REntityId, EntityFields>
@@ -17,58 +18,46 @@ export class REntityTypeDependencies extends ClearAll {
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
-        this.rEntity = new DependencyIndex(
+        this.rEntity = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.rEntityType,
             this.wh.prim.rEntity,
             rEntityIdToString,
             stringToREntityId,
             rEntityIdToString,
             stringToREntityId,
-        )
+        ))
 
         // stores the dependency of entityType (receiver) on entityLabel (provider)
-        this.rEntityLabel = new DependencyIndex(
+        this.rEntityLabel = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.rEntityType,
             this.wh.agg.rEntityLabel,
             rEntityIdToString,
             stringToREntityId,
             rEntityIdToString,
             stringToREntityId,
-        );
+        ));
 
         // stores the dependency of entityType (receiver) on edge (provider)
-        this.rEdge = new DependencyIndex(
+        this.rEdge = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.rEntityType,
             this.wh.prim.rEdge,
             rEntityIdToString,
             stringToREntityId,
             rEntityIdToString,
             stringToREntityId,
-        );
+        ));
 
         // stores the dependency of entityType (receiver) on dfhClassHasTypeProperty
-        this.dfhClassHasTypeProp = new DependencyIndex(
+        this.dfhClassHasTypeProp = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.rEntityType,
             this.wh.prim.dfhClassHasTypeProperty,
             rEntityIdToString,
             stringToREntityId,
             rClassIdToString,
             stringToRClassId,
-        );
+        ));
 
 
     }
-
-    async clearAll() {
-        await Promise.all([
-            this.rEdge.clearAll(),
-            this.rEntity.clearAll(),
-            this.rEntityLabel.clearAll(),
-        ])
-    }
-
-    async initIdx() {}
-
-
 
 }

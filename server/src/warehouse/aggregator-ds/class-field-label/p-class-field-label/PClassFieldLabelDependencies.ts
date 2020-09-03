@@ -6,8 +6,9 @@ import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService'
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../../Warehouse'
 import {PClassFieldId} from './PClassFieldLabelService'
+import {Dependencies} from '../../../base/classes/Dependencies'
 
-export class PClassFieldLabelDependencies extends ClearAll {
+export class PClassFieldLabelDependencies extends Dependencies {
   project: DependencyIndex<PClassFieldId, string, ProjectId, ProjectVal>
   dfhPropertyLabel: DependencyIndex<PClassFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
   proPropertyLabel: DependencyIndex<PClassFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
@@ -15,43 +16,33 @@ export class PClassFieldLabelDependencies extends ClearAll {
   // entityFulltextPropertyLabelDep: DependencyIndex<EntityId, string, PropertyId, string>;
   constructor(private wh: Warehouse) {
     super()
-    this.project = new DependencyIndex(
+    this.project = this.registerDepIdx(new DependencyIndex(
       wh.agg.pClassFieldLabel,
       wh.prim.proProject,
       pClassFieldIdToString,
       stringToPClassFieldId,
       projectIdToString,
       stringToProjectId
-    )
+    ))
 
-    this.dfhPropertyLabel = new DependencyIndex(
+    this.dfhPropertyLabel = this.registerDepIdx(new DependencyIndex(
       wh.agg.pClassFieldLabel,
       wh.prim.dfhPropertyLabel,
       pClassFieldIdToString,
       stringToPClassFieldId,
       dfhPropertyIdToString,
       stringToDfhPropertyId
-    )
+    ))
 
-    this.proPropertyLabel = new DependencyIndex(
+    this.proPropertyLabel = this.registerDepIdx(new DependencyIndex(
       wh.agg.pClassFieldLabel,
       wh.prim.proPropertyLabel,
       pClassFieldIdToString,
       stringToPClassFieldId,
       proPropertyIdToString,
       stringToProPropertyId
-    )
+    ))
   }
 
-
-  async clearAll() {
-    await Promise.all([
-      this.project.clearAll(),
-      this.dfhPropertyLabel.clearAll(),
-      this.proPropertyLabel.clearAll(),
-    ])
-  }
-
-  async initIdx() {}
 
 }

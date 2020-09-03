@@ -1,12 +1,12 @@
-import {ClearAll} from '../../../base/classes/ClearAll'
+import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {rClassIdToString, dfhClassIdToString, proClassIdToString, stringToRClassId, stringToDfhClassId, stringToProClassId} from '../../../base/functions'
+import {dfhClassIdToString, proClassIdToString, rClassIdToString, stringToDfhClassId, stringToProClassId, stringToRClassId} from '../../../base/functions'
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService'
 import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
 import {Warehouse} from '../../../Warehouse'
 
-export class RClassLabelDependencies extends ClearAll {
+export class RClassLabelDependencies extends Dependencies {
   dfhClassLabel: DependencyIndex<RClassId, string, DfhClassLabelId, DfhClassLabelVal>
   proClassLabel: DependencyIndex<RClassId, string, ProClassLabelId, ProClassLabelVal>
 
@@ -15,33 +15,25 @@ export class RClassLabelDependencies extends ClearAll {
     super()
 
 
-    this.dfhClassLabel = new DependencyIndex(
+    this.dfhClassLabel = this.registerDepIdx(new DependencyIndex(
       wh.agg.rClassLabel,
       wh.prim.dfhClassLabel,
       rClassIdToString,
       stringToRClassId,
       dfhClassIdToString,
       stringToDfhClassId
-    )
+    ))
 
-    this.proClassLabel = new DependencyIndex(
+    this.proClassLabel = this.registerDepIdx(new DependencyIndex(
       wh.agg.rClassLabel,
       wh.prim.proClassLabel,
       rClassIdToString,
       stringToRClassId,
       proClassIdToString,
       stringToProClassId
-    )
+    ))
   }
 
 
-  async clearAll() {
-    await Promise.all([
-      this.dfhClassLabel.clearAll(),
-      this.proClassLabel.clearAll(),
-    ])
-  }
-
-  async initIdx() {}
 
 }

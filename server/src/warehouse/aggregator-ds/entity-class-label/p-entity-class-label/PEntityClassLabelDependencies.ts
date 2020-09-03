@@ -4,42 +4,35 @@ import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId
 import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService'
 import {Warehouse} from '../../../Warehouse'
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
+import {Dependencies} from '../../../base/classes/Dependencies'
 
-export class PEntityClassLabelDependencies extends ClearAll {
+export class PEntityClassLabelDependencies extends Dependencies {
     entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>
     pClassLabel: DependencyIndex<PEntityId, string, PClassId, string>
 
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
-        this.entity = new DependencyIndex<PEntityId, string, PEntityId, PEntity>(
+        this.entity = this.registerDepIdx(new DependencyIndex<PEntityId, string, PEntityId, PEntity>(
             this.wh.agg.pEntityClassLabel,
             this.wh.prim.pEntity,
             pEntityIdToString,
             stringToPEntityId,
             pEntityIdToString,
             stringToPEntityId,
-        )
+        ))
         // stores the dependency of pEntityLabel (receiver) on pClassLabel (provider)
-        this.pClassLabel = new DependencyIndex(
+        this.pClassLabel = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.pEntityClassLabel,
             this.wh.agg.pClassLabel,
             pEntityIdToString,
             stringToPEntityId,
             pClassIdToString,
             stringToPClassId,
-        );
+        ))
 
 
     }
-
-    async clearAll() {
-        await Promise.all([
-            this.pClassLabel.clearAll(),
-        ])
-    }
-
-    async initIdx() {}
 
 
 

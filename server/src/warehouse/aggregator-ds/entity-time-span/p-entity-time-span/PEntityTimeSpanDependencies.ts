@@ -5,8 +5,9 @@ import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService'
 import {Warehouse} from '../../../Warehouse'
 import {PEntityTimeSpanVal} from './PEntityTimeSpanService'
+import {Dependencies} from '../../../base/classes/Dependencies'
 
-export class PEntityTimeSpanDependencies extends ClearAll {
+export class PEntityTimeSpanDependencies extends Dependencies {
 
     //the timespan depends on:
     //duration: information.time_primitive column duration
@@ -36,33 +37,25 @@ export class PEntityTimeSpanDependencies extends ClearAll {
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
-        this.pEntity = new DependencyIndex(
+        this.pEntity = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEntity,
             pEntityIdToString,
             stringToPEntityId,
             pEntityIdToString,
             stringToPEntityId,
-        )
+        ))
 
         // stores the dependency of entityType (receiver) on edge (provider)
-        this.pEdge = new DependencyIndex(
+        this.pEdge = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEdge,
             pEntityIdToString,
             stringToPEntityId,
             pEntityIdToString,
             stringToPEntityId,
-        );
+        ));
 
     }
 
-    async clearAll() {
-        await Promise.all([
-            this.pEdge.clearAll(),
-            this.pEntity.clearAll(),
-        ])
-    }
-
-    async initIdx() {}
 }

@@ -5,8 +5,9 @@ import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPr
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../../Warehouse'
 import {RClassFieldId} from './RClassFieldLabelService'
+import {Dependencies} from '../../../base/classes/Dependencies'
 
-export class RClassFieldLabelDependencies extends ClearAll {
+export class RClassFieldLabelDependencies extends Dependencies {
   dfhPropertyLabel: DependencyIndex<RClassFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
   proPropertyLabel: DependencyIndex<RClassFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
 
@@ -14,33 +15,23 @@ export class RClassFieldLabelDependencies extends ClearAll {
   constructor(private wh: Warehouse) {
     super()
 
-    this.dfhPropertyLabel = new DependencyIndex(
+    this.dfhPropertyLabel = this.registerDepIdx(new DependencyIndex(
       wh.agg.rClassFieldLabel,
       wh.prim.dfhPropertyLabel,
       rClassFieldIdToString,
       stringToRClassFieldId,
       dfhPropertyIdToString,
       stringToDfhPropertyId
-    )
+    ))
 
-    this.proPropertyLabel = new DependencyIndex(
+    this.proPropertyLabel = this.registerDepIdx(new DependencyIndex(
       wh.agg.rClassFieldLabel,
       wh.prim.proPropertyLabel,
       rClassFieldIdToString,
       stringToRClassFieldId,
       proPropertyIdToString,
       stringToProPropertyId
-    )
+    ))
   }
-
-
-  async clearAll() {
-    await Promise.all([
-      this.dfhPropertyLabel.clearAll(),
-      this.proPropertyLabel.clearAll(),
-    ])
-  }
-
-  async initIdx() {}
 
 }

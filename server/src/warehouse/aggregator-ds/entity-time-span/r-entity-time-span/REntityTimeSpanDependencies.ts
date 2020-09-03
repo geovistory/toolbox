@@ -5,8 +5,9 @@ import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {REntityId, REntity} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
 import {REntityTimeSpanVal} from './REntityTimeSpanService'
+import {Dependencies} from '../../../base/classes/Dependencies'
 
-export class REntityTimeSpanDependencies extends ClearAll {
+export class REntityTimeSpanDependencies extends Dependencies {
 
     //the timespan depends on:
     //duration: information.time_primitive column duration
@@ -36,33 +37,25 @@ export class REntityTimeSpanDependencies extends ClearAll {
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
-        this.rEntity = new DependencyIndex(
+        this.rEntity = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.rEntityTimeSpan,
             this.wh.prim.rEntity,
             rEntityIdToString,
             stringToREntityId,
             rEntityIdToString,
             stringToREntityId,
-        )
+        ))
 
         // stores the dependency of entityType (receiver) on edge (provider)
-        this.rEdge = new DependencyIndex(
+        this.rEdge = this.registerDepIdx(new DependencyIndex(
             this.wh.agg.rEntityTimeSpan,
             this.wh.prim.rEdge,
             rEntityIdToString,
             stringToREntityId,
             rEntityIdToString,
             stringToREntityId,
-        );
+        ));
 
     }
 
-    async clearAll() {
-        await Promise.all([
-            this.rEdge.clearAll(),
-            this.rEntity.clearAll(),
-        ])
-    }
-
-    async initIdx() {}
 }

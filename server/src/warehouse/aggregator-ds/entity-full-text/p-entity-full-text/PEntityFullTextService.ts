@@ -36,7 +36,6 @@ export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEn
     constructor(private wh: Warehouse) {
         super()
         const aggregatorFactory = async (id: PEntityId) => {
-            console.log(id)
             const providers = new PEntityFullTextProviders(this.wh.dep.pEntityFullText, id)
             return new PEntityFullTextAggregator(providers, id).create()
         }
