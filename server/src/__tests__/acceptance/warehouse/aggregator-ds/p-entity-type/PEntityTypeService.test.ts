@@ -4,11 +4,11 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
-import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
+import {createInfLanguage, createLanguages} from '../../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProInfoProjRel, updateProInfoProjRel, addEntitiesToProject, removeEntityFromProject} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
@@ -20,8 +20,11 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, waitUntilNext} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForEntityPreview, waitUntilNext, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 import {PEntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
+import {createModelMockForCityType, createProject1, createProject2, createProject3, createInstancesForCityType} from '../../../../helpers/graphs/cityType.helper';
+import {project} from 'ramda';
+import {createModelMockForMadrid, createInstancesForMadrid} from '../../../../helpers/graphs/madrid.helper';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -37,22 +40,23 @@ describe('PEntityTypeService', function () {
     afterEach(async function () {await wh.stop()})
 
     it('should create fk_type of geographical place', async () => {
-        const {madrid, project, cityTypeAppe} = await createMock();
+        const {madrid, project, cityTypeProjRel} = await createMock();
 
         const result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: madrid.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
-            {type_label: {eq: cityTypeAppe.string}},
+            {fk_type: {eq: cityTypeProjRel.fk_entity}},
         ])
-        expect(result.type_label).to.equal(cityTypeAppe.string);
+        expect(result);
     })
 
     it('should update fk_type of geographical place', async () => {
-        const {madrid, project, cityTypeAppe} = await createMock();
+        const {madrid, project, cityTypeProjRel, cityTypeAppe} = await createMock();
 
         let result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: madrid.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
+            {fk_type: {eq: cityTypeProjRel.fk_entity}},
             {type_label: {eq: cityTypeAppe.string}},
         ])
         expect(result.type_label).to.equal(cityTypeAppe.string);
@@ -65,28 +69,96 @@ describe('PEntityTypeService', function () {
         result = await waitForEntityPreview(wh, [
             {pk_entity: {eq: madrid.pk_entity}},
             {fk_project: {eq: project.pk_entity}},
+            {fk_type: {eq: null}},
+            {type_label: {eq: null}},
         ])
         expect(result.type_label).to.not.equal(cityTypeAppe.string);
     })
 
     it('should take repo-label of type, if type is not in project', async () => {
-        const {madrid, cityTypeProjRel, project, cityTypeAppe} = await createMock();
+        await createLanguages()
+        await createModelMockForCityType();
 
-        let result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: madrid.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
-            {type_label: {eq: cityTypeAppe.string}},
-        ])
-        expect(result.type_label).to.equal(cityTypeAppe.string);
-        // remove the type (peIt) from the project
-        await updateProInfoProjRel(cityTypeProjRel.pk_entity ?? -1, {is_in_project: false})
+        const {project1} = await createProject1();
 
-        result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: madrid.pk_entity}},
-            {fk_project: {eq: project.pk_entity}},
-            {type_label: {eq: cityTypeAppe.string}},
+        const {project2} = await createProject2();
+
+        const {project3} = await createProject3();
+
+        // create type instances
+        const {
+            cityType,
+            appeCity,
+            appeStadt,
+            naming1,
+            naming1RefersTo,
+            naming1IsAppeOf,
+            naming2,
+            naming2RefersTo,
+            naming2IsAppeOf
+        } = await createInstancesForCityType();
+
+        // add naming 1 to project1
+        await addEntitiesToProject(project1.pk_entity, [
+            cityType.pk_entity,
+            naming1.pk_entity,
+            naming1RefersTo.pk_entity,
+            naming1IsAppeOf.pk_entity])
+
+        // add naming 2 to project2
+        await addEntitiesToProject(project2.pk_entity, [
+            cityType.pk_entity,
+            naming2.pk_entity,
+            naming2RefersTo.pk_entity,
+            naming2IsAppeOf.pk_entity])
+
+        // add naming 2 to project3
+        await addEntitiesToProject(project3.pk_entity, [
+            cityType.pk_entity,
+            naming2.pk_entity,
+            naming2RefersTo.pk_entity,
+            naming2IsAppeOf.pk_entity])
+
+        await createModelMockForMadrid()
+        const {madrid, madridHasType} = await createInstancesForMadrid()
+
+
+
+        await addEntitiesToProject(project1.pk_entity, [
+            madrid.pk_entity,
+            madridHasType.pk_entity])
+
+
+        // cityType should be called 'City' in project 1 and 'Stadt' in repo
+        const [proj1V, repoV, madridTypeLabel] = await Promise.all([
+            waitForEntityPreviewUntil(wh, (item) => {
+                return item.pk_entity === cityType.pk_entity
+                    && item.fk_project === project1.pk_entity
+                    && item.entity_label === appeCity.string
+            }),
+            waitForEntityPreviewUntil(wh, (item) => {
+                return item.pk_entity === cityType.pk_entity
+                    && item.fk_project === null
+                    && item.entity_label === appeStadt.string
+            }),
+            waitForEntityPreviewUntil(wh, (item) => {
+                return item.pk_entity === madrid.pk_entity
+                    && item.fk_project === project1.pk_entity
+                    && item.type_label === appeCity.string // <- !! here is the tested type label
+            })
         ])
-        expect(result.type_label).to.equal(cityTypeAppe.string);
+        expect({proj1V, repoV, madridTypeLabel})
+
+        // remove the cityType (peIt) from the project1
+        await removeEntityFromProject(project1.pk_entity, cityType.pk_entity)
+
+        // madrid.entiy_type should be called 'City' in project 1 and 'Stadt' in repo
+        const madridTypeLabel2 = await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === madrid.pk_entity
+                && item.fk_project === project1.pk_entity
+                && item.type_label === appeStadt.string // <- !! here is the tested type label
+        })
+        expect(madridTypeLabel2.type_label).to.equal(appeStadt.string);
     })
 
     it('should delete entity type from index when entity is removed from project', async () => {
@@ -138,7 +210,7 @@ async function createMock() {
     const cityTypeAppe = await createInfAppellation(InfAppellationMock.CITY)
 
     // - teEn Y (Naming of peIt X = 'City')
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_CITY);
+    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1_CITY);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_CITY);
 
     // - stmt (Y refers to Name appe 'City')

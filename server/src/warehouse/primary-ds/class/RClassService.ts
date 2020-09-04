@@ -1,3 +1,4 @@
+import {RClassFieldId} from '../../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {rClassIdToString, stringToRClassId} from '../../base/functions';
@@ -22,7 +23,15 @@ export class RClassService extends PrimaryDataService<InitItem, RClassId, RClass
     this.afterPut$.subscribe(item => {
       // Add update requests on aggregaters based on project class
       wh.agg.rClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
-
+      // Generate incoming class field for 'has appellation' property 1111
+      if ([8, 9, 30].includes(item.val.basicType)) {
+        const incomingField: RClassFieldId = {
+          fkClass: item.val.fkClass,
+          fkProperty: 1111,
+          isOutgoing: false
+        }
+        wh.agg.rClassFieldLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
+      }
     })
 
     /**

@@ -27,14 +27,14 @@ export class InfStatementMock {
 
   static readonly NAMING_CITY_TO_APPE_CITY = new InfStatement({
     pk_entity: 3003,
-    fk_subject_info: InfTemporalEntityMock.NAMING_CITY.pk_entity,
+    fk_subject_info: InfTemporalEntityMock.NAMING_1_CITY.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
     fk_object_info: InfAppellationMock.CITY.pk_entity,
   })
 
   static readonly NAMING_CITY_TO_GEO_PLACE_TYPE = new InfStatement({
     pk_entity: 3004,
-    fk_subject_info: InfTemporalEntityMock.NAMING_CITY.pk_entity,
+    fk_subject_info: InfTemporalEntityMock.NAMING_1_CITY.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
   })
@@ -112,6 +112,19 @@ export class InfStatementMock {
     fk_object_info: InfPersistentItemMock.PERSON_1.pk_entity,
   })
 
+  static readonly NAMING_2_STADT_TO_APPE_STADT = new InfStatement({
+    pk_entity: 3015,
+    fk_subject_info: InfTemporalEntityMock.NAMING_2_STADT.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.STADT.pk_entity,
+  })
+
+  static readonly NAMING_2_STADT_TO_GEO_PLACE_TYPE = new InfStatement({
+    pk_entity: 3016,
+    fk_subject_info: InfTemporalEntityMock.NAMING_2_STADT.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
+  })
 
 
 }

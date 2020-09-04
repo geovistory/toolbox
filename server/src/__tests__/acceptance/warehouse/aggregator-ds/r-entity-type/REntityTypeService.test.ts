@@ -103,7 +103,7 @@ async function createMock() {
     const cityTypeAppe = await createInfAppellation(InfAppellationMock.CITY)
 
     // - teEn Y (Naming of peIt X = 'City')
-    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_CITY);
+    await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1_CITY);
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_CITY);
 
     // - stmt (Y refers to Name appe 'City')

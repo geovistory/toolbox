@@ -58,6 +58,9 @@ export class REntityLabelAggregator extends AbstractAggregator<REntityId> {
 
             if (keys(fieldsWithEdges).length === 0) return this;
 
+            if (entity.pkEntity === 2003) {
+                const a = ''
+            }
             const classId: RClassId = {
                 pkClass: entity.fkClass
             }

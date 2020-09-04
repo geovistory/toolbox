@@ -62,7 +62,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_NAMING_CITY = new ProInfoProjRel({
     pk_entity: 2007,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfTemporalEntityMock.NAMING_CITY.pk_entity,
+    fk_entity: InfTemporalEntityMock.NAMING_1_CITY.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })

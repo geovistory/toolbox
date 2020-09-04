@@ -43,7 +43,7 @@ export class REntityService extends PrimaryDataService<InitItem, REntityId, REnt
                 wh.agg.rEntityClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
                 wh.agg.rEntityType.updater.addItemToQueue(item.key).catch(e => console.log(e))
                 if (item.val.entityType === 'teEn') wh.agg.rEntityTimeSpan.updater.addItemToQueue(item.key).catch(e => console.log(e))
-                // wh.agg.pEntityFullText.updater.addItemToQueue(item.key).catch(e => console.log(e))
+                wh.agg.rEntityFullText.updater.addItemToQueue(item.key).catch(e => console.log(e))
 
                 // Add item to queue to upsert it into db
                 this.upsertQueue.add(item)

@@ -2,27 +2,28 @@
 import {expect} from '@loopback/testlab';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
-import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
+import {createInfLanguage, createLanguages} from '../../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
+import {addEntitiesToProject, createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
+import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
-import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
-import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -101,9 +102,6 @@ describe('REntityLabelService', function () {
         expect(result.entity_label).to.equal(appellation.string)
     })
 
-    it('should create entity label of Presence – E93 (-- without )', async () => {
-
-    })
 
     it('should create entity label of Birth – E67 (-- with identifying property)', async () => {
         await createProject();
@@ -130,11 +128,106 @@ describe('REntityLabelService', function () {
         })
         expect(result)
     })
+
+
+
+    /**
+     * tests if the entity label of the repo variant is the label that has the highest
+     * rank amongst the project variants
+     */
+    it('should create entity label of Geov.Place Type – according to most used is appe. of stmt', async () => {
+        await createLanguages()
+        await createModelMockForCityType();
+
+        const {project1} = await createProject1();
+
+        const {project2} = await createProject2();
+
+        const {project3} = await createProject3();
+
+        // create instances
+        const {
+            cityType,
+            appeCity,
+            appeStadt,
+            naming1,
+            naming1RefersTo,
+            naming1IsAppeOf,
+            naming2,
+            naming2RefersTo,
+            naming2IsAppeOf
+        } = await createInstancesForCityType();
+
+        // add naming 1 to project1
+        await addEntitiesToProject(project1.pk_entity, [
+            cityType.pk_entity,
+            naming1.pk_entity,
+            naming1RefersTo.pk_entity,
+            naming1IsAppeOf.pk_entity])
+
+        // add naming 2 to project2
+        await addEntitiesToProject(project2.pk_entity, [
+            cityType.pk_entity,
+            naming2.pk_entity,
+            naming2RefersTo.pk_entity,
+            naming2IsAppeOf.pk_entity])
+
+        // add naming 2 to project3
+        await addEntitiesToProject(project3.pk_entity, [
+            cityType.pk_entity,
+            naming2.pk_entity,
+            naming2RefersTo.pk_entity,
+            naming2IsAppeOf.pk_entity])
+
+
+
+        // since naming 2 is more often used, repo cityType.entity_label should be 'Stadt'
+        const [proj1V, proj2V, proj3V, repoV] = await Promise.all([
+            waitForEntityPreviewUntil(wh, (item) => {
+                return item.pk_entity === cityType.pk_entity
+                    && item.fk_project === project1.pk_entity
+                    && item.entity_label === appeCity.string
+            }),
+            waitForEntityPreviewUntil(wh, (item) => {
+                return item.pk_entity === cityType.pk_entity
+                    && item.fk_project === project2.pk_entity
+                    && item.entity_label === appeStadt.string
+            }),
+            waitForEntityPreviewUntil(wh, (item) => {
+                return item.pk_entity === cityType.pk_entity
+                    && item.fk_project === project3.pk_entity
+                    && item.entity_label === appeStadt.string
+            }),
+            waitForEntityPreviewUntil(wh, (item) => {
+                return item.pk_entity === cityType.pk_entity
+                    && item.fk_project === null
+                    && item.entity_label === appeStadt.string
+            })
+        ])
+        expect({proj1V, proj2V, proj3V, repoV})
+
+        // add naming 1 to project 2
+        await addEntitiesToProject(project2.pk_entity, [
+            naming1.pk_entity,
+            naming1RefersTo.pk_entity,
+            naming1IsAppeOf.pk_entity])
+        // add naming 1 to project 3
+        await addEntitiesToProject(project3.pk_entity, [
+            naming1.pk_entity,
+            naming1RefersTo.pk_entity,
+            naming1IsAppeOf.pk_entity])
+
+        // now naming1IsAppeOf is in 3 projects, naming2IsAppeOf in 2 projects
+        // -> the repo label should be 'City'
+        const repoVUpdated = await waitForEntityPreviewUntil(wh, (item) => {
+            return item.pk_entity === cityType.pk_entity
+                && item.fk_project === null
+                && item.entity_label === appeCity.string
+        })
+        expect(repoVUpdated)
+
+    })
 })
-
-
-
-
 
 
 async function createNamingAndPersonMock() {

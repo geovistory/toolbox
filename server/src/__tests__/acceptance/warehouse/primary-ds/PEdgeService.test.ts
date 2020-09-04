@@ -44,17 +44,14 @@ describe('PEdgeService', () => {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
 
-    await wait(500)
-
-    const result = await s.index.getFromIdx({
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
-      fkProject: project.pk_entity ?? -1
+    await waitUntilSatisfy(s.afterPut$, (item) => {
+      return item.key.pkEntity === (InfTemporalEntityMock.NAMING_1.pk_entity ?? -1)
+        && item.key.fkProject === (project.pk_entity ?? -1)
+        && item.val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
+        && item.val?.outgoing?.[1113]?.length === 1
+        && item.val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
+        && item.val?.outgoing?.[1111]?.length === 1
     })
-    expect(result?.outgoing?.[1113]?.[0].targetLabel).to.equal(InfAppellationMock.JACK_THE_FOO.string)
-    expect(result?.outgoing?.[1113]?.length).to.equal(1)
-
-    expect(result?.outgoing?.[1111]?.[0].fkTarget).to.equal(InfStatementMock.NAME_1_TO_PERSON.fk_object_info)
-    expect(result?.outgoing?.[1111]?.length).to.equal(1)
 
   })
 
@@ -72,13 +69,6 @@ describe('PEdgeService', () => {
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
 
 
-    // await wait(500)
-
-    // const id = {
-    //   pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
-    //   fkProject: project.pk_entity ?? -1
-    // }
-    // let result = await s.index.getFromIdx(id)
 
     await waitUntilSatisfy(s.afterPut$, (item) => {
       return item.key.pkEntity === InfTemporalEntityMock.NAMING_1.pk_entity
@@ -88,13 +78,6 @@ describe('PEdgeService', () => {
         && item.val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
         && item.val?.outgoing?.[1111]?.length === 1
     })
-    // expect(result?.outgoing?.[1113]?.[0].targetLabel).to.equal(InfAppellationMock.JACK_THE_FOO.string)
-    // expect(result?.outgoing?.[1113]?.length).to.equal(1)
-
-    // expect(result?.outgoing?.[1111]?.[0].fkTarget).to.equal(InfStatementMock.NAME_1_TO_PERSON.fk_object_info)
-    // expect(result?.outgoing?.[1111]?.length).to.equal(1)
-
-
 
     await updateProInfoProjRel(
       ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON.pk_entity ?? -1,
@@ -111,37 +94,9 @@ describe('PEdgeService', () => {
         && item.val?.outgoing?.[1113]?.length === 1
         && item.val?.outgoing?.[1111] === undefined
     })
-    // await waitUntilNext(s.afterPut$)
 
-    // result = await s.index.getFromIdx(id)
-    // expect(result?.outgoing?.[1113]?.[0].targetLabel).to.equal(InfAppellationMock.JACK_THE_FOO.string)
-    // expect(result?.outgoing?.[1113]?.length).to.equal(1)
-    // expect(result?.outgoing?.[1111]).be.undefined()
   })
 
-  // it('should delete entity if removed from project', async () => {
-  //   const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
-  //   await createInfLanguage(InfLanguageMock.GERMAN)
-  //   const project = await createProProject(ProProjectMock.PROJECT_1)
-  //   await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-  //   await s.initIdx();
-  //   const id = {
-  //     pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
-  //     fkProject: project.pk_entity ?? -1
-  //   }
-  //   let result = await s.index.getFromIdx(id)
-  //   expect(result?.fkClass).to.equal(entity?.fk_class)
-  //   await updateProInfoProjRel(
-  //     ProInfoProjRelMock.PROJ_1_PERSON_1.pk_entity ?? -1,
-  //     {
-  //       ...ProInfoProjRelMock.PROJ_1_PERSON_1,
-  //       is_in_project: false
-  //     }
-  //   )
-  //   await wait(20)
-  //   result = await s.index.getFromIdx(id)
-  //   expect(result?.fkClass).to.be.undefined()
-  // })
 
 });
 

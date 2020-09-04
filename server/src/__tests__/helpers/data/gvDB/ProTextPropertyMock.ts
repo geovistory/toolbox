@@ -83,5 +83,16 @@ export class ProTextPropertyMock {
     string: 'Was born (default)'
   })
 
+  static readonly PROJ_DEF_EN_PROPERTY_PERSON_HAS_APPELLATION = new ProTextProperty({
+    pk_entity: 5008,
+    fk_project: PK_DEFAULT_CONFIG_PROJECT,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_dfh_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_dfh_property_range: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+    fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
+    string: 'has appellations (default)'
+  })
+
+
 
 }

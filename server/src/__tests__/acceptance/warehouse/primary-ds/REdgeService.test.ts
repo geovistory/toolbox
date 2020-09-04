@@ -18,7 +18,7 @@ import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, wait, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, wait, waitUntilSatisfy, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('REdgeService', () => {
 
@@ -44,16 +44,14 @@ describe('REdgeService', () => {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
 
-    await wait(500)
-
-    const result = await s.index.getFromIdx({
-      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
+    await waitUntilSatisfy(s.afterPut$, (item) => {
+      return item.key.pkEntity === (InfTemporalEntityMock.NAMING_1.pk_entity ?? -1)
+        && item.val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
+        && item.val?.outgoing?.[1113]?.length === 1
+        && item.val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
+        && item.val?.outgoing?.[1111]?.length === 1
     })
-    expect(result?.outgoing?.[1113]?.[0].targetLabel).to.equal(InfAppellationMock.JACK_THE_FOO.string)
-    expect(result?.outgoing?.[1113]?.length).to.equal(1)
 
-    expect(result?.outgoing?.[1111]?.[0].fkTarget).to.equal(InfStatementMock.NAME_1_TO_PERSON.fk_object_info)
-    expect(result?.outgoing?.[1111]?.length).to.equal(1)
 
   })
 

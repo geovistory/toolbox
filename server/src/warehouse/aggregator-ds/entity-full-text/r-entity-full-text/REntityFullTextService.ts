@@ -36,7 +36,6 @@ export class REntityFullTextService extends AggregatedDataService<REntityId, REn
     constructor(private wh: Warehouse) {
         super()
         const aggregatorFactory = async (id: REntityId) => {
-            console.log(id)
             const providers = new REntityFullTextProviders(this.wh.dep.rEntityFullText, id)
             return new REntityFullTextAggregator(providers, id).create()
         }

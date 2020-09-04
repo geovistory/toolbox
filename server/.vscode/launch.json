@@ -107,11 +107,12 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "4000",
+        "40000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/PEntityFullText.*/"
+
+        "/PEdgeService.*should have field edges in index after initIdx()/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

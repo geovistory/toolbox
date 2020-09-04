@@ -18,4 +18,14 @@ export class ProProjectMock {
     fk_language: InfLanguageMock.GERMAN.pk_entity
   })
 
+  static readonly PROJECT_2 = new ProProject({
+    pk_entity: 3002,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity
+  })
+
+  static readonly PROJECT_3 = new ProProject({
+    pk_entity: 3003,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity
+  })
+
 }
