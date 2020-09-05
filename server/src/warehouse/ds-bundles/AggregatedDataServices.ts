@@ -16,7 +16,9 @@ import {REntityLabelService} from '../aggregator-ds/entity-label/r-entity-label/
 import {REntityTimeSpanService} from '../aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
 import {REntityTypeService} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeService';
 import {REntityFullTextService} from '../aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
-export class AggregatedDataServices extends DataServiceBundle {
+import {AggregatedDataService} from '../base/classes/AggregatedDataService';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any,any,any>> {
     // Model aggregators
     identifyingProperty: IdentifyingPropertyService;
 
@@ -65,7 +67,7 @@ export class AggregatedDataServices extends DataServiceBundle {
     }
 
 
-    async start() {
+    async startCycling() {
         // Model aggregators
         await this.identifyingProperty.updater.startCylcling()
 
@@ -81,5 +83,11 @@ export class AggregatedDataServices extends DataServiceBundle {
         // Repo aggregators
         await this.rClassLabel.updater.startCylcling()
 
+    }
+    async clearAll() {
+        await Promise.all(this.registered.map(x => x.clearAll()));
+    }
+    async clearUpdateQueues() {
+        await Promise.all(this.registered.map(x => x.updater.clearIdx()));
     }
 }

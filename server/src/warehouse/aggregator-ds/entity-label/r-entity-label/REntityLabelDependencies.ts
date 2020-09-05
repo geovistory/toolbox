@@ -1,15 +1,14 @@
+import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {REntityId, REntity} from '../../../primary-ds/entity/REntityService'
+import {pClassIdToString, rClassIdToString, rEntityIdToString, stringToPClassId, stringToRClassId, stringToREntityId} from '../../../base/functions'
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
+import {EntityFields} from "../../../primary-ds/edge/edge.commons"
+import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
 import {EntityLabelConfig} from '../../../primary-ds/ProEntityLabelConfigService'
-import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {Warehouse} from '../../../Warehouse'
-import {rEntityIdToString, stringToREntityId, pClassIdToString, stringToPClassId, stringToRClassId, rClassIdToString} from '../../../base/functions'
-import {ClearAll} from '../../../base/classes/ClearAll'
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService'
 import {EntityLabelVal} from '../entity-label.commons'
-import {Dependencies} from '../../../base/classes/Dependencies'
 
 export class REntityLabelDependencies extends Dependencies {
     entity: DependencyIndex<REntityId, EntityLabelVal, REntityId, REntity>

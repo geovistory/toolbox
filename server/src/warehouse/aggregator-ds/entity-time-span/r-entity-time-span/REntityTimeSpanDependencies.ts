@@ -1,11 +1,10 @@
-import {ClearAll} from '../../../base/classes/ClearAll'
+import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
 import {rEntityIdToString, stringToREntityId} from '../../../base/functions'
 import {EntityFields} from "../../../primary-ds/edge/edge.commons"
-import {REntityId, REntity} from '../../../primary-ds/entity/REntityService'
+import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {Warehouse} from '../../../Warehouse'
 import {REntityTimeSpanVal} from './REntityTimeSpanService'
-import {Dependencies} from '../../../base/classes/Dependencies'
 
 export class REntityTimeSpanDependencies extends Dependencies {
 

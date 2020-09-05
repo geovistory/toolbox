@@ -41,7 +41,7 @@ export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, En
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
-    getDeletesSql = undefined;
+    getDeletesSql(tmsp: Date) {return ''};
 
 
     // function is only used to easily add mock data

@@ -59,7 +59,7 @@ export class RPropertyService extends PrimaryDataService<InitItem, RPropertyId, 
   getUpdatesSql(tmsp: Date) {
     return updateSql
   }
-  getDeletesSql = undefined
+  getDeletesSql(tmsp: Date) {return ''}
 }
 
 

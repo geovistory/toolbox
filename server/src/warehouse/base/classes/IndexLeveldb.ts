@@ -12,7 +12,7 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> {
 
     constructor() {
         this.db = subleveldown<string, ValueModel>(leveldb, this.indexName, {valueEncoding: 'json'});
-
+        console.log(this.indexName, this.constructor.name)
     }
 
     async addToIdx(keyModel: KeyModel, val: ValueModel) {

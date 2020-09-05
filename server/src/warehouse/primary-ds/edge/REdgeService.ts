@@ -28,7 +28,7 @@ export class REdgeService extends PrimaryDataService<EdgeInitItem, REntityId, En
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
-    getDeletesSql = undefined;
+    getDeletesSql(tmsp: Date) {return ''};
 
 
 

@@ -1,4 +1,4 @@
-import {ClearAll} from '../../../base/classes/ClearAll'
+import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
 import {dfhPropertyIdToString, pClassFieldIdToString, projectIdToString, proPropertyIdToString, stringToDfhPropertyId, stringToPClassFieldId, stringToProjectId, stringToProPropertyId} from '../../../base/functions'
 import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService'
@@ -6,7 +6,6 @@ import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService'
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../../Warehouse'
 import {PClassFieldId} from './PClassFieldLabelService'
-import {Dependencies} from '../../../base/classes/Dependencies'
 
 export class PClassFieldLabelDependencies extends Dependencies {
   project: DependencyIndex<PClassFieldId, string, ProjectId, ProjectVal>

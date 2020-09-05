@@ -18,7 +18,7 @@ describe('DfhClassLabelService', () => {
   beforeEach(async function () {
     await cleanDb();
     wh = await setupWarehouse()
-    await wh.start()
+    await wh.init()
     s = wh.prim.dfhClassLabel;
   })
 

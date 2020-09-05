@@ -11,7 +11,7 @@ class UniqIdx extends IndexDB<string, true> {
 
 const sep = ':'
 
-export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> extends ClearAll {
+export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements ClearAll {
 
 
     constructor(
@@ -22,7 +22,6 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         public providerKeyToString: (key: ProviderKeyModel) => string,
         public stringToProviderKey: (str: string) => ProviderKeyModel,
     ) {
-        super()
         providerDS.registerProviderOf(this)
     }
 

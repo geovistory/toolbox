@@ -24,8 +24,8 @@ export class DfhClassLabelService extends PrimaryDataService<DbItem, DfhClassLab
     }
     getUpdatesSql(tmsp: Date) {
         return updateSql
-   }
-   getDeletesSql = undefined;
+    }
+    getDeletesSql(tmsp: Date) {return ''};
 }
 
 interface DbItem {

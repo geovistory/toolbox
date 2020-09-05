@@ -1,10 +1,9 @@
-import {ClearAll} from '../../../base/classes/ClearAll'
-import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {pEntityIdToString, stringToPEntityId, pClassIdToString, stringToPClassId} from '../../../base/functions'
-import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService'
-import {Warehouse} from '../../../Warehouse'
-import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
 import {Dependencies} from '../../../base/classes/Dependencies'
+import {DependencyIndex} from '../../../base/classes/DependencyIndex'
+import {pClassIdToString, pEntityIdToString, stringToPClassId, stringToPEntityId} from '../../../base/functions'
+import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService'
+import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
+import {Warehouse} from '../../../Warehouse'
 
 export class PEntityClassLabelDependencies extends Dependencies {
     entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>

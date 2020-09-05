@@ -37,7 +37,7 @@ export class ProClassFieldsConfigService extends PrimaryDataService<InitItem, PC
     getUpdatesSql(tmsp: Date) {
         return updateSql
    }
-   getDeletesSql = undefined;
+   getDeletesSql(tmsp: Date) {return ''};
 
     // /**
     //  * returns class config of requested project, else of default config project

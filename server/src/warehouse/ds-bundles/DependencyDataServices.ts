@@ -15,9 +15,10 @@ import {REntityTypeDependencies} from '../aggregator-ds/entity-type/r-entity-typ
 import {IdentifyingPropertyDependencies} from '../aggregator-ds/identifying-property/IdentifyingPropertyDependencies';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
 import {Warehouse} from '../Warehouse';
+import {Dependencies} from '../base/classes/Dependencies';
 
 
-export class DependencyDataServices extends DataServiceBundle {
+export class DependencyDataServices extends DataServiceBundle<Dependencies> {
     identifyingProperty: IdentifyingPropertyDependencies
 
     pClassLabel: PClassLabelDependencies
@@ -56,5 +57,8 @@ export class DependencyDataServices extends DataServiceBundle {
         this.rEntityFullText = this.registerDataService(new REntityFullTextDependencies(wh));
         this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelDependencies(wh));
         this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanDependencies(wh));
+    }
+    async clearAll() {
+        await Promise.all(this.registered.map(x => x.clearAll()));
     }
 }

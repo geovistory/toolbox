@@ -1,10 +1,9 @@
-import {ClearAll} from '../../../base/classes/ClearAll'
-import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {rEntityIdToString, stringToREntityId, rClassIdToString, stringToRClassId} from '../../../base/functions'
-import {REntityId, REntity} from '../../../primary-ds/entity/REntityService'
-import {Warehouse} from '../../../Warehouse'
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {Dependencies} from '../../../base/classes/Dependencies'
+import {DependencyIndex} from '../../../base/classes/DependencyIndex'
+import {rClassIdToString, rEntityIdToString, stringToRClassId, stringToREntityId} from '../../../base/functions'
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
+import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
+import {Warehouse} from '../../../Warehouse'
 
 export class REntityClassLabelDependencies extends Dependencies {
     entity: DependencyIndex<REntityId, string, REntityId, REntity>

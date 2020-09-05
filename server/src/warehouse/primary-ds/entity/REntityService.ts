@@ -75,7 +75,7 @@ export class REntityService extends PrimaryDataService<InitItem, REntityId, REnt
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
-    getDeletesSql = undefined;
+    getDeletesSql(tmsp: Date) {return ''};
 
 
 

@@ -63,7 +63,7 @@ export class DfhOutgoingPropertyService extends PrimaryDataService<DbItem, Outgo
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
-    getDeletesSql = undefined;
+    getDeletesSql(tmsp: Date) {return ''};
 }
 
 interface DbItem {

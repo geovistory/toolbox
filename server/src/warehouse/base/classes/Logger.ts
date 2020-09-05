@@ -12,7 +12,7 @@ export class Logger {
     }
     /**
      * print msg and return time
-     * @param msg 
+     * @param msg
      */
     static start(msg: string, intendation = 1) {
         const ind = new Array(intendation + 1).join('      ');
@@ -42,7 +42,7 @@ export class Logger {
         return new Array(x + 2).join('      ');
     }
 
-    static log(msg: any, endLine = true) {
+    static log(msg='', endLine = true) {
         if (process.env.LOGS === 'OFF') return true
         process.stdout.write(msg);
         if (endLine) Logger.endLine()
@@ -71,4 +71,4 @@ export class Logger {
         readline.cursorTo(process.stdout, 0)
     }
 
-} 
+}

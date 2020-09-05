@@ -58,7 +58,7 @@ export class RClassService extends PrimaryDataService<InitItem, RClassId, RClass
   getUpdatesSql(tmsp: Date) {
     return updateSql
   }
-  getDeletesSql = undefined
+  getDeletesSql(tmsp: Date) {return ''}
 
 }
 

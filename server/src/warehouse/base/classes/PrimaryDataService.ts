@@ -3,10 +3,9 @@ import prettyms from 'pretty-ms';
 import {Warehouse} from '../../Warehouse';
 import {DataService} from './DataService';
 import {Logger} from './Logger';
+import {ClearAll} from './ClearAll';
 
-
-export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> {
-
+export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
     // number of iterations before measurin time an memory
     abstract measure: number;
@@ -23,9 +22,8 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     // True if running sync() should restart right after finishing
     restartSyncing = false;
 
-
     constructor(
-        protected wh: Warehouse,
+        public wh: Warehouse,
         private listenTo: string[]
     ) {
         super()
@@ -40,6 +38,18 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         const dbNow = await this.wh.pgClient.query('SELECT now() as now');
         await this.sync(new Date(dbNow.rows?.[0]?.now))
 
+    }
+
+    /**
+     * start listening
+     * @param date Will look for changes since date.
+     */
+    async startAndSyncSince(lastUpdateBegin: Date) {
+        await this.addPgListeners()
+
+        this.lastUpdateBegin = lastUpdateBegin;
+
+        await this.sync(lastUpdateBegin)
     }
 
     async clearAll() {
@@ -89,8 +99,10 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         // Look for deletes if
         // - there is a deleteSql and
         // - this data service has ever been synced
-        if (this.getDeletesSql && this.lastUpdateBegin) {
-            calls.push(this.manageDeletesSince(this.lastUpdateBegin))
+
+        if (this.lastUpdateBegin) {
+            const deleteSql = this.getDeletesSql(this.lastUpdateBegin)
+            if (deleteSql !== '') calls.push(this.manageDeletesSince(this.lastUpdateBegin, deleteSql))
         }
 
         // set this.lastUpdateBegin to current date
@@ -202,66 +214,64 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      * On each streamed key, the function calls delItem(key)
      * @param date
      */
-    private async manageDeletesSince(date: Date) {
-        if (this.getDeletesSql) {
-            const t1 = Logger.start(`${this.constructor.name} > manageDeletesSince ${date}`, 1);
-            const t2 = Logger.start(`Start deletes query  ...`, 2);
-            const d = date ?? new Date(0);
-            const query = new QueryStream(this.getDeletesSql(d), [d])
+    private async manageDeletesSince(date: Date, deleteSql: string) {
+        const t1 = Logger.start(`${this.constructor.name} > manageDeletesSince ${date}`, 1);
+        const t2 = Logger.start(`Start deletes query  ...`, 2);
+        const query = new QueryStream(deleteSql, [date])
 
-            const stream = this.wh.pgClient.query(query)
-            let minMeasure: number | null = null, maxMeasure: number | null = null;
-            let i = 0;
-            await new Promise((res, rej) => {
+        const stream = this.wh.pgClient.query(query)
+        let minMeasure: number | null = null, maxMeasure: number | null = null;
+        let i = 0;
+        await new Promise((res, rej) => {
 
-                let t3 = Logger.getTime()
-                let t4 = Logger.getTime()
-                stream.once('data', _ => {
-                    Logger.itTook(t2, `to run delete query.`, 2);
-                    t3 = Logger.start(`Start deleting items from stream ...`, 2)
-                    t4 = Logger.getTime()
-                })
-                stream.on('data', (item: KeyModel) => {
+            let t3 = Logger.getTime()
+            let t4 = Logger.getTime()
+            stream.once('data', _ => {
+                Logger.itTook(t2, `to run delete query.`, 2);
+                t3 = Logger.start(`Start deleting items from stream ...`, 2)
+                t4 = Logger.getTime()
+            })
+            stream.on('data', (item: KeyModel) => {
 
-                    i++;
+                i++;
 
-                    // delete item and add update request if needed
-                    this.del(item)
-                        .catch((e) => {
-                            stream.destroy();
-                            rej(e);
-                        });;
+                // delete item and add update request if needed
+                this.del(item)
+                    .catch((e) => {
+                        stream.destroy();
+                        rej(e);
+                    });;
 
 
-                    i++
-                    if (i % this.measure === 0) {
-                        // Logger.resetLine()
-                        const time = Logger.itTook(t3, `to delete ${this.measure} items from index of ${this.constructor.name} – done so far: ${i}`, 2)
-                        t3 = Logger.getTime()
-                        if (!minMeasure || minMeasure > time) minMeasure = time;
-                        if (!maxMeasure || maxMeasure < time) maxMeasure = time;
-                    }
-
-                })
-                stream.on('error', (e) => {
-                    rej(e)
-                })
-
-                stream.on('end', () => {
-                    res()
+                i++
+                if (i % this.measure === 0) {
                     // Logger.resetLine()
-                    if (minMeasure && maxMeasure) {
-                        Logger.itTook(t4, `to delete ${i} items from index of ${this.constructor.name}  –  fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 2);
-                    } else {
-                        Logger.itTook(t4, `to delete ${i} items from index of ${this.constructor.name}`, 2);
-                    }
-                })
-
+                    const time = Logger.itTook(t3, `to delete ${this.measure} items from index of ${this.constructor.name} – done so far: ${i}`, 2)
+                    t3 = Logger.getTime()
+                    if (!minMeasure || minMeasure > time) minMeasure = time;
+                    if (!maxMeasure || maxMeasure < time) maxMeasure = time;
+                }
 
             })
+            stream.on('error', (e) => {
+                rej(e)
+            })
 
-            Logger.itTook(t1, `to manage ${i} deletes by ${this.constructor.name}`);
-        }
+            stream.on('end', () => {
+                res()
+                // Logger.resetLine()
+                if (minMeasure && maxMeasure) {
+                    Logger.itTook(t4, `to delete ${i} items from index of ${this.constructor.name}  –  fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 2);
+                } else {
+                    Logger.itTook(t4, `to delete ${i} items from index of ${this.constructor.name}`, 2);
+                }
+            })
+
+
+        })
+
+        Logger.itTook(t1, `to manage ${i} deletes by ${this.constructor.name}`);
+
     }
 
     /**
@@ -286,5 +296,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
     // sql statement used to query deletes for the index
     // if the warehouse does not need to consider deletets, set this to null
-    abstract getDeletesSql?(tmsp: Date): string;
+    abstract getDeletesSql(tmsp: Date): string;
+
+
 }

@@ -1,11 +1,10 @@
-import {ClearAll} from '../../../base/classes/ClearAll'
+import {Dependencies} from '../../../base/classes/Dependencies'
 import {DependencyIndex} from '../../../base/classes/DependencyIndex'
 import {dfhPropertyIdToString, proPropertyIdToString, rClassFieldIdToString, stringToDfhPropertyId, stringToProPropertyId, stringToRClassFieldId} from '../../../base/functions'
 import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService'
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../../Warehouse'
 import {RClassFieldId} from './RClassFieldLabelService'
-import {Dependencies} from '../../../base/classes/Dependencies'
 
 export class RClassFieldLabelDependencies extends Dependencies {
   dfhPropertyLabel: DependencyIndex<RClassFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>

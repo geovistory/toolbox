@@ -25,7 +25,7 @@ export class DfhPropertyLabelService extends PrimaryDataService<DbItem, DfhPrope
     getUpdatesSql(tmsp: Date) {
         return updateSql
    }
-   getDeletesSql = undefined;
+   getDeletesSql(tmsp: Date) {return ''};
 }
 
 interface DbItem {

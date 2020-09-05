@@ -26,7 +26,7 @@ describe('PEntityService', () => {
   beforeEach(async function () {
     await cleanDb();
     wh = await setupWarehouse()
-    await wh.start()
+    await wh.init()
     await wh.pgClient.query('LISTEN entity_previews_updated;')
     s = wh.prim.pEntity;
   })

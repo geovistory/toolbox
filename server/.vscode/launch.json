@@ -84,14 +84,29 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Warehouse",
+      "name": "Init Warehouse",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/warehouse.js",
+      "program": "${workspaceFolder}/warehouse-init.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
-      "restart": true,
+      "restart": false,
+      "outputCapture": "std",
+      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Listen Warehouse",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/warehouse-listen.js",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "restart": false,
       "outputCapture": "std",
       "envFile": "${workspaceFolder}/.vscode/envFile.dev",
       "outFiles": [

@@ -1,24 +1,27 @@
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
+import {PrimaryDataService} from '../base/classes/PrimaryDataService';
+import {PClassService} from '../primary-ds/class/PClassService';
+import {RClassService} from '../primary-ds/class/RClassService';
 import {DfhClassHasTypePropertyService} from '../primary-ds/DfhClassHasTypePropertyService';
 import {DfhClassLabelService} from '../primary-ds/DfhClassLabelService';
-import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
-import {EntityLabelConfig, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
-import {ProClassFieldsConfigService, PClassId} from '../primary-ds/ProClassFieldsConfigService';
-import {PClassService} from '../primary-ds/class/PClassService';
-import {PEdgeService} from '../primary-ds/edge/PEdgeService';
-import {StatementItemToIndexate} from "../primary-ds/edge/edge.commons";
-import {PEntityId, PEntityService, PEntity} from '../primary-ds/entity/PEntityService';
-import {PPropertyService} from '../primary-ds/property/PPropertyService';
-import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
-import {ProProjectService} from '../primary-ds/ProProjectService';
-import {Warehouse} from '../Warehouse';
-import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
 import {DfhOutgoingPropertyService} from '../primary-ds/DfhOutgoingPropertyService';
-import {REntityService} from '../primary-ds/entity/REntityService';
+import {DfhPropertyLabelService} from '../primary-ds/DfhPropertyLabelService';
+import {StatementItemToIndexate} from "../primary-ds/edge/edge.commons";
+import {PEdgeService} from '../primary-ds/edge/PEdgeService';
 import {REdgeService} from '../primary-ds/edge/REdgeService';
-import {RClassService} from '../primary-ds/class/RClassService';
+import {PEntity, PEntityId, PEntityService} from '../primary-ds/entity/PEntityService';
+import {REntityService} from '../primary-ds/entity/REntityService';
+import {PClassId, ProClassFieldsConfigService} from '../primary-ds/ProClassFieldsConfigService';
+import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
+import {EntityLabelConfig, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
+import {PPropertyService} from '../primary-ds/property/PPropertyService';
 import {RPropertyService} from '../primary-ds/property/RPropertyService';
-export class PrimaryDataServices extends DataServiceBundle {
+import {ProProjectService} from '../primary-ds/ProProjectService';
+import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
+import {Warehouse} from '../Warehouse';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<any, any, any>> {
 
     dfhClassLabel: DfhClassLabelService;
     dfhPropertyLabel: DfhPropertyLabelService;
@@ -83,5 +86,13 @@ export class PrimaryDataServices extends DataServiceBundle {
         return this.pEdge.indexateItems(items)
     }
 
-
+    async initAllIndexes() {
+        for (const ds of this.registered) {
+            await ds.initIdx()
+        }
+        // await Promise.all(this.registered.map(x => x.initIdx()));
+    }
+    async clearAll() {
+        await Promise.all(this.registered.map(x => x.clearAll()));
+    }
 }

@@ -1,13 +1,12 @@
-import {ClearAll} from '../../../base/classes/ClearAll'
-import {DependencyIndex} from '../../../base/classes/DependencyIndex'
-import {rEntityIdToString, stringToREntityId, rClassIdToString, stringToRClassId} from '../../../base/functions'
-import {EntityFields} from "../../../primary-ds/edge/edge.commons"
-import {REntityId, REntity} from '../../../primary-ds/entity/REntityService'
-import {Warehouse} from '../../../Warehouse'
-import {REntityTypeVal} from './REntityTypeService'
-import {RClassId, DfhClassHasTypePropVal} from '../../../primary-ds/DfhClassHasTypePropertyService'
-import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 import {Dependencies} from '../../../base/classes/Dependencies'
+import {DependencyIndex} from '../../../base/classes/DependencyIndex'
+import {rClassIdToString, rEntityIdToString, stringToRClassId, stringToREntityId} from '../../../base/functions'
+import {DfhClassHasTypePropVal, RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
+import {EntityFields} from "../../../primary-ds/edge/edge.commons"
+import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
+import {Warehouse} from '../../../Warehouse'
+import {EntityLabelVal} from '../../entity-label/entity-label.commons'
+import {REntityTypeVal} from './REntityTypeService'
 
 export class REntityTypeDependencies extends Dependencies {
     rEntity: DependencyIndex<REntityId, REntityTypeVal, REntityId, REntity>

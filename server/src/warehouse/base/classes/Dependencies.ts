@@ -1,5 +1,5 @@
 import {ClearAll} from './ClearAll';
-export abstract class Dependencies extends ClearAll {
+export abstract class Dependencies implements ClearAll {
     registered: ClearAll[] = [];
 
     async clearAll() {
