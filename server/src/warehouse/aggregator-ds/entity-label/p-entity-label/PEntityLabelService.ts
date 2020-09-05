@@ -12,10 +12,11 @@ import {EntityLabelVal} from '../entity-label.commons';
 export class PEntityLabelService extends AggregatedDataService<PEntityId, EntityLabelVal, PEntityLabelAggregator>{
     updater: Updater<PEntityId, PEntityLabelAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, EntityLabelVal>(pEntityIdToString, stringToPEntityId)
+    index: IndexDBGeneric<PEntityId, EntityLabelVal>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
         const aggregatorFactory = async (id: PEntityId) => {
             const providers = new PEntityLabelProviders(this.wh.dep.pEntityLabel, id)
             return new PEntityLabelAggregator(providers, id).create()

@@ -11,9 +11,10 @@ export interface ProjectVal {
 export class ProProjectService extends PrimaryDataService<DbItem, ProjectId, ProjectVal>{
     measure = 1000;
 
-    index = new IndexDBGeneric<ProjectId, ProjectVal>(projectIdToString, stringToProjectId)
+    index: IndexDBGeneric<ProjectId, ProjectVal>
     constructor(wh: Warehouse) {
         super(wh, ['modified_projects_project'])
+        this .index = new IndexDBGeneric(projectIdToString, stringToProjectId, this.constructor.name)
     }
     dbItemToKeyVal(item: DbItem): {key: ProjectId; val: ProjectVal;} {
         const key: ProjectId = {

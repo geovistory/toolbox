@@ -16,11 +16,11 @@ export interface PClassFieldId {
 type ValueModel = string
 export class PClassFieldLabelService extends AggregatedDataService<PClassFieldId, ValueModel, PClassFieldLabelAggregator>{
     updater: Updater<PClassFieldId, PClassFieldLabelAggregator>;
-
-    index = new IndexDBGeneric<PClassFieldId, ValueModel>(pClassFieldIdToString, stringToPClassFieldId)
+    index: IndexDBGeneric<PClassFieldId, ValueModel>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(pClassFieldIdToString, stringToPClassFieldId, this.constructor.name)
         const aggregatorFactory = async (id: PClassFieldId) => {
             const providers = new PClassFieldLabelProviders(this.wh.dep.pClassFieldLabel, id)
             return new PClassFieldLabelAggregator(providers, id).create()

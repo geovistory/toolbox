@@ -4,7 +4,7 @@ import {ProProjectService} from '../../../../warehouse/primary-ds/ProProjectServ
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProProjectService', () => {
 
@@ -13,8 +13,7 @@ describe('ProProjectService', () => {
 
   beforeEach(async function () {
     await cleanDb();
-    wh = await setupWarehouse()
-    await wh.init()
+    wh = await setupCleanAndStartWarehouse()
     s = wh.prim.proProject;
   })
 

@@ -13,10 +13,12 @@ type ValueModel = string
 export class REntityClassLabelService extends AggregatedDataService<REntityId, ValueModel, REntityClassLabelAggregator>{
     updater: Updater<REntityId, REntityClassLabelAggregator>;
 
-    index = new IndexDBGeneric<REntityId, ValueModel>(rEntityIdToString, stringToREntityId)
+    index: IndexDBGeneric<REntityId, ValueModel>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
+
         const aggregatorFactory = async (id: REntityId) => {
             const providers = new REntityClassLabelProviders(this.wh.dep.rEntityClassLabel, id)
             return new REntityClassLabelAggregator(providers, id).create()

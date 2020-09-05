@@ -24,6 +24,7 @@ export async function setupCleanAndStartWarehouse() {
 
     const wh = new Warehouse()
     await wh.init()
+    await wh.listen()
 
     await wh.pgClient.query('LISTEN entity_previews_updated;')
     await wh.pgClient.query('LISTEN modified_war_class_preview;')

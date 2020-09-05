@@ -1,7 +1,7 @@
-import {IndexDB} from './IndexDB';
 import {AggregatedDataService} from './AggregatedDataService';
-import {DataService} from './DataService';
 import {ClearAll} from './ClearAll';
+import {DataService} from './DataService';
+import {IndexDB} from './IndexDB';
 export interface DependencyMap {[key: string]: true}
 
 class UniqIdx extends IndexDB<string, true> {
@@ -13,8 +13,10 @@ const sep = ':'
 
 export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements ClearAll {
 
-
+    receiverToProvider: UniqIdx
+    providerToReceiver: UniqIdx
     constructor(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         public receiverDS: AggregatedDataService<ReceiverKeyModel, ReceiverValModel, any>,
         public providerDS: DataService<ProviderKeyModel, ProviderValModel>,
         public receiverKeyToString: (key: ReceiverKeyModel) => string,
@@ -23,14 +25,14 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         public stringToProviderKey: (str: string) => ProviderKeyModel,
     ) {
         providerDS.registerProviderOf(this)
+        // keys are of pattern `${receiverStr}:${providerStr}`, values = true
+        this.receiverToProvider = new UniqIdx(receiverDS.constructor.name + '_to_' + providerDS.constructor.name)
+
+        // keys are of pattern ${receiverStr}:${providerStr}`, values = true
+        this.providerToReceiver = new UniqIdx(providerDS.constructor.name + '_to_' + receiverDS.constructor.name)
     }
 
 
-    // keys are of pattern `${receiverStr}:${providerStr}`, values = true
-    receiverToProvider = new UniqIdx()
-
-    // keys are of pattern ${receiverStr}:${providerStr}`, values = true
-    providerToReceiver = new UniqIdx()
 
 
     async addProvider(receiver: ReceiverKeyModel, provider: ProviderKeyModel): Promise<void> {

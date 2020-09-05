@@ -10,7 +10,7 @@ export class PClassService extends PrimaryDataService<InitItem, PClassId, Projec
   measure = 1000;
 
 
-  index = new IndexDBGeneric<PClassId, ProjectClass>(pClassIdToString, stringToPClassId)
+  index: IndexDBGeneric<PClassId, ProjectClass>
 
   constructor(public wh: Warehouse) {
     super(wh, [
@@ -18,6 +18,7 @@ export class PClassService extends PrimaryDataService<InitItem, PClassId, Projec
       'modified_projects_dfh_profile_proj_rel',
       'modified_data_for_history_api_class'
     ])
+    this.index = new IndexDBGeneric(pClassIdToString, stringToPClassId, this.constructor.name)
 
     /**
      * Add actions after a new ProjectClass is put/updated into index

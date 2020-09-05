@@ -12,10 +12,11 @@ type ValueModel = string
 export class RClassLabelService extends AggregatedDataService<RClassId, ValueModel, RClassLabelAggregator>{
     updater: Updater<RClassId, RClassLabelAggregator>;
 
-    index = new IndexDBGeneric<RClassId, ValueModel>(rClassIdToString, stringToRClassId)
-
+    index: IndexDBGeneric<RClassId, ValueModel>
     constructor(private wh: Warehouse) {
         super()
+
+        this.index = new IndexDBGeneric<RClassId, ValueModel>(rClassIdToString, stringToRClassId, this.constructor.name)
         const aggregatorFactory = async (id: RClassId) => {
             const providers = new RClassLabelProviders(this.wh.dep.rClassLabel, id)
             return new RClassLabelAggregator(providers, id).create()

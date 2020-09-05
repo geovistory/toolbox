@@ -9,9 +9,10 @@ export interface DfhClassLabelId {
 export type DfhClassLabelVal = string;
 export class DfhClassLabelService extends PrimaryDataService<DbItem, DfhClassLabelId, DfhClassLabelVal>{
     measure = 1000;
-    index = new IndexDBGeneric<DfhClassLabelId, DfhClassLabelVal>(dfhClassIdToString, stringToDfhClassId)
+    index: IndexDBGeneric<DfhClassLabelId, DfhClassLabelVal>
     constructor(wh: Warehouse) {
         super(wh, ['modified_data_for_history_api_class'])
+        this.index = new IndexDBGeneric(dfhClassIdToString, stringToDfhClassId, this.constructor.name)
     }
     dbItemToKeyVal(item: DbItem): {key: DfhClassLabelId; val: DfhClassLabelVal;} {
         const key: DfhClassLabelId = {

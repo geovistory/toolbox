@@ -15,11 +15,11 @@ export interface RClassFieldId {
 type ValueModel = string
 export class RClassFieldLabelService extends AggregatedDataService<RClassFieldId, ValueModel, RClassFieldLabelAggregator>{
     updater: Updater<RClassFieldId, RClassFieldLabelAggregator>;
-
-    index = new IndexDBGeneric<RClassFieldId, ValueModel>(rClassFieldIdToString, stringToRClassFieldId)
+    index: IndexDBGeneric<RClassFieldId, ValueModel>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(rClassFieldIdToString, stringToRClassFieldId, this.constructor.name)
         const aggregatorFactory = async (id: RClassFieldId) => {
             const providers = new RClassFieldLabelProviders(this.wh.dep.rClassFieldLabel, id)
             return new RClassFieldLabelAggregator(providers, id).create()

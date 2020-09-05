@@ -10,7 +10,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, PEnt
 
     measure = 1000;
 
-    index = new IndexDBGeneric<PEntityId, PEntity>(pEntityIdToString, stringToPEntityId)
+    index: IndexDBGeneric<PEntityId, PEntity>
     upsertQueue: SqlUpsertQueue<PEntityId, PEntity>;
     constructor(public wh: Warehouse) {
         super(wh, [
@@ -18,6 +18,7 @@ export class PEntityService extends PrimaryDataService<InitItem, PEntityId, PEnt
             'modified_information_persistent_item',
             'modified_information_temporal_entity'
         ])
+        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
 
         this.upsertQueue = new SqlUpsertQueue(
             wh,

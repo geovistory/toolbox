@@ -31,10 +31,12 @@ export type PEntityFullTextVal = string;
 export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEntityFullTextVal, PEntityFullTextAggregator>{
     updater: Updater<PEntityId, PEntityFullTextAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, PEntityFullTextVal>(pEntityIdToString, stringToPEntityId)
+    index: IndexDBGeneric<PEntityId, PEntityFullTextVal>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
+
         const aggregatorFactory = async (id: PEntityId) => {
             const providers = new PEntityFullTextProviders(this.wh.dep.pEntityFullText, id)
             return new PEntityFullTextAggregator(providers, id).create()

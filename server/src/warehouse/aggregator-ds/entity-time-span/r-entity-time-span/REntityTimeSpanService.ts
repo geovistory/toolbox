@@ -46,10 +46,11 @@ export type REntityTimeSpan = {
 export class REntityTimeSpanService extends AggregatedDataService<REntityId, REntityTimeSpanVal, REntityTimeSpanAggregator>{
     updater: Updater<REntityId, REntityTimeSpanAggregator>;
 
-    index = new IndexDBGeneric<REntityId, REntityTimeSpanVal>(rEntityIdToString, stringToREntityId)
+    index: IndexDBGeneric<REntityId, REntityTimeSpanVal>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
         const aggregatorFactory = async (id: REntityId) => {
             const providers = new REntityTimeSpanProviders(this.wh.dep.rEntityTimeSpan, id)
             return new REntityTimeSpanAggregator(providers, id).create()

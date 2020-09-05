@@ -122,12 +122,12 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "40000",
+        "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
 
-        "/PEdgeService.*should have field edges in index after initIdx()/"
+        "/REntitySer/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

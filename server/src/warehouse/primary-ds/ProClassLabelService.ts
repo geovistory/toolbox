@@ -11,12 +11,10 @@ export type ProClassLabelVal = string
 
 export class ProClassLabelService extends PrimaryDataService<DbItem, ProClassLabelId, ProClassLabelVal>{
     measure = 1000;
-
-
-    index = new IndexDBGeneric<ProClassLabelId, ProClassLabelVal>(proClassIdToString, stringToProClassId)
-
+    index: IndexDBGeneric<ProClassLabelId, ProClassLabelVal>
     constructor(wh: Warehouse) {
         super(wh, ['modified_projects_text_property'])
+        this.index = new IndexDBGeneric(proClassIdToString, stringToProClassId, this.constructor.name)
     }
 
     dbItemToKeyVal(item: DbItem): {key: ProClassLabelId; val: ProClassLabelVal;} {

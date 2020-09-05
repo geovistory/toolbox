@@ -90,6 +90,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         // throttle sync process for 10 ms
         // await new Promise((res, rej) => { setTimeout(() => { res() }, 10) })
+        const t1 = Logger.start(`${this.constructor.name} > manageUpdatesSince ${this.lastUpdateBegin}`, 1);
 
         // Look for updates since the date of this.lastUpdateBegin or 1970
         const calls = [
@@ -109,7 +110,8 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         this.lastUpdateBegin = tmsp
 
         // await the calls produced above
-        await Promise.all(calls);
+        const [updates, deletes] = await Promise.all(calls);
+        Logger.itTook(t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
 
         this.syncing = false;
         if (this.restartSyncing) await this.sync(tmsp);
@@ -128,7 +130,6 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      */
     private async manageUpdatesSince(date?: Date) {
 
-        const t1 = Logger.start(`${this.constructor.name} > manageUpdatesSince ${date}`, 1);
         const t2 = Logger.start(`Start update query  ...`, 2);
         const d = date ?? new Date(0);
         const query = new QueryStream(this.getUpdatesSql(d), [d])
@@ -136,7 +137,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         const stream = this.wh.pgClient.query(query)
         let minMeasure: number | null = null, maxMeasure: number | null = null;
         let i = 0;
-        await new Promise((res, rej) => {
+        return new Promise((res, rej) => {
 
             let t3 = Logger.getTime()
             let t4 = Logger.getTime()
@@ -186,7 +187,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
             })
 
             stream.on('end', () => {
-                res()
+                res(i)
                 // Logger.resetLine()
                 if (minMeasure && maxMeasure) {
                     Logger.itTook(t4, `to put ${i} items to index of ${this.constructor.name}  –  fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 2);
@@ -198,7 +199,6 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         })
 
-        Logger.itTook(t1, `to manage ${i} updates by ${this.constructor.name}`, 1);
 
 
 
@@ -215,14 +215,13 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      * @param date
      */
     private async manageDeletesSince(date: Date, deleteSql: string) {
-        const t1 = Logger.start(`${this.constructor.name} > manageDeletesSince ${date}`, 1);
         const t2 = Logger.start(`Start deletes query  ...`, 2);
         const query = new QueryStream(deleteSql, [date])
 
         const stream = this.wh.pgClient.query(query)
         let minMeasure: number | null = null, maxMeasure: number | null = null;
         let i = 0;
-        await new Promise((res, rej) => {
+        return new Promise((res, rej) => {
 
             let t3 = Logger.getTime()
             let t4 = Logger.getTime()
@@ -258,7 +257,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
             })
 
             stream.on('end', () => {
-                res()
+                res(i)
                 // Logger.resetLine()
                 if (minMeasure && maxMeasure) {
                     Logger.itTook(t4, `to delete ${i} items from index of ${this.constructor.name}  –  fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 2);
@@ -270,7 +269,6 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         })
 
-        Logger.itTook(t1, `to manage ${i} deletes by ${this.constructor.name}`);
 
     }
 

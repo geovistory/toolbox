@@ -22,10 +22,11 @@ export class ProEntityLabelConfigService extends PrimaryDataService<InitItem, PC
 
     measure = 1000;
 
-    index = new IndexDBGeneric<PClassId, EntityLabelConfig>(pClassIdToString, stringToPClassId)
+    index: IndexDBGeneric<PClassId, EntityLabelConfig>
 
     constructor(wh: Warehouse) {
         super(wh, ['modified_projects_entity_label_config'])
+        this.index = new IndexDBGeneric(pClassIdToString, stringToPClassId, this.constructor.name)
     }
 
     dbItemToKeyVal(item: InitItem): {key: PClassId; val: EntityLabelConfig;} {

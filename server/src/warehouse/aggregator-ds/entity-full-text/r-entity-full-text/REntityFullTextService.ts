@@ -31,10 +31,11 @@ export type REntityFullTextVal = string;
 export class REntityFullTextService extends AggregatedDataService<REntityId, REntityFullTextVal, REntityFullTextAggregator>{
     updater: Updater<REntityId, REntityFullTextAggregator>;
 
-    index = new IndexDBGeneric<REntityId, REntityFullTextVal>(rEntityIdToString, stringToREntityId)
+    index: IndexDBGeneric<REntityId, REntityFullTextVal>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
         const aggregatorFactory = async (id: REntityId) => {
             const providers = new REntityFullTextProviders(this.wh.dep.rEntityFullText, id)
             return new REntityFullTextAggregator(providers, id).create()

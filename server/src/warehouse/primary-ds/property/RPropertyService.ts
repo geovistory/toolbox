@@ -10,7 +10,7 @@ export class RPropertyService extends PrimaryDataService<InitItem, RPropertyId, 
   measure = 1000;
 
 
-  index = new IndexDBGeneric<RPropertyId, RProperty>(rPropertyIdToString, stringToRPropertyId)
+  index: IndexDBGeneric<RPropertyId, RProperty>
 
   constructor(public wh: Warehouse) {
     super(wh, [
@@ -18,6 +18,7 @@ export class RPropertyService extends PrimaryDataService<InitItem, RPropertyId, 
       'modified_projects_dfh_profile_proj_rel',
       'modified_data_for_history_api_property'
     ])
+    this.index = new IndexDBGeneric(rPropertyIdToString, stringToRPropertyId, this.constructor.name)
 
     /**
      * Add actions after a new RProperty is put/updated into index

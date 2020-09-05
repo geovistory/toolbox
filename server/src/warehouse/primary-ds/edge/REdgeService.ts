@@ -11,12 +11,12 @@ export class REdgeService extends PrimaryDataService<EdgeInitItem, REntityId, En
 
     measure = 10000;
 
-    index = new IndexDBGeneric<REntityId, EntityFields>(rEntityIdToString, stringToREntityId)
-
+    index: IndexDBGeneric<REntityId, EntityFields>
     constructor(wh: Warehouse) {
         super(wh, [
             'modified_projects_info_proj_rel',
         ])
+        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
     }
 
     dbItemToKeyVal(item: EdgeInitItem): {key: REntityId; val: EntityFields;} {

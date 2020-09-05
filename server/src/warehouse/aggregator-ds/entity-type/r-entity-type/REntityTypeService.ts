@@ -34,10 +34,11 @@ export interface REntityTypeVal {
 export class REntityTypeService extends AggregatedDataService<REntityId, REntityTypeVal, REntityTypeAggregator>{
     updater: Updater<REntityId, REntityTypeAggregator>;
 
-    index = new IndexDBGeneric<REntityId, REntityTypeVal>(rEntityIdToString, stringToREntityId)
+    index: IndexDBGeneric<REntityId, REntityTypeVal>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
         const aggregatorFactory = async (id: REntityId) => {
             const providers = new REntityTypeProviders(this.wh.dep.rEntityType, id)
             return new REntityTypeAggregator(providers, id).create()

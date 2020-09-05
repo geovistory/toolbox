@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {PEntityService, PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
+import {PEntityId, PEntityService} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem, updateInfPersistentItem} from '../../../helpers/atomic/inf-persistent-item.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
+import {getWarEntityPreview} from '../../../helpers/atomic/war-entity_preview.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupWarehouse, wait, waitUntilNext, waitForEntityPreview} from '../../../helpers/warehouse-helpers';
-import {getWarEntityPreview} from '../../../helpers/atomic/war-entity_preview.helper';
+import {setupCleanAndStartWarehouse, waitForEntityPreview, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('PEntityService', () => {
 
@@ -25,9 +25,7 @@ describe('PEntityService', () => {
   })
   beforeEach(async function () {
     await cleanDb();
-    wh = await setupWarehouse()
-    await wh.init()
-    await wh.pgClient.query('LISTEN entity_previews_updated;')
+    wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pEntity;
   })
 

@@ -9,7 +9,7 @@ export class REntityService extends PrimaryDataService<InitItem, REntityId, REnt
 
     measure = 1000;
 
-    index = new IndexDBGeneric<REntityId, REntity>(rEntityIdToString, stringToREntityId)
+    index: IndexDBGeneric<REntityId, REntity>
     upsertQueue: SqlUpsertQueue<REntityId, REntity>;
     constructor(public wh: Warehouse) {
         super(wh, [
@@ -17,6 +17,7 @@ export class REntityService extends PrimaryDataService<InitItem, REntityId, REnt
             'modified_information_persistent_item',
             'modified_information_temporal_entity'
         ])
+        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
 
         this.upsertQueue = new SqlUpsertQueue(
             wh,
@@ -98,7 +99,7 @@ SELECT
 	count(t2.pk_entity) filter (where is_in_project=true) "isInProjectCount"
 FROM
 information.temporal_entity t1
-LEFT JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
+JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
 AND (
     t1.tmsp_last_modification >= $1
     OR
@@ -113,7 +114,7 @@ SELECT
 	count(t2.pk_entity) filter (where is_in_project=true) "isInProjectCount"
 FROM
 information.persistent_item t1
-LEFT JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
+JOIN projects.info_proj_rel t2 ON	t2.fk_entity = t1.pk_entity
 AND (
     t1.tmsp_last_modification >= $1
     OR

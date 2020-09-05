@@ -10,12 +10,13 @@ export class RClassService extends PrimaryDataService<InitItem, RClassId, RClass
   measure = 1000;
 
 
-  index = new IndexDBGeneric<RClassId, RClass>(rClassIdToString, stringToRClassId)
+  index: IndexDBGeneric<RClassId, RClass>
 
   constructor(public wh: Warehouse) {
     super(wh, [
       'modified_data_for_history_api_class'
     ])
+    this.index = new IndexDBGeneric(rClassIdToString, stringToRClassId, this.constructor.name)
 
     /**
      * Add actions after a new RClass is put/updated into index

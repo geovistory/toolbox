@@ -12,10 +12,11 @@ type ValueModel = string
 export class PEntityClassLabelService extends AggregatedDataService<PEntityId, ValueModel, PEntityClassLabelAggregator>{
     updater: Updater<PEntityId, PEntityClassLabelAggregator>;
 
-    index = new IndexDBGeneric<PEntityId, ValueModel>(pEntityIdToString, stringToPEntityId)
-
+    index: IndexDBGeneric<PEntityId, ValueModel>
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
+
         const aggregatorFactory = async (id: PEntityId) => {
             const providers = new PEntityClassLabelProviders(this.wh.dep.pEntityClassLabel, id)
             return new PEntityClassLabelAggregator(providers, id).create()

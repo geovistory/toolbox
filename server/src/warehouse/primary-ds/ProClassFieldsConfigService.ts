@@ -14,16 +14,11 @@ export interface ClassField {
 }
 export type ProClassFieldVal = ClassField[]
 export class ProClassFieldsConfigService extends PrimaryDataService<InitItem, PClassId, ProClassFieldVal>{
-
-
     measure = 1000;
-
-
-    index = new IndexDBGeneric<PClassId, ProClassFieldVal>(pClassIdToString, stringToPClassId)
-
-
+    index: IndexDBGeneric<PClassId, ProClassFieldVal>
     constructor(wh: Warehouse) {
         super(wh, ['modified_projects_class_field_config'])
+        this.index = new IndexDBGeneric(pClassIdToString, stringToPClassId, this.constructor.name)
     }
     dbItemToKeyVal(item: InitItem): {key: PClassId; val: ProClassFieldVal;} {
         const key: PClassId = {
@@ -36,8 +31,8 @@ export class ProClassFieldsConfigService extends PrimaryDataService<InitItem, PC
 
     getUpdatesSql(tmsp: Date) {
         return updateSql
-   }
-   getDeletesSql(tmsp: Date) {return ''};
+    }
+    getDeletesSql(tmsp: Date) {return ''};
 
     // /**
     //  * returns class config of requested project, else of default config project

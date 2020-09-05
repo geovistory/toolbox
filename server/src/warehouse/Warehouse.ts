@@ -2,7 +2,6 @@
 import {Pool, PoolClient} from 'pg';
 import subleveldown from 'subleveldown';
 import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
-import {wait} from '../__tests__/helpers/warehouse-helpers';
 import {Logger} from './base/classes/Logger';
 import {leveldb} from './base/database';
 import {getDbFileSize, getMemoryUsage} from './base/functions';
@@ -107,10 +106,9 @@ export class Warehouse {
         //     fkProject: 591,
         //     pkClass: 365
         // }))
-        const t3 = Logger.start('Wait', 0)
+        // const t3 = Logger.start('Wait', 0)
 
-        await wait(10000)
-        Logger.itTook(t3, 'to wait', 0)
+        // Logger.itTook(t3, 'to wait', 0)
 
         await this.stop()
     };
@@ -131,8 +129,6 @@ export class Warehouse {
 
         this.pgClient = await this.pgPool.connect();
 
-        await this.agg.clearUpdateQueues()
-
         this.startListening()
 
         const {tmsp} = await this.metadata.get(BEFORE_INIT_DATE_KEY);
@@ -141,8 +137,6 @@ export class Warehouse {
         for (const primDS of this.prim.registered) {
             await primDS.startAndSyncSince(new Date(tmsp))
         }
-
-        await this.agg.startCycling()
 
         this.status = 'running';
 

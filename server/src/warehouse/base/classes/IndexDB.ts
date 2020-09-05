@@ -13,8 +13,12 @@
  * - add update request
  */
 
-import { IndexLeveldb } from './IndexLeveldb';
+import {IndexLeveldb} from './IndexLeveldb';
 
-export abstract class IndexDB<KeyModel, ValueModel> extends IndexLeveldb<KeyModel, ValueModel> { }
+export abstract class IndexDB<KeyModel, ValueModel> extends IndexLeveldb<KeyModel, ValueModel> {
+  constructor(name = 'default') {
+    super(name)
+  }
+}
 
 

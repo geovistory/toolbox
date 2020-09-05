@@ -23,12 +23,14 @@ export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, En
 
     measure = 10000;
 
-    index = new IndexDBGeneric<PEntityId, EntityFields>(pEntityIdToString, stringToPEntityId)
+    index: IndexDBGeneric<PEntityId, EntityFields>
 
     constructor(wh: Warehouse) {
         super(wh, [
             'modified_projects_info_proj_rel',
         ])
+        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
+
     }
 
 

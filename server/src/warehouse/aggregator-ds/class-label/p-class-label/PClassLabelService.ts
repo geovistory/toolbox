@@ -12,10 +12,11 @@ type ValueModel = string
 export class PClassLabelService extends AggregatedDataService<PClassId, ValueModel, PClassLabelAggregator>{
     updater: Updater<PClassId, PClassLabelAggregator>;
 
-    index = new IndexDBGeneric<PClassId, ValueModel>(pClassIdToString, stringToPClassId)
-
+    index: IndexDBGeneric<PClassId, ValueModel>
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric<PClassId, ValueModel>(pClassIdToString, stringToPClassId, this.constructor.name)
+
         const aggregatorFactory = async (id: PClassId) => {
             const providers = new PClassLabelProviders(this.wh.dep.pClassLabel, id)
             return new PClassLabelAggregator(providers, id).create()

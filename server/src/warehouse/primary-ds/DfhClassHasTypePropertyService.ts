@@ -20,9 +20,10 @@ export type DfhClassHasTypePropVal = number;
  */
 export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, RClassId, DfhClassHasTypePropVal>{
     measure = 1000;
-    index = new IndexDBGeneric<RClassId, DfhClassHasTypePropVal>(rClassIdToString, stringToRClassId)
+    index: IndexDBGeneric<RClassId, DfhClassHasTypePropVal>
     constructor(wh: Warehouse) {
         super(wh, ['modified_data_for_history_api_property'])
+        this.index = new IndexDBGeneric(rClassIdToString, stringToRClassId, this.constructor.name)
     }
     dbItemToKeyVal(item: DbItem): {key: RClassId; val: DfhClassHasTypePropVal;} {
         const key: RClassId = {
@@ -33,7 +34,7 @@ export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, R
         return {key, val}
     }
     getUpdatesSql(tmsp: Date) {
-         return updateSql
+        return updateSql
     }
     getDeletesSql(tmsp: Date) {
         return deleteSql

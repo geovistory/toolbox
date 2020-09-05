@@ -13,10 +13,11 @@ export type IdentifyingPropertyVal = OutgoingPropertyVal[]
 export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal, IdentifyingPropertyAggregator>{
     updater: Updater<RClassId, IdentifyingPropertyAggregator>;
 
-    index = new IndexDBGeneric<RClassId, IdentifyingPropertyVal>(rClassIdToString, stringToRClassId)
+    index: IndexDBGeneric<RClassId, IdentifyingPropertyVal>
 
     constructor(private wh: Warehouse) {
         super()
+        this.index = new IndexDBGeneric(rClassIdToString, stringToRClassId, this.constructor.name)
         const aggregatorFactory = async (id: RClassId) => {
             const providers = new IdentifyingPropertyProviders(this.wh.dep.identifyingProperty, id)
             return new IdentifyingPropertyAggregator(providers, id).create()

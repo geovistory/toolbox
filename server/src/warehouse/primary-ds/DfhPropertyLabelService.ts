@@ -9,9 +9,10 @@ export interface DfhPropertyLabelId {
 export type DfhPropertyLabelVal = string;
 export class DfhPropertyLabelService extends PrimaryDataService<DbItem, DfhPropertyLabelId, DfhPropertyLabelVal>{
     measure = 1000;
-    index = new IndexDBGeneric<DfhPropertyLabelId, DfhPropertyLabelVal>(dfhPropertyIdToString, stringToDfhPropertyId)
+    index: IndexDBGeneric<DfhPropertyLabelId, DfhPropertyLabelVal>
     constructor(wh: Warehouse) {
         super(wh, ['modified_data_for_history_api_property'])
+        this.index = new IndexDBGeneric(dfhPropertyIdToString, stringToDfhPropertyId, this.constructor.name)
     }
     dbItemToKeyVal(item: DbItem): {key: DfhPropertyLabelId; val: DfhPropertyLabelVal;} {
         const key: DfhPropertyLabelId = {
@@ -24,8 +25,8 @@ export class DfhPropertyLabelService extends PrimaryDataService<DbItem, DfhPrope
     }
     getUpdatesSql(tmsp: Date) {
         return updateSql
-   }
-   getDeletesSql(tmsp: Date) {return ''};
+    }
+    getDeletesSql(tmsp: Date) {return ''};
 }
 
 interface DbItem {

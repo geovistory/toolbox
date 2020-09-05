@@ -15,10 +15,11 @@ export class ProPropertyLabelService extends PrimaryDataService<DbItem, ProPrope
     measure = 1000;
 
 
-    index = new IndexDBGeneric<ProPropertyLabelId, ProPropertyLabelVal>(proPropertyIdToString, stringToProPropertyId)
+    index: IndexDBGeneric<ProPropertyLabelId, ProPropertyLabelVal>
 
     constructor(wh: Warehouse) {
         super(wh, ['modified_projects_text_property'])
+        this.index = new IndexDBGeneric(proPropertyIdToString, stringToProPropertyId, this.constructor.name)
     }
 
     dbItemToKeyVal(item: DbItem): {key: ProPropertyLabelId; val: ProPropertyLabelVal;} {
