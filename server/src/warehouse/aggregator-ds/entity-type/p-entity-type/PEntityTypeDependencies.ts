@@ -20,6 +20,7 @@ export class PEntityTypeDependencies extends Dependencies {
         super()
         // stores the dependency of pEntityType (receiver) on pEntity (provider)
         this.pEntity = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityType,
             this.wh.prim.pEntity,
             pEntityIdToString,
@@ -30,6 +31,7 @@ export class PEntityTypeDependencies extends Dependencies {
 
         // stores the dependency of pEntityType (receiver) on pEntityLabel (provider)
         this.pEntityLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityType,
             this.wh.agg.pEntityLabel,
             pEntityIdToString,
@@ -40,6 +42,7 @@ export class PEntityTypeDependencies extends Dependencies {
 
         // stores the dependency of pEntityType (receiver) on rEntityLabel (provider)
         this.rEntityLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityType,
             this.wh.agg.rEntityLabel,
             pEntityIdToString,
@@ -50,6 +53,7 @@ export class PEntityTypeDependencies extends Dependencies {
 
         // stores the dependency of pEntityType (receiver) on pEdge (provider)
         this.pEdge = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityType,
             this.wh.prim.pEdge,
             pEntityIdToString,
@@ -60,6 +64,7 @@ export class PEntityTypeDependencies extends Dependencies {
 
         // stores the dependency of pEntityType (receiver) on dfhClassHasTypeProperty
         this.dfhClassHasTypeProp = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityType,
             this.wh.prim.dfhClassHasTypeProperty,
             pEntityIdToString,

@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../../base/classes/Updater';
 import {pClassIdToString, stringToPClassId} from '../../../base/functions';
@@ -12,10 +11,12 @@ type ValueModel = string
 export class PClassLabelService extends AggregatedDataService<PClassId, ValueModel, PClassLabelAggregator>{
     updater: Updater<PClassId, PClassLabelAggregator>;
 
-    index: IndexDBGeneric<PClassId, ValueModel>
-    constructor(private wh: Warehouse) {
-        super()
-        this.index = new IndexDBGeneric<PClassId, ValueModel>(pClassIdToString, stringToPClassId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            pClassIdToString,
+            stringToPClassId
+        )
 
         const aggregatorFactory = async (id: PClassId) => {
             const providers = new PClassLabelProviders(this.wh.dep.pClassLabel, id)

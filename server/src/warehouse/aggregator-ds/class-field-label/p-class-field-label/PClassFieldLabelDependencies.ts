@@ -16,6 +16,7 @@ export class PClassFieldLabelDependencies extends Dependencies {
   constructor(private wh: Warehouse) {
     super()
     this.project = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.pClassFieldLabel,
       wh.prim.proProject,
       pClassFieldIdToString,
@@ -25,6 +26,7 @@ export class PClassFieldLabelDependencies extends Dependencies {
     ))
 
     this.dfhPropertyLabel = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.pClassFieldLabel,
       wh.prim.dfhPropertyLabel,
       pClassFieldIdToString,
@@ -34,6 +36,7 @@ export class PClassFieldLabelDependencies extends Dependencies {
     ))
 
     this.proPropertyLabel = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.pClassFieldLabel,
       wh.prim.proPropertyLabel,
       pClassFieldIdToString,

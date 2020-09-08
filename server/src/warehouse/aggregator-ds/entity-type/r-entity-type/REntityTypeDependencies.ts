@@ -18,6 +18,7 @@ export class REntityTypeDependencies extends Dependencies {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
         this.rEntity = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityType,
             this.wh.prim.rEntity,
             rEntityIdToString,
@@ -28,6 +29,7 @@ export class REntityTypeDependencies extends Dependencies {
 
         // stores the dependency of entityType (receiver) on entityLabel (provider)
         this.rEntityLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityType,
             this.wh.agg.rEntityLabel,
             rEntityIdToString,
@@ -38,6 +40,7 @@ export class REntityTypeDependencies extends Dependencies {
 
         // stores the dependency of entityType (receiver) on edge (provider)
         this.rEdge = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityType,
             this.wh.prim.rEdge,
             rEntityIdToString,
@@ -48,6 +51,7 @@ export class REntityTypeDependencies extends Dependencies {
 
         // stores the dependency of entityType (receiver) on dfhClassHasTypeProperty
         this.dfhClassHasTypeProp = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityType,
             this.wh.prim.dfhClassHasTypeProperty,
             rEntityIdToString,

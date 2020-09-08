@@ -1,22 +1,22 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../../base/classes/Updater';
 import {rClassIdToString, stringToRClassId} from '../../../base/functions';
+import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {Warehouse} from '../../../Warehouse';
 import {RClassLabelAggregator} from './RClassLabelAggregator';
 import {RClassLabelProviders} from './RClassLabelProviders';
-import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 
 type ValueModel = string
 export class RClassLabelService extends AggregatedDataService<RClassId, ValueModel, RClassLabelAggregator>{
     updater: Updater<RClassId, RClassLabelAggregator>;
 
-    index: IndexDBGeneric<RClassId, ValueModel>
-    constructor(private wh: Warehouse) {
-        super()
-
-        this.index = new IndexDBGeneric<RClassId, ValueModel>(rClassIdToString, stringToRClassId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            rClassIdToString,
+            stringToRClassId
+        )
         const aggregatorFactory = async (id: RClassId) => {
             const providers = new RClassLabelProviders(this.wh.dep.rClassLabel, id)
             return new RClassLabelAggregator(providers, id).create()

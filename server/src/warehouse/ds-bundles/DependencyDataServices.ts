@@ -1,3 +1,5 @@
+import {combineLatest, Observable} from 'rxjs';
+import {mapTo} from 'rxjs/operators';
 import {PClassFieldLabelDependencies} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelDependencies';
 import {RClassFieldLabelDependencies} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelDependencies';
 import {PClassLabelDependencies} from '../aggregator-ds/class-label/p-class-label/PClassLabelDependencies';
@@ -14,8 +16,8 @@ import {PEntityTypeDependencies} from '../aggregator-ds/entity-type/p-entity-typ
 import {REntityTypeDependencies} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeDependencies';
 import {IdentifyingPropertyDependencies} from '../aggregator-ds/identifying-property/IdentifyingPropertyDependencies';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
-import {Warehouse} from '../Warehouse';
 import {Dependencies} from '../base/classes/Dependencies';
+import {Warehouse} from '../Warehouse';
 
 
 export class DependencyDataServices extends DataServiceBundle<Dependencies> {
@@ -38,6 +40,8 @@ export class DependencyDataServices extends DataServiceBundle<Dependencies> {
     rEntityFullText: REntityFullTextDependencies
     rEntityTimeSpan: REntityTimeSpanDependencies
 
+    ready$: Observable<boolean>
+
     constructor(wh: Warehouse) {
         super()
         this.identifyingProperty = this.registerDataService(new IdentifyingPropertyDependencies(wh));
@@ -57,6 +61,15 @@ export class DependencyDataServices extends DataServiceBundle<Dependencies> {
         this.rEntityFullText = this.registerDataService(new REntityFullTextDependencies(wh));
         this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelDependencies(wh));
         this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanDependencies(wh));
+
+        const readies$ = []
+        for (const reg1 of this.registered) {
+            for (const reg2 of reg1.registered) {
+                readies$.push(reg2.providerToReceiver.ready$)
+                readies$.push(reg2.providerToReceiver.ready$)
+            }
+        }
+        this.ready$ = combineLatest(readies$).pipe(mapTo(true))
     }
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));

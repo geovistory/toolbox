@@ -1,4 +1,3 @@
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {outgoingProperyIdToString, stringToOutgoingProperyId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
@@ -33,11 +32,8 @@ export type OutgoingPropertyVal = {
  */
 export class DfhOutgoingPropertyService extends PrimaryDataService<DbItem, OutgoingProperyId, OutgoingPropertyVal>{
     measure = 1000;
-    index: IndexDBGeneric<OutgoingProperyId, OutgoingPropertyVal>
     constructor(wh: Warehouse) {
-        super(wh, ['modified_data_for_history_api_property'])
-        this.index = new IndexDBGeneric(outgoingProperyIdToString, stringToOutgoingProperyId, this.constructor.name)
-
+        super(wh, ['modified_data_for_history_api_property'],outgoingProperyIdToString, stringToOutgoingProperyId)
         this.afterPut$.subscribe(item => {
             wh.agg.identifyingProperty.updater.addItemToQueue({pkClass: item.key.fkDomain}).catch(e => console.log(e))
         })

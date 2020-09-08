@@ -122,12 +122,12 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "4000",
+        "800",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        "--grep",
-
-        "/REntitySer/"
+        // "--grep",
+        // "/DfhPropertyLabelService.*/"
+        // "/IndexDB.*/"
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

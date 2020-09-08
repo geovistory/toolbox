@@ -1,24 +1,22 @@
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {Logger} from '../../base/classes/Logger';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
+import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 export interface PEntityId {fkProject: number, pkEntity: number}
 
 export class PEntityService extends PrimaryDataService<InitItem, PEntityId, PEntity>{
 
     measure = 1000;
 
-    index: IndexDBGeneric<PEntityId, PEntity>
     upsertQueue: SqlUpsertQueue<PEntityId, PEntity>;
     constructor(public wh: Warehouse) {
         super(wh, [
             'modified_projects_info_proj_rel',
             'modified_information_persistent_item',
             'modified_information_temporal_entity'
-        ])
-        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
+        ],
+            pEntityIdToString, stringToPEntityId)
 
         this.upsertQueue = new SqlUpsertQueue(
             wh,

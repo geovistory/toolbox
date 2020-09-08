@@ -1,5 +1,4 @@
 import {RClassFieldId} from '../../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {rClassIdToString, stringToRClassId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
@@ -9,14 +8,10 @@ export class RClassService extends PrimaryDataService<InitItem, RClassId, RClass
 
   measure = 1000;
 
-
-  index: IndexDBGeneric<RClassId, RClass>
-
   constructor(public wh: Warehouse) {
     super(wh, [
       'modified_data_for_history_api_class'
-    ])
-    this.index = new IndexDBGeneric(rClassIdToString, stringToRClassId, this.constructor.name)
+    ],rClassIdToString, stringToRClassId)
 
     /**
      * Add actions after a new RClass is put/updated into index

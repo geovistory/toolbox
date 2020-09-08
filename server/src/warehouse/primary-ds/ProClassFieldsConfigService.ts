@@ -1,4 +1,3 @@
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
@@ -15,10 +14,8 @@ export interface ClassField {
 export type ProClassFieldVal = ClassField[]
 export class ProClassFieldsConfigService extends PrimaryDataService<InitItem, PClassId, ProClassFieldVal>{
     measure = 1000;
-    index: IndexDBGeneric<PClassId, ProClassFieldVal>
     constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_class_field_config'])
-        this.index = new IndexDBGeneric(pClassIdToString, stringToPClassId, this.constructor.name)
+        super(wh, ['modified_projects_class_field_config'],pClassIdToString, stringToPClassId, )
     }
     dbItemToKeyVal(item: InitItem): {key: PClassId; val: ProClassFieldVal;} {
         const key: PClassId = {

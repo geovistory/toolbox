@@ -1,6 +1,5 @@
-import {pClassIdToString, stringToPClassId} from '../base/functions';
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
+import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {PK_DEFAULT_CONFIG_PROJECT, Warehouse} from '../Warehouse';
 import {PClassId} from './ProClassFieldsConfigService';
 
@@ -22,11 +21,9 @@ export class ProEntityLabelConfigService extends PrimaryDataService<InitItem, PC
 
     measure = 1000;
 
-    index: IndexDBGeneric<PClassId, EntityLabelConfig>
 
     constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_entity_label_config'])
-        this.index = new IndexDBGeneric(pClassIdToString, stringToPClassId, this.constructor.name)
+        super(wh, ['modified_projects_entity_label_config'],pClassIdToString, stringToPClassId)
     }
 
     dbItemToKeyVal(item: InitItem): {key: PClassId; val: EntityLabelConfig;} {

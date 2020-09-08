@@ -1,6 +1,5 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {dfhPropertyIdToString, stringToDfhPropertyId} from '../base/functions';
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {Warehouse} from '../Warehouse';
 export interface DfhPropertyLabelId {
     pkProperty: number
@@ -9,10 +8,8 @@ export interface DfhPropertyLabelId {
 export type DfhPropertyLabelVal = string;
 export class DfhPropertyLabelService extends PrimaryDataService<DbItem, DfhPropertyLabelId, DfhPropertyLabelVal>{
     measure = 1000;
-    index: IndexDBGeneric<DfhPropertyLabelId, DfhPropertyLabelVal>
     constructor(wh: Warehouse) {
-        super(wh, ['modified_data_for_history_api_property'])
-        this.index = new IndexDBGeneric(dfhPropertyIdToString, stringToDfhPropertyId, this.constructor.name)
+        super(wh, ['modified_data_for_history_api_property'],dfhPropertyIdToString, stringToDfhPropertyId)
     }
     dbItemToKeyVal(item: DbItem): {key: DfhPropertyLabelId; val: DfhPropertyLabelVal;} {
         const key: DfhPropertyLabelId = {

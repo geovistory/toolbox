@@ -13,6 +13,7 @@ export class IdentifyingPropertyDependencies extends Dependencies {
   constructor(private wh: Warehouse) {
     super()
     this.outgoingProperty = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.identifyingProperty,
       wh.prim.dfhOutgoingProperty,
       rClassIdToString,

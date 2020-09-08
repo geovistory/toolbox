@@ -1,8 +1,7 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../../base/classes/Updater';
-import {sqlForTsVector, stringToREntityId, rEntityIdToString} from '../../../base/functions';
+import {rEntityIdToString, sqlForTsVector, stringToREntityId} from '../../../base/functions';
 import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityClassLabelAggregator} from './REntityClassLabelAggregator';
@@ -13,11 +12,12 @@ type ValueModel = string
 export class REntityClassLabelService extends AggregatedDataService<REntityId, ValueModel, REntityClassLabelAggregator>{
     updater: Updater<REntityId, REntityClassLabelAggregator>;
 
-    index: IndexDBGeneric<REntityId, ValueModel>
-
-    constructor(private wh: Warehouse) {
-        super()
-        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            rEntityIdToString,
+            stringToREntityId
+        )
 
         const aggregatorFactory = async (id: REntityId) => {
             const providers = new REntityClassLabelProviders(this.wh.dep.rEntityClassLabel, id)

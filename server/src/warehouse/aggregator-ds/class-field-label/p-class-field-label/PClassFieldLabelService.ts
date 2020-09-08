@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {Updater} from '../../../base/classes/Updater';
 import {pClassFieldIdToString, stringToPClassFieldId} from '../../../base/functions';
 import {Warehouse} from '../../../Warehouse';
@@ -16,11 +15,13 @@ export interface PClassFieldId {
 type ValueModel = string
 export class PClassFieldLabelService extends AggregatedDataService<PClassFieldId, ValueModel, PClassFieldLabelAggregator>{
     updater: Updater<PClassFieldId, PClassFieldLabelAggregator>;
-    index: IndexDBGeneric<PClassFieldId, ValueModel>
 
-    constructor(private wh: Warehouse) {
-        super()
-        this.index = new IndexDBGeneric(pClassFieldIdToString, stringToPClassFieldId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            pClassFieldIdToString,
+            stringToPClassFieldId
+        )
         const aggregatorFactory = async (id: PClassFieldId) => {
             const providers = new PClassFieldLabelProviders(this.wh.dep.pClassFieldLabel, id)
             return new PClassFieldLabelAggregator(providers, id).create()

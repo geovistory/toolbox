@@ -1,13 +1,20 @@
-import { values } from 'ramda';
+import {values} from 'ramda';
+import {Index} from '../interfaces/Index';
+import {Warehouse} from '../../Warehouse';
+import {ReplaySubject} from 'rxjs';
 // Temporary implementation as in-memory key-value store
 
-export abstract class IndexMemory<KeyModel, ValueModel> {
+export abstract class IndexMemory<KeyModel, ValueModel> implements Index<KeyModel, ValueModel> {
+    ready$ = new ReplaySubject<boolean>()
 
+    private idx: {[key: string]: ValueModel;} = {};
+    constructor(
+        name = 'default',
+        wh: Warehouse
+    ) {
+        this.ready$.next(true)
 
-
-
-    private idx: { [key: string]: ValueModel; } = {};
-
+    }
 
     async addToIdx(keyModel: KeyModel, val: ValueModel) {
         this.idx[this.keyToString(keyModel)] = val;
@@ -27,23 +34,28 @@ export abstract class IndexMemory<KeyModel, ValueModel> {
     }
 
 
-
-
-
-
     async forEachKey<M>(cb: (keyModel: KeyModel) => Promise<M>) {
         for (const key of Object.keys(this.idx)) {
             await cb(this.stringToKey(key));
         }
     }
 
+    async forEachKeyStartingWith<M>(str: string, cb: (key: KeyModel) => Promise<M>): Promise<void> {
+        for (const key of Object.keys(this.idx)) {
+            if (key.startsWith(str)) await cb(this.stringToKey(key));
+        }
+    }
 
+    async forEachItemStartingWith<M>(str: string, cb: (item: {key: KeyModel, value: ValueModel}) => Promise<M>): Promise<void> {
+        for (const key of Object.keys(this.idx)) {
+            if (key.startsWith(str)) await cb({key: this.stringToKey(key), value: this.idx[key]});
+        }
+    }
     async forEachValue(cb: (val: ValueModel) => void) {
         return values(this.idx).forEach(val => {
             cb(val);
         });
     }
-
 
 
 

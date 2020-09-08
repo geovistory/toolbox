@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {Pool, PoolClient} from 'pg';
+import {combineLatest, ReplaySubject, Subject} from 'rxjs';
+import {filter, first} from 'rxjs/operators';
 import subleveldown from 'subleveldown';
 import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
 import {Logger} from './base/classes/Logger';
@@ -9,7 +11,7 @@ import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
 import {Edge} from "./primary-ds/edge/edge.commons";
-
+import {existsSync} from "fs"
 // import { UpdateService } from './data-services/UpdateService';
 
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
@@ -50,6 +52,9 @@ export class Warehouse {
 
     notificationHandlers: {[key: string]: NotificationHandler} = {}
 
+    pgConnected$ = new ReplaySubject<PoolClient>()
+    createSchema$ = new Subject<void>()
+
     constructor() {
         const connectionString = getPgUrlForPg8()
         const ssl = getPgSslForPg8()
@@ -74,50 +79,30 @@ export class Warehouse {
         this.status = 'initializing';
         const t0 = Logger.start('Initialize Warehouse', 0)
 
-        this.pgClient = await this.pgPool.connect();
+        await this.connectPgClient();
 
         await this.clearWhDB()
 
+        await this.initIndexSchema()
+
         await this.saveDateBeforeInit();
 
-        await this.initIndexes();
+        await this.initIndexData();
 
         await this.agg.startCycling()
 
+        // backup leveldb folder
+
         Logger.itTook(t0, 'to initialize', 0)
-
-
 
         Logger.log(`The warehouse uses approximately ${getMemoryUsage()} MB of memory`);
         const diskUsage = await getDbFileSize()
         Logger.log(`The warehouse uses approximately ${diskUsage.readable} of disk space`)
 
-        Logger.log('Example results')
-        const l = await this.agg.pEntityLabel.index.getFromIdx({
-            fkProject: 591,
-            pkEntity: 741589
-        })
-        Logger.log(l?.entityLabel)
-        // Logger.log(await this.agg.pEntityLabel.index.getFromIdx({
-        //     fkProject: 591,
-        //     pkEntity: 741570
-        // }))
-        // Logger.log(await this.agg.pClassLabel.index.getFromIdx({
-        //     fkProject: 591,
-        //     pkClass: 365
-        // }))
-        // const t3 = Logger.start('Wait', 0)
-
-        // Logger.itTook(t3, 'to wait', 0)
-
         await this.stop()
     };
 
-    private async saveDateBeforeInit() {
-        const dbNow = await this.pgClient.query('SELECT now() as now');
-        const tmsp = dbNow.rows?.[0]?.now;
-        await this.metadata.put(BEFORE_INIT_DATE_KEY, {tmsp});
-    }
+
 
     /**
      * Starts listening
@@ -127,9 +112,14 @@ export class Warehouse {
 
         this.status = 'starting';
 
-        this.pgClient = await this.pgPool.connect();
+        await this.connectPgClient();
+
+        // get backup and date before last update1
+
+        await this.initIndexSchema()
 
         this.startListening()
+
 
         const {tmsp} = await this.metadata.get(BEFORE_INIT_DATE_KEY);
         Logger.msg(`Catch up since ${tmsp}`)
@@ -143,11 +133,28 @@ export class Warehouse {
         Logger.itTook(t0, 'to start listening. Warehouse is up and running', 0)
     }
 
+    /**
+     * Initializes the 'database schema' and returns a Promise that resolves as
+     * soon as all 'tables' (= indexes) are ready to be used
+     */
+    private async initIndexSchema() {
+        this.createSchema$.next()
+        return new Promise((res, rej) => {
+            combineLatest(
+                this.prim.ready$.pipe(filter(r => r === true)),
+                this.agg.ready$.pipe(filter(r => r === true)),
+                this.dep.ready$.pipe(filter(r => r === true)),
+            ).pipe(first()).subscribe(_ => res())
+        })
+    }
+
 
     /**
-     * (re-)create all indexes
+     * Initialize the indexes of the primary data services which will potentially
+     * trigger aggregated data services to update themselfs.
+     * In short: The function (re-)creates all indexes
      */
-    async initIndexes() {
+    async initIndexData() {
         this.initializingIndexes = true
         const t1 = Logger.start('Initialize indexes', 0)
 
@@ -157,7 +164,26 @@ export class Warehouse {
         this.initializingIndexes = false
     }
 
+    /**
+     * checks out a new postgres client from the pool and nexts the pgConnected$
+     * observable that allows classes aware of this warehouse to wait for the
+     * connection before executing postgres queries.
+     */
+    public async connectPgClient() {
+        this.pgClient = await this.pgPool.connect();
+        this.pgConnected$.next(this.pgClient)
+    }
 
+
+    private async saveDateBeforeInit() {
+        const dbNow = await this.pgClient.query('SELECT now() as now');
+        const tmsp = dbNow.rows?.[0]?.now;
+        await this.metadata.put(BEFORE_INIT_DATE_KEY, {tmsp});
+    }
+
+    /**
+     * Clears the warehouse database (= all indexes)
+     */
     async clearWhDB() {
         const t1 = Logger.start('Clear Warehouse DB', 0)
 
@@ -166,6 +192,7 @@ export class Warehouse {
         await this.agg.clearAll()
 
         await this.dep.clearAll()
+
 
         await leveldb.del(BEFORE_INIT_DATE_KEY)
 
@@ -201,18 +228,33 @@ export class Warehouse {
     startListening() {
         this.pgClient.on('notification', (msg) => {
             const handler = this.notificationHandlers[msg.channel];
+
+
             if (typeof msg.payload === 'string') {
                 const date = new Date(msg.payload);
                 if (isNaN(date.getTime())) console.error(`Invalid Timestamp provided by pg_notify channel ${msg.channel}`, msg.payload)
-                else if (handler) handler.listeners.map(l => {
-                    l.callback(date).catch(e => console.log(e))
-                })
+                else if (handler) {
+                    // Q: Is leveldb folder still present?
+                    if (!existsSync('leveldb')) {
+                        process.exit(1)
+                    }
+                    // A: YES
+                    handler.listeners.map(l => {
+                        l.callback(date).catch(e => console.log(e))
+                    })
+
+                    // A: NO
+                    // exit the process, so that listen() is called again.
+                }
             } else {
                 console.error('payload of notification must be a string convertable to date')
             }
         });
     }
 
+    /**
+     * stops the warehouse
+     */
     async stop() {
         this.status = 'stopped';
         this.notificationHandlers = {}
@@ -221,11 +263,3 @@ export class Warehouse {
     }
 }
 
-
-
-
-export interface FieldWithEdges {
-    isOutgoing: boolean
-    fkProperty: number
-    edges: Edge[]
-}

@@ -1,21 +1,23 @@
+import {Warehouse} from '../../Warehouse';
 import {AggregatedDataService} from './AggregatedDataService';
 import {ClearAll} from './ClearAll';
 import {DataService} from './DataService';
-import {IndexDB} from './IndexDB';
-export interface DependencyMap {[key: string]: true}
+import {UniqIdx} from './UniqIdx';
 
-class UniqIdx extends IndexDB<string, true> {
-    keyToString(key: string) {return key}
-    stringToKey(key: string) {return key}
+export interface DepIdx extends ClearAll {
+    receiverToProvider: UniqIdx
+    providerToReceiver: UniqIdx
 }
+export interface DependencyMap {[key: string]: true}
 
 const sep = ':'
 
-export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements ClearAll {
+export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements DepIdx {
 
     receiverToProvider: UniqIdx
     providerToReceiver: UniqIdx
     constructor(
+        public wh: Warehouse,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         public receiverDS: AggregatedDataService<ReceiverKeyModel, ReceiverValModel, any>,
         public providerDS: DataService<ProviderKeyModel, ProviderValModel>,
@@ -26,10 +28,10 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     ) {
         providerDS.registerProviderOf(this)
         // keys are of pattern `${receiverStr}:${providerStr}`, values = true
-        this.receiverToProvider = new UniqIdx(receiverDS.constructor.name + '_to_' + providerDS.constructor.name)
+        this.receiverToProvider = new UniqIdx(receiverDS.constructor.name + '_to_' + providerDS.constructor.name, wh)
 
         // keys are of pattern ${receiverStr}:${providerStr}`, values = true
-        this.providerToReceiver = new UniqIdx(providerDS.constructor.name + '_to_' + receiverDS.constructor.name)
+        this.providerToReceiver = new UniqIdx(providerDS.constructor.name + '_to_' + receiverDS.constructor.name, wh)
     }
 
 
@@ -53,21 +55,28 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     }
 
     async getProviders(receiver: ReceiverKeyModel): Promise<ProviderKeyModel[]> {
-        return new Promise((res, rej) => {
-            const receiverStr = this.receiverKeyToString(receiver);
-            const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
-            const batch: ProviderKeyModel[] = []
-            keys.on('data', (key: string) => {
-                const providerStr = key.split(sep)[1]
-                batch.push(this.stringToProviderKey(providerStr))
-            })
-            keys.on('error', function (err: unknown) {
-                rej(err)
-            })
-            keys.on('end', function () {
-                res(batch)
-            })
+        const batch: ProviderKeyModel[] = []
+        const receiverStr = this.receiverKeyToString(receiver);
+        await this.receiverToProvider.forEachKeyStartingWith(receiverStr, async (key: string) => {
+            const providerStr = key.split(sep)[1]
+            batch.push(this.stringToProviderKey(providerStr))
         })
+        return batch
+        // return new Promise((res, rej) => {
+        //     const receiverStr = this.receiverKeyToString(receiver);
+        //     const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
+        //     const batch: ProviderKeyModel[] = []
+        //     keys.on('data', (key: string) => {
+        //         const providerStr = key.split(sep)[1]
+        //         batch.push(this.stringToProviderKey(providerStr))
+        //     })
+        //     keys.on('error', function (err: unknown) {
+        //         rej(err)
+        //     })
+        //     keys.on('end', function () {
+        //         res(batch)
+        //     })
+        // })
     }
 
     /**
@@ -76,39 +85,54 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
      * @param provider
      */
     async getReceivers(provider: ProviderKeyModel): Promise<ReceiverKeyModel[]> {
-        return new Promise((res, rej) => {
-            const providerStr = this.providerKeyToString(provider);
-            const keys = this.providerToReceiver.db.createKeyStream(createStreamOptions(providerStr))
-            const batch: ReceiverKeyModel[] = []
-            keys.on('data', (key: string) => {
-                const receiverStr = key.split(sep)[1]
-                batch.push(this.stringToReceiverKey(receiverStr))
-            })
-            keys.on('error', function (err: unknown) {
-                rej(err)
-            })
-            keys.on('end', function () {
-                res(batch)
-            })
+        const batch: ReceiverKeyModel[] = []
+        const providerStr = this.providerKeyToString(provider);
+        await this.providerToReceiver.forEachKeyStartingWith(providerStr, async (key: string) => {
+            const receiverStr = key.split(sep)[1]
+            batch.push(this.stringToReceiverKey(receiverStr))
         })
+        return batch
+
+        // return new Promise((res, rej) => {
+        //     const providerStr = this.providerKeyToString(provider);
+        //     const keys = this.providerToReceiver.db.createKeyStream(createStreamOptions(providerStr))
+        //     const batch: ReceiverKeyModel[] = []
+        //     keys.on('data', (key: string) => {
+        //         const receiverStr = key.split(sep)[1]
+        //         batch.push(this.stringToReceiverKey(receiverStr))
+        //     })
+        //     keys.on('error', function (err: unknown) {
+        //         rej(err)
+        //     })
+        //     keys.on('end', function () {
+        //         res(batch)
+        //     })
+        // })
     }
 
     async getProviderMap(receiver: ReceiverKeyModel): Promise<DependencyMap> {
-        return new Promise((res, rej) => {
-            const receiverStr = this.receiverKeyToString(receiver);
-            const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
-            const map: DependencyMap = {}
-            keys.on('data', (key: string) => {
-                const providerStr = key.split(sep)[1]
-                map[providerStr] = true
-            })
-            keys.on('error', function (err: unknown) {
-                rej(err)
-            })
-            keys.on('end', function () {
-                res(map)
-            })
+        const map: DependencyMap = {}
+        const receiverStr = this.receiverKeyToString(receiver);
+        await this.receiverToProvider.forEachKeyStartingWith(receiverStr, async (key: string) => {
+            const providerStr = key.split(sep)[1]
+            map[providerStr] = true
         })
+        return map
+        // return new Promise((res, rej) => {
+        //     const receiverStr = this.receiverKeyToString(receiver);
+        //     const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
+        //     const map: DependencyMap = {}
+        //     keys.on('data', (key: string) => {
+        //         const providerStr = key.split(sep)[1]
+        //         map[providerStr] = true
+        //     })
+        //     keys.on('error', function (err: unknown) {
+        //         rej(err)
+        //     })
+        //     keys.on('end', function () {
+        //         res(map)
+        //     })
+        // })
     }
 
     async removeProviderByString(receiverStr: string, providerStr: string): Promise<void> {
@@ -169,21 +193,16 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
      * Adds updated request for all receivers of the provider
      * @param provider key of the provider
      */
-    addUpdateRequestToReceiversOf(provider: ProviderKeyModel) {
+    async addUpdateRequestToReceiversOf(provider: ProviderKeyModel) {
         return new Promise((res, rej) => {
             const providerStr = this.providerKeyToString(provider);
-            const keys = this.providerToReceiver.db.createKeyStream(createStreamOptions(providerStr))
-            keys.on('data', (key: string) => {
+            this.providerToReceiver.forEachKeyStartingWith(providerStr, async (key) => {
                 const receiverStr = key.split(sep)[1]
-                this.receiverDS.updater.addItemToQueue(this.stringToReceiverKey(receiverStr))
-                    .catch(e => rej(e))
+                this.receiverDS.updater.addItemToQueue(this.stringToReceiverKey(receiverStr)).catch(e => rej(e))
             })
-            keys.on('error', function (err: unknown) {
-                rej(err)
-            })
-            keys.on('end', function () {
-                res()
-            })
+                .then(() => res())
+                .catch(e => rej(e))
+
         })
     }
 

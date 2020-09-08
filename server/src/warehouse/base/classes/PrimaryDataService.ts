@@ -1,9 +1,10 @@
 import QueryStream from 'pg-query-stream';
 import prettyms from 'pretty-ms';
 import {Warehouse} from '../../Warehouse';
-import {DataService} from './DataService';
-import {Logger} from './Logger';
 import {ClearAll} from './ClearAll';
+import {DataService} from './DataService';
+import {IndexDBGeneric} from './IndexDBGeneric';
+import {Logger} from './Logger';
 
 export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -22,11 +23,23 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     // True if running sync() should restart right after finishing
     restartSyncing = false;
 
+    index: IndexDBGeneric<KeyModel, ValueModel>
+
+
     constructor(
         public wh: Warehouse,
-        private listenTo: string[]
+        private listenTo: string[],
+        public keyToString: (key: KeyModel) => string,
+        public stringToKey: (str: string) => KeyModel,
     ) {
         super()
+        this.index = new IndexDBGeneric(
+            keyToString,
+            stringToKey,
+            this.constructor.name,
+            wh
+        )
+
     }
 
     /**
@@ -72,11 +85,9 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
     /**
      *
-     * @param tmsp the timestamp of oldes modification considered for syncing
+     * @param tmsp the timestamp of oldest modification considered for syncing
      */
     async sync(tmsp: Date) {
-        // const {syncing, restartSyncing, lastUpdateBegin} = this;
-        // console.log('sync' + this.constructor.name, {syncing, restartSyncing, lastUpdateBegin})
 
         // If syncing is true, it sets restartSyncing to true and stops the function here
         if (this.syncing) {
@@ -106,7 +117,8 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
             if (deleteSql !== '') calls.push(this.manageDeletesSince(this.lastUpdateBegin, deleteSql))
         }
 
-        // set this.lastUpdateBegin to current date
+        // set this.lastUpdateBegin to timestamp that was used to run this sync
+        // process.
         this.lastUpdateBegin = tmsp
 
         // await the calls produced above

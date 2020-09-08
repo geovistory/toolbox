@@ -23,6 +23,7 @@ export class REntityFullTextDependencies extends Dependencies {
         super()
         // stores the dependency of entityFullText (receiver) on rEntity (provider)
         this.rEntity = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.prim.rEntity,
             rEntityIdToString,
@@ -33,6 +34,7 @@ export class REntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on rEntityLabel (provider)
         this.rEntityLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.agg.rEntityLabel,
             rEntityIdToString,
@@ -43,6 +45,7 @@ export class REntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on rEdge (provider)
         this.rEdge = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.prim.rEdge,
             rEntityIdToString,
@@ -53,6 +56,7 @@ export class REntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on dfhClassHasTypeProperty
         this.pClassFields = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.prim.pClassFieldsConfig,
             rEntityIdToString,
@@ -63,6 +67,7 @@ export class REntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on project class labels
         this.rClassLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.agg.rClassLabel,
             rEntityIdToString,
@@ -72,6 +77,7 @@ export class REntityFullTextDependencies extends Dependencies {
         ));
 
         this.rClassFieldLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.rEntityFullText,
             this.wh.agg.rClassFieldLabel,
             rEntityIdToString,

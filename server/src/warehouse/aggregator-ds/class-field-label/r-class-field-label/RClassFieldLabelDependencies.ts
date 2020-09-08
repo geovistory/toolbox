@@ -15,6 +15,7 @@ export class RClassFieldLabelDependencies extends Dependencies {
     super()
 
     this.dfhPropertyLabel = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.rClassFieldLabel,
       wh.prim.dfhPropertyLabel,
       rClassFieldIdToString,
@@ -24,6 +25,7 @@ export class RClassFieldLabelDependencies extends Dependencies {
     ))
 
     this.proPropertyLabel = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.rClassFieldLabel,
       wh.prim.proPropertyLabel,
       rClassFieldIdToString,

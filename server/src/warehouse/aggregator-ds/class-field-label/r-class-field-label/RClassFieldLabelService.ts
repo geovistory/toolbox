@@ -1,5 +1,4 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {Updater} from '../../../base/classes/Updater';
 import {rClassFieldIdToString, stringToRClassFieldId} from '../../../base/functions';
 import {Warehouse} from '../../../Warehouse';
@@ -15,11 +14,13 @@ export interface RClassFieldId {
 type ValueModel = string
 export class RClassFieldLabelService extends AggregatedDataService<RClassFieldId, ValueModel, RClassFieldLabelAggregator>{
     updater: Updater<RClassFieldId, RClassFieldLabelAggregator>;
-    index: IndexDBGeneric<RClassFieldId, ValueModel>
 
-    constructor(private wh: Warehouse) {
-        super()
-        this.index = new IndexDBGeneric(rClassFieldIdToString, stringToRClassFieldId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            rClassFieldIdToString,
+            stringToRClassFieldId
+        )
         const aggregatorFactory = async (id: RClassFieldId) => {
             const providers = new RClassFieldLabelProviders(this.wh.dep.rClassFieldLabel, id)
             return new RClassFieldLabelAggregator(providers, id).create()

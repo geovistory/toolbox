@@ -1,12 +1,12 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../../base/classes/Updater';
-import {rEntityIdToString, stringToREntityId, sqlForTsVector} from '../../../base/functions';
+import {rEntityIdToString, sqlForTsVector, stringToREntityId} from '../../../base/functions';
 import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityFullTextAggregator} from './REntityFullTextAggregator';
 import {REntityFullTextProviders} from './REntityFullTextPoviders';
+import {Logger} from '../../../base/classes/Logger';
 
 export type REntityFullTextVal = string;
 
@@ -31,11 +31,12 @@ export type REntityFullTextVal = string;
 export class REntityFullTextService extends AggregatedDataService<REntityId, REntityFullTextVal, REntityFullTextAggregator>{
     updater: Updater<REntityId, REntityFullTextAggregator>;
 
-    index: IndexDBGeneric<REntityId, REntityFullTextVal>
-
-    constructor(private wh: Warehouse) {
-        super()
-        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            rEntityIdToString,
+            stringToREntityId
+        )
         const aggregatorFactory = async (id: REntityId) => {
             const providers = new REntityFullTextProviders(this.wh.dep.rEntityFullText, id)
             return new REntityFullTextAggregator(providers, id).create()

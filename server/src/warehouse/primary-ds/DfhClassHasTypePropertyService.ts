@@ -1,4 +1,3 @@
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {rClassIdToString, stringToRClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
@@ -20,10 +19,8 @@ export type DfhClassHasTypePropVal = number;
  */
 export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, RClassId, DfhClassHasTypePropVal>{
     measure = 1000;
-    index: IndexDBGeneric<RClassId, DfhClassHasTypePropVal>
     constructor(wh: Warehouse) {
-        super(wh, ['modified_data_for_history_api_property'])
-        this.index = new IndexDBGeneric(rClassIdToString, stringToRClassId, this.constructor.name)
+        super(wh, ['modified_data_for_history_api_property'], rClassIdToString, stringToRClassId)
     }
     dbItemToKeyVal(item: DbItem): {key: RClassId; val: DfhClassHasTypePropVal;} {
         const key: RClassId = {

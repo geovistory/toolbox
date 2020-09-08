@@ -1,8 +1,7 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../../base/classes/Updater';
-import {pEntityIdToString, stringToPEntityId, sqlForTsVector} from '../../../base/functions';
+import {pEntityIdToString, sqlForTsVector, stringToPEntityId} from '../../../base/functions';
 import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityFullTextAggregator} from './PEntityFullTextAggregator';
@@ -31,11 +30,12 @@ export type PEntityFullTextVal = string;
 export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEntityFullTextVal, PEntityFullTextAggregator>{
     updater: Updater<PEntityId, PEntityFullTextAggregator>;
 
-    index: IndexDBGeneric<PEntityId, PEntityFullTextVal>
-
-    constructor(private wh: Warehouse) {
-        super()
-        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            pEntityIdToString,
+            stringToPEntityId
+        )
 
         const aggregatorFactory = async (id: PEntityId) => {
             const providers = new PEntityFullTextProviders(this.wh.dep.pEntityFullText, id)

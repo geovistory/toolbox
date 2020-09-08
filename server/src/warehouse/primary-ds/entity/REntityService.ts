@@ -1,4 +1,3 @@
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {SqlUpsertQueue} from '../../base/classes/SqlUpsertQueue';
 import {rEntityIdToString, stringToREntityId} from '../../base/functions';
@@ -9,15 +8,13 @@ export class REntityService extends PrimaryDataService<InitItem, REntityId, REnt
 
     measure = 1000;
 
-    index: IndexDBGeneric<REntityId, REntity>
     upsertQueue: SqlUpsertQueue<REntityId, REntity>;
     constructor(public wh: Warehouse) {
         super(wh, [
             'modified_projects_info_proj_rel',
             'modified_information_persistent_item',
             'modified_information_temporal_entity'
-        ])
-        this.index = new IndexDBGeneric(rEntityIdToString, stringToREntityId, this.constructor.name)
+        ], rEntityIdToString, stringToREntityId)
 
         this.upsertQueue = new SqlUpsertQueue(
             wh,

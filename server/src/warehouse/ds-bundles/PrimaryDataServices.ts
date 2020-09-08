@@ -1,3 +1,5 @@
+import {combineLatest, Observable} from 'rxjs';
+import {filter, mapTo, map} from 'rxjs/operators';
 import {DataServiceBundle} from '../base/classes/DataServiceBundle';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {PClassService} from '../primary-ds/class/PClassService';
@@ -47,6 +49,8 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
     rEntity: REntityService;
     rEdge: REdgeService;
 
+    ready$: Observable<boolean>
+
     constructor(private wh: Warehouse) {
         super()
 
@@ -73,6 +77,14 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
 
         this.rClass = this.registerDataService(new RClassService(this.wh));
         this.rProperty = this.registerDataService(new RPropertyService(this.wh));
+
+        this.ready$ = combineLatest(
+            this.registered.map(ds => ds.index.ready$.pipe(filter(r => r === true)))
+        ).pipe(
+            map(a => {
+                return a
+            }),
+            mapTo(true))
 
     }
 

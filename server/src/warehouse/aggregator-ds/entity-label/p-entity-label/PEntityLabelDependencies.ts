@@ -22,6 +22,7 @@ export class PEntityLabelDependencies extends Dependencies {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
         this.entity = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityLabel,
             this.wh.prim.pEntity,
             pEntityIdToString,
@@ -32,6 +33,7 @@ export class PEntityLabelDependencies extends Dependencies {
 
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
         this.entityLabelConfig = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityLabel,
             this.wh.prim.proEntityLabelConfig,
             pEntityIdToString,
@@ -41,6 +43,7 @@ export class PEntityLabelDependencies extends Dependencies {
         ))
         // stores the dependency of entityLabel (receiver) on entityLabelConfig (provider)
         this.identifyingProperty = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityLabel,
             this.wh.agg.identifyingProperty,
             pEntityIdToString,
@@ -52,6 +55,7 @@ export class PEntityLabelDependencies extends Dependencies {
 
         // stores the dependency of entityLabel (receiver) on entityLabel (provider)
         this.entityLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityLabel,
             this.wh.agg.pEntityLabel,
             pEntityIdToString,
@@ -62,6 +66,7 @@ export class PEntityLabelDependencies extends Dependencies {
 
         // stores the dependency of entityLabel (receiver) on edge (provider)
         this.edge = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityLabel,
             this.wh.prim.pEdge,
             pEntityIdToString,

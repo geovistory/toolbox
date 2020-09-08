@@ -14,10 +14,14 @@
  */
 
 import {IndexLeveldb} from './IndexLeveldb';
+import {Warehouse} from '../../Warehouse';
 
 export abstract class IndexDB<KeyModel, ValueModel> extends IndexLeveldb<KeyModel, ValueModel> {
-  constructor(name = 'default') {
-    super(name)
+  constructor(
+    name = 'default',
+    wh: Warehouse
+  ) {
+    super(name, wh)
   }
 }
 

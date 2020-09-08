@@ -17,6 +17,8 @@ import {REntityTimeSpanService} from '../aggregator-ds/entity-time-span/r-entity
 import {REntityTypeService} from '../aggregator-ds/entity-type/r-entity-type/REntityTypeService';
 import {REntityFullTextService} from '../aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
 import {AggregatedDataService} from '../base/classes/AggregatedDataService';
+import {combineLatest, Observable} from 'rxjs';
+import {filter, mapTo} from 'rxjs/operators';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any,any,any>> {
     // Model aggregators
@@ -40,6 +42,7 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
     rEntityFullText: REntityFullTextService;
     rEntityTimeSpan: REntityTimeSpanService;
 
+    ready$: Observable<boolean>
 
     constructor(wh: Warehouse) {
         super()
@@ -64,6 +67,9 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
         this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
         this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
 
+        this.ready$ = combineLatest(
+            this.registered.map(ds => ds.index.ready$.pipe(filter(r => r === true))),
+        ).pipe(mapTo(true))
     }
 
 

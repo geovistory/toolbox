@@ -23,6 +23,7 @@ export class PEntityFullTextDependencies extends Dependencies {
         super()
         // stores the dependency of entityFullText (receiver) on pEntity (provider)
         this.pEntity = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityFullText,
             this.wh.prim.pEntity,
             pEntityIdToString,
@@ -33,6 +34,7 @@ export class PEntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on pEntityLabel (provider)
         this.pEntityLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityFullText,
             this.wh.agg.pEntityLabel,
             pEntityIdToString,
@@ -43,6 +45,7 @@ export class PEntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on rEntityLabel (provider)
         this.rEntityLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityFullText,
             this.wh.agg.rEntityLabel,
             pEntityIdToString,
@@ -53,6 +56,7 @@ export class PEntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on pEdge (provider)
         this.pEdge = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityFullText,
             this.wh.prim.pEdge,
             pEntityIdToString,
@@ -63,6 +67,7 @@ export class PEntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on dfhClassHasTypeProperty
         this.pClassFields = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityFullText,
             this.wh.prim.pClassFieldsConfig,
             pEntityIdToString,
@@ -73,6 +78,7 @@ export class PEntityFullTextDependencies extends Dependencies {
 
         // stores the dependency of entityFullText (receiver) on project class labels
         this.pClassLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityFullText,
             this.wh.agg.pClassLabel,
             pEntityIdToString,
@@ -82,6 +88,7 @@ export class PEntityFullTextDependencies extends Dependencies {
         ));
 
         this.pClassFieldLabel = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityFullText,
             this.wh.agg.pClassFieldLabel,
             pEntityIdToString,

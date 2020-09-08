@@ -30,6 +30,7 @@ describe('DependencyIndex', function () {
 
         receiver2 = {fkProject: 1, pkEntity: 101}
         idx = new DependencyIndex(
+            wh,
             stub1,
             stub2,
             pEntityIdToString,

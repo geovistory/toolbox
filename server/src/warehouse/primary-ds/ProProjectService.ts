@@ -1,6 +1,5 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {projectIdToString, stringToProjectId} from '../base/functions';
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {Warehouse} from '../Warehouse';
 export interface ProjectId {
     pkProject: number
@@ -11,10 +10,8 @@ export interface ProjectVal {
 export class ProProjectService extends PrimaryDataService<DbItem, ProjectId, ProjectVal>{
     measure = 1000;
 
-    index: IndexDBGeneric<ProjectId, ProjectVal>
     constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_project'])
-        this .index = new IndexDBGeneric(projectIdToString, stringToProjectId, this.constructor.name)
+        super(wh, ['modified_projects_project'],projectIdToString, stringToProjectId)
     }
     dbItemToKeyVal(item: DbItem): {key: ProjectId; val: ProjectVal;} {
         const key: ProjectId = {

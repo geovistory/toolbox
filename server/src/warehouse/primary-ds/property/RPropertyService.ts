@@ -1,8 +1,7 @@
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
+import {RClassFieldId} from '../../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {rPropertyIdToString, stringToRPropertyId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {RClassFieldId} from '../../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 export interface RPropertyId {pkProperty: number}
 
 export class RPropertyService extends PrimaryDataService<InitItem, RPropertyId, RProperty>{
@@ -10,15 +9,13 @@ export class RPropertyService extends PrimaryDataService<InitItem, RPropertyId, 
   measure = 1000;
 
 
-  index: IndexDBGeneric<RPropertyId, RProperty>
 
   constructor(public wh: Warehouse) {
     super(wh, [
       'modified_projects_project',
       'modified_projects_dfh_profile_proj_rel',
       'modified_data_for_history_api_property'
-    ])
-    this.index = new IndexDBGeneric(rPropertyIdToString, stringToRPropertyId, this.constructor.name)
+    ],rPropertyIdToString, stringToRPropertyId,)
 
     /**
      * Add actions after a new RProperty is put/updated into index

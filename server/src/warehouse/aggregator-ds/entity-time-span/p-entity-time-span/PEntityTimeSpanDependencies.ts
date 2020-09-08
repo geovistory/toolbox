@@ -37,6 +37,7 @@ export class PEntityTimeSpanDependencies extends Dependencies {
         super()
         // stores the dependency of entityType (receiver) on entity (provider)
         this.pEntity = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEntity,
             pEntityIdToString,
@@ -47,6 +48,7 @@ export class PEntityTimeSpanDependencies extends Dependencies {
 
         // stores the dependency of entityType (receiver) on edge (provider)
         this.pEdge = this.registerDepIdx(new DependencyIndex(
+            this.wh,
             this.wh.agg.pEntityTimeSpan,
             this.wh.prim.pEdge,
             pEntityIdToString,

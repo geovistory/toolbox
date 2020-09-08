@@ -1,6 +1,6 @@
 import {omit} from 'ramda';
 import {ProviderInterface} from '../interfaces/Providers';
-import {createStreamOptions, DependencyIndex, DependencyMap} from './DependencyIndex';
+import {DependencyIndex, DependencyMap} from './DependencyIndex';
 
 export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements ProviderInterface<ReceiverKeyModel> {
     providerCache: DependencyMap = {};
@@ -20,19 +20,24 @@ export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, Prov
      * @param str
      */
     async getItemsStartingWith(str: string): Promise<{key: ProviderKeyModel, value: ProviderValModel}[]> {
-        return new Promise((res, rej) => {
-            const keys = this.dependencyIndex.providerDS.index.db.createReadStream(createStreamOptions(str))
-            const batch: {key: ProviderKeyModel, value: ProviderValModel}[] = []
-            keys.on('data', (item) => {
-                batch.push(item)
-            })
-            keys.on('error', function (err: unknown) {
-                rej(err)
-            })
-            keys.on('end', function () {
-                res(batch)
-            })
+        const batch: {key: ProviderKeyModel, value: ProviderValModel}[] = []
+        await this.dependencyIndex.providerDS.index.forEachItemStartingWith(str, async (item)=>{
+            batch.push(item)
         })
+        return batch
+        // return new Promise((res, rej) => {
+        //     const keys = this.dependencyIndex.providerDS.index.db.createReadStream(createStreamOptions(str))
+        //     const batch: {key: ProviderKeyModel, value: ProviderValModel}[] = []
+        //     keys.on('data', (item) => {
+        //         batch.push(item)
+        //     })
+        //     keys.on('error', function (err: unknown) {
+        //         rej(err)
+        //     })
+        //     keys.on('end', function () {
+        //         res(batch)
+        //     })
+        // })
     }
     /**
      * gets value from providing DataService

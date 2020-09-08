@@ -1,13 +1,12 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {IndexDBGeneric} from '../../../base/classes/IndexDBGeneric';
 import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
 import {Updater} from '../../../base/classes/Updater';
 import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
+import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
 import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityTimeSpanAggregator} from './PEntityTimeSpanAggregator';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
-import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
 
 export type TimeSpanKeys =
     'p82'       // At some time within | outer bounds | not before – not after
@@ -46,11 +45,12 @@ export type PEntityTimeSpan = {
 export class PEntityTimeSpanService extends AggregatedDataService<PEntityId, PEntityTimeSpanVal, PEntityTimeSpanAggregator>{
     updater: Updater<PEntityId, PEntityTimeSpanAggregator>;
 
-    index: IndexDBGeneric<PEntityId, PEntityTimeSpanVal>
-
-    constructor(private wh: Warehouse) {
-        super()
-        this.index = new IndexDBGeneric(pEntityIdToString, stringToPEntityId, this.constructor.name)
+    constructor(public wh: Warehouse) {
+        super(
+            wh,
+            pEntityIdToString,
+            stringToPEntityId
+        )
         const aggregatorFactory = async (id: PEntityId) => {
             const providers = new PEntityTimeSpanProviders(this.wh.dep.pEntityTimeSpan, id)
             return new PEntityTimeSpanAggregator(providers, id).create()

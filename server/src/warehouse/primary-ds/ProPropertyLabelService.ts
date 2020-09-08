@@ -1,4 +1,3 @@
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {proPropertyIdToString, stringToProPropertyId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
@@ -14,12 +13,13 @@ export type ProPropertyLabelVal = string
 export class ProPropertyLabelService extends PrimaryDataService<DbItem, ProPropertyLabelId, ProPropertyLabelVal>{
     measure = 1000;
 
-
-    index: IndexDBGeneric<ProPropertyLabelId, ProPropertyLabelVal>
-
     constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_text_property'])
-        this.index = new IndexDBGeneric(proPropertyIdToString, stringToProPropertyId, this.constructor.name)
+        super(
+            wh,
+            ['modified_projects_text_property'],
+            proPropertyIdToString,
+            stringToProPropertyId
+        )
     }
 
     dbItemToKeyVal(item: DbItem): {key: ProPropertyLabelId; val: ProPropertyLabelVal;} {

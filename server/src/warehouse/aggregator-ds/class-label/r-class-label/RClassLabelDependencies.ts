@@ -16,6 +16,7 @@ export class RClassLabelDependencies extends Dependencies {
 
 
     this.dfhClassLabel = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.rClassLabel,
       wh.prim.dfhClassLabel,
       rClassIdToString,
@@ -25,6 +26,7 @@ export class RClassLabelDependencies extends Dependencies {
     ))
 
     this.proClassLabel = this.registerDepIdx(new DependencyIndex(
+      wh,
       wh.agg.rClassLabel,
       wh.prim.proClassLabel,
       rClassIdToString,

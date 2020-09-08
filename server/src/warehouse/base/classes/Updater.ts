@@ -36,8 +36,8 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         stringToKey: StringToKeyModel<KeyModel>,
     ) {
 
-        this._queueA = new UniqIndexGeneric<KeyModel>(keyToString, stringToKey)
-        this._queueB = new UniqIndexGeneric<KeyModel>(keyToString, stringToKey)
+        this._queueA = new UniqIndexGeneric<KeyModel>(name+'_queueA', wh, keyToString, stringToKey)
+        this._queueB = new UniqIndexGeneric<KeyModel>(name+'_queueB', wh, keyToString, stringToKey)
     }
 
 
@@ -48,9 +48,9 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         if (this.updating === false && this.wh.initializingIndexes === false
         ) {
             this.updating = true;
-            // setTimeout(() => {
-                this.startCylcling().catch(e => {console.error(e)})
-            // }, 0)
+            setTimeout(() => {
+            this.startCylcling().catch(e => {console.error(e)})
+            }, 0)
         }
     }
 

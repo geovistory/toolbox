@@ -1,24 +1,18 @@
-import {IndexDBGeneric} from '../../base/classes/IndexDBGeneric';
+import {PClassFieldId} from '../../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {pPropertyIdToString, stringToPPropertyId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {PClassFieldId} from '../../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 export interface PPropertyId {fkProject: number, pkProperty: number}
 
 export class PPropertyService extends PrimaryDataService<InitItem, PPropertyId, PProperty>{
 
   measure = 1000;
-
-
-  index: IndexDBGeneric<PPropertyId, PProperty>
-
   constructor(public wh: Warehouse) {
     super(wh, [
       'modified_projects_project',
       'modified_projects_dfh_profile_proj_rel',
       'modified_data_for_history_api_property'
-    ])
-    this.index = new IndexDBGeneric(pPropertyIdToString, stringToPPropertyId, this.constructor.name)
+    ],pPropertyIdToString, stringToPPropertyId)
 
     /**
      * Add actions after a new ProjectProperty is put/updated into index

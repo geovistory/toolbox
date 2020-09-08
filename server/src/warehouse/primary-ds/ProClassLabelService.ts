@@ -1,4 +1,3 @@
-import {IndexDBGeneric} from '../base/classes/IndexDBGeneric';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {proClassIdToString, stringToProClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
@@ -11,10 +10,8 @@ export type ProClassLabelVal = string
 
 export class ProClassLabelService extends PrimaryDataService<DbItem, ProClassLabelId, ProClassLabelVal>{
     measure = 1000;
-    index: IndexDBGeneric<ProClassLabelId, ProClassLabelVal>
     constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_text_property'])
-        this.index = new IndexDBGeneric(proClassIdToString, stringToProClassId, this.constructor.name)
+        super(wh, ['modified_projects_text_property'],proClassIdToString, stringToProClassId)
     }
 
     dbItemToKeyVal(item: DbItem): {key: ProClassLabelId; val: ProClassLabelVal;} {
