@@ -1,4 +1,4 @@
-import {testdb} from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 import {WarEntityPreview} from '../../../models';
 import {WarEntityPreviewRepository} from '../../../repositories';
 

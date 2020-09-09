@@ -1,4 +1,4 @@
-import {testdb} from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 import {ProDfhProfileProjRel} from '../../../models';
 import {ProDfhProfileProjRelRepository} from '../../../repositories';
 import {dealWithPkEntity} from './_sequences.helper';

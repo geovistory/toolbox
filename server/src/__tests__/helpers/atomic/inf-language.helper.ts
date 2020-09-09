@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import {testdb} from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 import {InfLanguage} from '../../../models';
 import {InfLanguageRepository} from '../../../repositories';
 import {dealWithPkEntity} from './_sequences.helper';

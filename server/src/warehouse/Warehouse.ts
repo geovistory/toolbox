@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {existsSync, fstat} from "fs";
+import {existsSync} from "fs";
+import path from 'path';
 import {Pool, PoolClient} from 'pg';
+import rimraf from 'rimraf';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
 import subleveldown from 'subleveldown';
@@ -12,8 +14,6 @@ import {getDbFileSize, getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
-import rimraf from 'rimraf'
-import path from 'path';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 
@@ -59,8 +59,13 @@ export class Warehouse {
     s3backuper: S3LevelBackup
     leveldbFolder = 'leveldb'
 
-    constructor(private rootDir = '') {
-        this.s3backuper = new S3LevelBackup(rootDir, this.leveldbFolder)
+    constructor(
+        private rootDir: string,
+        private skipS3Backups = false
+    ) {
+        if (!skipS3Backups) {
+            this.s3backuper = new S3LevelBackup(rootDir, this.leveldbFolder)
+        }
 
         const connectionString = getPgUrlForPg8()
         const ssl = getPgSslForPg8()
@@ -213,7 +218,7 @@ export class Warehouse {
     }
 
     private async createS3Backup() {
-
+        if (this.skipS3Backups) return;
 
         const date = this.getCatchUpDate()
         const t1 = Logger.start(`Create backup for catch up date ${date.toISOString()}`, 0)
@@ -222,6 +227,8 @@ export class Warehouse {
 
     }
     private async downloadBackup() {
+        if (this.skipS3Backups) return;
+
         rimraf.sync(path.join(this.rootDir, this.leveldbFolder))
         const date = await this.s3backuper.downloadLatestBackup()
         if (date) {
@@ -230,6 +237,8 @@ export class Warehouse {
 
     }
     createBackups() {
+        if (this.skipS3Backups) return;
+
         setTimeout(
             () => {
                 this.createS3Backup()

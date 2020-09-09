@@ -1,4 +1,4 @@
-import {testdb} from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 import {InfPersistentItem} from '../../../models';
 import {DfhClassRepository, InfPersistentItemRepository, InfStatementRepository, InfTextPropertyRepository, ProInfoProjRelRepository} from '../../../repositories';
 import {dealWithPkEntity} from './_sequences.helper';

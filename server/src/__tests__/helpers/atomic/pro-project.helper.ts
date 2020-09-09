@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import {testdb} from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 import {ProProject} from '../../../models';
 import {ProProjectRepository} from '../../../repositories';
 import * as AtmLanguage from '../atomic/inf-language.helper';

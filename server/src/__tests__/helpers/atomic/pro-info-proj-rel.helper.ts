@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import {testdb} from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 import {ProInfoProjRel} from '../../../models';
 import {ProInfoProjRelRepository} from '../../../repositories';
 import {PubAccountMock} from '../data/gvDB/PubAccountMock';

@@ -1,28 +1,27 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Where} from '@loopback/repository';
 import {Observable} from 'rxjs';
-import {first, filter} from 'rxjs/operators';
-import {WarEntityPreview, WarClassPreview} from '../../models';
+import {filter, first} from 'rxjs/operators';
+import {WarClassPreview, WarEntityPreview} from '../../models';
 import {Warehouse} from '../../warehouse/Warehouse';
-import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
-import {forEach} from 'lodash';
-
+import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
+import path from 'path'
 export async function setupWarehouseWithoutStarting() {
 
-    const wh = new Warehouse()
+    const wh = new Warehouse(path.resolve(__dirname, '../../../'), true)
     // await wh.pgClient.connect()
     // wh.startListening()
     return wh;
 }
 export async function setupWarehouse() {
 
-    const wh = new Warehouse()
+    const wh = new Warehouse(path.resolve(__dirname, '../../../'), true)
     return wh;
 }
 export async function setupCleanAndStartWarehouse() {
 
-    const wh = new Warehouse()
+    const wh = new Warehouse(path.resolve(__dirname, '../../../'), true)
     await wh.init()
     await wh.listen()
 

@@ -1,4 +1,4 @@
-import { testdb } from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository, ProEntityLabelConfigRepository } from '../../../repositories';
 import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
 import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';

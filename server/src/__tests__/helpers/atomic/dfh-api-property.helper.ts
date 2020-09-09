@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {values} from 'lodash';
 import {keys} from 'ramda';
-import {testdb} from '../../../datasources/testdb.datasource';
+import { testdb } from "../testdb";
 
 /**
  * These helpers are independent of any loopback 4 repository

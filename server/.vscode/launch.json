@@ -122,11 +122,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "800",
+        "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        // "--grep",
-        // "/DfhPropertyLabelService.*/"
+        "--grep",
+        "/PClassLabelService.*/"
         // "/IndexDB.*/"
       ],
       "cwd": "${workspaceRoot}",
