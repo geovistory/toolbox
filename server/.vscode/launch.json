@@ -136,5 +136,18 @@
         "${workspaceFolder}/dist/**/*.js"
       ]
     },
+    {
+      "name": "Launch Bucketeer",
+      "type": "node",
+      "request": "launch",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "stopOnEntry": false,
+      "program": "${workspaceFolder}/bucket-test.js",
+      "cwd": "${workspaceRoot}",
+      "restart": false,
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
   ]
 }

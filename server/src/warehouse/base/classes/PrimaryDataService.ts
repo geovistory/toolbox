@@ -16,6 +16,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     // marking the begin of the sync() process, which can be considerably earlier
     // than its end. It is null until sync() is called the first time.
     lastUpdateBegin?: Date;
+    lastUpdateDone?: Date;
 
     // True if sync() is running
     syncing = false;
@@ -127,6 +128,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         this.syncing = false;
         if (this.restartSyncing) await this.sync(tmsp);
+        this.lastUpdateDone = tmsp
     }
 
     /**

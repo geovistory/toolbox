@@ -1,6 +1,6 @@
 const warhouse = require('./dist/warehouse');
 warhouse
-  .init()
+  .init(__dirname)
   .then(() => {
     console.log(`***************************************`);
     console.log(`Warehouse initialized successfully!`);

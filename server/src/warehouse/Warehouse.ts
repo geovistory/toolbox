@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {existsSync, fstat} from "fs";
 import {Pool, PoolClient} from 'pg';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
 import subleveldown from 'subleveldown';
 import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
+import {S3LevelBackup} from './base/bucketeer/S3LevelBackup';
 import {Logger} from './base/classes/Logger';
 import {leveldb} from './base/database';
 import {getDbFileSize, getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
-import {Edge} from "./primary-ds/edge/edge.commons";
-import {existsSync} from "fs"
-// import { UpdateService } from './data-services/UpdateService';
-
+import rimraf from 'rimraf'
+import path from 'path';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 
@@ -55,7 +55,13 @@ export class Warehouse {
     pgConnected$ = new ReplaySubject<PoolClient>()
     createSchema$ = new Subject<void>()
 
-    constructor() {
+    backupCatchUpDate: Date;
+    s3backuper: S3LevelBackup
+    leveldbFolder = 'leveldb'
+
+    constructor(private rootDir = '') {
+        this.s3backuper = new S3LevelBackup(rootDir, this.leveldbFolder)
+
         const connectionString = getPgUrlForPg8()
         const ssl = getPgSslForPg8()
         this.pgPool = new Pool({
@@ -85,13 +91,13 @@ export class Warehouse {
 
         await this.initIndexSchema()
 
-        await this.saveDateBeforeInit();
+        await this.setInitBackupDate();
 
         await this.initIndexData();
 
         await this.agg.startCycling()
 
-        // backup leveldb folder
+        await this.createS3Backup()
 
         Logger.itTook(t0, 'to initialize', 0)
 
@@ -114,23 +120,48 @@ export class Warehouse {
 
         await this.connectPgClient();
 
-        // get backup and date before last update1
+        await this.downloadBackup()
 
         await this.initIndexSchema()
 
         this.startListening()
 
+        await this.catchUp();
 
-        const {tmsp} = await this.metadata.get(BEFORE_INIT_DATE_KEY);
-        Logger.msg(`Catch up since ${tmsp}`)
-        if (!tmsp) throw new Error('Can not listen() before initialized. Run init() first.')
-        for (const primDS of this.prim.registered) {
-            await primDS.startAndSyncSince(new Date(tmsp))
-        }
+        this.createBackups()
 
         this.status = 'running';
 
         Logger.itTook(t0, 'to start listening. Warehouse is up and running', 0)
+    }
+
+    private async catchUp() {
+
+
+        Logger.msg(`Catch up since ${this.backupCatchUpDate}`);
+
+        if (this.backupCatchUpDate) {
+            for (const primDS of this.prim.registered) {
+                await primDS.startAndSyncSince(this.backupCatchUpDate);
+            }
+        }
+        else {
+            new Error('Can not listen() before initialized. Run init() first.');
+        }
+    }
+
+    /**
+     * gets date of latest valid udate cycle
+     */
+    private getCatchUpDate() {
+        let date: Date = this.backupCatchUpDate;
+
+        const dates = this.prim.registered
+            .filter(d => !!d.lastUpdateDone)
+            .map(d => d.lastUpdateDone ?? new Date())
+            .sort();
+        if (dates.length) date = dates[dates.length - 1];
+        return date;
     }
 
     /**
@@ -175,10 +206,41 @@ export class Warehouse {
     }
 
 
-    private async saveDateBeforeInit() {
+    private async setInitBackupDate() {
         const dbNow = await this.pgClient.query('SELECT now() as now');
-        const tmsp = dbNow.rows?.[0]?.now;
-        await this.metadata.put(BEFORE_INIT_DATE_KEY, {tmsp});
+        const tmsp: string = dbNow.rows?.[0]?.now;
+        this.backupCatchUpDate = new Date(tmsp)
+    }
+
+    private async createS3Backup() {
+
+
+        const date = this.getCatchUpDate()
+        const t1 = Logger.start(`Create backup for catch up date ${date.toISOString()}`, 0)
+        await this.s3backuper.createBackup(date)
+        Logger.itTook(t1, 'to create backup', 0)
+
+    }
+    private async downloadBackup() {
+        rimraf.sync(path.join(this.rootDir, this.leveldbFolder))
+        const date = await this.s3backuper.downloadLatestBackup()
+        if (date) {
+            this.backupCatchUpDate = date
+        }
+
+    }
+    createBackups() {
+        setTimeout(
+            () => {
+                this.createS3Backup()
+                    .then(_ => {
+                        this.createBackups()
+                    })
+                    .catch(e => console.error('Error when creating backup!', e))
+            },
+            1000 * 20 // 20 sec
+            // 1000 * 60 * 5 // 5 min
+        )
     }
 
     /**
@@ -236,6 +298,8 @@ export class Warehouse {
                 else if (handler) {
                     // Q: Is leveldb folder still present?
                     if (!existsSync('leveldb')) {
+                        // A: NO
+                        // exit the process, so that listen() is called again.
                         process.exit(1)
                     }
                     // A: YES
@@ -243,8 +307,6 @@ export class Warehouse {
                         l.callback(date).catch(e => console.log(e))
                     })
 
-                    // A: NO
-                    // exit the process, so that listen() is called again.
                 }
             } else {
                 console.error('payload of notification must be a string convertable to date')

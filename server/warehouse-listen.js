@@ -1,6 +1,6 @@
 const warhouse = require('./dist/warehouse');
 warhouse
-  .listen()
+  .listen(__dirname)
   .catch(err => {
     console.log(`***************************************`);
     console.error('Warehouse was up and running, when this error occured:');
