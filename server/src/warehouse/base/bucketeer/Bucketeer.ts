@@ -113,7 +113,7 @@ export class Bucketeer {
   * Download a folder from S3
   */
   async downloadFolder(rootPath: string, localFolder: string, s3folder: string) {
-    const t = Logger.start('download')
+    const t = Logger.start(`download backup ${s3folder}`)
     const outputFolderPath = path.resolve(rootPath, localFolder)
 
     const data = await this.listObjects(s3folder)

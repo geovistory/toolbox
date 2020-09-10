@@ -1,10 +1,17 @@
+import {exec} from 'child_process';
 import {Bucketeer} from './Bucketeer';
+
+interface BackupId {
+  prefix: string
+  isoDate: string
+  gitCommit: string
+}
 
 export class S3LevelBackup {
   bucketeer: Bucketeer
 
   backupPrefix: string
-  delemiter = '_'
+  delemiter = '___'
   constructor(
     private rootFolder = __dirname,
     private leveldbFolder = 'leveldb'
@@ -14,11 +21,18 @@ export class S3LevelBackup {
   }
 
   async createBackup(tmsp: Date) {
+    const currentCommit = await this.getCurrentCommit()
+    const backupId: BackupId = {
+      prefix: this.backupPrefix,
+      isoDate: tmsp.toISOString(),
+      gitCommit: currentCommit
+    }
     // create s3 folder name
-    const backupname = this.backupPrefix + this.delemiter + tmsp.toISOString();
+    const backupname = this.backupIdToString(backupId)
     // upload folder
     await this.bucketeer.uploadFolder(this.rootFolder, this.leveldbFolder, backupname)
   }
+
 
   /**
    * returns array of backup-folder names ordered by latest first
@@ -44,8 +58,8 @@ export class S3LevelBackup {
   }
 
   private backupNameToDate(name: string) {
-    const isoTime = name.replace(this.backupPrefix + this.delemiter, '').replace('/', '');
-    return new Date(isoTime);
+    const backupId = this.stringToBackupId(name)
+    return new Date(backupId.isoDate);
   }
 
   async downloadLatestBackup(destinationFolder: string = this.leveldbFolder) {
@@ -53,7 +67,16 @@ export class S3LevelBackup {
     if (backupnames?.length) {
       const backupname = backupnames[0]
       await this.bucketeer.downloadFolder(this.rootFolder, destinationFolder, backupname)
-      return this.backupNameToDate(backupname);
+      return this.stringToBackupId(backupname);
+    }
+  }
+
+
+  async getLatestBackupId() {
+    const backupnames = await this.listBackupsNewestFirst()
+    if (backupnames?.length) {
+      const backupname = backupnames[0]
+      return this.stringToBackupId(backupname);
     }
   }
 
@@ -68,6 +91,27 @@ export class S3LevelBackup {
     }
   }
 
+  getCurrentCommit() {
+    return new Promise<string>((res, rej) => {
+      exec('git rev-parse --short HEAD', (error, stdout, stderr) => {
+        if (error) {
+          rej()
+        }
+        else {
+          const commit = stdout.trimEnd()
+          res(commit)
+        }
+      });
+    })
+  }
 
+  backupIdToString(id: BackupId): string {
+    return [id.prefix, id.isoDate, id.gitCommit].join(this.delemiter)
+  }
+
+  stringToBackupId(str: string): BackupId {
+    const [prefix, isoDate, gitCommit] = str.replace('/','').split(this.delemiter)
+    return {prefix, isoDate, gitCommit}
+  }
 
 }

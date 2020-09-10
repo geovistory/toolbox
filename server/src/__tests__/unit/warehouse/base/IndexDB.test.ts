@@ -3,6 +3,8 @@ import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {waitUntilNext} from '../../../helpers/warehouse-helpers';
 import {omit} from 'ramda';
+import path from 'path'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class TestIdx extends IndexDB<string, any> {
   keyToString(key: string) {return key;}
@@ -17,7 +19,7 @@ describe('IndexDB', function () {
 
   before(async () => {
 
-    wh = new Warehouse()
+    wh = new Warehouse(path.resolve(__dirname, '../../../../../'), true)
     idx = new TestIdx('test_idx', wh)
     await wh.connectPgClient();
     wh.createSchema$.next();

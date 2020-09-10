@@ -5,6 +5,7 @@ import {ClearAll} from './ClearAll';
 import {DataService} from './DataService';
 import {IndexDBGeneric} from './IndexDBGeneric';
 import {Logger} from './Logger';
+import {BehaviorSubject} from 'rxjs';
 
 export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -19,7 +20,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     lastUpdateDone?: Date;
 
     // True if sync() is running
-    syncing = false;
+    syncing$ = new BehaviorSubject(false);
 
     // True if running sync() should restart right after finishing
     restartSyncing = false;
@@ -91,13 +92,13 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     async sync(tmsp: Date) {
 
         // If syncing is true, it sets restartSyncing to true and stops the function here
-        if (this.syncing) {
+        if (this.syncing$.value) {
             this.restartSyncing = true
             return;
         }
 
         // Else sets syncing to true and restartSyncing to false
-        this.syncing = true;
+        this.syncing$.next(true);
         this.restartSyncing = false;
 
         // throttle sync process for 10 ms
@@ -126,7 +127,7 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         const [updates, deletes] = await Promise.all(calls);
         Logger.itTook(t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
 
-        this.syncing = false;
+        this.syncing$.next(false)
         if (this.restartSyncing) await this.sync(tmsp);
         this.lastUpdateDone = tmsp
     }

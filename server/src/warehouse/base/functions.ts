@@ -1,10 +1,8 @@
-import getFolderSize from 'get-folder-size';
 import {PClassId} from '../primary-ds/ProClassFieldsConfigService';
 import {DfhClassLabelId} from '../primary-ds/DfhClassLabelService';
 import {PEntityId} from '../primary-ds/entity/PEntityService';
 import {ProClassLabelId} from '../primary-ds/ProClassLabelService';
 import {ProjectId} from '../primary-ds/ProProjectService';
-import {leveldbpath} from './database';
 import {RClassId} from '../primary-ds/DfhClassHasTypePropertyService';
 import {PPropertyId} from '../primary-ds/property/PPropertyService';
 import {DfhPropertyLabelId} from '../primary-ds/DfhPropertyLabelService';
@@ -178,26 +176,6 @@ export function stringToOutgoingProperyId(str: string): OutgoingProperyId {
 
 
 
-
-/**
- * returns file size of db in MB
- */
-export async function getDbFileSize(): Promise<{
-    bytes: number,
-    readable: string
-}> {
-    return new Promise((res, rej) => {
-        getFolderSize(leveldbpath, (err, size) => {
-            if (err) {rej(err);}
-
-            res({
-                bytes: size,
-                readable: (size / 1024 / 1024).toFixed(2) + ' MB'
-            })
-        })
-    })
-
-}
 
 /**
  * returns memory usage in MB

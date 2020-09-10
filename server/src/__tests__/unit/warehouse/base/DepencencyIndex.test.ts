@@ -5,7 +5,7 @@ import {pEntityIdToString, stringToPEntityId} from '../../../../warehouse/base/f
 import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {EntityLabelVal} from '../../../../warehouse/aggregator-ds/entity-label/entity-label.commons';
-
+import path from 'path'
 
 
 describe('DependencyIndex', function () {
@@ -19,7 +19,7 @@ describe('DependencyIndex', function () {
     let receiver2: PEntityId
     before(async () => {
 
-        wh = new Warehouse()
+        wh = new Warehouse(path.resolve(__dirname, '../../../../../'), true)
         stub1 = new PEntityLabelService(wh)
         stub2 = new PEntityLabelService(wh)
 

@@ -6,8 +6,8 @@ import levelup from 'levelup'
  * This creates the level database that can be imported
  * throughout the app in order to use the database
  */
-export const leveldbpath = './leveldb';
-export const leveldb = levelup(leveldown('./leveldb'))
+// export const leveldbpath = './leveldb';
+// export const leveldb = levelup(leveldown('./leveldb'))
 
 /**
  * Other db implementations

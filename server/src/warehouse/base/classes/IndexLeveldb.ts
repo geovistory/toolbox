@@ -1,9 +1,8 @@
-import subleveldown from 'subleveldown';
-import {leveldb} from '../database';
 import {LevelUp} from 'levelup';
-import {Index} from '../interfaces/Index';
-import {Warehouse} from '../../Warehouse';
 import {ReplaySubject} from 'rxjs';
+import subleveldown from 'subleveldown';
+import {Warehouse} from '../../Warehouse';
+import {Index} from '../interfaces/Index';
 // Temporary implementation as leveldb key-value store
 
 export abstract class IndexLeveldb<KeyModel, ValueModel> implements Index<KeyModel, ValueModel> {
@@ -15,9 +14,9 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> implements Index<KeyMod
     ready$ = new ReplaySubject<boolean>()
     constructor(
         name = 'default',
-        wh?: Warehouse
+        wh: Warehouse
     ) {
-        this.db = subleveldown<string, ValueModel>(leveldb, this.indexName, {valueEncoding: 'json'});
+        this.db = subleveldown<string, ValueModel>(wh.leveldb, this.indexName, {valueEncoding: 'json'});
         this.ready$.next(true)
         // console.log(this.indexName, name)
     }

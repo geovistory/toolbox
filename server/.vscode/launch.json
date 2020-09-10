@@ -112,6 +112,20 @@
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
+    },    {
+      "type": "node",
+      "request": "launch",
+      "name": "Bucket Test",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/bucket-test.js",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "restart": false,
+      "outputCapture": "std",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
     },
     {
       "name": "Launch Warehouse Tests",
