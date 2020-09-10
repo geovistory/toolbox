@@ -316,7 +316,7 @@ export class Warehouse {
         await this.waitUntilSyncingDone()
         const date = this.getCatchUpDate()
 
-        Logger.itTook(t1, `to wait until syning done. Catch up date is: ${date.toISOString()}`, 0)
+        Logger.itTook(t1, `to wait until syning done. Catch-up-date is: ${date.toISOString()}`, 0)
 
 
         await this.s3backuper.createBackup(date)
@@ -324,7 +324,7 @@ export class Warehouse {
         // Reset status
         this.status = statusCache;
 
-        Logger.itTook(t1, `to create backup for catch up date ${date.toISOString()}`, 0)
+        Logger.itTook(t1, `to create backup for catch-up-date ${date.toISOString()}`, 0)
         return date
     }
     /**
