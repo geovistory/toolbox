@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {exec} from 'child_process';
 import {existsSync} from "fs";
 import getFolderSize from 'get-folder-size';
 import leveldown from 'leveldown';

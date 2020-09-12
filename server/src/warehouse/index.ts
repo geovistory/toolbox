@@ -1,12 +1,13 @@
 import {Warehouse, WarehouseConfig} from './Warehouse';
 import fs from 'fs'
 import c from 'child_process';
+import path from 'path';
 
 // Start on remote server (including backups)
 export async function start(rootDir: string) {
     // reads warhouse compatible commits
     const compatibleWithCommits = fs
-        .readFileSync('../deployment/warehouse-compat-list.txt')
+        .readFileSync(path.join(__dirname, '../../deployment/warehouse-compat-list.txt'))
         .toString()
         .split('\n');
     // reads current commit
