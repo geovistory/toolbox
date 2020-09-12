@@ -3,10 +3,15 @@ import {PEntityLabelService} from '../../../../warehouse/aggregator-ds/entity-la
 import {DependencyIndex} from '../../../../warehouse/base/classes/DependencyIndex';
 import {pEntityIdToString, stringToPEntityId} from '../../../../warehouse/base/functions';
 import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
-import {Warehouse} from '../../../../warehouse/Warehouse';
+import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
 import {EntityLabelVal} from '../../../../warehouse/aggregator-ds/entity-label/entity-label.commons';
 import path from 'path'
 
+const config: WarehouseConfig = {
+    leveldbFolder: 'leveldb',
+    rootDir: path.resolve(__dirname, '../../../../../'),
+    backups: undefined
+}
 
 describe('DependencyIndex', function () {
     let idx: DependencyIndex<PEntityId, EntityLabelVal, PEntityId, EntityLabelVal>
@@ -19,7 +24,7 @@ describe('DependencyIndex', function () {
     let receiver2: PEntityId
     before(async () => {
 
-        wh = new Warehouse(path.resolve(__dirname, '../../../../../'), true)
+        wh = new Warehouse(config)
         stub1 = new PEntityLabelService(wh)
         stub2 = new PEntityLabelService(wh)
 

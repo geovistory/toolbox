@@ -1,6 +1,5 @@
-import {exec} from 'child_process';
-import {Bucketeer} from './Bucketeer';
 import {Logger} from '../classes/Logger';
+import {Bucketeer} from './Bucketeer';
 
 interface BackupId {
   prefix: string
@@ -21,9 +20,9 @@ export class S3LevelBackup {
     this.backupPrefix = this.leveldbFolder;
   }
 
-  async createBackup(tmsp: Date) {
+  async createBackup(tmsp: Date, currentCommit:string) {
     Logger.msg(`Getting current git commit`)
-    const currentCommit = await this.getCurrentCommit()
+
     const backupId: BackupId = {
       prefix: this.backupPrefix,
       isoDate: tmsp.toISOString(),
@@ -95,20 +94,6 @@ export class S3LevelBackup {
         await this.bucketeer.emptyS3Directory(backupname)
       }
     }
-  }
-
-  getCurrentCommit() {
-    return new Promise<string>((res, rej) => {
-      exec('git rev-parse --short HEAD', (error, stdout, stderr) => {
-        if (error) {
-          rej()
-        }
-        else {
-          const commit = stdout.trimEnd()
-          res(commit)
-        }
-      });
-    })
   }
 
   backupIdToString(id: BackupId): string {

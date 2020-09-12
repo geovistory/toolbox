@@ -1,6 +1,6 @@
 import assert from 'assert';
 import {IndexDB} from '../../../../warehouse/base/classes/IndexDB';
-import {Warehouse} from '../../../../warehouse/Warehouse';
+import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
 import {waitUntilNext} from '../../../helpers/warehouse-helpers';
 import {omit} from 'ramda';
 import path from 'path'
@@ -11,7 +11,11 @@ export class TestIdx extends IndexDB<string, any> {
   stringToKey(key: string) {return key;}
 }
 
-
+const config: WarehouseConfig = {
+  leveldbFolder: 'leveldb',
+  rootDir: path.resolve(__dirname, '../../../../../'),
+  backups: undefined
+}
 
 describe('IndexDB', function () {
   let idx: TestIdx
@@ -19,7 +23,7 @@ describe('IndexDB', function () {
 
   before(async () => {
 
-    wh = new Warehouse(path.resolve(__dirname, '../../../../../'), true)
+    wh = new Warehouse(config)
     idx = new TestIdx('test_idx', wh)
     await wh.connectPgClient();
     wh.createSchema$.next();
@@ -56,7 +60,7 @@ describe('IndexDB', function () {
     const val = {foo: 123, bar: true, baz: undefined, x: null, y: `Hanse's ="" \n asdb <!?-320 daskj Apple`}
     await idx.addToIdx('aaa', val)
     const result = await idx.getFromIdx('aaa')
-    assert.deepStrictEqual(result, omit(['baz'],val))
+    assert.deepStrictEqual(result, omit(['baz'], val))
   })
 
   it('should add and get key-array pair', async () => {

@@ -3,25 +3,25 @@ import {Where} from '@loopback/repository';
 import {Observable} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
 import {WarClassPreview, WarEntityPreview} from '../../models';
-import {Warehouse} from '../../warehouse/Warehouse';
+import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
 import path from 'path'
+const config: WarehouseConfig = {
+    leveldbFolder: 'leveldb',
+    rootDir: path.resolve(__dirname, '../../../'),
+    backups: undefined
+}
 export async function setupWarehouseWithoutStarting() {
 
-    const wh = new Warehouse(path.resolve(__dirname, '../../../'), true)
-    // await wh.pgClient.connect()
-    // wh.startListening()
-    return wh;
-}
-export async function setupWarehouse() {
+    const wh = new Warehouse(config)
 
-    const wh = new Warehouse(path.resolve(__dirname, '../../../'), true)
     return wh;
 }
+
 export async function setupCleanAndStartWarehouse() {
 
-    const wh = new Warehouse(path.resolve(__dirname, '../../../'), true)
+    const wh = new Warehouse(config)
     await wh.init()
     await wh.listen()
 

@@ -17,8 +17,6 @@ import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
 
-
-
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 
@@ -28,7 +26,20 @@ interface NotificationHandler {
         listenerName: string,
         callback(date: Date): Promise<void>
     }[]
+}
 
+export interface WarehouseConfig {
+    // parent folder of leveldb
+    rootDir: string
+    // name of leveldb folder
+    leveldbFolder: string
+    // if provided, warehouse creates backups
+    backups?: {
+        // current git commit (short hash)
+        currentCommit: string,
+        // array of commits
+        compatibleWithCommits: string[]
+    }
 }
 
 export class Warehouse {
@@ -58,24 +69,22 @@ export class Warehouse {
     catchUpDate: Date;
 
     s3backuper: S3LevelBackup
-    leveldbFolder = 'leveldb'
 
     /**
- * This creates the level database that can be imported
- * throughout the app in order to use the database
- */
+     * This creates the level database that can be imported
+     * throughout the app in order to use the database
+     */
     leveldbpath: string;
     leveldb: LevelUp;
 
-    constructor(
-        private rootDir: string,
-        private skipS3Backups = false
-    ) {
-        this.leveldbpath = path.join(rootDir, this.leveldbFolder)
+
+    constructor(public readonly config: WarehouseConfig) {
+
+        this.leveldbpath = path.join(config.rootDir, this.config.leveldbFolder)
         this.leveldb = this.createLeveldb(this.leveldbpath)
 
-        if (!skipS3Backups) {
-            this.s3backuper = new S3LevelBackup(rootDir, this.leveldbFolder)
+        if (config.backups) {
+            this.s3backuper = new S3LevelBackup(config.rootDir, this.config.leveldbFolder)
         }
 
         const connectionString = getPgUrlForPg8()
@@ -112,7 +121,7 @@ export class Warehouse {
             Logger.msg(`Found backup – Date: ${latestBackupId.isoDate} Commit: ${latestBackupId.gitCommit}`, 0)
 
             // Q: Did the warehouse code change since backup?
-            const {changed} = await this.checkIfCodeChanged(latestBackupId.gitCommit);
+            const {changed} = this.checkIfCodeChanged(latestBackupId.gitCommit);
             if (changed) {
                 // A: YES. This means the backup is not compatible with current warehouse
                 // (we are in a fresh deployment)
@@ -205,21 +214,10 @@ export class Warehouse {
      *
      * @param commit short hash of git commit to compare with current commit
      */
-    private checkIfCodeChanged(commit: string): Promise<{changed: boolean}> {
-        return new Promise((res, rej) => {
-            exec(`bash did-code-change.sh ${commit} src/warehouse/`, (error, stdout, stderr) => {
-                Logger.msg(`${stdout}`);
-                if (error?.code === 100) {
-                    res({changed: false});
-                }
-                else if (error?.code === 200) {
-                    res({changed: true});
-                }
-                else {
-                    rej()
-                }
-            });
-        })
+    private checkIfCodeChanged(commit: string): {changed: boolean} {
+        if (commit === this.config.backups?.currentCommit) return {changed: false}
+        if (this.config.backups?.compatibleWithCommits.includes(commit)) return {changed: false}
+        return {changed: true}
     }
 
     /**
@@ -305,7 +303,7 @@ export class Warehouse {
     }
 
     private async createS3Backup(): Promise<Date | undefined> {
-        if (this.skipS3Backups) return;
+        if (!this.config.backups) return;
 
         const t1 = Logger.start(`Creating backup...`, 0)
 
@@ -319,7 +317,7 @@ export class Warehouse {
         Logger.itTook(t1, `to wait until syning done. Catch-up-date is: ${date.toISOString()}`, 0)
 
 
-        await this.s3backuper.createBackup(date)
+        await this.s3backuper.createBackup(date, this.config.backups.currentCommit)
 
         // Reset status
         this.status = statusCache;
@@ -332,9 +330,9 @@ export class Warehouse {
      * If this.skipS3Backups is true, no download happens
      */
     private async downloadBackup(): Promise<{download: 'success' | 'skipped' | 'not found'}> {
-        if (this.skipS3Backups) return {download: 'skipped'};
+        if (!this.config.backups) return {download: 'skipped'};
 
-        rimraf.sync(path.join(this.rootDir, this.leveldbFolder))
+        rimraf.sync(path.join(this.config.rootDir, this.config.leveldbFolder))
         const backupId = await this.s3backuper.downloadLatestBackup()
         if (backupId) {
             const date = new Date(backupId.isoDate)
@@ -351,7 +349,7 @@ export class Warehouse {
      * Starts the creation of regular backups
      */
     private startRegularBackups() {
-        if (this.skipS3Backups) return;
+        if (!this.config.backups) return;
 
         // 5 min in miliseconds
         const pause = 1000 * 20//60 * 5

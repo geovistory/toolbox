@@ -5,10 +5,16 @@
     "DB_ENV": "review",
     "HEROKU_APP_NAME": {
       "required": true
+    },
+    "HEROKU_SLUG_DESCRIPTION": {
+      "required": true
     }
   },
   "formation": {},
   "addons": [
+    {
+      "plan": "bucketeer:hobbyist"
+    },
     {
       "plan": "heroku-postgresql:hobby-basic",
       "options": {
