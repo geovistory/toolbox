@@ -4,7 +4,7 @@ import c from 'child_process';
 import path from 'path';
 
 // Start on remote server (including backups)
-export async function start(rootDir: string) {
+export async function start() {
     console.log('__dirname', __dirname)
     console.log('joined path', path.join(__dirname, '../../../deployment/warehouse-compat-list.txt'))
     console.log('resolved path', path.resolve(__dirname, '../../../deployment/warehouse-compat-list.txt'))

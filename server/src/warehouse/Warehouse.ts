@@ -361,7 +361,7 @@ export class Warehouse {
                 this.catchUp().catch(e => console.log(e))
 
                 this.startRegularBackups()
-            }).catch(e => console.error('Error when creating backup!', e))
+            }).catch(e => console.error('Error when creating backup!', JSON.stringify(e)))
         }, pause)
     }
 
