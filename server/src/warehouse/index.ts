@@ -1,18 +1,18 @@
-import {Warehouse, WarehouseConfig} from './Warehouse';
-import fs from 'fs'
 import c from 'child_process';
+import fs from 'fs';
 import path from 'path';
+import pgkDir from 'pkg-dir';
+import {Warehouse, WarehouseConfig} from './Warehouse';
+
+const appRoot = pgkDir.sync() ?? ''
 
 // Start on remote server (including backups)
 export async function start() {
-    console.log('__dirname', __dirname)
-    console.log('joined path', path.join(__dirname, '../../../deployment/warehouse-compat-list.txt'))
-    console.log('resolved path', path.resolve(__dirname, '../../../deployment/warehouse-compat-list.txt'))
-    console.log('absolute path', path.resolve('/deployment/warehouse-compat-list.txt'))
+    console.log('joined path', path.join(appRoot, '/deployment/warehouse-compat-list.txt'))
 
     // reads warhouse compatible commits
     const compatibleWithCommits = fs
-        .readFileSync(path.join(__dirname, '../../../deployment/warehouse-compat-list.txt'))
+        .readFileSync(path.join(appRoot, '/deployment/warehouse-compat-list.txt'))
         .toString()
         .split('\n');
     // reads current commit
@@ -21,7 +21,7 @@ export async function start() {
 
     const config: WarehouseConfig = {
         leveldbFolder: 'leveldb',
-        rootDir: __dirname,
+        rootDir: path.join(appRoot),
         backups: {
             currentCommit,
             compatibleWithCommits
@@ -35,16 +35,11 @@ export async function start() {
 // Start on local dev server (no backups)
 export async function startDev() {
 
-    /**
-     * TODO IMPLEMENT CREATEION OF COMPAT LIST
-     *  sh ../deployment/create-warehouse-compat-list.sh
-     * AND READ IT INTO STRING
-     */
-    c.execSync(`cd ../ && sh deployment/create-warehouse-compat-list.sh`);
+    c.execSync(`cd ${path.join(appRoot, '..')} && sh deployment/create-warehouse-compat-list.sh`);
 
     // reads warhouse compatible commits
     const compatibleWithCommits = fs
-        .readFileSync('../deployment/warehouse-compat-list.txt')
+        .readFileSync(path.join(appRoot, '../deployment/warehouse-compat-list.txt'))
         .toString()
         .split('\n');
 
@@ -53,7 +48,7 @@ export async function startDev() {
 
     const config: WarehouseConfig = {
         leveldbFolder: 'leveldb',
-        rootDir: __dirname,
+        rootDir: path.join(appRoot),
         backups: {
             currentCommit,
             compatibleWithCommits

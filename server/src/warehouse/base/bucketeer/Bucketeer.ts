@@ -27,7 +27,7 @@ export class Bucketeer {
 
   /**
    * Upload a folder to S3
-   * @param rootPath the path one level up of the directory to upload (e.g. __dirname)
+   * @param rootPath the path to parent directory of folder to upload
    * @param folderName the name of the directory to upload
    * @param outputFolder the name of the directory on S3
    */

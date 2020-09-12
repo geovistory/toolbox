@@ -4,6 +4,9 @@ import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
 import {waitUntilNext} from '../../../helpers/warehouse-helpers';
 import {omit} from 'ramda';
 import path from 'path'
+import pgkDir from 'pkg-dir'
+
+const appRoot = pgkDir.sync() ?? ''
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class TestIdx extends IndexDB<string, any> {
@@ -13,7 +16,7 @@ export class TestIdx extends IndexDB<string, any> {
 
 const config: WarehouseConfig = {
   leveldbFolder: 'leveldb',
-  rootDir: path.resolve(__dirname, '../../../../../'),
+  rootDir: path.resolve(appRoot, '/server'),
   backups: undefined
 }
 

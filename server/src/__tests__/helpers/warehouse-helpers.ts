@@ -1,15 +1,19 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Where} from '@loopback/repository';
+import path from 'path';
+import pgkDir from 'pkg-dir';
 import {Observable} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
 import {WarClassPreview, WarEntityPreview} from '../../models';
 import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
-import path from 'path'
+
+const appRoot = pgkDir.sync() ?? ''
+
 const config: WarehouseConfig = {
     leveldbFolder: 'leveldb',
-    rootDir: path.resolve(__dirname, '../../../'),
+    rootDir: path.join(appRoot, '/server'),
     backups: undefined
 }
 export async function setupWarehouseWithoutStarting() {

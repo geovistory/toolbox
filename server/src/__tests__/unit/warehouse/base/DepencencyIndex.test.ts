@@ -6,10 +6,13 @@ import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService'
 import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
 import {EntityLabelVal} from '../../../../warehouse/aggregator-ds/entity-label/entity-label.commons';
 import path from 'path'
+import pgkDir from 'pkg-dir'
+
+const appRoot = pgkDir.sync() ?? ''
 
 const config: WarehouseConfig = {
     leveldbFolder: 'leveldb',
-    rootDir: path.resolve(__dirname, '../../../../../'),
+    rootDir: path.resolve(appRoot, '/server'),
     backups: undefined
 }
 

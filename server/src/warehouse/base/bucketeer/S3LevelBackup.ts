@@ -13,14 +13,14 @@ export class S3LevelBackup {
   backupPrefix: string
   delemiter = '___'
   constructor(
-    private rootFolder = __dirname,
+    private rootFolder: string,
     private leveldbFolder = 'leveldb'
   ) {
     this.bucketeer = new Bucketeer
     this.backupPrefix = this.leveldbFolder;
   }
 
-  async createBackup(tmsp: Date, currentCommit:string) {
+  async createBackup(tmsp: Date, currentCommit: string) {
     Logger.msg(`Getting current git commit`)
 
     const backupId: BackupId = {
