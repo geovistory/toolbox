@@ -246,8 +246,15 @@ export class Warehouse {
      * @param commit short hash of git commit to compare with current commit
      */
     private checkIfCodeChanged(commit: string): {changed: boolean} {
+
+        Logger.msg(`Checking if code changed. Current: ${commit}.`)
+
+        Logger.msg(`Compatibility list: ${(this.config?.backups?.compatibleWithCommits ?? ['undefined']).join(', ')}`)
+
         if (commit === this.config.backups?.currentCommit) return {changed: false}
-        if (this.config.backups?.compatibleWithCommits.includes(commit)) return {changed: false}
+        if (this.config.backups?.compatibleWithCommits.some(
+            (compat) => compat.substring(0, 7) === commit.substring(0, 7)
+        )) return {changed: false}
         return {changed: true}
     }
 
