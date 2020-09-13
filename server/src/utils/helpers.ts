@@ -1,5 +1,5 @@
 import sqlFormatter from 'sql-formatter';
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import {writeFileSync, existsSync, mkdirSync} from 'fs';
 
 export const logSql = (sql: string, params: any[]) => {
 
@@ -14,7 +14,7 @@ export const logSql = (sql: string, params: any[]) => {
       mkdirSync(dir);
     }
     const filename = 'sql-' + new Date().toISOString()
-    const log = sqlFormatter.format(sql, { language: 'pl/sql' });
+    const log = sqlFormatter.format(sql, {language: 'pl/sql'});
     writeFileSync(dir + '/' + filename, log, 'utf-8')
 
     // console.log(`
@@ -24,3 +24,12 @@ export const logSql = (sql: string, params: any[]) => {
   }
 }
 
+
+
+/**
+ * Returns a Promise that resolves after given miliseconds
+ * @param ms
+ */
+export async function wait(ms: number) {
+  return new Promise(res => {setTimeout(() => res(), ms)})
+}

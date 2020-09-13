@@ -15,6 +15,7 @@ import {getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
+import {wait} from '../utils/helpers';
 
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
@@ -65,9 +66,8 @@ export class Warehouse {
     createSchema$ = new Subject<void>()
 
     // The date for which the current leveldb is up to date.
-    catchUpDate: Date;
-
     s3backuper: S3LevelBackup
+
 
     /**
      * This creates the level database that can be imported
@@ -80,7 +80,6 @@ export class Warehouse {
     constructor(public readonly config: WarehouseConfig) {
 
         this.leveldbpath = path.join(config.rootDir, this.config.leveldbFolder)
-        this.leveldb = this.createLeveldb(this.leveldbpath)
 
         if (config.backups) {
             this.s3backuper = new S3LevelBackup(config.rootDir, this.config.leveldbFolder)
@@ -95,85 +94,120 @@ export class Warehouse {
         });
 
         Logger.msg(`create warehouse for DB: ${connectionString.split('@')[1]}`)
-        this.prim = new PrimaryDataServices(this)
-        this.agg = new AggregatedDataServices(this)
-        this.dep = new DependencyDataServices(this)
 
     }
 
     /**
      * start warehouse
-     * this function is for deployment use – call it on start of Heroku Worker
      */
     async start() {
 
-        // Q: What was is backup id of latest backup?
-        const latestBackupId = await this.s3backuper.getLatestBackupId()
+        const whDataFound = await this.findWhData();
+
+        await this.dbSetup()
+
+        if (!whDataFound) await this.createWhData();
+
+        await this.listen()
+    }
+
+    /**
+     * Tries to find wh data, first in local leveldb folder,
+     * then in remote backup.
+     *
+     * returns true if data available, otherwise false
+     */
+    private async findWhData(): Promise<boolean> {
+
+        // Q: is there a leveldb folder?
+        if (this.leveldbFolderExists()) {
+            // A: yes. data found.
+            // For development: remove leveldb folder if you want to trigger
+            // creation of wh data
+            return true
+        }
+
+        // Q: Does warehouse support backups?
+        if (!this.config.backups) {
+            // A: No. no data found.
+            return false
+        }
+
+        // Q: I there a backup?
+        const latestBackupId = await this.s3backuper.getLatestBackupId();
 
         if (!latestBackupId) {
-            // A: No. Init first
-            Logger.msg('*** no backup found – need to initialize first ***', 0)
-            await this.init()
+            // A: No. no data found.
+            Logger.msg('*** no backup found – need to create data first ***', 0);
+            return false;
         }
         else {
             // A: Yes.
-            Logger.msg(`Found backup – Date: ${latestBackupId.isoDate} Commit: ${latestBackupId.gitCommit}`, 0)
+            Logger.msg(`Found backup – Date: ${latestBackupId.isoDate} Commit: ${latestBackupId.gitCommit}`, 0);
 
             // Q: Did the warehouse code change since backup?
             const {changed} = this.checkIfCodeChanged(latestBackupId.gitCommit);
             if (changed) {
                 // A: YES. This means the backup is not compatible with current warehouse
                 // (we are in a fresh deployment)
-                // initialize warehouse
-                Logger.msg('*** warehouse code changed – need to initialize first ***', 0)
-                await this.init()
+                // no data found.
+                Logger.msg('*** warehouse code changed – need to create first ***', 0);
+                return false;
             }
-
             else {
                 // A: NO. this means the backup is compatible with current warehouse
-                Logger.msg(`Backup is compatible with current warehouse`, 0)
+                Logger.msg(`Backup is compatible with current warehouse`, 0);
 
                 // download it
-                const {download} = await this.downloadBackup()
-                if (download === 'not found') {
-                    // there was an error
-                    Logger.msg('*** there was an error with backup download – need to initialize ***', 0)
-                    await this.init()
+                const {download} = await this.downloadBackup();
+
+                // Q: Download successful?
+                if (download === 'success') {
+                    // A: YES. data found
+                    return true
+                } else {
+                    // there was an error, no data found.
+                    Logger.msg('*** there was an error with backup download – need to initialize ***', 0);
+                    // A: No. no data found
+                    return false;
                 }
             }
         }
-
-        await this.listen()
     }
-    /**
-     * Initalize warehouse service
-     */
-    async init() {
 
-        this.status = 'initializing';
-        const t0 = Logger.start('Initialize Warehouse', 0)
+    /**
+     * sets the databases up:
+     * - connects to pg
+     * - initializes leveldb
+     */
+    async dbSetup() {
 
         await this.connectPgClient();
 
-        await this.clearWhDB()
+        await this.initWhDb()
+    }
 
-        await this.initIndexSchema()
+    /**
+     * Initalize warehouse service
+     */
+    async createWhData() {
+        this.status = 'initializing';
+        const t0 = Logger.start('Create Warehouse data', 0)
 
-        await this.setInitBackupDate();
+        const date = await this.getInitBackupDate();
 
-        await this.initIndexData();
+        await this.createPrimaryData();
 
-        await this.agg.startCycling()
+        await this.createAggregatedData()
 
-        await this.createS3Backup()
+        await this.createS3Backup(date)
 
-        Logger.itTook(t0, 'to initialize', 0)
+        Logger.itTook(t0, 'to create warehouse data', 0)
 
         Logger.log(`The warehouse uses approximately ${getMemoryUsage()} MB of memory`);
         const diskUsage = await this.getLevelDbFileSize()
         Logger.log(`The warehouse uses approximately ${diskUsage.readable} of disk space`)
 
-        await this.stop()
     };
 
 
@@ -186,15 +220,13 @@ export class Warehouse {
 
         this.status = 'starting';
 
-        await this.connectPgClient();
-
-        await this.initIndexSchema()
-
         this.startListening()
 
         await this.catchUp();
 
         this.startRegularBackups()
+            .catch(e => console.error('Error when creating backup!', JSON.stringify(e)))
+
 
         this.status = 'running';
 
@@ -226,38 +258,47 @@ export class Warehouse {
      * until now.
      */
     private async catchUp() {
-
-        Logger.msg(`Catch up since ${this.catchUpDate}`);
-
-        if (this.catchUpDate) {
-            for (const primDS of this.prim.registered) {
-                await primDS.startAndSyncSince(this.catchUpDate);
-            }
+        for (const primDS of this.prim.registered) {
+            await primDS.catchUp();
         }
-        else {
-            new Error('No backupCatchUpDate found.');
-        }
+
+        // if (this.catchUpDate) {
+        //     for (const primDS of this.prim.registered) {
+        //         await primDS.startAndSyncSince(this.catchUpDate);
+        //     }
+        // }
+        // else {
+        //     throw new Error('No backupCatchUpDate found.');
+        // }
     }
 
     /**
-     * gets date of latest valid udate cycle
+     * gets earliest date of latest valid udate cycle of
+     * the primary data services
      */
-    private getCatchUpDate() {
-        let date: Date = this.catchUpDate;
+    private async getCatchUpDate() {
 
-        const dates = this.prim.registered
-            .filter(d => !!d.lastUpdateDone)
-            .map(d => d.lastUpdateDone ?? new Date())
-            .sort();
-        if (dates.length) date = dates[dates.length - 1];
-        return date;
+        const dates: Date[] = []
+        for (const p of this.prim.registered) {
+            const d = await p.getLastUpdateDone()
+            if (d) dates.push(d)
+        }
+        dates.sort();
+        return dates[dates.length - 1];
     }
 
     /**
      * Initializes the 'database schema' and returns a Promise that resolves as
      * soon as all 'tables' (= indexes) are ready to be used
      */
-    private async initIndexSchema() {
+    private async initWhDb() {
+
+        this.leveldb = this.createLeveldb(this.leveldbpath)
+
+        this.prim = new PrimaryDataServices(this)
+        this.agg = new AggregatedDataServices(this)
+        this.dep = new DependencyDataServices(this)
+
         this.createSchema$.next()
         return new Promise((res, rej) => {
             combineLatest(
@@ -274,7 +315,7 @@ export class Warehouse {
      * trigger aggregated data services to update themselfs.
      * In short: The function (re-)creates all indexes
      */
-    private async initIndexData() {
+    private async createPrimaryData() {
         this.initializingIndexes = true
         const t1 = Logger.start('Initialize indexes', 0)
 
@@ -282,6 +323,16 @@ export class Warehouse {
 
         Logger.itTook(t1, 'to initialize indexes', 0)
         this.initializingIndexes = false
+    }
+    /**
+     * Initialize the indexes of the secondary data services
+     */
+    private async createAggregatedData() {
+        const t1 = Logger.start('Start cycling for all aggregators', 0)
+
+        await this.agg.startCycling()
+
+        Logger.itTook(t1, 'to cycle for all aggregators', 0)
     }
 
     /**
@@ -295,13 +346,13 @@ export class Warehouse {
     }
 
 
-    private async setInitBackupDate() {
+    private async getInitBackupDate(): Promise<Date> {
         const dbNow = await this.pgClient.query('SELECT now() as now');
         const tmsp: string = dbNow.rows?.[0]?.now;
-        this.catchUpDate = new Date(tmsp)
+        return new Date(tmsp)
     }
 
-    private async createS3Backup(): Promise<Date | undefined> {
+    private async createS3Backup(date: Date): Promise<Date | undefined> {
         if (!this.config.backups) return;
 
         const t1 = Logger.start(`Creating backup...`, 0)
@@ -311,7 +362,6 @@ export class Warehouse {
         this.status = 'backuping'
 
         await this.waitUntilSyncingDone()
-        const date = this.getCatchUpDate()
 
         Logger.itTook(t1, `to wait until syning done. Catch-up-date is: ${date.toISOString()}`, 0)
 
@@ -334,8 +384,6 @@ export class Warehouse {
         rimraf.sync(path.join(this.config.rootDir, this.config.leveldbFolder))
         const backupId = await this.s3backuper.downloadLatestBackup()
         if (backupId) {
-            const date = new Date(backupId.isoDate)
-            this.catchUpDate = date
             this.s3backuper.deleteOldBackups()
                 .catch(e => console.log('Error when deleting old backups.', e))
             return {download: 'success'}
@@ -347,22 +395,21 @@ export class Warehouse {
     /**
      * Starts the creation of regular backups
      */
-    private startRegularBackups() {
+    private async startRegularBackups() {
         if (!this.config.backups) return;
 
         // 5 min in miliseconds
         const pause = 1000 * 20//60 * 5
 
         // make a pause
-        setTimeout(() => {
-            // create backup (causing pause of warehouse)
-            this.createS3Backup().then(_ => {
-                // catch up modifications during pause
-                this.catchUp().catch(e => console.log(e))
-
-                this.startRegularBackups()
-            }).catch(e => console.error('Error when creating backup!', JSON.stringify(e)))
-        }, pause)
+        await wait(pause)
+        const date = await this.getCatchUpDate()
+        // create backup (causing pause of warehouse)
+        await this.createS3Backup(date)
+        await this.catchUp()
+        this.s3backuper.deleteOldBackups()
+            .catch(e => console.log('error when deleting old backups'))
+        await this.startRegularBackups()
     }
 
     /**
@@ -418,7 +465,7 @@ export class Warehouse {
                 if (isNaN(date.getTime())) console.error(`Invalid Timestamp provided by pg_notify channel ${msg.channel}`, msg.payload)
                 else if (handler) {
                     // Q: Is leveldb folder still present?
-                    if (!existsSync('leveldb')) {
+                    if (!this.leveldbFolderExists()) {
                         // A: NO
                         // exit the process, so that listen() is called again.
                         process.exit(1)
@@ -436,6 +483,10 @@ export class Warehouse {
                 console.error('payload of notification must be a string convertable to date')
             }
         });
+    }
+
+    private leveldbFolderExists() {
+        return existsSync(this.leveldbpath);
     }
 
     /**

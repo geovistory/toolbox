@@ -1,23 +1,16 @@
 import QueryStream from 'pg-query-stream';
 import prettyms from 'pretty-ms';
+import {BehaviorSubject} from 'rxjs';
 import {Warehouse} from '../../Warehouse';
 import {ClearAll} from './ClearAll';
 import {DataService} from './DataService';
 import {IndexDBGeneric} from './IndexDBGeneric';
 import {Logger} from './Logger';
-import {BehaviorSubject} from 'rxjs';
 
 export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
     // number of iterations before measurin time an memory
     abstract measure: number;
-
-
-    // Stores date and time of the last time the function sync() was called,
-    // marking the begin of the sync() process, which can be considerably earlier
-    // than its end. It is null until sync() is called the first time.
-    lastUpdateBegin?: Date;
-    lastUpdateDone?: Date;
 
     // True if sync() is running
     syncing$ = new BehaviorSubject(false);
@@ -26,6 +19,9 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     restartSyncing = false;
 
     index: IndexDBGeneric<KeyModel, ValueModel>
+
+    // a meta index where each primary data service can store its catchup date
+    meta: IndexDBGeneric<string, string>
 
 
     constructor(
@@ -41,6 +37,13 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
             this.constructor.name,
             wh
         )
+        this.meta = new IndexDBGeneric(
+            (key: string) => key,
+            (str: string) => str,
+            this.constructor.name + '_meta',
+            wh
+        )
+
 
     }
 
@@ -49,8 +52,11 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
      */
     async initIdx() {
         await this.clearAll()
+
         await this.addPgListeners()
+
         const dbNow = await this.wh.pgClient.query('SELECT now() as now');
+
         await this.sync(new Date(dbNow.rows?.[0]?.now))
 
     }
@@ -62,13 +68,27 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     async startAndSyncSince(lastUpdateBegin: Date) {
         await this.addPgListeners()
 
-        this.lastUpdateBegin = lastUpdateBegin;
+        await this.setLastUpdateBegin(lastUpdateBegin)
 
         await this.sync(lastUpdateBegin)
     }
 
+
+    async catchUp() {
+
+        const lastUpdateDone = await this.getLastUpdateDone()
+        if (lastUpdateDone) {
+            Logger.msg(`${this.constructor.name} > Catch up changes since ${lastUpdateDone}`);
+            await this.startAndSyncSince(lastUpdateDone)
+        }
+        else {
+            Logger.msg(`WARNING: ${this.constructor.name} > no lastUpdateDone date found for catchUp()!`)
+            await this.initIdx()
+        }
+    }
+
     async clearAll() {
-        await this.index.clearIdx()
+        await Promise.all([this.index.clearIdx(), this.meta.clearIdx()])
     }
 
     /**
@@ -103,25 +123,26 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         // throttle sync process for 10 ms
         // await new Promise((res, rej) => { setTimeout(() => { res() }, 10) })
-        const t1 = Logger.start(`${this.constructor.name} > manageUpdatesSince ${this.lastUpdateBegin}`, 1);
+        const lastUpdateBegin = await this.getLastUpdateBegin()
+        const t1 = Logger.start(`${this.constructor.name} > manageUpdatesSince ${lastUpdateBegin}`, 1);
 
-        // Look for updates since the date of this.lastUpdateBegin or 1970
+        // Look for updates since the date of lastUpdateBegin or 1970
         const calls = [
-            this.manageUpdatesSince(this.lastUpdateBegin)
+            this.manageUpdatesSince(lastUpdateBegin)
         ]
 
         // Look for deletes if
         // - there is a deleteSql and
         // - this data service has ever been synced
 
-        if (this.lastUpdateBegin) {
-            const deleteSql = this.getDeletesSql(this.lastUpdateBegin)
-            if (deleteSql !== '') calls.push(this.manageDeletesSince(this.lastUpdateBegin, deleteSql))
+        if (lastUpdateBegin) {
+            const deleteSql = this.getDeletesSql(lastUpdateBegin)
+            if (deleteSql !== '') calls.push(this.manageDeletesSince(lastUpdateBegin, deleteSql))
         }
 
-        // set this.lastUpdateBegin to timestamp that was used to run this sync
+        // set lastUpdateBegin to timestamp that was used to run this sync
         // process.
-        this.lastUpdateBegin = tmsp
+        await this.setLastUpdateBegin(tmsp)
 
         // await the calls produced above
         const [updates, deletes] = await Promise.all(calls);
@@ -129,7 +150,9 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
 
         this.syncing$.next(false)
         if (this.restartSyncing) await this.sync(tmsp);
-        this.lastUpdateDone = tmsp
+
+        await this.setLastUpdateDone(tmsp)
+
     }
 
     /**
@@ -312,4 +335,23 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
     abstract getDeletesSql(tmsp: Date): string;
 
 
+    // The following 4 function are for:
+    // Storing date and time of the last time the function sync() was called,
+    // marking the begin of the sync() process, which can be considerably earlier
+    // than its end. It is null until sync() is called the first time.
+
+    async setLastUpdateBegin(date: Date) {
+        await this.meta.addToIdx('lastUpdateBegin', date.toISOString())
+    }
+    async getLastUpdateBegin(): Promise<Date | undefined> {
+        const isoDate = await this.meta.getFromIdx('lastUpdateBegin')
+        return isoDate ? new Date(isoDate) : undefined
+    }
+    async setLastUpdateDone(date: Date) {
+        await this.meta.addToIdx('lastUpdateDone', date.toISOString())
+    }
+    async getLastUpdateDone(): Promise<Date | undefined> {
+        const isoDate = await this.meta.getFromIdx('lastUpdateDone')
+        return isoDate ? new Date(isoDate) : undefined
+    }
 }

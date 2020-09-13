@@ -26,7 +26,7 @@ export async function setupWarehouseWithoutStarting() {
 export async function setupCleanAndStartWarehouse() {
 
     const wh = new Warehouse(config)
-    await wh.init()
+    await wh.createWhData()
     await wh.listen()
 
     await wh.pgClient.query('LISTEN entity_previews_updated;')
