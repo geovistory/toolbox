@@ -15,9 +15,10 @@ export async function start() {
         .readFileSync(path.join(appRoot, '/deployment/warehouse-compat-list.txt'))
         .toString()
         .split('\n');
-    // reads current commit
-    if (!process.env.HEROKU_SLUG_DESCRIPTION) throw new Error('Can\'t find env var HEROKU_SLUG_DESCRIPTION before starting warehouse.')
-    const currentCommit = process.env.HEROKU_SLUG_DESCRIPTION.replace('Deploy ', '')
+
+    // reads latest commit
+    if (!compatibleWithCommits.length) throw new Error('Can\'t find the latest commit from compatibleWithCommits')
+    const currentCommit = compatibleWithCommits[0]
 
     const config: WarehouseConfig = {
         leveldbFolder: 'leveldb',
