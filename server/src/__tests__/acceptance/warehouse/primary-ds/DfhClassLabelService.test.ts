@@ -20,6 +20,9 @@ describe('DfhClassLabelService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.dfhClassLabel;
   })
+  afterEach(async () => {
+    await wh.stop()
+  })
 
   it('should have api class label in index after initIdx()', async () => {
     const c = await createDfhApiClass({dfh_class_label: 'Foo'})

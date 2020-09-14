@@ -19,6 +19,10 @@ describe('PEntityLabelAggregator', function () {
         await wh.clearWhDB()
 
     })
+    after(async () => {
+        await wh.stop()
+    })
+
 
     it('should create entity label of naming', async () => {
         await wh.prim.createEntity(EntityMock.NAME_1_ID, EntityMock.NAME_1)

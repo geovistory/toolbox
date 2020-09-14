@@ -70,6 +70,7 @@ typings/
 
 # warehouse data
 leveldb
+test_leveldb
 
 # development scripts
 dev.js

@@ -49,7 +49,7 @@
         "--colors",
         "'dist/__tests__/**/*.js'",
         "--grep",
-        "/WarEntityPreviewController.*test the stream/"
+        "/SysStatusController.*/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
@@ -85,6 +85,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Warehouse (dev)",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/forever",
       "skipFiles": [
         "<node_internals>/**"
       ],
@@ -105,7 +106,7 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/bucket-test.js",
+      "program": "${workspaceFolder}/dev.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "restart": false,
       "outputCapture": "std",
@@ -125,8 +126,8 @@
         "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        "--grep",
-        "/PClassLabelService.*/"
+        // "--grep",
+        // "/.*Aggregator|DfhClassHasTypePropertyService/"
         // "/IndexDB.*/"
       ],
       "cwd": "${workspaceRoot}",

@@ -11,7 +11,7 @@ import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helpe
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
 import {createProClassFieldConfig} from '../../../../helpers/atomic/pro-class-field-config.helper';
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
-import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
@@ -29,8 +29,7 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy, waitForEntityPreviewUntil, waitUntilNext} from '../../../../helpers/warehouse-helpers';
-import {PK_DEFAULT_CONFIG_PROJECT} from '../../../../../config';
+import {setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse

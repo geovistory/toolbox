@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Where} from '@loopback/repository';
+import leveldown from 'leveldown';
 import path from 'path';
 import pgkDir from 'pkg-dir';
 import {Observable} from 'rxjs';
@@ -8,30 +9,33 @@ import {WarClassPreview, WarEntityPreview} from '../../models';
 import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
 import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
+import {testdb} from './testdb';
+
 
 const appRoot = pgkDir.sync() ?? ''
 
 const config: WarehouseConfig = {
-    leveldbFolder: 'leveldb',
-    rootDir: path.join(appRoot, '/server'),
+    leveldbFolder: 'test_leveldb',
+    rootDir: appRoot,
     backups: undefined
 }
 export async function setupWarehouseWithoutStarting() {
-
     const wh = new Warehouse(config)
+    await wh.dbSetup()
 
     return wh;
 }
 
 export async function setupCleanAndStartWarehouse() {
-
+    await new Promise((res, rej) => {
+        leveldown.destroy(path.join(config.rootDir, config.leveldbFolder), (e) => {
+            res()
+        })
+    })
     const wh = new Warehouse(config)
-    await wh.createWhData()
-    await wh.listen()
-
+    await wh.start()
     await wh.pgClient.query('LISTEN entity_previews_updated;')
     await wh.pgClient.query('LISTEN modified_war_class_preview;')
-
     return wh;
 }
 /**
@@ -153,4 +157,9 @@ export function waitUntilSatisfy<M>(obs$: Observable<M>, compare: (item: M) => b
             sub.unsubscribe()
         })
     })
+}
+
+
+export function pgNotify(channel: string, value: string) {
+    return testdb.execute(`SELECT pg_notify($1, $2)`, [channel, value])
 }

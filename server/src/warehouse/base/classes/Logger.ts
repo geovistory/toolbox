@@ -2,7 +2,9 @@ import prettyMilliseconds from 'pretty-ms';
 import * as readline from 'readline'
 
 export class Logger {
-
+    static err(msg: string, intendation = 1) {
+        Logger.log(Logger.ind(intendation) + 'ERR: ' + msg);
+    }
     static msg(msg: string, intendation = 1) {
         Logger.log(Logger.ind(intendation) + msg);
     }
@@ -42,7 +44,7 @@ export class Logger {
         return new Array(x + 2).join('      ');
     }
 
-    static log(msg='', endLine = true) {
+    static log(msg = '', endLine = true) {
         if (process.env.LOGS === 'OFF') return true
         process.stdout.write(msg);
         if (endLine) Logger.endLine()

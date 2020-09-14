@@ -18,6 +18,8 @@ describe('DfhOutgoingPropertyService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.dfhOutgoingProperty;
   })
+  afterEach(async function () {await wh.stop()})
+
 
   it('should have two outgoing properties in index', async () => {
     await Promise.all([

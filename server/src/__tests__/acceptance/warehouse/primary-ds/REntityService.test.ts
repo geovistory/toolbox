@@ -27,6 +27,7 @@ describe('REntityService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.rEntity;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should have entity preview', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)

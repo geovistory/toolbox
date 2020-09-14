@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {expect} from '@loopback/testlab';
 import {PEdgeService} from '../../../../warehouse/primary-ds/edge/PEdgeService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
@@ -18,7 +17,7 @@ import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, wait, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
 
 describe('PEdgeService', () => {
 
@@ -30,7 +29,9 @@ describe('PEdgeService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pEdge;
   })
-
+  afterEach(async () => {
+    await wh.stop()
+  })
   it('should have field edges in index after initIdx()', async () => {
     await createInfLanguage(InfLanguageMock.GERMAN)
     const project = await createProProject(ProProjectMock.PROJECT_1)

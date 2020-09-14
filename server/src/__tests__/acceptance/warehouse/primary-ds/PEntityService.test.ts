@@ -28,6 +28,7 @@ describe('PEntityService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pEntity;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should have entity in index()', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)

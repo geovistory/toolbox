@@ -1,6 +1,6 @@
 
-import leveldown from 'leveldown'
-import levelup from 'levelup'
+// import leveldown from 'leveldown'
+// import levelup from 'levelup'
 
 /**
  * This creates the level database that can be imported

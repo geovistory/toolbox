@@ -16,6 +16,7 @@ describe('ProProjectService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.proProject;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should have project in index', async () => {
     const project = await createProject('German')

@@ -2,6 +2,7 @@ import {IndexDB} from './IndexDB';
 import {DependencyIndex} from './DependencyIndex';
 import {equals} from 'ramda';
 import {Subject} from 'rxjs';
+import {Logger} from './Logger';
 
 
 
@@ -80,7 +81,7 @@ export abstract class DataService<KeyModel, ValueModel>{
      */
     private addUpdateRequestsForReceivers(providerKey: KeyModel) {
         for (const dep of this.isProviderOf) {
-            dep.addUpdateRequestToReceiversOf(providerKey).catch(e => console.error(e));
+            dep.addUpdateRequestToReceiversOf(providerKey).catch(e => Logger.err(e));
         }
     }
 }

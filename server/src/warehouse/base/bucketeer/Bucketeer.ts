@@ -29,15 +29,15 @@ export class Bucketeer {
    * Upload a folder to S3
    * @param rootPath the path to parent directory of folder to upload
    * @param folderName the name of the directory to upload
-   * @param outputFolder the name of the directory on S3
+   * @param s3Key the name of the directory on S3
    */
-  async uploadFolder(rootPath: string, folderName: string, outputFolder: string) {
+  async uploadFolder(rootPath: string, folderName: string, s3Key: string) {
     const inputFolderPath = path.resolve(rootPath, folderName)
     const filesToUpload = await this.getFiles(inputFolderPath);
 
     return new Promise((resolve, reject) => {
       async.eachOfLimit(filesToUpload, 10, async.asyncify(async (filePath: string) => {
-        const key = filePath.replace(`${inputFolderPath}/`, `${outputFolder}/`);
+        const key = filePath.replace(`${inputFolderPath}/`, `${s3Key}/`);
         return this.uploadFile(filePath, key)
       }), (err) => {
         if (err) {
@@ -55,9 +55,9 @@ export class Bucketeer {
   /**
    * Upload a file to bucketeer
    * @param filePath the path to the file to upload
-   * @param key the key under which the file is stored in S3
+   * @param s3Key the key under which the file is stored in S3
    */
-  public uploadFile(filePath: string, key: string): Promise<S3.PutObjectOutput> {
+  public uploadFile(filePath: string, s3Key: string): Promise<S3.PutObjectOutput> {
     Logger.msg(`uploading: [${filePath}]`)
 
     return new Promise<S3.PutObjectOutput>((res, rej) => {
@@ -67,7 +67,7 @@ export class Bucketeer {
         rej({msg: 'File Error', err});
       });
       const params: S3.PutObjectRequest = {
-        Key: key,
+        Key: s3Key,
         Bucket: this.bucket,
         Body: fileStream
       };
@@ -82,17 +82,41 @@ export class Bucketeer {
   }
 
   /**
+ * Upload a string to a file to bucketeer
+ * @param string the string to put in the file to upload
+ * @param s3Key the key under which the file is stored in S3
+ */
+  public uploadStringToFile(string: string, s3Key: string): Promise<S3.PutObjectOutput> {
+    Logger.msg(`uploading string: [${string}] to file [${s3Key}]`)
+
+    return new Promise<S3.PutObjectOutput>((res, rej) => {
+      const params: S3.PutObjectRequest = {
+        Key: s3Key,
+        Bucket: this.bucket,
+        Body: new Buffer(string),
+      };
+      this.s3.putObject(params, function put(err, data) {
+        if (err) {
+          rej({msg: 'Upload Error', err});
+        } else {
+          res(data);
+        }
+      });
+    })
+  }
+
+  /**
    * Download a file from bucketeer and save it to the filesystem
    */
-  public downloadFile(filePath: string, key: string): Promise<S3.PutObjectOutput> {
-    Logger.msg(`downloading: [${key}]`)
+  public downloadFile(filePath: string, s3Key: string): Promise<S3.PutObjectOutput> {
+    Logger.msg(`downloading: [${s3Key}]`)
 
     return new Promise<S3.GetObjectOutput>((res, rej) => {
       // Configure the file stream
       const file = createWriteStream(filePath);
 
       const params: S3.GetObjectRequest = {
-        Key: key,
+        Key: s3Key,
         Bucket: this.bucket,
 
       };
@@ -108,6 +132,36 @@ export class Bucketeer {
 
     })
   }
+
+
+  /**
+   * Read a file from bucketeer and return array of strings
+   */
+  public readFile(s3Key: string): Promise<string[]|undefined> {
+    Logger.msg(`reading file: [${s3Key}]`)
+
+    return new Promise<string[]|undefined>((res, rej) => {
+      // Configure the file stream
+      const params: S3.GetObjectRequest = {
+        Key: s3Key,
+        Bucket: this.bucket,
+
+      };
+      const lines: string[] = []
+      this.s3.getObject(params).createReadStream()
+        .on('data', (line) => {
+          lines.push(line.toString())
+        })
+        .on('end', () => {
+          return res(lines);
+        })
+        .on('error', (err) => {
+          return rej(err);
+        })
+
+    })
+  }
+
 
   /**
   * Download a folder from S3

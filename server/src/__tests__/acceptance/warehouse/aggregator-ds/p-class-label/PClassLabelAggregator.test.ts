@@ -20,6 +20,9 @@ describe('PClassLabelAggregator', function () {
     beforeEach(async function () {
         await wh.clearWhDB()
     })
+    after(async () => {
+        await wh.stop()
+    })
 
     it('should create class label from: de-project', async () => {
         await wh.prim.proProject.put(ProjectMock.PROJECT_DE_ID, ProjectMock.PROJECT_DE_VAL)

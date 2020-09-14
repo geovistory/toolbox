@@ -46,6 +46,7 @@ import { CookiesModule } from './core/cookies/cookies.module';
 import { GvAuthService } from './core/auth/auth.service';
 import { Configuration, ConfigurationParameters } from './core/sdk-lb4/configuration';
 import { lb4SdkConfigurationProvider } from './core/auth/auth.module';
+import { SocketsModule } from './core/sockets/sockets.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -106,6 +107,7 @@ registerLocaleData(localeDeCh);
     MaterialModule,
     ApiModule,
     CookiesModule.forRoot(),
+    SocketsModule
   ],
   providers: [
     EntityEditorService,

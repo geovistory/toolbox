@@ -6,6 +6,7 @@ interface BackupId {
   isoDate: string
   gitCommit: string
 }
+const CURRENT = 'CURRENT'
 
 export class S3LevelBackup {
   bucketeer: Bucketeer
@@ -21,21 +22,23 @@ export class S3LevelBackup {
   }
 
   async createBackup(tmsp: Date, currentCommit: string) {
-    Logger.msg(`Getting current git commit`)
-
     const backupId: BackupId = {
       prefix: this.backupPrefix,
       isoDate: tmsp.toISOString(),
       gitCommit: currentCommit
     }
-    Logger.msg(`Created backupId – prefix:${backupId.prefix} isoDate:${backupId.isoDate} gitCommit:${backupId.gitCommit}`)
-
     // create s3 folder name
     const backupname = this.backupIdToString(backupId)
-    Logger.msg(`Created name ${backupname}`)
+
+    Logger.msg(`Creating backupId ${backupname}`)
 
     // upload folder
     await this.bucketeer.uploadFolder(this.rootFolder, this.leveldbFolder, backupname)
+
+    // set this backup as current backup
+    await this.bucketeer.uploadStringToFile(backupname, CURRENT);
+
+    Logger.msg(`Backup created! Current backup: ${backupname}`)
   }
 
 
@@ -59,7 +62,7 @@ export class S3LevelBackup {
         return aDate === bDate ? 0 : aDate > bDate ? -1 : 1;
       })
     }
-    return names
+    return names.map(name => name.replace('/', ''))
   }
 
   private backupNameToDate(name: string) {
@@ -67,33 +70,47 @@ export class S3LevelBackup {
     return new Date(backupId.isoDate);
   }
 
-  async downloadLatestBackup(destinationFolder: string = this.leveldbFolder) {
-    const backupnames = await this.listBackupsNewestFirst()
-    if (backupnames?.length) {
-      const backupname = backupnames[0]
+  async downloadCurrentBackup(destinationFolder: string = this.leveldbFolder) {
+    const backupname = await this.getCurrentBackupName()
+    if (backupname) {
       await this.bucketeer.downloadFolder(this.rootFolder, destinationFolder, backupname)
       return this.stringToBackupId(backupname);
     }
   }
+  async getCurrentBackupName(): Promise<string | undefined> {
+    try {
+      const currents = await this.bucketeer.readFile(CURRENT)
+      if (currents?.length === 1) {
+        return currents[0]
+      }
+
+    } catch (error) {
+      Logger.err(error)
+    }
+  }
+
+  async getCurrentBackupId(): Promise<BackupId | undefined> {
+    const backupname = await this.getCurrentBackupName()
+    if (backupname) return this.stringToBackupId(backupname)
+  }
 
 
-  async getLatestBackupId() {
+  async deleteUnusedBackups() {
     const backupnames = await this.listBackupsNewestFirst()
-    if (backupnames?.length) {
-      const backupname = backupnames[0]
-      return this.stringToBackupId(backupname);
+    const current = await this.getCurrentBackupName()
+
+    if (backupnames?.length > 1) {
+      for (const backupname of backupnames) {
+        if (backupname !== current) {
+          await this.bucketeer.emptyS3Directory(backupname)
+        }
+      }
     }
   }
 
 
-  async deleteOldBackups() {
-    const backupnames = await this.listBackupsNewestFirst()
-    if (backupnames?.length > 1) {
-      for (let i = 1; i < backupnames.length; i++) {
-        const backupname = backupnames[i];
-        await this.bucketeer.emptyS3Directory(backupname)
-      }
-    }
+  async deleteLinkToCurrent() {
+    await this.bucketeer.uploadStringToFile('', CURRENT);
   }
 
   backupIdToString(id: BackupId): string {

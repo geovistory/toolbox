@@ -3,6 +3,7 @@ import {ReplaySubject} from 'rxjs';
 import subleveldown from 'subleveldown';
 import {Warehouse} from '../../Warehouse';
 import {Index} from '../interfaces/Index';
+import {Logger} from './Logger';
 // Temporary implementation as leveldb key-value store
 
 export abstract class IndexLeveldb<KeyModel, ValueModel> implements Index<KeyModel, ValueModel> {
@@ -23,15 +24,22 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> implements Index<KeyMod
 
     async addToIdx(keyModel: KeyModel, val: ValueModel) {
         const key = this.keyToString(keyModel);
-        await this.db.put(key, val);
-
+        try {
+            await this.db.put(key, val);
+        }
+        catch (error) {
+            Logger.err(error);
+        }
         // this.idx[this.keyToString(key)] = val
     }
     async removeFromIdx(keyModel: KeyModel) {
         const key = this.keyToString(keyModel);
-        await this.db.del(key);
-
-        // delete this.idx[this.keyToString(key)]
+        try {
+            await this.db.del(key);
+        }
+        catch (error) {
+            Logger.err(error);
+        }
     }
 
     /**
@@ -40,6 +48,7 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> implements Index<KeyMod
      */
 
     async getFromIdx(keyModel: KeyModel): Promise<ValueModel | undefined> {
+
         const key = this.keyToString(keyModel);
         let val: (ValueModel | undefined) = undefined;
         try {
@@ -47,7 +56,9 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> implements Index<KeyMod
             return val;
         }
         catch (error) {
-            if (!error.notFound) throw new Error(error);
+            if (!error.notFound) {
+                Logger.err(error);
+            }
             return val;
         }
 
@@ -64,6 +75,8 @@ export abstract class IndexLeveldb<KeyModel, ValueModel> implements Index<KeyMod
 
 
     async forEachKeyStartingWith<M>(str: string, cb: (key: KeyModel) => Promise<M>): Promise<void> {
+        if (!this.db.isOpen()) return;
+
         const stream = this.db.createKeyStream(whereKeyStartsWith(str));
         return handleAsyncStream<M, string>(stream, (item) => cb(this.stringToKey(item)));
     }

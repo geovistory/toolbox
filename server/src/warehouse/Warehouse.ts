@@ -6,17 +6,17 @@ import levelup, {LevelUp} from 'levelup';
 import path from 'path';
 import {Pool, PoolClient} from 'pg';
 import rimraf from 'rimraf';
+import rmfr from 'rmfr';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
 import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
+import {wait} from '../utils/helpers';
 import {S3LevelBackup} from './base/bucketeer/S3LevelBackup';
 import {Logger} from './base/classes/Logger';
 import {getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
-import {wait} from '../utils/helpers';
-
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 
@@ -134,7 +134,7 @@ export class Warehouse {
         }
 
         // Q: I there a backup?
-        const latestBackupId = await this.s3backuper.getLatestBackupId();
+        const latestBackupId = await this.s3backuper.getCurrentBackupId();
 
         if (!latestBackupId) {
             // A: No. no data found.
@@ -192,15 +192,21 @@ export class Warehouse {
      */
     async createWhData() {
         this.status = 'initializing';
+        await this.pgNotify('warehouse_initializing', 'true')
+
         const t0 = Logger.start('Create Warehouse data', 0)
 
         const date = await this.getInitBackupDate();
 
         await this.createPrimaryData();
 
+        await this.pgNotify('warehouse_initializing', 'true')
+
         await this.createAggregatedData()
 
         await this.createS3Backup(date)
+
+        await this.pgNotify('warehouse_initializing', 'false')
 
         Logger.itTook(t0, 'to create warehouse data', 0)
 
@@ -218,6 +224,7 @@ export class Warehouse {
     async listen() {
         const t0 = Logger.start('Start listening Warehouse', 0)
 
+
         this.status = 'starting';
 
         this.startListening()
@@ -225,7 +232,9 @@ export class Warehouse {
         await this.catchUp();
 
         this.startRegularBackups()
-            .catch(e => console.error('Error when creating backup!', JSON.stringify(e)))
+            .catch(e => {
+                throw new Error("********** Error during regular backup cycle! **********");
+            })
 
 
         this.status = 'running';
@@ -234,8 +243,34 @@ export class Warehouse {
     }
 
 
-    createLeveldb(leveldbpath: string): LevelUp {
-        return levelup(leveldown(leveldbpath))
+    async createLeveldb(leveldbpath: string): Promise<LevelUp> {
+        const down = leveldown(leveldbpath)
+        const up = levelup(down, {}, (error) => {
+            if (error) {
+                Logger.err('Error on opening leveldb. Make hard reset.')
+                // if we have an error here, the db is currupt
+                // make hard reset to trigger initialization of
+                // warehouse on next start
+                this.hardReset()
+                    .then(() => {
+                        throw error
+                    })
+                    .catch(e => {
+                        if (e) throw e
+                    })
+            }
+        })
+        return up
+    }
+
+    /**
+     * Deletes local and remote leveldb
+     */
+    async hardReset() {
+        // delete the local folder
+        await rmfr(this.leveldbpath)
+        // delete the link to the current backup
+        await this.s3backuper.deleteLinkToCurrent()
     }
 
     /**
@@ -265,18 +300,12 @@ export class Warehouse {
      * until now.
      */
     private async catchUp() {
+
         for (const primDS of this.prim.registered) {
+
             await primDS.catchUp();
         }
 
-        // if (this.catchUpDate) {
-        //     for (const primDS of this.prim.registered) {
-        //         await primDS.startAndSyncSince(this.catchUpDate);
-        //     }
-        // }
-        // else {
-        //     throw new Error('No backupCatchUpDate found.');
-        // }
     }
 
     /**
@@ -300,8 +329,7 @@ export class Warehouse {
      */
     private async initWhDb() {
 
-        this.leveldb = this.createLeveldb(this.leveldbpath)
-
+        this.leveldb = await this.createLeveldb(this.leveldbpath)
         this.prim = new PrimaryDataServices(this)
         this.agg = new AggregatedDataServices(this)
         this.dep = new DependencyDataServices(this)
@@ -389,9 +417,9 @@ export class Warehouse {
         if (!this.config.backups) return {download: 'skipped'};
 
         rimraf.sync(path.join(this.config.rootDir, this.config.leveldbFolder))
-        const backupId = await this.s3backuper.downloadLatestBackup()
+        const backupId = await this.s3backuper.downloadCurrentBackup()
         if (backupId) {
-            this.s3backuper.deleteOldBackups()
+            this.s3backuper.deleteUnusedBackups()
                 .catch(e => console.log('Error when deleting old backups.', e))
             return {download: 'success'}
         }
@@ -405,8 +433,8 @@ export class Warehouse {
     private async startRegularBackups() {
         if (!this.config.backups) return;
 
-        // 5 min in miliseconds
-        const pause = 1000 * 20//60 * 5
+        // pause in miliseconds
+        const pause = 1000 * 60 * 30 // 30 Min
 
         // make a pause
         await wait(pause)
@@ -414,7 +442,7 @@ export class Warehouse {
         // create backup (causing pause of warehouse)
         await this.createS3Backup(date)
         await this.catchUp()
-        this.s3backuper.deleteOldBackups()
+        this.s3backuper.deleteUnusedBackups()
             .catch(e => console.log('error when deleting old backups'))
         await this.startRegularBackups()
     }
@@ -481,7 +509,9 @@ export class Warehouse {
                     // Q: Is status running? (this prevents actions during backuping)
                     if (this.status === 'running') {
                         handler.listeners.map(l => {
-                            l.callback(date).catch(e => console.log(e))
+                            l.callback(date).catch(e => {
+                                console.log(e)
+                            })
                         })
                     }
 
@@ -531,6 +561,11 @@ export class Warehouse {
         })
     }
 
+    pgNotify(channel: string, value: string) {
+        return this.pgClient.query(`SELECT pg_notify($1, $2)`, [channel, value])
+    }
+
+
     /**
      * stops the warehouse
      */
@@ -538,6 +573,7 @@ export class Warehouse {
         this.status = 'stopped';
         this.notificationHandlers = {}
         this.pgClient.release();
+        await this.leveldb.close()
 
     }
 }

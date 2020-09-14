@@ -18,6 +18,7 @@ describe('DfhClassHasTypePropertyService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.dfhClassHasTypeProperty;
   })
+  afterEach(async function () {await wh.stop()})
 
   it('should have class-has-type-property in index', async () => {
     await createDfhApiProperty(DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE)
