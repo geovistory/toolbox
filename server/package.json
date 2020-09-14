@@ -138,6 +138,7 @@
     "json-schema-to-typescript": "^7.1.0",
     "nodemon": "^2.0.4",
     "pascalcase": "^1.0.0",
+    "rxjs-marbles": "^6.0.1",
     "socket.io-client": "^2.3.0",
     "source-map-support": "^0.5.19",
     "ts-node": "^8.10.2",

@@ -49,7 +49,7 @@
         "--colors",
         "'dist/__tests__/**/*.js'",
         "--grep",
-        "/ProjectConfigController.*/"
+        "/WarEntityPreviewController.*test the stream/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
@@ -70,8 +70,8 @@
         "20000",
         "--colors",
         "'dist/__tests__/**/*.js'",
-        // "--grep",
-        // "/WarEntityPreviewController.*/"
+        "--grep",
+        "/WarEntityPreviewController.*test the stream/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",

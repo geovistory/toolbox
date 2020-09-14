@@ -7,10 +7,15 @@ import {Entity, model, property} from '@loopback/repository';
  *
  * acls, methods, mixins
  */
+export interface WarEntityPreviewId {
+  pk_entity: number,
+  fk_project?: number | null
+}
 
 @model({
   settings: {
     forceId: false,
+    id: ['pk_entity', 'fk_project'],
     postgresql: {schema: 'war', table: 'entity_preview'},
     validateUpsert: true,
     idInjection: false
