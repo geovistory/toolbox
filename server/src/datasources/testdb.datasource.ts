@@ -32,6 +32,3 @@ export class TestdbDataSource extends juggler.DataSource
     });
   }
 }
-
-
-export const testdb = new TestdbDataSource();
