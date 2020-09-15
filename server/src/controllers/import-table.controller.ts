@@ -255,7 +255,7 @@ async function createCells(datasource: Postgres1DataSource, fkDigital: number, r
 
         const advancement = Math.round(((i * colKeys.length + j) / totalNumber) * 100);
         const eta = Math.round(((new Date().getTime() - begin) / advancement) * (100 - advancement) / (1000 * 60)); // in minutes
-        feedBacks[fkDigital].next({ id: fkDigital, advancement: advancement, infos: '[6/6] Creating cells ... ' + advancement + '% (ETA: ' + (eta === Infinity ? 'Calculating...) ' : eta + ' minutes') });
+        feedBacks[fkDigital].next({ id: fkDigital, advancement: advancement, infos: '[6/6] Creating cells ... ' + advancement + '% (ETA: ' + (eta === Infinity ? 'Calculating...) ' : eta + ' minutes)') });
       }
     }
   }
