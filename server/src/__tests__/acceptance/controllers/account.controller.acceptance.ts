@@ -1,5 +1,5 @@
 import {Client, expect} from '@loopback/testlab';
-import {testdb} from '../../../datasources/testdb.datasource';
+import {testdb} from '../../helpers/testdb';
 import {PubAccount} from '../../../models';
 import {PubAccountRepository} from '../../../repositories';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';

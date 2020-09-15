@@ -1,4 +1,4 @@
-import {testdb} from '../../../datasources/testdb.datasource';
+import {testdb} from '../../helpers/testdb';
 import {PubAccountRepository} from '../../../repositories';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 

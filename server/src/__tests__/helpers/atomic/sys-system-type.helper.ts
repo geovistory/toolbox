@@ -1,4 +1,4 @@
-import {testdb} from '../../../datasources/testdb.datasource';
+import {testdb} from '../../helpers/testdb';
 import {SysSystemTypeRepository} from '../../../repositories';
 
 let initialized = false;

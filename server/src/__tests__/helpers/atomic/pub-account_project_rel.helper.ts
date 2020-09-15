@@ -1,4 +1,4 @@
-import {testdb} from '../../../datasources/testdb.datasource';
+import {testdb} from '../../helpers/testdb';
 import {ProProject, PubAccount} from '../../../models';
 import {PubAccountProjectRelRepository} from '../../../repositories';
 
