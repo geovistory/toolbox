@@ -142,12 +142,21 @@ export class ImportTableController {
 
   @ws.subscribe('listenDigitals')
   listenDigitals(digitals: number[]) {
+
+    console.log('===========')
+    console.log('GOT LISTENING TO DIGITAL: ' + JSON.stringify(digitals))
+    console.log('===========')
+    
+
     const importingList = [];
     for (const dig of digitals) {
       if (feedBacks[dig] && !this.subscriptionsCache[dig]) {
         importingList.push({ id: dig, advancement: feedBacks[dig].value.advancement, infos: feedBacks[dig].value.infos });
         this.subscriptions.push(feedBacks[dig].subscribe(state => {
           if (this.socket) {
+            console.log('===========')
+            console.log('EMIT NEW STATE FOR: ' + dig)
+            console.log('===========')
             this.socket.emit('state_' + state.id, state);
           }
           else throw new Error('Impossible error');

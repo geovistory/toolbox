@@ -380,6 +380,9 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
           this.apiImporter.importTableControllerImportTable(this.namespaceCtrl.value, importTable)
             .pipe(switchMap(response => {
+
+              console.log('REQUEST for ' + response.fk_digital + ' HAS BEEN POSTED, should now connect to ws...') // temp gmu
+
               this.fkDigital = response.fk_digital;
               this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
 
