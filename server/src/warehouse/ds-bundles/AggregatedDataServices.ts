@@ -88,7 +88,12 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
 
         // Repo aggregators
         await this.rClassLabel.updater.startCylcling()
-
+        await this.rClassFieldLabel.updater.startCylcling()
+        await this.rEntityClassLabel.updater.startCylcling()
+        await this.rEntityLabel.updater.startCylcling()
+        await this.rEntityType.updater.startCylcling()
+        await this.rEntityFullText.updater.startCylcling()
+        await this.rEntityTimeSpan.updater.startCylcling()
     }
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));
