@@ -7,10 +7,15 @@ import {Entity, model, property} from '@loopback/repository';
  *
  * acls, methods, mixins
  */
+export interface WarEntityPreviewId {
+  pk_entity: number,
+  fk_project?: number | null
+}
 
 @model({
   settings: {
     forceId: false,
+    id: ['pk_entity', 'fk_project'],
     postgresql: {schema: 'war', table: 'entity_preview'},
     validateUpsert: true,
     idInjection: false
@@ -27,6 +32,11 @@ export class WarEntityPreview extends Entity {
     type: 'number',
   })
   fk_project?: number;
+
+  @property({
+    type: 'number',
+  })
+  project?: number;
 
   @property({
     type: 'number',
@@ -64,14 +74,24 @@ export class WarEntityPreview extends Entity {
   time_span?: object;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  first_second?: number;
+  first_second?: string;
 
   @property({
-    type: 'number',
+    type: 'string',
   })
-  last_second?: number;
+  last_second?: string;
+
+  @property({
+    type: 'string',
+  })
+  full_text?: string;
+
+  @property({
+    type: 'string',
+  })
+  ts_vector?: string;
 
   @property({
     type: 'string',

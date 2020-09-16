@@ -6,7 +6,7 @@ import {InfLanguage} from './inf-language.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     postgresql: {schema: 'information', table: 'v_text_property'},
     plural: 'InfTextProperties'
   }

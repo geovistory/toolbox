@@ -2,7 +2,7 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     postgresql: {schema: 'projects', table: 'dfh_profile_proj_rel'},
     validateUpsert: true,
     idInjection: true

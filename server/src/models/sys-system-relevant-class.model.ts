@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model({
-  settings: {strict: false, postgresql: {schema: 'system', table: 'system_relevant_class'}}
+  settings: {strict: true, postgresql: {schema: 'system', table: 'system_relevant_class'}}
 })
 export class SysSystemRelevantClass extends Entity {
   @property({

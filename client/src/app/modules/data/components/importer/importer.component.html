@@ -23,26 +23,28 @@
     </div>
 
     <!-- Load file -->
-    <div class="d-flex flex-direction-column" *ngIf="mode=='load' || mode == 'parsing' || mode == 'preview'">
+    <div class="d-flex flex-direction-column"
+        *ngIf="mode=='load' || mode == 'parsing' || mode == 'uploading' || mode == 'preview'">
 
         <mat-form-field appearance="outline" style="margin-right: 10px">
             <mat-icon matPrefix>folder</mat-icon>
             <input matInput placeholder="Selected file" [value]="file?.name" readonly="true">
-            <mat-icon matSuffix (click)="reset()" *ngIf="mode!='load' && mode != 'parsing'">close
+            <mat-icon matSuffix (click)="reset()" *ngIf="mode!='load' && mode != 'parsing' && mode != 'uploading'">close
             </mat-icon>
         </mat-form-field>
 
         <mat-form-field appearance="outline" *ngIf="type=='csv'" style="margin-right: 10px">
             <mat-label>Separator used in the CSV file</mat-label>
             <mat-select [(value)]="separator" (selectionChange)="parseCSV()"
-                [disabled]="mode=='load' || mode == 'parsing'">
+                [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
                 <mat-option *ngFor="let s of separators" [value]="s">{{s}}</mat-option>
             </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" *ngIf="type=='csv'" style="margin-right: 10px">
             <mat-label>Comma used in numbers</mat-label>
-            <mat-select [(value)]="comma" (selectionChange)="parseCSV()" [disabled]="mode=='load' || mode == 'parsing'">
+            <mat-select [(value)]="comma" (selectionChange)="parseCSV()"
+                [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
                 <mat-option *ngFor="let c of commas" [value]="c">{{c}}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -50,7 +52,7 @@
         <mat-form-field appearance="outline" *ngIf="type=='xls'" style="margin-right: 10px">
             <mat-label>Excel sheet</mat-label>
             <mat-select [(value)]="sheetName" (selectionChange)="parseXLS()"
-                [disabled]="mode=='load' || mode == 'parsing'">
+                [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
                 <mat-option *ngFor="let s of sheetsNames" [value]="s">{{s}}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -58,7 +60,7 @@
         <mat-form-field appearance="outline" style="margin-right: 10px">
             <mat-label>Columns headers are in</mat-label>
             <mat-select [(value)]="columnsOption" (selectionChange)="parseHeaders()"
-                [disabled]="mode=='load' || mode == 'parsing'">
+                [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
                 <mat-option *ngFor="let opt of columnsOptions" [value]="opt">{{opt}}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -66,7 +68,7 @@
         <mat-form-field appearance="outline" style="margin-right: 10px">
             <mat-label>Number of rows to preview</mat-label>
             <mat-select [(value)]="rowsNb" (selectionChange)="parseTable()"
-                [disabled]="mode=='load' || mode == 'parsing'">
+                [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
                 <mat-option *ngFor="let nb of rowsNbs" [value]="nb">{{nb}}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -75,9 +77,10 @@
     <mat-progress-bar mode="indeterminate" *ngIf="mode=='load'"></mat-progress-bar>
 
     <!-- [columnComments$]="dataTypes$" -->
-    <gv-table [headers$]="headers$" [table$]="previewTable$" [loading]="mode=='parsing'" [sortingEnabled]="true"
-        [filteringEnabled]="true" class="gv-overflow-hidden" *ngIf="mode=='parsing' || mode=='preview'"
-        (sortDemanded)="sort($event)" (filterDemanded)="filter($event)">
+    <gv-table [headers$]="headers$" [table$]="previewTable$" [loading]="mode=='parsing'"
+        [sortingEnabled]="true" [filteringEnabled]="true" class="gv-overflow-hidden"
+        *ngIf="mode=='parsing' || mode=='preview' || mode == 'uploading'" (sortDemanded)="sort($event)"
+        (filterDemanded)="filter($event)">
     </gv-table>
 </div>
 
@@ -106,7 +109,10 @@
         </mat-form-field>
 
         <button mat-button (click)="load()" *ngIf="mode=='preview'">Load</button>
-        <button mat-button cdkFocusInitial [mat-dialog-close]="" *ngIf="mode != 'parsing'">Cancel</button>
-
+        <button mat-button cdkFocusInitial [mat-dialog-close]=""
+            *ngIf="mode != 'parsing' && mode != 'uploading'">Cancel</button>
     </form>
+
+    <mat-progress-bar mode="indeterminate" *ngIf="mode == 'uploading'"></mat-progress-bar>
+    <div *ngIf="mode == 'uploading'">{{socketMessage}}</div>
 </div>

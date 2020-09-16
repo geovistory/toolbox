@@ -1,4 +1,5 @@
 export * from './war-entity-preview.repository';
+export * from './war-class-preview.repository';
 export * from './dat-chunk.repository';
 export * from './dat-column.repository';
 export * from './dat-digital.repository';
@@ -30,8 +31,8 @@ export * from './sys-analysis-type.repository';
 export * from './sys-app-context.repository';
 export * from './sys-class-field-property-rel.repository';
 export * from './sys-class-field.repository';
-export * from './sys-class-has-type-property.repository';
 export * from './sys-system-relevant-class.repository';
 export * from './sys-system-type.repository';
 export * from './pub-role-mapping.repository';
 export * from './pub-role.repository';
+export * from './pro-entity-label-config.repository';

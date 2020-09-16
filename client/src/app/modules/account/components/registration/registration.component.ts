@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { LoopBackConfig } from 'app/core';
 import { environment } from 'environments/environment';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
-import { AccountControllerService, PubAccount, SignupRequest, SignupValidationError } from 'app/core/sdk-lb4';
+import { AccountService, PubAccount, SignupRequest, SignupValidationError } from 'app/core/sdk-lb4';
 import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 
@@ -22,9 +22,10 @@ export class RegistrationComponent {
   validationError: SignupValidationError
 
   confirm = false; // if true, form is hidden and confirmation shown.
+  confirmEmail = ''; //email to inform user
 
   constructor(
-    private accountApi: AccountControllerService,
+    private accountApi: AccountService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
@@ -45,7 +46,7 @@ export class RegistrationComponent {
         data => {
           this.completeLoading();
           this.validationError = data.validationError;
-          if (!this.validationError) this.confirm = true;
+          if (!this.validationError) { this.confirm = true; this.confirmEmail = data.success.email; };
         },
         errResponse => {
 

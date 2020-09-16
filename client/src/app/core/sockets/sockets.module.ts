@@ -4,11 +4,37 @@ import { environment } from 'environments/environment';
 
 @Injectable()
 export class EntityPreviewSocket extends Socket {
-
   constructor() {
     super({ url: environment.baseUrl + '/WarEntityPreview' });
   }
+}
 
+@Injectable()
+export class ImportTableSocket extends Socket {
+  connected = false;
+
+  constructor() {
+    super({ url: environment.baseUrl + '/ImportTable' });
+    this.connected = true;
+  }
+
+  cleanConnect() {
+    if (!this.connected) this.connect();
+  }
+
+  cleanDisconnect() {
+    this.disconnect();
+    this.connected = false;
+  }
+
+}
+
+
+@Injectable()
+export class SysStatusSocket extends Socket {
+  constructor() {
+    super({ url: environment.baseUrl + '/SysStatus' });
+  }
 }
 
 
@@ -20,7 +46,7 @@ export class EntityPreviewSocket extends Socket {
     SocketIoModule,
     // ...
   ],
-  providers: [EntityPreviewSocket],
+  providers: [EntityPreviewSocket, ImportTableSocket, SysStatusSocket],
   bootstrap: [/** AppComponent **/]
 })
 export class SocketsModule { }

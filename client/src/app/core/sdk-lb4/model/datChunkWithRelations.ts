@@ -18,9 +18,6 @@ import { DatDigitalWithRelations } from './datDigitalWithRelations';
  * (tsType: DatChunkWithRelations, schemaOptions: { includeRelations: true })
  */
 export interface DatChunkWithRelations { 
-  [key: string]: object | any;
-
-
     pk_entity?: number;
     quill_doc?: object;
     string?: string;

@@ -6,7 +6,7 @@ import {ProProject} from './pro-project.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     postgresql: {schema: 'projects', table: 'class_field_config'},
     validateUpsert: true,
     idInjection: false

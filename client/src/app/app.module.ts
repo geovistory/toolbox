@@ -45,6 +45,8 @@ import { ApiModule } from 'app/core/sdk-lb4/api.module';
 import { CookiesModule } from './core/cookies/cookies.module';
 import { GvAuthService } from './core/auth/auth.service';
 import { Configuration, ConfigurationParameters } from './core/sdk-lb4/configuration';
+import { lb4SdkConfigurationProvider } from './core/auth/auth.module';
+import { SocketsModule } from './core/sockets/sockets.module';
 
 // TODO: check if this can stay.
 const socketConfig: SocketIoConfig = { url: environment.baseUrl, options: {} };
@@ -105,6 +107,7 @@ registerLocaleData(localeDeCh);
     MaterialModule,
     ApiModule,
     CookiesModule.forRoot(),
+    SocketsModule
   ],
   providers: [
     EntityEditorService,
@@ -117,20 +120,7 @@ registerLocaleData(localeDeCh);
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: appearance
     },
-    {
-      provide: Configuration,
-      useFactory: (authService: GvAuthService) => {
-        const config = new Configuration(
-          {
-            basePath: environment.baseUrl,
-            accessToken: authService.getToken().lb4Token
-          })
-        return authService.setLb4SdkConfig(config)
-      },
-      deps: [GvAuthService],
-      multi: false
-    }
-
+    lb4SdkConfigurationProvider
   ],
   entryComponents: [
     AppComponent

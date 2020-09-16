@@ -55,11 +55,14 @@ export class WebSocketServer extends Context {
         socket.id,
         socket.nsp.name,
       );
+
       // Create a request context
       const reqCtx = new Context(this.ctx);
+
       // Bind websocket
       reqCtx.bind('ws.socket').to(socket);
       // this.ctx.bind('ws.socket').to(socket);
+
       // Instantiate the controller instance
       await new WebSocketControllerFactory(reqCtx, controllerClass).create(
         socket,

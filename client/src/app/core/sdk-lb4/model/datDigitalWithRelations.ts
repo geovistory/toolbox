@@ -16,9 +16,6 @@ import { DatNamespaceWithRelations } from './datNamespaceWithRelations';
  * (tsType: DatDigitalWithRelations, schemaOptions: { includeRelations: true })
  */
 export interface DatDigitalWithRelations { 
-  [key: string]: object | any;
-
-
     pk_entity?: number;
     entity_version?: number;
     pk_text?: number;

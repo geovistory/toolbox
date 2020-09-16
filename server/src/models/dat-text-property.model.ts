@@ -3,7 +3,7 @@ import {DatEntity, DatNamespace} from '.';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'data', table: 'text_property'}
   }

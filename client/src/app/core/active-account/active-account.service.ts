@@ -7,7 +7,7 @@ import { filter, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';
 import { PubAccountApi, SDKToken } from '../sdk';
-import { LoginRequest, LoginResponse, PubAccount, AccountControllerService } from '../sdk-lb4';
+import { LoginRequest, LoginResponse, PubAccount, AccountService } from '../sdk-lb4';
 import { LoopBackConfig } from '../sdk/lb.config';
 import { IAppState } from '../store/model';
 
@@ -24,7 +24,7 @@ export class ActiveAccountService {
     private authService: GvAuthService,
     private accountActions: AccountActions,
     private ngRedux: NgRedux<IAppState>,
-    private lb4AccountApi: AccountControllerService,
+    private lb4AccountApi: AccountService,
     private lb3AccountApi: PubAccountApi,
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);

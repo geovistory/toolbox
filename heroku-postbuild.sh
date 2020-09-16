@@ -31,9 +31,9 @@ if [ $DB_ENV = 'review' ] && [ $RESTORE_DB = 'ON' ]; then
   echo '======== Database restored  =============================================='
   echo
 
-  echo '======== Recreate Warehouse (entity_previews) ============================'
-  time psql -d $DATABASE_URL -c 'SELECT war.warehouse_update_all()'
-  echo '======== Recreate Warehouse done! ========================================'
+  # echo '======== Recreate Warehouse (entity_previews) ============================'
+  # time psql -d $DATABASE_URL -c 'SELECT war.warehouse_update_all()'
+  # echo '======== Recreate Warehouse done! ========================================'
 
 fi
 

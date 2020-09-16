@@ -1,4 +1,4 @@
-import {Subject} from 'rxjs';
+import {Subject, BehaviorSubject} from 'rxjs';
 
 /**
  * This class initializes streams
@@ -12,5 +12,8 @@ export class Streams {
    * currently connected clients.
    */
   warEntityPreviewModificationTmsp$ = new Subject<string>()
+
+
+  warehouseInitializing$ = new BehaviorSubject(false)
 
 }

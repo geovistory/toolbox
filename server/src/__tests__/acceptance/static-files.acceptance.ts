@@ -1,18 +1,22 @@
-import {Client} from '@loopback/testlab';
-import {GeovistoryServer} from '../../server';
-import {setupApplication} from './_test-helper';
+import { Client } from '@loopback/testlab';
+import { GeovistoryServer } from '../../server';
+import { setupApplication } from '../helpers/gv-server-helpers';
+import { cleanDb } from '../helpers/cleaning/clean-db.helper';
+
 
 describe('Static Files', () => {
-  let app: GeovistoryServer;
+  let server: GeovistoryServer;
   let client: Client;
 
   before('setupApplication', async () => {
-    ({app, client} = await setupApplication());
+    ({ server, client } = await setupApplication());
   });
 
   after(async () => {
-    await app.stop();
+    await server.stop();
   });
+
+  beforeEach(async () => cleanDb());
 
   it('exposes angular index.html', async () => {
     await client

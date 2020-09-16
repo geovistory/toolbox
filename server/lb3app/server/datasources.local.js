@@ -31,6 +31,10 @@ let config = {
  */
 switch (process.env.DB_ENV) {
 
+  case "test":
+    config.postgres1.url = process.env.TEST_DATABASE_URL + '?ssl=true';
+    break;
+
   case "development":
     config.postgres1.url = process.env.DATABASE_URL + '?ssl=true';
     break;

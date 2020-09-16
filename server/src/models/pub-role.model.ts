@@ -2,7 +2,7 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     postgresql: {schema: 'public', table: 'role'},
   }
 })
