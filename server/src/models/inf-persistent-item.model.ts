@@ -8,7 +8,7 @@ import {DfhClass} from './dfh-class.model';
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'information', table: 'v_persistent_item'}
+    postgresql: {schema: 'information', table: 'persistent_item'}
   }
 })
 export class InfPersistentItem extends Entity implements InfEntity {

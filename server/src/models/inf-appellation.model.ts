@@ -22,9 +22,9 @@ export class InfAppellation extends Entity implements InfEntity {
 
   @property({
     type: 'object',
-    required: true,
+    // required: true,
   })
-  quill_doc: object;
+  quill_doc?: object;
 
   @property({
     type: 'number',

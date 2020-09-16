@@ -1,4 +1,4 @@
-import {testdb} from '../../helpers/testdb';
+import { testdb } from "../testdb";
 import {ProProject} from '../../../models';
 import {DatNamespaceRepository} from '../../../repositories';
 

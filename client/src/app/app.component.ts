@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { environment } from 'environments/environment';
 import { LoopBackConfig } from './core';
+import { SysStatusSocket } from './core/sockets/sockets.module';
 
 @Component({
   selector: 'gv-root',
@@ -8,10 +9,18 @@ import { LoopBackConfig } from './core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  warehouseInitializing = false
+  constructor(
+    private status: SysStatusSocket,
 
-  constructor() {
+  ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);
     LoopBackConfig.setApiVersion(environment.apiVersion);
+
+    this.status.on('warehouseInitializing', (message: boolean) => {
+      this.warehouseInitializing = message
+    })
+
   }
 
 

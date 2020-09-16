@@ -1,4 +1,5 @@
 export * from './war-entity-preview.model';
+export * from './war-class-preview.model';
 export * from './dat-chunk.model';
 export * from './dat-entity.interface';
 export * from './dfh-profile.model';
@@ -37,3 +38,4 @@ export * from './inf-text-property.model';
 export * from './sys-system-type.model';
 export * from './pub-role-mapping.model';
 export * from './pub-role.model';
+export * from './pro-entity-label-config.model';

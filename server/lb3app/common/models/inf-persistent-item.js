@@ -55,7 +55,7 @@ module.exports = function(InfPersistentItem) {
 
       // Add F2 Expression, if this is a F4 Manifestation Singleton
       if (requestedPeIt.fk_class == 220) {
-        requestedPeIt.te_statements = [
+        requestedPeIt.outgoing_statements = [
           ...(requestedPeIt.outgoing_statements || []),
           { fk_property: 1016, object_persistent_item: { fk_class: 218 } },
         ];

@@ -35,6 +35,8 @@ import { InformationComponent } from './containers/entity-list/entity-list.compo
 import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timeline.component';
+import { ClassConfigModule } from '../class-config/class-config.module';
+import { EntityLabelConfigModule } from 'app/shared/modules/entity-label-config/entity-label-config.module';
 
 
 @NgModule({
@@ -69,6 +71,7 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     DetailTopBarModule,
     AnnotationModule,
     TileHeaderModule,
+    EntityLabelConfigModule
   ],
   declarations: [
     InformationComponent,

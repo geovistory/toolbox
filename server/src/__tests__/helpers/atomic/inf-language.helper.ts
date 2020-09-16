@@ -1,6 +1,13 @@
-import {testdb} from '../../helpers/testdb';
+import { testdb } from "../testdb";
 import {InfLanguage} from '../../../models';
 import {InfLanguageRepository} from '../../../repositories';
+import {dealWithPkEntity} from './_sequences.helper';
+
+function createInfLanguageRepo() {
+  return new InfLanguageRepository(
+    testdb
+  )
+}
 
 let initialized = false;
 
@@ -11,7 +18,15 @@ const languages = [
   {name: "Italian", id: 19703, code: 'ita'}
 ]
 
-export function resetLanguageInitialization(){
+export namespace AtmLanguages {
+  export const GERMAN = {name: "German", id: 18605, code: 'ger'}
+  export const ENGLISH = {name: "English", id: 18889, code: 'eng'}
+  export const FRENCH = {name: "French", id: 19008, code: 'fra'}
+  export const ITALIAN = {name: "Italian", id: 19703, code: 'ita'}
+}
+
+
+export function resetLanguageInitialization() {
   initialized = false;
 }
 
@@ -20,7 +35,7 @@ export async function createLanguages() {
 
   for (const lang of languages) {
     await testdb.execute("SELECT setval('information.entity_pk_entity_seq', " + (lang.id - 1) + ", true);");
-    await new InfLanguageRepository(testdb).create({pk_language: lang.code, notes: lang.name});
+    await createInfLanguageRepo().create({pk_language: lang.code, notes: lang.name});
   }
   initialized = true;
 }
@@ -38,4 +53,8 @@ export async function getLanguage(name: string): Promise<InfLanguage> {
 
   //replacement of
   // return (await new InfLanguageRepository(testdb).findOne({where: {notes: name}})) as InfLanguage;
+}
+
+export async function createInfLanguage(item: Partial<InfLanguage>) {
+  return createInfLanguageRepo().create(await dealWithPkEntity(item, 'information'))
 }

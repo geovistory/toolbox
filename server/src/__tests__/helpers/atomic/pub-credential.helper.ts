@@ -1,5 +1,5 @@
 import {genSalt, hash} from 'bcrypt';
-import {testdb} from '../../helpers/testdb';
+import { testdb } from "../testdb";
 import {PubAccount} from '../../../models';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 

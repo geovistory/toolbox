@@ -5,7 +5,7 @@ const HOST = process.env.HOST || '0.0.0.0'
 module.exports = application;
 
 if (require.main === module) {
-  console.log('$PORT:', PORT);
+  console.log(`Starting server at: ${HOST}:${PORT}`);
   // Run the application
   const config = {
     rest: {
