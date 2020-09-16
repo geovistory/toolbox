@@ -67,3 +67,10 @@ typings/
 
 # Cache used by TypeScript's incremental build
 *.tsbuildinfo
+
+# warehouse data
+leveldb
+test_leveldb
+
+# development scripts
+dev.js

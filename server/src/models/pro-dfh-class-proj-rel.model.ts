@@ -3,7 +3,7 @@ import {ProEntity} from './pro-entity.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     postgresql: {schema: 'projects', table: 'dfh_class_proj_rel'},
     validateUpsert: true,
     idInjection: true

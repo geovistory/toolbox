@@ -2,7 +2,7 @@ import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     postgresql: {schema: 'system', table: 'class_field_property_rel'},
     validateUpsert: true,
     idInjection: false

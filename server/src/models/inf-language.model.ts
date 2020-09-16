@@ -3,7 +3,7 @@ import {InfEntity} from '.';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'information', table: 'v_language'}
   }

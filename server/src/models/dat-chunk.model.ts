@@ -5,7 +5,7 @@ import {DatDigital} from './dat-digital.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     idInjection: false,
     postgresql: {schema: 'data', table: 'v_chunk'}
   }

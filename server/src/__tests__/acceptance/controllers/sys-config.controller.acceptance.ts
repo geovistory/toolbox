@@ -1,17 +1,17 @@
-import {Client, expect} from '@loopback/testlab';
-import {GeovistoryServer} from '../../../server';
-import {setupApplication} from '../_test-helper';
+import { Client, expect } from '@loopback/testlab';
+import { GeovistoryServer } from '../../../server';
+import { setupApplication } from '../../helpers/gv-server-helpers';
 
 describe('SysConfigController', () => {
-  let app: GeovistoryServer;
+  let server: GeovistoryServer;
   let client: Client;
 
   before('setupApplication', async () => {
-    ({app, client} = await setupApplication());
+    ({ server, client } = await setupApplication());
   });
 
   after(async () => {
-    await app.stop();
+    await server.stop();
   });
   describe('GET /get-system-config', () => {
     it('should return 200', async () => {
@@ -39,7 +39,7 @@ describe('SysConfigController', () => {
     it('should reject invalid body as 422 "Unprocessable Entity"', async () => {
       await client
         .post('/validate-system-config')
-        .send({foo: 'bar'})
+        .send({ foo: 'bar' })
         .expect(422);
     });
 

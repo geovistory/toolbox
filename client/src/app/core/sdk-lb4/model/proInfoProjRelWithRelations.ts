@@ -15,9 +15,6 @@
  * (tsType: ProInfoProjRelWithRelations, schemaOptions: { includeRelations: true })
  */
 export interface ProInfoProjRelWithRelations { 
-  [key: string]: object | any;
-
-
     pk_entity?: number;
     fk_project: number;
     fk_entity?: number;

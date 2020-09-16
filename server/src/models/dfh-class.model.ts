@@ -6,7 +6,7 @@ import {InfPersistentItem} from './inf-persistent-item.model';
 
 @model({
   settings: {
-    strict: false,
+    strict: true,
     postgresql: {schema: 'data_for_history', table: 'v_class'},
     validateUpsert: true,
     plural: 'DfhClasses',
@@ -50,8 +50,6 @@ export class DfhClass extends Entity {
   @hasMany(() => ProClassFieldConfig, {keyTo: 'fk_class_for_class_field'})
   class_field_configs: ProClassFieldConfig[];
 
-  @hasMany(() => InfPersistentItem, {keyTo: 'fk_class'})
-  persistent_items: InfPersistentItem[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

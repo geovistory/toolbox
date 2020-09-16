@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SlimLoadingBarService } from '@cime/ngx-slim-loading-bar';
 import { LoopBackConfig } from 'app/core';
-import { AccountControllerService } from 'app/core/sdk-lb4';
+import { AccountService } from 'app/core/sdk-lb4';
 import { environment } from 'environments/environment';
 
 
@@ -20,7 +20,7 @@ export class RequestPasswordResetComponent {
   confirm = false; // if true, form is hidden and confirmation shown.
 
   constructor(
-    private accountApi: AccountControllerService,
+    private accountApi: AccountService,
     private slimLoadingBarService: SlimLoadingBarService
   ) {
     LoopBackConfig.setBaseURL(environment.baseUrl);

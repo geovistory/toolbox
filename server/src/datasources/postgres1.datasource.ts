@@ -1,13 +1,14 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
+import {getPgUrlForLoopback, getPgSslForLoopback} from '../utils/databaseUrl';
+
 
 const config = {
-  url: process.env.DATABASE_URL + '?ssl=true',
+  url: getPgUrlForLoopback(),
+  // url: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
   name: 'postgres1',
   connector: 'postgresql',
-  ssl: {
-    rejectUnauthorized: true,
-  },
+  ssl: getPgSslForLoopback()
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -25,5 +26,6 @@ export class Postgres1DataSource extends juggler.DataSource
     dsConfig: object = config,
   ) {
     super(dsConfig);
+    console.log('Geovistory Database:', config.url.split('@')[1])
   }
 }

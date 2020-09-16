@@ -2,7 +2,7 @@ import {model, property, Entity} from '@loopback/repository';
 import {InfEntity} from '.';
 
 @model({
-  settings: {strict: false, postgresql: {schema: 'information', table: 'v_time_primitive'}}
+  settings: {strict: true, postgresql: {schema: 'information', table: 'v_time_primitive'}}
 })
 export class InfTimePrimitive  extends Entity implements InfEntity {
 

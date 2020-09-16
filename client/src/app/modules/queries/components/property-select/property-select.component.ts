@@ -161,7 +161,7 @@ export class PropertySelectComponent extends PropertySelectMatControl implements
   @HostBinding('class.d-flex') dflex = true;
 
   @Input() level = 0; // level of component nesting, 0...n
-  // @Input() qtree: FilterTree; // TODO: remove this line
+
   @Input() options$: Observable<PropertyOption[]>;
 
   @Input() rootFormGroup: FormGroup;

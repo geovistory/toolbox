@@ -71,8 +71,6 @@ export class ResetPasswordRequest {
   @property({required: true}) resetPasswordToken: string
 }
 
-
-
 @model()
 export class ResponseWithMsg {
   @property() message: string;
@@ -222,7 +220,6 @@ export class AccountController {
     const params = [savedAccount.id];
     await this.dataSource.execute(sql, params);
 
-
     return {
       success: new PubAccount({
         id: savedAccount.id,
@@ -271,7 +268,7 @@ export class AccountController {
       account.emailVerified = true;
       await this.accountRepository.update(account)
 
-      response.redirect(redirectOnSuccess);
+      if (redirectOnSuccess) response.redirect(redirectOnSuccess);
 
       return;
     }

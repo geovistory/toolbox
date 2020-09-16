@@ -5,9 +5,9 @@ import {
 } from '@loopback/authorization';
 import {Provider} from "@loopback/core";
 import {repository} from '@loopback/repository';
-import {HttpErrors, RequestContext} from '@loopback/rest';
+import {RequestContext} from '@loopback/rest';
 import {isInteger} from 'lodash';
-import {PubAccountProjectRelRepository} from '../../repositories';
+import {DatNamespaceRepository, PubAccountProjectRelRepository} from '../../repositories';
 import {PubRoleMappingRepository} from '../../repositories/pub-role-mapping.repository';
 import {Roles} from './keys';
 
@@ -22,27 +22,32 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
   constructor(
     @repository(PubAccountProjectRelRepository) private pubAccountProjectRelRepo: PubAccountProjectRelRepository,
-    @repository(PubRoleMappingRepository) private pubRoleMappingRepo: PubRoleMappingRepository
+    @repository(PubRoleMappingRepository) private pubRoleMappingRepo: PubRoleMappingRepository,
+    @repository(DatNamespaceRepository) private datNamespaceRepository: DatNamespaceRepository
   ) {}
 
   async authorize(
     context: AuthorizationContext,
     metadata: AuthorizationMetadata,
   ) {
-
+    let decision: AuthorizationDecision = AuthorizationDecision.ALLOW;
 
     if (metadata.allowedRoles?.includes(Roles.PROJECT_MEMBER)) {
-      const decision = await this.authorizeProjectMember(context)
-      return decision;
+      decision = await this.authorizeProjectMember(context)
+      if (decision === AuthorizationDecision.DENY) return decision;
     }
 
     if (metadata.allowedRoles?.includes(Roles.SYS_ADMIN)) {
-      const decision = await this.authorizeSystemAdmin(context)
-      return decision;
+      decision = await this.authorizeSystemAdmin(context)
+      if (decision === AuthorizationDecision.DENY) return decision;
     }
 
-    throw new HttpErrors.InternalServerError('This type of authorization is not supported.')
+    if (metadata.allowedRoles?.includes(Roles.NAMESPACE_MEMBER)) {
+      decision = await this.authorizeNamespaceMember(context);
+      if (decision === AuthorizationDecision.DENY) return decision;
+    }
 
+    return decision;
   }
 
   private async authorizeProjectMember(context: AuthorizationContext): Promise<AuthorizationDecision> {
@@ -55,18 +60,14 @@ export class AuthorizationProvider implements Provider<Authorizer> {
 
     if (!accountId) return AuthorizationDecision.DENY
 
-    const membbership = await this.pubAccountProjectRelRepo.findOne({
+    const membership = await this.pubAccountProjectRelRepo.findOne({
       where: {
-        and: [
-          {
-            accountId: accountId,
-            'fk_project': pkProject
-          }
-        ]
+        'account_id': {eq: accountId},
+        'fk_project': {eq: pkProject}
       }
     })
 
-    if (!membbership) return AuthorizationDecision.DENY
+    if (!membership) return AuthorizationDecision.DENY
 
     return AuthorizationDecision.ALLOW
   }
@@ -91,6 +92,26 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     return AuthorizationDecision.DENY
   }
 
+  private async authorizeNamespaceMember(context: AuthorizationContext): Promise<AuthorizationDecision> {
+    const accountId = this.extractAccountId(context);
+    const pkNamespace = this.extractPkNamespace(context);
+    if (!accountId || !pkNamespace) return AuthorizationDecision.DENY;
+
+    const namespace = await this.datNamespaceRepository.findById(pkNamespace);
+    const membership = await this.pubAccountProjectRelRepo.findOne({
+      where: {
+        and: [
+          {
+            'account_id': accountId,
+            'fk_project': namespace.fk_project
+          }
+        ]
+      }
+    })
+    if (!membership) return AuthorizationDecision.DENY;
+    else return AuthorizationDecision.ALLOW;
+  }
+
 
   private extractAccountId(context: AuthorizationContext) {
     const principal = context?.principals[0];
@@ -108,7 +129,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
   private extractPkProject(context: AuthorizationContext) {
     const requestContext = context.invocationContext?.parent as RequestContext;
     const request = requestContext?.request;
-    const pkProject = request?.query?.pkProject || request?.body?.pkProject;
+    const pkProject = request?.query?.pkProject || request?.body?.pkProject || request?.body?.fk_project;
     if (typeof pkProject === 'string') {
       const pk = parseInt(pkProject)
       if (isInteger(pk)) return pk;
@@ -117,6 +138,19 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     if (typeof pkProject === 'number') {
       if (isInteger(pkProject)) return pkProject;
     };
+  }
 
+  private extractPkNamespace(context: AuthorizationContext) {
+    const requestContext = context.invocationContext?.parent as RequestContext;
+    const request = requestContext?.request;
+    const pkNamespace = request?.query?.pkNamespace || request?.body?.pkNamespace;
+    if (typeof pkNamespace === 'string') {
+      const pk = parseInt(pkNamespace)
+      if (isInteger(pk)) return pk;
+    }
+
+    if (typeof pkNamespace === 'number') {
+      if (isInteger(pkNamespace)) return pkNamespace;
+    };
   }
 }

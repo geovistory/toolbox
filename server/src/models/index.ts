@@ -1,4 +1,5 @@
 export * from './war-entity-preview.model';
+export * from './war-class-preview.model';
 export * from './dat-chunk.model';
 export * from './dat-entity.interface';
 export * from './dfh-profile.model';
@@ -11,7 +12,6 @@ export * from './dat-digital.model';
 export * from './dat-namespace.model';
 export * from './sys-class-field-property-rel.model';
 export * from './sys-class-field.model';
-export * from './sys-class-has-type-property.model';
 export * from './sys-system-relevant-class.model';
 export * from './pro-entity.model';
 export * from './sys-analysis-type.model';
@@ -38,3 +38,4 @@ export * from './inf-text-property.model';
 export * from './sys-system-type.model';
 export * from './pub-role-mapping.model';
 export * from './pub-role.model';
+export * from './pro-entity-label-config.model';

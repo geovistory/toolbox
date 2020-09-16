@@ -1,83 +1,124 @@
 import { Client, expect } from '@loopback/testlab';
-import { GeovistoryApplication } from '../../../application';
-import { setupApplication } from '../_test-helper';
-import { hostname } from 'os';
+import { DatNamespace, ProProject, PubAccount } from '../../../models';
+import { ImportTable } from '../../../models/import-table.model';
+import { GeovistoryServer } from '../../../server';
+import { linkAccountProject } from '../../helpers/atomic/pub-account_project_rel.helper';
+import { cleanDb } from '../../helpers/cleaning/clean-db.helper';
+import { createAccountVerified } from '../../helpers/graphs/account.helper';
+import { createProjectAndNamespace, createRawProject } from '../../helpers/graphs/project.helpers';
+import { setupApplication } from '../../helpers/gv-server-helpers';
+import { createTypes } from '../../helpers/atomic/sys-system-type.helper';
+import { createNamespace } from '../../helpers/atomic/dat-namespace.helper';
+import { init } from '../../helpers/graphs/init.helper';
+
+const qs = require('querystring');
+
 
 describe('ImportTableController', () => {
-    let app: GeovistoryApplication;
+    let server: GeovistoryServer;
     let client: Client;
 
-    let table: any;
+    before(async () => { ({ server, client } = await setupApplication()); });
+    after(async () => { await server.stop(); });
 
-    before(async () => {
-        // ({ app, client } = await setupApplication());
-    });
+    describe('POST /import-table', () => {
+        let project: ProProject, accountInProject: PubAccount, accountOutOfProject: PubAccount, namespace: DatNamespace;
+        const pwd = 'testtest1';
+        let table: ImportTable;
 
-    beforeEach(async () => {
-        table = {
-            tableName: 'TestTable',
-            pk_language: 19008, //
-            pk_namespace: 24647440,
-            headers: [
-                { colLabel: '', comment: 'string', type: 'string' },
-                { colLabel: 'col 1', comment: 'string', type: 'string' }
-            ],
-            rows: [
-                ['cell [0:0]', 'cell [0:1]'],
-                ['cell [1:0]', 'cell [1:1]']
-            ],
-        }
-    })
+        beforeEach(async () => {
+            await cleanDb();
+            await createTypes();
+            const result = await createProjectAndNamespace('English');
+            project = result.project;
+            namespace = result.namespace;
+            accountInProject = await createAccountVerified('gaetan.muck@kleiolab.ch', 'gaetanmuck', pwd);
+            await linkAccountProject(accountInProject, project);
+            accountOutOfProject = await createAccountVerified('jonas.schneider@kleiolab.ch', 'jonasscheider', pwd);
 
-    after(async () => {
-        await app.stop();
-    });
+            table = {
+                tableName: 'TestTable',
+                fileName: 'TestTableFileName',
+                pk_language: 18889, // english
+                headers: [
+                    { colLabel: 'col 0', comment: 'string', type: 'string' },
+                    { colLabel: 'col 1', comment: 'string', type: 'string' }
+                ],
+                rows: [
+                    ['cell [0:0]', 'cell [0:1]'],
+                    ['cell [1:0]', 'cell [1:1]']
+                ],
+            }
+        })
 
-    // it('Not authenticated', async () => {
-    //     const res = await client.post('/import-table').send();
-    //     expect(res.body).to.containEql({ statusCode: 401 });
-    // })
+        it('should reject the request because the user is not authenticated', async () => {
+            const res = await client.post('/import-table').send();
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+        })
 
+        it('should reject the request because the authorization header is wrong', async () => {
+            const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
+            const res = await client.post('/import-table').set('Authorization', randomJWT).send(table);
+            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+        })
 
-    it('Send empty body', async () => {
-        const res = await client.post('/import-table').send({});
-        expect(res.body).to.containEql({ statusCode: 422 });
-    })
+        it('should reject the request because the user is not in the project', async () => {
+            const jwt = (await client.post('/login').send({ email: accountOutOfProject.email, password: pwd })).body.lb4Token;
+            const res = await client.post('/import-table').set('Authorization', jwt).send(table);
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        });
 
-    it('Send wrong format body', async () => {
-        const res = await client.post('/import-table').send({ foo: 'bar' });
-        expect(res.body).to.containEql({ statusCode: 422 });
-    })
+        it('should reject the request because the namespace is not linked to the project', async () => {
+            const wrongNamespace = await createNamespace(await createRawProject('English'));
+            const params = { pkNamespace: wrongNamespace.pk_entity }
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+        });
 
-    it('Send a column with no name', async () => {
-        table.headers[0].colLabel = '';
-        const res = await client.post('/import-table').send(table);
-        expect(res.body).to.containEql({ error: "Inconsistency in column name <0>." });
-    })
+        it('should reject the request because the body is empty', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const res = await client.post('/import-table').set('Authorization', jwt).send({});
+            expect(res.body.error).to.containEql({ statusCode: 422, message: "The request body is invalid. See error object `details` property for more info." });
+        });
 
-    it('Number of column is not matching in the header and in the table', async () => {
-        table.headers[2] = { colLabel: 'col 2', comment: 'string', type: 'string' }
-        const res = await client.post('/import-table').send(table);
-        expect(res.body).to.containEql({ error: "Inconsistency in columns number in row <0>." });
-    })
+        it('should reject the request because body is not at right format', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const res = await client.post('/import-table').set('Authorization', jwt).send({ foo: 'bar' });
+            expect(res.body.error).to.containEql({ statusCode: 422, message: 'The request body is invalid. See error object `details` property for more info.' });
+        });
 
-    it('Cell is supposed to be a number, but it is not', async () => {
-        table.headers[0].type = 'Number';
-        const res = await client.post('/import-table').send(table);
-        expect(res.body).to.containEql({ error: "Inconsistency in data format at cell: [0:0] ==> It should be a number." });
-    })
+        it('should reject the request because there is a column which has no name', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            table.headers[0].colLabel = '';
+            const params = { pkNamespace: namespace.pk_entity }
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            expect(res.body).to.containEql({ error: "Inconsistency in column name <0>." });
+        });
 
-    it('Create a table', async () => {
-        const res = await client.post('/import-table').send(table);
-        expect(res.body).have.property('duration');
-        expect(res.body.duration).to.be.a.Number;
-        expect(res.body).have.property('fk_digital');
-        expect(res.body.fk_digital).to.be.a.Number;
-    })
+        it('should reject the request because the number of column is not the same in the header and in the table', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            table.headers[2] = { colLabel: 'col 2', comment: 'string', type: 'string' }
+            const params = { pkNamespace: namespace.pk_entity }
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            expect(res.body).to.containEql({ error: "Inconsistency in columns number in row <0>." });
+        })
 
-    it('Add a already existing table', async () => {
-        const res = await client.post('/import-table').send(table);
-        expect(res.body).to.containEql({ error: "This table already exists in this namespace." });
+        it('should reject the request because there is a cell which is supposed to be a number, but it is not', async () => {
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            table.headers[0].type = 'number';
+            const params = { pkNamespace: namespace.pk_entity }
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            expect(res.body).to.containEql({ error: "Inconsistency in data format at cell: [0: 0] ==> It should be a number." });
+        })
+
+        it('should accept the request', async () => {
+            await init();
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const params = { pkNamespace: namespace.pk_entity }
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            expect(res.body).have.property('fk_digital');
+            expect(res.body.fk_digital).to.be.a.Number();
+        })
     });
 });
-

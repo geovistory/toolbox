@@ -52,6 +52,7 @@ import { DndModule } from 'ng2-dnd';
 import { QuillOpsToStrModule } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TruncateModule } from 'app/shared/pipes/truncate/truncate.module';
 import { BaseModule } from '../base/base.module';
+import { EntityLabelConfigModule } from 'app/shared/modules/entity-label-config/entity-label-config.module';
 
 
 
@@ -93,6 +94,7 @@ import { BaseModule } from '../base/base.module';
     DndModule,
     QuillOpsToStrModule,
     // TruncateModule
+    EntityLabelConfigModule
   ],
   declarations: [
     ProjectCreateComponent,
