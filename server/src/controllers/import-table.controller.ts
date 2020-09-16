@@ -121,13 +121,6 @@ export class ImportTableController {
 
     })(this, digital)
 
-    //gmutemp 
-    console.log('I HAVE GOT A fk_digital and I am sending it to the client: ' + digital)
-    console.log('I HAVE GOT A fk_digital and I am sending it to the client: ' + digital)
-    console.log('I HAVE GOT A fk_digital and I am sending it to the client: ' + digital)
-    
-
-
     return {
       // eslint-disable-next-line @typescript-eslint/camelcase
       fk_digital: digital
@@ -149,22 +142,12 @@ export class ImportTableController {
   @ws.subscribe('listenDigitals')
   listenDigitals(digitals: number[]) {
 
-    //gmutemp
-    console.log('===========')
-    console.log('GOT LISTENING TO DIGITAL: ' + JSON.stringify(digitals))
-    console.log('===========')
-    
-
     const importingList = [];
     for (const dig of digitals) {
       if (feedBacks[dig] && !this.subscriptionsCache[dig]) {
         importingList.push({ id: dig, advancement: feedBacks[dig].value.advancement, infos: feedBacks[dig].value.infos });
         this.subscriptions.push(feedBacks[dig].subscribe(state => {
           if (this.socket) {
-            //gmutemp
-            console.log('===========')
-            console.log('EMIT NEW STATE FOR: ' + dig)
-            console.log('===========')
             this.socket.emit('state_' + state.id, state);
           }
           else throw new Error('Impossible error');
