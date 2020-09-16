@@ -39,7 +39,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   readonly dtText = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT;
   readonly dtNumeric = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
 
-  //fetched rows
+  // fetched rows
   rows$: Observable<TabRow[]>
 
   // total count of records found in database according to the filters
@@ -81,13 +81,13 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   // used to tell stupid table component to show spinner
   loading = true;
 
-  //for stupid table component:
-  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' }[]>;
+  // for stupid table component:
+  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' | number }[]>;
   table$: ReplaySubject<string[][]>;
   colFiltersEnabled = false;
   lineBrakeInCells = false;
 
-  //to target data on event of the stupid table component
+  // to target data on event of the stupid table component
   dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number }[][];
   colMapping: number | string[];
 
@@ -156,7 +156,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       shareReplay({ bufferSize: 1, refCount: true })
     )
 
-    //creating the table and the data mapping
+    // creating the table and the data mapping
     this.table$ = new ReplaySubject();
     res$.pipe(
       map(res => {
@@ -239,18 +239,19 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
-    //set the headers
+    // set the headers
     this.headers$ = new ReplaySubject();
     this.columns$.pipe(
       map(cols => {
-        const columns: { colLabel: string, comment: string, type: 'number' | 'string' }[] = [];
+        const columns: { colLabel: string, comment: string, type: 'number' | 'string' | number }[] = [];
         columns.push({ colLabel: 'Row ID', comment: 'number', type: 'number' });
         for (let i = 0; i < cols.length; i++) {
-          columns.push({
+          const column = {
             colLabel: cols[i].display,
             comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
-            type: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
-          });
+            type: cols[i].mappingClass ? cols[i].mappingClass : cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+          };
+          columns.push(column);
         }
         return columns;
       }),
@@ -295,20 +296,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.pageSize$.next(e.pageSize)
   }
 
-  // cleanupFilters(filters) {
-  //   const f = {};
-  //   [... this.colToggleCtrl.value, 'pk_row']
-  //     .forEach(col => {
-  //       if (filters[col]) {
-  //         f[col] = filters[col];
-  //       }
-  //     });
-  //   filters = f;
-  //   return filters
-  // }
-
   onFilterChange(allFilters: { col: number, filter: TColFilter }[]) {
-    let filters: TColFilters = {};
+    const filters: TColFilters = {};
 
     allFilters.forEach(incFilter => {
       const colName = this.colMapping[incFilter.col];
@@ -331,10 +320,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   }
 
-  click(cell: { col: number, row: number }) {
-    // console.log('CLICK', cell);
-    // console.log(this.dataMapping[cell.row][cell.col])
-  }
+  click(cell: { col: number, row: number }) { }
 
   ngOnDestroy() {
     this.destroy$.next(true);

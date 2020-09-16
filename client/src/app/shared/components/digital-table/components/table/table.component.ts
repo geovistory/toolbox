@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { SysConfig } from 'app/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActiveProjectService } from 'app/core/active-project';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TColFilter } from '../../../../../../../../server/src/lb3/server/table/interfaces';
@@ -9,26 +9,27 @@ import { TColFilter } from '../../../../../../../../server/src/lb3/server/table/
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   @Input() loading = false;
-  @Input() headers$: Observable<{ colLabel: string, comment: string, type: 'number' | 'string' }[]>;
+  @Input() headers$: Observable<{ colLabel: string, comment: string, type: 'number' | 'string' | number }[]>; // the header[x].type: number is the pk_class
   @Input() table$: Observable<string[][]>;
-  @Input() filteringEnabled = false; //optional
-  @Input() sortingEnabled = false; //optional
-  @Input() lineBreak = false; //optional
-  @Input() sortBy$: Observable<{ colNb: number, direction: string }>; //optional
+  @Input() filteringEnabled = false; // optional
+  @Input() sortingEnabled = false; // optional
+  @Input() lineBreak = false; // optional
+  @Input() sortBy$: Observable<{ colNb: number, direction: string }>; // optional
 
   @Output() sortDemanded = new EventEmitter<{ colNb: number, direction: string }>();
   @Output() filterDemanded = new EventEmitter<Array<{ col: number, filter: TColFilter }>>();
   @Output() cellClicked = new EventEmitter<{ col: number, row: number }>();
 
-  headers: { colLabel: string, comment: string, type: 'number' | 'string' }[];
+  headers: { colLabel: string, comment: string, type: 'number' | 'string' | number }[];
   table: string[][];
   curSort: { colNb: number, direction: string };
   filters: Array<{ col: number, value: string }>;
-  constructor() { }
+
+  constructor(public p: ActiveProjectService) { }
 
   ngOnInit() {
     this.headers = [];
@@ -36,17 +37,16 @@ export class TableComponent implements OnInit {
     this.curSort = { colNb: -1, direction: '' };
     this.filters = [];
 
-    //listen to input headers (from parent)
+    // listen to input headers (from parent)
     this.headers$.pipe(takeUntil(this.destroy$))
       .subscribe(headers => this.headers = headers);
 
-    //listen to input table (from parent)
+    // listen to input table (from parent)
     this.table$.pipe(takeUntil(this.destroy$))
       .subscribe(table => this.table = table);
 
-    //listen to sortBy option (from parent or from html)
-    if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$))
-      .subscribe(sort => this.curSort = sort);
+    // listen to sortBy option (from parent or from html)
+    if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$)).subscribe(sort => this.curSort = sort);
   }
 
   ngOnDestroy() {
