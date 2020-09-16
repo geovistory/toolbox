@@ -121,6 +121,12 @@ export class ImportTableController {
 
     })(this, digital)
 
+    //gmutemp 
+    console.log('I HAVE GOT A fk_digital and I am sending it to the client: ' + digital)
+    console.log('I HAVE GOT A fk_digital and I am sending it to the client: ' + digital)
+    console.log('I HAVE GOT A fk_digital and I am sending it to the client: ' + digital)
+    
+
 
     return {
       // eslint-disable-next-line @typescript-eslint/camelcase
