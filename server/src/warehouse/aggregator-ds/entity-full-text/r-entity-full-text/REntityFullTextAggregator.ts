@@ -7,6 +7,7 @@ import {ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService'
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {RClassFieldId} from '../../class-field-label/r-class-field-label/RClassFieldLabelService';
 import {REntityFullTextProviders} from './REntityFullTextPoviders';
+import {isHiddenOutgoingProperty, isHiddenIngoingProperty} from '../entity-full-text.commons';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -62,7 +63,7 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
         // get fields of that class
         const rClassId: RClassId = {pkClass: entity.fkClass}
         // look for config of efault config project
-        const classFields = await  this.providers.pClassFields.get({pkClass: rClassId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
+        const classFields = await this.providers.pClassFields.get({pkClass: rClassId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
 
         // create fulltext
         const fullText = await this.loopOverFields(edges, classFields, entity.fkClass)
@@ -113,7 +114,7 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
         const isOutgoing = true;
         for (const fkProperty in entityFields.outgoing) {
 
-            if (!loopedCache[fieldKey(fkProperty, isOutgoing)]) {
+            if (!loopedCache[fieldKey(fkProperty, isOutgoing)] && !isHiddenOutgoingProperty(fkProperty)) {
                 const edges = entityFields.outgoing[fkProperty];
                 promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isOutgoing));
             }
@@ -122,7 +123,7 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
         const isIncoming = false;
         for (const fkProperty in entityFields.incoming) {
 
-            if (!loopedCache[fieldKey(fkProperty, isIncoming)]) {
+            if (!loopedCache[fieldKey(fkProperty, isIncoming)] && !isHiddenIngoingProperty(fkProperty)) {
                 const edges = entityFields.incoming[fkProperty];
                 promises.push(this.loopOverEdges(edges, fkClass, parseInt(fkProperty, 10), isIncoming));
             }

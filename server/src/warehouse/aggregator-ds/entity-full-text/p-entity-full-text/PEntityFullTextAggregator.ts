@@ -7,6 +7,7 @@ import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PClassFieldId} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
+import {isHiddenOutgoingProperty, isHiddenIngoingProperty} from '../entity-full-text.commons';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -117,8 +118,8 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         // loop over the remaining fields of the entity (not covered by class config)
         const isOutgoing = true;
         for (const fkProperty in entityFields.outgoing) {
-
-            if (!loopedCache[fieldKey(fkProperty, isOutgoing)]) {
+            // hidden outgoing
+            if (!loopedCache[fieldKey(fkProperty, isOutgoing)] && !isHiddenOutgoingProperty(fkProperty)) {
                 const edges = entityFields.outgoing[fkProperty];
                 promises.push(this.loopOverEdges(edges, fkProject, fkClass, parseInt(fkProperty, 10), isOutgoing));
             }
@@ -127,7 +128,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         const isIncoming = false;
         for (const fkProperty in entityFields.incoming) {
 
-            if (!loopedCache[fieldKey(fkProperty, isIncoming)]) {
+            if (!loopedCache[fieldKey(fkProperty, isIncoming)] && !isHiddenIngoingProperty(fkProperty)) {
                 const edges = entityFields.incoming[fkProperty];
                 promises.push(this.loopOverEdges(edges, fkProject, fkClass, parseInt(fkProperty, 10), isIncoming));
             }
@@ -136,7 +137,6 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         const res = await Promise.all(promises)
         return flatten(res).join(', ');
     }
-
 
 
     /**

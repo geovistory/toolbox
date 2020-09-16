@@ -11,7 +11,7 @@ import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helpe
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
 import {createProClassFieldConfig} from '../../../../helpers/atomic/pro-class-field-config.helper';
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
-import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProInfoProjRel, updateProInfoProjRel, addEntityToProject} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
@@ -30,6 +30,8 @@ import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
 import {setupCleanAndStartWarehouse, waitUntilSatisfy, waitForEntityPreviewUntil, waitUntilNext} from '../../../../helpers/warehouse-helpers';
+import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
+import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -157,9 +159,9 @@ async function createPersonMock() {
     await createDfhApiProperty(DfhApiPropertyMock.EN_1111_IS_APPE_OF);
     const hasAppePropLabel = await createProTextProperty(ProTextPropertyMock.PROJ_1_PROPERTY_PERSON_HAS_APPELLATION)
     const person = await createInfPersistentItem(InfPersistentItemMock.PERSON_1);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1);
-    await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON);
+    await addEntityToProject(person.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
+    const stmt = await createInfStatement(InfStatementMock.NAME_1_TO_PERSON);
+    await addEntityToProject(stmt.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
     return {person, classPerson, hasAppePropLabel};
 }
 
@@ -175,11 +177,17 @@ async function createNamingMock() {
     await createProClassFieldConfig(ProClassFieldConfigMock.PROJ_DEF_C365_NAMING_P1113_REFERS_TO_NAME)
 
     const naming = await createInfTemporalEntity(InfTemporalEntityMock.NAMING_1);
-  const namingProjRel=  await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_NAMING_1);
+    const namingProjRel = await addEntityToProject(naming.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
 
     const appellation = await createInfAppellation(InfAppellationMock.JACK_THE_FOO);
-    await createInfStatement(InfStatementMock.NAME_1_TO_APPE);
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE);
-    return {naming, namingProjRel,project, appellation, propertyRefersToName};
+    const stmtToAppe = await createInfStatement(InfStatementMock.NAME_1_TO_APPE);
+    await addEntityToProject(stmtToAppe.pk_entity, ProProjectMock.PROJECT_1.pk_entity);
+
+    await createInfTimePrimitive(InfTimePrimitiveMock.TP_1)
+
+    const stmtToTp = await createInfStatement(InfStatementMock.NAMING_1_ONGOING_THROUGHOUT_TP_1)
+    await addEntityToProject(stmtToTp.pk_entity, project.pk_entity)
+
+    return {naming, namingProjRel, project, appellation, propertyRefersToName};
 }
 

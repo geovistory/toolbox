@@ -126,8 +126,8 @@
         "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
-        // "--grep",
-        // "/.*Aggregator|DfhClassHasTypePropertyService/"
+        "--grep",
+        "/.*should create full text of naming/"
         // "/IndexDB.*/"
       ],
       "cwd": "${workspaceRoot}",

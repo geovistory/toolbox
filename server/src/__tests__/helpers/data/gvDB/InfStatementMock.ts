@@ -126,6 +126,12 @@ export class InfStatementMock {
     fk_object_info: InfPersistentItemMock.GEO_PLACE_TYPE_CITY.pk_entity,
   })
 
+  static readonly NAMING_1_ONGOING_THROUGHOUT_TP_1 = new InfStatement({
+    pk_entity: 3017,
+    fk_subject_info: InfTemporalEntityMock.NAMING_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT.dfh_pk_property,
+    fk_object_info: InfTimePrimitiveMock.TP_1.pk_entity,
+  })
 
 }
 
