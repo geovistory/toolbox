@@ -192,7 +192,21 @@ export class Warehouse {
      */
     async createWhData() {
         this.status = 'initializing';
-        await this.pgNotify('warehouse_initializing', 'true')
+
+        let maxMemoryUsage = 0
+
+        const interval1 = setInterval(() => {
+            const m = process.memoryUsage().heapUsed
+            if (maxMemoryUsage < m) {
+                maxMemoryUsage = m
+            }
+            this.pgNotify('warehouse_initializing', 'true').catch(e => {})
+        }, 1000)
+
+        const interval2 = setInterval(() => {
+            this.pgNotify('warehouse_initializing', 'true').catch(e => {})
+        }, 10000)
+
 
         const t0 = Logger.start('Create Warehouse data', 0)
 
@@ -200,17 +214,19 @@ export class Warehouse {
 
         await this.createPrimaryData();
 
-        await this.pgNotify('warehouse_initializing', 'true')
 
         await this.createAggregatedData()
 
         await this.createS3Backup(date)
 
+        clearInterval(interval1)
+        clearInterval(interval2)
+
         await this.pgNotify('warehouse_initializing', 'false')
 
         Logger.itTook(t0, 'to create warehouse data', 0)
 
-        Logger.log(`The warehouse uses approximately ${getMemoryUsage()} MB of memory`);
+        Logger.log(`The max memory usage was: ${Math.round(maxMemoryUsage / 1024 / 1024 * 100) / 100} MB of memory`);
         const diskUsage = await this.getLevelDbFileSize()
         Logger.log(`The warehouse uses approximately ${diskUsage.readable} of disk space`)
 
