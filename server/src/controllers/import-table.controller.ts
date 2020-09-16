@@ -143,6 +143,7 @@ export class ImportTableController {
   @ws.subscribe('listenDigitals')
   listenDigitals(digitals: number[]) {
 
+    //gmutemp
     console.log('===========')
     console.log('GOT LISTENING TO DIGITAL: ' + JSON.stringify(digitals))
     console.log('===========')
@@ -154,6 +155,7 @@ export class ImportTableController {
         importingList.push({ id: dig, advancement: feedBacks[dig].value.advancement, infos: feedBacks[dig].value.infos });
         this.subscriptions.push(feedBacks[dig].subscribe(state => {
           if (this.socket) {
+            //gmutemp
             console.log('===========')
             console.log('EMIT NEW STATE FOR: ' + dig)
             console.log('===========')
