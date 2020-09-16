@@ -129,6 +129,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.sheetName = '';
     this.columnsOption = this.columnsOptions[0];
     this.rowsNb = this.rowsNbs[0];
+    this.fkDigital = -1;
   }
 
   /**
@@ -391,6 +392,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
                     if (state.infos == '') state.infos = 'Your table has correctly been imported';
                     this.mode = 'drag-and-drop';
                     this.loaded('Table Uploaded', state.infos);
+                    this.reset();
                   }
                 }
               })
