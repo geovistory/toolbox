@@ -1,7 +1,8 @@
 <ngx-slim-loading-bar color="inherit"></ngx-slim-loading-bar>
 <gv-notifications></gv-notifications>
-<div *ngIf="warehouseInitializing" class="p-3 mat-bg-warn" style="color: white;">
-  Geovistory is indexing&nbsp;–&nbsp;during this time it may come to unexpected behavior.
+<div *ngIf="warehouseInitializing" class="p-3 mat-bg-warn"
+  style="color: white; width: 100%; position:absolute; display: block;  bottom: 0; z-index: 1000;">
+  Geovistory is indexing&nbsp;–&nbsp;during this time it may come to unexpected behavior. Please come back later.
 </div>
 <router-outlet></router-outlet>
 <div class="beta-banner mat-elevation-z2" color="warn">Beta</div>
