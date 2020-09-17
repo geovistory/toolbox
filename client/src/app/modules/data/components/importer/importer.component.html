@@ -114,5 +114,5 @@
     </form>
 
     <mat-progress-bar mode="indeterminate" *ngIf="mode == 'uploading'"></mat-progress-bar>
-    <div *ngIf="mode == 'uploading'">{{socketMessage}}</div>
+    <div *ngIf="mode == 'uploading'">{{socketMessage$ | async}}</div>
 </div>

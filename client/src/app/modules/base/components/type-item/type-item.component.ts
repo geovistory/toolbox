@@ -60,7 +60,7 @@ export class TypeItemComponent implements OnInit {
     this.hasTypeStatement$ = this.i.pipeTypeOfEntity(this.pkEntity, this.pkProperty, this.isOutgoing)
 
     this.pkType$ = this.hasTypeStatement$.pipe(
-      map(e => { console.log(e); return e ? (this.isOutgoing ? e.fk_object_info : e.fk_subject_info) : undefined })
+      map(e => e ? (this.isOutgoing ? e.fk_object_info : e.fk_subject_info) : undefined)
     )
     this.typeLabel$ = this.pkType$.pipe(
       switchMap(pkType => this.p.streamEntityPreview(pkType).pipe(

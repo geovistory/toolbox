@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'app/shared/components/confirm-dialog/confirm-dialog.component';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
-import { ReplaySubject, Subject, Observable } from 'rxjs';
+import { ReplaySubject, Subject, Observable, BehaviorSubject } from 'rxjs';
 import { WorkBook } from 'xlsx/types';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 import { first, takeUntil, switchMap } from 'rxjs/operators';
@@ -29,7 +29,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
   // UI
   mode: string;
   type: string;
-  socketMessage: string;
+  socketMessage$ = new BehaviorSubject<string>('');
 
   // about file
   files: NgxFileDropEntry[] = [];
@@ -98,22 +98,6 @@ export class ImporterComponent implements OnInit, OnDestroy {
         this.namespaceCtrl.setValue(this.namespaces[0].pk_entity);
       })
     })
-
-    this.importTableSocket.on('digitalUpdate', (message: { digital: number, msg: string }) => {
-      if (this.fkDigital == message.digital) {
-        this.socketMessage = message.msg;
-        if (message.msg == 'Your table has correctly been imported') {
-          this.mode = 'drag-and-drop';
-          this.loaded('Table Uploaded', message.msg);
-        }
-      }
-    })
-
-    this.importTableSocket.fromEvent('reconnect')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(disconnect => {
-        this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
-      })
   }
 
   /**
@@ -145,6 +129,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.sheetName = '';
     this.columnsOption = this.columnsOptions[0];
     this.rowsNb = this.rowsNbs[0];
+    this.fkDigital = -1;
   }
 
   /**
@@ -384,7 +369,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
       dialog.afterClosed().pipe(first()).subscribe(confirmed => {
         if (confirmed) {
           this.mode = 'uploading';
-          this.socketMessage = 'Uploading...'
+          this.socketMessage$.next('Uploading...');
 
           const importTable: ImportTable = {
             fileName: this.file.name,
@@ -396,8 +381,28 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
           this.apiImporter.importTableControllerImportTable(this.namespaceCtrl.value, importTable)
             .pipe(switchMap(response => {
+
               this.fkDigital = response.fk_digital;
               this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
+
+              this.importTableSocket.on('state_' + this.fkDigital, (state: { id: number, advancement: number, infos: string }) => {
+                if (this.fkDigital == state.id) {
+                  this.socketMessage$.next(state.infos);
+                  if (state.advancement == 100 && state.infos != 'inexisting') {
+                    if (state.infos == '') state.infos = 'Your table has correctly been imported';
+                    this.mode = 'drag-and-drop';
+                    this.loaded('Table Uploaded', state.infos);
+                    this.reset();
+                  }
+                }
+              })
+
+              this.importTableSocket.fromEvent('reconnect')
+                .pipe(takeUntil(this.destroy$))
+                .subscribe(disconnect => {
+                  this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
+                })
+
               return this.data.apiCall(response);
             }))
             .subscribe(response => {
@@ -430,7 +435,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    * Clean destroy of component
    */
   ngOnDestroy() {
-    this.importTableSocket.cleanDisconnect();
+    // this.importTableSocket.cleanDisconnect();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
