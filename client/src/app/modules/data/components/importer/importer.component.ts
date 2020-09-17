@@ -435,7 +435,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    * Clean destroy of component
    */
   ngOnDestroy() {
-    this.importTableSocket.cleanDisconnect();
+    // this.importTableSocket.cleanDisconnect();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
