@@ -33,8 +33,6 @@ export class ContentTreeNodeOptionsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.importTableSocket.cleanConnect();
 
-    this.isAdmin = true;
-
     if (this.node && this.isDigital) {
       if (this.node.datDigital.fk_system_type == 3287) {
         this.loaded$.next(false);
