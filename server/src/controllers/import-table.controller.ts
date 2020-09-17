@@ -153,7 +153,7 @@ export class ImportTableController {
           else throw new Error('Impossible error');
         }));
         this.subscriptionsCache[dig] = true;
-      } else if (this.socket) this.socket.emit('state_' + dig, { id: dig, advancement: 100, infos: '' });
+      } else if (this.socket) this.socket.emit('state_' + dig, { id: dig, advancement: 100, infos: 'inexisting' });
       else throw new Error('Impossible error');
     }
   }
