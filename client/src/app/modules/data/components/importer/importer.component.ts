@@ -386,8 +386,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
               this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
 
               this.importTableSocket.on('state_' + this.fkDigital, (state: { id: number, advancement: number, infos: string }) => {
-                if (this.fkDigital == state.id) {
-                  this.socketMessage$.next(state.infos);
+                if (this.fkDigital == state.id && state.infos != '') {
+                  if (state.infos != 'inexisting') this.socketMessage$.next(state.infos);
                   if (state.advancement == 100) {
                     this.mode = 'drag-and-drop';
                     this.loaded('Table Uploaded', 'Your table has correctly been imported');
