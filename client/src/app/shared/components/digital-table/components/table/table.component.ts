@@ -25,7 +25,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Output() cellClicked = new EventEmitter<{ col: number, row: number }>();
 
   headers: { colLabel: string, comment: string, type: 'number' | 'string' | number }[];
-  table: string[][];
+  table: string[][] | { text: string, pkEntity: number, score: number }[][];
   curSort: { colNb: number, direction: string };
   filters: Array<{ col: number, value: string }>;
 
