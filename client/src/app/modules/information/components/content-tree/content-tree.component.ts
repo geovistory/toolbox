@@ -120,7 +120,7 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
   isAdmin = false;
 
-  digitals: { state: 'imported' | 'importing', msg: string }[] = [];
+  digitals: { [key: number]: BehaviorSubject<{ id: number, advancement: number, infos: string }> } = {};
 
   constructor(
     public p: ActiveProjectService,
@@ -132,7 +132,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef,
     private i: InformationPipesService,
     private dialog: MatDialog,
-    private importTableSocket: ImportTableSocket,
   ) { }
 
   ngOnInit() {
@@ -150,30 +149,10 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     this.a.isSystemAdmin()
       .pipe(takeUntil(this.destroy$))
       .subscribe(isAdmin => this.isAdmin = isAdmin);
-
-    this.importTableSocket.emit('listenDigitals', []);
-    this.importTableSocket.on('digitalUpdate', (message) => {
-      if (this.digitals[message.digital]) {
-        if (message.msg == 'Your table has correctly been imported') {
-          this.digitals[message.digital].state = 'imported';
-        } else {
-          this.digitals[message.digital].state = 'importing';
-          this.digitals[message.digital].msg = message.msg;
-        }
-      }
-    })
-
-    this.importTableSocket.fromEvent('reconnect')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(disconnect => {
-        this.importTableSocket.emit('listenDigitals', []);
-      })
-
   }
 
   /**
    * Loads the entity that is the root of the content tree
-
    */
   loadRootEntity(pkEntity: number, fkClass: number, pkProject) {
 
@@ -380,7 +359,6 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.importTableSocket.cleanDisconnect();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
@@ -617,11 +595,17 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
   addTable(pkParent: number, parentIsF2Expression = false) {
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      const apiCall = (response: ImportTableResponse) => this.inf.statement.upsert([{
-        fk_subject_data: response.fk_digital,
-        fk_object_info: pkParent,
-        fk_property: this.isReproProp(parentIsF2Expression)
-      } as InfStatement], pkProject).resolved$.pipe(map(r => r ? response : undefined))
+      const apiCall = (response: ImportTableResponse) => {
+        const a$ = this.inf.statement.upsert([{
+          fk_subject_data: response.fk_digital,
+          fk_object_info: pkParent,
+          fk_property: this.isReproProp(parentIsF2Expression)
+        } as InfStatement], pkProject).resolved$.pipe(map(r => r ? response : undefined));
+
+        const b$ = this.dat.digital.loadVersion(response.fk_digital).resolved$;
+
+        return combineLatest(a$, b$).pipe(map((vals) => vals[0]))
+      }
 
       this.dialog.open<ImporterComponent, ImporterDialogData>(ImporterComponent, {
         height: 'calc(100% - 30px)',
@@ -735,7 +719,13 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
       })
     })
   }
+
+  handleClick_nodeOptions(data: { from: string, param: any }) {
+    if (data.from == 'openNode') this.open(data.param.node);
+    if (data.from == 'addExpresionPortion') this.addExpressionPortion(data.param.pkParent, data.param.parentIsF2Expression);
+    if (data.from == 'addText') this.addText(data.param.pkParent, data.param.parentIsF2Expression);
+    if (data.from == 'addTable') this.addTable(data.param.pkParent, data.param.parentIsF2Expression);
+    if (data.from == 'removeStatement') this.removeStatement(data.param.node);
+  }
+
 }
-
-
-

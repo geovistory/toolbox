@@ -11,7 +11,7 @@ describe('PingController', () => {
   after(async () => { await server.stop(); });
 
   describe('GET /ping', () => {
-    beforeEach(async () => cleanDb());
+    beforeEach(async () => await cleanDb());
 
     it('should answer to normal ping', async () => {
       const res = await client.get('/ping?msg=world').expect(200);

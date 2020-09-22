@@ -1,17 +1,19 @@
 import { Client, expect } from '@loopback/testlab';
+import io from 'socket.io-client';
 import { DatNamespace, ProProject, PubAccount } from '../../../models';
 import { ImportTable } from '../../../models/import-table.model';
 import { GeovistoryServer } from '../../../server';
+import { createNamespace } from '../../helpers/atomic/dat-namespace.helper';
 import { linkAccountProject } from '../../helpers/atomic/pub-account_project_rel.helper';
+import { createTypes } from '../../helpers/atomic/sys-system-type.helper';
 import { cleanDb } from '../../helpers/cleaning/clean-db.helper';
 import { createAccountVerified } from '../../helpers/graphs/account.helper';
+import { init } from '../../helpers/graphs/init.helper';
 import { createProjectAndNamespace, createRawProject } from '../../helpers/graphs/project.helpers';
 import { setupApplication } from '../../helpers/gv-server-helpers';
-import { createTypes } from '../../helpers/atomic/sys-system-type.helper';
-import { createNamespace } from '../../helpers/atomic/dat-namespace.helper';
-import { init } from '../../helpers/graphs/init.helper';
 
 const qs = require('querystring');
+const pEvent = require('p-event');
 
 
 describe('ImportTableController', () => {
@@ -27,27 +29,31 @@ describe('ImportTableController', () => {
         let table: ImportTable;
 
         beforeEach(async () => {
-            await cleanDb();
-            await createTypes();
-            const result = await createProjectAndNamespace('English');
-            project = result.project;
-            namespace = result.namespace;
-            accountInProject = await createAccountVerified('gaetan.muck@kleiolab.ch', 'gaetanmuck', pwd);
-            await linkAccountProject(accountInProject, project);
-            accountOutOfProject = await createAccountVerified('jonas.schneider@kleiolab.ch', 'jonasscheider', pwd);
+            try {
+                await cleanDb();
+                await createTypes();
+                const result = await createProjectAndNamespace('English');
+                project = result.project;
+                namespace = result.namespace;
+                accountInProject = await createAccountVerified('gaetan.muck@kleiolab.ch', 'gaetanmuck', pwd);
+                await linkAccountProject(accountInProject, project);
+                accountOutOfProject = await createAccountVerified('jonas.schneider@kleiolab.ch', 'jonasscheider', pwd);
 
-            table = {
-                tableName: 'TestTable',
-                fileName: 'TestTableFileName',
-                pk_language: 18889, // english
-                headers: [
-                    { colLabel: 'col 0', comment: 'string', type: 'string' },
-                    { colLabel: 'col 1', comment: 'string', type: 'string' }
-                ],
-                rows: [
-                    ['cell [0:0]', 'cell [0:1]'],
-                    ['cell [1:0]', 'cell [1:1]']
-                ],
+                table = {
+                    tableName: 'TestTable',
+                    fileName: 'TestTableFileName',
+                    pk_language: 18889, // english
+                    headers: [
+                        { colLabel: 'col 0', comment: 'string', type: 'string' },
+                        { colLabel: 'col 1', comment: 'string', type: 'string' }
+                    ],
+                    rows: [
+                        ['cell [0:0]', 'cell [0:1]'],
+                        ['cell [1:0]', 'cell [1:1]']
+                    ],
+                }
+            } catch (e) {
+                console.log(e);
             }
         })
 
@@ -120,5 +126,170 @@ describe('ImportTableController', () => {
             expect(res.body).have.property('fk_digital');
             expect(res.body.fk_digital).to.be.a.Number();
         })
+    });
+
+
+    describe('WSS /ImportTable', () => {
+        let socketClient: SocketIOClient.Socket;
+
+        beforeEach(async () => {
+            try {
+                await cleanDb();
+                await createTypes();
+                const url = server.url;
+                socketClient = io(`${url}/ImportTable`);
+            } catch (e) {
+                console.log(e);
+            }
+        });
+
+        afterEach(async () => {
+            socketClient.close();
+        })
+
+        it('should throw no errors', async () => {
+            socketClient.emit('listenDigitals', []);
+            expect(true);
+        })
+
+        it('should tell the front-end that the non existing digital is already loaded', async () => {
+            const fakeId = 999;
+            socketClient.emit('listenDigitals', [fakeId]);
+            const response = await pEvent(socketClient, 'state_' + fakeId);
+            expect(response).to.containEql({ advancement: 100, id: fakeId, infos: '' });
+        })
+
+        it('should tell the front end that the digital is loading', async () => {
+            const pwd = 'testtest1';
+            const result = await createProjectAndNamespace('English');
+            const project = result.project;
+            const namespace = result.namespace;
+            const accountInProject = await createAccountVerified('gaetan.muck@kleiolab.ch', 'gaetanmuck', pwd);
+            await linkAccountProject(accountInProject, project);
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const params = { pkNamespace: namespace.pk_entity }
+
+            const table = {
+                tableName: 'TestTable',
+                fileName: 'TestTableFileName',
+                pk_language: 18889, // english
+                headers: [
+                    { colLabel: 'col 0', comment: 'string', type: 'string' },
+                    { colLabel: 'col 1', comment: 'string', type: 'string' }
+                ],
+                rows: [
+                    ['cell [0:0]', 'cell [0:1]'],
+                    ['cell [1:0]', 'cell [1:1]']
+                ],
+            }
+            table.rows = [];
+            for (let i = 0; i < 1000; i++) {
+                table.rows.push(['cell [' + i + ':0]', 'cell [' + i + ':1]'])
+            }
+
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            socketClient.emit('listenDigitals', [res.body.fk_digital]);
+            const response = await pEvent(socketClient, 'state_' + res.body.fk_digital);
+            expect(response.infos).to.be.a.String();
+
+            let finished = false;
+            while (!finished) {
+                const resp = await pEvent(socketClient, 'state_' + res.body.fk_digital);
+                finished = resp.advancement === 100;
+            }
+        })
+
+        it('should tell the front-end that the digital is already loaded', async () => {
+            const pwd = 'testtest1';
+            const result = await createProjectAndNamespace('English');
+            const project = result.project;
+            const namespace = result.namespace;
+            const accountInProject = await createAccountVerified('gaetan.muck@kleiolab.ch', 'gaetanmuck', pwd);
+            await linkAccountProject(accountInProject, project);
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const params = { pkNamespace: namespace.pk_entity }
+
+            const table = {
+                tableName: 'TestTable',
+                fileName: 'TestTableFileName',
+                pk_language: 18889, // english
+                headers: [
+                    { colLabel: 'col 0', comment: 'string', type: 'string' },
+                    { colLabel: 'col 1', comment: 'string', type: 'string' }
+                ],
+                rows: [
+                    ['cell [0:0]', 'cell [0:1]'],
+                    ['cell [1:0]', 'cell [1:1]']
+                ],
+            }
+            for (let i = 0; i < 1000; i++) {
+                table.rows.push(['cell [' + i + ':0]', 'cell [' + i + ':1]'])
+            }
+
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            socketClient.emit('listenDigitals', [res.body.fk_digital]);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const response = await pEvent(socketClient, 'state_' + res.body.fk_digital);
+            expect(response.infos).to.be.a.String();
+
+            let finished = false;
+            while (!finished) {
+                const resp = await pEvent(socketClient, 'state_' + res.body.fk_digital);
+                finished = resp.advancement === 100;
+            }
+        })
+
+        it('should tell both users that the digital is loading', async () => {
+            const socketClient2 = io(`${server.url}/ImportTable`);
+
+            const pwd = 'testtest1';
+            const result = await createProjectAndNamespace('English');
+            const project = result.project;
+            const namespace = result.namespace;
+            const accountInProject = await createAccountVerified('gaetan.muck@kleiolab.ch', 'gaetanmuck', pwd);
+            await linkAccountProject(accountInProject, project);
+            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const params = { pkNamespace: namespace.pk_entity }
+
+            const table = {
+                tableName: 'TestTable',
+                fileName: 'TestTableFileName',
+                pk_language: 18889, // english
+                headers: [
+                    { colLabel: 'col 0', comment: 'string', type: 'string' },
+                    { colLabel: 'col 1', comment: 'string', type: 'string' }
+                ],
+                rows: [
+                    ['cell [0:0]', 'cell [0:1]'],
+                    ['cell [1:0]', 'cell [1:1]']
+                ],
+            }
+            for (let i = 0; i < 1000; i++) {
+                table.rows.push(['cell [' + i + ':0]', 'cell [' + i + ':1]'])
+            }
+
+
+            const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
+            socketClient.emit('listenDigitals', [res.body.fk_digital]);
+            socketClient2.emit('listenDigitals', [res.body.fk_digital]);
+
+            let resp1, resp2;
+            await Promise.all([pEvent(socketClient, 'state_' + res.body.fk_digital), pEvent(socketClient, 'state_' + res.body.fk_digital)])
+                .then(r => {
+                    resp1 = r[0];
+                    resp2 = r[1];
+                });
+
+            expect(JSON.stringify(resp1)).to.be.equal(JSON.stringify(resp2));
+
+            let finished = false;
+            while (!finished) {
+                const resp = await pEvent(socketClient, 'state_' + res.body.fk_digital);
+                finished = resp.advancement === 100;
+            }
+
+            socketClient2.close();
+        })
+
     });
 });
