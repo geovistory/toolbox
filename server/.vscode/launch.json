@@ -15,7 +15,7 @@
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "runtimeExecutable": null,
       "envFile": "${workspaceFolder}/.vscode/envFile.dev",
-      "restart": true,
+      "restart": false,
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
