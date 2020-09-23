@@ -1,7 +1,7 @@
-import {ApplicationConfig} from '@loopback/core';
-import {GeovistoryServer} from './server';
-import {init} from './__tests__/helpers/graphs/init.helper';
-import {cleanDb} from './__tests__/helpers/cleaning/clean-db.helper';
+import { ApplicationConfig } from '@loopback/core';
+import { cleanDb } from './__tests__/helpers/cleaning/clean-db.helper';
+import { init } from './__tests__/helpers/graphs/init.helper';
+import { forFeatureX } from './__tests__/helpers/graphs/feature-X.helper';
 
 /**
  * This function starts the geovistory application and fills the database
@@ -13,7 +13,8 @@ export async function serveWithMockData(options: ApplicationConfig = {}) {
   await cleanDb();
 
   console.log(`Seeding test database with mock data...`);
-  await  init()
+  await init()
+  await forFeatureX();
   console.log(`Test database is ready!\n`);
 
 
