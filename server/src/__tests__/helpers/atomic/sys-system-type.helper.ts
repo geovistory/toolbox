@@ -1,5 +1,5 @@
-import { testdb } from '../../helpers/testdb';
-import { SysSystemTypeRepository } from '../../../repositories';
+import { testdb } from "../testdb";
+import {SysSystemTypeRepository} from '../../../repositories';
 
 let initialized = false;
 

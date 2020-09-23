@@ -1,6 +1,6 @@
 import { Client } from '@loopback/testlab';
 import { GeovistoryServer } from '../../server';
-import { setupApplication } from './_test-helper';
+import { setupApplication } from '../helpers/gv-server-helpers';
 import { cleanDb } from '../helpers/cleaning/clean-db.helper';
 
 

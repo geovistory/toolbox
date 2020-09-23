@@ -1,6 +1,5 @@
 import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
 import { juggler } from '@loopback/repository';
-import { createAccountVerified } from '../__tests__/helpers/graphs/account.helper';
 
 const config = {
   url: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
@@ -27,13 +26,6 @@ export class Postgres1DataSource extends juggler.DataSource
     dsConfig: object = config,
   ) {
     super(dsConfig);
-
-    incr++;
-    createAccountVerified('test.hello@gmail.com' + incr, 'HELLO' + incr, 'WORLD').then(() => {
-      this.execute("SELECT * from public.account where username = 'HELLO'").then(result => console.log('HERE: ' + JSON.stringify(result)));
-    });
-
+    console.log('Geovistory Database:', config.url.split('@')[1])
   }
 }
-
-let incr = 5;

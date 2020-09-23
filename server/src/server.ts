@@ -23,6 +23,7 @@ import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-not
 import {WebSocketServer} from './realtime/websockets/websocket.server';
 import {RestApplicationLike, RestServerLike} from '@loopback/testlab';
 import {ImportTableController} from './controllers/import-table.controller';
+import {SysStatusController} from './controllers/sys-status.controller';
 
 
 
@@ -87,6 +88,18 @@ export class GeovistoryServer extends Context implements RestApplicationLike {
       );
       next();
     })
+
+    // Add a ws route to SystemStatusController
+    this.wsServer.route(SysStatusController, /^\/SysStatus/)
+      .use((socket, next) => {
+        this.log(
+          'Middleware for namespace %s - socket: %s',
+          socket.nsp.name,
+          socket.id,
+        );
+        next();
+      });
+
 
     // Create the Postgres Notification Manager
     this.pgNotifManager = new PostgresNotificationsManager(this.lbApp);

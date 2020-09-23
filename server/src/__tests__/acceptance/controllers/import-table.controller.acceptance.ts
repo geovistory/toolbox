@@ -10,8 +10,7 @@ import { cleanDb } from '../../helpers/cleaning/clean-db.helper';
 import { createAccountVerified } from '../../helpers/graphs/account.helper';
 import { init } from '../../helpers/graphs/init.helper';
 import { createProjectAndNamespace, createRawProject } from '../../helpers/graphs/project.helpers';
-import { setupApplication } from '../_test-helper';
-
+import { setupApplication } from '../../helpers/gv-server-helpers';
 
 const qs = require('querystring');
 const pEvent = require('p-event');

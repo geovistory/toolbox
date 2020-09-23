@@ -129,6 +129,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
     this.sheetName = '';
     this.columnsOption = this.columnsOptions[0];
     this.rowsNb = this.rowsNbs[0];
+    this.fkDigital = -1;
   }
 
   /**
@@ -380,15 +381,17 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
           this.apiImporter.importTableControllerImportTable(this.namespaceCtrl.value, importTable)
             .pipe(switchMap(response => {
+
               this.fkDigital = response.fk_digital;
               this.importTableSocket.emit('listenDigitals', [this.fkDigital]);
 
               this.importTableSocket.on('state_' + this.fkDigital, (state: { id: number, advancement: number, infos: string }) => {
-                if (this.fkDigital == state.id) {
-                  this.socketMessage$.next(state.infos);
-                  if (state.advancement == 100 && state.infos != '') {
+                if (this.fkDigital == state.id && state.infos != '') {
+                  if (state.infos != 'inexisting') this.socketMessage$.next(state.infos);
+                  if (state.advancement == 100) {
                     this.mode = 'drag-and-drop';
-                    this.loaded('Table Uploaded', state.infos);
+                    this.loaded('Table Uploaded', 'Your table has correctly been imported');
+                    this.reset();
                   }
                 }
               })
@@ -431,7 +434,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    * Clean destroy of component
    */
   ngOnDestroy() {
-    this.importTableSocket.cleanDisconnect();
+    // this.importTableSocket.cleanDisconnect();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

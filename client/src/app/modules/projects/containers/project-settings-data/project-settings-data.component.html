@@ -138,9 +138,21 @@
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> Configuration
       </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-
-        <button mat-button color="primary" *ngIf="!element.excluded_from_entities" (click)="openClassConfig(element)">
-          Configure Class... </button>
+        <mat-menu #configMenu="matMenu">
+          <button mat-menu-item (click)="openClassConfig(element)">
+            <mat-icon svgIcon="cogs"></mat-icon>
+            Configure Class...
+          </button>
+          <gv-entity-label-config-open-btn [fkClass]="element.pkClass">
+            <button mat-menu-item>
+              <mat-icon svgIcon="cogs"></mat-icon>
+              <span>Configure {{element.label}} labels</span>
+            </button>
+          </gv-entity-label-config-open-btn>
+        </mat-menu>
+        <button mat-button color="primary" [matMenuTriggerFor]="configMenu">
+          Configure class
+        </button>
 
       </td>
     </ng-container>

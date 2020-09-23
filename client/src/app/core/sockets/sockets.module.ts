@@ -4,11 +4,9 @@ import { environment } from 'environments/environment';
 
 @Injectable()
 export class EntityPreviewSocket extends Socket {
-
   constructor() {
     super({ url: environment.baseUrl + '/WarEntityPreview' });
   }
-
 }
 
 @Injectable()
@@ -31,6 +29,15 @@ export class ImportTableSocket extends Socket {
 
 }
 
+
+@Injectable()
+export class SysStatusSocket extends Socket {
+  constructor() {
+    super({ url: environment.baseUrl + '/SysStatus' });
+  }
+}
+
+
 @NgModule({
   declarations: [
     // components
@@ -39,7 +46,7 @@ export class ImportTableSocket extends Socket {
     SocketIoModule,
     // ...
   ],
-  providers: [EntityPreviewSocket, ImportTableSocket],
+  providers: [EntityPreviewSocket, ImportTableSocket, SysStatusSocket],
   bootstrap: [/** AppComponent **/]
 })
 export class SocketsModule { }

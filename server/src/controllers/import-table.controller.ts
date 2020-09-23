@@ -121,7 +121,6 @@ export class ImportTableController {
 
     })(this, digital)
 
-
     return {
       // eslint-disable-next-line @typescript-eslint/camelcase
       fk_digital: digital
@@ -142,6 +141,7 @@ export class ImportTableController {
 
   @ws.subscribe('listenDigitals')
   listenDigitals(digitals: number[]) {
+
     const importingList = [];
     for (const dig of digitals) {
       if (feedBacks[dig] && !this.subscriptionsCache[dig]) {
@@ -153,7 +153,7 @@ export class ImportTableController {
           else throw new Error('Impossible error');
         }));
         this.subscriptionsCache[dig] = true;
-      } else if (this.socket) this.socket.emit('state_' + dig, { id: dig, advancement: 100, infos: '' });
+      } else if (this.socket) this.socket.emit('state_' + dig, { id: dig, advancement: 100, infos: 'inexisting' });
       else throw new Error('Impossible error');
     }
   }
@@ -255,7 +255,7 @@ async function createCells(datasource: Postgres1DataSource, fkDigital: number, r
 
         const advancement = Math.round(((i * colKeys.length + j) / totalNumber) * 100);
         const eta = Math.round(((new Date().getTime() - begin) / advancement) * (100 - advancement) / (1000 * 60)); // in minutes
-        feedBacks[fkDigital].next({ id: fkDigital, advancement: advancement, infos: '[6/6] Creating cells ... ' + advancement + '% (ETA: ' + (eta === Infinity ? 'Calculating...) ' : eta + ' minutes') });
+        feedBacks[fkDigital].next({ id: fkDigital, advancement: advancement, infos: '[6/6] Creating cells ... ' + advancement + '% (ETA: ' + (eta === Infinity ? 'Calculating...) ' : eta + ' minutes)') });
       }
     }
   }

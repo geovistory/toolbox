@@ -1,14 +1,6 @@
-import { LifeCycleObserver } from '@loopback/core';
-import { juggler } from '@loopback/repository';
+import {LifeCycleObserver} from '@loopback/core';
+import {juggler} from '@loopback/repository';
 
-// const config = {
-//   url: process.env.TEST_DATABASE_URL + '?ssl=true',
-//   name: 'testdb',
-//   connector: 'postgresql',
-//   ssl: {
-//     rejectUnauthorized: true,
-//   },
-// };
 
 // Observe application's life cycle to disconnect the datasource when
 // application is stopped. This allows the application to be shut down
@@ -27,7 +19,7 @@ export class TestdbDataSource extends juggler.DataSource
       name: 'testdb',
       connector: 'postgresql',
       ssl: {
-        rejectUnauthorized: true,
+        rejectUnauthorized: false,
       },
     });
   }

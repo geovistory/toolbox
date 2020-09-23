@@ -1,6 +1,6 @@
 import { Client, expect } from '@loopback/testlab';
 import { GeovistoryServer } from '../../../server';
-import { setupApplication } from '../_test-helper';
+import { setupApplication } from '../../helpers/gv-server-helpers';
 
 describe('SysConfigController', () => {
   let server: GeovistoryServer;

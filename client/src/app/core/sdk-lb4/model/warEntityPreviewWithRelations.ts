@@ -17,6 +17,7 @@
 export interface WarEntityPreviewWithRelations { 
     pk_entity?: number;
     fk_project?: number;
+    project?: number;
     fk_class?: number;
     class_label?: string;
     entity_label?: string;
@@ -24,8 +25,10 @@ export interface WarEntityPreviewWithRelations {
     type_label?: string;
     fk_type?: number;
     time_span?: object;
-    first_second?: number;
-    last_second?: number;
+    first_second?: string;
+    last_second?: string;
+    full_text?: string;
+    ts_vector?: string;
     tmsp_last_modification?: string;
 }
 

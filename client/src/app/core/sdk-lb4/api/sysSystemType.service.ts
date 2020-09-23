@@ -29,7 +29,7 @@ import { Configuration }                                     from '../configurat
 })
 export class SysSystemTypeService {
 
-    protected basePath = 'http://127.0.0.1:3000';
+    protected basePath = 'http://0.0.0.0:3000';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
