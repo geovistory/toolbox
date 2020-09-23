@@ -43,6 +43,7 @@ describe('ImportTableController', () => {
                 table = {
                     tableName: 'TestTable',
                     fileName: 'TestTableFileName',
+                    // eslint-disable-next-line @typescript-eslint/camelcase
                     pk_language: 18889, // english
                     headers: [
                         { colLabel: 'col 0', comment: 'string', type: 'string' },
@@ -173,6 +174,7 @@ describe('ImportTableController', () => {
             const table = {
                 tableName: 'TestTable',
                 fileName: 'TestTableFileName',
+                // eslint-disable-next-line @typescript-eslint/camelcase
                 pk_language: 18889, // english
                 headers: [
                     { colLabel: 'col 0', comment: 'string', type: 'string' },
@@ -213,6 +215,7 @@ describe('ImportTableController', () => {
             const table = {
                 tableName: 'TestTable',
                 fileName: 'TestTableFileName',
+                // eslint-disable-next-line @typescript-eslint/camelcase
                 pk_language: 18889, // english
                 headers: [
                     { colLabel: 'col 0', comment: 'string', type: 'string' },
@@ -255,6 +258,7 @@ describe('ImportTableController', () => {
             const table = {
                 tableName: 'TestTable',
                 fileName: 'TestTableFileName',
+                // eslint-disable-next-line @typescript-eslint/camelcase
                 pk_language: 18889, // english
                 headers: [
                     { colLabel: 'col 0', comment: 'string', type: 'string' },

@@ -38,9 +38,12 @@
                 </mat-icon>
               </div>
             </tr>
+            <!--still working-->
             <tr *ngIf='type col.type == "number"'>
-
+                <td>Text</td>
+                <td>Matched</td>
             </tr>
+
           </table>
         </th>
         <th *ngFor="let com of columnComments" pResizableColumn>{{com}}</th>
