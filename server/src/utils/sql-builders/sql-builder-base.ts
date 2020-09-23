@@ -1,4 +1,4 @@
-import {logSql} from './helpers';
+import {logSql} from '../helpers';
 
 export interface BuiltQuery {
   sql: string,

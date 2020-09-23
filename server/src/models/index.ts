@@ -39,3 +39,4 @@ export * from './sys-system-type.model';
 export * from './pub-role-mapping.model';
 export * from './pub-role.model';
 export * from './pro-entity-label-config.model';
+export * from './inf-dimension.model';
