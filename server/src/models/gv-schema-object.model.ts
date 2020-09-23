@@ -2,6 +2,7 @@ import {InfPersistentItem, InfTemporalEntity, InfStatement, InfPlace, InfLanguag
 import {property, model} from '@loopback/repository';
 import {DatTextProperty} from './dat-text-property.model';
 import {DatColumn} from './dat-column.model';
+import {DatClassColumnMapping} from './dat-class-column-mapping.model';
 
 
 @model()
@@ -28,6 +29,7 @@ class DatObject {
   @property.array(DatDigital) digital?: Partial<DatDigital>[]
   @property.array(DatColumn) column?: Partial<DatColumn>[]
   @property.array(DatTextProperty) text_property?: Partial<DatTextProperty>[]
+  @property.array(DatClassColumnMapping) class_column_mapping?: Partial<DatClassColumnMapping>[]
 }
 
 
