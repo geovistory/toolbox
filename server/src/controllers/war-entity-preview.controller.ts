@@ -9,7 +9,7 @@ import {WarEntityPreview, WarEntityPreviewWithRelations} from '../models';
 import {Streams} from '../realtime/streams/streams';
 import {WarEntityPreviewRepository} from '../repositories';
 import {logSql} from '../utils/helpers';
-import {SqlBuilderBase} from '../utils/sql-builder-base';
+import {SqlBuilderBase} from '../utils/sql-builders/sql-builder-base';
 import {indexBy, keys} from 'ramda';
 /**
  * TODO-LB3-LB4
