@@ -21,4 +21,14 @@ export class InfPersistentItemMock {
     fk_class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE.dfh_pk_class,
   })
 
+  static readonly ALBERT_IV = new InfPersistentItem({
+    pk_entity: 2004,
+    fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+  })
+
+  static readonly RUDOLF = new InfPersistentItem({
+    pk_entity: 2005,
+    fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
+  })
+
 }

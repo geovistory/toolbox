@@ -1,15 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatNamespace } from '../../../models';
-import { DatDigitalRepository } from '../../../repositories';
-import { testdb } from '../../helpers/testdb';
-import { getTypeId, DigitalType } from './sys-system-type.helper';
+import {DatDigital} from '../../../models';
+import {DatDigitalRepository} from '../../../repositories';
+import {testdb} from '../../helpers/testdb';
+import {dealWithPkEntity} from './_sequences.helper';
 
 
-export async function createDigital(type: DigitalType, namespace: DatNamespace, digitalName: string) {
+function createDatDigitalRepo() {
     return new DatDigitalRepository(testdb)
-        .create({
-            fk_namespace: namespace.pk_entity,
-            fk_system_type: getTypeId(type),
-            id_for_import_txt: digitalName
-        });
+}
+
+export async function createDatDigital(item: Partial<DatDigital>) {
+    return createDatDigitalRepo().create(await dealWithPkEntity(item, 'data'));
+}
+
+export async function updateDatDigital(id: number, item: Partial<DatDigital>) {
+    return createDatDigitalRepo().updateById(id, item);
+}
+
+export async function deleteDatDigital(id: number) {
+    return createDatDigitalRepo().deleteById(id);
 }

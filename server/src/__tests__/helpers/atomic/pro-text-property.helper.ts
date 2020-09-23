@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { testdb } from "../testdb";
 import {ProTextPropertyRepository} from '../../../repositories';
 import {ProTextProperty} from '../../../models';

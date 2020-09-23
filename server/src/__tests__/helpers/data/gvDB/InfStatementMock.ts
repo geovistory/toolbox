@@ -5,6 +5,7 @@ import {InfAppellationMock} from './InfAppellationMock';
 import {InfPersistentItemMock} from './InfPersistentItemMock';
 import {InfTemporalEntityMock} from './InfTemporalEntityMock';
 import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
+import {TabCell} from '../../atomic/tab-cell-X.helper';
 
 /**
  * pk_entity prefix: 300
@@ -132,6 +133,42 @@ export class InfStatementMock {
     fk_property: DfhApiPropertyMock.EN_71_ONGOING_THOUGHOUT.dfh_pk_property,
     fk_object_info: InfTimePrimitiveMock.TP_1.pk_entity,
   })
+
+  static readonly NAMING_ALBERT_TO_APPE_ALBERT = new InfStatement({
+    pk_entity: 3018,
+    fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.ALERT_IV.pk_entity,
+  })
+
+  static readonly NAMING_RUDOLF_TO_APPE_RUDOLF = new InfStatement({
+    pk_entity: 3019,
+    fk_subject_info: InfTemporalEntityMock.RUDOLF_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.RUDOLF.pk_entity,
+  })
+
+  static readonly NAMING_ALBERT_TO_PEIT_ALBERT = new InfStatement({
+    pk_entity: 3018,
+    fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
+  })
+
+  static readonly NAMING_RUDOLF_TO_PEIT_RUDOLF = new InfStatement({
+    pk_entity: 3019,
+    fk_subject_info: InfTemporalEntityMock.RUDOLF_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
+
+  // static readonly NAMING_CELL__NAME_RUDOLF_REFERS_TO_PEIT = new InfStatement({
+  //   pk_entity: 3019,
+  //   fk_subject_info:
+  //   fk_property: 1334,
+  //   fk_object_info:
+  // })
+
 
 }
 

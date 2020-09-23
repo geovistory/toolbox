@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatDigital } from '../../../models';
-import { testdb } from '../../helpers/testdb';
+import {TabRow} from '../../../models';
+import {TabRowRepository} from '../../../repositories/tab-row.repository';
+import {testdb} from '../../helpers/testdb';
+import {dealWithPkEntity} from './_sequences.helper';
 
 
-export class TabRow {
-    pk_entity: number;
-    fk_digital: number;
-
-    constructor(fk_digital: number, pk_entity: number) {
-        this.pk_entity = pk_entity
-        this.fk_digital = fk_digital;
-    }
+function createTabRowRepo() {
+    return new TabRowRepository(testdb)
 }
 
-export async function createRow(digital: DatDigital): Promise<TabRow> {
-    return new TabRow(digital.pk_entity as number,
-        (await testdb.execute('INSERT INTO tables.row (fk_digital) VALUES (' + digital.pk_entity + ');')).pk_entity
-    )
+export async function createTabRow(item: Partial<TabRow>) {
+    return createTabRowRepo().create(await dealWithPkEntity(item, 'table'));
+}
+
+export async function updateTabRow(id: number, item: Partial<TabRow>) {
+    return createTabRowRepo().updateById(id, item);
+}
+
+export async function deleteTabRow(id: number) {
+    return createTabRowRepo().deleteById(id);
 }

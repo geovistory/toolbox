@@ -1,25 +1,22 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatColumn } from '../../../models';
+import { DatClassColumnMappingRepository } from '../../../repositories';
 import { testdb } from '../testdb';
-import { DfhApiClass } from './dfh-api-class.helper';
+import { DatClassColumnMapping } from '../../../models';
+import { dealWithPkEntity } from './_sequences.helper';
 
-export class DatColumnMapping {
-    pk_entity: number;
-    fk_class: number;
-    fk_column: number;
-
-    constructor(pkEntity: number, fk_class: number, fk_column: number) {
-        this.pk_entity = pkEntity;
-        this.fk_class = fk_class;
-        this.fk_column = fk_column;
-    }
+function createDatClassColumnMappingRepo() {
+    return new DatClassColumnMappingRepository(testdb)
 }
 
-export async function createClassColumnMapping(clas: DfhApiClass, col: DatColumn) {
-    return new DatColumnMapping(
-        (await testdb.execute('INSERT INTO data.class_column_mapping (fk_class, fk_column) VALUES (' + clas.dfh_pk_class + ', ' + col.pk_entity + ');')).pk_entity,
-        clas.dfh_pk_class as number,
-        col.pk_entity as number,
-    )
+export async function createDatClassColumnMapping(item: Partial<DatClassColumnMapping>) {
+    return createDatClassColumnMappingRepo().create(await dealWithPkEntity(item, 'data'));
+}
+
+export async function updateDatClassColumnMapping(id: number, item: Partial<DatClassColumnMapping>) {
+    return createDatClassColumnMappingRepo().updateById(id, item);
+}
+
+export async function deleteDatClassColumnMapping(id: number) {
+    return createDatClassColumnMappingRepo().deleteById(id);
 }

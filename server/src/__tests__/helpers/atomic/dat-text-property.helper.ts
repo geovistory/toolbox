@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatColumn, DatNamespace, DatTextProperty, InfLanguage } from '../../../models';
-import { testdb } from '../../helpers/testdb';
+import {DatTextProperty} from '../../../models';
+import {DatTextPropertyRepository} from '../../../repositories';
+import {testdb} from '../../helpers/testdb';
+import {dealWithPkEntity} from './_sequences.helper';
 
+function createDatTextPropertyRepo() {
+    return new DatTextPropertyRepository(testdb)
+}
 
-export async function createTextProperty(namespace: DatNamespace, column: DatColumn, label: string, language: InfLanguage) {
-    return new DatTextProperty(testdb)
-        .create({
-            fk_namespace: namespace.pk_entity,
-            fk_entity: column.pk_entity,
-            string: label,
-            fk_language: language.pk_entity
-        });
+export async function createDatTextProperty(item: Partial<DatTextProperty>) {
+    return createDatTextPropertyRepo().create(await dealWithPkEntity(item, 'data'));
+}
+
+export async function updateDatTextProperty(id: number, item: Partial<DatTextProperty>) {
+    return createDatTextPropertyRepo().updateById(id, item);
+}
+
+export async function deleteDatTextProperty(id: number) {
+    return createDatTextPropertyRepo().deleteById(id);
 }

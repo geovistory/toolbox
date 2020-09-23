@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
 import {DatColumn, DatColumnRelations, DatNamespace} from '../models';
 import {Postgres1DataSource} from '../datasources';

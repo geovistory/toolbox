@@ -1,16 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatDigital } from '../../../models';
-import { DatColumnRepository, DatNamespaceRepository } from '../../../repositories';
-import { testdb } from '../../helpers/testdb';
-import { getTypeId } from './sys-system-type.helper';
+import {DatColumn} from '../../../models';
+import {DatColumnRepository, DatNamespaceRepository} from '../../../repositories';
+import {testdb} from '../../helpers/testdb';
+import {dealWithPkEntity} from './_sequences.helper';
 
-
-export async function createColumn(digital: DatDigital, type: 'string' | 'number') {
+function createDatColumnRepo() {
     let datNamespaceRepository: DatNamespaceRepository;
     return new DatColumnRepository(testdb, async () => datNamespaceRepository)
-        .create({
-            fk_digital: digital.pk_entity,
-            fk_namespace: digital.fk_namespace,
-            fk_data_type: getTypeId(type),
-        });
+}
+
+export async function createDatColumn(item: Partial<DatColumn>) {
+    return createDatColumnRepo().create(await dealWithPkEntity(item, 'data'));
+}
+
+export async function updateDatColumn(id: number, item: Partial<DatColumn>) {
+    return createDatColumnRepo().updateById(id, item);
+}
+
+export async function deleteDatColumn(id: number) {
+    return createDatColumnRepo().deleteById(id);
 }

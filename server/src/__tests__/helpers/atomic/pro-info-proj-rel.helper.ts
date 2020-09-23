@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { testdb } from "../testdb";
 import {ProInfoProjRel} from '../../../models';
 import {ProInfoProjRelRepository} from '../../../repositories';

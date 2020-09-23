@@ -27,5 +27,15 @@ export class InfAppellationMock {
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
     string: 'Stadt'
   })
+  static readonly ALERT_IV = new InfAppellation({
+    pk_entity: 5005,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Albert IV'
+  })
+  static readonly RUDOLF = new InfAppellation({
+    pk_entity: 5006,
+    fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
+    string: 'Rudolf of Habsbourg'
+  })
 
 }

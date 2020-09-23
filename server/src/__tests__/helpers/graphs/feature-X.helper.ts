@@ -1,41 +1,55 @@
-import { createColumn } from '../atomic/dat-column.helper';
-import { createDigital } from '../atomic/dat-digital.helper';
-import { createTextProperty } from '../atomic/dat-text-property.helper';
-import { getLanguage } from '../atomic/inf-language.helper';
-import { linkAccountProject } from '../atomic/pub-account_project_rel.helper';
-import { createRow } from '../atomic/tab-row.helper';
-import { cleanDb } from '../cleaning/clean-db.helper';
-import { createAccountVerified } from "../graphs/account.helper";
-import { createProjectAndNamespace } from '../graphs/project.helpers';
-import { testdb } from '../testdb';
-import { createPersonWithClassAndProperty } from './create-person.helper';
-import { createCell } from '../atomic/tab-cell-X.helper';
-import { createClassColumnMapping } from '../atomic/dat-class-mapping.helper';
+import {createColumn, createDatColumn} from '../atomic/dat-column.helper';
+import {createDigital, createDatDigital} from '../atomic/dat-digital.helper';
+import {createDatNamespace} from '../atomic/dat-namespace.helper';
+import {createTextProperty, createDatTextProperty} from '../atomic/dat-text-property.helper';
+import {getLanguage} from '../atomic/inf-language.helper';
+import {createProProject} from '../atomic/pro-project.helper';
+import {createPubAccount} from '../atomic/pub-account.helper';
+import {linkAccountProject} from '../atomic/pub-account_project_rel.helper';
+import {createCell, createTabCell, createCellTable} from '../atomic/tab-cell-X.helper';
+import {createRow, createTabRow} from '../atomic/tab-row.helper';
+import {cleanDb} from '../cleaning/clean-db.helper';
+import {DatNamespaceMock} from '../data/gvDB/DatNamespaceMock';
+import {ProProjectMock} from '../data/gvDB/ProProjectMock';
+import {PubAccountMock} from '../data/gvDB/PubAccountMock';
+import {testdb} from '../testdb';
+import {createAlbertAndRudolf} from './create-albert-and-rudolf.helper';
+import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
+import {DatColumnMock} from '../data/gvDB/DatColumnMock';
+import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
+import {TabRowMock} from '../data/gvDB/TabRowMock';
+import {TabCellXMock} from '../data/gvDB/TabCellXMock';
+import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
+import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
 
 export async function forFeatureX() {
     await cleanDb();
-    const result = await createProjectAndNamespace('English');
-    const project = result.project;
-    const namespace = result.namespace;
-    const accountInProject = await createAccountVerified('gaetan.muck@gmail.com', 'gaetanmuck', 'test1234');
-    await linkAccountProject(accountInProject, project);
 
-    const rudolf = await createPersonWithClassAndProperty('Rudolf of Habsburg');
+    //create account, namespace and project
+    await createProProject(ProProjectMock.PROJECT_2); //english
+    await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
+    await createPubAccount(PubAccountMock.GAETAN_VERIFIED);
+    await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.PROJECT_2);
 
-    const digital = await createDigital('digitalTable', namespace, 'a table');
-    const col1 = await createColumn(digital, "string");
-    await createTextProperty(namespace, col1, 'Name', await getLanguage('English'))
-    const col2 = await createColumn(digital, "string");
-    await createTextProperty(namespace, col2, 'Birthdate', await getLanguage('English'));
-    const row1 = await createRow(digital);
-    const row2 = await createRow(digital);
-    await testdb.execute("SELECT tables.create_cell_table_for_digital(" + digital.pk_entity + ");");
+    //create the data
+    await createAlbertAndRudolf()
 
-    createCell(digital, col1, row1, 'Albert IV');
-    createCell(digital, col2, row1, '1180');
-    createCell(digital, col1, row2, 'Rudolf of Habsburg');
-    createCell(digital, col2, row2, '1218');
+    //create the digital and related
+    await createDatDigital(DatDigitalMock.DIGITAL_BIRTHDATES);
+    await createDatColumn(DatColumnMock.COL_NAMES);
+    await createDatColumn(DatColumnMock.COL_DATES);
+    await createDatTextProperty(DatTextPropertyMock.NAME);
+    await createDatTextProperty(DatTextPropertyMock.BIRTHDATE);
+    await createTabRow(TabRowMock.ROW_ALBERT);
+    await createTabRow(TabRowMock.ROW_RUDOLF);
+    await createCellTable(DatDigitalMock.DIGITAL_BIRTHDATES);
+    await createTabCell(TabCellXMock.FEATURE_X_1_1);
+    await createTabCell(TabCellXMock.FEATURE_X_1_2);
+    await createTabCell(TabCellXMock.FEATURE_X_2_1);
+    await createTabCell(TabCellXMock.FEATURE_X_2_2);
 
-    createClassColumnMapping(rudolf.class, col1);
+    //create the mapping of columns
+    await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON);
 
+    //create the real mapping
 }

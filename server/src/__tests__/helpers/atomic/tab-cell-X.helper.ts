@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { DatDigital, DatColumn } from "../../../models";
-import { TabRow } from './tab-row.helper';
-import { testdb } from '../testdb';
-import { findKey } from 'lodash';
+import {DatDigital} from "../../../models";
+import {testdb} from '../testdb';
 
 
 export class TabCell {
@@ -22,12 +20,11 @@ export class TabCell {
     }
 }
 
-export async function createCell(digital: DatDigital, columns: DatColumn, row: TabRow, content: number | string) {
-    return new TabCell(
-        (await testdb.execute('INSERT INTO tables.cell_' + digital.pk_entity + ' (fk_digital, fk_column, fk_row, string_value, numeric_value) VALUES (' + digital.pk_entity + ', ' + columns.pk_entity + ', ' + row.pk_entity + ', ' + (typeof content == 'string' ? content : '') + ', ' + (typeof content == 'number' ? content : ''))).pk_entity,
-        digital.pk_entity as number,
-        columns.pk_entity as number,
-        row.pk_entity,
-        content,
-    )
+
+export async function createCellTable(digital: DatDigital) {
+    await testdb.execute("SELECT tables.create_cell_table_for_digital(" + digital.pk_entity + ");");
+}
+
+export async function createTabCell(cell: Partial<TabCell>) {
+    await testdb.execute('INSERT INTO tables.cell_' + cell.fk_digital + ' (fk_digital, fk_column, fk_row, string_value, numeric_value) VALUES (' + cell.fk_digital + ', ' + cell.fk_column + ', ' + cell.fk_row + ', ' + (typeof cell.content == 'string' ? cell.content : '') + ', ' + (typeof cell.content == 'number' ? cell.content : ''))
 }
