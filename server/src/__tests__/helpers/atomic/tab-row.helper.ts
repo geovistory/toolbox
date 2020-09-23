@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { DatDigital } from '../../../models';
 import { testdb } from '../../helpers/testdb';
-import { F_OK } from 'constants';
 
 
 export class TabRow {

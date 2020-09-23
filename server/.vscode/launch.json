@@ -23,6 +23,23 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Launch App with Mock",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/index.dev.js",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "runtimeExecutable": null,
+      "env": {
+        "DATABASE_URL": "${env:TEST_DATABASE_URL}"
+      },
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch App:watch",
       "skipFiles": [
         "<node_internals>/**"
