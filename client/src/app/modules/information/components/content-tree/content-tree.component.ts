@@ -18,6 +18,7 @@ import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '
 import { ImporterComponent, ImporterDialogData } from 'app/modules/data/components/importer/importer.component';
 import { ImportTableResponse } from 'app/core/sdk-lb4/model/importTableResponse';
 import { ImportTableSocket } from 'app/core/sockets/sockets.module';
+import { ContentTreeClickEvent } from '../content-tree-node-options/content-tree-node-options.component';
 
 /**
  * Food data with nested structure.
@@ -720,12 +721,12 @@ export class ContentTreeComponent implements OnInit, OnDestroy {
     })
   }
 
-  handleClick_nodeOptions(data: { from: string, param: any }) {
-    if (data.from == 'openNode') this.open(data.param.node);
-    if (data.from == 'addExpresionPortion') this.addExpressionPortion(data.param.pkParent, data.param.parentIsF2Expression);
-    if (data.from == 'addText') this.addText(data.param.pkParent, data.param.parentIsF2Expression);
-    if (data.from == 'addTable') this.addTable(data.param.pkParent, data.param.parentIsF2Expression);
-    if (data.from == 'removeStatement') this.removeStatement(data.param.node);
+  handleClick_nodeOptions(data: ContentTreeClickEvent) {
+    if (data.openNode) this.open(data.openNode);
+    if (data.addExpressionPortion) this.addExpressionPortion(data.addExpressionPortion.pkParent, data.addExpressionPortion.parentIsF2Expression);
+    if (data.addText) this.addText(data.addText.pkParent, data.addText.parentIsF2Expression);
+    if (data.addTable) this.addTable(data.addTable.pkParent, data.addTable.parentIsF2Expression);
+    if (data.removeStatement) this.removeStatement(data.removeStatement);
   }
 
 }

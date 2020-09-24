@@ -1,10 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { ContentTreeNode } from '../content-tree/content-tree.component';
-import { ActiveProjectService, latestVersion, SysConfig } from 'app/core';
-import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
-import { map, filter, shareReplay, takeUntil } from 'rxjs/operators';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ImportTableSocket } from 'app/core/sockets/sockets.module';
-import { pkEntityKey } from 'app/modules/backoffice/components/class-field-list/api/class-field-list.reducer';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ContentTreeNode } from '../content-tree/content-tree.component';
+
+
+interface ParentNodeInfo {
+  pkParent: number,
+  parentIsF2Expression: boolean
+}
+export interface ContentTreeClickEvent {
+  openNode?: ContentTreeNode,
+  removeStatement?: ContentTreeNode
+
+  addExpressionPortion?: ParentNodeInfo,
+  addText?: ParentNodeInfo,
+  addTable?: ParentNodeInfo,
+}
 
 @Component({
   selector: 'gv-content-tree-node-options',
@@ -20,7 +32,7 @@ export class ContentTreeNodeOptionsComponent implements OnInit, OnDestroy {
   @Input() rootIsF2Expression = false;
   @Input() isAdmin: boolean;
 
-  @Output() clicked = new EventEmitter();
+  @Output() clicked = new EventEmitter<ContentTreeClickEvent>();
 
   loaded$ = new BehaviorSubject<boolean>(true);
   mode$ = new BehaviorSubject<string>('indeterminate');
@@ -51,6 +63,25 @@ export class ContentTreeNodeOptionsComponent implements OnInit, OnDestroy {
       }
     }
   }
+  openNode(n: ContentTreeNode) {
+    this.clicked.emit({ openNode: n })
+  }
+  removeStatement(n: ContentTreeNode) {
+    this.clicked.emit({ removeStatement: n })
+  }
+
+  addExpressionPortion(parentN: ParentNodeInfo) {
+    this.clicked.emit({ addExpressionPortion: parentN })
+  }
+
+  addText(parentN: ParentNodeInfo) {
+    this.clicked.emit({ addText: parentN })
+  }
+
+  addTable(parentN: ParentNodeInfo) {
+    this.clicked.emit({ addTable: parentN })
+  }
+
 
   ngOnDestroy() {
     this.importTableSocket.cleanDisconnect();

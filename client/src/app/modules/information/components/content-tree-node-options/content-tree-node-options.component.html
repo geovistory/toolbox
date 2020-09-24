@@ -1,50 +1,50 @@
 <button *ngIf="loaded$ | async" mat-icon-button [matMenuTriggerFor]="mainMenu">
-    <mat-icon>more_vert</mat-icon>
+  <mat-icon>more_vert</mat-icon>
 </button>
 
-<mat-progress-spinner diameter="20" *ngIf="!(loaded$ | async)" mode="{{mode$ | async}}" value="{{value$ | async}}" aria-label="Show progress of upload">
+<mat-progress-spinner diameter="20" *ngIf="!(loaded$ | async)" mode="{{mode$ | async}}" value="{{value$ | async}}"
+  aria-label="Show progress of upload">
 </mat-progress-spinner>
 
 
 
 <mat-menu #mainMenu="matMenu" xPosition="before">
 
-    <!-- is expression portion or digital -->
-    <button mat-menu-item *ngIf="!rootIsF2Expression" (click)="clicked.emit({from: 'openNode', param: {node: node}})">
-        <mat-icon>edit</mat-icon>
-        <span>Open</span>
-    </button>
+  <!-- is expression portion or digital -->
+  <button mat-menu-item *ngIf="!rootIsF2Expression" (click)="openNode(node)">
+    <mat-icon>edit</mat-icon>
+    <span>Open</span>
+  </button>
 
-    <!-- is expression portion -->
-    <mat-divider *ngIf="!isDigital && !rootIsF2Expression"></mat-divider>
+  <!-- is expression portion -->
+  <mat-divider *ngIf="!isDigital && !rootIsF2Expression"></mat-divider>
 
-    <!-- is expression or expression portion -->
-    <button mat-menu-item *ngIf="!isDigital"
-        (click)="clicked.emit({from: 'addExpressionPortion', param: {pkParent: pkParent, parentIsF2Expression: rootIsF2Expression}})">
-        <mat-icon>folder</mat-icon>
-        <span>Add a Section</span>
-    </button>
-    <button mat-menu-item *ngIf="!isDigital"
-        (click)="clicked.emit({from: 'addText', param: {pkParent: pkParent, parentIsF2Expression: rootIsF2Expression}})">
-        <mat-icon>description</mat-icon>
-        <span>Add a Text</span>
-    </button>
+  <!-- is expression or expression portion -->
+  <button mat-menu-item *ngIf="!isDigital"
+    (click)="addExpressionPortion({pkParent: pkParent, parentIsF2Expression: rootIsF2Expression})">
+    <mat-icon>folder</mat-icon>
+    <span>Add a Section</span>
+  </button>
+  <button mat-menu-item *ngIf="!isDigital"
+    (click)="addText({pkParent: pkParent, parentIsF2Expression: rootIsF2Expression})">
+    <mat-icon>description</mat-icon>
+    <span>Add a Text</span>
+  </button>
 
-    <button mat-menu-item *ngIf="!isDigital && isAdmin"
-        (click)="clicked.emit({from: 'addTable', param: {pkParent: pkParent, parentIsF2Expression: rootIsF2Expression}})">
-        <mat-icon>folder</mat-icon>
-        <span>Add a Table</span>
-    </button>
+  <button mat-menu-item *ngIf="!isDigital && isAdmin"
+    (click)="addTable({pkParent: pkParent, parentIsF2Expression: rootIsF2Expression})">
+    <mat-icon>folder</mat-icon>
+    <span>Add a Table</span>
+  </button>
 
-    <mat-divider *ngIf="!rootIsF2Expression"></mat-divider>
+  <mat-divider *ngIf="!rootIsF2Expression"></mat-divider>
 
-    <div *ngIf="!rootIsF2Expression" class="dropdown-header">Danger Zone</div>
+  <div *ngIf="!rootIsF2Expression" class="dropdown-header">Danger Zone</div>
 
-    <!-- is expression portion or digital -->
-    <button mat-menu-item *ngIf="!rootIsF2Expression"
-        (click)="clicked.emit({from: 'removeStatement', param: {node: node}})">
-        <mat-icon color="warn">delete</mat-icon>
-        <span>Remove</span>
-    </button>
+  <!-- is expression portion or digital -->
+  <button mat-menu-item *ngIf="!rootIsF2Expression" (click)="removeStatement(node)">
+    <mat-icon color="warn">delete</mat-icon>
+    <span>Remove</span>
+  </button>
 
 </mat-menu>
