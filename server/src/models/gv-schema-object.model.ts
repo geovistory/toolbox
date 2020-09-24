@@ -2,38 +2,40 @@ import {InfPersistentItem, InfTemporalEntity, InfStatement, InfPlace, InfLanguag
 import {property, model} from '@loopback/repository';
 import {DatTextProperty} from './dat-text-property.model';
 import {DatColumn} from './dat-column.model';
+import {DatClassColumnMapping} from './dat-class-column-mapping.model';
 
 
 @model()
 class InfObject {
-  @property.array(InfPersistentItem) persistent_item: Partial<InfPersistentItem>[]
-  @property.array(InfTemporalEntity) temporal_entity: Partial<InfTemporalEntity>[]
-  @property.array(InfStatement) statement: Partial<InfStatement>[]
-  @property.array(InfPlace) place: Partial<InfPlace>[]
-  @property.array(InfLanguage) language: Partial<InfLanguage>[]
-  @property.array(InfAppellation) appellation: Partial<InfAppellation>[]
-  @property.array(InfTimePrimitive) time_primitive: Partial<InfTimePrimitive>[]
-  @property.array(InfTextProperty) text_property: Partial<InfTextProperty>[]
-  @property.array(InfLangString) lang_string: Partial<InfLangString>[]
-  @property.array(InfDimension) dimension: Partial<InfDimension>[]
+  @property.array(InfPersistentItem) persistent_item?: Partial<InfPersistentItem>[]
+  @property.array(InfTemporalEntity) temporal_entity?: Partial<InfTemporalEntity>[]
+  @property.array(InfStatement) statement?: Partial<InfStatement>[]
+  @property.array(InfPlace) place?: Partial<InfPlace>[]
+  @property.array(InfLanguage) language?: Partial<InfLanguage>[]
+  @property.array(InfAppellation) appellation?: Partial<InfAppellation>[]
+  @property.array(InfTimePrimitive) time_primitive?: Partial<InfTimePrimitive>[]
+  @property.array(InfTextProperty) text_property?: Partial<InfTextProperty>[]
+  @property.array(InfLangString) lang_string?: Partial<InfLangString>[]
+  @property.array(InfDimension) dimension?: Partial<InfDimension>[]
 }
 
 @model()
 class ProObject {
-  @property.array(ProInfoProjRel) info_proj_rel: Partial<ProInfoProjRel>[]
+  @property.array(ProInfoProjRel) info_proj_rel?: Partial<ProInfoProjRel>[]
 }
 
 @model()
 class DatObject {
-  @property.array(DatDigital) digital: Partial<DatDigital>[]
-  @property.array(DatColumn) column: Partial<DatColumn>[]
-  @property.array(DatTextProperty) text_property: Partial<DatTextProperty>[]
+  @property.array(DatDigital) digital?: Partial<DatDigital>[]
+  @property.array(DatColumn) column?: Partial<DatColumn>[]
+  @property.array(DatTextProperty) text_property?: Partial<DatTextProperty>[]
+  @property.array(DatClassColumnMapping) class_column_mapping?: Partial<DatClassColumnMapping>[]
 }
 
 
 @model()
 class WarObject {
-  @property.array(WarEntityPreview) entity_preview: Partial<WarEntityPreview>[]
+  @property.array(WarEntityPreview) entity_preview?: Partial<WarEntityPreview>[]
 }
 
 /**

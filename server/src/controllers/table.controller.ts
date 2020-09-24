@@ -1,13 +1,12 @@
 import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/context';
-import {get, param, Request, RestBindings} from '@loopback/rest';
-import {SecurityBindings, UserProfile} from '@loopback/security';
-import {Roles} from '../components/authorization/keys';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
+import {get, param} from '@loopback/rest';
+import {Roles} from '../components/authorization/keys';
+import {Postgres1DataSource} from '../datasources';
 import {GvSchemaObject} from '../models/gv-schema-object.model';
 import {QTableColumns} from '../components/query/q-table-columns';
-import {QueryBindings} from '../components/query/keys';
 
 
 /**
@@ -16,7 +15,7 @@ import {QueryBindings} from '../components/query/keys';
 @tags('table')
 export class TableController {
   constructor(
-    @inject(QueryBindings.qTableColumns) private qTableColumns: QTableColumns
+    @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
   ) {}
 
 
@@ -35,7 +34,7 @@ export class TableController {
     @param.query.number('pkProject', {required: true}) pkProject: number,
     @param.query.number('pkDigital', {required: true}) pkDigital: number,
   ): Promise<GvSchemaObject> {
-    return this.qTableColumns.query(pkProject, pkDigital)
+    return new QTableColumns(this.dataSource).query(pkProject, pkDigital)
   }
 
 

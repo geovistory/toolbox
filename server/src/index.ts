@@ -26,6 +26,8 @@ import {ApplicationConfig} from '@loopback/core';
 import {GeovistoryServer} from './server';
 
 export async function main(options: ApplicationConfig = {}) {
+  console.log(`Starting server using database: ${process.env.DATABASE_URL?.split('@')?.[1]}`)
+
   const server = new GeovistoryServer(options);
   await server.boot();
   await server.start();
