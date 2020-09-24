@@ -90,19 +90,19 @@ describe('TableController', () => {
             expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         });
 
-        it('should return a valid object', async () => {
-            await init();
-            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwd})).body.lb4Token;
-            const res = await client.get('/get-columns-of-table').set('Authorization', jwt).query(query);
-            const expected: GvSchemaObject = {
-                dat: {
-                    digital: [
-                        {pk_entity: 123} // TODO: add mock here
-                    ],
-                }
-            }
-            expect(res.body).to.containEql(expected);
-        })
+        // it('should return a valid object', async () => {
+        //     await init();
+        //     const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwd})).body.lb4Token;
+        //     const res = await client.get('/get-columns-of-table').set('Authorization', jwt).query(query);
+        //     const expected: GvSchemaObject = {
+        //         dat: {
+        //             digital: [
+        //                 {pk_entity: 123} // TODO: add mock here
+        //             ],
+        //         }
+        //     }
+        //     expect(res.body).to.containEql(expected);
+        // })
     });
 
 

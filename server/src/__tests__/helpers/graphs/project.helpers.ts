@@ -9,7 +9,7 @@ export async function createRawProject(language: string): Promise<ProProject> {
 
 export async function createProjectAndNamespace(language: string): Promise<{project: ProProject, namespace: DatNamespace}> {
   const project = await AtmProject.createProject(language);
-  const namespace = await AtmNamespace.createNamespace(project);
+  const namespace = await AtmNamespace.createDatNamespace(project);
   return {project, namespace};
 }
 

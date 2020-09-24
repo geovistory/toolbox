@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
 import {InfStatement} from '../../../../models';
 import {DfhApiPropertyMock} from './DfhApiPropertyMock';
@@ -6,6 +7,8 @@ import {InfPersistentItemMock} from './InfPersistentItemMock';
 import {InfTemporalEntityMock} from './InfTemporalEntityMock';
 import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
 import {TabCell} from '../../atomic/tab-cell-X.helper';
+import {TabCellXMock} from './TabCellXMock';
+import {TabRowMock} from './TabRowMock';
 
 /**
  * pk_entity prefix: 300
@@ -149,25 +152,25 @@ export class InfStatementMock {
   })
 
   static readonly NAMING_ALBERT_TO_PEIT_ALBERT = new InfStatement({
-    pk_entity: 3018,
+    pk_entity: 3020,
     fk_subject_info: InfTemporalEntityMock.ALBERT_IV_NAMING.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.ALBERT_IV.pk_entity,
   })
 
   static readonly NAMING_RUDOLF_TO_PEIT_RUDOLF = new InfStatement({
-    pk_entity: 3019,
+    pk_entity: 3021,
     fk_subject_info: InfTemporalEntityMock.RUDOLF_NAMING.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
     fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
   })
 
-  // static readonly NAMING_CELL__NAME_RUDOLF_REFERS_TO_PEIT = new InfStatement({
-  //   pk_entity: 3019,
-  //   fk_subject_info:
-  //   fk_property: 1334,
-  //   fk_object_info:
-  // })
+  static readonly CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF = new InfStatement({
+    pk_entity: 3022,
+    fk_subject_info: TabCellXMock.FEATURE_X_2_1.pk_entity,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
 
 
 }

@@ -10,7 +10,7 @@ export class InfAppellationMock {
   static readonly JACK_THE_FOO = new InfAppellation({
     pk_entity: 5001,
     fk_class: DfhApiClassMock.EN_40_APPELLATION.dfh_pk_class,
-    string: 'Jack the foo'
+    string: 'Jack the foo',
   })
   static readonly JACK = new InfAppellation({
     pk_entity: 5002,
