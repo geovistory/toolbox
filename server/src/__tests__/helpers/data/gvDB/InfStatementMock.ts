@@ -6,9 +6,7 @@ import {InfAppellationMock} from './InfAppellationMock';
 import {InfPersistentItemMock} from './InfPersistentItemMock';
 import {InfTemporalEntityMock} from './InfTemporalEntityMock';
 import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
-import {TabCell} from '../../atomic/tab-cell-X.helper';
 import {TabCellXMock} from './TabCellXMock';
-import {TabRowMock} from './TabRowMock';
 
 /**
  * pk_entity prefix: 300

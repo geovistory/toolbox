@@ -24,19 +24,15 @@ import {InfStatementMock} from '../data/gvDB/InfStatementMock';
 
 export async function forFeatureX() {
 
-    console.log('Step 1')
-
     //create account, namespace and project
     await createProProject(ProProjectMock.PROJECT_2); //english
     await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
     await createPubAccount(PubAccountMock.GAETAN_VERIFIED);
     await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.PROJECT_2);
 
-    console.log('Step 2')
     //create the data
     await createAlbertAndRudolf()
 
-    console.log('Step 3')
     //create the digital and related
     await createDatDigital(DatDigitalMock.DIGITAL_BIRTHDATES);
     await createDatColumn(DatColumnMock.COL_NAMES);
@@ -51,11 +47,8 @@ export async function forFeatureX() {
     await createTabCell(TabCellXMock.FEATURE_X_2_1);
     await createTabCell(TabCellXMock.FEATURE_X_2_2);
 
-    console.log('Step 4')
-
     //create the mapping
     await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON);
     await createInfStatement(InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF);
 
-    console.log('Step 5')
 }
