@@ -103,7 +103,7 @@ export class QTableColumns extends SqlBuilderLb4Models {
 
         this.getBuiltQuery()
 
-    return this.execute<GvSchemaObject>();
+    return this.executeAndReturnFirstData<GvSchemaObject>();
   }
 
 
