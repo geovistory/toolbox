@@ -13,7 +13,6 @@ import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
 import {wait} from '../utils/helpers';
 import {S3LevelBackup} from './base/bucketeer/S3LevelBackup';
 import {Logger} from './base/classes/Logger';
-import {getMemoryUsage} from './base/functions';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
