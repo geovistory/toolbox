@@ -5,6 +5,7 @@ import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { Observable } from 'rxjs';
 import { map } from '../../../../node_modules/rxjs/operators';
 import { DatChunk, DatDigital, DatNamespace } from '../sdk';
+import { DatClassColumnMapping } from '../sdk-lb4';
 import { DatColumn } from '../sdk/models/DatColumn';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';
 import { latestVersion } from '../util/custom-rxjs-operators';
@@ -74,6 +75,16 @@ class DatChunkSelections extends Selector {
   ) { super(ngRedux, configs, model) }
 }
 
+class DatClassColumnMappingSelections extends Selector {
+  public by_pk_entity$ = this.selector<DatClassColumnMapping>('by_pk_entity')
+  public by_fk_column$ = this.selector<ByPk<DatClassColumnMapping>>('by_fk_column')
+  constructor(
+    public ngRedux: NgRedux<IAppState>,
+    public configs: ReducerConfigCollection,
+    public model: string
+  ) { super(ngRedux, configs, model) }
+}
+
 class DatColumnSelections extends Selector {
   public by_pk_entity$ = this.selector<DatColumn>('by_pk_entity')
   public by_fk_digital$ = this.selector<ByPk<DatColumn>>('by_fk_digital')
@@ -101,6 +112,7 @@ export class DatSelector extends DatActions {
   namespace$ = new DatNamespaceSelections(this.ngRedux, datDefinitions, 'namespace');
   chunk$ = new DatChunkSelections(this.ngRedux, datDefinitions, 'chunk');
   column$ = new DatColumnSelections(this.ngRedux, datDefinitions, 'column');
+  class_column_mapping$ = new DatClassColumnMappingSelections(this.ngRedux, datDefinitions, 'class_column_mapping');
   text_property$ = new DatTextPropertySelections(this.ngRedux, datDefinitions, 'text_property');
 
   constructor(public ngRedux: NgRedux<IAppState>) {

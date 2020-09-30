@@ -10,6 +10,9 @@ import { FormControl } from '@angular/forms';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { TColFilters, TColFilter } from '../../../../../../../server/src/lb3/server/table/interfaces'
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { TableService } from 'app/core/sdk-lb4';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 
 // TODO import this interface from backend
 interface TabCell {
@@ -82,7 +85,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   loading = true;
 
   // for stupid table component:
-  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' | number }[]>;
+  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' } }[]>;
   table$: ReplaySubject<string[][]>;
   colFiltersEnabled = false;
   lineBrakeInCells = false;
@@ -106,6 +109,9 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     private digitalApi: DatDigitalApi,
     private p: ActiveProjectService,
     private worker: WorkerWrapperService,
+    private tableAPI: TableService,
+    private s: SchemaObjectService,
+    private c: ConfigurationPipesService
   ) { }
 
   ngOnInit() {
@@ -113,7 +119,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.t.setTabTitle('Table ' + this.pkEntity)
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.dat$.column.loadColumnsOfTable(this.pkEntity, pkProject);
+      // this.p.dat$.column.loadColumnsOfTable(this.pkEntity, pkProject);
+      this.s.storeGv(this.tableAPI.tableControllerGetTableColumns(pkProject, this.pkEntity), pkProject);
     })
 
     const loadConfig$ = combineLatest(
@@ -241,15 +248,79 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
     // set the headers
     this.headers$ = new ReplaySubject();
+
+
+
+
+    // const data$: InterfaceForStupidCmpt = this.columns$.pipe(
+    //   switchMap(cols => {
+    //     combineLatestOrEmpty(cols.map(c => {
+    //       let result: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' };
+
+
+    //       return this.p.dat$.class_column_mapping$.by_fk_column$.key(c.datColumn.pk_entity).pipe(
+
+    //       )
+    //     }))
+    //   })
+    // )
+
+
+
+
+
+
+
+
+    // combineLatest([
+    //   this.columns$,
+    //   this.p.dat$.classColumnMapping$.by_fk_column$$]
+
+    // ).pipe(takeUntil(this.destroy$))
+    //   .subscribe(([cols, mapping, labels, type]) => {
+    //     const columns: { colLabel: string, comment: string, type: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' } }[] = [];
+    //     columns.push({ colLabel: 'Row ID', comment: 'number', type: 'number' });
+    //     let column: { colLabel: string, comment: string, type: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' } };
+    //     for (let i = 0; i < cols.length; i++) {
+    //       column = {
+    //         colLabel: cols[i].display,
+    //         comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+    //         type: mapping[cols[i].datColumn.pk_entity] ? { fkClass: mapping[cols[i].datColumn.pk_entity].fk_class, className:, icon } : cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+    //       };
+    //       columns.push(column);
+    //     }
+    //     return columns;
+    //   })
+
+
+
+
+    // combineLatest(this.headers$, this.p.dfh$.class$.by_pk_class$.all$).pipe(takeUntil(this.destroy$)).subscribe(([headers, classes]) => {
+    //   this.headers = headers;
+    //   this.headers.forEach(h => {
+    //     if (typeof h.type === 'number') {
+    //       h.classLabel$ = this.c.pipeClassLabel(h.type);
+    //       h.classType$ = this.p.dfh$.class$.by_pk_class$.key(h.type).pipe(filter(klass => !!klass), map(klass => {
+    //         const systype = klass.basic_type;
+    //         if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || systype === 30) return 'peIt';
+    //         else return 'teEn';
+    //       })
+    //       )
+    //     }
+    //   });
+    // })
+
+
     this.columns$.pipe(
       map(cols => {
-        const columns: { colLabel: string, comment: string, type: 'number' | 'string' | number }[] = [];
+        const columns: { colLabel: string, comment: string, type: 'number' | 'string' }[] = [];
+        let column: { colLabel: string, comment: string, type: 'number' | 'string' };
         columns.push({ colLabel: 'Row ID', comment: 'number', type: 'number' });
         for (let i = 0; i < cols.length; i++) {
-          const column = {
+          column = {
             colLabel: cols[i].display,
             comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
-            type: cols[i].mappingClass ? cols[i].mappingClass : cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+            type: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
           };
           columns.push(column);
         }

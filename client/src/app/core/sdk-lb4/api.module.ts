@@ -39,6 +39,7 @@ import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.se
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';
 import { SysSystemTypeService } from './api/sysSystemType.service';
 import { SystemConfigurationService } from './api/systemConfiguration.service';
+import { TableService } from './api/table.service';
 import { WarEntityPreviewService } from './api/warEntityPreview.service';
 import { WarEntityPreviewControllerService } from './api/warEntityPreviewController.service';
 

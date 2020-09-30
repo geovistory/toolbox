@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, HostBinding, ViewChild, OnDestroy } from '@angular/core';
-import { EntityPreview, ActiveProjectService } from 'app/core';
-import { MatMenuTrigger } from '../../../../../node_modules/@angular/material';
-import { takeUntil } from 'rxjs/operators';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ActiveProjectService, EntityPreview } from 'app/core';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-entity-preview',

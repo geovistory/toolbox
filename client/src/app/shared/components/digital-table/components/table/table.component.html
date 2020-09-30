@@ -18,35 +18,49 @@
 
     <!-- HEADER -->
     <ng-template pTemplate="header">
+      <!-- column name -->
       <tr>
-        <th class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn>
-          <table>
-            <tr>
-              <div class="gv-td-col-header row">
-                <div class="col-9">
-                  <div
-                    [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                    {{col.colLabel}}
-                  </div>
-                  <div class="mat-caption"
-                    [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                    {{col.comment}}</div>
-                </div>
-                <!-- SORT -->
-                <mat-icon class="col-3" *ngIf="sortingEnabled && curSort.colNb == i"
-                  [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
-                </mat-icon>
+        <th class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn
+          colspan="2">
+          <div class="gv-td-col-header row">
+            <div class="col-9">
+              <div
+                [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                {{col.colLabel}}
               </div>
-            </tr>
-            <!--still working-->
-            <tr *ngIf='type col.type == "number"'>
-                <td>Text</td>
-                <td>Matched</td>
-            </tr>
-
-          </table>
+              <div class="mat-caption"
+                [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                {{col.comment}}</div>
+            </div>
+            <!-- SORT -->
+            <mat-icon class="col-3" *ngIf="sortingEnabled && curSort.colNb == i"
+              [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
+            </mat-icon>
+          </div>
         </th>
-        <th *ngFor="let com of columnComments" pResizableColumn>{{com}}</th>
+      </tr>
+      <tr>
+        <!-- When mapping: Text column -->
+        <th class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn
+          colspan="col.mapping ? 1 : 2">
+          <div class="gv-td-col-header row">
+            <div class="col-9">
+              <div
+                [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                Text
+              </div>
+            </div>
+        </th>
+
+        <!-- When mapping: Matched entity -->
+        <th class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn
+          colspan="col.mapping ? 1 : 0">
+          Matched
+          <span *ngIf="col.type.icon === 'teEn'" class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
+          <span *ngIf="col.type.icon === 'peIt'"
+            class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+          {{col.mapping.className}}
+          </td>
       </tr>
 
       <!-- FILTERING -->
@@ -62,15 +76,28 @@
     </ng-template>
 
     <!-- BODY -->
-    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+    <ng-template pTemplate="body" let-row let-rowIndex="i">
       <tr>
-        <td *ngFor="let value of row; let i = index" class="ui-resizable-column" (click)='cellClick(rowIndex, i)'>
-          <div
-            [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-            {{value}}
-          </div>
+        <td *ngFor="let value of row; let j = index" class="ui-resizable-column">
+          <table>
+            <tr>
+              <td (click)='cellClick(i, j)'>
+                <div
+                  [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                  {{value}}
+                </div>
+              </td>
+              <td *ngIf='headers[j].type.className'>
+                <gv-entity-preview-component *ngIf="entityMappings[i][j]" [pkEntity]="entityMappings[i][j]"
+                  [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview-component>
+
+                <!-- SELECT ENTITY COMPONENT *ngIf="!entityMappings[i][j]" -->
+                <!-- add the 3 dots options -->
 
 
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>
     </ng-template>

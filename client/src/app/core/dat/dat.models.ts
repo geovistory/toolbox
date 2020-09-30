@@ -1,5 +1,6 @@
 import { ByPk } from "app/core/store/model";
 import { DatDigital, DatNamespace } from "../sdk";
+import { DatClassColumnMapping } from '../sdk-lb4/model/datClassColumnMapping';
 import { DatColumn } from '../sdk/models/DatColumn';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';
 
@@ -17,6 +18,11 @@ export class ChunkSlice {
 export class ColumnSlice {
   by_pk_entity?: ByPk<DatColumn>;
   by_fk_digital?: ByPk<ByPk<DatColumn>>;
+}
+
+export class ClassColumnMappingSlice {
+  by_pk_entity?: ByPk<DatClassColumnMapping>;
+  by_fk_column?: ByPk<ByPk<DatClassColumnMapping>>;
 }
 
 export class TextPropertySlice {
