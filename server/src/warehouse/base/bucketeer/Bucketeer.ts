@@ -48,9 +48,12 @@ export class Bucketeer {
     });
   }
 
-  getFiles(dirPath: string) {
-    return existsSync(dirPath) ? readdir(dirPath) : [];
+  async getFiles(dirPath: string) {
+    let files: string[] = []
+    if (existsSync(dirPath)) files = await readdir(dirPath)
+    return files;
   }
+
 
   /**
    * Upload a file to bucketeer
@@ -137,10 +140,10 @@ export class Bucketeer {
   /**
    * Read a file from bucketeer and return array of strings
    */
-  public readFile(s3Key: string): Promise<string[]|undefined> {
+  public readFile(s3Key: string): Promise<string[] | undefined> {
     Logger.msg(`reading file: [${s3Key}]`)
 
-    return new Promise<string[]|undefined>((res, rej) => {
+    return new Promise<string[] | undefined>((res, rej) => {
       // Configure the file stream
       const params: S3.GetObjectRequest = {
         Key: s3Key,
