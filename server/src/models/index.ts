@@ -3,6 +3,7 @@ export * from './war-class-preview.model';
 export * from './dat-chunk.model';
 export * from './dat-entity.interface';
 export * from './dfh-profile.model';
+export * from './dfh-api-profile.model';
 export * from './dfh-class.model';
 export * from './dfh-property.model';
 export * from './dfh-label.model';

@@ -6,9 +6,11 @@ import {Warehouse, WarehouseConfig} from './Warehouse';
 
 const appRoot = pgkDir.sync() ?? ''
 
-// Start on remote server (including backups)
+// Use this function on heroku environments
+// It starts the warehouse with backups: this requires a bucketeer instance,
+// specified by env vars. Additionnaly the warehouse-compat-list is required
+// (it's not created by this function, because on heroku .git folder is missing)
 export async function start() {
-    console.log('joined path', path.join(appRoot, '/deployment/warehouse-compat-list.txt'))
 
     // reads warhouse compatible commits
     const compatibleWithCommits = fs
@@ -33,9 +35,10 @@ export async function start() {
 }
 
 
-// Start on local dev server with backups
-// this requires a bucketeer instance, specified by env vars,
-// see src/warehouse/base/bucketeer/Bucketeer.ts
+// Use this function on local environments
+// Start on local dev server with backups: this requires a bucketeer instance,
+// specified by env vars. The function will create the warehouse-compat-list
+// (this requires git CLI and .git folder)
 export async function startDev() {
 
     c.execSync(`cd ${path.join(appRoot, '..')} && sh deployment/create-warehouse-compat-list.sh`);
@@ -62,14 +65,15 @@ export async function startDev() {
 }
 
 
-// Start on local dev server without backups
+// Use this function on local environments
+// Cleans the whDB and starts warehouse without backups
 // (No bucketeer instance required, everything related to backups is skipped)
-export async function startDevSimple() {
-
+export async function cleanAndStartDev() {
     const config: WarehouseConfig = {
         leveldbFolder: 'leveldb',
         rootDir: path.join(appRoot),
     }
     const warehouse = new Warehouse(config)
+    await warehouse.hardReset()
     await warehouse.start();
 }
