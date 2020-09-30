@@ -1,10 +1,10 @@
-import { testdb } from "../testdb";
-import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository, ProEntityLabelConfigRepository } from '../../../repositories';
-import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
-import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';
-import { PubRoleRepository } from '../../../repositories/pub-role.repository';
-import { resetLanguageInitialization } from '../atomic/inf-language.helper';
-import { resetTypeInitialization } from '../atomic/sys-system-type.helper';
+import {testdb} from "../testdb";
+import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository, ProEntityLabelConfigRepository} from '../../../repositories';
+import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
+import {PubRoleRepository} from '../../../repositories/pub-role.repository';
+import {resetLanguageInitialization} from '../atomic/inf-language.helper';
+import {resetTypeInitialization} from '../atomic/sys-system-type.helper';
 
 export async function cleanDb() {
     //because we update it to create an information.language
@@ -15,14 +15,14 @@ export async function cleanDb() {
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE '%_vt'`);
-    tables.forEach(async (t: { name: string }) => { await testdb.execute('DELETE FROM ' + t.name) });
+    tables.forEach(async (t: {name: string}) => {await testdb.execute('DELETE FROM ' + t.name)});
 
     //delete all cell partitionned table
     const cellTables = await testdb.execute(`
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE 'cell_%'`);
-    cellTables.forEach(async (t: { name: string }) => { if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name) });
+    cellTables.forEach(async (t: {name: string}) => {if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name)});
 
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
     const datDigitalRepository = new DatDigitalRepository(testdb);
