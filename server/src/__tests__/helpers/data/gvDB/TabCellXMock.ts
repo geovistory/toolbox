@@ -12,7 +12,7 @@ export class TabCellXMock {
     2000, //pk_entity
     DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
     DatColumnMock.COL_NAMES.pk_entity as number, //fk_column
-    TabRowMock.ROW_ALBERT.pk_entity as number, //fk_row
+    TabRowMock.ROW_ALBERT.pk_row as number, //fk_row
     'Albert IV' //content
   )
 
@@ -20,7 +20,7 @@ export class TabCellXMock {
     2001, //pk_entity
     DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
     DatColumnMock.COL_DATES.pk_entity as number, //fk_column
-    TabRowMock.ROW_ALBERT.pk_entity as number, //fk_row
+    TabRowMock.ROW_ALBERT.pk_row as number, //fk_row
     '1180' //content
   )
 
@@ -28,7 +28,7 @@ export class TabCellXMock {
     2002, //pk_entity
     DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
     DatColumnMock.COL_NAMES.pk_entity as number, //fk_column
-    TabRowMock.ROW_RUDOLF.pk_entity as number, //fk_row
+    TabRowMock.ROW_RUDOLF.pk_row as number, //fk_row
     'Rudolf of Habsbourg' //content
   )
 
@@ -36,7 +36,7 @@ export class TabCellXMock {
     2003, //pk_entity
     DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
     DatColumnMock.COL_DATES.pk_entity as number, //fk_column
-    TabRowMock.ROW_RUDOLF.pk_entity as number, //fk_row
+    TabRowMock.ROW_RUDOLF.pk_row as number, //fk_row
     '1218' //content
   )
 }

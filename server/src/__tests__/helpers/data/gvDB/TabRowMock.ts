@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {DatColumn} from '../../../../models';
 import {TabRow} from '../../../../models/tab-row.model';
 import {DatDigitalMock} from './DatDigitalMock';
 
@@ -8,12 +7,12 @@ import {DatDigitalMock} from './DatDigitalMock';
  */
 export class TabRowMock {
     static readonly ROW_RUDOLF = new TabRow({
-        pk_entity: 1000,
+        // pk_row: 1000, ==> apparently not allowed
         fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
     })
 
     static readonly ROW_ALBERT = new TabRow({
-        pk_entity: 1001,
+        // pk_row: 1001, ==> apparently not allowed
         fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
     })
 }

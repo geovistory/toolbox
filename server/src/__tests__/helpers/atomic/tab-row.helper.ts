@@ -3,7 +3,6 @@
 import {TabRow} from '../../../models';
 import {TabRowRepository} from '../../../repositories/tab-row.repository';
 import {testdb} from '../../helpers/testdb';
-import {dealWithPkEntity} from './_sequences.helper';
 
 
 function createTabRowRepo() {
@@ -11,7 +10,8 @@ function createTabRowRepo() {
 }
 
 export async function createTabRow(item: Partial<TabRow>) {
-    return createTabRowRepo().create(await dealWithPkEntity(item, 'table'));
+    //can not deals with the pk_entity because in schema tables, there is a sequence for cell and an other for column, this would imply another parameter. I assume it is easier to spit an error from pg in case the parameter item does not contain a valid private key
+    return createTabRowRepo().create(item);
 }
 
 export async function updateTabRow(id: number, item: Partial<TabRow>) {

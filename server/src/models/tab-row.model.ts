@@ -1,14 +1,13 @@
-import { Entity, model, property } from '@loopback/repository';
-import { DatEntity } from '.';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
     settings: {
         strict: true,
         idInjection: false,
-        postgresql: { schema: 'data', table: 'row' }
+        postgresql: {schema: 'tables', table: 'row'}
     }
 })
-export class TabRow extends Entity implements DatEntity {
+export class TabRow extends Entity {
 
     @property({
         type: 'number',
@@ -16,7 +15,7 @@ export class TabRow extends Entity implements DatEntity {
         generated: true,
         updateOnly: true,
     })
-    pk_entity?: number;
+    pk_row?: number;
 
     @property({
         type: 'number',

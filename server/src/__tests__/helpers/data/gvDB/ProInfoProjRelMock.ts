@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {ProInfoProjRel} from '../../../../models';
-import {InfPersistentItemMock} from './InfPersistentItemMock';
-import {InfStatementMock} from './InfStatementMock';
-import {InfTemporalEntityMock} from './InfTemporalEntityMock';
-import {ProProjectMock} from './ProProjectMock';
-import {PubAccountMock} from './PubAccountMock';
+import { ProInfoProjRel } from '../../../../models';
+import { InfPersistentItemMock } from './InfPersistentItemMock';
+import { InfStatementMock } from './InfStatementMock';
+import { InfTemporalEntityMock } from './InfTemporalEntityMock';
+import { ProProjectMock } from './ProProjectMock';
+import { PubAccountMock } from './PubAccountMock';
 
 /**
  * pk_entity prefixed with 200
@@ -184,11 +184,42 @@ export class ProInfoProjRelMock {
     is_in_project: true
   })
 
-
   static readonly PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1 = new ProInfoProjRel({
     pk_entity: 2022,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
     fk_entity: InfStatementMock.UNOIN_1_HAS_PARTNER_1.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly SANDBOX_ALBERT_IV = new ProInfoProjRel({
+    pk_entity: 2023,
+    fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+    fk_entity: InfPersistentItemMock.ALBERT_IV.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly SANDBOX_ALBERT_IV_NAMING = new ProInfoProjRel({
+    pk_entity: 2024,
+    fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+    fk_entity: InfStatementMock.NAMING_ALBERT_TO_PEIT_ALBERT.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly SANDBOX_RUDOLF = new ProInfoProjRel({
+    pk_entity: 2025,
+    fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+    fk_entity: InfPersistentItemMock.RUDOLF.pk_entity,
+    fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
+    is_in_project: true
+  })
+
+  static readonly SANDBOX_RUDOLF_NAMING = new ProInfoProjRel({
+    pk_entity: 2026,
+    fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+    fk_entity: InfStatementMock.NAMING_RUDOLF_TO_PEIT_RUDOLF.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     is_in_project: true
   })

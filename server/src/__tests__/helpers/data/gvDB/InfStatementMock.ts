@@ -165,7 +165,7 @@ export class InfStatementMock {
 
   static readonly CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF = new InfStatement({
     pk_entity: 3022,
-    fk_subject_info: TabCellXMock.FEATURE_X_2_1.pk_entity,
+    fk_subject_info: TabCellXMock.FEATURE_X_2_1.pk_cell,
     fk_property: 1334,
     fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
   })
