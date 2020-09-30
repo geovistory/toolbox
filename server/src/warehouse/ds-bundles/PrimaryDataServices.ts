@@ -107,4 +107,10 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));
     }
+
+    async everythingInitialized(): Promise<boolean> {
+        const doneDates = await Promise.all(this.registered.map(ds => ds.getLastUpdateDone()))
+        if (doneDates.includes(undefined)) return false
+        return true
+    }
 }

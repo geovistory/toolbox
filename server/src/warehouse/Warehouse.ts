@@ -100,12 +100,12 @@ export class Warehouse {
      * start warehouse
      */
     async start() {
-
         const whDataFound = await this.findWhData();
 
-        await this.dbSetup()
-
-        if (!whDataFound) await this.createWhData();
+        if (!whDataFound) {
+            await this.dbSetup()
+            await this.createWhData();
+        }
 
         await this.listen()
     }
@@ -118,12 +118,16 @@ export class Warehouse {
      */
     private async findWhData(): Promise<boolean> {
 
-        // Q: is there a leveldb folder?
+        // Q: is there a valid leveldb folder?
+        // For development: remove leveldb folder if you want to trigger
+        // creation of wh data
         if (this.leveldbFolderExists()) {
             // A: yes. data found.
-            // For development: remove leveldb folder if you want to trigger
-            // creation of wh data
-            return true
+
+            // Q: Is the leveldb folder initialized ?
+            const initialized = await this.setupAndCheckWhDb();
+
+            return initialized
         }
 
         // Q: Does warehouse support backups?
@@ -163,7 +167,9 @@ export class Warehouse {
                 // Q: Download successful?
                 if (download === 'success') {
                     // A: YES. data found
-                    return true
+
+                    const initialized = await this.setupAndCheckWhDb();
+                    return initialized
                 } else {
                     // there was an error, no data found.
                     Logger.msg('*** there was an error with backup download – need to initialize ***', 0);
@@ -172,6 +178,19 @@ export class Warehouse {
                 }
             }
         }
+    }
+
+    /**
+     * sets up the db code and checks if the current folder contains a
+     * initialized wh db. If not, make a hard reset.
+     */
+    private async setupAndCheckWhDb() {
+        await this.dbSetup();
+        const isInitialized = await this.prim.everythingInitialized();
+
+        // A: No. delete and stop process
+        if (!isInitialized) await this.hardReset('Primary data services were not (all) initialized');
+        return isInitialized
     }
 
     /**
@@ -212,7 +231,6 @@ export class Warehouse {
         const date = await this.getInitBackupDate();
 
         await this.createPrimaryData();
-
 
         await this.createAggregatedData()
 
@@ -259,33 +277,38 @@ export class Warehouse {
 
 
     async createLeveldb(leveldbpath: string): Promise<LevelUp> {
-        const down = leveldown(leveldbpath)
-        const up = levelup(down, {}, (error) => {
-            if (error) {
-                Logger.err('Error on opening leveldb. Make hard reset.')
-                // if we have an error here, the db is currupt
-                // make hard reset to trigger initialization of
-                // warehouse on next start
-                this.hardReset()
-                    .then(() => {
-                        throw error
-                    })
-                    .catch(e => {
-                        if (e) throw e
-                    })
-            }
+        return new Promise((res, rej) => {
+
+            const down = leveldown(leveldbpath)
+            const up = levelup(down, {}, (error) => {
+                if (error) {
+                    Logger.err('Error on opening leveldb. Make hard reset.')
+                    // if we have an error here, the db is currupt
+                    // make hard reset to trigger initialization of
+                    // warehouse on next start
+                    this.hardReset('Error on opening leveldb. Make hard reset.')
+                        .catch(e => {rej(e)})
+                        .finally(() => rej())
+
+                }
+                else {
+                    res(up)
+                }
+            })
+
         })
-        return up
     }
 
     /**
      * Deletes local and remote leveldb
      */
-    async hardReset() {
+    async hardReset(errorMsg: string) {
         // delete the local folder
         await rmfr(this.leveldbpath)
         // delete the link to the current backup
-        await this.s3backuper.deleteLinkToCurrent()
+        if (this.config.backups) await this.s3backuper.deleteLinkToCurrent()
+        // terminate process
+        throw new Error(errorMsg)
     }
 
     /**
@@ -348,6 +371,8 @@ export class Warehouse {
         this.prim = new PrimaryDataServices(this)
         this.agg = new AggregatedDataServices(this)
         this.dep = new DependencyDataServices(this)
+
+
 
         this.createSchema$.next()
         return new Promise((res, rej) => {

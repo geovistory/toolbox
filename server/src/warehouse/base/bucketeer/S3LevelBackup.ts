@@ -1,5 +1,8 @@
+import {statSync} from 'fs';
 import {Logger} from '../classes/Logger';
 import {Bucketeer} from './Bucketeer';
+import * as path from 'path';
+import {equals} from 'ramda';
 
 interface BackupId {
   prefix: string
@@ -13,12 +16,14 @@ export class S3LevelBackup {
 
   backupPrefix: string
   delemiter = '___'
+  leveldbPath: string
   constructor(
     private rootFolder: string,
     private leveldbFolder = 'leveldb'
   ) {
     this.bucketeer = new Bucketeer
     this.backupPrefix = this.leveldbFolder;
+    this.leveldbPath = path.join(rootFolder, leveldbFolder)
   }
 
   async createBackup(tmsp: Date, currentCommit: string) {
@@ -32,13 +37,31 @@ export class S3LevelBackup {
 
     Logger.msg(`Creating backupId ${backupname}`)
 
+    // get file names with sizes of folder
+    const folderBefore = await this.getFilesWithSizes(this.leveldbPath)
+
     // upload folder
     await this.bucketeer.uploadFolder(this.rootFolder, this.leveldbFolder, backupname)
 
-    // set this backup as current backup
-    await this.bucketeer.uploadStringToFile(backupname, CURRENT);
+    // get file names with size of folder
+    const folderAfter = await this.getFilesWithSizes(this.leveldbPath)
 
-    Logger.msg(`Backup created! Current backup: ${backupname}`)
+    // Q: did file names and/or size change?
+    if (equals(folderBefore, folderAfter)) {
+      // A: Now -> backup successfull
+
+      // set this backup as current backup
+      await this.bucketeer.uploadStringToFile(backupname, CURRENT);
+
+      Logger.msg(`Backup created! Current backup: ${backupname}`)
+
+    }
+    else {
+      // A: Yes -> backup potentially corrupt, we don't set it as current backup
+      Logger.msg(`WARN: Backup potentially corrupt, not marked as current: ${backupname}`)
+
+    }
+
   }
 
 
@@ -120,6 +143,15 @@ export class S3LevelBackup {
   stringToBackupId(str: string): BackupId {
     const [prefix, isoDate, gitCommit] = str.replace('/', '').split(this.delemiter)
     return {prefix, isoDate, gitCommit}
+  }
+
+  async getFilesWithSizes(dirPath: string) {
+    const arrayOfFiles = await this.bucketeer.getFiles(dirPath)
+    const filesWithSizes: {[fileName: string]: number} = {}
+    arrayOfFiles.forEach(function (filePath) {
+      filesWithSizes[filePath] = statSync(filePath).size
+    })
+    return filesWithSizes
   }
 
 }
