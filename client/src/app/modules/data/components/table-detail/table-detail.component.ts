@@ -320,7 +320,11 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           column = {
             colLabel: cols[i].display,
             comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+<<<<<<< HEAD
             type: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+=======
+            type: 1 //cols[i].mappingClass ? cols[i].mappingClass : cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+>>>>>>> 9771ab107afd2c670e18c4dc508fcb359d76f68f
           };
           columns.push(column);
         }

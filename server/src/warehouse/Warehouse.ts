@@ -286,7 +286,7 @@ export class Warehouse {
         // delete the local folder
         await rmfr(this.leveldbpath)
         // delete the link to the current backup
-        await this.s3backuper.deleteLinkToCurrent()
+        if (this.config.backups) await this.s3backuper.deleteLinkToCurrent()
     }
 
     /**

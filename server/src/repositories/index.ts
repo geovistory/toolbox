@@ -9,6 +9,7 @@ export * from './dat-text-property.repository';
 export * from './dfh-class.repository';
 export * from './dfh-label.repository';
 export * from './dfh-profile.repository';
+export * from './dfh-api-profile.repository';
 export * from './dfh-property.repository';
 export * from './inf-appellation.repository';
 export * from './inf-lang-string.repository';

@@ -6,7 +6,7 @@ interface PkEntity {
   pk_entity?: number
   [key: string]: unknown
 }
-export async function dealWithPkEntity<M extends PkEntity>(item: M, schema: 'information' | 'projects' | 'data') {
+export async function dealWithPkEntity<M extends PkEntity>(item: M, schema: 'information' | 'projects' | 'data' | 'data_for_history') {
   if (item.pk_entity) {
     await testdb.execute(`SELECT setval('${schema}.entity_pk_entity_seq', ${item.pk_entity - 1}, true);`);
   }
