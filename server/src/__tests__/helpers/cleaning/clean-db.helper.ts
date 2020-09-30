@@ -119,6 +119,10 @@ export async function cleanDb() {
     await pubAccountProjectRelRepository.deleteAll(); //update or delete on table "project" violates foreign key constraint "account_project_rel_fk_project_fkey" on table "account_project_rel"
     await testdb.execute('ALTER TABLE public.account_project_rel ENABLE TRIGGER versioning_trigger');
 
+    await testdb.execute('ALTER TABLE data.class_column_mapping DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM data.class_column_mapping');
+    await testdb.execute('ALTER TABLE data.class_column_mapping ENABLE TRIGGER versioning_trigger');
+
     await testdb.execute('ALTER TABLE data.column DISABLE TRIGGER versioning_trigger');
     await datColumnRepository.deleteAll();
     await testdb.execute('ALTER TABLE data.column ENABLE TRIGGER versioning_trigger');
