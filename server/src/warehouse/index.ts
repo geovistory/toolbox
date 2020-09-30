@@ -33,7 +33,9 @@ export async function start() {
 }
 
 
-// Start on local dev server (no backups)
+// Start on local dev server with backups
+// this requires a bucketeer instance, specified by env vars,
+// see src/warehouse/base/bucketeer/Bucketeer.ts
 export async function startDev() {
 
     c.execSync(`cd ${path.join(appRoot, '..')} && sh deployment/create-warehouse-compat-list.sh`);
@@ -59,3 +61,15 @@ export async function startDev() {
     await warehouse.start();
 }
 
+
+// Start on local dev server without backups
+// (No bucketeer instance required, everything related to backups is skipped)
+export async function startDevSimple() {
+
+    const config: WarehouseConfig = {
+        leveldbFolder: 'leveldb',
+        rootDir: path.join(appRoot),
+    }
+    const warehouse = new Warehouse(config)
+    await warehouse.start();
+}
