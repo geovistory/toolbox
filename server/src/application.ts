@@ -20,6 +20,7 @@ import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
 import {PasswordResetTokenService} from './services/password-reset-token.service';
 import {NodeENV} from './utils/code.utils';
+import {SpecEnhancerComponent} from './components/spec-enhancer/spec-enhancer.component';
 
 
 export class GeovistoryApplication extends BootMixin(
@@ -84,6 +85,7 @@ export class GeovistoryApplication extends BootMixin(
     // this.setupLoggingComponent();
     this.setupJWTComponent();
     this.setupAuthorizationComponent();
+    this.setupSpecEnhancerComponent()
   }
 
   // Register Loopback 3 app as a component
@@ -99,6 +101,9 @@ export class GeovistoryApplication extends BootMixin(
 
   private setupLoopback3Component() {
     this.component(Lb3AppBooterComponent);
+  }
+  private setupSpecEnhancerComponent() {
+    this.component(SpecEnhancerComponent);
   }
 
   private setupLoggingComponent() {
