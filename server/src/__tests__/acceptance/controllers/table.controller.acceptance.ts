@@ -6,10 +6,15 @@ import {linkAccountProject} from '../../helpers/atomic/pub-account_project_rel.h
 import {createTypes} from '../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
 import {createAccountVerified} from '../../helpers/graphs/account.helper';
-import {init} from '../../helpers/graphs/init.helper';
 import {createProjectAndNamespace} from '../../helpers/graphs/project.helpers';
 import {setupApplication} from '../../helpers/gv-server-helpers';
+import {forFeatureX} from '../../helpers/graphs/feature-X.helper';
+import {PubAccountMock} from '../../helpers/data/gvDB/PubAccountMock';
+import {PubCredentialMock} from '../../helpers/data/gvDB/PubCredentialMock';
+import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
+import {DatDigitalMock} from '../../helpers/data/gvDB/DatDigitalMock';
 import {GvSchemaObject} from '../../../models/gv-schema-object.model';
+import {GetTablePageOptions, SortDirection, TablePageResponse} from '../../../components/query/q-table-page';
 
 
 describe('TableController', () => {
@@ -104,7 +109,48 @@ describe('TableController', () => {
         //     expect(res.body).to.containEql(expected);
         // })
     });
+    describe('GET /get-table-page', () => {
+        let query: {pkProject: number, pkEntity: number};
+        beforeEach(async () => {
+            try {
+                await cleanDb();
+                await forFeatureX()
+            } catch (e) {
+                console.log(e);
+            }
+            query = {
+                pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity ?? -1,
+                pkEntity: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity ?? -1
+            }
+        })
 
+        it('should return a valid object', async () => {
+            const jwt = (
+                await client.post('/login')
+                    .send({
+                        email: PubAccountMock.GAETAN_VERIFIED.email,
+                        password: PubCredentialMock.GAETAN_PASSWORD.password
+                    })
+            ).body.lb4Token;
+            const options: GetTablePageOptions = {
+                limit: 10,
+                offset: 0,
+                sortBy: 'pk_row',
+                sortDirection: SortDirection.ASC,
+                filters: {}
+            }
+            const res = await client
+                .post('/get-table-page')
+                .set('Authorization', jwt)
+                .query(query)
+                .send(options)
+            const expected
+                // : TablePageResponse
+                = {
+            }
+            expect(res.body).to.equal(expected);
+        })
+    })
 
 
 });

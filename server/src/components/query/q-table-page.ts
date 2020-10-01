@@ -58,15 +58,14 @@ export class TColFilter {
   },
 })
 export class TColFilters {
-  @property() colName1: TColFilter
-  @property() colName2: TColFilter
-  [colName: string]: TColFilter
+  @property() colName1?: TColFilter
+  [colName: string]: TColFilter | undefined
 }
 @model()
 export class GetTablePageOptions {
   @property({required: true}) limit: number;
   @property({required: true}) offset: number;
-  @property.array(String) columns: string[];
+  @property.array(String) columns?: string[];
   @property({required: true}) sortBy: string;
   @property({
     type: String,
