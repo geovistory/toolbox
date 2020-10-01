@@ -31,4 +31,13 @@ export class InfPersistentItemMock {
     fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
   })
 
+  static readonly HABS_EMP_MANIF_PROD_TYPE = new InfPersistentItem({
+    pk_entity: 2006,
+    fk_class: DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
+  })
+
+  static readonly HABS_EMP_EXPR = new InfPersistentItem({
+    pk_entity: 2007,
+    fk_class: DfhApiClassMock.EN_218_EXPRESSION.dfh_pk_class,
+  })
 }

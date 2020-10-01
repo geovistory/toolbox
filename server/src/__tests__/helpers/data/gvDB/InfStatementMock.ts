@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import {InfStatement} from '../../../../models';
-import {DfhApiPropertyMock} from './DfhApiPropertyMock';
-import {InfAppellationMock} from './InfAppellationMock';
-import {InfPersistentItemMock} from './InfPersistentItemMock';
-import {InfTemporalEntityMock} from './InfTemporalEntityMock';
-import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
-import {TabCellXMock} from './TabCellXMock';
+import { InfStatement } from '../../../../models';
+import { DatDigitalMock } from './DatDigitalMock';
+import { DfhApiPropertyMock } from './DfhApiPropertyMock';
+import { InfAppellationMock } from './InfAppellationMock';
+import { InfPersistentItemMock } from './InfPersistentItemMock';
+import { InfTemporalEntityMock } from './InfTemporalEntityMock';
+import { InfTimePrimitiveMock } from './InfTimePrimitiveMock';
+import { TabCellXMock } from './TabCellXMock';
 
 /**
  * pk_entity prefix: 300
@@ -170,6 +171,33 @@ export class InfStatementMock {
     fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
   })
 
+  static readonly NAMING_HABS_EMP_TO_PEIT_HABS_EMP = new InfStatement({
+    pk_entity: 3023,
+    fk_subject_info: InfTemporalEntityMock.HABSBOURG_EMPIRE_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1111_IS_APPE_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.HABS_EMP_MANIF_PROD_TYPE.pk_entity,
+  })
+
+  static readonly NAMING_HABS_EMP_TO_APPE_HABS_EMP = new InfStatement({
+    pk_entity: 3024,
+    fk_subject_info: InfTemporalEntityMock.HABSBOURG_EMPIRE_NAMING.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1113_REFERS_TO_NAME.dfh_pk_property,
+    fk_object_info: InfAppellationMock.SOURCE_HABSBOURG_EMPIRE.pk_entity,
+  })
+
+  static readonly DIGITAL_BIRTHDATES_IS_REPRODUCTION_OF_HABS_EMP = new InfStatement({
+    pk_entity: 3025,
+    fk_subject_data: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1216_IS_REPRODUCTION_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.HABS_EMP_EXPR.pk_entity,
+  })
+
+  static readonly HABS_EMP_CARRIERS_PROVIDED_BY = new InfStatement({
+    pk_entity: 3026,
+    fk_subject_info: InfPersistentItemMock.HABS_EMP_EXPR.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_979_CARRIERS_PROVIDED_BY.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.HABS_EMP_MANIF_PROD_TYPE.pk_entity,
+  })
 
 }
 

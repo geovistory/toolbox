@@ -46,4 +46,8 @@ export class InfTemporalEntityMock {
     fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
   })
 
+  static readonly HABSBOURG_EMPIRE_NAMING = new InfTemporalEntity({
+    pk_entity: 4009,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
 }

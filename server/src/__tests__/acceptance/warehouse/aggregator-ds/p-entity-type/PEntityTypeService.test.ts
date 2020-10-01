@@ -8,7 +8,7 @@ import {createInfLanguage, createLanguages} from '../../../../helpers/atomic/inf
 import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProInfoProjRel, updateProInfoProjRel, addEntitiesToProject, removeEntityFromProject} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {createProInfoProjRel, updateProInfoProjRel, addInfosToProject, removeEntityFromProject} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
@@ -99,21 +99,21 @@ describe('PEntityTypeService', function () {
         } = await createInstancesForCityType();
 
         // add naming 1 to project1
-        await addEntitiesToProject(project1.pk_entity, [
+        await addInfosToProject(project1.pk_entity, [
             cityType.pk_entity,
             naming1.pk_entity,
             naming1RefersTo.pk_entity,
             naming1IsAppeOf.pk_entity])
 
         // add naming 2 to project2
-        await addEntitiesToProject(project2.pk_entity, [
+        await addInfosToProject(project2.pk_entity, [
             cityType.pk_entity,
             naming2.pk_entity,
             naming2RefersTo.pk_entity,
             naming2IsAppeOf.pk_entity])
 
         // add naming 2 to project3
-        await addEntitiesToProject(project3.pk_entity, [
+        await addInfosToProject(project3.pk_entity, [
             cityType.pk_entity,
             naming2.pk_entity,
             naming2RefersTo.pk_entity,
@@ -124,7 +124,7 @@ describe('PEntityTypeService', function () {
 
 
 
-        await addEntitiesToProject(project1.pk_entity, [
+        await addInfosToProject(project1.pk_entity, [
             madrid.pk_entity,
             madridHasType.pk_entity])
 
