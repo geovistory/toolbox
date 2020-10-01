@@ -29,10 +29,9 @@ export async function createSourceHabsbourgEmpire() {
         await createInfStatement(InfStatementMock.NAMING_HABS_EMP_TO_PEIT_HABS_EMP),
         await createInfStatement(InfStatementMock.NAMING_HABS_EMP_TO_APPE_HABS_EMP),
         await createInfStatement(InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY),
-        await createInfStatement(InfStatementMock.DIGITAL_BIRTHDATES_IS_REPRODUCTION_OF_HABS_EMP)
+        await createInfStatement(InfStatementMock.DIGITAL_BIRTHDATES_IS_REPRODUCTION_OF_HABS_EMP),
+        await createInfStatement(InfStatementMock.DIGITAL_RANDOM_IS_REPRODUCTION_OF_HABS_EMP)
     ])
-
-    //link the digital and the source
 
     return { appes, teens, peits, stmts }
 }

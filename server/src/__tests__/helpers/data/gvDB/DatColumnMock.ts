@@ -20,4 +20,20 @@ export class DatColumnMock {
         fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
         fk_data_type: 3293, //string
     })
+
+    static readonly COL_RND1 = new DatColumn({
+        pk_entity: 3002,
+        fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity,
+        fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_data_type: 3293, //string
+    })
+
+    static readonly COL_RND2 = new DatColumn({
+        pk_entity: 3003,
+        fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity,
+        fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_data_type: 3293, //string
+    })
+
+
 }

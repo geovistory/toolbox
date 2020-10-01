@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {DatTextProperty} from '../../../../models';
-import {DatNamespaceMock} from './DatNamespaceMock';
-import {InfLanguageMock} from './InfLanguageMock';
-import {SysSystemTypeMock} from './SysSystemTypeMock';
+import { DatTextProperty } from '../../../../models';
+import { DatNamespaceMock } from './DatNamespaceMock';
+import { InfLanguageMock } from './InfLanguageMock';
+import { SysSystemTypeMock } from './SysSystemTypeMock';
 
 /**
  * pk_entity prefix: 500
@@ -22,5 +22,21 @@ export class DatTextPropertyMock {
     fk_language: InfLanguageMock.ENGLISH.pk_entity,
     fk_namespace: DatNamespaceMock.NAMESPACE_2.pk_entity,
     fk_system_type: SysSystemTypeMock.TEXT.pk_entity
+  })
+
+  static readonly RND1 = new DatTextProperty({
+    pk_entity: 5002,
+    string: 'Random col 1 - string',
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_namespace: DatNamespaceMock.NAMESPACE_2.pk_entity,
+    fk_system_type: SysSystemTypeMock.TEXT.pk_entity
+  })
+
+  static readonly RND2 = new DatTextProperty({
+    pk_entity: 5003,
+    string: 'Random col 1 - number',
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_namespace: DatNamespaceMock.NAMESPACE_2.pk_entity,
+    fk_system_type: SysSystemTypeMock.VALUE.pk_entity
   })
 }
