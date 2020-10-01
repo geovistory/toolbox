@@ -199,6 +199,13 @@ export class InfStatementMock {
     fk_object_info: InfPersistentItemMock.HABS_EMP_MANIF_PROD_TYPE.pk_entity,
   })
 
+  static readonly DIGITAL_RANDOM_IS_REPRODUCTION_OF_HABS_EMP = new InfStatement({
+    pk_entity: 3027,
+    fk_subject_data: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1216_IS_REPRODUCTION_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.HABS_EMP_EXPR.pk_entity,
+  })
+
 }
 
 

@@ -40,7 +40,7 @@ export async function forFeatureX() {
     // add profiles to project
     await addProfilesToProject(pkProject, profiles.map(p => p.dfh_pk_profile))
 
-    //create the digital and related
+    //create the digital and related (mapping)
     await createDatDigital(DatDigitalMock.DIGITAL_BIRTHDATES);
     await createDatColumn(DatColumnMock.COL_NAMES);
     await createDatColumn(DatColumnMock.COL_DATES);
@@ -53,14 +53,27 @@ export async function forFeatureX() {
     await createTabCell(TabCellXMock.FEATURE_X_1_2, row1);
     await createTabCell(TabCellXMock.FEATURE_X_2_1, row2);
     await createTabCell(TabCellXMock.FEATURE_X_2_2, row2);
+    //create the related mapping
+    await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON);
+    const statementMapping = await createInfStatement(InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF);
+
+    //create the digital and related (not mapped)
+    await createDatDigital(DatDigitalMock.DIGITAL_RANDOM_TABLE);
+    await createDatColumn(DatColumnMock.COL_RND1);
+    await createDatColumn(DatColumnMock.COL_RND2);
+    await createDatTextProperty(DatTextPropertyMock.RND1);
+    await createDatTextProperty(DatTextPropertyMock.RND2);
+    const row3 = await createTabRow(TabRowMock.ROW_RND_VAL1);
+    const row4 = await createTabRow(TabRowMock.ROW_RND_VAL1);
+    await createCellTable(DatDigitalMock.DIGITAL_RANDOM_TABLE);
+    await createTabCell(TabCellXMock.FEATURE_X_RND_1_1, row3);
+    await createTabCell(TabCellXMock.FEATURE_X_RND_1_2, row3);
+    await createTabCell(TabCellXMock.FEATURE_X_RND_2_1, row4);
+    await createTabCell(TabCellXMock.FEATURE_X_RND_2_2, row4);
 
     //create the info
     const entities = await createAlbertAndRudolf();
     const source = await createSourceHabsbourgEmpire();
-
-    //create the mapping
-    await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON);
-    const statementMapping = await createInfStatement(InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF);
 
     // add info to project
     await addInfosToProject(pkProject, [...entities.teens, ...entities.peits, ...entities.stmts, ...source.teens, ...source.peits, ...source.stmts, statementMapping]
