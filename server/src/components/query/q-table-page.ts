@@ -2,10 +2,9 @@ import {model, property} from '@loopback/repository';
 import {without} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
 import {DatColumn} from '../../models';
+import {logSql} from '../../utils/helpers';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {registerType} from '../spec-enhancer/model.spec.enhancer';
-import {logSql} from '../../utils/helpers';
-import {GvSchemaObject} from '../../models/gv-schema-object.model';
 
 // Table column filter interface
 export enum SortDirection {
@@ -65,7 +64,7 @@ export class TColFilters {
 export class GetTablePageOptions {
   @property({required: true}) limit: number;
   @property({required: true}) offset: number;
-  @property.array(String) columns?: string[];
+  @property.array(String) columns: string[];
   @property({required: true}) sortBy: string;
   @property({
     type: String,
@@ -319,13 +318,13 @@ export class QTableTablePage extends SqlBuilderLb4Models {
         const filter = filters[key];
         const tableAlias = key === 'pk_row' ? 't1' : this.colTableAliasMap.get(key);
 
-        if (filter.numeric) {
+        if (filter?.numeric) {
           const column = key === 'pk_row' ? 'pk_row' : 'numeric_value';
 
           sql = `${sql} AND ${tableAlias}."${column}" ${filter.numeric.operator} ${filter.numeric.value}`
 
         }
-        else if (filter.text) {
+        else if (filter?.text) {
           const o = filter.text.operator
           sql = `${sql} AND ${tableAlias}.string_value::text ${
             o === '%iLike%' ?
