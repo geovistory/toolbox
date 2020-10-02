@@ -160,16 +160,17 @@ describe('TableController', () => {
                         [col1]: {string_value: 'Rudolf of Habsbourg'} as TableCell,
                         [col2]: {string_value: '1218'} as TableCell,
                     }
-                ]
+                ],
+                schemaObject: {
+                    inf: {
+                        statement: [
+                            InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF
+                        ]
+                    }
+                }
             }
 
-            const schemaObject: GvSchemaObject = {
-                inf: {statement: [
-                    InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF
-                ]}
-            }
             expect(res.body).to.containDeep(expected);
-            expect(res.body.schemaObject).to.deepEqual(schemaObject);
         })
     })
 });

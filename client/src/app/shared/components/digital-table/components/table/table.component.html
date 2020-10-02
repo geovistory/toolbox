@@ -50,17 +50,18 @@
                 Text
               </div>
             </div>
+          </div>
         </th>
 
         <!-- When mapping: Matched entity -->
-        <th class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn
+        <td class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn
           colspan="col.mapping ? 1 : 0">
           Matched
-          <span *ngIf="col.type.icon === 'teEn'" class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
-          <span *ngIf="col.type.icon === 'peIt'"
-            class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
-          {{col.mapping.className}}
-          </td>
+          <!-- <span *ngIf="col.icon === 'teEn'" class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
+          <span *ngIf="col.icon === 'peIt'"
+            class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span> -->
+          {{col?.mapping?.className}}
+        </td>
       </tr>
 
       <!-- FILTERING -->
@@ -81,15 +82,15 @@
         <td *ngFor="let value of row; let j = index" class="ui-resizable-column">
           <table>
             <tr>
-              <td (click)='cellClick(i, j)'>
+              <td (click)='cellClick(rowIndex, j)'>
                 <div
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
                   {{value}}
                 </div>
               </td>
-              <td *ngIf='headers[j].type.className'>
-                <gv-entity-preview-component *ngIf="entityMappings[i][j]" [pkEntity]="entityMappings[i][j]"
-                  [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview-component>
+              <td *ngIf='headers[j].mapping'>
+                <gv-entity-preview *ngIf="entityMappings[rowIndex][j]" [pkEntity]="entityMappings[rowIndex][j]"
+                  [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview>
 
                 <!-- SELECT ENTITY COMPONENT *ngIf="!entityMappings[i][j]" -->
                 <!-- add the 3 dots options -->

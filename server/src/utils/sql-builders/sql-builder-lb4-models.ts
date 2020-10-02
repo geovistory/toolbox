@@ -9,7 +9,7 @@ import {Postgres1DataSource} from '../../datasources';
 export class SqlBuilderLb4Models extends SqlBuilderBase {
 
 
-  constructor(private dataSource: Postgres1DataSource) {
+  constructor(protected dataSource: Postgres1DataSource) {
     super()
   }
 

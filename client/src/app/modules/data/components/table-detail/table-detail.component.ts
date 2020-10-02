@@ -11,7 +11,7 @@ import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { TColFilters, TColFilter } from '../../../../../../../server/src/lb3/server/table/interfaces'
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
-import { TableService } from 'app/core/sdk-lb4';
+import { TableService, TableRow } from 'app/core/sdk-lb4';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 
 // TODO import this interface from backend
@@ -21,10 +21,10 @@ interface TabCell {
   numeric_value?: number;
 }
 // TODO import this interface from backend
-interface TabRow {
-  pk_row: number,
-  [key: number]: TabCell
-}
+// interface TableRow {
+//   pk_row: number,
+//   [key: number]: TabCell
+// }
 
 @Component({
   selector: 'gv-table-detail',
@@ -43,12 +43,12 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   readonly dtNumeric = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
 
   // fetched rows
-  rows$: Observable<TabRow[]>
+  rows$: Observable<TableRow[]>
 
   // total count of records found in database according to the filters
   // (biggest number in pagination UI)
   // Value of length$ is updated AFTER Api call
-  length$: Observable<number[]>;
+  length$: Observable<number>;
 
   /**
    * configuration parameters that trigger new api call and
@@ -92,7 +92,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   // to target data on event of the stupid table component
   dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number }[][];
-  colMapping: number | string[];
+  colMapping: (number | string)[];
 
   // Array of pk_entity of columns that have been queried
   // Value is updated after the API call
@@ -149,17 +149,20 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         sortDirection,
         filters
 
-        // this.tableAPI.tableControllerGetTablePage
-      ]) => this.digitalApi.getTablePage(pkProject, this.pkEntity, {
+      ]) => this.tableAPI.tableControllerGetTablePage(pkProject, this.pkEntity, {
+        // ]) => this.digitalApi.getTablePage(pkProject, this.pkEntity, {
         limit: pageSize,
         offset: pageSize * pageIndex,
-        columns: this.colToggleCtrl.value,
+        columns: this.colToggleCtrl.value.map((i: number) => i.toString()),
         sortBy,
         sortDirection,
         filters: this.filters$.value
-      })),
+      }).pipe(
+        tap((res) => {
+          this.s.storeSchemaObjectGv(res.schemaObject, pkProject)
+        })
+      )),
       tap((res) => {
-        // this.s.storeSchemaObjectGv(res.schemaObject)
         this.loading = false;
         // this.firstApiCall = false; TODO: check if this would work
       }),
@@ -173,7 +176,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         this.colMapping = ['pk_row', ...res.columns.map(pk => parseInt(pk, 10))];
 
         this.dataMapping = [];
-        const rows: TabRow[] = res.rows;
+        const rows: TableRow[] = res.rows;
         const table: string[][] = [];
 
         for (let i = 0; i < rows.length; i++) {
@@ -208,10 +211,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     // Update this.queriedCols with columns returned by rest api
     res$.pipe(
       map(res => res.columns),
-      distinctUntilChanged<number[]>(equals),
+      distinctUntilChanged(equals),
       takeUntil(this.destroy$)
-    ).subscribe(columns => {
-      this.queriedCols = columns;
+    ).subscribe((columns: string[]) => {
+      this.queriedCols = columns.map(pk => parseInt(pk, 10));
     })
 
     /**

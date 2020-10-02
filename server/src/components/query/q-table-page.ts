@@ -1,11 +1,11 @@
 import {model, property} from '@loopback/repository';
 import {without} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
-import {DatColumn} from '../../models';
+import {DatColumn, InfStatement, ProInfoProjRel} from '../../models';
+import {GvSchemaObject} from '../../models/gv-schema-object.model';
 import {logSql} from '../../utils/helpers';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {registerType} from '../spec-enhancer/model.spec.enhancer';
-import {GvSchemaObject} from '../../models/gv-schema-object.model';
 
 // Table column filter interface
 export enum SortDirection {
@@ -118,6 +118,10 @@ export class TablePageResponse {
   @property() schemaObject: GvSchemaObject
 }
 
+interface ColBatchWith {name: string, columns: string[]}
+interface TwNameColName {twName: string, colName: string}
+const PK_CELL_SUFFIX = '_pk_cell'
+const TW_JOIN_STMT = 'tw_stmt_'
 /**
  * Class to create select queries on data tables
  */
@@ -126,8 +130,10 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   // key is the column name / pkColumn, value is the alias of the table
   colTableAliasMap = new Map<string, string>()
 
-  colBatchWiths: {name: string, columns: string[]}[] = [];
+  colBatchWiths: ColBatchWith[] = [];
   colBatchWithI = 0;
+  colsWithMapping: string[];
+  masterColumns: string[]
 
   constructor(
     dataSource: Postgres1DataSource
@@ -147,7 +153,10 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       this.colTableAliasMap.set(pkCol, `tr${i}`)
     })
 
+    this.masterColumns = masterColumns;
     const colsForBatches = without(masterColumns, options.columns);
+
+    await this.setColsWithMapping(pkEntity);
 
     this.sql = `
     -- master columns
@@ -202,31 +211,149 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
     )
+    ------------------------------------
+    --- join elements for schema object
+    ------------------------------------
+    ${this.leftJoinStatements(this.getRefersToColumns(), fkProject)}
+    ------------------------------------
+    --- group parts by model
+    ------------------------------------
+    ${this.groupStatements(this.getRefersToColumns())}
 
     SELECT
     json_build_object (
         'rows', COALESCE(tw4.rows, '[]'::json),
-        'length', tw3.length
+        'length', tw3.length,
+        'schemaObject', json_build_object (
+          'inf', json_strip_nulls(json_build_object(
+            'statement', statement.json
+          )),
+          'pro', json_strip_nulls(json_build_object(
+            'info_proj_rel', info_proj_rel.json
+          ))
+        )
     ) as data
     FROM tw4
-    LEFT JOIN tw3 ON true;
+    LEFT JOIN tw3 ON true
+    LEFT JOIN statement ON true
+    LEFT JOIN info_proj_rel ON true;
     `
 
     logSql(this.sql, this.params)
 
     const res = await this.executeAndReturnFirstData<{
-      rows: TableCell[][],
+      rows: TableRow[],
       length: number,
+      schemaObject: GvSchemaObject
     }>()
 
     return {
       columns: options.columns,
       rows: res?.rows,
       length: res?.length,
-      schemaObject: {}
+      schemaObject: res?.schemaObject
     }
 
   }
+
+  private async setColsWithMapping(pkEntity: number) {
+    const x = await this.dataSource.execute(
+      `SELECT json_agg(fk_column::text) arr
+      FROM data.class_column_mapping t1,
+      data.column t2
+      WHERE t1.fk_column = t2.pk_entity
+      AND t2.fk_digital = $1
+      `,
+      [pkEntity]);
+    this.colsWithMapping = x?.[0]?.arr ?? [];
+  }
+
+  private getRefersToColumns() {
+    const refersToColumns: TwNameColName[] = [];
+    for (const colBatch of this.colBatchWiths) {
+      const twName = colBatch.name;
+      for (const colName of colBatch.columns) {
+        if (this.colsWithMapping.includes(colName)) {
+          refersToColumns.push({twName, colName: colName + PK_CELL_SUFFIX});
+        }
+      }
+    }
+    for (const colName of this.masterColumns) {
+      if (this.colsWithMapping.includes(colName)) {
+        refersToColumns.push({twName: 'tw1', colName: colName + PK_CELL_SUFFIX});
+      }
+    }
+    return refersToColumns
+  }
+
+  private groupStatements(refersToColumns: TwNameColName[]) {
+    if (!refersToColumns.length) return '';
+    return `,
+    info_proj_rel AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.proj_rel ->> 'pk_entity') t1.proj_rel as objects
+        FROM
+        (
+          ${refersToColumns
+        .map(item => `SELECT proj_rel FROM ${TW_JOIN_STMT}${item.colName}`)
+        .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    ),
+    statement AS (
+      SELECT json_agg(t1.objects) as json
+      FROM (
+        select
+        distinct on (t1.pk_entity)
+        ${this.createBuildObject('t1', InfStatement.definition)} as objects
+        FROM
+        (
+          ${refersToColumns
+        .map(item => `SELECT * FROM ${TW_JOIN_STMT}${item.colName}`)
+        .join('\nUNION ALL\n')}
+        ) AS t1
+      ) as t1
+      GROUP BY true
+    )`
+
+  }
+
+
+  private leftJoinStatements(refersToColumns: TwNameColName[], fkProject: number) {
+    if (!refersToColumns.length) return '';
+    const sqlPerCol: string[] = []
+    for (const item of refersToColumns) {
+      sqlPerCol.push(this.leftJoinStatement(item.twName, item.colName, fkProject))
+    }
+    const sql = ',\n' + sqlPerCol.join(',\n')
+    return sql
+  }
+
+
+  private leftJoinStatement(twName: string, pkCellColName: string, fkProject: number) {
+    return `
+      -- statements where cell in column ${pkCellColName} 'refers to' entity
+        ${TW_JOIN_STMT}${pkCellColName} AS (
+        SELECT
+          ${this.createSelect('t1', InfStatement.definition)},
+          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
+        FROM
+          ${twName}
+          CROSS JOIN information.v_statement t1,
+          projects.info_proj_rel t2
+        WHERE
+          ${twName}."${pkCellColName}" = t1.fk_subject_tables_cell
+          AND t1.pk_entity = t2.fk_entity
+          AND t1.fk_property = 1334
+          AND t2.is_in_project = true
+          AND t2.fk_project = ${this.addParam(fkProject)}
+      )
+    `
+  }
+
 
 
 
@@ -248,7 +375,9 @@ export class QTableTablePage extends SqlBuilderLb4Models {
               'string_value', ${tableAlias}.string_value,
               'numeric_value', ${tableAlias}.numeric_value,
               'pk_cell', ${tableAlias}.pk_cell
-            ) As "${colName}"`
+            ) As "${colName}",
+            ${tableAlias}.pk_cell AS "${colName}${PK_CELL_SUFFIX}"
+            `
   }
 
 

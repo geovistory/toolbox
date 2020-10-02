@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { TColFilter } from './tColFilter';
+import { TableCell } from './tableCell';
 
 
-export interface TColFilters { 
-  [key: string]: TColFilter | any;
+export interface TableRow { 
+  [key: string]: TableCell | any;
 
 
-    colName1?: TColFilter;
+    colName1?: TableCell;
 }
 
