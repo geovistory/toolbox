@@ -13,7 +13,9 @@ export class DatColumnMock {
         fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
         fk_column_content_type: SysSystemTypeMock.TEXT.pk_entity,
         fk_data_type: 3292, //string
-        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+        is_imported: false,
+        fk_column_relationship_type: 3367
     })
 
     static readonly COL_DATES = new DatColumn({
@@ -21,7 +23,9 @@ export class DatColumnMock {
         fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
         fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
         fk_data_type: 3293, //string
-        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
+        is_imported: false,
+        fk_column_relationship_type: 3367
     })
 
     static readonly COL_RND1 = new DatColumn({

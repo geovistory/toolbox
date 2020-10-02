@@ -5,6 +5,7 @@ import {DatColumn} from '../../models';
 import {logSql} from '../../utils/helpers';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {registerType} from '../spec-enhancer/model.spec.enhancer';
+import {GvSchemaObject} from '../../models/gv-schema-object.model';
 
 // Table column filter interface
 export enum SortDirection {
@@ -81,27 +82,40 @@ export class GetTablePageOptions {
 @model()
 export class TableCell {
   @property() 'string_value': string;
-  @property() 'numeric_value': number
+  @property() 'numeric_value': number | null
   @property() 'pk_cell': number
 }
 
+
+@model({
+  jsonSchema: {
+    additionalProperties: {
+      $ref: registerType(TableCell)
+    }
+  },
+})
+export class TableRow {
+  @property() colName1?: TableCell
+  [colName: string]: TableCell | undefined
+}
 @model()
 export class TablePageResponse {
-  @property({
-    jsonSchema: {
-      title: 'TableRow',
-      type: 'array',
-      items: {
-        type: 'array',
-        items: {
-          $ref: registerType(TableCell)
-        },
-      }
-    }
-  }) rows: TableCell[][];
+  // @property({
+  //   jsonSchema: {
+  //     title: 'TableRow',
+  //     type: 'array',
+  //     items: {
+  //       type: 'array',
+  //       items: {
+  //         $ref: registerType(TableCell)
+  //       },
+  //     }
+  //   }
+  // }) rows: TableCell[][];
+  @property.array(TableRow) rows: TableRow[];
   @property.array(String) columns: string[];
   @property() length: number;
-  // @property() schemaObject: GvSchemaObject
+  @property() schemaObject: GvSchemaObject
 }
 
 /**
@@ -209,6 +223,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       columns: options.columns,
       rows: res?.rows,
       length: res?.length,
+      schemaObject: {}
     }
 
   }

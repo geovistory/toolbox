@@ -148,6 +148,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         sortBy,
         sortDirection,
         filters
+
+        // this.tableAPI.tableControllerGetTablePage
       ]) => this.digitalApi.getTablePage(pkProject, this.pkEntity, {
         limit: pageSize,
         offset: pageSize * pageIndex,
@@ -156,7 +158,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         sortDirection,
         filters: this.filters$.value
       })),
-      tap(() => {
+      tap((res) => {
+        // this.s.storeSchemaObjectGv(res.schemaObject)
         this.loading = false;
         // this.firstApiCall = false; TODO: check if this would work
       }),

@@ -65,7 +65,7 @@
         "--colors",
         "'dist/__tests__/**/*.js'",
         "--grep",
-        "/^TableController.*get-columns-of-table.*should return/"
+        "/^TableController.*get-ta/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,

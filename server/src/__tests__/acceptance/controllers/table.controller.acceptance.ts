@@ -2,7 +2,7 @@
 import {Client, expect} from '@loopback/testlab';
 import qs from 'qs';
 import {init} from 'ramda';
-import {GetTablePageOptions, SortDirection} from '../../../components/query/q-table-page';
+import {GetTablePageOptions, SortDirection, TablePageResponse, TableCell} from '../../../components/query/q-table-page';
 import {PubAccount} from '../../../models';
 import {GvSchemaObject} from '../../../models/gv-schema-object.model';
 import {GeovistoryServer} from '../../../server';
@@ -16,6 +16,10 @@ import {PubCredentialMock} from '../../helpers/data/gvDB/PubCredentialMock';
 import {forFeatureX} from '../../helpers/graphs/feature-X.helper';
 import {createRawProject} from '../../helpers/graphs/project.helpers';
 import {setupApplication} from '../../helpers/gv-server-helpers';
+import {DatColumnMock} from '../../helpers/data/gvDB/DatColumnMock';
+import {DatClassColumnMappingMock} from '../../helpers/data/gvDB/DatClassColumnMappingMock';
+import {TabCellXMock} from '../../helpers/data/gvDB/TabCellXMock';
+import {InfStatementMock} from '../../helpers/data/gvDB/InfStatementMock';
 
 
 describe('TableController', () => {
@@ -91,12 +95,16 @@ describe('TableController', () => {
             const res = await client.get('/get-columns-of-table').set('Authorization', jwt).query(query);
             const expected: GvSchemaObject = {
                 dat: {
-                    digital: [
-                        {pk_entity: 123} // TODO: add mock here
+                    column: [
+                        DatColumnMock.COL_NAMES.toObject(),
+                        DatColumnMock.COL_DATES.toObject()
                     ],
+                    class_column_mapping: [
+                        DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON.toObject()
+                    ]
                 }
             }
-            expect(res.body).to.equal(expected);
+            expect(res.body).to.deepEqual(expected);
         })
     });
     describe('GET /get-table-page', () => {
@@ -135,13 +143,33 @@ describe('TableController', () => {
                 .set('Authorization', jwt)
                 .query(query)
                 .send(options)
-            const expected
-                // : TablePageResponse
-                = {
+            const col1 = (DatColumnMock.COL_NAMES.pk_entity ?? -1).toString()
+            const col2 = (DatColumnMock.COL_DATES.pk_entity ?? -1).toString()
+            const expected: Partial<TablePageResponse> = {
+                columns: [
+                    col1,
+                    col2
+                ],
+                length: 2,
+                rows: [
+                    {
+                        [col1]: {string_value: 'Albert IV'} as TableCell,
+                        [col2]: {string_value: '1180'} as TableCell
+                    },
+                    {
+                        [col1]: {string_value: 'Rudolf of Habsbourg'} as TableCell,
+                        [col2]: {string_value: '1218'} as TableCell,
+                    }
+                ]
             }
-            expect(res.body).to.equal(expected);
+
+            const schemaObject: GvSchemaObject = {
+                inf: {statement: [
+                    InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF
+                ]}
+            }
+            expect(res.body).to.containDeep(expected);
+            expect(res.body.schemaObject).to.deepEqual(schemaObject);
         })
     })
-
-
 });
