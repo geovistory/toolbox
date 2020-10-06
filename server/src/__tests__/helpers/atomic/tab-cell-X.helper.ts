@@ -26,5 +26,8 @@ export async function createCellTable(digital: DatDigital) {
 }
 
 export async function createTabCell(cell: Partial<TabCell>, row: TabRow) {
+    if (cell.pk_cell) {
+        await testdb.execute(`SELECT setval('tables.cell_pk_cell_seq', ${cell.pk_cell - 1}, true);`);
+    }
     await testdb.execute('INSERT INTO tables.cell_' + cell.fk_digital + ' (fk_digital, fk_column, fk_row, string_value, numeric_value) VALUES (' + cell.fk_digital + ', ' + cell.fk_column + ', ' + row.pk_row + ', ' + (typeof cell.content == 'string' ? '\'' + cell.content + '\', ' : 'NULL, ') + (typeof cell.content == 'number' ? cell.content : 'NULL') + ')')
 }

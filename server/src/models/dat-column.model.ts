@@ -44,9 +44,9 @@ export class DatColumn extends Entity implements DatEntity {
   fk_original_column?: number;
 
   @property({
-    type: 'number',
+    type: 'boolean',
   })
-  is_imported?: number;
+  is_imported?: boolean;
 
   @belongsTo(() => DatNamespace, {name: 'namespace'})
   fk_namespace: number;

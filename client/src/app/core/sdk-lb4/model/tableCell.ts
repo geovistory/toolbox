@@ -13,7 +13,7 @@
 
 export interface TableCell { 
     string_value?: string;
-    numeric_value?: number;
+    numeric_value?: object;
     pk_cell?: number;
 }
 

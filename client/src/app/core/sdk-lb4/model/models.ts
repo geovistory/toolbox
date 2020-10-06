@@ -77,6 +77,7 @@ export * from './tColFilterTxt';
 export * from './tColFilters';
 export * from './tableCell';
 export * from './tablePageResponse';
+export * from './tableRow';
 export * from './warEntityPreview';
 export * from './warEntityPreviewWithRelations';
 export * from './warObject';

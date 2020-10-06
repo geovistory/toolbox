@@ -65,7 +65,7 @@
         "--colors",
         "'dist/__tests__/**/*.js'",
         "--grep",
-        "/^TableController.*should return a valid object/"
+        "/^TableController.*get-ta/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
