@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {DatColumn} from '../../../../models';
-import {DatDigitalMock} from './DatDigitalMock';
-import {SysSystemTypeMock} from './SysSystemTypeMock';
+import { DatColumn } from '../../../../models';
+import { DatDigitalMock } from './DatDigitalMock';
+import { DatNamespaceMock } from './DatNamespaceMock';
+import { SysSystemTypeMock } from './SysSystemTypeMock';
 
 /**
  * pk_entity prefix: 300
@@ -11,6 +12,7 @@ export class DatColumnMock {
         pk_entity: 3000,
         fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
         fk_column_content_type: SysSystemTypeMock.TEXT.pk_entity,
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
         fk_data_type: 3292, //string
     })
 
@@ -18,6 +20,7 @@ export class DatColumnMock {
         pk_entity: 3001,
         fk_digital: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity,
         fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
         fk_data_type: 3293, //string
     })
 
@@ -25,6 +28,7 @@ export class DatColumnMock {
         pk_entity: 3002,
         fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity,
         fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
         fk_data_type: 3293, //string
     })
 
@@ -32,6 +36,7 @@ export class DatColumnMock {
         pk_entity: 3003,
         fk_digital: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity,
         fk_column_content_type: SysSystemTypeMock.NUMBER.pk_entity,
+        fk_namespace: DatNamespaceMock.SANDBOX_NAMESPACE.pk_entity,
         fk_data_type: 3293, //string
     })
 

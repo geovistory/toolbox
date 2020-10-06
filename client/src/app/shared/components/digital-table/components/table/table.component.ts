@@ -64,6 +64,10 @@ export class TableComponent implements OnInit, OnDestroy {
     // listen to input headers (from parent)
     this.headers$.pipe(takeUntil(this.destroy$)).subscribe(headers => {
       this.headers = headers;
+      // this.headers = [
+      //   { colLabel: '123', comment: '', type: 'string' },
+      //   { colLabel: '456', comment: '', type: 'string' }
+      // ]
     })
 
     // listen to input mappings (from parent)

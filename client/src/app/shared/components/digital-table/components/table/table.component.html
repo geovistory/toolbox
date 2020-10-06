@@ -50,17 +50,20 @@
                 Text
               </div>
             </div>
+          </div>
+
         </th>
 
         <!-- When mapping: Matched entity -->
-        <th class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn
+        <!-- <th class="gv-pointer" *ngFor="let col of headers; let i = index" (click)="sort(i)" pResizableColumn
           colspan="col.mapping ? 1 : 0">
+          
           Matched
-          <span *ngIf="col.type.icon === 'teEn'" class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
-          <span *ngIf="col.type.icon === 'peIt'"
+          <span *ngIf="col.mapping.icon === 'teEn'" class="icon fa fa-star-o align-self-center gv-icon-preview"></span>
+          <span *ngIf="col.mapping.icon === 'peIt'"
             class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
           {{col.mapping.className}}
-          </td>
+        </th> -->
       </tr>
 
       <!-- FILTERING -->
@@ -88,8 +91,9 @@
                 </div>
               </td>
               <td *ngIf='headers[j].type.className'>
-                <gv-entity-preview-component *ngIf="entityMappings[i][j]" [pkEntity]="entityMappings[i][j]"
-                  [dragEnabled]="false" [openTabOnClick]="true"></gv-entity-preview-component>
+
+                <gv-entity-preview *ngIf="entityMappings[i][j]" [pkEntity]="entityMappings[i][j]" [dragEnabled]="false"
+                  [openTabOnClick]="true"></gv-entity-preview>
 
                 <!-- SELECT ENTITY COMPONENT *ngIf="!entityMappings[i][j]" -->
                 <!-- add the 3 dots options -->

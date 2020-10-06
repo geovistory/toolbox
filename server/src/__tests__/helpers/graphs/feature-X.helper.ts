@@ -49,7 +49,7 @@ export async function forFeatureX() {
     const row1 = await createTabRow(TabRowMock.ROW_ALBERT);
     const row2 = await createTabRow(TabRowMock.ROW_RUDOLF);
     await createCellTable(DatDigitalMock.DIGITAL_BIRTHDATES);
-    await createTabCell(TabCellXMock.FEATURE_X_1_1, row1);
+    await createTabCell(TabCellXMock.FEATURE_X_1_1, row1);  
     await createTabCell(TabCellXMock.FEATURE_X_1_2, row1);
     await createTabCell(TabCellXMock.FEATURE_X_2_1, row2);
     await createTabCell(TabCellXMock.FEATURE_X_2_2, row2);
@@ -64,7 +64,7 @@ export async function forFeatureX() {
     await createDatTextProperty(DatTextPropertyMock.RND1);
     await createDatTextProperty(DatTextPropertyMock.RND2);
     const row3 = await createTabRow(TabRowMock.ROW_RND_VAL1);
-    const row4 = await createTabRow(TabRowMock.ROW_RND_VAL1);
+    const row4 = await createTabRow(TabRowMock.ROW_RND_VAL2);
     await createCellTable(DatDigitalMock.DIGITAL_RANDOM_TABLE);
     await createTabCell(TabCellXMock.FEATURE_X_RND_1_1, row3);
     await createTabCell(TabCellXMock.FEATURE_X_RND_1_2, row3);
