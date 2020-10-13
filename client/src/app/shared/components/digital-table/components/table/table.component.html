@@ -74,6 +74,10 @@
     <!-- BODY -->
     <ng-template pTemplate="body" let-row let-i="rowIndex">
       <tr>
+        <!-- <ng-container *ngFor="let value of row; let j = index" >
+          <td></td>
+          <td *ngIf="headers[j].mapping"></td>
+        </ng-container> -->
         <td *ngFor="let value of row; let j = index" class="ui-resizable-column" (click)='cellClick(rowIndex, j)'>
           <div class="row">
             <span [ngClass]="{'gv-word-wrap-break-word': lineBreak}"
