@@ -299,7 +299,14 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   }
 
   private groupStatements(refersToColumns: TwNameColName[]) {
-    if (!refersToColumns.length) return '';
+    if (!refersToColumns.length) return `,
+    info_proj_rel AS (
+      SELECT '[]'::json as json
+    ),
+    statement AS (
+      SELECT '[]'::json as json
+    )
+    `;
     return `,
     info_proj_rel AS (
       SELECT json_agg(t1.objects) as json

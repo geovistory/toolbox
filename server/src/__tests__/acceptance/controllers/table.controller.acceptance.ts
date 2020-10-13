@@ -116,13 +116,13 @@ describe('TableController', () => {
             } catch (e) {
                 console.log(e);
             }
+        })
+
+        it('should return a valid object for table with class column mapping', async () => {
             query = {
                 pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity ?? -1,
                 pkEntity: DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity ?? -1
             }
-        })
-
-        it('should return a valid object', async () => {
             const jwt = (
                 await client.post('/login')
                     .send({
@@ -166,6 +166,60 @@ describe('TableController', () => {
                         statement: [
                             InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF
                         ]
+                    }
+                }
+            }
+
+            expect(res.body).to.containDeep(expected);
+        })
+
+
+        it('should return a valid object for table without class column mapping', async () => {
+            query = {
+                pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity ?? -1,
+                pkEntity: DatDigitalMock.DIGITAL_RANDOM_TABLE.pk_entity ?? -1
+            }
+            const jwt = (
+                await client.post('/login')
+                    .send({
+                        email: PubAccountMock.GAETAN_VERIFIED.email,
+                        password: PubCredentialMock.GAETAN_PASSWORD.password
+                    })
+            ).body.lb4Token;
+            const options: GetTablePageOptions = {
+                limit: 10,
+                offset: 0,
+                sortBy: 'pk_row',
+                sortDirection: SortDirection.ASC,
+                filters: {},
+                columns: []
+            }
+            const res = await client
+                .post('/get-table-page')
+                .set('Authorization', jwt)
+                .query(query)
+                .send(options)
+            const col1 = (DatColumnMock.COL_RND1.pk_entity ?? -1).toString()
+            const col2 = (DatColumnMock.COL_RND2.pk_entity ?? -1).toString()
+            const expected: Partial<TablePageResponse> = {
+                columns: [
+                    col1,
+                    col2
+                ],
+                length: 2,
+                rows: [
+                    {
+                        [col1]: {numeric_value: TabCellXMock.FEATURE_X_RND_1_1.content} as TableCell,
+                        [col2]: {numeric_value: TabCellXMock.FEATURE_X_RND_1_2.content} as TableCell
+                    },
+                    {
+                        [col1]: {numeric_value: TabCellXMock.FEATURE_X_RND_2_1.content} as TableCell,
+                        [col2]: {numeric_value: TabCellXMock.FEATURE_X_RND_2_2.content} as TableCell,
+                    }
+                ],
+                schemaObject: {
+                    inf: {
+                        statement: []
                     }
                 }
             }

@@ -79,7 +79,7 @@ export class TableController {
     let masterColumns: string[] = [];
 
 
-    console.log('options.sortBy', JSON.stringify(options.sortBy))
+    // console.log('options.sortBy', JSON.stringify(options.sortBy))
 
     // add sort-by column
     if (options.sortBy && options.sortBy !== 'pk_row') {
@@ -89,8 +89,8 @@ export class TableController {
     // add filter columns
     const filterCols = keys(options.filters);
 
-    console.log('filterCols', JSON.stringify(filterCols))
-    console.log('options', JSON.stringify(options))
+    // console.log('filterCols', JSON.stringify(filterCols))
+    // console.log('options', JSON.stringify(options))
 
     if (options.filters && filterCols.length > 0) {
       masterColumns = [
