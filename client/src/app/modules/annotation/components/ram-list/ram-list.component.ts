@@ -57,6 +57,7 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   @Input() pkEntity: number;
   @Input() fkProperty: number;
+  @Input() annotatedIn: 'sources' | 'digital-text' | 'digital-tables';
 
   items$: Observable<RamListItem[]>;
   cols: any[];
@@ -113,6 +114,8 @@ export class RamListComponent implements OnInit, OnDestroy {
     this.items$.pipe(
       takeUntil(this.destroy$),
     ).subscribe((items) => {
+      console.log('ANNOTEDIN: ' + this.annotatedIn)
+      console.log(items);
       const y = items;
     })
 
@@ -142,7 +145,7 @@ export class RamListComponent implements OnInit, OnDestroy {
       return basicStatements$.pipe(
         switchMap(statements => {
           return combineLatestOrEmpty(
-            statements.map(statement => this.p.dat$.chunk$.by_pk_entity$.key(statement.fk_subject_data)
+            statements.map(statement => this.p.dat$.chunk$.by_pk_entity$.key(this.annotatedIn != 'digital-tables' ? statement.fk_subject_data : statement.fk_object_tables_cell)
               .pipe(
                 switchMap(chunk => {
                   const item: RamListItem = {
@@ -226,10 +229,12 @@ export class RamListComponent implements OnInit, OnDestroy {
           // I map the input value to a Observable and switchMap will subscribe to the new one
           const rowsArray$: Observable<RamListItem>[] = basicStatements.map(statement => {
             return combineLatest(
-              this.pipePathRecursivly(statement.fk_subject_info, prefix),
+              this.pipePathRecursivly(this.annotatedIn != 'digital-tables' ? statement.fk_subject_info : statement.fk_object_tables_cell, prefix),
               this.getReference(statement.pk_entity)
             ).pipe(
               map(([path, location]) => {
+                console.log('hello2');
+                console.log(statement);
                 return {
                   path,
                   location,

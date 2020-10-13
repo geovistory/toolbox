@@ -1,16 +1,16 @@
-import {authenticate} from '@loopback/authentication';
-import {authorize} from '@loopback/authorization';
-import {inject} from '@loopback/context';
-import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
-import {get, param, post, requestBody} from '@loopback/rest';
-import {Roles} from '../components/authorization/keys';
-import {QTableColumns} from '../components/query/q-table-columns';
-import {GetTablePageOptions, QTableTablePage, TablePageResponse} from '../components/query/q-table-page';
-import {Postgres1DataSource} from '../datasources';
-import {DatColumn} from '../models/dat-column.model';
-import {GvSchemaObject} from '../models/gv-schema-object.model';
-import {keys, uniq} from 'ramda';
-import {QTableDatColumns} from '../components/query/q-table-dat-columns';
+import { authenticate } from '@loopback/authentication';
+import { authorize } from '@loopback/authorization';
+import { inject } from '@loopback/context';
+import { tags } from '@loopback/openapi-v3/dist/decorators/tags.decorator';
+import { get, param, post, requestBody } from '@loopback/rest';
+import { Roles } from '../components/authorization/keys';
+import { QTableColumns } from '../components/query/q-table-columns';
+import { GetTablePageOptions, QTableTablePage, TablePageResponse } from '../components/query/q-table-page';
+import { Postgres1DataSource } from '../datasources';
+import { DatColumn } from '../models/dat-column.model';
+import { GvSchemaObject } from '../models/gv-schema-object.model';
+import { keys, uniq } from 'ramda';
+import { QTableDatColumns } from '../components/query/q-table-dat-columns';
 
 /**
  * A simple controller to bounce back http requests
@@ -19,7 +19,7 @@ import {QTableDatColumns} from '../components/query/q-table-dat-columns';
 export class TableController {
   constructor(
     @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
-  ) {}
+  ) { }
 
 
   @get('/get-columns-of-table', {
@@ -27,15 +27,15 @@ export class TableController {
     responses: {
       '200': {
         description: 'Ok',
-        content: {'application/json': {schema: {'x-ts-type': GvSchemaObject}}},
+        content: { 'application/json': { schema: { 'x-ts-type': GvSchemaObject } } },
       },
     },
   })
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   getTableColumns(
-    @param.query.number('pkProject', {required: true}) pkProject: number,
-    @param.query.number('pkDigital', {required: true}) pkDigital: number,
+    @param.query.number('pkProject', { required: true }) pkProject: number,
+    @param.query.number('pkDigital', { required: true }) pkDigital: number,
   ): Promise<GvSchemaObject> {
     return new QTableColumns(this.dataSource).query(pkProject, pkDigital)
   }
@@ -45,15 +45,15 @@ export class TableController {
     responses: {
       '200': {
         description: 'Ok',
-        content: {'application/json': {schema: {'x-ts-type': TablePageResponse}}},
+        content: { 'application/json': { schema: { 'x-ts-type': TablePageResponse } } },
       },
     },
   })
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   async getTablePage(
-    @param.query.number('pkProject', {required: true}) pkProject: number,
-    @param.query.number('pkEntity', {required: true}) pkEntity: number,
+    @param.query.number('pkProject', { required: true }) pkProject: number,
+    @param.query.number('pkEntity', { required: true }) pkEntity: number,
     @requestBody() options: GetTablePageOptions
   ): Promise<TablePageResponse> {
 
@@ -78,6 +78,9 @@ export class TableController {
     // filter and orderby columns
     let masterColumns: string[] = [];
 
+
+    console.log('options.sortBy', JSON.stringify(options.sortBy))
+
     // add sort-by column
     if (options.sortBy && options.sortBy !== 'pk_row') {
       masterColumns = [options.sortBy]
@@ -85,6 +88,10 @@ export class TableController {
 
     // add filter columns
     const filterCols = keys(options.filters);
+
+    console.log('filterCols', JSON.stringify(filterCols))
+    console.log('options', JSON.stringify(options))
+
     if (options.filters && filterCols.length > 0) {
       masterColumns = [
         ...masterColumns,

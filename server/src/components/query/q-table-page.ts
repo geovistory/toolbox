@@ -1,11 +1,11 @@
-import {model, property} from '@loopback/repository';
-import {without} from 'ramda';
-import {Postgres1DataSource} from '../../datasources';
-import {DatColumn, InfStatement, ProInfoProjRel} from '../../models';
-import {GvSchemaObject} from '../../models/gv-schema-object.model';
-import {logSql} from '../../utils/helpers';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {registerType} from '../spec-enhancer/model.spec.enhancer';
+import { model, property } from '@loopback/repository';
+import { without } from 'ramda';
+import { Postgres1DataSource } from '../../datasources';
+import { DatColumn, InfStatement, ProInfoProjRel } from '../../models';
+import { GvSchemaObject } from '../../models/gv-schema-object.model';
+import { logSql } from '../../utils/helpers';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import { registerType } from '../spec-enhancer/model.spec.enhancer';
 
 // Table column filter interface
 export enum SortDirection {
@@ -31,7 +31,7 @@ export class TColFilterNum {
       enum: Object.values(TColFilterOpNumeric),
     }
   }) operator: TColFilterOpNumeric;
-  @property({required: true}) value: number;
+  @property({ required: true }) value: number;
 }
 @model()
 export class TColFilterTxt {
@@ -42,7 +42,7 @@ export class TColFilterTxt {
       enum: Object.values(TColFilterOpText),
     }
   }) operator: TColFilterOpText;
-  @property({required: true}) value: string;
+  @property({ required: true }) value: string;
 }
 @model()
 export class TColFilter {
@@ -63,10 +63,10 @@ export class TColFilters {
 }
 @model()
 export class GetTablePageOptions {
-  @property({required: true}) limit: number;
-  @property({required: true}) offset: number;
+  @property({ required: true }) limit: number;
+  @property({ required: true }) offset: number;
   @property.array(String) columns: string[];
-  @property({required: true}) sortBy: string;
+  @property({ required: true }) sortBy: string;
   @property({
     type: String,
     required: true,
@@ -118,8 +118,8 @@ export class TablePageResponse {
   @property() schemaObject: GvSchemaObject
 }
 
-interface ColBatchWith {name: string, columns: string[]}
-interface TwNameColName {twName: string, colName: string}
+interface ColBatchWith { name: string, columns: string[] }
+interface TwNameColName { twName: string, colName: string }
 const PK_CELL_SUFFIX = '_pk_cell'
 const TW_JOIN_STMT = 'tw_stmt_'
 /**
@@ -223,21 +223,33 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     SELECT
     json_build_object (
         'rows', COALESCE(tw4.rows, '[]'::json),
-        'length', tw3.length,
-        'schemaObject', json_build_object (
+        'length', tw3.length
+        ` + (this.getRefersToColumns().length !== 0 ? `, 'schemaObject', json_build_object (
           'inf', json_strip_nulls(json_build_object(
             'statement', statement.json
           )),
           'pro', json_strip_nulls(json_build_object(
             'info_proj_rel', info_proj_rel.json
           ))
-        )
+        )` : ``) + `
     ) as data
     FROM tw4
     LEFT JOIN tw3 ON true
-    LEFT JOIN statement ON true
+    ` + (this.getRefersToColumns().length !== 0 ? ` LEFT JOIN statement ON true
     LEFT JOIN info_proj_rel ON true;
-    `
+    ` : '');
+
+
+    console.log(this.sql)
+    console.log(this.params)
+    console.log(this.leftJoinStatements(this.getRefersToColumns(), fkProject));
+    console.log(this.groupStatements(this.getRefersToColumns()))
+
+    console.log('this.colBatchWiths', JSON.stringify(this.colBatchWiths))
+    console.log('this.masterColumns', JSON.stringify(this.masterColumns))
+    console.log('this.getRefersToColumns()', JSON.stringify(this.getRefersToColumns()))
+
+
 
     logSql(this.sql, this.params)
 
@@ -274,13 +286,13 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       const twName = colBatch.name;
       for (const colName of colBatch.columns) {
         if (this.colsWithMapping.includes(colName)) {
-          refersToColumns.push({twName, colName: colName + PK_CELL_SUFFIX});
+          refersToColumns.push({ twName, colName: colName + PK_CELL_SUFFIX });
         }
       }
     }
     for (const colName of this.masterColumns) {
       if (this.colsWithMapping.includes(colName)) {
-        refersToColumns.push({twName: 'tw1', colName: colName + PK_CELL_SUFFIX});
+        refersToColumns.push({ twName: 'tw1', colName: colName + PK_CELL_SUFFIX });
       }
     }
     return refersToColumns
@@ -418,7 +430,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   }
 
   private addColBatchWith(colBatchWith: string, columns: string[], pkEntity: number): string {
-    this.colBatchWiths.push({name: colBatchWith, columns})
+    this.colBatchWiths.push({ name: colBatchWith, columns })
     const sql = `
     ${colBatchWith} As (
         Select
@@ -435,16 +447,14 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   private joinColBatchWiths(masterColumns: string[]) {
     return `
         Select
-      ${
-      [
+      ${[
         ...['pk_row', ...masterColumns].map(colName => `tw1."${colName}"`),
         ...this.colBatchWiths.map(w => w.columns.map(c => `${w.name}."${c}"`).join(',\n'))
       ].join(',\n')
       }
         From
           ${['tw1', ...this.colBatchWiths.map(w => w.name)].join(',\n')}
-          ${
-      this.colBatchWiths.length < 1 ? '' :
+          ${this.colBatchWiths.length < 1 ? '' :
         `Where
             ${this.colBatchWiths
           .map((w) => `tw1.pk_row = ${w.name}.pk_row`)
@@ -470,10 +480,9 @@ export class QTableTablePage extends SqlBuilderLb4Models {
         }
         else if (filter?.text) {
           const o = filter.text.operator
-          sql = `${sql} AND ${tableAlias}.string_value::text ${
-            o === '%iLike%' ?
-              `iLike '%${filter.text.value}%'` :
-              `iLike '%${filter.text.value}%'` // Default
+          sql = `${sql} AND ${tableAlias}.string_value::text ${o === '%iLike%' ?
+            `iLike '%${filter.text.value}%'` :
+            `iLike '%${filter.text.value}%'` // Default
             }`
 
         }

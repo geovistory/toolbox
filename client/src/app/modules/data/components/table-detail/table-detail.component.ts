@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, DatDigitalApi, DatColumn, SysConfig } from 'app/core';
+import { ActiveProjectService, DatDigitalApi, DatColumn, SysConfig, InfStatement } from 'app/core';
 import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
 import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
 import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
@@ -13,6 +13,9 @@ import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { TableService, TableRow } from 'app/core/sdk-lb4';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
+import { CellMapping, ColumnMapping } from 'app/shared/components/digital-table/components/table/table.component';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { InfActions } from 'app/core/inf/inf.actions';
 
 // TODO import this interface from backend
 interface TabCell {
@@ -85,13 +88,14 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   loading = true;
 
   // for stupid table component:
-  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' } }[]>;
+  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping }[]>;
   table$: ReplaySubject<string[][]>;
+  entityMappings$: ReplaySubject<CellMapping[]>;
   colFiltersEnabled = false;
   lineBrakeInCells = false;
 
   // to target data on event of the stupid table component
-  dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number }[][];
+  dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number, refersTo?: number }[][];
   colMapping: (number | string)[];
 
   // Array of pk_entity of columns that have been queried
@@ -104,6 +108,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   // (for optimisation)
   firstApiCall = true;
 
+  pkProject: number;
+
   constructor(
     public ref: ChangeDetectorRef,
     private digitalApi: DatDigitalApi,
@@ -111,7 +117,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     private worker: WorkerWrapperService,
     private tableAPI: TableService,
     private s: SchemaObjectService,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    private inf: InfActions
   ) { }
 
   ngOnInit() {
@@ -121,6 +128,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       // this.p.dat$.column.loadColumnsOfTable(this.pkEntity, pkProject);
       this.s.storeGv(this.tableAPI.tableControllerGetTableColumns(pkProject, this.pkEntity), pkProject);
+      this.pkProject = pkProject
     })
 
     const loadConfig$ = combineLatest(
@@ -194,7 +202,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
             this.dataMapping[i].push({
               pk_row: row.pk_row,
               pk_col: parseInt(res.columns[j], 10),
-              pk_cell: row[key].pk_cell
+              pk_cell: row[key].pk_cell,
+              refersTo: -1
             })
           }
         }
@@ -202,7 +211,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         return table;
       }),
       takeUntil(this.destroy$)
-    ).subscribe(table => this.table$.next(table));
+    ).subscribe(table => {
+      this.emitEntityMappings();
+      this.table$.next(table);
+    });
 
     this.length$ = res$.pipe(
       map(res => res.length)
@@ -240,7 +252,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       shareReplay({ refCount: true, bufferSize: 1 })
     )
 
-
     this.columns$ = combineLatest(
       this.colToggleCtrl.valueChanges,
       this.colToggleOptions$
@@ -254,86 +265,35 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
     // set the headers
     this.headers$ = new ReplaySubject();
+    this.entityMappings$ = new ReplaySubject();
 
+    combineLatest([this.columns$, this.p.dfh$.class$.by_pk_class$.all$, this.p.dat$.class_column_mapping$.by_fk_column$.all$])
+      .pipe(takeUntil(this.destroy$)).subscribe(([cols, classNames, mappings]) => {
 
-
-
-    // const data$: InterfaceForStupidCmpt = this.columns$.pipe(
-    //   switchMap(cols => {
-    //     combineLatestOrEmpty(cols.map(c => {
-    //       let result: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' };
-
-
-    //       return this.p.dat$.class_column_mapping$.by_fk_column$.key(c.datColumn.pk_entity).pipe(
-
-    //       )
-    //     }))
-    //   })
-    // )
-
-
-
-
-
-
-
-
-    // combineLatest([
-    //   this.columns$,
-    //   this.p.dat$.classColumnMapping$.by_fk_column$$]
-
-    // ).pipe(takeUntil(this.destroy$))
-    //   .subscribe(([cols, mapping, labels, type]) => {
-    //     const columns: { colLabel: string, comment: string, type: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' } }[] = [];
-    //     columns.push({ colLabel: 'Row ID', comment: 'number', type: 'number' });
-    //     let column: { colLabel: string, comment: string, type: 'number' | 'string' | { fkClass: number, className: string, icon: 'teEn' | 'peIt' } };
-    //     for (let i = 0; i < cols.length; i++) {
-    //       column = {
-    //         colLabel: cols[i].display,
-    //         comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
-    //         type: mapping[cols[i].datColumn.pk_entity] ? { fkClass: mapping[cols[i].datColumn.pk_entity].fk_class, className:, icon } : cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
-    //       };
-    //       columns.push(column);
-    //     }
-    //     return columns;
-    //   })
-
-
-
-
-    // combineLatest(this.headers$, this.p.dfh$.class$.by_pk_class$.all$).pipe(takeUntil(this.destroy$)).subscribe(([headers, classes]) => {
-    //   this.headers = headers;
-    //   this.headers.forEach(h => {
-    //     if (typeof h.type === 'number') {
-    //       h.classLabel$ = this.c.pipeClassLabel(h.type);
-    //       h.classType$ = this.p.dfh$.class$.by_pk_class$.key(h.type).pipe(filter(klass => !!klass), map(klass => {
-    //         const systype = klass.basic_type;
-    //         if (systype === DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || systype === 30) return 'peIt';
-    //         else return 'teEn';
-    //       })
-    //       )
-    //     }
-    //   });
-    // })
-
-
-    this.columns$.pipe(
-      map(cols => {
-        const columns: { colLabel: string, comment: string, type: 'number' | 'string' }[] = [];
-        let column: { colLabel: string, comment: string, type: 'number' | 'string' };
+        const columns: { colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping }[] = [];
+        let column: { colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping };
         columns.push({ colLabel: 'Row ID', comment: 'number', type: 'number' });
+
         for (let i = 0; i < cols.length; i++) {
           column = {
             colLabel: cols[i].display,
             comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
             type: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
           };
+
+          if (mappings && mappings[cols[i].datColumn.pk_entity]) {
+            const fkClass = mappings[cols[i].datColumn.pk_entity].fk_class
+            column.mapping = {
+              fkClass: fkClass,
+              className: '', // classNames[fkClass].label,
+              icon: classNames[fkClass].basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || classNames[fkClass].basic_type == 30 ? 'peIt' : 'teEn'
+            }
+          }
           columns.push(column);
         }
-        return columns;
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe(cols => this.headers$.next(cols));
+
+        this.headers$.next(columns)
+      });
   }
 
   /**
@@ -368,6 +328,16 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       }));
   }
 
+  emitEntityMappings() {
+    const entityMappings = [];
+    for (let i = 0; i < this.dataMapping.length; i++) {
+      for (let j = 0; j < this.dataMapping[i].length; j++) {
+        if (this.dataMapping[i][j].refersTo) entityMappings.push({ colIndex: j, rowIndex: i, pkEntity: this.dataMapping[i][j].refersTo });
+      }
+    }
+    this.entityMappings$.next(entityMappings);
+  }
+
   onPageChange(e: PageEvent) {
     this.pageIndex$.next(e.pageIndex)
     this.pageSize$.next(e.pageSize)
@@ -398,6 +368,50 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   }
 
   click(cell: { col: number, row: number }) { }
+
+  mappingChanged(col: number, row: number, pkEntity: number) {
+    const cell = this.dataMapping[row][col];
+
+    // GMU TODO  remove hard coded property
+
+    if (pkEntity) {
+      // create
+      if (pkEntity != -1 && !cell.refersTo) {
+        cell.refersTo = pkEntity;
+        this.inf.statement.upsert([{
+          fk_subject_tables_cell: cell.pk_cell,
+          fk_property: 1334,
+          fk_object_info: pkEntity
+        } as InfStatement], this.pkProject);
+      }
+
+      // update
+      if (pkEntity != -1 && cell.refersTo) {
+        this.inf.statement.remove([{
+          fk_subject_tables_cell: cell.pk_cell,
+          fk_property: 1334,
+          fk_object_info: pkEntity
+        } as InfStatement], this.pkProject)
+        cell.refersTo = pkEntity;
+        this.inf.statement.upsert([{
+          fk_subject_tables_cell: cell.pk_cell,
+          fk_property: 1334,
+          fk_object_info: pkEntity
+        } as InfStatement], this.pkProject);
+      }
+
+      // delete
+      if (pkEntity == -1) {
+        this.inf.statement.remove([{
+          fk_subject_tables_cell: cell.pk_cell,
+          fk_property: 1334,
+          fk_object_info: pkEntity
+        } as InfStatement], this.pkProject)
+      }
+
+      this.emitEntityMappings();
+    }
+  }
 
   ngOnDestroy() {
     this.destroy$.next(true);

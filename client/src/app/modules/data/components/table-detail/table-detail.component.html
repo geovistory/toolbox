@@ -32,5 +32,6 @@
 <!--  [columnComments$]="" [loading]="" -->
 <gv-table [headers$]="headers$" [table$]="table$" [loading]="loading" [sortingEnabled]="true"
   [filteringEnabled]="colFiltersEnabled" [lineBreak]="lineBrakeInCells" class="gv-overflow-hidden"
-  (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)">
+  (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)"
+  (cellMapping)="mappingChanged($event.row, $event.col, $event.pkEntity)">
 </gv-table>

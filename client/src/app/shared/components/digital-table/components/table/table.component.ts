@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { ActiveProjectService } from 'app/core/active-project';
 import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
 import { Observable, Subject } from 'rxjs';
@@ -28,7 +29,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   // mandatory inputs
   @Input() loading = false;
-  @Input() headers$: Observable<{ colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping }[]>; // the header[x].type: number is the pk_class
+  @Input() headers$: Observable<{ colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping }[]>;
   @Input() table$: Observable<string[][]>;
 
   // optionnal inputs
@@ -42,6 +43,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Output() sortDemanded = new EventEmitter<{ colNb: number, direction: string }>();
   @Output() filterDemanded = new EventEmitter<Array<{ col: number, filter: TColFilter }>>();
   @Output() cellClicked = new EventEmitter<{ col: number, row: number }>();
+  @Output() cellMapping = new EventEmitter<{ col: number, row: number, pkEntity: number }>()
 
   // private parameters
   headers: { colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping }[];
@@ -52,7 +54,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    private dialog: MatDialog,
+
   ) { }
 
   ngOnInit() {
@@ -64,25 +68,48 @@ export class TableComponent implements OnInit, OnDestroy {
     // listen to input headers (from parent)
     this.headers$.pipe(takeUntil(this.destroy$)).subscribe(headers => {
       this.headers = headers;
-      // this.headers = [
-      //   { colLabel: '123', comment: '', type: 'string' },
-      //   { colLabel: '456', comment: '', type: 'string' }
-      // ]
-    })
 
-    // listen to input mappings (from parent)
-    this.entityMappings$.pipe(takeUntil(this.destroy$))
-      .subscribe(mappings => {
-        this.entityMappings = [];
-        mappings.forEach(m => {
-          if (!this.entityMappings[m.rowIndex]) this.entityMappings[m.rowIndex] = [];
-          this.entityMappings[m.rowIndex][m.colIndex] = m.pkEntity;
-        })
-      })
+
+      // GMU TODO : to remove when link is done
+      this.headers = [
+        { colLabel: 'Name', comment: 'the name of the person', type: 'string', mapping: { fkClass: 21, className: 'Person', icon: 'peIt' } },
+        { colLabel: 'Birthdates', comment: 'the birthdate of the person', type: 'string' },
+      ]
+    })
 
     // listen to input table (from parent)
     this.table$.pipe(takeUntil(this.destroy$))
-      .subscribe(table => this.table = table);
+      .subscribe(table => {
+        this.table = table;
+
+
+        // GMU TODO : to remove when link is done
+        this.table = [];
+        this.table[0] = [];
+        this.table[0][0] = 'Albert IV';
+        this.table[0][1] = '1216';
+        this.table[1] = [];
+        this.table[1][0] = 'Rudolf of Habsbourg';
+        this.table[1][1] = '1465';
+      });
+
+    // listen to input mappings (from parent)
+    if (this.entityMappings$) {
+      this.entityMappings$.pipe(takeUntil(this.destroy$))
+        .subscribe(mappings => {
+          this.entityMappings = [];
+          mappings.forEach(m => {
+            if (!this.entityMappings[m.rowIndex]) this.entityMappings[m.rowIndex] = [];
+            this.entityMappings[m.rowIndex][m.colIndex] = m.pkEntity;
+          })
+        })
+    } else {
+
+      // GMU TODO : to remove when link is done
+      this.entityMappings = [];
+      this.entityMappings[1] = [];
+      this.entityMappings[1][0] = 2005;
+    }
 
     // listen to sortBy option (from parent or from html)
     if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$)).subscribe(sort => this.curSort = sort);
@@ -117,7 +144,7 @@ export class TableComponent implements OnInit, OnDestroy {
     this.cellClicked.emit({ col: col, row: row });
   }
 
-
-  // template helpers: way to test if a variable is a number or not inside a [template - ngIf]
-  isNumber = (val: any) => typeof val === 'number';
+  mappingChanged(pkEntity: number, i: number, j: number) {
+    this.cellMapping.emit({ col: j, row: i, pkEntity: pkEntity });
+  }
 }

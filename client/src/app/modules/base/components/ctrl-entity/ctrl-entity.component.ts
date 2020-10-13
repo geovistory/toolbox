@@ -42,7 +42,7 @@ export class CtrlEntityComponent implements OnDestroy,
 
 
 
-  @Output() blur = new EventEmitter<void>();
+  @Output() blur = new EventEmitter<number | undefined>();
   @Output() focus = new EventEmitter<void>();
 
   autofilled?: boolean;
@@ -260,7 +260,7 @@ export class CtrlEntityComponent implements OnDestroy,
 
   onBlur() {
     this.onTouched();
-    this.blur.emit();
+    this.blur.emit(this.value ? this.value.pkEntity ? this.value.pkEntity : undefined : undefined);
     this.focused = false;
   }
 

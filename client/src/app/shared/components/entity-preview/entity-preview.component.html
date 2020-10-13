@@ -69,4 +69,12 @@
     <mat-icon color="primary">add</mat-icon>
     Add to project and open
   </button>
+  <button *ngIf="editAllowed" mat-menu-item (click)="editEntity()">
+    <mat-icon>edit</mat-icon>
+    Edit entity
+  </button>
+  <button *ngIf="editAllowed" mat-menu-item (click)="">
+    <mat-icon>delete</mat-icon>
+    Delete entity
+  </button>
 </mat-menu>
