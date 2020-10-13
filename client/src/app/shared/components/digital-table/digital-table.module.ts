@@ -8,6 +8,7 @@ import { EntityPreviewModule } from '../entity-preview/entity-preview.module';
 import { ColFilterNumericComponent } from './components/table/col-filter-numeric/col-filter-numeric.component';
 import { ColFilterTextComponent } from './components/table/col-filter-text/col-filter-text.component';
 import { TableComponent } from './components/table/table.component';
+import { EntityMatcherComponent } from './components/table/entity-matcher/entity-matcher.component';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { TableComponent } from './components/table/table.component';
     TableComponent,
     ColFilterTextComponent,
     ColFilterNumericComponent,
+    EntityMatcherComponent
   ],
   exports: [
     TableComponent

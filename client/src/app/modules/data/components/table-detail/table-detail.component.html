@@ -30,6 +30,7 @@
 <mat-divider></mat-divider>
 
 <!--  [columnComments$]="" [loading]="" -->
+<!-- // MOVED cellMapping TO EntityMatcherComponent -->
 <gv-table [headers$]="headers$" [table$]="table$" [loading]="loading" [sortingEnabled]="true"
   [filteringEnabled]="colFiltersEnabled" [lineBreak]="lineBrakeInCells" class="gv-overflow-hidden"
   (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)"

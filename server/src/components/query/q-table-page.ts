@@ -223,31 +223,31 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     SELECT
     json_build_object (
         'rows', COALESCE(tw4.rows, '[]'::json),
-        'length', tw3.length
-        ` + (this.getRefersToColumns().length !== 0 ? `, 'schemaObject', json_build_object (
+        'length', tw3.length,
+         'schemaObject', json_build_object (
           'inf', json_strip_nulls(json_build_object(
             'statement', statement.json
           )),
           'pro', json_strip_nulls(json_build_object(
             'info_proj_rel', info_proj_rel.json
           ))
-        )` : ``) + `
+        )
     ) as data
     FROM tw4
     LEFT JOIN tw3 ON true
-    ` + (this.getRefersToColumns().length !== 0 ? ` LEFT JOIN statement ON true
+    LEFT JOIN statement ON true
     LEFT JOIN info_proj_rel ON true;
-    ` : '');
+    `
 
 
-    console.log(this.sql)
-    console.log(this.params)
-    console.log(this.leftJoinStatements(this.getRefersToColumns(), fkProject));
-    console.log(this.groupStatements(this.getRefersToColumns()))
+    // console.log(this.sql)
+    // console.log(this.params)
+    // console.log(this.leftJoinStatements(this.getRefersToColumns(), fkProject));
+    // console.log(this.groupStatements(this.getRefersToColumns()))
 
-    console.log('this.colBatchWiths', JSON.stringify(this.colBatchWiths))
-    console.log('this.masterColumns', JSON.stringify(this.masterColumns))
-    console.log('this.getRefersToColumns()', JSON.stringify(this.getRefersToColumns()))
+    // console.log('this.colBatchWiths', JSON.stringify(this.colBatchWiths))
+    // console.log('this.masterColumns', JSON.stringify(this.masterColumns))
+    // console.log('this.getRefersToColumns()', JSON.stringify(this.getRefersToColumns()))
 
 
 

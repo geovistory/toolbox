@@ -369,6 +369,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   click(cell: { col: number, row: number }) { }
 
+
+  // MOVE TO EntityMatcherComponent
   mappingChanged(col: number, row: number, pkEntity: number) {
     const cell = this.dataMapping[row][col];
 

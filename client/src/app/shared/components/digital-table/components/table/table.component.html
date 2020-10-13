@@ -81,8 +81,9 @@
               {{value}}
             </span>
 
+            <gv-entity-matcher *ngIf="headers[j].mapping"></gv-entity-matcher>
 
-            
+            <!--   // MOVED TO EntityMatcherComponent -->
             <span *ngIf="entityMappings[i] ? entityMappings[i][j] : false" class="col-6 text-center align-self-center">
               <gv-entity-preview [pkEntity]="entityMappings[i][j]" [openTabOnClick]="true" [editAllowed]="true">
               </gv-entity-preview>

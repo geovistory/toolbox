@@ -144,6 +144,7 @@ export class TableComponent implements OnInit, OnDestroy {
     this.cellClicked.emit({ col: col, row: row });
   }
 
+  // MOVE TO EntityMatcherComponent
   mappingChanged(pkEntity: number, i: number, j: number) {
     this.cellMapping.emit({ col: j, row: i, pkEntity: pkEntity });
   }

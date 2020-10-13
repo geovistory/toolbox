@@ -197,6 +197,10 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.list._closedStream.pipe(takeUntil(this.destroy$)).subscribe(e => {
       this.p.setListType('')
     })
+
+
+    // DEV: For development of a component in a specific Tab uncomment and modify the following
+    this.p.addTableTab(2001)
   }
 
   trackByFn(index, item) {
