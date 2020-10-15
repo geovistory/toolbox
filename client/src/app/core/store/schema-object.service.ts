@@ -8,6 +8,8 @@ import { Observable, Subject } from 'rxjs';
 import { NotificationsAPIActions } from '../notifications/components/api/notifications.actions';
 import { WarActions } from '../war/war.actions';
 import { GvSchemaObject } from '../sdk-lb4';
+import { EntityPreviewSocket } from '../sockets/sockets.module';
+import { TabActions } from '../tab/tab.actions';
 
 
 @Injectable()
@@ -22,7 +24,9 @@ export class SchemaObjectService {
     public proActions: ProActions,
     public datActions: DatActions,
     public warActions: WarActions,
-    public notifications: NotificationsAPIActions
+    public tabActions: TabActions,
+    public notifications: NotificationsAPIActions,
+    private entityPreviewSocket: EntityPreviewSocket
   ) { }
 
 
@@ -116,13 +120,28 @@ export class SchemaObjectService {
         else if (schema === 'pro') actions = this.proActions;
         else if (schema === 'dat') actions = this.datActions;
         else if (schema === 'war') actions = this.warActions;
+        else if (schema === 'tab') actions = this.tabActions;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
             actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
           });
         }
       });
+      this.extendEntityPreviewStream(object, pkProject);
     }
   }
 
+  /**
+   * Adds the entity previews to the streamed entity previews (for ws communication)
+   * @param object
+   * @param pkProject
+   */
+  private extendEntityPreviewStream(object: GvSchemaObject, pkProject: number) {
+    if (object && object.war && object.war.entity_preview && object.war.entity_preview.length) {
+      this.entityPreviewSocket.emit('extendStream', {
+        pkProject,
+        pks: object.war.entity_preview.map(p => p.pk_entity)
+      });
+    }
+  }
 }

@@ -2,23 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {DatDigital, TabRow} from "../../../models";
 import {testdb} from '../testdb';
-
-
-export class TabCell {
-    pk_cell: number;
-    fk_digital: number;
-    fk_column: number;
-    fk_row: number;
-    content: string | number;
-
-    constructor(pk_cell: number, fk_digital: number, fk_column: number, fk_row: number, content: string | number) {
-        this.pk_cell = pk_cell;
-        this.fk_digital = fk_digital;
-        this.fk_column = fk_column;
-        this.fk_row = fk_row;
-        this.content = content;
-    }
-}
+import {TabCell} from '../../../models/tab-cell.model';
 
 
 export async function createCellTable(digital: DatDigital) {
@@ -27,7 +11,28 @@ export async function createCellTable(digital: DatDigital) {
 
 export async function createTabCell(cell: Partial<TabCell>, row: TabRow) {
     if (cell.pk_cell) {
-        await testdb.execute(`SELECT setval('tables.cell_pk_cell_seq', ${cell.pk_cell - 1}, true);`);
+        await testdb.execute(`SELECT setval('tables.cell_pk_cell_seq', ${parseInt(cell.pk_cell) - 1}, true);`);
     }
-    await testdb.execute('INSERT INTO tables.cell_' + cell.fk_digital + ' (fk_digital, fk_column, fk_row, string_value, numeric_value) VALUES (' + cell.fk_digital + ', ' + cell.fk_column + ', ' + row.pk_row + ', ' + (typeof cell.content == 'string' ? '\'' + cell.content + '\', ' : 'NULL, ') + (typeof cell.content == 'number' ? cell.content : 'NULL') + ')')
+    const sql = `
+    INSERT INTO tables.cell_${cell.fk_digital} (
+        fk_digital,
+        fk_column,
+        fk_row,
+        string_value,
+        numeric_value
+    )
+    VALUES (
+        $1,
+        $2,
+        $3,
+        $4,
+        $5
+    );`
+    await testdb.execute(sql, [
+        cell.fk_digital,
+        cell.fk_column,
+        cell.fk_row,
+        cell.string_value ?? null,
+        cell.numeric_value ?? null
+    ])
 }

@@ -243,14 +243,13 @@ export class SchemaObjectService {
      * @param pkProject Primary key of the project
      * @param pkEntity Primary key of the entity
      * @param pkProperty Key of the property (1218, 1334, 117)
-     * @param annotatedIn Tells if we are looking for annotations in texts or in tables
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, annotatedIn: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<SchemaObject>>;
-    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, annotatedIn: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<SchemaObject>>>;
-    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, annotatedIn: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<SchemaObject>>>;
-    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, annotatedIn: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
+    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<SchemaObject>>;
+    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<SchemaObject>>>;
+    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<SchemaObject>>>;
+    public schemaObjectGetRamList(pkProject: number, pkEntity: number, pkProperty: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
         if (pkProject === null || pkProject === undefined) {
             throw new Error('Required parameter pkProject was null or undefined when calling schemaObjectGetRamList.');
         }
@@ -259,9 +258,6 @@ export class SchemaObjectService {
         }
         if (pkProperty === null || pkProperty === undefined) {
             throw new Error('Required parameter pkProperty was null or undefined when calling schemaObjectGetRamList.');
-        }
-        if (annotatedIn === null || annotatedIn === undefined) {
-            throw new Error('Required parameter annotatedIn was null or undefined when calling schemaObjectGetRamList.');
         }
 
         let queryParameters = new HttpParams({encoder: this.encoder});
@@ -276,10 +272,6 @@ export class SchemaObjectService {
         if (pkProperty !== undefined && pkProperty !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>pkProperty, 'pkProperty');
-        }
-        if (annotatedIn !== undefined && annotatedIn !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>annotatedIn, 'annotatedIn');
         }
 
         let headers = this.defaultHeaders;

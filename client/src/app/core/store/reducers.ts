@@ -15,6 +15,7 @@ import { createDfhReducer } from '../dfh/dfh.reducer';
 import { loadingBarReducer } from '../loading-bar/api/loading-bar.reducer';
 import { createSysReducer } from '../sys/sys.reducer';
 import { createWarReducer } from '../war/war.reducer';
+import { createTabReducer } from '../tab/tab.reducer';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
@@ -91,6 +92,7 @@ export const rootReducer = composeReducers(
     dat: createDatReducer(),
     pro: createProReducer(),
     war: createWarReducer(),
+    tab: createTabReducer(),
     pending: pendingRequestReducer,
     resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
   })

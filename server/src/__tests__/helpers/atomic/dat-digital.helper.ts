@@ -2,7 +2,7 @@
 import {DatDigital} from '../../../models';
 import {DatDigitalRepository} from '../../../repositories';
 import {testdb} from '../../helpers/testdb';
-import {dealWithPkEntity} from './_sequences.helper';
+import {dealWithPkEntityAndPkText} from './_sequences.helper';
 
 
 function createDatDigitalRepo() {
@@ -10,7 +10,7 @@ function createDatDigitalRepo() {
 }
 
 export async function createDatDigital(item: Partial<DatDigital>) {
-    return createDatDigitalRepo().create(await dealWithPkEntity(item, 'data'));
+    return createDatDigitalRepo().create(await dealWithPkEntityAndPkText(item, 'data'));
 }
 
 export async function updateDatDigital(id: number, item: Partial<DatDigital>) {

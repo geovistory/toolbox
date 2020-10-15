@@ -1,19 +1,20 @@
-import { testdb } from "../testdb";
+import {testdb} from "../testdb";
 import {SysSystemTypeRepository} from '../../../repositories';
 
 let initialized = false;
 
 const types = [
-  { name: "projectDescription", id: 638, definition: 'Description of an entity.' },
-  { name: "projectLabel", id: 639, definition: 'Label of an entity.' },
-  { name: "digitalTable", id: 3287, definition: 'Table. Type of Digital stored in the table data.digital' },
-  { name: "value", id: 3291, definition: 'Value.  Semistructured data of one of the data types specified with fk_data_type' },
-  { name: "string", id: 3292, definition: 'Text. Data type' },
-  { name: "number", id: 3293, definition: 'Float. Data type' },
-  { name: "label", id: 3295, definition: 'Label of an entity.' },
+  {name: "projectDescription", id: 638, definition: 'Description of an entity.'},
+  {name: "projectLabel", id: 639, definition: 'Label of an entity.'},
+  {name: "digitalTable", id: 3287, definition: 'Table. Type of Digital stored in the table data.digital'},
+  {name: "digitalText", id: 3286, definition: 'Text. Type of a Digital stored in the table data.digital'},
+  {name: "value", id: 3291, definition: 'Value.  Semistructured data of one of the data types specified with fk_data_type'},
+  {name: "string", id: 3292, definition: 'Text. Data type'},
+  {name: "number", id: 3293, definition: 'Float. Data type'},
+  {name: "label", id: 3295, definition: 'Label of an entity.'},
 ]
 
-export type DigitalType = "projectDescription" | "projectLabel" | "digitalTable" | "value" | "string" | "number" | "label";
+export type DigitalType = "projectDescription" | "projectLabel" | "digitalTable" | "digitalText" | "value" | "string" | "number" | "label";
 
 export function getTypeId(name: DigitalType) {
   const target = types.filter(t => t.name === name)[0];
@@ -30,7 +31,7 @@ export async function createTypes() {
 
   for (const type of types) {
     await testdb.execute("SELECT setval('system.entity_pk_entity_seq', " + (type.id - 1) + ", true);");
-    await new SysSystemTypeRepository(testdb).create({ definition: type.definition });
+    await new SysSystemTypeRepository(testdb).create({definition: type.definition});
   }
   initialized = true;
 }

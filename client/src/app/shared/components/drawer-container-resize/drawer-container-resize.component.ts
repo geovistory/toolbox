@@ -50,7 +50,7 @@ export class DrawerContainerResizeComponent implements AfterViewInit, OnDestroy 
       const newWidth = $event.pointerPosition.x - this.parentOffsetLeft + this.minDrawerWidth - (this.draggableWidth / 2)
       if (newWidth >= this.minDrawerWidth && newWidth <= this.maxDrawerWidth) {
         this.drawerWidth = newWidth;
-        console.log(this.drawerWidth)
+        // console.log(this.drawerWidth)
       }
     }
   }

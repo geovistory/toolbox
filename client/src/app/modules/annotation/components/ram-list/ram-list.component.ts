@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ActiveProjectService, InfStatement, switchMapOr, EntityPreview } from 'app/core';
+import { ActiveProjectService, InfStatement, switchMapOr, EntityPreview, SysConfig } from 'app/core';
 import { InfActions } from 'app/core/inf/inf.actions';
 import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { values, equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject, of } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil, distinctUntilChanged, tap, shareReplay } from 'rxjs/operators';
-import { GraphPathSegment } from '../graph-path/graph-path.component';
+import { GraphPathSegment, GraphPathEntity } from '../graph-path/graph-path.component';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { ByPk } from 'app/core/store/model';
 import { QuillOpsToStrPipe } from 'app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -14,6 +14,7 @@ import { RamListEditDialogComponent, RamListEditDialogData } from '../ram-list-e
 import { RamListRemoveDialogData, RamListRemoveDialogComponent } from '../ram-list-remove-dialog/ram-list-remove-dialog.component';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
 import { TruncatePipe } from 'app/shared/pipes/truncate/truncate.pipe';
+import { RamListService, DatChunk, DatDigital } from 'app/core/sdk-lb4';
 
 interface GraphPath {
   segments: GraphPathSegment[];
@@ -37,6 +38,8 @@ export interface RamListItem {
   location?: Reference;
   // the exact reference
   annotatedText?: AnnotatedText;
+  // the exact reference
+  annotatedCell?: AnnotatedText;
   // configuration for the action menu
   actions: any;
 }
@@ -58,6 +61,7 @@ export class RamListComponent implements OnInit, OnDestroy {
   @Input() pkEntity: number;
   @Input() fkProperty: number;
   @Input() annotatedIn: 'sources' | 'digital-text' | 'digital-tables';
+  @Input() disableAddBtn: boolean;
 
   items$: Observable<RamListItem[]>;
   cols: any[];
@@ -73,6 +77,7 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   constructor(
     private s: SchemaObjectService,
+    private ramListApi: RamListService,
     private inf: InfActions,
     public p: ActiveProjectService,
     private quillPipe: QuillOpsToStrPipe,
@@ -86,8 +91,6 @@ export class RamListComponent implements OnInit, OnDestroy {
     // setInterval(() => {
     //   this.ref.detectChanges();
     // }, 5000);
-
-
   }
 
   rowTrackByFn(_, i: RamListItem) {
@@ -96,9 +99,19 @@ export class RamListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.cols = this.setCols();
+    let refersTo: 'Chunk' | 'Cell';
+    if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
+      if (this.annotatedIn === 'digital-tables') refersTo = 'Cell';
+      else if (this.annotatedIn === 'digital-text') refersTo = 'Chunk';
+    }
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.s.store(this.s.api.getRamList(pkProject, this.pkEntity, this.fkProperty), pkProject)
+      this.s.storeGv(this.ramListApi.ramListControllerGetRamList(
+        pkProject,
+        this.pkEntity,
+        this.fkProperty,
+        refersTo
+      ), pkProject)
         .pipe(first(), takeUntil(this.destroy$))
         .subscribe(() => {
           this.loading$.next(false);
@@ -128,90 +141,15 @@ export class RamListComponent implements OnInit, OnDestroy {
       fk_property: this.fkProperty,
       fk_object_info: this.pkEntity
     }).pipe(
-
-      // TODO find out why this is triggered on wrong moments
-      tap((s) => {
-
-      }),
       distinctUntilChanged<InfStatement[]>(equals),
-      tap((s) => {
-
-      }),
     )
 
 
     // if property is 'refers to' we need to get the chunk and the digital
     if (this.fkProperty == DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
-      return basicStatements$.pipe(
-        switchMap(statements => {
-          return combineLatestOrEmpty(
-            statements.map(statement => this.p.dat$.chunk$.by_pk_entity$.key(this.annotatedIn != 'digital-tables' ? statement.fk_subject_data : statement.fk_object_tables_cell)
-              .pipe(
-                switchMap(chunk => {
-                  const item: RamListItem = {
-                    path: {
-                      segments: []
-                    },
-                    location: undefined,
-                    statement: statement,
-                    actions: {
-                      edit: this.propertyHasReference()
-                    }
-                  };
 
-                  if (!chunk) return new BehaviorSubject(item);
-
-                  return this.p.dat$.digital$.by_pk_text$.key(chunk.fk_text).pipe(
-                    map(digitalIdx => values(digitalIdx)),
-                    switchMap(digitals => {
-                      if (digitals.length < 1) return new BehaviorSubject(item);
-                      const digital = digitals[0];
-                      return this.p.inf$.statement$.by_subject_and_property$({
-                        fk_subject_data: digital.pk_entity,
-                        fk_property: DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF,
-                      }).pipe(
-                        switchMap(statementsToExpression => {
-
-                          if (statementsToExpression.length < 1) return new BehaviorSubject(item)
-
-                          return this.pipePathRecursivly(statementsToExpression[0].fk_object_info, '').pipe(
-                            map((path) => {
-                              const annotatedText: AnnotatedText = {
-                                label: this.quillPipe.transform(chunk.quill_doc.ops)
-                              }
-                              path.segments = [
-                                ...path.segments,
-                                {
-                                  property: {
-                                    label: 'is reproduced by',
-                                    tooltip: 'is reproduced by'
-                                  }
-                                },
-                                {
-                                  entity: {
-                                    icon: 'text',
-                                    label: 'Text ' + digital.pk_entity,
-                                    tooltip: 'Text ' + digital.pk_entity,
-                                    pkEntity: digital.pk_entity,
-                                    isDigitalText: true
-                                  }
-                                }
-                              ]
-                              return { ...item, path, annotatedText };
-                            })
-                          )
-
-                        })
-                      )
-
-                    })
-                  )
-                })
-              )
-            )
-          )
-        })
-      )
+      if (this.annotatedIn === 'digital-text') return this.pipeRefersToChunk(basicStatements$)
+      else if (this.annotatedIn === 'digital-tables') return this.pipeRefersToCell(basicStatements$)
 
     }
     // if poperty is 'mentions' or 'is topic of' we need to get the path directly
@@ -219,36 +157,163 @@ export class RamListComponent implements OnInit, OnDestroy {
       this.fkProperty == DfhConfig.PROPERTY_PK_GEOVP2_MENTIONS ||
       this.fkProperty == DfhConfig.PROPERTY_PK_P129_IS_ABOUT
     ) {
-      return combineLatest(
-        this.rootEntity$,
-        basicStatements$
-      ).pipe(
-        switchMap(([rootEntity, basicStatements]) => {
-          const prefix = ''; // `${rootEntity.class_label} ${rootEntity.entity_label} is mentioned somewhere in`;
-
-          // I map the input value to a Observable and switchMap will subscribe to the new one
-          const rowsArray$: Observable<RamListItem>[] = basicStatements.map(statement => {
-            return combineLatest(
-              this.pipePathRecursivly(this.annotatedIn != 'digital-tables' ? statement.fk_subject_info : statement.fk_object_tables_cell, prefix),
-              this.getReference(statement.pk_entity)
-            ).pipe(
-              map(([path, location]) => {
-                console.log('hello2');
-                console.log(statement);
-                return {
-                  path,
-                  location,
-                  statement: statement,
-                  actions: {
-                    edit: this.propertyHasReference()
-                  }
-                };
-              })
-            )
-          });
-          return combineLatestOrEmpty(rowsArray$);
-        }));
+      return this.pipeMentionsOrIsAbout(basicStatements$);
     }
+  }
+
+  private pipeMentionsOrIsAbout(basicStatements$: Observable<InfStatement[]>): Observable<RamListItem[]> {
+    return combineLatest(this.rootEntity$, basicStatements$).pipe(switchMap(([rootEntity, basicStatements]) => {
+      const prefix = '';
+      const rowsArray$: Observable<RamListItem>[] = basicStatements.map(statement => {
+        return combineLatest(this.pipePathRecursivly(statement.fk_subject_info, prefix), this.getReference(statement.pk_entity)).pipe(map(([path, location]) => {
+          return {
+            path,
+            location,
+            statement: statement,
+            actions: {
+              edit: this.propertyHasReference()
+            }
+          };
+        }));
+      });
+      return combineLatestOrEmpty(rowsArray$);
+    }));
+  }
+
+  private pipeRefersToChunk(basicStatements$: Observable<InfStatement[]>): Observable<RamListItem[]> {
+    return basicStatements$.pipe(
+      map(stmst => stmst.filter(s => s.fk_subject_data !== 0)),
+      switchMap(statements => {
+        return combineLatestOrEmpty(statements.map(statement => this.p.dat$.chunk$.by_pk_entity$.key(statement.fk_subject_data)
+          .pipe(switchMap(chunk => {
+            const item: RamListItem = {
+              path: {
+                segments: []
+              },
+              location: undefined,
+              statement: statement,
+              actions: {
+                edit: this.propertyHasReference()
+              }
+            };
+            if (!chunk) return new BehaviorSubject(item);
+            return this.pipeDigitalFromChunk(chunk.fk_text, item)
+              .pipe(map((i) => {
+                i.annotatedText = {
+                  label: this.quillPipe.transform((chunk.quill_doc as any).ops)
+                };
+                return i
+              }))
+          }))));
+      }));
+  }
+
+  private pipeRefersToCell(basicStatements$: Observable<InfStatement[]>): Observable<RamListItem[]> {
+    return basicStatements$.pipe(
+      map(stmst => stmst.filter(s => s.fk_subject_tables_cell !== 0)),
+      switchMap(statements => {
+        return combineLatestOrEmpty(statements.map(statement => this.p.tab$.cell$.by_pk_cell$.key(statement.fk_subject_tables_cell)
+          .pipe(switchMap(cell => {
+            const item: RamListItem = {
+              path: {
+                segments: []
+              },
+              location: undefined,
+              statement: statement,
+              actions: {
+                edit: this.propertyHasReference()
+              }
+            };
+            if (!cell) return new BehaviorSubject(item);
+            return this.pipeDigitalFromCell(cell.fk_digital, item)
+              .pipe(map((i) => {
+                i.annotatedCell = {
+                  label: cell.string_value || cell.numeric_value.toString()
+                };
+                i.path.segments = [
+                  ...i.path.segments,
+                  {
+                    property: {
+                      label: 'cell',
+                      tooltip: 'cell'
+                    }
+                  },
+                  {
+                    entity: {
+                      icon: 'cell',
+                      label: 'Cell ' + cell.fk_row + ':' + cell.fk_column,
+                      tooltip: 'Cell'
+                    }
+                  },
+                ]
+                return i
+              }))
+          }))));
+      }));
+  }
+
+  private pipeDigitalFromCell(fkDigital: number, item: RamListItem): Observable<RamListItem> {
+    return this.p.dat$.digital$.by_pk_entity$.key(fkDigital).pipe(map(digitalIdx => values(digitalIdx)), switchMap(digitals => {
+      if (digitals.length < 1) return new BehaviorSubject(item);
+      const digital = digitals[0];
+      return this.pipePathOfDigital(digital, item);
+    }));
+  }
+
+  private pipeDigitalFromChunk(pkText: number, item: RamListItem): Observable<RamListItem> {
+    return this.p.dat$.digital$.by_pk_text$.key(pkText).pipe(map(digitalIdx => values(digitalIdx)), switchMap(digitals => {
+      if (digitals.length < 1) return new BehaviorSubject(item);
+      const digital = digitals[0];
+      return this.pipePathOfDigital(digital, item);
+    }));
+  }
+
+  private pipePathOfDigital(digital: DatDigital, item: RamListItem): Observable<RamListItem> {
+    return this.p.inf$.statement$.by_subject_and_property$({
+      fk_subject_data: digital.pk_entity,
+      fk_property: DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF,
+    }).pipe(switchMap(statementsToExpression => {
+      if (statementsToExpression.length < 1) return new BehaviorSubject(item);
+
+      let entity: GraphPathEntity;
+      if (digital.fk_system_type === SysConfig.PK_SYSTEM_TYPE__DIGITAL_TEXT) {
+        entity = {
+          icon: 'text',
+          label: 'Text ' + digital.pk_entity,
+          tooltip: 'Text ' + digital.pk_entity,
+          pkEntity: digital.pk_entity,
+          isDigitalText: true
+        }
+      }
+      else {
+        if (digital.fk_system_type === SysConfig.PK_SYSTEM_TYPE__DIGITAL_TABLE) {
+          entity = {
+            icon: 'table',
+            label: 'Table ' + digital.pk_entity,
+            tooltip: 'Table ' + digital.pk_entity,
+            pkEntity: digital.pk_entity,
+            isDigitalTable: true
+          }
+        }
+      }
+
+      return this.pipePathRecursivly(statementsToExpression[0].fk_object_info, '')
+        .pipe(map((path) => {
+          path.segments = [
+            ...path.segments,
+            {
+              property: {
+                label: 'is reproduced by',
+                tooltip: 'is reproduced by'
+              }
+            },
+            {
+              entity
+            }
+          ];
+          return { ...item, path };
+        }));
+    }));
   }
 
   getReference(pkSubjectStatement: number): Observable<Reference> {
@@ -444,6 +509,15 @@ export class RamListComponent implements OnInit, OnDestroy {
       filterCol: 'annotatedText.label',
       width: '40%'
     };
+    const annotatedCellCol = {
+      field: 'annotatedCell',
+      header: 'Annotated Cell',
+      tooltip: 'Cell in a table.',
+      hasFilter: true,
+      filterMatchMode: 'contains',
+      filterCol: 'annotatedCell.label',
+      width: '40%'
+    };
     const actionsCol = {
       field: 'action',
       header: 'Action',
@@ -459,7 +533,8 @@ export class RamListComponent implements OnInit, OnDestroy {
     // refers to
     else if (this.fkProperty === DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
       pathCol.width = '40%'
-      return [pathCol, annotatedTextCol, actionsCol]
+      if (this.annotatedIn === 'digital-text') return [pathCol, annotatedTextCol, actionsCol]
+      else if (this.annotatedIn === 'digital-tables') return [pathCol, annotatedCellCol, actionsCol]
     }
 
     return [pathCol, actionsCol]

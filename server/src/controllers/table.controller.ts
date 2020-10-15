@@ -13,7 +13,7 @@ import { keys, uniq } from 'ramda';
 import { QTableDatColumns } from '../components/query/q-table-dat-columns';
 
 /**
- * A simple controller to bounce back http requests
+ * A controller to get data from and about tables (digitals)
  */
 @tags('table')
 export class TableController {

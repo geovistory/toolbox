@@ -1,28 +1,29 @@
-import { createDatClassColumnMapping } from '../atomic/dat-class-mapping.helper';
-import { createDatColumn } from '../atomic/dat-column.helper';
-import { createDatDigital } from '../atomic/dat-digital.helper';
-import { createDatTextProperty } from '../atomic/dat-text-property.helper';
-import { createInfStatement } from '../atomic/inf-statement.helper';
-import { addProfilesToProject } from '../atomic/pro-dfh-profile-proj-rel.helper';
-import { linkAccountProject } from '../atomic/pub-account_project_rel.helper';
-import { createTypes } from '../atomic/sys-system-type.helper';
-import { createCellTable, createTabCell } from '../atomic/tab-cell-X.helper';
-import { createTabRow } from '../atomic/tab-row.helper';
-import { DatClassColumnMappingMock } from '../data/gvDB/DatClassColumnMappingMock';
-import { DatColumnMock } from '../data/gvDB/DatColumnMock';
-import { DatDigitalMock } from '../data/gvDB/DatDigitalMock';
-import { DatTextPropertyMock } from '../data/gvDB/DatTextPropertyMock';
-import { InfStatementMock } from '../data/gvDB/InfStatementMock';
-import { ProProjectMock } from '../data/gvDB/ProProjectMock';
-import { PubAccountMock } from '../data/gvDB/PubAccountMock';
-import { TabCellXMock } from '../data/gvDB/TabCellXMock';
-import { TabRowMock } from '../data/gvDB/TabRowMock';
-import { createGaetanMuck } from './account.helper';
-import { createAlbertAndRudolf } from './create-albert-and-rudolf.helper';
-import { createSandBoxProject } from './project.helpers';
-import { addInfosToProject } from '../atomic/pro-info-proj-rel.helper';
-import { createModel } from './createModel.helper';
-import { createSourceHabsbourgEmpire } from './create-source-Habsbourg-Enpire.helper';
+import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
+import {createDatColumn} from '../atomic/dat-column.helper';
+import {createDatDigital} from '../atomic/dat-digital.helper';
+import {createDatTextProperty} from '../atomic/dat-text-property.helper';
+import {createInfStatement} from '../atomic/inf-statement.helper';
+import {addProfilesToProject} from '../atomic/pro-dfh-profile-proj-rel.helper';
+import {linkAccountProject} from '../atomic/pub-account_project_rel.helper';
+import {createTypes} from '../atomic/sys-system-type.helper';
+import {createCellTable, createTabCell} from '../atomic/tab-cell-X.helper';
+import {createTabRow} from '../atomic/tab-row.helper';
+import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
+import {DatColumnMock} from '../data/gvDB/DatColumnMock';
+import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
+import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
+import {InfStatementMock} from '../data/gvDB/InfStatementMock';
+import {ProProjectMock} from '../data/gvDB/ProProjectMock';
+import {PubAccountMock} from '../data/gvDB/PubAccountMock';
+import {TabCellXMock} from '../data/gvDB/TabCellXMock';
+import {TabRowMock} from '../data/gvDB/TabRowMock';
+import {createGaetanMuck} from './account.helper';
+import {createAlbertAndRudolf} from './create-albert-and-rudolf.helper';
+import {createSandBoxProject} from './project.helpers';
+import {addInfosToProject} from '../atomic/pro-info-proj-rel.helper';
+import {createModel} from './createModel.helper';
+import {createSourceHabsbourgEmpire} from './create-source-Habsbourg-Enpire.helper';
+import {createTextAndAnnotation} from './createText.helper';
 
 export async function forFeatureX() {
     const pkProject = ProProjectMock.SANDBOX_PROJECT.pk_entity ?? -1;
@@ -35,7 +36,7 @@ export async function forFeatureX() {
     await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.SANDBOX_PROJECT);
 
     //create the model
-    const { profiles } = await createModel()
+    const {profiles} = await createModel()
 
     // add profiles to project
     await addProfilesToProject(pkProject, profiles.map(p => p.dfh_pk_profile))
@@ -75,8 +76,15 @@ export async function forFeatureX() {
     const entities = await createAlbertAndRudolf();
     const source = await createSourceHabsbourgEmpire();
 
+    //create a text, a chunk and annotate rudolf
+    const txtAnnot = await createTextAndAnnotation()
+
     // add info to project
-    await addInfosToProject(pkProject, [...entities.teens, ...entities.peits, ...entities.stmts, ...source.teens, ...source.peits, ...source.stmts, statementMapping]
+    await addInfosToProject(pkProject, [
+        ...entities.teens, ...entities.peits, ...entities.stmts,
+        ...source.teens, ...source.peits, ...source.stmts,
+        ...txtAnnot.stmts,
+        statementMapping]
         .map(x => x.pk_entity))
 
 }

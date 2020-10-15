@@ -101,7 +101,7 @@ export class QTableColumns extends SqlBuilderLb4Models {
     LEFT JOIN dat_class_column_mapping ON true
   `;
 
-        this.getBuiltQuery()
+    this.getBuiltQuery()
 
     return this.executeAndReturnFirstData<GvSchemaObject>();
   }

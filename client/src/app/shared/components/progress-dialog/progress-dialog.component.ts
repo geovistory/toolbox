@@ -42,7 +42,7 @@ export class ProgressDialogComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.value$ = this.data.value$.pipe(auditTime(500));
     this.data.mode$.pipe(auditTime(500), takeUntil(this.destroy$)).subscribe(v => {
-      console.log(v)
+      // console.log(v)
     })
   }
   ngOnDestroy() {
