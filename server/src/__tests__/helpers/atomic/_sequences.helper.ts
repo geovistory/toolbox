@@ -12,7 +12,7 @@ interface PkEntityAndPkText extends PkEntity {
 }
 
 interface PkRow {
-  pk_row?: string
+  pk_row?: number
   [key: string]: unknown
 }
 
@@ -25,7 +25,7 @@ export async function dealWithPkEntity<M extends PkEntity>(item: M, schema: 'inf
 
 export async function dealWithPkRow<M extends PkRow>(item: M) {
   if (item.pk_row) {
-    await testdb.execute(`SELECT setval('tables.row_pk_row_seq', ${parseInt(item.pk_row) - 1}, true);`);
+    await testdb.execute(`SELECT setval('tables.row_pk_row_seq', ${item.pk_row - 1}, true);`);
   }
   return omit(['pk_row'], item);
 }

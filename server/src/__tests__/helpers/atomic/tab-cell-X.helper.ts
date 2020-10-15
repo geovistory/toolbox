@@ -11,7 +11,7 @@ export async function createCellTable(digital: DatDigital) {
 
 export async function createTabCell(cell: Partial<TabCell>, row: TabRow) {
     if (cell.pk_cell) {
-        await testdb.execute(`SELECT setval('tables.cell_pk_cell_seq', ${parseInt(cell.pk_cell) - 1}, true);`);
+        await testdb.execute(`SELECT setval('tables.cell_pk_cell_seq', ${cell.pk_cell - 1}, true);`);
     }
     const sql = `
     INSERT INTO tables.cell_${cell.fk_digital} (
