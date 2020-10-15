@@ -19,9 +19,9 @@ class Selector {
     public model: string
   ) { }
 
-  selector<M>(indexKey: string): { all$: Observable<M>, key: (x) => Observable<M> } {
+  selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
-    const all$ = this.ngRedux.select<M>([datRoot, this.model, indexKey])
+    const all$ = this.ngRedux.select<ByPk<M>>([datRoot, this.model, indexKey])
     // .pipe(
     //   distinctUntilChanged<M>(equals)
     // )

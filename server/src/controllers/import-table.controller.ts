@@ -72,7 +72,7 @@ export class ImportTableController {
     for (let i = 0; i < table.rows.length; i++) {
       //columns number
       if (table.rows[i].length !== table.headers.length) {
-        return { error: "Inconsistency in columns number in row <" + i + ">." };
+        return { error: "Inconsistency in columns number in row <" + (i+1) + ">." };
       }
       //data format
       for (let j = 0; j < table.rows[i].length; j++) {

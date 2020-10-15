@@ -21,7 +21,7 @@ export class TabCellXMock {
     DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
     DatColumnMock.COL_DATES.pk_entity as number, //fk_column
     TabRowMock.ROW_ALBERT.pk_row as number, //fk_row
-    '1180' //content
+    1180 //content
   )
 
   static readonly FEATURE_X_2_1 = new TabCell(
@@ -37,7 +37,7 @@ export class TabCellXMock {
     DatDigitalMock.DIGITAL_BIRTHDATES.pk_entity as number, //fk_digital
     DatColumnMock.COL_DATES.pk_entity as number, //fk_column
     TabRowMock.ROW_RUDOLF.pk_row as number, //fk_row
-    '1218' //content
+    1218 //content
   )
 
   static readonly FEATURE_X_RND_1_1 = new TabCell(

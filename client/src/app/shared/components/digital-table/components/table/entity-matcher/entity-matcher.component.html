@@ -1,23 +1,33 @@
-gv-entity-matcher: {{pkEntity$|async}}
+<div class="full-width">
+  <gv-entity-preview *ngIf="statement" [pkEntity]="statement.fk_object_info" class="left-col"></gv-entity-preview>
+  <span *ngIf="!statement" class="left-col">No entity mapped</span>
 
-<!-- *ngIf="pkEntity$|async" -->
+  <button mat-icon-button [matMenuTriggerFor]="options" class="right-col">
+    <mat-icon>more_vert</mat-icon>
+  </button>
 
-<!-- <span *ngIf="entityMappings[i] ? entityMappings[i][j] : false" class="col-6 text-center align-self-center">
-  <gv-entity-preview [pkEntity]="entityMappings[i][j]" [openTabOnClick]="true" [editAllowed]="true">
-  </gv-entity-preview>
-</span> -->
-<!-- *ngIf="!(pkEntity$|async)" -->
+  <mat-menu #options="matMenu" xPosition="before">
 
-<!-- <span *ngIf="(!entityMappings[i] || (entityMappings[i] && !entityMappings[i][j])) && headers[j].mapping"
-  class="col-6 text-center align-self-center">
-  <mat-form-field class="w-50" appearance="outline">
-    <gv-ctrl-entity [pkClass]="headers[j].mapping.fkClass" placeholder="Map to an entity" name="controlName"
-      [(ngModel)]="model" #m="ngModel" [showAddList]="true" (blur)="mappingChanged($event, i, j)">
-    </gv-ctrl-entity>
-    <mat-error *ngIf="m.invalid">You must enter a value</mat-error>
-    <mat-icon matSuffix svgIcon="pencil"></mat-icon>
-  </mat-form-field>
-</span> -->
+    <button mat-menu-item *ngIf="statement" (click)="openEntity()">
+      <mat-icon>tab</mat-icon>
+      Open entity in new tab
+    </button>
 
+    <button mat-menu-item *ngIf="!statement" (click)="changeMapping('create')">
+      <mat-icon>add</mat-icon>
+      Map an entity
+    </button>
 
-<!-- 3-dots Menu -->
+    <button mat-menu-item *ngIf="statement" (click)="changeMapping('edit')">
+      <mat-icon>edit</mat-icon>
+      Edit entity
+    </button>
+
+    <mat-divider></mat-divider>
+    <div class="dropdown-header" *ngIf="statement">Danger Zone</div>
+    <button mat-menu-item *ngIf="statement" (click)="changeMapping('delete')">
+      <mat-icon color="warn">delete</mat-icon>
+      <span>Remove mapping</span>
+    </button>
+  </mat-menu>
+</div>

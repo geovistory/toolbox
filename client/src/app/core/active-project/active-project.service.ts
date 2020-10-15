@@ -463,7 +463,7 @@ export class ActiveProjectService {
     return this.ngRedux.select<boolean>([...['activeProject', 'tabLayouts', path[2]], 'loading']);
   }
 
-  addEntityTab(pkEntity: number, pkClass: number, entityType: EntityType) {
+  addEntityTab(pkEntity: number, pkClass: number, entityType?: EntityType) {
     // if (entityType === 'teEn') {
     //   this.addEntityTeEnTab(pkEntity)
     // }
