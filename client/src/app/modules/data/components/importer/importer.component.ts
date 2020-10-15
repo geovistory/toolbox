@@ -406,7 +406,10 @@ export class ImporterComponent implements OnInit, OnDestroy {
             }))
             .subscribe(response => {
               if (!response) return;
-              if (response.error) this.loaded('Import error', 'The table has not been imported: ' + response.error);
+              if (response.error) {
+                this.mode = 'preview';
+                this.loaded('Import error', 'The table has not been imported: ' + response.error)
+              };
               // else this.loaded('Table uploaded', 'Your table is saved in our database, we are right now creating it. It may take a few moments, based on your table. To know when it will be finished, keep the importer open.');
             });
         }

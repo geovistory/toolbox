@@ -31,8 +31,7 @@
 
 <!--  [columnComments$]="" [loading]="" -->
 <!-- // MOVED cellMapping TO EntityMatcherComponent -->
-<gv-table [headers$]="headers$" [table$]="table$" [loading]="loading" [sortingEnabled]="true"
-  [filteringEnabled]="colFiltersEnabled" [lineBreak]="lineBrakeInCells" class="gv-overflow-hidden"
-  (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)"
-  (cellMapping)="mappingChanged($event.row, $event.col, $event.pkEntity)">
+<gv-table [loading]="loading" [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled"
+  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" class="gv-overflow-hidden"
+  (sortDemanded)="onSortChangesort($event)" (filterDemanded)="onFilterChange($event)" (cellClicked)="click($event)">
 </gv-table>

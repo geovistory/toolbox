@@ -34,6 +34,10 @@ export class SysSystemTypeMock {
     pk_entity: 3293,
     definition: 'Float. Data type'
   })
+  static readonly LABEL_OF_DATA_RECORD = new SysSystemType({
+    pk_entity: 3295,
+    definition: 'Label of an entity stored in data.text_property table'
+  })
 
 
 }

@@ -20,7 +20,6 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
   @Input() dragEnabled = true;
   @Input() openTabOnClick = false;
   @Input() showId = false;
-  @Input() editAllowed = false;
 
   constructor(
     private p: ActiveProjectService,
@@ -48,32 +47,6 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
   }
 
   editEntity() {
-    this.dialog.open<CtrlEntityDialogComponent,
-      CtrlEntityDialogData,
-      CtrlEntityModel>(CtrlEntityDialogComponent, {
-
-        // minWidth: '800px',
-        height: 'calc(100% - 30px)',
-        width: '980px',
-        maxWidth: '100%',
-        data: {
-          initVal$: new Subject(),
-          showAddList: true,
-          hiddenProperty: { pkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
-          alreadyInProjectBtnText: 'Select',
-          notInProjectClickBehavior: 'selectOnly',
-          notInProjectBtnText: 'Select',
-          disableIfHasStatement: undefined,
-          classAndTypePk: { pkClass: this.preview.fk_class, pkType: undefined },
-          pkUiContext: SysConfig.PK_UI_CONTEXT_DATAUNITS_CREATE
-        }
-      }
-      )
-    // .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
-    //   if (!!result) this.value = result
-    //   this.onBlur()
-    // });
-
 
   }
 

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {DatDigitalMock} from './DatDigitalMock';
-import {DatColumnMock} from './DatColumnMock';
-import {TabRowMock} from './TabRowMock';
-import {TabCell} from '../../../../models/tab-cell.model';
+import { DatDigitalMock } from './DatDigitalMock';
+import { DatColumnMock } from './DatColumnMock';
+import { TabRowMock } from './TabRowMock';
+import { TabCell } from '../../../../models/tab-cell.model';
 
 /**
  * pk_entity prefix: 200
