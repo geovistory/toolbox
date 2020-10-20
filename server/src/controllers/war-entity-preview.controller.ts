@@ -41,10 +41,15 @@ const includeFieldsForSteam: Fields<WarEntityPreview> = {
   fk_type: true,
 }
 
-interface Cache {
+export interface StreamedEntityPreviews {
   currentProjectPk: string | undefined,
   streamedPks: {[key: string]: boolean}
 }
+interface AddToStreamMsg {
+  pkProject: number;
+  pks: (number | string)[];
+}
+
 /**
  * EntityPreview Controller
  * Handlentity_typees also websockets
@@ -53,7 +58,7 @@ interface Cache {
 export class WarEntityPreviewController {
 
   // Websockets Connection Cache
-  cache: Cache = {
+  cache: StreamedEntityPreviews = {
     currentProjectPk: undefined, // the gevistory project
     streamedPks: {}, // the entityPreviews streamed
   };
@@ -152,43 +157,64 @@ export class WarEntityPreviewController {
 
   /**
    * Register a handler for 'addToStream' events
-   * @param msg
+   * The function extends the cache of streamed entities with the provided data.pks
+   * and it immediatly queries the entity previews with these pks and emits
+   * the results via ws.
+   *
+   * @param data
    */
   @ws.subscribe('addToStream')
-  // @ws.emit('namespace' | 'requestor' | 'broadcast')
-  async handleAddToStream(data: {pkProject: number, pks: (number | string)[]}) {
-    const pkProject = data.pkProject;
-    const pks = data.pks
-
-    if (!pkProject) return this.warn('Please provide a pkProject');
-
-    // verify that the socket is in the right room
-    this.safeJoin(pkProject);
-
-    // sanitize the pks
-    const sanitizedPks: number[] = this.sanitizeNumberArray(pks);
-
-    if (sanitizedPks?.length) {
-      // extend cache of streamedPks
-      sanitizedPks.forEach((pk) => this.extendStreamedPks(pk.toString()));
-
-      if (log) {
-        this.log(
-          'request for EntityPreviews ' +
-          JSON.stringify(sanitizedPks) +
-          ' by project ' +
-          this.cache.currentProjectPk
-        );
-      }
-
-      // Query and emit requested previews
-      const projectItems = await this.findByProjectAndEntityPks(pkProject, sanitizedPks)
-      const allItems = await this.completeProjectWithRepoPreviews(projectItems, sanitizedPks);
-      this.emitEntityPreviews(allItems);
-    }
-
+  async handleAddToStream(data: AddToStreamMsg) {
+    const {pkProject, sanitizedPks} = this.extendStream(data)
+    // Query and emit requested previews
+    const projectItems = await this.findByProjectAndEntityPks(pkProject, sanitizedPks)
+    const allItems = await this.completeProjectWithRepoPreviews(projectItems, sanitizedPks);
+    this.emitEntityPreviews(allItems);
   }
 
+  /**
+   * Register a handler for 'addToStream' events
+   * The function extends the cache of streamed entities with the provided data.pks
+   * It does not query / emit the previews
+   *
+   * @param data
+  */
+  @ws.subscribe('extendStream')
+  handleExtendStream(data: AddToStreamMsg) {
+    return this.extendStream(data);
+  }
+
+  private extendStream(data: AddToStreamMsg) {
+    const pkProject = data.pkProject;
+    const pks = data.pks;
+    let sanitizedPks: number[] = [];
+
+    if (pkProject) {
+      // verify that the socket is in the right room
+      this.safeJoin(pkProject);
+
+      // sanitize the pks
+      sanitizedPks = this.sanitizeNumberArray(pks);
+
+      if (sanitizedPks?.length) {
+        // extend cache of streamedPks
+        sanitizedPks.forEach((pk) => this.extendStreamedPks(pk.toString()));
+
+        if (log) {
+          this.log(
+            'request for EntityPreviews ' +
+            JSON.stringify(sanitizedPks) +
+            ' by project ' +
+            this.cache.currentProjectPk
+          );
+        }
+      }
+    }
+    else {
+      this.warn('Please provide a pkProject');
+    }
+    return {pkProject, sanitizedPks};
+  }
 
   /**
    * takes any[] and returns number[]
@@ -359,8 +385,8 @@ export class WarEntityPreviewController {
       this.resetStreamedPks();
       this.cache.currentProjectPk = newProjectPk;
 
-      // TODO: make this cache available on app scope
-      // WarEntityPreview.cachesByProject[newProjectPk] = cache;
+      // make this cache available on app scope
+      this.streams.streamedEntityPreviews[newProjPk] = this.cache;
     }
   };
 

@@ -104,7 +104,7 @@ export class FgTextPropertyComponent implements OnInit, OnDestroy, AfterViewInit
     ).subscribe((v) => {
       this.formFactory$.next(v)
       this.formFactory = v;
-      console.log(v)
+      // console.log(v)
     })
   }
   getChildNodeConfigs(n: FgTextPropertyNodeConfig): Observable<FgTextPropertyNodeConfig[]> {

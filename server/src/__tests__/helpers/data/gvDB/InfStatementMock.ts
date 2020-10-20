@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { InfStatement } from '../../../../models';
-import { DatDigitalMock } from './DatDigitalMock';
-import { DfhApiPropertyMock } from './DfhApiPropertyMock';
-import { InfAppellationMock } from './InfAppellationMock';
-import { InfPersistentItemMock } from './InfPersistentItemMock';
-import { InfTemporalEntityMock } from './InfTemporalEntityMock';
-import { InfTimePrimitiveMock } from './InfTimePrimitiveMock';
-import { TabCellXMock } from './TabCellXMock';
+import {InfStatement} from '../../../../models';
+import {DatDigitalMock} from './DatDigitalMock';
+import {DfhApiPropertyMock} from './DfhApiPropertyMock';
+import {InfAppellationMock} from './InfAppellationMock';
+import {InfPersistentItemMock} from './InfPersistentItemMock';
+import {InfTemporalEntityMock} from './InfTemporalEntityMock';
+import {InfTimePrimitiveMock} from './InfTimePrimitiveMock';
+import {TabCellXMock} from './TabCellXMock';
+import {DatChunkMock} from './DatChunkMock';
 
 /**
  * pk_entity prefix: 300
@@ -206,6 +207,26 @@ export class InfStatementMock {
     fk_object_info: InfPersistentItemMock.HABS_EMP_EXPR.pk_entity,
   })
 
+  static readonly DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP = new InfStatement({
+    pk_entity: 3028,
+    fk_subject_data: DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1216_IS_REPRODUCTION_OF.dfh_pk_property,
+    fk_object_info: InfPersistentItemMock.HABS_EMP_EXPR.pk_entity,
+  })
+
+  static readonly CHUNK_RUDOLF_REFERS_TO_RUDOLF = new InfStatement({
+    pk_entity: 3029,
+    fk_subject_data: DatChunkMock.RUDOLF.pk_entity,
+    fk_property: 1334,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
+
+  static readonly HABS_EMP_EXPR_MENTIONS_RUDOLF = new InfStatement({
+    pk_entity: 3030,
+    fk_subject_info: InfPersistentItemMock.HABS_EMP_EXPR.pk_entity,
+    fk_property: 1218,
+    fk_object_info: InfPersistentItemMock.RUDOLF.pk_entity,
+  })
 }
 
 

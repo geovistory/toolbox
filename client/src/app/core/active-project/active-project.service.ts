@@ -28,6 +28,7 @@ import { SystemSelector } from '../sys/sys.service';
 import { WarActions } from '../war/war.actions';
 import { ActiveProjectActions } from './active-project.action';
 import { ListType, Panel, ProjectDetail, RamSource, Tab, TypePeIt, TypePreview, TypePreviewsByClass, TypesByPk } from './active-project.models';
+import { TabSelector } from '../tab/tab.service';
 
 
 
@@ -63,6 +64,7 @@ export class ActiveProjectService {
 
   inf$: InfSelector;
   dat$: DatSelector;
+  tab$: TabSelector;
   pro$: ProSelector;
 
   /***************************************************************
@@ -118,6 +120,7 @@ export class ActiveProjectService {
     this.inf$ = new InfSelector(ngRedux, this.pkProject$);
     this.dat$ = new DatSelector(ngRedux);
     this.pro$ = new ProSelector(ngRedux);
+    this.tab$ = new TabSelector(ngRedux);
 
     this.initializingProject$.subscribe(bool => {
       this.shouldPause.shouldPause$.next(bool)

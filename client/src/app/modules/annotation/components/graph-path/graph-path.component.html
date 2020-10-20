@@ -47,6 +47,9 @@
   <mat-icon *ngIf="entity.icon =='table'" class="gv-pointer entity-icon gv-digital-color" svgIcon="file-table"
     [matTooltip]="entity.tooltip" [matMenuTriggerFor]="appMenu">
   </mat-icon>
+  <mat-icon *ngIf="entity.icon =='cell'" class="gv-pointer entity-icon gv-digital-color" svgIcon="google-spreadsheet"
+    [matTooltip]="entity.tooltip" [matMenuTriggerFor]="appMenu">
+  </mat-icon>
   <mat-icon *ngIf="entity.icon =='text'" class="gv-pointer entity-icon gv-digital-color" svgIcon="file-document"
     [matTooltip]="entity.tooltip" [matMenuTriggerFor]="appMenu">
   </mat-icon>
@@ -77,6 +80,10 @@
     <button *ngIf="entity.isDigitalText" mat-menu-item (click)="openTextInNewTab(entity.pkEntity)">
       <mat-icon>tab</mat-icon>
       Open text in new tab
+    </button>
+    <button *ngIf="entity.isDigitalTable" mat-menu-item (click)="openTableInNewTab(entity.pkEntity)">
+      <mat-icon>tab</mat-icon>
+      Open table in new tab
     </button>
 
   </mat-menu>

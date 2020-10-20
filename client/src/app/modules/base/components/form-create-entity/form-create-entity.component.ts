@@ -149,7 +149,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
       this.formFactory = v
-      console.log(v)
+      // console.log(v)
     })
 
   }

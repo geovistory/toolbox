@@ -31,6 +31,7 @@ import { ProProjectService } from './api/proProject.service';
 import { ProTextPropertyService } from './api/proTextProperty.service';
 import { ProjectConfigurationService } from './api/projectConfiguration.service';
 import { PubAccountService } from './api/pubAccount.service';
+import { RamListService } from './api/ramList.service';
 import { SchemaObjectService } from './api/schemaObject.service';
 import { SysAnalysisTypeService } from './api/sysAnalysisType.service';
 import { SysAppContextService } from './api/sysAppContext.service';

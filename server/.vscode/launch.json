@@ -65,7 +65,7 @@
         "--colors",
         "'dist/__tests__/**/*.js'",
         "--grep",
-        "/^TableController.*get-ta/"
+        "/^RamList/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,

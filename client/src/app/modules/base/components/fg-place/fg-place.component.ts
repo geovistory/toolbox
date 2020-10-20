@@ -68,7 +68,7 @@ export class FgPlaceComponent implements OnInit, OnDestroy, AfterViewInit, FormF
     ).subscribe((v) => {
       this.formFactory$.next(v)
       this.formFactory = v;
-      console.log(v)
+      // console.log(v)
     })
   }
   getChildNodeConfigs(n: FgPlaceNodeConfig): Observable<FgPlaceNodeConfig[]> {

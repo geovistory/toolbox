@@ -75,6 +75,7 @@ export * from './tColFilter';
 export * from './tColFilterNum';
 export * from './tColFilterTxt';
 export * from './tColFilters';
+export * from './tabCell';
 export * from './tableCell';
 export * from './tablePageResponse';
 export * from './tableRow';
