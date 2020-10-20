@@ -17,7 +17,8 @@ export interface Header {
   colLabel: string,
   comment: string,
   type: 'number' | 'string',
-  mapping?: ColumnMapping
+  mapping?: ColumnMapping,
+  pk_column?: number
 }
 
 @Component({
