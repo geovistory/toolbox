@@ -1,10 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActiveProjectService, EntityPreview, SysConfig } from 'app/core';
-import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
-import { CtrlEntityComponent, CtrlEntityModel } from 'app/modules/base/components/ctrl-entity/ctrl-entity.component';
-import { DfhConfig } from 'app/modules/information/shared/dfh-config';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { ActiveProjectService, EntityPreview } from 'app/core';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
