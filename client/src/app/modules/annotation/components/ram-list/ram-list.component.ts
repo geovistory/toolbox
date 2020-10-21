@@ -127,8 +127,6 @@ export class RamListComponent implements OnInit, OnDestroy {
     this.items$.pipe(
       takeUntil(this.destroy$),
     ).subscribe((items) => {
-      console.log('ANNOTEDIN: ' + this.annotatedIn)
-      console.log(items);
       const y = items;
     })
 
