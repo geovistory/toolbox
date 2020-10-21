@@ -88,8 +88,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   loading = true;
 
   // for stupid table component:
-  headers$: Observable<{ colLabel: string, comment: string, type: 'number' | 'string', mapping?: ColumnMapping }[]>;
-  table$: ReplaySubject<Array<Array<string | { text: string, pkCell: number }>>>;
+  headers$: Observable<Header[]>;
+  table$: Observable<Array<Array<string | { text: string, pkCell: number }>>>;
   colFiltersEnabled = false;
   lineBrakeInCells = false;
 
@@ -240,6 +240,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
               colLabel: col.display,
               comment: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
               type: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+              pk_column: col.datColumn.pk_entity,
             };
             if (!fkClass) return of(header);
             // get the class and the class label
@@ -269,8 +270,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     );
 
     // creating the table and the data mapping
-    this.table$ = new ReplaySubject();
-    combineLatest([res$, this.headers$]).pipe(
+
+
+
+    this.table$ = combineLatest([res$, this.headers$]).pipe(
       map(([res, headers]) => {
         this.colMapping = ['pk_row', ...res.columns];
 
@@ -285,12 +288,13 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           this.dataMapping[i] = [];
           table[i][0] = row.pk_row.toString();
           this.dataMapping[i][0] = { pk_row: row.pk_row };
-          let headersIndex = 1;  // +1 because headers[0] is for Row Id
           for (let j = 0; j < keys.length; j++) {
             const key = keys[j];
-            if (key == 'pk_row') { headersIndex--; continue; } // +1 because headers[0]
+            if (this.colMapping.indexOf(key) == -1) continue;
             const str: string = (row[key]).string_value || (row[key].numeric_value || '').toString();
-            if (headers[j + headersIndex] && !headers[j + headersIndex].mapping) table[i].push(str);
+            const theCol = headers.filter(h => h.pk_column == parseInt(key, 10))[0];
+            if (!theCol) continue;
+            if (!theCol.mapping) table[i].push(str);
             else table[i].push({ text: str, pkCell: row[key].pk_cell as number });
 
             this.dataMapping[i].push({
@@ -304,9 +308,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         return table;
       }),
       takeUntil(this.destroy$)
-    ).subscribe(table => {
-      this.table$.next(table);
-    });
+    );
 
   }
 
