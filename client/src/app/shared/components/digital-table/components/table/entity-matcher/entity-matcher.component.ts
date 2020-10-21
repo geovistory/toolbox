@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { ActiveProjectService, InfStatement, SysConfig } from 'app/core';
 import { DfhConfig } from 'app/modules/information/shared/dfh-config';
 import { first, map, takeUntil } from 'rxjs/operators';
@@ -60,7 +60,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
           width: '980px',
           maxWidth: '100%',
           data: {
-            initVal$: new Subject(),
+            initVal$: new BehaviorSubject(undefined),
             showAddList: true,
             hiddenProperty: { pkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
             alreadyInProjectBtnText: 'Select',
