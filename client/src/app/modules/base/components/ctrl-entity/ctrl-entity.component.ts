@@ -12,8 +12,8 @@ import { FieldProperty } from '../properties-tree/properties-tree.models';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
 
 export interface CtrlEntityModel {
-  pkEntity?: number,
-  persistent_item?: InfPersistentItem,
+  pkEntity?: number, // if pkEntity, an entity has been selected on the right side
+  persistent_item?: InfPersistentItem, // if persistent_item || temporal_entity the output is just created
   temporal_entity?: InfTemporalEntity
 }
 

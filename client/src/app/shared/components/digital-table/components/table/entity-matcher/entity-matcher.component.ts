@@ -72,28 +72,37 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
           }
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
-          if (!!result) {
-            if (mode == 'edit' && this.statement) {
-              this.inf.statement.remove([this.statement], this.pkProject).resolved$.subscribe(result2 => {
-                if (result2) {
-                  this.upsertStatement(result);
-                }
-              });
-            } else this.upsertStatement(result);
-          }
+          if (mode == 'edit' && this.statement) {
+            this.inf.statement.remove([this.statement], this.pkProject).resolved$.subscribe(result2 => {
+              if (result2) this.handleDialogResponse(result);
+            });
+          } else this.handleDialogResponse(result);
         });
     }
   }
 
-
-
   openEntity = () => this.p.addEntityTab(this.statement.fk_object_info, this.pkClass);
 
-  private upsertStatement(result: CtrlEntityModel) {
+  private handleDialogResponse(result: CtrlEntityModel) {
+    if (result && result.persistent_item) {
+      this.inf.persistent_item.upsert([result.persistent_item], this.pkProject).resolved$.subscribe(result2 => {
+        if (result2) this.upsertStatement(result2.items[0].pk_entity);
+      });
+    } else if (result && result.temporal_entity) {
+      this.inf.temporal_entity.upsert([result.temporal_entity], this.pkProject).resolved$.subscribe(result2 => {
+        if (result2) this.upsertStatement(result2.items[0].pk_entity);
+      });
+    } else if (result.pkEntity) {
+      this.upsertStatement(result.pkEntity);
+    }
+  }
+
+  private upsertStatement(pkEntity: number) {
     this.inf.statement.upsert([{
       fk_subject_tables_cell: this.pkCell,
       fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
-      fk_object_info: result.pkEntity
+      fk_object_info: pkEntity
     } as InfStatement], this.pkProject);
   }
+
 }

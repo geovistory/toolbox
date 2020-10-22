@@ -2,7 +2,7 @@ import c from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import pgkDir from 'pkg-dir';
-import {Warehouse, WarehouseConfig} from './Warehouse';
+import { Warehouse, WarehouseConfig } from './Warehouse';
 
 const appRoot = pgkDir.sync() ?? ''
 
@@ -74,6 +74,8 @@ export async function cleanAndStartDev() {
         rootDir: path.join(appRoot),
     }
     const warehouse = new Warehouse(config)
-    await warehouse.hardReset()
+    try {
+        await warehouse.hardReset('Warehouse reset')
+    } catch (e) { console.log(e) }
     await warehouse.start();
 }
