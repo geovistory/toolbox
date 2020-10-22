@@ -12,8 +12,8 @@ var SqlTypeItem = require('../../../dist/lb3/server/sql-builders/sql-type-item')
 
 var _ = require('lodash');
 
-module.exports = function(SchemaObject) {
-  SchemaObject.getRamList = function(pkProject, pkEntity, fkProperty, ctx, cb) {
+module.exports = function (SchemaObject) {
+  SchemaObject.getRamList = function (pkProject, pkEntity, fkProperty, ctx, cb) {
     const q = new SqlRamList(SchemaObject.app.models).create(
       pkProject,
       pkEntity,
@@ -25,7 +25,7 @@ module.exports = function(SchemaObject) {
   /**
    * Get an array of statements that build the tree of the content of an F2 Expression.
    */
-  SchemaObject.contentTree = function(pkProject, pkExpressionEntity, cb) {
+  SchemaObject.contentTree = function (pkProject, pkExpressionEntity, cb) {
     const q = new SqlContentTree(SchemaObject.app.models).create(
       pkProject,
       pkExpressionEntity
@@ -37,7 +37,7 @@ module.exports = function(SchemaObject) {
    * Remove entity, outgoing statements, text properties
    * and namings from project
    */
-  SchemaObject.removeEntityFromProject = function(
+  SchemaObject.removeEntityFromProject = function (
     pkProject,
     pkEntity,
     ctx,
@@ -60,7 +60,7 @@ module.exports = function(SchemaObject) {
    * Add entity, outgoing statements, text properties
    * and namings to project
    */
-  SchemaObject.addEntityToProject = function(pkProject, pkEntity, ctx, cb) {
+  SchemaObject.addEntityToProject = function (pkProject, pkEntity, ctx, cb) {
     if (!ctx.req.accessToken.userId)
       return reject(Error('AccessToken missing'));
 
@@ -78,7 +78,7 @@ module.exports = function(SchemaObject) {
    * Get one type of project with all appellations
    * and the entity definitions (text properties)
    */
-  SchemaObject.typeOfProject = function(pkProject, pkType, cb) {
+  SchemaObject.typeOfProject = function (pkProject, pkType, cb) {
     const mainQuery = new SqlTypeItem(SchemaObject.app.models).create(
       pkProject,
       pkType
@@ -95,7 +95,7 @@ module.exports = function(SchemaObject) {
   /**
    * internal function to execute query
    */
-  SchemaObject.query = function(pkProject, query, cb) {
+  SchemaObject.query = function (pkProject, query, cb) {
     const connector = SchemaObject.dataSource.connector;
     connector.execute(query.sql, query.params, (err, result) => {
       if (err) return cb(err);

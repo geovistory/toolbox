@@ -31,6 +31,7 @@ import { ProProjectService } from './api/proProject.service';
 import { ProTextPropertyService } from './api/proTextProperty.service';
 import { ProjectConfigurationService } from './api/projectConfiguration.service';
 import { PubAccountService } from './api/pubAccount.service';
+import { RamListService } from './api/ramList.service';
 import { SchemaObjectService } from './api/schemaObject.service';
 import { SysAnalysisTypeService } from './api/sysAnalysisType.service';
 import { SysAppContextService } from './api/sysAppContext.service';
@@ -39,6 +40,7 @@ import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.se
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';
 import { SysSystemTypeService } from './api/sysSystemType.service';
 import { SystemConfigurationService } from './api/systemConfiguration.service';
+import { TableService } from './api/table.service';
 import { WarEntityPreviewService } from './api/warEntityPreview.service';
 import { WarEntityPreviewControllerService } from './api/warEntityPreviewController.service';
 

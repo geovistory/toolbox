@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { testdb } from "../testdb";
 import {ProInfoProjRel} from '../../../models';
 import {ProInfoProjRelRepository} from '../../../repositories';
@@ -22,7 +23,7 @@ export async function updateProInfoProjRel(id: number, item: Partial<ProInfoProj
  * @param fkEntity the entity to relate to project (teEn, peIt, statement)
  * @param fkProject the project
  */
-export async function addEntityToProject(fkEntity = -1, fkProject = -1) {
+export async function addInfoToProject(fkEntity = -1, fkProject = -1) {
   const item: Partial<ProInfoProjRel> = {
     fk_project: fkProject,
     fk_entity: fkEntity,
@@ -36,8 +37,8 @@ export async function addEntityToProject(fkEntity = -1, fkProject = -1) {
  * @param fkEntities the entities to relate to project (teEn, peIt, statement)
  * @param fkProject the project
  */
-export async function addEntitiesToProject(fkProject: (number | undefined), fkEntities: (number | undefined)[]) {
-  return Promise.all(fkEntities.map(fkEntity => addEntityToProject(fkEntity, fkProject)))
+export async function addInfosToProject(fkProject: (number | undefined), fkEntities: (number | undefined)[]) {
+  return Promise.all(fkEntities.map(fkEntity => addInfoToProject(fkEntity, fkProject)))
 }
 
 

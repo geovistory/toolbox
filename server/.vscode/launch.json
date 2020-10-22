@@ -3,7 +3,6 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-
     {
       "type": "node",
       "request": "launch",
@@ -15,7 +14,24 @@
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "runtimeExecutable": null,
       "envFile": "${workspaceFolder}/.vscode/envFile.dev",
-      "restart": true,
+      "restart": false,
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch App with Mock",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/index.dev.js",
+      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "runtimeExecutable": null,
+      "env": {
+        "DATABASE_URL": "${env:TEST_DATABASE_URL}",
+      },
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -49,7 +65,7 @@
         "--colors",
         "'dist/__tests__/**/*.js'",
         "--grep",
-        "/SysStatusController.*/"
+        "/^RamList/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
@@ -98,8 +114,7 @@
         "${workspaceFolder}/dist/**/*.js"
       ]
     },
-
-       {
+    {
       "type": "node",
       "request": "launch",
       "name": "Bucket Test",

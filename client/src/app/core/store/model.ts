@@ -12,6 +12,7 @@ import { Pro } from '../pro/pro.models';
 import { DatDigital, InfAppellation, InfLanguage, InfPersistentItem, InfPlace, InfStatement, InfTemporalEntity, InfTextProperty, InfTimePrimitive, ProInfoProjRel, WarEntityPreview, InfLangString, InfDimension } from '../sdk';
 import { Sys } from '../sys/sys.models';
 import { War } from '../war/war.models';
+import { Tab } from '../tab/tab.models';
 
 export interface InfObject {
   persistent_item: InfPersistentItem[]
@@ -60,6 +61,7 @@ export interface IAppState {
   dat?: Dat
   pro?: Pro
   war?: War
+  tab?: Tab
   activeProject?: ProjectDetail
   routes?: any,
   information?: Information,

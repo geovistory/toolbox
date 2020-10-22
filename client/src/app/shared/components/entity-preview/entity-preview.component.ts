@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, HostBinding, ViewChild, OnDestroy } from '@angular/core';
-import { EntityPreview, ActiveProjectService } from 'app/core';
-import { MatMenuTrigger } from '../../../../../node_modules/@angular/material';
-import { takeUntil } from 'rxjs/operators';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { ActiveProjectService, EntityPreview } from 'app/core';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-entity-preview',
@@ -18,7 +18,10 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
   @Input() openTabOnClick = false;
   @Input() showId = false;
 
-  constructor(private p: ActiveProjectService) { }
+  constructor(
+    private p: ActiveProjectService,
+    private dialog: MatDialog,
+  ) { }
 
   ngOnInit() {
 
@@ -39,6 +42,11 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
       this.p.addEntityTab(this.preview.pk_entity, this.preview.fk_class, this.preview.entity_type)
     })
   }
+
+  editEntity() {
+
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

@@ -1,10 +1,10 @@
-import { testdb } from "../testdb";
-import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository, ProEntityLabelConfigRepository } from '../../../repositories';
-import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
-import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';
-import { PubRoleRepository } from '../../../repositories/pub-role.repository';
-import { resetLanguageInitialization } from '../atomic/inf-language.helper';
-import { resetTypeInitialization } from '../atomic/sys-system-type.helper';
+import {testdb} from "../testdb";
+import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAnalysisTypeRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarEntityPreviewRepository, WarClassPreviewRepository, ProEntityLabelConfigRepository} from '../../../repositories';
+import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
+import {PubRoleRepository} from '../../../repositories/pub-role.repository';
+import {resetLanguageInitialization} from '../atomic/inf-language.helper';
+import {resetTypeInitialization} from '../atomic/sys-system-type.helper';
 
 export async function cleanDb() {
     //because we update it to create an information.language
@@ -15,14 +15,14 @@ export async function cleanDb() {
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE '%_vt'`);
-    tables.forEach(async (t: { name: string }) => { await testdb.execute('DELETE FROM ' + t.name) });
+    tables.forEach(async (t: {name: string}) => {await testdb.execute('DELETE FROM ' + t.name)});
 
     //delete all cell partitionned table
     const cellTables = await testdb.execute(`
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE 'cell_%'`);
-    cellTables.forEach(async (t: { name: string }) => { if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name) });
+    cellTables.forEach(async (t: {name: string}) => {if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name)});
 
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
     const datDigitalRepository = new DatDigitalRepository(testdb);
@@ -118,6 +118,10 @@ export async function cleanDb() {
     await testdb.execute('ALTER TABLE public.account_project_rel DISABLE TRIGGER versioning_trigger');
     await pubAccountProjectRelRepository.deleteAll(); //update or delete on table "project" violates foreign key constraint "account_project_rel_fk_project_fkey" on table "account_project_rel"
     await testdb.execute('ALTER TABLE public.account_project_rel ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE data.class_column_mapping DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM data.class_column_mapping');
+    await testdb.execute('ALTER TABLE data.class_column_mapping ENABLE TRIGGER versioning_trigger');
 
     await testdb.execute('ALTER TABLE data.column DISABLE TRIGGER versioning_trigger');
     await datColumnRepository.deleteAll();

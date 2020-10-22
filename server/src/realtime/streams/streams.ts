@@ -1,4 +1,5 @@
-import {Subject, BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {StreamedEntityPreviews} from '../../controllers';
 
 /**
  * This class initializes streams
@@ -13,6 +14,10 @@ export class Streams {
    */
   warEntityPreviewModificationTmsp$ = new Subject<string>()
 
+  /**
+   * caches the streamed entity previews per project
+   */
+  streamedEntityPreviews: {[pkProject: number]: StreamedEntityPreviews} = {}
 
   warehouseInitializing$ = new BehaviorSubject(false)
 

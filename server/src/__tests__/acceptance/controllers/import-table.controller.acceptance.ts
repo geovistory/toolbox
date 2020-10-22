@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { DatNamespace, ProProject, PubAccount } from '../../../models';
 import { ImportTable } from '../../../models/import-table.model';
 import { GeovistoryServer } from '../../../server';
-import { createNamespace } from '../../helpers/atomic/dat-namespace.helper';
+import { createDatNamespace } from '../../helpers/atomic/dat-namespace.helper';
 import { linkAccountProject } from '../../helpers/atomic/pub-account_project_rel.helper';
 import { createTypes } from '../../helpers/atomic/sys-system-type.helper';
 import { cleanDb } from '../../helpers/cleaning/clean-db.helper';
@@ -42,6 +42,7 @@ describe('ImportTableController', () => {
                 table = {
                     tableName: 'TestTable',
                     fileName: 'TestTableFileName',
+                    // eslint-disable-next-line @typescript-eslint/camelcase
                     pk_language: 18889, // english
                     headers: [
                         { colLabel: 'col 0', comment: 'string', type: 'string' },
@@ -75,7 +76,7 @@ describe('ImportTableController', () => {
         });
 
         it('should reject the request because the namespace is not linked to the project', async () => {
-            const wrongNamespace = await createNamespace(await createRawProject('English'));
+            const wrongNamespace = await createDatNamespace(await createRawProject('English'));
             const params = { pkNamespace: wrongNamespace.pk_entity }
             const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
             const res = await client.post('/import-table?' + qs.stringify(params)).set('Authorization', jwt).send(table);
@@ -172,6 +173,7 @@ describe('ImportTableController', () => {
             const table = {
                 tableName: 'TestTable',
                 fileName: 'TestTableFileName',
+                // eslint-disable-next-line @typescript-eslint/camelcase
                 pk_language: 18889, // english
                 headers: [
                     { colLabel: 'col 0', comment: 'string', type: 'string' },
@@ -212,6 +214,7 @@ describe('ImportTableController', () => {
             const table = {
                 tableName: 'TestTable',
                 fileName: 'TestTableFileName',
+                // eslint-disable-next-line @typescript-eslint/camelcase
                 pk_language: 18889, // english
                 headers: [
                     { colLabel: 'col 0', comment: 'string', type: 'string' },
@@ -254,6 +257,7 @@ describe('ImportTableController', () => {
             const table = {
                 tableName: 'TestTable',
                 fileName: 'TestTableFileName',
+                // eslint-disable-next-line @typescript-eslint/camelcase
                 pk_language: 18889, // english
                 headers: [
                     { colLabel: 'col 0', comment: 'string', type: 'string' },

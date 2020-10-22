@@ -46,10 +46,10 @@ export class InfStatement extends Entity implements InfEntity {
   fk_subject_tables_cell?: number;
 
   @property({
-    type: 'number',
+    type: 'string',
     default: 0,
   })
-  fk_subject_tables_row?: number;
+  fk_subject_tables_row?: string;
 
   @property({
     type: 'number',

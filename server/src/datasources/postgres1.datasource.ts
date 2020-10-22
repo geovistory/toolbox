@@ -1,14 +1,14 @@
-import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
-import {juggler} from '@loopback/repository';
-import {getPgUrlForLoopback, getPgSslForLoopback} from '../utils/databaseUrl';
-
+import { inject, lifeCycleObserver, LifeCycleObserver } from '@loopback/core';
+import { juggler } from '@loopback/repository';
 
 const config = {
-  url: getPgUrlForLoopback(),
-  // url: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
+  url: (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) + '?ssl=true',
   name: 'postgres1',
   connector: 'postgresql',
-  ssl: getPgSslForLoopback()
+  ssl: {
+    rejectUnauthorized: true,
+  },
+  type: ''
 };
 
 // Observe application's life cycle to disconnect the datasource when
@@ -22,7 +22,7 @@ export class Postgres1DataSource extends juggler.DataSource
   static readonly defaultConfig = config;
 
   constructor(
-    @inject('datasources.config.postgres1', {optional: true})
+    @inject('datasources.config.postgres1', { optional: true })
     dsConfig: object = config,
   ) {
     super(dsConfig);

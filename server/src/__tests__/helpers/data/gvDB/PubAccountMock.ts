@@ -12,5 +12,11 @@ export class PubAccountMock {
     username: 'gaetanmuck',
     emailVerified:true
   })
+  static readonly JONAS = new PubAccount({
+    id: 1002,
+    email: 'jonas.schneider@kleiolab.ch',
+    username: 'joschne',
+    emailVerified:true
+  })
 
 }

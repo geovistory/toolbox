@@ -10,7 +10,7 @@ export class DatChunkRepository extends DefaultCrudRepository<
   DatChunk,
   typeof DatChunk.prototype.pk_entity,
   DatChunkRelations
-> {
+  > {
 
   public readonly outgoing_statements: HasManyRepositoryFactory<InfStatement, typeof DatChunk.prototype.pk_entity>;
 
@@ -20,8 +20,9 @@ export class DatChunkRepository extends DefaultCrudRepository<
 
   constructor(
     @inject('datasources.postgres1') dataSource: Postgres1DataSource,
-     @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>,
-     @repository.getter('DatDigitalRepository') protected datDigitalRepositoryGetter: Getter<DatDigitalRepository>, @repository.getter('DatNamespaceRepository') protected datNamespaceRepositoryGetter: Getter<DatNamespaceRepository>,
+    @repository.getter('InfStatementRepository') protected infStatementRepositoryGetter: Getter<InfStatementRepository>,
+    @repository.getter('DatDigitalRepository') protected datDigitalRepositoryGetter: Getter<DatDigitalRepository>,
+    @repository.getter('DatNamespaceRepository') protected datNamespaceRepositoryGetter: Getter<DatNamespaceRepository>,
   ) {
     super(DatChunk, dataSource);
     this.namespace = this.createBelongsToAccessorFor('namespace', datNamespaceRepositoryGetter,);

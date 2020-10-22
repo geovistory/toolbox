@@ -1,5 +1,6 @@
 import { ReducerConfigCollection } from 'app/core/store/reducer-factory';
 import { DatDigital } from '../sdk';
+import { DatClassColumnMapping } from '../sdk-lb4';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';
 
 export const datRoot = 'dat';
@@ -52,6 +53,19 @@ export const datDefinitions: ReducerConfigCollection = {
       {
         keyInStore: 'fk_digital',
         groupByFn: (item): string => item.fk_digital.toString()
+      }
+    ]
+  },
+  class_column_mapping: {
+    // facetteByPk,
+    indexBy: {
+      keyInStore: 'pk_entity',
+      indexByFn: (item) => item.pk_entity.toString()
+    },
+    groupBy: [
+      {
+        keyInStore: 'fk_column',
+        groupByFn: (item: DatClassColumnMapping): string => item.fk_column.toString()
       }
     ]
   },

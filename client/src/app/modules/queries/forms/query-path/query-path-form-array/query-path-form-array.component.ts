@@ -55,7 +55,7 @@ export class QueryPathFormArrayComponent implements OnInit {
     const b = new BehaviorSubject(false);
     const disabled$ = this.formArrayFactory.childFactoryValues$.pipe(
       map(v => {
-        console.log(v.length, currentIndex)
+        // console.log(v.length, currentIndex)
         return v.length > currentIndex
       }),
     );

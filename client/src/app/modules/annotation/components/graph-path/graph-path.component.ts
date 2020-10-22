@@ -1,15 +1,18 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActiveProjectService, EntityPreview } from 'app/core';
+export interface GraphPathEntity {
+  label: string;
+  icon: string;
+  tooltip: string;
+  fkClass?: number;
+  pkEntity?: number;
+  preview?: EntityPreview;
+  isDigitalText?: boolean;
+  isDigitalTable?: boolean;
+};
+
 export interface GraphPathSegment {
-  entity?: {
-    label: string;
-    icon: string;
-    tooltip: string;
-    fkClass?: number
-    pkEntity?: number
-    preview?: EntityPreview
-    isDigitalText?: boolean
-  };
+  entity?: GraphPathEntity;
   property?: {
     label: string;
     tooltip: string;
@@ -41,6 +44,10 @@ export class GraphPathComponent implements OnInit {
 
   openTextInNewTab(pkEntity: number) {
     this.p.addTextTab(pkEntity)
+  }
+
+  openTableInNewTab(pkEntity: number) {
+    this.p.addTableTab(pkEntity)
   }
 
 }

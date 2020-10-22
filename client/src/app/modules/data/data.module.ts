@@ -17,7 +17,6 @@ import { TextDetailComponent } from './components/text-detail/text-detail.compon
 import { VersionPickerComponent } from './components/version-picker/version-picker.component';
 import { BaseModule } from '../base/base.module';
 
-
 @NgModule({
   imports: [
     CommonModule,

@@ -827,7 +827,7 @@ function getSubject(pkProject, reqStatement, ctxWithoutBody) {
     } else {
       reject({
         message: 'Subject of statement not found',
-        statement: reqStatement,
+        statement: JSON.stringify(reqStatement),
       });
     }
   });
@@ -1042,7 +1042,7 @@ function getObject(pkProject, reqStatement, ctxWithoutBody) {
     } else {
       reject({
         message: 'Object of statement not found',
-        statement: reqStatement,
+        statement: JSON.stringify(reqStatement),
       });
     }
   });

@@ -6,8 +6,9 @@ import { FluxStandardAction } from '../../../../node_modules/flux-standard-actio
 import { DatChunk, DatNamespace } from '../sdk';
 import { DatColumn } from '../sdk/models/DatColumn';
 import { datRoot } from './dat.config';
-import { ChunkSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from './dat.models';
+import { ChunkSlice, ClassColumnMappingSlice, ColumnSlice, DigitalSlice, NamespaceSlice, TextPropertySlice } from './dat.models';
 import { DatTextProperty } from '../sdk/models/DatTextProperty';
+import { DatClassColumnMapping } from '../sdk-lb4';
 
 export interface LoadVersionAction extends LoadActionMeta { pkEntity: number, entityVersion: number };
 
@@ -125,6 +126,8 @@ export class DatActions {
   chunk = new ChunkActionsFactory(this.ngRedux).createActions()
 
   column = new ColumnActionsFactory(this.ngRedux).createActions()
+
+  class_column_mapping = new StandardActionsFactory<ClassColumnMappingSlice, DatClassColumnMapping>(this.ngRedux).createCrudActions(datRoot, 'class_column_mapping')
 
   namespace = new StandardActionsFactory<NamespaceSlice, DatNamespace>(this.ngRedux).createCrudActions(datRoot, 'namespace')
 

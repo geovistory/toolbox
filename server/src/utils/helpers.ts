@@ -3,7 +3,7 @@ import {writeFileSync, existsSync, mkdirSync} from 'fs';
 
 export const logSql = (sql: string, params: any[]) => {
 
-  if (process.env.DB_ENV === 'development') {
+  if (process.env.DB_ENV === 'development' || process.env.DB_ENV === 'test') {
     params.forEach((param, i) => {
       const replaceStr = new RegExp('\\$' + (i + 1) + '(?!\\d)', 'g')
       sql = sql.replace(replaceStr, typeof param === 'string' ? "'" + param + "'" : param)

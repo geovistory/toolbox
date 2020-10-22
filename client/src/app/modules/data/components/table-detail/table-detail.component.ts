@@ -1,14 +1,20 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService, DatDigitalApi, DatColumn, SysConfig } from 'app/core';
-import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
-import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
-import { Observable, Subject, BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
-import { first, map, takeUntil, shareReplay, distinctUntilChanged, switchMap, tap, filter, debounceTime, auditTime } from 'rxjs/operators';
-import { PageEvent } from '@angular/material/paginator';
-import { equals, values, without, indexBy, pick, keys, omit } from 'ramda';
 import { FormControl } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
+import { ActiveProjectService, DatColumn, DatDigitalApi, SysConfig } from 'app/core';
+import { InfActions } from 'app/core/inf/inf.actions';
+import { TableRow, TableService } from 'app/core/sdk-lb4';
+import { SchemaObjectService } from 'app/core/store/schema-object.service';
 import { combineLatestOrEmpty } from 'app/core/util/combineLatestOrEmpty';
-import { TColFilters, TColFilter } from '../../../../../../../server/src/lb3/server/table/interfaces'
+import { ConfigurationPipesService } from 'app/modules/base/services/configuration-pipes.service';
+import { DfhConfig } from 'app/modules/information/shared/dfh-config';
+import { TabLayoutComponentInterface } from 'app/modules/projects/containers/project-edit/project-edit.component';
+import { ColumnMapping, Header } from 'app/shared/components/digital-table/components/table/table.component';
+import { TabLayout } from 'app/shared/components/tab-layout/tab-layout';
+import { equals, indexBy, values, without } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, of } from 'rxjs';
+import { auditTime, distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { TColFilter, TColFilters } from '../../../../../../../server/src/lb3/server/table/interfaces';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
 // TODO import this interface from backend
@@ -18,10 +24,10 @@ interface TabCell {
   numeric_value?: number;
 }
 // TODO import this interface from backend
-interface TabRow {
-  pk_row: number,
-  [key: number]: TabCell
-}
+// interface TableRow {
+//   pk_row: number,
+//   [key: number]: TabCell
+// }
 
 @Component({
   selector: 'gv-table-detail',
@@ -39,13 +45,13 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   readonly dtText = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_TEXT;
   readonly dtNumeric = SysConfig.PK_SYSTEM_TYPE__DATA_TYPE_NUMERIC;
 
-  //fetched rows
-  rows$: Observable<TabRow[]>
+  // fetched rows
+  rows$: Observable<TableRow[]>
 
   // total count of records found in database according to the filters
   // (biggest number in pagination UI)
   // Value of length$ is updated AFTER Api call
-  length$: Observable<number[]>;
+  length$: Observable<number>;
 
   /**
    * configuration parameters that trigger new api call and
@@ -54,7 +60,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
    */
   pageSize$ = new BehaviorSubject(20)
   pageIndex$ = new BehaviorSubject(0)
-  sortBy$ = new BehaviorSubject<string | number>('pk_row')
+  sortBy$ = new BehaviorSubject<string>('pk_row')
   sortDirection$ = new BehaviorSubject<'ASC' | 'DESC'>('ASC');
   filters$ = new BehaviorSubject<TColFilters>({});
 
@@ -81,15 +87,15 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   // used to tell stupid table component to show spinner
   loading = true;
 
-  //for stupid table component:
-  headers$: ReplaySubject<{ colLabel: string, comment: string, type: 'number' | 'string' }[]>;
-  table$: ReplaySubject<string[][]>;
+  // for stupid table component:
+  headers$: Observable<Header[]>;
+  table$: Observable<Array<Array<string | { text: string, pkCell: number }>>>;
   colFiltersEnabled = false;
   lineBrakeInCells = false;
 
-  //to target data on event of the stupid table component
-  dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number }[][];
-  colMapping: number | string[];
+  // to target data on event of the stupid table component
+  dataMapping: { pk_row: number, pk_col?: number, pk_cell?: number, refersTo?: number }[][];
+  colMapping: (string)[];
 
   // Array of pk_entity of columns that have been queried
   // Value is updated after the API call
@@ -101,11 +107,17 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   // (for optimisation)
   firstApiCall = true;
 
+  pkProject: number;
+
   constructor(
     public ref: ChangeDetectorRef,
     private digitalApi: DatDigitalApi,
     private p: ActiveProjectService,
     private worker: WorkerWrapperService,
+    private tableAPI: TableService,
+    private s: SchemaObjectService,
+    private c: ConfigurationPipesService,
+    private inf: InfActions
   ) { }
 
   ngOnInit() {
@@ -113,7 +125,9 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.t.setTabTitle('Table ' + this.pkEntity)
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.dat$.column.loadColumnsOfTable(this.pkEntity, pkProject);
+      // this.p.dat$.column.loadColumnsOfTable(this.pkEntity, pkProject);
+      this.s.storeGv(this.tableAPI.tableControllerGetTableColumns(pkProject, this.pkEntity), pkProject);
+      this.pkProject = pkProject
     })
 
     const loadConfig$ = combineLatest(
@@ -141,55 +155,26 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         sortBy,
         sortDirection,
         filters
-      ]) => this.digitalApi.getTablePage(pkProject, this.pkEntity, {
+
+      ]) => this.tableAPI.tableControllerGetTablePage(pkProject, this.pkEntity, {
+        // ]) => this.digitalApi.getTablePage(pkProject, this.pkEntity, {
         limit: pageSize,
         offset: pageSize * pageIndex,
-        columns: this.colToggleCtrl.value,
+        columns: this.colToggleCtrl.value.map((i: number) => i.toString()),
         sortBy,
         sortDirection,
         filters: this.filters$.value
-      })),
-      tap(() => {
+      }).pipe(
+        tap((res) => {
+          this.s.storeSchemaObjectGv(res.schemaObject, pkProject)
+        })
+      )),
+      tap((res) => {
         this.loading = false;
         // this.firstApiCall = false; TODO: check if this would work
       }),
       shareReplay({ bufferSize: 1, refCount: true })
     )
-
-    //creating the table and the data mapping
-    this.table$ = new ReplaySubject();
-    res$.pipe(
-      map(res => {
-        this.colMapping = ['pk_row', ...res.columns.map(pk => parseInt(pk, 10))];
-
-        this.dataMapping = [];
-        const rows: TabRow[] = res.rows;
-        const table: string[][] = [];
-
-        for (let i = 0; i < rows.length; i++) {
-          const row = rows[i];
-          const keys = Object.keys(row);
-          table[i] = [];
-          this.dataMapping[i] = [];
-
-          table[i][0] = row.pk_row.toString();
-          this.dataMapping[i][0] = { pk_row: row.pk_row };
-          for (let j = 0; j < keys.length; j++) {
-            const key = keys[j];
-            if (key == 'pk_row') continue;
-            table[i].push(row[key].string_value || (row[key].numeric_value || '').toString());
-            this.dataMapping[i].push({
-              pk_row: row.pk_row,
-              pk_col: parseInt(res.columns[j], 10),
-              pk_cell: row[key].pk_cell
-            })
-          }
-        }
-
-        return table;
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe(table => this.table$.next(table));
 
     this.length$ = res$.pipe(
       map(res => res.length)
@@ -198,10 +183,10 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     // Update this.queriedCols with columns returned by rest api
     res$.pipe(
       map(res => res.columns),
-      distinctUntilChanged<number[]>(equals),
+      distinctUntilChanged(equals),
       takeUntil(this.destroy$)
-    ).subscribe(columns => {
-      this.queriedCols = columns;
+    ).subscribe((columns: string[]) => {
+      this.queriedCols = columns.map(pk => parseInt(pk, 10));
     })
 
     /**
@@ -227,7 +212,6 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       shareReplay({ refCount: true, bufferSize: 1 })
     )
 
-
     this.columns$ = combineLatest(
       this.colToggleCtrl.valueChanges,
       this.colToggleOptions$
@@ -239,23 +223,93 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
-    //set the headers
-    this.headers$ = new ReplaySubject();
-    this.columns$.pipe(
-      map(cols => {
-        const columns: { colLabel: string, comment: string, type: 'number' | 'string' }[] = [];
-        columns.push({ colLabel: 'Row ID', comment: 'number', type: 'number' });
-        for (let i = 0; i < cols.length; i++) {
-          columns.push({
-            colLabel: cols[i].display,
-            comment: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
-            type: cols[i].datColumn.fk_data_type == this.dtText ? 'string' : 'number',
-          });
+    // set the headers
+    this.headers$ = this.columns$.pipe(
+      switchMap((cols) => {
+        const obs$ = cols.map(col => this.p.dat$.class_column_mapping$.by_fk_column$.key(col.datColumn.pk_entity).pipe(
+          // extract the fkClass
+          map((mappings) => {
+            const mapArr = values(mappings);
+            let toReturn: number | undefined;
+            if (mapArr.length) toReturn = mapArr[0].fk_class;
+            return toReturn;
+          }),
+          // create the header for that column
+          switchMap((fkClass: number | undefined) => {
+            const header: Header = {
+              colLabel: col.display,
+              comment: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+              type: col.datColumn.fk_data_type == this.dtText ? 'string' : 'number',
+              pk_column: col.datColumn.pk_entity,
+            };
+            if (!fkClass) return of(header);
+            // get the class and the class label
+            return combineLatest(
+              this.p.dfh$.class$.by_pk_class$.key(fkClass),
+              this.c.pipeClassLabel(fkClass)
+            ).pipe(
+              map(([dfhClass, classLabels]) => {
+                header.mapping = {
+                  fkClass: fkClass,
+                  className: classLabels,
+                  icon: dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn'
+                }
+                return header;
+              }
+              )
+            )
+          }),
+        )
+        );
+        return combineLatestOrEmpty(obs$);
+      }),
+      map((cols) => {
+        const firstHeader: Header = { colLabel: 'Row ID', comment: 'number', type: 'number' };
+        return [firstHeader, ...cols]
+      })
+    );
+
+    // creating the table and the data mapping
+
+
+
+    this.table$ = combineLatest([res$, this.headers$]).pipe(
+      map(([res, headers]) => {
+        this.colMapping = ['pk_row', ...res.columns];
+
+        this.dataMapping = [];
+        const rows: TableRow[] = res.rows;
+        const table: Array<Array<string | { text: string, pkCell: number }>> = [];
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const keys = Object.keys(row);
+          table[i] = [];
+          this.dataMapping[i] = [];
+          table[i][0] = row.pk_row.toString();
+          this.dataMapping[i][0] = { pk_row: row.pk_row };
+          for (let j = 0; j < keys.length; j++) {
+            const key = keys[j];
+            if (this.colMapping.indexOf(key) == -1) continue;
+            const str: string = (row[key]).string_value || (row[key].numeric_value || '').toString();
+            const theCol = headers.filter(h => h.pk_column == parseInt(key, 10))[0];
+            if (!theCol) continue;
+            if (!theCol.mapping) table[i].push(str);
+            else table[i].push({ text: str, pkCell: row[key].pk_cell as number });
+
+            this.dataMapping[i].push({
+              pk_row: row.pk_row,
+              pk_col: parseInt(res.columns[j], 10),
+              pk_cell: row[key].pk_cell,
+              refersTo: -1
+            })
+          }
         }
-        return columns;
+        return table;
       }),
       takeUntil(this.destroy$)
-    ).subscribe(cols => this.headers$.next(cols));
+    );
+
   }
 
   /**
@@ -295,20 +349,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     this.pageSize$.next(e.pageSize)
   }
 
-  // cleanupFilters(filters) {
-  //   const f = {};
-  //   [... this.colToggleCtrl.value, 'pk_row']
-  //     .forEach(col => {
-  //       if (filters[col]) {
-  //         f[col] = filters[col];
-  //       }
-  //     });
-  //   filters = f;
-  //   return filters
-  // }
-
   onFilterChange(allFilters: { col: number, filter: TColFilter }[]) {
-    let filters: TColFilters = {};
+    const filters: TColFilters = {};
 
     allFilters.forEach(incFilter => {
       const colName = this.colMapping[incFilter.col];
@@ -322,6 +364,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
   onSortChangesort(sortOpt: { colNb: number, direction: string }) {
     const colName = this.colMapping[sortOpt.colNb]
 
+
     if (this.sortBy$.value === colName) {
       this.sortDirection$.next(this.sortDirection$.value === 'ASC' ? 'DESC' : 'ASC')
     } else {
@@ -331,10 +374,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   }
 
-  click(cell: { col: number, row: number }) {
-    // console.log('CLICK', cell);
-    // console.log(this.dataMapping[cell.row][cell.col])
-  }
+  click(cell: { col: number, row: number }) { }
 
   ngOnDestroy() {
     this.destroy$.next(true);

@@ -17,8 +17,9 @@
           <ng-container *ngIf="col.field == 'path'">Path</ng-container>
           <ng-container *ngIf="col.field == 'location'">References</ng-container>
           <ng-container *ngIf="col.field == 'annotatedText'">Annotated Text</ng-container>
+          <ng-container *ngIf="col.field == 'annotatedCell'">Cell content</ng-container>
           <ng-container *ngIf="col.field == 'action'">
-            <button mat-icon-button color=primary (click)="onAdd()">
+            <button *ngIf="!disableAddBtn" mat-icon-button color=primary (click)="onAdd()">
               <mat-icon>add</mat-icon>
             </button>
           </ng-container>
@@ -57,9 +58,6 @@
           <div *ngIf="col.field == 'location'" class="d-flex align-items-center"
             [ngClass]="{'gv-one-liner gv-fade-out-right': (viewMode != 'full')}"
             [matTooltip]="rowData?.location?.label">
-            <!-- <mat-icon class="mat-text-secondary mr-2">
-                            {{rowData.location.icon}}
-                        </mat-icon>-->
             {{rowData?.location?.label}}
           </div>
 
@@ -67,6 +65,12 @@
             [ngClass]="{'gv-one-liner gv-fade-out-right': (viewMode != 'full')}"
             [matTooltip]="rowData?.annotatedText?.label">
             {{rowData?.annotatedText?.label}}
+          </div>
+
+          <div *ngIf="col.field == 'annotatedCell'" class="d-flex align-items-center"
+            [ngClass]="{'gv-one-liner gv-fade-out-right': (viewMode != 'full')}"
+            [matTooltip]="rowData?.annotatedCell?.label">
+            {{rowData?.annotatedCell?.label}}
           </div>
 
           <div *ngIf="col.field == 'action'" class="d-flex align-items-center col-action">

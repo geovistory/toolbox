@@ -36,4 +36,18 @@ export class InfTemporalEntityMock {
     fk_class: DfhApiClassMock.EN_633_UNION.dfh_pk_class,
   })
 
+  static readonly ALBERT_IV_NAMING = new InfTemporalEntity({
+    pk_entity: 4007,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly RUDOLF_NAMING = new InfTemporalEntity({
+    pk_entity: 4008,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
+
+  static readonly HABSBOURG_EMPIRE_NAMING = new InfTemporalEntity({
+    pk_entity: 4009,
+    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+  })
 }

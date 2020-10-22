@@ -9,7 +9,7 @@ import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
 import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
-import {addEntitiesToProject, createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {addInfosToProject, createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
@@ -159,21 +159,21 @@ describe('REntityLabelService', function () {
         } = await createInstancesForCityType();
 
         // add naming 1 to project1
-        await addEntitiesToProject(project1.pk_entity, [
+        await addInfosToProject(project1.pk_entity, [
             cityType.pk_entity,
             naming1.pk_entity,
             naming1RefersTo.pk_entity,
             naming1IsAppeOf.pk_entity])
 
         // add naming 2 to project2
-        await addEntitiesToProject(project2.pk_entity, [
+        await addInfosToProject(project2.pk_entity, [
             cityType.pk_entity,
             naming2.pk_entity,
             naming2RefersTo.pk_entity,
             naming2IsAppeOf.pk_entity])
 
         // add naming 2 to project3
-        await addEntitiesToProject(project3.pk_entity, [
+        await addInfosToProject(project3.pk_entity, [
             cityType.pk_entity,
             naming2.pk_entity,
             naming2RefersTo.pk_entity,
@@ -207,12 +207,12 @@ describe('REntityLabelService', function () {
         expect({proj1V, proj2V, proj3V, repoV})
 
         // add naming 1 to project 2
-        await addEntitiesToProject(project2.pk_entity, [
+        await addInfosToProject(project2.pk_entity, [
             naming1.pk_entity,
             naming1RefersTo.pk_entity,
             naming1IsAppeOf.pk_entity])
         // add naming 1 to project 3
-        await addEntitiesToProject(project3.pk_entity, [
+        await addInfosToProject(project3.pk_entity, [
             naming1.pk_entity,
             naming1RefersTo.pk_entity,
             naming1IsAppeOf.pk_entity])

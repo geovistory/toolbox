@@ -147,11 +147,13 @@
 
             <mat-tab-group class="gv-slim-tabs gv-flex-fh">
               <mat-tab label="Is mentioned in">
-                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1218"></gv-ram-list>
+                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1218" [annotatedIn]="'sources'">
+                </gv-ram-list>
               </mat-tab>
 
               <mat-tab label="Is topic of">
-                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="117"></gv-ram-list>
+                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="117" [annotatedIn]="'sources'">
+                </gv-ram-list>
               </mat-tab>
             </mat-tab-group>
 
@@ -163,12 +165,13 @@
             </ng-template>
             <mat-tab-group class="gv-slim-tabs gv-mat-tabs-shrink gv-flex-fh">
               <mat-tab label="Texts">
-                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1334"></gv-ram-list>
+                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1334" [annotatedIn]="'digital-text'">
+                </gv-ram-list>
               </mat-tab>
               <mat-tab label="Tables">
-                <p class="p-3">
-                  Coming soon...
-                </p>
+                <gv-ram-list [pkEntity]="pkEntity$|async" [fkProperty]="1334" [annotatedIn]="'digital-tables'"
+                  [disableAddBtn]="true">
+                </gv-ram-list>
               </mat-tab>
               <mat-tab label="Images">
                 <p class="p-3">

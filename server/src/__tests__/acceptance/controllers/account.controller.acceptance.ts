@@ -6,7 +6,7 @@ import {PubCredentialRepository} from '../../../repositories/pub-credential.repo
 import {GeovistoryServer} from '../../../server';
 import {AccountService} from '../../../services/account.service';
 import {PasswordResetTokenService} from '../../../services/password-reset-token.service';
-import {SqlBuilderBase} from '../../../utils/sql-builder-base';
+import {SqlBuilderBase} from '../../../utils/sql-builders/sql-builder-base';
 import {cleanDb} from '../../helpers/cleaning/clean-db.helper';
 import {createAccount, createAccountVerified} from '../../helpers/graphs/account.helper';
 import {createSandBoxProject} from '../../helpers/graphs/project.helpers';
