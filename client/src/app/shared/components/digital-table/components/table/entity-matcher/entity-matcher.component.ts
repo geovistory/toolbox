@@ -21,6 +21,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
 
   pkProject: number;
   statement?: InfStatement;
+  isInProject = false;
 
   constructor(
     private p: ActiveProjectService,
@@ -42,8 +43,10 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
       fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO
     }).pipe(
       map((statements) => {
-        if (statements.length) return statements[0];
-        else return undefined;
+        if (statements.length) {
+          this.p.streamEntityPreview(statements[0].fk_object_info).subscribe(ep => this.isInProject = !!ep.fk_project);
+          return statements[0];
+        } else return undefined;
       }),
       takeUntil(this.destroy$)
     ).subscribe(statement => this.statement = statement);
@@ -72,7 +75,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
           }
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
-          if (mode == 'edit' && this.statement) {
+          if (mode == 'edit' && this.statement && result) {
             this.inf.statement.remove([this.statement], this.pkProject).resolved$.subscribe(result2 => {
               if (result2) this.handleDialogResponse(result);
             });
@@ -82,6 +85,12 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
   }
 
   openEntity = () => this.p.addEntityTab(this.statement.fk_object_info, this.pkClass);
+
+  addAndOpenEntity() {
+    this.p.addEntityToProject(this.statement.fk_object_info, () => {
+      this.p.addEntityTab(this.statement.fk_object_info, this.pkClass)
+    })
+  }
 
   private handleDialogResponse(result: CtrlEntityModel) {
     if (result && result.persistent_item) {

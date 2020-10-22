@@ -8,9 +8,14 @@
 
   <mat-menu #options="matMenu" xPosition="before">
 
-    <button mat-menu-item *ngIf="statement" (click)="openEntity()">
+    <button mat-menu-item *ngIf="statement && isInProject" (click)="openEntity()">
       <mat-icon>tab</mat-icon>
       Open entity in new tab
+    </button>
+
+    <button mat-menu-item *ngIf="statement && !isInProject" (click)="addAndOpenEntity()">
+      <mat-icon color="primary">add</mat-icon>
+      Add to project and open
     </button>
 
     <button mat-menu-item *ngIf="!statement" (click)="changeMapping('create')">
@@ -27,7 +32,7 @@
     <div class="dropdown-header" *ngIf="statement">Danger Zone</div>
     <button mat-menu-item *ngIf="statement" (click)="changeMapping('delete')">
       <mat-icon color="warn">delete</mat-icon>
-      <span>Remove mapping</span>
+      <span>Remove match</span>
     </button>
   </mat-menu>
 </div>
