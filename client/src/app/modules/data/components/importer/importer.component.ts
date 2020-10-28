@@ -189,7 +189,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
 
     // readFile
     const fr: FileReader = new FileReader();
-    fr.readAsBinaryString(file);
+    if (this.type == 'csv') fr.readAsText(file, 'utf-8');
+    else fr.readAsBinaryString(file);
     fr.onload = () => {
       if (typeof fr.result != 'string') {
         this.reset();
