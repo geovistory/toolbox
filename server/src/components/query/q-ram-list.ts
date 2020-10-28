@@ -20,21 +20,17 @@ export class QRamList extends SqlBuilderLb4Models {
  * digital.
  * @param refersTo
  */
-  leftJoinSpotAndDigital(refersTo?: 'Chunk' | 'Cell') {
+  joinSpotAndDigital(refersTo?: 'Chunk' | 'Cell') {
     if (refersTo === 'Chunk') {
-      return `
-      LEFT JOIN data.chunk t3
-                ON t3.pk_entity = t1.fk_subject_data
-      LEFT JOIN	data.digital t4
-                ON t3.fk_text = t4.pk_text
+      return `,
+      data.chunk t3,
+      data.digital t4
       `
     }
     else if (refersTo === 'Cell') {
-      return `
-      LEFT JOIN tables.cell t3
-                ON t3.pk_cell = t1.fk_subject_tables_cell
-      LEFT JOIN	data.digital t4
-                ON t3.fk_digital = t4.pk_entity
+      return `,
+      tables.cell t3,
+      data.digital t4
       `
     }
     return ``
@@ -62,14 +58,14 @@ export class QRamList extends SqlBuilderLb4Models {
   whereRefersTo(refersTo?: 'Chunk' | 'Cell') {
     if (refersTo === 'Chunk') {
       return `
-      AND   t3.pk_entity IS NOT NULL
-      AND   t1.fk_subject_tables_cell = 0
+      WHERE t3.pk_entity = t1.fk_subject_data
+      AND t3.fk_text = t4.pk_text
       `
     }
     else if (refersTo === 'Cell') {
       return `
-      AND   t3.pk_cell IS NOT NULL
-      AND   t1.fk_subject_tables_cell IS NOT NULL
+      WHERE  t3.pk_cell = t1.fk_subject_tables_cell
+      AND t3.fk_digital = t4.pk_entity
       `
     }
     return ''
@@ -193,7 +189,17 @@ export class QRamList extends SqlBuilderLb4Models {
 
     this.sql = `
     WITH RECURSIVE tw0 (fk_subject_info, fk_subject_data, fk_property, fk_object_info, fk_object_data, level, pk_entity, path, pk_spot, pk_digital) AS (
-
+      WITH tw_statements AS (
+        SELECT t1.*
+        FROM
+              information.statement t1,
+              projects.info_proj_rel t2
+        WHERE t1.pk_entity = t2.fk_entity
+        AND 	t2.fk_project = ${this.addParam(fkProject)}
+        AND 	t2.is_in_project = TRUE
+        AND 	t1.fk_object_info = ${this.addParam(pkEntity)}
+        AND 	t1.fk_property = ${this.addParam(fkProperty)}
+      )
       SELECT    t1.fk_subject_info,
                 t1.fk_subject_data,
                 t1.fk_property,
@@ -203,14 +209,8 @@ export class QRamList extends SqlBuilderLb4Models {
                 t1.pk_entity,
                 ARRAY[t1.pk_entity],
                 ${this.selectDigital(refersTo)}
-      FROM      information.statement t1
-      JOIN      projects.info_proj_rel t2
-                ON   t1.pk_entity = t2.fk_entity
-                AND  t2.fk_project = ${this.addParam(fkProject)}
-                AND  t2.is_in_project = true
-      ${this.leftJoinSpotAndDigital(refersTo)}
-      WHERE     t1.fk_object_info = ${this.addParam(pkEntity)}
-      AND       t1.fk_property IN ( ${this.addParam(fkProperty)} )
+      FROM      tw_statements t1
+      ${this.joinSpotAndDigital(refersTo)}
       ${this.whereRefersTo(refersTo)}
 
       UNION ALL
