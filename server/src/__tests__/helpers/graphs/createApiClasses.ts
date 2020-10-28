@@ -6,6 +6,7 @@ export async function createApiClasses() {
         await createDfhApiClass(DfhApiClassMock.EN_365_NAMING),
         await createDfhApiClass(DfhApiClassMock.EN_21_PERSON),
         await createDfhApiClass(DfhApiClassMock.EN_218_EXPRESSION),
-        await createDfhApiClass(DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE)
+        await createDfhApiClass(DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE),
+        await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH)
     ]);
 }

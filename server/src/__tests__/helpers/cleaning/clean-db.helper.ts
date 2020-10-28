@@ -49,6 +49,14 @@ export async function cleanDb() {
     const warEntityPreviewRepository = new WarEntityPreviewRepository(testdb);
     const warClassPreviewRepository = new WarClassPreviewRepository(testdb);
 
+    await testdb.execute('ALTER TABLE data.factoid_role_mapping DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM data.factoid_role_mapping');
+    await testdb.execute('ALTER TABLE data.factoid_role_mapping ENABLE TRIGGER versioning_trigger');
+
+    await testdb.execute('ALTER TABLE data.factoid_mapping DISABLE TRIGGER versioning_trigger');
+    await testdb.execute('DELETE FROM data.factoid_mapping');
+    await testdb.execute('ALTER TABLE data.factoid_mapping ENABLE TRIGGER versioning_trigger');
+
     await testdb.execute('ALTER TABLE tables.row DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM tables.row');
     await testdb.execute('ALTER TABLE tables.row ENABLE TRIGGER versioning_trigger');

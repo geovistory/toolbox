@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { DatColumn, DatTextProperty } from '../../../../models';
+import { DatTextProperty } from '../../../../models';
 import { DatColumnMock } from './DatColumnMock';
 import { DatNamespaceMock } from './DatNamespaceMock';
 import { InfLanguageMock } from './InfLanguageMock';
