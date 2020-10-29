@@ -9,6 +9,8 @@ export interface GraphPathEntity {
   preview?: EntityPreview;
   isDigitalText?: boolean;
   isDigitalTable?: boolean;
+  fkRow?: string;
+  fkDigital?: number;
 };
 
 export interface GraphPathSegment {
@@ -48,6 +50,10 @@ export class GraphPathComponent implements OnInit {
 
   openTableInNewTab(pkEntity: number) {
     this.p.addTableTab(pkEntity)
+  }
+
+  openCellInNewTab(fkDigital: number, fkRow: number) {
+    this.p.addTableTab(fkDigital, fkRow);
   }
 
 }

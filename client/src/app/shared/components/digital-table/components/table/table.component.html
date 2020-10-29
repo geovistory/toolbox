@@ -121,7 +121,7 @@
               class="text-center align-self-center" pResizableColumn colspan="1">
               {{value.text}}
             </td>
-            <td *ngIf="headers[j].mapping" pResizableColumn colspan="1">
+            <td *ngIf="headers[j].mapping" pResizableColumn colspan="1" [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': true}">
               <gv-entity-matcher [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell"></gv-entity-matcher>
             </td>
           </ng-container>

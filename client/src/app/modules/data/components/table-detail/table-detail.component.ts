@@ -39,6 +39,7 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
 
   @Input() basePath: string[]; // path to the substore
   @Input() pkEntity: number; // Primary key of the text digital to be viewed or edited
+  @Input() filterOnRow: number; // the row on which to filter on
 
   t: TabLayout;
 
@@ -309,6 +310,22 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
       }),
       takeUntil(this.destroy$)
     );
+
+
+    console.log('pkEntity: ' + this.pkEntity)
+    console.log('fkRow to filter on: ' + this.filterOnRow);
+
+    if (this.filterOnRow) {
+      // this.colFiltersEnabled = true;
+      this.filters$.next({
+        'pk_row': {
+          numeric: {
+            operator: '=',
+            value: this.filterOnRow
+          }
+        }
+      })
+    }
 
   }
 
