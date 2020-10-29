@@ -595,13 +595,14 @@ export class ActiveProjectService {
   }
 
 
-  addTableTab(pkEntity: number) {
+  addTableTab(pkEntity: number, fkRow?: number) {
     this.addTab({
       active: true,
       component: 'table-detail',
       icon: 'table',
       data: {
-        pkEntity: pkEntity
+        pkEntity: pkEntity,
+        filterOnRow: fkRow
       },
       pathSegment: 'tableDetails'
     })

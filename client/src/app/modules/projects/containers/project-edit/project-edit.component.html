@@ -146,7 +146,8 @@
             </gv-text-detail>
 
             <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table-detail'" [pkEntity]="tab.data.pkEntity"
-              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+              [filterOnRow]="tab.data.filterOnRow" [basePath]="tab.path"
+              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-table-detail>
 
 
