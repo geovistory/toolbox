@@ -86,7 +86,7 @@
       Open table in new tab
     </button>
 
-    <button *ngIf="true" mat-menu-item (click)="openCellInNewTab(entity.fkDigital, entity.fkRow)">
+    <button *ngIf="entity.fkRow" mat-menu-item (click)="openCellInNewTab(entity.fkDigital, entity.fkRow)">
       <mat-icon>tab</mat-icon>
       Open Cell in new tab
     </button>
