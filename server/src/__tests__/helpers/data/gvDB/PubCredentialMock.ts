@@ -14,4 +14,10 @@ export class PubCredentialMock {
         password: 'test1234',
     })
 
+    static readonly JONAS_PASSWORD = new PubCredential({
+        id: 2002,
+        accountId: PubAccountMock.JONAS.id,
+        password: 'test1234',
+    })
+
 }

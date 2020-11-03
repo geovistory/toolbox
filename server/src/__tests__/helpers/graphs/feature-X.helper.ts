@@ -91,13 +91,9 @@ export async function forFeatureX() {
         statementMapping]
         .map(x => x.pk_entity));
 
-
-
-
     ////// FACTOIDS //////
     await createFactoidMapping(DatFactoidMappingMock.FactoidMapping_BIRTHDATES_BIRTH);
     await createFactoidPropertyMapping(DatFactoidPropertyMappingMock.FactoidPropertyMapping_BIRTH_WHEN);
     await createFactoidPropertyMapping(DatFactoidPropertyMappingMock.FactoidPropertyMapping_BIRTH_BROUGHT_INTO_LIFE);
 }
-
 

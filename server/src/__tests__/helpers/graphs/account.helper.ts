@@ -31,3 +31,11 @@ export async function createGaetanMuck() {
     return new PubCredentialRepository(testdb)
         .create({ accountId: PubAccountMock.GAETAN_VERIFIED.id, password: hashed });
 }
+
+export async function createJonasSchneider() {
+    await createPubAccount(PubAccountMock.JONAS);
+    const hashed = await hash(PubCredentialMock.JONAS_PASSWORD.password, await genSalt());
+    return new PubCredentialRepository(testdb)
+        .create({ accountId: PubAccountMock.JONAS.id, password: hashed });
+}
+
