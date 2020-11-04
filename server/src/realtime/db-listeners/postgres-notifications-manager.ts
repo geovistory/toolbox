@@ -22,6 +22,8 @@ export class PostgresNotificationsManager {
   client: Client;
   client2: Client;
 
+  vmStatementUpdated = '1970-01-01 10:08:21.128869+00';
+
   /**
    * @param lb4App the Application Context to which we bind this manager
    */
@@ -71,18 +73,19 @@ export class PostgresNotificationsManager {
   async start() {
     // create postgres client for war.updater() queue
     this.client = this.createClient();
-
-
+    this.client2 = this.createClient();
 
     await this.client.connect();
+    await this.client2.connect();
     // this.callQueueWorker();
 
     // react to notifications
     this.reactOnNotifications()
 
+    this.startVmStatementsUpdateJob().catch(e => console.log(e))
+
     // start listening on pg notifications
     await this.listenToPgNotifyChannels()
-
 
   }
 
@@ -93,12 +96,34 @@ export class PostgresNotificationsManager {
     // disconnect clients from pg server
     try {
       await this.client.end()
-      // await this.client2.end()
+      await this.client2.end()
     } catch (e) {
       console.log(e);
       throw new Error(e);
     }
 
   }
+  /**
+   * Starts a job that periodically updates war.vm_statement
+   */
+  async startVmStatementsUpdateJob() {
 
+    const changes = await this.client2.query<{count: number, now: string}>(`
+      Select   count(*),  to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') now
+      From     projects.info_proj_rel t1
+      Where    t1.tmsp_last_modification::timestamp >=$1;
+    	`, [this.vmStatementUpdated])
+
+    this.vmStatementUpdated = changes.rows?.[0].now;
+
+    if (changes.rows?.[0].count > 0) {
+      await this.client2.query('REFRESH MATERIALIZED VIEW CONCURRENTLY war.vm_statement;')
+    }
+
+    setTimeout(() => {
+      this.startVmStatementsUpdateJob().catch(e => console.log(e))
+    }, 3000)
+
+  }
 }
+
