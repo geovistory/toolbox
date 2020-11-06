@@ -15,7 +15,7 @@ export class TestdbDataSource extends juggler.DataSource
   constructor() {
 
     super({
-      url: process.env.TEST_DATABASE_URL + '?ssl=true',
+      url: process.env.TEST_DATABASE_URL,
       name: 'testdb',
       connector: 'postgresql',
       ssl: {
