@@ -11,7 +11,7 @@ if [[ $DB_MIGRATE_URL == *"sslmode=require"* || $DB_MIGRATE_URL == *"ssl=true"* 
     DB_MIGRATE_ENV=dbSSL
 fi
 
-echo 
+echo
 IFS='@' read -ra part <<< "$DB_MIGRATE_URL"
 echo  Run db-migrate on database: ${part[1]}
 echo

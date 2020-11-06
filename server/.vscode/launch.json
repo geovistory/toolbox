@@ -13,7 +13,7 @@
       "program": "${workspaceFolder}/index.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "runtimeExecutable": null,
-      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
+      "envFile": "${workspaceFolder}/.env",
       "restart": false,
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
@@ -29,8 +29,9 @@
       "program": "${workspaceFolder}/index.dev.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "runtimeExecutable": null,
+      "envFile": "${workspaceFolder}/.env",
       "env": {
-        "DATABASE_URL": "${env:TEST_DATABASE_URL}",
+        "DB_ENV": "test",
       },
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
@@ -46,7 +47,7 @@
       "program": "${workspaceFolder}/index.js",
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
-      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
+      "envFile": "${workspaceFolder}/.env",
       "restart": true,
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
@@ -69,7 +70,10 @@
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": null,
-      "envFile": "${workspaceFolder}/.vscode/envFile.test",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "DB_ENV": "test",
+      },
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -92,7 +96,10 @@
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
       "restart": true,
-      "envFile": "${workspaceFolder}/.vscode/envFile.test",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "DB_ENV": "test",
+      },
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -109,7 +116,7 @@
       "preLaunchTask": "tsc: watch - tsconfig.json",
       "restart": false,
       "outputCapture": "std",
-      "envFile": "${workspaceFolder}/.vscode/envFile.dev",
+      "envFile": "${workspaceFolder}/.env",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
@@ -138,7 +145,7 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "4000",
+        "6000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
@@ -147,7 +154,10 @@
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,
-      "envFile": "${workspaceFolder}/.vscode/envFile.test",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "DB_ENV": "test",
+      },
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
       ]
