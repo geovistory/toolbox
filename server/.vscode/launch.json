@@ -145,11 +145,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "6000",
+        "20000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/.*should create full text of naming/"
+        "/PEntityService/"
         // "/IndexDB.*/"
       ],
       "cwd": "${workspaceRoot}",

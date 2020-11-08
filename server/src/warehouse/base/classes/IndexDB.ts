@@ -13,10 +13,10 @@
  * - add update request
  */
 
-import {IndexLeveldb} from './IndexLeveldb';
 import {Warehouse} from '../../Warehouse';
+import {IndexPostgres} from './IndexPostgres';
 
-export abstract class IndexDB<KeyModel, ValueModel> extends IndexLeveldb<KeyModel, ValueModel> {
+export abstract class IndexDB<KeyModel, ValueModel> extends IndexPostgres<KeyModel, ValueModel> {
   constructor(
     name = 'default',
     wh: Warehouse

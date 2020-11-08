@@ -3,10 +3,6 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 DB_MIGRATE_ENV=db
 DB_MIGRATE_URL=$DATABASE_URL
 
-if [[ $DB_ENV == "test" ]]; then
-    DB_MIGRATE_URL=$TEST_DATABASE_URL
-fi
-
 if [[ $DB_MIGRATE_URL == *"sslmode=require"* || $DB_MIGRATE_URL == *"ssl=true"* ]]; then
     DB_MIGRATE_ENV=dbSSL
 fi

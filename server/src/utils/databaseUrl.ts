@@ -19,14 +19,13 @@ export function getPgUrlForPg8() {
   return url
 };
 // creates postgres ssl config for node-postgres ('pg') v8 and higher
-export function getPgSslForPg8() {
-  if (dbRequiresSSL()) return { rejectUnauthorized: false }
+export function getPgSslForPg8(url: string) {
+  if (dbRequiresSSL(url)) return {rejectUnauthorized: false}
   return undefined;
 };
 
 // returns true if the url string wants ssl, else false
-export function dbRequiresSSL() {
-  const url = getDatabaseUrl()
+export function dbRequiresSSL(url: string) {
   if (url.includes('ssl=true')) return true;
   if (url.includes('sslmode=require')) return true;
   return false

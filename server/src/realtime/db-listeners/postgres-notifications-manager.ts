@@ -25,13 +25,14 @@ export class PostgresNotificationsManager {
   /**
    * @param lb4App the Application Context to which we bind this manager
    */
-  constructor(private lb4App: GeovistoryApplication) {}
+  constructor(private lb4App: GeovistoryApplication) { }
 
   // create postgres client
   createClient() {
+    const connectionString = getPgUrlForPg8()
     return new Client({
-      connectionString: getPgUrlForPg8(),
-      ssl: getPgSslForPg8(),
+      connectionString,
+      ssl: getPgSslForPg8(connectionString),
     })
   }
 

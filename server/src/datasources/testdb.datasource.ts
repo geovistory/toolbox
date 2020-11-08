@@ -11,7 +11,6 @@ export class TestdbDataSource extends juggler.DataSource
   implements LifeCycleObserver {
   static dataSourceName = 'testdb';
   // static readonly defaultConfig = config;
-
   constructor() {
 
     super({
@@ -22,5 +21,6 @@ export class TestdbDataSource extends juggler.DataSource
         rejectUnauthorized: false,
       },
     });
+    console.log(process.env.TEST_DATABASE_URL)
   }
 }

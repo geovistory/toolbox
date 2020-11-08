@@ -85,7 +85,7 @@ export class Warehouse {
         }
 
         const connectionString = getPgUrlForPg8()
-        const ssl = getPgSslForPg8()
+        const ssl = getPgSslForPg8(connectionString)
         this.pgPool = new Pool({
             max: 15,
             connectionString,
