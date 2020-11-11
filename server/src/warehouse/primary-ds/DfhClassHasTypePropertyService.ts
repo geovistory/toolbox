@@ -1,9 +1,13 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {rClassIdToString, stringToRClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 export interface RClassId {
     pkClass: number
 }
+export const rClassIdKeyDefs: KeyDefinition[] = [
+    {name: 'pkClass', type: 'integer'}
+]
 export type DfhClassHasTypePropVal = number;
 
 /**

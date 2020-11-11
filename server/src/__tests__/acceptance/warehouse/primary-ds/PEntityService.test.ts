@@ -36,7 +36,7 @@ describe('PEntityService', () => {
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    await waitUntilNext(s.afterPut$)
+    await waitUntilNext(s.afterChange$)
 
     const result = await s.index.getFromIdx({
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
@@ -52,14 +52,14 @@ describe('PEntityService', () => {
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    await waitUntilNext(s.afterPut$)
+    await waitUntilNext(s.afterChange$)
 
     const id = {
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
     }
-    let result = await s.index.getFromIdx(id)
-    expect(result?.fkClass).to.equal(entity?.fk_class)
+    const result1 = await s.index.getFromIdxWithTmsps(id)
+    expect(result1?.val?.fkClass).to.equal(entity?.fk_class)
     await updateInfPersistentItem(
       InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       {
@@ -68,10 +68,13 @@ describe('PEntityService', () => {
       }
     )
 
-    await waitUntilNext(s.afterPut$)
+    await waitUntilNext(s.afterChange$)
 
-    result = await s.index.getFromIdx(id)
-    expect(result?.fkClass).to.equal(987654321)
+    const result2 = await s.index.getFromIdxWithTmsps(id)
+    expect(result2?.val?.fkClass).to.equal(987654321)
+
+    expect(((result2?.lastModification ?? 0) > (result1?.lastModification ?? 0))).to.be.true()
+
   })
 
   it('should delete entity if removed from project', async () => {
@@ -80,14 +83,19 @@ describe('PEntityService', () => {
     const project = await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    await waitUntilNext(s.afterPut$)
+    await waitUntilNext(s.afterChange$)
 
     const id = {
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: project.pk_entity ?? -1
     }
-    let result = await s.index.getFromIdx(id)
-    expect(result?.fkClass).to.equal(entity?.fk_class)
+    const result = await s.index.getFromIdxWithTmsps(id)
+    expect(result?.val.fkClass).to.equal(entity?.fk_class)
+    expect(result?.deleted).to.be.undefined()
+
+    let entities = await getWarEntityPreview(id.pkEntity,id.fkProject)
+    expect(entities.length).to.equal(1);
+
     await updateProInfoProjRel(
       ProInfoProjRelMock.PROJ_1_PERSON_1.pk_entity ?? -1,
       {
@@ -96,10 +104,13 @@ describe('PEntityService', () => {
       }
     )
 
-    await waitUntilNext(s.afterDel$)
+    await waitUntilNext(s.afterChange$)
 
-    result = await s.index.getFromIdx(id)
-    expect(result?.fkClass).to.be.undefined()
+    const result2 = await s.index.getFromIdxWithTmsps(id)
+    expect(result2?.deleted).not.to.be.undefined()
+
+    entities = await getWarEntityPreview(id.pkEntity,id.fkProject)
+    expect(entities.length).to.equal(0);
   })
 
   it('should add entity preview with fk_class after entity is added', async () => {
@@ -114,8 +125,6 @@ describe('PEntityService', () => {
     await createProProject(ProProjectMock.PROJECT_1)
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
-    const item = await waitUntilNext(s.afterPut$)
-    expect(item.key.pkEntity).to.equal(InfPersistentItemMock.PERSON_1.pk_entity)
     const id: PEntityId = {
       pkEntity: InfPersistentItemMock.PERSON_1.pk_entity ?? -1,
       fkProject: ProProjectMock.PROJECT_1.pk_entity ?? -1

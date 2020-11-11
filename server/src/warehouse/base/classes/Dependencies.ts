@@ -1,20 +1,21 @@
 import {ClearAll} from './ClearAll';
-import {DepIdx} from './DependencyIndex';
+import {DependencyIndex} from './DependencyIndex';
 
 export abstract class Dependencies implements ClearAll {
 
-    registered: DepIdx[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    registered: DependencyIndex<any,any,any,any>[] = [];
 
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));
     }
 
-
-    registerDepIdx<M extends DepIdx>(dep: M) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    registerDepIdx<M extends DependencyIndex<any,any,any,any>>(dep: M) {
         this.registered.push(dep);
         return dep;
     }
 
-    async initIdx(): Promise<void> {};
+    async initIdx(): Promise<void> { };
 
 }

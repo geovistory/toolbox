@@ -2,8 +2,9 @@ import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../../Warehouse';
 import {RClassLabelProviders} from './RClassLabelProviders';
+import {RClassLabelValue} from './RClassLabelService';
 
-export class RClassLabelAggregator extends AbstractAggregator<RClassId> {
+export class RClassLabelAggregator extends AbstractAggregator<RClassLabelValue> {
 
 
   // the resulting label
@@ -11,6 +12,8 @@ export class RClassLabelAggregator extends AbstractAggregator<RClassId> {
 
   // For testing / debugging
   labelMissing = true;
+
+
 
   constructor(
     public providers: RClassLabelProviders,
@@ -20,7 +23,6 @@ export class RClassLabelAggregator extends AbstractAggregator<RClassId> {
   }
 
   async create() {
-    await this.providers.load();
 
     // default language (en)
     const defaultLang = PK_ENGLISH;
@@ -33,30 +35,26 @@ export class RClassLabelAggregator extends AbstractAggregator<RClassId> {
     */
 
     // from geovistory
-    classLabel = await this.providers.proClassLabel.get({
+    classLabel = (await this.providers.proClassLabel.get({
       fkClass: this.id.pkClass,
       fkLanguage: defaultLang,
       fkProject: PK_DEFAULT_CONFIG_PROJECT
-    })
+    }))?.label
 
     if (classLabel) return this.finalize(classLabel);
 
     // from ontome
-    classLabel = await this.providers.dfhClassLabel.get({
+    classLabel = (await this.providers.dfhClassLabel.get({
       pkClass: this.id.pkClass,
       language: 'en'
+    }))?.label
 
-    })
+    return this.finalize(classLabel);
 
-    if (classLabel) return this.finalize(classLabel);
-
-    return this
   }
 
-  finalize(label: string) {
-    this.classLabel = label;
-    this.labelMissing = false;
-    return this;
+  finalize(label?: string) {
+    return {label};
   }
 }
 

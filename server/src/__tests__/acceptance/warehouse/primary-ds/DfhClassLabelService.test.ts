@@ -28,7 +28,7 @@ describe('DfhClassLabelService', () => {
     const c = await createDfhApiClass({dfh_class_label: 'Foo'})
     await wait(200);
     const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
-    expect(result).to.equal('Foo')
+    expect(result?.label).to.equal('Foo')
 
   })
 
@@ -38,14 +38,14 @@ describe('DfhClassLabelService', () => {
     await wait(200);
 
     const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
-    expect(result).to.equal('Foo')
+    expect(result?.label).to.equal('Foo')
 
     const c2 = await updateDfhApiClass(c.pk_entity as any, {dfh_class_label: 'Bar'})
     expect(c2.dfh_class_label).to.equal('Bar')
 
     await wait(200);
     const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
-    expect(resultUpdated).to.equal('Bar')
+    expect(resultUpdated?.label).to.equal('Bar')
   })
 
   it('should NOT! delete class label', async () => {
@@ -53,14 +53,14 @@ describe('DfhClassLabelService', () => {
 
     await wait(200);
     const result = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
-    expect(result).to.equal('Foo')
+    expect(result?.label).to.equal('Foo')
 
     await deleteDfhApiClass(c.pk_entity as any)
 
 
     await new Promise(r => setTimeout(r, 10));
     const resultUpdated = await s.index.getFromIdx({pkClass: c.dfh_pk_class, language: c.dfh_class_label_language})
-    expect(resultUpdated).to.equal('Foo')
+    expect(resultUpdated?.label).to.equal('Foo')
   })
 
 });

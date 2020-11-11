@@ -14,7 +14,7 @@ export abstract class IndexPostgres<KeyModel, ValueModel> implements Index<KeyMo
     indexName = '/' + IndexPostgres.indexes++
     pgClient: PoolClient
 
-    schema = 'war_cache'
+    schema: string;
     table: string;
     ready$ = new ReplaySubject<boolean>()
 
@@ -22,6 +22,7 @@ export abstract class IndexPostgres<KeyModel, ValueModel> implements Index<KeyMo
         name = 'default',
         wh: Warehouse
     ) {
+        this.schema = wh.schemaName;
         this.table = name;
         combineLatest(
             wh.pgConnected$,

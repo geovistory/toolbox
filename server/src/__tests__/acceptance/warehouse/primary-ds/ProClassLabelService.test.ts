@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
-import {ProClassLabelService} from '../../../../warehouse/primary-ds/ProClassLabelService';
+import {ProClassLabelService, ProClassLabelVal} from '../../../../warehouse/primary-ds/ProClassLabelService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {AtmLanguages, createLanguages} from '../../../helpers/atomic/inf-language.helper';
 import {createProject} from '../../../helpers/atomic/pro-project.helper';
 import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProClassLabelService', () => {
 
@@ -41,14 +41,14 @@ describe('ProClassLabelService', () => {
     const str = 'FooClassLabel'
     const label = await createProTextPropertyClassLabel(pkProject, 12, str, AtmLanguages.FRENCH.id)
 
-    await waitUntilNext(s.afterPut$)
+    await waitUntilNext(s.afterChange$)
 
     const result = await s.index.getFromIdx({
       fkProject: label.fk_project ?? -1,
       fkLanguage: label.fk_language ?? -1,
       fkClass: label.fk_dfh_class ?? -1
     })
-    expect(result).to.equal(str)
+    expect(result?.label).to.equal(str)
 
   })
 
@@ -59,26 +59,29 @@ describe('ProClassLabelService', () => {
     const pkProject = project.pk_entity ?? -1;
     const str = 'FooClassLabel'
     const label = await createProTextPropertyClassLabel(pkProject, 12, str, AtmLanguages.FRENCH.id)
-    let result = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.fkProject === label.fk_project
-        && item.key.fkLanguage === label.fk_language
-        && item.key.fkClass === label.fk_dfh_class
-        && item.val === str
-    })
+    const id = {
+      fkClass: label.fk_dfh_class ?? -1,
+      fkLanguage: label.fk_language,
+      fkProject: label.fk_project
+    }
+    let result = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val?: ProClassLabelVal) => val?.label === str
+    });
 
-    expect(result.val).to.equal(str)
+    expect(result?.label).to.equal(str)
 
     const str2 = 'BarClassLabel'
     await updateProTextProperty(label.pk_entity ?? -1, {string: str2})
 
-    result = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.fkProject === label.fk_project
-        && item.key.fkLanguage === label.fk_language
-        && item.key.fkClass === label.fk_dfh_class
-        && item.val === str2
-    })
+    result = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val?: ProClassLabelVal) => val?.label === str2
+    });
 
-    expect(result.val).to.equal(str2)
+    expect(result?.label).to.equal(str2)
   })
 
   it('should delete pro class label in index', async () => {
@@ -88,7 +91,7 @@ describe('ProClassLabelService', () => {
     const pkProject = project.pk_entity ?? -1;
     const str = 'FooClassLabel'
     const label = await createProTextPropertyClassLabel(pkProject, 12, str, AtmLanguages.FRENCH.id)
-    await waitUntilNext(s.afterPut$)
+    await waitUntilNext(s.afterChange$)
 
     const id = {
       fkProject: label.fk_project ?? -1,
@@ -96,13 +99,13 @@ describe('ProClassLabelService', () => {
       fkClass: label.fk_dfh_class ?? -1
     }
     const result = await s.index.getFromIdx(id)
-    expect(result).to.equal(str)
+    expect(result?.label).to.equal(str)
 
     await deleteProTextProperty(label.pk_entity ?? -1)
 
-    await waitUntilNext(s.afterDel$)
-    const resultUpdated = await s.index.getFromIdx(id)
-    expect(resultUpdated).to.be.undefined()
+    await waitUntilNext(s.afterChange$)
+    const resultUpdated = await s.index.getFromIdxWithTmsps(id)
+    expect(resultUpdated?.deleted).not.to.be.undefined()
   })
 
 });

@@ -17,7 +17,9 @@ describe('RClassLabelService', function () {
         wh = await setupCleanAndStartWarehouse()
     })
 
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {
+        await wh.stop()
+    })
 
 
     it('should create class label of Person: en-geovistory', async () => {
@@ -32,8 +34,12 @@ describe('RClassLabelService', function () {
 
 
     it('should switch class label of Person: en-geovistory to en-ontome', async () => {
-        const {cla,  gvTxt} = await createGeovistoryLabelMock();
-
+        const {cla, gvTxt} = await createGeovistoryLabelMock();
+        await waitForClassPreview(wh, [
+            {fk_class: {eq: cla.dfh_pk_class}},
+            {fk_project: {eq: 0}},
+            {label: {eq: gvTxt.string}},
+        ])
         await deleteProTextProperty(gvTxt.pk_entity ?? -1)
         const result = await waitForClassPreview(wh, [
             {fk_class: {eq: cla.dfh_pk_class}},

@@ -1,18 +1,13 @@
 import assert from 'assert';
+import pgkDir from 'pkg-dir';
+import {EntityLabelVal} from '../../../../warehouse/aggregator-ds/entity-label/entity-label.commons';
 import {PEntityLabelService} from '../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 import {DependencyIndex} from '../../../../warehouse/base/classes/DependencyIndex';
 import {pEntityIdToString, stringToPEntityId} from '../../../../warehouse/base/functions';
 import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse, WarehouseConfig} from '../../../../warehouse/Warehouse';
-import {EntityLabelVal} from '../../../../warehouse/aggregator-ds/entity-label/entity-label.commons';
-import path from 'path'
-import pgkDir from 'pkg-dir'
-
-const appRoot = pgkDir.sync() ?? ''
 
 const config: WarehouseConfig = {
-    leveldbFolder: 'leveldb',
-    rootDir: path.resolve(appRoot, '/server'),
     backups: undefined
 }
 

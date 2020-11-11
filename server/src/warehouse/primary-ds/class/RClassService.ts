@@ -3,22 +3,36 @@ import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {rClassIdToString, stringToRClassId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
 import {RClassId} from '../DfhClassHasTypePropertyService';
+import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 
+
+const keyDefs: KeyDefinition[] = [
+  {
+    name: 'pkClass',
+    type: 'integer'
+  }
+]
 export class RClassService extends PrimaryDataService<InitItem, RClassId, RClass>{
 
   measure = 1000;
 
   constructor(public wh: Warehouse) {
-    super(wh, [
-      'modified_data_for_history_api_class'
-    ],rClassIdToString, stringToRClassId)
+    super(
+      wh,
+      [
+        'modified_data_for_history_api_class'
+      ],
+      rClassIdToString,
+      stringToRClassId,
+      keyDefs
+    )
 
     /**
      * Add actions after a new RClass is put/updated into index
      */
     this.afterPut$.subscribe(item => {
       // Add update requests on aggregaters based on project class
-      wh.agg.rClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
+      // wh.agg.rClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
       // Generate incoming class field for 'has appellation' property 1111
       if ([8, 9, 30].includes(item.val.basicType)) {
         const incomingField: RClassFieldId = {
@@ -39,18 +53,6 @@ export class RClassService extends PrimaryDataService<InitItem, RClassId, RClass
 
   }
 
-  dbItemToKeyVal(item: InitItem): {key: RClassId; val: RClass;} {
-    const key: RClassId = {
-      pkClass: item.fkClass,
-
-    };
-    const val: RClass = {
-      fkClass: item.fkClass,
-      basicType: item.basicType
-    };
-    return {key, val}
-  }
-
   getUpdatesSql(tmsp: Date) {
     return updateSql
   }
@@ -66,8 +68,11 @@ interface InitItem {
 
 const updateSql = `
   SELECT DISTINCT
-  dfh_pk_class "fkClass",
-  dfh_basic_type "basicType"
+  dfh_pk_class "pkClass",
+  jsonb_build_object(
+    'fkClass', dfh_pk_class,
+    'basicType', dfh_basic_type
+  ) val
   FROM
   data_for_history.api_class t1
   WHERE

@@ -2,7 +2,7 @@ import c from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import pgkDir from 'pkg-dir';
-import { Warehouse, WarehouseConfig } from './Warehouse';
+import {Warehouse, WarehouseConfig} from './Warehouse';
 
 const appRoot = pgkDir.sync() ?? ''
 
@@ -23,8 +23,6 @@ export async function start() {
     const currentCommit = compatibleWithCommits[0]
 
     const config: WarehouseConfig = {
-        leveldbFolder: 'leveldb',
-        rootDir: path.join(appRoot),
         backups: {
             currentCommit,
             compatibleWithCommits
@@ -53,8 +51,6 @@ export async function startDev() {
     const currentCommit = c.execSync('git rev-parse --short HEAD').toString().replace('\n', '');
 
     const config: WarehouseConfig = {
-        leveldbFolder: 'leveldb',
-        rootDir: path.join(appRoot),
         backups: {
             currentCommit,
             compatibleWithCommits
@@ -69,13 +65,10 @@ export async function startDev() {
 // Cleans the whDB and starts warehouse without backups
 // (No bucketeer instance required, everything related to backups is skipped)
 export async function cleanAndStartDev() {
-    const config: WarehouseConfig = {
-        leveldbFolder: 'leveldb',
-        rootDir: path.join(appRoot),
-    }
+    const config: WarehouseConfig = {}
     const warehouse = new Warehouse(config)
     try {
         await warehouse.hardReset('Warehouse reset')
-    } catch (e) { console.log(e) }
+    } catch (e) {console.log(e)}
     await warehouse.start();
 }

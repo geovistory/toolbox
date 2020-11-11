@@ -145,12 +145,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "20000",
+        "4000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/PEntityService/"
-        // "/IndexDB.*/"
+        "/RClassLabelService.*/",
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

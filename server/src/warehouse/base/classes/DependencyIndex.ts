@@ -2,24 +2,34 @@ import {Warehouse} from '../../Warehouse';
 import {AggregatedDataService} from './AggregatedDataService';
 import {ClearAll} from './ClearAll';
 import {DataService} from './DataService';
-import {UniqIdx} from './UniqIdx';
+import {ReplaySubject, combineLatest} from 'rxjs';
+import {first} from 'rxjs/operators';
+import {PoolClient} from 'pg';
+import {KeyDefinition} from '../interfaces/KeyDefinition';
+import {recreateDB} from '../../../__tests__/helpers/cleaning/recreate-db.helper';
 
-export interface DepIdx extends ClearAll {
-    receiverToProvider: UniqIdx
-    providerToReceiver: UniqIdx
-}
-export interface DependencyMap {[key: string]: true}
 
-const sep = ':'
 
-export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements DepIdx {
+export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements ClearAll {
 
-    receiverToProvider: UniqIdx
-    providerToReceiver: UniqIdx
+    schema: string;
+    table: string;
+    schemaTable: string;
+    ready$ = new ReplaySubject<boolean>()
+    providerKeyCols: string; // e.g. '"fkProject","pkEntity"'
+    receiverKeyCols: string; // e.g. '"fkProject","pkEntity"'
+    providerKeyDefs: KeyDefinition[];
+    receiverKeyDefs: KeyDefinition[];
+    keyCols: string; // e.g. '"r_fkProject","r_pkEntity", "p_fkProject","p_pkEntity"'
+    pgClient: PoolClient
+
+
+    private cache: {receiverKey: ReceiverKeyModel, providerKey: ProviderKeyModel}[] = [];
+
     constructor(
         public wh: Warehouse,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        public receiverDS: AggregatedDataService<ReceiverKeyModel, ReceiverValModel, any>,
+        public receiverDS: AggregatedDataService<ReceiverKeyModel, ReceiverValModel>,
         public providerDS: DataService<ProviderKeyModel, ProviderValModel>,
         public receiverKeyToString: (key: ReceiverKeyModel) => string,
         public stringToReceiverKey: (str: string) => ReceiverKeyModel,
@@ -27,213 +37,110 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         public stringToProviderKey: (str: string) => ProviderKeyModel,
     ) {
         providerDS.registerProviderOf(this)
-        // keys are of pattern `${receiverStr}:${providerStr}`, values = true
-        this.receiverToProvider = new UniqIdx(receiverDS.constructor.name + '_to_' + providerDS.constructor.name, wh)
-
-        // keys are of pattern ${receiverStr}:${providerStr}`, values = true
-        this.providerToReceiver = new UniqIdx(providerDS.constructor.name + '_to_' + receiverDS.constructor.name, wh)
-    }
-
-
-
-
-    async addProvider(receiver: ReceiverKeyModel, provider: ProviderKeyModel): Promise<void> {
-        const receiverStr = this.receiverKeyToString(receiver)
-        const providerStr = this.providerKeyToString(provider)
-
-        await this.receiverToProvider.addToIdx(this.createReceiverToProviderStr(receiverStr, providerStr), true)
-        await this.providerToReceiver.addToIdx(this.createProviderToReceiverStr(providerStr, receiverStr), true)
-        return;
-    }
-
-    createReceiverToProviderStr(receiverStr: string, providerStr: string) {
-        return `${receiverStr}${sep}${providerStr}`
-    }
-
-    createProviderToReceiverStr(providerStr: string, receiverStr: string) {
-        return `${providerStr}${sep}${receiverStr}`
-    }
-
-    async getProviders(receiver: ReceiverKeyModel): Promise<ProviderKeyModel[]> {
-        const batch: ProviderKeyModel[] = []
-        const receiverStr = this.receiverKeyToString(receiver);
-        await this.receiverToProvider.forEachKeyStartingWith(receiverStr, async (key: string) => {
-            const providerStr = key.split(sep)[1]
-            batch.push(this.stringToProviderKey(providerStr))
+        receiverDS.registerReceiverOf(this)
+        this.schema = wh.schemaName;
+        this.table = 'dep__' + receiverDS.index.table + '__on__' + providerDS.index.table;
+        this.schemaTable = `${this.schema}.${this.table}`
+        this.providerKeyDefs = this.providerDS.index.keyDefs.map(k => ({...k, name: 'p_' + k.name}));
+        this.receiverKeyDefs = this.receiverDS.index.keyDefs.map(k => ({...k, name: 'r_' + k.name}));
+        this.providerKeyCols = this.providerKeyDefs.map(k => `"${k.name}"`).join(',')
+        this.receiverKeyCols = this.receiverKeyDefs.map(k => `"${k.name}"`).join(',')
+        this.keyCols = `${this.providerKeyCols},${this.receiverKeyCols}`
+        combineLatest(
+            wh.pgConnected$,
+            wh.createSchema$
+        ).pipe(first()).subscribe(([client]) => {
+            this.pgClient = client;
+            this.setupTable()
+                .then(() => {
+                    this.ready$.next(true)
+                })
+                .catch((e) => this.err(e))
         })
-        return batch
-        // return new Promise((res, rej) => {
-        //     const receiverStr = this.receiverKeyToString(receiver);
-        //     const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
-        //     const batch: ProviderKeyModel[] = []
-        //     keys.on('data', (key: string) => {
-        //         const providerStr = key.split(sep)[1]
-        //         batch.push(this.stringToProviderKey(providerStr))
-        //     })
-        //     keys.on('error', function (err: unknown) {
-        //         rej(err)
-        //     })
-        //     keys.on('end', function () {
-        //         res(batch)
-        //     })
-        // })
     }
 
-    /**
-     * the returned receivers are depending on the provider.
-     * In other words: the given provider is used/needed by the returned receivers
-     * @param provider
-     */
-    async getReceivers(provider: ProviderKeyModel): Promise<ReceiverKeyModel[]> {
-        const batch: ReceiverKeyModel[] = []
-        const providerStr = this.providerKeyToString(provider);
-        await this.providerToReceiver.forEachKeyStartingWith(providerStr, async (key: string) => {
-            const receiverStr = key.split(sep)[1]
-            batch.push(this.stringToReceiverKey(receiverStr))
+
+    private async setupTable() {
+        await this.pgClient.query(`
+                CREATE TABLE IF NOT EXISTS ${this.schemaTable} (
+                -- provider key cols
+                ${this.providerKeyDefs.map(k => `"${k.name}" ${k.type}`).join(',')},
+                -- receiver key cols
+                ${this.receiverKeyDefs.map(k => `"${k.name}" ${k.type}`).join(',')},
+                val jsonb,
+                used_by_aggregator timestamp with time zone,
+                CONSTRAINT ${this.table}_keys_uniq UNIQUE (${this.providerKeyCols},${this.receiverKeyCols})
+            )`).catch((e) => {
+            console.log(`Error during CREATE TABLE:  ${this.schemaTable}:`, e)
         })
-        return batch
 
-        // return new Promise((res, rej) => {
-        //     const providerStr = this.providerKeyToString(provider);
-        //     const keys = this.providerToReceiver.db.createKeyStream(createStreamOptions(providerStr))
-        //     const batch: ReceiverKeyModel[] = []
-        //     keys.on('data', (key: string) => {
-        //         const receiverStr = key.split(sep)[1]
-        //         batch.push(this.stringToReceiverKey(receiverStr))
-        //     })
-        //     keys.on('error', function (err: unknown) {
-        //         rej(err)
-        //     })
-        //     keys.on('end', function () {
-        //         res(batch)
-        //     })
-        // })
-    }
+        const indexedCols = [
+            ...this.providerKeyDefs.map(k => k.name),
+            ...this.receiverKeyDefs.map(k => k.name),
+            'used_by_aggregator'
+        ]
+        for (const indexCol of indexedCols) {
 
-    async getProviderMap(receiver: ReceiverKeyModel): Promise<DependencyMap> {
-        const map: DependencyMap = {}
-        const receiverStr = this.receiverKeyToString(receiver);
-        await this.receiverToProvider.forEachKeyStartingWith(receiverStr, async (key: string) => {
-            const providerStr = key.split(sep)[1]
-            map[providerStr] = true
-        })
-        return map
-        // return new Promise((res, rej) => {
-        //     const receiverStr = this.receiverKeyToString(receiver);
-        //     const keys = this.receiverToProvider.db.createKeyStream(createStreamOptions(receiverStr))
-        //     const map: DependencyMap = {}
-        //     keys.on('data', (key: string) => {
-        //         const providerStr = key.split(sep)[1]
-        //         map[providerStr] = true
-        //     })
-        //     keys.on('error', function (err: unknown) {
-        //         rej(err)
-        //     })
-        //     keys.on('end', function () {
-        //         res(map)
-        //     })
-        // })
-    }
-
-    async removeProviderByString(receiverStr: string, providerStr: string): Promise<void> {
-        await this.providerToReceiver.removeFromIdx(this.createProviderToReceiverStr(providerStr, receiverStr))
-        await this.receiverToProvider.removeFromIdx(this.createReceiverToProviderStr(receiverStr, providerStr))
-    }
-
-    async removeProvider(receiver: ReceiverKeyModel, provider: ProviderKeyModel): Promise<void> {
-        const receiverStr = this.receiverKeyToString(receiver)
-        const providerStr = this.providerKeyToString(provider)
-
-        await this.removeProviderByString(receiverStr, providerStr);
-    }
-
-    /**
-     * remove all providers of receiver
-     * keeps both directions in sync
-     * @param receiver
-     */
-    async removeAllProviders(receiver: ReceiverKeyModel): Promise<void> {
-        const dependencies = await this.getProviders(receiver)
-        for (const provider of dependencies) {
-            await this.removeProvider(receiver, provider)
-        }
-    }
-
-
-
-    // async removeReceiverByString(providerStr: string, receiverStr: string): Promise<void> {
-    //     await this.receiverToProvider.removeFromIdx(this.createReceiverToProviderStr(receiverStr, providerStr))
-    //     await this.providerToReceiver.removeFromIdx(this.createProviderToReceiverStr(providerStr, receiverStr))
-    // }
-
-    // async removeReceiver(provider: ProviderKeyModel, receiver: ReceiverKeyModel): Promise<void> {
-    //     const providerStr = this.providerKeyToString(provider)
-    //     const receiverStr = this.receiverKeyToString(receiver)
-
-    //     await this.removeReceiverByString(providerStr, receiverStr);
-    // }
-
-    // /**
-    //  * remove all receivers of provider
-    //  * keeps both directions in sync
-    //  * @param provider
-    //  */
-    // async removeAllReceivers(provider: ProviderKeyModel): Promise<void> {
-    //     const dependencies = await this.getReceivers(provider)
-    //     for (const receiver of dependencies) {
-    //         await this.removeReceiver(provider, receiver)
-    //     }
-    // }
-
-
-
-
-
-    /**
-     * Adds updated request for all receivers of the provider
-     * @param provider key of the provider
-     */
-    async addUpdateRequestToReceiversOf(provider: ProviderKeyModel) {
-        return new Promise((res, rej) => {
-            const providerStr = this.providerKeyToString(provider);
-            this.providerToReceiver.forEachKeyStartingWith(providerStr, async (key) => {
-                const receiverStr = key.split(sep)[1]
-                this.receiverDS.updater.addItemToQueue(this.stringToReceiverKey(receiverStr)).catch(e => rej(e))
+            await this.pgClient.query(`
+                    CREATE INDEX IF NOT EXISTS ${this.schema}_${this.table}_${indexCol}_idx
+                    ON ${this.schemaTable}("${indexCol}");
+                `).catch((e) => {
+                console.log(`Error during CREATE INDEX:  ${this.schemaTable}(${indexCol}):`, e)
             })
-                .then(() => res())
-                .catch(e => rej(e))
+        }
 
-        })
     }
 
+
+    cacheNewDependencies(receiverKey: ReceiverKeyModel, providerKey: ProviderKeyModel) {
+        this.cache.push({receiverKey, providerKey})
+    }
+    getSqlForStoringCache(tmsp: string): {
+        sql: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        params: any[];
+    } | undefined {
+        if (this.cache.length === 0) return
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const params: any[] = [], addParam = (val: any) => {
+            params.push(val)
+            return '$' + params.length
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const addParams = (vals: any[]) => {
+            return vals.map((val) => addParam(val)).join(',');
+        }
+        const sql = `
+            INSERT INTO
+                ${this.schemaTable}
+                (${this.keyCols}, used_by_aggregator)
+            VALUES
+            ${this.cache.map(c => `(
+                ${addParams(this.providerDS.index.getKeyModelValues(c.providerKey))},
+                ${addParam(tmsp)}
+            )`).join(',')}
+        `
+        return {sql, params}
+    }
+
+    clearCache() {
+        this.cache = []
+    }
 
     async clearAll(): Promise<void> {
-        await this.providerToReceiver.clearIdx()
-        await this.receiverToProvider.clearIdx()
+
+        await this.pgClient.query(`
+        DELETE FROM ${this.schema}_${this.table};
+        `).catch((e) => {
+            console.log(`Error during DELETE INDEX:  ${this.schemaTable}:`, e)
+        })
     }
 
-    initIdx(): Promise<void> {
-        throw new Error('Method not implemented.');
-    }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    err(e: any) {
+        console.log(`Error during setup of  ${this.schemaTable}:`, e)
+    }
 
 }
 
-/**
-  * Returns an object for streaming keys that begin with the given string
-  *
-  * @param str beginning of the streamed keys
-  *
-  * Read more here:
-  * https://github.com/Level/levelup/issues/285#issuecomment-57205251
-  *
-  * Read more about '!' and '~' here:
-  * https://medium.com/@kevinsimper/how-to-get-range-of-keys-in-leveldb-and-how-gt-and-lt-works-29a8f1e11782
-  * @param str
-  */
-export function createStreamOptions(str: string) {
-    return {
-        gte: str + '!',
-        lte: str + '~'
-    }
-}

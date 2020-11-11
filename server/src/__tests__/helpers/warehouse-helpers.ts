@@ -1,10 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Where} from '@loopback/repository';
-import leveldown from 'leveldown';
-import path from 'path';
-import pgkDir from 'pkg-dir';
 import {Observable} from 'rxjs';
-import {filter, first} from 'rxjs/operators';
+import {filter, first, switchMap} from 'rxjs/operators';
 import {WarClassPreview, WarEntityPreview} from '../../models';
 import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
@@ -12,11 +9,8 @@ import {createWarEntityPreviewRepo} from './atomic/war-entity_preview.helper';
 import {testdb} from './testdb';
 
 
-const appRoot = pgkDir.sync() ?? ''
 
 const config: WarehouseConfig = {
-    leveldbFolder: 'test_leveldb',
-    rootDir: appRoot,
     backups: undefined
 }
 export async function setupWarehouseWithoutStarting() {
@@ -27,12 +21,12 @@ export async function setupWarehouseWithoutStarting() {
 }
 
 export async function setupCleanAndStartWarehouse() {
-    await new Promise((res, rej) => {
-        leveldown.destroy(path.join(config.rootDir, config.leveldbFolder), (e) => {
-            res()
-        })
-    })
+
+
     const wh = new Warehouse(config)
+    const client = await wh.pgPool.connect()
+    await client.query('drop schema if exists war_cache cascade;')
+    client.release()
     await wh.start()
     await wh.pgClient.query('LISTEN entity_previews_updated;')
     await wh.pgClient.query('LISTEN modified_war_class_preview;')
@@ -158,6 +152,20 @@ export function waitUntilSatisfy<M>(obs$: Observable<M>, compare: (item: M) => b
         })
     })
 }
+
+export async function searchUntilSatisfy<M>(options: {
+    notifier$: Observable<unknown>,
+    getFn: () => Promise<M | undefined>,
+    compare: (val?: M) => boolean
+}) {
+    const item$ = options.notifier$.pipe(
+        switchMap(_ => options.getFn())
+    );
+    const result = await waitUntilSatisfy(item$, options.compare);
+    return result;
+}
+
+
 
 
 export function pgNotify(channel: string, value: string) {

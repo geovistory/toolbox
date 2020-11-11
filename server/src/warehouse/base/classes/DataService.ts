@@ -1,14 +1,15 @@
-import {IndexDB} from './IndexDB';
-import {DependencyIndex} from './DependencyIndex';
-import {equals} from 'ramda';
+import {equals, values} from 'ramda';
 import {Subject} from 'rxjs';
+import {AggregatedDataService} from './AggregatedDataService';
+import {DataIndexPostgres} from './DataIndexPostgres';
+import {DependencyIndex} from './DependencyIndex';
 import {Logger} from './Logger';
 
 
 
 export abstract class DataService<KeyModel, ValueModel>{
 
-    abstract index: IndexDB<KeyModel, ValueModel>
+    abstract index: DataIndexPostgres<KeyModel, ValueModel>
     abstract clearAll(): Promise<void>
 
     // emits key value pair after it was put into this.index
@@ -18,13 +19,59 @@ export abstract class DataService<KeyModel, ValueModel>{
     // also in the case that there was nothing to delete
     afterDel$: Subject<KeyModel>;
 
+    afterChange$ = new Subject<void>()
+
     // array of dependency indexes where this data service is provider
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     isProviderOf: DependencyIndex<any, any, KeyModel, ValueModel>[] = []
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    isCreatorOf: AggregatedDataService<KeyModel, any>[] = []
+
+
     constructor() {
         this.afterPut$ = new Subject<{key: KeyModel, val: ValueModel}>()
         this.afterDel$ = new Subject<KeyModel>()
+
+        this.afterChange$
+        // .pipe(throttleTime(10)) TODO: Test if this helps!
+        .subscribe(_ => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            this.propagateUpdates()
+                .catch(e => console.log(e));
+
+        })
+
+
+    }
+
+
+    private async propagateUpdates() {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const toInform: {[key: string]: AggregatedDataService<any, any>;} = {};
+
+        // add receiver DataServices
+        for (const depIdx of this.isProviderOf) {
+            toInform[depIdx.receiverDS.constructor.name] = depIdx.receiverDS;
+        }
+        // add created DataServices
+        for (const createdDs of this.isCreatorOf) {
+            toInform[createdDs.constructor.name] = createdDs;
+        }
+        const ds = values(toInform)
+        if (ds.length) {
+            const wh = ds[0].wh
+            const currentTime = await wh.pgNow()
+
+            const updates = ds.map(d => d.doUpdate(currentTime));
+            // wait until all aggregated DS have handled updates
+            await Promise.all(updates)
+                .then(_ => {
+                    // cleanup items marked as deleted
+                    this.index.removeFromIdxWhereDeletedBefore(currentTime)
+                        .catch(e => console.log(e))
+                });
+        }
     }
 
     /**
@@ -36,6 +83,16 @@ export abstract class DataService<KeyModel, ValueModel>{
      */
     registerProviderOf<ReceiverKeyModel, ReceiverValModel>(dep: DependencyIndex<ReceiverKeyModel, ReceiverValModel, KeyModel, ValueModel>) {
         this.isProviderOf.push(dep)
+    }
+
+    /**
+     * Adds AggregatedDataService to the array of dataservices that should
+     * have one aggregated item for each item in this DataService.
+     * @param createdDS
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    registerIsCreatorOf(createdDS: AggregatedDataService<KeyModel, any>) {
+        this.isCreatorOf.push(createdDS)
     }
 
     /**

@@ -21,7 +21,7 @@ describe('RClassService', () => {
 
   it('should add api-class', async () => {
     const {cla} = await createRClassMockData();
-    await waitUntilNext(s.afterPut$)
+    await waitUntilNext(s.afterChange$)
     const result = await s.index.getFromIdx({
       pkClass: cla.dfh_pk_class ?? -1
     })
