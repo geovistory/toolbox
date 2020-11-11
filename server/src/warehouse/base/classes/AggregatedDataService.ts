@@ -1,18 +1,18 @@
 import {Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
+import {Providers} from '../interfaces/Providers';
 import {AbstractAggregator} from './AbstractAggregator';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
-import {DependencyIndex} from './DependencyIndex';
 import {Dependencies} from './Dependencies';
-import {Providers} from '../interfaces/Providers';
+import {DependencyIndex} from './DependencyIndex';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
 
 export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> {
 
-    // updater: Updater<KeyModel, Aggregator>
+    // updater: Updater<KeyModel, Aggregator>Ú
 
     index: DataIndexPostgres<KeyModel, ValueModel>
 
@@ -109,7 +109,16 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // cleanup old dependencies
         // delete dependencies where receivers are in temp table
         // and tmsp_last_aggregation less than 'currentTimestamp'
-
+        const depDS = this.isReceiverOf[0]
+        const cleanupSql = `
+            DELETE
+            FROM    ${depDS.schemaTable} t1
+            USING   ${this.tempTable} t2
+            WHERE   ${depDS.receiverDS.index.keyDefs
+                .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
+            AND t1.tmsp_last_aggregation < '${currentTimestamp}'
+        `
+        await this.wh.pgClient.query(cleanupSql)
 
         // update meta tsmp
         // - update the 'changesConsideredUntil': set to 'currentTimestamp'
@@ -131,9 +140,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         if (toAggregate.rows.length > 0) {
             let valuesStr = ''
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const aggParams: any[] = [], addParam = (val: any) => {
-                aggParams.push(val)
-                return '$' + aggParams.length
+            const params: any[] = [], addParam = (val: any) => {
+                params.push(val)
+                return '$' + params.length
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const addParams = (vals: any[]) => {
@@ -143,7 +152,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             for (const key of toAggregate.rows) {
                 i++;
                 const val = await this.aggregate(key)
-                const sql = `(${addParams([...this.index.getKeyModelValues(key), val])})${i < toAggregate.rows.length ? ',' : ''}`
+                const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])})${i < toAggregate.rows.length ? ',' : ''}`
                 valuesStr = valuesStr + sql;
             }
             // insert or update the results of the aggregation
@@ -157,30 +166,29 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             RETURNING *
         `
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const depSqls: {sql: string; params: any[];}[] = []
+            const depSqls: string[] = []
             // get the dependency sqls
-            this.isProviderOf.forEach(dep => {
-                const depSql = dep.getSqlForStoringCache(currentTimestamp)
+            this.isReceiverOf.forEach(dep => {
+                const depSql = dep.getSqlForStoringCache(currentTimestamp, params)
                 if (depSql) depSqls.push(depSql)
             })
             // create the full query
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const params: any[] = []
-            const parts = [{sql: aggSql, params: aggParams}, ...depSqls];
+            const parts: string[] = [aggSql, ...depSqls];
             const sql = `
             WITH
             ${parts.map((part, j) => {
-                params.push(...part?.params)
-                return `
-            tw${j} AS (
-                ${part?.sql}
-            )`}).join(',')}
+                return `tw${j} AS (
+                    ${part}
+                )`}).join(',')}
             ${this.afterChangeSql ? `
             , afterChange AS (
                 ${this.afterChangeSql('tw0')}
             )` : ''}
-            SELECT count(*) changes FROM tw0;
+            SELECT count(*)::int changes FROM tw0;
         `
+            // logSql(sql, params)
+
             const result = await this.wh.pgClient.query<{changes: number}>(sql, params)
             changes = result.rows?.[0].changes ?? 0
         }

@@ -9,7 +9,7 @@ import {IdentifyingPropertyProviders} from './IdentifyingPropertyProviders';
 
 
 export type IdentifyingPropertyVal = OutgoingPropertyVal[]
-export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal, IdentifyingPropertyAggregator>{
+export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal>{
     updater: Updater<RClassId, IdentifyingPropertyAggregator>;
 
     constructor(public wh: Warehouse) {

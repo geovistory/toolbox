@@ -20,7 +20,7 @@ import {AggregatedDataService} from '../base/classes/AggregatedDataService';
 import {combineLatest, Observable} from 'rxjs';
 import {filter, mapTo} from 'rxjs/operators';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any,any,any>> {
+export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any,any>> {
     // Model aggregators
     identifyingProperty: IdentifyingPropertyService;
 
@@ -98,7 +98,5 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));
     }
-    async clearUpdateQueues() {
-        await Promise.all(this.registered.map(x => x.updater.clearIdx()));
-    }
+
 }

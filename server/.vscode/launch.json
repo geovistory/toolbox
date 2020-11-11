@@ -149,7 +149,7 @@
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/RClassLabelService.*/",
+        "/RClassLabelService.*create/",
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

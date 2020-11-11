@@ -1,4 +1,4 @@
-import {DependencyIndex, } from './DependencyIndex';
+import {DependencyIndex} from './DependencyIndex';
 
 export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel>  {
 

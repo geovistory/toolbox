@@ -1,14 +1,17 @@
+import {PoolClient} from 'pg';
+import {combineLatest, ReplaySubject} from 'rxjs';
+import {first} from 'rxjs/operators';
 import {Warehouse} from '../../Warehouse';
+import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {AggregatedDataService} from './AggregatedDataService';
 import {ClearAll} from './ClearAll';
 import {DataService} from './DataService';
-import {ReplaySubject, combineLatest} from 'rxjs';
-import {first} from 'rxjs/operators';
-import {PoolClient} from 'pg';
-import {KeyDefinition} from '../interfaces/KeyDefinition';
-import {recreateDB} from '../../../__tests__/helpers/cleaning/recreate-db.helper';
+import {values} from 'ramda';
 
-
+interface Cache {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: {receiverKeys: any[], providerKeys: any[]}
+}
 
 export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, ProviderValModel> implements ClearAll {
 
@@ -24,7 +27,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     pgClient: PoolClient
 
 
-    private cache: {receiverKey: ReceiverKeyModel, providerKey: ProviderKeyModel}[] = [];
+    private cache: Cache = {};
 
     constructor(
         public wh: Warehouse,
@@ -68,7 +71,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
                 -- receiver key cols
                 ${this.receiverKeyDefs.map(k => `"${k.name}" ${k.type}`).join(',')},
                 val jsonb,
-                used_by_aggregator timestamp with time zone,
+                tmsp_last_aggregation timestamp with time zone,
                 CONSTRAINT ${this.table}_keys_uniq UNIQUE (${this.providerKeyCols},${this.receiverKeyCols})
             )`).catch((e) => {
             console.log(`Error during CREATE TABLE:  ${this.schemaTable}:`, e)
@@ -77,7 +80,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         const indexedCols = [
             ...this.providerKeyDefs.map(k => k.name),
             ...this.receiverKeyDefs.map(k => k.name),
-            'used_by_aggregator'
+            'tmsp_last_aggregation'
         ]
         for (const indexCol of indexedCols) {
 
@@ -93,16 +96,16 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
 
 
     cacheNewDependencies(receiverKey: ReceiverKeyModel, providerKey: ProviderKeyModel) {
-        this.cache.push({receiverKey, providerKey})
+        const prov = this.providerDS.index.getKeyModelValues(providerKey)
+        const rec = this.receiverDS.index.getKeyModelValues(receiverKey)
+        this.cache[JSON.stringify([...prov, ...rec])] = ({receiverKeys: rec, providerKeys: prov})
     }
-    getSqlForStoringCache(tmsp: string): {
-        sql: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    getSqlForStoringCache(tmsp: string, params: any[]): string | undefined {
+        const cacheVals = values(this.cache)
+        if (cacheVals.length === 0) return
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        params: any[];
-    } | undefined {
-        if (this.cache.length === 0) return
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const params: any[] = [], addParam = (val: any) => {
+        const addParam = (val: any) => {
             params.push(val)
             return '$' + params.length
         }
@@ -113,18 +116,23 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         const sql = `
             INSERT INTO
                 ${this.schemaTable}
-                (${this.keyCols}, used_by_aggregator)
+                (${this.keyCols}, tmsp_last_aggregation)
             VALUES
-            ${this.cache.map(c => `(
-                ${addParams(this.providerDS.index.getKeyModelValues(c.providerKey))},
+            ${cacheVals.map(v => `(
+                ${addParams(v.providerKeys)},
+                ${addParams(v.receiverKeys)},
                 ${addParam(tmsp)}
             )`).join(',')}
+            ON CONFLICT (${this.keyCols})
+            DO UPDATE
+            SET tmsp_last_aggregation = EXCLUDED.tmsp_last_aggregation
         `
-        return {sql, params}
+        this.clearCache()
+        return sql
     }
 
     clearCache() {
-        this.cache = []
+        this.cache = {}
     }
 
     async clearAll(): Promise<void> {
