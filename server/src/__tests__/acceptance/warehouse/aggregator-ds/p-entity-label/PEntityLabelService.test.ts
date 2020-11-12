@@ -1,30 +1,29 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
+import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfAppellation} from '../../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
+import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../../../../helpers/data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistentItemMock';
 import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
+import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext} from '../../../../helpers/warehouse-helpers';
-import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
-import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {createProEntityLabelConfig} from '../../../../helpers/atomic/pro-entity-label-config.helper';
-import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
-import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
-import {PEntityLabelService} from '../../../../../warehouse/aggregator-ds/entity-label/p-entity-label/PEntityLabelService';
 
 /**
  * Testing whole stack from postgres to warehouse

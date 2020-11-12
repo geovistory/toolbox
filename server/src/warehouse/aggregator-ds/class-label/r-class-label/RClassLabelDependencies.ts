@@ -5,10 +5,11 @@ import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService'
 import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
 import {Warehouse} from '../../../Warehouse'
+import {RClassLabelValue} from './RClassLabelService'
 
 export class RClassLabelDependencies extends Dependencies {
-  dfhClassLabel: DependencyIndex<RClassId, string, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: DependencyIndex<RClassId, string, ProClassLabelId, ProClassLabelVal>
+  dfhClassLabel: DependencyIndex<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
+  proClassLabel: DependencyIndex<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
 
   // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
   constructor(private wh: Warehouse) {

@@ -159,6 +159,11 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             for (const key of toAggregate.rows) {
                 i++;
                 const val = await brkOnErr(this.aggregate(key))
+                try {
+                    JSON.stringify(val)
+                } catch (error) {
+                    console.log(val)
+                }
                 const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])})${i < toAggregate.rows.length ? ',' : ''}`
                 valuesStr = valuesStr + sql;
             }

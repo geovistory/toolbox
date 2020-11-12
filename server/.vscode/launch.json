@@ -149,7 +149,7 @@
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/PEntityLabel.*/",
+        "/PEntityLabelService.*/",
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

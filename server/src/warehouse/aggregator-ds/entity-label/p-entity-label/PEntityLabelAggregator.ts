@@ -6,6 +6,7 @@ import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {PEntityLabelProviders} from './PEntityLabelPoviders';
 import {keys} from 'lodash';
+import {EntityLabelVal} from '../entity-label.commons';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -15,7 +16,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
+export class PEntityLabelAggregator extends AbstractAggregator<EntityLabelVal> {
 
     // array of strings to create label
     labelArr: string[] = [];
@@ -49,14 +50,9 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
         if (entity) {
 
-            // load previous providers in a cache
-            // in the end (after create), this cahche will contain only deprecated providers
-            // that can then be deleted from dependency indexes
-            await this.providers.load()
-
             const fieldsWithEdges = await this.providers.edges.get(this.id)
 
-            if (keys(fieldsWithEdges).length === 0) return this;
+            if (keys(fieldsWithEdges).length === 0) return this.finalize()
 
             const classId = {
                 fkProject: entity.fkProject,
@@ -65,9 +61,15 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
             await this.createLabel(classId, fieldsWithEdges)
         }
-        return this
+        return this.finalize()
     }
 
+    finalize() {
+        return {
+            entityLabel: this.entityLabel,
+            labelMissing: this.labelMissing,
+        }
+    }
 
     async createLabel(classId: PClassId, entityFields?: EntityFields) {
         const labelParts = await this.getLabelParts(classId);
