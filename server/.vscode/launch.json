@@ -91,7 +91,7 @@
         "--colors",
         "'dist/__tests__/**/*.js'",
         "--grep",
-        "/WarEntityPreviewController.*test the stream/"
+        "/skipWhileFirst.*/"
       ],
       "cwd": "${workspaceRoot}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
@@ -145,11 +145,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "6000",
+        "600000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/PEntityLabelService.*/",
+        "/PEntityLabelService.*label of naming and add person/",
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

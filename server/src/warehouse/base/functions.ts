@@ -12,6 +12,8 @@ import {OutgoingProperyId} from '../primary-ds/DfhOutgoingPropertyService';
 import {REntityId} from '../primary-ds/entity/REntityService';
 import {RClassFieldId} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {RPropertyId} from '../primary-ds/property/RPropertyService';
+import {switchMap, filter, map} from 'rxjs/operators';
+import {timer, pipe} from 'rxjs';
 
 export function pEntityIdToString(key: PEntityId): string {
     return key.fkProject + '_' + key.pkEntity;
@@ -151,15 +153,15 @@ export function stringToProPropertyId(str: string): ProPropertyLabelId {
     };
 }
 
-// this sql is useful for update statements of all entity preview parts
-// contributing to the TSearch Vector of an entity preview:
-// entity_label, type_label, class_label, full_text
-export const sqlForTsVector = `ts_vector = (
-    SELECT
-    setweight(to_tsvector(coalesce(entity_label, '')), 'A') ||
-    setweight(to_tsvector(coalesce(type_label, class_label, '')), 'B') ||
-    setweight(to_tsvector(coalesce(full_text, '')), 'C')
-)`
+// // this sql is useful for update statements of all entity preview parts
+// // contributing to the TSearch Vector of an entity preview:
+// // entity_label, type_label, class_label, full_text
+// export const sqlForTsVector = `ts_vector = (
+//     SELECT
+//     setweight(to_tsvector(coalesce(entity_label, '')), 'A') ||
+//     setweight(to_tsvector(coalesce(type_label, class_label, '')), 'B') ||
+//     setweight(to_tsvector(coalesce(full_text, '')), 'C')
+// )`
 
 
 export function outgoingProperyIdToString(key: OutgoingProperyId): string {
@@ -183,4 +185,27 @@ export function stringToOutgoingProperyId(str: string): OutgoingProperyId {
 export function getMemoryUsage(): number {
     const used = process.memoryUsage().heapUsed / 1024 / 1024;
     return Math.round(used * 100) / 100
+}
+
+
+/**
+ * RxJS operator function
+ * When it recieves a value, waits for specified miliseconds
+ * until it emits the value. All values it receives during the
+ * miliseconds are skipped. After emitting the value, it starts over.
+ */
+export function skipWhileFirst<T>(miliseconds?: number) {
+    let blocked = false;
+    return pipe(
+        filter((a: T) => !blocked),
+        switchMap((value: T) => {
+            blocked = true
+            return timer(miliseconds).pipe(
+                map(_ => {
+                    blocked = false
+                    return value
+                })
+            )
+        })
+    )
 }

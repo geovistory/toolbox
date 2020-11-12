@@ -1,5 +1,5 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {pEntityIdToString, sqlForTsVector, stringToPEntityId} from '../../../base/functions';
+import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
 import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {EntityLabelVal} from '../entity-label.commons';
@@ -25,8 +25,7 @@ export class PEntityLabelService extends AggregatedDataService<PEntityId, Entity
     afterChangeSql(tableAlias: string) {
         return `
         UPDATE war.entity_preview
-        SET entity_label = ${tableAlias}.val->>'entityLabel',
-        ${sqlForTsVector}
+        SET entity_label = ${tableAlias}.val->>'entityLabel'
         FROM ${tableAlias}
         WHERE pk_entity = ${tableAlias}."pkEntity"
         AND project = ${tableAlias}."fkProject"

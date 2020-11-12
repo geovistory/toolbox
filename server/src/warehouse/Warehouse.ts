@@ -8,15 +8,15 @@ import {Logger} from './base/classes/Logger';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
+import {values} from 'ramda';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 
 interface NotificationHandler {
     channel: string
     listeners: {
-        listenerName: string,
-        callback(date: Date): Promise<void>
-    }[]
+        [listenerName: string]: Subject<Date>,
+    }
 }
 
 export interface WarehouseConfig {
@@ -359,17 +359,14 @@ export class Warehouse {
      * @param callback
      * @param name for debugging
      */
-    async registerDbListener(channel: string, callback: (date: Date) => Promise<void>, listenerName: string) {
+    async registerDbListener(channel: string, emitter: Subject<Date>, listenerName: string) {
         await this.pgClient.query(`LISTEN ${channel}`)
         this.notificationHandlers[channel] = {
             channel,
-            listeners: [
-                ...(this.notificationHandlers?.[channel]?.listeners ?? []),
-                {
-                    listenerName,
-                    callback
-                }
-            ]
+            listeners: {
+                ...(this.notificationHandlers?.[channel]?.listeners ?? {}),
+                [listenerName]: emitter
+            }
         }
     }
 
@@ -387,10 +384,8 @@ export class Warehouse {
                 if (isNaN(date.getTime())) console.error(`Invalid Timestamp provided by pg_notify channel ${msg.channel}`, msg.payload)
                 else if (handler) {
 
-                    handler.listeners.map(l => {
-                        l.callback(date).catch(e => {
-                            console.log(e)
-                        })
+                    values(handler.listeners).map(emitter => {
+                        emitter.next(date)
                     })
 
                 }

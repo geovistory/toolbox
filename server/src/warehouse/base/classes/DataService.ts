@@ -3,6 +3,7 @@ import {Subject} from 'rxjs';
 import {AggregatedDataService} from './AggregatedDataService';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DependencyIndex} from './DependencyIndex';
+import {IoTJobsDataPlane} from 'aws-sdk';
 
 
 
@@ -33,13 +34,13 @@ export abstract class DataService<KeyModel, ValueModel>{
         this.afterDel$ = new Subject<KeyModel>()
 
         this.afterChange$
-        // .pipe(throttleTime(10)) TODO: Test if this helps!
-        .subscribe(_ => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            this.propagateUpdates()
-                .catch(e => console.log(e));
+            // .pipe(throttleTime(10)) TODO: Test if this helps!
+            .subscribe(_ => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                this.propagateUpdates()
+                    .catch(e => console.log(e));
 
-        })
+            })
 
 
     }
@@ -61,6 +62,16 @@ export abstract class DataService<KeyModel, ValueModel>{
         if (ds.length) {
             const wh = ds[0].wh
             const currentTime = await wh.pgNow()
+
+            // if (this.constructor.name === 'PEntityService') {
+            //     const x = await wh.pgClient.query('SELECT * FROM war_cache.prim_pentity')
+            //     console.log('###### trigger, prim_pentity', JSON.stringify(x.rows, null, 2))
+            //     // const y = await wh.pgClient.query('SELECT * FROM war.entity_preview')
+            //     // console.log(JSON.stringify(y.rows))
+            //     console.log(JSON.stringify(ds.map(d => d.constructor.name)))
+            //     console.log('######')
+
+            // }
 
             const updates = ds.map(d => d.doUpdate(currentTime));
             // wait until all aggregated DS have handled updates

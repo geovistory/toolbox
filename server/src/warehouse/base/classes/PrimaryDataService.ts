@@ -1,4 +1,4 @@
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 import {Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {ClearAll} from './ClearAll';
@@ -6,6 +6,8 @@ import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {IndexDBGeneric} from './IndexDBGeneric';
 import {Logger} from './Logger';
+import {skipWhileFirst} from '../functions';
+import {tap} from 'rxjs/operators';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -97,10 +99,16 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      * @param listenTo
      */
     private async addPgListeners() {
+        const sync$ = new Subject<Date>()
+        sync$.pipe(
+            skipWhileFirst(80)
+        ).subscribe(tmsp => {
+            this.sync(tmsp).catch(e => console.log(e))
+        })
         for (const eventName of this.listenTo) {
             await this.wh.registerDbListener(
                 eventName,
-                (tmsp: Date) => this.sync(tmsp),
+                sync$,
                 this.constructor.name
             )
         }
@@ -111,6 +119,11 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      * @param tmsp the timestamp of oldest modification considered for syncing
      */
     async sync(tmsp: Date) {
+
+        // if (this.constructor.name === 'PEntityService') {
+        //     const d = new Date()
+        //     console.log('######', `${tmsp.toISOString()}, ${d.toISOString()},${d.getMilliseconds()}`)
+        // }
 
         // If syncing is true, it sets restartSyncing to true and stops the function here
         if (this.syncing$.value) {

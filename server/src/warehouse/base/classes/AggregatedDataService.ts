@@ -1,3 +1,4 @@
+import {brkOnErr} from '../../../utils/helpers';
 import {Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {Providers} from '../interfaces/Providers';
@@ -6,7 +7,6 @@ import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {Dependencies} from './Dependencies';
 import {DependencyIndex} from './DependencyIndex';
-import {brkOnErr} from '../../../utils/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
@@ -66,11 +66,24 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         return new this.aggregator(providers, id).create()
     }
 
+    async startUpdate() {
+        const tmsp = await this.wh.pgNow();
+        const changes = await this.doUpdate(tmsp);
+        return changes
+    }
 
     async doUpdate(currentTimestamp: string) {
+        let changes = 0
+        // if (this.constructor.name === 'PEntityLabelService') {
+        //     console.log('------------- doUpdate')
+        //     console.log('------------- updating', this.updating)
+        // }
+
         this.shouldUpdate = true
 
-        if (!this.updating) await this.update(currentTimestamp)
+        if (!this.updating) changes = await this.update(currentTimestamp)
+
+        return changes
     }
 
     private async update(currentTimestamp: string) {
@@ -107,7 +120,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         await this.createTempTable(changesConsideredUntil, currentTimestamp);
 
         // aggregate
-        const changes = await this.aggregateAll(currentTimestamp)
+        let changes = await this.aggregateAll(currentTimestamp)
 
 
 
@@ -128,15 +141,17 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // update meta tsmp
         // - update the 'changesConsideredUntil': set to 'currentTimestamp'
 
-        if (this.shouldUpdate) {
-            await this.startUpdate();
-        }
         // finalize
         this.updating = false;
+        if (this.shouldUpdate) {
+            const nextChanges = await this.startUpdate();
+            changes = changes + nextChanges;
+        }
 
 
         // - emit this.afterUpdate$ if anything has changed
         if (changes > 0) this.afterChange$.next()
+        return changes
     }
 
     async aggregateAll(currentTimestamp: string) {
@@ -159,11 +174,6 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             for (const key of toAggregate.rows) {
                 i++;
                 const val = await brkOnErr(this.aggregate(key))
-                try {
-                    JSON.stringify(val)
-                } catch (error) {
-                    console.log(val)
-                }
                 const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])})${i < toAggregate.rows.length ? ',' : ''}`
                 valuesStr = valuesStr + sql;
             }
@@ -263,6 +273,17 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             `;
             }).join('\n');
             await this.wh.pgClient.query(sql1 + sql2);
+
+            // if (this.constructor.name === 'PEntityLabelService') {
+            //     console.log('-------------')
+            //     console.log(`curr:${currentTimestamp}, cons:${changesConsideredUntil}`)
+            //     console.log('------------- prim_pentity')
+            //     const a = await this.index.pgClient.query('SELECT * FROM war_cache.prim_pentity')
+            //     console.log(JSON.stringify(a.rows, null, 2))
+            //     console.log('------------- agg_pentitylabel_tmp')
+            //     const x = await this.index.pgClient.query('SELECT * FROM war_cache.agg_pentitylabel_tmp')
+            //     console.log(JSON.stringify(x.rows, null, 2))
+            // }
         }
     }
 
@@ -279,10 +300,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         await this.wh.metaTimestamps.addToIdx(this.constructor.name + '__changes_considered_until', {tmsp});
     }
 
-    async startUpdate() {
-        const tmsp = await this.wh.pgNow();
-        await this.doUpdate(tmsp);
-    }
+
 
     /**
      * registers the DataService that contains the items for each of them
