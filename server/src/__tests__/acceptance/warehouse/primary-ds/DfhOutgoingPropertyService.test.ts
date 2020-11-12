@@ -6,7 +6,7 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, searchUntilSatisfy} from '../../../helpers/warehouse-helpers';
 
 describe('DfhOutgoingPropertyService', () => {
 
@@ -27,17 +27,21 @@ describe('DfhOutgoingPropertyService', () => {
       createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM)
     ])
 
-    const a = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.fkDomain === 61
-        && item.key.fkProperty === 86
-    })
-    const b = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.fkDomain === 61
-        && item.key.fkProperty === 1435
-    })
+    const [a, b] = await Promise.all([
+      await searchUntilSatisfy({
+        notifier$: s.afterChange$,
+        getFn: () => s.index.getFromIdx({fkDomain: 61, fkProperty: 86}),
+        compare: (v) => v?.dfhIdentityDefining === true
+      }),
+      await searchUntilSatisfy({
+        notifier$: s.afterChange$,
+        getFn: () => s.index.getFromIdx({fkDomain: 61, fkProperty: 1435}),
+        compare: (v) => v?.dfhIdentityDefining === false
+      })
+    ])
 
-    expect(a.val.dfhIdentityDefining).to.equal(true)
-    expect(b.val.dfhIdentityDefining).to.equal(false)
+    expect(a?.dfhIdentityDefining).to.equal(true)
+    expect(b?.dfhIdentityDefining).to.equal(false)
 
   })
 

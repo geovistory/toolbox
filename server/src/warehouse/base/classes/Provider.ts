@@ -9,13 +9,14 @@ export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, Prov
     ) { }
 
     /**
-     * Gets array of items where the provider key starts with given string.
+     * Gets array of items where the some of the provider key colums match the given
+     * partialKey.
      *
-     * @param str
+     * @param partialKey
      */
-    async getItemsStartingWith(str: string): Promise<{key: ProviderKeyModel, value: ProviderValModel}[]> {
+    async getItemsWith(partialKey: Partial<ProviderKeyModel>): Promise<{key: ProviderKeyModel, value: ProviderValModel}[]> {
         const batch: {key: ProviderKeyModel, value: ProviderValModel}[] = []
-        await this.dependencyIndex.providerDS.index.forEachItemStartingWith(str, async (item) => {
+        await this.dependencyIndex.providerDS.index.forEachItemWith(partialKey, async (item) => {
             this.dependencyIndex.cacheNewDependencies(this.receiverKey, item.key);
             batch.push(item)
         })

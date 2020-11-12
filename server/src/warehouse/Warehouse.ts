@@ -3,12 +3,11 @@ import {Pool, PoolClient} from 'pg';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
 import {getPgSslForPg8, getPgUrlForPg8} from '../utils/databaseUrl';
+import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
 import {Logger} from './base/classes/Logger';
 import {AggregatedDataServices} from './ds-bundles/AggregatedDataServices';
 import {DependencyDataServices} from './ds-bundles/DependencyDataServices';
 import {PrimaryDataServices} from './ds-bundles/PrimaryDataServices';
-import {IndexPostgres} from './base/classes/IndexPostgres';
-import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
 

@@ -6,6 +6,7 @@ import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {Dependencies} from './Dependencies';
 import {DependencyIndex} from './DependencyIndex';
+import {brkOnErr} from '../../../utils/helpers';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
@@ -17,7 +18,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     index: DataIndexPostgres<KeyModel, ValueModel>
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    abstract creatorDS: DataService<KeyModel, any>
+    abstract creatorDS: DataService<any, any>
     abstract getDependencies(): Dependencies
     abstract aggregator: Constructor<AbstractAggregator<ValueModel>>
     abstract providers: Constructor<Providers<KeyModel>>
@@ -27,6 +28,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
 
     afterChangeSql?(updateSqlAlias: string): string;
+
+    // a custom select statement to map creatorDS KeyCols to this DS KeyCols
+    customCreatorDSSelect?: string;
 
     // true during running update cycle
     updating = false;
@@ -45,7 +49,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         private keyDefs: KeyDefinition[]
     ) {
         super()
-        const tableName = 'agg_' + this.constructor.name
+        const tableName = 'agg_' + this.constructor.name.replace('Service', '')
         this.index = new DataIndexPostgres(
             this.keyDefs,
             keyToString,
@@ -106,6 +110,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const changes = await this.aggregateAll(currentTimestamp)
 
 
+
         // cleanup old dependencies
         // delete dependencies where receivers are in temp table
         // and tmsp_last_aggregation less than 'currentTimestamp'
@@ -136,7 +141,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
     async aggregateAll(currentTimestamp: string) {
         let changes = 0
-        const toAggregate = await this.wh.pgClient.query<KeyModel>(`SELECT * From ${this.tempTable}`)
+
+        const toAggregate = await brkOnErr(this.wh.pgClient.query<KeyModel>(`SELECT * From ${this.tempTable}`))
+
         if (toAggregate.rows.length > 0) {
             let valuesStr = ''
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -151,7 +158,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             let i = 0;
             for (const key of toAggregate.rows) {
                 i++;
-                const val = await this.aggregate(key)
+                const val = await brkOnErr(this.aggregate(key))
                 const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])})${i < toAggregate.rows.length ? ',' : ''}`
                 valuesStr = valuesStr + sql;
             }
@@ -189,7 +196,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         `
             // logSql(sql, params)
 
-            const result = await this.wh.pgClient.query<{changes: number}>(sql, params)
+            const result = await brkOnErr(this.wh.pgClient.query<{changes: number}>(sql, params))
             changes = result.rows?.[0].changes ?? 0
         }
         return changes
@@ -216,8 +223,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             const creatorIdx = this.creatorDS.index;
             const sql1 = `
             CREATE TABLE ${this.tempTable} AS
-            SELECT ${creatorIdx.keyCols}
-            FROM ${creatorIdx.schema}.${creatorIdx.table}
+            SELECT ${
+                this.customCreatorDSSelect ?
+                    this.customCreatorDSSelect :
+                    this.index.keyCols
+                }
+            FROM ${creatorIdx.schemaTable}
             WHERE tmsp_last_modification > '${changesConsideredUntil}'
             AND tmsp_last_modification <= '${currentTimestamp}'
             AND (tmsp_deleted IS NULL OR tmsp_deleted > '${currentTimestamp}')
@@ -273,7 +284,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * an aggregation should happen
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    registerCreatorDS<DS extends DataService<KeyModel, any>>(creatorDS: DS) {
+    registerCreatorDS<DS extends DataService<any, any>>(creatorDS: DS) {
         this.creatorDS = creatorDS;
         creatorDS.registerIsCreatorOf(this)
     }

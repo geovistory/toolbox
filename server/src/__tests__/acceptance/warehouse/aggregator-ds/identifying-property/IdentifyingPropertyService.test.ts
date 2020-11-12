@@ -5,11 +5,11 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilSatisfy, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 
 
-describe('IdentifyingProperty', function () {
+describe('IdentifyingPropertyService', function () {
 
     let wh: Warehouse;
     let s: IdentifyingPropertyService;
@@ -26,9 +26,10 @@ describe('IdentifyingProperty', function () {
             createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM)
         ])
 
-        const a = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.pkClass === 61
-                && item.val.length === 1
+        const a = await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            compare: (val) => val?.length === 1,
+            getFn: () => s.index.getFromIdx({pkClass: 61})
         })
 
         expect(a)
@@ -44,9 +45,10 @@ describe('IdentifyingProperty', function () {
             createDfhApiProperty(DfhApiPropertyMock.EN_1435_STEMS_FROM)
         ])
 
-        const a = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.pkClass === 365
-                && item.val.length === 3
+        const a = await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            compare: (val) => val?.length === 3,
+            getFn: () => s.index.getFromIdx({pkClass: 365})
         })
 
         expect(a)

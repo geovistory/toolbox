@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Where} from '@loopback/repository';
-import {Observable} from 'rxjs';
-import {filter, first, switchMap} from 'rxjs/operators';
+import {Observable, BehaviorSubject, merge} from 'rxjs';
+import {filter, first, switchMap, startWith} from 'rxjs/operators';
 import {WarClassPreview, WarEntityPreview} from '../../models';
 import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';
@@ -25,7 +25,7 @@ export async function setupCleanAndStartWarehouse() {
 
     const wh = new Warehouse(config)
     const client = await wh.pgPool.connect()
-    await client.query('drop schema if exists war_cache cascade;')
+    await client.query(`drop schema if exists ${wh.schemaName} cascade;`)
     client.release()
     await wh.start()
     await wh.pgClient.query('LISTEN entity_previews_updated;')
@@ -158,9 +158,11 @@ export async function searchUntilSatisfy<M>(options: {
     getFn: () => Promise<M | undefined>,
     compare: (val?: M) => boolean
 }) {
-    const item$ = options.notifier$.pipe(
-        switchMap(_ => options.getFn())
-    );
+    const x$ = new BehaviorSubject(undefined);
+    const item$ = merge(x$, options.notifier$)
+        .pipe(
+            switchMap(_ => options.getFn()),
+        );
     const result = await waitUntilSatisfy(item$, options.compare);
     return result;
 }

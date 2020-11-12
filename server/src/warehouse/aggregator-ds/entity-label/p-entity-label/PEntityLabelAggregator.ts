@@ -1,5 +1,5 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
-import {EntityLabelConfig, LabelPart} from '../../../primary-ds/ProEntityLabelConfigService';
+import {EntityLabelConfigVal, LabelPart} from '../../../primary-ds/ProEntityLabelConfigService';
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {Edge, EntityFields} from "../../../primary-ds/edge/edge.commons";
 import {PEntityId} from '../../../primary-ds/entity/PEntityService';
@@ -235,7 +235,7 @@ export class PEntityLabelAggregator extends AbstractAggregator<PEntityId> {
 
 
 
-    private async getEntityLabelConfig(classId: PClassId): Promise<EntityLabelConfig | undefined> {
+    private async getEntityLabelConfig(classId: PClassId): Promise<EntityLabelConfigVal | undefined> {
 
 
         let res = await this.providers.entityLabelConfig.get(classId)

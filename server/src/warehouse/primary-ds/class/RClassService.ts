@@ -12,7 +12,7 @@ const keyDefs: KeyDefinition[] = [
     type: 'integer'
   }
 ]
-export class RClassService extends PrimaryDataService<InitItem, RClassId, RClass>{
+export class RClassService extends PrimaryDataService<RClassId, RClass>{
 
   measure = 1000;
 

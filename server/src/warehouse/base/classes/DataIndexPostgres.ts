@@ -6,6 +6,7 @@ import {Warehouse} from '../../Warehouse';
 import {handleAsyncStream} from './IndexLeveldb';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {SqlUpsertQueue} from './SqlUpsertQueue';
+import {keys, values} from 'ramda';
 
 export class DataIndexPostgres<KeyModel, ValueModel> {
 
@@ -19,6 +20,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
     keyCols: string; // e.g. '"fkProject","pkEntity"'
 
     insertStmt: string;
+    keyJsonObjSql: string;
 
     upsertQueue: SqlUpsertQueue<KeyModel, ValueModel>;
 
@@ -29,13 +31,13 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         name: string,
         wh: Warehouse
     ) {
-        if (keyDefs.length < 1) throw Error('KeyDefs missing')
+        if (!keyDefs || keyDefs?.length < 1) throw Error(`KeyDefs missing in ${name}`)
         this.schema = wh.schemaName;
         this.table = name;
         this.schemaTable = `${this.schema}.${this.table}`
         this.keyCols = this.keyDefs.map(k => `"${k.name}"`).join(',')
         this.insertStmt = this.createInsertStatement()
-
+        this.keyJsonObjSql = this.createKeyJsonObjSql()
         combineLatest(
             wh.pgConnected$,
             wh.createSchema$
@@ -117,7 +119,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
     }
 
-     getKeyModelValues(keyModel: KeyModel) {
+    getKeyModelValues(keyModel: KeyModel) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this.keyDefs.map(k => (keyModel as any)[k.name]);
     }
@@ -205,14 +207,20 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         return handleAsyncStream<M, {key: string}>(stream, (item) => cb(this.stringToKey(item.key)));
     }
 
-    async forEachItemStartingWith<M>(str: string, cb: (item: {key: KeyModel, value: ValueModel}) => Promise<M>): Promise<void> {
+    async forEachItemWith<M>(partialKey: Partial<KeyModel>, cb: (item: {key: KeyModel, value: ValueModel}) => Promise<M>): Promise<void> {
+        const cols = keys(partialKey);
+        if (cols.length < 1) throw new Error("Partial key must contain at least one key");
+        const sql = `
+        SELECT ${this.keyJsonObjSql} as key, val as value
+        FROM ${this.schemaTable}
+        WHERE ${cols.map((k, i) => `"${k}"=$${i + 1}`).join(' AND ')}`
         const querystream = new QueryStream(
-            `SELECT key, val as value FROM ${this.schema}.${this.table} WHERE key LIKE $1`,
-            [str + '%']
+            sql,
+            values(partialKey)
         )
         const stream = this.pgClient.query(querystream);
-        return handleAsyncStream<M, {key: string, value: ValueModel}>(stream, (item) => cb({
-            key: this.stringToKey(item.key),
+        return handleAsyncStream<M, {key: KeyModel, value: ValueModel}>(stream, (item) => cb({
+            key: item.key,
             value: item.value
         }));
     }
@@ -265,6 +273,10 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
                 ${this.keyDefs.map((k, i) => `$${i + 3}`)}
         )
         ON CONFLICT (key) DO UPDATE SET val = EXCLUDED.val;`
+    }
+
+    createKeyJsonObjSql() {
+        return `json_build_object(${this.keyDefs.map(k => `'${k.name}', "${k.name}"`).join(',')})`
     }
 
 }

@@ -17,7 +17,8 @@ import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitUntilSatisfy, searchUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
 
 describe('PEdgeService', () => {
 
@@ -44,16 +45,20 @@ describe('PEdgeService', () => {
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
-
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkEntity === (InfTemporalEntityMock.NAMING_1.pk_entity ?? -1)
-        && item.key.fkProject === (project.pk_entity ?? -1)
-        && item.val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
-        && item.val?.outgoing?.[1113]?.length === 1
-        && item.val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
-        && item.val?.outgoing?.[1111]?.length === 1
-    })
-
+    const id: PEntityId = {
+      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
+      fkProject: project.pk_entity ?? -1
+    }
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => {
+        return val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
+          && val?.outgoing?.[1113]?.length === 1
+          && val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
+          && val?.outgoing?.[1111]?.length === 1
+      }
+    });
   })
 
   it('should update field edges if statement is removed from project', async () => {
@@ -69,16 +74,21 @@ describe('PEdgeService', () => {
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
 
+    const id: PEntityId = {
+      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
+      fkProject: project.pk_entity ?? -1
+    }
 
-
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkEntity === InfTemporalEntityMock.NAMING_1.pk_entity
-        && item.key.fkProject === project.pk_entity
-        && item.val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
-        && item.val?.outgoing?.[1113]?.length === 1
-        && item.val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
-        && item.val?.outgoing?.[1111]?.length === 1
-    })
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => {
+        return val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
+          && val?.outgoing?.[1113]?.length === 1
+          && val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
+          && val?.outgoing?.[1111]?.length === 1
+      }
+    });
 
     await updateProInfoProjRel(
       ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON.pk_entity ?? -1,
@@ -87,14 +97,15 @@ describe('PEdgeService', () => {
         is_in_project: false
       }
     )
-
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkEntity === InfTemporalEntityMock.NAMING_1.pk_entity
-        && item.key.fkProject === project.pk_entity
-        && item.val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
-        && item.val?.outgoing?.[1113]?.length === 1
-        && item.val?.outgoing?.[1111] === undefined
-    })
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => {
+        return val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
+          && val?.outgoing?.[1113]?.length === 1
+          && val?.outgoing?.[1111] === undefined
+      }
+    });
 
   })
 

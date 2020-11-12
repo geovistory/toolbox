@@ -2,7 +2,7 @@ import {Provider} from '../../../base/classes/Provider';
 import {Providers} from "../../../base/interfaces/Providers";
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {EntityFields} from "../../../primary-ds/edge/edge.commons";
-import {EntityLabelConfig} from '../../../primary-ds/ProEntityLabelConfigService';
+import {EntityLabelConfigVal} from '../../../primary-ds/ProEntityLabelConfigService';
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService';
 import {REntityLabelDependencies} from './REntityLabelDependencies';
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService';
@@ -11,7 +11,7 @@ import {EntityLabelVal} from '../entity-label.commons';
 export class REntityLabelProviders extends Providers<REntityId> {
     entity: Provider<REntityId, EntityLabelVal, REntityId, REntity>;
     entityLabels: Provider<REntityId, EntityLabelVal, REntityId, EntityLabelVal>;
-    entityLabelConfig: Provider<REntityId, EntityLabelVal, PClassId, EntityLabelConfig>;
+    entityLabelConfig: Provider<REntityId, EntityLabelVal, PClassId, EntityLabelConfigVal>;
     identifyingProperty: Provider<REntityId, EntityLabelVal, RClassId,IdentifyingPropertyVal>;
     edges: Provider<REntityId, EntityLabelVal, REntityId, EntityFields>;
     constructor(

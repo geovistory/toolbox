@@ -3,7 +3,7 @@ import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {Edge, EntityFields} from "../../../primary-ds/edge/edge.commons";
 import {REntityId} from '../../../primary-ds/entity/REntityService';
-import {EntityLabelConfig, LabelPart} from '../../../primary-ds/ProEntityLabelConfigService';
+import {EntityLabelConfigVal, LabelPart} from '../../../primary-ds/ProEntityLabelConfigService';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {REntityLabelProviders} from './REntityLabelPoviders';
 
@@ -206,7 +206,7 @@ export class REntityLabelAggregator extends AbstractAggregator<REntityId> {
     }
 
 
-    private async getEntityLabelConfig(classId: RClassId): Promise<EntityLabelConfig | undefined> {
+    private async getEntityLabelConfig(classId: RClassId): Promise<EntityLabelConfigVal | undefined> {
 
         const res = await this.providers.entityLabelConfig.get({pkClass: classId.pkClass, fkProject: PK_DEFAULT_CONFIG_PROJECT})
 

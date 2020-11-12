@@ -5,14 +5,14 @@ import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService'
 import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
-import {EntityLabelConfig} from '../../../primary-ds/ProEntityLabelConfigService'
+import {EntityLabelConfigVal} from '../../../primary-ds/ProEntityLabelConfigService'
 import {Warehouse} from '../../../Warehouse'
 import {IdentifyingPropertyVal} from '../../identifying-property/IdentifyingPropertyService'
 import {EntityLabelVal} from '../entity-label.commons'
 
 export class REntityLabelDependencies extends Dependencies {
     entity: DependencyIndex<REntityId, EntityLabelVal, REntityId, REntity>
-    entityLabelConfig: DependencyIndex<REntityId, EntityLabelVal, PClassId, EntityLabelConfig>
+    entityLabelConfig: DependencyIndex<REntityId, EntityLabelVal, PClassId, EntityLabelConfigVal>
     identifyingProperty: DependencyIndex<REntityId, EntityLabelVal, RClassId, IdentifyingPropertyVal>
     entityLabel: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityLabelVal>
     edge: DependencyIndex<REntityId, EntityLabelVal, REntityId, EntityFields>

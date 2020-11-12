@@ -10,8 +10,8 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProEntityLabelConfigMock} from '../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
-import {clone} from 'ramda';
+import {setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy, searchUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {clone, equals} from 'ramda';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 
 describe('ProEntityLabelConfigService', () => {
@@ -40,12 +40,13 @@ describe('ProEntityLabelConfigService', () => {
     await createProjectMock();
     const dbItem = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
 
-    const whItem = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-    })
+    const whItem = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => equals(val, ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
+    });
 
-    expect(whItem.val).to.deepEqual(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
+    expect(whItem).to.deepEqual(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
 
   })
   it('should update pro entity label config in index', async () => {
@@ -53,10 +54,11 @@ describe('ProEntityLabelConfigService', () => {
     await createProjectMock();
     const dbItem = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
 
-    let whItem = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-    })
+    let whItem = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => equals(val, ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT.config)
+    });
     const modified = clone(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT)
     modified.config.labelParts = [{
       ordNum: 0,
@@ -68,12 +70,11 @@ describe('ProEntityLabelConfigService', () => {
     }]
     await updateProEntityLabelConfig(dbItem.pk_entity, modified);
 
-    whItem = await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-        && item.val.labelParts?.[0].field?.nrOfStatementsInLabel === 1
-    })
-
+    whItem = await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => val?.labelParts?.[0].field?.nrOfStatementsInLabel === 1
+    });
 
     expect(whItem).not.to.be.undefined()
 
@@ -84,19 +85,19 @@ describe('ProEntityLabelConfigService', () => {
     await createProjectMock();
     const dbItem = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
 
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkClass === dbItem.fk_class
-        && item.key.fkProject === dbItem.fk_project
-    })
-
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkClass: dbItem.fk_class, fkProject: dbItem.fk_project}),
+      compare: (val) => !!val
+    });
     await deleteProEntityLabelConfig(dbItem.pk_entity ?? -1)
 
-    await waitUntilNext(s.afterDel$)
-    const resultUpdated = await s.index.getFromIdx({
+    await waitUntilNext(s.afterChange$)
+    const resultUpdated = await s.index.getFromIdxWithTmsps({
       fkProject: dbItem.fk_project,
       pkClass: dbItem.fk_class
     })
-    expect(resultUpdated).to.be.undefined()
+    expect(resultUpdated?.deleted).not.to.be.undefined()
   })
 
 });

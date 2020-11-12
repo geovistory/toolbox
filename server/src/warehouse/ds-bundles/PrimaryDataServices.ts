@@ -15,7 +15,7 @@ import {PEntity, PEntityId, PEntityService} from '../primary-ds/entity/PEntitySe
 import {REntityService} from '../primary-ds/entity/REntityService';
 import {PClassId, ProClassFieldsConfigService} from '../primary-ds/ProClassFieldsConfigService';
 import {ProClassLabelService} from '../primary-ds/ProClassLabelService';
-import {EntityLabelConfig, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
+import {EntityLabelConfigVal, ProEntityLabelConfigService} from '../primary-ds/ProEntityLabelConfigService';
 import {PPropertyService} from '../primary-ds/property/PPropertyService';
 import {RPropertyService} from '../primary-ds/property/RPropertyService';
 import {ProProjectService} from '../primary-ds/ProProjectService';
@@ -23,7 +23,7 @@ import {ProPropertyLabelService} from '../primary-ds/ProPropertyLabelService';
 import {Warehouse} from '../Warehouse';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<any, any, any>> {
+export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<any, any>> {
 
     dfhClassLabel: DfhClassLabelService;
     dfhPropertyLabel: DfhPropertyLabelService;
@@ -57,7 +57,7 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
         this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.wh));
         // this.dfhPropertyLabel = this.registerDataService(new DfhPropertyLabelService(this.wh));
         // this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
-        // this.dfhOutgoingProperty = this.registerDataService(new DfhOutgoingPropertyService(this.wh));
+        this.dfhOutgoingProperty = this.registerDataService(new DfhOutgoingPropertyService(this.wh));
 
         // this.proProject = this.registerDataService(new ProProjectService(this.wh));
         this.proClassLabel = this.registerDataService(new ProClassLabelService(this.wh));
@@ -67,9 +67,9 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
         // this.pProperty = this.registerDataService(new PPropertyService(this.wh));
 
         // this.pClassFieldsConfig = this.registerDataService(new ProClassFieldsConfigService(this.wh));
-        // this.proEntityLabelConfig = this.registerDataService(new ProEntityLabelConfigService(this.wh));
+        this.proEntityLabelConfig = this.registerDataService(new ProEntityLabelConfigService(this.wh));
 
-        // this.pEdge = this.registerDataService(new PEdgeService(this.wh));
+        this.pEdge = this.registerDataService(new PEdgeService(this.wh));
         this.pEntity = this.registerDataService(new PEntityService(this.wh));
 
         // this.rEntity = this.registerDataService(new REntityService(this.wh));
@@ -88,7 +88,7 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
 
     }
 
-    async createEntityLabelConfig(keyModel: PClassId, val: EntityLabelConfig) {
+    async createEntityLabelConfig(keyModel: PClassId, val: EntityLabelConfigVal) {
         return this.proEntityLabelConfig.index.addToIdx(keyModel, val)
     }
     async createEntity(keyModel: PEntityId, val: PEntity) {

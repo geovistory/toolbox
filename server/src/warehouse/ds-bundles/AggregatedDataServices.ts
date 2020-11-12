@@ -47,7 +47,7 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
     constructor(wh: Warehouse) {
         super()
         // // Model aggregators
-        // this.identifyingProperty = this.registerDataService(new IdentifyingPropertyService(wh));
+        this.identifyingProperty = this.registerDataService(new IdentifyingPropertyService(wh));
 
         // // Project aggegators
         // this.pClassLabel = this.registerDataService(new PClassLabelService(wh))

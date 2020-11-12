@@ -33,3 +33,18 @@ export const logSql = (sql: string, params: any[]) => {
 export async function wait(ms: number) {
   return new Promise(res => {setTimeout(() => res(), ms)})
 }
+
+
+export function logOnErr<M>(promise: Promise<M>) {
+  return promise
+    .then(data => data)
+    .catch(error => console.log('Error: ', error.message));
+}
+
+export function brkOnErr<M>(promise: Promise<M>) {
+  return promise
+    .then(data => data)
+    .catch(error => {
+      throw new Error(error.message)
+    });
+}

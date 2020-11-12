@@ -23,7 +23,7 @@ const keyDefs: KeyDefinition[] = [
 ]
 export interface ProClassLabelVal {label: string}
 
-export class ProClassLabelService extends PrimaryDataService<DbItem, ProClassLabelId, ProClassLabelVal>{
+export class ProClassLabelService extends PrimaryDataService< ProClassLabelId, ProClassLabelVal>{
     measure = 1000;
     constructor(wh: Warehouse) {
         super(

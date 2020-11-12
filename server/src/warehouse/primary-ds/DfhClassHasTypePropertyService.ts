@@ -8,6 +8,7 @@ export interface RClassId {
 export const rClassIdKeyDefs: KeyDefinition[] = [
     {name: 'pkClass', type: 'integer'}
 ]
+
 export type DfhClassHasTypePropVal = number;
 
 /**
@@ -21,10 +22,10 @@ export type DfhClassHasTypePropVal = number;
  *      '363': 1110
  * }
  */
-export class DfhClassHasTypePropertyService extends PrimaryDataService<DbItem, RClassId, DfhClassHasTypePropVal>{
+export class DfhClassHasTypePropertyService extends PrimaryDataService< RClassId, DfhClassHasTypePropVal>{
     measure = 1000;
     constructor(wh: Warehouse) {
-        super(wh, ['modified_data_for_history_api_property'], rClassIdToString, stringToRClassId)
+        super(wh, ['modified_data_for_history_api_property'], rClassIdToString, stringToRClassId, rClassIdKeyDefs)
     }
     dbItemToKeyVal(item: DbItem): {key: RClassId; val: DfhClassHasTypePropVal;} {
         const key: RClassId = {
@@ -50,7 +51,8 @@ interface DbItem {
 const updateSql = `
     SELECT DISTINCT
         dfh_property_domain "fkClass",
-        dfh_pk_property "fkProperty"
+        dfh_pk_property "fkProperty",
+        jsonb_build_object('fkProperty',dfh_pk_property) val
     FROM
         data_for_history.api_property
     WHERE

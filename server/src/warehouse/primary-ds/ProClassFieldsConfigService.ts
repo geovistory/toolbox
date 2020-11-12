@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {pClassIdToString, stringToPClassId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 
 export interface PClassId {
     fkProject: number,
@@ -11,19 +12,27 @@ export interface ClassField {
     isOutgoing: boolean,
     ordNum: number
 }
+export const pClassIdKeyDef: KeyDefinition[] = [
+    {
+        name: 'fkProject',
+        type: 'integer'
+    },
+    {
+        name: 'pkClass',
+        type: 'integer'
+    }
+]
 export type ProClassFieldVal = ClassField[]
-export class ProClassFieldsConfigService extends PrimaryDataService<InitItem, PClassId, ProClassFieldVal>{
+export class ProClassFieldsConfigService extends PrimaryDataService<PClassId, ProClassFieldVal>{
     measure = 1000;
     constructor(wh: Warehouse) {
-        super(wh, ['modified_projects_class_field_config'],pClassIdToString, stringToPClassId, )
-    }
-    dbItemToKeyVal(item: InitItem): {key: PClassId; val: ProClassFieldVal;} {
-        const key: PClassId = {
-            fkProject: item.fkProject,
-            pkClass: item.fkSourceClass
-        }
-        const val: ProClassFieldVal = item.fields
-        return {key, val}
+        super(
+            wh,
+            ['modified_projects_class_field_config'],
+            pClassIdToString,
+            stringToPClassId,
+            pClassIdKeyDef
+        )
     }
 
     getUpdatesSql(tmsp: Date) {
@@ -85,7 +94,7 @@ WITH tw1 AS (
 		'fkProperty', fk_property,
 		'isOutgoing', property_is_outgoing,
 		'ordNum', ord_num
-	)) fields
+	)) val
 	FROM tw1
 	GROUP BY fk_project, fk_source_class;
 `

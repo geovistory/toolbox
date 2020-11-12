@@ -1,15 +1,13 @@
-import QueryStream from 'pg-query-stream';
-import prettyms from 'pretty-ms';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {Warehouse} from '../../Warehouse';
+import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {ClearAll} from './ClearAll';
+import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {IndexDBGeneric} from './IndexDBGeneric';
 import {Logger} from './Logger';
-import {DataIndexPostgres} from './DataIndexPostgres';
-import {KeyDefinition} from '../interfaces/KeyDefinition';
 
-export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
+export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
     // number of iterations before measurin time an memory
     abstract measure: number;
@@ -30,14 +28,14 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
         private listenTo: string[],
         public keyToString: (key: KeyModel) => string,
         public stringToKey: (str: string) => KeyModel,
-        private keyDefs: KeyDefinition[] = [{name: 'foo', type: 'integer'}],
+        private keyDefs: KeyDefinition[]
     ) {
         super()
         this.index = new DataIndexPostgres(
             this.keyDefs,
             keyToString,
             stringToKey,
-            'prim_' + this.constructor.name,
+            'prim_' + this.constructor.name.replace('Service', ''),
             wh
         )
         this.meta = new IndexDBGeneric(
@@ -194,7 +192,9 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
                 `,
             [date]
         );
-        if (inserted.rows.length) this.afterChange$.next()
+        if (inserted.rows.length) {
+            this.afterChange$.next()
+        }
         Logger.itTook(t2, `to update query`, 2);
         return inserted.rows.length
 
@@ -232,19 +232,13 @@ export abstract class PrimaryDataService<DbItem, KeyModel, ValueModel> extends D
             `,
             [date]
         );
-        if (deleted.rows.length) this.afterChange$.next()
+        if (deleted.rows.length) {
+            this.afterChange$.next()
+        }
         Logger.itTook(t2, `To mark items as deleted  ...`, 2);
         return deleted.rows.length
 
     }
-
-    /**
-     * Converts item to key-value pair. Must be implemented by derived class.
-     *
-     * @param item
-     */
-    dbItemToKeyVal?(item: DbItem): {key: KeyModel, val: ValueModel}
-
 
     // sql statement used to query updates for the index
     abstract getUpdatesSql(tmsp: Date): string;

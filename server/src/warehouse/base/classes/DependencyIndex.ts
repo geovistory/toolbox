@@ -43,6 +43,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         receiverDS.registerReceiverOf(this)
         this.schema = wh.schemaName;
         this.table = 'dep__' + receiverDS.index.table + '__on__' + providerDS.index.table;
+        if (this.table.length > 63) throw new Error(`pg table has ${this.table.length} chars (max: 63): ${this.schemaTable}`);
         this.schemaTable = `${this.schema}.${this.table}`
         this.providerKeyDefs = this.providerDS.index.keyDefs.map(k => ({...k, name: 'p_' + k.name}));
         this.receiverKeyDefs = this.receiverDS.index.keyDefs.map(k => ({...k, name: 'r_' + k.name}));

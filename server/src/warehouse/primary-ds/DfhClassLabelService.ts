@@ -17,7 +17,7 @@ const keyDefs: KeyDefinition[] = [
     }
 ]
 export interface DfhClassLabelVal {label: string};
-export class DfhClassLabelService extends PrimaryDataService<DbItem, DfhClassLabelId, DfhClassLabelVal>{
+export class DfhClassLabelService extends PrimaryDataService<DfhClassLabelId, DfhClassLabelVal>{
     measure = 1000;
     constructor(wh: Warehouse) {
         super(

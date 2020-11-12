@@ -3,8 +3,8 @@ import {Logger} from '../../base/classes/Logger';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {pEntityIdToString, stringToPEntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {PEntityId} from '../entity/PEntityService';
-import {buildIncomingEdges, buildOutgoingEdges, Edge, EdgeInitItem, EntityFields, StatementItemToIndexate} from './edge.commons';
+import {PEntityId, pEntityKeyDefs} from '../entity/PEntityService';
+import {buildIncomingEdges, buildOutgoingEdges, Edge, EntityFields, StatementItemToIndexate} from './edge.commons';
 
 interface Noun {
     table: string;
@@ -18,23 +18,23 @@ interface Noun {
 
 
 
-export class PEdgeService extends PrimaryDataService<EdgeInitItem, PEntityId, EntityFields>{
+export class PEdgeService extends PrimaryDataService<PEntityId, EntityFields>{
 
     measure = 10000;
 
 
     constructor(wh: Warehouse) {
-        super(wh, [
-            'modified_projects_info_proj_rel',
-        ], pEntityIdToString, stringToPEntityId)
+        super(
+            wh,
+            [
+                'modified_projects_info_proj_rel',
+            ],
+            pEntityIdToString,
+            stringToPEntityId,
+            pEntityKeyDefs
+        )
     }
 
-
-    dbItemToKeyVal(item: EdgeInitItem): {key: PEntityId; val: EntityFields;} {
-        const key = {pkEntity: item.pkEntity, fkProject: item.fkProject}
-        const val = item.fields
-        return {key, val}
-    }
 
     getUpdatesSql(tmsp: Date) {
         return updateSql
@@ -280,7 +280,7 @@ tw5 AS (
 SELECT
 t1.fk_project "fkProject",
 t1.pk_entity "pkEntity",
-COALESCE(t2.fields, '{}'::json) fields
+COALESCE(t2.fields, '{}'::json) val
 FROM tw0 t1
 LEFT JOIN tw5 t2 ON t1.pk_entity = t2.pk_entity AND t1.fk_project =  t2.fk_project
 `

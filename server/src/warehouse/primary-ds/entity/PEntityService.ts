@@ -4,7 +4,7 @@ import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 
 export interface PEntityId {fkProject: number, pkEntity: number}
-const keyDefs: KeyDefinition[] = [
+export const pEntityKeyDefs: KeyDefinition[] = [
     {
         name: 'pkEntity',
         type: 'integer'
@@ -14,7 +14,7 @@ const keyDefs: KeyDefinition[] = [
         type: 'integer'
     }
 ]
-export class PEntityService extends PrimaryDataService<any, PEntityId, PEntity>{
+export class PEntityService extends PrimaryDataService< PEntityId, PEntity>{
 
     measure = 1000;
 
@@ -26,7 +26,7 @@ export class PEntityService extends PrimaryDataService<any, PEntityId, PEntity>{
         ],
             pEntityIdToString,
             stringToPEntityId,
-            keyDefs
+            pEntityKeyDefs
         )
 
 
