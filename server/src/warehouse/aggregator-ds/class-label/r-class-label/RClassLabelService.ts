@@ -47,7 +47,7 @@ export class RClassLabelService extends AggregatedDataService<RClassId, RClassLa
     getDependencies() {
         return this.wh.dep.rClassLabel
     };
-    afterChangeSql(tableAlias: string) {
+    onUpsertSql(tableAlias: string) {
         return `
         INSERT INTO war.class_preview (fk_class, fk_project, label)
         SELECT "pkClass", 0, val->>'label'

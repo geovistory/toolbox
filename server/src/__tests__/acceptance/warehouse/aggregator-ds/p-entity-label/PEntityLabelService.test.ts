@@ -23,7 +23,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext, wait, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -143,11 +143,19 @@ describe('PEntityLabelService', function () {
             {entity_label: {eq: appellation.string}},
         ])
         expect(result)
+
         await updateProInfoProjRel(namingProRel.pk_entity ?? -1, {is_in_project: false})
 
-        await waitUntilNext(s.afterDel$)
-        const item = await s.index.getFromIdx({pkEntity: naming.pk_entity ?? -1, fkProject: project.pk_entity ?? -1})
-        expect(item).to.be.undefined()
+        const item = await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdxWithTmsps({pkEntity: naming.pk_entity ?? -1, fkProject: project.pk_entity ?? -1}),
+            compare: (row) => {
+                // console.log('test',JSON.stringify(row))
+                return (!!row?.deleted)
+            }
+        })
+
+        expect(item?.deleted).not.to.be.undefined()
     })
 })
 

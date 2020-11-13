@@ -22,7 +22,7 @@ export class PEntityLabelService extends AggregatedDataService<PEntityId, Entity
     getDependencies() {
         return this.wh.dep.pEntityLabel
     };
-    afterChangeSql(tableAlias: string) {
+    onUpsertSql(tableAlias: string) {
         return `
         UPDATE war.entity_preview
         SET entity_label = ${tableAlias}.val->>'entityLabel'
@@ -31,6 +31,5 @@ export class PEntityLabelService extends AggregatedDataService<PEntityId, Entity
         AND project = ${tableAlias}."fkProject"
         AND entity_label IS DISTINCT FROM ${tableAlias}.val->>'entityLabel'`
     }
-
 }
 

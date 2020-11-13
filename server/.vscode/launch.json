@@ -145,11 +145,11 @@
       "stopOnEntry": false,
       "args": [
         "--timeout",
-        "600000",
+        "400000",
         "--colors",
         "'dist/__tests__/**/warehouse/**/*.js'",
         "--grep",
-        "/PEntityLabelService.*label of naming and add person/",
+        "/PEntityLabelService.*/",
       ],
       "cwd": "${workspaceRoot}",
       "restart": false,

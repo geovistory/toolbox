@@ -185,31 +185,34 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const t2 = Logger.start(`Start update query  ...`, 2);
 
         const updateSql = this.getUpdatesSql(date)
-        const inserted = await this.wh.pgClient.query(
+        const upsertHookSql = this.get2ndUpdatesSql ? `,
+            hook AS (${this.get2ndUpdatesSql('tw1', date)})`
+            : ''
+        const upserted = await this.wh.pgClient.query<{count:number}>(
             `
                 WITH tw1 AS (
                     ${updateSql}
                 )
-                ${this.get2ndUpdatesSql ?
-                `,
-                tw2 AS (${this.get2ndUpdatesSql('tw1', date)})`
-                : ''}
-                INSERT INTO  ${this.index.schema}.${this.index.table}
+                ${upsertHookSql},
+                tw2 AS (
+                    INSERT INTO  ${this.index.schema}.${this.index.table}
                     (${this.index.keyCols}, val)
-                SELECT ${this.index.keyCols}, tw1.val
-                FROM tw1
-                ON CONFLICT (${this.index.keyCols}) DO UPDATE
-                SET val = EXCLUDED.val
-                WHERE  ${this.index.schema}.${this.index.table}.val <> EXCLUDED.val
-                RETURNING *
+                    SELECT ${this.index.keyCols}, tw1.val
+                    FROM tw1
+                    ON CONFLICT (${this.index.keyCols}) DO UPDATE
+                    SET val = EXCLUDED.val
+                    WHERE  ${this.index.schema}.${this.index.table}.val <> EXCLUDED.val
+                    RETURNING *
+                )
+                SELECT count(*)::int FROM tw2
                 `,
             [date]
         );
-        if (inserted.rows.length) {
+        if (upserted.rows?.[0].count > 0) {
             this.afterChange$.next()
         }
         Logger.itTook(t2, `to update query`, 2);
-        return inserted.rows.length
+        return upserted.rows.length
 
     }
 
@@ -226,26 +229,31 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     private async manageDeletesSince(date: Date, deleteSql: string) {
         const t2 = Logger.start(`Start deletes query  ...`, 2);
 
-        const deleted = await this.wh.pgClient.query(
+        const deleteHookTw = this.get2ndDeleteSql ? `,
+            hook AS (
+                ${this.get2ndDeleteSql('tw1', date)}
+            )`
+            : '';
+        const deleted = await this.wh.pgClient.query<{count: number}>(
             `
                 WITH tw1 AS (
                     ${deleteSql}
                 )
-                ${this.get2ndDeleteSql ? `,
-                    tw2 AS (${this.get2ndDeleteSql('tw1', date)})`
-                : ''}
-                UPDATE  ${this.index.schema}.${this.index.table} t1
-                SET tmsp_deleted = now()
-                FROM tw1
-                WHERE
-                    ${this.index.keyDefs
-                .map(k => `t1."${k.name}" = tw1."${k.name}"`)
-                .join(' AND ')}
-                RETURNING tw1.*
+                ${deleteHookTw},
+                tw2 AS (
+                    UPDATE  ${this.index.schema}.${this.index.table} t1
+                    SET tmsp_deleted = now()
+                    FROM tw1
+                    WHERE
+                    ${this.index.keyDefs.map(k => `t1."${k.name}" = tw1."${k.name}"`).join(' AND ')}
+                    RETURNING t1.*
+                )
+                SELECT count(*)::int FROM tw2
             `,
             [date]
         );
-        if (deleted.rows.length) {
+        if (deleted.rows?.[0].count > 0) {
+
             this.afterChange$.next()
         }
         Logger.itTook(t2, `To mark items as deleted  ...`, 2);
