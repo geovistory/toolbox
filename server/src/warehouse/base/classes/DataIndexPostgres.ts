@@ -64,6 +64,12 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             )`).catch((e) => {
             console.log(`Error during CREATE TABLE:  ${this.schema}.${this.table}:`, e)
         })
+
+        await this.pgClient.query(`
+                DROP TRIGGER IF EXISTS last_modification_tmsp ON ${this.schema}.${this.table}
+            `).catch((e) => {
+            console.log(`Error during DROP TRIGGER last_modification_tmsp:  ${this.schema}.${this.table}:`, e)
+        })
         await this.pgClient.query(`
                 CREATE TRIGGER last_modification_tmsp
                 BEFORE INSERT OR UPDATE
@@ -71,7 +77,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
                 FOR EACH ROW
                 EXECUTE PROCEDURE ${this.schema}.tmsp_last_modification();
             `).catch((e) => {
-            console.log(`Error during CREATE RIGGER last_modification_tmsp:  ${this.schema}.${this.table}:`, e)
+            console.log(`Error during CREATE TRIGGER last_modification_tmsp:  ${this.schema}.${this.table}:`, e)
         })
         const indexedCols = [
             ...this.keyDefs.map(k => k.name),

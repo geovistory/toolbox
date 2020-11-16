@@ -67,8 +67,8 @@ export async function startDev() {
 export async function cleanAndStartDev() {
     const config: WarehouseConfig = {}
     const warehouse = new Warehouse(config)
-    try {
-        await warehouse.hardReset('Warehouse reset')
-    } catch (e) {console.log(e)}
+    const client = await warehouse.pgPool.connect()
+    await client.query(`drop schema if exists ${warehouse.schemaName} cascade;`)
+    client.release()
     await warehouse.start();
 }

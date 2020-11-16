@@ -1,4 +1,4 @@
-import {brkOnErr, logSql} from '../../../utils/helpers';
+import {brkOnErr} from '../../../utils/helpers';
 import {Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {Providers} from '../interfaces/Providers';
@@ -151,58 +151,10 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
          * Handle deletes
          */
 
-        // find 'newDeletes' in creatorDS
-        // - items of the creatorDS
-        //   that have a tmsp_deleted greater than 'changesConsideredUntil' and
-        //      less or equal than 'currentTimestamp'
-        //      (these items are the 'newDeletes')
-        // mark 'newDeletes' as deleted in AggregatedDS
-        // – items of this AggregatedDS
-        //   that have the same keyModel as the 'newDeletes', setting tmsp_deleted='currentTimestamp'
-        //    (don't delete them yet, because they may be providers of other aggregators)
-        //    this operation happens directly on Postgres (within one query)
 
-        let twOnDelete = ''
-        if (this.onDeleteSql) {
-            twOnDelete = `,
-            delete AS (
-                ${this.onDeleteSql('tw1')}
-            )`
-        }
-        const handleDeletes = `
-        -- find new deletes in creatorDS
-        WITH tw1 AS (
-            SELECT ${this.getCreatorDsSelectStmt()}
-            FROM ${this.creatorDS.index.schemaTable}
-            WHERE tmsp_deleted > '${changesConsideredUntil}'
-            AND tmsp_deleted <= '${currentTimestamp}'
-        )
-        ${twOnDelete},
-        -- mark them as deleted in aggregatedDS
-        tw2 AS (
-            UPDATE ${this.index.schemaTable} t1
-            SET tmsp_deleted = '${currentTimestamp}'
-            FROM tw1 t2
-            WHERE ${this.index.keyDefs
-                .map(k => `t1."${k.name}"=t2."${k.name}"`)
-                .join(' AND ')}
-            RETURNING t1.*
-        )
-        -- count the rows marked as deleted
-        SELECT count(*)::int FROM tw2
-        `
-        // useful for debugging
-        // logSql(handleDeletes, [])
 
-        // if (this.constructor.name === 'PEntityLabelService') {
-        //     console.log(`--> ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp}`)
-        // }
-        const res = await this.wh.pgClient.query<{count: number}>(handleDeletes)
-        changes += res.rows[0].count
-        // useful for debugging
-        // if (this.constructor.name === 'PEntityLabelService') {
-        //     console.log(`--> ${this.cycle} handled ${res.rows[0].count}`)
-        // }
+        changes += await this.handleDeletes(changesConsideredUntil, currentTimestamp);
+
 
 
 
@@ -247,6 +199,61 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
 
 
+    /** find 'newDeletes' in creatorDS
+     * - items of the creatorDS
+     *   that have a tmsp_deleted greater than 'changesConsideredUntil' and
+     *      less or equal than 'currentTimestamp'
+     *      (these items are the 'newDeletes')
+     * mark 'newDeletes' as deleted in AggregatedDS
+     * – items of this AggregatedDS
+     *   that have the same keyModel as the 'newDeletes', setting tmsp_deleted='currentTimestamp'
+     *    (don't delete them yet, because they may be providers of other aggregators)
+     *    this operation happens directly on Postgres (within one query)
+     */
+    private async handleDeletes(changesConsideredUntil: string, currentTimestamp: string) {
+        let changes = 0
+        let twOnDelete = '';
+        if (this.onDeleteSql) {
+            twOnDelete = `,
+            delete AS (
+                ${this.onDeleteSql('tw1')}
+            )`;
+        }
+        const handleDeletes = `
+        -- find new deletes in creatorDS
+        WITH tw1 AS (
+            SELECT ${this.getCreatorDsSelectStmt()}
+            FROM ${this.creatorDS.index.schemaTable}
+            WHERE tmsp_deleted > '${changesConsideredUntil}'
+            AND tmsp_deleted <= '${currentTimestamp}'
+        )
+        ${twOnDelete},
+        -- mark them as deleted in aggregatedDS
+        tw2 AS (
+            UPDATE ${this.index.schemaTable} t1
+            SET tmsp_deleted = '${currentTimestamp}'
+            FROM tw1 t2
+            WHERE ${this.index.keyDefs
+                .map(k => `t1."${k.name}"=t2."${k.name}"`)
+                .join(' AND ')}
+            RETURNING t1.*
+        )
+        -- count the rows marked as deleted
+        SELECT count(*)::int FROM tw2
+        `;
+        // useful for debugging
+        // logSql(handleDeletes, [])
+        // if (this.constructor.name === 'PEntityLabelService') {
+        //     console.log(`--> ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp}`)
+        // }
+        const res = await this.wh.pgClient.query<{count: number;}>(handleDeletes);
+        changes += res.rows[0].count;
+        // useful for debugging
+        // if (this.constructor.name === 'PEntityLabelService') {
+        //     console.log(`--> ${this.cycle} handled ${res.rows[0].count}`)
+        // }
+        return changes;
+    }
 
     /**
      * cleanup old dependencies
@@ -270,25 +277,39 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
     async aggregateAll(currentTimestamp: string) {
         let changes = 0
+        const res = await brkOnErr(this.wh.pgClient.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
+        const size = res.rows[0].count;
+        const limit = 100;
+        for (let offset = 0; offset < size; offset += limit) {
+            changes += await this.aggregateBatch(limit, offset, currentTimestamp);
+        }
+        return changes
+    }
 
-        const toAggregate = await brkOnErr(this.wh.pgClient.query<KeyModel>(`SELECT * From ${this.tempTable}`))
+    private async aggregateBatch(limit: number, offset: number, currentTimestamp: string) {
+        let changes = 0
+
+        const toAggregate = await brkOnErr(this.wh.pgClient.query<KeyModel>(`
+        SELECT * From ${this.tempTable}
+        LIMIT $1 OFFSET $2
+        `, [limit, offset]));
 
         if (toAggregate.rows.length > 0) {
-            let valuesStr = ''
+            let valuesStr = '';
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const params: any[] = [], addParam = (val: any) => {
-                params.push(val)
-                return '$' + params.length
-            }
+                params.push(val);
+                return '$' + params.length;
+            };
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const addParams = (vals: any[]) => {
                 return vals.map((val) => addParam(val)).join(',');
-            }
+            };
             let i = 0;
             for (const key of toAggregate.rows) {
                 i++;
-                const val = await brkOnErr(this.aggregate(key))
-                const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])})${i < toAggregate.rows.length ? ',' : ''}`
+                const val = await brkOnErr(this.aggregate(key));
+                const sql = `(${addParams([...this.index.getKeyModelValues(key), JSON.stringify(val)])})${i < toAggregate.rows.length ? ',' : ''}`;
                 valuesStr = valuesStr + sql;
             }
             // insert or update the results of the aggregation
@@ -300,37 +321,37 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             SET val = EXCLUDED.val
             WHERE EXCLUDED.val IS DISTINCT FROM ${this.index.schemaTable}.val
             RETURNING *
-        `
-            const depSqls: string[] = []
+        `;
+            const depSqls: string[] = [];
             // get the dependency sqls
             this.isReceiverOf.forEach(dep => {
-                const depSql = dep.getSqlForStoringCache(currentTimestamp, params)
-                if (depSql) depSqls.push(depSql)
-            })
+                const depSql = dep.getSqlForStoringCache(currentTimestamp, params);
+                if (depSql)
+                    depSqls.push(depSql);
+            });
             // create the full query
             const parts: string[] = [aggSql, ...depSqls];
             const tws = parts.map((part, j) => `tw${j} AS (
                     ${part}
-                )`).join(',')
-            let twOnUpsert = ''
+                )`).join(',');
+            let twOnUpsert = '';
             if (this.onUpsertSql) {
                 twOnUpsert = `
                 , afterChange AS (
                     ${this.onUpsertSql('tw0')}
-                )`
+                )`;
             }
             const sql = `
                 WITH
                 ${tws}
                 ${twOnUpsert}
                 SELECT count(*):: int changes FROM tw0;
-                `
+                `;
             // logSql(sql, params)
-
-            const result = await brkOnErr(this.wh.pgClient.query<{changes: number}>(sql, params))
-            changes = result.rows?.[0].changes ?? 0
+            const result = await brkOnErr(this.wh.pgClient.query<{changes: number;}>(sql, params));
+            changes = result.rows?.[0].changes ?? 0;
         }
-        return changes
+        return changes;
     }
 
     /**

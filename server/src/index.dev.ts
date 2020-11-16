@@ -1,6 +1,6 @@
 import {ApplicationConfig} from '@loopback/core';
 import {GeovistoryServer} from './server';
-import {cleanAndStartDev} from './warehouse';
+import {cleanAndStartDev} from './warehouse/startScripts';
 import {cleanDb} from './__tests__/helpers/cleaning/clean-db.helper';
 import {forFeatureX} from './__tests__/helpers/graphs/feature-X.helper';
 

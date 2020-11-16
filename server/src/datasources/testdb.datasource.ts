@@ -14,13 +14,12 @@ export class TestdbDataSource extends juggler.DataSource
   constructor() {
 
     super({
-      url: process.env.TEST_DATABASE_URL,
+      url: process.env.DATABASE_URL,
       name: 'testdb',
       connector: 'postgresql',
       ssl: {
         rejectUnauthorized: false,
       },
     });
-    console.log(process.env.TEST_DATABASE_URL)
   }
 }

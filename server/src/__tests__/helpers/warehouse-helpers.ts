@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {Where} from '@loopback/repository';
-import {Observable, BehaviorSubject, merge} from 'rxjs';
-import {filter, first, switchMap, startWith} from 'rxjs/operators';
+import {BehaviorSubject, merge, Observable} from 'rxjs';
+import {filter, first, switchMap} from 'rxjs/operators';
 import {WarClassPreview, WarEntityPreview} from '../../models';
 import {Warehouse, WarehouseConfig} from '../../warehouse/Warehouse';
 import {createWarClassPreviewRepo} from './atomic/war-class-preview.helper';

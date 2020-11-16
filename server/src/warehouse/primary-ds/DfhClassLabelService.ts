@@ -44,8 +44,8 @@ interface DbItem {
 }
 
 const updateSql = `
-    SELECT DISTINCT
-        dfh_pk_class "pkClass",
+    SELECT DISTINCT ON (dfh_pk_class,dfh_class_label_language)
+    dfh_pk_class "pkClass",
         dfh_class_label_language "language",
         jsonb_build_object('label',dfh_class_label) val
     FROM

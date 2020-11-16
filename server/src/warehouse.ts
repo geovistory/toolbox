@@ -1,7 +1,6 @@
-const warhouse = require('./dist/warehouse');
+import {start} from './warehouse/startScripts';
 
-warhouse
-  .startDev()
+start()
   .catch(err => {
     console.log(`***************************************`);
     console.error('Warehouse was up and running, when this error occured:');

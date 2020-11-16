@@ -1,6 +1,6 @@
 
 export function getDatabaseUrl() {
-  const databaseUrl = (process.env.DB_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL) as string;
+  const databaseUrl = process.env.DATABASE_URL as string;
   return databaseUrl
 }
 

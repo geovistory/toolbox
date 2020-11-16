@@ -139,7 +139,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     async clearAll(): Promise<void> {
 
         await this.pgClient.query(`
-        DELETE FROM ${this.schema}_${this.table};
+        DELETE FROM ${this.schemaTable};
         `).catch((e) => {
             console.log(`Error during DELETE INDEX:  ${this.schemaTable}:`, e)
         })
