@@ -7,6 +7,7 @@ import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {Dependencies} from './Dependencies';
 import {DependencyIndex} from './DependencyIndex';
+import {Logger} from './Logger';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
@@ -140,6 +141,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
       * @param currentTimestamp consider changes until (less or eq) to this tmsp
       */
     private async update(currentTimestamp: string) {
+        const t0 = Logger.start(`${this.constructor.name} > Run aggregation cycle ${this.cycle}`, 0)
+
         this.updating = true
         this.shouldUpdate = false
         let changes = 0;
@@ -181,6 +184,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             // if (this.constructor.name === 'PEntityLabelService') {
             //     console.log('------------- restart startUpdate()')
             // }
+            Logger.itTook(t0, `${this.constructor.name} > for cycle ${this.cycle}, start over...`, 0)
+
             const nextChanges = await this.startUpdate();
             changes = changes + nextChanges;
         }
@@ -192,6 +197,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // if (this.constructor.name === 'PEntityLabelService') {
         //     console.log(`-------------  finalized cycle ${this.cycle}`)
         // }
+
+        Logger.msg(`${this.constructor.name} > restart within cycle ${this.cycle}`, 0)
+
         this.cycle++
         return changes
     }

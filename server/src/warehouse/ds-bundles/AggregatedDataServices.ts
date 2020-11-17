@@ -20,7 +20,7 @@ import {AggregatedDataService} from '../base/classes/AggregatedDataService';
 import {combineLatest, Observable} from 'rxjs';
 import {filter, mapTo} from 'rxjs/operators';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any,any>> {
+export class AggregatedDataServices extends DataServiceBundle<AggregatedDataService<any, any>> {
     // Model aggregators
     identifyingProperty: IdentifyingPropertyService;
 
@@ -75,25 +75,25 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
 
     async startCycling() {
         // // Model aggregators
-        // await this.identifyingProperty.updater.startCylcling()
+        await this.identifyingProperty.startUpdate()
 
         // // Project aggegators
-        // await this.pClassLabel.updater.startCylcling()
-        // await this.pClassFieldLabel.updater.startCylcling()
-        // await this.pEntityClassLabel.updater.startCylcling()
-        // await this.pEntityLabel.updater.startCylcling()
-        // await this.pEntityType.updater.startCylcling()
-        // await this.pEntityFullText.updater.startCylcling()
-        // await this.pEntityTimeSpan.updater.startCylcling()
+        // await this.pClassLabel.startUpdate()
+        // await this.pClassFieldLabel.startUpdate()
+        // await this.pEntityClassLabel.startUpdate()
+        await this.pEntityLabel.startUpdate()
+        // await this.pEntityType.startUpdate()
+        // await this.pEntityFullText.startUpdate()
+        // await this.pEntityTimeSpan.startUpdate()
 
         // // Repo aggregators
         await this.rClassLabel.startUpdate()
-        // await this.rClassFieldLabel.updater.startCylcling()
-        // await this.rEntityClassLabel.updater.startCylcling()
-        // await this.rEntityLabel.updater.startCylcling()
-        // await this.rEntityType.updater.startCylcling()
-        // await this.rEntityFullText.updater.startCylcling()
-        // await this.rEntityTimeSpan.updater.startCylcling()
+        // await this.rClassFieldLabel.startUpdate()
+        // await this.rEntityClassLabel.startUpdate()
+        // await this.rEntityLabel.startUpdate()
+        // await this.rEntityType.startUpdate()
+        // await this.rEntityFullText.startUpdate()
+        // await this.rEntityTimeSpan.startUpdate()
     }
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));

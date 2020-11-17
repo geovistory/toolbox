@@ -1,13 +1,12 @@
 import {BehaviorSubject, Subject} from 'rxjs';
 import {Warehouse} from '../../Warehouse';
+import {skipWhileFirst} from '../functions';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {IndexDBGeneric} from './IndexDBGeneric';
 import {Logger} from './Logger';
-import {skipWhileFirst} from '../functions';
-import {tap} from 'rxjs/operators';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
