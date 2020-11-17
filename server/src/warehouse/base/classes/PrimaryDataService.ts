@@ -80,11 +80,11 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
         const lastUpdateDone = await this.getLastUpdateDone()
         if (lastUpdateDone) {
-            Logger.msg(`${this.constructor.name} > Catch up changes since ${lastUpdateDone}`);
+            Logger.msg(this.constructor.name, `Catch up changes since ${lastUpdateDone}`);
             await this.startAndSyncSince(lastUpdateDone)
         }
         else {
-            Logger.msg(`WARNING: ${this.constructor.name} > no lastUpdateDone date found for catchUp()!`)
+            Logger.msg(this.constructor.name, `WARNING: no lastUpdateDone date found for catchUp()!`)
             await this.initIdx()
         }
     }
@@ -137,7 +137,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         // throttle sync process for 10 ms
         // await new Promise((res, rej) => { setTimeout(() => { res() }, 10) })
         const lastUpdateBegin = await this.getLastUpdateBegin()
-        const t1 = Logger.start(`${this.constructor.name} > manageUpdatesSince ${lastUpdateBegin}`, 1);
+        const t1 = Logger.start(this.constructor.name, `manageUpdatesSince ${lastUpdateBegin}`, 1);
 
         // Look for updates since the date of lastUpdateBegin or 1970
         const calls = [
@@ -159,7 +159,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
         // await the calls produced above
         const [updates, deletes] = await Promise.all(calls);
-        Logger.itTook(t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
+        Logger.itTook(this.constructor.name, t1, `to manage ${updates} updates and ${deletes ?? 0} deletes by ${this.constructor.name}`, 1);
 
         this.syncing$.next(false)
         if (this.restartSyncing) await this.sync(tmsp);
@@ -181,7 +181,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      */
     private async manageUpdatesSince(date: Date = new Date(0)) {
 
-        const t2 = Logger.start(`Start update query  ...`, 2);
+        const t2 = Logger.start(this.constructor.name, `Start update query  ...`, 2);
 
         const updateSql = this.getUpdatesSql(date)
         const upsertHookSql = this.get2ndUpdatesSql ? `,
@@ -210,7 +210,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         if (upserted.rows?.[0].count > 0) {
             this.afterChange$.next()
         }
-        Logger.itTook(t2, `to update query`, 2);
+        Logger.itTook(this.constructor.name, t2, `to update query`, 2);
         return upserted.rows.length
 
     }
@@ -226,7 +226,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      * @param date
      */
     private async manageDeletesSince(date: Date, deleteSql: string) {
-        const t2 = Logger.start(`Start deletes query  ...`, 2);
+        const t2 = Logger.start(this.constructor.name, `Start deletes query  ...`, 2);
 
         const deleteHookTw = this.get2ndDeleteSql ? `,
             hook AS (
@@ -255,7 +255,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
             this.afterChange$.next()
         }
-        Logger.itTook(t2, `To mark items as deleted  ...`, 2);
+        Logger.itTook(this.constructor.name, t2, `To mark items as deleted  ...`, 2);
         return deleted.rows.length
 
     }

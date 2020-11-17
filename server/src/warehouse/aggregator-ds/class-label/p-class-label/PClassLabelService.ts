@@ -90,7 +90,7 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
     //         `
     //         this.main.pgClient.query(updateEntityPreviewQ, [res.classLabel, res.id.pkClass, res.id.fkProject])
     //             .then(() => {
-    //                 Logger.msg(`Updated class labels of entity previews`, 2)
+    //                 Logger.msg(this.constructor.name, `Updated class labels of entity previews`, 2)
     //             })
     //             .catch(e => {
     //                 console.log(e)
@@ -103,11 +103,11 @@ export class PClassLabelService extends AggregatedDataService<PClassId, ValueMod
     //         batchSize++
     //         if (i % maxBatchSize === 0 || i === results.length) {
     //             remaining = remaining - batchSize;
-    //             const t = Logger.start(`Upserting ${batchSize} class labels, remaining: ${remaining} of ${results.length}`, 2)
+    //             const t = Logger.start(this.constructor.name, `Upserting ${batchSize} class labels, remaining: ${remaining} of ${results.length}`, 2)
     //             const q = this.getUpsertSql(values.slice(0, -1))
     //             this.main.pgClient.query(q, params)
     //                 .then(() => {
-    //                     Logger.itTook(t, `to batch upsert class labels`, 2)
+    //                     Logger.itTook(this.constructor.name, t, `to batch upsert class labels`, 2)
     //                 })
     //                 .catch(e => {
     //                     console.log(e)

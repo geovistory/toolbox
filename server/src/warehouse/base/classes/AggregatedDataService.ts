@@ -141,7 +141,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
       * @param currentTimestamp consider changes until (less or eq) to this tmsp
       */
     private async update(currentTimestamp: string) {
-        const t0 = Logger.start(`${this.constructor.name} > Run aggregation cycle ${this.cycle}`, 0)
+        const t0 = Logger.start(this.constructor.name, `Run aggregation cycle ${this.cycle}`, 0)
 
         this.updating = true
         this.shouldUpdate = false
@@ -184,7 +184,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             // if (this.constructor.name === 'PEntityLabelService') {
             //     console.log('------------- restart startUpdate()')
             // }
-            Logger.itTook(t0, `${this.constructor.name} > for cycle ${this.cycle}, start over...`, 0)
+            Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
 
             const nextChanges = await this.startUpdate();
             changes = changes + nextChanges;
@@ -198,7 +198,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         //     console.log(`-------------  finalized cycle ${this.cycle}`)
         // }
 
-        Logger.msg(`${this.constructor.name} > restart within cycle ${this.cycle}`, 0)
+        Logger.msg(this.constructor.name, `restart within cycle ${this.cycle}`, 0)
 
         this.cycle++
         return changes
@@ -289,7 +289,11 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const size = res.rows[0].count;
         const limit = 100;
         for (let offset = 0; offset < size; offset += limit) {
+            const logString = `batch aggregate ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1}/${Math.floor(size / limit) + 1}) in cycle ${this.cycle}`
+            const t0 = Logger.start(this.constructor.name, `${logString}`, 0)
             changes += await this.aggregateBatch(limit, offset, currentTimestamp);
+            Logger.itTook(this.constructor.name, t0, `to ${logString}`, 0)
+
         }
         return changes
     }

@@ -28,7 +28,7 @@ import {Logger} from './Logger';
 //             await this.db.put(key, val);
 //         }
 //         catch (error) {
-//             Logger.err(error);
+//             Logger.err(this.constructor.name, error);
 //         }
 //         // this.idx[this.keyToString(key)] = val
 //     }
@@ -38,7 +38,7 @@ import {Logger} from './Logger';
 //             await this.db.del(key);
 //         }
 //         catch (error) {
-//             Logger.err(error);
+//             Logger.err(this.constructor.name, error);
 //         }
 //     }
 
@@ -57,7 +57,7 @@ import {Logger} from './Logger';
 //         }
 //         catch (error) {
 //             if (!error.notFound) {
-//                 Logger.err(error);
+//                 Logger.err(this.constructor.name, error);
 //             }
 //             return val;
 //         }

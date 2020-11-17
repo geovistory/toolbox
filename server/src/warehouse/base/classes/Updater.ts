@@ -49,7 +49,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         ) {
             this.updating = true;
             setTimeout(() => {
-                this.startCylcling().catch(e => {Logger.err(e)})
+                this.startCylcling().catch(e => {Logger.err(this.constructor.name, e)})
             }, 0)
         }
     }
@@ -78,16 +78,16 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
     async startCylcling() {
         this.updating = true
 
-        const t0 = Logger.start(`${this.name} > Run recursive cycle ${this.cycleNr}`, 0)
+        const t0 = Logger.start(this.constructor.name, `${this.name} > Run recursive cycle ${this.cycleNr}`, 0)
         await this.runOneCycle();
-        Logger.itTook(t0, `to run recursive cycle`, 0)
+        Logger.itTook(this.constructor.name, t0, `to run recursive cycle`, 0)
         // this.updating = true
 
 
-        const t1 = Logger.start(`get length of growingQueue`)
+        const t1 = Logger.start(this.constructor.name, `get length of growingQueue`)
         const hotReqsLenght = await this.growingQueue.getLength()
-        Logger.msg(`${hotReqsLenght} pending request remaining`)
-        Logger.itTook(t1, `get length`)
+        Logger.msg(this.constructor.name, `${hotReqsLenght} pending request remaining`)
+        Logger.itTook(this.constructor.name, t1, `get length`)
 
         // - restart cicle, if pending
 
@@ -125,7 +125,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
             i++
             if (i % measure === 0) {
                 // Logger.resetLine()
-                const time = Logger.itTook(t, `to aggregate ${measure} items by ${this.name} – item ${i}/${length}`, 1)
+                const time = Logger.itTook(this.constructor.name, t, `to aggregate ${measure} items by ${this.name} – item ${i}/${length}`, 1)
                 t = Logger.getTime()
                 if (!minMeasure || minMeasure > time) minMeasure = time;
                 if (!maxMeasure || maxMeasure < time) maxMeasure = time;
@@ -137,9 +137,9 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         // Logger.resetLine()
         if (minMeasure && maxMeasure) {
             const average = prettyms(Logger.diffMs(t2) / i)
-            Logger.itTook(t2, `to aggregate ${i} items by ${this.constructor.name} – fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , average: \u{1b}[33m${average}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 1);
+            Logger.itTook(this.constructor.name, t2, `to aggregate ${i} items by ${this.constructor.name} – fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , average: \u{1b}[33m${average}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 1);
         } else {
-            Logger.itTook(t2, `to aggregate ${i} items by ${this.constructor.name}`);
+            Logger.itTook(this.constructor.name, t2, `to aggregate ${i} items by ${this.constructor.name}`);
         }
 
 
@@ -153,7 +153,7 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
             i++
             if (i % measure === 0) {
                 // Logger.resetLine()
-                Logger.itTook(t, `to register ${measure} items by ${this.name} – item ${i}/${results.length}`, 1)
+                Logger.itTook(this.constructor.name, t, `to register ${measure} items by ${this.name} – item ${i}/${results.length}`, 1)
                 t = Logger.getTime()
             }
             // await result.register();
@@ -161,9 +161,9 @@ export class Updater<KeyModel, Aggregator extends AbstractAggregator<KeyModel>> 
         // Logger.resetLine()
         if (minMeasure && maxMeasure) {
             const average = prettyms(Logger.diffMs(t2) / i)
-            Logger.itTook(t2, `to register ${i} items by ${this.constructor.name} – fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , average: \u{1b}[33m${average}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 1);
+            Logger.itTook(this.constructor.name, t2, `to register ${i} items by ${this.constructor.name} – fastest: \u{1b}[33m${prettyms(minMeasure)}\u{1b}[0m , average: \u{1b}[33m${average}\u{1b}[0m , slowest: \u{1b}[33m${prettyms(maxMeasure)}\u{1b}[0m`, 1);
         } else {
-            Logger.itTook(t2, `to register ${i} items by ${this.constructor.name}`);
+            Logger.itTook(this.constructor.name, t2, `to register ${i} items by ${this.constructor.name}`);
         }
 
 

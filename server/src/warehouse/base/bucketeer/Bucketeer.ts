@@ -61,7 +61,7 @@ export class Bucketeer {
    * @param s3Key the key under which the file is stored in S3
    */
   public uploadFile(filePath: string, s3Key: string): Promise<S3.PutObjectOutput> {
-    Logger.msg(`uploading: [${filePath}]`)
+    Logger.msg(this.constructor.name, `uploading: [${filePath}]`)
 
     return new Promise<S3.PutObjectOutput>((res, rej) => {
       // Configure the file stream and obtain the upload parameters
@@ -90,7 +90,7 @@ export class Bucketeer {
  * @param s3Key the key under which the file is stored in S3
  */
   public uploadStringToFile(string: string, s3Key: string): Promise<S3.PutObjectOutput> {
-    Logger.msg(`uploading string: [${string}] to file [${s3Key}]`)
+    Logger.msg(this.constructor.name, `uploading string: [${string}] to file [${s3Key}]`)
 
     return new Promise<S3.PutObjectOutput>((res, rej) => {
       const params: S3.PutObjectRequest = {
@@ -112,7 +112,7 @@ export class Bucketeer {
    * Download a file from bucketeer and save it to the filesystem
    */
   public downloadFile(filePath: string, s3Key: string): Promise<S3.PutObjectOutput> {
-    Logger.msg(`downloading: [${s3Key}]`)
+    Logger.msg(this.constructor.name, `downloading: [${s3Key}]`)
 
     return new Promise<S3.GetObjectOutput>((res, rej) => {
       // Configure the file stream
@@ -141,7 +141,7 @@ export class Bucketeer {
    * Read a file from bucketeer and return array of strings
    */
   public readFile(s3Key: string): Promise<string[] | undefined> {
-    Logger.msg(`reading file: [${s3Key}]`)
+    Logger.msg(this.constructor.name, `reading file: [${s3Key}]`)
 
     return new Promise<string[] | undefined>((res, rej) => {
       // Configure the file stream
@@ -170,7 +170,7 @@ export class Bucketeer {
   * Download a folder from S3
   */
   async downloadFolder(rootPath: string, localFolder: string, s3folder: string) {
-    const t = Logger.start(`download backup ${s3folder}`)
+    const t = Logger.start(this.constructor.name, `download backup ${s3folder}`)
     const outputFolderPath = path.resolve(rootPath, localFolder)
 
     const data = await this.listObjects(s3folder)
@@ -194,7 +194,7 @@ export class Bucketeer {
           if (err) {
             return reject(err);
           }
-          Logger.itTook(t, 'to download')
+          Logger.itTook(this.constructor.name, t, 'to download')
           resolve({result: true});
 
         });
@@ -222,7 +222,7 @@ export class Bucketeer {
       listedObjects.Contents.forEach((object) => {
         if (object.Key) deleteParams.Delete.Objects.push({Key: object.Key});
       });
-      Logger.msg(`deleting ${listedObjects.Contents.length} from [${dir}]`)
+      Logger.msg(this.constructor.name, `deleting ${listedObjects.Contents.length} from [${dir}]`)
 
       await this.s3.deleteObjects(deleteParams).promise();
 

@@ -76,7 +76,7 @@ export class PEdgeService extends PrimaryDataService<PEntityId, EntityFields>{
             }
             i++
             if (i % this.measure === 0) {
-                Logger.msg(`indexed ${i} edges`, 1)
+                Logger.msg(this.constructor.name, `indexed ${i} edges`, 1)
             }
 
 

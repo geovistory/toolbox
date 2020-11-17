@@ -120,11 +120,11 @@ export class REntityTypeService extends AggregatedDataService<REntityId, REntity
     //         batchSize++
     //         if (i % maxBatchSize === 0 || i === results.length) {
     //             remaining = remaining - batchSize;
-    //             const t = Logger.start(`Upserting ${batchSize} entity labels, remaining: ${remaining} of ${results.length}`, 2)
+    //             const t = Logger.start(this.constructor.name, `Upserting ${batchSize} entity labels, remaining: ${remaining} of ${results.length}`, 2)
     //             const q = this.getUpsertSql(values.slice(0, -1))
     //             this.wh.pgClient.query(q, params)
     //                 .then(() => {
-    //                     Logger.itTook(t, `to batch upsert entity labels`, 2)
+    //                     Logger.itTook(this.constructor.name, t, `to batch upsert entity labels`, 2)
     //                 })
     //                 .catch(e => {
     //                     console.log(e)

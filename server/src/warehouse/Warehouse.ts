@@ -64,7 +64,7 @@ export class Warehouse {
             ssl
         });
 
-        Logger.msg(`create warehouse for DB: ${connectionString.split('@')[1]}`)
+        Logger.msg(this.constructor.name, `create warehouse for DB: ${connectionString.split('@')[1]}`)
 
     }
 
@@ -117,7 +117,7 @@ export class Warehouse {
         }, 10000)
 
 
-        const t0 = Logger.start('Create Warehouse data', 0)
+        const t0 = Logger.start(this.constructor.name, 'Create Warehouse data', 0)
 
         await this.getInitBackupDate();
 
@@ -130,7 +130,7 @@ export class Warehouse {
 
         await this.pgNotify('warehouse_initializing', 'false')
 
-        Logger.itTook(t0, 'to create warehouse data', 0)
+        Logger.itTook(this.constructor.name, t0, 'to create warehouse data', 0)
 
         Logger.log(`The max memory usage was: ${Math.round(maxMemoryUsage / 1024 / 1024 * 100) / 100} MB of memory`);
 
@@ -142,7 +142,7 @@ export class Warehouse {
      * Starts listening
      */
     async listen() {
-        const t0 = Logger.start('Start listening Warehouse', 0)
+        const t0 = Logger.start(this.constructor.name, 'Start listening Warehouse', 0)
 
 
         this.status = 'starting';
@@ -153,7 +153,7 @@ export class Warehouse {
 
         this.status = 'running';
 
-        Logger.itTook(t0, 'to start listening. Warehouse is up and running', 0)
+        Logger.itTook(this.constructor.name, t0, 'to start listening. Warehouse is up and running', 0)
     }
 
 
@@ -163,7 +163,7 @@ export class Warehouse {
     //         const down = leveldown(leveldbpath)
     //         const up = levelup(down, {}, (error) => {
     //             if (error) {
-    //                 Logger.err('Error on opening leveldb. Make hard reset.')
+    //                 Logger.err(this.constructor.name, 'Error on opening leveldb. Make hard reset.')
     //                 // if we have an error here, the db is currupt
     //                 // make hard reset to trigger initialization of
     //                 // warehouse on next start
@@ -199,9 +199,9 @@ export class Warehouse {
      */
     private checkIfCodeChanged(commit: string): {changed: boolean} {
 
-        Logger.msg(`Checking if code changed. Current: ${commit}.`)
+        Logger.msg(this.constructor.name, `Checking if code changed. Current: ${commit}.`)
 
-        Logger.msg(`Compatibility list: ${(this.config?.backups?.compatibleWithCommits ?? ['undefined']).join(', ')}`)
+        Logger.msg(this.constructor.name, `Compatibility list: ${(this.config?.backups?.compatibleWithCommits ?? ['undefined']).join(', ')}`)
 
         if (commit === this.config.backups?.currentCommit) return {changed: false}
         if (this.config.backups?.compatibleWithCommits.some(
@@ -291,22 +291,22 @@ export class Warehouse {
      */
     private async createPrimaryData() {
         this.initializingIndexes = true
-        const t1 = Logger.start('Initialize indexes', 0)
+        const t1 = Logger.start(this.constructor.name, 'Initialize indexes', 0)
 
         await this.prim.initAllIndexes()
 
-        Logger.itTook(t1, 'to initialize indexes', 0)
+        Logger.itTook(this.constructor.name, t1, 'to initialize indexes', 0)
         this.initializingIndexes = false
     }
     /**
      * Initialize the indexes of the secondary data services
      */
     private async createAggregatedData() {
-        const t1 = Logger.start('Start cycling for all aggregators', 0)
+        const t1 = Logger.start(this.constructor.name, 'Start cycling for all aggregators', 0)
 
         await this.agg.startCycling()
 
-        Logger.itTook(t1, 'to cycle for all aggregators', 0)
+        Logger.itTook(this.constructor.name, t1, 'to cycle for all aggregators', 0)
     }
 
     /**
@@ -330,7 +330,7 @@ export class Warehouse {
      * Clears the warehouse database (= all indexes)
      */
     async clearWhDB() {
-        const t1 = Logger.start('Clear Warehouse DB', 0)
+        const t1 = Logger.start(this.constructor.name, 'Clear Warehouse DB', 0)
 
         // rimraf.sync(this.leveldbpath)
 
@@ -340,7 +340,7 @@ export class Warehouse {
 
         await this.dep.clearAll()
 
-        Logger.itTook(t1, `to clear Warehouse DB`, 0)
+        Logger.itTook(this.constructor.name, t1, `to clear Warehouse DB`, 0)
 
     }
 

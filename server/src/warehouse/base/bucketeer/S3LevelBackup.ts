@@ -35,7 +35,7 @@ export class S3LevelBackup {
     // create s3 folder name
     const backupname = this.backupIdToString(backupId)
 
-    Logger.msg(`Creating backupId ${backupname}`)
+    Logger.msg(this.constructor.name, `Creating backupId ${backupname}`)
 
     // get file names with sizes of folder
     const folderBefore = await this.getFilesWithSizes(this.leveldbPath)
@@ -53,12 +53,12 @@ export class S3LevelBackup {
       // set this backup as current backup
       await this.bucketeer.uploadStringToFile(backupname, CURRENT);
 
-      Logger.msg(`Backup created! Current backup: ${backupname}`)
+      Logger.msg(this.constructor.name, `Backup created! Current backup: ${backupname}`)
 
     }
     else {
       // A: Yes -> backup potentially corrupt, we don't set it as current backup
-      Logger.msg(`WARN: Backup potentially corrupt, not marked as current: ${backupname}`)
+      Logger.msg(this.constructor.name, `WARN: Backup potentially corrupt, not marked as current: ${backupname}`)
 
     }
 
@@ -108,7 +108,7 @@ export class S3LevelBackup {
       }
 
     } catch (error) {
-      Logger.err(error)
+      Logger.err(this.constructor.name, error)
     }
   }
 
