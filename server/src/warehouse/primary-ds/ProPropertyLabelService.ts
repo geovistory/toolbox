@@ -1,6 +1,7 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {proPropertyIdToString, stringToProPropertyId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 export interface ProPropertyLabelId {
     fkProject: number
     fkProperty: number
@@ -8,9 +9,14 @@ export interface ProPropertyLabelId {
     isOutgoing: boolean
     fkLanguage: number
 }
-export type ProPropertyLabelVal = string
-
-export class ProPropertyLabelService extends PrimaryDataService<DbItem, ProPropertyLabelId, ProPropertyLabelVal>{
+export interface ProPropertyLabelVal {label: string}
+export const proPropertyLabelKeyDef: KeyDefinition[] = [
+    {name: 'fkProperty', type: 'integer'},
+    {name: 'fkClass', type: 'integer'},
+    {name: 'isOutgoing', type: 'boolean'},
+    {name: 'fkLanguage', type: 'integer'},
+]
+export class ProPropertyLabelService extends PrimaryDataService<ProPropertyLabelId, ProPropertyLabelVal>{
     measure = 1000;
 
     constructor(wh: Warehouse) {
@@ -18,7 +24,8 @@ export class ProPropertyLabelService extends PrimaryDataService<DbItem, ProPrope
             wh,
             ['modified_projects_text_property'],
             proPropertyIdToString,
-            stringToProPropertyId
+            stringToProPropertyId,
+            proPropertyLabelKeyDef
         )
     }
 
@@ -56,10 +63,13 @@ export const updateSql = `
 SELECT
     fk_project "fkProject",
     fk_dfh_property "fkProperty",
-    fk_dfh_property_domain "fkPropertyDomain",
-    fk_dfh_property_range "fkPropertyRange",
+    COALESCE(fk_dfh_property_domain, fk_dfh_property_range) "fkClass",
+    CASE WHEN fk_dfh_property_domain IS NOT NULL
+    THEN true
+    ELSE false
+    END "isOutgoing",
     fk_language "fkLanguage",
-    string "label"
+    jsonb_build_object('label', string) val
 FROM
     projects.text_property
 WHERE
@@ -101,7 +111,5 @@ WITH tw1 AS (
         CASE WHEN "fkPropertyDomain" IS NOT NULL THEN true ELSE false END "isOutgoing",
         "fkLanguage"
     FROM
-    tw1;
-
-
+    tw1
 `

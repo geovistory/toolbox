@@ -12,7 +12,7 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitForEntityPreviewUntil} from '../../../helpers/warehouse-helpers';
 
 describe('REntityService', () => {
 
@@ -78,15 +78,14 @@ describe('REntityService', () => {
     await createProProject(ProProjectMock.PROJECT_1)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_PERSON_1)
 
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.val.isInProjectCount === 1
-    })
-
     const id = {
       pkEntity: entity.pk_entity ?? -1
     }
-    let result = await s.index.getFromIdx(id)
-    expect(result?.isInProjectCount).to.equal(1)
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => val?.isInProjectCount === 1
+    })
     await updateProInfoProjRel(
       entity.pk_entity ?? -1,
       {
@@ -95,12 +94,11 @@ describe('REntityService', () => {
       }
     )
 
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.val.isInProjectCount === 0
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => val?.isInProjectCount === 0
     })
-
-    result = await s.index.getFromIdx(id)
-    expect(result?.isInProjectCount).to.equal(0)
   })
 
 

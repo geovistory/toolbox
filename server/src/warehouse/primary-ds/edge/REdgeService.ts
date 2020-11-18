@@ -2,11 +2,11 @@
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {rEntityIdToString, stringToREntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
-import {REntityId} from '../entity/REntityService';
-import {buildIncomingEdges, buildOutgoingEdges, EdgeInitItem, EntityFields} from "./edge.commons";
+import {REntityId, rEntityKeyDefs} from '../entity/REntityService';
+import {buildIncomingEdges, buildOutgoingEdges, EntityFields} from "./edge.commons";
 
 
-export class REdgeService extends PrimaryDataService<EdgeInitItem, REntityId, EntityFields>{
+export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{
 
     measure = 10000;
 
@@ -16,26 +16,15 @@ export class REdgeService extends PrimaryDataService<EdgeInitItem, REntityId, En
             [
                 'modified_projects_info_proj_rel',
             ],
-            rEntityIdToString, stringToREntityId
+            rEntityIdToString, stringToREntityId,
+            rEntityKeyDefs
         )
-    }
-
-    dbItemToKeyVal(item: EdgeInitItem): {key: REntityId; val: EntityFields;} {
-        const key = {pkEntity: item.pkEntity, fkProject: item.fkProject}
-        const val = item.fields
-        return {key, val}
     }
 
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
     getDeletesSql(tmsp: Date) {return ''};
-
-
-
-    isEntityTable(str: string) {
-        return (str === 'temporal_entity' || str === 'persistent_item')
-    }
 
 
 }
@@ -176,6 +165,6 @@ tw5 AS (
 )
 SELECT
 t1.pk_entity "pkEntity",
-COALESCE(t2.fields, '{}'::json) fields
+COALESCE(t2.fields, '{}'::json) val
 FROM tw0 t1
 LEFT JOIN tw5 t2 ON t1.pk_entity = t2.pk_entity `

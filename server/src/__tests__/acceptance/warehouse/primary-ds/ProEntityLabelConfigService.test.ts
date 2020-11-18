@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
+import {clone, equals} from 'ramda';
 import {ProEntityLabelConfigService} from '../../../../warehouse/primary-ds/ProEntityLabelConfigService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {createProEntityLabelConfig, updateProEntityLabelConfig, deleteProEntityLabelConfig} from '../../../helpers/atomic/pro-entity-label-config.helper';
+import {createProEntityLabelConfig, deleteProEntityLabelConfig, updateProEntityLabelConfig} from '../../../helpers/atomic/pro-entity-label-config.helper';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
+import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProEntityLabelConfigMock} from '../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilNext, waitUntilSatisfy, searchUntilSatisfy} from '../../../helpers/warehouse-helpers';
-import {clone, equals} from 'ramda';
-import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProEntityLabelConfigService', () => {
 

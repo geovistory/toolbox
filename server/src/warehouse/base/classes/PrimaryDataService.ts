@@ -5,7 +5,6 @@ import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
-import {IndexDBGeneric} from './IndexDBGeneric';
 import {Logger} from './Logger';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
@@ -21,8 +20,8 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
     index: DataIndexPostgres<KeyModel, ValueModel>
 
-    // a meta index where each primary data service can store its catchup date
-    meta: IndexDBGeneric<string, string>
+    // // a meta index where each primary data service can store its catchup date
+    // meta: IndexDBGeneric<string, string>
 
     constructor(
         public wh: Warehouse,
@@ -39,12 +38,12 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
             'prim_' + this.constructor.name.replace('Service', ''),
             wh
         )
-        this.meta = new IndexDBGeneric(
-            (key: string) => key,
-            (str: string) => str,
-            this.constructor.name + '_meta',
-            wh
-        )
+        // this.meta = new IndexDBGeneric(
+        //     (key: string) => key,
+        //     (str: string) => str,
+        //     this.constructor.name + '_meta',
+        //     wh
+        // )
 
 
     }
@@ -90,7 +89,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     }
 
     async clearAll() {
-        await Promise.all([this.index.clearIdx(), this.meta.clearIdx()])
+        // await Promise.all([this.index.clearIdx(), this.meta.clearIdx()])
     }
 
     /**
@@ -119,10 +118,6 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      */
     async sync(tmsp: Date) {
 
-        // if (this.constructor.name === 'PEntityService') {
-        //     const d = new Date()
-        //     console.log('######', `${tmsp.toISOString()}, ${d.toISOString()},${d.getMilliseconds()}`)
-        // }
 
         // If syncing is true, it sets restartSyncing to true and stops the function here
         if (this.syncing$.value) {
@@ -187,20 +182,20 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const upsertHookSql = this.get2ndUpdatesSql ? `,
             hook AS (${this.get2ndUpdatesSql('tw1', date)})`
             : ''
-        const upserted = await this.wh.pgClient.query<{count:number}>(
+        const upserted = await this.wh.pgClient.query<{count: number}>(
             `
                 WITH tw1 AS (
                     ${updateSql}
                 )
                 ${upsertHookSql},
                 tw2 AS (
-                    INSERT INTO  ${this.index.schema}.${this.index.table}
+                    INSERT INTO  ${this.index.schemaTable}
                     (${this.index.keyCols}, val)
                     SELECT ${this.index.keyCols}, tw1.val
                     FROM tw1
                     ON CONFLICT (${this.index.keyCols}) DO UPDATE
                     SET val = EXCLUDED.val
-                    WHERE  ${this.index.schema}.${this.index.table}.val <> EXCLUDED.val
+                    WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
                     RETURNING *
                 )
                 SELECT count(*)::int FROM tw2
@@ -240,7 +235,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
                 )
                 ${deleteHookTw},
                 tw2 AS (
-                    UPDATE  ${this.index.schema}.${this.index.table} t1
+                    UPDATE  ${this.index.schemaTable} t1
                     SET tmsp_deleted = now()
                     FROM tw1
                     WHERE
@@ -279,17 +274,19 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     // than its end. It is null until sync() is called the first time.
 
     async setLastUpdateBegin(date: Date) {
-        await this.meta.addToIdx('lastUpdateBegin', date.toISOString())
+        await this.wh.metaTimestamps.addToIdx(this.constructor.name + '__last_update_begin', {tmsp: date.toISOString()});
     }
     async getLastUpdateBegin(): Promise<Date | undefined> {
-        const isoDate = await this.meta.getFromIdx('lastUpdateBegin')
+        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + '__last_update_begin');
+        const isoDate = val?.tmsp;
         return isoDate ? new Date(isoDate) : undefined
     }
     async setLastUpdateDone(date: Date) {
-        await this.meta.addToIdx('lastUpdateDone', date.toISOString())
+        await this.wh.metaTimestamps.addToIdx(this.constructor.name + '__last_update_done', {tmsp: date.toISOString()});
     }
     async getLastUpdateDone(): Promise<Date | undefined> {
-        const isoDate = await this.meta.getFromIdx('lastUpdateDone')
+        const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + '__last_update_done');
+        const isoDate = val?.tmsp;
         return isoDate ? new Date(isoDate) : undefined
     }
 }

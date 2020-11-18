@@ -1,24 +1,26 @@
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {dfhPropertyIdToString, stringToDfhPropertyId} from '../base/functions';
 import {Warehouse} from '../Warehouse';
+import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 export interface DfhPropertyLabelId {
     pkProperty: number
     language: string
 }
-export type DfhPropertyLabelVal = string;
-export class DfhPropertyLabelService extends PrimaryDataService<DbItem, DfhPropertyLabelId, DfhPropertyLabelVal>{
+export interface DfhPropertyLabelVal {label: string};
+export const dfhPropertyLabelIdKeyDef: KeyDefinition[] = [
+    {name: 'pkProperty', type: 'integer'},
+    {name: 'language', type: 'text'}
+]
+export class DfhPropertyLabelService extends PrimaryDataService<DfhPropertyLabelId, DfhPropertyLabelVal>{
     measure = 1000;
     constructor(wh: Warehouse) {
-        super(wh, ['modified_data_for_history_api_property'],dfhPropertyIdToString, stringToDfhPropertyId)
-    }
-    dbItemToKeyVal(item: DbItem): {key: DfhPropertyLabelId; val: DfhPropertyLabelVal;} {
-        const key: DfhPropertyLabelId = {
-            pkProperty: item.pkProperty,
-            language: item.language,
-        }
-        const val: DfhPropertyLabelVal = item.label
-
-        return {key, val}
+        super(
+            wh,
+            ['modified_data_for_history_api_property'],
+            dfhPropertyIdToString,
+            stringToDfhPropertyId,
+            dfhPropertyLabelIdKeyDef
+        )
     }
     getUpdatesSql(tmsp: Date) {
         return updateSql
@@ -36,7 +38,7 @@ const updateSql = `
     SELECT DISTINCT
         dfh_pk_property "pkProperty",
         dfh_property_label_language "language",
-        dfh_property_label "label"
+        jsonb_build_object('label', dfh_property_label) val
     FROM
         data_for_history.api_property
     WHERE

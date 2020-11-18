@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {REdgeService} from '../../../../warehouse/primary-ds/edge/REdgeService';
+import {REntityId} from '../../../../warehouse/primary-ds/entity/REntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
@@ -17,7 +18,7 @@ import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('REdgeService', () => {
 
@@ -43,15 +44,19 @@ describe('REdgeService', () => {
     await createInfStatement(InfStatementMock.NAME_1_TO_PERSON)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON)
     await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
-
-    await waitUntilSatisfy(s.afterPut$, (item) => {
-      return item.key.pkEntity === (InfTemporalEntityMock.NAMING_1.pk_entity ?? -1)
-        && item.val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
-        && item.val?.outgoing?.[1113]?.length === 1
-        && item.val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
-        && item.val?.outgoing?.[1111]?.length === 1
+    const id: REntityId = {
+      pkEntity: InfTemporalEntityMock.NAMING_1.pk_entity ?? -1,
+    }
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => {
+        return val?.outgoing?.[1113]?.[0].targetLabel === InfAppellationMock.JACK_THE_FOO.string
+          && val?.outgoing?.[1113]?.length === 1
+          && val?.outgoing?.[1111]?.[0].fkTarget === InfStatementMock.NAME_1_TO_PERSON.fk_object_info
+          && val?.outgoing?.[1111]?.length === 1
+      }
     })
-
 
   })
 

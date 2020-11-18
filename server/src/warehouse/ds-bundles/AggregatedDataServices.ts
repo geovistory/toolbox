@@ -60,10 +60,10 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
 
         // // Repo aggregators
         this.rClassLabel = this.registerDataService(new RClassLabelService(wh))
-        // this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelService(wh))
-        // this.rEntityLabel = this.registerDataService(new REntityLabelService(wh));
-        // this.rEntityType = this.registerDataService(new REntityTypeService(wh));
-        // this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
+        this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelService(wh))
+        this.rEntityLabel = this.registerDataService(new REntityLabelService(wh));
+        this.rEntityType = this.registerDataService(new REntityTypeService(wh));
+        this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
         // this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
         // this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
 

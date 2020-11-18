@@ -1,6 +1,7 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {Updater} from '../../../base/classes/Updater';
 import {rClassFieldIdToString, stringToRClassFieldId} from '../../../base/functions';
+import {KeyDefinition} from '../../../base/interfaces/KeyDefinition';
+import {RPropertyService} from '../../../primary-ds/property/RPropertyService';
 import {Warehouse} from '../../../Warehouse';
 import {RClassFieldLabelAggregator} from './RClassFieldLabelAggregator';
 import {RClassFieldLabelProviders} from './RClassFieldLabelProviders';
@@ -10,37 +11,39 @@ export interface RClassFieldId {
     fkProperty: number
     isOutgoing: boolean
 }
-
-type ValueModel = string
-export class RClassFieldLabelService extends AggregatedDataService<RClassFieldId, ValueModel, RClassFieldLabelAggregator>{
-    updater: Updater<RClassFieldId, RClassFieldLabelAggregator>;
-
+export interface RClassFieldVal {
+    label?: string
+}
+export const rClassFieldKeyDef: KeyDefinition[] = [
+    {name: 'fkClass', type: 'integer'},
+    {name: 'fkProperty', type: 'integer'},
+    {name: 'isOutgoing', type: 'boolean'},
+]
+export class RClassFieldLabelService extends AggregatedDataService<RClassFieldId, RClassFieldVal>{
+    creatorDS: RPropertyService
+    aggregator = RClassFieldLabelAggregator;
+    providers = RClassFieldLabelProviders;
+    customCreatorDSSql = [
+        {
+            select: `"fkDomain" as "fkClass", "pkProperty" as "fkProperty", true as "isOutgoing"`,
+        },
+        {
+            select: `"fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
+        }
+    ]
     constructor(public wh: Warehouse) {
         super(
             wh,
             rClassFieldIdToString,
-            stringToRClassFieldId
-        )
-        const aggregatorFactory = async (id: RClassFieldId) => {
-            const providers = new RClassFieldLabelProviders(this.wh.dep.rClassFieldLabel, id)
-            return new RClassFieldLabelAggregator(providers, id).create()
-        }
-        const register = async (result: RClassFieldLabelAggregator) => {
-            await this.put(result.id, result.propertyLabel)
-            await result.providers.removeProvidersFromIndexes()
-        }
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            rClassFieldIdToString,
             stringToRClassFieldId,
+            rClassFieldKeyDef
         )
 
-
+        this.registerCreatorDS(this.wh.prim.rProperty)
 
     }
-
+    getDependencies() {
+        return this.wh.dep.rClassFieldLabel
+    };
 
 }

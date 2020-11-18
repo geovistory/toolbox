@@ -55,13 +55,13 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
         super()
 
         this.dfhClassLabel = this.registerDataService(new DfhClassLabelService(this.wh));
-        // this.dfhPropertyLabel = this.registerDataService(new DfhPropertyLabelService(this.wh));
-        // this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
+        this.dfhPropertyLabel = this.registerDataService(new DfhPropertyLabelService(this.wh));
+        this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
         this.dfhOutgoingProperty = this.registerDataService(new DfhOutgoingPropertyService(this.wh));
 
         // this.proProject = this.registerDataService(new ProProjectService(this.wh));
         this.proClassLabel = this.registerDataService(new ProClassLabelService(this.wh));
-        // this.proPropertyLabel = this.registerDataService(new ProPropertyLabelService(this.wh));
+        this.proPropertyLabel = this.registerDataService(new ProPropertyLabelService(this.wh));
 
         // this.pClass = this.registerDataService(new PClassService(this.wh));
         // this.pProperty = this.registerDataService(new PPropertyService(this.wh));
@@ -72,11 +72,11 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
         this.pEdge = this.registerDataService(new PEdgeService(this.wh));
         this.pEntity = this.registerDataService(new PEntityService(this.wh));
 
-        // this.rEntity = this.registerDataService(new REntityService(this.wh));
-        // this.rEdge = this.registerDataService(new REdgeService(this.wh));
+        this.rEntity = this.registerDataService(new REntityService(this.wh));
+        this.rEdge = this.registerDataService(new REdgeService(this.wh));
 
         this.rClass = this.registerDataService(new RClassService(this.wh));
-        // this.rProperty = this.registerDataService(new RPropertyService(this.wh));
+        this.rProperty = this.registerDataService(new RPropertyService(this.wh));
 
         this.ready$ = combineLatest(
             this.registered.map(ds => ds.index.ready$.pipe(filter(r => r === true)))

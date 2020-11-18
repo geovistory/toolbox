@@ -64,7 +64,7 @@ async function start() {
   const resp = await chooseDb();
   const cmd = createCommand(resp);
 
-  require('./__execShell').fromScript(cmd);
+  return require('./__execShell').fromScript(cmd);
 }
 
 start().catch(err => console.error(err));
@@ -73,7 +73,7 @@ function createCommand(resp) {
   const mocha = path.join(__dirname, '../node_modules/.bin/mocha');
   const dist = path.join(__dirname, '../dist');
   const g = resp.cusomGrep || resp.grep;
-  const grep = g ? `--grep ${g}` : '';
+  const grep = g ? `--grep "${g}"` : '';
   const cmd = `${mocha}\
   --timeout ${resp.timeout}\
   --colors\

@@ -11,6 +11,7 @@ import {Logger} from './Logger';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
+interface CustomCreatorDsSql {select: string, where?: string}
 
 export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> {
 
@@ -65,10 +66,10 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * creatorDS columns with the name the corresponding columns have in this
      * aggregated data service.
      *
-     * example where column
+     * example
      * `"fkDomain" as "pkClass"` -> creatorDS.fkDomain = aggDS.pkClass
      */
-    customCreatorDSSelect?: string;
+    customCreatorDSSql?: CustomCreatorDsSql[];
 
     // true during running update cycle
     updating = false;
@@ -153,14 +154,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         /**
          * Handle deletes
          */
-
-
-
         changes += await this.handleDeletes(changesConsideredUntil, currentTimestamp);
-
-
-
-
 
         /**
          * Handle upserts
@@ -230,10 +224,13 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const handleDeletes = `
         -- find new deletes in creatorDS
         WITH tw1 AS (
-            SELECT ${this.getCreatorDsSelectStmt()}
+            ${this.getCreatorDsSqls().map(part => `
+            SELECT ${part.select}
             FROM ${this.creatorDS.index.schemaTable}
             WHERE tmsp_deleted > '${changesConsideredUntil}'
             AND tmsp_deleted <= '${currentTimestamp}'
+            ${part.where ? `AND ${part.where}` : ''}
+            `).join(' UNION ')}
         )
         ${twOnDelete},
         -- mark them as deleted in aggregatedDS
@@ -349,7 +346,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             let twOnUpsert = '';
             if (this.onUpsertSql) {
                 twOnUpsert = `
-                , afterChange AS (
+                , onUpsert AS (
                     ${this.onUpsertSql('tw0')}
                 )`;
             }
@@ -385,15 +382,18 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         if (this.creatorDS) {
             await this.wh.pgClient.query(`DROP TABLE IF EXISTS ${this.tempTable} `);
             const creatorIdx = this.creatorDS.index;
-            const selectStmt = this.getCreatorDsSelectStmt();
+            const creatorSqlParts = this.getCreatorDsSqls();
             const sql1 = `
                 CREATE TABLE ${this.tempTable} AS
-                SELECT ${selectStmt}
-                FROM ${creatorIdx.schemaTable}
-                WHERE tmsp_last_modification > '${changesConsideredUntil}'
-                AND tmsp_last_modification <= '${currentTimestamp}'
-                AND(tmsp_deleted IS NULL OR tmsp_deleted > '${currentTimestamp}')
-                    `;
+                ${creatorSqlParts.map(part => `
+                    SELECT ${part.select}
+                    FROM ${creatorIdx.schemaTable}
+                    WHERE tmsp_last_modification > '${changesConsideredUntil}'
+                    AND tmsp_last_modification <= '${currentTimestamp}'
+                    AND (tmsp_deleted IS NULL OR tmsp_deleted > '${currentTimestamp}')
+                    ${part.where ? `AND ${part.where}` : ''}
+                `).join(' UNION ')}
+                `;
 
             const sql2 = this.isReceiverOf.map(depDS => {
                 return `
@@ -450,9 +450,9 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * example where column
      * `"fkDomain" as "pkClass"` -> creatorDS.fkDomain = aggDS.pkClass
      */
-    private getCreatorDsSelectStmt() {
-        return this.customCreatorDSSelect ?
-            this.customCreatorDSSelect : this.index.keyCols;
+    private getCreatorDsSqls(): CustomCreatorDsSql[] {
+        return this.customCreatorDSSql ?
+            this.customCreatorDSSql : [{select: this.index.keyCols}];
     }
 
     /**

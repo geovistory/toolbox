@@ -1,16 +1,10 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../../Warehouse';
 import {RClassFieldLabelProviders} from './RClassFieldLabelProviders';
-import {RClassFieldId} from './RClassFieldLabelService';
+import {RClassFieldId, RClassFieldVal} from './RClassFieldLabelService';
+import {ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService';
 
-export class RClassFieldLabelAggregator extends AbstractAggregator<RClassFieldId> {
-
-
-  // the resulting label
-  propertyLabel = '';
-
-  // For testing / debugging
-  labelMissing = true;
+export class RClassFieldLabelAggregator extends AbstractAggregator<RClassFieldVal> {
 
   constructor(
     public providers: RClassFieldLabelProviders,
@@ -20,7 +14,6 @@ export class RClassFieldLabelAggregator extends AbstractAggregator<RClassFieldId
   }
 
   async create() {
-    await this.providers.load();
 
 
 
@@ -29,7 +22,7 @@ export class RClassFieldLabelAggregator extends AbstractAggregator<RClassFieldId
 
 
     // property label
-    let propertyLabel: string | undefined;
+    let val: ProPropertyLabelVal | undefined;
 
 
 
@@ -37,7 +30,7 @@ export class RClassFieldLabelAggregator extends AbstractAggregator<RClassFieldId
     * Try to get label in english
     */
     // from geovistory
-    propertyLabel = await this.providers.proPropertyLabel.get({
+    val = await this.providers.proPropertyLabel.get({
       fkProject: PK_DEFAULT_CONFIG_PROJECT,
       fkClass: this.id.fkClass,
       fkProperty: this.id.fkProperty,
@@ -45,28 +38,26 @@ export class RClassFieldLabelAggregator extends AbstractAggregator<RClassFieldId
       fkLanguage: defaultLang,
     })
 
-    if (propertyLabel) return this.finalize(propertyLabel);
+    if (val?.label) return this.finalize(val.label);
 
     // from ontome
-    propertyLabel = await this.providers.dfhPropertyLabel.get({
+    val = await this.providers.dfhPropertyLabel.get({
       pkProperty: this.id.fkProperty,
       language: 'en'
 
     })
-    if (propertyLabel) {
-      propertyLabel = this.completeReverseLabels(propertyLabel);
-      return this.finalize(propertyLabel);
+    if (val?.label) {
+      const label = this.completeReverseLabels(val.label);
+      return this.finalize(label);
     }
 
 
 
-    return this
+    return this.finalize()
   }
 
-  finalize(label: string) {
-    this.propertyLabel = label;
-    this.labelMissing = false;
-    return this;
+  finalize(label?: string): RClassFieldVal {
+    return {label};
   }
 
   /**

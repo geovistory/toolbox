@@ -1,5 +1,5 @@
 
 export interface KeyDefinition {
     name: string;
-    type: 'integer' | 'text';
+    type: 'integer' | 'text' | 'boolean';
 }

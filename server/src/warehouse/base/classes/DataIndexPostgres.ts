@@ -164,6 +164,23 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         })
     }
 
+
+    async getFromIdxNoDeleted(keyModel: KeyModel): Promise<ValueModel | undefined> {
+        return new Promise((res, rej) => {
+            const sql = `
+                SELECT val
+                FROM ${this.schema}.${this.table}
+                WHERE
+                ${this.keyDefs.map((k, i) => `"${k.name}"=$${i + 1}`).join(' AND ')}
+                AND tmsp_deleted IS NULL -- Check if should not be (tmsp_deleted IS NULL OR tmsp_deleted > currentTsmp)
+            `
+            const params = this.getKeyModelValues(keyModel)
+            this.pgClient.query<{val: ValueModel}>(sql, params)
+                .then(results => res(results?.rows?.[0]?.val))
+                .catch(e => rej(e))
+        })
+    }
+
     async getFromIdxWithTmsps(keyModel: KeyModel): Promise<{
         val: ValueModel,
         lastModification: Date | undefined,
@@ -220,6 +237,26 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         SELECT ${this.keyJsonObjSql} as key, val as value
         FROM ${this.schemaTable}
         WHERE ${cols.map((k, i) => `"${k}"=$${i + 1}`).join(' AND ')}`
+        const querystream = new QueryStream(
+            sql,
+            values(partialKey)
+        )
+        const stream = this.pgClient.query(querystream);
+        return handleAsyncStream<M, {key: KeyModel, value: ValueModel}>(stream, (item) => cb({
+            key: item.key,
+            value: item.value
+        }));
+    }
+
+    async forEachItemWithNoDeleted<M>(partialKey: Partial<KeyModel>, cb: (item: {key: KeyModel, value: ValueModel}) => Promise<M>): Promise<void> {
+        const cols = keys(partialKey);
+        if (cols.length < 1) throw new Error("Partial key must contain at least one key");
+        const sql = `
+        SELECT ${this.keyJsonObjSql} as key, val as value
+        FROM ${this.schemaTable}
+        WHERE ${cols.map((k, i) => `"${k}"=$${i + 1}`).join(' AND ')}
+        AND tmsp_deleted IS NULL -- Check if should not be (tmsp_deleted IS NULL OR tmsp_deleted > currentTsmp)
+        `
         const querystream = new QueryStream(
             sql,
             values(partialKey)

@@ -11,13 +11,6 @@ export abstract class DataService<KeyModel, ValueModel>{
     abstract index: DataIndexPostgres<KeyModel, ValueModel>
     abstract clearAll(): Promise<void>
 
-    // emits key value pair after it was put into this.index
-    afterPut$: Subject<{key: KeyModel, val: ValueModel}>;
-
-    // emits key after it was deleted from this.index
-    // also in the case that there was nothing to delete
-    afterDel$: Subject<KeyModel>;
-
     afterChange$ = new Subject<void>()
 
     // array of dependency indexes where this data service is provider
@@ -29,8 +22,6 @@ export abstract class DataService<KeyModel, ValueModel>{
 
 
     constructor() {
-        this.afterPut$ = new Subject<{key: KeyModel, val: ValueModel}>()
-        this.afterDel$ = new Subject<KeyModel>()
 
         this.afterChange$
             // .pipe(throttleTime(10)) TODO: Test if this helps!

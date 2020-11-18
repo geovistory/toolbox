@@ -11,7 +11,7 @@ export type IdentifyingPropertyVal = OutgoingPropertyVal[]
 
 export class IdentifyingPropertyService extends AggregatedDataService<RClassId, IdentifyingPropertyVal>{
     creatorDS: DfhOutgoingPropertyService
-    customCreatorDSSelect = `"fkDomain" as "pkClass"`
+    customCreatorDSSql = [{select: `"fkDomain" as "pkClass"`}]
 
     aggregator = IdentifyingPropertyAggregator;
     providers = IdentifyingPropertyProviders;

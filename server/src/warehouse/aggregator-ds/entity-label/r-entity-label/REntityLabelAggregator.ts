@@ -6,6 +6,7 @@ import {REntityId} from '../../../primary-ds/entity/REntityService';
 import {EntityLabelConfigVal, LabelPart} from '../../../primary-ds/ProEntityLabelConfigService';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {REntityLabelProviders} from './REntityLabelPoviders';
+import {EntityLabelVal} from '../entity-label.commons';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -15,7 +16,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class REntityLabelAggregator extends AbstractAggregator<REntityId> {
+export class REntityLabelAggregator extends AbstractAggregator<EntityLabelVal> {
 
     // array of strings to create label
     labelArr: string[] = [];
@@ -49,27 +50,25 @@ export class REntityLabelAggregator extends AbstractAggregator<REntityId> {
 
         if (entity) {
 
-            // load previous providers in a cache
-            // in the end (after create), this cahche will contain only deprecated providers
-            // that can then be deleted from dependency indexes
-            await this.providers.load()
-
             const fieldsWithEdges = await this.providers.edges.get(this.id)
 
-            if (keys(fieldsWithEdges).length === 0) return this;
+            if (keys(fieldsWithEdges).length === 0) return this.finalize();
 
-            if (entity.pkEntity === 2003) {
-                const a = ''
-            }
             const classId: RClassId = {
                 pkClass: entity.fkClass
             }
 
             await this.createLabel(classId, fieldsWithEdges)
         }
-        return this
+        return this.finalize()
     }
 
+    finalize(): EntityLabelVal {
+        return {
+            labelMissing: this.labelMissing,
+            entityLabel: this.entityLabel
+        }
+    }
 
     async createLabel(classId: RClassId, entityFields?: EntityFields) {
         const labelParts = await this.getLabelParts(classId);

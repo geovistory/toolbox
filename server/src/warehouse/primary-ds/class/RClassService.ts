@@ -1,9 +1,8 @@
-import {RClassFieldId} from '../../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {rClassIdToString, stringToRClassId} from '../../base/functions';
+import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
 import {RClassId} from '../DfhClassHasTypePropertyService';
-import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 
 
 const keyDefs: KeyDefinition[] = [
@@ -30,25 +29,19 @@ export class RClassService extends PrimaryDataService<RClassId, RClass>{
     /**
      * Add actions after a new RClass is put/updated into index
      */
-    this.afterPut$.subscribe(item => {
-      // Add update requests on aggregaters based on project class
-      // wh.agg.rClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
-      // Generate incoming class field for 'has appellation' property 1111
-      if ([8, 9, 30].includes(item.val.basicType)) {
-        const incomingField: RClassFieldId = {
-          fkClass: item.val.fkClass,
-          fkProperty: 1111,
-          isOutgoing: false
-        }
-        wh.agg.rClassFieldLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
-      }
-    })
-
-    /**
-    * Remove class preview from db
-    */
-    this.afterDel$.subscribe(item => {
-    })
+    // this.afterPut$.subscribe(item => {
+    //   // Add update requests on aggregaters based on project class
+    //   // wh.agg.rClassLabel.updater.addItemToQueue(item.key).catch(e => console.log(e))
+    //   // Generate incoming class field for 'has appellation' property 1111
+    //   if ([8, 9, 30].includes(item.val.basicType)) {
+    //     const incomingField: RClassFieldId = {
+    //       fkClass: item.val.fkClass,
+    //       fkProperty: 1111,
+    //       isOutgoing: false
+    //     }
+    //     wh.agg.rClassFieldLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
+    //   }
+    // })
 
 
   }

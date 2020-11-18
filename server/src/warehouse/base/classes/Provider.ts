@@ -16,7 +16,7 @@ export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, Prov
      */
     async getItemsWith(partialKey: Partial<ProviderKeyModel>): Promise<{key: ProviderKeyModel, value: ProviderValModel}[]> {
         const batch: {key: ProviderKeyModel, value: ProviderValModel}[] = []
-        await this.dependencyIndex.providerDS.index.forEachItemWith(partialKey, async (item) => {
+        await this.dependencyIndex.providerDS.index.forEachItemWithNoDeleted(partialKey, async (item) => {
             this.dependencyIndex.cacheNewDependencies(this.receiverKey, item.key);
             batch.push(item)
         })
@@ -28,7 +28,7 @@ export class Provider<ReceiverKeyModel, ReceiverValModel, ProviderKeyModel, Prov
      */
     public async get(providerKey: ProviderKeyModel) {
         this.dependencyIndex.cacheNewDependencies(this.receiverKey, providerKey);
-        return this.dependencyIndex.providerDS.index.getFromIdx(providerKey)
+        return this.dependencyIndex.providerDS.index.getFromIdxNoDeleted(providerKey)
 
     }
 
