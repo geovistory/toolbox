@@ -40,21 +40,6 @@ export class ProClassFieldsConfigService extends PrimaryDataService<PClassId, Pr
     }
     getDeletesSql(tmsp: Date) {return ''};
 
-    // /**
-    //  * returns class config of requested project, else of default config project
-    //  * @param classId
-    //  */
-    // async getClassConfig(classId: PClassId) {
-    //     let x = await this.index.getFromIdx(classId)
-    //     if (x) return x
-
-    //     x = await this.index.getFromIdx({
-    //         fkProject: PK_DEFAULT_CONFIG_PROJECT,
-    //         pkClass: classId.pkClass
-    //     })
-
-    //     return x
-    // }
 
 }
 
@@ -89,12 +74,12 @@ WITH tw1 AS (
 )
     SELECT
     fk_project "fkProject",
-    fk_source_class "fkSourceClass",
+    fk_source_class "pkClass",
     json_agg(json_build_object(
 		'fkProperty', fk_property,
 		'isOutgoing', property_is_outgoing,
 		'ordNum', ord_num
 	)) val
 	FROM tw1
-	GROUP BY fk_project, fk_source_class;
+	GROUP BY fk_project, fk_source_class
 `

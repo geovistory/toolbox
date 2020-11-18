@@ -66,7 +66,7 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
         // this.pClass = this.registerDataService(new PClassService(this.wh));
         // this.pProperty = this.registerDataService(new PPropertyService(this.wh));
 
-        // this.pClassFieldsConfig = this.registerDataService(new ProClassFieldsConfigService(this.wh));
+        this.pClassFieldsConfig = this.registerDataService(new ProClassFieldsConfigService(this.wh));
         this.proEntityLabelConfig = this.registerDataService(new ProEntityLabelConfigService(this.wh));
 
         this.pEdge = this.registerDataService(new PEdgeService(this.wh));

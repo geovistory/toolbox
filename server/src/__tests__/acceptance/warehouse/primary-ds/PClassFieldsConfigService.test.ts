@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {expect} from '@loopback/testlab';
-import {ProClassFieldsConfigService} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
+import {PClassId, ProClassFieldsConfigService} from '../../../../warehouse/primary-ds/ProClassFieldsConfigService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createProClassFieldConfig} from '../../../helpers/atomic/pro-class-field-config.helper';
@@ -9,7 +8,7 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProClassFieldConfigMock} from '../../../helpers/data/gvDB/ProClassFieldConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('PClassFieldsConfigService', () => {
 
@@ -25,11 +24,15 @@ describe('PClassFieldsConfigService', () => {
 
   it('should add project-class', async () => {
     const {one} = await createPClassMockData();
-    const result =   await waitUntilSatisfy(s.afterPut$, (i) => {
-      return i.key.fkProject === one.fk_project
-        && i.key.pkClass === one.fk_domain_class
+    const id: PClassId = {
+      fkProject: one.fk_project ?? -1,
+      pkClass: one.fk_domain_class ?? -1,
+    }
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => val?.length === 2
     })
-    expect(result.val.length).to.equal(2)
   })
 
 
