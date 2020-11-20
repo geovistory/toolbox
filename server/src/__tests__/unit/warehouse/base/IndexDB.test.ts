@@ -23,7 +23,7 @@ describe('IndexDB', function () {
 
     wh = new Warehouse(config)
     idx = new TestIdx('test_idx', wh)
-    await wh.connectPgClient();
+    // await wh.connectPgClient();
     wh.createSchema$.next();
     await waitUntilNext(idx.ready$)
 

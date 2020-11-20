@@ -25,7 +25,7 @@ async function chooseDb() {
       type: 'number',
       message: 'Mocha --timeout:',
       name: 'timeout',
-      initial: 4000,
+      initial: process.env.MOCHA_TIMEOUT || 4000,
       description: 'mocha --timeout',
     },
     {

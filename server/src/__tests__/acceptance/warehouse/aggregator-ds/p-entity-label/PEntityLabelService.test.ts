@@ -23,7 +23,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext, wait, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -37,7 +37,7 @@ describe('PEntityLabelService', function () {
         s = wh.agg.pEntityLabel
 
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create entity label of naming', async () => {
         const project = await createProject();

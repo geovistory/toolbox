@@ -4,7 +4,7 @@ import {ProProjectService} from '../../../../warehouse/primary-ds/ProProjectServ
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProProjectService', () => {
 
@@ -16,7 +16,7 @@ describe('ProProjectService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.proProject;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should have project in index', async () => {
     const project = await createProject('German')

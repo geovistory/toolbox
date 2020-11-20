@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {PEdgeService} from '../../../../warehouse/primary-ds/edge/PEdgeService';
+import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
@@ -17,8 +18,7 @@ import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy, searchUntilSatisfy} from '../../../helpers/warehouse-helpers';
-import {PEntityId} from '../../../../warehouse/primary-ds/entity/PEntityService';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('PEdgeService', () => {
 
@@ -31,7 +31,7 @@ describe('PEdgeService', () => {
     s = wh.prim.pEdge;
   })
   afterEach(async () => {
-    await wh.stop()
+    await stopWarehouse(wh)
   })
   it('should have field edges in index after initIdx()', async () => {
     await createInfLanguage(InfLanguageMock.GERMAN)

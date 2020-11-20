@@ -2,6 +2,7 @@
 import {expect} from '@loopback/testlab';
 import {PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
+import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
 import {createProDfhProfileProjRel} from '../../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
@@ -9,14 +10,13 @@ import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty, deleteProTextProperty, updateProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
+import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
-import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
-import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 
 
@@ -29,7 +29,7 @@ describe('PClassFieldLabelService', function () {
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.pClassFieldLabel
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create outgoing property label for en from ontome', async () => {
         const {prel, dfhProp} = await createDfhLabelMock();

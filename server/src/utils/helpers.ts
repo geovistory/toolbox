@@ -45,6 +45,6 @@ export function brkOnErr<M>(promise: Promise<M>) {
   return promise
     .then(data => data)
     .catch(error => {
-      throw new Error(error.message)
+      throw new Error(error)
     });
 }

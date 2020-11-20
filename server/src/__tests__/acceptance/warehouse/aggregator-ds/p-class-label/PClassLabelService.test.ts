@@ -11,7 +11,7 @@ import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForClassPreview} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForClassPreview} from '../../../../helpers/warehouse-helpers';
 
 describe('PClassLabelService', function () {
 
@@ -21,7 +21,7 @@ describe('PClassLabelService', function () {
         wh = await setupCleanAndStartWarehouse()
     })
 
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create class label of Person: de-ontome', async () => {
         const {prel, cla} = await createBasicMock();

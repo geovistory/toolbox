@@ -5,7 +5,7 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('RClassService', () => {
 
@@ -17,7 +17,10 @@ describe('RClassService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.rClass;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {
+    await wait(200)
+    await stopWarehouse(wh)
+  })
 
   it('should add api-class', async () => {
     const {cla} = await createRClassMockData();

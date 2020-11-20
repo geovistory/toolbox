@@ -1,17 +1,17 @@
-import {PoolClient} from 'pg';
+import {Pool} from 'pg';
 import QueryStream from 'pg-query-stream';
+import {keys, values} from 'ramda';
 import {combineLatest, ReplaySubject} from 'rxjs';
 import {first} from 'rxjs/operators';
 import {Warehouse} from '../../Warehouse';
-import {handleAsyncStream} from './IndexLeveldb';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
+import {handleAsyncStream} from './IndexLeveldb';
 import {SqlUpsertQueue} from './SqlUpsertQueue';
-import {keys, values} from 'ramda';
 
 export class DataIndexPostgres<KeyModel, ValueModel> {
 
     static indexes = 0;
-    pgClient: PoolClient
+    pgPool: Pool
 
     schema: string;
     table: string;
@@ -42,7 +42,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             wh.pgConnected$,
             wh.createSchema$
         ).pipe(first()).subscribe(([client]) => {
-            this.pgClient = client;
+            this.pgPool = client;
             this.setupTable()
                 .then(() => {
                     this.ready$.next(true)
@@ -54,7 +54,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
 
     private async setupTable() {
-        await this.pgClient.query(`
+        await this.pgPool.query(`
                 CREATE TABLE IF NOT EXISTS ${this.schema}.${this.table} (
                 ${this.keyDefs.map(keyDef => `"${keyDef.name}" ${keyDef.type}`).join(',')},
                 val jsonb,
@@ -65,12 +65,12 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             console.log(`Error during CREATE TABLE:  ${this.schema}.${this.table}:`, e)
         })
 
-        await this.pgClient.query(`
+        await this.pgPool.query(`
                 DROP TRIGGER IF EXISTS last_modification_tmsp ON ${this.schema}.${this.table}
             `).catch((e) => {
             console.log(`Error during DROP TRIGGER last_modification_tmsp:  ${this.schema}.${this.table}:`, e)
         })
-        await this.pgClient.query(`
+        await this.pgPool.query(`
                 CREATE TRIGGER last_modification_tmsp
                 BEFORE INSERT OR UPDATE
                 ON ${this.schema}.${this.table}
@@ -86,7 +86,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         ]
         for (const indexCol of indexedCols) {
 
-            await this.pgClient.query(`
+            await this.pgPool.query(`
                     CREATE INDEX IF NOT EXISTS ${this.schema}_${this.table}_${indexCol}_idx
                     ON ${this.schema}.${this.table}("${indexCol}");
                 `).catch((e) => {
@@ -112,7 +112,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         const key: string = this.keyToString(keyModel);
 
         return new Promise((res, rej) => {
-            this.pgClient.query(this.insertStmt, [
+            this.pgPool.query(this.insertStmt, [
                 ...this.getKeyModelValues(keyModel),
                 key,
                 Array.isArray(val) ? JSON.stringify(val) : val,
@@ -132,14 +132,14 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
     async removeFromIdx(keyModel: KeyModel): Promise<void> {
         const key: string = this.keyToString(keyModel);
-        await this.pgClient.query(`
+        await this.pgPool.query(`
             DELETE FROM ${this.schema}.${this.table} WHERE key = $1;
         `, [key]);
     }
 
 
     async removeFromIdxWhereDeletedBefore(tmsp: string): Promise<void> {
-        await this.pgClient.query(`
+        await this.pgPool.query(`
             DELETE FROM ${this.schema}.${this.table} WHERE tmsp_deleted <= $1;
         `, [tmsp]);
     }
@@ -158,7 +158,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
                 ${this.keyDefs.map((k, i) => `"${k.name}"=$${i + 1}`).join(' AND ')}
             `
             const params = this.getKeyModelValues(keyModel)
-            this.pgClient.query<{val: ValueModel}>(sql, params)
+            this.pgPool.query<{val: ValueModel}>(sql, params)
                 .then(results => res(results?.rows?.[0]?.val))
                 .catch(e => rej(e))
         })
@@ -175,7 +175,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
                 AND tmsp_deleted IS NULL -- Check if should not be (tmsp_deleted IS NULL OR tmsp_deleted > currentTsmp)
             `
             const params = this.getKeyModelValues(keyModel)
-            this.pgClient.query<{val: ValueModel}>(sql, params)
+            this.pgPool.query<{val: ValueModel}>(sql, params)
                 .then(results => res(results?.rows?.[0]?.val))
                 .catch(e => rej(e))
         })
@@ -194,7 +194,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
                 ${this.keyDefs.map((k, i) => `"${k.name}"=$${i + 1}`).join(' AND ')}
             `
             const params = this.getKeyModelValues(keyModel)
-            this.pgClient.query<{
+            this.pgPool.query<{
                 val: ValueModel,
                 tmsp_last_modification: string,
                 tmsp_deleted: string
@@ -216,7 +216,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
         const querystream = new QueryStream(
             `SELECT key FROM ${this.schema}.${this.table}`
         )
-        const stream = this.pgClient.query(querystream);
+        const stream = await this.manageQueryStream<M>(querystream);
         return handleAsyncStream<M, {key: string}>(stream, (item) => cb(this.stringToKey(item.key)));
 
     }
@@ -226,7 +226,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             `SELECT key FROM ${this.schema}.${this.table} WHERE key LIKE $1`,
             [str + '%']
         )
-        const stream = this.pgClient.query(querystream);
+        const stream = await this.manageQueryStream<M>(querystream);
         return handleAsyncStream<M, {key: string}>(stream, (item) => cb(this.stringToKey(item.key)));
     }
 
@@ -241,7 +241,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             sql,
             values(partialKey)
         )
-        const stream = this.pgClient.query(querystream);
+        const stream = await this.manageQueryStream<M>(querystream);
         return handleAsyncStream<M, {key: KeyModel, value: ValueModel}>(stream, (item) => cb({
             key: item.key,
             value: item.value
@@ -261,7 +261,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             sql,
             values(partialKey)
         )
-        const stream = this.pgClient.query(querystream);
+        const stream = await this.manageQueryStream<M>(querystream);
         return handleAsyncStream<M, {key: KeyModel, value: ValueModel}>(stream, (item) => cb({
             key: item.key,
             value: item.value
@@ -269,15 +269,16 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
     }
 
 
+
     async clearIdx() {
-        await this.pgClient.query(`TRUNCATE TABLE ${this.schema}.${this.table};`)
+        await this.pgPool.query(`TRUNCATE TABLE ${this.schema}.${this.table};`)
     }
 
 
     async keyExists(key: string): Promise<boolean> {
         return new Promise((res, rej) => {
 
-            this.pgClient.query<{exists: boolean}>(
+            this.pgPool.query<{exists: boolean}>(
                 `SELECT EXISTS (SELECT key FROM ${this.schema}.${this.table} WHERE key = $1);`,
                 [key]
             )
@@ -290,7 +291,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
     async getKeys(): Promise<KeyModel[]> {
         return new Promise((res, rej) => {
-            this.pgClient.query<{keys: KeyModel[]}>(
+            this.pgPool.query<{keys: KeyModel[]}>(
                 `SELECT array_agg(key) AS keys FROM ${this.schema}.${this.table};`
             ).then(results => res(results?.rows?.[0].keys)
             ).catch(e => rej(e))
@@ -301,12 +302,24 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
 
     async getLength(): Promise<number> {
         return new Promise((res, rej) => {
-            this.pgClient.query<{count: string}>(
+            this.pgPool.query<{count: string}>(
                 `SELECT count(*) FROM ${this.schema}.${this.table}`
             ).then(results => res(parseInt(results?.rows?.[0].count, 10))
             ).catch(e => rej(e))
         })
 
+    }
+
+    /**
+     * Takes QueryStream, checks out a pg.Client and returns the QueryStream.
+     * It releases the checked out client when stream ends.
+     * @param querystream
+     */
+    private async manageQueryStream<M>(querystream: QueryStream) {
+        const client = await this.pgPool.connect();
+        const stream = client.query(querystream);
+        stream.on('end', () => client.release());
+        return stream;
     }
 
     createInsertStatement() {

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
+import {PEntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -8,7 +9,7 @@ import {createInfLanguage, createLanguages} from '../../../../helpers/atomic/inf
 import {createInfPersistentItem} from '../../../../helpers/atomic/inf-persistent-item.helper';
 import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
 import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-entity.helper';
-import {createProInfoProjRel, updateProInfoProjRel, addInfosToProject, removeEntityFromProject} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import {addInfosToProject, createProInfoProjRel, removeEntityFromProject, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
@@ -20,11 +21,9 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, waitUntilNext, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
-import {PEntityTypeService} from '../../../../../warehouse/aggregator-ds/entity-type/p-entity-type/PEntityTypeService';
-import {createModelMockForCityType, createProject1, createProject2, createProject3, createInstancesForCityType} from '../../../../helpers/graphs/cityType.helper';
-import {project} from 'ramda';
-import {createModelMockForMadrid, createInstancesForMadrid} from '../../../../helpers/graphs/madrid.helper';
+import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
+import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -37,7 +36,7 @@ describe('PEntityTypeService', function () {
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.pEntityType
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create fk_type of geographical place', async () => {
         const {madrid, project, cityTypeProjRel} = await createMock();

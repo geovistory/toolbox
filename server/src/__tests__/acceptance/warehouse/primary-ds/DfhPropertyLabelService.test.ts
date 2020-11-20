@@ -6,7 +6,7 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, deleteDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, wait} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, wait, stopWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('DfhPropertyLabelService', () => {
 
@@ -21,7 +21,7 @@ describe('DfhPropertyLabelService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.dfhPropertyLabel;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should have api property label in index after initIdx()', async () => {
     const c = await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);

@@ -6,7 +6,7 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {setupCleanAndStartWarehouse, searchUntilSatisfy} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('DfhOutgoingPropertyService', () => {
 
@@ -18,7 +18,7 @@ describe('DfhOutgoingPropertyService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.dfhOutgoingProperty;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
 
   it('should have two outgoing properties in index', async () => {

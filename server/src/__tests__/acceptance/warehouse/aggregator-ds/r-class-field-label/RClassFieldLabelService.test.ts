@@ -13,7 +13,7 @@ import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMo
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../../helpers/warehouse-helpers';
 
 
 
@@ -27,7 +27,7 @@ describe('RClassFieldLabelService', function () {
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.rClassFieldLabel
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create outgoing property label for en from ontome', async () => {
         const {dfhProp} = await createDfhLabelMock();

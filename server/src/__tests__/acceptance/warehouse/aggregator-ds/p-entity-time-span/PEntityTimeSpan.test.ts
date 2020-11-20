@@ -12,6 +12,7 @@ import {createInfTemporalEntity} from '../../../../helpers/atomic/inf-temporal-e
 import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
 import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
+import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
@@ -21,8 +22,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreviewUntil, waitUntilSatisfy, wait, waitForEntityPreview, waitUntilNext} from '../../../../helpers/warehouse-helpers';
-import {getWarEntityPreview} from '../../../../helpers/atomic/war-entity_preview.helper';
+import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -38,7 +38,7 @@ describe('PEntityTimeSpan', function () {
         edgeService = wh.prim.pEdge
         s = wh.agg.pEntityTimeSpan
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create edges with time primitives', async () => {
         const {shipVoyage, project} = await createMock();

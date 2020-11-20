@@ -12,7 +12,7 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitForEntityPreviewUntil} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreviewUntil} from '../../../helpers/warehouse-helpers';
 
 describe('REntityService', () => {
 
@@ -27,7 +27,7 @@ describe('REntityService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.rEntity;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should have entity preview', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)

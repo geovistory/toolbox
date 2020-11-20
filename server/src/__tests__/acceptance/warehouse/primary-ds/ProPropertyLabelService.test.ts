@@ -11,7 +11,7 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../helpers/data/gvDB/ProTextPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProPropertyLabelService', () => {
 
@@ -27,7 +27,7 @@ describe('ProPropertyLabelService', () => {
   })
 
 
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should create pro Property label in db', async () => {
     const txtProp = await createMock();

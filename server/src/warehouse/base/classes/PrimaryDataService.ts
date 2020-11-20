@@ -56,7 +56,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
         await this.addPgListeners()
 
-        const dbNow = await this.wh.pgClient.query('SELECT now() as now');
+        const dbNow = await this.wh.pgPool.query('SELECT now() as now');
 
         await this.sync(new Date(dbNow.rows?.[0]?.now))
 
@@ -200,7 +200,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         SELECT count(*)::int FROM tw2
         `
         const params = [date]
-        const upserted = await this.wh.pgClient.query<{count: number}>(sql, params);
+        const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
         if (upserted.rows?.[0].count > 0) {
             this.afterChange$.next()
         }
@@ -227,7 +227,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
                 ${this.get2ndDeleteSql('tw1', date)}
             )`
             : '';
-        const deleted = await this.wh.pgClient.query<{count: number}>(
+        const deleted = await this.wh.pgPool.query<{count: number}>(
             `
                 WITH tw1 AS (
                     ${deleteSql}

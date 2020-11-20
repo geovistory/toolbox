@@ -6,7 +6,7 @@ import {AtmLanguages, createInfLanguage} from '../../../../helpers/atomic/inf-la
 import {createProTextPropertyClassLabel, deleteProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, waitForClassPreview} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForClassPreview, stopWarehouse} from '../../../../helpers/warehouse-helpers';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 
 describe('RClassLabelService', function () {
@@ -18,7 +18,7 @@ describe('RClassLabelService', function () {
     })
 
     afterEach(async function () {
-        await wh.stop()
+        await stopWarehouse(wh)
     })
 
 

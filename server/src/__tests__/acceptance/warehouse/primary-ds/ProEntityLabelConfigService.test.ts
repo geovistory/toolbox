@@ -12,7 +12,7 @@ import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock'
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProEntityLabelConfigMock} from '../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('ProEntityLabelConfigService', () => {
 
@@ -27,7 +27,7 @@ describe('ProEntityLabelConfigService', () => {
   })
 
 
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should create pro entity label config in db', async () => {
     await createProjectMock();

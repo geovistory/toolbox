@@ -8,7 +8,7 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProClassFieldConfigMock} from '../../../helpers/data/gvDB/ProClassFieldConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('PClassFieldsConfigService', () => {
 
@@ -20,7 +20,7 @@ describe('PClassFieldsConfigService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pClassFieldsConfig;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should add project-class', async () => {
     const {one} = await createPClassMockData();

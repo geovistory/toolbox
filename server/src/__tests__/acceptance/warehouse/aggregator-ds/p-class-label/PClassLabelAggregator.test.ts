@@ -6,7 +6,7 @@ import {ClassIdMock} from '../../../../helpers/data/whDb/ClassIdMock';
 import {DfhClassLabelMock} from '../../../../helpers/data/whDb/DfhClassLabelMock';
 import {ProClassLabelMock} from '../../../../helpers/data/whDb/ProClassLabelMock';
 import {ProjectMock} from '../../../../helpers/data/whDb/ProjectMock';
-import {setupWarehouseWithoutStarting} from '../../../../helpers/warehouse-helpers';
+import {setupWarehouseWithoutStarting, stopWarehouse} from '../../../../helpers/warehouse-helpers';
 
 
 describe('PClassLabelAggregator', function () {
@@ -21,7 +21,7 @@ describe('PClassLabelAggregator', function () {
         await wh.clearWhDB()
     })
     after(async () => {
-        await wh.stop()
+        await stopWarehouse(wh)
     })
 
     it('should create class label from: de-project', async () => {

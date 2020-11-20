@@ -7,7 +7,7 @@ import {createProject} from '../../../helpers/atomic/pro-project.helper';
 import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext, stopWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('ProClassLabelService', () => {
 
@@ -21,7 +21,7 @@ describe('ProClassLabelService', () => {
     s = wh.prim.proClassLabel;
   })
 
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should create pro class label in db', async () => {
     await createLanguages();

@@ -251,7 +251,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // if (this.constructor.name === 'PEntityLabelService') {
         //     console.log(`--> ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp}`)
         // }
-        const res = await this.wh.pgClient.query<{count: number;}>(handleDeletes);
+        const res = await this.wh.pgPool.query<{count: number;}>(handleDeletes);
         changes += res.rows[0].count;
         // useful for debugging
         // if (this.constructor.name === 'PEntityLabelService') {
@@ -277,12 +277,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                 .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
             AND t1.tmsp_last_aggregation < '${currentTimestamp}'
         `;
-        await this.wh.pgClient.query(cleanupSql);
+        await this.wh.pgPool.query(cleanupSql);
     }
 
     async aggregateAll(currentTimestamp: string) {
         let changes = 0
-        const res = await brkOnErr(this.wh.pgClient.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
+        const res = await brkOnErr(this.wh.pgPool.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
         const size = res.rows[0].count;
         const limit = 100;
         for (let offset = 0; offset < size; offset += limit) {
@@ -298,7 +298,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     private async aggregateBatch(limit: number, offset: number, currentTimestamp: string) {
         let changes = 0
 
-        const toAggregate = await brkOnErr(this.wh.pgClient.query<KeyModel>(`
+        const toAggregate = await brkOnErr(this.wh.pgPool.query<KeyModel>(`
         SELECT * From ${this.tempTable}
         LIMIT $1 OFFSET $2
         `, [limit, offset]));
@@ -357,7 +357,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                 SELECT count(*):: int changes FROM tw0;
                 `;
             // logSql(sql, params)
-            const result = await brkOnErr(this.wh.pgClient.query<{changes: number;}>(sql, params));
+            const result = await brkOnErr(this.wh.pgPool.query<{changes: number;}>(sql, params));
             changes = result.rows?.[0].changes ?? 0;
         }
         return changes;
@@ -380,7 +380,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      */
     private async findWhatToAggregate(changesConsideredUntil: string, currentTimestamp: string) {
         if (this.creatorDS) {
-            await this.wh.pgClient.query(`DROP TABLE IF EXISTS ${this.tempTable} `);
+            await this.wh.pgPool.query(`DROP TABLE IF EXISTS ${this.tempTable} `);
             const creatorIdx = this.creatorDS.index;
             const creatorSqlParts = this.getCreatorDsSqls();
             const sql1 = `
@@ -420,7 +420,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                     )
                 `;
             }).join('\n');
-            await this.wh.pgClient.query(sql1 + sql2);
+            await this.wh.pgPool.query(sql1 + sql2);
 
             // if (this.constructor.name === 'PEntityLabelService') {
             //     console.log('-------------')

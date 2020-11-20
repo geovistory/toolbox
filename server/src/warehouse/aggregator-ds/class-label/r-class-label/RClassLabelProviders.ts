@@ -4,10 +4,11 @@ import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {DfhClassLabelId, DfhClassLabelVal} from '../../../primary-ds/DfhClassLabelService';
 import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService';
 import {RClassLabelDependencies} from './RClassLabelDependencies';
+import {RClassLabelValue} from './RClassLabelService';
 
 export class RClassLabelProviders extends Providers<RClassId> {
-  dfhClassLabel: Provider<RClassId, string, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: Provider<RClassId, string, ProClassLabelId, ProClassLabelVal>
+  dfhClassLabel: Provider<RClassId, RClassLabelValue, DfhClassLabelId, DfhClassLabelVal>
+  proClassLabel: Provider<RClassId, RClassLabelValue, ProClassLabelId, ProClassLabelVal>
 
   constructor(
     dep: RClassLabelDependencies,

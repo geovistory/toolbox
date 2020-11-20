@@ -14,7 +14,7 @@ import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistent
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, wait} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
 
 describe('REntityClassLabelService', function () {
 
@@ -23,7 +23,7 @@ describe('REntityClassLabelService', function () {
         await cleanDb()
         wh = await setupCleanAndStartWarehouse()
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create entity class label of Person', async () => {
         const {pers, cla} = await createBasicMock();

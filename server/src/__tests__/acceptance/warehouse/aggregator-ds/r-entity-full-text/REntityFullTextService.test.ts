@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
 import {REntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/r-entity-full-text/REntityFullTextService';
@@ -31,7 +32,7 @@ import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProf
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -47,7 +48,7 @@ describe('REntityFullTextService', function () {
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.rEntityFullText
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create full text of naming', async () => {
         const {naming} = await createNamingMock();
@@ -66,9 +67,9 @@ describe('REntityFullTextService', function () {
         const {naming} = await createNamingAndPersonMock();
 
         const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
-        const id: REntityId = {
-            pkEntity: naming.pk_entity ?? -1
-        }
+        // const id: REntityId = {
+        //     pkEntity: naming.pk_entity ?? -1
+        // }
         await waitForEntityPreview(wh, [
             {pk_entity: {eq: naming.pk_entity}},
             {fk_project: {eq: null}},

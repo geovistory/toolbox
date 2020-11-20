@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {RPropertyId, RPropertyService} from '../../../../warehouse/primary-ds/property/RPropertyService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
+import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse} from '../../../helpers/warehouse-helpers';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
 
 describe('RPropertyService', () => {
 
@@ -18,7 +18,7 @@ describe('RPropertyService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.rProperty;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should add project-property', async () => {
     const {prop} = await createPPropertyMockData();

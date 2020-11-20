@@ -24,13 +24,15 @@ export async function setupCleanAndStartWarehouse() {
 
 
     const wh = new Warehouse(config)
-    const client = await wh.pgPool.connect()
-    await client.query(`drop schema if exists ${wh.schemaName} cascade;`)
-    client.release()
+    await wh.pgPool.query(`drop schema if exists ${wh.schemaName} cascade;`)
     await wh.start()
-    await wh.pgClient.query('LISTEN entity_previews_updated;')
-    await wh.pgClient.query('LISTEN modified_war_class_preview;')
+    await wh.pgListener.query('LISTEN entity_previews_updated;')
+    await wh.pgListener.query('LISTEN modified_war_class_preview;')
     return wh;
+}
+export async function stopWarehouse(wh:Warehouse){
+    await wait(200)
+    await wh.stop()
 }
 /**
  * Returns a Promise that resolves after given miliseconds
@@ -56,7 +58,7 @@ export async function waitUntilNext<M>(observable$: Observable<M>) {
  */
 export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEntityPreview>[]) {
     return new Promise<WarEntityPreview>((res, rej) => {
-        wh.pgClient.on('notification', (msg) => {
+        wh.pgListener.on('notification', (msg) => {
             if (msg.channel === 'entity_previews_updated') {
                 createWarEntityPreviewRepo().find({
                     where: {
@@ -87,7 +89,7 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
  */
 export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarEntityPreview) => boolean) {
     return new Promise<WarEntityPreview>((res, rej) => {
-        wh.pgClient.on('notification', (msg) => {
+        wh.pgListener.on('notification', (msg) => {
             if (msg.channel === 'entity_previews_updated') {
                 createWarEntityPreviewRepo().find({
                     where: {
@@ -120,7 +122,7 @@ export function waitForEntityPreviewUntil<M>(wh: Warehouse, compare: (item: WarE
  */
 export async function waitForClassPreview<M>(wh: Warehouse, whereFilter: Where<WarClassPreview>[]) {
     return new Promise<WarClassPreview>((res, rej) => {
-        wh.pgClient.on('notification', (msg) => {
+        wh.pgListener.on('notification', (msg) => {
             if (msg.channel === 'modified_war_class_preview') {
                 createWarClassPreviewRepo().find({
                     where: {

@@ -1,4 +1,5 @@
-import {PoolClient} from 'pg';
+import {Pool} from 'pg';
+import {values} from 'ramda';
 import {combineLatest, ReplaySubject} from 'rxjs';
 import {first} from 'rxjs/operators';
 import {Warehouse} from '../../Warehouse';
@@ -6,7 +7,6 @@ import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {AggregatedDataService} from './AggregatedDataService';
 import {ClearAll} from './ClearAll';
 import {DataService} from './DataService';
-import {values} from 'ramda';
 
 interface Cache {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +24,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
     providerKeyDefs: KeyDefinition[];
     receiverKeyDefs: KeyDefinition[];
     keyCols: string; // e.g. '"r_fkProject","r_pkEntity", "p_fkProject","p_pkEntity"'
-    pgClient: PoolClient
+    pgPool: Pool
 
 
     private cache: Cache = {};
@@ -54,7 +54,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
             wh.pgConnected$,
             wh.createSchema$
         ).pipe(first()).subscribe(([client]) => {
-            this.pgClient = client;
+            this.pgPool = client;
             this.setupTable()
                 .then(() => {
                     this.ready$.next(true)
@@ -65,7 +65,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
 
 
     private async setupTable() {
-        await this.pgClient.query(`
+        await this.pgPool.query(`
                 CREATE TABLE IF NOT EXISTS ${this.schemaTable} (
                 -- provider key cols
                 ${this.providerKeyDefs.map(k => `"${k.name}" ${k.type}`).join(',')},
@@ -85,7 +85,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
         ]
         for (const indexCol of indexedCols) {
 
-            await this.pgClient.query(`
+            await this.pgPool.query(`
                     CREATE INDEX IF NOT EXISTS ${this.schema}_${this.table}_${indexCol}_idx
                     ON ${this.schemaTable}("${indexCol}");
                 `).catch((e) => {
@@ -138,7 +138,7 @@ export class DependencyIndex<ReceiverKeyModel, ReceiverValModel, ProviderKeyMode
 
     async clearAll(): Promise<void> {
 
-        await this.pgClient.query(`
+        await this.pgPool.query(`
         DELETE FROM ${this.schemaTable};
         `).catch((e) => {
             console.log(`Error during DELETE INDEX:  ${this.schemaTable}:`, e)

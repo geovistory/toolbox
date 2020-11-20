@@ -5,7 +5,7 @@ import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {setupCleanAndStartWarehouse, waitUntilSatisfy, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../../helpers/warehouse-helpers';
 
 
 
@@ -18,7 +18,7 @@ describe('IdentifyingPropertyService', function () {
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.identifyingProperty
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should have one identifying property for birth', async () => {
         await Promise.all([

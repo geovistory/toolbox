@@ -13,7 +13,7 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('PEntityService', () => {
 
@@ -28,7 +28,7 @@ describe('PEntityService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pEntity;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should have entity in index()', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)

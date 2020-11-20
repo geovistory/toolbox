@@ -32,7 +32,8 @@ export interface WarehouseConfig {
 export class Warehouse {
 
     pgPool: Pool;
-    pgClient: PoolClient;
+    pgListener: PoolClient;
+    // pgClient: PoolClient;
 
     // Indexes holding data given by db
     prim: PrimaryDataServices;
@@ -49,7 +50,7 @@ export class Warehouse {
 
     notificationHandlers: {[key: string]: NotificationHandler} = {}
 
-    pgConnected$ = new ReplaySubject<PoolClient>()
+    pgConnected$ = new ReplaySubject<Pool>()
     createSchema$ = new Subject<void>()
     schemaName = 'war_cache'
     metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
@@ -63,6 +64,8 @@ export class Warehouse {
             connectionString,
             ssl
         });
+        this.pgConnected$.next(this.pgPool)
+
 
         Logger.msg(this.constructor.name, `create warehouse for DB: ${connectionString.split('@')[1]}`)
 
@@ -91,7 +94,7 @@ export class Warehouse {
      */
     async dbSetup() {
 
-        await this.connectPgClient();
+        await this.connectPgListener();
 
         await this.initWhDbSchema()
     }
@@ -185,7 +188,7 @@ export class Warehouse {
      */
     async hardReset(errorMsg: string) {
         // delete the warehouse schema
-        await this.pgClient.query(`DROP SCHEMA IF EXISTS ${this.schemaName}`)
+        await this.pgPool.query(`DROP SCHEMA IF EXISTS ${this.schemaName}`)
         // terminate process
         throw new Error(errorMsg)
     }
@@ -245,8 +248,8 @@ export class Warehouse {
      * soon as all 'tables' (= indexes) are ready to be used
      */
     private async initWhDbSchema() {
-        await this.pgClient.query(`CREATE SCHEMA IF NOT EXISTS ${this.schemaName}`)
-        await this.pgClient.query(`
+        await this.pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${this.schemaName}`)
+        await this.pgPool.query(`
         CREATE OR REPLACE FUNCTION ${this.schemaName}.tmsp_last_modification()
                 RETURNS trigger
                 LANGUAGE 'plpgsql'
@@ -309,19 +312,19 @@ export class Warehouse {
         Logger.itTook(this.constructor.name, t1, 'to cycle for all aggregators', 0)
     }
 
-    /**
-     * checks out a new postgres client from the pool and nexts the pgConnected$
-     * observable that allows classes aware of this warehouse to wait for the
-     * connection before executing postgres queries.
-     */
-    public async connectPgClient() {
-        this.pgClient = await this.pgPool.connect();
-        this.pgConnected$.next(this.pgClient)
+    // /**
+    //  * checks out a new postgres client from the pool and nexts the pgConnected$
+    //  * observable that allows classes aware of this warehouse to wait for the
+    //  * connection before executing postgres queries.
+    //  */
+    public async connectPgListener() {
+
+        this.pgListener = await this.pgPool.connect();
     }
 
 
     private async getInitBackupDate(): Promise<Date> {
-        const dbNow = await this.pgClient.query('SELECT now() as now');
+        const dbNow = await this.pgPool.query('SELECT now() as now');
         const tmsp: string = dbNow.rows?.[0]?.now;
         return new Date(tmsp)
     }
@@ -348,7 +351,7 @@ export class Warehouse {
      * returns now() tmsp from postgres
      */
     async pgNow() {
-        const res = await this.pgClient.query<{now: Date}>('select now()')
+        const res = await this.pgPool.query<{now: Date}>('select now()')
         return res.rows[0].now.toISOString()
     }
 
@@ -360,7 +363,7 @@ export class Warehouse {
      * @param name for debugging
      */
     async registerDbListener(channel: string, emitter: Subject<Date>, listenerName: string) {
-        await this.pgClient.query(`LISTEN ${channel}`)
+        await this.pgListener.query(`LISTEN ${channel}`)
         this.notificationHandlers[channel] = {
             channel,
             listeners: {
@@ -375,7 +378,8 @@ export class Warehouse {
      * and calls callback of notification handler, if available for the channel
      */
     startListening() {
-        this.pgClient.on('notification', (msg) => {
+
+        this.pgListener.on('notification', (msg) => {
             const handler = this.notificationHandlers[msg.channel];
 
 
@@ -416,7 +420,7 @@ export class Warehouse {
 
 
     pgNotify(channel: string, value: string) {
-        return this.pgClient.query(`SELECT pg_notify($1, $2)`, [channel, value])
+        return this.pgPool.query(`SELECT pg_notify($1, $2)`, [channel, value])
     }
 
 
@@ -426,7 +430,8 @@ export class Warehouse {
     async stop() {
         this.status = 'stopped';
         this.notificationHandlers = {}
-        this.pgClient.release();
+        this.pgListener.release();
+        await this.pgPool.end();
     }
 }
 

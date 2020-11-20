@@ -11,7 +11,7 @@ import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock'
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
 
 describe('PPropertyService', () => {
 
@@ -23,7 +23,7 @@ describe('PPropertyService', () => {
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.pProperty;
   })
-  afterEach(async function () {await wh.stop()})
+  afterEach(async function () {await stopWarehouse(wh)})
 
   it('should add project-property', async () => {
     const {prel, prop} = await createPPropertyMockData();

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
+import {PEntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
@@ -14,8 +15,7 @@ import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistent
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, waitForEntityPreview, wait, waitUntilNext} from '../../../../helpers/warehouse-helpers';
-import {PEntityClassLabelService} from '../../../../../warehouse/aggregator-ds/entity-class-label/p-entity-class-label/PEntityClassLabelService';
+import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitForEntityPreview, waitUntilNext} from '../../../../helpers/warehouse-helpers';
 
 describe('PEntityClassLabelService', function () {
 
@@ -26,7 +26,7 @@ describe('PEntityClassLabelService', function () {
         wh = await setupCleanAndStartWarehouse()
         s=wh.agg.pEntityClassLabel
     })
-    afterEach(async function () {await wh.stop()})
+    afterEach(async function () {await stopWarehouse(wh)})
 
     it('should create entity class label of Person', async () => {
         const {prel, pers, cla} = await createBasicMock();
