@@ -64,7 +64,7 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
         this.rEntityLabel = this.registerDataService(new REntityLabelService(wh));
         this.rEntityType = this.registerDataService(new REntityTypeService(wh));
         this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
-        // this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
+        this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
         // this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
 
         this.ready$ = combineLatest(

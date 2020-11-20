@@ -28,34 +28,12 @@ export class ProPropertyLabelService extends PrimaryDataService<ProPropertyLabel
             proPropertyLabelKeyDef
         )
     }
-
-    dbItemToKeyVal(item: DbItem): {key: ProPropertyLabelId; val: ProPropertyLabelVal;} {
-        const key: ProPropertyLabelId = {
-            fkProject: item.fkProject,
-            fkProperty: item.fkProperty,
-            fkClass: item.fkPropertyDomain ?? item.fkPropertyRange ?? -99,
-            isOutgoing: !!item.fkPropertyDomain,
-            fkLanguage: item.fkLanguage
-        }
-        const val = item.label
-        return {key, val};
-    }
     getUpdatesSql(tmsp: Date) {
         return updateSql
     }
     getDeletesSql(tmsp: Date) {
         return deleteSql
     };
-}
-
-
-interface DbItem {
-    fkProject: number,
-    fkProperty: number,
-    fkPropertyDomain: number | null,
-    fkPropertyRange: number | null,
-    fkLanguage: number,
-    label: string
 }
 
 

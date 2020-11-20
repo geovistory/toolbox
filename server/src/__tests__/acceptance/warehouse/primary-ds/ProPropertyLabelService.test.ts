@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {expect} from '@loopback/testlab';
 import {ProPropertyLabelId, ProPropertyLabelService} from '../../../../warehouse/primary-ds/ProPropertyLabelService';
@@ -19,6 +20,7 @@ describe('ProPropertyLabelService', () => {
 
 
   beforeEach(async function () {
+    this.timeout(5000)
     await cleanDb();
     wh = await setupCleanAndStartWarehouse()
     s = wh.prim.proPropertyLabel;
@@ -52,6 +54,24 @@ describe('ProPropertyLabelService', () => {
     await createTypes();
     await createInfLanguage(InfLanguageMock.GERMAN);
     const txtProp = await createProTextProperty(ProTextPropertyMock.PROJ_1_PROPERTY_PERSON_HAS_APPELLATION)
+    const id: ProPropertyLabelId = {
+      fkProject: txtProp.fk_project ?? -1,
+      fkClass: txtProp.fk_dfh_property_range ?? -1,
+      fkProperty: txtProp.fk_dfh_property ?? -1,
+      isOutgoing: false,
+      fkLanguage: txtProp.fk_language ?? -1,
+    }
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx(id),
+      compare: (val) => val?.label === txtProp.string
+    })
+
+  })
+  it('should have pro Property label <person - has appellations> of default project in index', async () => {
+    await createTypes();
+    await createInfLanguage(InfLanguageMock.ENGLISH);
+    const txtProp = await createProTextProperty(ProTextPropertyMock.PROJ_DEF_EN_PROPERTY_PERSON_HAS_APPELLATION)
     const id: ProPropertyLabelId = {
       fkProject: txtProp.fk_project ?? -1,
       fkClass: txtProp.fk_dfh_property_range ?? -1,
@@ -115,8 +135,8 @@ describe('ProPropertyLabelService', () => {
     await deleteProTextProperty(txtProp.pk_entity ?? -1)
 
     await waitUntilNext(s.afterChange$)
-    const resultUpdated = await s.index.getFromIdx(id)
-    expect(resultUpdated).to.be.undefined()
+    const resultUpdated = await s.index.getFromIdxWithTmsps(id)
+    expect(resultUpdated?.deleted).not.to.be.undefined()
   })
 
 });

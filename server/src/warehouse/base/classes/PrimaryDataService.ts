@@ -99,7 +99,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     private async addPgListeners() {
         const sync$ = new Subject<Date>()
         sync$.pipe(
-            skipWhileFirst(80)
+            // skipWhileFirst(80)
         ).subscribe(tmsp => {
             this.sync(tmsp).catch(e => console.log(e))
         })
@@ -182,26 +182,25 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const upsertHookSql = this.get2ndUpdatesSql ? `,
             hook AS (${this.get2ndUpdatesSql('tw1', date)})`
             : ''
-        const upserted = await this.wh.pgClient.query<{count: number}>(
-            `
-                WITH tw1 AS (
-                    ${updateSql}
-                )
-                ${upsertHookSql},
-                tw2 AS (
-                    INSERT INTO  ${this.index.schemaTable}
-                    (${this.index.keyCols}, val)
-                    SELECT ${this.index.keyCols}, tw1.val
-                    FROM tw1
-                    ON CONFLICT (${this.index.keyCols}) DO UPDATE
-                    SET val = EXCLUDED.val
-                    WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
-                    RETURNING *
-                )
-                SELECT count(*)::int FROM tw2
-                `,
-            [date]
-        );
+        const sql = `
+        WITH tw1 AS (
+            ${updateSql}
+        )
+        ${upsertHookSql},
+        tw2 AS (
+            INSERT INTO  ${this.index.schemaTable}
+            (${this.index.keyCols}, val)
+            SELECT ${this.index.keyCols}, tw1.val
+            FROM tw1
+            ON CONFLICT (${this.index.keyCols}) DO UPDATE
+            SET val = EXCLUDED.val
+            WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
+            RETURNING *
+        )
+        SELECT count(*)::int FROM tw2
+        `
+        const params = [date]
+        const upserted = await this.wh.pgClient.query<{count: number}>(sql, params);
         if (upserted.rows?.[0].count > 0) {
             this.afterChange$.next()
         }

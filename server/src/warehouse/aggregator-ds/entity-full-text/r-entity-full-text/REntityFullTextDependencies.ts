@@ -6,7 +6,8 @@ import {EntityFields} from "../../../primary-ds/edge/edge.commons"
 import {REntity, REntityId} from '../../../primary-ds/entity/REntityService'
 import {PClassId, ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService'
 import {Warehouse} from '../../../Warehouse'
-import {RClassFieldId} from '../../class-field-label/r-class-field-label/RClassFieldLabelService'
+import {RClassFieldId, RClassFieldVal} from '../../class-field-label/r-class-field-label/RClassFieldLabelService'
+import {RClassLabelValue} from '../../class-label/r-class-label/RClassLabelService'
 import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 import {REntityFullTextVal} from './REntityFullTextService'
 
@@ -14,8 +15,8 @@ export class REntityFullTextDependencies extends Dependencies {
     rEntity: DependencyIndex<REntityId, REntityFullTextVal, REntityId, REntity>
     rEntityLabel: DependencyIndex<REntityId, REntityFullTextVal, REntityId, EntityLabelVal>
     rEdge: DependencyIndex<REntityId, REntityFullTextVal, REntityId, EntityFields>
-    rClassLabel: DependencyIndex<REntityId, REntityFullTextVal, RClassId, string>
-    rClassFieldLabel: DependencyIndex<REntityId, REntityFullTextVal, RClassFieldId, string>
+    rClassLabel: DependencyIndex<REntityId, REntityFullTextVal, RClassId, RClassLabelValue>
+    rClassFieldLabel: DependencyIndex<REntityId, REntityFullTextVal, RClassFieldId, RClassFieldVal>
 
     pClassFields: DependencyIndex<REntityId, REntityFullTextVal, PClassId, ProClassFieldVal>
 

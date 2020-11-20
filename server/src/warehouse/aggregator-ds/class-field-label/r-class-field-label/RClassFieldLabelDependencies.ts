@@ -4,11 +4,11 @@ import {dfhPropertyIdToString, proPropertyIdToString, rClassFieldIdToString, str
 import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPropertyLabelService'
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../../Warehouse'
-import {RClassFieldId} from './RClassFieldLabelService'
+import {RClassFieldId, RClassFieldVal} from './RClassFieldLabelService'
 
 export class RClassFieldLabelDependencies extends Dependencies {
-  dfhPropertyLabel: DependencyIndex<RClassFieldId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
-  proPropertyLabel: DependencyIndex<RClassFieldId, string, ProPropertyLabelId, ProPropertyLabelVal>
+  dfhPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, DfhPropertyLabelId, DfhPropertyLabelVal>
+  proPropertyLabel: DependencyIndex<RClassFieldId, RClassFieldVal, ProPropertyLabelId, ProPropertyLabelVal>
 
   // entityFulltextPropertyLabelDep: DependencyIndex<EntityId, string, PropertyId, string>;
   constructor(private wh: Warehouse) {

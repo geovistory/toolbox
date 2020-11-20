@@ -8,6 +8,7 @@ import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {RClassFieldId} from '../../class-field-label/r-class-field-label/RClassFieldLabelService';
 import {REntityFullTextProviders} from './REntityFullTextPoviders';
 import {isHiddenOutgoingProperty, isHiddenIngoingProperty} from '../entity-full-text.commons';
+import {REntityFullTextVal} from './REntityFullTextService';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -17,7 +18,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
+export class REntityFullTextAggregator extends AbstractAggregator<REntityFullTextVal> {
 
     // Defines the maximum number of statements per field
     // taken into consideration for the fulltext
@@ -27,7 +28,7 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
 
 
     fullTextArr: string[] = [];
-    fullText = '';
+    fullText?: string;
 
     constructor(
         public providers: REntityFullTextProviders,
@@ -47,17 +48,13 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
      *  Gets values from Indexes and chaches dependencies in itself.
      */
     async create() {
-        // load previous providers in a cache
-        // in the end (after create), this cahche will contain only deprecated providers
-        // that can then be deleted from dependency indexes
-        await this.providers.load()
 
         const entity = await this.providers.rEntity.get(this.id);
-        if (!entity) return this;
+        if (!entity) return this.finalize();
 
         // get entity fields of that entity
         const edges = await this.providers.rEdges.get(this.id)
-        if (!edges) return this;
+        if (!edges) return this.finalize();
         // if no edges, return
 
         // get fields of that class
@@ -69,13 +66,18 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
         const fullText = await this.loopOverFields(edges, classFields, entity.fkClass)
 
         // get class label
-        let classLabel = await this.providers.rClassLabel.get(rClassId)
+        const res = await this.providers.rClassLabel.get(rClassId)
 
-        classLabel = classLabel ?? `[${entity.fkClass}]`;
+        const classLabel = res?.label ?? `[${entity.fkClass}]`;
         this.fullText = `${classLabel} – ${fullText}`;
-        return this
+        return this.finalize()
     }
 
+    finalize(): REntityFullTextVal {
+        return {
+            fullText: this.fullText
+        }
+    }
 
     /**
      * This function loops over all fields. Per field:
@@ -174,8 +176,8 @@ export class REntityFullTextAggregator extends AbstractAggregator<REntityId> {
 
                 if (i === 0) {
                     // Get the fieldLabel (the label for property in correct direction)
-                    let l = await this.providers.rClassFieldLabel.get(fieldId)
-                    l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},repo]`
+                    const res = await this.providers.rClassFieldLabel.get(fieldId)
+                    const l = res?.label ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},repo]`
                     fieldLabel = (`${l}: `);
                 }
 

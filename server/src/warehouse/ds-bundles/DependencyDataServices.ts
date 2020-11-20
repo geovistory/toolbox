@@ -58,7 +58,7 @@ export class DependencyDataServices extends DataServiceBundle<Dependencies> {
         this.rEntityClassLabel = this.registerDataService(new REntityClassLabelDependencies(wh));
         this.rEntityLabel = this.registerDataService(new REntityLabelDependencies(wh));
         this.rEntityType = this.registerDataService(new REntityTypeDependencies(wh));
-        // this.rEntityFullText = this.registerDataService(new REntityFullTextDependencies(wh));
+        this.rEntityFullText = this.registerDataService(new REntityFullTextDependencies(wh));
         this.rClassFieldLabel = this.registerDataService(new RClassFieldLabelDependencies(wh));
         // this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanDependencies(wh));
 

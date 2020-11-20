@@ -35,9 +35,8 @@ export class RPropertyService extends PrimaryDataService<RPropertyId, RPropertyV
 
   constructor(public wh: Warehouse) {
     super(wh, [
-      'modified_projects_project',
-      'modified_projects_dfh_profile_proj_rel',
-      'modified_data_for_history_api_property'
+      'modified_data_for_history_api_property',
+      'modified_data_for_history_api_class'
     ], rPropertyIdToString, stringToRPropertyId,
       rPropertyIdKeyConfig
     )
@@ -90,6 +89,23 @@ const updateSql = `
   data_for_history.api_property t1
   WHERE
   t1.tmsp_last_modification >= $1
+
+  --- add generic incoming 1111 for all classes of basic type 8/9/30
+  UNION
+  SELECT DISTINCT
+    1111 "pkProperty",
+    365 "fkDomain",
+    t1.dfh_pk_class "fkRange",
+    jsonb_build_object(
+      'fkProperty', 1111,
+      'fkDomain', 365,
+      'fkRange',  t1.dfh_pk_class
+    ) val
+  FROM data_for_history.api_class t1
+  WHERE t1.dfh_pk_class <> 365
+  AND  t1.tmsp_last_modification >= $1
+  AND t1.dfh_basic_type IN (8, 9, 30)
+  GROUP BY t1.dfh_pk_class
 `
 
 
