@@ -4,15 +4,17 @@ import {pClassIdToString, pEntityIdToString, stringToPClassId, stringToPEntityId
 import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService'
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
 import {Warehouse} from '../../../Warehouse'
+import {PEntityClassLabelVal} from './PEntityClassLabelService'
+import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService'
 
 export class PEntityClassLabelDependencies extends Dependencies {
-    entity: DependencyIndex<PEntityId, string, PEntityId, PEntity>
-    pClassLabel: DependencyIndex<PEntityId, string, PClassId, string>
+    entity: DependencyIndex<PEntityId, PEntityClassLabelVal, PEntityId, PEntity>
+    pClassLabel: DependencyIndex<PEntityId, PEntityClassLabelVal, PClassId, PClassLabelVal>
 
     constructor(private wh: Warehouse) {
         super()
         // stores the dependency of entityLabel (receiver) on entity (provider)
-        this.entity = this.registerDepIdx(new DependencyIndex<PEntityId, string, PEntityId, PEntity>(
+        this.entity = this.registerDepIdx(new DependencyIndex(
             this.wh,
             this.wh.agg.pEntityClassLabel,
             this.wh.prim.pEntity,

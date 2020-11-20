@@ -11,7 +11,7 @@ describe('ProProjectService', function () {
   let wh: Warehouse;
   let s: ProProjectService;
 
-  before(async () => {
+  before(async function () {
     // eslint-disable-next-line @typescript-eslint/no-invalid-this
     this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()

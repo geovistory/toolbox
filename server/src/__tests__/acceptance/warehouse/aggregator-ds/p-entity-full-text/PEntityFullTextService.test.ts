@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {expect} from '@loopback/testlab';
 import {PEntityFullTextService} from '../../../../../warehouse/aggregator-ds/entity-full-text/p-entity-full-text/PEntityFullTextService';
+import {PEntityId} from '../../../../../warehouse/primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -30,21 +31,27 @@ import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProf
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreviewUntil, waitUntilNext, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
  */
-describe('PEntityFullText', function () {
+describe('PEntityFullTextService', function () {
     let wh: Warehouse;
     let s: PEntityFullTextService;
-
-    beforeEach(async function () {
-        await cleanDb()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.pEntityFullText
     })
-    afterEach(async function () {await stopWarehouse(wh)})
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
 
     it('should create full text of naming', async () => {
         const {naming, project} = await createNamingMock();
@@ -62,48 +69,63 @@ describe('PEntityFullText', function () {
         const {naming, project} = await createNamingAndPersonMock();
 
         const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.pkEntity === naming.pk_entity
-                && item.key.fkProject === project.pk_entity
-                && item.val === expected
-        })
 
-        expect(result).not.to.be.undefined();
+        await waitForEntityPreview(wh, [
+            {pk_entity: {eq: naming.pk_entity}},
+            {fk_project: {eq: project.pk_entity}},
+            {full_text: {eq: expected}},
+        ])
+
     })
 
-    it('should create incoming property label of person "has appellations"', async () => {
-        const {project, hasAppePropLabel} = await createNamingAndPersonMock();
-        const expected = hasAppePropLabel.string
-        const result = await waitUntilSatisfy(wh.agg.pClassFieldLabel.afterPut$, (item) => {
-            return item.key.fkProject === project.pk_entity
-                && item.key.fkClass === DfhApiClassMock.EN_21_PERSON.dfh_pk_class
-                && item.key.fkProperty === 1111
-                && item.key.isOutgoing === false
-                && item.val === expected
-        })
-        expect(result.val).to.equal(expected)
-    })
+    // it('should create incoming property label of person "has appellations"', async () => {
+    //     const {project, hasAppePropLabel} = await createNamingAndPersonMock();
+    //     const expected = hasAppePropLabel.string
+
+    //     const result = await waitUntilSatisfy(wh.agg.pClassFieldLabel.afterPut$, (item) => {
+    //         return item.key.fkProject === project.pk_entity
+    //             && item.key.fkClass === DfhApiClassMock.EN_21_PERSON.dfh_pk_class
+    //             && item.key.fkProperty === 1111
+    //             && item.key.isOutgoing === false
+    //             && item.val === expected
+    //     })
+    //     expect(result.val).to.equal(expected)
+
+    // })
     it('should create full text of person', async () => {
         const {person, project} = await createNamingAndPersonMock();
 
         const expected = `Person – has appellations: 'Jack the foo'`
-        const result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.pkEntity === person.pk_entity
-                && item.key.fkProject === project.pk_entity
-                && item.val === expected
+
+        const id: PEntityId = {
+            pkEntity: person.pk_entity ?? -1,
+            fkProject: project.pk_entity ?? -1
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => {
+                return val?.fullText === expected
+            }
         })
 
-        expect(result).not.to.be.undefined();
     })
     it('should update full text of person', async () => {
         const {person, project} = await createNamingAndPersonMock();
 
         let expected = `Person – has appellations: 'Jack the foo'`
-        let result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.pkEntity === person.pk_entity
-                && item.key.fkProject === project.pk_entity
-                && item.val === expected
+        const id: PEntityId = {
+            pkEntity: person.pk_entity ?? -1,
+            fkProject: project.pk_entity ?? -1
+        }
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => {
+                return val?.fullText === expected
+            }
         })
+
         await createProTextProperty({
             fk_dfh_class: 21,
             fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -112,18 +134,22 @@ describe('PEntityFullText', function () {
             string: 'Human'
         })
         expected = `Human – has appellations: 'Jack the foo'`
-        result = await waitUntilSatisfy(s.afterPut$, (item) => {
-            return item.key.pkEntity === person.pk_entity
-                && item.key.fkProject === project.pk_entity
-                && item.val === expected
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdx(id),
+            compare: (val) => {
+                return val?.fullText === expected
+            }
         })
 
-        expect(result)
     })
 
     it('should delete entity full text from index when entity is removed from project', async () => {
         const {naming, namingProjRel, project} = await createNamingMock();
-
+        const id: PEntityId = {
+            pkEntity: naming.pk_entity ?? -1,
+            fkProject: project.pk_entity ?? -1
+        }
         const result = await waitForEntityPreviewUntil(wh, (item) => {
             return item.pk_entity === naming.pk_entity
                 && item.fk_project === project.pk_entity
@@ -133,10 +159,12 @@ describe('PEntityFullText', function () {
         expect(result).not.to.be.undefined();
         // remove person from the project
         await updateProInfoProjRel(namingProjRel.pk_entity ?? -1, {is_in_project: false})
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdxWithTmsps(id),
+            compare: (item) => !!item?.deleted
+        })
 
-        await waitUntilNext(s.afterDel$)
-        const item = await s.index.getFromIdx({pkEntity: naming.pk_entity ?? -1, fkProject: namingProjRel.fk_project ?? -1})
-        expect(item).to.be.undefined()
     })
 
 

@@ -22,34 +22,42 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, wait, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
  */
-describe('PEntityTimeSpan', function () {
+describe('PEntityTimeSpanService', function () {
     let wh: Warehouse;
     let edgeService: PEdgeService;
     let s: PEntityTimeSpanService
 
-    beforeEach(async function () {
-        await cleanDb()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
-        edgeService = wh.prim.pEdge
         s = wh.agg.pEntityTimeSpan
+        edgeService = wh.prim.pEdge
     })
-    afterEach(async function () {await stopWarehouse(wh)})
-
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
     it('should create edges with time primitives', async () => {
         const {shipVoyage, project} = await createMock();
 
-        const edgesOfShipVoyage = await waitUntilSatisfy(edgeService.afterPut$, (item => {
-            return item.key.fkProject === project.pk_entity
-                && item.key.pkEntity === shipVoyage.pk_entity
-                && item.val.outgoing?.[71]?.length > 0
-        }))
+        await searchUntilSatisfy({
+            notifier$: edgeService.afterChange$,
+            getFn: () => edgeService.index.getFromIdx({
+                fkProject: project.pk_entity ?? -1,
+                pkEntity: shipVoyage.pk_entity ?? -1,
+            }),
+            compare: (val) => !!val?.outgoing?.[71]?.length
+        })
 
-        expect(edgesOfShipVoyage).not.to.be.undefined();
     })
 
 
@@ -130,10 +138,12 @@ describe('PEntityTimeSpan', function () {
         expect(result)
         // remove person from the project
         await updateProInfoProjRel(prel.pk_entity ?? -1, {is_in_project: false})
+        await searchUntilSatisfy({
+            notifier$: s.afterChange$,
+            getFn: () => s.index.getFromIdxWithTmsps({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
+            compare: (item) => !!item?.deleted
+        })
 
-        await waitUntilNext(s.afterDel$)
-        const item = await s.index.getFromIdx({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1})
-        expect(item).to.be.undefined()
     })
 
 })

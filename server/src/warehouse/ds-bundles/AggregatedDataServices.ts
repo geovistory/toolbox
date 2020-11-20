@@ -53,10 +53,10 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
         this.pClassLabel = this.registerDataService(new PClassLabelService(wh))
         this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelService(wh))
         this.pEntityLabel = this.registerDataService(new PEntityLabelService(wh));
-        // this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
-        // this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
-        // this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
-        // this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
+        this.pEntityType = this.registerDataService(new PEntityTypeService(wh));
+        this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelService(wh))
+        this.pEntityFullText = this.registerDataService(new PEntityFullTextService(wh))
+        this.pEntityTimeSpan = this.registerDataService(new PEntityTimeSpanService(wh))
 
         // // Repo aggregators
         this.rClassLabel = this.registerDataService(new RClassLabelService(wh))

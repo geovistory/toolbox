@@ -1,16 +1,16 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../../Warehouse';
 import {PClassFieldLabelProviders} from './PClassFieldLabelProviders';
-import {PClassFieldId, PClassFieldVal} from './PClassFieldLabelService';
+import {PClassFieldLabelId, PClassFieldLabelVal} from './PClassFieldLabelService';
 
-export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldVal> {
+export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldLabelVal> {
 
 
 
 
   constructor(
     public providers: PClassFieldLabelProviders,
-    public id: PClassFieldId
+    public id: PClassFieldLabelId
   ) {
     super()
   }
@@ -111,7 +111,7 @@ export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldVa
     return this.finalize()
   }
 
-  finalize(label?: string): PClassFieldVal {
+  finalize(label?: string): PClassFieldLabelVal {
     return {label};
   }
 

@@ -1,8 +1,6 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../../base/classes/Updater';
-import {pEntityIdToString, sqlForTsVector, stringToPEntityId} from '../../../base/functions';
-import {PEntityId} from '../../../primary-ds/entity/PEntityService';
+import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
+import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityTypeAggregator} from './PEntityTypeAggregator';
 import {PEntityTypeProviders} from './PEntityTypePoviders';
@@ -30,69 +28,40 @@ export interface PEntityTypeVal {
  * -> The Val is the result of the PEntityTypeAggregator
  *
  */
-export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal, PEntityTypeAggregator>{
-    updater: Updater<PEntityId, PEntityTypeAggregator>;
+export class PEntityTypeService extends AggregatedDataService<PEntityId, PEntityTypeVal>{
+    creatorDS: PEntityService
+    aggregator = PEntityTypeAggregator;
+    providers = PEntityTypeProviders;
 
     constructor(public wh: Warehouse) {
         super(
             wh,
             pEntityIdToString,
-            stringToPEntityId
-        )
-
-        const aggregatorFactory = async (id: PEntityId) => {
-            const providers = new PEntityTypeProviders(this.wh.dep.pEntityType, id)
-            return new PEntityTypeAggregator(providers, id).create()
-        }
-        const register = async (result: PEntityTypeAggregator) => {
-            await this.put(result.id, {
-                fkType: result.fkEntityType,
-                typeLabel: result.entityTypeLabel
-            })
-            await result.providers.removeProvidersFromIndexes()
-        }
-
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            pEntityIdToString,
             stringToPEntityId,
+            pEntityKeyDefs
         )
 
-        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityTypeVal>(
-            wh,
-            'war.entity_preview (entity_type)',
-            (valuesStr: string) => `
-                UPDATE war.entity_preview
-                SET
-                    type_label = x.column3,
-                    fk_type = x.column4::int,
-                    ${sqlForTsVector}
-                FROM
-                (
-                    values ${valuesStr}
-                ) as x
-                WHERE pk_entity = x.column1::int
-                AND project = x.column2::int
-                AND (
-                    type_label IS DISTINCT FROM x.column3
-                    OR
-                    fk_type IS DISTINCT FROM x.column4::int
-                );`,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val.typeLabel, item.val.fkType],
-            pEntityIdToString
-        )
+        this.registerCreatorDS(this.wh.prim.pEntity)
 
-        /**
-         * Add actions after a new class type is put/updated into index
-         */
-        this.afterPut$.subscribe(item => {
 
-            // Add item to queue to upsert it into db
-            upsertQueue.add(item)
-        })
+    }
+
+    getDependencies() {
+        return this.wh.dep.pEntityType
+    };
+    onUpsertSql(tableAlias: string) {
+        return `
+        UPDATE war.entity_preview
+        SET type_label = ${tableAlias}.val->>'typeLabel',
+        fk_type = (${tableAlias}.val->>'fkType')::int
+        FROM ${tableAlias}
+        WHERE pk_entity = ${tableAlias}."pkEntity"
+        AND project = ${tableAlias}."fkProject"
+        AND (
+            type_label IS DISTINCT FROM ${tableAlias}.val->>'typeLabel'
+            OR
+            fk_type IS DISTINCT FROM (${tableAlias}.val->>'fkType')::int
+        )`
     }
 }
 

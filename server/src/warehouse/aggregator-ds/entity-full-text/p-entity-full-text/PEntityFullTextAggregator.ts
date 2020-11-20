@@ -4,10 +4,11 @@ import {ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService'
 import {PClassId} from '../../../primary-ds/class/PClassService';
 import {Edge, EntityFields} from "../../../primary-ds/edge/edge.commons";
 import {PEntityId} from '../../../primary-ds/entity/PEntityService';
-import {PClassFieldId} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PClassFieldLabelId} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../../Warehouse';
 import {isHiddenOutgoingProperty, isHiddenIngoingProperty} from '../entity-full-text.commons';
+import {PEntityFullTextVal} from './PEntityFullTextService';
 
 export interface ClassLabelConfig {
     fkProperty: number,
@@ -17,7 +18,7 @@ export interface ClassLabelConfig {
 }
 
 
-export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
+export class PEntityFullTextAggregator extends AbstractAggregator<PEntityFullTextVal> {
 
     // Defines the maximum number of statements per field
     // taken into consideration for the fulltext
@@ -27,7 +28,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
 
     fullTextArr: string[] = [];
-    fullText = '';
+    fullText?: string;
 
     constructor(
         public providers: PEntityFullTextProviders,
@@ -47,17 +48,13 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
      *  Gets values from Indexes and chaches dependencies in itself.
      */
     async create() {
-        // load previous providers in a cache
-        // in the end (after create), this cahche will contain only deprecated providers
-        // that can then be deleted from dependency indexes
-        await this.providers.load()
 
         const entity = await this.providers.pEntity.get(this.id);
-        if (!entity) return this;
+        if (!entity) return this.finalize();
 
         // get entity fields of that entity
         const edges = await this.providers.pEdges.get(this.id)
-        if (!edges) return this;
+        if (!edges) return this.finalize();
         // if no edges, return
 
         // get fields of that class
@@ -74,14 +71,18 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         const fullText = await this.loopOverFields(edges, classFields, entity.fkProject, entity.fkClass)
 
         // get class label
-        let classLabel = await this.providers.pClassLabel.get(pClassId)
+        const res = await this.providers.pClassLabel.get(pClassId)
 
-        classLabel = classLabel ?? `[${entity.fkClass}]`;
+        const classLabel = res?.label ?? `[${entity.fkClass}]`;
         this.fullText = `${classLabel} – ${fullText}`;
-        return this
+        return this.finalize()
     }
 
-
+    finalize(): PEntityFullTextVal {
+        return {
+            fullText: this.fullText
+        }
+    }
     /**
      * This function loops over all fields. Per field:
      * 1. it adds string elements to the full text of the entity
@@ -165,7 +166,7 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
         const result: string[] = [];
 
 
-        const fieldId: PClassFieldId = {fkProject, fkClass, fkProperty, isOutgoing}
+        const fieldId: PClassFieldLabelId = {fkProject, fkClass, fkProperty, isOutgoing}
 
         // are there any edges?
         if (edges?.length) {
@@ -179,8 +180,8 @@ export class PEntityFullTextAggregator extends AbstractAggregator<PEntityId> {
 
                 if (i === 0) {
                     // Get the fieldLabel (the label for property in correct direction)
-                    let l = await this.providers.pClassFieldLabel.get(fieldId)
-                    l = l ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},proj${fkProject}]`
+                    const res = await this.providers.pClassFieldLabel.get(fieldId)
+                    const l = res?.label ?? `[c${fkClass},p${fkProperty},${isOutgoing ? 'out' : 'in'},proj${fkProject}]`
                     fieldLabel = (`${l}: `);
                 }
 

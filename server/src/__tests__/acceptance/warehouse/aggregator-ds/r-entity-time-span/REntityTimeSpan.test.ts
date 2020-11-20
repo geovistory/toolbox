@@ -27,11 +27,11 @@ import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncate
 /**
  * Testing whole stack from postgres to warehouse
  */
-describe('REntityTimeSpan', function () {
+describe('REntityTimeSpanService', function () {
     let wh: Warehouse;
     let edgeService: REdgeService;
 
-    before(async () => {
+    before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()

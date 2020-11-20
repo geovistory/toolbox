@@ -73,19 +73,12 @@ describe('REntityFullTextService', function () {
         const {naming} = await createNamingAndPersonMock();
 
         const expected = `Appellation in a language (time-indexed) – refers to name: 'Jack the foo', is appellation for language of: 'Jack the foo'`
-        // const id: REntityId = {
-        //     pkEntity: naming.pk_entity ?? -1
-        // }
+
         await waitForEntityPreview(wh, [
             {pk_entity: {eq: naming.pk_entity}},
             {fk_project: {eq: null}},
             {full_text: {eq: expected}},
         ])
-        // await searchUntilSatisfy({
-        //     notifier$: s.afterChange$,
-        //     getFn: () => s.index.getFromIdx(id),
-        //     compare: (val) => val?.fullText === expected
-        // })
 
     })
 

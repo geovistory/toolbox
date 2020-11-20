@@ -6,18 +6,19 @@ import {PEntity, PEntityId} from '../../../primary-ds/entity/PEntityService'
 import {REntityId} from '../../../primary-ds/entity/REntityService'
 import {PClassId, ProClassFieldVal} from '../../../primary-ds/ProClassFieldsConfigService'
 import {Warehouse} from '../../../Warehouse'
-import {PClassFieldId} from '../../class-field-label/p-class-field-label/PClassFieldLabelService'
+import {PClassFieldLabelId, PClassFieldLabelVal} from '../../class-field-label/p-class-field-label/PClassFieldLabelService'
 import {EntityLabelVal} from '../../entity-label/entity-label.commons'
 import {PEntityFullTextVal} from './PEntityFullTextService'
+import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService'
 
 export class PEntityFullTextDependencies extends Dependencies {
     pEntity: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, PEntity>
     pEntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityLabelVal>
     rEntityLabel: DependencyIndex<PEntityId, PEntityFullTextVal, REntityId, EntityLabelVal>
     pEdge: DependencyIndex<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>
-    pClassLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, string>
+    pClassLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, PClassLabelVal>
     pClassFields: DependencyIndex<PEntityId, PEntityFullTextVal, PClassId, ProClassFieldVal>
-    pClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassFieldId, string>
+    pClassFieldLabel: DependencyIndex<PEntityId, PEntityFullTextVal, PClassFieldLabelId, PClassFieldLabelVal>
 
     constructor(private wh: Warehouse) {
         super()

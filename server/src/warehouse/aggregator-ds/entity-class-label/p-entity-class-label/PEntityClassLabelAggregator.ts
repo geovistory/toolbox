@@ -1,8 +1,9 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PEntityClassLabelProviders} from './PEntityClassLabelPoviders';
+import {PEntityClassLabelVal} from './PEntityClassLabelService';
 
-export class PEntityClassLabelAggregator extends AbstractAggregator<PEntityId> {
+export class PEntityClassLabelAggregator extends AbstractAggregator<PEntityClassLabelVal> {
 
     // the resulting entityClassLabel
     entityClassLabel = '(no label)';
@@ -29,32 +30,32 @@ export class PEntityClassLabelAggregator extends AbstractAggregator<PEntityId> {
      */
     async create() {
 
-        const entity = await this.providers.entity.get(this.id);
+        const entity = await this.providers.pEntity.get(this.id);
 
         if (entity) {
 
-            // load previous providers in a cache
-            // in the end (after create), this cahche will contain only deprecated providers
-            // that can then be deleted from dependency indexes
-            await this.providers.load()
 
             const classId = {
                 fkProject: entity.fkProject,
                 pkClass: entity.fkClass
             }
 
-            const classLabel = await this.providers.classLabels.get(classId)
+            const classLabel = await this.providers.pClassLabels.get(classId)
 
-            if (classLabel) {
+            if (classLabel?.label) {
                 this.labelMissing = false
-                this.entityClassLabel = classLabel;
+                this.entityClassLabel = classLabel.label;
             }
 
         }
-        return this
+        return this.finalize()
     }
 
 
-
+    finalize(): PEntityClassLabelVal {
+        return {
+            entityClassLabel: this.entityClassLabel
+        }
+    }
 
 }

@@ -6,13 +6,13 @@ import {Warehouse} from '../../../Warehouse';
 import {PClassFieldLabelAggregator} from './PClassFieldLabelAggregator';
 import {PClassFieldLabelProviders} from './PClassFieldLabelProviders';
 
-export interface PClassFieldId {
+export interface PClassFieldLabelId {
     fkProject: number,
     fkClass: number
     fkProperty: number
     isOutgoing: boolean
 }
-export interface PClassFieldVal {
+export interface PClassFieldLabelVal {
     label?: string
 }
 export const pClassFieldKeyDef: KeyDefinition[] = [
@@ -21,7 +21,7 @@ export const pClassFieldKeyDef: KeyDefinition[] = [
     {name: 'fkProperty', type: 'integer'},
     {name: 'isOutgoing', type: 'boolean'},
 ]
-export class PClassFieldLabelService extends AggregatedDataService<PClassFieldId, PClassFieldVal>{
+export class PClassFieldLabelService extends AggregatedDataService<PClassFieldLabelId, PClassFieldLabelVal>{
     creatorDS: PPropertyService
     aggregator = PClassFieldLabelAggregator;
     providers = PClassFieldLabelProviders;

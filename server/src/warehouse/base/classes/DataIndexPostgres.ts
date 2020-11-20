@@ -201,6 +201,7 @@ export class DataIndexPostgres<KeyModel, ValueModel> {
             }>(sql, params)
                 .then(results => {
                     const row = results?.rows?.[0]
+                    if (!row) res();
                     res({
                         val: row?.val,
                         lastModification: row.tmsp_last_modification ? new Date(row.tmsp_last_modification) : undefined,

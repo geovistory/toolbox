@@ -11,7 +11,7 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../helpers/data/gvDB/ProTextPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('ProPropertyLabelService', () => {
 
@@ -19,15 +19,19 @@ describe('ProPropertyLabelService', () => {
   let s: ProPropertyLabelService;
 
 
-  beforeEach(async function () {
-    this.timeout(5000)
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.proPropertyLabel;
+    s = wh.prim.proPropertyLabel
   })
-
-
-  afterEach(async function () {await stopWarehouse(wh)})
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
 
   it('should create pro Property label in db', async () => {
     const txtProp = await createMock();

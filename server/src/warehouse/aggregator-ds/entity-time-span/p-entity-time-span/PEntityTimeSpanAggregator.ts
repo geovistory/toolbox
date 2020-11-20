@@ -2,7 +2,7 @@ import {keys} from 'ramda';
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {PEntityId} from '../../../primary-ds/entity/PEntityService';
 import {PEntityTimeSpanProviders} from './PEntityTimeSpanPoviders';
-import {PEntityTimeSpan, TimeSpanKeys} from './PEntityTimeSpanService';
+import {PEntityTimeSpan, TimeSpanKeys, PEntityTimeSpanVal} from './PEntityTimeSpanService';
 type KeyMap = {
     [key in TimeSpanKeys]: number
 }
@@ -15,7 +15,7 @@ const keyMap: KeyMap = {
     p82b: 153,
 }
 const ks = keys(keyMap)
-export class PEntityTimeSpanAggregator extends AbstractAggregator<PEntityId> {
+export class PEntityTimeSpanAggregator extends AbstractAggregator<PEntityTimeSpanVal> {
 
     // the resulting entityTimeSpan
     entityTimeSpan?: PEntityTimeSpan;
@@ -48,10 +48,6 @@ export class PEntityTimeSpanAggregator extends AbstractAggregator<PEntityId> {
 
         if (entity) {
 
-            // load previous providers in a cache
-            // in the end (after create), this cahche will contain only deprecated providers
-            // that can then be deleted from dependency indexes
-            await this.providers.load()
             const timeSpan: PEntityTimeSpan = {}
             let first = Number.POSITIVE_INFINITY;
             let last = Number.NEGATIVE_INFINITY;
@@ -84,7 +80,13 @@ export class PEntityTimeSpanAggregator extends AbstractAggregator<PEntityId> {
             if (Object.keys(timeSpan).length) this.entityTimeSpan = timeSpan
 
         }
-        return this
+        return this.finalize()
     }
-
+    finalize(): PEntityTimeSpanVal {
+        return {
+            firstSecond: this.firstSecond,
+            lastSecond: this.lastSecond,
+            timeSpan: this.entityTimeSpan
+        }
+    }
 }

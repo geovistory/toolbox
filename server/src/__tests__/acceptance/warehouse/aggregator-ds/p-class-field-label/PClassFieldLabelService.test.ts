@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {PClassFieldId, PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PClassFieldLabelId, PClassFieldLabelService} from '../../../../../warehouse/aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -23,7 +23,7 @@ describe('PClassFieldLabelService', function () {
 
     let wh: Warehouse;
     let s: PClassFieldLabelService;
-    before(async () => {
+    before(async function () {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
         this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
@@ -40,7 +40,7 @@ describe('PClassFieldLabelService', function () {
 
     it('should create outgoing property label for en from ontome', async () => {
         const {prel, dfhProp} = await createDfhLabelMock();
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_domain,
             fkProperty: dfhProp.dfh_pk_property,
@@ -57,7 +57,7 @@ describe('PClassFieldLabelService', function () {
     it('should create incoming property label for en from ontome', async () => {
         const {prel, dfhProp} = await createDfhLabelMock();
         const expected = '[reverse of: ' + DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_property_label + ']'
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_range,
             fkProperty: dfhProp.dfh_pk_property,
@@ -73,7 +73,7 @@ describe('PClassFieldLabelService', function () {
     it('should create outgoing property label for de from geovistory', async () => {
         const {prel, dfhProp, gvTxt} = await createGeovistoryLabelMock();
         const expected = gvTxt.string
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_domain,
             fkProperty: dfhProp.dfh_pk_property,
@@ -90,7 +90,7 @@ describe('PClassFieldLabelService', function () {
     it('should create incoming property label for de from geovistory', async () => {
         const {prel, dfhProp, gvTxt} = await createGeovistoryLabelIncomingMock();
         const expected = gvTxt.string
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_range,
             fkProperty: dfhProp.dfh_pk_property,
@@ -106,7 +106,7 @@ describe('PClassFieldLabelService', function () {
     it('should create outgoing property label de from project', async () => {
         const {prel, dfhProp, proTxt} = await createProjectLabelMock();
         const expected = proTxt.string
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_domain,
             fkProperty: dfhProp.dfh_pk_property,
@@ -123,7 +123,7 @@ describe('PClassFieldLabelService', function () {
     it('should create incoming property label de from project', async () => {
         const {prel, dfhProp, proTxt} = await createProjectLabelIncomingMock();
         const expected = proTxt.string
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_range,
             fkProperty: dfhProp.dfh_pk_property,
@@ -139,7 +139,7 @@ describe('PClassFieldLabelService', function () {
     it('should create incoming property label of person "has appellations"', async () => {
         const {project, apiProp: dfhProp, hasAppePropLabel} = await createPersonMock();
         const expected = hasAppePropLabel.string
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: project.pk_entity??-1,
             fkClass:DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
             fkProperty: dfhProp.dfh_pk_property,
@@ -159,7 +159,7 @@ describe('PClassFieldLabelService', function () {
             proTxt.pk_entity ?? -1,
             {string: expected}
         )
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_domain,
             fkProperty: dfhProp.dfh_pk_property,
@@ -175,7 +175,7 @@ describe('PClassFieldLabelService', function () {
 
     it('should switch outgoing property label de-project to de-geovistory', async () => {
         const {prel, dfhProp, gvTxt, proTxt} = await createProjectLabelMock();
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_domain,
             fkProperty: dfhProp.dfh_pk_property,
@@ -200,7 +200,7 @@ describe('PClassFieldLabelService', function () {
 
     it('should switch outgoing property label from de-project to de-ontome', async () => {
         const {prel, dfhProp, proTxt, gvTxt} = await createProjectLabelMock();
-        const id: PClassFieldId = {
+        const id: PClassFieldLabelId = {
             fkProject: prel.fk_project,
             fkClass: dfhProp.dfh_property_domain,
             fkProperty: dfhProp.dfh_pk_property,

@@ -7,7 +7,7 @@ import {RClassId} from '../primary-ds/DfhClassHasTypePropertyService';
 import {PPropertyId} from '../primary-ds/property/PPropertyService';
 import {DfhPropertyLabelId} from '../primary-ds/DfhPropertyLabelService';
 import {ProPropertyLabelId} from '../primary-ds/ProPropertyLabelService';
-import {PClassFieldId} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PClassFieldLabelId} from '../aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {OutgoingProperyId} from '../primary-ds/DfhOutgoingPropertyService';
 import {REntityId} from '../primary-ds/entity/REntityService';
 import {RClassFieldId} from '../aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
@@ -54,11 +54,11 @@ export function stringToRPropertyId(str: string): RPropertyId {
 
 
 // project field id to string
-export function pClassFieldIdToString(key: PClassFieldId): string {
+export function pClassFieldIdToString(key: PClassFieldLabelId): string {
     return key.fkProject + '_' + key.fkClass + '_' + key.fkProperty + '_' + key.isOutgoing;;
 }
 // string to project field
-export function stringToPClassFieldId(str: string): PClassFieldId {
+export function stringToPClassFieldId(str: string): PClassFieldLabelId {
     const [fkProject, fkClass, fkProperty, isOutgoing] = str.split('_');
     return {
         fkProject: parseInt(fkProject, 10),

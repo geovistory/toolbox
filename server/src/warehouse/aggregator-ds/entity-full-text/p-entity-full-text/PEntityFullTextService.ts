@@ -1,13 +1,11 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../../base/classes/Updater';
-import {pEntityIdToString, sqlForTsVector, stringToPEntityId} from '../../../base/functions';
-import {PEntityId} from '../../../primary-ds/entity/PEntityService';
+import {pEntityIdToString, stringToPEntityId} from '../../../base/functions';
+import {PEntityId, pEntityKeyDefs, PEntityService} from '../../../primary-ds/entity/PEntityService';
 import {Warehouse} from '../../../Warehouse';
 import {PEntityFullTextAggregator} from './PEntityFullTextAggregator';
 import {PEntityFullTextProviders} from './PEntityFullTextPoviders';
 
-export type PEntityFullTextVal = string;
+export interface PEntityFullTextVal {fullText?: string};
 
 /**
  * This Data Service manages the key-value store containing
@@ -27,61 +25,32 @@ export type PEntityFullTextVal = string;
  * -> The Val is the result of the PEntityFullTextAggregator
  *
  */
-export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEntityFullTextVal, PEntityFullTextAggregator>{
-    updater: Updater<PEntityId, PEntityFullTextAggregator>;
-
+export class PEntityFullTextService extends AggregatedDataService<PEntityId, PEntityFullTextVal>{
+    creatorDS: PEntityService
+    aggregator = PEntityFullTextAggregator;
+    providers = PEntityFullTextProviders;
     constructor(public wh: Warehouse) {
         super(
             wh,
             pEntityIdToString,
-            stringToPEntityId
-        )
-
-        const aggregatorFactory = async (id: PEntityId) => {
-            const providers = new PEntityFullTextProviders(this.wh.dep.pEntityFullText, id)
-            return new PEntityFullTextAggregator(providers, id).create()
-        }
-        const register = async (result: PEntityFullTextAggregator) => {
-            await this.put(result.id, result.fullText)
-            await result.providers.removeProvidersFromIndexes()
-        }
-
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            pEntityIdToString,
             stringToPEntityId,
+            pEntityKeyDefs
         )
-
-        const upsertQueue = new SqlUpsertQueue<PEntityId, PEntityFullTextVal>(
-            wh,
-            'war.entity_preview (full_text)',
-            (valuesStr: string) => `
-                UPDATE war.entity_preview
-                SET full_text = x.column3,
-                ${sqlForTsVector}
-                FROM
-                (
-                    values ${valuesStr}
-                ) as x
-                WHERE pk_Entity = x.column1::int
-                AND project = x.column2::int
-                AND full_text IS DISTINCT FROM x.column3
-            `,
-            (item) => [item.key.pkEntity, item.key.fkProject, item.val],
-            pEntityIdToString
-        )
-
-        /**
-         * Add actions after a new class type is put/updated into index
-         */
-        this.afterPut$.subscribe(item => {
-            // Add item to queue to upsert it into db
-            upsertQueue.add(item)
-        })
+        this.registerCreatorDS(wh.prim.pEntity)
     }
 
+
+    getDependencies() {
+        return this.wh.dep.pEntityFullText
+    };
+    onUpsertSql(tableAlias: string) {
+        return `
+        UPDATE war.entity_preview
+        SET full_text = ${tableAlias}.val->>'fullText'
+        FROM ${tableAlias}
+        WHERE pk_entity = ${tableAlias}."pkEntity"
+        AND project = ${tableAlias}."fkProject"
+        AND full_text IS DISTINCT FROM ${tableAlias}.val->>'fullText'`
+    }
 }
 

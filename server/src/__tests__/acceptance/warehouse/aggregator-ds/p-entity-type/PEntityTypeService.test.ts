@@ -23,7 +23,7 @@ import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMo
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
 import {createInstancesForMadrid, createModelMockForMadrid} from '../../../../helpers/graphs/madrid.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, waitUntilNext, truncateWarehouseTables, searchUntilSatisfy} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -31,13 +31,19 @@ import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitFo
 describe('PEntityTypeService', function () {
     let wh: Warehouse;
     let s: PEntityTypeService
-    beforeEach(async function () {
-        await cleanDb()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.pEntityType
     })
-    afterEach(async function () {await stopWarehouse(wh)})
-
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
     it('should create fk_type of geographical place', async () => {
         const {madrid, project, cityTypeProjRel} = await createMock();
 
@@ -171,10 +177,12 @@ describe('PEntityTypeService', function () {
         expect(result.type_label).to.equal(cityTypeAppe.string);
         // remove madrid from the project
         await updateProInfoProjRel(madridProjRel.pk_entity ?? -1, {is_in_project: false})
+        await searchUntilSatisfy({
+            notifier$:s.afterChange$,
+            getFn:()=>s.index.getFromIdxWithTmsps({pkEntity: madrid.pk_entity ?? -1, fkProject: project.pk_entity ?? -1}),
+            compare:(val)=>!!val?.deleted
 
-        await waitUntilNext(s.afterDel$)
-        const item = await s.index.getFromIdx({pkEntity: madrid.pk_entity ?? -1, fkProject: project.pk_entity ?? -1})
-        expect(item).to.be.undefined()
+        })
     })
 
 })

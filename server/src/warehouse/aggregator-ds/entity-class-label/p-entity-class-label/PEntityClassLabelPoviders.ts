@@ -3,16 +3,18 @@ import {Providers} from "../../../base/interfaces/Providers";
 import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService';
 import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService';
 import {PEntityClassLabelDependencies} from './PEntityClassLabelDependencies';
+import {PEntityClassLabelVal} from './PEntityClassLabelService';
+import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService';
 export class PEntityClassLabelProviders extends Providers<PEntityId> {
-    entity: Provider<PEntityId, string, PEntityId, PEntity>;
-    classLabels: Provider<PEntityId, string, PClassId, string>;
+    pEntity: Provider<PEntityId, PEntityClassLabelVal, PEntityId, PEntity>;
+    pClassLabels: Provider<PEntityId, PEntityClassLabelVal, PClassId, PClassLabelVal>;
     constructor(
         dep: PEntityClassLabelDependencies,
         protected receiverKey: PEntityId
     ) {
         super()
-        this.entity = this.registerProvider(dep.entity, receiverKey)
-        this.classLabels = this.registerProvider(dep.pClassLabel, receiverKey)
+        this.pEntity = this.registerProvider(dep.entity, receiverKey)
+        this.pClassLabels = this.registerProvider(dep.pClassLabel, receiverKey)
     }
 
 }

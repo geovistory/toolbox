@@ -260,7 +260,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const res = await this.wh.pgPool.query<{count: number;}>(handleDeletes);
         changes += res.rows[0].count;
         // useful for debugging
-        // if (this.constructor.name === 'REntityLabelService') {
+        // if (this.constructor.name === 'PEntityTimeSpanService') {
         //     console.log(`--> ${this.cycle} handled ${res.rows[0].count}`)
         // }
         return changes;

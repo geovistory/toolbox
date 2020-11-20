@@ -5,17 +5,18 @@ import {EntityFields} from "../../../primary-ds/edge/edge.commons";
 import {PEntityId, PEntity} from '../../../primary-ds/entity/PEntityService';
 import {PEntityFullTextDependencies} from './PEntityFullTextDependencies';
 import {PEntityFullTextVal} from './PEntityFullTextService';
-import {PClassFieldId} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
+import {PClassFieldLabelId, PClassFieldLabelVal} from '../../class-field-label/p-class-field-label/PClassFieldLabelService';
 import {EntityLabelVal} from '../../entity-label/entity-label.commons';
 import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {PClassLabelVal} from '../../class-label/p-class-label/PClassLabelService';
 export class PEntityFullTextProviders extends Providers<PEntityId> {
     pEntity: Provider<PEntityId, PEntityFullTextVal, PEntityId, PEntity>;
     pEdges: Provider<PEntityId, PEntityFullTextVal, PEntityId, EntityFields>;
     pEntityLabel: Provider<PEntityId, PEntityFullTextVal, PEntityId, EntityLabelVal>;
     rEntityLabel: Provider<PEntityId, PEntityFullTextVal, REntityId, EntityLabelVal>;
-    pClassLabel: Provider<PEntityId, PEntityFullTextVal, PClassId, string>;
+    pClassLabel: Provider<PEntityId, PEntityFullTextVal, PClassId, PClassLabelVal>;
     pClassFields: Provider<PEntityId, PEntityFullTextVal, PClassId, ProClassFieldVal>;
-    pClassFieldLabel: Provider<PEntityId, PEntityFullTextVal, PClassFieldId, string>;
+    pClassFieldLabel: Provider<PEntityId, PEntityFullTextVal, PClassFieldLabelId, PClassFieldLabelVal>;
 
     constructor(
         dep: PEntityFullTextDependencies,
