@@ -6,16 +6,17 @@ import {PClassId} from '../../../primary-ds/ProClassFieldsConfigService'
 import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLabelService'
 import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService'
 import {Warehouse} from '../../../Warehouse'
+import {PClassLabelVal} from './PClassLabelService'
 
 export class PClassLabelDependencies extends Dependencies {
-  project: DependencyIndex<PClassId, string, ProjectId, ProjectVal>
-  dfhClassLabel: DependencyIndex<PClassId, string, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: DependencyIndex<PClassId, string, ProClassLabelId, ProClassLabelVal>
+  proProject: DependencyIndex<PClassId, PClassLabelVal, ProjectId, ProjectVal>
+  dfhClassLabel: DependencyIndex<PClassId, PClassLabelVal, DfhClassLabelId, DfhClassLabelVal>
+  proClassLabel: DependencyIndex<PClassId, PClassLabelVal, ProClassLabelId, ProClassLabelVal>
 
   // entityFulltextClassLabelDep: DependencyIndex<EntityId, string, ClassId, string>;
-  constructor(private wh: Warehouse) {
+  constructor(wh: Warehouse) {
     super()
-    this.project = this.registerDepIdx(new DependencyIndex(
+    this.proProject = this.registerDepIdx(new DependencyIndex(
       wh,
       wh.agg.pClassLabel,
       wh.prim.proProject,

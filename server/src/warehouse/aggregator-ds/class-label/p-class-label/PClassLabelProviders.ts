@@ -5,18 +5,19 @@ import {ProClassLabelId, ProClassLabelVal} from '../../../primary-ds/ProClassLab
 import {PClassLabelDependencies} from './PClassLabelDependencies';
 import {Provider} from '../../../base/classes/Provider';
 import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService';
+import {PClassLabelVal} from './PClassLabelService';
 
 export class PClassLabelProviders extends Providers<PClassId> {
-  project: Provider<PClassId, string, ProjectId, ProjectVal>
-  dfhClassLabel: Provider<PClassId, string, DfhClassLabelId, DfhClassLabelVal>
-  proClassLabel: Provider<PClassId, string, ProClassLabelId, ProClassLabelVal>
+  proProject: Provider<PClassId, PClassLabelVal, ProjectId, ProjectVal>
+  dfhClassLabel: Provider<PClassId, PClassLabelVal, DfhClassLabelId, DfhClassLabelVal>
+  proClassLabel: Provider<PClassId, PClassLabelVal, ProClassLabelId, ProClassLabelVal>
 
   constructor(
     dep: PClassLabelDependencies,
     protected receiverKey: PClassId
   ) {
     super()
-    this.project = this.registerProvider(dep.project, receiverKey);
+    this.proProject = this.registerProvider(dep.proProject, receiverKey);
     this.dfhClassLabel = this.registerProvider(dep.dfhClassLabel, receiverKey)
     this.proClassLabel = this.registerProvider(dep.proClassLabel, receiverKey);
   }

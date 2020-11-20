@@ -33,7 +33,7 @@ async function chooseDb() {
       message: 'Mocha --grep:',
       name: 'grep',
       choices: [
-        {title: 'env.MOCHA_GREP', value: process.env.MOCHA_GREP},
+        {title: process.env.MOCHA_GREP + ' (env MOCHA_GREP)' , value: process.env.MOCHA_GREP},
         {title: 'none', value: null},
         {title: 'custom', value: 'custom'},
       ],

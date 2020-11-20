@@ -54,11 +54,6 @@ export class RClassService extends PrimaryDataService<RClassId, RClass>{
 }
 
 
-interface InitItem {
-  fkClass: number,
-  basicType: number
-}
-
 const updateSql = `
   SELECT DISTINCT
   dfh_pk_class "pkClass",

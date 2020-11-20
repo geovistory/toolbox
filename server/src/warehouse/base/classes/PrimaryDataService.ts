@@ -5,6 +5,7 @@ import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DataService} from './DataService';
 import {Logger} from './Logger';
+import {logSql} from '../../../utils/helpers';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -199,6 +200,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         SELECT count(*)::int FROM tw2
         `
         const params = [date]
+        if (this.constructor.name === 'PPropertyService') logSql(sql, params)
         const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
         if (upserted.rows?.[0].count > 0) {
             // useful for debugging

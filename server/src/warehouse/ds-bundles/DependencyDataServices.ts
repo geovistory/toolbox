@@ -46,8 +46,8 @@ export class DependencyDataServices extends DataServiceBundle<Dependencies> {
         super()
         this.identifyingProperty = this.registerDataService(new IdentifyingPropertyDependencies(wh));
 
-        // this.pClassLabel = this.registerDataService(new PClassLabelDependencies(wh));
-        // this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelDependencies(wh));
+        this.pClassLabel = this.registerDataService(new PClassLabelDependencies(wh));
+        this.pClassFieldLabel = this.registerDataService(new PClassFieldLabelDependencies(wh));
         this.pEntityLabel = this.registerDataService(new PEntityLabelDependencies(wh));
         // this.pEntityClassLabel = this.registerDataService(new PEntityClassLabelDependencies(wh));
         // this.pEntityType = this.registerDataService(new PEntityTypeDependencies(wh));

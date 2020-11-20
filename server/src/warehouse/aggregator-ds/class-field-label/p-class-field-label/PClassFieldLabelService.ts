@@ -1,6 +1,7 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {Updater} from '../../../base/classes/Updater';
 import {pClassFieldIdToString, stringToPClassFieldId} from '../../../base/functions';
+import {KeyDefinition} from '../../../base/interfaces/KeyDefinition';
+import {PPropertyService} from '../../../primary-ds/property/PPropertyService';
 import {Warehouse} from '../../../Warehouse';
 import {PClassFieldLabelAggregator} from './PClassFieldLabelAggregator';
 import {PClassFieldLabelProviders} from './PClassFieldLabelProviders';
@@ -11,37 +12,40 @@ export interface PClassFieldId {
     fkProperty: number
     isOutgoing: boolean
 }
-
-type ValueModel = string
-export class PClassFieldLabelService extends AggregatedDataService<PClassFieldId, ValueModel, PClassFieldLabelAggregator>{
-    updater: Updater<PClassFieldId, PClassFieldLabelAggregator>;
-
+export interface PClassFieldVal {
+    label?: string
+}
+export const pClassFieldKeyDef: KeyDefinition[] = [
+    {name: 'fkProject', type: 'integer'},
+    {name: 'fkClass', type: 'integer'},
+    {name: 'fkProperty', type: 'integer'},
+    {name: 'isOutgoing', type: 'boolean'},
+]
+export class PClassFieldLabelService extends AggregatedDataService<PClassFieldId, PClassFieldVal>{
+    creatorDS: PPropertyService
+    aggregator = PClassFieldLabelAggregator;
+    providers = PClassFieldLabelProviders;
+    customCreatorDSSql = [
+        {
+            select: `"fkProject" as "fkProject", "fkDomain" as "fkClass", "pkProperty" as "fkProperty", true as "isOutgoing"`,
+        },
+        {
+            select: `"fkProject" as "fkProject", "fkRange" as "fkClass", "pkProperty" as "fkProperty", false as "isOutgoing"`,
+        }
+    ]
     constructor(public wh: Warehouse) {
         super(
             wh,
             pClassFieldIdToString,
-            stringToPClassFieldId
-        )
-        const aggregatorFactory = async (id: PClassFieldId) => {
-            const providers = new PClassFieldLabelProviders(this.wh.dep.pClassFieldLabel, id)
-            return new PClassFieldLabelAggregator(providers, id).create()
-        }
-        const register = async (result: PClassFieldLabelAggregator) => {
-            await this.put(result.id, result.propertyLabel)
-            await result.providers.removeProvidersFromIndexes()
-        }
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            pClassFieldIdToString,
             stringToPClassFieldId,
+            pClassFieldKeyDef
         )
 
-
-
+        this.registerCreatorDS(this.wh.prim.pProperty)
     }
 
+    getDependencies() {
+        return this.wh.dep.pClassFieldLabel
+    };
 
 }

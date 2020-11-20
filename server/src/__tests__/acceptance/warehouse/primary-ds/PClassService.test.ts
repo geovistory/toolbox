@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {expect} from '@loopback/testlab';
 import {PClassService} from '../../../../warehouse/primary-ds/class/PClassService';
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
@@ -11,46 +10,62 @@ import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
-describe('PClassService', () => {
+describe('PClassService', function () {
 
   let wh: Warehouse;
   let s: PClassService;
 
-  beforeEach(async function () {
-    await cleanDb();
+  before(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.pClass;
+    s = wh.prim.pClass
   })
-  afterEach(async function () {await stopWarehouse(wh)})
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
 
   it('should add project-class', async () => {
     const {prel, cla} = await createPClassMockData();
-    await waitUntilNext(s.afterPut$)
-    const result = await s.index.getFromIdx({
-      fkProject: prel.fk_project ?? -1,
-      pkClass: cla.dfh_pk_class ?? -1
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({
+        fkProject: prel.fk_project ?? -1,
+        pkClass: cla.dfh_pk_class ?? -1
+      }),
+      compare: (val) => val?.fkClass === cla.dfh_pk_class
     })
-    expect(result?.fkClass).to.equal(cla.dfh_pk_class)
-
   })
 
 
 
   it('should delete project-class', async () => {
     const {prel, cla} = await createPClassMockData();
-    await waitUntilNext(s.afterPut$)
-
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({
+        fkProject: prel.fk_project ?? -1,
+        pkClass: cla.dfh_pk_class ?? -1
+      }),
+      compare: (val) => val?.fkClass === cla.dfh_pk_class
+    })
 
     await updateProDfhProfileProjRel(prel.pk_entity ?? -1, {enabled: false})
 
-    await waitUntilNext(s.afterDel$)
-    const result = await s.index.getFromIdx({
-      fkProject: prel.fk_project ?? -1,
-      pkClass: cla.dfh_pk_class ?? -1
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdxWithTmsps({
+        fkProject: prel.fk_project ?? -1,
+        pkClass: cla.dfh_pk_class ?? -1
+      }),
+      compare: (val) => !!val?.deleted
     })
-    expect(result).to.be.undefined()
   })
 
 });

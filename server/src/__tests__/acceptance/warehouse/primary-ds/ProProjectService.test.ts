@@ -4,53 +4,60 @@ import {ProProjectService} from '../../../../warehouse/primary-ds/ProProjectServ
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createProject, deleteProject, updateProjectLanguage} from '../../../helpers/atomic/pro-project.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
-describe('ProProjectService', () => {
+describe('ProProjectService', function () {
 
   let wh: Warehouse;
   let s: ProProjectService;
 
-  beforeEach(async function () {
-    await cleanDb();
+  before(async () => {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.proProject;
+    s = wh.prim.proProject
   })
-  afterEach(async function () {await stopWarehouse(wh)})
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
 
   it('should have project in index', async () => {
     const project = await createProject('German')
-    await waitUntilNext(s.afterPut$)
-    const result = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
-    expect(result?.fkLanguage).to.equal(project?.fk_language)
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkProject: project.pk_entity ?? -1}),
+      compare: (val) => val?.fkLanguage === project?.fk_language
+    })
 
   })
 
   it('should update project', async () => {
     const project = await createProject('German')
-    await waitUntilNext(s.afterPut$)
-    const result = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
-    expect(result?.fkLanguage).to.equal(project?.fk_language)
 
     const projectUpdated = await updateProjectLanguage(project.pk_entity as any, 'English')
     expect(projectUpdated.fk_language).to.not.equal(project.fk_language)
 
-    await waitUntilNext(s.afterPut$)
-    const resultUpdated = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
-    expect(resultUpdated?.fkLanguage).to.not.equal(project.fk_language)
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdx({pkProject: project.pk_entity ?? -1}),
+      compare: (val) => val?.fkLanguage !== project?.fk_language
+    })
+
+
   })
 
   it('should delete project', async () => {
     const project = await createProject('German')
-    await waitUntilNext(s.afterPut$)
-    const result = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
-    expect(result?.fkLanguage).to.equal(project?.fk_language)
-
     await deleteProject(project.pk_entity ?? -1)
-
-    await waitUntilNext(s.afterDel$)
-    const resultUpdated = await s.index.getFromIdx({pkProject: project.pk_entity ?? -1})
-    expect(resultUpdated).to.be.undefined()
+    await searchUntilSatisfy({
+      notifier$: s.afterChange$,
+      getFn: () => s.index.getFromIdxWithTmsps({pkProject: project.pk_entity ?? -1}),
+      compare: (val) => !!val?.deleted
+    })
   })
 
 });

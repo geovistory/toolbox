@@ -11,17 +11,25 @@ import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForClassPreview} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForClassPreview, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 
 describe('PClassLabelService', function () {
 
     let wh: Warehouse;
-    beforeEach(async function () {
-        await cleanDb()
+
+    before(async () => {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
     })
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
 
-    afterEach(async function () {await stopWarehouse(wh)})
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
 
     it('should create class label of Person: de-ontome', async () => {
         const {prel, cla} = await createBasicMock();
@@ -80,14 +88,15 @@ describe('PClassLabelService', function () {
     it('should switch class label of Person: de-project to de-ontome', async () => {
         const {prel, cla, proTxt, gvTxt} = await createProjectLabelMock();
 
-        await deleteProTextProperty(proTxt.pk_entity ?? -1)
-        await deleteProTextProperty(gvTxt.pk_entity ?? -1)
-        const result = await waitForClassPreview(wh, [
-            {fk_class: {eq: cla.dfh_pk_class}},
-            {fk_project: {eq: prel.fk_project}},
-            {label: {eq: 'Foo'}},
+        await Promise.all([
+            deleteProTextProperty(proTxt.pk_entity ?? -1),
+            deleteProTextProperty(gvTxt.pk_entity ?? -1),
+            waitForClassPreview(wh, [
+                {fk_class: {eq: cla.dfh_pk_class}},
+                {fk_project: {eq: prel.fk_project}},
+                {label: {eq: 'Foo'}},
+            ])
         ])
-        expect(result.label).to.equal('Foo')
 
     })
 

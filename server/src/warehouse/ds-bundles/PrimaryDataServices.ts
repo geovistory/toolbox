@@ -59,12 +59,12 @@ export class PrimaryDataServices extends DataServiceBundle<PrimaryDataService<an
         this.dfhClassHasTypeProperty = this.registerDataService(new DfhClassHasTypePropertyService(this.wh));
         this.dfhOutgoingProperty = this.registerDataService(new DfhOutgoingPropertyService(this.wh));
 
-        // this.proProject = this.registerDataService(new ProProjectService(this.wh));
+        this.proProject = this.registerDataService(new ProProjectService(this.wh));
         this.proClassLabel = this.registerDataService(new ProClassLabelService(this.wh));
         this.proPropertyLabel = this.registerDataService(new ProPropertyLabelService(this.wh));
 
-        // this.pClass = this.registerDataService(new PClassService(this.wh));
-        // this.pProperty = this.registerDataService(new PPropertyService(this.wh));
+        this.pClass = this.registerDataService(new PClassService(this.wh));
+        this.pProperty = this.registerDataService(new PPropertyService(this.wh));
 
         this.pClassFieldsConfig = this.registerDataService(new ProClassFieldsConfigService(this.wh));
         this.proEntityLabelConfig = this.registerDataService(new ProEntityLabelConfigService(this.wh));

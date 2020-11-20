@@ -1,16 +1,12 @@
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../../Warehouse';
 import {PClassFieldLabelProviders} from './PClassFieldLabelProviders';
-import {PClassFieldId} from './PClassFieldLabelService';
+import {PClassFieldId, PClassFieldVal} from './PClassFieldLabelService';
 
-export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldId> {
+export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldVal> {
 
 
-  // the resulting label
-  propertyLabel = '';
 
-  // For testing / debugging
-  labelMissing = true;
 
   constructor(
     public providers: PClassFieldLabelProviders,
@@ -20,7 +16,6 @@ export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldId
   }
 
   async create() {
-    await this.providers.load();
 
     const project = await this.providers.project.get({pkProject: this.id.fkProject})
     if (project) {
@@ -32,46 +27,46 @@ export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldId
       const proLang = project.fkLanguage
 
       // property label
-      let propertyLabel: string | undefined;
+      let label: string | undefined;
 
       /**
        * Try to get label in project language
        */
 
       // from project
-      propertyLabel = await this.providers.proPropertyLabel.get({
+      label = (await this.providers.proPropertyLabel.get({
         fkProject: this.id.fkProject,
         fkClass: this.id.fkClass,
         fkProperty: this.id.fkProperty,
         isOutgoing: this.id.isOutgoing,
         fkLanguage: proLang,
-      })
+      }))?.label
 
-      if (propertyLabel) return this.finalize(propertyLabel);
+      if (label) return this.finalize(label);
 
       // from geovistory
-      propertyLabel = await this.providers.proPropertyLabel.get({
+      label = (await this.providers.proPropertyLabel.get({
         fkProject: PK_DEFAULT_CONFIG_PROJECT,
         fkClass: this.id.fkClass,
         fkProperty: this.id.fkProperty,
         isOutgoing: this.id.isOutgoing,
         fkLanguage: proLang,
-      })
+      }))?.label
 
-      if (propertyLabel) return this.finalize(propertyLabel);
+      if (label) return this.finalize(label);
 
       // from ontome
       const iso6391ProLang = pkLanguageIso6391Map[proLang];
       if (iso6391ProLang) {
-        propertyLabel = await this.providers.dfhPropertyLabel.get({
+        label = (await this.providers.dfhPropertyLabel.get({
           pkProperty: this.id.fkProperty,
           language: iso6391ProLang
-        })
+        }))?.label
       }
 
-      if (propertyLabel) {
-        propertyLabel = this.completeReverseLabels(propertyLabel);
-        return this.finalize(propertyLabel);
+      if (label) {
+        label = this.completeReverseLabels(label);
+        return this.finalize(label);
       }
 
       /**
@@ -79,47 +74,45 @@ export class PClassFieldLabelAggregator extends AbstractAggregator<PClassFieldId
       */
 
       // from project
-      propertyLabel = await this.providers.proPropertyLabel.get({
+      label = (await this.providers.proPropertyLabel.get({
         fkProject: this.id.fkProject,
         fkClass: this.id.fkClass,
         fkProperty: this.id.fkProperty,
         isOutgoing: this.id.isOutgoing,
         fkLanguage: defaultLang,
-      })
+      }))?.label
 
-      if (propertyLabel) return this.finalize(propertyLabel);
+      if (label) return this.finalize(label);
 
       // from geovistory
-      propertyLabel = await this.providers.proPropertyLabel.get({
+      label = (await this.providers.proPropertyLabel.get({
         fkProject: PK_DEFAULT_CONFIG_PROJECT,
         fkClass: this.id.fkClass,
         fkProperty: this.id.fkProperty,
         isOutgoing: this.id.isOutgoing,
         fkLanguage: defaultLang,
-      })
+      }))?.label
 
-      if (propertyLabel) return this.finalize(propertyLabel);
+      if (label) return this.finalize(label);
 
       // from ontome
-      propertyLabel = await this.providers.dfhPropertyLabel.get({
+      label = (await this.providers.dfhPropertyLabel.get({
         pkProperty: this.id.fkProperty,
         language: 'en'
 
-      })
-      if (propertyLabel) {
-        propertyLabel = this.completeReverseLabels(propertyLabel);
-        return this.finalize(propertyLabel);
+      }))?.label
+      if (label) {
+        label = this.completeReverseLabels(label);
+        return this.finalize(label);
       }
 
     }
 
-    return this
+    return this.finalize()
   }
 
-  finalize(label: string) {
-    this.propertyLabel = label;
-    this.labelMissing = false;
-    return this;
+  finalize(label?: string): PClassFieldVal {
+    return {label};
   }
 
   /**
