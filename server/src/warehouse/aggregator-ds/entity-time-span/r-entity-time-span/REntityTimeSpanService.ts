@@ -1,9 +1,7 @@
 import {AggregatedDataService} from '../../../base/classes/AggregatedDataService';
-import {SqlUpsertQueue} from '../../../base/classes/SqlUpsertQueue';
-import {Updater} from '../../../base/classes/Updater';
 import {rEntityIdToString, stringToREntityId} from '../../../base/functions';
 import {EntityTimePrimitive} from "../../../primary-ds/edge/edge.commons";
-import {REntityId} from '../../../primary-ds/entity/REntityService';
+import {REntityId, rEntityKeyDefs, REntityService} from '../../../primary-ds/entity/REntityService';
 import {Warehouse} from '../../../Warehouse';
 import {REntityTimeSpanAggregator} from './REntityTimeSpanAggregator';
 import {REntityTimeSpanProviders} from './REntityTimeSpanPoviders';
@@ -42,64 +40,48 @@ export type REntityTimeSpan = {
  * -> The Val is the result of the REntityTimeSpanAggregator
  *
  */
-export class REntityTimeSpanService extends AggregatedDataService<REntityId, REntityTimeSpanVal, REntityTimeSpanAggregator>{
-    updater: Updater<REntityId, REntityTimeSpanAggregator>;
-
+export class REntityTimeSpanService extends AggregatedDataService<REntityId, REntityTimeSpanVal>{
+    creatorDS: REntityService
+    aggregator = REntityTimeSpanAggregator;
+    providers = REntityTimeSpanProviders;
+    customCreatorDSSql = [
+        {
+            where: `val->>'entityType' = 'teEn'`,
+        }
+    ]
     constructor(public wh: Warehouse) {
         super(
             wh,
             rEntityIdToString,
-            stringToREntityId
-        )
-        const aggregatorFactory = async (id: REntityId) => {
-            const providers = new REntityTimeSpanProviders(this.wh.dep.rEntityTimeSpan, id)
-            return new REntityTimeSpanAggregator(providers, id).create()
-        }
-        const register = async (result: REntityTimeSpanAggregator) => {
-            await this.put(result.id, {
-                timeSpan: result.entityTimeSpan,
-                firstSecond: result.firstSecond,
-                lastSecond: result.lastSecond
-            })
-            await result.providers.removeProvidersFromIndexes()
-        }
-
-        this.updater = new Updater(
-            this.wh,
-            this.constructor.name,
-            aggregatorFactory,
-            register,
-            rEntityIdToString,
             stringToREntityId,
+            rEntityKeyDefs
         )
+        this.registerCreatorDS(this.wh.prim.rEntity)
 
-        const upsertQueue = new SqlUpsertQueue<REntityId, REntityTimeSpanVal>(
-            wh,
-            'war.entity_preview (time_span)',
-            (valuesStr: string) => `
-            UPDATE war.entity_preview
-            SET time_span = x.column3::jsonb,
-                first_second = x.column4::bigint,
-                last_second = x.column5::bigint
-            FROM
-            (
-                values ${valuesStr}
-            ) as x
-            WHERE pk_entity = x.column1::int
-            AND project = x.column2::int
-            AND time_span IS DISTINCT FROM x.column3::jsonb;`,
-            (item) => [item.key.pkEntity, 0, item.val.timeSpan, item.val.firstSecond, item.val.lastSecond],
-            rEntityIdToString
+    }
+    getDependencies() {
+        return this.wh.dep.rEntityTimeSpan
+    };
+    onUpsertSql(tableAlias: string) {
+        return `
+        UPDATE war.entity_preview
+        SET time_span = (${tableAlias}.val->>'timeSpan')::jsonb,
+            first_second = (${tableAlias}.val->>'firstSecond')::bigint,
+            last_second = (${tableAlias}.val->>'lastSecond')::bigint
+        FROM ${tableAlias}
+        WHERE pk_entity = ${tableAlias}."pkEntity"
+        AND project = 0
+        AND (
+            time_span,
+            first_second,
+            last_second
         )
-
-        /**
-         * Add actions after a new class type is put/updated into index
-         */
-        this.afterPut$.subscribe(item => {
-
-            // Add item to queue to upsert it into db
-            upsertQueue.add(item)
-        })
+        IS DISTINCT FROM
+        (
+            (${tableAlias}.val->>'timeSpan')::jsonb,
+            (${tableAlias}.val->>'firstSecond')::bigint,
+            (${tableAlias}.val->>'lastSecond')::bigint
+        )`
     }
 }
 

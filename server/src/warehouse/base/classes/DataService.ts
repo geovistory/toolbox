@@ -50,8 +50,8 @@ export abstract class DataService<KeyModel, ValueModel>{
             const currentTime = await wh.pgNow()
 
             // useful for debugging
-            // if (ds.some(d => d.constructor.name === 'PEntityLabelService')) {
-            //     console.log(`-> propagate changes from ${this.constructor.name} to PEntityLabelService: ${currentTime}`)
+            // if (ds.some(d => d.constructor.name === 'REntityLabelService')) {
+            //     console.log(`-> propagate changes from ${this.constructor.name} to REntityLabelService: ${currentTime}`)
             // }
 
             // propagate updates

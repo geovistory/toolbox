@@ -1,4 +1,4 @@
-import {keys} from 'lodash';
+import {isEmpty} from 'ramda';
 import {AbstractAggregator} from '../../../base/classes/AbstractAggregator';
 import {RClassId} from '../../../primary-ds/DfhClassHasTypePropertyService';
 import {Edge, EntityFields} from "../../../primary-ds/edge/edge.commons";
@@ -46,13 +46,15 @@ export class REntityLabelAggregator extends AbstractAggregator<EntityLabelVal> {
      */
     async create() {
 
-        const entity = await this.providers.entity.get(this.id);
+        const entity = await this.providers.rEntity.get(this.id);
 
         if (entity) {
 
-            const fieldsWithEdges = await this.providers.edges.get(this.id)
+            const fieldsWithEdges = await this.providers.rEdges.get(this.id)
 
-            if (keys(fieldsWithEdges).length === 0) return this.finalize();
+            if (isEmpty(fieldsWithEdges) || (isEmpty(fieldsWithEdges?.outgoing) && isEmpty(fieldsWithEdges?.incoming))) {
+                return this.finalize();
+            }
 
             const classId: RClassId = {
                 pkClass: entity.fkClass
@@ -191,7 +193,7 @@ export class REntityLabelAggregator extends AbstractAggregator<EntityLabelVal> {
 
                 let string;
                 if (e.targetIsEntity) {
-                    const label = await this.providers.entityLabels.get({pkEntity: e.fkTarget})
+                    const label = await this.providers.rEntityLabels.get({pkEntity: e.fkTarget})
                     string = label?.entityLabel;
                 } else {
                     string = e.targetLabel;

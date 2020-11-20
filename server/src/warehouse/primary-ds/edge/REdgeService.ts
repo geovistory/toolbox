@@ -3,7 +3,7 @@ import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {rEntityIdToString, stringToREntityId} from '../../base/functions';
 import {Warehouse} from '../../Warehouse';
 import {REntityId, rEntityKeyDefs} from '../entity/REntityService';
-import {buildIncomingEdges, buildOutgoingEdges, EntityFields} from "./edge.commons";
+import {EntityFields} from "./edge.commons";
 
 
 export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{

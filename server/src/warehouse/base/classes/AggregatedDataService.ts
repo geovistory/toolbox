@@ -11,7 +11,7 @@ import {Logger} from './Logger';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
-interface CustomCreatorDsSql {select: string, where?: string}
+interface CustomCreatorDsSql {select?: string, where?: string}
 
 export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> {
 
@@ -76,7 +76,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
     // the running update cycle promise
     updatingPromise: Promise<number>
 
-    shouldUpdate = false;
+    shouldRestart = false;
 
     deleting = false;
     shouldDelete = false;
@@ -123,14 +123,17 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      */
     public doUpdate(currentTimestamp: string): Promise<number> {
         // useful for debugging
-        // if (this.constructor.name === 'PEntityLabelService') {
+        // if (this.constructor.name === 'REntityLabelService') {
         //     console.log(`------------- doUpdate, current cycle: ${this.cycle}, is updating:${this.updating}`)
         // }
 
-        this.shouldUpdate = true
-
-        if (!this.updating) {
+        if (this.updating) {
+            this.shouldRestart = true
+        }
+        else {
+            this.shouldRestart = false
             this.updatingPromise = this.update(currentTimestamp)
+            this.cycle++
         }
         return this.updatingPromise
     }
@@ -145,12 +148,14 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const t0 = Logger.start(this.constructor.name, `Run aggregation cycle ${this.cycle}`, 0)
 
         this.updating = true
-        this.shouldUpdate = false
         let changes = 0;
 
         // get the 'changesConsideredUntil'-timestamp
         const changesConsideredUntil = await this.getChangesConsideredUntilTsmp()
-
+        // useful for debugging
+        // if (this.constructor.name === 'REntityLabelService') {
+        //     console.log(`------------- update (cycle ${this.cycle}) from ${changesConsideredUntil} to ${currentTimestamp}`)
+        // }
         /**
          * Handle deletes
          */
@@ -167,20 +172,22 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
         // cleanup
         await this.cleanupOldDependencies(currentTimestamp);
-
         // update 'changesConsideredUntil'-timestamp
         await this.setChangesConsideredUntilTsmp(currentTimestamp)
 
+
         // finalize
         this.updating = false;
-        if (this.shouldUpdate) {
+        if (this.shouldRestart) {
             // useful for debugging
-            // if (this.constructor.name === 'PEntityLabelService') {
+            // if (this.constructor.name === 'REntityLabelService') {
             //     console.log('------------- restart startUpdate()')
             // }
             Logger.itTook(this.constructor.name, t0, `for cycle ${this.cycle}, start over...`, 0)
 
-            const nextChanges = await this.startUpdate();
+            // restart
+            currentTimestamp = await this.wh.pgNow();
+            const nextChanges = await this.doUpdate(currentTimestamp);
             changes = changes + nextChanges;
         }
 
@@ -188,13 +195,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         // - emit this.afterUpdate$ if anything has changed
         if (changes > 0) this.afterChange$.next()
         // useful for debugging
-        // if (this.constructor.name === 'PEntityLabelService') {
-        //     console.log(`-------------  finalized cycle ${this.cycle}`)
+        // if (this.constructor.name === 'REntityLabelService') {
+        //     console.log(`-------------  finalized cycle ${this.cycle} for time until ${currentTimestamp}`)
         // }
 
         Logger.msg(this.constructor.name, `restart within cycle ${this.cycle}`, 0)
 
-        this.cycle++
         return changes
     }
 
@@ -225,7 +231,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         -- find new deletes in creatorDS
         WITH tw1 AS (
             ${this.getCreatorDsSqls().map(part => `
-            SELECT ${part.select}
+            SELECT ${part.select ? part.select : this.index.keyCols}
             FROM ${this.creatorDS.index.schemaTable}
             WHERE tmsp_deleted > '${changesConsideredUntil}'
             AND tmsp_deleted <= '${currentTimestamp}'
@@ -248,13 +254,13 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         `;
         // useful for debugging
         // logSql(handleDeletes, [])
-        // if (this.constructor.name === 'PEntityLabelService') {
+        // if (this.constructor.name === 'REntityLabelService') {
         //     console.log(`--> ${this.cycle} handle deletes between ${changesConsideredUntil} and ${currentTimestamp}`)
         // }
         const res = await this.wh.pgPool.query<{count: number;}>(handleDeletes);
         changes += res.rows[0].count;
         // useful for debugging
-        // if (this.constructor.name === 'PEntityLabelService') {
+        // if (this.constructor.name === 'REntityLabelService') {
         //     console.log(`--> ${this.cycle} handled ${res.rows[0].count}`)
         // }
         return changes;
@@ -285,6 +291,10 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         const res = await brkOnErr(this.wh.pgPool.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
         const size = res.rows[0].count;
         const limit = 100;
+        // useful for debugging
+        // if (this.constructor.name === 'REntityLabelService') {
+        //     console.log(`--> ${this.cycle} handle update of ${size} items`)
+        // }
         for (let offset = 0; offset < size; offset += limit) {
             const logString = `batch aggregate ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1}/${Math.floor(size / limit) + 1}) in cycle ${this.cycle}`
             const t0 = Logger.start(this.constructor.name, `${logString}`, 0)
@@ -386,7 +396,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             const sql1 = `
                 CREATE TABLE ${this.tempTable} AS
                 ${creatorSqlParts.map(part => `
-                    SELECT ${part.select}
+                    SELECT ${part.select ? part.select : this.index.keyCols}
                     FROM ${creatorIdx.schemaTable}
                     WHERE tmsp_last_modification > '${changesConsideredUntil}'
                     AND tmsp_last_modification <= '${currentTimestamp}'
@@ -422,7 +432,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             }).join('\n');
             await this.wh.pgPool.query(sql1 + sql2);
 
-            // if (this.constructor.name === 'PEntityLabelService') {
+            // if (this.constructor.name === 'REntityLabelService') {
             //     console.log('-------------')
             //     console.log(`curr: ${currentTimestamp}, cons: ${changesConsideredUntil} `)
             //     console.log('------------- prim_pentity')

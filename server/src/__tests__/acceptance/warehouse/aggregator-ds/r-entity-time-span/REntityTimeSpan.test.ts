@@ -2,7 +2,7 @@
 import {expect} from '@loopback/testlab';
 import {equals} from 'ramda';
 import {REntityTimeSpan} from '../../../../../warehouse/aggregator-ds/entity-time-span/r-entity-time-span/REntityTimeSpanService';
-import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import {REdgeService} from '../../../../../warehouse/primary-ds/edge/REdgeService';
 import {Warehouse} from '../../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
@@ -22,32 +22,38 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitForEntityPreviewUntil, waitUntilSatisfy} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, wait, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
  */
 describe('REntityTimeSpan', function () {
     let wh: Warehouse;
-    let edgeService: PEdgeService;
+    let edgeService: REdgeService;
 
-    beforeEach(async function () {
-        await cleanDb()
+    before(async () => {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
-        edgeService = wh.prim.pEdge
+        edgeService = wh.prim.rEdge
     })
-    afterEach(async function () {await stopWarehouse(wh)})
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
 
     it('should create edges with time primitives', async () => {
-        const {shipVoyage, project} = await createMock();
-
-        const edgesOfShipVoyage = await waitUntilSatisfy(edgeService.afterPut$, (item => {
-            return item.key.fkProject === project.pk_entity
-                && item.key.pkEntity === shipVoyage.pk_entity
-                && item.val.outgoing?.[71]?.length > 0
-        }))
-
-        expect(edgesOfShipVoyage).not.to.be.undefined();
+        const {shipVoyage} = await createMock();
+        await searchUntilSatisfy({
+            notifier$: edgeService.afterChange$,
+            getFn: () => edgeService.index.getFromIdx({
+                pkEntity: shipVoyage.pk_entity ?? -1,
+            }),
+            compare: (val) => !!val?.outgoing?.[71]?.length
+        })
     })
 
 

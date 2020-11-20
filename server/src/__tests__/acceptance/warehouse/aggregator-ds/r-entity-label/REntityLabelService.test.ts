@@ -36,17 +36,21 @@ describe('REntityLabelService', function () {
         wh = await setupCleanAndStartWarehouse()
 
     })
-    afterEach(async function () {await stopWarehouse(wh)})
+    afterEach(async function () {
+        await stopWarehouse(wh)
+    })
 
-    it('should create entity label of naming', async () => {
+    it('should create entity label of naming.', async () => {
         await createProject();
-        const {naming, appellation} = await createNamingMock();
-        const result = await waitForEntityPreview(wh, [
-            {pk_entity: {eq: naming.pk_entity}},
-            {fk_project: {eq: null}},
-            {entity_label: {eq: appellation.string}},
+        await Promise.all([
+            createNamingMock(),
+            waitForEntityPreview(wh, [
+                {pk_entity: {eq: InfTemporalEntityMock.NAMING_1.pk_entity}},
+                {fk_project: {eq: null}},
+                {entity_label: {eq: InfAppellationMock.JACK_THE_FOO.string}},
+            ])
         ])
-        expect(result.entity_label).to.equal(appellation.string)
+        // expect(result.entity_label).to.equal(appellation.string)
     })
     it('should create entity label of person', async () => {
         await createProject();
@@ -83,7 +87,7 @@ describe('REntityLabelService', function () {
         expect(result.entity_label).to.equal('(no label)')
     })
 
-    it('should create entity label of naming and add person', async () => {
+    it('should create entity label of naming and add person.', async () => {
         await createProject();
         const {naming, appellation} = await createNamingMock();
         let result = await waitForEntityPreview(wh, [

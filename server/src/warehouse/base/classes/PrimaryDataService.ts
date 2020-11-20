@@ -1,6 +1,5 @@
 import {BehaviorSubject, Subject} from 'rxjs';
 import {Warehouse} from '../../Warehouse';
-import {skipWhileFirst} from '../functions';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {ClearAll} from './ClearAll';
 import {DataIndexPostgres} from './DataIndexPostgres';
@@ -202,6 +201,10 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const params = [date]
         const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
         if (upserted.rows?.[0].count > 0) {
+            // useful for debugging
+            // if (this.constructor.name === 'REdgeService') {
+            //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
+            // }
             this.afterChange$.next()
         }
         Logger.itTook(this.constructor.name, t2, `to update query`, 2);

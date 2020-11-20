@@ -77,6 +77,7 @@ function createCommand(resp) {
   const cmd = `${mocha}\
   --timeout ${resp.timeout}\
   --colors\
+  --exit\
   ${grep}\
   '${dist}/__tests__/**/*.js'`;
   return cmd;

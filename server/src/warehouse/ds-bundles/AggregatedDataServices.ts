@@ -65,7 +65,7 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
         this.rEntityType = this.registerDataService(new REntityTypeService(wh));
         this.rEntityClassLabel = this.registerDataService(new REntityClassLabelService(wh))
         this.rEntityFullText = this.registerDataService(new REntityFullTextService(wh))
-        // this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
+        this.rEntityTimeSpan = this.registerDataService(new REntityTimeSpanService(wh))
 
         this.ready$ = combineLatest(
             this.registered.map(ds => ds.index.ready$.pipe(filter(r => r === true))),
@@ -88,12 +88,12 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
 
         // // Repo aggregators
         await this.rClassLabel.startUpdate()
-        // await this.rClassFieldLabel.startUpdate()
-        // await this.rEntityClassLabel.startUpdate()
-        // await this.rEntityLabel.startUpdate()
-        // await this.rEntityType.startUpdate()
-        // await this.rEntityFullText.startUpdate()
-        // await this.rEntityTimeSpan.startUpdate()
+        await this.rClassFieldLabel.startUpdate()
+        await this.rEntityClassLabel.startUpdate()
+        await this.rEntityLabel.startUpdate()
+        await this.rEntityType.startUpdate()
+        await this.rEntityFullText.startUpdate()
+        await this.rEntityTimeSpan.startUpdate()
     }
     async clearAll() {
         await Promise.all(this.registered.map(x => x.clearAll()));

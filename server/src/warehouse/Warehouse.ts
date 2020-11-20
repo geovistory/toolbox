@@ -50,7 +50,7 @@ export class Warehouse {
 
     notificationHandlers: {[key: string]: NotificationHandler} = {}
 
-    pgConnected$ = new ReplaySubject<Pool>()
+    pgListenerConnected$ = new ReplaySubject<PoolClient>()
     createSchema$ = new Subject<void>()
     schemaName = 'war_cache'
     metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
@@ -64,8 +64,6 @@ export class Warehouse {
             connectionString,
             ssl
         });
-        this.pgConnected$.next(this.pgPool)
-
 
         Logger.msg(this.constructor.name, `create warehouse for DB: ${connectionString.split('@')[1]}`)
 
@@ -256,7 +254,7 @@ export class Warehouse {
                 COST 100
                 VOLATILE NOT LEAKPROOF
             AS $BODY$
-            BEGIN NEW.tmsp_last_modification = NOW();
+            BEGIN NEW.tmsp_last_modification = clock_timestamp();
             RETURN NEW;
             END;
             $BODY$;
@@ -320,6 +318,8 @@ export class Warehouse {
     public async connectPgListener() {
 
         this.pgListener = await this.pgPool.connect();
+        this.pgListenerConnected$.next(this.pgListener)
+
     }
 
 

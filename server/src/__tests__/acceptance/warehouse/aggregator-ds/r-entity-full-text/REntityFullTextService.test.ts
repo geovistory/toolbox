@@ -32,7 +32,7 @@ import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProf
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../../helpers/data/gvDB/ProTextPropertyMock';
 import {SysSystemTypeMock} from '../../../../helpers/data/gvDB/SysSystemTypeMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, truncateWarehouseTables, waitForEntityPreview, stopWarehouse} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -41,14 +41,20 @@ describe('REntityFullTextService', function () {
     let wh: Warehouse;
     let s: REntityFullTextService;
 
-    beforeEach(async function () {
+    before(async () => {
         // eslint-disable-next-line @typescript-eslint/no-invalid-this
-        this.timeout(20000); // A very long environment setup.
-        await cleanDb()
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.rEntityFullText
     })
-    afterEach(async function () {await stopWarehouse(wh)})
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
+
 
     it('should create full text of naming', async () => {
         const {naming} = await createNamingMock();
@@ -83,6 +89,8 @@ describe('REntityFullTextService', function () {
 
     })
 
+
+
     it('should create full text of person', async () => {
         const {person} = await createNamingAndPersonMock();
 
@@ -94,7 +102,6 @@ describe('REntityFullTextService', function () {
             notifier$: s.afterChange$,
             getFn: () => s.index.getFromIdx(id),
             compare: (val) => {
-                console.log(val?.fullText)
                 return val?.fullText === expected
             }
         })

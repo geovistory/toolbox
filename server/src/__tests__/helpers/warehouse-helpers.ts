@@ -30,7 +30,29 @@ export async function setupCleanAndStartWarehouse() {
     await wh.pgListener.query('LISTEN modified_war_class_preview;')
     return wh;
 }
-export async function stopWarehouse(wh:Warehouse){
+
+export async function truncateWarehouseTables(wh: Warehouse) {
+    await wh.pgPool.query(`
+        CREATE OR REPLACE FUNCTION truncate_tables(_schemaname text)
+        RETURNS void AS
+        $func$
+        BEGIN
+            -- RAISE NOTICE '%',
+            EXECUTE  -- dangerous, test before you execute!
+            (SELECT 'TRUNCATE TABLE '
+                || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')
+                || ' CASCADE'
+            FROM   pg_tables
+            WHERE  schemaname = _schemaname
+            );
+        END
+        $func$ LANGUAGE plpgsql;
+
+        select truncate_tables('${wh.schemaName}')
+    `)
+}
+
+export async function stopWarehouse(wh: Warehouse) {
     await wait(200)
     await wh.stop()
 }
@@ -60,6 +82,8 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
     return new Promise<WarEntityPreview>((res, rej) => {
         wh.pgListener.on('notification', (msg) => {
             if (msg.channel === 'entity_previews_updated') {
+                // console.log('log in waitForEntityPreview', msg.payload)
+
                 createWarEntityPreviewRepo().find({
                     where: {
                         and: [
@@ -70,6 +94,7 @@ export function waitForEntityPreview<M>(wh: Warehouse, whereFilter: Where<WarEnt
                 })
                     .then((result) => {
                         if (result?.length === 1) {
+                            // console.log('OK! ', msg.payload)
                             res(result[0])
                         } else if (result.length > 1) {
                             rej('found too many entity peviews')
