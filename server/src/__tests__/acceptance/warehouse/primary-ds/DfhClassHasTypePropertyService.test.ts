@@ -5,20 +5,26 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('DfhClassHasTypePropertyService', () => {
 
   let wh: Warehouse;
   let s: DfhClassHasTypePropertyService;
 
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.dfhClassHasTypeProperty;
+    s = wh.prim.dfhClassHasTypeProperty
   })
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should have class-has-type-property in index', async () => {
     await createDfhApiProperty(DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE)
     const id: RClassId = {

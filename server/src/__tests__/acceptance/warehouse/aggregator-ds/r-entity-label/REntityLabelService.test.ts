@@ -23,7 +23,7 @@ import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityL
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
 import {createInstancesForCityType, createModelMockForCityType, createProject1, createProject2, createProject3} from '../../../../helpers/graphs/cityType.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -31,12 +31,16 @@ import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitFo
 describe('REntityLabelService', function () {
     let wh: Warehouse;
 
-    beforeEach(async function () {
-        await cleanDb()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
-
     })
-    afterEach(async function () {
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
         await stopWarehouse(wh)
     })
 

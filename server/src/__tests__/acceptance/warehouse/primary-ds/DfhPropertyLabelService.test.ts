@@ -6,23 +6,26 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty, deleteDfhApiProperty, updateDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, wait, stopWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, wait, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('DfhPropertyLabelService', () => {
 
   let wh: Warehouse;
   let s: DfhPropertyLabelService;
 
-  before(async () => {
-    // await wh.pgClient.connect()
-  })
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.dfhPropertyLabel;
+    s = wh.prim.dfhPropertyLabel
   })
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should have api property label in index after initIdx()', async () => {
     const c = await createDfhApiProperty(DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE);
     const id: DfhPropertyLabelId = {pkProperty: c.dfh_pk_property, language: c.dfh_property_label_language}

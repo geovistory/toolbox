@@ -5,25 +5,26 @@ import {DfhClassLabelService} from '../../../../warehouse/primary-ds/DfhClassLab
 import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass, deleteDfhApiClass, updateDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, stopWarehouse, wait} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, wait, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('DfhClassLabelService', () => {
 
   let wh: Warehouse;
   let s: DfhClassLabelService;
 
-  before(async () => {
-    // await wh.pgClient.connect()
-  })
-  beforeEach(async function () {
-    await cleanDb();
+   before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.dfhClassLabel;
+    s = wh.prim.dfhClassLabel
   })
-  afterEach(async () => {
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
     await stopWarehouse(wh)
   })
-
   it('should have api class label in index after initIdx()', async () => {
     const c = await createDfhApiClass({dfh_class_label: 'Foo'})
     await wait(200);

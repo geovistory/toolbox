@@ -6,20 +6,26 @@ import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.hel
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('RPropertyService', () => {
 
   let wh: Warehouse;
   let s: RPropertyService;
 
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.rProperty;
+    s = wh.prim.rProperty
   })
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should add project-property', async () => {
     const {prop} = await createPPropertyMockData();
     const id: RPropertyId = {

@@ -79,7 +79,7 @@ function createCommand(resp) {
   --colors\
   --exit\
   ${grep}\
-  '${dist}/__tests__/**/*.js'`;
+  '${dist}/__tests__/${process.env.MOCHA_FOLDER}/*.js'`;
   return cmd;
 }
 
@@ -88,6 +88,7 @@ function logPreview(resp) {
   const dbUrlPreview = helpers.createDbUrlPreview(resp.selectedDbUrl);
   console.log('\nConfirm your settings:');
   console.log('Database: ', dbUrlPreview);
+  console.log('Folder: ', `'__tests__/${process.env.MOCHA_FOLDER}/*.js'`);
   console.log('Command: ', cmd);
   console.log('\n');
 }

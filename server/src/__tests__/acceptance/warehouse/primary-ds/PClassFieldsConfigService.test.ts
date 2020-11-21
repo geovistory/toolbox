@@ -8,20 +8,26 @@ import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProClassFieldConfigMock} from '../../../helpers/data/gvDB/ProClassFieldConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('PClassFieldsConfigService', () => {
 
   let wh: Warehouse;
   let s: ProClassFieldsConfigService;
 
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.pClassFieldsConfig;
+    s = wh.prim.pClassFieldsConfig
   })
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should add project-class', async () => {
     const {one} = await createPClassMockData();
     const id: PClassId = {

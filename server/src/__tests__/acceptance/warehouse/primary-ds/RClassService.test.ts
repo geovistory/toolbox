@@ -5,23 +5,25 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('RClassService', () => {
 
   let wh: Warehouse;
   let s: RClassService;
-
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.rClass;
+    s = wh.prim.rClass
   })
-  afterEach(async function () {
-    await wait(200)
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
     await stopWarehouse(wh)
   })
-
   it('should add api-class', async () => {
     const {cla} = await createRClassMockData();
     await waitUntilNext(s.afterChange$)

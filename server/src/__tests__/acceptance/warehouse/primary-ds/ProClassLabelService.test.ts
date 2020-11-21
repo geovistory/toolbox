@@ -7,22 +7,26 @@ import {createProject} from '../../../helpers/atomic/pro-project.helper';
 import {createProTextPropertyClassLabel, deleteProTextProperty, updateProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext, stopWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, waitUntilNext, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('ProClassLabelService', () => {
 
   let wh: Warehouse;
   let s: ProClassLabelService;
 
-
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.proClassLabel;
+    s = wh.prim.proClassLabel
   })
-
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should create pro class label in db', async () => {
     await createLanguages();
     await createTypes();

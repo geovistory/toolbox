@@ -12,23 +12,26 @@ import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock'
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {ProEntityLabelConfigMock} from '../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('ProEntityLabelConfigService', () => {
 
   let wh: Warehouse;
   let s: ProEntityLabelConfigService;
 
-
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.proEntityLabelConfig;
+    s = wh.prim.proEntityLabelConfig
   })
-
-
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should create pro entity label config in db', async () => {
     await createProjectMock();
     const item = await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);

@@ -14,7 +14,7 @@ import {InfPersistentItemMock} from '../../../../helpers/data/gvDB/InfPersistent
 import {ProDfhProfileProjRelMock} from '../../../../helpers/data/gvDB/ProDfhProfileProjRelMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, wait, waitForEntityPreview, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
 
 describe('REntityClassLabelService', function () {
 

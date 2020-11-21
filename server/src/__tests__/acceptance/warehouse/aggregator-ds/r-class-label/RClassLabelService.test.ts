@@ -6,18 +6,22 @@ import {AtmLanguages, createInfLanguage} from '../../../../helpers/atomic/inf-la
 import {createProTextPropertyClassLabel, deleteProTextProperty} from '../../../../helpers/atomic/pro-text-property.helper';
 import {createTypes} from '../../../../helpers/atomic/sys-system-type.helper';
 import {cleanDb} from '../../../../helpers/cleaning/clean-db.helper';
-import {setupCleanAndStartWarehouse, waitForClassPreview, stopWarehouse} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, waitForClassPreview, stopWarehouse, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
 
 describe('RClassLabelService', function () {
 
     let wh: Warehouse;
-    beforeEach(async function () {
-        await cleanDb()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
     })
-
-    afterEach(async function () {
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
         await stopWarehouse(wh)
     })
 

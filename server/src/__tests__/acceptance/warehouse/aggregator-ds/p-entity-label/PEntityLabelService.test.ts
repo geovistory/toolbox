@@ -23,7 +23,7 @@ import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEn
 import {ProEntityLabelConfigMock} from '../../../../helpers/data/gvDB/ProEntityLabelConfigMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -31,14 +31,19 @@ import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForE
 describe('PEntityLabelService', function () {
     let wh: Warehouse;
     let s: PEntityLabelService
-    beforeEach(async function () {
-        await cleanDb()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
         s = wh.agg.pEntityLabel
-
     })
-    afterEach(async function () {await stopWarehouse(wh)})
-
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
     it('should create entity label of naming', async () => {
         const project = await createProject();
         const {naming, appellation} = await createNamingMock();

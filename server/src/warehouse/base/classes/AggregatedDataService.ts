@@ -387,6 +387,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      *      and less or equal than 'currentTimestamp'
      * @param changesConsideredUntil
      * @param currentTimestamp
+     * @returns a pg.PoolClient with an open transaction the temp table is
      */
     private async findWhatToAggregate(changesConsideredUntil: string, currentTimestamp: string) {
         if (this.creatorDS) {

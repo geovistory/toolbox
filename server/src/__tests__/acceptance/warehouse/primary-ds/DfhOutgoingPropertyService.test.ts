@@ -6,20 +6,26 @@ import {Warehouse} from '../../../../warehouse/Warehouse';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {cleanDb} from '../../../helpers/cleaning/clean-db.helper';
 import {DfhApiPropertyMock} from '../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('DfhOutgoingPropertyService', () => {
 
   let wh: Warehouse;
   let s: DfhOutgoingPropertyService;
 
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.dfhOutgoingProperty;
+    s = wh.prim.dfhOutgoingProperty
   })
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
 
   it('should have two outgoing properties in index', async () => {
     await Promise.all([

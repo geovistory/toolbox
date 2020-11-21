@@ -12,22 +12,28 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreviewUntil} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreviewUntil, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('REntityService', () => {
 
   let wh: Warehouse;
   let s: REntityService;
 
-  before(async () => {
-    // await wh.pgClient.connect()
-  })
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.rEntity;
+    s = wh.prim.rEntity
   })
-  afterEach(async function () {await stopWarehouse(wh)})
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
+
+
 
   it('should have entity preview', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)

@@ -18,19 +18,24 @@ import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse} from '../../../helpers/warehouse-helpers';
+import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('PEdgeService', () => {
 
   let wh: Warehouse;
   let s: PEdgeService;
 
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.pEdge;
+    s = wh.prim.pEdge
   })
-  afterEach(async () => {
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
     await stopWarehouse(wh)
   })
   it('should have field edges in index after initIdx()', async () => {

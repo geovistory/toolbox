@@ -20,7 +20,7 @@ import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
 import {InfTemporalEntityMock} from '../../../../helpers/data/gvDB/InfTemporalEntityMock';
 import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview} from '../../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, truncateWarehouseTables} from '../../../../helpers/warehouse-helpers';
 
 /**
  * Testing whole stack from postgres to warehouse
@@ -28,12 +28,18 @@ import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview} from '
 describe('REntityTypeService', function () {
     let wh: Warehouse;
 
-    beforeEach(async function () {
-        await cleanDb()
+    before(async function () {
+        // eslint-disable-next-line @typescript-eslint/no-invalid-this
+        this.timeout(5000); // A very long environment setup.
         wh = await setupCleanAndStartWarehouse()
     })
-    afterEach(async function () {await stopWarehouse(wh)})
-
+    beforeEach(async () => {
+        await cleanDb()
+        await truncateWarehouseTables(wh)
+    })
+    after(async function () {
+        await stopWarehouse(wh)
+    })
     // TODO: Test that the entity type most often used by projects is used
     // for the repo variant (should be the case according to order by of edges)
 

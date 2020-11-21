@@ -13,23 +13,25 @@ import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfPersistentItemMock} from '../../../helpers/data/gvDB/InfPersistentItemMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
-import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitUntilNext} from '../../../helpers/warehouse-helpers';
+import {setupCleanAndStartWarehouse, stopWarehouse, waitForEntityPreview, waitUntilNext, truncateWarehouseTables} from '../../../helpers/warehouse-helpers';
 
 describe('PEntityService', () => {
 
   let wh: Warehouse;
   let s: PEntityService;
-
-  before(async () => {
-    // await wh.pgClient.connect()
-  })
-  beforeEach(async function () {
-    await cleanDb();
+  before(async function () {
+    // eslint-disable-next-line @typescript-eslint/no-invalid-this
+    this.timeout(5000); // A very long environment setup.
     wh = await setupCleanAndStartWarehouse()
-    s = wh.prim.pEntity;
+    s = wh.prim.pEntity
   })
-  afterEach(async function () {await stopWarehouse(wh)})
-
+  beforeEach(async () => {
+    await cleanDb()
+    await truncateWarehouseTables(wh)
+  })
+  after(async function () {
+    await stopWarehouse(wh)
+  })
   it('should have entity in index()', async () => {
     const entity = await createInfPersistentItem(InfPersistentItemMock.PERSON_1)
     await createInfLanguage(InfLanguageMock.GERMAN)
@@ -93,7 +95,7 @@ describe('PEntityService', () => {
     expect(result?.val.fkClass).to.equal(entity?.fk_class)
     expect(result?.deleted).to.be.undefined()
 
-    let entities = await getWarEntityPreview(id.pkEntity,id.fkProject)
+    let entities = await getWarEntityPreview(id.pkEntity, id.fkProject)
     expect(entities.length).to.equal(1);
 
     await updateProInfoProjRel(
@@ -109,7 +111,7 @@ describe('PEntityService', () => {
     const result2 = await s.index.getFromIdxWithTmsps(id)
     expect(result2?.deleted).not.to.be.undefined()
 
-    entities = await getWarEntityPreview(id.pkEntity,id.fkProject)
+    entities = await getWarEntityPreview(id.pkEntity, id.fkProject)
     expect(entities.length).to.equal(0);
   })
 

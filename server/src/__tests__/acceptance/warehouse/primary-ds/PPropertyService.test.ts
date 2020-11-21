@@ -32,7 +32,6 @@ describe('PPropertyService', function () {
   after(async function () {
     await stopWarehouse(wh)
   })
-
   it('should add project-property', async () => {
     const {prel, prop} = await createPPropertyMockData();
 
