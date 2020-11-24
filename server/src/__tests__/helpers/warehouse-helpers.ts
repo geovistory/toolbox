@@ -53,7 +53,8 @@ export async function truncateWarehouseTables(wh: Warehouse) {
 }
 
 export async function stopWarehouse(wh: Warehouse) {
-    await wait(1000)
+    // await wait(1000)
+    await wh.pgPool.query('VACUUM ANALYZE')
     await wh.stop()
 }
 /**

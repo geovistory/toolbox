@@ -3,6 +3,7 @@ import {Subject} from 'rxjs';
 import {AggregatedDataService} from './AggregatedDataService';
 import {DataIndexPostgres} from './DataIndexPostgres';
 import {DependencyIndex} from './DependencyIndex';
+import {Warehouse} from '../../Warehouse';
 
 
 
@@ -21,12 +22,15 @@ export abstract class DataService<KeyModel, ValueModel>{
     isCreatorOf: AggregatedDataService<KeyModel, any>[] = []
 
 
-    constructor() {
+    constructor(wh: Warehouse) {
 
         this.afterChange$
             // .pipe(throttleTime(10)) TODO: Test if this helps!
             .subscribe(_ => {
-                this.propagateUpdates().catch(e => console.log(e));
+                // do not propagate updates, if warehouse is initalizing primary data services
+                if (wh.preventPropagation === false) {
+                    this.propagateUpdates().catch(e => console.log(e));
+                }
             })
 
     }

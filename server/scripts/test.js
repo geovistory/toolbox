@@ -14,18 +14,7 @@ let mochaFolder = process.env.MOCHA_FOLDER;
 
 async function getUserInputs() {
   // confirm defaults
-  const defaults = await prompts({
-    type: 'confirm',
-    message: `Run tests with default settings?
-    database:       ${helpers.createDbUrlPreview(
-      process.env.DATABASE_URL,
-    )} (from env.DB_FOR_SEEDING)
-    mocha-grep:     ${mochaGrep}
-    mocha-folder:   ${mochaFolder}
-    mocha-timeout:  ${mochaTimeout}
-    `,
-    name: 'confirmed',
-  });
+  const defaults = await confirmSettings();
 
   // validate defaults
   validateSettings();
@@ -66,6 +55,11 @@ async function getUserInputs() {
       ],
     },
     {
+      type: prev => (prev === 'custom' ? 'text' : null),
+      message: 'Custom mocha --grep:',
+      name: 'customGrep',
+    },
+    {
       type: 'text',
       message: 'What folder filter should be applied? (mocha folder)',
       name: 'folder',
@@ -78,36 +72,37 @@ async function getUserInputs() {
       initial: mochaTimeout || 4000,
       description: 'mocha --timeout',
     },
-
-    {
-      type: prev => (prev === 'custom' ? 'text' : null),
-      message: 'Custom mocha --grep:',
-      name: 'customGrep',
-    },
-    {
-      type: 'confirm',
-      message: `Run tests with these settings?
-      database:       ${helpers.createDbUrlPreview(process.env.DATABASE_URL)}
-
-      mocha-grep:     ${mochaGrep}
-      mocha-folder:   ${mochaFolder}
-      mocha-timeout:  ${mochaTimeout}
-      `,
-      name: 'confirmed',
-    },
   ]);
-  if (!custom.confirmed) process.exit();
 
   // assign custom settings
   process.env.DATABASE_URL = custom.selectedDbUrl;
-  mochaGrep = custom.cusomGrep || custom.grep;
+  mochaGrep = custom.customGrep || custom.grep;
   mochaTimeout = custom.timeout;
-  mochaFolder = custom.timeout;
+  mochaFolder = custom.folder;
+
+  // confirm custom settings
+  const customConfirmation = await confirmSettings();
+  if (!customConfirmation.confirmed) process.exit();
 
   // validate custom settings
   validateSettings();
 
   return;
+}
+
+async function confirmSettings() {
+  return prompts({
+    type: 'confirm',
+    message: `Run tests with these settings?
+    database:       ${helpers.createDbUrlPreview(
+      process.env.DATABASE_URL,
+    )} (from env.DB_FOR_SEEDING)
+    mocha-grep:     ${mochaGrep}
+    mocha-folder:   ${mochaFolder}
+    mocha-timeout:  ${mochaTimeout}
+    `,
+    name: 'confirmed',
+  });
 }
 
 function validateSettings() {

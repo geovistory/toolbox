@@ -84,6 +84,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
     tempTableName: string;
     tempTable: string;
+    batchSize = 100;
 
     constructor(
         public wh: Warehouse,
@@ -91,7 +92,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         public stringToKey: (str: string) => KeyModel,
         private keyDefs: KeyDefinition[]
     ) {
-        super()
+        super(wh)
         const tableName = 'agg_' + this.constructor.name.replace('Service', '')
         this.index = new DataIndexPostgres(
             this.keyDefs,
@@ -305,7 +306,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         let changes = 0
         const res = await brkOnErr(client.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
         const size = res.rows[0].count;
-        const limit = 100;
+        const limit = this.batchSize;
         // useful for debugging
         // if (this.constructor.name === 'REntityLabelService') {
         //     console.log(`--> ${this.cycle} handle update of ${size} items`)
@@ -369,12 +370,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                     ${part}
                 )`).join(',');
             let twOnUpsert = '';
-            if (this.onUpsertSql) {
-                twOnUpsert = `
-                , onUpsert AS (
-                    ${this.onUpsertSql('tw0')}
-                )`;
-            }
+            // if (this.onUpsertSql) {
+            //     twOnUpsert = `
+            //     , onUpsert AS (
+            //         ${this.onUpsertSql('tw0')}
+            //     )`;
+            // }
             const sql = `
                 WITH
                 ${tws}

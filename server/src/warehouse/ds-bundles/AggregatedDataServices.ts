@@ -74,19 +74,19 @@ export class AggregatedDataServices extends DataServiceBundle<AggregatedDataServ
 
 
     async startCycling() {
-        // // Model aggregators
+        // Model aggregators
         await this.identifyingProperty.startUpdate()
 
-        // // Project aggegators
-        // await this.pClassLabel.startUpdate()
-        // await this.pClassFieldLabel.startUpdate()
-        // await this.pEntityClassLabel.startUpdate()
+        // Project aggegators
+        await this.pClassLabel.startUpdate()
+        await this.pClassFieldLabel.startUpdate()
+        await this.pEntityClassLabel.startUpdate()
         await this.pEntityLabel.startUpdate()
-        // await this.pEntityType.startUpdate()
-        // await this.pEntityFullText.startUpdate()
-        // await this.pEntityTimeSpan.startUpdate()
+        await this.pEntityType.startUpdate()
+        await this.pEntityFullText.startUpdate()
+        await this.pEntityTimeSpan.startUpdate()
 
-        // // Repo aggregators
+        // Repo aggregators
         await this.rClassLabel.startUpdate()
         await this.rClassFieldLabel.startUpdate()
         await this.rEntityClassLabel.startUpdate()

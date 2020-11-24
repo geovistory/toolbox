@@ -30,7 +30,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         public stringToKey: (str: string) => KeyModel,
         private keyDefs: KeyDefinition[]
     ) {
-        super()
+        super(wh)
         this.index = new DataIndexPostgres(
             this.keyDefs,
             keyToString,
@@ -200,13 +200,13 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         SELECT count(*)::int FROM tw2
         `
         const params = [date]
-        // if (this.constructor.name === 'PEdgeService') logSql(sql, params)
+        // if (this.constructor.name === 'REdgeService') logSql(sql, params)
         const upserted = await this.wh.pgPool.query<{count: number}>(sql, params);
+        // useful for debugging
+        // if (this.constructor.name === 'REdgeService') {
+        //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
+        // }
         if (upserted.rows?.[0].count > 0) {
-            // useful for debugging
-            // if (this.constructor.name === 'REdgeService') {
-            //     console.log(`REdgeService updated ${upserted.rows?.[0].count} rows`)
-            // }
             this.afterChange$.next()
         }
         Logger.itTook(this.constructor.name, t2, `to update query`, 2);

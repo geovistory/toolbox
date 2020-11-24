@@ -44,7 +44,8 @@ export class Warehouse {
     // Indexes holding dependencies between primary and secondary data
     dep: DependencyDataServices
 
-    initializingIndexes = false
+    // if true, changes on dependencies are not propagated to aggregators
+    preventPropagation = false
 
     status: 'stopped' | 'initializing' | 'starting' | 'running' | 'backuping' = 'stopped'
 
@@ -122,7 +123,10 @@ export class Warehouse {
 
         await this.getInitBackupDate();
 
+        this.preventPropagation = true
         await this.createPrimaryData();
+        await this.createAggregatedData()
+        this.preventPropagation = false
 
         await this.createAggregatedData()
 
@@ -291,13 +295,12 @@ export class Warehouse {
      * In short: The function (re-)creates all indexes
      */
     private async createPrimaryData() {
-        this.initializingIndexes = true
+
         const t1 = Logger.start(this.constructor.name, 'Initialize indexes', 0)
 
         await this.prim.initAllIndexes()
 
         Logger.itTook(this.constructor.name, t1, 'to initialize indexes', 0)
-        this.initializingIndexes = false
     }
     /**
      * Initialize the indexes of the secondary data services

@@ -148,7 +148,7 @@ WITH tw0 AS (
           t.fk_entity
       ) t1 ON true
     WHERE
-        t1.is_in_project_count IS DISTINCT FROM 0
+        t1.is_in_project_count IS NOT NULL
     AND
      t8.table_name IN ('temporal_entity', 'persistent_item')
     GROUP BY
@@ -207,7 +207,7 @@ WITH tw0 AS (
           t.fk_entity
       ) t1 ON true
     WHERE
-      t1.is_in_project_count IS DISTINCT FROM 0
+      t1.is_in_project_count IS NOT NULL
       AND
       t9.table_name IN ('temporal_entity', 'persistent_item')
     GROUP BY
