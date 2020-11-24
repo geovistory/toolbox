@@ -6,38 +6,79 @@ const helpers = require('./__helpers');
 process.env.LOGS = 'OFF';
 process.env.NO_LOGS = 'true';
 
-async function chooseDb() {
-  const response = await prompts([
+// assign defaults
+process.env.DATABASE_URL = process.env.DB_FOR_SEEDING;
+let mochaGrep = process.env.MOCHA_GREP;
+let mochaTimeout = process.env.MOCHA_TIMEOUT;
+let mochaFolder = process.env.MOCHA_FOLDER;
+
+async function getUserInputs() {
+  // confirm defaults
+  const defaults = await prompts({
+    type: 'confirm',
+    message: `Run tests with default settings?
+    database:       ${helpers.createDbUrlPreview(
+      process.env.DATABASE_URL,
+    )} (from env.DB_FOR_SEEDING)
+    mocha-grep:     ${mochaGrep}
+    mocha-folder:   ${mochaFolder}
+    mocha-timeout:  ${mochaTimeout}
+    `,
+    name: 'confirmed',
+  });
+
+  // validate defaults
+  validateSettings();
+
+  // finish here, if defaults confirmed
+  if (defaults.confirmed) {
+    return;
+  }
+
+  // let user customize settings
+  console.log(`Defaults denyed. Customize settings:`);
+  const custom = await prompts([
     {
       type: 'select',
       name: 'selectedDbUrl',
-      message: 'What database should be used as DATABASE_URL?',
+      message: 'What database should be used? (as DATABASE_URL)',
       choices: [
-        {title: 'TEST_DATABASE_URL', value: process.env.TEST_DATABASE_URL},
-        {title: 'DATABASE_URL', value: process.env.DATABASE_URL},
+        {title: 'DB_FOR_SEEDING', value: process.env.DB_FOR_SEEDING},
+        {title: 'DB_REVIEW_COPY', value: process.env.DB_REVIEW_COPY},
+        {title: 'DB_PROD_COPY', value: process.env.DB_PROD_COPY},
         {
-          title: 'TEMPLATE_DATABASE_URL',
-          value: process.env.TEMPLATE_DATABASE_URL,
+          title: 'DB_SCHEMA_TEMPLATE',
+          value: process.env.DB_SCHEMA_TEMPLATE,
         },
       ],
     },
     {
-      type: 'number',
-      message: 'Mocha --timeout:',
-      name: 'timeout',
-      initial: process.env.MOCHA_TIMEOUT || 4000,
-      description: 'mocha --timeout',
-    },
-    {
       type: 'select',
-      message: 'Mocha --grep:',
+      message: 'What regex filter should be applied? (mocha --grep)',
       name: 'grep',
       choices: [
-        {title: process.env.MOCHA_GREP + ' (env MOCHA_GREP)' , value: process.env.MOCHA_GREP},
-        {title: 'none', value: null},
+        {title: 'none (run all tests)', value: null},
         {title: 'custom', value: 'custom'},
+        {
+          title: mochaGrep + ' (env MOCHA_GREP)',
+          value: mochaGrep,
+        },
       ],
     },
+    {
+      type: 'text',
+      message: 'What folder filter should be applied? (mocha folder)',
+      name: 'folder',
+      initial: mochaFolder || '**',
+    },
+    {
+      type: 'number',
+      message: 'What timeout should be applied for tests? (mocha --timeout)',
+      name: 'timeout',
+      initial: mochaTimeout || 4000,
+      description: 'mocha --timeout',
+    },
+
     {
       type: prev => (prev === 'custom' ? 'text' : null),
       message: 'Custom mocha --grep:',
@@ -45,50 +86,71 @@ async function chooseDb() {
     },
     {
       type: 'confirm',
-      message: 'Run tests? (will delete data from specified db)',
-      description: (prev, values) => `${logPreview(values)}`,
-      name: 'confirm',
+      message: `Run tests with these settings?
+      database:       ${helpers.createDbUrlPreview(process.env.DATABASE_URL)}
+
+      mocha-grep:     ${mochaGrep}
+      mocha-folder:   ${mochaFolder}
+      mocha-timeout:  ${mochaTimeout}
+      `,
+      name: 'confirmed',
     },
   ]);
-  if (!response.selectedDbUrl) {
+  if (!custom.confirmed) process.exit();
+
+  // assign custom settings
+  process.env.DATABASE_URL = custom.selectedDbUrl;
+  mochaGrep = custom.cusomGrep || custom.grep;
+  mochaTimeout = custom.timeout;
+  mochaFolder = custom.timeout;
+
+  // validate custom settings
+  validateSettings();
+
+  return;
+}
+
+function validateSettings() {
+  if (!process.env.DATABASE_URL) {
     console.log('No database url specified');
     process.exit();
   }
-  if (!response.confirm) process.exit();
-  process.env.DATABASE_URL = response.selectedDbUrl;
-
-  return response;
 }
 
 async function start() {
-  const resp = await chooseDb();
-  const cmd = createCommand(resp);
+  await getUserInputs();
+  const cmd = createCommand();
+  console.log(`
+  Running tests on ${helpers.createDbUrlPreview(
+    process.env.DATABASE_URL,
+  )} with this command:`);
+  console.log(cmd);
 
   return require('./__execShell').fromScript(cmd);
 }
 
 start().catch(err => console.error(err));
 
-function createCommand(resp) {
+const createCommand = () => {
   const mocha = path.join(__dirname, '../node_modules/.bin/mocha');
   const dist = path.join(__dirname, '../dist');
-  const g = resp.cusomGrep || resp.grep;
-  const grep = g ? `--grep "${g}"` : '';
+
   const cmd = `${mocha}\
-  --timeout ${resp.timeout}\
+  --timeout ${mochaTimeout}\
   --colors\
   --exit\
-  ${grep}\
+  ${mochaGrep ? `--grep "${mochaGrep}"` : ''}\
   '${dist}/__tests__/${process.env.MOCHA_FOLDER}/*.js'`;
-  return cmd;
-}
 
-function logPreview(resp) {
-  const cmd = createCommand(resp);
-  const dbUrlPreview = helpers.createDbUrlPreview(resp.selectedDbUrl);
-  console.log('\nConfirm your settings:');
-  console.log('Database: ', dbUrlPreview);
-  console.log('Folder: ', `'__tests__/${process.env.MOCHA_FOLDER}/*.js'`);
-  console.log('Command: ', cmd);
-  console.log('\n');
-}
+  return cmd;
+};
+
+// function logPreview(resp) {
+//   const cmd = createCommand(resp);
+//   const dbUrlPreview = helpers.createDbUrlPreview(resp.selectedDbUrl);
+//   console.log('\nConfirm your settings:');
+//   console.log('Database: ', dbUrlPreview);
+//   console.log('Folder: ', `'__tests__/${process.env.MOCHA_FOLDER}/*.js'`);
+//   console.log('Command: ', cmd);
+//   console.log('\n');
+// }

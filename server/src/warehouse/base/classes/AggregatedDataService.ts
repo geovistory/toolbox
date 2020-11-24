@@ -8,6 +8,7 @@ import {DataService} from './DataService';
 import {Dependencies} from './Dependencies';
 import {DependencyIndex} from './DependencyIndex';
 import {Logger} from './Logger';
+import {PoolClient} from 'pg';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
@@ -100,7 +101,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             wh
         )
         this.tempTableName = tableName + '_tmp'
-        this.tempTable = `${this.index.schema}.${this.tempTableName}`
+        this.tempTable = tableName + '_tmp' // `${this.index.schema}.${this.tempTableName}`
     }
 
     async aggregate(id: KeyModel) {
@@ -164,14 +165,28 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         /**
          * Handle upserts
          */
-        // find what to aggregate (store it in temp table)
-        await this.findWhatToAggregate(changesConsideredUntil, currentTimestamp);
+        // create client for the aggregation
+        const client = await this.wh.pgPool.connect()
+        try {
+            await client.query('BEGIN')
 
-        // aggregate
-        changes += await this.aggregateAll(currentTimestamp)
+            // find what to aggregate (store it in temp table)
+            await this.findWhatToAggregate(client, changesConsideredUntil, currentTimestamp);
 
-        // cleanup
-        await this.cleanupOldDependencies(currentTimestamp);
+            // aggregate batchwise, reading from temp table
+            changes += await this.aggregateAll(client, currentTimestamp)
+
+            // cleanup dependencies
+            await this.cleanupOldDependencies(client, currentTimestamp);
+
+            await client.query('COMMIT')
+        } catch (e) {
+            await client.query('ROLLBACK')
+            throw e
+        } finally {
+            client.release()
+        }
+
         // update 'changesConsideredUntil'-timestamp
         await this.setChangesConsideredUntilTsmp(currentTimestamp)
 
@@ -273,7 +288,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      * recent aggregation (=tmsp_last_aggregation less than 'currentTimestamp')
      * @param currentTimestamp
      */
-    private async cleanupOldDependencies(currentTimestamp: string) {
+    private async cleanupOldDependencies(client: PoolClient, currentTimestamp: string) {
         const depDS = this.isReceiverOf[0];
         const cleanupSql = `
             DELETE
@@ -283,12 +298,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                 .map(k => `t2."${k.name}" = t1."r_${k.name}"`).join(' AND ')}
             AND t1.tmsp_last_aggregation < '${currentTimestamp}'
         `;
-        await this.wh.pgPool.query(cleanupSql);
+        await client.query(cleanupSql);
     }
 
-    async aggregateAll(currentTimestamp: string) {
+    async aggregateAll(client: PoolClient, currentTimestamp: string) {
         let changes = 0
-        const res = await brkOnErr(this.wh.pgPool.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
+        const res = await brkOnErr(client.query<{count: number}>(`SELECT count(*)::integer From ${this.tempTable}`))
         const size = res.rows[0].count;
         const limit = 100;
         // useful for debugging
@@ -298,17 +313,17 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         for (let offset = 0; offset < size; offset += limit) {
             const logString = `batch aggregate ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1}/${Math.floor(size / limit) + 1}) in cycle ${this.cycle}`
             const t0 = Logger.start(this.constructor.name, `${logString}`, 0)
-            changes += await this.aggregateBatch(limit, offset, currentTimestamp);
+            changes += await this.aggregateBatch(client, limit, offset, currentTimestamp);
             Logger.itTook(this.constructor.name, t0, `to ${logString}`, 0)
 
         }
         return changes
     }
 
-    private async aggregateBatch(limit: number, offset: number, currentTimestamp: string) {
+    private async aggregateBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string) {
         let changes = 0
 
-        const toAggregate = await brkOnErr(this.wh.pgPool.query<KeyModel>(`
+        const toAggregate = await brkOnErr(client.query<KeyModel>(`
         SELECT * From ${this.tempTable}
         LIMIT $1 OFFSET $2
         `, [limit, offset]));
@@ -367,7 +382,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                 SELECT count(*):: int changes FROM tw0;
                 `;
             // logSql(sql, params)
-            const result = await brkOnErr(this.wh.pgPool.query<{changes: number;}>(sql, params));
+            const result = await brkOnErr(client.query<{changes: number;}>(sql, params));
             changes = result.rows?.[0].changes ?? 0;
         }
         return changes;
@@ -387,15 +402,14 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      *      and less or equal than 'currentTimestamp'
      * @param changesConsideredUntil
      * @param currentTimestamp
-     * @returns a pg.PoolClient with an open transaction the temp table is
      */
-    private async findWhatToAggregate(changesConsideredUntil: string, currentTimestamp: string) {
+    private async findWhatToAggregate(client: PoolClient, changesConsideredUntil: string, currentTimestamp: string) {
         if (this.creatorDS) {
-            await this.wh.pgPool.query(`DROP TABLE IF EXISTS ${this.tempTable} `);
             const creatorIdx = this.creatorDS.index;
             const creatorSqlParts = this.getCreatorDsSqls();
+
             const sql1 = `
-                CREATE TABLE ${this.tempTable} AS
+                CREATE TEMPORARY TABLE ${this.tempTable} ON COMMIT DROP AS
                 ${creatorSqlParts.map(part => `
                     SELECT ${part.select ? part.select : this.index.keyCols}
                     FROM ${creatorIdx.schemaTable}
@@ -431,7 +445,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                     )
                 `;
             }).join('\n');
-            await this.wh.pgPool.query(sql1 + sql2);
+            await client.query(sql1 + sql2);
 
             // if (this.constructor.name === 'REntityLabelService') {
             //     console.log('-------------')

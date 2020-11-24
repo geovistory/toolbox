@@ -1,4 +1,4 @@
-.import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
+import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {pPropertyIdToString, stringToPPropertyId} from '../../base/functions';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';

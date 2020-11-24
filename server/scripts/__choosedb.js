@@ -8,16 +8,18 @@ require('./__dotenv');
 const prompts = require('prompts');
 
 async function chooseDb() {
+
   const response = await prompts({
     type: 'select',
     name: 'selectedDbUrl',
     message: 'What database should be used as DATABASE_URL?',
     choices: [
-      {title: 'DATABASE_URL', value: process.env.DATABASE_URL},
-      {title: 'TEST_DATABASE_URL', value: process.env.TEST_DATABASE_URL},
+      {title: 'DB_REVIEW_COPY', value: process.env.DB_REVIEW_COPY},
+      {title: 'DB_PROD_COPY', value: process.env.DB_PROD_COPY},
+      {title: 'DB_FOR_SEEDING', value: process.env.DB_FOR_SEEDING},
       {
-        title: 'TEMPLATE_DATABASE_URL',
-        value: process.env.TEMPLATE_DATABASE_URL,
+        title: 'DB_SCHEMA_TEMPLATE',
+        value: process.env.DB_SCHEMA_TEMPLATE,
       },
     ],
   })

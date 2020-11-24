@@ -35,21 +35,31 @@ export function stringToPClassId(str: string): PClassId {
 
 // project property id to string
 export function pPropertyIdToString(key: PPropertyId): string {
-    return key.fkProject + '_' + key.pkProperty;
+    return key.fkProject + '_' + key.pkProperty + '_' + key.fkDomain + '_' + key.fkRange;
 }
 // string to project property
 export function stringToPPropertyId(str: string): PPropertyId {
-    const [fkProject, pkProperty] = str.split('_');
-    return {fkProject: parseInt(fkProject, 10), pkProperty: parseInt(pkProperty, 10)};
+    const [fkProject, pkProperty, fkDomain,fkRange] = str.split('_');
+    return {
+        fkProject: parseInt(fkProject, 10),
+        pkProperty: parseInt(pkProperty, 10),
+        fkDomain: parseInt(fkDomain, 10),
+        fkRange: parseInt(fkRange, 10),
+    };
 }
 
 // repo property id to string
 export function rPropertyIdToString(key: RPropertyId): string {
-    return '' + key.pkProperty;
+    return '' + key.pkProperty+ '_' + key.fkDomain + '_' + key.fkRange;
 }
 // string to repo property
 export function stringToRPropertyId(str: string): RPropertyId {
-    return {pkProperty: parseInt(str, 10)};
+    const [ pkProperty, fkDomain,fkRange] = str.split('_');
+    return {
+        pkProperty: parseInt(pkProperty, 10),
+        fkDomain: parseInt(fkDomain, 10),
+        fkRange: parseInt(fkRange, 10),
+    };
 }
 
 

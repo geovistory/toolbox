@@ -8,21 +8,21 @@ import {parse} from 'pg-connection-string'
  * - a test db
  */
 export async function recreateDB() {
-    if (!process.env.MAINTAINANCE_DATABASE_URL) throw Error('MAINTAINANCE_DATABASE_URL not defined')
-    if (!process.env.TEMPLATE_DATABASE_URL) throw Error('TEMPLATE_DATABASE_URL not defined')
-    if (!process.env.TEST_DATABASE_URL) throw Error('TEST_DATABASE_URL not defined')
+    if (!process.env.DB_MAINTAINANCE) throw Error('DB_MAINTAINANCE not defined')
+    if (!process.env.DB_SCHEMA_TEMPLATE) throw Error('DB_SCHEMA_TEMPLATE not defined')
+    if (!process.env.DB_FOR_SEEDING) throw Error('DB_FOR_SEEDING not defined')
 
-    const maintainanceDb = parse(process.env.MAINTAINANCE_DATABASE_URL)
-    const templateDb = parse(process.env.TEMPLATE_DATABASE_URL)
-    const testDb = parse(process.env.TEST_DATABASE_URL)
+    const maintainanceDb = parse(process.env.DB_MAINTAINANCE)
+    const templateDb = parse(process.env.DB_SCHEMA_TEMPLATE)
+    const testDb = parse(process.env.DB_FOR_SEEDING)
 
     if (maintainanceDb.host !== templateDb.host || maintainanceDb.host !== testDb.host) {
         throw Error('Databases must be on same host')
     }
 
     const maintainanceClient = new Client({
-        connectionString: process.env.MAINTAINANCE_DATABASE_URL,
-        ssl: getPgSslForPg8(process.env.MAINTAINANCE_DATABASE_URL)
+        connectionString: process.env.DB_MAINTAINANCE,
+        ssl: getPgSslForPg8(process.env.DB_MAINTAINANCE)
     })
     await maintainanceClient.connect()
 

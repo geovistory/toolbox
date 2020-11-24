@@ -5,12 +5,12 @@ import {DfhPropertyLabelId, DfhPropertyLabelVal} from '../../../primary-ds/DfhPr
 import {ProjectId, ProjectVal} from '../../../primary-ds/ProProjectService'
 import {ProPropertyLabelId, ProPropertyLabelVal} from '../../../primary-ds/ProPropertyLabelService'
 import {Warehouse} from '../../../Warehouse'
-import {PClassFieldLabelId} from './PClassFieldLabelService'
+import {PClassFieldLabelId, PClassFieldLabelVal} from './PClassFieldLabelService'
 
 export class PClassFieldLabelDependencies extends Dependencies {
-  project: DependencyIndex<PClassFieldLabelId, string, ProjectId, ProjectVal>
-  dfhPropertyLabel: DependencyIndex<PClassFieldLabelId, string, DfhPropertyLabelId, DfhPropertyLabelVal>
-  proPropertyLabel: DependencyIndex<PClassFieldLabelId, string, ProPropertyLabelId, ProPropertyLabelVal>
+  project: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, ProjectId, ProjectVal>
+  dfhPropertyLabel: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, DfhPropertyLabelId, DfhPropertyLabelVal>
+  proPropertyLabel: DependencyIndex<PClassFieldLabelId, PClassFieldLabelVal, ProPropertyLabelId, ProPropertyLabelVal>
 
   // entityFulltextPropertyLabelDep: DependencyIndex<EntityId, string, PropertyId, string>;
   constructor(private wh: Warehouse) {
