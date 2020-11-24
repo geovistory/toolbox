@@ -370,12 +370,12 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                     ${part}
                 )`).join(',');
             let twOnUpsert = '';
-            // if (this.onUpsertSql) {
-            //     twOnUpsert = `
-            //     , onUpsert AS (
-            //         ${this.onUpsertSql('tw0')}
-            //     )`;
-            // }
+            if (this.onUpsertSql) {
+                twOnUpsert = `
+                , onUpsert AS (
+                    ${this.onUpsertSql('tw0')}
+                )`;
+            }
             const sql = `
                 WITH
                 ${tws}
